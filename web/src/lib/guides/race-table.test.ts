@@ -62,6 +62,18 @@ describe('racialEffects', () => {
     const berserking = troll === undefined ? undefined : racialEffects(troll).get('Berserking');
     if (berserking !== undefined) expect(berserking).toMatch(/casting and attack speed/);
   });
+
+  it('describes the racials as Blizzard retuned them on 26 and 27 October', () => {
+    const effect = (slug: string, name: string) => {
+      const race = raceBy(slug);
+      return race === undefined ? undefined : racialEffects(race).get(name);
+    };
+    expect(effect('orc', 'Command')).toMatch(/Hunter and Warlock pets by 5%/);
+    expect(effect('troll', 'Berserking')).toMatch(/for 15 seconds/);
+    expect(effect('undead', 'Touch of the Grave')).toMatch(/once every 15 seconds/);
+    expect(effect('human', 'The Human Spirit')).toMatch(/Spirit by 10%/);
+    expect(effect('high-order-skyborne', 'Wind Blessed')).toMatch(/2% haste/);
+  });
 });
 
 describe('specKindOf', () => {

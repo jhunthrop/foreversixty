@@ -13,8 +13,8 @@ export type SpecKind = 'caster' | 'melee' | 'ranged' | 'healer' | 'tank';
 
 /** Every racial the data names for a race. */
 export const RACIAL_NAMES: Readonly<Record<string, readonly string[]>> = {
-  human: ['Will to Survive', 'Perception', 'Sword Specialization', 'The Human Spirit'],
-  orc: ['Blood Fury', 'Shatter Curse', 'Axe Specialization', 'Hardiness'],
+  human: ['Will to Survive', 'Perception', 'Ruthless', 'The Human Spirit'],
+  orc: ['Blood Fury', 'Shatter Curse', 'Command', 'Hardiness'],
   dwarf: ['Stoneform', 'Find Treasure', 'Mace Specialization', 'Big Game Hunter'],
   'night-elf': ["Elune's Light", 'Shadowmeld', 'Quickness', 'Wisp Spirit'],
   undead: ['Will of the Forsaken', 'Cannibalize', 'Touch of the Grave'],
@@ -33,8 +33,8 @@ type Picks = { default: string[] } & Partial<Record<SpecKind, string[]>>;
 export const RACIAL_PICKS: Readonly<Record<string, Picks>> = {
   human: {
     default: ['Perception', 'The Human Spirit'],
-    melee: ['Sword Specialization'],
-    tank: ['Sword Specialization'],
+    melee: ['Ruthless'],
+    tank: ['Ruthless'],
     ranged: ['Will to Survive'],
   },
   orc: { default: ['Blood Fury'], tank: ['Shatter Curse'] },
