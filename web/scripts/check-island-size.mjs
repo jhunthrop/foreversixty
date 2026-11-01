@@ -43,7 +43,11 @@ const BUDGETS = [
   // Select, whose closed-field and fine-pointer core ship in the boot chunk. The deploy's
   // real-data build read 82,747 bytes against 79,872 (the fixture build reads ~79.5 KB).
   // Debt: lazy-load the listbox core from the planner so its boot chunk drops back under 79 KB.
-  { file: 'dist/planner-island.js', limitBytes: 82 * 1024 },
+  // 83 KB since sim-accuracy round 5 (2026-11-01): the Raid-buffed preset carries each spec's
+  // published consumable set (sim/request/raid-consumes.json, about 0.7 KB gzipped) so the
+  // planner's live figure and the /sim page match the published numbers; the real-data build
+  // read 84,126 bytes against 83,968.
+  { file: 'dist/planner-island.js', limitBytes: 83 * 1024 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
