@@ -5917,6 +5917,12 @@
         "level": 10,
         "lines": [
           {
+            "spell_id": 456397,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 400618,
             "name": "Fire Blast",
             "condition": "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts.",
@@ -5933,6 +5939,12 @@
       {
         "level": 20,
         "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
           {
             "spell_id": 11366,
             "name": "Pyroblast",
@@ -5956,6 +5968,12 @@
       {
         "level": 30,
         "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
           {
             "spell_id": 8444,
             "name": "Scorch",
@@ -5992,6 +6010,12 @@
         "level": 38,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 8445,
             "name": "Scorch",
             "condition": "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.",
@@ -6026,6 +6050,12 @@
       {
         "level": 40,
         "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
           {
             "spell_id": 28682,
             "name": "Combustion",
@@ -6068,6 +6098,12 @@
         "level": 50,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 28682,
             "name": "Combustion",
             "condition": "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits.",
@@ -6108,6 +6144,12 @@
       {
         "level": 60,
         "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
           {
             "spell_id": 28682,
             "name": "Combustion",
@@ -7247,6 +7289,12 @@
             "icon": "spell_holy_righteousfury"
           },
           {
+            "spell_id": 20287,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 679,
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6.",
@@ -7270,9 +7318,21 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
+            "spell_id": 20288,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20375,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20375,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7305,9 +7365,21 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
+            "spell_id": 20289,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20915,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20915,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7340,9 +7412,21 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20915,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20915,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7375,9 +7459,21 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20918,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20918,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7416,9 +7512,21 @@
             "icon": "ability_thunderclap"
           },
           {
+            "spell_id": 20292,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20919,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20919,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7457,9 +7565,21 @@
             "icon": "ability_thunderclap"
           },
           {
+            "spell_id": 20293,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20920,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20920,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -11350,6 +11470,12 @@
             "icon": "spell_shadow_abominationexplosion"
           },
           {
+            "spell_id": 980,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 707,
             "name": "Immolate",
             "condition": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
@@ -11377,6 +11503,12 @@
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.",
             "icon": "spell_shadow_abominationexplosion"
+          },
+          {
+            "spell_id": 1014,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 1094,
@@ -11408,6 +11540,12 @@
             "icon": "spell_shadow_abominationexplosion"
           },
           {
+            "spell_id": 6217,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 2941,
             "name": "Immolate",
             "condition": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
@@ -11437,6 +11575,12 @@
             "icon": "spell_shadow_abominationexplosion"
           },
           {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 2941,
             "name": "Immolate",
             "condition": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
@@ -11464,6 +11608,12 @@
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.",
             "icon": "spell_shadow_abominationexplosion"
+          },
+          {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 11665,
@@ -11499,6 +11649,12 @@
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.",
             "icon": "spell_shadow_abominationexplosion"
+          },
+          {
+            "spell_id": 11712,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 11667,
@@ -11538,8 +11694,14 @@
           {
             "spell_id": 603,
             "name": "Bane of Doom",
-            "condition": "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires.",
+            "condition": "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains.",
             "icon": "spell_shadow_auraofdarkness"
+          },
+          {
+            "spell_id": 11713,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 25309,
@@ -11573,6 +11735,12 @@
             "icon": "spell_shadow_burningspirit"
           },
           {
+            "spell_id": 980,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 707,
             "name": "Immolate",
             "condition": "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is recast when under 3 seconds remain.",
@@ -11600,6 +11768,12 @@
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low.",
             "icon": "spell_shadow_burningspirit"
+          },
+          {
+            "spell_id": 1014,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 1094,
@@ -11635,6 +11809,12 @@
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low.",
             "icon": "spell_shadow_burningspirit"
+          },
+          {
+            "spell_id": 6217,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 2941,
@@ -11678,6 +11858,12 @@
             "icon": "spell_shadow_burningspirit"
           },
           {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 2941,
             "name": "Immolate",
             "condition": "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is recast when under 3 seconds remain.",
@@ -11717,6 +11903,12 @@
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low.",
             "icon": "spell_shadow_burningspirit"
+          },
+          {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 11665,
@@ -11764,6 +11956,12 @@
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low.",
             "icon": "spell_shadow_burningspirit"
+          },
+          {
+            "spell_id": 11712,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 11667,
@@ -11815,8 +12013,14 @@
           {
             "spell_id": 603,
             "name": "Bane of Doom",
-            "condition": "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires.",
+            "condition": "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains.",
             "icon": "spell_shadow_auraofdarkness"
+          },
+          {
+            "spell_id": 11713,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 25309,
@@ -109025,6 +109229,7 @@
     "11713": 8,
     "12042": 1,
     "12043": 1,
+    "12051": 1,
     "12294": 40,
     "12328": 1,
     "12522": 20,
@@ -109093,6 +109298,12 @@
     "20116": 20,
     "20163": 10,
     "20271": 4,
+    "20287": 1,
+    "20288": 1,
+    "20289": 1,
+    "20290": 1,
+    "20292": 1,
+    "20293": 1,
     "20375": 20,
     "20419": 10,
     "20422": 10,
@@ -109226,6 +109437,7 @@
     "436944": 12,
     "436946": 12,
     "456195": 1,
+    "456397": 1,
     "461810": 6,
     "461826": 6,
     "461827": 6,
