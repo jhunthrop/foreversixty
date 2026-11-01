@@ -28,8 +28,13 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from './support/test';
-import { ENGINE_VERSION } from '../../src/lib/sim/version';
-import { artifactPublished, hasWasmExports, realEngineSkipReason } from './support/real-engine';
+import {
+  artifactPublished,
+  E2E_ARTIFACT,
+  hasWasmExports,
+  publishedTalents,
+  realEngineSkipReason,
+} from './support/real-engine';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -41,7 +46,7 @@ const activeBuild = JSON.parse(readFileSync(path.join(WEB_ROOT, 'src/data/active
 // gear ids from the active build's embedded database, talents included -- the field report
 // pasted this exact FS1 export against https://foreversixty.gg/sim/weights.
 const FURY_REPRO =
-  `FS1:${activeBuild.build}:warrior:orc:33305013002/150531000051310051/0:` +
+  `FS1:${activeBuild.build}:warrior:orc:${publishedTalents(WEB_ROOT, activeBuild.build, 'warrior-fury')}:` +
   'head=12640,neck=21809,shoulder=275737,back=21394,chest=19690,wrist=19687,hands=21278,' +
   'waist=19823,legs=16543,feet=16545,ranged=22656,finger1=19325,finger2=21182,' +
   'trinket1=19406,trinket2=249469,main_hand=22384,off_hand=18827';
@@ -53,11 +58,11 @@ test('a browser-lane weights run at the default precision finishes with a table,
 }) => {
   test.slow();
 
-  const published = artifactPublished(WEB_ROOT, ENGINE_VERSION);
+  const published = artifactPublished(WEB_ROOT, E2E_ARTIFACT);
   const hasExports =
     process.env.PUBLIC_SIM_ENGINE === 'wasm' &&
     published &&
-    (await hasWasmExports(browser, baseURL ?? 'http://localhost:4340', ENGINE_VERSION, ['simWeights']));
+    (await hasWasmExports(browser, baseURL ?? 'http://localhost:4340', E2E_ARTIFACT, ['simWeights']));
   test.skip(!hasExports, realEngineSkipReason('weights smoke'));
 
   const pageErrors: string[] = [];

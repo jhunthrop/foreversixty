@@ -8,10 +8,30 @@
 // import a browser-only module into a Node-side gate check) rather than left a second time
 // inline, once a second real-engine spec (sim-weights-real-engine.spec.ts) needed the exact
 // same probe.
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Browser } from '@playwright/test';
-import { engineAssetUrl } from '../../../src/lib/sim/version';
+import { ENGINE_VERSION, engineAssetUrl } from '../../../src/lib/sim/version';
+
+/**
+ * The artifact directory the page was built against: `make publish-wasm` names it
+ * `<engine sha>-<wasm digest>` and the build reads it from PUBLIC_SIM_ARTIFACT, so the gate
+ * reads the same variable (a hand-copied `public/_sim/<engine sha>/` still works without it).
+ */
+export const E2E_ARTIFACT: string = process.env.PUBLIC_SIM_ARTIFACT ?? ENGINE_VERSION;
+
+/**
+ * A spec's published talent string at a band, in FS1's slash form, read from the active
+ * build's BiS file: a hardcoded string goes illegal the next time a tree moves (round 6:
+ * three real-engine specs failed "not a legal build" on strings written before 70707).
+ */
+export function publishedTalents(webRoot: string, build: string, spec: string, band = 60): string {
+  const file = path.join(webRoot, '..', 'data', 'builds', build, 'bis', `${spec}.json`);
+  const bis = JSON.parse(readFileSync(file, 'utf8')) as { bands: { band: number; talents: string }[] };
+  const entry = bis.bands.find((row) => row.band === band);
+  if (entry === undefined) throw new Error(`${file} publishes no band ${band}`);
+  return entry.talents.replaceAll('-', '/');
+}
 
 export function artifactPublished(webRoot: string, version: string): boolean {
   return existsSync(path.join(webRoot, 'public/_sim', version, 'sim.wasm'));
@@ -19,8 +39,8 @@ export function artifactPublished(webRoot: string, version: string): boolean {
 
 export function realEngineSkipReason(what: string): string {
   return (
-    `real-engine ${what}; publish web/public/_sim/<ENGINE_VERSION>/ first ` +
-    '(make simdb && make artifacts && make publish-wasm) and run with npm run test:e2e:real-engine'
+    `real-engine ${what}; publish the wasm first (make simdb && make publish-wasm), then run ` +
+    'npm run test:e2e:real-engine with PUBLIC_SIM_ARTIFACT set to artifacts/ARTIFACT_ID'
   );
 }
 

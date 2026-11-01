@@ -17,9 +17,14 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test } from './support/test';
-import { ENGINE_VERSION } from '../../src/lib/sim/version';
-import { artifactPublished, hasWasmExports, realEngineSkipReason } from './support/real-engine';
+import { apiUnreachable, expect, test } from './support/test';
+import {
+  artifactPublished,
+  E2E_ARTIFACT,
+  hasWasmExports,
+  publishedTalents,
+  realEngineSkipReason,
+} from './support/real-engine';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const SKIP_REASON = realEngineSkipReason('talent compare two-loadout ranking');
@@ -35,15 +40,21 @@ const activeBuild = JSON.parse(readFileSync(path.join(WEB_ROOT, 'src/data/active
 // little gear, an arms-vs-fury talent swap is too close for the fast ladder's SlackSE
 // overlap allowance to ever drop either candidate, which is exactly why this needs the
 // same full gear set the production defect was actually found with.
+// The talent strings are the published builds' own (support/real-engine.ts), so they stay
+// legal when a client build moves a tree.
 const FURY =
-  `FS1:${activeBuild.build}:warrior:orc:33305013002/150531000051310051/0:` +
+  `FS1:${activeBuild.build}:warrior:orc:${publishedTalents(WEB_ROOT, activeBuild.build, 'warrior-fury')}:` +
   'head=12640,neck=21809,shoulder=275737,back=21394,chest=19690,wrist=19687,hands=21278,' +
   'waist=19823,legs=16543,feet=16545,ranged=22656,finger1=19325,finger2=21182,' +
   'trinket1=19406,trinket2=249469,main_hand=22384,off_hand=18827';
 // A genuinely different, drastically worse spec on the SAME gear -- an arms-heavy talent
 // string, no gear after the last colon (valid FS1; the inline planner locks gear to the
 // loaded character regardless).
-const ALT_TALENTS = `FS1:${activeBuild.build}:warrior:orc:35325213132515231/4/0:`;
+const ALT_TALENTS = `FS1:${activeBuild.build}:warrior:orc:${publishedTalents(WEB_ROOT, activeBuild.build, 'warrior-arms')}:`;
+
+// The saved-builds row (/v1/builds?mine=1) is a signed-in nicety the hermetic site cannot
+// reach; answer it unreachable, as sim-gear.spec.ts does.
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
 
 test('a pasted talent build joins the current build in one ranked table', async ({
   page,
@@ -54,8 +65,8 @@ test('a pasted talent build joins the current build in one ranked table', async 
 
   const hasExports =
     process.env.PUBLIC_SIM_ENGINE === 'wasm' &&
-    artifactPublished(WEB_ROOT, ENGINE_VERSION) &&
-    (await hasWasmExports(browser, baseURL ?? 'http://localhost:4341', ENGINE_VERSION, [
+    artifactPublished(WEB_ROOT, E2E_ARTIFACT) &&
+    (await hasWasmExports(browser, baseURL ?? 'http://localhost:4341', E2E_ARTIFACT, [
       'simPlan',
       'simRank',
       'simCount',
