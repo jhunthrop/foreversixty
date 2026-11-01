@@ -32,6 +32,9 @@ const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_h
 // loadout is deliberately named "Deep Fury" -- the same title the mocked
 // `/v1/builds?mine=1` row below uses -- so the same fixture also exercises the
 // saved-vs-exported name collision fix.
+// The same character recorded at level 60: Top Gear offers the Raid-buffed consumables of
+// the character's level, and a fresh 33 can use no Elixir of the Mongoose (RequiredLevel 46).
+const FURY_60 = `${FURY}|level=60`;
 const FURY_V2 = `${FURY}|loadouts=Deep Fury=5530515/0/0|sets=Alt Set=head=12640:2543:1`;
 
 export async function loadGear(page: Page, at = '/sim/gear', code = FURY): Promise<void> {
@@ -132,7 +135,7 @@ test('usable-only is on by default and can be turned off', async ({ page }) => {
 });
 
 test('a ticked consumable multiplies the combination count (contract 10.1 A5)', async ({ page }) => {
-  await loadGear(page);
+  await loadGear(page, '/sim/gear', FURY_60);
   await page.getByTestId('sim-search-add-16963').click();
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1), {
     // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
@@ -153,7 +156,7 @@ test('a ticked consumable multiplies the combination count (contract 10.1 A5)', 
 });
 
 test('a consumable candidate is named, not spelled as an id', async ({ page }) => {
-  await loadGear(page);
+  await loadGear(page, '/sim/gear', FURY_60);
   await expect(page.getByTestId('sim-consumables')).toContainText('Elixir of the Mongoose');
 });
 
