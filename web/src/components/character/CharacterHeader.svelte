@@ -343,9 +343,12 @@
     {:else if current.kind === 'figures'}
       {@render figuresBody(current, ghost)}
     {:else if current.kind === 'sentence'}
-      <span class="ch-sentence" data-testid={ghost ? undefined : 'character-header-sentence'}
-        >{current.text}</span
-      >
+      <span class="ch-held">
+        {@render figuresReserve()}
+        <span class="ch-sentence" data-testid={ghost ? undefined : 'character-header-sentence'}
+          >{current.text}</span
+        >
+      </span>
     {:else if current.kind === 'no-gear'}
       <span class="ch-small" data-testid={ghost ? undefined : 'character-header-no-gear'}>
         {@render txt(current.sentence, ghost)}
@@ -354,17 +357,29 @@
         >
       </span>
     {:else}
-      <span class="ch-small" data-testid={ghost ? undefined : 'character-header-failed'}>
-        {current.text}
-        <button
-          type="button"
-          class="ch-text-link"
-          onclick={() => (attempt += 1)}
-          data-testid={ghost ? undefined : 'character-header-retry'}>{characterHeaderCopy.tryAgain}</button
-        >
+      <span class="ch-held">
+        {@render figuresReserve()}
+        <span class="ch-small" data-testid={ghost ? undefined : 'character-header-failed'}>
+          {current.text}
+          <button
+            type="button"
+            class="ch-text-link"
+            onclick={() => (attempt += 1)}
+            data-testid={ghost ? undefined : 'character-header-retry'}>{characterHeaderCopy.tryAgain}</button
+          >
+        </span>
       </span>
     {/if}
   </div>
+{/snippet}
+
+<!-- A sentence or a failed answer replaces the pending figures, so it holds their height: the
+     hidden figures share its grid cell, and the band is the height its loading state already
+     drew whichever answer arrives (no shift below 1024 px, where nothing else holds it). -->
+{#snippet figuresReserve()}
+  {#if placeholderView !== null && placeholderView.kind === 'figures'}
+    <span class="ch-reserve" aria-hidden="true">{@render figuresBody(placeholderView, true)}</span>
+  {/if}
 {/snippet}
 
 {#snippet button(act: HeaderAction, ghost: boolean)}
@@ -930,6 +945,22 @@
   :global(html:not([data-ch-gear='1'])) .ch-ghost-geared,
   :global(html[data-ch-gear='1']) .ch-ghost-gearless {
     display: none;
+  }
+  /* A sentence or a failed answer over the hidden figures it replaced (figuresReserve). */
+  .ch-held {
+    display: grid;
+    align-self: stretch;
+  }
+  .ch-held > * {
+    grid-area: 1 / 1;
+    align-self: center;
+  }
+  .ch-reserve {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    visibility: hidden;
   }
   /* The answer's own loading state: the hidden figures hold the column, the skeleton sits on top. */
   .ch-answer:has(> .ch-ask-over) {
