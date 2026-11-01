@@ -244,6 +244,9 @@ struct RotationRow: Identifiable, Equatable, Sendable {
     var id: Int { number }
     /// `Rank 4`, or nil when the file names no rank.
     var rankText: String? { spell.rank.map { Copy.guidesRank(n: $0) } }
+    /// A spell draws its icon tile (the neutral bordered tile when its icon is missing); a line
+    /// that names no spell (`Trinkets, racials and potions`) draws none.
+    var hasTile: Bool { spell.spellId != nil }
 }
 
 /// One list of the rotation: Opener, Priority or Cooldowns.

@@ -15,8 +15,8 @@ struct KeyDateRow: Identifiable, Equatable, Sendable {
 }
 
 enum KeyDatesLogic {
-    /// Past dates dropped, the rest sorted by `iso`; `running` only while today is inside the
-    /// date's span (dates.json is compared by `iso`/`endIso`, never by `key`).
+    /// Past dates dropped, the rest sorted by `iso`; while today is inside a date's span its gold
+    /// `running` line replaces the `note` (dates.json is compared by `iso`/`endIso`, never `key`).
     static func rows(_ dates: [KeyDate], now: Date, zone: TimeZone = .current) -> [KeyDateRow] {
         let today = GuideDates.iso(now, zone: zone)
         return dates
@@ -24,7 +24,8 @@ enum KeyDatesLogic {
             .sorted { $0.iso < $1.iso }
             .map { date in
                 let inProgress = date.iso <= today && today <= (date.endIso ?? date.iso)
-                return KeyDateRow(key: date.key, label: date.value, note: date.note, running: inProgress ? date.running : nil, iso: date.iso)
+                let running = inProgress ? date.running : nil
+                return KeyDateRow(key: date.key, label: date.value, note: running == nil ? date.note : nil, running: running, iso: date.iso)
             }
     }
 }

@@ -117,6 +117,7 @@ struct GuideSectionStrip: View {
                 .padding(.horizontal, GuidesLayout.gutter)
                 .padding(.vertical, 8)
             }
+            .onAppear { if let current { proxy.scrollTo(current, anchor: .center) } }
             .onChange(of: current) { _, section in
                 guard let section else { return }
                 withAnimation { proxy.scrollTo(section, anchor: .center) }
@@ -129,6 +130,7 @@ struct GuideSectionStrip: View {
 
     private func chip(_ section: GuideSection) -> some View {
         let isCurrent = section == current
+        let shape = RoundedRectangle(cornerRadius: GuidesLayout.chip / 2)
         return Button { select(section) } label: {
             Text(section.title)
                 .font(ScaledType.bodyStrong)
@@ -136,8 +138,10 @@ struct GuideSectionStrip: View {
                 .lineLimit(1)
                 .fixedSize()
                 .padding(.horizontal, 14)
+                .padding(.vertical, 4)
                 .frame(minHeight: GuidesLayout.chip)
-                .pillSurface(fill: isCurrent ? FSColor.gold.opacity(0.12) : GameColors.controlFill, line: isCurrent ? FSColor.gold : FSColor.lineCard)
+                .background(isCurrent ? FSColor.gold.opacity(0.12) : GameColors.controlFill, in: shape)
+                .overlay(shape.strokeBorder(isCurrent ? FSColor.gold : FSColor.lineCard, lineWidth: 1))
                 .frame(minHeight: 44)
                 .contentShape(Rectangle())
         }

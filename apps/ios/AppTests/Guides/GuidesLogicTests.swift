@@ -86,6 +86,9 @@ struct GuidesLogicTests {
         #expect(priority.rows.first?.rankText == "Rank 4")
         let cooldowns = try #require(groups.last)
         #expect(cooldowns.rows.first?.rankText == nil)
+        let fireNova = try #require(priority.rows.first { $0.spell.name == "Fire Nova" })
+        #expect(fireNova.spell.icon == nil && fireNova.hasTile)
+        #expect(cooldowns.rows.last?.hasTile == false)
         #expect(RotationRows.groups(nil).isEmpty)
     }
 
@@ -158,7 +161,9 @@ struct GuidesLogicTests {
         let rows = KeyDatesLogic.rows(try GuidesTestData.dates(), now: GuidesTestData.now)
         #expect(rows.map(\.label) == ["Name reservation", "First raids"])
         #expect(rows[0].running == "Name reservation open through Nov 3")
+        #expect(rows[0].note == nil)
         #expect(rows[1].running == nil)
+        #expect(rows[1].note == "Barrow Deeps · Hyjal Summit · Onyxia")
         #expect(rows[1].key == "Dec 9")
     }
 

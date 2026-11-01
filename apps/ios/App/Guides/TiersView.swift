@@ -228,13 +228,16 @@ struct TierRowView: View {
 struct TierChip: View {
     let letter: String
     let color: Color
+    /// The chip and its letter grow with the text, so the letter stays readable at AX5.
+    @ScaledMetric(relativeTo: .subheadline) private var size = GuidesLayout.tierChip
+    @ScaledMetric(relativeTo: .subheadline) private var letterSize = GuidesLayout.tierLetterSize
 
     var body: some View {
         Text(letter)
-            .font(.system(size: 14, weight: .bold, design: .monospaced))
+            .font(.system(size: letterSize, weight: .bold, design: .monospaced))
             .foregroundStyle(color)
-            .frame(width: GuidesLayout.tierChip, height: GuidesLayout.tierChip)
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(color, lineWidth: 1.5))
+            .frame(width: size, height: size)
+            .overlay(Capsule().strokeBorder(color, lineWidth: 1.5))
             .accessibilityHidden(true)
     }
 }

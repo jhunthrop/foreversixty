@@ -183,7 +183,7 @@ struct GuideRotationRow: View {
             Text("\(row.number)").font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
                 .frame(minWidth: 16, alignment: .leading)
                 .padding(.top, 11)
-            SpecIcon(icon: row.spell.icon, build: build, size: GuidesLayout.rowIcon)
+            if row.hasTile { SpecIcon(icon: row.spell.icon, build: build, size: GuidesLayout.rowIcon) }
             VStack(alignment: .leading, spacing: 3) {
                 ViewThatFits(in: .horizontal) {
                     HStack(alignment: .firstTextBaseline, spacing: 8) { name; rank }

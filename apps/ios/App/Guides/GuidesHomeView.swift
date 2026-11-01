@@ -138,6 +138,11 @@ struct GuideClassView: View {
                     .buttonStyle(RowPressStyle())
             }
             .padding(.horizontal, GuidesLayout.gutter)
+            if offlineSince != nil, specs.contains(where: { !home.saved.isSaved($0.spec) }) {
+                Text(Copy.guidesNotCached).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, GuidesLayout.gutter).padding(.top, 12)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

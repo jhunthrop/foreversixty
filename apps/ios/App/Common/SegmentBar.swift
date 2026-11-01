@@ -12,6 +12,8 @@ struct SegmentBar<Item: Hashable>: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     static var minHeight: CGFloat { 44 }
+    /// Side by side, a long label shrinks a little before it would wrap; stacked it never needs to.
+    static var minimumScale: CGFloat { 0.85 }
 
     var body: some View {
         let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 0)) : AnyLayout(HStackLayout(spacing: 0))
@@ -22,8 +24,14 @@ struct SegmentBar<Item: Hashable>: View {
                     Text(title(item))
                         .font(ScaledType.segment)
                         .foregroundStyle(checked ? FSColor.strong : FSColor.muted)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(1)
+                        .minimumScaleFactor(Self.minimumScale)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, typeSize.isAccessibilitySize ? 10 : 0)
                         .frame(maxWidth: .infinity, minHeight: Self.minHeight)
+                        .overlay(alignment: .top) {
+                            if typeSize.isAccessibilitySize, item != items.first { FSColor.line.frame(height: 1) }
+                        }
                         .background(checked ? FSColor.gold.opacity(0.12) : .clear)
                         .overlay(alignment: .bottom) { if checked { FSColor.gold.frame(height: 2) } }
                         .contentShape(Rectangle())

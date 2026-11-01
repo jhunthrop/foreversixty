@@ -26,7 +26,8 @@ enum GuidesLayout {
     /// A section counts as current once its top passes under the strip.
     static let currentThreshold: CGFloat = 80
     static let tabBarClearance: CGFloat = 96
-    static let chipNumber = Font.system(size: 12, weight: .semibold, design: .monospaced)
+    static let chipNumberSize: CGFloat = 12
+    static let tierLetterSize: CGFloat = 14
 }
 
 /// A section label with the spec's 22 pt above it.
@@ -41,16 +42,21 @@ struct GuideSectionLabel: View {
     }
 }
 
-/// A numbered stat chip (spec §4): 36 pt pill, a 22 pt number disc in mono 12, the stat.
+/// A numbered stat chip (spec §4): 36 pt pill, a 22 pt number disc in mono 12, the stat. The
+/// disc and its number grow with the text; a stat that wraps keeps the chip's 18 pt corners, so
+/// no letter is cut by the curve.
 struct StatChipView: View {
     let chip: StatChip
+    @ScaledMetric(relativeTo: .caption) private var disc = GuidesLayout.chipDisc
+    @ScaledMetric(relativeTo: .caption) private var number = GuidesLayout.chipNumberSize
 
     var body: some View {
+        let shape = RoundedRectangle(cornerRadius: GuidesLayout.chip / 2)
         HStack(spacing: 8) {
             Text("\(chip.number)")
-                .font(GuidesLayout.chipNumber)
+                .font(.system(size: number, weight: .semibold, design: .monospaced))
                 .foregroundStyle(FSColor.strong)
-                .frame(width: GuidesLayout.chipDisc, height: GuidesLayout.chipDisc)
+                .frame(width: disc, height: disc)
                 .background(FSColor.cardTop, in: .circle)
                 .overlay(Circle().stroke(FSColor.line))
             Text(chip.stat)
@@ -59,10 +65,11 @@ struct StatChipView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.leading, 7)
-        .padding(.trailing, 12)
+        .padding(.trailing, 14)
         .padding(.vertical, 4)
         .frame(minHeight: GuidesLayout.chip)
-        .pillSurface(fill: GameColors.controlFill, line: FSColor.lineSoft)
+        .background(GameColors.controlFill, in: shape)
+        .overlay(shape.strokeBorder(FSColor.lineSoft, lineWidth: 1))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(chip.a11y)
     }
