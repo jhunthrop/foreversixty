@@ -5363,7 +5363,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The answer"
-          x-fixtures: [character.home, character.home.empty, character.home.no-gear]
+          x-fixtures: [character.home, character.home.empty, character.home.no-gear, character.home.yours]
           content:
             application/json:
               schema:

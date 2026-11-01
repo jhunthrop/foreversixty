@@ -45,3 +45,31 @@ The rankings page answers "where do I stand" first, and the parse colours are ri
 - `rankings-offpage-ios.png`: the pinned "YOU" row with the gold edge and "204" in grey, above the list, answers "where am I" without scrolling. Keep it.
 - Parse colours follow WCL (99 pink, 93 purple, 81 purple, 204th grey).
 - Quality borders and name colours on the Paperdoll read like the character frame; units (DPS, ilvl, percentile) are present on every figure that has one.
+
+---
+
+# Round 2
+
+## Verdict: HOLD (one MUST left, small)
+
+Five of the six round-1 MUSTs are fixed. One new contradiction on Home would still be screenshotted.
+
+Checked and fixed:
+- **Gear sets.** `character-gear-ios.png`: Voltaris now wears his own set (Living Crown, Ironfeather Breastplate, Skycaller's Leather Waistguard, one gold dot on Trinket 2, gap 3.0). `character-yours-ios.png`: Lightningbolltz is in Coif of Elements with gold dots. Two different players, two different sets.
+- **Filters.** `rankings-filters-ios.png`: a real switch with a knob, clean chip borders.
+- **Off hand.** `home-gear-full-ios.png`: an empty "Off hand" socket reading "Two-hand in main hand". The unknown wrist reads "Wrist · Item 999999".
+- **Rank card.** `rankings-onpage-and.png`: "Lightningbolltz · best kill on Onyxia, Normal, Phase 1." in gold, and "14th" in parse purple, matching iOS.
+- **Ages and times.** Ages no longer break in the middle ("2 d ago" stays together). Voltaris reads 3:13 and "2 d ago" in the list and "Normal · 2 d ago" on his page.
+
+### MUST
+
+1. **Home iOS still shows another character's upgrades.** `home-rankings-ios.png`: the header says "Troll Elemental Shaman · Level 60 · Hordebreakers" and the next section is "NEXT FOR LIGHTNINGBOLLTZ" with "14th of 212 Elemental Shaman characters on Onyxia". But the upgrades card above it lists Legionite Glaive, "Hyper Deluxe Sniper Rifle Mk XVII", "Beaststalker's Pants" and "Beastmaster Boots", and the screen title is still "Velaren". A shaman with a sniper-rifle upgrade is exactly what a player would mock. Your note says this capture has no upgrades. This one does, and it contradicts `home-rankings-and.png` ("Every slot matches the 60 list."). Recapture iOS with the same data as Android, with the title "Lightningbolltz".
+2. **Android Home contradicts the character page.** `home-rankings-and.png` says "Every slot matches the 60 list." and the Talents row says "DIFFERS", while `character-yours-ios.png` shows Lightningbolltz with a gold dot on Head (Coif of Elements) and Waist, and a gear gap of 36.0 (your note). Either Home shows his upgrades or the character page loses the dots. This file is also older (11:33) than the iOS captures (12:32); regenerate it with the fresh build.
+
+### SHOULD (carried over, not changed)
+
+- "Gear gap 3.0 points": still no unit. A player does not know what a point is.
+- Rows still show no ilvl or talent split, though the data carries both.
+- The "pick for 60 · raid" intro line is still on Home.
+- Your note calls Voltaris's set a "nearly complete raid set". It reads as dungeon and crafted gear: Band of the Unicorn (ilvl 48), Rune of the Guard Captain (green), Totem of Thunder (ilvl 65). That is fine for a launch-week Onyxia kill, but don't promise a raid set in the copy.
+- The data items for the accuracy reviewer (Uther's Strength, leather picks, ilvl-65 totem, Emperor Dagran Thaurissan, KR/TW/CN) still stand.

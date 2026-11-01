@@ -36,3 +36,31 @@ What matches: answer card, filter line plus 44 pt Filters button, board rows wit
 - Android rankings largest text with the filter line and the sheet at largest text.
 
 Round 2 needs: MUST 1 to 5 fixed, recaptures named above, and SHOULD 1 to 4 decided.
+
+# Round 2
+
+## Verdict: SHIP
+
+All five round 1 MUSTs are closed. I found no new blockers in the 59 fresh captures.
+
+## Round 1 MUSTs re-checked
+
+1. iOS bar star and share: closed. character-other-ios, character-watchfailed-ios and character-error-ios show back, star and share in the bar. Error state correctly drops the star (share only). character-watching-ios not opened; character-watchfailed-ios shows the unfilled star and `Voltaris was not saved. Try again.` in place.
+2. Android filters sheet: closed. filters-today-on-and and filters-today-off-and reach `Reset filters` above the tab bar; filters-and (scrolled to the top) still shows the button cut at the fold, which is a scroll position, not a defect.
+3. iOS filter controls: closed. rankings-filters-today-ios has clean chip borders and a real gold switch with a white thumb inside the margin. The off state is shown on Android only (filters-and).
+4. iOS encounter sheet: closed. rankings-encounters-ios anchors the list to the top under the handle.
+5. Off-hand string: closed. home-gear-ios reads `Two-hand in main hand` under `Off hand`; Wrist reads `Wrist · Item 999999` (owner's ruling); empty Trinket 2 and the unknown Wrist have no gold dot.
+
+## Round 1 SHOULDs
+
+Closed: ordinal colour matches on both platforms (purple on page, grey 204th off page); card names the character in gold on both; Android `Your rank` label; pin edge inside the corner (rankings-offpage-ios); `2 d ago` no longer splits (the date moves as a unit); Android mono score and totals; iOS weapons row matches Android; score card trimmed; bar title empty on Android. Menus: rankings-menu-ios and -and show `Watch`/`Stop watching`, `Open the report`, `Share`. Largest text: rankings-onpage-large-and reflows to one column with the value under the meta, no clipping.
+
+## New SHOULDs (do not block)
+
+1. **home-rankings-ios is self-contradictory.** The header says `Velaren`, the list below says `Next for Lightningbolltz`, and the upgrades are a hunter's (Beaststalker's, Sniper Rifle) under a Troll Elemental Shaman. Recapture with one character, or crop to the Rankings row, so the acceptance image does not show a mixed state. Same note for home-rankings-and if it matches.
+2. **Android menu is a bare popup.** rankings-menu-and sits over row 3 with its labels but no icons; iOS shows icons. Add the same three icons for parity.
+3. **iOS menu capture is simulated** (the agent says the system menu cannot open off-screen). Verify on a device before release.
+4. **character-gear-large-ios has no bar items** (render limit, noted). Confirm on a device that the star and share survive largest text.
+5. **Android `Reset filters`** clips at the fold in filters-and; confirm the sheet scrolls on a device with the tab bar visible.
+
+Round 3 is not needed. Fix SHOULD 1 with the next capture pass.

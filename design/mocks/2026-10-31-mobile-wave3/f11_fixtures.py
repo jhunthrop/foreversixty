@@ -280,6 +280,45 @@ def items_fixture(data, by_name):
     write("cdn.items.shaman", {"build": data["build"], "class_slug": "shaman", "items": items})
 
 
+# Lightningbolltz's Home answer: the same six slots his character page dots, each pick's gain in
+# DPS (the Home unit; the card's gap is the gear-score points, a different measure).
+YOURS_HOME_GAINS = {"chest": 3.8, "head": 3.1, "legs": 2.7, "shoulder": 2.0, "waist": 1.6, "trinket2": 1.2}
+SLOT_LABELS = {"head": "Head", "neck": "Neck", "shoulder": "Shoulder", "back": "Back", "chest": "Chest",
+               "wrist": "Wrist", "hands": "Hands", "waist": "Waist", "legs": "Legs", "feet": "Feet",
+               "finger1": "Finger 1", "finger2": "Finger 2", "trinket1": "Trinket 1", "trinket2": "Trinket 2",
+               "main_hand": "Main hand", "off_hand": "Off hand", "ranged": "Ranged"}
+
+
+def look(item):
+    return {"id": item["id"], "name": item["name"], "quality": item["quality"], "icon": item["icon"],
+            "item_level": item["item_level"]}
+
+
+def home_yours(data, by_name):
+    upgrades, best = [], []
+    picks = dict(BIS)
+    for slot, gain in sorted(YOURS_HOME_GAINS.items(), key=lambda kv: -kv[1]):
+        pick, worn = by_name[picks[slot]], by_name[YOURS_GAPS[slot][0]]
+        upgrades.append({
+            "slot": slot, "slot_label": SLOT_LABELS[slot],
+            "pick": {**look(pick), "source_line": PICK_SOURCES[pick["name"]], "drop_chance": None},
+            "worn": {**look(worn), "known": True, "label": worn["name"]},
+            "gain": gain, "gain_words": f"+{gain} DPS", "modelled": True,
+        })
+    for slot, name in BIS:
+        if slot not in YOURS_GAPS:
+            best.append({"slot": slot, "slot_label": SLOT_LABELS[slot], "item": look(by_name[name])})
+    write("character.home.yours", env({
+        "character": "us/normal/lightningbolltz", "state": "ok", "spec": "shaman-elemental",
+        "band": 60, "band_label": "60", "preset": "raid", "unit": "dps", "unit_word": "DPS",
+        "data_build": data["build"], "upgrade_count": len(upgrades),
+        "total_gain": round(sum(YOURS_HOME_GAINS.values()), 1), "not_sim_checked_count": 0,
+        "not_modelled_count": 0, "synced_at": iso(TODAY - timedelta(hours=3)), "synced_from": "addon",
+        "upgrades": upgrades, "already_best": best,
+        "talents": {"state": "optimized", "points_differ": 0, "band_points": 51},
+    }))
+
+
 RANKED_ROWS = []
 
 
@@ -289,6 +328,7 @@ def main():
     data, by_name = shaman_items()
     cards(by_name, RANKED_ROWS)
     items_fixture(data, by_name)
+    home_yours(data, by_name)
 
 
 main()
