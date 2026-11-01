@@ -13,6 +13,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from pipeline.spellranks import load_book_ids
+
 MAX_LEVEL = 60  # a player's trainable ranks end here
 
 # aura kinds
@@ -223,7 +225,11 @@ def _family_ids(name, sc, tr, apl_ids):
     return ids
 
 
-def _top_id(ids, sc, apl_ids):
+def _top_id(ids, sc, apl_ids, books=frozenset()):
+    """The rank the coach judges against: the highest a trainer teaches. An Ahn'Qiraj
+    book rank (curated/book-ranks.json) is not learnable in Phase 1, so it is the top only
+    when the family has nothing else."""
+    ids = [i for i in ids if i not in books] or ids
     best = max(sc[i]["rank"] for i in ids)
     tied = [i for i in ids if sc[i]["rank"] == best]
     preferred = [i for i in tied if i in apl_ids]
@@ -241,13 +247,13 @@ def _all_ranks(ids, top, sc):
     return [*ordered, top]
 
 
-def _entries(names, ctx):
+def _entries(names, ctx, books=frozenset()):
     if names is None:
         return None
     out = []
     for name in names:
         ids = _family_ids(name, ctx.sc, ctx.tr, ctx.apl_ids)
-        top = _top_id(ids, ctx.sc, ctx.apl_ids)
+        top = _top_id(ids, ctx.sc, ctx.apl_ids, books)
         out.append(
             {
                 "family": name,
@@ -282,9 +288,10 @@ def _auras(pairs, ctx):
 class _Context:
     """One spec's resolved tables: what every list is built against."""
 
-    def __init__(self, build, cls, sc, tr, talents, apl_ids):
+    def __init__(self, build, cls, sc, tr, talents, apl_ids, books=frozenset()):
         self.build, self.cls = build, cls
         self.sc, self.tr, self.talents, self.apl_ids = sc, tr, talents, apl_ids
+        self.books = books
 
     def stamp(self, spell_id: int) -> str:
         return f"{self.build}/spellconst/{self.cls}.json#{spell_id}"
@@ -298,12 +305,14 @@ def render_spec(spec: str, build: str, data_root: Path = Path()) -> str:
     apl_ids: set[int] = set()
     apl = json.loads((data_root / "curated" / "apl" / f"{spec}.json").read_text(encoding="utf-8"))
     _walk_apl(apl["rotation"], apl_ids)
-    ctx = _Context(build, cls, sc, tr, talents, apl_ids)
+    ctx = _Context(build, cls, sc, tr, talents, apl_ids, load_book_ids(data_root / "curated"))
     doc: dict = {"spec": spec, "build": build}
     for key, value in (
         ("core", _entries(lists.get("core"), ctx)),
         ("auras", _auras(lists.get("auras"), ctx)),
-        ("downranks", _entries(lists.get("downranks"), ctx)),
+        # A downrank is judged against the top rank a trainer teaches: a book rank is
+        # not learnable in Phase 1 (round 6 healers: Renew 25315, Prayer of Healing 25316).
+        ("downranks", _entries(lists.get("downranks"), ctx, ctx.books)),
         ("defensives", _entries(lists.get("defensives"), ctx)),
         ("efficiency", _entries(lists.get("efficiency", []), ctx)),
     ):

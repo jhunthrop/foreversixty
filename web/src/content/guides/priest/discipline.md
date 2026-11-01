@@ -59,7 +59,7 @@ Open the planner at [/planner?class=priest](/planner?class=priest) to adjust it.
 
 ## Rotation and priority
 
-The curated rotation leads with **Penance** whenever it is ready, and keeps **Power Word: Shield** on a tank who is taking damage and is not under Weakened Soul. **Renew** stays on the tank at a cheap rank (keeping it up measured about +2% healing and a tenth more of the ranker's score in our run); **Flash Heal** is the emergency button for a nearly dead tank or member; **Prayer of Healing** answers several party members being hurt together; **Heal** is the efficient filler.
+The curated rotation leads with **Penance** whenever it is ready, and keeps **Power Word: Shield** on a tank who is taking damage and is not under Weakened Soul. **Renew** stays on the tank at a cheap rank (keeping it up measured about +2% healing and a tenth more of the ranker's score in our run); **Flash Heal** is the emergency button for a nearly dead tank or member, and **Binding Heal** takes its place while you are hurt yourself, since it heals you as much as the target for the same mana; **Prayer of Healing** answers several party members being hurt together; **Greater Heal** is the filler on the tank, where the big hits land, and **Heal** the efficient filler on everyone else. The party members' emergency Flash Heals wait while your mana is behind the fight clock.
 
 The shield, the filler and Prayer of Healing are paced against your mana the way Holy's are: they fire at their normal thresholds only while your mana is keeping up with the share of the fight that is left. Discipline lasts longer on its mana than Holy does under the same fight, which is why the shield is worth pacing rather than dropping.
 

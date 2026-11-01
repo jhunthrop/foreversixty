@@ -59,7 +59,7 @@ The sim found any build that keeps that core scores the same, because the points
 
 ## Rotation and priority
 
-Water Shield and a Healing Stream Totem go up before the pull. In the fight the tank comes first: **Riptide** whenever it is ready and the tank is hurt, **Healing Wave** for a deeper hole, **Lesser Healing Wave** when it is serious, and **Nature's Swiftness** into an instant Healing Wave when the tank is nearly dead. **Chain Heal** is cast on the tank, so Riptide's bonus applies, and it jumps to the most injured party members. Members are healed directly only while your mana is healthy, so the tank keeps the mana. **Mana Tide Totem** goes down when you are low.
+Water Shield and a Healing Stream Totem go up before the pull. In the fight the tank comes first: **Riptide** whenever it is ready and the tank is hurt, **Healing Wave** for a deeper hole, **Lesser Healing Wave** when it is serious, and **Nature's Swiftness** into an instant Healing Wave when the tank is nearly dead. **Chain Heal** is cast on the tank, so Riptide's bonus applies, and it jumps to the most injured party members, you included; it goes out as soon as anyone in the group is hurt, as long as your mana keeps pace with the fight. Members are healed directly only while your mana is healthy, so the tank keeps the mana. **Mana Tide Totem** goes down when you are low.
 
 Under the profile the shaman's mana lasts the whole fight at raid-ready gear, so the rotation spends the spare on members. It does not downrank.
 

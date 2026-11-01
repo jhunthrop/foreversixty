@@ -200,6 +200,66 @@
                     "currentHealthPercent": {
                       "sourceUnit": {
                         "type": "Player",
+                        "index": 0
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "0.7"
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpGt",
+                  "lhs": {
+                    "currentManaPercent": {}
+                  },
+                  "rhs": {
+                    "math": {
+                      "op": "OpAdd",
+                      "lhs": {
+                        "remainingTimePercent": {}
+                      },
+                      "rhs": {
+                        "const": {
+                          "val": "-0.05"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 1311606,
+            "rank": 1
+          },
+          "target": {
+            "type": "Player",
+            "index": 0
+          }
+        }
+      },
+      "notes": "You are one of the five party members the raid pulses reach; you are healed like the other four."
+    },
+    {
+      "action": {
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "cmp": {
+                  "op": "OpLt",
+                  "lhs": {
+                    "currentHealthPercent": {
+                      "sourceUnit": {
+                        "type": "Player",
                         "index": 1
                       }
                     }
@@ -466,6 +526,39 @@
               "currentHealthPercent": {
                 "sourceUnit": {
                   "type": "Player",
+                  "index": 0
+                }
+              }
+            },
+            "rhs": {
+              "const": {
+                "val": "0.8"
+              }
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 19941,
+            "rank": 4
+          },
+          "target": {
+            "type": "Player",
+            "index": 0
+          }
+        }
+      },
+      "notes": "You are one of the five party members the raid pulses reach; you are healed like the other four."
+    },
+    {
+      "action": {
+        "condition": {
+          "cmp": {
+            "op": "OpLt",
+            "lhs": {
+              "currentHealthPercent": {
+                "sourceUnit": {
+                  "type": "Player",
                   "index": 1
                 }
               }
@@ -582,26 +675,6 @@
             "type": "Player",
             "index": 4
           }
-        }
-      }
-    }
-  ],
-  "prepullActions": [
-    {
-      "action": {
-        "castSpell": {
-          "spellId": {
-            "spellId": 25890
-          },
-          "target": {
-            "type": "Player",
-            "index": 5
-          }
-        }
-      },
-      "doAtValue": {
-        "const": {
-          "val": "-1.6s"
         }
       }
     }

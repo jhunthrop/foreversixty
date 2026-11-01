@@ -1,7 +1,7 @@
 {
   "spec": "druid-restoration",
   "state": "written",
-  "notes": "Restoration druid healer rotation (stage 2 of the healer build), written against the fork's fake raid: the healer is raid player 0, the four fake party members are players 1 to 4 and the tank is player 5. The tank carries Regrowth and Rejuvenation for the whole fight (Nature's Splendor makes them 27 and 15 seconds), Healing Touch fires only on a real hole in his health bar and only while the mana bar is above the share of the fight left, so the mana lasts instead of running out at the first long fight. Party members get Wild Growth when two are hurt, Rejuvenation when one is, Tranquility when two are well down. Nature's Swiftness is cast by hand and always with an instant Healing Touch under 35% tank health, the major-cooldown pass is told to leave it alone for a healer. Top ranks only, on purpose: the site rewrites every ranked id in a rotation to the highest rank the character has learned, so a downranked heal could not survive it. Healing Touch rank 11 and Rejuvenation rank 11 are Ahn'Qiraj book ranks (core.IncludeAQ is false), so the top ranks are 10; the client's second Regrowth and Rejuvenation ids (436937-436946, 417057-417068) are not taught by the trainer and are not used. Client 1.60.1.70707 (2026-10-31): the Wild Growth line is gone. The guide build does not take the talent (heal-builds measured it about 5% less healing for any point it would take, with Wild Growth's new 3 s cast), so the line could never fire for it and a player reading the rotation cannot cast it.",
+  "notes": "Restoration druid healer rotation (stage 2 of the healer build), written against the fork's fake raid: the healer is raid player 0, the four fake party members are players 1 to 4 and the tank is player 5. The tank carries Regrowth and Rejuvenation for the whole fight (Nature's Splendor makes them 27 and 15 seconds), Healing Touch fires only on a real hole in his health bar and only while the mana bar is above the share of the fight left, so the mana lasts instead of running out at the first long fight. Party members get Rejuvenation when one is hurt and Tranquility when two are well down. Nature's Swiftness is cast by hand and always with an instant Healing Touch under 35% tank health, the major-cooldown pass is told to leave it alone for a healer. Top ranks only, on purpose: the site rewrites every ranked id in a rotation to the highest rank the character has learned, so a downranked heal could not survive it. Healing Touch rank 11 and Rejuvenation rank 11 are Ahn'Qiraj book ranks (core.IncludeAQ is false), so the top ranks are 10; the client's second Regrowth and Rejuvenation ids (436937-436946, 417057-417068) are not taught by the trainer and are not used. Client 1.60.1.70707 (2026-10-31): the Wild Growth line is gone. The guide build does not take the talent (heal-builds measured it about 5% less healing for any point it would take, with Wild Growth's new 3 s cast), so the line could never fire for it and a player reading the rotation cannot cast it. Round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md): the heal profile's raid-wide pulses now land on the healer as well, three of the five members of the group a pulse. You are a party member like the other four: Rejuvenation covers you and Tranquility counts you (about +0.8% effective healing against the same list without you). Wild Growth was measured again on this fight, with the point from Swiftmend (Swiftmend eats a heal over time before it can Bloom, so the point is nearly free) and 36 Wild Growth lines: the best was level with this list, within error, so the build and the list stand.",
   "expected_idle": [],
   "sources": [
     {
@@ -199,6 +199,174 @@
                 {
                   "or": {
                     "vals": [
+                      {
+                        "and": {
+                          "vals": [
+                            {
+                              "cmp": {
+                                "op": "OpLt",
+                                "lhs": {
+                                  "currentHealthPercent": {
+                                    "sourceUnit": {
+                                      "type": "Player",
+                                      "index": 0
+                                    }
+                                  }
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "0.7"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "cmp": {
+                                "op": "OpLt",
+                                "lhs": {
+                                  "currentHealthPercent": {
+                                    "sourceUnit": {
+                                      "type": "Player",
+                                      "index": 1
+                                    }
+                                  }
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "0.7"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "and": {
+                          "vals": [
+                            {
+                              "cmp": {
+                                "op": "OpLt",
+                                "lhs": {
+                                  "currentHealthPercent": {
+                                    "sourceUnit": {
+                                      "type": "Player",
+                                      "index": 0
+                                    }
+                                  }
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "0.7"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "cmp": {
+                                "op": "OpLt",
+                                "lhs": {
+                                  "currentHealthPercent": {
+                                    "sourceUnit": {
+                                      "type": "Player",
+                                      "index": 2
+                                    }
+                                  }
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "0.7"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "and": {
+                          "vals": [
+                            {
+                              "cmp": {
+                                "op": "OpLt",
+                                "lhs": {
+                                  "currentHealthPercent": {
+                                    "sourceUnit": {
+                                      "type": "Player",
+                                      "index": 0
+                                    }
+                                  }
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "0.7"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "cmp": {
+                                "op": "OpLt",
+                                "lhs": {
+                                  "currentHealthPercent": {
+                                    "sourceUnit": {
+                                      "type": "Player",
+                                      "index": 3
+                                    }
+                                  }
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "0.7"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "and": {
+                          "vals": [
+                            {
+                              "cmp": {
+                                "op": "OpLt",
+                                "lhs": {
+                                  "currentHealthPercent": {
+                                    "sourceUnit": {
+                                      "type": "Player",
+                                      "index": 0
+                                    }
+                                  }
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "0.7"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "cmp": {
+                                "op": "OpLt",
+                                "lhs": {
+                                  "currentHealthPercent": {
+                                    "sourceUnit": {
+                                      "type": "Player",
+                                      "index": 4
+                                    }
+                                  }
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "0.7"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
                       {
                         "and": {
                           "vals": [
@@ -471,7 +639,7 @@
             }
           }
         },
-        "notes": "Tranquility once two of the four party members are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown."
+        "notes": "Tranquility once two of the five party members (you among them) are hurt; it heals the party every 2 seconds for 10 and sits on a 5 minute cooldown."
       },
       {
         "action": {
@@ -631,6 +799,82 @@
           }
         },
         "notes": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 9841,
+              "rank": 10
+            },
+            "target": {
+              "type": "Player",
+              "index": 0
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 0
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.7"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 9841,
+                          "rank": 10
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 0
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "1.2"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "You are one of the five: a hurt healer gets Rejuvenation at the party pace."
       },
       {
         "action": {

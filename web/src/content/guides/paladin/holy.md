@@ -65,7 +65,7 @@ Oath of Light is taken, but the client does not yet say how much it adds, so the
 
 ## Rotation and priority
 
-The curated rotation opens with **Greater Blessing of Light** before the pull and then leans on **Flash of Light** as the staple: it is the most efficient heal per mana for both the tank and the party. **Divine Favor** into **Holy Light** answers a tank who is nearly dead. **Holy Shock** and a second Holy Light line only fire while your mana is keeping up with the share of the fight that is left; a healer who is short on mana, which is the usual case, heals as a Flash of Light healer.
+The curated rotation leans on **Flash of Light** as the staple (Blessing of Light is gone in Forever): it is the most efficient heal per mana for both the tank and the party. **Divine Favor** into **Holy Light** answers a tank who is nearly dead. **Holy Shock** and a second Holy Light line only fire while your mana is keeping up with the share of the fight that is left; a healer who is short on mana, which is the usual case, heals as a Flash of Light healer. You are one of the five your group's raid damage reaches, so you heal yourself like any other party member.
 
 **Light's Vigil** is taken because it is the capstone point, but it is left out of the rotation: its party heal costs about as much mana as ten Flash of Lights, and against the profile's small raid pulses most of it would go to waste. The rotation does not downrank.
 

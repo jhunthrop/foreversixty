@@ -39,11 +39,13 @@ type HealMembers struct {
 	Reason string  `json:"reason"`
 }
 
-// HealPulse is the raid-wide damage the non-tank members take.
+// HealPulse is the raid-wide damage the non-tank members take. ReachesHealer
+// puts the healer among the members a pulse picks from.
 type HealPulse struct {
 	Damage          float64 `json:"damage"`
 	IntervalSeconds float64 `json:"interval_seconds"`
 	Members         int     `json:"members"`
+	ReachesHealer   bool    `json:"reaches_healer"`
 	Reason          string  `json:"reason"`
 }
 
@@ -184,6 +186,7 @@ func (p HealProfile) Model() *proto.RaidDamageModel {
 		PulseDamage:          p.Pulse.Damage,
 		PulseIntervalSeconds: p.Pulse.IntervalSeconds,
 		PulseMembers:         int32(p.Pulse.Members),
+		PulsesReachHealer:    p.Pulse.ReachesHealer,
 	}
 }
 
