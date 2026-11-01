@@ -325,6 +325,9 @@ func TestBuildRequestTakesTheFightLength(t *testing.T) {
 	if def.Encounter.DurationSec != api.DefaultEncounter().DurationSec {
 		t.Errorf("default fight = %d s, want %d", def.Encounter.DurationSec, api.DefaultEncounter().DurationSec)
 	}
+	if def.Encounter.TargetType != api.TargetTypeUnknown {
+		t.Errorf("default target type = %q, want the ranker's %q", def.Encounter.TargetType, api.TargetTypeUnknown)
+	}
 	o := baseOptions(root)
 	o.duration = 60
 	short, err := buildRequest(o)
@@ -333,6 +336,22 @@ func TestBuildRequestTakesTheFightLength(t *testing.T) {
 	}
 	if short.Encounter.DurationSec != 60 {
 		t.Errorf("-duration 60 fought %d s", short.Encounter.DurationSec)
+	}
+}
+
+// -target-type fights the named creature type, so a creature-type talent
+// (Murder, Improved Tracking) can be measured; the default stays the
+// ranker's type-neutral target.
+func TestBuildRequestTakesTheTargetType(t *testing.T) {
+	root := bisFixture(t)
+	o := baseOptions(root)
+	o.targetType = "humanoid"
+	req, err := buildRequest(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if req.Encounter.TargetType != "humanoid" {
+		t.Errorf("-target-type humanoid fought %q", req.Encounter.TargetType)
 	}
 }
 

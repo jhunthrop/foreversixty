@@ -60,6 +60,7 @@ type options struct {
 	tank       bool
 	heal       bool
 	duration   int
+	targetType string
 	bisDir     string
 	gear       string
 }
@@ -80,6 +81,7 @@ func main() {
 	flag.StringVar(&o.gear, "gear", "", "comma list of slot:item_id pairs replacing the published entry's items, e.g. off_hand:20688")
 	flag.BoolVar(&o.heal, "heal", false, "print the healer fight: mana income and spend against data/curated/heal-profile.json (healer specs only)")
 	flag.IntVar(&o.duration, "duration", 0, "fight length in seconds instead of the default (with -heal: instead of the profile's, where a shorter window shows a healer's mana rates before it runs dry)")
+	flag.StringVar(&o.targetType, "target-type", api.TargetTypeUnknown, "creature type of the target (beast, demon, dragonkin, elemental, giant, humanoid, mechanical, undead or unknown); the ranker's is unknown")
 	flag.StringVar(&o.bisDir, "bis-dir", "", "directory holding the published <spec>.json entries; defaults to the build's bis directory (point it at a ranker run's -out to break that run down)")
 	flag.BoolVar(&o.tank, "tank", false, "print the tank fight: final defensive stats, tank figures and the boss's swing outcomes (tank specs only)")
 	flag.BoolVar(&o.jsonOut, "json", false, "print the totals as JSON")
@@ -250,7 +252,12 @@ func buildRequest(o options) (api.SimRequest, error) {
 		kitBuffs = append(kitBuffs, strings.Split(o.buffs, ",")...)
 	}
 	encounter := api.DefaultEncounter()
+	// The ranker's target has no creature type; "" (the engine's humanoid)
+	// is never what an unset option means here.
 	encounter.TargetType = api.TargetTypeUnknown
+	if o.targetType != "" {
+		encounter.TargetType = o.targetType
+	}
 	if o.duration > 0 {
 		encounter.DurationSec = o.duration
 	}
