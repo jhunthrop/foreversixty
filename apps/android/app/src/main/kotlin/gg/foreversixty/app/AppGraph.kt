@@ -11,6 +11,7 @@ import gg.foreversixty.app.auth.TokenStore
 import gg.foreversixty.app.auth.session.FixtureBrowser
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.SessionTokens
+import gg.foreversixty.app.guides.GuidesFeature
 import gg.foreversixty.app.home.HomeDependencies
 import gg.foreversixty.app.premium.DebugStorefront
 import gg.foreversixty.app.premium.PlansLink
@@ -206,6 +207,21 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         liveSurfaces = widgets?.settings,
         guildExtras = guildExtras,
     )
+
+    /**
+     * Lane F9: the Guides tab and its offline guides; null while the `guides` switch is off. Tier
+     * lists show only with `guide_tiers` on.
+     */
+    val guides: GuidesFeature? = if (isAvailable(Feature.Guides)) {
+        GuidesFeature.create(
+            context = context,
+            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            tiersOn = { isAvailable(Feature.GuideTiers) },
+            characters = { session.phase.value.me?.characters.orEmpty() },
+        )
+    } else {
+        null
+    }
 
     /**
      * BiS (lane F3): the static files through their offline cache; null while the switch is off.

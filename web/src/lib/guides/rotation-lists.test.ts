@@ -40,6 +40,15 @@ describe('clauseOf', () => {
     expect(clauseOf('Seal of Fury kept up. Then something else.', 'Seal of Fury')).toBe('Kept up');
   });
 
+  it('never ends inside a parenthesis the cut left open', () => {
+    expect(
+      clauseOf(
+        'Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client data; Era is 60 s).',
+        'Mana Spring Totem',
+      ),
+    ).toBe('Restores 10 mana every 2 seconds for its five-minute life');
+  });
+
   it('drops a leading parenthetical and comma', () => {
     expect(
       clauseOf(
@@ -239,6 +248,13 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
     expect(names).not.toContain('Presence of Mind');
     expect(names).not.toContain('Arcane Power');
     expect(names).not.toContain('Blink');
+  });
+
+  it('never lists a long-cast utility spell as a fight cooldown', () => {
+    const shaman = specCooldowns(BUILD, 'shaman', new Set(), spellLookupFor(BUILD, 'shaman')).map(
+      (item) => item.name,
+    );
+    expect(shaman).not.toContain('Astral Recall');
   });
 
   it('gives Evocation its icon from the spell icon data', () => {

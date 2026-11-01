@@ -617,6 +617,21 @@ def test_items_are_sorted_by_required_level_then_name():
     )
 
 
+def test_ranged_attack_power_is_kept_not_dropped():
+    """ItemSparse stat 39 is ITEM_MOD_RANGED_ATTACK_POWER. On 1.60.1.70707,
+    37 rows carry it (Core Marksman Rifle 18282, Rhok'delar 18713, the
+    Dawnstalker set, the rank-14 bows and guns), and wowhead Forever states
+    the same amounts as `rgdatkpwr`. It was mapped to None, so the planner
+    and simdb.bin gave those items no ranged attack power (sim-audit round 4,
+    physical H1)."""
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    rows[0]["StatModifier_bonusStat_0"] = "39"
+    rows[0]["StatModifier_bonusAmount_0"] = "22"
+    item_rows = read_csv(HERE / "fixtures/Item.csv")
+    armor, stats = resolve_item_values(rows[0], item_rows[0], None)
+    assert stats.get("ranged_attack_power") == 22
+
+
 def test_an_unmapped_stat_id_is_an_error_not_a_guess():
     rows = read_csv(HERE / "fixtures/ItemSparse.csv")
     rows[0]["StatModifier_bonusStat_0"] = "99"

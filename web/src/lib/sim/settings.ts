@@ -5,6 +5,7 @@ import { MAX_LEVEL } from './character';
 import { durationLabel, encounterLabel } from './encounter';
 import { referenceStatOf } from './spec-label';
 import { applyFightStyle, DEFAULT_STYLE_ID, type FightStyleId } from './styles';
+import raidPreset from '../../data/generated/raid-preset.json';
 import { DEFAULT_ENCOUNTER, TARGET_TYPE_IDS, type CooldownSpec, type EncounterSpec } from './types';
 
 export { durationLabel, encounterLabel };
@@ -81,23 +82,20 @@ export function encounterFor(encounter: EncounterSpec, characterLevel: number): 
 
 /**
  * Contract A8's own rule -- the engine's boss preset, 3,731 at level 63, and a linear fall
- * to the level-60 figure, 3,300 (sim/api/envelope.go's own comment; ratified in
- * docs/superpowers/specs/2026-09-19-simulator-parity-interfaces.md, A8) -- extended down
- * through level 1 for a levelling character's target (design step 5: "the target armour
- * table extended by level"). This repository has no per-level source for a levelling
- * mob's own armour (the wowhead payload the level-aware design names for player base stats
- * carries nothing about NPCs), so this continues contract A8's already-documented rate
- * rather than inventing an unrelated curve, floored at zero once the line would otherwise
- * go negative -- a levelling-zone mob's armor being negligible next to a raid boss's is the
- * one fact about it this file can state without a better source, which "a better source
- * replaces the three interior numbers" (A8) already anticipated needing.
+ * to the level-60 figure, 3,300 (sim/api/envelope.go's TargetArmorByLevel) -- and below 60
+ * the engine's own estimate for a levelling character's target (design step 5: "the target
+ * armour table extended by level"): the level-60 figure scaled by level
+ * (envelope.go's armorBelowMaxLevel, rounded). No per-level source for a levelling mob's
+ * armour exists yet, so both sides derive it from the one number; this file mirrors the
+ * engine's rule so the field never names an armor the run does not use.
  */
 const ARMOR_LEVEL_60 = 3300;
 const ARMOR_BOSS_LEVEL = 63;
 const ARMOR_BOSS = 3731;
 function armorForLevel(level: number): number {
+  if (level < MAX_LEVEL) return Math.round((ARMOR_LEVEL_60 * level) / MAX_LEVEL);
   const raised = ((level - 60) * (ARMOR_BOSS - ARMOR_LEVEL_60)) / (ARMOR_BOSS_LEVEL - 60);
-  return Math.max(0, Math.ceil(ARMOR_LEVEL_60 + raised));
+  return Math.ceil(ARMOR_LEVEL_60 + raised);
 }
 export const TARGET_ARMOR_BY_LEVEL: Record<number, number> = Object.fromEntries(
   Array.from({ length: MAX_LEVEL + 3 }, (_, index) => index + 1).map((level) => [
@@ -126,64 +124,16 @@ export type BuffPresetId = (typeof BUFF_PRESETS)[number]['id'];
 // the whole run, so every id below is checked against IDS.md (settings.test.ts, over the
 // same generated catalogue buffs.ts builds its panel from).
 //
-// This is a preset, not a picker, and the preset is the only list this file holds. The full
-// vocabulary is several hundred entries and it lives in IDS.md; copying it into web/ would
-// be a second copy to keep in step with the descriptors that generate it. The settings bar
-// offers this preset plus a custom list, and surfaces the engine's own error verbatim when
-// an id in that list does not resolve.
-//
-// Task 4 (dps-minmaxer D16 BLOCKER): the old preset was five buffs and two consumables,
-// +6% over Solo where vanilla's real answer for a melee is +60% to +120%. This is the full
-// standard set instead, copied verbatim from sim/adapter/testdata/warrior-fury.request.json
-// (identical in mage-frost.request.json, so the buff half never splits by spec -- Ruling 2).
-export const RAID_BUFFS: readonly string[] = [
-  'curse_of_elements',
-  'curse_of_recklessness',
-  'curse_of_shadow',
-  'curse_of_weakness',
-  'demoralizing_roar',
-  'demoralizing_shout',
-  'expose_armor',
-  'faerie_fire',
-  'improved_scorch',
-  'improved_shadow_bolt',
-  'insect_swarm',
-  'judgement_of_light',
-  'judgement_of_the_crusader',
-  'judgement_of_wisdom',
-  'scorpid_sting',
-  'shadow_weaving',
-  'stormstrike',
-  'sunder_armor',
-  'thunder_clap',
-  'winters_chill',
-  'blessing_of_kings',
-  'blessing_of_might',
-  'blessing_of_sanctuary',
-  'blessing_of_wisdom',
-  'arcane_brilliance',
-  'battle_shout',
-  'blood_pact',
-  'devotion_aura',
-  'divine_spirit',
-  'fire_resistance_aura',
-  'fire_resistance_totem',
-  'frost_resistance_aura',
-  'frost_resistance_totem',
-  'gift_of_the_wild',
-  'grace_of_air_totem',
-  'leader_of_the_pack',
-  'mana_spring_totem',
-  'moonkin_aura',
-  'nature_resistance_totem',
-  'power_word_fortitude',
-  'retribution_aura',
-  'sanctity_aura',
-  'shadow_protection',
-  'strength_of_earth_totem',
-  'thorns',
-  'trueshot_aura',
-];
+// The Raid-buffed preset's buff and debuff half is the curated raid preset
+// (data/curated/presets.json), synced into src/data/generated/raid-preset.json by
+// scripts/sync-raid-preset.mjs. The BiS ranker, the tier list and every sim tool run their
+// level-60 numbers under that same preset, so the page sims a character with the buffs and
+// debuffs the published number was simmed with. The engine applies the faction-gated ones
+// (Blessing of Might and Wisdom for the Alliance; Strength of Earth and Mana Spring Totem
+// for the Horde) to the side that can receive them, so one list serves both factions.
+// Every id is checked against IDS.md (settings.test.ts), and the curated file's own loader
+// (sim/request/preset.go) refuses an id the engine cannot map.
+export const RAID_BUFFS: readonly string[] = [...raidPreset.buffs, ...raidPreset.debuffs];
 
 export const PRESET_BUFFS: Record<Exclude<BuffPresetId, 'custom'>, readonly string[]> = {
   'raid-buffed': RAID_BUFFS,
@@ -391,10 +341,22 @@ export function targetArmorField(
   return { value: encounter.target_armor === undefined ? '' : String(encounter.target_armor), preset, level };
 }
 
-/** An id outside the contract's vocabulary reads as "any", never as itself. */
+/** An id outside the contract's vocabulary reads as the default, never as itself. */
 export function withTargetType(settings: SimSettings, type: string): SimSettings {
-  const known = TARGET_TYPES.includes(type) ? (type as EncounterSpec['target_type']) : '';
+  const known = TARGET_TYPES.includes(type)
+    ? (type as EncounterSpec['target_type'])
+    : DEFAULT_ENCOUNTER.target_type;
   return { ...settings, encounter: { ...settings.encounter, target_type: known } };
+}
+
+/**
+ * The type the engine fights, for the target-type control. A request stored before the
+ * field existed carries none, and sim/request fights a Humanoid for it, so the control
+ * says Humanoid rather than a choice the run is not making.
+ */
+export function targetTypeShown(encounter: EncounterSpec): string {
+  const type = encounter.target_type ?? '';
+  return type === '' ? 'humanoid' : type;
 }
 
 export function withDummy(settings: SimSettings, on: boolean): SimSettings {

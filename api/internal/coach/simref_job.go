@@ -72,6 +72,9 @@ func RunSimRef(ctx context.Context, d SimRefDeps, k SimRefKey) error {
 func simRefRequest(k SimRefKey, char simapi.CharacterSpec, at time.Time) simapi.SimRequest {
 	enc := simapi.DefaultEncounter()
 	enc.DurationSec = k.DurationBucket
+	// The published numbers' target (sim/leveling RankerEncounter): no creature type. The
+	// empty type is the engine's Humanoid, which credits Murder and slaying gear.
+	enc.TargetType = simapi.TargetTypeUnknown
 	return simapi.SimRequest{
 		EngineVersion: k.EngineVersion, Spec: k.Spec, Iterations: SimRefIterations,
 		Source: simapi.CharacterSource{

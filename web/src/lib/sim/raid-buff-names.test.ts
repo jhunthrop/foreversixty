@@ -16,7 +16,10 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { writeSimNames } from '../../../scripts/sync-data.mjs';
 import { resolveActionName, type ActionNames } from './action-names';
+import raidPreset from '../../data/generated/raid-preset.json';
 import { RAID_BUFFS } from './settings';
+
+const debuffIds = new Set<string>(raidPreset.debuffs);
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 const BUILD_DIR = path.join(REPO_ROOT, 'data/builds/1.60.1.69893');
@@ -29,50 +32,34 @@ const BUILD_DIR = path.join(REPO_ROOT, 'data/builds/1.60.1.69893');
  * data/builds/1.60.1.69893/spellconst/<class>.json, which is what the test below actually
  * resolves against.
  *
- * Twenty-four of RAID_BUFFS' 46 slugs are deliberately absent (the eight world buffs left
- * the preset on 2026-09-28: Forever has none):
- *   - The twenty debuffs (curse_of_elements .. winters_chill) land on the TARGET, never the
- *     player, and sim/adapter/adapter.go's own comment says a sim result carries aura
- *     metrics for the player only -- a target debuff has no row to resolve in the first
- *     place, on this build or any other.
- *   - blessing_of_sanctuary: buffs.go's own implementation of it is commented out; the buff
- *     never applies.
+ * The rest of RAID_BUFFS is deliberately absent:
+ *   - The debuffs (the curated raid preset's "debuffs" list, curse_of_elements ..
+ *     curse_of_recklessness) land on the TARGET, never the player, and
+ *     sim/adapter/adapter.go's own comment says a sim result carries aura metrics for the
+ *     player only -- a target debuff has no row to resolve in the first place.
  *   - blessing_of_wisdom, leader_of_the_pack, moonkin_aura: each is a flat
  *     character.AddStat(s) call in buffs.go with no RegisterAura at all, so none of the
  *     three ever produces an aura row either.
- * 46 - 20 - 1 - 3 = 22, this table's own size.
  */
 const RAID_BUFF_AURA_SPELLS: Readonly<Record<string, number>> = {
-  blessing_of_kings: 20217,
-  blessing_of_might: 25291,
   arcane_brilliance: 23028,
-  battle_shout: 25289,
-  blood_pact: 11767,
-  devotion_aura: 10293,
-  divine_spirit: 27841,
-  fire_resistance_aura: 19900,
-  fire_resistance_totem: 10538,
-  frost_resistance_aura: 19898,
-  frost_resistance_totem: 10479,
   gift_of_the_wild: 21850,
-  grace_of_air_totem: 25359,
-  mana_spring_totem: 10497,
-  nature_resistance_totem: 10601,
   power_word_fortitude: 23948,
-  retribution_aura: 10301,
-  sanctity_aura: 20218,
-  shadow_protection: 16874,
-  strength_of_earth_totem: 25361,
-  thorns: 9910,
+  divine_spirit: 27841,
+  blessing_of_might: 25291,
+  battle_shout: 25289,
   trueshot_aura: 20906,
+  heart_of_the_lion: 409583,
+  strength_of_earth_totem: 25361,
+  windfury_totem: 10610,
+  mana_spring_totem: 10497,
 };
 
 describe('RAID_BUFF_AURA_SPELLS', () => {
-  it('is exactly the RAID_BUFFS slugs this task can actually walk (22 of the preset’s 46)', () => {
-    for (const slug of Object.keys(RAID_BUFF_AURA_SPELLS)) {
-      expect(RAID_BUFFS, `${slug} must be a real RAID_BUFFS slug`).toContain(slug);
-    }
-    expect(Object.keys(RAID_BUFF_AURA_SPELLS)).toHaveLength(22);
+  it('is exactly the RAID_BUFFS slugs that reach the player as an aura', () => {
+    const noAura = ['blessing_of_wisdom', 'leader_of_the_pack', 'moonkin_aura'];
+    const onPlayer = RAID_BUFFS.filter((slug) => !debuffIds.has(slug) && !noAura.includes(slug));
+    expect(new Set(Object.keys(RAID_BUFF_AURA_SPELLS))).toEqual(new Set(onPlayer));
   });
 });
 

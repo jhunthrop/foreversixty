@@ -79,6 +79,13 @@
       "basis": "engine"
     },
     {
+      "id": 25345,
+      "class": "mage",
+      "spell": "Arcane Missiles",
+      "rank": 8,
+      "basis": "engine"
+    },
+    {
       "id": 25291,
       "class": "paladin",
       "spell": "Blessing of Might",

@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
                         account = graph.account.takeIf { graph.isAvailable(Feature.SignIn) },
                         raids = graph.raids.takeIf { it.enabled },
                         search = graph.search.takeIf { it.enabled },
+                        guides = graph.guides,
                     )
                 } else {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
@@ -66,6 +67,8 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         // A Custom Tab closed without a redirect: back to signed out (spec F1.2's cancel).
         graph.session.onReturnedToApp()
+        // Lane F9: the active build and the player's classes' guides, at most hourly.
+        graph.guides?.let { guides -> lifecycleScope.launch { guides.sync() } }
         // Lane F14: every foreground rewrites the snapshot the widgets and the tile read.
         graph.widgets?.let { widgets -> lifecycleScope.launch { widgets.refresher.refresh() } }
     }
@@ -99,6 +102,8 @@ class MainActivity : ComponentActivity() {
             is DeepLink.Sim -> graph.home.sims?.navigator?.open(parsed)
             // Lane F10: a report link opens Home, Your reports and the report.
             is DeepLink.Report -> graph.home.reports?.navigator?.open(parsed)
+            // Lane F9: a guides link opens the Guides tab and the guide.
+            is DeepLink.Guides, is DeepLink.Guide -> graph.guides?.navigator?.open(parsed)
             // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.
             else -> if (graph.raids.enabled) graph.raids.navigator.open(parsed)
         }

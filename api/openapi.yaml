@@ -2749,6 +2749,234 @@ components:
         running: { type: string, description: The sentence while the date is in progress. }
         role: { type: string }
         highlight: { type: boolean }
+    # W3-C1 (lane F9): guides, tier lists and the changelog, written by web/src/lib/app-data.
+    GuideIndex:
+      type: object
+      description: /data/{build}/guides/index.json. Classes in classes.json order, specs in tree order.
+      required: [build, classes]
+      properties:
+        build: { type: string }
+        classes: { type: array, items: { $ref: '#/components/schemas/GuideIndexClass' } }
+    GuideIndexClass:
+      type: object
+      required: [class, class_name, specs]
+      properties:
+        class: { type: string, x-name: classSlug, description: "Class slug, shaman." }
+        class_name: { type: string }
+        specs: { type: array, items: { $ref: '#/components/schemas/GuideIndexSpec' } }
+    GuideIndexSpec:
+      type: object
+      required: [spec, spec_slug, spec_name, role, icon, updated, path]
+      properties:
+        spec: { type: string, description: "shaman-elemental, the BiS file's spec id." }
+        spec_slug: { type: string }
+        spec_name: { type: string }
+        role: { type: string, enum: [dps, healer, tank] }
+        icon: { type: [string, "null"], description: "The spec's icon stem, /data/{build}/icons/{stem}.webp." }
+        updated: { type: string, format: date }
+        path: { type: string, description: "The guide's file, relative to /data/{build}/: guides/shaman-elemental.json." }
+    GuideFile:
+      type: object
+      description: /data/{build}/guides/{spec}.json. One spec guide, composed by the web guide page's own functions.
+      required: [build, spec, class, spec_slug, class_name, spec_name, role, icon, title, updated, summary, role_line, recommended_races, stat_priority, hit_cap, overview, talents, rotation, races, gear, sources, sections]
+      properties:
+        build: { type: string }
+        spec: { type: string }
+        class: { type: string, x-name: classSlug }
+        spec_slug: { type: string }
+        class_name: { type: string }
+        spec_name: { type: string }
+        role: { type: string, enum: [dps, healer, tank] }
+        icon: { type: [string, "null"] }
+        title: { type: string }
+        updated: { type: string, format: date, description: "The later of the guide's date and its BiS file's." }
+        summary: { type: string }
+        role_line: { type: [string, "null"], description: "The In a raid block's Role line." }
+        recommended_races: { type: array, items: { $ref: '#/components/schemas/GuideRace' } }
+        stat_priority: { type: array, items: { type: string }, description: "The web's pill order: the sim's per-point order, else the guide's list." }
+        hit_cap: { type: [string, "null"], description: "Hit cap: 10%." }
+        overview: { $ref: '#/components/schemas/GuideOverview' }
+        talents: { $ref: '#/components/schemas/GuideTalents' }
+        rotation:
+          oneOf:
+            - { $ref: '#/components/schemas/GuideRotation' }
+            - { type: "null" }
+        races: { type: array, items: { $ref: '#/components/schemas/GuideRaceRow' } }
+        gear:
+          oneOf:
+            - { $ref: '#/components/schemas/GuideGear' }
+            - { type: "null" }
+        sources: { type: array, items: { $ref: '#/components/schemas/GuideSourceLink' } }
+        sections:
+          type: array
+          description: The sections the guide has, in reading order; the strip draws exactly these.
+          items: { type: string, enum: [overview, talents, rotation, stats, gear, races] }
+    GuideRace:
+      type: object
+      required: [slug, name, faction]
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        faction: { type: string }
+    GuideOverview:
+      type: object
+      required: [strengths, weaknesses, raid]
+      properties:
+        strengths: { type: array, items: { type: string } }
+        weaknesses: { type: array, items: { type: string } }
+        raid: { type: array, items: { type: string }, description: "The In a raid lines other than Role." }
+    GuideTalents:
+      type: object
+      required: [key, leveling_build, raid_build]
+      properties:
+        key: { type: array, items: { $ref: '#/components/schemas/GuideKeyTalent' } }
+        leveling_build:
+          oneOf:
+            - { $ref: '#/components/schemas/GuideBuild' }
+            - { type: "null" }
+        raid_build:
+          description: Null when the raid build is the leveling build.
+          oneOf:
+            - { $ref: '#/components/schemas/GuideBuild' }
+            - { type: "null" }
+    GuideKeyTalent:
+      type: object
+      required: [name, icon, rank, max_rank, text, why]
+      properties:
+        name: { type: string }
+        icon: { type: [string, "null"] }
+        rank: { type: [integer, "null"], description: "Points the guide's build spends in it." }
+        max_rank: { type: [integer, "null"] }
+        text: { type: [string, "null"], description: "The game's own text for the top rank." }
+        why: { type: [string, "null"], description: "The guide's line on why; null when it would repeat text." }
+    GuideBuild:
+      type: object
+      required: [code, totals, tree_names]
+      properties:
+        code: { type: string, description: The FS1 code the planner loads. }
+        totals: { type: array, items: { type: integer }, description: Points per tree, left to right. }
+        tree_names: { type: array, items: { type: string } }
+    GuideRotation:
+      type: object
+      required: [opener, priority, cooldowns]
+      properties:
+        opener: { type: array, items: { $ref: '#/components/schemas/GuideSpell' } }
+        priority: { type: array, items: { $ref: '#/components/schemas/GuideSpell' } }
+        cooldowns: { type: array, items: { $ref: '#/components/schemas/GuideSpell' } }
+    GuideSpell:
+      type: object
+      required: [spell_id, name, rank, icon, clause]
+      properties:
+        spell_id: { type: [integer, "null"] }
+        name: { type: string }
+        rank: { type: [integer, "null"], description: "The top rank learned by level 60." }
+        icon: { type: [string, "null"] }
+        clause: { type: string, description: "One clause, sentence case, no final stop." }
+    GuideRaceRow:
+      type: object
+      required: [slug, name, faction, recommended, racials]
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        faction: { type: string }
+        recommended: { type: boolean }
+        racials:
+          type: array
+          items:
+            type: object
+            title: GuideRacial
+            required: [name, effect]
+            properties:
+              name: { type: string }
+              effect: { type: string }
+    GuideGear:
+      type: object
+      required: [spec, band, preset_label]
+      properties:
+        spec: { type: string }
+        band: { type: integer }
+        preset_label: { type: string, description: "Raid-ready, Phase 1." }
+    GuideSourceLink:
+      type: object
+      required: [label, url, kind]
+      properties:
+        label: { type: string }
+        url: { type: string }
+        kind: { type: string, enum: [blizzard, datamined, community, site] }
+    TiersFile:
+      type: object
+      description: /data/{build}/tiers.json. The web's ranked tier lists; the apps never sort, gap or letter.
+      required: [build, updated, preset_label, factions]
+      properties:
+        build: { type: string }
+        updated: { type: [string, "null"], format: date }
+        preset_label: { type: [string, "null"] }
+        factions:
+          type: object
+          title: TierFactions
+          required: [alliance, horde]
+          properties:
+            alliance: { $ref: '#/components/schemas/TierRoles' }
+            horde: { $ref: '#/components/schemas/TierRoles' }
+    TierRoles:
+      type: object
+      required: [dps, tank, healer]
+      properties:
+        dps: { $ref: '#/components/schemas/TierList' }
+        tank: { $ref: '#/components/schemas/TierList' }
+        healer: { $ref: '#/components/schemas/TierList' }
+    TierList:
+      type: object
+      required: [notes, rows]
+      properties:
+        notes: { type: array, items: { type: string }, description: "The web's lines above the list; the last is the role's race line." }
+        rows: { type: array, items: { $ref: '#/components/schemas/TierRow' } }
+    TierRow:
+      type: object
+      required: [rank, spec, class, spec_slug, name, race, icon, metric, metric_text, unit, gap_percent, gap_text, fraction, tie, tier, low_confidence, title, detail]
+      properties:
+        rank: { type: integer }
+        spec: { type: string }
+        class: { type: string, x-name: classSlug }
+        spec_slug: { type: string }
+        name: { type: string, description: "Fury Warrior." }
+        race: { type: string }
+        icon: { type: [string, "null"] }
+        metric: { type: number }
+        metric_text: { type: string }
+        unit: { type: string }
+        gap_percent: { type: number }
+        gap_text: { type: string, description: "Top, −2.8%, +15.2%." }
+        fraction: { type: number }
+        tie: { type: [string, "null"], enum: [above, below, both, null] }
+        tier: { type: [string, "null"], enum: [S, A, B, C, D, null] }
+        low_confidence: { type: boolean }
+        title: { type: string, description: "The callout: Fire Mage is 6th of 20 DPS specs." }
+        detail: { type: string, description: "9.1% behind Fury Warrior." }
+    Changelog:
+      type: object
+      description: /data/changelog.json. Newest first.
+      required: [entries]
+      properties:
+        entries: { type: array, items: { $ref: '#/components/schemas/ChangelogEntry' } }
+    ChangelogEntry:
+      type: object
+      required: [id, date, title, kind, blocks, sources]
+      properties:
+        id: { type: string }
+        date: { type: string, format: date }
+        title: { type: string }
+        kind: { type: string, enum: [blizzard, datamined, community, site], description: "site is a change to this site; the rest are game news." }
+        blocks:
+          type: array
+          items:
+            type: object
+            title: ChangelogBlock
+            required: [type, text]
+            properties:
+              type: { type: string, enum: [p, h, li], x-name: kind }
+              text: { type: string }
+        sources: { type: array, items: { $ref: '#/components/schemas/GuideSourceLink' } }
     ClassInfo:
       type: object
       required: [id, name, slug, color, forever_changes]
@@ -6040,6 +6268,58 @@ paths:
           description: "The dates"
           x-fixtures: [cdn.dates]
           content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/KeyDate' } } } }
+  /data/changelog.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The site's changelog, newest first (W3-C1)
+      operationId: getChangelog
+      tags: [app-static]
+      responses:
+        '200':
+          description: "The changelog"
+          x-fixtures: [cdn.changelog]
+          content: { application/json: { schema: { $ref: '#/components/schemas/Changelog' } } }
+  /data/{build}/guides/index.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Every spec guide of a build (W3-C1)
+      operationId: getGuideIndex
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The guide list"
+          x-fixtures: [cdn.guides.index]
+          content: { application/json: { schema: { $ref: '#/components/schemas/GuideIndex' } } }
+  /data/{build}/guides/{spec}.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: One spec guide (W3-C1)
+      operationId: getGuide
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+        - { name: spec, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The guide"
+          x-fixture-route: cdn.guides.{spec}
+          x-fixtures: [cdn.guides.shaman-elemental, cdn.guides.mage-fire, cdn.guides.warrior-protection]
+          content: { application/json: { schema: { $ref: '#/components/schemas/GuideFile' } } }
+  /data/{build}/tiers.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The ranked tier lists (W3-C1; the apps show them only behind guide_tiers)
+      operationId: getTiers
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "Both factions, every role"
+          x-fixtures: [cdn.tiers]
+          content: { application/json: { schema: { $ref: '#/components/schemas/TiersFile' } } }
   /data/{build}/classes.json:
     servers: [{ url: 'https://foreversixty.gg' }]
     get:

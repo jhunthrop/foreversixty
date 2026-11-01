@@ -162,6 +162,9 @@ type candidate struct {
 	Speed        float64
 	DPS          float64
 	TwoHand      bool
+	// MainHandOnly is a "Main Hand" weapon, from the engine's own row
+	// (withEngineWeaponDamage): it never goes in the off hand.
+	MainHandOnly bool
 	Unique       bool
 	Slots        []string
 	SetID        *int
@@ -240,6 +243,7 @@ func withEngineWeaponDamage(items []candidate, lookup func(int32) (simdb.WeaponD
 		if w, ok := lookup(int32(c.ID)); ok {
 			c.DamageMin, c.DamageMax, c.Speed = w.Min, w.Max, w.Speed
 			c.DPS = (w.Min + w.Max) / 2 / w.Speed
+			c.MainHandOnly = w.MainHandOnly
 		}
 		out[i] = c
 	}

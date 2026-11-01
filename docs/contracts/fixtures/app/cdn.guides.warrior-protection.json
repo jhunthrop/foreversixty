@@ -1,0 +1,481 @@
+{
+  "build": "1.60.1.70707",
+  "spec": "warrior-protection",
+  "class": "warrior",
+  "spec_slug": "protection",
+  "class_name": "Warrior",
+  "spec_name": "Protection",
+  "role": "tank",
+  "icon": "ability_racial_bloodrage",
+  "title": "Protection Warrior in Forever",
+  "updated": "2026-11-01",
+  "summary": "Protection is Forever's tanking spec, using a one-handed weapon and shield to hold enemy attention and survive heavy hits.",
+  "role_line": "Main tank",
+  "recommended_races": [
+    {
+      "slug": "dwarf",
+      "name": "Dwarf",
+      "faction": "alliance"
+    },
+    {
+      "slug": "tauren",
+      "name": "Tauren",
+      "faction": "horde"
+    }
+  ],
+  "stat_priority": [
+    "Expertise",
+    "Defense",
+    "Dodge",
+    "Agility",
+    "Parry",
+    "Stamina",
+    "Strength",
+    "Critical strike",
+    "Armor",
+    "Attack power",
+    "Block",
+    "Hit"
+  ],
+  "hit_cap": "Hit cap: 6%",
+  "overview": {
+    "strengths": [
+      "Shield Slam is its highest-threat button and grows with Block Value",
+      "Sunder Armor stacks add threat on every spare global",
+      "Defensive talents keep mitigation and Rage generation high",
+      "Revenge comes up more often the better its avoidance"
+    ],
+    "weaknesses": [
+      "Gives up the damage of the two-handed and dual-wield specs",
+      "Needs healers to outlast sustained damage",
+      "Threat leans on Sunder Armor filling every other global"
+    ],
+    "raid": [
+      "Brings: Sunder Armor on the target, Thunder Clap's attack-speed slow and Demoralizing Shout"
+    ]
+  },
+  "talents": {
+    "key": [
+      {
+        "name": "Shield Specialization",
+        "icon": "inv_shield_06",
+        "rank": 5,
+        "max_rank": 5,
+        "text": "Increases your chance to Block attacks with your shield by 5% and grants you a 100% chance to generate 5 Rage when you Block.",
+        "why": "More Block chance, and every Block pays Rage. A block is no longer only mitigation: it feeds the Rage that Shield Slam, Revenge and Heroic Strike spend"
+      },
+      {
+        "name": "Anticipation",
+        "icon": "spell_nature_mirrorimage",
+        "rank": 5,
+        "max_rank": 5,
+        "text": "Increases your Defense Skill by 20.",
+        "why": "Defense Skill, which raises avoidance and lowers the chance to be critically hit"
+      },
+      {
+        "name": "Improved Revenge",
+        "icon": "ability_warrior_revenge",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Increases damage dealt by your Revenge ability by 60%.",
+        "why": "Cheaper or harder-hitting versions of the three abilities that make most of a tank's threat"
+      },
+      {
+        "name": "Improved Thunder Clap",
+        "icon": "ability_thunderclap",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Reduces the Rage cost of your Thunder Clap ability by 6.",
+        "why": "Cheaper or harder-hitting versions of the three abilities that make most of a tank's threat"
+      },
+      {
+        "name": "Improved Sunder Armor",
+        "icon": "ability_warrior_sunder",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Reduces the Rage cost of your Sunder Armor ability by 3.",
+        "why": "Cheaper or harder-hitting versions of the three abilities that make most of a tank's threat"
+      },
+      {
+        "name": "Last Stand",
+        "icon": "spell_holy_ashestoashes",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "When activated, this ability temporarily grants you 30% of your maximum health for 20 sec. After the effect expires, the health is lost.",
+        "why": "A short burst of health, then it is lost again. An emergency button, not a damage-taken talent"
+      },
+      {
+        "name": "Master of Defense",
+        "icon": "ability_warrior_shieldguard",
+        "rank": 2,
+        "max_rank": 2,
+        "text": "Grants you a 100% chance to generate 5 Rage when you Dodge or Parry while a shield is equipped.",
+        "why": "Rage whenever you Dodge or Parry with a shield equipped, the avoidance counterpart of Shield Specialization"
+      },
+      {
+        "name": "Defiance",
+        "icon": "ability_warrior_innerrage",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Increases all threat generated in Defensive stance by an additional 15% while a shield is equipped.",
+        "why": "More threat in Defensive Stance while a shield is equipped, added on top of the stance's own threat bonus"
+      },
+      {
+        "name": "Focused Rage",
+        "icon": "ability_warrior_focusedrage",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Reduces the Rage cost of your offensive abilities by 3.",
+        "why": "Cheaper offensive abilities, so the Rage the talents above produce goes further"
+      },
+      {
+        "name": "Bastion",
+        "icon": "inv_shield_04",
+        "rank": 5,
+        "max_rank": 5,
+        "text": "Increases all damage you deal by 10% while a shield is equipped.",
+        "why": "10% more damage from everything you do while a shield is equipped, and so 10% more threat from your damage (the flat threat on Shield Slam, Sunder Armor and Heroic Strike does not scale with it)"
+      },
+      {
+        "name": "Improved Bloodrage",
+        "icon": "ability_racial_bloodrage",
+        "rank": 2,
+        "max_rank": 2,
+        "text": "Increases all the Rage generated by your Bloodrage ability by 50%.",
+        "why": "Half again as much Rage from Bloodrage"
+      },
+      {
+        "name": "Concussion Blow",
+        "icon": "ability_thunderbolt",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "Stuns the target for 5 sec.",
+        "why": "One point, because Shield Slam requires it"
+      },
+      {
+        "name": "Shield Slam",
+        "icon": "inv_shield_05",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "Slam the target with your shield, causing 421 to 439 damage, increased by your Block Value, and has a 50% chance of dispelling 1 magic effect on the target. Causes a very high amount of threat.",
+        "why": "The capstone: a shield hit that adds your Block Value, with very high threat"
+      }
+    ],
+    "leveling_build": {
+      "code": "FS1:1.60.1.70707:warrior:dwarf:35300003/0/250533120330001351:",
+      "totals": [
+        14,
+        0,
+        37
+      ],
+      "tree_names": [
+        "Arms",
+        "Fury",
+        "Protection"
+      ]
+    },
+    "raid_build": null
+  },
+  "rotation": {
+    "opener": [],
+    "priority": [
+      {
+        "spell_id": 71,
+        "name": "Defensive Stance",
+        "rank": null,
+        "icon": "ability_warrior_defensivestance",
+        "clause": "Stay in Defensive Stance"
+      },
+      {
+        "spell_id": 12975,
+        "name": "Last Stand",
+        "rank": null,
+        "icon": "spell_holy_ashestoashes",
+        "clause": "Below 35 percent health"
+      },
+      {
+        "spell_id": 871,
+        "name": "Shield Wall",
+        "rank": null,
+        "icon": "ability_warrior_shieldwall",
+        "clause": "Below 40 percent health"
+      },
+      {
+        "spell_id": 29131,
+        "name": "Bloodrage",
+        "rank": null,
+        "icon": "ability_racial_bloodrage",
+        "clause": "On cooldown while rage is under 60"
+      },
+      {
+        "spell_id": 2565,
+        "name": "Shield Block",
+        "rank": null,
+        "icon": "ability_defend",
+        "clause": "Whenever its buff is down"
+      },
+      {
+        "spell_id": 25288,
+        "name": "Revenge",
+        "rank": 6,
+        "icon": "ability_warrior_revenge",
+        "clause": "The moment it is available"
+      },
+      {
+        "spell_id": 23925,
+        "name": "Shield Slam",
+        "rank": 4,
+        "icon": "inv_shield_05",
+        "clause": "On cooldown"
+      },
+      {
+        "spell_id": 461810,
+        "name": "Thunder Clap",
+        "rank": 6,
+        "icon": "spell_nature_thunderclap",
+        "clause": "Keep Thunder Clap on the boss"
+      },
+      {
+        "spell_id": 11597,
+        "name": "Sunder Armor",
+        "rank": 5,
+        "icon": "ability_warrior_sunder",
+        "clause": "The global-cooldown filler"
+      },
+      {
+        "spell_id": 25286,
+        "name": "Heroic Strike",
+        "rank": 9,
+        "icon": "ability_rogue_ambush",
+        "clause": "With spare rage"
+      }
+    ],
+    "cooldowns": [
+      {
+        "spell_id": 12975,
+        "name": "Last Stand",
+        "rank": null,
+        "icon": "spell_holy_ashestoashes",
+        "clause": "3 min cooldown. Below 35 percent health"
+      },
+      {
+        "spell_id": 871,
+        "name": "Shield Wall",
+        "rank": null,
+        "icon": "ability_warrior_shieldwall",
+        "clause": "15 min cooldown. Below 40 percent health"
+      },
+      {
+        "spell_id": 5246,
+        "name": "Intimidating Shout",
+        "rank": null,
+        "icon": null,
+        "clause": "3 min cooldown"
+      },
+      {
+        "spell_id": 1161,
+        "name": "Challenging Shout",
+        "rank": null,
+        "icon": null,
+        "clause": "10 min cooldown"
+      },
+      {
+        "spell_id": 20230,
+        "name": "Retaliation",
+        "rank": null,
+        "icon": null,
+        "clause": "15 min cooldown"
+      },
+      {
+        "spell_id": 1719,
+        "name": "Recklessness",
+        "rank": null,
+        "icon": null,
+        "clause": "30 min cooldown"
+      },
+      {
+        "spell_id": null,
+        "name": "Trinkets, racials and potions",
+        "rank": null,
+        "icon": null,
+        "clause": "On cooldown, with your biggest damage"
+      }
+    ]
+  },
+  "races": [
+    {
+      "slug": "human",
+      "name": "Human",
+      "faction": "alliance",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Sword Specialization",
+          "effect": "Grants 2% spell and ability critical strike chance with a sword"
+        }
+      ]
+    },
+    {
+      "slug": "orc",
+      "name": "Orc",
+      "faction": "horde",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Shatter Curse",
+          "effect": "Removes and grants immunity to Curses and Banes and reduces magical damage taken 15% for 8 seconds"
+        }
+      ]
+    },
+    {
+      "slug": "dwarf",
+      "name": "Dwarf",
+      "faction": "alliance",
+      "recommended": true,
+      "racials": [
+        {
+          "name": "Stoneform",
+          "effect": "Reduces physical damage taken instead of raising armor"
+        }
+      ]
+    },
+    {
+      "slug": "night-elf",
+      "name": "Night Elf",
+      "faction": "alliance",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Quickness",
+          "effect": "Grants dodge and run speed"
+        }
+      ]
+    },
+    {
+      "slug": "undead",
+      "name": "Undead",
+      "faction": "horde",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Will of the Forsaken",
+          "effect": "Removes Charm, Fear, and Sleep"
+        }
+      ]
+    },
+    {
+      "slug": "tauren",
+      "name": "Tauren",
+      "faction": "horde",
+      "recommended": true,
+      "racials": [
+        {
+          "name": "Endurance",
+          "effect": "Grants 5% Health and 1% Hit chance"
+        }
+      ]
+    },
+    {
+      "slug": "gnome",
+      "name": "Gnome",
+      "faction": "alliance",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Escape Artist",
+          "effect": "Breaks and grants brief immunity to movement impairment on a 2 minute cooldown"
+        },
+        {
+          "name": "Expansive Mind",
+          "effect": "Grants 5% Mana, Rage and Energy"
+        }
+      ]
+    },
+    {
+      "slug": "troll",
+      "name": "Troll",
+      "faction": "horde",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Rapid Regeneration",
+          "effect": "Channels back 50% of maximum Health"
+        }
+      ]
+    },
+    {
+      "slug": "high-order-skyborne",
+      "name": "High Order Skyborne",
+      "faction": "alliance",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Read Ley Line",
+          "effect": "100% health and mana regeneration for 15 seconds"
+        }
+      ]
+    },
+    {
+      "slug": "windshaper-skyborne",
+      "name": "Windshaper Skyborne",
+      "faction": "horde",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Read Ley Line",
+          "effect": "100% health and mana regeneration for 15 seconds"
+        }
+      ]
+    }
+  ],
+  "gear": {
+    "spec": "warrior-protection",
+    "band": 60,
+    "preset_label": "Raid-ready, Phase 1"
+  },
+  "sources": [
+    {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard"
+    },
+    {
+      "label": "Talents Forever (demo transcription)",
+      "url": "https://talentsforever.com/data.json",
+      "kind": "community"
+    },
+    {
+      "label": "Icy Veins, the racial rework",
+      "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+      "kind": "community"
+    },
+    {
+      "label": "Forever Sixty stat weights, data/curated/specs.json",
+      "url": "https://foreversixty.gg/sim/weights",
+      "kind": "site"
+    },
+    {
+      "label": "Forever Sixty rotation data, data/curated/apl/warrior-protection.json",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site"
+    },
+    {
+      "label": "Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json",
+      "url": "https://foreversixty.gg/sources",
+      "kind": "site"
+    },
+    {
+      "label": "This site, character planner",
+      "url": "https://foreversixty.gg/planner",
+      "kind": "site"
+    }
+  ],
+  "sections": [
+    "overview",
+    "talents",
+    "rotation",
+    "stats",
+    "gear",
+    "races"
+  ]
+}

@@ -100,6 +100,10 @@ data class BisSelection(val classSlug: String, val spec: String, val range: BisR
             faction = factions.first(),
         )
 
+        /** A guide's Gear row (spec F9.2): that spec at 60 with the raid preset, in the player's faction. */
+        fun forGuide(classSlug: String, spec: String, faction: String?): BisSelection =
+            BisSelection(classSlug, spec, BisRange.all.last(), faction?.takeIf { it in factions } ?: factions.last())
+
         /** The character's own list, when the catalogue knows its class and spec. */
         fun forCharacter(character: AccountCharacter, catalog: SpecCatalog): BisSelection? {
             val classSlug = character.className ?: return null

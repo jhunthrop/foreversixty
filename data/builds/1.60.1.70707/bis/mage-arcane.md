@@ -8,37 +8,37 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 141005000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 29.8. Weights run: 1.1s. Verify run: 0.7s. 160 eligible items had no known source.
+Set DPS (verified): 30.3. Weights run: 1.1s. Verify run: 0.7s. 160 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.313 ± 0.008, crit=0.074 ± 0.002 per rating point (14 rating = 1%, 1.034 per %), hit=0.261 ± 0.009 per rating point (10 rating = 1%, 2.606 per %), spell_haste=0.437 ± 0.093, spell_penetration=not significant (0.000 ± 0.000), arcane_power=0.491 ± 0.003
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Pristine Circlet (253949) | Tailoring [crafted] | 6.0 spell_power points (0.59 DPS) | yes | Shadow Goggles (4373, -1.47 DPS, sim-verified) [crafted] |
+| head | Pristine Circlet (253949) | Tailoring [crafted] | 6.0 spell_power points (0.59 DPS) | yes | Shadow Goggles (4373, -1.23 DPS, sim-verified) [crafted] |
 | neck | - | - |  |  |  |
-| shoulder | Magician's Mantle (12998) | World drop [world_drop] | 7.8 spell_power points (0.77 DPS) | yes | Double-Stitched Woolen Shoulders (4314, -0.38 DPS) [crafted]; Reinforced Woolen Shoulders (4315, -0.50 DPS, sim-verified) [crafted] |
-| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 spell_power points (0.40 DPS) | yes | Pearl-clasped Cloak (5542, -0.11 DPS) [crafted]; Sanguine Cape (14376, -0.27 DPS) [world_drop]; Black Whelp Cloak (7283, -0.42 DPS, sim-verified) [crafted] |
-| chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 6.6 spell_power points (0.65 DPS) | yes | Green Woolen Vest (2582, -0.25 DPS) [crafted]; Bloody Apron (6226, -0.25 DPS) [dungeon]; Gray Woolen Robe (2585, -0.96 DPS, sim-verified) [crafted] |
-| wrist | Mindthrust Bracers (1974) | Shadowfang Keep [dungeon] | 1.6 spell_power points (0.15 DPS) | yes | Windsong Bangles (263336, -0.06 DPS) [quest]; Repurposed Hair Band (281256, -0.09 DPS) [quest]; Bright Bracers (3647, -0.99 DPS, sim-verified) [world_drop] |
+| shoulder | Magician's Mantle (12998) | World drop [world_drop] | 7.8 spell_power points (0.77 DPS) | yes | Reinforced Woolen Shoulders (4315, -0.20 DPS, sim-verified) [crafted]; Double-Stitched Woolen Shoulders (4314, -0.38 DPS) [crafted] |
+| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 spell_power points (0.40 DPS) | yes | Pearl-clasped Cloak (5542, -0.11 DPS) [crafted]; Black Whelp Cloak (7283, -0.23 DPS, sim-verified) [crafted]; Sanguine Cape (14376, -0.27 DPS) [world_drop] |
+| chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 6.6 spell_power points (0.65 DPS) | yes | Green Woolen Vest (2582, -0.25 DPS) [crafted]; Bloody Apron (6226, -0.25 DPS) [dungeon]; Gray Woolen Robe (2585, -0.84 DPS, sim-verified) [crafted] |
+| wrist | Mindthrust Bracers (1974) | Shadowfang Keep [dungeon] | 1.6 spell_power points (0.15 DPS) | yes | Windsong Bangles (263336, -0.06 DPS) [quest]; Repurposed Hair Band (281256, -0.09 DPS) [quest]; Bright Bracers (3647, -0.46 DPS, sim-verified) [world_drop] |
 | hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 spell_power points (0.69 DPS) | yes | Gnoll Casting Gloves (892, -0.20 DPS, sim-verified) [world]; Pristine Gloves (253913, -0.20 DPS) [crafted]; Heavy Woolen Gloves (4310, -0.43 DPS) [crafted] |
-| waist | Pristine Sash (253925) | Tailoring [crafted] | 5.3 spell_power points (0.52 DPS) | yes | Novice Ardent's Sash (253887, -0.23 DPS) [crafted]; Keller's Girdle (2911, -0.27 DPS) [world_drop]; Novice Arcanist's Sash (253885, -0.81 DPS, sim-verified) [crafted] |
-| legs | Filigreed Pristine Leggings (253937) | Tailoring [crafted] | 7.9 spell_power points (0.78 DPS) | yes | Colorful Kilt (10048, -0.29 DPS) [crafted]; Heavy Woolen Pants (4316, -0.48 DPS) [crafted]; Silk-threaded Trousers (1929, -1.38 DPS, sim-verified) [dungeon] |
-| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 8.3 spell_power points (0.82 DPS) | yes | Pristine Boots (253889, -0.43 DPS) [crafted]; Woolen Boots (2583, -0.56 DPS) [crafted]; Red Woolen Boots (4313, -0.64 DPS, sim-verified) [crafted] |
+| waist | Pristine Sash (253925) | Tailoring [crafted] | 5.3 spell_power points (0.52 DPS) | yes | Novice Arcanist's Sash (253885, -0.23 DPS, sim-verified) [crafted]; Novice Ardent's Sash (253887, -0.23 DPS) [crafted]; Keller's Girdle (2911, -0.27 DPS) [world_drop] |
+| legs | Filigreed Pristine Leggings (253937) | Tailoring [crafted] | 7.9 spell_power points (0.78 DPS) | yes | Colorful Kilt (10048, -0.29 DPS) [crafted]; Heavy Woolen Pants (4316, -0.48 DPS) [crafted]; Silk-threaded Trousers (1929, -0.71 DPS, sim-verified) [dungeon] |
+| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 8.3 spell_power points (0.82 DPS) | yes | Pristine Boots (253889, -0.43 DPS) [crafted]; Red Woolen Boots (4313, -0.46 DPS, sim-verified) [crafted]; Woolen Boots (2583, -0.56 DPS) [crafted] |
 | finger1 | Minor Channeling Ring (1449) | WANTED: Chok'sul [quest] | 5.6 spell_power points (0.56 DPS) | yes | Volcanic Rock Ring (12053, -0.46 DPS) [world_drop]; The 1 Ring (8350, -0.53 DPS) [world] |
-| finger2 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 1.9 spell_power points (0.19 DPS) | yes | The 1 Ring (8350, -0.15 DPS) [world]; Volcanic Rock Ring (12053, -0.49 DPS, sim-verified) [world_drop] |
+| finger2 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 1.9 spell_power points (0.19 DPS) | yes | The 1 Ring (8350, -0.15 DPS) [world]; Volcanic Rock Ring (12053, -0.25 DPS, sim-verified) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Twisted Chanter's Staff (890) | World drop [world_drop] | 3.1 spell_power points (0.31 DPS) | yes | Witching Stave (1484, -0.15 DPS) [dungeon]; Staff of Westfall (2042, -0.15 DPS) [quest]; Lesser Staff of the Spire (1300, -0.61 DPS, sim-verified) [world] |
+| main_hand | Twisted Chanter's Staff (890) | World drop [world_drop] | 3.1 spell_power points (0.31 DPS) | yes | Witching Stave (1484, -0.15 DPS) [dungeon]; Staff of Westfall (2042, -0.15 DPS) [quest]; Lesser Staff of the Spire (1300, -0.25 DPS, sim-verified) [world] |
 | off_hand | - | - |  |  |  |
-| ranged | Cookie's Stirring Rod (5198) | The Deadmines: Cookie [dungeon] | 228.2 spell_power points (22.61 DPS) | yes | Skycaller (12984, -0.77 DPS, sim-verified) [world_drop]; Deepblaze (279896, -4.08 DPS) [quest]; Sizzle Stick (8071, -4.46 DPS) [quest] |
+| ranged | Sizzle Stick (8071) | Deviate Eradication [quest] | 239.5 spell_power points (23.73 DPS) | yes | Cookie's Stirring Rod (5198, -0.53 DPS, sim-verified) [dungeon]; Sable Wand (7607, -1.21 DPS) [quest]; Skycaller (12984, -2.17 DPS) [world_drop] |
 
-**New at 20:** head: Pristine Circlet; shoulder: Magician's Mantle; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Mindthrust Bracers; hands: Serpent Gloves; waist: Pristine Sash; legs: Filigreed Pristine Leggings; feet: Spidersilk Boots; finger1: Minor Channeling Ring; finger2: Lavishly Jeweled Ring; main_hand: Twisted Chanter's Staff; ranged: Cookie's Stirring Rod
+**New at 20:** head: Pristine Circlet; shoulder: Magician's Mantle; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Mindthrust Bracers; hands: Serpent Gloves; waist: Pristine Sash; legs: Filigreed Pristine Leggings; feet: Spidersilk Boots; finger1: Minor Channeling Ring; finger2: Lavishly Jeweled Ring; main_hand: Twisted Chanter's Staff; ranged: Sizzle Stick
 
 No-known-source sample (15 of 160, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 6478 Rat Stompers; 14145 Cursed Felblade; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade; 14389 Durability Shoulderpads; 18850 Insignia of the Horde; 20428 Caretaker's Cape; 20431 Lorekeeper's Ring
 
 ### Band 30 (gnome, 141005213100300000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 92.9. Weights run: 1.3s. Verify run: 0.8s. 298 eligible items had no known source.
+Set DPS (verified): 92.9. Weights run: 1.3s. Verify run: 0.9s. 298 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=0.561 ± 0.019, crit=0.073 ± 0.002 per rating point (14 rating = 1%, 1.024 per %), hit=0.290 ± 0.029 per rating point (10 rating = 1%, 2.899 per %), spell_haste=not significant (0.511 ± 0.288), spell_penetration=not significant (0.000 ± 0.000), arcane_power=0.589 ± 0.003
 
@@ -60,7 +60,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | - | - |  |  |  |
 | main_hand | Spine of the Devourer (273040) (or Tendonscraper Dagger (273053)) | Mana Devourer [world] | 36.0 spell_power points (6.56 DPS) | yes | Tendonscraper Dagger (273053, +0.00 DPS) [world]; Hardened Root Staff (1317, -2.92 DPS) [quest]; Glimmering Staff (249392, -5.44 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Wand of Mana Concentration (273043) | Arcanic Enigma [world] | sim-verified (+1.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Starfaller (13063, -1.04 DPS, sim-verified) [world_drop]; Greater Mystic Wand (217287, -1.68 DPS) [crafted]; Gravestone Scepter (7001, -2.59 DPS) [quest] |
+| ranged | Wand of Mana Concentration (273043) | Arcanic Enigma [world] | sim-verified (+1.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Starfaller (13063, -1.04 DPS, sim-verified) [world_drop]; Gyromatic Icemaker (9489, -1.23 DPS) [dungeon]; Greater Mystic Wand (217287, -1.67 DPS) [crafted] |
 
 **New at 30:** head: Holy Shroud; neck: Archmagister's Faceted Pendant; shoulder: Bloodmage Mantle; back: Vine Pruner's Cloak; chest: Beguiler Robes; wrist: Spidertank Oilrag; hands: Shilly Mitts; waist: Belt of Arugal; legs: Pristine Leggings; feet: Gilded Slippers; finger1: Snake Hoop; finger2: Minor Channeling Ring; main_hand: Spine of the Devourer; ranged: Wand of Mana Concentration
 
@@ -90,7 +90,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | - | - |  |  |  |
 | main_hand | Hypnotic Blade (7714) | Scarlet Monastery: Arcanist Doan [dungeon] | sim-verified (141.5 DPS) | yes | Gut Ripper (2164, +0.00 DPS) [world_drop]; Illusionary Rod (7713, -0.32 DPS) [dungeon]; Spine of the Devourer (273040, -2.86 DPS) [world] |
 | off_hand | Celestial Orb (7515) | Celestial Power [quest] | 15.5 spell_power points (3.02 DPS) | yes | Orb of Lorica (11262, -0.23 DPS) [quest]; Orb of the Forgotten Seer (7685, -0.29 DPS) [dungeon]; Orb of Mystic Insight (249394, -0.68 DPS) [crafted] |
-| ranged | Jaina's Firestarter (13064) | World drop [world_drop] | 207.0 spell_power points (40.35 DPS) | yes | Nether Force Wand (11263, -2.54 DPS) [quest]; Icefury Wand (7514, -2.68 DPS) [quest]; Ragefire Wand (7513, -2.73 DPS) [quest] |
+| ranged | Jaina's Firestarter (13064) | World drop [world_drop] | 206.9 spell_power points (40.35 DPS) | yes | Nether Force Wand (11263, -2.53 DPS) [quest]; Icefury Wand (7514, -2.67 DPS) [quest]; Ragefire Wand (7513, -2.72 DPS) [quest] |
 
 **New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; wrist: Arcane Runed Bracers; hands: Dreamweave Gloves; waist: Deathmage Sash; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Snake Hoop; main_hand: Hypnotic Blade; off_hand: Celestial Orb; ranged: Jaina's Firestarter
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 396, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 141005213100301531-32023000000000000-000000000000000000)
 
-Set DPS (verified): 239.1. Weights run: 1.3s. Verify run: 1.2s. 512 eligible items had no known source.
+Set DPS (verified): 239.1. Weights run: 1.2s. Verify run: 1.3s. 512 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.073 ± 0.058, crit=0.261 ± 0.007 per rating point (14 rating = 1%, 3.659 per %), hit=0.644 ± 0.081 per rating point (10 rating = 1%, 6.445 per %), spell_haste=not significant (1.716 ± 0.866), spell_penetration=not significant (0.000 ± 0.000), arcane_power=0.662 ± 0.004
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 512, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 141005213100301531-32023000000000000-053200000000000000)
 
-Set DPS (verified): 398.8. Weights run: 1.4s. Verify run: 3.2s. 1131 eligible items had no known source.
+Set DPS (verified): 398.8. Weights run: 1.3s. Verify run: 3.1s. 1131 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.149 ± 0.066, crit=0.411 ± 0.011 per rating point (14 rating = 1%, 5.756 per %), hit=1.115 ± 0.107 per rating point (10 rating = 1%, 11.154 per %), spell_haste=not significant (2.372 ± 1.180), spell_penetration=not significant (0.000 ± 0.000), arcane_power=0.638 ± 0.003
 
@@ -150,7 +150,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (398.8 DPS) | yes | Mark of the Chosen (17774, -4.62 DPS, sim-verified) [quest] |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-verified (398.8 DPS) | yes | Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Spellshifter Rod (9527, -0.64 DPS) [quest]; Teebu's Blazing Longsword (1728, -51.85 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Torch of Light (279246) | Enchanting [crafted] | 351.5 spell_power points (78.09 DPS) | yes | Stormrager (16997, -4.65 DPS, sim-verified) [quest]; Brilliant Wand (249385, -14.73 DPS) [crafted]; Torch of Austen (13004, -21.30 DPS) [world_drop] |
+| ranged | Torch of Light (279246) | Enchanting [crafted] | 351.5 spell_power points (78.10 DPS) | yes | Stormrager (16997, -4.65 DPS, sim-verified) [quest]; Brilliant Wand (249385, -14.73 DPS) [crafted]; Torch of Austen (13004, -21.31 DPS) [world_drop] |
 
 **New at 60:** head: Devout Crown; neck: Archlight Talisman; shoulder: Devout Mantle; chest: Robe of the Archmage; wrist: Devout Bracers; hands: Devout Gloves; waist: Devout Belt; legs: Devout Skirt; feet: Omnicast Boots; finger1: Maiden's Circle; finger2: Philanthropist's Ring; ranged: Torch of Light
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1131, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 131205213100301531-30000000000000000-053500030000000000)
 
-Set DPS (verified): 663.4. Weights run: 1.6s. Verify run: 2.3s. 1131 eligible items had no known source.
+Set DPS (verified): 663.4. Weights run: 1.5s. Verify run: 2.2s. 1131 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.784 ± 0.042, crit=0.515 ± 0.011 per rating point (14 rating = 1%, 7.204 per %), hit=1.208 ± 0.085 per rating point (10 rating = 1%, 12.082 per %), spell_haste=3.538 ± 0.795, spell_penetration=not significant (0.000 ± 0.000), arcane_power=0.670 ± 0.002
 
@@ -180,7 +180,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Mark of the Chosen (17774) | The Pariah's Instructions [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, +0.00 DPS, sim-verified) [world_drop] |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Spellshifter Rod (9527, -0.31 DPS) [quest]; Teebu's Blazing Longsword (1728, -60.30 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Torch of Light (279246) | Enchanting [crafted] | 178.9 spell_power points (79.42 DPS) | yes | Brilliant Wand (249385, -13.41 DPS) [crafted]; Stormrager (16997, -14.99 DPS) [quest]; Greater Eternal Wand (249237, -22.10 DPS) [crafted] |
+| ranged | Torch of Light (279246) | Enchanting [crafted] | 178.9 spell_power points (79.43 DPS) | yes | Brilliant Wand (249385, -13.41 DPS) [crafted]; Stormrager (16997, -15.00 DPS) [quest]; Greater Eternal Wand (249237, -22.10 DPS) [crafted] |
 
 **New at 60:** head: Magister's Crown; neck: Archlight Talisman; shoulder: Mantle of the Timbermaw; chest: Robe of the Archmage; wrist: Runecloth Cuffs; hands: Gloves of Spell Mastery; waist: Magister's Belt; legs: Magister's Leggings; feet: Omnicast Boots; finger1: Maiden's Circle; finger2: Philanthropist's Ring; trinket2: Mark of the Chosen; ranged: Torch of Light
 
@@ -190,31 +190,31 @@ No-known-source sample (15 of 1131, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 141005000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 27.9. Weights run: 1.1s. Verify run: 0.7s. 154 eligible items had no known source.
+Set DPS (verified): 28.6. Weights run: 1.1s. Verify run: 0.8s. 154 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.313 ± 0.008, crit=0.074 ± 0.002 per rating point (14 rating = 1%, 1.034 per %), hit=0.261 ± 0.009 per rating point (10 rating = 1%, 2.606 per %), spell_haste=0.437 ± 0.093, spell_penetration=not significant (0.000 ± 0.000), arcane_power=0.491 ± 0.003
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Pristine Circlet (253949) | Tailoring [crafted] | 6.0 spell_power points (0.59 DPS) | yes | Shadow Goggles (4373, -1.41 DPS, sim-verified) [crafted] |
+| head | Pristine Circlet (253949) | Tailoring [crafted] | 6.0 spell_power points (0.59 DPS) | yes | Shadow Goggles (4373, -0.59 DPS, sim-verified) [crafted] |
 | neck | - | - |  |  |  |
-| shoulder | Magician's Mantle (12998) | World drop [world_drop] | 7.8 spell_power points (0.77 DPS) | yes | Double-Stitched Woolen Shoulders (4314, -0.38 DPS) [crafted]; Reinforced Woolen Shoulders (4315, -0.41 DPS, sim-verified) [crafted] |
-| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 spell_power points (0.40 DPS) | yes | Pearl-clasped Cloak (5542, -0.11 DPS) [crafted]; Mystic Shawl (3449, -0.20 DPS) [quest]; Black Whelp Cloak (7283, -0.47 DPS, sim-verified) [crafted] |
-| chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 6.6 spell_power points (0.65 DPS) | yes | Green Woolen Vest (2582, -0.25 DPS) [crafted]; Bloody Apron (6226, -0.25 DPS) [dungeon]; Gray Woolen Robe (2585, -0.73 DPS, sim-verified) [crafted] |
-| wrist | Tabitha's Cuffs (251486) | A Frightened Request [quest] | 3.0 spell_power points (0.30 DPS) | yes | Owlbeard Bracers (16981, -0.14 DPS) [quest]; Mindthrust Bracers (1974, -0.14 DPS) [dungeon]; Featherbead Bracers (15452, -0.14 DPS) [quest] |
+| shoulder | Magician's Mantle (12998) | World drop [world_drop] | 7.8 spell_power points (0.77 DPS) | yes | Reinforced Woolen Shoulders (4315, -0.15 DPS) [crafted]; Double-Stitched Woolen Shoulders (4314, -0.38 DPS) [crafted] |
+| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 spell_power points (0.40 DPS) | yes | Black Whelp Cloak (7283, -0.10 DPS) [crafted]; Pearl-clasped Cloak (5542, -0.11 DPS) [crafted]; Mystic Shawl (3449, -0.20 DPS) [quest] |
+| chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 6.6 spell_power points (0.65 DPS) | yes | Green Woolen Vest (2582, -0.25 DPS) [crafted]; Bloody Apron (6226, -0.25 DPS) [dungeon]; Gray Woolen Robe (2585, -0.81 DPS, sim-verified) [crafted] |
+| wrist | Owlbeard Bracers (16981) | Earthen Arise [quest] | sim-verified (28.6 DPS) | yes | Mindthrust Bracers (1974, -0.01 DPS) [dungeon]; Featherbead Bracers (15452, -0.01 DPS) [quest]; Tabitha's Cuffs (251486, -0.38 DPS, sim-verified) [quest] |
 | hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 spell_power points (0.69 DPS) | yes | Gnoll Casting Gloves (892, -0.17 DPS, sim-verified) [world]; Pristine Gloves (253913, -0.20 DPS) [crafted]; Apothecary Gloves (10919, -0.30 DPS) [quest] |
-| waist | Pristine Sash (253925) | Tailoring [crafted] | 5.3 spell_power points (0.52 DPS) | yes | Novice Ardent's Sash (253887, -0.23 DPS) [crafted]; Keller's Girdle (2911, -0.27 DPS) [world_drop]; Novice Arcanist's Sash (253885, -0.56 DPS, sim-verified) [crafted] |
-| legs | Filigreed Pristine Leggings (253937) | Tailoring [crafted] | 7.9 spell_power points (0.78 DPS) | yes | Colorful Kilt (10048, -0.29 DPS) [crafted]; Embroidered Leggings (270011, -0.38 DPS) [quest]; Silk-threaded Trousers (1929, -1.36 DPS, sim-verified) [dungeon] |
-| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 8.3 spell_power points (0.82 DPS) | yes | Pristine Boots (253889, -0.43 DPS) [crafted]; Woolen Boots (2583, -0.56 DPS) [crafted]; Red Woolen Boots (4313, -0.65 DPS, sim-verified) [crafted] |
+| waist | Pristine Sash (253925) | Tailoring [crafted] | 5.3 spell_power points (0.52 DPS) | yes | Novice Arcanist's Sash (253885, -0.03 DPS) [crafted]; Novice Ardent's Sash (253887, -0.23 DPS) [crafted]; Keller's Girdle (2911, -0.27 DPS) [world_drop] |
+| legs | Filigreed Pristine Leggings (253937) | Tailoring [crafted] | 7.9 spell_power points (0.78 DPS) | yes | Colorful Kilt (10048, -0.29 DPS) [crafted]; Embroidered Leggings (270011, -0.38 DPS) [quest]; Silk-threaded Trousers (1929, -0.79 DPS, sim-verified) [dungeon] |
+| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 8.3 spell_power points (0.82 DPS) | yes | Red Woolen Boots (4313, -0.42 DPS) [crafted]; Pristine Boots (253889, -0.43 DPS) [crafted]; Woolen Boots (2583, -0.56 DPS) [crafted] |
 | finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 1.9 spell_power points (0.19 DPS) | yes | Volcanic Rock Ring (12053, -0.09 DPS) [world_drop]; The 1 Ring (8350, -0.15 DPS) [world] |
-| finger2 | Loop of Sacrifice (281673) | The Offering of Blood [quest] | 1.6 spell_power points (0.15 DPS) | yes | The 1 Ring (8350, -0.12 DPS) [world]; Volcanic Rock Ring (12053, -0.31 DPS, sim-verified) [world_drop] |
+| finger2 | Loop of Sacrifice (281673) | The Offering of Blood [quest] | 1.6 spell_power points (0.15 DPS) | yes | Volcanic Rock Ring (12053, -0.06 DPS) [world_drop]; The 1 Ring (8350, -0.12 DPS) [world] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gnarled Necromancer's Staff (251534) (or Twisted Chanter's Staff (890)) | The Wrath of Rath'mael [quest] | 3.1 spell_power points (0.31 DPS) | yes | Twisted Chanter's Staff (890, +0.00 DPS) [world_drop]; Lesser Staff of the Spire (1300, -0.12 DPS) [world]; Clear Crystal Rod (16894, -0.15 DPS) [quest] |
 | off_hand | - | - |  |  |  |
-| ranged | Cookie's Stirring Rod (5198) | The Deadmines: Cookie [dungeon] | 228.2 spell_power points (22.61 DPS) | yes | Skycaller (12984, -0.50 DPS, sim-verified) [world_drop]; Sizzle Stick (8071, -4.46 DPS) [quest]; Greater Magic Wand (11288, -4.91 DPS) [crafted] |
+| ranged | Sizzle Stick (8071) | Deviate Eradication [quest] | 239.5 spell_power points (23.73 DPS) | yes | Cookie's Stirring Rod (5198, -0.35 DPS, sim-verified) [dungeon]; Skycaller (12984, -2.17 DPS) [world_drop]; Greater Magic Wand (11288, -6.03 DPS) [crafted] |
 
-**New at 20:** head: Pristine Circlet; shoulder: Magician's Mantle; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Tabitha's Cuffs; hands: Serpent Gloves; waist: Pristine Sash; legs: Filigreed Pristine Leggings; feet: Spidersilk Boots; finger1: Lavishly Jeweled Ring; finger2: Loop of Sacrifice; main_hand: Gnarled Necromancer's Staff; ranged: Cookie's Stirring Rod
+**New at 20:** head: Pristine Circlet; shoulder: Magician's Mantle; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Owlbeard Bracers; hands: Serpent Gloves; waist: Pristine Sash; legs: Filigreed Pristine Leggings; feet: Spidersilk Boots; finger1: Lavishly Jeweled Ring; finger2: Loop of Sacrifice; main_hand: Gnarled Necromancer's Staff; ranged: Sizzle Stick
 
 No-known-source sample (15 of 154, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 6478 Rat Stompers; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 18859 Insignia of the Alliance; 20425 Advisor's Gnarled Staff; 20426 Advisor's Ring; 20427 Battle Healer's Cloak; 20429 Legionnaire's Band; 20430 Legionnaire's Sword; 20441 Scout's Blade; 20442 Scout's Medallion; 21566 Rune of Perfection
 
@@ -242,7 +242,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | - | - |  |  |  |
 | main_hand | Spine of the Devourer (273040) (or Tendonscraper Dagger (273053)) | Mana Devourer [world] | 36.0 spell_power points (6.56 DPS) | yes | Tendonscraper Dagger (273053, +0.00 DPS) [world]; Glimmering Staff (249392, -5.44 DPS) [crafted]; Gnarled Necromancer's Staff (251534, -5.54 DPS) [quest] |
 | off_hand | - | - |  |  |  |
-| ranged | Starfaller (13063) | World drop [world_drop] | 182.5 spell_power points (33.27 DPS) | yes | Wand of Mana Concentration (273043, -1.68 DPS) [world]; Greater Mystic Wand (217287, -3.36 DPS) [crafted]; Unstable Power Core (279847, -3.56 DPS) [quest] |
+| ranged | Starfaller (13063) | World drop [world_drop] | 182.5 spell_power points (33.27 DPS) | yes | Wand of Mana Concentration (273043, -1.68 DPS) [world]; Gyromatic Icemaker (9489, -2.91 DPS) [dungeon]; Greater Mystic Wand (217287, -3.36 DPS) [crafted] |
 
 **New at 30:** head: Holy Shroud; neck: Archmagister's Faceted Pendant; shoulder: Bloodmage Mantle; back: Hillman's Cloak; chest: Beguiler Robes; wrist: Spidertank Oilrag; hands: Jutebraid Gloves; waist: Warsong Sash; legs: Pristine Leggings; feet: Gilded Slippers; finger1: Snake Hoop; finger2: Ring of Power Regulation; main_hand: Spine of the Devourer; ranged: Starfaller
 
@@ -272,7 +272,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | - | - |  |  |  |
 | main_hand | Hypnotic Blade (7714) | Scarlet Monastery: Arcanist Doan [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gut Ripper (2164, +0.00 DPS) [world_drop]; Illusionary Rod (7713, -0.32 DPS) [dungeon]; Spine of the Devourer (273040, -2.86 DPS) [world] |
 | off_hand | Celestial Orb (7515) | Celestial Power [quest] | 15.5 spell_power points (3.02 DPS) | yes | Orb of the Forgotten Seer (7685, -0.29 DPS) [dungeon]; Orb of Mystic Insight (249394, -0.68 DPS) [crafted]; Omega Orb (7749, -1.27 DPS) [quest] |
-| ranged | Jaina's Firestarter (13064) | World drop [world_drop] | 207.0 spell_power points (40.35 DPS) | yes | Nether Force Wand (11263, -2.54 DPS) [quest]; Icefury Wand (7514, -2.68 DPS) [quest]; Ragefire Wand (7513, -2.73 DPS) [quest] |
+| ranged | Jaina's Firestarter (13064) | World drop [world_drop] | 206.9 spell_power points (40.35 DPS) | yes | Nether Force Wand (11263, -2.53 DPS) [quest]; Icefury Wand (7514, -2.67 DPS) [quest]; Ragefire Wand (7513, -2.72 DPS) [quest] |
 
 **New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; wrist: Radiant Silver Bracers; hands: Dreamweave Gloves; waist: Gilded Cord; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Snake Hoop; main_hand: Hypnotic Blade; off_hand: Celestial Orb; ranged: Jaina's Firestarter
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 386, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 141005213100301531-32023000000000000-000000000000000000)
 
-Set DPS (verified): 233.7. Weights run: 1.3s. Verify run: 1.2s. 502 eligible items had no known source.
+Set DPS (verified): 233.7. Weights run: 1.2s. Verify run: 1.2s. 502 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.073 ± 0.058, crit=0.261 ± 0.007 per rating point (14 rating = 1%, 3.659 per %), hit=0.644 ± 0.081 per rating point (10 rating = 1%, 6.445 per %), spell_haste=not significant (1.716 ± 0.866), spell_penetration=not significant (0.000 ± 0.000), arcane_power=0.662 ± 0.004
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 502, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 141005213100301531-32023000000000000-053200000000000000)
 
-Set DPS (verified): 389.7. Weights run: 1.4s. Verify run: 3.2s. 1123 eligible items had no known source.
+Set DPS (verified): 389.7. Weights run: 1.3s. Verify run: 3.0s. 1123 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.149 ± 0.066, crit=0.411 ± 0.011 per rating point (14 rating = 1%, 5.756 per %), hit=1.115 ± 0.107 per rating point (10 rating = 1%, 11.154 per %), spell_haste=not significant (2.372 ± 1.180), spell_penetration=not significant (0.000 ± 0.000), arcane_power=0.638 ± 0.003
 
@@ -332,7 +332,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (389.7 DPS) | yes | Uther's Strength (11302, -0.40 DPS) [world_drop] |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-verified (389.7 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Spellshifter Rod (9527, -0.64 DPS) [quest]; Teebu's Blazing Longsword (1728, -49.54 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Torch of Light (279246) | Enchanting [crafted] | 351.5 spell_power points (78.09 DPS) | yes | Stormrager (16997, -14.13 DPS) [quest]; Brilliant Wand (249385, -14.73 DPS) [crafted]; Torch of Austen (13004, -21.30 DPS) [world_drop] |
+| ranged | Torch of Light (279246) | Enchanting [crafted] | 351.5 spell_power points (78.10 DPS) | yes | Stormrager (16997, -14.13 DPS) [quest]; Brilliant Wand (249385, -14.73 DPS) [crafted]; Torch of Austen (13004, -21.31 DPS) [world_drop] |
 
 **New at 60:** head: Devout Crown; neck: Archlight Talisman; shoulder: Devout Mantle; chest: Robe of the Archmage; wrist: Devout Bracers; hands: Gloves of Spell Mastery; waist: Devout Belt; legs: Devout Skirt; feet: Omnicast Boots; finger1: Maiden's Circle; finger2: Philanthropist's Ring; trinket2: Rune of the Guard Captain; ranged: Torch of Light
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1123, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 131205213100301531-30000000000000000-053500030000000000)
 
-Set DPS (verified): 667.5. Weights run: 1.6s. Verify run: 2.3s. 1123 eligible items had no known source.
+Set DPS (verified): 667.5. Weights run: 1.5s. Verify run: 2.3s. 1123 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.784 ± 0.042, crit=0.515 ± 0.011 per rating point (14 rating = 1%, 7.204 per %), hit=1.208 ± 0.085 per rating point (10 rating = 1%, 12.082 per %), spell_haste=3.538 ± 0.795, spell_penetration=not significant (0.000 ± 0.000), arcane_power=0.670 ± 0.002
 
@@ -362,7 +362,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, -1.09 DPS) [world_drop] |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Spellshifter Rod (9527, -0.31 DPS) [quest]; Teebu's Blazing Longsword (1728, -64.52 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Torch of Light (279246) | Enchanting [crafted] | 178.9 spell_power points (79.42 DPS) | yes | Brilliant Wand (249385, -13.41 DPS) [crafted]; Stormrager (16997, -14.99 DPS) [quest]; Greater Eternal Wand (249237, -22.10 DPS) [crafted] |
+| ranged | Torch of Light (279246) | Enchanting [crafted] | 178.9 spell_power points (79.43 DPS) | yes | Brilliant Wand (249385, -13.41 DPS) [crafted]; Stormrager (16997, -15.00 DPS) [quest]; Greater Eternal Wand (249237, -22.10 DPS) [crafted] |
 
 **New at 60:** head: Magister's Crown; neck: Archlight Talisman; shoulder: Mantle of the Timbermaw; chest: Robe of the Archmage; wrist: Runecloth Cuffs; hands: Gloves of Spell Mastery; waist: Magister's Belt; legs: Magister's Leggings; feet: Omnicast Boots; finger1: Maiden's Circle; finger2: Philanthropist's Ring; trinket2: Rune of the Guard Captain; ranged: Torch of Light
 

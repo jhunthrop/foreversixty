@@ -87,9 +87,12 @@ func Known(id int32) bool {
 	return ok
 }
 
-// WeaponDamage is one weapon row's swing as the engine reads it.
+// WeaponDamage is one weapon row's swing as the engine reads it, and
+// whether the engine lets it go only in the main hand (a "Main Hand"
+// weapon, which the planner's item file cannot tell from a one-hander).
 type WeaponDamage struct {
 	Min, Max, Speed float64
+	MainHandOnly    bool
 }
 
 // weaponDamage is every embedded row with a swing speed, by item id,
@@ -102,7 +105,10 @@ var weaponDamage = sync.OnceValues(func() (map[int32]WeaponDamage, error) {
 	out := make(map[int32]WeaponDamage)
 	for _, item := range db.Items {
 		if item.WeaponSpeed > 0 {
-			out[item.Id] = WeaponDamage{Min: item.WeaponDamageMin, Max: item.WeaponDamageMax, Speed: item.WeaponSpeed}
+			out[item.Id] = WeaponDamage{
+				Min: item.WeaponDamageMin, Max: item.WeaponDamageMax, Speed: item.WeaponSpeed,
+				MainHandOnly: item.HandType == proto.HandType_HandTypeMainHand,
+			}
 		}
 	}
 	return out, nil

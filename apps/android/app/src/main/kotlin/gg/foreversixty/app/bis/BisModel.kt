@@ -173,6 +173,12 @@ class BisModel(
     val state: StateFlow<BisUiState> = mutable.asStateFlow()
     private var worn: Set<Int> = emptySet()
     private var generation = 0
+    private var requested: BisSelection? = null
+
+    /** Another tab's link (a guide's Gear row): the next [start] opens on this list, not the character's. */
+    fun request(selection: BisSelection) {
+        requested = selection
+    }
 
     /** A list Search asked for (F12): the next [start] opens it instead of the character's own. */
     private var requested: BisSelection? = null
@@ -187,12 +193,13 @@ class BisModel(
 
     /** The first load: the character, then the saved list at once, then the network. */
     suspend fun start() {
+        val asked = requested.also { requested = null }
         val character = source.currentCharacter()
         val own = character?.let { BisSelection.forCharacter(it, catalog) }
         val asked = requested.also { requested = null }
         worn = character?.build?.gear?.values?.toSet().orEmpty()
         var openPicker = false
-        if (own == null && character == null && !preferences.hasOpenedPicker) {
+        if (asked == null && own == null && character == null && !preferences.hasOpenedPicker) {
             preferences.hasOpenedPicker = true
             openPicker = true
         }

@@ -2,12 +2,14 @@ package gg.foreversixty.app.designsystem
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -24,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -81,6 +84,40 @@ fun OfflineStrip(text: String, shape: Shape? = null) {
         Text(text, style = FsType.meta, color = FsColor.nav)
     }
 }
+
+/**
+ * The new-data strip (W3 §5.7): 36 dp on a gold 10% ground, [text] and a trailing gold [action]
+ * (a 48 dp target). It only ever appears above content; nothing under it changes until [onAction].
+ * Lane F15 extends this same component with the stale state.
+ */
+@Composable
+fun NewDataStrip(text: String, action: String, onAction: () -> Unit, failed: Boolean = false) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 36.dp)
+            .background(FsColor.gold.copy(alpha = NEW_DATA_GROUND_ALPHA))
+            .drawBehind { drawLine(FsColor.line, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx()) }
+            .padding(start = FsSpacing.space4)
+            .semantics { liveRegion = LiveRegionMode.Polite },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space2),
+    ) {
+        Text(text, style = FsType.meta, color = if (failed) FsColor.wipe else FsColor.text, modifier = Modifier.weight(1f).padding(vertical = FsSpacing.space2))
+        Text(
+            action,
+            style = FsType.bodyStrong,
+            color = FsColor.gold,
+            modifier = Modifier
+                .heightIn(min = 48.dp)
+                .clickable(role = Role.Button, onClick = onAction)
+                .padding(horizontal = FsSpacing.space4)
+                .wrapContentHeight(Alignment.CenterVertically),
+        )
+    }
+}
+
+private const val NEW_DATA_GROUND_ALPHA = 0.10f
 
 /** The primary card (`--surface-card`): the warm gradient and its gold border. */
 fun Modifier.primaryCard(): Modifier = this

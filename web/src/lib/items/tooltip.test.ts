@@ -58,6 +58,19 @@ describe('itemTooltipModel', () => {
     expect(model.stats).toEqual(['+18 Strength', '+20 Stamina', '+14 Crit']);
   });
 
+  it('renders school spell damage and spell penetration (Elemental Mage Staff)', () => {
+    const model = itemTooltipModel(
+      item({ stats: { intellect: 26, fire_power: 100, frost_power: 100, spell_penetration: 8 } }),
+      NO_SOURCES,
+    );
+    expect(model.stats).toEqual([
+      '+26 Intellect',
+      '+8 Spell penetration',
+      '+100 Fire spell damage',
+      '+100 Frost spell damage',
+    ]);
+  });
+
   it('shows armor only when the row carries some', () => {
     expect(itemTooltipModel(item({ armor: 400 }), NO_SOURCES).armor).toBe(400);
     expect(itemTooltipModel(item({ armor: 0 }), NO_SOURCES).armor).toBeNull();

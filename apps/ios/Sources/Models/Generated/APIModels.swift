@@ -884,6 +884,76 @@ public struct Candidate: Codable, Sendable, Equatable {
     }
 }
 
+/// /data/changelog.json. Newest first.
+public struct Changelog: Codable, Sendable, Equatable {
+    public let entries: [ChangelogEntry]
+
+    public init(
+        entries: [ChangelogEntry] = []
+    ) {
+        self.entries = entries
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        entries = try c.decodeIfPresent([ChangelogEntry].self, forKey: .entries) ?? []
+    }
+}
+
+public struct ChangelogBlock: Codable, Sendable, Equatable {
+    public let kind: String
+    public let text: String
+
+    public init(
+        kind: String,
+        text: String
+    ) {
+        self.kind = kind
+        self.text = text
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case kind = "type"
+        case text
+    }
+}
+
+public struct ChangelogEntry: Codable, Sendable, Equatable {
+    public let id: String
+    public let date: String
+    public let title: String
+    /// site is a change to this site; the rest are game news.
+    public let kind: String
+    public let blocks: [ChangelogBlock]
+    public let sources: [GuideSourceLink]
+
+    public init(
+        id: String,
+        date: String,
+        title: String,
+        kind: String,
+        blocks: [ChangelogBlock] = [],
+        sources: [GuideSourceLink] = []
+    ) {
+        self.id = id
+        self.date = date
+        self.title = title
+        self.kind = kind
+        self.blocks = blocks
+        self.sources = sources
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        date = try c.decode(String.self, forKey: .date)
+        title = try c.decode(String.self, forKey: .title)
+        kind = try c.decode(String.self, forKey: .kind)
+        blocks = try c.decodeIfPresent([ChangelogBlock].self, forKey: .blocks) ?? []
+        sources = try c.decodeIfPresent([GuideSourceLink].self, forKey: .sources) ?? []
+    }
+}
+
 public struct ChangeSource: Codable, Sendable, Equatable {
     public let label: String
     public let url: String
@@ -2103,6 +2173,458 @@ public struct GearSlot: Codable, Sendable, Equatable {
         self.itemId = itemId
         self.enchant = enchant
         self.suffix = suffix
+    }
+}
+
+public struct GuideBuild: Codable, Sendable, Equatable {
+    /// The FS1 code the planner loads.
+    public let code: String
+    /// Points per tree
+    public let totals: [Int]
+    public let treeNames: [String]
+
+    public init(
+        code: String,
+        totals: [Int] = [],
+        treeNames: [String] = []
+    ) {
+        self.code = code
+        self.totals = totals
+        self.treeNames = treeNames
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        code = try c.decode(String.self, forKey: .code)
+        totals = try c.decodeIfPresent([Int].self, forKey: .totals) ?? []
+        treeNames = try c.decodeIfPresent([String].self, forKey: .treeNames) ?? []
+    }
+}
+
+/// /data/{build}/guides/{spec}.json. One spec guide, composed by the web guide page's own functions.
+public struct GuideFile: Codable, Sendable, Equatable {
+    public let build: String
+    public let spec: String
+    public let classSlug: String
+    public let specSlug: String
+    public let className: String
+    public let specName: String
+    public let role: String
+    public let icon: String?
+    public let title: String
+    /// The later of the guide's date and its BiS file's.
+    public let updated: String
+    public let summary: String
+    /// The In a raid block's Role line.
+    public let roleLine: String?
+    public let recommendedRaces: [GuideRace]
+    /// The web's pill order: the sim's per-point order, else the guide's list.
+    public let statPriority: [String]
+    /// Hit cap: 10%.
+    public let hitCap: String?
+    public let overview: GuideOverview
+    public let talents: GuideTalents
+    public let rotation: GuideRotation?
+    public let races: [GuideRaceRow]
+    public let gear: GuideGear?
+    public let sources: [GuideSourceLink]
+    /// The sections the guide has, in reading order; the strip draws exactly these.
+    public let sections: [String]
+
+    public init(
+        build: String,
+        spec: String,
+        classSlug: String,
+        specSlug: String,
+        className: String,
+        specName: String,
+        role: String,
+        icon: String? = nil,
+        title: String,
+        updated: String,
+        summary: String,
+        roleLine: String? = nil,
+        recommendedRaces: [GuideRace] = [],
+        statPriority: [String] = [],
+        hitCap: String? = nil,
+        overview: GuideOverview,
+        talents: GuideTalents,
+        rotation: GuideRotation? = nil,
+        races: [GuideRaceRow] = [],
+        gear: GuideGear? = nil,
+        sources: [GuideSourceLink] = [],
+        sections: [String] = []
+    ) {
+        self.build = build
+        self.spec = spec
+        self.classSlug = classSlug
+        self.specSlug = specSlug
+        self.className = className
+        self.specName = specName
+        self.role = role
+        self.icon = icon
+        self.title = title
+        self.updated = updated
+        self.summary = summary
+        self.roleLine = roleLine
+        self.recommendedRaces = recommendedRaces
+        self.statPriority = statPriority
+        self.hitCap = hitCap
+        self.overview = overview
+        self.talents = talents
+        self.rotation = rotation
+        self.races = races
+        self.gear = gear
+        self.sources = sources
+        self.sections = sections
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case build
+        case spec
+        case classSlug = "class"
+        case specSlug
+        case className
+        case specName
+        case role
+        case icon
+        case title
+        case updated
+        case summary
+        case roleLine
+        case recommendedRaces
+        case statPriority
+        case hitCap
+        case overview
+        case talents
+        case rotation
+        case races
+        case gear
+        case sources
+        case sections
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        build = try c.decode(String.self, forKey: .build)
+        spec = try c.decode(String.self, forKey: .spec)
+        classSlug = try c.decode(String.self, forKey: .classSlug)
+        specSlug = try c.decode(String.self, forKey: .specSlug)
+        className = try c.decode(String.self, forKey: .className)
+        specName = try c.decode(String.self, forKey: .specName)
+        role = try c.decode(String.self, forKey: .role)
+        icon = try c.decodeIfPresent(String.self, forKey: .icon)
+        title = try c.decode(String.self, forKey: .title)
+        updated = try c.decode(String.self, forKey: .updated)
+        summary = try c.decode(String.self, forKey: .summary)
+        roleLine = try c.decodeIfPresent(String.self, forKey: .roleLine)
+        recommendedRaces = try c.decodeIfPresent([GuideRace].self, forKey: .recommendedRaces) ?? []
+        statPriority = try c.decodeIfPresent([String].self, forKey: .statPriority) ?? []
+        hitCap = try c.decodeIfPresent(String.self, forKey: .hitCap)
+        overview = try c.decode(GuideOverview.self, forKey: .overview)
+        talents = try c.decode(GuideTalents.self, forKey: .talents)
+        rotation = try c.decodeIfPresent(GuideRotation.self, forKey: .rotation)
+        races = try c.decodeIfPresent([GuideRaceRow].self, forKey: .races) ?? []
+        gear = try c.decodeIfPresent(GuideGear.self, forKey: .gear)
+        sources = try c.decodeIfPresent([GuideSourceLink].self, forKey: .sources) ?? []
+        sections = try c.decodeIfPresent([String].self, forKey: .sections) ?? []
+    }
+}
+
+public struct GuideGear: Codable, Sendable, Equatable {
+    public let spec: String
+    public let band: Int
+    /// Raid-ready, Phase 1.
+    public let presetLabel: String
+
+    public init(
+        spec: String,
+        band: Int,
+        presetLabel: String
+    ) {
+        self.spec = spec
+        self.band = band
+        self.presetLabel = presetLabel
+    }
+}
+
+/// /data/{build}/guides/index.json. Classes in classes.json order, specs in tree order.
+public struct GuideIndex: Codable, Sendable, Equatable {
+    public let build: String
+    public let classes: [GuideIndexClass]
+
+    public init(
+        build: String,
+        classes: [GuideIndexClass] = []
+    ) {
+        self.build = build
+        self.classes = classes
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        build = try c.decode(String.self, forKey: .build)
+        classes = try c.decodeIfPresent([GuideIndexClass].self, forKey: .classes) ?? []
+    }
+}
+
+public struct GuideIndexClass: Codable, Sendable, Equatable {
+    /// Class slug, shaman.
+    public let classSlug: String
+    public let className: String
+    public let specs: [GuideIndexSpec]
+
+    public init(
+        classSlug: String,
+        className: String,
+        specs: [GuideIndexSpec] = []
+    ) {
+        self.classSlug = classSlug
+        self.className = className
+        self.specs = specs
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case classSlug = "class"
+        case className
+        case specs
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        classSlug = try c.decode(String.self, forKey: .classSlug)
+        className = try c.decode(String.self, forKey: .className)
+        specs = try c.decodeIfPresent([GuideIndexSpec].self, forKey: .specs) ?? []
+    }
+}
+
+public struct GuideIndexSpec: Codable, Sendable, Equatable {
+    /// shaman-elemental, the BiS file's spec id.
+    public let spec: String
+    public let specSlug: String
+    public let specName: String
+    public let role: String
+    /// The spec's icon stem, /data/{build}/icons/{stem}.webp.
+    public let icon: String?
+    public let updated: String
+    /// The guide's file, relative to /data/{build}/: guides/shaman-elemental.json.
+    public let path: String
+
+    public init(
+        spec: String,
+        specSlug: String,
+        specName: String,
+        role: String,
+        icon: String? = nil,
+        updated: String,
+        path: String
+    ) {
+        self.spec = spec
+        self.specSlug = specSlug
+        self.specName = specName
+        self.role = role
+        self.icon = icon
+        self.updated = updated
+        self.path = path
+    }
+}
+
+public struct GuideKeyTalent: Codable, Sendable, Equatable {
+    public let name: String
+    public let icon: String?
+    /// Points the guide's build spends in it.
+    public let rank: Int?
+    public let maxRank: Int?
+    /// The game's own text for the top rank.
+    public let text: String?
+    /// The guide's line on why; null when it would repeat text.
+    public let why: String?
+
+    public init(
+        name: String,
+        icon: String? = nil,
+        rank: Int? = nil,
+        maxRank: Int? = nil,
+        text: String? = nil,
+        why: String? = nil
+    ) {
+        self.name = name
+        self.icon = icon
+        self.rank = rank
+        self.maxRank = maxRank
+        self.text = text
+        self.why = why
+    }
+}
+
+public struct GuideOverview: Codable, Sendable, Equatable {
+    public let strengths: [String]
+    public let weaknesses: [String]
+    /// The In a raid lines other than Role.
+    public let raid: [String]
+
+    public init(
+        strengths: [String] = [],
+        weaknesses: [String] = [],
+        raid: [String] = []
+    ) {
+        self.strengths = strengths
+        self.weaknesses = weaknesses
+        self.raid = raid
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        strengths = try c.decodeIfPresent([String].self, forKey: .strengths) ?? []
+        weaknesses = try c.decodeIfPresent([String].self, forKey: .weaknesses) ?? []
+        raid = try c.decodeIfPresent([String].self, forKey: .raid) ?? []
+    }
+}
+
+public struct GuideRace: Codable, Sendable, Equatable {
+    public let slug: String
+    public let name: String
+    public let faction: String
+
+    public init(
+        slug: String,
+        name: String,
+        faction: String
+    ) {
+        self.slug = slug
+        self.name = name
+        self.faction = faction
+    }
+}
+
+public struct GuideRaceRow: Codable, Sendable, Equatable {
+    public let slug: String
+    public let name: String
+    public let faction: String
+    public let recommended: Bool
+    public let racials: [GuideRacial]
+
+    public init(
+        slug: String,
+        name: String,
+        faction: String,
+        recommended: Bool,
+        racials: [GuideRacial] = []
+    ) {
+        self.slug = slug
+        self.name = name
+        self.faction = faction
+        self.recommended = recommended
+        self.racials = racials
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        slug = try c.decode(String.self, forKey: .slug)
+        name = try c.decode(String.self, forKey: .name)
+        faction = try c.decode(String.self, forKey: .faction)
+        recommended = try c.decode(Bool.self, forKey: .recommended)
+        racials = try c.decodeIfPresent([GuideRacial].self, forKey: .racials) ?? []
+    }
+}
+
+public struct GuideRacial: Codable, Sendable, Equatable {
+    public let name: String
+    public let effect: String
+
+    public init(
+        name: String,
+        effect: String
+    ) {
+        self.name = name
+        self.effect = effect
+    }
+}
+
+public struct GuideRotation: Codable, Sendable, Equatable {
+    public let opener: [GuideSpell]
+    public let priority: [GuideSpell]
+    public let cooldowns: [GuideSpell]
+
+    public init(
+        opener: [GuideSpell] = [],
+        priority: [GuideSpell] = [],
+        cooldowns: [GuideSpell] = []
+    ) {
+        self.opener = opener
+        self.priority = priority
+        self.cooldowns = cooldowns
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        opener = try c.decodeIfPresent([GuideSpell].self, forKey: .opener) ?? []
+        priority = try c.decodeIfPresent([GuideSpell].self, forKey: .priority) ?? []
+        cooldowns = try c.decodeIfPresent([GuideSpell].self, forKey: .cooldowns) ?? []
+    }
+}
+
+public struct GuideSourceLink: Codable, Sendable, Equatable {
+    public let label: String
+    public let url: String
+    public let kind: String
+
+    public init(
+        label: String,
+        url: String,
+        kind: String
+    ) {
+        self.label = label
+        self.url = url
+        self.kind = kind
+    }
+}
+
+public struct GuideSpell: Codable, Sendable, Equatable {
+    public let spellId: Int?
+    public let name: String
+    /// The top rank learned by level 60.
+    public let rank: Int?
+    public let icon: String?
+    /// One clause, sentence case, no final stop.
+    public let clause: String
+
+    public init(
+        spellId: Int? = nil,
+        name: String,
+        rank: Int? = nil,
+        icon: String? = nil,
+        clause: String
+    ) {
+        self.spellId = spellId
+        self.name = name
+        self.rank = rank
+        self.icon = icon
+        self.clause = clause
+    }
+}
+
+public struct GuideTalents: Codable, Sendable, Equatable {
+    public let key: [GuideKeyTalent]
+    public let levelingBuild: GuideBuild?
+    /// Null when the raid build is the leveling build.
+    public let raidBuild: GuideBuild?
+
+    public init(
+        key: [GuideKeyTalent] = [],
+        levelingBuild: GuideBuild? = nil,
+        raidBuild: GuideBuild? = nil
+    ) {
+        self.key = key
+        self.levelingBuild = levelingBuild
+        self.raidBuild = raidBuild
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        key = try c.decodeIfPresent([GuideKeyTalent].self, forKey: .key) ?? []
+        levelingBuild = try c.decodeIfPresent(GuideBuild.self, forKey: .levelingBuild)
+        raidBuild = try c.decodeIfPresent(GuideBuild.self, forKey: .raidBuild)
     }
 }
 
@@ -6288,6 +6810,161 @@ public struct TankResult: Codable, Sendable, Equatable {
         self.effectiveHealth = effectiveHealth
         self.chanceOfDeath = chanceOfDeath
         self.score = score
+    }
+}
+
+public struct TierFactions: Codable, Sendable, Equatable {
+    public let alliance: TierRoles
+    public let horde: TierRoles
+
+    public init(
+        alliance: TierRoles,
+        horde: TierRoles
+    ) {
+        self.alliance = alliance
+        self.horde = horde
+    }
+}
+
+public struct TierList: Codable, Sendable, Equatable {
+    /// The web's lines above the list; the last is the role's race line.
+    public let notes: [String]
+    public let rows: [TierRow]
+
+    public init(
+        notes: [String] = [],
+        rows: [TierRow] = []
+    ) {
+        self.notes = notes
+        self.rows = rows
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        notes = try c.decodeIfPresent([String].self, forKey: .notes) ?? []
+        rows = try c.decodeIfPresent([TierRow].self, forKey: .rows) ?? []
+    }
+}
+
+public struct TierRoles: Codable, Sendable, Equatable {
+    public let dps: TierList
+    public let tank: TierList
+    public let healer: TierList
+
+    public init(
+        dps: TierList,
+        tank: TierList,
+        healer: TierList
+    ) {
+        self.dps = dps
+        self.tank = tank
+        self.healer = healer
+    }
+}
+
+public struct TierRow: Codable, Sendable, Equatable {
+    public let rank: Int
+    public let spec: String
+    public let classSlug: String
+    public let specSlug: String
+    /// Fury Warrior.
+    public let name: String
+    public let race: String
+    public let icon: String?
+    public let metric: Double
+    public let metricText: String
+    public let unit: String
+    public let gapPercent: Double
+    /// Top, −2.8%, +15.2%.
+    public let gapText: String
+    public let fraction: Double
+    public let tie: String?
+    public let tier: String?
+    public let lowConfidence: Bool
+    /// The callout: Fire Mage is 6th of 20 DPS specs.
+    public let title: String
+    /// 9.1% behind Fury Warrior.
+    public let detail: String
+
+    public init(
+        rank: Int,
+        spec: String,
+        classSlug: String,
+        specSlug: String,
+        name: String,
+        race: String,
+        icon: String? = nil,
+        metric: Double,
+        metricText: String,
+        unit: String,
+        gapPercent: Double,
+        gapText: String,
+        fraction: Double,
+        tie: String? = nil,
+        tier: String? = nil,
+        lowConfidence: Bool,
+        title: String,
+        detail: String
+    ) {
+        self.rank = rank
+        self.spec = spec
+        self.classSlug = classSlug
+        self.specSlug = specSlug
+        self.name = name
+        self.race = race
+        self.icon = icon
+        self.metric = metric
+        self.metricText = metricText
+        self.unit = unit
+        self.gapPercent = gapPercent
+        self.gapText = gapText
+        self.fraction = fraction
+        self.tie = tie
+        self.tier = tier
+        self.lowConfidence = lowConfidence
+        self.title = title
+        self.detail = detail
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case rank
+        case spec
+        case classSlug = "class"
+        case specSlug
+        case name
+        case race
+        case icon
+        case metric
+        case metricText
+        case unit
+        case gapPercent
+        case gapText
+        case fraction
+        case tie
+        case tier
+        case lowConfidence
+        case title
+        case detail
+    }
+}
+
+/// /data/{build}/tiers.json. The web's ranked tier lists; the apps never sort, gap or letter.
+public struct TiersFile: Codable, Sendable, Equatable {
+    public let build: String
+    public let updated: String?
+    public let presetLabel: String?
+    public let factions: TierFactions
+
+    public init(
+        build: String,
+        updated: String? = nil,
+        presetLabel: String? = nil,
+        factions: TierFactions
+    ) {
+        self.build = build
+        self.updated = updated
+        self.presetLabel = presetLabel
+        self.factions = factions
     }
 }
 

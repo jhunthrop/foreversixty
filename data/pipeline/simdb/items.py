@@ -26,6 +26,7 @@ from pipeline import wowhead_items as wh
 from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
     PLANNER_QUALITIES,
+    WEAPON_DAMAGE_STAT_KEY,
     column_value,
     int_column,
     is_junk_name,
@@ -243,7 +244,9 @@ def build_sim_items(
         class_id = int_column(item_row, "ClassID")
         subclass = int_column(item_row, "SubclassID")
 
-        armor, resolved = resolve_item_values(sparse, item_row, curves)
+        armor, all_resolved = resolve_item_values(sparse, item_row, curves)
+        flat_weapon_damage = all_resolved.get(WEAPON_DAMAGE_STAT_KEY, 0)
+        resolved = {k: v for k, v in all_resolved.items() if k != WEAPON_DAMAGE_STAT_KEY}
         stat_pairs: list[tuple[str, float]] = list(
             convert_rating_stats(resolved, rating_factors).items()
         )
@@ -258,7 +261,7 @@ def build_sim_items(
             type=pb.ItemType.Value(ITEM_TYPE_BY_INVENTORY_TYPE[inventory]),
             stats=stat_array(stat_pairs),
             weapon_skills=weapon_skill_array(bonus.weapon_skills),
-            bonus_physical_damage=bonus.bonus_physical_damage,
+            bonus_physical_damage=bonus.bonus_physical_damage + flat_weapon_damage,
             class_allowlist=_class_allowlist(int_column(sparse, "AllowableClass")),
             unique=int_column(sparse, "MaxCount") == 1,
             required_level=int_column(sparse, "RequiredLevel"),
@@ -331,9 +334,17 @@ def build_wowhead_sim_items(
     set_names = set_names or {}
     out: list[pb.SimItem] = []
     for w in items:
+        # A percent stat (`wh.PERCENT_STAT_KEYS`) is already a percentage:
+        # only the rating part of each entry is divided down.
+        percent = wh.planner_percent_stats(w)
+        ratings = {
+            key: amount - percent.get(key, 0)
+            for key, amount in wh.planner_stats(w, untracked).items()
+        }
         stat_pairs: list[tuple[str, float]] = list(
-            convert_rating_stats(wh.planner_stats(w, untracked), rating_factors).items()
+            convert_rating_stats(ratings, rating_factors).items()
         )
+        stat_pairs.extend((key, float(amount)) for key, amount in percent.items())
         if w.armor:
             stat_pairs.append(("armor", float(w.armor)))
 

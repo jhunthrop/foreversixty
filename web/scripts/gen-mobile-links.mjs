@@ -24,6 +24,73 @@ export const SOURCE = 'apps/shared/links.json';
 const SCRIPT = 'web/scripts/gen-mobile-links.mjs';
 const SEGMENT = /^\{([a-z][a-zA-Z0-9]*)\}$/;
 
+/**
+ * Words a generated parameter cannot be called in Kotlin or Swift. A path param named one of
+ * them keeps its name in the URL template ({class}) and is `<name>Name` in both apps' code.
+ */
+const RESERVED = new Set([
+  'as',
+  'associatedtype',
+  'break',
+  'case',
+  'catch',
+  'class',
+  'continue',
+  'default',
+  'defer',
+  'deinit',
+  'do',
+  'else',
+  'enum',
+  'extension',
+  'fallthrough',
+  'false',
+  'for',
+  'fun',
+  'func',
+  'guard',
+  'if',
+  'import',
+  'in',
+  'init',
+  'inout',
+  'interface',
+  'internal',
+  'is',
+  'let',
+  'nil',
+  'null',
+  'object',
+  'operator',
+  'package',
+  'private',
+  'protocol',
+  'public',
+  'repeat',
+  'return',
+  'self',
+  'static',
+  'struct',
+  'subscript',
+  'super',
+  'switch',
+  'this',
+  'throw',
+  'throws',
+  'true',
+  'try',
+  'typealias',
+  'typeof',
+  'val',
+  'var',
+  'when',
+  'where',
+  'while',
+]);
+
+/** The name a path param has in the generated code: itself, or `<name>Name` for a keyword. */
+export const codeName = (param) => (RESERVED.has(param) ? `${param}Name` : param);
+
 export const OUTPUTS = {
   swift: join(IOS_ROOT, 'Sources/Routing/Generated/DeepLink.swift'),
   kotlin: join(ANDROID_ROOT, 'app', KOTLIN_SRC, 'navigation/DeepLink.kt'),
@@ -49,7 +116,7 @@ export function buildRoutes(json) {
         if (!m) return { literal: part };
         const type = r.params?.[m[1]] ?? 'string';
         if (type !== 'int' && type !== 'string') fail(`${r.path}: {${m[1]}} is int or string`);
-        return { param: m[1], type };
+        return { param: codeName(m[1]), type };
       });
     const query = Object.entries(r.query ?? {}).map(([name, allowed]) => ({
       name,
@@ -133,8 +200,12 @@ export function renderSwift(model, banner) {
     '        let s = url.pathComponents.filter { $0 != "/" }',
     '        let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []',
     '        let q = Dictionary(items.compactMap { item in item.value.map { (item.name, $0) } }) { first, _ in first }',
-    `        guard let link = ${routes.map((r) => `Self.match${pascal(r.screen)}(s, q)`).join('\n            ?? ')}`,
-    '        else { return nil }',
+    // A list, not one long `??` chain: the chain grows with every route and outruns the Swift
+    // type checker's time limit.
+    '        let matchers: [([String], [String: String]) -> DeepLink?] = [',
+    ...routes.map((r) => `            Self.match${pascal(r.screen)},`),
+    '        ]',
+    '        guard let link = matchers.lazy.compactMap({ $0(s, q) }).first else { return nil }',
     '        self = link',
     '    }',
     '',

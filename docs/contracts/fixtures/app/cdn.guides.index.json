@@ -1,0 +1,311 @@
+{
+  "build": "1.60.1.70707",
+  "classes": [
+    {
+      "class": "warrior",
+      "class_name": "Warrior",
+      "specs": [
+        {
+          "spec": "warrior-arms",
+          "spec_slug": "arms",
+          "spec_name": "Arms",
+          "role": "dps",
+          "icon": "ability_rogue_ambush",
+          "updated": "2026-11-01",
+          "path": "guides/warrior-arms.json"
+        },
+        {
+          "spec": "warrior-fury",
+          "spec_slug": "fury",
+          "spec_name": "Fury",
+          "role": "dps",
+          "icon": "spell_nature_purge",
+          "updated": "2026-11-01",
+          "path": "guides/warrior-fury.json"
+        },
+        {
+          "spec": "warrior-protection",
+          "spec_slug": "protection",
+          "spec_name": "Protection",
+          "role": "tank",
+          "icon": "ability_racial_bloodrage",
+          "updated": "2026-11-01",
+          "path": "guides/warrior-protection.json"
+        }
+      ]
+    },
+    {
+      "class": "paladin",
+      "class_name": "Paladin",
+      "specs": [
+        {
+          "spec": "paladin-holy",
+          "spec_slug": "holy",
+          "spec_name": "Holy",
+          "role": "healer",
+          "icon": "spell_arcane_blink",
+          "updated": "2026-11-01",
+          "path": "guides/paladin-holy.json"
+        },
+        {
+          "spec": "paladin-protection",
+          "spec_slug": "protection",
+          "spec_name": "Protection",
+          "role": "tank",
+          "icon": "spell_nature_sleep",
+          "updated": "2026-11-01",
+          "path": "guides/paladin-protection.json"
+        },
+        {
+          "spec": "paladin-retribution",
+          "spec_slug": "retribution",
+          "spec_name": "Retribution",
+          "role": "dps",
+          "icon": "ability_parry",
+          "updated": "2026-11-01",
+          "path": "guides/paladin-retribution.json"
+        }
+      ]
+    },
+    {
+      "class": "hunter",
+      "class_name": "Hunter",
+      "specs": [
+        {
+          "spec": "hunter-beast-mastery",
+          "spec_slug": "beast-mastery",
+          "spec_name": "Beast Mastery",
+          "role": "dps",
+          "icon": "spell_nature_ravenform",
+          "updated": "2026-11-01",
+          "path": "guides/hunter-beast-mastery.json"
+        },
+        {
+          "spec": "hunter-marksmanship",
+          "spec_slug": "marksmanship",
+          "spec_name": "Marksmanship",
+          "role": "dps",
+          "icon": "ability_townwatch",
+          "updated": "2026-11-01",
+          "path": "guides/hunter-marksmanship.json"
+        },
+        {
+          "spec": "hunter-survival",
+          "spec_slug": "survival",
+          "spec_name": "Survival",
+          "role": "dps",
+          "icon": "inv_misc_head_dragon_black",
+          "updated": "2026-11-01",
+          "path": "guides/hunter-survival.json"
+        }
+      ]
+    },
+    {
+      "class": "rogue",
+      "class_name": "Rogue",
+      "specs": [
+        {
+          "spec": "rogue-assassination",
+          "spec_slug": "assassination",
+          "spec_name": "Assassination",
+          "role": "dps",
+          "icon": "ability_gouge",
+          "updated": "2026-11-01",
+          "path": "guides/rogue-assassination.json"
+        },
+        {
+          "spec": "rogue-combat",
+          "spec_slug": "combat",
+          "spec_name": "Combat",
+          "role": "dps",
+          "icon": "ability_rogue_eviscerate",
+          "updated": "2026-11-01",
+          "path": "guides/rogue-combat.json"
+        },
+        {
+          "spec": "rogue-subtlety",
+          "spec_slug": "subtlety",
+          "spec_name": "Subtlety",
+          "role": "dps",
+          "icon": "ability_stealth",
+          "updated": "2026-11-01",
+          "path": "guides/rogue-subtlety.json"
+        }
+      ]
+    },
+    {
+      "class": "priest",
+      "class_name": "Priest",
+      "specs": [
+        {
+          "spec": "priest-discipline",
+          "spec_slug": "discipline",
+          "spec_name": "Discipline",
+          "role": "healer",
+          "icon": "spell_holy_searinglight",
+          "updated": "2026-11-01",
+          "path": "guides/priest-discipline.json"
+        },
+        {
+          "spec": "priest-holy",
+          "spec_slug": "holy",
+          "spec_name": "Holy",
+          "role": "healer",
+          "icon": "spell_holy_healingfocus",
+          "updated": "2026-11-01",
+          "path": "guides/priest-holy.json"
+        },
+        {
+          "spec": "priest-shadow",
+          "spec_slug": "shadow",
+          "spec_name": "Shadow",
+          "role": "dps",
+          "icon": "spell_shadow_burningspirit",
+          "updated": "2026-11-01",
+          "path": "guides/priest-shadow.json"
+        }
+      ]
+    },
+    {
+      "class": "shaman",
+      "class_name": "Shaman",
+      "specs": [
+        {
+          "spec": "shaman-elemental",
+          "spec_slug": "elemental",
+          "spec_name": "Elemental",
+          "role": "dps",
+          "icon": "spell_nature_wispsplode",
+          "updated": "2026-11-01",
+          "path": "guides/shaman-elemental.json"
+        },
+        {
+          "spec": "shaman-enhancement",
+          "spec_slug": "enhancement",
+          "spec_name": "Enhancement",
+          "role": "dps",
+          "icon": "spell_nature_stoneclawtotem",
+          "updated": "2026-11-01",
+          "path": "guides/shaman-enhancement.json"
+        },
+        {
+          "spec": "shaman-restoration",
+          "spec_slug": "restoration",
+          "spec_name": "Restoration",
+          "role": "healer",
+          "icon": "spell_nature_magicimmunity",
+          "updated": "2026-11-01",
+          "path": "guides/shaman-restoration.json"
+        }
+      ]
+    },
+    {
+      "class": "mage",
+      "class_name": "Mage",
+      "specs": [
+        {
+          "spec": "mage-arcane",
+          "spec_slug": "arcane",
+          "spec_name": "Arcane",
+          "role": "dps",
+          "icon": "inv_wand_01",
+          "updated": "2026-11-01",
+          "path": "guides/mage-arcane.json"
+        },
+        {
+          "spec": "mage-fire",
+          "spec_slug": "fire",
+          "spec_name": "Fire",
+          "role": "dps",
+          "icon": "spell_fire_flameshock",
+          "updated": "2026-11-01",
+          "path": "guides/mage-fire.json"
+        },
+        {
+          "spec": "mage-frost",
+          "spec_slug": "frost",
+          "spec_name": "Frost",
+          "role": "dps",
+          "icon": "spell_frost_frostward",
+          "updated": "2026-11-01",
+          "path": "guides/mage-frost.json"
+        }
+      ]
+    },
+    {
+      "class": "warlock",
+      "class_name": "Warlock",
+      "specs": [
+        {
+          "spec": "warlock-affliction",
+          "spec_slug": "affliction",
+          "spec_name": "Affliction",
+          "role": "dps",
+          "icon": "spell_shadow_burningspirit",
+          "updated": "2026-11-01",
+          "path": "guides/warlock-affliction.json"
+        },
+        {
+          "spec": "warlock-demonology",
+          "spec_slug": "demonology",
+          "spec_name": "Demonology",
+          "role": "dps",
+          "icon": "spell_shadow_lifedrain",
+          "updated": "2026-11-01",
+          "path": "guides/warlock-demonology.json"
+        },
+        {
+          "spec": "warlock-destruction",
+          "spec_slug": "destruction",
+          "spec_name": "Destruction",
+          "role": "dps",
+          "icon": "spell_shadow_corpseexplode",
+          "updated": "2026-11-01",
+          "path": "guides/warlock-destruction.json"
+        }
+      ]
+    },
+    {
+      "class": "druid",
+      "class_name": "Druid",
+      "specs": [
+        {
+          "spec": "druid-balance",
+          "spec_slug": "balance",
+          "spec_name": "Balance",
+          "role": "dps",
+          "icon": "spell_nature_abolishmagic",
+          "updated": "2026-11-01",
+          "path": "guides/druid-balance.json"
+        },
+        {
+          "spec": "druid-feral-bear",
+          "spec_slug": "feral-bear",
+          "spec_name": "Feral Bear",
+          "role": "tank",
+          "icon": "ability_hunter_pet_hyena",
+          "updated": "2026-11-01",
+          "path": "guides/druid-feral-bear.json"
+        },
+        {
+          "spec": "druid-feral",
+          "spec_slug": "feral",
+          "spec_name": "Feral",
+          "role": "dps",
+          "icon": "ability_hunter_pet_hyena",
+          "updated": "2026-11-01",
+          "path": "guides/druid-feral.json"
+        },
+        {
+          "spec": "druid-restoration",
+          "spec_slug": "restoration",
+          "spec_name": "Restoration",
+          "role": "healer",
+          "icon": "spell_nature_healingwavegreater",
+          "updated": "2026-11-01",
+          "path": "guides/druid-restoration.json"
+        }
+      ]
+    }
+  ]
+}

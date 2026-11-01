@@ -15,5 +15,8 @@ class PrefsValue(context: Context, private val key: String) : StoredValue {
     companion object {
         private const val FILE = "forever_account"
         const val PICKED_CHARACTER = "picked_character"
+
+        /** The Guides tab's segment (spec F9.1), kept per device. */
+        const val GUIDES_SEGMENT = "guides_segment"
     }
 }

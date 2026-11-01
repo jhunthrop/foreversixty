@@ -346,6 +346,29 @@ data class Candidate(
     @SerialName("source_name") val sourceName: String? = null,
 )
 
+/** /data/changelog.json. Newest first. */
+@Serializable
+data class Changelog(
+    @SerialName("entries") val entries: List<ChangelogEntry> = emptyList(),
+)
+
+@Serializable
+data class ChangelogBlock(
+    @SerialName("type") val kind: String,
+    @SerialName("text") val text: String,
+)
+
+@Serializable
+data class ChangelogEntry(
+    @SerialName("id") val id: String,
+    @SerialName("date") val date: String,
+    @SerialName("title") val title: String,
+    /** site is a change to this site; the rest are game news. */
+    @SerialName("kind") val kind: String,
+    @SerialName("blocks") val blocks: List<ChangelogBlock> = emptyList(),
+    @SerialName("sources") val sources: List<GuideSourceLink> = emptyList(),
+)
+
 @Serializable
 data class ChangeSource(
     @SerialName("label") val label: String,
@@ -793,6 +816,160 @@ data class GearSlot(
     @SerialName("item_id") val itemId: Int,
     @SerialName("enchant") val enchant: Int? = null,
     @SerialName("suffix") val suffix: Int? = null,
+)
+
+@Serializable
+data class GuideBuild(
+    /** The FS1 code the planner loads. */
+    @SerialName("code") val code: String,
+    /** Points per tree */
+    @SerialName("totals") val totals: List<Int> = emptyList(),
+    @SerialName("tree_names") val treeNames: List<String> = emptyList(),
+)
+
+/** /data/{build}/guides/{spec}.json. One spec guide, composed by the web guide page's own functions. */
+@Serializable
+data class GuideFile(
+    @SerialName("build") val build: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("class") val classSlug: String,
+    @SerialName("spec_slug") val specSlug: String,
+    @SerialName("class_name") val className: String,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("role") val role: String,
+    @SerialName("icon") val icon: String? = null,
+    @SerialName("title") val title: String,
+    /** The later of the guide's date and its BiS file's. */
+    @SerialName("updated") val updated: String,
+    @SerialName("summary") val summary: String,
+    /** The In a raid block's Role line. */
+    @SerialName("role_line") val roleLine: String? = null,
+    @SerialName("recommended_races") val recommendedRaces: List<GuideRace> = emptyList(),
+    /** The web's pill order: the sim's per-point order, else the guide's list. */
+    @SerialName("stat_priority") val statPriority: List<String> = emptyList(),
+    /** Hit cap: 10%. */
+    @SerialName("hit_cap") val hitCap: String? = null,
+    @SerialName("overview") val overview: GuideOverview,
+    @SerialName("talents") val talents: GuideTalents,
+    @SerialName("rotation") val rotation: GuideRotation? = null,
+    @SerialName("races") val races: List<GuideRaceRow> = emptyList(),
+    @SerialName("gear") val gear: GuideGear? = null,
+    @SerialName("sources") val sources: List<GuideSourceLink> = emptyList(),
+    /** The sections the guide has, in reading order; the strip draws exactly these. */
+    @SerialName("sections") val sections: List<String> = emptyList(),
+)
+
+@Serializable
+data class GuideGear(
+    @SerialName("spec") val spec: String,
+    @SerialName("band") val band: Int,
+    /** Raid-ready, Phase 1. */
+    @SerialName("preset_label") val presetLabel: String,
+)
+
+/** /data/{build}/guides/index.json. Classes in classes.json order, specs in tree order. */
+@Serializable
+data class GuideIndex(
+    @SerialName("build") val build: String,
+    @SerialName("classes") val classes: List<GuideIndexClass> = emptyList(),
+)
+
+@Serializable
+data class GuideIndexClass(
+    /** Class slug, shaman. */
+    @SerialName("class") val classSlug: String,
+    @SerialName("class_name") val className: String,
+    @SerialName("specs") val specs: List<GuideIndexSpec> = emptyList(),
+)
+
+@Serializable
+data class GuideIndexSpec(
+    /** shaman-elemental, the BiS file's spec id. */
+    @SerialName("spec") val spec: String,
+    @SerialName("spec_slug") val specSlug: String,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("role") val role: String,
+    /** The spec's icon stem, /data/{build}/icons/{stem}.webp. */
+    @SerialName("icon") val icon: String? = null,
+    @SerialName("updated") val updated: String,
+    /** The guide's file, relative to /data/{build}/: guides/shaman-elemental.json. */
+    @SerialName("path") val path: String,
+)
+
+@Serializable
+data class GuideKeyTalent(
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String? = null,
+    /** Points the guide's build spends in it. */
+    @SerialName("rank") val rank: Int? = null,
+    @SerialName("max_rank") val maxRank: Int? = null,
+    /** The game's own text for the top rank. */
+    @SerialName("text") val text: String? = null,
+    /** The guide's line on why; null when it would repeat text. */
+    @SerialName("why") val why: String? = null,
+)
+
+@Serializable
+data class GuideOverview(
+    @SerialName("strengths") val strengths: List<String> = emptyList(),
+    @SerialName("weaknesses") val weaknesses: List<String> = emptyList(),
+    /** The In a raid lines other than Role. */
+    @SerialName("raid") val raid: List<String> = emptyList(),
+)
+
+@Serializable
+data class GuideRace(
+    @SerialName("slug") val slug: String,
+    @SerialName("name") val name: String,
+    @SerialName("faction") val faction: String,
+)
+
+@Serializable
+data class GuideRaceRow(
+    @SerialName("slug") val slug: String,
+    @SerialName("name") val name: String,
+    @SerialName("faction") val faction: String,
+    @SerialName("recommended") val recommended: Boolean,
+    @SerialName("racials") val racials: List<GuideRacial> = emptyList(),
+)
+
+@Serializable
+data class GuideRacial(
+    @SerialName("name") val name: String,
+    @SerialName("effect") val effect: String,
+)
+
+@Serializable
+data class GuideRotation(
+    @SerialName("opener") val opener: List<GuideSpell> = emptyList(),
+    @SerialName("priority") val priority: List<GuideSpell> = emptyList(),
+    @SerialName("cooldowns") val cooldowns: List<GuideSpell> = emptyList(),
+)
+
+@Serializable
+data class GuideSourceLink(
+    @SerialName("label") val label: String,
+    @SerialName("url") val url: String,
+    @SerialName("kind") val kind: String,
+)
+
+@Serializable
+data class GuideSpell(
+    @SerialName("spell_id") val spellId: Int? = null,
+    @SerialName("name") val name: String,
+    /** The top rank learned by level 60. */
+    @SerialName("rank") val rank: Int? = null,
+    @SerialName("icon") val icon: String? = null,
+    /** One clause, sentence case, no final stop. */
+    @SerialName("clause") val clause: String,
+)
+
+@Serializable
+data class GuideTalents(
+    @SerialName("key") val key: List<GuideKeyTalent> = emptyList(),
+    @SerialName("leveling_build") val levelingBuild: GuideBuild? = null,
+    /** Null when the raid build is the leveling build. */
+    @SerialName("raid_build") val raidBuild: GuideBuild? = null,
 )
 
 /** addon_snapshot on GET /v1/guilds/{id}/home: the guild's newest addon roster snapshot, null when it has none. The newest snapshot wins even when it lists nobody (members is then 0 and every roster[].addon is null). */
@@ -2349,6 +2526,61 @@ data class TankResult(
     @SerialName("chance_of_death") val chanceOfDeath: Double,
     /** The tank score. A bulk-pooled run computes it after pooling the three measured terms, because it is nonlinear in them. */
     @SerialName("score") val score: Estimate,
+)
+
+@Serializable
+data class TierFactions(
+    @SerialName("alliance") val alliance: TierRoles,
+    @SerialName("horde") val horde: TierRoles,
+)
+
+@Serializable
+data class TierList(
+    /** The web's lines above the list; the last is the role's race line. */
+    @SerialName("notes") val notes: List<String> = emptyList(),
+    @SerialName("rows") val rows: List<TierRow> = emptyList(),
+)
+
+@Serializable
+data class TierRoles(
+    @SerialName("dps") val dps: TierList,
+    @SerialName("tank") val tank: TierList,
+    @SerialName("healer") val healer: TierList,
+)
+
+@Serializable
+data class TierRow(
+    @SerialName("rank") val rank: Int,
+    @SerialName("spec") val spec: String,
+    @SerialName("class") val classSlug: String,
+    @SerialName("spec_slug") val specSlug: String,
+    /** Fury Warrior. */
+    @SerialName("name") val name: String,
+    @SerialName("race") val race: String,
+    @SerialName("icon") val icon: String? = null,
+    @SerialName("metric") val metric: Double,
+    @SerialName("metric_text") val metricText: String,
+    @SerialName("unit") val unit: String,
+    @SerialName("gap_percent") val gapPercent: Double,
+    /** Top, −2.8%, +15.2%. */
+    @SerialName("gap_text") val gapText: String,
+    @SerialName("fraction") val fraction: Double,
+    @SerialName("tie") val tie: String? = null,
+    @SerialName("tier") val tier: String? = null,
+    @SerialName("low_confidence") val lowConfidence: Boolean,
+    /** The callout: Fire Mage is 6th of 20 DPS specs. */
+    @SerialName("title") val title: String,
+    /** 9.1% behind Fury Warrior. */
+    @SerialName("detail") val detail: String,
+)
+
+/** /data/{build}/tiers.json. The web's ranked tier lists; the apps never sort, gap or letter. */
+@Serializable
+data class TiersFile(
+    @SerialName("build") val build: String,
+    @SerialName("updated") val updated: String? = null,
+    @SerialName("preset_label") val presetLabel: String? = null,
+    @SerialName("factions") val factions: TierFactions,
 )
 
 @Serializable

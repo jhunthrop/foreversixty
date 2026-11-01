@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-254000000000000000-0000000000000000)
 
-Set DPS (verified): 37.2. Weights run: 2.1s. Verify run: 1.8s. 227 eligible items had no known source.
+Set DPS (verified): 37.2. Weights run: 1.8s. Verify run: 1.7s. 227 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.362 ± 0.029, crit=0.920 ± 0.029 per rating point (14 rating = 1%, 12.879 per %), hit=1.472 ± 0.077 per rating point (10 rating = 1%, 14.724 per %), melee_haste=8.999 ± 0.400
 
@@ -28,7 +28,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger2 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | sim-verified (+0.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Ring of the Moon (12052, -0.03 DPS) [world_drop]; The 1 Ring (8350, -0.43 DPS, sim-verified) [world] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Smite's Mighty Hammer (7230) | The Deadmines: Mr. Smite [dungeon] | 303.4 attack_power points (10.80 DPS) | yes | Night Reaver (1318, -0.53 DPS) [dungeon]; Staff of Westfall (2042, -0.58 DPS) [quest]; Living Root (6631, -0.75 DPS, sim-verified) [dungeon] |
+| main_hand | Smite's Mighty Hammer (7230) | The Deadmines: Mr. Smite [dungeon] | 303.4 attack_power points (10.80 DPS) | yes | Rockslicer (872, -0.27 DPS) [dungeon]; Staff of the Blessed Seer (2271, -0.34 DPS) [dungeon]; Staff of Westfall (2042, -0.59 DPS) [quest] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 227, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-255130030002000000-0000000000000000)
 
-Set DPS (verified): 89.6. Weights run: 2.1s. Verify run: 2.0s. 427 eligible items had no known source.
+Set DPS (verified): 89.6. Weights run: 1.9s. Verify run: 1.9s. 427 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.006, agility=1.269 ± 0.030, crit=1.042 ± 0.034 per rating point (14 rating = 1%, 14.583 per %), hit=1.909 ± 0.087 per rating point (10 rating = 1%, 19.089 per %), melee_haste=8.928 ± 0.462
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 427, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-255130030005102031-0000000000000000)
 
-Set DPS (verified): 117.9. Weights run: 2.7s. Verify run: 2.4s. 676 eligible items had no known source.
+Set DPS (verified): 117.9. Weights run: 2.4s. Verify run: 2.2s. 676 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.310 ± 0.042, crit=1.286 ± 0.050 per rating point (14 rating = 1%, 18.008 per %), hit=2.017 ± 0.102 per rating point (10 rating = 1%, 20.174 per %), melee_haste=6.941 ± 0.801
 
@@ -98,37 +98,37 @@ No-known-source sample (15 of 676, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 3200300000000000-255130030005102051-0000000000000000)
 
-Set DPS (verified): 159.1. Weights run: 2.6s. Verify run: 4.9s. 879 eligible items had no known source.
+Set DPS (verified): 163.2. Weights run: 2.3s. Verify run: 4.5s. 879 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.221 ± 0.046, crit=1.435 ± 0.060 per rating point (14 rating = 1%, 20.094 per %), hit=2.732 ± 0.136 per rating point (10 rating = 1%, 27.324 per %), melee_haste=7.773 ± 1.054
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.400 ± 0.052, crit=1.656 ± 0.067 per rating point (14 rating = 1%, 23.187 per %), hit=3.108 ± 0.141 per rating point (10 rating = 1%, 31.079 per %), melee_haste=10.988 ± 1.138
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | White Bandit Mask (10008) | Tailoring [crafted] | 35.4 attack_power points (2.57 DPS) | yes | Knight-Lieutenant's Mail Helmet (223075, +0.00 DPS) [vendor]; Barbaric Iron Helm (7915, -0.47 DPS) [crafted]; Hard Gold Coif (250537, -0.54 DPS) [crafted] |
-| neck | Skibi's Pendant (13089) | World drop [world_drop] | 25.9 attack_power points (1.88 DPS) | yes | Kaleidoscope Chain (13084, -0.94 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -1.01 DPS) [world]; River Pride Choker (13087, -1.30 DPS) [world_drop] |
-| shoulder | Prowler's Leather Shoulders (252534) | Leatherworking [crafted] | 33.0 attack_power points (2.39 DPS) | yes | Knight-Lieutenant's Mail Epaulets (223073, +0.00 DPS) [vendor]; Skulker's Leather Shoulder (252535, -0.11 DPS) [crafted]; Failed Flying Experiment (9647, -4.09 DPS, sim-verified) [quest] |
-| back | Sergeant Major's Cape (16336) | PvP rank 9 · Sergeant Major · Alliance [pvp] | 19.3 attack_power points (1.40 DPS) | yes | Bloodlust Cape (14801, -0.10 DPS) [world_drop]; Pridelord Cape (14673, -0.17 DPS) [world_drop]; Dark Phantom Cape (13122, -3.74 DPS, sim-verified) [world_drop] |
-| chest | Knight's Mail Armor (223078) | Captain Dirgehammer [vendor] | 44.1 attack_power points (3.20 DPS) | yes | Kolkar Marauder Chain (6773, -0.55 DPS) [quest]; Blazewind Breastplate (11193, -0.72 DPS) [quest]; Warbear Harness (15064, -4.76 DPS, sim-verified) [crafted] |
-| wrist | Arena Bands (18711) (or Bracers of the Stone Princess (17714)) | Arena Treasure Chest [world] | 28.0 attack_power points (2.03 DPS) | yes | Bracers of the Stone Princess (17714, +0.00 DPS, sim-verified) [dungeon]; Prowler's Leather Bracers (252539, -0.11 DPS) [crafted]; Deepfury Bracers (13120, -0.12 DPS) [world_drop] |
-| hands | Stonerender Gauntlets (17007) | World drop [world_drop] | sim-verified (159.1 DPS) | yes | Gloves of Holy Might (867, +0.00 DPS) [world_drop]; Prowler's Leather Gauntlets (252547, -0.07 DPS) [crafted]; Sergeant Major's Mail Gauntlets (223076, -1.74 DPS, sim-verified) [vendor] |
-| waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 42.7 attack_power points (3.09 DPS) | yes | Skulker's Leather Waistguard (252474, -0.11 DPS) [crafted]; Belt of the Gladiator (13134, -0.48 DPS) [world_drop]; Ogron's Sash (13117, -0.99 DPS) [world_drop] |
-| legs | Knight's Mail Legplates (223074) | Captain Dirgehammer [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Serpentskin Leggings (8262, +0.00 DPS) [world_drop]; Scarlet Leggings (10330, -0.15 DPS) [dungeon]; Gryphon Rider's Leggings (9652, -4.53 DPS, sim-verified) [quest] |
-| feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 39.4 attack_power points (2.86 DPS) | yes | Skulker's Leather Boots (252469, -0.11 DPS) [crafted]; Prowler's Leather Shoes (252465, -0.64 DPS) [crafted]; Blackforge Greaves (6423, -0.67 DPS) [dungeon] |
-| finger1 | Blackstone Ring (17713) (or Mark of Kern (2262), Assault Band (13095)) | Maraudon: Princess Theradras [dungeon] | 20.0 attack_power points (1.45 DPS) | yes | Assault Band (13095, +0.00 DPS) [world_drop]; Thunderbrow Ring (13097, -0.02 DPS) [world_drop]; Masons Fraternity Ring (9533, -0.21 DPS) [quest] |
-| finger2 | Mark of Kern (2262) (or Assault Band (13095)) | Scarlet Monastery [dungeon] | 20.0 attack_power points (1.45 DPS) | yes | Assault Band (13095, +0.00 DPS) [world_drop]; Thunderbrow Ring (13097, -0.02 DPS) [world_drop]; Masons Fraternity Ring (9533, -0.21 DPS) [quest] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (+2.0 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
-| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest] |
-| main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Thorium Greatmace (250613, -0.94 DPS) [crafted]; Pendulum of Doom (9425, -1.90 DPS, sim-verified) [dungeon]; Bleakwood Hew (12769, -3.29 DPS) [crafted] |
+| head | White Bandit Mask (10008) | Tailoring [crafted] | 37.4 attack_power points (2.49 DPS) | yes | Knight-Lieutenant's Mail Helmet (223075, +0.00 DPS) [vendor]; Barbaric Iron Helm (7915, -0.45 DPS) [crafted]; Hard Gold Coif (250537, -0.63 DPS) [crafted] |
+| neck | Skibi's Pendant (13089) | World drop [world_drop] | 28.2 attack_power points (1.87 DPS) | yes | Kaleidoscope Chain (13084, -0.97 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -1.08 DPS) [world]; River Pride Choker (13087, -1.34 DPS) [world_drop] |
+| shoulder | Prowler's Leather Shoulders (252534) | Leatherworking [crafted] | 34.6 attack_power points (2.30 DPS) | yes | Knight-Lieutenant's Mail Epaulets (223073, +0.00 DPS) [vendor]; Skulker's Leather Shoulder (252535, -0.08 DPS) [crafted]; Failed Flying Experiment (9647, -3.33 DPS, sim-verified) [quest] |
+| back | Dark Phantom Cape (13122) | World drop [world_drop] | 21.0 attack_power points (1.40 DPS) | yes | Sergeant Major's Cape (16336, -0.04 DPS) [pvp]; Pridelord Cape (14673, -0.16 DPS) [world_drop]; Bloodlust Cape (14801, -0.20 DPS) [world_drop] |
+| chest | Knight's Mail Armor (223078) | Captain Dirgehammer [vendor] | sim-verified (163.2 DPS) | yes | Blazewind Breastplate (11193, -0.60 DPS) [quest]; Kolkar Marauder Chain (6773, -0.62 DPS) [quest]; Warbear Harness (15064, -4.04 DPS, sim-verified) [crafted] |
+| wrist | Deepfury Bracers (13120) | World drop [world_drop] | 29.0 attack_power points (1.93 DPS) | yes | Bracers of the Stone Princess (17714, -0.07 DPS) [dungeon]; Arena Bands (18711, -0.07 DPS) [world]; Prowler's Leather Bracers (252539, -0.08 DPS) [crafted] |
+| hands | Sergeant Major's Mail Gauntlets (223076) | PvP rank 9 · Sergeant Major · Alliance [vendor] | sim-verified (163.2 DPS) | yes | Gloves of Holy Might (867, +0.00 DPS) [world_drop]; Stonerender Gauntlets (17007, +0.00 DPS) [world_drop]; Prowler's Leather Gauntlets (252547, +0.00 DPS) [crafted] |
+| waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 44.8 attack_power points (2.98 DPS) | yes | Skulker's Leather Waistguard (252474, -0.08 DPS) [crafted]; Belt of the Gladiator (13134, -0.59 DPS) [world_drop]; Ogron's Sash (13117, -0.94 DPS) [world_drop] |
+| legs | Knight's Mail Legplates (223074) | Captain Dirgehammer [vendor] | sim-verified (163.2 DPS) | yes | Serpentskin Leggings (8262, +0.00 DPS) [world_drop]; Stormshroud Pants (15057, -0.05 DPS) [crafted]; Gryphon Rider's Leggings (9652, -3.95 DPS, sim-verified) [quest] |
+| feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 41.4 attack_power points (2.75 DPS) | yes | Skulker's Leather Boots (252469, -0.08 DPS) [crafted]; Blackforge Greaves (6423, -0.62 DPS) [dungeon]; Prowler's Leather Shoes (252465, -0.64 DPS) [crafted] |
+| finger1 | Thunderbrow Ring (13097) | World drop [world_drop] | 20.2 attack_power points (1.34 DPS) | yes | Mark of Kern (2262, -0.01 DPS) [dungeon]; Assault Band (13095, -0.01 DPS) [world_drop]; Masons Fraternity Ring (9533, -0.04 DPS) [quest] |
+| finger2 | Blackstone Ring (17713) (or Mark of Kern (2262), Assault Band (13095)) | Maraudon: Princess Theradras [dungeon] | 20.0 attack_power points (1.33 DPS) | yes | Mark of Kern (2262, +0.00 DPS) [dungeon]; Assault Band (13095, +0.00 DPS) [world_drop]; Masons Fraternity Ring (9533, -0.03 DPS) [quest] |
+| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (163.2 DPS) | yes | - |
+| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (163.2 DPS) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest] |
+| main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | sim-verified (163.2 DPS) | yes | Bleakwood Hew (12769, -2.15 DPS) [crafted]; Dark Iron Pulverizer (11608, -2.73 DPS) [crafted]; Pendulum of Doom (9425, -9.91 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulders; chest: Knight's Mail Armor; wrist: Arena Bands; hands: Stonerender Gauntlets; waist: Prowler's Leather Waistguard; legs: Knight's Mail Legplates; feet: Prowler's Leather Boots; finger1: Blackstone Ring; finger2: Mark of Kern; trinket1: Frozen Heart of the Mountain; trinket2: Molten Heart of the Mountain; main_hand: Glowing Brightwood Staff
+**New at 50:** neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulders; back: Dark Phantom Cape; chest: Knight's Mail Armor; wrist: Deepfury Bracers; hands: Sergeant Major's Mail Gauntlets; waist: Prowler's Leather Waistguard; legs: Knight's Mail Legplates; feet: Prowler's Leather Boots; finger1: Thunderbrow Ring; finger2: Blackstone Ring; trinket1: Frozen Heart of the Mountain; trinket2: Molten Heart of the Mountain; main_hand: Thorium Greatmace
 
 No-known-source sample (15 of 879, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ### Band 60 (dwarf, 3200330000000000-255130030005102051-0520000000000000)
 
-Set DPS (verified): 224.2. Weights run: 2.6s. Verify run: 8.0s. 1826 eligible items had no known source.
+Set DPS (verified): 224.2. Weights run: 2.3s. Verify run: 7.2s. 1826 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.711 ± 0.066, crit=2.407 ± 0.093 per rating point (14 rating = 1%, 33.705 per %), hit=3.971 ± 0.194 per rating point (10 rating = 1%, 39.708 per %), melee_haste=16.913 ± 1.488
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1826, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 0533001000000000-253030031005102051-0530000000000000)
 
-Set DPS (verified): 623.6. Weights run: 2.5s. Verify run: 6.0s. 1826 eligible items had no known source.
+Set DPS (verified): 623.6. Weights run: 2.2s. Verify run: 5.7s. 1826 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.005, agility=2.381 ± 0.091, crit=3.017 ± 0.124 per rating point (14 rating = 1%, 42.237 per %), hit=5.350 ± 0.299 per rating point (10 rating = 1%, 53.498 per %), melee_haste=23.198 ± 2.536
 
@@ -182,7 +182,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Black Dragonscale Helm; shoulder: Dark Warder's Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Deepfury Bracers; hands: Timbermaw Brawlers; waist: Might of the Timbermaw; legs: Warbear Woolies; feet: Shadowcraft Boots; finger1: Masons Fraternity Ring; finger2: Ring of the Underwood; main_hand: Forest Defender's Axe
+**New at 60:** head: Black Dragonscale Helm; shoulder: Dark Warder's Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; hands: Timbermaw Brawlers; waist: Might of the Timbermaw; legs: Warbear Woolies; feet: Shadowcraft Boots; finger1: Masons Fraternity Ring; finger2: Ring of the Underwood; main_hand: Forest Defender's Axe
 
 No-known-source sample (15 of 1826, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1826, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 0000000000000000-254000000000000000-0000000000000000)
 
-Set DPS (verified): 37.6. Weights run: 2.1s. Verify run: 2.0s. 216 eligible items had no known source.
+Set DPS (verified): 37.6. Weights run: 1.8s. Verify run: 1.9s. 216 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.362 ± 0.029, crit=0.920 ± 0.029 per rating point (14 rating = 1%, 12.879 per %), hit=1.472 ± 0.077 per rating point (10 rating = 1%, 14.724 per %), melee_haste=8.999 ± 0.400
 
@@ -210,7 +210,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger2 | Loop of Sacrifice (281673) | The Offering of Blood [quest] | 6.0 attack_power points (0.21 DPS) | yes | The 1 Ring (8350, -0.09 DPS) [world]; Lavishly Jeweled Ring (1156, -0.12 DPS) [dungeon]; Bounty Hunter's Ring (5351, -0.51 DPS, sim-verified) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Hammerbone (270018) | Leaders of the Fang [quest] | 306.2 attack_power points (10.90 DPS) | yes | Forsaken Greataxe (251533, -0.11 DPS) [quest]; Living Root (6631, -0.33 DPS) [dungeon]; Smite's Mighty Hammer (7230, -0.33 DPS, sim-verified) [dungeon] |
+| main_hand | Hammerbone (270018) | Leaders of the Fang [quest] | 306.2 attack_power points (10.90 DPS) | yes | Forsaken Greataxe (251533, -0.11 DPS) [quest]; Smite's Mighty Hammer (7230, -0.33 DPS, sim-verified) [dungeon]; Rockslicer (872, -0.37 DPS) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 216, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 0000000000000000-255130030002000000-0000000000000000)
 
-Set DPS (verified): 90.9. Weights run: 2.1s. Verify run: 1.9s. 420 eligible items had no known source.
+Set DPS (verified): 90.9. Weights run: 1.9s. Verify run: 1.8s. 420 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.006, agility=1.269 ± 0.030, crit=1.042 ± 0.034 per rating point (14 rating = 1%, 14.583 per %), hit=1.909 ± 0.087 per rating point (10 rating = 1%, 19.089 per %), melee_haste=8.928 ± 0.462
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 420, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 0000000000000000-255130030005102031-0000000000000000)
 
-Set DPS (verified): 115.1. Weights run: 2.7s. Verify run: 2.4s. 658 eligible items had no known source.
+Set DPS (verified): 115.1. Weights run: 2.4s. Verify run: 2.3s. 658 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.310 ± 0.042, crit=1.286 ± 0.050 per rating point (14 rating = 1%, 18.008 per %), hit=2.017 ± 0.102 per rating point (10 rating = 1%, 20.174 per %), melee_haste=6.941 ± 0.801
 
@@ -270,7 +270,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger2 | Assault Band (13095) | World drop [world_drop] | 20.0 attack_power points (1.37 DPS) | yes | Falcon's Hook (7552, -0.15 DPS) [dungeon]; Ring of the Underwood (2951, -0.20 DPS) [world_drop]; Thunderbrow Ring (13097, -0.96 DPS, sim-verified) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Staff of Jordan (873) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Pendulum of Doom (9425, +0.00 DPS) [dungeon]; Fiery War Axe (870, -0.07 DPS) [world_drop]; Mograine's Might (7723, -0.32 DPS) [dungeon] |
+| main_hand | Staff of Jordan (873) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Pendulum of Doom (9425, +0.00 DPS) [dungeon]; Fiery War Axe (870, -0.06 DPS) [world_drop]; Thornstone Sledgehammer (1722, -0.35 DPS) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
@@ -280,37 +280,37 @@ No-known-source sample (15 of 658, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 3200300000000000-255130030005102051-0000000000000000)
 
-Set DPS (verified): 157.8. Weights run: 2.6s. Verify run: 2.8s. 849 eligible items had no known source.
+Set DPS (verified): 165.4. Weights run: 2.3s. Verify run: 2.8s. 849 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.221 ± 0.046, crit=1.435 ± 0.060 per rating point (14 rating = 1%, 20.094 per %), hit=2.732 ± 0.136 per rating point (10 rating = 1%, 27.324 per %), melee_haste=7.773 ± 1.054
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.400 ± 0.052, crit=1.656 ± 0.067 per rating point (14 rating = 1%, 23.187 per %), hit=3.108 ± 0.141 per rating point (10 rating = 1%, 31.079 per %), melee_haste=10.988 ± 1.138
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | White Bandit Mask (10008) | Tailoring [crafted] | 35.4 attack_power points (2.57 DPS) | yes | Blood Guard's Mail Helmet (220820, +0.00 DPS) [vendor]; Undercity Reservist's Cap (20643, -0.14 DPS) [quest]; Barbaric Iron Helm (7915, -0.47 DPS) [crafted] |
-| neck | Skibi's Pendant (13089) | World drop [world_drop] | 25.9 attack_power points (1.88 DPS) | yes | Woven Ivy Necklace (19159, -0.21 DPS) [quest]; Ethereal Talisman (4430, -0.80 DPS) [quest]; Kaleidoscope Chain (13084, -0.94 DPS) [world_drop] |
-| shoulder | Prowler's Leather Shoulders (252534) | Leatherworking [crafted] | 33.0 attack_power points (2.39 DPS) | yes | Blood Guard's Mail Epaulets (220823, +0.00 DPS) [vendor]; Skulker's Leather Shoulder (252535, -0.11 DPS) [crafted]; Failed Flying Experiment (9647, -1.79 DPS, sim-verified) [quest] |
-| back | Dark Phantom Cape (13122) | World drop [world_drop] | 18.3 attack_power points (1.33 DPS) | yes | Bloodlust Cape (14801, -0.02 DPS) [world_drop]; Pridelord Cape (14673, -0.10 DPS) [world_drop]; Blackflame Cape (13109, -0.27 DPS) [world_drop] |
-| chest | Stone Guard's Mail Armor (220826) | PvP rank 10 · Stone Guard · Horde [vendor] | 44.1 attack_power points (3.20 DPS) | yes | Kolkar Marauder Chain (6773, -0.55 DPS) [quest]; Blazewind Breastplate (11193, -0.72 DPS) [quest]; Warbear Harness (15064, -3.11 DPS, sim-verified) [crafted] |
-| wrist | Arena Bands (18711) (or Bracers of the Stone Princess (17714)) | Arena Treasure Chest [world] | 28.0 attack_power points (2.03 DPS) | yes | Bracers of the Stone Princess (17714, +0.00 DPS) [dungeon]; Prowler's Leather Bracers (252539, -0.11 DPS) [crafted]; Deepfury Bracers (13120, -0.12 DPS) [world_drop] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | 40.1 attack_power points (2.91 DPS) | yes | Stonerender Gauntlets (17007, +0.00 DPS, sim-verified) [world_drop]; Prowler's Leather Gauntlets (252547, -0.08 DPS) [crafted]; Scarlet Gauntlets (10331, -0.28 DPS) [dungeon] |
-| waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 42.7 attack_power points (3.09 DPS) | yes | Skulker's Leather Waistguard (252474, -0.11 DPS) [crafted]; Belt of the Gladiator (13134, -0.48 DPS) [world_drop]; Ogron's Sash (13117, -0.99 DPS) [world_drop] |
-| legs | Stone Guard's Mail Legplates (220834) | PvP rank 10 · Stone Guard · Horde [vendor] | sim-verified (157.8 DPS) | yes | Scarlet Leggings (10330, -0.15 DPS) [dungeon]; Stormshroud Pants (15057, -0.28 DPS) [crafted]; Serpentskin Leggings (8262, -2.61 DPS, sim-verified) [world_drop] |
-| feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 39.4 attack_power points (2.86 DPS) | yes | Skulker's Leather Boots (252469, -0.11 DPS) [crafted]; Prowler's Leather Shoes (252465, -0.64 DPS) [crafted]; Blackforge Greaves (6423, -0.67 DPS) [dungeon] |
-| finger1 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 attack_power points (1.74 DPS) | yes | Mark of Kern (2262, -0.29 DPS) [dungeon]; Assault Band (13095, -0.29 DPS) [world_drop]; Thunderbrow Ring (13097, -0.31 DPS) [world_drop] |
-| finger2 | Blackstone Ring (17713) (or Mark of Kern (2262), Assault Band (13095)) | Maraudon: Princess Theradras [dungeon] | 20.0 attack_power points (1.45 DPS) | yes | Mark of Kern (2262, +0.00 DPS) [dungeon]; Assault Band (13095, +0.00 DPS) [world_drop]; Thunderbrow Ring (13097, -0.02 DPS) [world_drop] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Molten Heart of the Mountain (249470, -4.96 DPS, sim-verified) [crafted] |
-| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Molten Heart of the Mountain (249470, -1.86 DPS, sim-verified) [crafted] |
-| main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Pendulum of Doom (9425, +0.00 DPS) [dungeon]; Thorium Greatmace (250613, -0.94 DPS) [crafted]; Bleakwood Hew (12769, -3.29 DPS) [crafted] |
+| head | White Bandit Mask (10008) | Tailoring [crafted] | 37.4 attack_power points (2.49 DPS) | yes | Blood Guard's Mail Helmet (220820, +0.00 DPS) [vendor]; Undercity Reservist's Cap (20643, -0.13 DPS) [quest]; Blood Guard's Pulsing Helmet (220848, -0.42 DPS) [vendor] |
+| neck | Skibi's Pendant (13089) | World drop [world_drop] | 28.2 attack_power points (1.87 DPS) | yes | Woven Ivy Necklace (19159, -0.24 DPS) [quest]; Ethereal Talisman (4430, -0.84 DPS) [quest]; Kaleidoscope Chain (13084, -0.97 DPS) [world_drop] |
+| shoulder | Prowler's Leather Shoulders (252534) | Leatherworking [crafted] | 34.6 attack_power points (2.30 DPS) | yes | Blood Guard's Mail Epaulets (220823, +0.00 DPS) [vendor]; Skulker's Leather Shoulder (252535, -0.08 DPS) [crafted]; Failed Flying Experiment (9647, -2.74 DPS, sim-verified) [quest] |
+| back | Dark Phantom Cape (13122) | World drop [world_drop] | 21.0 attack_power points (1.40 DPS) | yes | Pridelord Cape (14673, -0.16 DPS) [world_drop]; Bloodlust Cape (14801, -0.20 DPS) [world_drop]; Blackflame Cape (13109, -0.28 DPS) [world_drop] |
+| chest | Stone Guard's Mail Armor (220826) | PvP rank 10 · Stone Guard · Horde [vendor] | sim-verified (+3.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Blazewind Breastplate (11193, -0.60 DPS) [quest]; Kolkar Marauder Chain (6773, -0.62 DPS) [quest]; Warbear Harness (15064, -3.48 DPS, sim-verified) [crafted] |
+| wrist | Deepfury Bracers (13120) | World drop [world_drop] | 29.0 attack_power points (1.93 DPS) | yes | Bracers of the Stone Princess (17714, -0.07 DPS) [dungeon]; Arena Bands (18711, -0.07 DPS) [world]; Prowler's Leather Bracers (252539, -0.08 DPS) [crafted] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | 43.2 attack_power points (2.87 DPS) | yes | Prowler's Leather Gauntlets (252547, -0.17 DPS) [crafted]; Stonerender Gauntlets (17007, -0.21 DPS) [world_drop]; First Sergeant's Mail Gauntlets (220831, -0.27 DPS) [vendor] |
+| waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 44.8 attack_power points (2.98 DPS) | yes | Skulker's Leather Waistguard (252474, -0.08 DPS) [crafted]; Belt of the Gladiator (13134, -0.59 DPS) [world_drop]; Ogron's Sash (13117, -0.94 DPS) [world_drop] |
+| legs | Stone Guard's Mail Legplates (220834) | PvP rank 10 · Stone Guard · Horde [vendor] | sim-verified (+3.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Stormshroud Pants (15057, -0.05 DPS) [crafted]; Scarlet Leggings (10330, -0.34 DPS) [dungeon]; Serpentskin Leggings (8262, -3.55 DPS, sim-verified) [world_drop] |
+| feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 41.4 attack_power points (2.75 DPS) | yes | Skulker's Leather Boots (252469, -0.08 DPS) [crafted]; Blackforge Greaves (6423, -0.62 DPS) [dungeon]; Prowler's Leather Shoes (252465, -0.64 DPS) [crafted] |
+| finger1 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 attack_power points (1.60 DPS) | yes | Mark of Kern (2262, -0.27 DPS) [dungeon]; Assault Band (13095, -0.27 DPS) [world_drop]; Blackstone Ring (17713, -0.27 DPS) [dungeon] |
+| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 20.2 attack_power points (1.34 DPS) | yes | Mark of Kern (2262, -0.01 DPS) [dungeon]; Assault Band (13095, -0.01 DPS) [world_drop]; Blackstone Ring (17713, -0.01 DPS) [dungeon] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Molten Heart of the Mountain (249470, -4.99 DPS, sim-verified) [crafted] |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Molten Heart of the Mountain (249470, -1.91 DPS, sim-verified) [crafted] |
+| main_hand | Thorium Greatmace (250613) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bleakwood Hew (12769, -2.15 DPS) [crafted]; Dark Iron Pulverizer (11608, -2.73 DPS) [crafted]; Ravager (7717, -10.80 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulders; back: Dark Phantom Cape; chest: Stone Guard's Mail Armor; wrist: Arena Bands; waist: Prowler's Leather Waistguard; legs: Stone Guard's Mail Legplates; feet: Prowler's Leather Boots; finger1: White Bone Band; finger2: Blackstone Ring; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Glowing Brightwood Staff
+**New at 50:** neck: Skibi's Pendant; shoulder: Prowler's Leather Shoulders; back: Dark Phantom Cape; chest: Stone Guard's Mail Armor; wrist: Deepfury Bracers; waist: Prowler's Leather Waistguard; legs: Stone Guard's Mail Legplates; feet: Prowler's Leather Boots; finger1: White Bone Band; finger2: Thunderbrow Ring; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Thorium Greatmace
 
 No-known-source sample (15 of 849, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 
 ### Band 60 (orc, 3200330000000000-255130030005102051-0520000000000000)
 
-Set DPS (verified): 229.2. Weights run: 2.6s. Verify run: 7.6s. 1782 eligible items had no known source.
+Set DPS (verified): 229.2. Weights run: 2.3s. Verify run: 7.1s. 1782 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.711 ± 0.066, crit=2.407 ± 0.093 per rating point (14 rating = 1%, 33.705 per %), hit=3.971 ± 0.194 per rating point (10 rating = 1%, 39.708 per %), melee_haste=16.913 ± 1.488
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1782, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 0533001000000000-253030031005102051-0530000000000000)
 
-Set DPS (verified): 635.4. Weights run: 2.5s. Verify run: 7.7s. 1782 eligible items had no known source.
+Set DPS (verified): 635.4. Weights run: 2.2s. Verify run: 7.2s. 1782 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.005, agility=2.381 ± 0.091, crit=3.017 ± 0.124 per rating point (14 rating = 1%, 42.237 per %), hit=5.350 ± 0.299 per rating point (10 rating = 1%, 53.498 per %), melee_haste=23.198 ± 2.536
 
@@ -364,7 +364,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Black Dragonscale Helm; shoulder: Dark Warder's Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Deepfury Bracers; hands: Devilsaur Gauntlets; waist: Might of the Timbermaw; legs: Devilsaur Leggings; feet: Shadowcraft Boots; finger1: Masons Fraternity Ring; finger2: Ring of the Underwood; main_hand: Forest Defender's Axe
+**New at 60:** head: Black Dragonscale Helm; shoulder: Dark Warder's Pauldrons; back: Cape of the Black Baron; chest: Dawn Armor; hands: Devilsaur Gauntlets; waist: Might of the Timbermaw; legs: Devilsaur Leggings; feet: Shadowcraft Boots; finger1: Masons Fraternity Ring; finger2: Ring of the Underwood; main_hand: Forest Defender's Axe
 
 No-known-source sample (15 of 1782, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 
