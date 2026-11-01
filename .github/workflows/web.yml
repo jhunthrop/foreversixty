@@ -316,9 +316,9 @@ jobs:
             exit 1
           fi
           case "$PUBLIC_SIM_ARTIFACT" in "$pin-"*) ;; *) echo "PUBLIC_SIM_ARTIFACT '$PUBLIC_SIM_ARTIFACT' does not belong to engine $pin"; exit 1;; esac
-          test -f "web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm" || { echo "missing web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm"; exit 1; }
+          test -f "web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm.gz" || { echo "missing web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm.gz"; exit 1; }
           test -f "web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.js"   || { echo "missing web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.js"; exit 1; }
-          echo "engine $pin: sim.wasm and sim.js published as $PUBLIC_SIM_ARTIFACT for the production build"
+          echo "engine $pin: sim.wasm.gz and sim.js published as $PUBLIC_SIM_ARTIFACT for the production build"
       # CF_PAGES makes the build fail if src/data/links.json still holds a PLACEHOLDER link.
       # FOREVER_DATA is unset here on purpose: a real build prerenders no fixture report,
       # rankings, character or guild page and publishes no public/logs-data/.

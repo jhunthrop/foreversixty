@@ -11,10 +11,10 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import type { Browser } from '@playwright/test';
-import { engineAssetUrl } from '../../../src/lib/sim/version';
+import { engineAssetUrl, WASM_FILE } from '../../../src/lib/sim/version';
 
 export function artifactPublished(webRoot: string, version: string): boolean {
-  return existsSync(path.join(webRoot, 'public/_sim', version, 'sim.wasm'));
+  return existsSync(path.join(webRoot, 'public/_sim', version, WASM_FILE));
 }
 
 export function realEngineSkipReason(what: string): string {
@@ -25,7 +25,7 @@ export function realEngineSkipReason(what: string): string {
 }
 
 /**
- * Loads `sim.js`/`sim.wasm` in a scratch page (closed before returning, so a negative
+ * Loads `sim.js`/`sim.wasm.gz` in a scratch page (closed before returning, so a negative
  * result leaves nothing running behind it) and answers whether the running program
  * registered every export in `need` as a function on `window`.
  */
@@ -39,7 +39,7 @@ export async function hasWasmExports(
   try {
     await page.goto(baseURL);
     const glueUrl = engineAssetUrl('sim.js', version);
-    const wasmUrl = engineAssetUrl('sim.wasm', version);
+    const wasmUrl = engineAssetUrl(WASM_FILE, version);
     await page.addScriptTag({ url: glueUrl });
     return await page.evaluate(
       async ({ wasm, exportNames }) => {
@@ -51,7 +51,18 @@ export async function hasWasmExports(
         try {
           if (typeof w.Go !== 'function') return false;
           const go = new w.Go();
-          const { instance } = await WebAssembly.instantiateStreaming(fetch(wasm), go.importObject);
+          // The published module is gzipped (version.ts's WASM_FILE). engine.ts's wasmResponse
+          // cannot be imported into this serialized callback, so the same sniff is inline: a
+          // host that sends Content-Encoding: gzip (astro preview does) has fetch inflate it
+          // already, and only a body that still starts with gzip's magic is inflated here.
+          const fetched = await fetch(wasm);
+          if (!fetched.ok) return false;
+          let bytes = new Uint8Array(await fetched.arrayBuffer());
+          if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
+            const inflated = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+            bytes = new Uint8Array(await new Response(inflated).arrayBuffer());
+          }
+          const { instance } = await WebAssembly.instantiate(bytes, go.importObject);
           const ready = new Promise<'ready'>((resolve) => {
             w.wasmready = () => resolve('ready');
           });

@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fixtureResult, fixtureSpecs } from '../../test-support/sim-api';
-import { ENGINE_ARTIFACT, ENGINE_VERSION, engineAssetUrl, engineLabel, isStale } from './version';
+import { ENGINE_ARTIFACT, ENGINE_VERSION, engineAssetUrl, engineLabel, isStale, WASM_FILE } from './version';
 
 // The engine lane's Go module is not on main yet -- this tree carries only the data lane's
 // sim/specs -- so the pin assertion runs when the file lands and reports as skipped until
@@ -33,7 +33,7 @@ describe('engineAssetUrl', () => {
   });
 
   it('addresses the immutable directory the page build was told about', () => {
-    expect(engineAssetUrl('sim.wasm')).toBe(`/_sim/${ENGINE_ARTIFACT}/sim.wasm`);
+    expect(engineAssetUrl(WASM_FILE)).toBe(`/_sim/${ENGINE_ARTIFACT}/sim.wasm.gz`);
     expect(engineAssetUrl('sim.js')).toBe(`/_sim/${ENGINE_ARTIFACT}/sim.js`);
   });
 
@@ -50,11 +50,11 @@ describe('engineAssetUrl', () => {
     vi.resetModules();
     const fresh = await import('./version');
     expect(fresh.ENGINE_ARTIFACT).toBe(`${ENGINE_VERSION}-95318caea162`);
-    expect(fresh.engineAssetUrl('sim.wasm')).toBe(`/_sim/${ENGINE_VERSION}-95318caea162/sim.wasm`);
+    expect(fresh.engineAssetUrl(WASM_FILE)).toBe(`/_sim/${ENGINE_VERSION}-95318caea162/sim.wasm.gz`);
   });
 
   it('can address an older artifact, so a stored result stays readable', () => {
-    expect(engineAssetUrl('sim.wasm', '6a1c2d9')).toBe('/_sim/6a1c2d9/sim.wasm');
+    expect(engineAssetUrl(WASM_FILE, '6a1c2d9')).toBe('/_sim/6a1c2d9/sim.wasm.gz');
   });
 });
 

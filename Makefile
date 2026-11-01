@@ -95,6 +95,13 @@ WASM_BUDGET_MB = 4.5
 # simmed specs on top of twenty) took the engine to 4.08 MB; the
 # engine-only baseline is 3.31 MB, so the growth is the specs, not bloat.
 WEB_SIM_DIR   = web/public/_sim
+# The Go toolchain the artifacts are built with: sim/go.mod's own `go` line,
+# which is what web.yml's and sim.yml's setup-go install. Without it a
+# laptop's newer go builds a different module: go1.27.1 made a 40.5 MB
+# sim.wasm from the same tree go1.25.11 builds at 24.8 MB (2026-11-01), and
+# sim.js (wasm_exec.js) must come from the toolchain that built the wasm.
+# GOTOOLCHAIN=goX.Y.Z downloads that toolchain once if it is not the local go.
+GO_TOOLCHAIN := go$(shell sed -n 's/^go //p' sim/go.mod)
 ACTIVE_BUILD_JSON = web/src/data/active-build.json
 SIMDB_EMBED   = sim/internal/simdb/simdb.bin
 # Read at parse time so the copy below has a real prerequisite: an earlier
@@ -245,12 +252,16 @@ artifacts: simdb
 #	No -ldflags -X: both mains import sim/enginever, so the pin is
 #	compiled in and a plain `go build ./cmd/forever-sim` produces a
 #	binary that knows its own engine rather than one stamped "dev".
-	@(cd sim && GOOS=js GOARCH=wasm go build -trimpath -ldflags="-s -w" -o ../$(ARTIFACT_DIR)/sim.wasm ./cmd/wasm) && \
-	  (cd sim && go build -ldflags="-s -w" -o ../$(ARTIFACT_DIR)/forever-sim ./cmd/forever-sim)
+#	Warns (never fails) when the engine resolves to a local checkout that is
+#	not at the pin: sim/go.mod's development replace points at the owner's
+#	fork checkout, which CI rewrites to the pinned sha.
+	@./tools/engine/check-checkout.sh . "$$(cd sim && go list -m -f '{{with .Replace}}{{.Path}}{{end}}' github.com/wowsims/classic)"
+	@(cd sim && GOTOOLCHAIN=$(GO_TOOLCHAIN) GOOS=js GOARCH=wasm go build -trimpath -ldflags="-s -w" -o ../$(ARTIFACT_DIR)/sim.wasm ./cmd/wasm) && \
+	  (cd sim && GOTOOLCHAIN=$(GO_TOOLCHAIN) go build -ldflags="-s -w" -o ../$(ARTIFACT_DIR)/forever-sim ./cmd/forever-sim)
 #	install, not cp: wasm_exec.js is read-only inside GOROOT, so a plain
 #	cp copies the mode too and the NEXT `make artifacts` dies with
 #	"Permission denied" on its own output.
-	@install -m 0644 "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(ARTIFACT_DIR)/sim.js
+	@install -m 0644 "$$(cd sim && GOTOOLCHAIN=$(GO_TOOLCHAIN) go env GOROOT)/lib/wasm/wasm_exec.js" $(ARTIFACT_DIR)/sim.js
 	@(cd $(ARTIFACT_DIR) && shasum -a 256 sim.wasm sim.js forever-sim > SHA256SUMS)
 	@test -x $(ARTIFACT_DIR)/forever-sim || { echo "forever-sim was not built"; exit 1; }
 	@ls -l $(ARTIFACT_DIR)
@@ -279,13 +290,20 @@ publish-wasm: artifacts
 #	the old one (2026-09-28: a fix in sim/request never reached returning
 #	visitors). $(ARTIFACT_DIR)/ARTIFACT_ID carries the name for web.yml,
 #	which hands it to the page build as PUBLIC_SIM_ARTIFACT.
+#	The module is published GZIPPED, as sim.wasm.gz, and the page inflates it
+#	(web/src/lib/sim/wasm-fetch.ts): the raw module read 24.7 MB on the
+#	2026-11-01 deploy, 94% of Cloudflare's 25 MiB per-file static-asset
+#	limit, and one file over it refuses the whole deploy. The gzip is the
+#	file WASM_BUDGET_MB above measures, so that budget gates the deployed
+#	bytes; -n keeps the gzip header free of a name and timestamp.
 	@sha=$$(./$(ARTIFACT_DIR)/forever-sim -version); \
 	test -n "$$sha" || { echo "forever-sim -version printed nothing"; exit 1; }; \
 	digest=$$( (sha256sum $(ARTIFACT_DIR)/sim.wasm 2>/dev/null || shasum -a 256 $(ARTIFACT_DIR)/sim.wasm) | cut -c1-12 ); \
 	test -n "$$digest" || { echo "could not hash $(ARTIFACT_DIR)/sim.wasm"; exit 1; }; \
 	id="$$sha-$$digest"; \
 	mkdir -p "$(WEB_SIM_DIR)/$$id"; \
-	cp $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.js "$(WEB_SIM_DIR)/$$id/"; \
+	gzip -9 -n -c $(ARTIFACT_DIR)/sim.wasm > "$(WEB_SIM_DIR)/$$id/sim.wasm.gz"; \
+	cp $(ARTIFACT_DIR)/sim.js "$(WEB_SIM_DIR)/$$id/"; \
 	printf '%s\n' "$$id" > $(ARTIFACT_DIR)/ARTIFACT_ID; \
 	echo "published to $(WEB_SIM_DIR)/$$id"
 

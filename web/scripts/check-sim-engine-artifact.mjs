@@ -1,7 +1,7 @@
 // web/scripts/check-sim-engine-artifact.mjs
 // The last-mile guard on web/public/_sim/README.md's contract: when PUBLIC_SIM_ENGINE=wasm
 // built this dist/, web/src/lib/sim/engine.ts's loadWasmEngine fetches
-// /_sim/<PUBLIC_SIM_ARTIFACT>/sim.wasm and sim.js at runtime, on a visitor's machine, not at
+// /_sim/<PUBLIC_SIM_ARTIFACT>/sim.wasm.gz and sim.js at runtime, on a visitor's machine, not at
 // build time -- a stale or missing publish would ship silently and only fail in the
 // browser. This runs in `npm run postbuild`, after `astro build` has copied public/ into
 // dist/, so a pin bump (web/src/lib/sim/version.ts) that outran `make publish-wasm` (or a
@@ -44,7 +44,7 @@ if (!artifact.startsWith(engineVersion)) {
   process.exit(1);
 }
 const distSimDir = path.join(webRoot, 'dist/_sim', artifact);
-const missing = ['sim.wasm', 'sim.js'].filter((file) => !existsSync(path.join(distSimDir, file)));
+const missing = ['sim.wasm.gz', 'sim.js'].filter((file) => !existsSync(path.join(distSimDir, file)));
 if (missing.length > 0) {
   console.error(
     `check-sim-engine-artifact: PUBLIC_SIM_ENGINE=wasm but dist/_sim/${artifact}/ is missing ` +
@@ -54,4 +54,4 @@ if (missing.length > 0) {
   );
   process.exit(1);
 }
-console.log(`check-sim-engine-artifact: dist/_sim/${artifact}/ carries sim.wasm and sim.js`);
+console.log(`check-sim-engine-artifact: dist/_sim/${artifact}/ carries sim.wasm.gz and sim.js`);

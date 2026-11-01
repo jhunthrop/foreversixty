@@ -25,79 +25,26 @@
 // `bulk: the build has no such item: 16963`. Real data plus the new simitems.json filter
 // is what keeps that from happening again; twoKnownSearchCandidates() below reads both
 // from the real build directory, not the fixture, for the same reason.
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Browser } from '@playwright/test';
 import { expect, test } from './support/test';
-import { engineAssetUrl, ENGINE_VERSION } from '../../src/lib/sim/version';
+import { ENGINE_VERSION } from '../../src/lib/sim/version';
+import { artifactPublished as artifactPublishedAt, hasWasmExports } from './support/real-engine';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const artifactPublished = existsSync(path.join(WEB_ROOT, 'public/_sim', ENGINE_VERSION, 'sim.wasm'));
+const artifactPublished = artifactPublishedAt(WEB_ROOT, ENGINE_VERSION);
 const SKIP_REASON =
   `real-engine Top Gear smoke; publish web/public/_sim/${ENGINE_VERSION}/ first ` +
   '(make simdb && make artifacts && make publish-wasm) and run with npm run test:e2e:real-engine';
 
 /**
- * Instantiates the published artifact in an ephemeral page (never the test's own `page`, so a
- * negative result leaves nothing running behind it) and reports which of the four bulk/weights
- * exports the running Go program actually registered on `window` -- the same handshake
- * `engine.ts`'s own `loadWasmEngine` performs (`Go`, `instantiateStreaming`, race against
- * `wasmready`), duplicated here in miniature because this file cannot import a browser-only
- * module into a Node-side gate check and must not assume what it has not observed.
+ * Whether the published artifact registers the four bulk/weights exports, through the shared
+ * real-engine probe (support/real-engine.ts), which instantiates it in an ephemeral page.
  */
 async function hasNewBulkExports(browser: Browser, baseURL: string, version: string): Promise<boolean> {
-  const page = await browser.newPage();
-  try {
-    await page.goto(baseURL);
-    // engineAssetUrl (version.ts) is the one place that knows the `/_sim/<version>/<file>`
-    // path shape -- computed here, on the Node side, rather than rebuilt as a template
-    // literal inside the evaluated closure, so this probe cannot silently drift from
-    // `engine.ts`'s own `loadWasmEngine`, which builds the same two URLs the same way.
-    const glueUrl = engineAssetUrl('sim.js', version);
-    const wasmUrl = engineAssetUrl('sim.wasm', version);
-    await page.addScriptTag({ url: glueUrl });
-    return await page.evaluate(async (wasm) => {
-      type GoGlue = new () => {
-        importObject: WebAssembly.Imports;
-        run(instance: WebAssembly.Instance): Promise<void>;
-      };
-      const w = window as unknown as {
-        Go?: GoGlue;
-        wasmready?: () => void;
-        simPlan?: unknown;
-        simRank?: unknown;
-        simCount?: unknown;
-        simWeights?: unknown;
-      };
-      try {
-        if (typeof w.Go !== 'function') return false;
-        const go = new w.Go();
-        const { instance } = await WebAssembly.instantiateStreaming(fetch(wasm), go.importObject);
-        const ready = new Promise<'ready'>((resolve) => {
-          w.wasmready = () => resolve('ready');
-        });
-        const exited: Promise<'exited'> = go.run(instance).then(
-          () => 'exited',
-          () => 'exited',
-        );
-        const outcome = await Promise.race([ready, exited]);
-        if (outcome !== 'ready') return false;
-        return (
-          typeof w.simPlan === 'function' &&
-          typeof w.simRank === 'function' &&
-          typeof w.simCount === 'function' &&
-          typeof w.simWeights === 'function'
-        );
-      } catch {
-        return false;
-      }
-    }, wasmUrl);
-  } catch {
-    return false;
-  } finally {
-    await page.close();
-  }
+  return hasWasmExports(browser, baseURL, version, ['simPlan', 'simRank', 'simCount', 'simWeights']);
 }
 
 const activeBuild = JSON.parse(readFileSync(path.join(WEB_ROOT, 'src/data/active-build.json'), 'utf8')) as {

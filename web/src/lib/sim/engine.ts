@@ -20,7 +20,8 @@
 // It defaults to 'fake' because sim.wasm does not exist yet; web.yml sets it to 'wasm' once
 // CI builds an artifact for the pinned sha.
 import type { StageRequests } from './bulk-types';
-import { ENGINE_ARTIFACT, engineAssetUrl } from './version';
+import { ENGINE_ARTIFACT, engineAssetUrl, WASM_FILE } from './version';
+import { wasmResponse } from './wasm-fetch';
 
 export type EngineMode = 'fake' | 'wasm';
 
@@ -158,7 +159,7 @@ async function loadWasmEngine(version: string): Promise<EngineModule> {
   if (globals.Go === undefined) throw new Error(`sim.js at ${glueUrl} did not define Go`);
   const go = new globals.Go();
   const { instance } = await WebAssembly.instantiateStreaming(
-    fetch(engineAssetUrl('sim.wasm', version)),
+    fetch(engineAssetUrl(WASM_FILE, version)).then(wasmResponse),
     go.importObject,
   );
   // main.go's main() calls `js.Global().Call("wasmready")` the instant the four exports and
