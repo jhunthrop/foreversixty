@@ -139,6 +139,12 @@ SLOT_BY_INVENTORY_TYPE: dict[int, str] = {
     28: "ranged",
 }
 
+#: ItemSparse stat 83's key. `simdb/items.py` moves it onto
+#: `SimItem.bonus_physical_damage`; `build_class_items` keeps it out of the
+#: planner's `stats`.
+WEAPON_DAMAGE_STAT_KEY = "bonus_physical_damage"
+PLANNER_EXCLUDED_STAT_KEYS = frozenset({WEAPON_DAMAGE_STAT_KEY})
+
 #: StatModifier_bonusStat_<n> -> the planner's stat key, or None for a stat the
 #: planner does not track. An id that is not a key here raises ItemDataError
 #: rather than being dropped silently or guessed at. Classic Era only uses
@@ -186,7 +192,10 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     46: None,  # health regen
     47: None,  # spell penetration
     50: None,  # mastery rating
-    83: None,
+    # "+N Weapon Damage" (Molten Heart of the Mountain, Might of Cenarius):
+    # the engine's flat bonus physical damage, so simdb only; the planner's
+    # stat vocabulary has no key for it (`PLANNER_EXCLUDED_STAT_KEYS`).
+    83: WEAPON_DAMAGE_STAT_KEY,
     84: None,
     85: "fire_power",  # fire spell damage (Inferno Robe, Phoenix set; build 1.60.1.70291)
     86: None,
@@ -932,7 +941,12 @@ def build_class_items(
         item_class_id = int_column(item_row, "ClassID")
         subclass_id = int_column(item_row, "SubclassID")
         item_level = int_column(row, "ItemLevel")
-        armor, stats = resolve_item_values(row, item_row, curves)
+        armor, resolved_stats = resolve_item_values(row, item_row, curves)
+        stats = {
+            key: amount
+            for key, amount in resolved_stats.items()
+            if key not in PLANNER_EXCLUDED_STAT_KEYS
+        }
         percent_stats: dict[str, int] = {}
         if effects is not None:
             _merge_effect_stats(stats, item_id, display_name, effects)

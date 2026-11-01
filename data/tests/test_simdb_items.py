@@ -187,6 +187,32 @@ def test_an_on_equip_bonus_is_folded_into_the_stat_array():
     assert axe.bonus_physical_damage == 2.0
 
 
+def _with_first_stat(item_id: int, stat_id: str, editor: str):
+    rows = []
+    for sparse, item_row in pairs():
+        if int(sparse["ID"]) == item_id:
+            sparse = {**sparse, "StatModifier_bonusStat_0": stat_id, "StatPercentEditor_0": editor}
+        rows.append((sparse, item_row))
+    items = build_sim_items(rows, {}, {}, curves(), weapon_curves(), RATING_FACTORS, {})
+    return next(item for item in items if item.id == item_id)
+
+
+def test_item_stat_83_is_flat_weapon_damage():
+    """ItemSparse stat 83 is "+N Weapon Damage" (wowhead Forever tooltips,
+    2026-11-01: Molten Heart of the Mountain 249470 "+ 2 Weapon Damage",
+    Might of Cenarius 21189 "+ 4", Sharpened Cutlery 274092 "+ 1"). The
+    fork's own db.json gives Might of Cenarius bonusPhysicalDamage 4. It was
+    dropped, so the trinket every published physical set wears lost it
+    (sim-audit round 4, physical H2). Same budget share as a primary stat."""
+    damage = _with_first_stat(12798, "83", "5000")
+    agility = _with_first_stat(12798, "3", "5000")
+    expected = agility.stats[pb.Stat.Value("StatAgility")]
+    assert expected > 0
+    assert damage.bonus_physical_damage == expected
+    agility_index = pb.Stat.Value("StatAgility")
+    assert agility_index >= len(damage.stats) or damage.stats[agility_index] == 0
+
+
 def test_an_unrestricted_item_has_an_empty_class_allowlist():
     assert list(built()[12798].class_allowlist) == []
 
