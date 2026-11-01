@@ -217,6 +217,9 @@ lists the ones that do.
 Both weapon imbue slots hold one enum, so an imbue must say which hand:
 ` + "`main_hand_imbue:shadow_oil`" + `, ` + "`off_hand_imbue:item:3824`" + `. Any id may be
 qualified by its field this way; only the ambiguous ones must be.
+A hand whose imbue is a rogue poison also takes a stone, weightstone or
+oil in its stone field (` + "`main_hand_stone:dense_sharpening_stone`" + `): Forever
+lets the two share a weapon, and the engine refuses anything else there.
 
 | id | sets |
 | --- | --- |
