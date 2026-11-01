@@ -90,13 +90,40 @@ struct SearchRow<Icon: View, Title: View>: View {
     }
 }
 
-/// A row's name: wraps, never cut.
+/// A row's name: wraps, never cut. At accessibility sizes it wraps only between words, and a
+/// word wider than the row (a long character name) shrinks to fit rather than break inside it.
 struct SearchRowName: View {
     let text: String
     var color: Color = FSColor.strong
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        Text(text).font(ScaledType.bodyStrong).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+        if typeSize.isAccessibilitySize {
+            WordWrapText(text: text, font: ScaledType.bodyStrong, color: color)
+        } else {
+            Text(text).font(ScaledType.bodyStrong).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+        }
+    }
+}
+
+/// Words laid out with WrapLayout: lines break only between words; a word that cannot fit a
+/// line on its own scales down instead of splitting (lane F15 ruling: never a break in a name).
+struct WordWrapText: View {
+    let text: String
+    let font: Font
+    let color: Color
+    @ScaledMetric(relativeTo: .body) private var gap: CGFloat = 4
+
+    private static let minimumScale = 0.5
+
+    var body: some View {
+        WrapLayout(spacing: gap) {
+            ForEach(Array(text.split(separator: " ").enumerated()), id: \.offset) { _, word in
+                Text(word).font(font).foregroundStyle(color).lineLimit(1).minimumScaleFactor(Self.minimumScale)
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(text)
     }
 }
 

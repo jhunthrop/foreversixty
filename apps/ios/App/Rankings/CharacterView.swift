@@ -77,7 +77,8 @@ struct CharacterView: View {
             let builds = CharacterPage.builds(profile, clock: clock)
             if !builds.isEmpty { section(Copy.charBuilds) { buildRows(builds) } }
             if let openPlanner = actions.openPlanner, let link = CharacterPage.plannerLink(profile) {
-                linkRow(Copy.charOpenPlanner) { openPlanner(link) }
+                // In the app: a chevron, not the external arrow.
+                linkRow(Copy.charOpenPlanner, glyph: "chevron.right") { openPlanner(link) }
             }
             if account.history, CharacterPage.isYours(profile.character, keys: Set(account.characterKeys)) {
                 linkRow(Copy.charParseHistory, action: actions.openHistory)
@@ -186,12 +187,12 @@ struct CharacterView: View {
         .quietCard()
     }
 
-    private func linkRow(_ title: String, action: @escaping () -> Void) -> some View {
+    private func linkRow(_ title: String, glyph: String = "arrow.up.right", action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
                 Text(title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.gold)
                 Spacer()
-                Image(systemName: "arrow.up.right").foregroundStyle(FSColor.muted).accessibilityHidden(true)
+                Image(systemName: glyph).foregroundStyle(FSColor.muted).accessibilityHidden(true)
             }
             .padding(.horizontal, 16)
             .frame(minHeight: 52)
