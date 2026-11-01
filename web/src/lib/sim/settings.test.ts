@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import generated from '../../data/generated/sim-ids.json';
 import { selectedIn } from './buffs';
@@ -28,6 +31,7 @@ import {
   TARGET_TYPES,
   targetArmorField,
   targetLevelFor,
+  targetTypeShown,
   VARIATIONS,
   withDummy,
   withDuration,
@@ -43,6 +47,10 @@ import {
 } from './settings';
 import { DEFAULT_ENCOUNTER } from './types';
 
+const CURATED_PRESETS = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../../../data/curated/presets.json',
+);
 const PHYSICAL = 'attack_power';
 const CASTER = 'spell_power';
 
@@ -58,7 +66,9 @@ describe('defaultSettings', () => {
       style: 'patchwerk',
       target_level: 63,
       // Absent, not 0: the default fight carries no armor override at all (Defect 3).
-      target_type: '',
+      // The published numbers' target (sim/leveling RankerEncounter): no creature type, so
+      // a rogue's Murder or a slaying enchant reads the same here as on the tier list.
+      target_type: 'unknown',
       dummy: false,
     });
     expect(settings.encounter.target_armor).toBeUndefined();
@@ -87,9 +97,20 @@ describe('defaultSettings', () => {
  * one of the 70 accepted, no ErrUnknownBuff, no ErrUnknownConsume, no ErrAmbiguousConsume.
  */
 describe('the Raid-buffed preset', () => {
-  it('is exactly the brief’s 54 buff ids less the eight world buffs, never split by spec (Ruling 2)', () => {
-    expect(RAID_BUFFS).toHaveLength(46);
+  it('is the curated raid preset’s buffs and debuffs, the list every published level-60 number is simmed under, never split by spec', () => {
+    const curated = JSON.parse(readFileSync(CURATED_PRESETS, 'utf8')) as {
+      presets: { raid: { buffs: { id: string }[]; debuffs: { id: string }[] } };
+    };
+    const raid = curated.presets.raid;
+    expect([...RAID_BUFFS]).toEqual([...raid.buffs.map((b) => b.id), ...raid.debuffs.map((d) => d.id)]);
     expect(PRESET_BUFFS['raid-buffed']).toBe(RAID_BUFFS);
+  });
+
+  it('carries Heart of the Lion and none of the buffs the raid preset refuses (round 3 C3)', () => {
+    expect(RAID_BUFFS).toContain('heart_of_the_lion');
+    for (const refused of ['blessing_of_kings', 'sanctity_aura', 'winters_chill', 'shadow_weaving']) {
+      expect(RAID_BUFFS, refused).not.toContain(refused);
+    }
   });
 
   it('splits the consumable half by reference_stat: 9 physical ids, 7 caster ids', () => {
@@ -294,12 +315,19 @@ describe('the setters never mutate and always clamp', () => {
     });
   });
 
-  it('accepts only the contract’s target types, and the empty string for “any”', () => {
+  it('accepts only the contract’s target types; anything else is the default, no creature type', () => {
     const base = defaultSettings(PHYSICAL);
     expect(TARGET_TYPES).toContain('undead');
     expect(withTargetType(base, 'undead').encounter.target_type).toBe('undead');
-    expect(withTargetType(base, 'gnome').encounter.target_type).toBe('');
-    expect(withTargetType(base, '').encounter.target_type).toBe('');
+    expect(withTargetType(base, 'gnome').encounter.target_type).toBe('unknown');
+    expect(withTargetType(base, '').encounter.target_type).toBe('unknown');
+  });
+
+  it('shows an empty stored type as the humanoid the engine fights for it (sim/request request.go)', () => {
+    expect(targetTypeShown({ ...DEFAULT_ENCOUNTER, target_type: '' })).toBe('humanoid');
+    expect(targetTypeShown({ ...DEFAULT_ENCOUNTER, target_type: undefined })).toBe('humanoid');
+    expect(targetTypeShown({ ...DEFAULT_ENCOUNTER, target_type: 'beast' })).toBe('beast');
+    expect(targetTypeShown(DEFAULT_ENCOUNTER)).toBe('unknown');
   });
 
   it('turns the dummy on and off', () => {

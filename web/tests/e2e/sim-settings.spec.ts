@@ -172,7 +172,7 @@ test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’
   await choose(page.getByTestId('sim-preset'), 'raid-buffed');
   await page.getByTestId('sim-request-drawer').locator('summary').click();
   await expect(page.getByTestId('sim-request-buffs')).toContainText('sunder_armor');
-  await expect(page.getByTestId('sim-request-buffs')).toContainText('blessing_of_kings');
+  await expect(page.getByTestId('sim-request-buffs')).toContainText('heart_of_the_lion');
   await expect(page.getByTestId('sim-request-json')).toHaveValue(
     /main_hand_imbue:elemental_sharpening_stone/,
   );

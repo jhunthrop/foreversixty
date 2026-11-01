@@ -18,6 +18,7 @@
     executePhaseOn,
     styleIdOf,
     targetArmorField,
+    targetTypeShown,
     withDummy,
     withExecutePhase,
     withTargetArmor,
@@ -165,11 +166,8 @@
         id="sim-target-type-field"
         size="compact"
         {disabled}
-        value={settings.encounter.target_type ?? ''}
-        options={[
-          { value: '', label: simCopy.targetTypeAny },
-          ...TARGET_TYPES.map((id) => ({ value: id, label: simCopy.targetTypeLabel[id] ?? id })),
-        ]}
+        value={targetTypeShown(settings.encounter)}
+        options={TARGET_TYPES.map((id) => ({ value: id, label: simCopy.targetTypeLabel[id] ?? id }))}
         testid="sim-target-type"
         onchange={(event) =>
           onchange(withTargetType(settings, (event.currentTarget as HTMLSelectElement).value))}
