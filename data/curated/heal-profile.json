@@ -5,6 +5,16 @@
   "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption, and this profile is a stand-in for Phase 1 that is NOT a named boss. It was first sized to an Onyxia-class boss, but at that size the raid-ready healers covered 80 to 97 percent of what came in, healing met the damage, and more healing power changed nothing, so gear tied. The retune rule (design/reviews/2026-10-08-heal-profile-retune.md) is: scale the tank hit size and the raid-wide pulse damage together, keeping their ratio and cadence, by the smallest multiplier at which the strongest raid-ready healer covers about 80 percent of the incoming damage, the weakest about 60, every bare set (no raid consumables) covers less than half, and mana is a live constraint (a bare set's mana runs out before the fight ends for every healer, and a raid set's for at least one). The multiplier chosen was 1.5 on 2026-10-08 and is 1.65 since 2026-11-01: client 1.60.1.70707 gave the Restoration druid Bloom and let heals over time crit (the client flags every trained heal over time PERIODIC_CAN_CRIT, and Blizzard's beta notes of 24 September say so for Rejuvenation), which took the druid to 91 percent at 1.5, and 1.65 is the smallest multiplier that brings every raid set back between about 60 and 85 percent (design/reviews/2026-11-01-sim-audit-round4/hybrids.md). The next retune (Phase 2 gear) follows the same rule. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights.",
   "duration_sec": 300,
   "damage_spread": 0.25,
+  "tuning": {
+    "scale": 1.65,
+    "bounds": [
+      1.5,
+      1.65
+    ],
+    "base_tank_hit_damage": 1150,
+    "base_pulse_damage": 300,
+    "reason": "The tank hit and the raid pulse are the Onyxia-class figures first assumed (1,150 and 300) times one multiplier, set by the retune rule: 1.5 on 2026-10-08, 1.65 on 2026-11-01 once the client let heals over time crit. The multiplier is a tuning, not a measured boss, so the two answers are its bounds: /tiers/healer orders two healers only when the order holds, and the gap is beyond the error, at both."
+  },
   "tank": {
     "health": 9500,
     "hit_damage": 1898,
