@@ -62,7 +62,7 @@ Demonology is Warlock's pet spec: its talents empower a summoned demon, and Demo
 - **Master Demonologist** — a scaling buff to both Warlock and demon that differs by pet, up to 10% at rank 5 for whichever pet is out.
 - **Decimation** — cuts Soul Fire's cooldown by 90%; once the target is below 35% health, each Shadow Bolt deals 6% more and gives you 10 seconds of faster Soul Fires that cost no Soul Shard.
 
-In Forever your demon scales from your own stats and no longer takes the raid's buffs. Blizzard has not published how much it inherits, so our sim uses the Classic shares: 75% of your Stamina, 35% of your armor, and 15% of your spell damage as its spell damage and 56.5% as its attack power. Treat the demon's share of your damage as an estimate until level-60 logs confirm it.
+In Forever your demon scales from your own stats and no longer takes the raid's buffs. Forever's character sheet gives it 10% of your Shadow or Fire spell damage, whichever is higher, as its spell damage, 17% as its attack power, and 35% of your armor. Its spells hit as often as yours, and its melee takes 8/17 of your hit. It does not yet take your spell crit; Blizzard plans to give it that and has not said when. Treat the demon's share of your damage as an estimate until level-60 logs confirm it.
 
 ## Rotation and priority
 
