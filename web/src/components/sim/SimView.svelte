@@ -21,7 +21,7 @@
   import { parseCharacterPath } from '../../lib/characters';
   import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { VIEW_GAP } from '../../lib/current-character-layout';
-  import { readLastUpgrade, type LastUpgrade } from '../../lib/sim/last-upgrade';
+  import { readLastUpgrade, upgradeKeyOf } from '../../lib/sim/last-upgrade';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
@@ -301,12 +301,11 @@
   // where the browser has none, read once. Permission is asked only from `toggleNotify`.
   const notifier = untrack(() => browserNotifier());
 
-  // Spec 2026-09-25 §6: the after-sim sentence's data source, read once -- same one-shot
-  // pattern as `notifier`/`bootstrap`/`store` above. No re-read on later state changes: a
-  // Droptimizer run made *during this same /sim session* (impossible today -- they are
-  // separate page loads) would need a fresh read, but nothing on this page can produce one
-  // without a navigation, which remounts the island anyway.
-  const topUpgrade = untrack<LastUpgrade | null>(() => readLastUpgrade());
+  // Spec 2026-09-25 §6: the after-sim sentence's data source -- the last Droptimizer
+  // upgrade recorded for the character on screen, never another character's or spec's.
+  const topUpgrade = $derived(
+    store.character === null ? null : readLastUpgrade(upgradeKeyOf(store.character)),
+  );
   let notifyWanted = $state(false);
   // The id of the last result a notification was raised for, so a re-render never raises a
   // second one for the same run.

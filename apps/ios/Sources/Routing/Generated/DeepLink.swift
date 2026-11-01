@@ -28,6 +28,12 @@ public enum DeepLink: Equatable, Sendable {
     case guides
     /// Guides tab, that spec's guide (class and spec are slugs). /app/guides/{class}/{spec}
     case guide(className: String, spec: String)
+    /// The talent planner for that class (a slug). code is an FS1 build code (a guide's build) loaded as one legal order; race is a race slug. With neither it reopens the class's draft. /app/planner/{class}
+    case planner(className: String, code: String? = nil, race: String? = nil)
+    /// Your builds. /app/builds
+    case builds
+    /// The shared build viewer (read only; Edit a copy opens the planner). A real site page, so a pasted link opens the app when it is installed and the web page when it is not. /b/{id}
+    case sharedBuild(id: String)
     /// You, Notifications. /app/you/notifications
     case notifications
     /// You, Plan. /app/you/plan
@@ -55,6 +61,9 @@ public enum DeepLink: Equatable, Sendable {
             Self.matchPlayer,
             Self.matchGuides,
             Self.matchGuide,
+            Self.matchPlanner,
+            Self.matchBuilds,
+            Self.matchSharedBuild,
             Self.matchNotifications,
             Self.matchPlan,
             Self.matchSignIn,
@@ -77,6 +86,9 @@ public enum DeepLink: Equatable, Sendable {
         case .player: "player"
         case .guides: "guides"
         case .guide: "guide"
+        case .planner: "planner"
+        case .builds: "builds"
+        case .sharedBuild: "sharedBuild"
         case .notifications: "notifications"
         case .plan: "plan"
         case .signIn: "signIn"
@@ -97,6 +109,9 @@ public enum DeepLink: Equatable, Sendable {
         case let .player(region, ruleset, name): Self.link("/app/player/\(region)/\(ruleset)/\(name)", [])
         case .guides: Self.link("/app/guides", [])
         case let .guide(className, spec): Self.link("/app/guides/\(className)/\(spec)", [])
+        case let .planner(className, code, race): Self.link("/app/planner/\(className)", [("code", code), ("race", race)])
+        case .builds: Self.link("/app/builds", [])
+        case let .sharedBuild(id): Self.link("/b/\(id)", [])
         case .notifications: Self.link("/app/you/notifications", [])
         case .plan: Self.link("/app/you/plan", [])
         case let .signIn(code, state, error): Self.link("/app/auth", [("code", code), ("state", state), ("error", error)])
@@ -156,6 +171,21 @@ public enum DeepLink: Equatable, Sendable {
     private static func matchGuide(_ s: [String], _ q: [String: String]) -> DeepLink? {
         guard s.count == 4, s[0] == "app", s[1] == "guides" else { return nil }
         return .guide(className: s[2], spec: s[3])
+    }
+
+    private static func matchPlanner(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 3, s[0] == "app", s[1] == "planner" else { return nil }
+        return .planner(className: s[2], code: q["code"], race: q["race"])
+    }
+
+    private static func matchBuilds(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 2, s[0] == "app", s[1] == "builds" else { return nil }
+        return .builds
+    }
+
+    private static func matchSharedBuild(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 2, s[0] == "b" else { return nil }
+        return .sharedBuild(id: s[1])
     }
 
     private static func matchNotifications(_ s: [String], _ q: [String: String]) -> DeepLink? {

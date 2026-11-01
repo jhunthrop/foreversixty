@@ -272,3 +272,41 @@ func TestRankSlotWithEffectsLeavesTheSlotAloneWhenOnlyOneCandidateQualifies(t *t
 		t.Fatalf("fake engine was called %d times, want 0 (nothing to verify)", len(fake.Calls))
 	}
 }
+
+// Round 5, ranker item 1 (Arcane, Kindling Stave): the effect tournament
+// handed the slot's verify runner-up to an effect item, so the stat-scored
+// runner-up (Glowing Brightwood Staff) was never simmed against the pick at
+// all and verify only ever compared the staff with a sword 47 DPS behind it.
+// The pick's own stat runner-up is one of the measured candidates, so the
+// closest challenger reaches verify.
+func TestRankSlotWithEffectsMeasuresTheStatRunnerUp(t *testing.T) {
+	statRunnerUp := scored{candidate: candidate{ID: 812, Name: "Glowing Brightwood Staff"}}
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 11750, Name: "Kindling Stave"}}, RunnerUp: &statRunnerUp},
+	}
+	bySlot := map[string][]scored{
+		"main_hand": {effectItem(754, "Proc sword", "text", "main_hand")},
+	}
+	staff := gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 812}})
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 11750}}): 100.0,
+			staff: 100.8, // ahead, inside the tournament's margin
+			gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 754}}): 60.0,
+		},
+	}
+	out, _ := rankSlotWithEffects(fake, specInfo{}, "human", "mage", 60, "", picks, bySlot, "main_hand")
+	measured := false
+	for _, call := range fake.Calls {
+		measured = measured || call == staff
+	}
+	if !measured {
+		t.Fatalf("the stat runner-up was never simmed: calls %v", fake.Calls)
+	}
+	if out["main_hand"].Item.ID != 11750 {
+		t.Fatalf("pick = %d, want the stat pick kept inside the margin", out["main_hand"].Item.ID)
+	}
+	if ru := out["main_hand"].RunnerUp; ru == nil || ru.ID != 812 {
+		t.Fatalf("runner-up = %+v, want the best-measured challenger (812), not the proc sword", ru)
+	}
+}

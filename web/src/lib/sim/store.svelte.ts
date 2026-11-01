@@ -12,6 +12,7 @@
 //     page has the site's 1.6 s mobile LCP budget, so nothing touches the engine until the
 //     player asks for a number. `init.pool` exists for tests and for the planner, which
 //     brings its own.
+import { loadRaidConsumes } from './raid-consumes';
 import { loadItemsWithCurrentFallback, loadReference, loadTalents } from '../planner/load';
 import type { Item, RaceRow, TalentFile } from '../planner/types';
 import { indexTalents } from '../planner/rules';
@@ -136,7 +137,7 @@ export function createSimStore(init: SimStoreInit) {
 
   let phase = $state<SimPhase>('idle');
   let character = $state<SimCharacter | null>(null);
-  let settings = $state<SimSettings>(defaultSettings('attack_power'));
+  let settings = $state<SimSettings>(defaultSettings());
   let precisionId = $state<PrecisionId>('normal');
   // Empty means "the settings clause", which moves with the settings; anything the player
   // types wins until they clear it again. Blank-but-not-empty counts as empty: a title of
@@ -187,6 +188,11 @@ export function createSimStore(init: SimStoreInit) {
   // guarantee the cancellation wins the race -- so run() checks this rather than trusting
   // that a resolved handle.result means the player's Stop click was too late to matter.
   let stopRequested = false;
+
+  // Bumped by adopt(): a browser run still in flight for the character before is cancelled
+  // and writes nothing more (store-request.ts runAndSettle), so its result can never show
+  // under the character that replaced it.
+  let browserRunGeneration = 0;
 
   // True for the duration of a runOnServer() call, set synchronously before its first
   // `await` -- both the reentrancy guard (a second call while one is in flight is a no-op)
@@ -261,8 +267,19 @@ export function createSimStore(init: SimStoreInit) {
       phase = 'idle';
       return;
     }
+    browserRunGeneration += 1;
+    handle?.cancel();
+    handle = null;
+    try {
+      // The Raid-buffed preset's consumables load on demand (raid-consumes.ts).
+      await loadRaidConsumes();
+    } catch {
+      message = simCopy.failed;
+      phase = 'idle';
+      return;
+    }
     character = outcome.character;
-    settings = withSpecForPreset(settings, outcome.character.spec);
+    settings = withSpecForPreset(settings, outcome.character.spec, outcome.character.level);
     result = null;
     estimate = EMPTY_ESTIMATE;
     iterationsDone = 0;
@@ -359,6 +376,7 @@ export function createSimStore(init: SimStoreInit) {
     setPrecisionId: (value) => {
       precisionId = value;
     },
+    getRunGeneration: () => browserRunGeneration,
     getResult: () => result,
     setResult: (value) => {
       result = value;

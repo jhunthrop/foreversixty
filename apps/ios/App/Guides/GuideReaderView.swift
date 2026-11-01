@@ -7,6 +7,9 @@ struct GuideActions {
     var openGear: (GuideGear) -> Void = { _ in }
     var retry: () -> Void = {}
     var update: () -> Void = {}
+    /// Lane F13: the talents section's `Open this build in the planner` row (an FS1 code); nil
+    /// while `planner` is off, and the row hides.
+    var openPlanner: ((_ classSlug: String, _ code: String) -> Void)?
 }
 
 /// F9.2 as drawn from a phase: stateless apart from the scroll, so snapshots drive every state.

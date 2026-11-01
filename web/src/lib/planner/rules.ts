@@ -43,8 +43,10 @@ const refuse = (reason: string): Decision => ({ ok: false, reason });
 
 /** Every refusal string in the planner. Components and tests import these, never literals. */
 export const messages = {
-  tierLocked: (tier: number, treeName: string): string =>
-    `Tier ${tier} of ${treeName} needs ${POINTS_PER_TIER * tier} points in ${treeName} first`,
+  /** A tier's row is locked: the points it needs in the tree and the points the tree holds. No tier
+   *  number: a player counts rows from 1 and the data from 0, so the sentence names neither. */
+  tierLocked: (need: number, treeName: string, have: number): string =>
+    `Needs ${need} points in ${treeName}. You have ${have}.`,
   prereqMissing: (talentName: string, rank: number, prereqName: string): string =>
     `${talentName} needs ${rank} ${rank === 1 ? 'point' : 'points'} in ${prereqName} first`,
   maxRank: (talentName: string, maxRank: number): string =>
@@ -78,9 +80,22 @@ export function indexItems(file: ItemFile): Map<number, Item> {
   return new Map(file.items.map((item) => [item.id, item]));
 }
 
+/**
+ * One broken rule at one index. `rule` names the rule broken, not the sentence: the tier
+ * sentence carries the tree's running count ("You have 14."), which a removal earlier in the
+ * order changes without the point breaking a different rule.
+ */
+interface Violation extends FieldError {
+  rule: string;
+}
+
 /** Rules 2 to 5, applied point by point. Returns one message per offending index. */
 export function validateOrder(index: TalentIndex, order: number[]): FieldError[] {
-  const errors: FieldError[] = [];
+  return violations(index, order).map(({ field, message }) => ({ field, message }));
+}
+
+function violations(index: TalentIndex, order: number[]): Violation[] {
+  const errors: Violation[] = [];
   const pointsInTree = new Map<number, number>();
   const ranks = new Map<number, number>();
 
@@ -88,32 +103,36 @@ export function validateOrder(index: TalentIndex, order: number[]): FieldError[]
     const field = `point_order[${i}]`;
     const talent = index.byId.get(id);
     if (!talent) {
-      errors.push({ field, message: messages.unknownTalent(id) });
+      const message = messages.unknownTalent(id);
+      errors.push({ field, message, rule: message });
       return;
     }
     const tree = index.treeOf.get(id)!;
     const inTree = pointsInTree.get(tree.id) ?? 0;
     const rank = ranks.get(id) ?? 0;
 
-    if (inTree < POINTS_PER_TIER * talent.tier) {
-      errors.push({ field, message: messages.tierLocked(talent.tier, tree.name) });
+    const need = POINTS_PER_TIER * talent.tier;
+    const push = (message: string, rule = message): void => {
+      errors.push({ field, message, rule });
+    };
+    if (inTree < need) {
+      push(messages.tierLocked(need, tree.name, inTree), `tier ${tree.id} ${need}`);
     } else if (
       talent.prereq_talent_id !== null &&
       (ranks.get(talent.prereq_talent_id) ?? 0) < (talent.prereq_rank ?? 0)
     ) {
       const prereq = index.byId.get(talent.prereq_talent_id);
-      errors.push({
-        field,
-        message: messages.prereqMissing(
+      push(
+        messages.prereqMissing(
           talent.name,
           talent.prereq_rank ?? 0,
           prereq?.name ?? String(talent.prereq_talent_id),
         ),
-      });
+      );
     } else if (rank >= talent.max_rank) {
-      errors.push({ field, message: messages.maxRank(talent.name, talent.max_rank) });
+      push(messages.maxRank(talent.name, talent.max_rank));
     } else if (i >= MAX_POINTS) {
-      errors.push({ field, message: messages.capReached() });
+      push(messages.capReached());
     }
 
     // Both counters advance even when the point above was just refused: a refused
@@ -205,14 +224,12 @@ export function canRemovePoint(index: TalentIndex, order: number[], talentId: nu
   }
 
   const removedAt = order.lastIndexOf(talentId);
-  const before = new Map(
-    validateOrder(index, order).map((error) => [fieldIndex(error.field), error.message]),
-  );
-  const after = validateOrder(index, withoutLastPoint(order, talentId));
+  const before = new Map(violations(index, order).map((error) => [fieldIndex(error.field), error.rule]));
+  const after = violations(index, withoutLastPoint(order, talentId));
   const newViolation = after.find((error) => {
     const beforeIndex =
       fieldIndex(error.field) < removedAt ? fieldIndex(error.field) : fieldIndex(error.field) + 1;
-    return before.get(beforeIndex) !== error.message;
+    return before.get(beforeIndex) !== error.rule;
   });
   return newViolation ? refuse(newViolation.message) : ALLOWED;
 }

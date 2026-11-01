@@ -26,6 +26,20 @@ const roleTank = "tank"
 
 var casterForbidden = []string{"strength", "expertise", "armor_penetration", "feral_attack_power"}
 
+// foreverPhysicalCasterStats is Forever's exceptions to the physical rule
+// (round 5): its talents turn Intellect into attack power and spell power
+// (Mental Dexterity and Mental Quickness for Enhancement, Careful Aim for
+// hunters, Champion of the Light for Retribution), and the engine measures
+// spell power on Retribution's seals and the hunters' rotations. Each spec
+// is allowed exactly these.
+var foreverPhysicalCasterStats = map[string][]string{
+	"shaman-enhancement":   {"intellect", "spell_power"},
+	"paladin-retribution":  {"intellect", "spell_power"},
+	"hunter-marksmanship":  {"intellect", "spell_power"},
+	"hunter-beast-mastery": {"intellect", "spell_power"},
+	"hunter-survival":      {"intellect"},
+}
+
 func TestEverySpecHasANonEmptyWeightStats(t *testing.T) {
 	for _, spec := range All {
 		if len(spec.WeightStats) == 0 {
@@ -64,7 +78,7 @@ func TestNoPhysicalSpecCarriesACasterStatAndNoCasterSpecCarriesAMeleeStat(t *tes
 			forbidden = physicalForbidden
 		}
 		for _, stat := range spec.WeightStats {
-			if slices.Contains(forbidden, stat) {
+			if slices.Contains(forbidden, stat) && !slices.Contains(foreverPhysicalCasterStats[spec.Spec], stat) {
 				t.Errorf("%s (reference %s) carries forbidden stat %q",
 					spec.Spec, spec.ReferenceStat, stat)
 			}

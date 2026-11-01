@@ -190,7 +190,7 @@ test('clicking a talent spends points and the counters follow', async ({ page })
 test('a locked tier refuses the point and says why', async ({ page }) => {
   await page.goto('/planner');
   await page.getByTestId('talent-1003').click();
-  await expect(page.getByTestId('planner-refusal')).toHaveText('Tier 1 of Arms needs 5 points in Arms first');
+  await expect(page.getByTestId('planner-refusal')).toHaveText('Needs 5 points in Arms. You have 0.');
   await expect(page.getByTestId('talent-1003')).toHaveAttribute('data-rank', '0');
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
 });
@@ -219,7 +219,7 @@ test('removal is refused when a later point depends on it', async ({ page }) => 
   await page.getByTestId('talent-1002').click();
   await page.getByTestId('talent-1003').click();
   await page.getByTestId('talent-1001').click({ button: 'right' });
-  await expect(page.getByTestId('planner-refusal')).toHaveText('Tier 1 of Arms needs 5 points in Arms first');
+  await expect(page.getByTestId('planner-refusal')).toHaveText('Needs 5 points in Arms. You have 4.');
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
 });
 

@@ -72,6 +72,36 @@ describe('buildTierData', () => {
     expect(data.lists.alliance.dps.map((r) => r.name)).toEqual(['Fury']);
   });
 
+  it('says per faction whether the healer order is measured (every healer band with its error and bounds)', () => {
+    const HOLY = catalogEntry('priest', 'holy', 'Holy', 'healer');
+    const measured = {
+      hps: 600,
+      raw_hps: 600,
+      overheal_pct: 0,
+      mana_lasts_sec: 300,
+      hpm: 1,
+      hps_error: 1,
+      hps_at_bounds: [
+        { scale: 1.5, hps: 590, hps_error: 1 },
+        { scale: 1.65, hps: 600, hps_error: 1 },
+      ],
+    };
+    const unmeasured = { hps: 600, raw_hps: 600, overheal_pct: 0, mana_lasts_sec: 300, hpm: 1 };
+    const files = {
+      ...filesFor(),
+      [HOLY.spec]: bisFile(
+        HOLY,
+        [
+          band(HOLY, { set_dps: 600, metrics: measured }),
+          band(HOLY, { set_dps: 600, faction: 'horde', metrics: unmeasured }),
+        ],
+        '2026-10-08T10:00:00Z',
+      ),
+    };
+    const data = buildTierData({ ...deps(files), catalog: [FURY, ARMS, PROT, HOLY] });
+    expect(data.healerOrderMeasured).toEqual({ alliance: true, horde: false });
+  });
+
   it('gives empty lists and no stamp when nothing is published', () => {
     const data = buildTierData(deps({}));
     expect(data.lists.alliance).toEqual({ dps: [], tank: [], healer: [] });

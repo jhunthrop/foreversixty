@@ -47950,11 +47950,13 @@
           "npc_id": 6906,
           "items": [
             5432,
+            9399,
             9400,
             9401
           ],
           "item_chances": {
             "5432": 16.6667,
+            "9399": 100.0,
             "9400": 90.0,
             "9401": 10.0
           },
@@ -75867,6 +75869,18 @@
       ],
       "item_chances": {
         "16252": 0.75
+      },
+      "source_origin": "classic-db"
+    },
+    {
+      "id": "world:scarlet-trainee",
+      "kind": "world",
+      "name": "Scarlet Trainee",
+      "items": [
+        23192
+      ],
+      "item_chances": {
+        "23192": 1.6016
       },
       "source_origin": "classic-db"
     },

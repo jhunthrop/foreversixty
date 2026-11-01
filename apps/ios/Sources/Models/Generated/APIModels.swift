@@ -2136,6 +2136,7 @@ public struct FinishedSim: Codable, Sendable, Equatable {
     }
 }
 
+/// One sourced line about what Forever changed (classes.json and races.json).
 public struct ForeverChange: Codable, Sendable, Equatable {
     public let text: String
     public let sources: [ChangeSource]
@@ -4546,6 +4547,57 @@ public struct QuietHours: Codable, Sendable, Equatable {
         self.enabled = enabled
         self.start = start
         self.end = end
+    }
+}
+
+public struct RaceClassCombo: Codable, Sendable, Equatable {
+    public let raceId: Int
+    public let classId: Int
+    public let newInForever: Bool
+
+    public init(
+        raceId: Int,
+        classId: Int,
+        newInForever: Bool
+    ) {
+        self.raceId = raceId
+        self.classId = classId
+        self.newInForever = newInForever
+    }
+}
+
+public struct RaceInfo: Codable, Sendable, Equatable {
+    public let id: Int
+    public let name: String
+    public let slug: String
+    public let faction: String
+    public let placeholder: Bool
+    public let foreverChanges: [ForeverChange]
+
+    public init(
+        id: Int,
+        name: String,
+        slug: String,
+        faction: String,
+        placeholder: Bool,
+        foreverChanges: [ForeverChange] = []
+    ) {
+        self.id = id
+        self.name = name
+        self.slug = slug
+        self.faction = faction
+        self.placeholder = placeholder
+        self.foreverChanges = foreverChanges
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(Int.self, forKey: .id)
+        name = try c.decode(String.self, forKey: .name)
+        slug = try c.decode(String.self, forKey: .slug)
+        faction = try c.decode(String.self, forKey: .faction)
+        placeholder = try c.decode(Bool.self, forKey: .placeholder)
+        foreverChanges = try c.decodeIfPresent([ForeverChange].self, forKey: .foreverChanges) ?? []
     }
 }
 

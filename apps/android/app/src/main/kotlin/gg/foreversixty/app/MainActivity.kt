@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
                         search = graph.search.takeIf { it.enabled },
                         guides = graph.guides,
                         system = graph.system.navigator,
+                        planner = graph.planner,
                     )
                     }
                 } else {
@@ -98,6 +99,16 @@ class MainActivity : ComponentActivity() {
         return true
     }
 
+    /**
+     * The web page, in the browser app: the selector keeps this app's own /b/ filter from catching the
+     * link again (a deep link is never a dead end, spec §3.4).
+     */
+    private fun openInBrowser(link: String) {
+        val view = Intent(Intent.ACTION_VIEW, link.toUri()).addCategory(Intent.CATEGORY_BROWSABLE)
+        view.selector = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+        runCatching { startActivity(view) }
+    }
+
     private fun openStore(url: String) {
         startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
     }
@@ -128,6 +139,9 @@ class MainActivity : ComponentActivity() {
             is DeepLink.Rankings, is DeepLink.Player -> graph.home.rankings?.navigator?.open(parsed)
             // Lane F9: a guides link opens the Guides tab and the guide.
             is DeepLink.Guides, is DeepLink.Guide -> graph.guides?.navigator?.open(parsed)
+            // Lane F13: the planner, Your builds and a shared build; with `planner` off a /b/ link is the web page.
+            is DeepLink.Planner, DeepLink.Builds -> graph.planner?.open(parsed)
+            is DeepLink.SharedBuild -> if (graph.planner?.open(parsed) != true) openInBrowser(link)
             // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.
             else -> if (graph.raids.enabled) graph.raids.navigator.open(parsed)
         }

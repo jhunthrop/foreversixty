@@ -22,7 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import java.util.Locale
 
 /**
@@ -44,7 +46,10 @@ fun BrandButton(
     height: Dp = 52.dp,
     fill: Boolean = true,
     leadingIcon: ImageVector? = null,
+    /** The leading icon at the label's size, so it grows with the font scale (16 at 1x). */
+    iconScalesWithText: Boolean = false,
 ) {
+    val iconSize = if (iconScalesWithText) with(LocalDensity.current) { ICON_TEXT_SIZE.toDp() } else ICON_SIZE
     val shape = RoundedCornerShape(FsRadius.control)
     val size = if (fill) modifier.fillMaxWidth().heightIn(min = height) else modifier.heightIn(min = height)
     val padding = PaddingValues(horizontal = HORIZONTAL_PADDING)
@@ -53,7 +58,7 @@ fun BrandButton(
             CircularProgressIndicator(Modifier.size(20.dp), color = contentColor(kind), strokeWidth = 2.dp)
         } else {
             if (leadingIcon != null) {
-                Icon(leadingIcon, contentDescription = null, modifier = Modifier.size(16.dp))
+                Icon(leadingIcon, contentDescription = null, modifier = Modifier.size(iconSize))
                 Spacer(Modifier.width(FsSpacing.space2))
             }
             Text(caseOf(kind, label), style = FsType.button, textAlign = TextAlign.Center)
@@ -94,6 +99,8 @@ fun BrandButton(
 }
 
 private val HORIZONTAL_PADDING = 18.dp
+private val ICON_SIZE = 16.dp
+private val ICON_TEXT_SIZE = 16.sp
 private const val DISABLED_ALPHA = 0.38f
 
 /** Spec §4.5: the primary button is uppercase; a secondary reads in sentence case (BiS UX verdict). */

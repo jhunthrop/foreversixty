@@ -1,13 +1,12 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import generated from '../../data/generated/sim-ids.json';
 import { selectedIn } from './buffs';
 import { simCopy } from './copy';
 import {
   BUFF_PRESETS,
-  CASTER_CONSUMABLES,
   DEFAULT_TARGET_LEVEL,
   defaultSettings,
   defaultTargetLevel,
@@ -20,7 +19,6 @@ import {
   MAX_TARGETS,
   MAX_VARIATION,
   MIN_DURATION_SEC,
-  PHYSICAL_CONSUMABLES,
   PRESET_BUFFS,
   presetConsumables,
   RAID_BUFFS,
@@ -46,17 +44,42 @@ import {
   withVariation,
 } from './settings';
 import { DEFAULT_ENCOUNTER } from './types';
+import { loadRaidConsumes } from './raid-consumes';
+
+// The Raid-buffed consumables are a chunk loaded on demand (raid-consumes.ts).
+beforeAll(() => loadRaidConsumes());
 
 const CURATED_PRESETS = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '../../../../data/curated/presets.json',
 );
-const PHYSICAL = 'attack_power';
-const CASTER = 'spell_power';
+const RAID_CONSUMES = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../../../sim/request/raid-consumes.json',
+);
+const FURY = 'warrior-fury';
+const FIRE = 'mage-fire';
+
+const MAX = 60;
+const LADDER_BANDS = [20, 30, 40, 50, 60] as const;
+
+type LevelRows = { from_level: number; consumes: string[] }[];
+
+/** The raid set per spec and level, read straight from the Go-generated file (whose rows
+ *  sim/request's TestRaidConsumesAreThePublishedSetAtEveryLevel holds to the published setup). */
+function publishedRows(): Record<string, LevelRows> {
+  return (JSON.parse(readFileSync(RAID_CONSUMES, 'utf8')) as { specs: Record<string, LevelRows> }).specs;
+}
+
+function publishedAt(spec: string, level: number): string[] {
+  return publishedRows()
+    [spec]!.filter((row) => row.from_level <= level)
+    .at(-1)!.consumes;
+}
 
 describe('defaultSettings', () => {
   it("is the contract's EncounterSpec defaults, raid-buffed, on Patchwerk", () => {
-    const settings = defaultSettings(PHYSICAL);
+    const settings = defaultSettings(FURY, MAX);
     expect(settings.encounter).toEqual({
       duration_sec: 180,
       variation: 0.2,
@@ -77,14 +100,73 @@ describe('defaultSettings', () => {
     expect(settings.cooldowns).toEqual([]);
   });
 
-  it('carries the physical consumables for attack_power and the caster ones for spell_power', () => {
-    expect(defaultSettings(PHYSICAL).consumables).toEqual([...PHYSICAL_CONSUMABLES]);
-    expect(defaultSettings(CASTER).consumables).toEqual([...CASTER_CONSUMABLES]);
+  it('carries each spec’s published level-60 raid consumables (round 5 ruling 3), so page and published DPS agree', () => {
+    const specs = Object.keys(publishedRows());
+    expect(specs.length).toBeGreaterThanOrEqual(27);
+    for (const spec of specs) {
+      for (const level of LADDER_BANDS) {
+        expect(defaultSettings(spec, level).consumables, `${spec} ${level}`).toEqual(
+          publishedAt(spec, level),
+        );
+      }
+    }
   });
 
-  it('falls back to the physical set for a reference_stat it does not recognise, rather than an empty preset', () => {
-    expect(defaultSettings('').consumables).toEqual([...PHYSICAL_CONSUMABLES]);
-    expect(defaultSettings('unknown-stat').consumables).toEqual([...PHYSICAL_CONSUMABLES]);
+  it('follows the kit’s level gates: Instant Poisons from 20, Deadly from 30, Rockbiter before Windfury', () => {
+    expect(defaultSettings('rogue-combat', 25).consumables).toContain('main_hand_imbue:instant_poison');
+    expect(defaultSettings('rogue-combat', 25).consumables).not.toContain('main_hand_imbue:deadly_poison');
+    expect(defaultSettings('rogue-combat', 19).consumables.some((id) => id.endsWith('_poison'))).toBe(false);
+    expect(defaultSettings('shaman-enhancement', 29).consumables).toContain(
+      'main_hand_imbue:rockbiter_weapon',
+    );
+    expect(defaultSettings('shaman-enhancement', 30).consumables).toContain(
+      'main_hand_imbue:windfury_weapon',
+    );
+  });
+
+  it('carries only consumables the character’s level can use (the client’s RequiredLevel)', () => {
+    const fury40 = defaultSettings('warrior-fury', 40).consumables;
+    for (const id of [
+      'elixir_of_the_mongoose',
+      'mighty_rage_potion',
+      'main_hand_imbue:elemental_sharpening_stone',
+    ]) {
+      expect(fury40).not.toContain(id);
+    }
+    expect(defaultSettings('warrior-fury', 60).consumables).toContain('elixir_of_the_mongoose');
+  });
+
+  it('gives rogues their poisons and Survival its ranged set, not a shared physical list', () => {
+    const combat = defaultSettings('rogue-combat', MAX).consumables;
+    expect(combat).toContain('main_hand_imbue:deadly_poison');
+    expect(combat).toContain('off_hand_imbue:instant_poison');
+    expect(combat).not.toContain('main_hand_imbue:elemental_sharpening_stone');
+    const survival = defaultSettings('hunter-survival', MAX).consumables;
+    expect(survival).not.toContain('flask_of_the_titans');
+    expect(survival).not.toContain('mighty_rage_potion');
+  });
+
+  it('carries no consumables before a character, or for a spec the published set does not know', () => {
+    expect(defaultSettings().consumables).toEqual([]);
+    expect(defaultSettings('not-a-real-spec').consumables).toEqual([]);
+  });
+
+  it('carries Power Infusion in no default, for any spec or preset (round 5 ruling 2)', () => {
+    for (const spec of [...Object.keys(publishedRows()), '']) {
+      for (const preset of BUFF_PRESETS.map((row) => row.id)) {
+        const settings = withPreset(defaultSettings(spec, MAX), preset, spec, MAX);
+        expect([...settings.buffs, ...settings.consumables], `${spec} ${preset}`).not.toContain(
+          'power_infusions',
+        );
+      }
+    }
+    expect(RAID_BUFFS).not.toContain('power_infusions');
+  });
+
+  it('still offers Power Infusion as a player buff the player can tick', () => {
+    expect(
+      generated.buffs.some((row) => row.id === 'power_infusions' && row.message === 'IndividualBuffs'),
+    ).toBe(true);
   });
 });
 
@@ -113,13 +195,9 @@ describe('the Raid-buffed preset', () => {
     }
   });
 
-  it('splits the consumable half by reference_stat: 9 physical ids, 7 caster ids', () => {
-    expect(PHYSICAL_CONSUMABLES).toHaveLength(9);
-    expect(CASTER_CONSUMABLES).toHaveLength(7);
-    expect(presetConsumables('raid-buffed', PHYSICAL)).toBe(PHYSICAL_CONSUMABLES);
-    expect(presetConsumables('raid-buffed', CASTER)).toBe(CASTER_CONSUMABLES);
-    // Never both at once -- the engine's Consumes has one field per effect.
-    expect(PHYSICAL_CONSUMABLES.some((id) => CASTER_CONSUMABLES.includes(id))).toBe(false);
+  it('reads its consumable half per spec from the published set', () => {
+    expect(presetConsumables('raid-buffed', FURY, MAX)).toEqual(publishedAt(FURY, MAX));
+    expect(presetConsumables('raid-buffed', FIRE, MAX)).toEqual(publishedAt(FIRE, MAX));
   });
 
   it('carries every buff and consumable id in the synced catalogue -- an id the engine cannot map is ErrUnknownBuff/ErrUnknownConsume and fails the whole run', () => {
@@ -127,15 +205,18 @@ describe('the Raid-buffed preset', () => {
       ...generated.buffs.map((row) => row.id),
       ...generated.consumables.map((row) => row.id),
     ]);
-    for (const id of [...RAID_BUFFS, ...PHYSICAL_CONSUMABLES, ...CASTER_CONSUMABLES]) {
+    for (const id of [
+      ...RAID_BUFFS,
+      ...Object.values(publishedRows()).flatMap((rows) => rows.flatMap((row) => row.consumes)),
+    ]) {
       expect(published.has(id), id).toBe(true);
     }
   });
 
   it('solo stays self-only', () => {
     expect(PRESET_BUFFS.solo).toEqual([]);
-    expect(presetConsumables('solo', PHYSICAL)).toEqual([]);
-    expect(presetConsumables('solo', CASTER)).toEqual([]);
+    expect(presetConsumables('solo', FURY, MAX)).toEqual([]);
+    expect(presetConsumables('solo', FIRE, MAX)).toEqual([]);
   });
 
   /**
@@ -146,7 +227,7 @@ describe('the Raid-buffed preset', () => {
    * in a list nobody reads a length off.
    */
   it('reports real totals in the group counters the findings quoted as 4/30, 0/24 and 0/48', () => {
-    const settings = defaultSettings(PHYSICAL);
+    const settings = defaultSettings(FURY, MAX);
     const selection = { buffs: settings.buffs, consumables: settings.consumables };
     expect(selectedIn(selection, 'raid-buffs').length).toBeGreaterThan(4);
     expect(selectedIn(selection, 'debuffs').length).toBeGreaterThan(0);
@@ -184,20 +265,20 @@ describe('DURATIONS and durationLabel', () => {
 
 describe('the setters never mutate and always clamp', () => {
   it('keeps duration inside twenty seconds to ten minutes', () => {
-    const base = defaultSettings(PHYSICAL);
+    const base = defaultSettings(FURY, MAX);
     expect(withDuration(base, 5).encounter.duration_sec).toBe(MIN_DURATION_SEC);
     expect(withDuration(base, 9999).encounter.duration_sec).toBe(MAX_DURATION_SEC);
     expect(base.encounter.duration_sec).toBe(180);
   });
 
   it('keeps targets between one and ten', () => {
-    const base = defaultSettings(PHYSICAL);
+    const base = defaultSettings(FURY, MAX);
     expect(withTargets(base, 0).encounter.targets).toBe(1);
     expect(withTargets(base, 99).encounter.targets).toBe(MAX_TARGETS);
   });
 
   it('keeps variation between none and thirty per cent, in five-point steps', () => {
-    const base = defaultSettings(PHYSICAL);
+    const base = defaultSettings(FURY, MAX);
     expect(VARIATIONS).toEqual([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]);
     expect(MAX_VARIATION).toBe(0.3);
     expect(withVariation(base, -1).encounter.variation).toBe(0);
@@ -206,7 +287,7 @@ describe('the setters never mutate and always clamp', () => {
   });
 
   it('keeps the target level between sixty and sixty-three', () => {
-    const base = defaultSettings(PHYSICAL);
+    const base = defaultSettings(FURY, MAX);
     expect(TARGET_LEVELS).toEqual([60, 61, 62, 63]);
     expect(withTargetLevel(base, 42).encounter.target_level).toBe(60);
     expect(withTargetLevel(base, 99).encounter.target_level).toBe(63);
@@ -218,7 +299,7 @@ describe('the setters never mutate and always clamp', () => {
   // "clear the override" (settings.ts's own doc comment); a number, including 0, is always
   // an explicit override, never silently swapped for the preset.
   it('clears the override to the level’s preset on null, and keeps a numeric override non-negative and bounded', () => {
-    const base = defaultSettings(PHYSICAL);
+    const base = defaultSettings(FURY, MAX);
     const overridden = withTargetArmor(base, 3731);
     expect(overridden.encounter.target_armor).toBe(3731);
     expect(withTargetArmor(overridden, null).encounter.target_armor).toBeUndefined();
@@ -228,7 +309,7 @@ describe('the setters never mutate and always clamp', () => {
   });
 
   it('an explicit 0 is zero armor, not the preset', () => {
-    const base = defaultSettings(PHYSICAL);
+    const base = defaultSettings(FURY, MAX);
     expect(withTargetArmor(base, 0).encounter.target_armor).toBe(0);
   });
 
@@ -322,7 +403,7 @@ describe('the setters never mutate and always clamp', () => {
   });
 
   it('accepts only the contract’s target types; anything else is the default, no creature type', () => {
-    const base = defaultSettings(PHYSICAL);
+    const base = defaultSettings(FURY, MAX);
     expect(TARGET_TYPES).toContain('undead');
     expect(withTargetType(base, 'undead').encounter.target_type).toBe('undead');
     expect(withTargetType(base, 'gnome').encounter.target_type).toBe('unknown');
@@ -337,28 +418,28 @@ describe('the setters never mutate and always clamp', () => {
   });
 
   it('turns the dummy on and off', () => {
-    const base = defaultSettings(PHYSICAL);
+    const base = defaultSettings(FURY, MAX);
     expect(withDummy(base, true).encounter.dummy).toBe(true);
     expect(withDummy(withDummy(base, true), false).encounter.dummy).toBe(false);
   });
 
   it('turns the execute phase off by zeroing the ratio, and back on to the default', () => {
-    const base = defaultSettings(PHYSICAL);
+    const base = defaultSettings(FURY, MAX);
     const off = withExecutePhase(base, false);
     expect(off.encounter.execute_ratio).toBe(0);
     expect(executePhaseOn(off)).toBe(false);
     expect(withExecutePhase(off, true).encounter.execute_ratio).toBe(0.25);
   });
 
-  it('swaps the whole buff and consumable list with the preset, keyed off reference_stat, and leaves it alone for custom', () => {
-    const base = defaultSettings(PHYSICAL);
-    const solo = withPreset(base, 'solo', PHYSICAL);
+  it('swaps the whole buff and consumable list with the preset, keyed off the spec, and leaves it alone for custom', () => {
+    const base = defaultSettings(FURY, MAX);
+    const solo = withPreset(base, 'solo', FURY, MAX);
     expect(solo.buffs).toEqual([]);
     expect(solo.consumables).toEqual([]);
-    const caster = withPreset(base, 'raid-buffed', CASTER);
-    expect(caster.consumables).toEqual([...CASTER_CONSUMABLES]);
+    const caster = withPreset(base, 'raid-buffed', FIRE, MAX);
+    expect(caster.consumables).toEqual(publishedAt(FIRE, MAX));
     expect(caster.buffs).toEqual([...RAID_BUFFS]);
-    const custom = withPreset(base, 'custom', PHYSICAL);
+    const custom = withPreset(base, 'custom', FURY, MAX);
     expect(custom.buffs).toEqual(base.buffs);
     expect(custom.consumables).toEqual(base.consumables);
     expect(custom.preset).toBe('custom');
@@ -376,8 +457,8 @@ describe('the setters never mutate and always clamp', () => {
  */
 describe('withPreset(..., "custom")', () => {
   it('carries every tick across rather than resetting to empty', () => {
-    const raid = defaultSettings(PHYSICAL);
-    const custom = withPreset(raid, 'custom', PHYSICAL);
+    const raid = defaultSettings(FURY, MAX);
+    const custom = withPreset(raid, 'custom', FURY, MAX);
     expect(custom.buffs).toEqual(raid.buffs);
     expect(custom.buffs.length).toBeGreaterThan(0);
     expect(custom.consumables).toEqual(raid.consumables);
@@ -385,9 +466,9 @@ describe('withPreset(..., "custom")', () => {
   });
 
   it('leaving custom and returning to raid-buffed restores the preset exactly', () => {
-    const raid = defaultSettings(PHYSICAL);
-    const custom = withPreset(raid, 'custom', PHYSICAL);
-    const backToRaid = withPreset(custom, 'raid-buffed', PHYSICAL);
+    const raid = defaultSettings(FURY, MAX);
+    const custom = withPreset(raid, 'custom', FURY, MAX);
+    const backToRaid = withPreset(custom, 'raid-buffed', FURY, MAX);
     expect(backToRaid.buffs).toEqual(raid.buffs);
     expect(backToRaid.consumables).toEqual(raid.consumables);
   });
@@ -400,28 +481,25 @@ describe('withPreset(..., "custom")', () => {
  * the title and everything else the player already touched.
  */
 describe('withSpecForPreset', () => {
-  it('re-applies the current preset for the new spec’s reference_stat', () => {
-    // warrior-fury has reference_stat attack_power (specs.ts); mage-frost spell_power.
-    const forWarrior = defaultSettings(PHYSICAL);
-    expect(forWarrior.consumables).toEqual([...PHYSICAL_CONSUMABLES]);
-    const forMage = withSpecForPreset(forWarrior, 'mage-frost');
-    expect(forMage.consumables).toEqual([...CASTER_CONSUMABLES]);
+  it('re-applies the current preset for the new spec', () => {
+    const forWarrior = defaultSettings(FURY, MAX);
+    expect(forWarrior.consumables).toEqual(publishedAt(FURY, MAX));
+    const forMage = withSpecForPreset(forWarrior, 'mage-frost', MAX);
+    expect(forMage.consumables).toEqual(publishedAt('mage-frost', MAX));
     expect(forMage.preset).toBe('raid-buffed');
-    const backToWarrior = withSpecForPreset(forMage, 'warrior-fury');
-    expect(backToWarrior.consumables).toEqual([...PHYSICAL_CONSUMABLES]);
+    const forRogue = withSpecForPreset(forMage, 'rogue-combat', 25);
+    expect(forRogue.consumables).toEqual(publishedAt('rogue-combat', 25));
   });
 
   it('never touches a custom selection -- a mage-to-warrior switch keeps the player’s own ticks', () => {
-    const custom = withPreset(defaultSettings(PHYSICAL), 'custom', PHYSICAL);
-    const afterSwitch = withSpecForPreset(custom, 'mage-frost');
+    const custom = withPreset(defaultSettings(FURY, MAX), 'custom', FURY, MAX);
+    const afterSwitch = withSpecForPreset(custom, 'mage-frost', MAX);
     expect(afterSwitch).toEqual(custom);
   });
 
-  it('falls back to the physical set for an unknown spec rather than an empty preset', () => {
-    const forMage = withSpecForPreset(defaultSettings(CASTER), 'mage-frost');
-    expect(forMage.consumables).toEqual([...CASTER_CONSUMABLES]);
-    const forUnknown = withSpecForPreset(forMage, 'not-a-real-spec');
-    expect(forUnknown.consumables).toEqual([...PHYSICAL_CONSUMABLES]);
+  it('carries no consumables for an unknown spec rather than another spec’s set', () => {
+    const forMage = withSpecForPreset(defaultSettings(FIRE, MAX), 'mage-frost', MAX);
+    expect(withSpecForPreset(forMage, 'not-a-real-spec', MAX).consumables).toEqual([]);
   });
 });
 
@@ -431,37 +509,37 @@ describe('the setters guard against non-finite input', () => {
   // a wire field the contract requires as a plain number. Either way the setting has to
   // stay where it was, not snap anywhere.
   it('leaves duration where it was rather than producing NaN', () => {
-    const moved = withDuration(defaultSettings(PHYSICAL), 300);
+    const moved = withDuration(defaultSettings(FURY, MAX), 300);
     expect(withDuration(moved, NaN).encounter.duration_sec).toBe(300);
     expect(withDuration(moved, Infinity).encounter.duration_sec).toBe(300);
   });
 
   it('leaves targets where they were rather than producing NaN', () => {
-    const moved = withTargets(defaultSettings(PHYSICAL), 4);
+    const moved = withTargets(defaultSettings(FURY, MAX), 4);
     expect(withTargets(moved, NaN).encounter.targets).toBe(4);
     expect(withTargets(moved, Infinity).encounter.targets).toBe(4);
   });
 
   it('leaves variation where it was rather than producing NaN', () => {
-    const moved = withVariation(defaultSettings(PHYSICAL), 0.1);
+    const moved = withVariation(defaultSettings(FURY, MAX), 0.1);
     expect(withVariation(moved, NaN).encounter.variation).toBe(0.1);
     expect(withVariation(moved, Infinity).encounter.variation).toBe(0.1);
   });
 
   it('leaves the target level where it was rather than producing NaN', () => {
-    const moved = withTargetLevel(defaultSettings(PHYSICAL), 61);
+    const moved = withTargetLevel(defaultSettings(FURY, MAX), 61);
     expect(withTargetLevel(moved, NaN).encounter.target_level).toBe(61);
     expect(withTargetLevel(moved, Infinity).encounter.target_level).toBe(61);
   });
 
   it('leaves target armor where it was rather than producing NaN', () => {
-    const moved = withTargetArmor(defaultSettings(PHYSICAL), 3731);
+    const moved = withTargetArmor(defaultSettings(FURY, MAX), 3731);
     expect(withTargetArmor(moved, NaN).encounter.target_armor).toBe(3731);
     expect(withTargetArmor(moved, Infinity).encounter.target_armor).toBe(3731);
   });
 
   it('never lets a non-finite value reach the wire as null', () => {
-    const settings = withDuration(defaultSettings(PHYSICAL), NaN);
+    const settings = withDuration(defaultSettings(FURY, MAX), NaN);
     const wire = JSON.parse(JSON.stringify(settings.encounter)) as Record<string, unknown>;
     expect(wire.duration_sec).toBe(180);
   });
@@ -469,13 +547,13 @@ describe('the setters guard against non-finite input', () => {
 
 describe('the style and the controls beside it', () => {
   it('writes the style’s fields through applyFightStyle', () => {
-    const cleave = withStyle(defaultSettings(PHYSICAL), 'cleave-5');
+    const cleave = withStyle(defaultSettings(FURY, MAX), 'cleave-5');
     expect(cleave.encounter.targets).toBe(5);
     expect(styleIdOf(cleave)).toBe('cleave-5');
   });
 
   it('detaches from the style the moment a style-owned field is set by hand', () => {
-    const cleave = withStyle(defaultSettings(PHYSICAL), 'cleave-3');
+    const cleave = withStyle(defaultSettings(FURY, MAX), 'cleave-3');
     expect(styleIdOf(withTargets(cleave, 4))).toBe('');
     expect(styleIdOf(withExecutePhase(cleave, false))).toBe('');
     expect(styleIdOf(withDummy(cleave, true))).toBe('');
@@ -498,7 +576,7 @@ describe('the style and the controls beside it', () => {
   // dungeon pull's 1->5 ramp from the run the moment a player ticks "dummy" or flips
   // execute phase. This pins that: the ramp survives detachment.
   it('leaves the dungeon pull’s target-count timeline intact when a style-owned field detaches the encounter by hand', () => {
-    const dungeon = withStyle(defaultSettings(PHYSICAL), 'dungeon');
+    const dungeon = withStyle(defaultSettings(FURY, MAX), 'dungeon');
     const detached = withDummy(dungeon, true);
     expect(styleIdOf(detached)).toBe('');
     expect(detached.encounter.targets_over_time).toEqual(dungeon.encounter.targets_over_time);
@@ -507,8 +585,8 @@ describe('the style and the controls beside it', () => {
 
 describe('settingsLabel', () => {
   it('is the one line a saved sim is titled with, unchanged by the new controls', () => {
-    expect(settingsLabel(defaultSettings(PHYSICAL))).toBe('Raid-buffed, 3:00, single target');
-    expect(settingsLabel(withTargets(withPreset(defaultSettings(PHYSICAL), 'solo', PHYSICAL), 4))).toBe(
+    expect(settingsLabel(defaultSettings(FURY, MAX))).toBe('Raid-buffed, 3:00, single target');
+    expect(settingsLabel(withTargets(withPreset(defaultSettings(FURY, MAX), 'solo', FURY, MAX), 4))).toBe(
       'Solo, 3:00, 4 targets',
     );
   });

@@ -275,7 +275,7 @@ fun HomeCharacterScreen(
         // Lane F15: a newer build waits behind the strip above Talents; Update reloads it on that build.
         Column(Modifier.fillMaxSize()) {
             NewBuildStrip(shownModel) { scope.launch { shownModel.load() } }
-            TalentsRoute(character, shownModel) { showTalents = false }
+            TalentsRoute(character, shownModel, talents.planner) { showTalents = false }
         }
     } else if (showGear && home != null) {
         BackHandler { showGear = false }

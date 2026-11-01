@@ -1,15 +1,19 @@
 package main
 
-// Keeping the incumbent.
+// Keeping the verify-best set.
 //
-// A healer's published set must never be worse than the set the site
-// already published for the same band, preset and faction, when both are
-// measured under the harness the new set was ranked with. The ranker picks
-// slot by slot on noisy short sims, so a long chain of locally better picks can still end below a set
-// it could have kept. After the last pass the previous published set is
-// read back from the committed report, measured under the final harness
-// next to the new set, and kept when it beats the new set beyond the two
-// runs' combined standard error.
+// Owner ruling 4 (round 5): a published set must never be worse than a set
+// the ranker considered for the same band, preset and faction, when both
+// are measured under one harness. The ranker picks slot by slot on noisy
+// short sims, so a chain of locally better picks can end below the set it
+// started from, or below the set the site already published. After the
+// last pass every such set (the previous published set read back from the
+// committed report, and each stage the band passed through) is measured
+// under the guard harness next to the final set, and the best of them is
+// kept when it beats the final set beyond the two runs' combined standard
+// error. Every role runs the guard; until round 5 only healers compared
+// against the published set, and DPS and tank bands published sets their
+// own check scored lower (Arcane, Enhancement, Destruction, the tanks).
 
 import (
 	"encoding/json"
@@ -18,6 +22,7 @@ import (
 	"math"
 	"os"
 	"sort"
+	"strings"
 )
 
 // incumbentKey names one published set: a band, a preset, a faction.
@@ -67,12 +72,28 @@ func loadIncumbentSets(path string) (incumbentSets, error) {
 	return out, nil
 }
 
-// keptIncumbent is the published note of a band that kept its previous set:
-// both sets' effective healing per second under the final harness, with their errors, and
-// the slots where they differ.
-type keptIncumbent struct {
-	IncumbentScore float64  `json:"incumbent_score"`
-	IncumbentError float64  `json:"incumbent_error"`
+// consideredSet is one set a band passed through on its way to the set it
+// publishes, or the set the site published before.
+type consideredSet struct {
+	Label string
+	Picks map[string]slotPick
+}
+
+// The labels keepVerifyBest publishes for the set it kept.
+const (
+	consideredIncumbent       = "the previous published set"
+	consideredBeforeVerify    = "the set before the verify swaps"
+	consideredBeforeSets      = "the set before set completion"
+	consideredBeforeConfirmed = "the set before the confirmed-stats check"
+)
+
+// keptAlternative is the published note of a band whose final set lost to a
+// set it considered: which set was kept, both scores under the guard harness
+// with their errors, and the slots where they differ.
+type keptAlternative struct {
+	Kept           string   `json:"kept"`
+	KeptScore      float64  `json:"kept_score"`
+	KeptError      float64  `json:"kept_error"`
 	NewScore       float64  `json:"new_score"`
 	NewError       float64  `json:"new_error"`
 	DifferingSlots []string `json:"differing_slots"`
@@ -81,12 +102,11 @@ type keptIncumbent struct {
 // incumbentPicks rebuilds the incumbent as picks on the current candidate
 // pools. A slot whose item the current pool does not offer (renamed away,
 // no longer eligible) makes the incumbent unreproducible: ok is false and
-// the new set stands, as does a band with no incumbent at all. A slot where the incumbent wears what the new set
-// wears keeps the new set's own pick; a slot where it differs takes the
-// incumbent's item with the new set's item as its runner-up.
-func incumbentPicks(gear map[string]int, current map[string]slotPick, pools map[string][]scored) (picks map[string]slotPick, differing []string, ok bool) {
+// the new set stands, as does a band with no incumbent at all. A slot where
+// the incumbent wears what the new set wears keeps the new set's own pick.
+func incumbentPicks(gear map[string]int, current map[string]slotPick, pools map[string][]scored) (picks map[string]slotPick, ok bool) {
 	if len(gear) == 0 {
-		return nil, nil, false
+		return nil, false
 	}
 	picks = make(map[string]slotPick, len(current))
 	for slot, id := range gear {
@@ -96,18 +116,11 @@ func incumbentPicks(gear map[string]int, current map[string]slotPick, pools map[
 		}
 		item, found := findScored(pools[slot], id)
 		if !found {
-			return nil, nil, false
+			return nil, false
 		}
-		picks[slot] = slotPick{Item: &item, RunnerUp: current[slot].Item}
-		differing = append(differing, slot)
+		picks[slot] = slotPick{Item: &item}
 	}
-	for slot, cur := range current {
-		if _, worn := gear[slot]; !worn && cur.Item != nil {
-			differing = append(differing, slot)
-		}
-	}
-	sort.Strings(differing)
-	return picks, differing, true
+	return picks, true
 }
 
 // findScored is the candidate with the given item id.
@@ -120,42 +133,136 @@ func findScored(pool []scored, id int) (scored, bool) {
 	return scored{}, false
 }
 
-// keepIncumbent measures the new band and the incumbent set under the final
-// harness and returns the incumbent's band when it beats the new set beyond
-// error, the new band otherwise. The note is nil unless the incumbent was
-// kept. An incumbent identical to the new set, or one the pools cannot
-// reproduce, costs no run.
-func keepIncumbent(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, current verifiedBand, gear map[string]int, pools map[string][]scored) (verifiedBand, *keptIncumbent, error) {
-	picks, differing, ok := incumbentPicks(gear, current.picks, pools)
-	if !ok || len(differing) == 0 {
+// differingSlots is every slot where a and b wear different items (or one
+// wears nothing), sorted.
+func differingSlots(a, b map[string]slotPick) []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, m := range []map[string]slotPick{a, b} {
+		for slot := range m {
+			if seen[slot] {
+				continue
+			}
+			seen[slot] = true
+			if pickedID(a[slot]) != pickedID(b[slot]) {
+				out = append(out, slot)
+			}
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
+func pickedID(pk slotPick) int {
+	if pk.Item == nil {
+		return 0
+	}
+	return pk.Item.ID
+}
+
+// wearsUnconfirmedIn reports whether picks wears an item the client has not
+// confirmed in any of slots: preferConfirmedStats holds such an item out on
+// purpose, so the guard never restores one.
+func wearsUnconfirmedIn(picks map[string]slotPick, slots []string) bool {
+	for _, slot := range slots {
+		if pk := picks[slot]; pk.Item != nil && pk.Item.ClientUnconfirmed {
+			return true
+		}
+	}
+	return false
+}
+
+// guardIterations is the iterations a guard run asks for. Every role is
+// compared at the healer harness's effective count: the heal runner scales
+// verifyIterations by healIterationScale itself, so a healer asks for
+// verifyIterations and every other role for the scaled count. At 300
+// iterations a set's error is about 1% of its DPS, too wide to resolve the
+// 1 to 2% losses round 5 found.
+func guardIterations(spec specInfo) int {
+	if isHealer(spec) {
+		return verifyIterations
+	}
+	return verifyIterations * healIterationScale
+}
+
+// keepVerifyBest is owner ruling 4's guard: the ranker never publishes a set
+// its own check scores lower than an alternative it considered. The final
+// band and every distinct considered set are measured under the guard
+// harness; the best considered set is published instead when it beats the
+// final one beyond the two runs' combined standard error. A set identical
+// to the final one, a repeat of a set already measured, or one wearing an
+// item the client has not confirmed costs no run. The note is nil unless
+// another set was kept.
+func keepVerifyBest(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, current verifiedBand, considered []consideredSet) (verifiedBand, *keptAlternative, error) {
+	type contender struct {
+		set       consideredSet
+		differing []string
+	}
+	var contenders []contender
+	measuredKeys := map[string]bool{}
+	for _, c := range considered {
+		differing := differingSlots(c.Picks, current.picks)
+		if len(differing) == 0 || wearsUnconfirmedIn(c.Picks, differing) {
+			continue
+		}
+		key := gearFingerprint(c.Picks)
+		if measuredKeys[key] {
+			continue
+		}
+		measuredKeys[key] = true
+		contenders = append(contenders, contender{set: c, differing: differing})
+	}
+	if len(contenders) == 0 {
 		return current, nil, nil
 	}
 	newScore, newErr, err := measureSet(runner, spec, race, classSlug, level, talents, current.picks)
 	if err != nil {
-		return verifiedBand{}, nil, fmt.Errorf("measuring the new set: %w", err)
+		return verifiedBand{}, nil, fmt.Errorf("measuring the final set: %w", err)
 	}
-	incScore, incErr, err := measureSet(runner, spec, race, classSlug, level, talents, picks)
-	if err != nil {
-		return verifiedBand{}, nil, fmt.Errorf("measuring the incumbent set: %w", err)
-	}
-	if incScore-newScore <= math.Hypot(newErr, incErr) {
-		return current, nil, nil
-	}
-	for _, slot := range differing {
-		if pk, worn := picks[slot]; worn {
-			measured := *pk.Item
-			measured.MeasuredDPS = incScore
-			pk.Item = &measured
-			picks[slot] = pk
+	var best *contender
+	var bestScore, bestErr float64
+	for i := range contenders {
+		score, stdErr, err := measureSet(runner, spec, race, classSlug, level, talents, contenders[i].set.Picks)
+		if err != nil {
+			return verifiedBand{}, nil, fmt.Errorf("measuring %s: %w", contenders[i].set.Label, err)
+		}
+		if best == nil || score > bestScore {
+			best, bestScore, bestErr = &contenders[i], score, stdErr
 		}
 	}
-	note := &keptIncumbent{IncumbentScore: incScore, IncumbentError: incErr, NewScore: newScore, NewError: newErr, DifferingSlots: differing}
-	return verifiedBand{picks: dropStaleSetBonuses(picks), setDPS: incScore, errors: current.errors}, note, nil
+	if bestScore-newScore <= math.Hypot(newErr, bestErr) {
+		return current, nil, nil
+	}
+	picks := copyPicks(best.set.Picks)
+	for _, slot := range best.differing {
+		pk, worn := picks[slot]
+		if !worn || pk.Item == nil {
+			continue
+		}
+		measured := *pk.Item
+		measured.MeasuredDPS = bestScore
+		pk.Item = &measured
+		if replaced := current.picks[slot].Item; replaced != nil {
+			pk.RunnerUp = replaced
+		}
+		picks[slot] = pk
+	}
+	note := &keptAlternative{Kept: best.set.Label, KeptScore: bestScore, KeptError: bestErr, NewScore: newScore, NewError: newErr, DifferingSlots: best.differing}
+	return verifiedBand{picks: dropStaleSetBonuses(picks), setDPS: bestScore, errors: current.errors}, note, nil
 }
 
-// measureSet is a set's score and standard error under the verification
-// harness: the verification seed and iterations, the band's talents.
+// gearFingerprint is a set's equipped gear as a comparable string.
+func gearFingerprint(picks map[string]slotPick) string {
+	var b strings.Builder
+	for _, g := range buildGear(picks) {
+		fmt.Fprintf(&b, "%s=%d;", g.Slot, g.ItemID)
+	}
+	return b.String()
+}
+
+// measureSet is a set's score and standard error under the guard harness:
+// the verification seed, guardIterations, the band's talents.
 func measureSet(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick) (score, stdErr float64, err error) {
 	ch := bandCharacter("verify", race, classSlug, spec.Spec, level, talents, buildGear(picks))
-	return runner.RunPlainDPSWithError(plainRequest(spec, ch, verifyIterations, verifySeed))
+	return runner.RunPlainDPSWithError(plainRequest(spec, ch, guardIterations(spec), verifySeed))
 }

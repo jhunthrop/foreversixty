@@ -10,6 +10,9 @@ enum TalentGeometry {
     static let icon: CGFloat = 44
     static let border: CGFloat = 2
     static let tierPitch: CGFloat = 70
+    /// The planner's pitch (F13.1): a whole seven-tier tree fits above the stepper strip on an
+    /// iPhone 17 at the default text size; the badges still clear the next tier.
+    static let compactTierPitch: CGFloat = 60
     static let maxColumnPitch: CGFloat = 96
     static let columns = 4
     static let reservedTiers = 7
@@ -20,14 +23,16 @@ enum TalentGeometry {
     static let lineWidth: CGFloat = 2
     static let haloWidth: CGFloat = 5
 
-    static var height: CGFloat { CGFloat(reservedTiers - 1) * tierPitch + cell + badgeHang + 2 }
+    static var height: CGFloat { height(pitch: tierPitch) }
+
+    static func height(pitch: CGFloat) -> CGFloat { CGFloat(reservedTiers - 1) * pitch + cell + badgeHang + 2 }
 
     static func columnPitch(width: CGFloat) -> CGFloat {
         min(maxColumnPitch, ((width - 2 * margin - cell) / CGFloat(columns - 1)).rounded(.down))
     }
 
     /// The top-left corner of a cell, the grid centred in `width`.
-    static func origin(_ cell: TalentCell, width: CGFloat) -> CGPoint {
+    static func origin(_ cell: TalentCell, width: CGFloat, tierPitch: CGFloat = tierPitch) -> CGPoint {
         let pitch = columnPitch(width: width)
         let left = (width - (Self.cell + CGFloat(columns - 1) * pitch)) / 2
         return CGPoint(x: left + CGFloat(cell.column) * pitch, y: CGFloat(cell.tier) * tierPitch)
@@ -35,10 +40,10 @@ enum TalentGeometry {
 
     /// A prerequisite line from cell edge to cell edge (`connectors.ts` `connectorPath`), and the
     /// point and direction its arrowhead ends on.
-    static func path(_ line: TalentConnector, width: CGFloat) -> (path: Path, tip: CGPoint, direction: CGVector) {
+    static func path(_ line: TalentConnector, width: CGFloat, tierPitch: CGFloat = tierPitch) -> (path: Path, tip: CGPoint, direction: CGVector) {
         let half = cell / 2
-        let from = origin(line.from, width: width)
-        let to = origin(line.to, width: width)
+        let from = origin(line.from, width: width, tierPitch: tierPitch)
+        let to = origin(line.to, width: width, tierPitch: tierPitch)
         let start: CGPoint
         let tip: CGPoint
         let direction: CGVector
@@ -82,13 +87,19 @@ enum TalentGeometry {
     }
 }
 
-/// One tree: the prerequisite lines under the cells (spec F6 §5.2).
+/// One tree: the prerequisite lines under the cells (spec F6 §5.2). F6 draws it read-only (a tap
+/// opens the rank sheet); the planner (F13.1) passes `remove`, which makes each cell editable:
+/// a tap adds a point, a long press removes one, and VoiceOver gets both as named actions.
 struct TalentTreeView: View {
     let cells: [TalentCellModel]
     let connectors: [TalentConnector]
     let build: String
     let selectedID: Int?
+    /// A tap: F6 opens the rank sheet, the planner adds a point.
     let open: (Int) -> Void
+    /// The planner's long press: remove a point. Nil draws the read-only tree.
+    var remove: ((Int) -> Void)?
+    var tierPitch: CGFloat = TalentGeometry.tierPitch
 
     var body: some View {
         GeometryReader { proxy in
@@ -96,13 +107,16 @@ struct TalentTreeView: View {
             ZStack(alignment: .topLeading) {
                 lines(width: width)
                 ForEach(cells) { cell in
-                    let origin = TalentGeometry.origin(TalentCell(tier: cell.talent.tier, column: cell.talent.column), width: width)
-                    TalentCellView(cell: cell, build: build, isSelected: selectedID == cell.id) { open(cell.id) }
-                        .offset(x: origin.x, y: origin.y)
+                    let origin = TalentGeometry.origin(TalentCell(tier: cell.talent.tier, column: cell.talent.column), width: width, tierPitch: tierPitch)
+                    TalentCellView(
+                        cell: cell, build: build, isSelected: selectedID == cell.id,
+                        open: { open(cell.id) }, remove: remove.map { remove in { remove(cell.id) } }
+                    )
+                    .offset(x: origin.x, y: origin.y)
                 }
             }
         }
-        .frame(height: TalentGeometry.height)
+        .frame(height: TalentGeometry.height(pitch: tierPitch))
         .background(alignment: .top) { tierAnchors }
     }
 
@@ -111,7 +125,7 @@ struct TalentTreeView: View {
         ZStack(alignment: .top) {
             ForEach(0..<TalentGeometry.reservedTiers, id: \.self) { tier in
                 VStack(spacing: 0) {
-                    Color.clear.frame(height: CGFloat(tier) * TalentGeometry.tierPitch)
+                    Color.clear.frame(height: CGFloat(tier) * tierPitch)
                     Color.clear.frame(height: TalentGeometry.cell).id(Self.anchor(tier: tier))
                 }
             }
@@ -124,7 +138,7 @@ struct TalentTreeView: View {
     private func lines(width: CGFloat) -> some View {
         Canvas { context, _ in
             for line in connectors {
-                let (path, tip, direction) = TalentGeometry.path(line, width: width)
+                let (path, tip, direction) = TalentGeometry.path(line, width: width, tierPitch: tierPitch)
                 let color = line.met ? FSColor.gold : FSColor.line
                 let head = TalentGeometry.arrowhead(tip: tip, direction: direction)
                 context.stroke(path, with: .color(FSColor.bg), style: StrokeStyle(lineWidth: TalentGeometry.haloWidth, lineCap: .round))
@@ -144,24 +158,50 @@ struct TalentCellView: View {
     let build: String
     let isSelected: Bool
     let open: () -> Void
+    /// The planner's long press; nil for F6's read-only cell.
+    var remove: (() -> Void)?
 
+    /// The web planner's `LONG_PRESS_MS`.
+    static let longPress: Double = 0.5
+
+    @ViewBuilder
     var body: some View {
-        Button(action: open) {
-            TalentIconTile(talent: cell.talent, state: cell.state, build: build)
-                .overlay { ring }
-                .overlay(alignment: .bottomTrailing) { badge.offset(x: 6, y: 6) }
-                .overlay(alignment: .topLeading) { chip.offset(x: -8, y: -8) }
-                .overlay {
-                    if isSelected {
-                        RoundedRectangle(cornerRadius: FSRadius.control + 9)
-                            .stroke(FSColor.gold, lineWidth: 2)
-                            .padding(-9)
-                    }
-                }
+        if let remove {
+            editable(remove: remove)
+        } else {
+            Button(action: open) { face }
+                .buttonStyle(CellPressStyle())
+                .accessibilityLabel(cell.accessibilityLabel)
+                .accessibilityHint(Copy.talentsA11yHint)
         }
-        .buttonStyle(CellPressStyle())
-        .accessibilityLabel(cell.accessibilityLabel)
-        .accessibilityHint(Copy.talentsA11yHint)
+    }
+
+    private var face: some View {
+        TalentIconTile(talent: cell.talent, state: cell.state, build: build)
+            .overlay { ring }
+            .overlay(alignment: .bottomTrailing) { badge.offset(x: 6, y: 6) }
+            .overlay(alignment: .topLeading) { chip.offset(x: -8, y: -8) }
+            .overlay {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: FSRadius.control + 9)
+                        .stroke(FSColor.gold, lineWidth: 2)
+                        .padding(-9)
+                }
+            }
+    }
+
+    /// Tap adds, long press removes (spec F13.1); a long press never also fires the tap.
+    private func editable(remove: @escaping () -> Void) -> some View {
+        face
+            .contentShape(.rect)
+            .onTapGesture(perform: open)
+            .onLongPressGesture(minimumDuration: Self.longPress, perform: remove)
+            .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(Copy.planA11yCell(name: cell.talent.name, n: cell.rank, max: cell.talent.maxRank))
+            .accessibilityAction(.default, open)
+            .accessibilityAction(named: Copy.planAddPoint, open)
+            .accessibilityAction(named: Copy.planRemovePoint, remove)
     }
 
     private var deltaColor: Color { (cell.delta ?? 0) > 0 ? FSColor.wipe : FSColor.gold }
@@ -235,6 +275,7 @@ enum TalentColors {
         switch state {
         case .maxed, .filled: FSColor.kill
         case .open, .locked: FSColor.line
+        case .available: FSColor.gold
         }
     }
 
@@ -244,6 +285,7 @@ enum TalentColors {
         switch state {
         case .maxed: FSColor.kill
         case .filled: FSColor.text
+        case .available: FSColor.gold
         case .open, .locked: FSColor.muted
         }
     }

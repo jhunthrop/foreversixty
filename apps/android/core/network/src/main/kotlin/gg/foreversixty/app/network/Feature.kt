@@ -35,4 +35,6 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     GuildExtras("guild_extras", false),
     /** F15: System integration: Siri and App Shortcuts, the Control, Spotlight, the Android shortcuts and Assistant features, and You › Offline data. Share actions, the stale strip and haptics follow their own screens' switches */
     System("system", false),
+    /** F13: The talent planner: plan a build, share it, open a shared /b/ link, and Your builds */
+    Planner("planner", false),
 }

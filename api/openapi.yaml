@@ -3056,24 +3056,41 @@ components:
         name: { type: string }
         slug: { type: string }
         color: { type: string, description: "#RRGGBB" }
-        forever_changes:
+        forever_changes: { type: array, items: { $ref: '#/components/schemas/ForeverChange' } }
+    ForeverChange:
+      type: object
+      title: ForeverChange
+      description: One sourced line about what Forever changed (classes.json and races.json).
+      required: [text, sources]
+      properties:
+        text: { type: string }
+        sources:
           type: array
           items:
             type: object
-            title: ForeverChange
-            required: [text, sources]
+            title: ChangeSource
+            required: [label, url, kind]
             properties:
-              text: { type: string }
-              sources:
-                type: array
-                items:
-                  type: object
-                  title: ChangeSource
-                  required: [label, url, kind]
-                  properties:
-                    label: { type: string }
-                    url: { type: string }
-                    kind: { type: string }
+              label: { type: string }
+              url: { type: string }
+              kind: { type: string }
+    RaceInfo:
+      type: object
+      required: [id, name, slug, faction, placeholder, forever_changes]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        faction: { type: string, enum: [alliance, horde] }
+        placeholder: { type: boolean }
+        forever_changes: { type: array, items: { $ref: '#/components/schemas/ForeverChange' } }
+    RaceClassCombo:
+      type: object
+      required: [race_id, class_id, new_in_forever]
+      properties:
+        race_id: { type: integer }
+        class_id: { type: integer }
+        new_in_forever: { type: boolean }
     BisFile:
       type: object
       description: The BiS lists for one spec. Pick a band by (band, faction, preset).
@@ -4006,6 +4023,31 @@ paths:
         '404':
           description: "Unknown id"
           x-fixtures: [builds.get.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '500':
+          description: "Unexpected store error"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    delete:
+      operationId: removeBuild
+      tags: [app]
+      summary: Take a build off the caller's own list (W3-C9)
+      description: >-
+        Removes the build from GET /v1/builds?mine=1 only. The record and its /b/{id} link stay and
+        keep working for anyone who has them; saving the same build again puts it back on the list.
+        Auth session or device token.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '204': { description: "Removed from your list" }
+        '404':
+          description: "Not on your list: another player's build, nobody's, or no such id"
+          x-fixtures: [builds.delete.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token, or a dead one"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '500':
           description: "Unexpected store error"
@@ -6544,6 +6586,39 @@ paths:
           description: "One entry per class"
           x-fixtures: [cdn.classes]
           content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ClassInfo' } } } }
+  /data/{build}/races.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Every race of a build (W3-C10)
+      description: >-
+        One entry per race. faction is alliance or horde; placeholder marks a race the client
+        names but nobody can play yet (the planner lists none of those). The planner's Race sheet
+        lists the races combos.json pairs with the class.
+      operationId: getRaces
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "One entry per race"
+          x-fixtures: [cdn.races]
+          content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/RaceInfo' } } } }
+  /data/{build}/combos.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The legal race and class pairs of a build (W3-C10)
+      description: >-
+        One entry per legal pair; a pair that is not listed cannot be made (POST /v1/builds refuses
+        it). new_in_forever marks the pairs Forever added.
+      operationId: getCombos
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "One entry per legal pair"
+          x-fixtures: [cdn.combos]
+          content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/RaceClassCombo' } } } }
   /data/{build}/bis/{spec}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
     get:

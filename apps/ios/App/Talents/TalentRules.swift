@@ -127,9 +127,10 @@ enum TalentRules {
     }
 }
 
-/// A cell's state: the planner's `CellState` with `available` read as open (spec F6 §5.2).
+/// A cell's state: the planner's `CellState`. F6's read-only tree never draws `available` (it reads
+/// as open there); the planner (F13) draws it gold where a point can go now.
 enum TalentCellState: Equatable, Sendable {
-    case locked, open, filled, maxed
+    case locked, open, available, filled, maxed
 }
 
 /// A talent's place on the grid, 0-based.

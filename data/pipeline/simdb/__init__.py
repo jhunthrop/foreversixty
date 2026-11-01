@@ -51,6 +51,7 @@ from pipeline.normalize.gear import MAX_PLAYER_LEVEL, column_value, int_column, 
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.enchants import build_sim_enchants
 from pipeline.simdb.equip import equip_bonuses, index_spell_effects, item_effect_spells
+from pipeline.simdb.equip_fill import with_wowhead_equip_stats
 from pipeline.simdb.items import (
     build_classicdb_sim_items,
     build_sim_items,
@@ -58,6 +59,7 @@ from pipeline.simdb.items import (
     simdb_item_rows,
 )
 from pipeline.simdb.ratings import load_rating_factors
+from pipeline.simdb.shield_block import shield_block_values, with_shield_block
 from pipeline.simdb.weapons import load_weapon_curves
 from pipeline.simproto import pb
 
@@ -228,6 +230,11 @@ def build_sim_database(
         pairs, set_names, equip, curves, weapon_curves, rating_factors, fork_columns
     )
     sources: dict[int, str] = {item.id: "client" for item in items}
+    wowhead_path = raw / wh.CARRY_FILE
+    if wowhead_path.exists():
+        # A hotfix item's effect links never reach the client tables
+        # (pipeline/simdb/equip_fill.py); Wowhead states its on-equip stats.
+        items = with_wowhead_equip_stats(items, wh.load_items(wowhead_path), rating_factors)
 
     # Every id ItemSparse states outright, junk or not, gate-passing or not --
     # "the client already has this id" for a supplement's own purposes
@@ -243,7 +250,6 @@ def build_sim_database(
     # `fetch-wowhead` became a workflow step, and any build fetched without
     # it -- is byte-identical to what this function produced before this
     # branch existed.
-    wowhead_path = raw / wh.CARRY_FILE
     wowhead_ids: set[int] = set()
     if wowhead_path.exists():
         supplement = wh.supplement(wh.load_items(wowhead_path), client_ids)
@@ -290,6 +296,11 @@ def build_sim_database(
             len(classicdb_sim_items),
             dict(classicdb_untracked),
         )
+
+    # Every shield's own block value, which the client does not state
+    # (pipeline/simdb/shield_block.py); Wowhead Forever's feed carries it.
+    if wowhead_path.exists():
+        items = with_shield_block(items, shield_block_values(wh.load_items(wowhead_path)))
 
     database = pb.SimDatabase(
         items=items,

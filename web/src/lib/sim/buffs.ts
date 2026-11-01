@@ -91,6 +91,9 @@ const BY_CONSUMES_FIELD: Record<string, BuffGroupId> = {
   alcohol: 'food',
   main_hand_imbue: 'weapon-imbue',
   off_hand_imbue: 'weapon-imbue',
+  // A stone beside a rogue's poison (IDS.md: a poisoned hand also takes a stone or oil).
+  main_hand_stone: 'weapon-imbue',
+  off_hand_stone: 'weapon-imbue',
   default_potion: 'potion',
   default_conjured: 'potion',
   filler_explosive: 'explosive',

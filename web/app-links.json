@@ -4,5 +4,5 @@
   "iosBundleId": "gg.foreversixty.app",
   "androidPackage": "gg.foreversixty.app",
   "androidSha256Fingerprints": ["SHA256_FINGERPRINT_TODO"],
-  "paths": ["/app/*"]
+  "paths": ["/app/*", "/b/*"]
 }

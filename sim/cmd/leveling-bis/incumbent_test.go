@@ -46,10 +46,20 @@ func engineFor(newScore, incumbentScore, stdErr float64) *fakeEngine {
 	}
 }
 
-func TestKeepIncumbentKeepsTheOldSetThatBeatsTheNewOneBeyondError(t *testing.T) {
+// incumbentConsidered is the incumbent as the one set keepVerifyBest
+// considers, or none when the pools cannot reproduce it.
+func incumbentConsidered(gear map[string]int, current verifiedBand, pools map[string][]scored) []consideredSet {
+	picks, ok := incumbentPicks(gear, current.picks, pools)
+	if !ok {
+		return nil
+	}
+	return []consideredSet{{Label: consideredIncumbent, Picks: picks}}
+}
+
+func TestKeepVerifyBestKeepsTheIncumbentThatBeatsTheNewSetBeyondError(t *testing.T) {
 	current, pools := incumbentFixture()
 	engine := engineFor(500, 520, 2)
-	got, note, err := keepIncumbent(engine, specInfo{Spec: "druid-restoration"}, "tauren", "druid", 60, "", current, incumbentGear, pools)
+	got, note, err := keepVerifyBest(engine, specInfo{Spec: "druid-restoration"}, "tauren", "druid", 60, "", current, incumbentConsidered(incumbentGear, current, pools))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,30 +73,30 @@ func TestKeepIncumbentKeepsTheOldSetThatBeatsTheNewOneBeyondError(t *testing.T) 
 		t.Error("the new pick must be the kept slot's runner-up")
 	}
 	if got.picks["head"].Item.MeasuredDPS != 520 || got.picks["legs"].Item.MeasuredDPS != 0 {
-		t.Error("a changed slot is sim-decided at the incumbent's score; an unchanged one is not")
+		t.Error("a changed slot is sim-decided at the kept set's score; an unchanged one is not")
 	}
 	if want := []string{"chest", "head"}; !reflect.DeepEqual(note.DifferingSlots, want) {
 		t.Errorf("differing slots = %v, want %v", note.DifferingSlots, want)
 	}
-	if note.IncumbentScore != 520 || note.NewScore != 500 || note.IncumbentError != 2 || note.NewError != 2 {
-		t.Errorf("note = %+v, want both scores and errors", note)
+	if note.Kept != consideredIncumbent || note.KeptScore != 520 || note.NewScore != 500 || note.KeptError != 2 || note.NewError != 2 {
+		t.Errorf("note = %+v, want the kept set's label, both scores and errors", note)
 	}
 }
 
-func TestKeepIncumbentKeepsTheNewSetWhenTheDifferenceIsInsideError(t *testing.T) {
+func TestKeepVerifyBestKeepsTheNewSetWhenTheDifferenceIsInsideError(t *testing.T) {
 	current, pools := incumbentFixture()
 	// 3 ahead against a combined error of 2.83 would be kept; 2 is not.
-	_, note, err := keepIncumbent(engineFor(500, 502, 2), specInfo{}, "tauren", "druid", 60, "", current, incumbentGear, pools)
+	_, note, err := keepVerifyBest(engineFor(500, 502, 2), specInfo{}, "tauren", "druid", 60, "", current, incumbentConsidered(incumbentGear, current, pools))
 	if err != nil || note != nil {
 		t.Fatalf("note = %+v, err = %v: a gap inside the combined error must keep the new set", note, err)
 	}
-	_, note, err = keepIncumbent(engineFor(500, 490, 0.1), specInfo{}, "tauren", "druid", 60, "", current, incumbentGear, pools)
+	_, note, err = keepVerifyBest(engineFor(500, 490, 0.1), specInfo{}, "tauren", "druid", 60, "", current, incumbentConsidered(incumbentGear, current, pools))
 	if err != nil || note != nil {
 		t.Fatalf("note = %+v, err = %v: a worse incumbent must never be kept", note, err)
 	}
 }
 
-func TestKeepIncumbentCostsNothingWhenThereIsNothingToCompare(t *testing.T) {
+func TestKeepVerifyBestCostsNothingWhenThereIsNothingToCompare(t *testing.T) {
 	current, pools := incumbentFixture()
 	cases := map[string]map[string]int{
 		"the same set":                             {"head": 1, "chest": 2, "legs": 3},
@@ -98,7 +108,7 @@ func TestKeepIncumbentCostsNothingWhenThereIsNothingToCompare(t *testing.T) {
 	}
 	for name, gear := range cases {
 		engine := engineFor(500, 600, 0)
-		got, note, err := keepIncumbent(engine, specInfo{}, "tauren", "druid", 60, "", current, gear, pools)
+		got, note, err := keepVerifyBest(engine, specInfo{}, "tauren", "druid", 60, "", current, incumbentConsidered(gear, current, pools))
 		if err != nil || note != nil || got.setDPS != 500 {
 			t.Errorf("%s: got %+v note %+v err %v, want the new band back", name, got, note, err)
 		}
@@ -108,15 +118,127 @@ func TestKeepIncumbentCostsNothingWhenThereIsNothingToCompare(t *testing.T) {
 	}
 }
 
-func TestKeepIncumbentDropsASlotTheIncumbentLeftEmpty(t *testing.T) {
+func TestKeepVerifyBestDropsASlotTheIncumbentLeftEmpty(t *testing.T) {
 	current, pools := incumbentFixture()
 	engine := &fakeEngine{DPSByGear: map[string]float64{gear(1, 2, 3): 500, gear(1, 2): 530}}
-	got, note, err := keepIncumbent(engine, specInfo{}, "tauren", "druid", 60, "", current, map[string]int{"head": 1, "chest": 2}, pools)
+	got, note, err := keepVerifyBest(engine, specInfo{}, "tauren", "druid", 60, "", current, incumbentConsidered(map[string]int{"head": 1, "chest": 2}, current, pools))
 	if err != nil || note == nil {
 		t.Fatalf("note = %+v, err = %v, want the incumbent without legs kept", note, err)
 	}
 	if got.picks["legs"].Item != nil || !reflect.DeepEqual(note.DifferingSlots, []string{"legs"}) {
 		t.Errorf("picks = %+v, differing = %v, want legs empty", got.picks, note.DifferingSlots)
+	}
+}
+
+// Owner ruling 4 (round 5): the ranker never publishes a set its own check
+// scores lower than an alternative it considered. Every set a band passed
+// through on its way to the final one is such an alternative, and the best
+// of them that beats the final set beyond error is what gets published.
+func TestKeepVerifyBestPublishesTheBestConsideredSet(t *testing.T) {
+	current, _ := incumbentFixture()
+	beforeSwaps := map[string]slotPick{
+		"head":  pickOf(gearItem(11, "head")),
+		"chest": pickOf(gearItem(2, "chest")),
+		"legs":  pickOf(gearItem(3, "legs")),
+	}
+	beforeSets := map[string]slotPick{
+		"head":  pickOf(gearItem(1, "head")),
+		"chest": pickOf(gearItem(12, "chest")),
+		"legs":  pickOf(gearItem(3, "legs")),
+	}
+	engine := &fakeEngine{DPSByGear: map[string]float64{
+		gear(1, 2, 3):  500,
+		gear(11, 2, 3): 530,
+		gear(1, 12, 3): 515,
+	}, DefaultStdErr: 2}
+	got, note, err := keepVerifyBest(engine, specInfo{Spec: "mage-arcane"}, "troll", "mage", 60, "", current, []consideredSet{
+		{Label: consideredBeforeVerify, Picks: beforeSwaps},
+		{Label: consideredBeforeSets, Picks: beforeSets},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if note == nil || note.Kept != consideredBeforeVerify {
+		t.Fatalf("note = %+v, want the set before the swaps (530) kept over the final 500", note)
+	}
+	if got.setDPS != 530 || got.picks["head"].Item.ID != 11 || got.picks["chest"].Item.ID != 2 {
+		t.Errorf("kept band = %+v, want head 11 and chest 2 at 530", got.picks)
+	}
+	if got.picks["head"].RunnerUp == nil || got.picks["head"].RunnerUp.ID != 1 {
+		t.Error("the final set's item must be the kept slot's runner-up")
+	}
+}
+
+// An alternative is measured once however many stages left it unchanged,
+// and the final set once.
+func TestKeepVerifyBestMeasuresEachDistinctSetOnce(t *testing.T) {
+	current, _ := incumbentFixture()
+	other := map[string]slotPick{
+		"head":  pickOf(gearItem(11, "head")),
+		"chest": pickOf(gearItem(2, "chest")),
+		"legs":  pickOf(gearItem(3, "legs")),
+	}
+	engine := &fakeEngine{DPSByGear: map[string]float64{gear(1, 2, 3): 500, gear(11, 2, 3): 490}}
+	_, note, err := keepVerifyBest(engine, specInfo{}, "troll", "mage", 60, "", current, []consideredSet{
+		{Label: consideredBeforeVerify, Picks: other},
+		{Label: consideredBeforeSets, Picks: other},
+		{Label: consideredBeforeConfirmed, Picks: current.picks},
+	})
+	if err != nil || note != nil {
+		t.Fatalf("note = %+v, err = %v, want the final set kept", note, err)
+	}
+	if len(engine.Calls) != 2 {
+		t.Errorf("%d runs (%v), want two: the final set and the one distinct alternative", len(engine.Calls), engine.Calls)
+	}
+}
+
+// The confirmed-stats check holds an item the client has not confirmed out
+// of the set on purpose; a considered set that wears one again is not an
+// alternative the guard may restore.
+func TestKeepVerifyBestNeverRestoresAnUnconfirmedItem(t *testing.T) {
+	current, _ := incumbentFixture()
+	unconfirmed := gearItem(11, "head")
+	unconfirmed.ClientUnconfirmed = true
+	withUnconfirmed := map[string]slotPick{
+		"head":  pickOf(unconfirmed),
+		"chest": pickOf(gearItem(2, "chest")),
+		"legs":  pickOf(gearItem(3, "legs")),
+	}
+	engine := &fakeEngine{DPSByGear: map[string]float64{gear(1, 2, 3): 500, gear(11, 2, 3): 600}}
+	_, note, err := keepVerifyBest(engine, specInfo{}, "troll", "mage", 60, "", current, []consideredSet{{Label: consideredBeforeConfirmed, Picks: withUnconfirmed}})
+	if err != nil || note != nil {
+		t.Fatalf("note = %+v, err = %v, want the unconfirmed item left out", note, err)
+	}
+	if len(engine.Calls) != 0 {
+		t.Errorf("%d runs, want none", len(engine.Calls))
+	}
+}
+
+// The guard compares sets at the healer harness's effective iterations for
+// every role: a healer's runner scales verifyIterations itself, every other
+// role asks for the scaled count directly, so a 1 to 2% gap is resolved
+// beyond error where the 300-iteration verify run cannot resolve it.
+func TestGuardIterationsMatchTheHealerHarnessForEveryRole(t *testing.T) {
+	if got := guardIterations(specInfo{Role: healerRole}); got != verifyIterations {
+		t.Errorf("healer guard iterations = %d, want %d (the heal runner scales them)", got, verifyIterations)
+	}
+	if got := guardIterations(specInfo{Role: "dps"}); got != verifyIterations*healIterationScale {
+		t.Errorf("dps guard iterations = %d, want %d", got, verifyIterations*healIterationScale)
+	}
+	current, _ := incumbentFixture()
+	other := map[string]slotPick{"head": pickOf(gearItem(11, "head")), "chest": pickOf(gearItem(2, "chest")), "legs": pickOf(gearItem(3, "legs"))}
+	var seen []int
+	engine := &fakeEngine{DPSFunc: func(req api.SimRequest) (float64, error) {
+		seen = append(seen, req.Iterations)
+		return 500, nil
+	}}
+	if _, _, err := keepVerifyBest(engine, specInfo{Role: "tank"}, "orc", "warrior", 60, "", current, []consideredSet{{Label: consideredBeforeVerify, Picks: other}}); err != nil {
+		t.Fatal(err)
+	}
+	for _, n := range seen {
+		if n != verifyIterations*healIterationScale {
+			t.Errorf("a tank guard run asked for %d iterations, want %d", n, verifyIterations*healIterationScale)
+		}
 	}
 }
 

@@ -272,14 +272,14 @@ struct TalentsPresenter: Equatable, Sendable {
             state: TalentRules.cellState(talent, in: tree, ranks: ranks),
             current: rank > 0 ? description(rank - 1) : nil,
             next: rank < talent.maxRank ? description(rank) : nil,
-            requirements: requirements(talent, in: tree, ranks: ranks),
+            requirements: Self.requirements(talent, in: tree, ranks: ranks),
             guideLine: differs ? guideRank.map { Copy.talentsGuideRank(g: $0, max: talent.maxRank) } : nil,
             isOver: differs && rank > (guideRank ?? 0)
         )
     }
 
     /// The game's requirement lines, only when unmet in the drawn build (spec F6 §7).
-    private func requirements(_ talent: Talent, in tree: TalentTree, ranks: [Int: Int]) -> [String] {
+    static func requirements(_ talent: Talent, in tree: TalentTree, ranks: [Int: Int]) -> [String] {
         var lines: [String] = []
         let needed = TalentRules.pointsPerTier * talent.tier
         let inTree = tree.talents.reduce(0) { $0 + (ranks[$1.id] ?? 0) }

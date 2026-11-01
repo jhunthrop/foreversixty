@@ -174,12 +174,22 @@ struct GuidesRootView: View {
 
 /// F9.2 bound to its store: the saved copy at once, the new-data check on foreground.
 struct GuideScreen: View {
+    /// Lane F13: a guide's build opens the editor as one legal order, `Cancel` in the bar.
+    private var openPlanner: ((String, String) -> Void)? {
+        guard let planner, planner.isOn else { return nil }
+        return { classSlug, code in
+            planner.openEditor(PlannerLaunch(classSlug: classSlug, source: .code(code), origin: .guide))
+        }
+    }
+
     let dependencies: GuidesDependencies
     let openGear: (GuideGear) -> Void
     let onLoaded: () -> Void
 
     @State private var store: GuideStore
     @Environment(\.scenePhase) private var scenePhase
+    /// Lane F13: the talents section's planner row.
+    @Environment(PlannerRouter.self) private var planner: PlannerRouter?
 
     init(spec: String, dependencies: GuidesDependencies, openGear: @escaping (GuideGear) -> Void, onLoaded: @escaping () -> Void) {
         self.dependencies = dependencies
@@ -194,7 +204,8 @@ struct GuideScreen: View {
             actions: GuideActions(
                 openGear: openGear,
                 retry: { Task { await store.load() } },
-                update: { Task { await store.update() } }
+                update: { Task { await store.update() } },
+                openPlanner: openPlanner
             )
         )
         .background(FSColor.bg)

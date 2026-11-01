@@ -39,6 +39,7 @@ import gg.foreversixty.app.network.Feature
 import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.talents.TalentsFeature
+import gg.foreversixty.app.planner.PlannerFeature
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.UpdateGate
@@ -49,6 +50,7 @@ import gg.foreversixty.app.guild.GuildExtrasFeature
 import gg.foreversixty.app.update.InstallId
 import gg.foreversixty.app.widgets.WidgetsFeature
 import gg.foreversixty.app.auth.session.me
+import gg.foreversixty.app.auth.session.isSignedIn
 
 /**
  * The app's object graph, built once per process and passed down explicitly. Feature lanes add
@@ -104,9 +106,26 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
      */
     val statics: StaticDataStore = staticDataStore(context, ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)))
 
+    /**
+     * Lane F13: the talent planner (editor, shared builds, Your builds); null while `planner` is off.
+     * Its sign-in and character are read from [session] when asked, never at build time.
+     */
+    val planner: PlannerFeature? = if (isAvailable(Feature.Planner)) {
+        PlannerFeature.create(
+            context = context,
+            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            appConfig = appConfig,
+            api = apiClient,
+            signedIn = { session.phase.value.isSignedIn },
+            character = { session.currentCharacter() },
+        )
+    } else {
+        null
+    }
+
     /** Lane F6: the Talents screen pushed from Home; null while its switch is off. */
     private val talents: TalentsFeature? = if (isAvailable(Feature.Talents)) {
-        TalentsFeature.create(context, statics, appConfig)
+        TalentsFeature.create(context, statics, appConfig, planner)
     } else {
         null
     }

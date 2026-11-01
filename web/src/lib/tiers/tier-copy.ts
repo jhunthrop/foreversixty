@@ -45,6 +45,8 @@ export interface NoteContext {
   healSeconds?: number;
   /** `tank-encounter.json` `boss.swing_speed_sec.value`; tank notes only. */
   bossSwingSeconds?: number;
+  /** Whether the healer list's order is measured (`TierData.healerOrderMeasured`); healer notes only. */
+  healerOrderMeasured?: boolean;
 }
 
 function plain(text: string): NoteSegment[] {
@@ -92,6 +94,19 @@ function dpsNotes(ctx: NoteContext): NoteSegment[][] {
   ];
 }
 
+/** The healer list's rule in plain words: why a pair ties and how a shared rank counts, or,
+ *  with no measured error published yet, that the ranks are still to come. */
+function healerOrderNote(measured: boolean): NoteSegment[] {
+  if (!measured) return [{ text: ' Ranks appear once the next ranking publishes the measured error.' }];
+  return [
+    { text: ' ' },
+    { text: '≈ tie', strong: true },
+    {
+      text: ' means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error. Tied healers share a rank: =2, =2, then 4.',
+    },
+  ];
+}
+
 function healerNotes(ctx: NoteContext): NoteSegment[][] {
   const seconds = requireContext(ctx.healSeconds, 'the heal profile duration', ctx.role);
   return [
@@ -103,6 +118,7 @@ function healerNotes(ctx: NoteContext): NoteSegment[][] {
       { text: `${raceSentence(ctx.faction)} ` },
       { text: 'Gap to the top', strong: true },
       { text: ' is less healing in this fight, not a verdict on the class.' },
+      ...healerOrderNote(ctx.healerOrderMeasured !== false),
     ],
   ];
 }
@@ -148,7 +164,11 @@ export function ordinal(n: number): string {
   return `${n}${teen ? 'th' : (ORDINAL_SUFFIXES[n % ORDINAL_DIGIT_BASE] ?? 'th')}`;
 }
 
-function tieTitle(tie: TierTie): string {
+function tieTitle(tie: TierTie, role: BisRole = 'dps'): string {
+  if (role === 'healer') {
+    const neighbour = tie === 'both' ? 'healers above and below' : `healer ${tie}`;
+    return `Tied with the ${neighbour}: the order changes with the heal profile’s tuning, or the gap is within the measured error`;
+  }
   if (tie === 'both') return `Within ${TIE_MARGIN_PERCENT}% of the specs above and below: a tie`;
   return `Within ${TIE_MARGIN_PERCENT}% of the spec ${tie}: a tie`;
 }
@@ -176,6 +196,11 @@ export const tiersCopy = {
     "This spec's stat weights did not settle cleanly, so its gear pick and number are less firm.",
   tie: '≈ tie',
   tieTitle,
+  /** The rank column: a tied healer's shared rank reads "=2"; every other row its plain rank. */
+  rankLabel: (row: Pick<TierRow, 'rank' | 'role' | 'tie' | 'ranked'>): string => {
+    if (!row.ranked) return '';
+    return row.role === 'healer' && row.tie !== null ? `=${row.rank}` : String(row.rank);
+  },
   topGap: 'Top',
   leastGap: 'Least',
   rowLinks: { bis: 'BiS', guide: 'Guide', planner: 'Planner' },
@@ -225,8 +250,12 @@ export function formatMetric(role: BisRole, value: number): string {
 }
 
 /** The gap column's text for a row: "Top"/"Least" on the leader, "−4.8%"/"+15.2%" below. */
-export function gapText(row: Pick<TierRow, 'rank' | 'role' | 'gapPercent'>): string {
-  if (row.rank === 1) return row.role === 'tank' ? tiersCopy.leastGap : tiersCopy.topGap;
+export function gapText(row: Pick<TierRow, 'rank' | 'role' | 'gapPercent' | 'ranked'>): string {
   const figure = row.gapPercent.toFixed(1);
+  // An unranked list claims no leader: its top row reads its own gap, 0.0%.
+  if (!row.ranked) return row.gapPercent === 0 ? `${figure}%` : `−${figure}%`;
+  // A healer tied for the top shares rank 1 but still has a gap; only the leader reads Top.
+  if (row.rank === 1 && row.gapPercent === 0)
+    return row.role === 'tank' ? tiersCopy.leastGap : tiersCopy.topGap;
   return row.role === 'tank' ? `+${figure}%` : `−${figure}%`;
 }

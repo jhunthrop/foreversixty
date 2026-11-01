@@ -11,6 +11,7 @@
 //   * a failed load keeps the character already on screen;
 //   * the pool is created on the first run, never on mount -- the wasm is 4 MB and these
 //     pages have the site's Lighthouse budget.
+import { loadRaidConsumes } from './raid-consumes';
 import { fetchSpecs, saveSim } from './api';
 import { stageProgressLine, type BulkProgress, type BulkRunHandle } from './bulk-run';
 import {
@@ -50,7 +51,7 @@ import {
 } from './candidates';
 import { needsRace, type SimCharacter } from './character';
 import type { CharacterPath } from '../characters';
-import { bulkCopy } from './copy';
+import { bulkCopy, simCopy } from './copy';
 import type { RequestValidation } from './engine';
 import { loadEnchants, loadSuffixes, type EnchantRow, type SuffixRow } from './enchants';
 import {
@@ -137,7 +138,7 @@ export function createBulkStore(init: BulkStoreInit) {
 
   let phase = $state<BulkPhase>('idle');
   let character = $state<SimCharacter | null>(null);
-  let settings = $state<SimSettings>(defaultSettings('attack_power'));
+  let settings = $state<SimSettings>(defaultSettings());
   let message = $state<string | null>(null);
   let detail = $state('');
   let premium = $state(false);
@@ -220,8 +221,16 @@ export function createBulkStore(init: BulkStoreInit) {
       phase = 'idle';
       return;
     }
+    try {
+      // The Raid-buffed preset's consumables load on demand (raid-consumes.ts).
+      await loadRaidConsumes();
+    } catch {
+      message = simCopy.failed;
+      phase = 'idle';
+      return;
+    }
     character = outcome.character;
-    settings = withSpecForPreset(settings, outcome.character.spec);
+    settings = withSpecForPreset(settings, outcome.character.spec, outcome.character.level);
     result = null;
     progress = null;
     capNotice = null;

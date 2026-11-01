@@ -231,3 +231,26 @@ def test_hit_from_two_spells_still_adds():
 def test_spell_hit_alone_stays_spell_hit():
     rows = [_aura_row(900100, 0, 55, 2)]
     assert spell_bonus([900100], index_spell_effects(rows)).stats == {"spell_hit": 2.0}
+
+
+def test_the_forever_feral_combat_skill_line_is_feral_combat():
+    """Spell 1320726 "Increased Feral Combat" names skill line 3014, which
+    SkillLine.csv lacks; Wowhead Forever lists its item (Oilskin Leggings 9414)
+    as +1 skillferalcombat. It reached simdb once wago's hotfix rows did."""
+    row = {
+        "SpellID": "1320726",
+        "DifficultyID": "0",
+        "EffectIndex": "0",
+        "Effect": "6",
+        "EffectAura": "30",
+        "EffectBasePointsF": "1",
+        "EffectAuraPeriod": "0",
+        "EffectBonusCoefficient": "0",
+        "BonusCoefficientFromAP": "0",
+        "EffectTriggerSpell": "0",
+        "EffectMiscValue_0": "3014",
+        "Variance": "0",
+        "EffectRealPointsPerLevel": "0",
+    }
+    effects_index = index_spell_effects([row])
+    assert spell_bonus([1320726], effects_index).weapon_skills == {"WeaponSkillFeralCombat": 1.0}

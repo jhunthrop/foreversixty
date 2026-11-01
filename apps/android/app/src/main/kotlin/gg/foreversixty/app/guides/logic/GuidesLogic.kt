@@ -119,6 +119,9 @@ object Guides {
 
     private fun totals(build: GuideBuild) = build.totals.joinToString(TOTALS_SEPARATOR)
 
+    /** The FS1 code the planner loads (lane F13): the raid build's, else the leveling build's. */
+    fun plannerCode(talents: GuideTalents): String? = (talents.raidBuild ?: talents.levelingBuild)?.code?.takeIf { it.isNotBlank() }
+
     /** A rotation line draws a tile when it names a spell (its icon, or the neutral tile); a general line has none. */
     fun hasTile(spell: GuideSpell): Boolean = spell.spellId != null || spell.icon != null
 

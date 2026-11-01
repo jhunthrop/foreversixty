@@ -15,6 +15,9 @@ struct TalentsView: View {
     var openTalent: (Int) -> Void = { _ in }
     var retry: () -> Void = {}
     var openPlanner: () -> Void = {}
+    /// Lane F13: with `planner` on, `Plan a build` opens the app's planner (not the site), and
+    /// signed in, `Your builds` is pushed.
+    var planner: TalentPlannerEntry?
 
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -103,20 +106,39 @@ struct TalentsView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(Copy.talentsFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 .fixedSize(horizontal: false, vertical: true)
-            Button(action: openPlanner) {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(Copy.talentsPlanLink).multilineTextAlignment(.leading)
-                    Image(systemName: "arrow.up.right.square").font(.system(size: 14)).accessibilityHidden(true)
+            if let planner {
+                footerLink(Copy.planPlanBuild, systemImage: "chevron.right", action: planner.plan)
+                if let yourBuilds = planner.yourBuilds {
+                    footerLink(Copy.planYourBuilds, systemImage: "chevron.right", action: yourBuilds)
                 }
-                .font(ScaledType.bodyStrong)
-                .foregroundStyle(FSColor.gold)
-                .frame(minHeight: 48, alignment: .leading)
+            } else {
+                footerLink(Copy.talentsPlanLink, systemImage: "arrow.up.right.square", action: openPlanner)
+                    .accessibilityAddTraits(.isLink)
             }
-            .buttonStyle(.plain)
-            .accessibilityAddTraits(.isLink)
         }
         .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
     }
+}
+
+extension TalentsView {
+    fileprivate func footerLink(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text(title).multilineTextAlignment(.leading)
+                Image(systemName: systemImage).font(.system(size: 14)).accessibilityHidden(true)
+            }
+            .font(ScaledType.bodyStrong)
+            .foregroundStyle(FSColor.gold)
+            .frame(minHeight: 48, alignment: .leading)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// The Talents screen's planner rows (lane F13): Plan a build, and Your builds when signed in.
+struct TalentPlannerEntry {
+    let plan: () -> Void
+    let yourBuilds: (() -> Void)?
 }
 
 /// The status block, the screen's one primary element, then the secondary notes (spec F6 §5.1).

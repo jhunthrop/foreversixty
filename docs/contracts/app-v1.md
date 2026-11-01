@@ -541,6 +541,23 @@ characters). Answer **201** (new) or **200** (the same build again) `{ id, url }
 the content. Fixtures `builds.save`. Errors: 400 `invalid` with `fields` keyed by `point_order[n]`
 and the like (`builds.save.error-invalid`).
 
+### DELETE /v1/builds/{id} (W3-C9, Wave 3 lane F13)
+Take a build off the caller's own list (Your builds). Auth session or device. Answer **204** with no
+body. The record and its `/b/{id}` link stay and keep working for anyone who has them; nothing is
+deleted (`builds.user_id` is already nullable, migration 0015, so this lane adds no migration).
+Saving the same build again (`POST /v1/builds`, the same content) puts it back on the list, which
+is the apps' Undo. Errors: **404** `not_found` when the build is not on the caller's list (another
+player's, nobody's, or no such id; never 403) (`builds.delete.error-not-found`).
+
+### The planner's rules (Wave 3 lane F13)
+The apps' planner refuses exactly what the site planner and `POST /v1/builds` refuse. The rules
+live in `web/src/lib/planner` (`rules.ts`, `fs1.ts`, `derive.ts`); `web/scripts/gen-planner-rules.mjs`
+replays them over the active build's talent files into `apps/shared/fixtures/planner-rules.json`
+(add, remove, validate, split, points per level, FS1 code to order), and both apps' tests replay
+every vector. The refusal sentences are the planner's own, copied into the app catalog as
+`plan.refuse.*`; the app adds one, the level budget (`level - 9` points, at most 51): `No points
+left. Take one off first.` `src/lib/mobile/planner-rules-codegen.test.ts` fails CI on drift.
+
 ## Static files
 
 Served from `https://foreversixty.gg`. A build directory `/data/<build>/` is immutable per build in
@@ -629,6 +646,14 @@ prereq_rank (nullable), ranks[], spell_id }`, a rank `{ spell_id, description }`
 ### /data/{build}/classes.json
 `[{ id, name, slug, color, forever_changes[] }]`, one per class, `color` a hex. `forever_changes[]`
 is `{ text, sources[] }`. Use the id to read `class_id` of a build. Fixture `cdn.classes`.
+
+### /data/{build}/races.json and /data/{build}/combos.json (W3-C10)
+`races.json` is `[{ id, name, slug, faction (alliance|horde), placeholder, forever_changes[] }]`;
+`placeholder` marks a race the client names but nobody can play yet. `combos.json` is
+`[{ race_id, class_id, new_in_forever }]`, one per legal pair: a pair it does not list cannot be
+made, and `POST /v1/builds` refuses it. The planner's Race sheet lists the non-placeholder races
+paired with the class. Both are copied by `web/scripts/sync-data.mjs`. Fixtures `cdn.races`,
+`cdn.combos` (held to the generator's files by `cdn_test.go`).
 
 ### /data/{build}/icons/{icon}.webp
 The game icon for any item, talent or spell: `icon` is the stem a JSON file carries

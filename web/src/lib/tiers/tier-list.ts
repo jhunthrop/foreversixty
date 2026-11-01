@@ -5,7 +5,7 @@
 // published band at build time and nothing here is typed in.
 import type { BisBand, BisRole, SpecCatalogEntry, TankMetrics } from '../bis/types';
 import { isTankMetrics } from '../bis/tank-view';
-import { TIE_MARGIN_PERCENT, TIER_BANDS, type TierBand, type TierLetter } from './tier-rules';
+import { HEALER_ERROR_Z, TIE_MARGIN_PERCENT, TIER_BANDS, type TierBand, type TierLetter } from './tier-rules';
 
 /** The roles, in the order of the page's tabs. */
 export const TIER_ROLES: readonly BisRole[] = ['dps', 'tank', 'healer'];
@@ -20,7 +20,11 @@ export interface TierInput {
 export type TierTie = 'above' | 'below' | 'both';
 
 export interface TierRow {
+  /** 1-based. Healers the error cannot tell apart share the rank of the first of them. */
   rank: number;
+  /** False on a healer list published without the measured error and tuning bounds: the
+   *  rows are sorted by value, but the page claims neither an order nor a tie. */
+  ranked: boolean;
   spec: string;
   classSlug: string;
   specSlug: string;
@@ -34,7 +38,8 @@ export interface TierRow {
   gapPercent: number;
   /** 0..1 bar length: value over top (tank: best over value). */
   fraction: number;
-  /** The neighbour(s) within the tie margin, or `null`. Always `null` on a tank list. */
+  /** The neighbour(s) within the tie margin (a healer: within error), or `null`. Always
+   *  `null` on a tank list. */
   tie: TierTie | null;
   /** S to D from the gap to the top. `null` on tank and healer lists, which carry no letters. */
   tier: TierLetter | null;
@@ -123,6 +128,84 @@ function tieMarks(metrics: readonly number[], enabled: boolean): (TierTie | null
   });
 }
 
+/** One measurement of a healer: effective HPS and its standard error. */
+interface HealerPoint {
+  hps: number;
+  error: number;
+}
+
+/** A healer's measurements: the tuned profile and each tuning bound. `null` until the file
+ *  publishes the error and the bounds, and without them no order is measured. */
+function healerPoints(band: BisBand, metric: number): HealerPoint[] | null {
+  const metrics = band.metrics;
+  if (metrics === null || metrics === undefined || !('hps' in metrics) || metrics.hps_error === undefined) {
+    return null;
+  }
+  const bounds = metrics.hps_at_bounds ?? [];
+  if (bounds.length === 0) return null;
+  return [
+    { hps: metric, error: metrics.hps_error },
+    ...bounds.map((row) => ({ hps: row.hps, error: row.hps_error })),
+  ];
+}
+
+/** Whether the healer above leads the one below at one measurement, beyond the error. */
+function leadsBeyondError(above: HealerPoint, below: HealerPoint): boolean {
+  return above.hps - below.hps > HEALER_ERROR_Z * Math.hypot(above.error, below.error);
+}
+
+/** Whether two neighbouring healers tie: unless the one above leads beyond the error at the
+ *  tuned profile and at every tuning bound, the order is the error's or the tuning's, not the
+ *  healers'. A pair missing the error or the bounds is never ordered (owner ruling, round 5). */
+function healerTiedWith(above: Scored, below: Scored): boolean {
+  const pointsAbove = healerPoints(above.input.band, above.metric);
+  const pointsBelow = healerPoints(below.input.band, below.metric);
+  if (pointsAbove === null || pointsBelow === null || pointsAbove.length !== pointsBelow.length) return true;
+  return !pointsAbove.every((point, index) => leadsBeyondError(point, pointsBelow[index]!));
+}
+
+/** Whether every healer band carries the error and both bounds, so the list can order at all. */
+export function healerOrderMeasured(inputs: readonly TierInput[]): boolean {
+  return inputs
+    .filter((input) => roleOf(input.band) === 'healer')
+    .every((input) => healerPoints(input.band, sortMetricOf(input.band)) !== null);
+}
+
+/** Healer tie marks and ranks. A healer within error of the one above shares its rank, and
+ *  the chain carries on, so no two healers are ever ordered by a gap the error cannot tell. */
+function healerTiesAndRanks(sorted: readonly Scored[]): { ties: (TierTie | null)[]; ranks: number[] } {
+  const tiedAbove = sorted.map((scored, index) => index > 0 && healerTiedWith(sorted[index - 1]!, scored));
+  const ranks = sorted.reduce<number[]>(
+    (acc, _scored, index) => [...acc, tiedAbove[index] ? acc[index - 1]! : index + 1],
+    [],
+  );
+  const ties = tiedAbove.map((above, index): TierTie | null => {
+    const below = tiedAbove[index + 1] === true;
+    if (above && below) return 'both';
+    if (above) return 'above';
+    return below ? 'below' : null;
+  });
+  return { ties, ranks };
+}
+
+/** The tie marks and ranks of one sorted role: healers by error, DPS by the fixed margin,
+ *  tanks unmarked; only healers share a rank. */
+function tiesAndRanks(
+  sorted: readonly Scored[],
+  role: BisRole,
+  ranked: boolean,
+): { ties: (TierTie | null)[]; ranks: number[] } {
+  if (!ranked) return { ties: sorted.map(() => null), ranks: sorted.map((_scored, index) => index + 1) };
+  if (role === 'healer') return healerTiesAndRanks(sorted);
+  return {
+    ties: tieMarks(
+      sorted.map((scored) => scored.metric),
+      role !== 'tank',
+    ),
+    ranks: sorted.map((_scored, index) => index + 1),
+  };
+}
+
 function bestOf(values: readonly number[]): number {
   return Math.max(...values);
 }
@@ -137,10 +220,9 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
     tank,
   );
   const top = sorted[0]!.metric;
-  const ties = tieMarks(
-    sorted.map((scored) => scored.metric),
-    !tank,
-  );
+  // A healer list published without the measured error claims neither an order nor a tie.
+  const ranked = role !== 'healer' || healerOrderMeasured(pool);
+  const { ties, ranks } = tiesAndRanks(sorted, role, ranked);
   const bestEffectiveHealth = tank
     ? bestOf(sorted.map((s) => tankMetricsOf(s.input.band).effective_health))
     : 0;
@@ -149,7 +231,8 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
     const { entry, band } = input;
     const { gap, fraction } = gapAndFraction(metric, top, tank);
     const row: TierRow = {
-      rank: index + 1,
+      rank: ranks[index]!,
+      ranked,
       spec: entry.spec,
       classSlug: entry.class_slug,
       specSlug: entry.spec_slug,

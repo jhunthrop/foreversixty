@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "name": "Human",
+    "slug": "human",
+    "faction": "alliance",
+    "placeholder": false,
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Humans can be Hunters, one of six new race and class pairs.",
+        "sources": [
+          {
+            "label": "Blizzard, Deep Dive panel recap",
+            "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Every race has two active and two passive racial abilities, tuned for similar offensive power.",
+        "sources": [
+          {
+            "label": "Blizzard, Deep Dive panel recap",
+            "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Racials read from the BlizzCon demo: Will to Survive removes all Stuns on a 3 minute cooldown, Perception gives 20 seconds of stealth detection, Sword Specialization grants 2% spell and ability critical strike chance with a sword, and The Human Spirit grants 5% Spirit.",
+        "sources": [
+          {
+            "label": "Icy Veins, the racial rework",
+            "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+            "kind": "community"
+          },
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Orc",
+    "slug": "orc",
+    "faction": "horde",
+    "placeholder": false,
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Orcs can be Mages, one of six new race and class pairs.",
+        "sources": [
+          {
+            "label": "Blizzard, Deep Dive panel recap",
+            "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Every race has two active and two passive racial abilities, tuned for similar offensive power.",
+        "sources": [
+          {
+            "label": "Blizzard, Deep Dive panel recap",
+            "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Racials read from the BlizzCon demo: Blood Fury grants 10% Attack Power and Spell Power for 15 seconds on a 2 minute cooldown, Shatter Curse removes and grants immunity to Curses and Banes and reduces magical damage taken 15% for 8 seconds, Axe Specialization grants 1% critical strike chance with an axe, and Hardiness reduces stun duration 20%.",
+        "sources": [
+          {
+            "label": "Icy Veins, the racial rework",
+            "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+            "kind": "community"
+          },
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  }
+]

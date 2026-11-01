@@ -46,7 +46,7 @@ internal fun GuideSectionView(section: GuideSection, guide: GuideFile, actions: 
     GuideSectionBlock(copy.section(section), Modifier.screenMargins()) {
         when (section) {
             GuideSection.Overview -> Overview(guide)
-            GuideSection.Talents -> Talents(guide, copy)
+            GuideSection.Talents -> Talents(guide, copy, actions.openPlanner)
             GuideSection.Rotation -> Rotation(guide.rotation, guide.build, copy)
             GuideSection.Stats -> Stats(guide, copy)
             GuideSection.Gear -> Gear(guide, actions)
@@ -75,12 +75,28 @@ private fun LabelledLines(label: String, lines: List<String>) {
     }
 }
 
-/** Every key talent with its icon, ranks and the game's text; then the raid and leveling builds. */
+/**
+ * Every key talent with its icon, ranks and the game's text; then the raid and leveling builds, and
+ * (lane F13) `Open this build in the planner` under them when the planner is on and a build has a code.
+ */
 @Composable
-private fun Talents(guide: GuideFile, copy: GuidesCopy) {
+private fun Talents(guide: GuideFile, copy: GuidesCopy, openPlanner: ((GuideFile) -> Unit)?) {
     Column(verticalArrangement = Arrangement.spacedBy(GuideSpace.labelGap)) {
         QuietRows(guide.talents.key) { TalentRow(it, guide.build, copy) }
         QuietRows(Guides.builds(guide.talents)) { BuildRowView(it, copy) }
+        if (openPlanner != null && Guides.plannerCode(guide.talents) != null) OpenInPlannerRow { openPlanner(guide) }
+    }
+}
+
+@Composable
+private fun OpenInPlannerRow(open: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = TARGET).clickable(role = Role.Button, onClick = open).cardInside(),
+        horizontalArrangement = Arrangement.spacedBy(GuideSpace.rowGap),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(stringResource(R.string.plan_openInPlanner), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+        Chevron(CHEVRON)
     }
 }
 

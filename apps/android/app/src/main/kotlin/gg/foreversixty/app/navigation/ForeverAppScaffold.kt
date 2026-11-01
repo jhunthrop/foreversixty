@@ -41,6 +41,10 @@ import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.guides.GuidesFeature
 import gg.foreversixty.app.guides.GuidesRoute
 import gg.foreversixty.app.home.HomeRoute
+import gg.foreversixty.app.planner.PlannerFeature
+import gg.foreversixty.app.planner.PlannerScreenHost
+import gg.foreversixty.app.planner.logic.PlannerScreen
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.raids.RaidsReports
 import gg.foreversixty.app.raids.RaidsRoute
@@ -71,6 +75,7 @@ fun ForeverAppScaffold(
     guides: GuidesFeature? = null,
     /** Lane F15: where a launcher shortcut or the Assistant asked to go. */
     system: SystemNavigator? = null,
+    planner: PlannerFeature? = null,
 ) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Home) }
     val wantsTab = system?.wantsTab
@@ -79,6 +84,14 @@ fun ForeverAppScaffold(
             if (wantsTab != ForeverTab.Guides || guides != null) selected = wantsTab
             system.wantsTab = null
         }
+    }
+    // Lane F13: the planner's screens sit over the shell; the shell's saved state outlives them.
+    val shell = rememberSaveableStateHolder()
+    val plannerTop = planner?.navigator?.top
+    if (planner != null && plannerTop is PlannerScreen.Editor) {
+        // The editor is a full-screen task with no tab bar (spec F13.1).
+        PlannerScreenHost(planner, plannerTop)
+        return
     }
     val openBis = { selected = ForeverTab.Bis }
     // Lane F9: a guide link selects the Guides tab, where the guide is pushed.
@@ -126,27 +139,34 @@ fun ForeverAppScaffold(
             // While Search covers the app, the tabs under it are hidden from TalkBack.
             Box(if (searchOpen) Modifier.fillMaxSize().clearAndSetSemantics {} else Modifier.fillMaxSize()) {
                 ForeverTabScaffold(selected = selected, onSelect = { selected = it }, tabs = ForeverTab.visible(guides != null)) {
+                    // Lane F13: a shared build and Your builds are pushed over the current tab.
+                    if (planner != null && plannerTop != null) {
+                        PlannerScreenHost(planner, plannerTop)
+                        return@ForeverTabScaffold
+                    }
                     // The tab slots. Each lane replaces its placeholder branch: F2 Home, F4 Raids, F3 BiS, F1 You.
-                    when (selected) {
-                        ForeverTab.Home ->
-                            if (account == null) {
-                                HomeRoute(home, openBis = openBis, onSearch = onSearch) { ComingSoon(selected) }
-                            } else if (publicRankings(home, account)) {
-                                PublicRankings(home, account)
-                            } else {
-                                HomeAccountGate(account, openBis) {
-                                    HomeRoute(home, account.session, openBis, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }) { ComingSoon(selected) }
+                    shell.SaveableStateProvider(SHELL_KEY) {
+                        when (selected) {
+                            ForeverTab.Home ->
+                                if (account == null) {
+                                    HomeRoute(home, openBis = openBis, onSearch = onSearch) { ComingSoon(selected) }
+                                } else if (publicRankings(home, account)) {
+                                    PublicRankings(home, account)
+                                } else {
+                                    HomeAccountGate(account, openBis) {
+                                        HomeRoute(home, account.session, openBis, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }) { ComingSoon(selected) }
+                                    }
                                 }
-                            }
-                        ForeverTab.Raids -> if (raids == null) ComingSoon(selected) else RaidsTab(raids, account, home.reports, onSearch)
-                        ForeverTab.Bis ->
-                            if (bis == null) {
-                                ComingSoon(selected)
-                            } else {
-                                BisTab(bis, home, account, onSearch)
-                            }
-                        ForeverTab.Guides -> if (guides == null) ComingSoon(selected) else GuidesTab(guides, account, bis, onSearch) { selected = ForeverTab.Bis }
-                        ForeverTab.You -> if (account == null) ComingSoon(selected) else YouRoute(account, openBis)
+                            ForeverTab.Raids -> if (raids == null) ComingSoon(selected) else RaidsTab(raids, account, home.reports, onSearch)
+                            ForeverTab.Bis ->
+                                if (bis == null) {
+                                    ComingSoon(selected)
+                                } else {
+                                    BisTab(bis, home, account, onSearch)
+                                }
+                            ForeverTab.Guides -> if (guides == null) ComingSoon(selected) else GuidesTab(guides, account, bis, onSearch, planner) { selected = ForeverTab.Bis }
+                            ForeverTab.You -> if (account == null) ComingSoon(selected) else YouRoute(account, openBis)
+                        }
                     }
                 }
             }
@@ -154,6 +174,9 @@ fun ForeverAppScaffold(
         }
     }
 }
+
+/** The tab content's saved-state key: one, so a tab's screens come back after a planner screen closes. */
+private const val SHELL_KEY = "tabs"
 
 /**
  * The BiS tab under the character selector (spec §3.4): the list follows the session's current
@@ -174,7 +197,7 @@ private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?,
  * A guide's Gear row asks BiS for that spec's level-60 raid list and switches to it.
  */
 @Composable
-private fun GuidesTab(guides: GuidesFeature, account: AccountDeps?, bis: BisModel?, onSearch: (() -> Unit)?, showBis: () -> Unit) {
+private fun GuidesTab(guides: GuidesFeature, account: AccountDeps?, bis: BisModel?, onSearch: (() -> Unit)?, planner: PlannerFeature?, showBis: () -> Unit) {
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
@@ -188,6 +211,7 @@ private fun GuidesTab(guides: GuidesFeature, account: AccountDeps?, bis: BisMode
                 showBis()
             }
         },
+        planner = planner,
     ) { RootSearchBar(onSearch) { if (session != null) CharacterSelectorBar(session) } }
 }
 

@@ -286,3 +286,20 @@ func TestEachWarlockSpecSimsItsOwnDemon(t *testing.T) {
 		})
 	}
 }
+
+// Every mage spec wears Mage Armor, the one armor a Forever mage trains
+// that changes damage: the client's aura 134 keeps 50% of mana regeneration
+// while casting (22783 effect 1). Molten Armor (428741) is a Season of
+// Discovery rune with no trainer row in Forever, and the engine's armor
+// switch has no case for it, so asking for it wore no armor at all.
+func TestEveryMageSpecWearsMageArmor(t *testing.T) {
+	for _, spec := range []string{"mage-arcane", "mage-fire", "mage-frost"} {
+		t.Run(spec, func(t *testing.T) {
+			p := &proto.Player{}
+			specOptions[spec](p)
+			if got := p.GetMage().GetOptions().GetArmor(); got != proto.Mage_Options_MageArmor {
+				t.Errorf("%s wears %v, want Mage Armor", spec, got)
+			}
+		})
+	}
+}

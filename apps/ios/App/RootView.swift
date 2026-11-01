@@ -72,6 +72,9 @@ struct RootView: View {
     /// Lane F16: the app's raid calendar, kept up to date from the Raids tab. It never asks for
     /// access until the player flips its switch.
     @State private var calendarSync: CalendarSyncController
+    /// Lane F13: the planner's editor and link pages, behind `planner`.
+    @State private var plannerRouter: PlannerRouter
+    @Environment(\.openURL) private var openURL
 
     init(environment: AppEnvironment) {
         self.environment = environment
@@ -83,6 +86,9 @@ struct RootView: View {
             adapter: EventKitCalendarAdapter(), store: UserDefaultsCalendarSyncStore(), now: AppClock.now, clock: RaidClock(),
             loadInput: { await loader.load() }
         ))
+        _plannerRouter = State(initialValue: PlannerRouter(dependencies: .live(environment)) {
+            environment.isAvailable(.planner)
+        })
     }
 
     var body: some View {
@@ -113,6 +119,8 @@ struct RootView: View {
         }
         .environment(reportsRouter)
         .environment(rankingsRouter)
+        .environment(plannerRouter)
+        .modifier(PlannerHost(router: plannerRouter, newBuild: plannerNewBuild))
         .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
@@ -133,7 +141,8 @@ struct RootView: View {
             RaidNotificationCenter.shared.onOpen = openRaids
             #if DEBUG
                 // Review captures only: the launch arguments in Raids/Debug/RaidDebugLaunch.swift.
-                if let link = RaidDebugLaunch.link { openRaids(link) }
+                // Lane F13's captures open the planner the same way (UITests/PlannerCaptureTests).
+                if let link = RaidDebugLaunch.link { PlannerRouter.handles(link) ? openLink(link) : openRaids(link) }
                 await RaidDebugLaunch.postRaidPushIfAsked()
             #endif
         }
@@ -207,7 +216,10 @@ extension RootView {
     /// A link selects its tab: sim, report, rankings and player links Home (lanes F5, F10, F11),
     /// guide links Guides and list links BiS (lane F9), raid links Raids (lane F4).
     private func openLink(_ link: DeepLink) {
-        if SimsRouter.handles(link) {
+        if PlannerRouter.handles(link) {
+            // Lane F13: with the switch off, a pasted /b/ link opens the site's page instead.
+            if !plannerRouter.open(link), case .sharedBuild = link { openURL(link.url) }
+        } else if SimsRouter.handles(link) {
             guard environment.isAvailable(.sims) else { return }
             selection = .home
             simsRouter.open(link)
@@ -288,6 +300,12 @@ extension RootView {
         )
         guidesPrefetcher = prefetcher
         await prefetcher.run(classes: playerClasses)
+    }
+
+    /// Lane F13: Your builds' `Plan a new build` row, for the current character.
+    private func plannerNewBuild() -> PlannerNewBuild? {
+        let character = environment.session.currentCharacter
+        return PlannerNewBuild(className: character?.className, race: character?.race, level: character?.level)
     }
 
     /// The classes the signed-in player has characters in.

@@ -43,10 +43,13 @@
                     <category android:name="android.intent.category.DEFAULT" />
                     <category android:name="android.intent.category.BROWSABLE" />
                     <data android:scheme="https" android:host="foreversixty.gg" android:pathPrefix="/app/" />
+                    <data android:scheme="https" android:host="foreversixty.gg" android:pathPrefix="/b/" />
                 </intent-filter>
 
                 The sign-in redirect (SignInContract.REDIRECT_URI) and the notification deep
-                links (F7) both arrive through it; MainActivity already routes them.
+                links (F7) both arrive through it; MainActivity already routes them. Lane F13:
+                /b/{id} is the shared build viewer, a real site page, so the same filter opens a
+                pasted link in the app when it is installed and on the web when it is not.
             -->
         </activity>
 

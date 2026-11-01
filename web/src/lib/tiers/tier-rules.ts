@@ -24,3 +24,8 @@ export const TIER_BANDS: readonly TierBand[] = [
 /** Two specs within this many percent of each other tie: the site's own gear adoption margin.
  *  A tie may straddle a tier line; the mark then says the letters differ by less than the sim can tell. */
 export const TIE_MARGIN_PERCENT = 1;
+
+/** Healer ties (owner ruling, 2026-11-01): one healer leads another only by more than this
+ *  many standard errors of their difference, sqrt(e1^2 + e2^2), about 95% confidence, at the
+ *  tuned heal profile and at both its tuning bounds. */
+export const HEALER_ERROR_Z = 2;

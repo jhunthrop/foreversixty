@@ -1,6 +1,8 @@
 package gg.foreversixty.app.talents
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -36,7 +38,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
@@ -85,7 +89,21 @@ object TalentGeometry {
     }
 }
 
-/** One tree: the prerequisite lines under the cells (spec F6 §5.2). */
+/**
+ * The planner's touch on a cell (spec F13.1): tap adds, long press removes, and TalkBack gets both
+ * as named actions. Without it a cell is F6's read-only button that opens the rank sheet.
+ */
+class TalentEditing(
+    val add: (Int) -> Unit,
+    val remove: (Int) -> Unit,
+    val addLabel: String,
+    val removeLabel: String,
+)
+
+/**
+ * One tree: the prerequisite lines under the cells (spec F6 §5.2). F6 draws it read only ([open]
+ * shows the rank sheet); the planner (F13) passes [editing] and the same drawing becomes the editor.
+ */
 @Composable
 fun TalentTreeView(
     cells: List<TalentCellModel>,
@@ -94,6 +112,7 @@ fun TalentTreeView(
     selectedId: Int?,
     open: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    editing: TalentEditing? = null,
 ) {
     BoxWithConstraints(modifier.fillMaxWidth().height(TalentGeometry.height)) {
         val width = maxWidth
@@ -101,7 +120,7 @@ fun TalentTreeView(
         cells.forEach { cell ->
             val (x, y) = TalentGeometry.origin(TalentCell(cell.talent.tier, cell.talent.column), width)
             Box(Modifier.offset(x, y)) {
-                TalentCellView(cell, build, selectedId == cell.talent.id) { open(cell.talent.id) }
+                TalentCellView(cell, build, selectedId == cell.talent.id, editing) { open(cell.talent.id) }
             }
         }
     }
@@ -172,23 +191,48 @@ private fun arrowhead(tip: Offset, direction: Offset, size: Float): Path {
  * One talent: the icon on its tile in the state border, the rank badge, and on Your build the
  * dashed ring and the signed chip (spec F6 §5.2).
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TalentCellView(cell: TalentCellModel, build: String, isSelected: Boolean, open: () -> Unit) {
+fun TalentCellView(cell: TalentCellModel, build: String, isSelected: Boolean, editing: TalentEditing? = null, open: () -> Unit) {
     val res = LocalResources.current
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val deltaColor = if ((cell.delta ?: 0) > 0) FsColor.wipe else FsColor.gold
     val label = cell.accessibilityLabel(res)
     val hint = stringResource(R.string.talents_a11yHint)
-    Box(
+    val id = cell.talent.id
+    val touch = if (editing == null) {
         Modifier
-            .size(TalentGeometry.CELL)
             .semantics(mergeDescendants = true) {
                 contentDescription = label
                 role = Role.Button
                 onClick(hint) { open(); true }
             }
             .clickable(interaction, indication = null, onClick = open)
+    } else {
+        Modifier
+            .semantics(mergeDescendants = true) {
+                contentDescription = label
+                role = Role.Button
+                onClick(editing.addLabel) { editing.add(id); true }
+                customActions = listOf(
+                    CustomAccessibilityAction(editing.addLabel) { editing.add(id); true },
+                    CustomAccessibilityAction(editing.removeLabel) { editing.remove(id); true },
+                )
+            }
+            // The planner plays its own haptics (LONG_PRESS only when a point really comes off).
+            .combinedClickable(
+                interaction,
+                indication = null,
+                hapticFeedbackEnabled = false,
+                onLongClick = { editing.remove(id) },
+                onClick = { editing.add(id) },
+            )
+    }
+    Box(
+        Modifier
+            .size(TalentGeometry.CELL)
+            .then(touch)
             .scale(if (pressed) PRESSED_SCALE else 1f),
     ) {
         if (isSelected) {
@@ -262,16 +306,18 @@ fun TalentIconTile(talent: Talent, state: TalentCellState, build: String, size: 
     }
 }
 
-/** The state colours (spec F6 §5.2's table). */
+/** The state colours (spec F6 §5.2's table; the planner's gold `available`, spec F13.1). */
 object TalentColors {
     fun border(state: TalentCellState): Color = when (state) {
         TalentCellState.Maxed, TalentCellState.Filled -> FsColor.kill
+        TalentCellState.Available -> FsColor.gold
         TalentCellState.Open, TalentCellState.Locked -> FsColor.line
     }
 
     fun badgeText(state: TalentCellState): Color = when (state) {
         TalentCellState.Maxed -> FsColor.kill
         TalentCellState.Filled -> FsColor.text
+        TalentCellState.Available -> FsColor.gold
         TalentCellState.Open, TalentCellState.Locked -> FsColor.muted
     }
 }

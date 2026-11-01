@@ -12,6 +12,7 @@ import {
   generate,
   renderKotlin,
   renderSwift,
+  sitePagePaths,
 } from '../../../scripts/gen-mobile-links.mjs';
 
 const HINT = 'run `node web/scripts/gen-mobile-links.mjs` and commit the result';
@@ -24,19 +25,24 @@ describe('mobile deep-link codegen', () => {
     expect(readFileSync(file, 'utf8'), HINT).toBe(generated[file]);
   });
 
-  it('serves every route, and only /app/ paths', () => {
+  it('serves every route, under /app/ except the site pages', () => {
     const model = buildRoutes(
       readFileSync(new URL('../../../../apps/shared/links.json', import.meta.url), 'utf8'),
     );
     const paths = appLinkPaths(model) as string[];
     expect(paths).toContain('/app/auth');
     expect(paths).toContain('/app/raid/*/*');
-    expect(paths.every((p) => p.startsWith('/app/'))).toBe(true);
+    expect(paths).toContain('/app/planner/*');
+    expect(sitePagePaths(model)).toEqual(['/b/*']);
+    const outside = paths.filter((p) => !p.startsWith('/app/'));
+    expect(outside).toEqual(sitePagePaths(model));
   });
 
   it('refuses a path outside /app/, a duplicate screen and two routes for one link', () => {
     const route = { path: '/app/sim/{id}', screen: 'sim', example: '/app/sim/a' };
     expect(() => buildRoutes(table([{ ...route, path: '/raid/{id}' }]))).toThrow(/under \/app\//);
+    expect(() => buildRoutes(table([{ ...route, path: '/b/{id}', site: true }]))).not.toThrow();
+    expect(() => buildRoutes(table([{ ...route, site: true }]))).toThrow(/outside \/app\//);
     expect(() => buildRoutes(table([route, { ...route, path: '/app/sims/{id}' }]))).toThrow(
       /two routes open/,
     );
