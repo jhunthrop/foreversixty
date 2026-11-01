@@ -143,18 +143,9 @@ async function exists(file) {
   }
 }
 
-/**
- * Bookkeeping a manifest may list that is never published: tools/activate-build.sh writes
- * dps-per-point.carried-from on a build move, and bis.yml deletes it once it re-measures,
- * leaving it listed in the manifest data.yml wrote while it existed.
- */
-const UNPUBLISHED_MARKERS = new Set(['dps-per-point.carried-from']);
-
 /** Manifest-listed paths with no file on disk, sorted. */
 export async function missingManifestFiles(manifest, sourceDir) {
-  const names = Object.keys(manifest?.files ?? {})
-    .filter((name) => !UNPUBLISHED_MARKERS.has(name))
-    .sort();
+  const names = Object.keys(manifest?.files ?? {}).sort();
   const missing = [];
   for (const name of names) {
     if (!(await exists(path.join(sourceDir, name)))) missing.push(name);
