@@ -1,6 +1,6 @@
 // web/src/lib/tiers/tier-list.test.ts
 import { describe, expect, it } from 'vitest';
-import { band, catalogEntry, dpsInput, tankInput } from './tier-test-support';
+import { band, catalogEntry, dpsInput, healerInput, tankInput } from './tier-test-support';
 import {
   hrefsFor,
   groupByTier,
@@ -138,6 +138,74 @@ describe('ties', () => {
       'tank',
     );
     expect(rows.map((r) => r.tie)).toEqual([null, null]);
+  });
+});
+
+/**
+ * Owner ruling (round 5): /tiers/healer never orders healers by a margin smaller than the
+ * measurement's error, or by a tuned profile. Healers the error cannot tell apart share a
+ * rank and are marked tied; an order needs a gap beyond it.
+ */
+describe('healer ties within error', () => {
+  const ranked = (rows: [number, number?][]) =>
+    rankRole(
+      rows.map(([hps, error], i) => healerInput('c', `h${i}`, `H${i}`, hps, error)),
+      'healer',
+    );
+
+  it('ties two healers whose gap is within two standard errors of the difference, past the 1% floor', () => {
+    // 1.5% apart, each ±0.6%: the difference's error is 0.85%, two of it 1.7%.
+    const rows = ranked([
+      [1000, 6],
+      [985, 5.91],
+    ]);
+    expect(rows.map((r) => r.tie)).toEqual(['below', 'above']);
+    expect(rows.map((r) => r.rank)).toEqual([1, 1]);
+  });
+
+  it('orders healers whose gap is beyond the error', () => {
+    const rows = ranked([
+      [1000, 1],
+      [985, 1],
+    ]);
+    expect(rows.map((r) => r.tie)).toEqual([null, null]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 2]);
+  });
+
+  it('keeps the site’s 1% floor when the error is smaller, or not published yet', () => {
+    expect(
+      ranked([
+        [1000, 0.5],
+        [992, 0.5],
+      ]).map((r) => r.rank),
+    ).toEqual([1, 1]);
+    expect(ranked([[1000], [992]]).map((r) => r.rank)).toEqual([1, 1]);
+    expect(ranked([[1000], [980]]).map((r) => r.rank)).toEqual([1, 2]);
+  });
+
+  it('chains a tie: a healer tied with the one above shares its rank even when it is beyond the top', () => {
+    // 0.8% steps: each neighbour ties, so no two of the three are ordered by less than error.
+    const rows = ranked([[1000], [992], [984.1], [900]]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 1, 1, 4]);
+    expect(rows.map((r) => r.tie)).toEqual(['below', 'both', 'above', null]);
+  });
+
+  it('ranks the published horde healers at the current profile as tied pairs (2026-11-01 measurement)', () => {
+    // spec-breakdown -heal, 2000 iterations, seeds 1 and 50001 agree within 0.2%.
+    const rows = ranked([
+      [732.6, 0.9],
+      [639.3, 0.8],
+      [618.0, 0.8],
+      [542.8, 0.7],
+      [541.3, 0.7],
+    ]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 2, 3, 4, 4]);
+  });
+
+  it('leaves the DPS list on its own fixed margin and its own ranks', () => {
+    const rows = rankRole([dpsInput('a', 'a', 'A', 100), dpsInput('b', 'b', 'B', 99.5)], 'dps');
+    expect(rows.map((r) => r.rank)).toEqual([1, 2]);
+    expect(rows.map((r) => r.tie)).toEqual(['below', 'above']);
   });
 });
 

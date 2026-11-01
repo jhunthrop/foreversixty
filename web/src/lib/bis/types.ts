@@ -261,6 +261,9 @@ export interface TankMetrics {
 export interface BisHealMetrics {
   /** Effective healing per second; equals the band's `set_dps`. */
   hps: number;
+  /** The standard error of `hps` in the same run. Absent on a file ranked before
+   *  2026-11-01, which published no error; /tiers/healer then ties on its 1% floor alone. */
+  hps_error?: number;
   raw_hps: number;
   /** 0..1 share of raw healing that landed on full health. */
   overheal_pct: number;

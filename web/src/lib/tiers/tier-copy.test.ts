@@ -63,6 +63,30 @@ describe('tierNotes', () => {
   });
 });
 
+describe('the healer tie rule (owner ruling, round 5)', () => {
+  it('says tied healers are within error and share a rank', () => {
+    const healer = tierNotes({ ...CTX, role: 'healer', healSeconds: 300 })
+      .map(flat)
+      .join(' ');
+    expect(healer).toContain(
+      '≈ tie marks healers the sim cannot tell apart: within its measurement error of each other, and never less than 1%. Tied healers share a rank.',
+    );
+  });
+
+  it('titles a healer tie by the error, not the DPS margin', () => {
+    expect(tiersCopy.tieTitle('above', 'healer')).toBe(
+      'Within the measurement error of the healer above: tied',
+    );
+    expect(tiersCopy.tieTitle('both', 'healer')).toContain('healers above and below');
+    expect(tiersCopy.tieTitle('above', 'dps')).toBe('Within 1% of the spec above: a tie');
+  });
+
+  it('shows a gap figure on a healer tied for the top, and Top only on the leader itself', () => {
+    expect(gapText({ rank: 1, role: 'healer', gapPercent: 0.3 })).toBe('−0.3%');
+    expect(gapText({ rank: 1, role: 'healer', gapPercent: 0 })).toBe(tiersCopy.topGap);
+  });
+});
+
 describe('how to read this', () => {
   it('carries the spec bullets, with the preset and the fight length from the data and constants', () => {
     const dps = howToReadBullets('dps', 'Raid-ready, Phase 1');

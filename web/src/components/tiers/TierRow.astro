@@ -21,7 +21,7 @@ const href = hrefsFor(row);
 const isTank = row.role === 'tank';
 const key = specViewKey(row.classSlug, row.specSlug);
 const fullName = `${row.name} ${className}`;
-const isLeader = row.rank === 1;
+const isLeader = row.rank === 1 && row.gapPercent === 0;
 const unit = tiersCopy.rowUnit[row.role];
 const numberLabel = tiersCopy.headers.number[row.role];
 const gapLabel = tiersCopy.headers.gap[row.role];
@@ -88,7 +88,7 @@ const gapLabel = tiersCopy.headers.gap[row.role];
       {gapText(row)}
     </span>
     {row.tie !== null && (
-      <span class="tier-tie" title={tiersCopy.tieTitle(row.tie)} data-testid="tier-tie">
+      <span class="tier-tie" title={tiersCopy.tieTitle(row.tie, row.role)} data-testid="tier-tie">
         {tiersCopy.tie}
       </span>
     )}

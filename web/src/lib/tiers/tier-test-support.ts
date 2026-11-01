@@ -51,6 +51,27 @@ export function dpsInput(classSlug: string, specSlug: string, name: string, setD
   return { entry, band: band(entry, { set_dps: setDps }) };
 }
 
+/** A healer row: `hps` as the band's `set_dps` and metrics, `hpsError` its standard error
+ *  (omitted: a file ranked before the error was published). */
+export function healerInput(
+  classSlug: string,
+  specSlug: string,
+  name: string,
+  hps: number,
+  hpsError?: number,
+): TierInput {
+  const entry = catalogEntry(classSlug, specSlug, name, 'healer');
+  const metrics = {
+    hps,
+    raw_hps: hps,
+    overheal_pct: 0,
+    mana_lasts_sec: 300,
+    hpm: 1,
+    ...(hpsError === undefined ? {} : { hps_error: hpsError }),
+  };
+  return { entry, band: band(entry, { set_dps: hps, metrics }) };
+}
+
 export function tankInput(
   classSlug: string,
   specSlug: string,

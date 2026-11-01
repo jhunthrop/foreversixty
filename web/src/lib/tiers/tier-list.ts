@@ -5,7 +5,7 @@
 // published band at build time and nothing here is typed in.
 import type { BisBand, BisRole, SpecCatalogEntry, TankMetrics } from '../bis/types';
 import { isTankMetrics } from '../bis/tank-view';
-import { TIE_MARGIN_PERCENT, TIER_BANDS, type TierBand, type TierLetter } from './tier-rules';
+import { HEALER_ERROR_Z, TIE_MARGIN_PERCENT, TIER_BANDS, type TierBand, type TierLetter } from './tier-rules';
 
 /** The roles, in the order of the page's tabs. */
 export const TIER_ROLES: readonly BisRole[] = ['dps', 'tank', 'healer'];
@@ -20,6 +20,7 @@ export interface TierInput {
 export type TierTie = 'above' | 'below' | 'both';
 
 export interface TierRow {
+  /** 1-based. Healers the error cannot tell apart share the rank of the first of them. */
   rank: number;
   spec: string;
   classSlug: string;
@@ -34,7 +35,8 @@ export interface TierRow {
   gapPercent: number;
   /** 0..1 bar length: value over top (tank: best over value). */
   fraction: number;
-  /** The neighbour(s) within the tie margin, or `null`. Always `null` on a tank list. */
+  /** The neighbour(s) within the tie margin (a healer: within error), or `null`. Always
+   *  `null` on a tank list. */
   tie: TierTie | null;
   /** S to D from the gap to the top. `null` on tank and healer lists, which carry no letters. */
   tier: TierLetter | null;
@@ -123,6 +125,56 @@ function tieMarks(metrics: readonly number[], enabled: boolean): (TierTie | null
   });
 }
 
+/** A healer row's standard error as a percent of its figure; 0 when the file has none. */
+function errorPercentOf(band: BisBand, metric: number): number {
+  const metrics = band.metrics;
+  const error = metrics !== null && metrics !== undefined && 'hps' in metrics ? metrics.hps_error : undefined;
+  return error === undefined || metric <= 0 ? 0 : (error / metric) * PERCENT;
+}
+
+/** Whether the healer below is told apart from the one above: its gap is beyond both the
+ *  site's tie margin and HEALER_ERROR_Z standard errors of the difference. */
+function healerTiedWith(above: Scored, below: Scored): boolean {
+  const gap = (1 - below.metric / above.metric) * PERCENT;
+  const errorAbove = errorPercentOf(above.input.band, above.metric);
+  const errorBelow = errorPercentOf(below.input.band, below.metric);
+  const margin = Math.max(TIE_MARGIN_PERCENT, HEALER_ERROR_Z * Math.hypot(errorAbove, errorBelow));
+  return gap <= margin;
+}
+
+/** Healer tie marks and ranks. A healer within error of the one above shares its rank, and
+ *  the chain carries on, so no two healers are ever ordered by a gap the error cannot tell. */
+function healerTiesAndRanks(sorted: readonly Scored[]): { ties: (TierTie | null)[]; ranks: number[] } {
+  const tiedAbove = sorted.map((scored, index) => index > 0 && healerTiedWith(sorted[index - 1]!, scored));
+  const ranks = sorted.reduce<number[]>(
+    (acc, _scored, index) => [...acc, tiedAbove[index] ? acc[index - 1]! : index + 1],
+    [],
+  );
+  const ties = tiedAbove.map((above, index): TierTie | null => {
+    const below = tiedAbove[index + 1] === true;
+    if (above && below) return 'both';
+    if (above) return 'above';
+    return below ? 'below' : null;
+  });
+  return { ties, ranks };
+}
+
+/** The tie marks and ranks of one sorted role: healers by error, DPS by the fixed margin,
+ *  tanks unmarked; only healers share a rank. */
+function tiesAndRanks(
+  sorted: readonly Scored[],
+  role: BisRole,
+): { ties: (TierTie | null)[]; ranks: number[] } {
+  if (role === 'healer') return healerTiesAndRanks(sorted);
+  return {
+    ties: tieMarks(
+      sorted.map((scored) => scored.metric),
+      role !== 'tank',
+    ),
+    ranks: sorted.map((_scored, index) => index + 1),
+  };
+}
+
 function bestOf(values: readonly number[]): number {
   return Math.max(...values);
 }
@@ -137,10 +189,7 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
     tank,
   );
   const top = sorted[0]!.metric;
-  const ties = tieMarks(
-    sorted.map((scored) => scored.metric),
-    !tank,
-  );
+  const { ties, ranks } = tiesAndRanks(sorted, role);
   const bestEffectiveHealth = tank
     ? bestOf(sorted.map((s) => tankMetricsOf(s.input.band).effective_health))
     : 0;
@@ -149,7 +198,7 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
     const { entry, band } = input;
     const { gap, fraction } = gapAndFraction(metric, top, tank);
     const row: TierRow = {
-      rank: index + 1,
+      rank: ranks[index]!,
       spec: entry.spec,
       classSlug: entry.class_slug,
       specSlug: entry.spec_slug,
