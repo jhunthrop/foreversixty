@@ -66,6 +66,20 @@ sealed interface DeepLink {
         override fun url(): String = link("/app/report/${enc(id)}")
     }
 
+    /** Home, Rankings, on that encounter (its slug or id). /app/rankings/{encounter} */
+    data class Rankings(val encounter: String) : DeepLink {
+        override val screen: String get() = "rankings"
+
+        override fun url(): String = link("/app/rankings/${enc(encounter)}")
+    }
+
+    /** Home, that character's page (F11.4); the current character does not change. /app/player/{region}/{ruleset}/{name} */
+    data class Player(val region: String, val ruleset: String, val name: String) : DeepLink {
+        override val screen: String get() = "player"
+
+        override fun url(): String = link("/app/player/${enc(region)}/${enc(ruleset)}/${enc(name)}")
+    }
+
     /** Guides tab. /app/guides */
     data object Guides : DeepLink {
         override val screen: String get() = "guides"
@@ -117,6 +131,8 @@ sealed interface DeepLink {
                 ?: matchBis(s)
                 ?: matchSim(s)
                 ?: matchReport(s)
+                ?: matchRankings(s)
+                ?: matchPlayer(s)
                 ?: matchGuides(s)
                 ?: matchGuide(s)
                 ?: matchNotifications(s)
@@ -162,6 +178,16 @@ sealed interface DeepLink {
         private fun matchReport(s: List<String>): DeepLink? {
             if (s.size != 3 || s[0] != "app" || s[1] != "report") return null
             return Report(s[2])
+        }
+
+        private fun matchRankings(s: List<String>): DeepLink? {
+            if (s.size != 3 || s[0] != "app" || s[1] != "rankings") return null
+            return Rankings(s[2])
+        }
+
+        private fun matchPlayer(s: List<String>): DeepLink? {
+            if (s.size != 5 || s[0] != "app" || s[1] != "player") return null
+            return Player(s[2], s[3], s[4])
         }
 
         private fun matchGuides(s: List<String>): DeepLink? {

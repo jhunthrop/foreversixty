@@ -45,6 +45,13 @@
       "attendance": 12,
       "discipline": 6
     },
+    "component_caps": {
+      "gear": 500,
+      "experience": 700,
+      "parses": 600,
+      "attendance": 200,
+      "discipline": 100
+    },
     "experience": {
       "dungeons": 9,
       "raid_kills": 4,

@@ -99,17 +99,22 @@ export function renderSwiftModels(model, header) {
 
 // Endpoints ------------------------------------------------------------------------------
 
+// Swift keywords an OpenAPI name may be (`class`): fine as an argument label, but a reference in
+// the body is written in backticks.
+const KEYWORDS = new Set(['class', 'default', 'func', 'in', 'is', 'let', 'protocol', 'return', 'self', 'static', 'struct', 'var']);
+const ref = (name) => (KEYWORDS.has(name) ? `\`${name}\`` : name);
+
 function swiftPath(op) {
   return pathSegments(op.path, op.pathParams)
-    .map((s) => (s.literal !== undefined ? s.literal : `\\(${s.param.name})`))
+    .map((s) => (s.literal !== undefined ? s.literal : `\\(${ref(s.param.name)})`))
     .join('');
 }
 
 function queryItems(op) {
   const items = op.query.map((q) => {
     if (q.constant !== undefined) return `URLQueryItem(name: "${q.json}", value: "${q.constant}")`;
-    if (q.required) return `URLQueryItem(name: "${q.json}", value: "\\(${q.name})")`;
-    return `${q.name}.map { URLQueryItem(name: "${q.json}", value: "\\($0)") }`;
+    if (q.required) return `URLQueryItem(name: "${q.json}", value: "\\(${ref(q.name)})")`;
+    return `${ref(q.name)}.map { URLQueryItem(name: "${q.json}", value: "\\($0)") }`;
   });
   return items;
 }

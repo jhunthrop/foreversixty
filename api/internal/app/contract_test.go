@@ -37,6 +37,8 @@ func TestContractFixtures(t *testing.T) {
 		edit    func(*homeWorld)
 	}{
 		{"character.home.json", "/v1/characters/us/normal/velaren/home", nil},
+		// Lane F11's Home for Lightningbolltz, written by f11_fixtures.py: held to the same shape.
+		{"character.home.yours.json", "/v1/characters/us/normal/velaren/home", nil},
 		{"character.home.empty.json", "/v1/characters/us/normal/velaren/home", func(w *homeWorld) {
 			w.chars.cards["velaren"] = velaren(everyPick)
 		}},

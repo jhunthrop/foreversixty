@@ -41,6 +41,8 @@ struct BisPickerSheet: View {
     let catalog: SpecCatalog
     /// The build the spec icons load from; nil before the first config read.
     let build: String?
+    /// False for Rankings' signed-out pick (lane F11): class and spec only, no range or faction.
+    var showsListChoices = true
     let onSelect: (BisSelection) -> Void
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -59,8 +61,10 @@ struct BisPickerSheet: View {
                     .accessibilityAddTraits(.isHeader)
                 section(Copy.bisPickerClass) { classGrid }
                 section(Copy.bisPickerSpec) { specs }
-                section(Copy.bisPickerRange) { ranges }
-                section(Copy.bisPickerFaction) { factions }
+                if showsListChoices {
+                    section(Copy.bisPickerRange) { ranges }
+                    section(Copy.bisPickerFaction) { factions }
+                }
                 if let back = context.backTarget {
                     SecondaryButton(title: Copy.bisPickerBack(name: back.name), fullWidth: true) { onSelect(back.selection) }
                 }

@@ -81,6 +81,7 @@ struct AppEnvironment {
                 recentSearches.clear()
                 Task { await staticData.removeAll() }
                 DiskRaidCache.reports().removeAll()
+                DiskRaidCache.rankings().removeAll()
                 widgets.clear()
                 Task { await liveActivities.endAll() }
                 // Lane F16: the calendar link is the account's, never the next one's.

@@ -1,0 +1,330 @@
+{
+  "ok": true,
+  "data": {
+    "character": {
+      "key": "us/normal/lightningbolltz",
+      "region": "us",
+      "ruleset": "normal",
+      "name": "Lightningbolltz",
+      "class": "Shaman",
+      "guild": {
+        "name": "Hordebreakers",
+        "rank": "member"
+      },
+      "level": 60,
+      "race": "Troll",
+      "realm": null
+    },
+    "best": [
+      {
+        "encounter": "Onyxia",
+        "encounter_id": 1084,
+        "difficulty": 8,
+        "metric": "dps",
+        "value": 398.0,
+        "percentile": 93,
+        "spec": "Elemental",
+        "fought_at": "2026-12-16T20:00:00Z",
+        "report_id": "onyx0014kill",
+        "fight_index": 9
+      }
+    ],
+    "history": [
+      {
+        "encounter": "Onyxia",
+        "encounter_id": 1084,
+        "difficulty": 8,
+        "kill": true,
+        "metric": "dps",
+        "value": 398.0,
+        "spec": "Elemental",
+        "talent_split": "30/0/21",
+        "duration_ms": 194000,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "report_id": "onyx0014kill",
+        "fight_index": 9,
+        "execution_score": 0.91,
+        "percentile": 93
+      },
+      {
+        "encounter": "Onyxia",
+        "encounter_id": 1084,
+        "difficulty": 8,
+        "kill": false,
+        "metric": "dps",
+        "value": 377.9,
+        "spec": "Elemental",
+        "talent_split": "30/0/21",
+        "duration_ms": 71000,
+        "fought_at": "2026-12-16T20:00:00Z",
+        "report_id": "onyx0014kill",
+        "fight_index": 7,
+        "execution_score": 0.91
+      }
+    ],
+    "builds_seen": [
+      {
+        "talent_split": "30/0/21",
+        "spec": "Elemental",
+        "first_seen": "2026-12-10T20:00:00Z"
+      }
+    ],
+    "score": 1510,
+    "tier": "epic",
+    "as_of": "2026-12-17",
+    "components": {
+      "gear": 371,
+      "experience": 410,
+      "parses": 498,
+      "attendance": 160,
+      "discipline": 71
+    },
+    "experience": {
+      "dungeons": 14,
+      "raid_kills": 1,
+      "alts": 1
+    },
+    "component_caps": {
+      "gear": 500,
+      "experience": 700,
+      "parses": 600,
+      "attendance": 200,
+      "discipline": 100
+    },
+    "score_history": [
+      {
+        "date": "2026-12-10",
+        "score": 1300,
+        "tier": "rare"
+      },
+      {
+        "date": "2026-12-12",
+        "score": 1370,
+        "tier": "rare"
+      },
+      {
+        "date": "2026-12-14",
+        "score": 1450,
+        "tier": "rare"
+      },
+      {
+        "date": "2026-12-16",
+        "score": 1490,
+        "tier": "rare"
+      },
+      {
+        "date": "2026-12-17",
+        "score": 1510,
+        "tier": "epic"
+      }
+    ],
+    "supporter": false,
+    "gear": [
+      {
+        "slot": "head",
+        "worn": {
+          "id": 16667,
+          "name": "Coif of Elements",
+          "item_level": 62
+        },
+        "pick": {
+          "id": 252561,
+          "name": "Living Crown",
+          "source": "Leatherworking",
+          "chance": null
+        },
+        "gap": 7.8
+      },
+      {
+        "slot": "neck",
+        "worn": {
+          "id": 15856,
+          "name": "Archlight Talisman",
+          "item_level": 60
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "shoulder",
+        "worn": {
+          "id": 16669,
+          "name": "Pauldrons of Elements",
+          "item_level": 60
+        },
+        "pick": {
+          "id": 15067,
+          "name": "Ironfeather Shoulders",
+          "source": "Leatherworking",
+          "chance": null
+        },
+        "gap": 5.1
+      },
+      {
+        "slot": "back",
+        "worn": {
+          "id": 11623,
+          "name": "Spritecaster Cape",
+          "item_level": 52
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "chest",
+        "worn": {
+          "id": 16666,
+          "name": "Vest of Elements",
+          "item_level": 63
+        },
+        "pick": {
+          "id": 15066,
+          "name": "Ironfeather Breastplate",
+          "source": "Leatherworking",
+          "chance": null
+        },
+        "gap": 9.4
+      },
+      {
+        "slot": "wrist",
+        "worn": {
+          "id": 254123,
+          "name": "Runecloth Cuffs",
+          "item_level": 57
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "hands",
+        "worn": {
+          "id": 12632,
+          "name": "Storm Gauntlets",
+          "item_level": 59
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "waist",
+        "worn": {
+          "id": 16673,
+          "name": "Cord of Elements",
+          "item_level": 58
+        },
+        "pick": {
+          "id": 252476,
+          "name": "Skycaller's Leather Waistguard",
+          "source": "Leatherworking",
+          "chance": null
+        },
+        "gap": 4.1
+      },
+      {
+        "slot": "legs",
+        "worn": {
+          "id": 16668,
+          "name": "Kilt of Elements",
+          "item_level": 61
+        },
+        "pick": {
+          "id": 252486,
+          "name": "Ironfeather Leggings",
+          "source": "Leatherworking",
+          "chance": null
+        },
+        "gap": 6.6
+      },
+      {
+        "slot": "feet",
+        "worn": {
+          "id": 11822,
+          "name": "Omnicast Boots",
+          "item_level": 59
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "finger1",
+        "worn": {
+          "id": 13001,
+          "name": "Maiden's Circle",
+          "item_level": 61
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "finger2",
+        "worn": {
+          "id": 7553,
+          "name": "Band of the Unicorn",
+          "item_level": 48
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "trinket1",
+        "worn": {
+          "id": 19120,
+          "name": "Rune of the Guard Captain",
+          "item_level": 51
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "trinket2",
+        "worn": {
+          "id": 12930,
+          "name": "Briarwood Reed",
+          "item_level": 60
+        },
+        "pick": {
+          "id": 11302,
+          "name": "Uther's Strength",
+          "source": "World drop",
+          "chance": null
+        },
+        "gap": 3.0
+      },
+      {
+        "slot": "main_hand",
+        "worn": {
+          "id": 2243,
+          "name": "Hand of Edward the Odd",
+          "item_level": 62
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "off_hand",
+        "worn": {
+          "id": 11904,
+          "name": "Spirit of Aquementas",
+          "item_level": 56
+        },
+        "pick": null,
+        "gap": null
+      },
+      {
+        "slot": "ranged",
+        "worn": {
+          "id": 228176,
+          "name": "Totem of Thunder",
+          "item_level": 65
+        },
+        "pick": null,
+        "gap": null
+      }
+    ],
+    "gear_gap_total": 36.0,
+    "gear_spec": "shaman-elemental",
+    "gear_spec_source": "talents"
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

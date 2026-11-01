@@ -793,6 +793,127 @@
     <string name="home_logs_last">Your last raid: %1$s, %2$s</string>
     <string name="home_logs_none">No reports yet.</string>
     <string name="night_openReport">Open the full report</string>
+    <string name="home_rankings">Rankings</string>
+    <string name="home_rankings_line" tools:ignore="PluralsCandidate">%1$s of %2$d %3$s %4$s characters on %5$s</string>
+    <string name="home_rankings_none">Not ranked yet.</string>
+    <string name="rank_title">Rankings</string>
+    <string name="rank_label">Your rank</string>
+    <string name="rank_unit" tools:ignore="PluralsCandidate">of %1$d %2$s %3$s characters</string>
+    <string name="rank_unitKills" tools:ignore="PluralsCandidate">of %1$d %2$s %3$s kills</string>
+    <string name="rank_meta">Your best kill on %1$s, %2$s, %3$s.</string>
+    <string name="rank_metaNamed">%1$s · best kill on %2$s, %3$s, %4$s.</string>
+    <string name="rank_none">Not ranked yet on %1$s.</string>
+    <string name="rank_noneMeta">A logged kill puts you on the board.</string>
+    <string name="rank_empty">No ranked fights yet for this filter. Rankings fill in as reports are uploaded.</string>
+    <string name="rank_pin">Your best kill</string>
+    <string name="rank_jump">Jump to your row, %1$s</string>
+    <string name="rank_filters">Filters</string>
+    <string name="rank_reset">Reset filters</string>
+    <string name="rank_error">The rankings did not load.</string>
+    <string name="rank_loadingMore">Loading more</string>
+    <string name="rank_chooseSpec">Choose a class and spec</string>
+    <string name="rank_you">You</string>
+    <string name="rank_rowMeta" tools:ignore="PluralsCandidate">%1$s · %2$d players · %3$s · %4$s</string>
+    <string name="rank_rowMetaNoGuild" tools:ignore="PluralsCandidate">%1$d players · %2$s · %3$s</string>
+    <string name="rank_unit_dps">DPS</string>
+    <string name="rank_unit_hps">HPS</string>
+    <string name="rank_unit_dtps">DTPS</string>
+    <string name="rank_unit_execution">Executed</string>
+    <string name="rank_line_allRegions">All regions</string>
+    <string name="rank_filter_encounter">Encounter</string>
+    <string name="rank_filter_measure">Measure</string>
+    <string name="rank_filter_ruleset">Ruleset</string>
+    <string name="rank_filter_region">Region</string>
+    <string name="rank_filter_phase">Phase</string>
+    <string name="rank_filter_faction">Faction</string>
+    <string name="rank_filter_today">Today only</string>
+    <string name="rank_measure_damage">Damage</string>
+    <string name="rank_measure_healing">Healing</string>
+    <string name="rank_measure_taken">Damage taken</string>
+    <string name="rank_measure_execution">Execution</string>
+    <string name="rank_ruleset_normal">Normal</string>
+    <string name="rank_ruleset_pvp">PvP</string>
+    <string name="rank_ruleset_rp">RP</string>
+    <string name="rank_ruleset_hardcore">Hardcore</string>
+    <string name="rank_ruleset_all">Every ruleset</string>
+    <string name="rank_region_all">All</string>
+    <string name="rank_faction_both">Both</string>
+    <string name="rank_faction_alliance">Alliance</string>
+    <string name="rank_faction_horde">Horde</string>
+    <string name="rank_phase_preBeta">Pre-beta</string>
+    <string name="rank_phase_beta">Beta</string>
+    <string name="rank_phase_launch">Launch</string>
+    <string name="rank_phase_raids1">Phase 1</string>
+    <string name="rank_encounterMeta" tools:ignore="PluralsCandidate">%1$s · %2$d players · %3$s</string>
+    <plurals name="rank_kills">
+        <item quantity="one">1 ranked kill</item>
+        <item quantity="other">%1$d ranked kills</item>
+    </plurals>
+    <string name="rank_menu_watch">Watch</string>
+    <string name="rank_menu_unwatch">Stop watching</string>
+    <string name="rank_menu_report">Open the report</string>
+    <string name="rank_menu_share">Share</string>
+    <string name="rank_a11y_row" tools:ignore="PluralsCandidate">Rank %1$d of %2$d, %3$s, %4$s %5$s, %6$s</string>
+    <string name="rank_a11y_yours">your character</string>
+    <string name="rank_a11y_perSecond_dps">damage per second</string>
+    <string name="rank_a11y_perSecond_hps">healing per second</string>
+    <string name="rank_a11y_perSecond_dtps">damage taken per second</string>
+    <string name="rank_a11y_executed">percent executed</string>
+    <string name="char_score">Forever Score</string>
+    <string name="char_how">How is this calculated?</string>
+    <string name="char_asOf">As of %1$s</string>
+    <string name="char_bests">Bests</string>
+    <string name="char_recent">Recent fights</string>
+    <string name="char_gear">Gear</string>
+    <string name="char_gap">Gear gap</string>
+    <string name="char_builds">Builds seen</string>
+    <string name="char_noLogs">No logs yet.</string>
+    <string name="char_noScore">%1$s has no rated fight in a public report, so there is no score to show.</string>
+    <string name="char_noGear">%1$s has not sent gear to Forever Sixty.</string>
+    <string name="char_notFound">We have no character called %1$s.</string>
+    <string name="char_notFoundHelp">Check the spelling, the region and the ruleset.</string>
+    <string name="char_searchAgain">Search again</string>
+    <string name="char_watch">Watch</string>
+    <string name="char_watching">Watching</string>
+    <string name="char_watchA11y">Watch %1$s</string>
+    <string name="char_unwatchA11y">Stop watching %1$s</string>
+    <string name="char_watchFailed">%1$s was not saved. Try again.</string>
+    <string name="char_share">Share</string>
+    <string name="char_error">That character did not load.</string>
+    <string name="char_you">You</string>
+    <string name="char_supporter">Supporter</string>
+    <string name="char_descriptor" tools:ignore="PluralsCandidate">%1$s %2$s %3$s · Level %4$d</string>
+    <string name="char_descriptorNoLevel">%1$s %2$s %3$s</string>
+    <string name="char_where">%1$s · %2$s %3$s</string>
+    <string name="char_whereNoGuild">%1$s %2$s</string>
+    <string name="char_component_gear">Gear</string>
+    <string name="char_component_experience">Experience</string>
+    <string name="char_component_parses">Parses</string>
+    <string name="char_component_attendance">Attendance</string>
+    <string name="char_component_discipline">Discipline</string>
+    <string name="char_tier_common">Common</string>
+    <string name="char_tier_uncommon">Uncommon</string>
+    <string name="char_tier_rare">Rare</string>
+    <string name="char_tier_epic">Epic</string>
+    <string name="char_tier_legendary">Legendary</string>
+    <string name="char_bestMeta">%1$s · %2$s</string>
+    <string name="char_kill">Kill</string>
+    <string name="char_wipe">Wipe</string>
+    <string name="char_fightMeta">%1$s · %2$s</string>
+    <string name="char_percentile">percentile</string>
+    <string name="char_goldDot">Gold dot: the BiS list has a better item for this slot.</string>
+    <string name="char_gapPoints">%1$s points</string>
+    <string name="char_buildMeta">%1$s · first seen %2$s</string>
+    <string name="char_openPlanner">Open in planner</string>
+    <string name="char_parseHistory">Parse history</string>
+    <string name="char_a11y_score">Forever Score %1$s, %2$s.</string>
+    <string name="char_a11y_component" tools:ignore="PluralsCandidate">%1$s %2$d of %3$d.</string>
+    <string name="paperdoll_a11y_socket">%1$s, %2$s, %3$s, item level %4$s.</string>
+    <string name="paperdoll_a11y_empty">%1$s, empty.</string>
+    <string name="paperdoll_twoHand">Two-hand in main hand</string>
+    <string name="items_unknownItem">%1$s · Item %2$s</string>
+    <string name="paperdoll_a11y_better">A better item is on your best in slot list.</string>
+    <string name="paperdoll_detail" tools:ignore="PluralsCandidate">%1$s · ilvl %2$d</string>
     <string name="reports_title">Your reports</string>
     <string name="reports_back">Reports</string>
     <string name="reports_thisWeek">This week</string>

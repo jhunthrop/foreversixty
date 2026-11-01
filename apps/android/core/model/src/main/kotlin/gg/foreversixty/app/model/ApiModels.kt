@@ -499,6 +499,8 @@ data class CharacterProfile(
     @SerialName("tier") val tier: String? = null,
     @SerialName("as_of") val asOf: String? = null,
     @SerialName("components") val components: ScoreComponents? = null,
+    /** Each component's ceiling (gear 500, experience 700, parses 600, attendance 200, discipline 100): a bar is value over cap. Null with the score. */
+    @SerialName("component_caps") val componentCaps: ScoreComponentCaps? = null,
     @SerialName("experience") val experience: ScoreExperience? = null,
 )
 
@@ -523,6 +525,13 @@ data class CharacterProfileHeader(
     @SerialName("class") val className: String? = null,
     @SerialName("avatar_url") val avatarUrl: String? = null,
     @SerialName("render_url") val renderUrl: String? = null,
+)
+
+/** Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort */
+@Serializable
+data class CharacterRank(
+    @SerialName("rank") val rank: Int,
+    @SerialName("row") val row: RankingRow,
 )
 
 @Serializable
@@ -1650,6 +1659,17 @@ data class NotificationsPatch(
 )
 
 @Serializable
+data class PhaseBoundary(
+    @SerialName("name") val name: String,
+    @SerialName("start") val start: String,
+)
+
+@Serializable
+data class Phases(
+    @SerialName("phases") val phases: List<PhaseBoundary> = emptyList(),
+)
+
+@Serializable
 data class PushTokenRegistered(
     @SerialName("platform") val platform: String,
     @SerialName("app_version") val appVersion: String,
@@ -2043,6 +2063,84 @@ data class RaidZone(
 )
 
 @Serializable
+data class RankedEncounter(
+    @SerialName("id") val id: Long,
+    @SerialName("slug") val slug: String,
+    @SerialName("name") val name: String,
+    /** The zone the newest log of it named */
+    @SerialName("zone") val zone: String? = null,
+    /** The raid size most of its ranked kills had */
+    @SerialName("size") val size: Int? = null,
+    /** Ranked kills */
+    @SerialName("kills") val kills: Int,
+)
+
+@Serializable
+data class RankedEncounters(
+    @SerialName("encounters") val encounters: List<RankedEncounter> = emptyList(),
+)
+
+/** Absent when the report is filed to no guild */
+@Serializable
+data class RankingGuild(
+    @SerialName("name") val name: String,
+    @SerialName("region") val region: String,
+    @SerialName("ruleset") val ruleset: String,
+)
+
+@Serializable
+data class RankingPercentile(
+    /** 0 to 100 */
+    @SerialName("percentile") val percentile: Double,
+    /** Kills the bracket ranks */
+    @SerialName("ranked") val ranked: Int,
+)
+
+@Serializable
+data class RankingPlayer(
+    /** <region>/<ruleset>/<name-slug> */
+    @SerialName("key") val key: String,
+    @SerialName("name") val name: String,
+    /** Absent when the log did not say */
+    @SerialName("class") val className: String? = null,
+    /** Absent when the log did not say */
+    @SerialName("spec") val spec: String? = null,
+)
+
+@Serializable
+data class RankingRow(
+    @SerialName("rank") val rank: Int,
+    @SerialName("player") val player: RankingPlayer,
+    /** Absent when the report is filed to no guild */
+    @SerialName("guild") val guild: RankingGuild? = null,
+    @SerialName("value") val value: Double,
+    @SerialName("ilvl") val ilvl: Int? = null,
+    @SerialName("size") val size: Int,
+    @SerialName("fought_at") val foughtAt: String,
+    @SerialName("duration_ms") val durationMs: Int,
+    @SerialName("talent_split") val talentSplit: String? = null,
+    @SerialName("trinkets") val trinkets: List<Int>? = null,
+    @SerialName("buff_count") val buffCount: Int? = null,
+    @SerialName("report_id") val reportId: String,
+    @SerialName("fight_index") val fightIndex: Int,
+    @SerialName("state") val state: String,
+    @SerialName("execution_score") val executionScore: Double? = null,
+)
+
+@Serializable
+data class RankingsPage(
+    @SerialName("rows") val rows: List<RankingRow> = emptyList(),
+    @SerialName("total") val total: Int,
+    @SerialName("page") val page: Int,
+    @SerialName("per_page") val perPage: Int,
+    @SerialName("updated_at") val updatedAt: String,
+    /** True when each row is a different character's best kill (distinct=character): the apps then say characters, else kills */
+    @SerialName("deduped") val deduped: Boolean,
+    /** Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort */
+    @SerialName("character_rank") val characterRank: CharacterRank? = null,
+)
+
+@Serializable
 data class Report(
     @SerialName("id") val id: String,
     @SerialName("title") val title: String,
@@ -2188,6 +2286,16 @@ data class SampleCast(
     @SerialName("target") val target: String? = null,
     /** What the player held AFTER the cast: rage, energy, mana, combo_points. */
     @SerialName("resources") val resources: Map<String, Int>? = null,
+)
+
+/** Each component's ceiling (gear 500, experience 700, parses 600, attendance 200, discipline 100): a bar is value over cap. Null with the score. */
+@Serializable
+data class ScoreComponentCaps(
+    @SerialName("gear") val gear: Int,
+    @SerialName("experience") val experience: Int,
+    @SerialName("parses") val parses: Int,
+    @SerialName("attendance") val attendance: Int,
+    @SerialName("discipline") val discipline: Int,
 )
 
 @Serializable
@@ -2592,6 +2700,24 @@ data class TrashGroup(
     @SerialName("fights") val fights: List<Int> = emptyList(),
     /** The pulls' lengths summed */
     @SerialName("duration_ms") val durationMs: Long,
+)
+
+@Serializable
+data class WatchedCharacter(
+    /** <region>/<ruleset>/<name-slug> */
+    @SerialName("key") val key: String,
+    @SerialName("region") val region: String,
+    @SerialName("ruleset") val ruleset: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String? = null,
+    /** The character page's level, null when no source knows it */
+    @SerialName("level") val level: Int? = null,
+    @SerialName("added_at") val addedAt: String,
+)
+
+@Serializable
+data class WatchingList(
+    @SerialName("rows") val rows: List<WatchedCharacter> = emptyList(),
 )
 
 /** Asks for stat weights instead of a DPS number. */

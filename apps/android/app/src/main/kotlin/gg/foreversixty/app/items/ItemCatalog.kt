@@ -1,5 +1,6 @@
 package gg.foreversixty.app.items
 
+import gg.foreversixty.app.model.Item
 import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.StaticEndpoints
 import gg.foreversixty.app.network.dataOrNull
@@ -16,9 +17,13 @@ class ItemCatalog(private val store: StaticDataStore) {
      * did not load.
      */
     suspend fun sources(request: ItemTooltipRequest): ItemTooltipSources? {
-        val items = store.get(StaticEndpoints.getItems(request.build, request.classSlug)).dataOrNull() ?: return null
+        val items = items(request.build, request.classSlug) ?: return null
         val sets = store.get(StaticEndpoints.getSets(request.build)).dataOrNull().orEmpty()
         val bis = request.spec?.let { store.get(StaticEndpoints.getBis(request.build, it)).dataOrNull() }
-        return ItemTooltipSources(items.items.associateBy { it.id }, sets, bis)
+        return ItemTooltipSources(items, sets, bis)
     }
+
+    /** A class's items by id (lane F11: a character page's gear), or null when the file did not load. */
+    suspend fun items(build: String, classSlug: String): Map<Int, Item>? =
+        store.get(StaticEndpoints.getItems(build, classSlug)).dataOrNull()?.items?.associateBy { it.id }
 }

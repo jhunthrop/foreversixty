@@ -102,6 +102,8 @@ class MainActivity : ComponentActivity() {
             is DeepLink.Sim -> graph.home.sims?.navigator?.open(parsed)
             // Lane F10: a report link opens Home, Your reports and the report.
             is DeepLink.Report -> graph.home.reports?.navigator?.open(parsed)
+            // Lane F11: a rankings link opens Home and Rankings; a player link opens Home and that character.
+            is DeepLink.Rankings, is DeepLink.Player -> graph.home.rankings?.navigator?.open(parsed)
             // Lane F9: a guides link opens the Guides tab and the guide.
             is DeepLink.Guides, is DeepLink.Guide -> graph.guides?.navigator?.open(parsed)
             // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.

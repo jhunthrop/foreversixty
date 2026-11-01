@@ -46,10 +46,24 @@ func newHarness(t *testing.T) *harness {
 	}
 	t.Cleanup(pool.Close)
 	ctx := context.Background()
-	if _, err := pool.Exec(ctx,
-		`truncate users, reports, guilds, fight_metrics, percentile_digests, moderation cascade`); err != nil {
+	if err := truncateSeeded(ctx, pool); err != nil {
 		t.Fatal(err)
 	}
+	// Leave nothing behind: a complete report with unrated fights is a stale fight to the rating
+	// package's backfill, which shares the test database when packages run one after another.
+	// It opens its own pool: some tests close the harness's to prove reads fail without one.
+	t.Cleanup(func() {
+		bg := context.Background()
+		clean, err := db.Connect(bg, url)
+		if err != nil {
+			t.Errorf("clean up the rankings harness: %v", err)
+			return
+		}
+		defer clean.Close()
+		if err := truncateSeeded(bg, clean); err != nil {
+			t.Errorf("clean up the rankings harness: %v", err)
+		}
+	})
 	if err := db.EnsureMetricsPartitions(ctx, pool, engine.FixtureBase, 1); err != nil {
 		t.Fatal(err)
 	}
@@ -72,6 +86,13 @@ func newHarness(t *testing.T) *harness {
 		t.Fatal(err)
 	}
 	return h
+}
+
+// truncateSeeded empties every table the harness seeds (watched_characters goes with users).
+func truncateSeeded(ctx context.Context, pool *pgxpool.Pool) error {
+	_, err := pool.Exec(ctx,
+		`truncate users, reports, guilds, fight_metrics, percentile_digests, moderation, characters cascade`)
+	return err
 }
 
 // seedReport makes a report owned by the guild.

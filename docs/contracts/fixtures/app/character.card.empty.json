@@ -15,6 +15,7 @@
       "ruleset": "pvp"
     },
     "components": null,
+    "component_caps": null,
     "experience": null,
     "gear": [],
     "gear_gap_total": null,

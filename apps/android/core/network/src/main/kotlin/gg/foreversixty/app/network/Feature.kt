@@ -25,6 +25,8 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     Widgets("widgets", false),
     /** F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach */
     Reports("reports", false),
+    /** F11: Rankings and character pages: your rank, the board and its filters, a character's Forever Score, bests and gear (the Paperdoll), watching */
+    Rankings("rankings", false),
     /** F9: The Guides tab: your guide, every class's guides saved for offline, and What changed */
     Guides("guides", false),
     /** F9: The Guides tab's Tier lists segment; on only after the accuracy reviewer verifies every DPS band (spec F9.4) */

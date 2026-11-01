@@ -1471,6 +1471,562 @@
         }
       }
     },
+    "char.a11y.component": {
+      "comment": "Arguments: 1 component (string), 2 value (int), 3 cap (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$lld of %3$lld."
+          }
+        }
+      }
+    },
+    "char.a11y.score": {
+      "comment": "Arguments: 1 score (string), 2 tier (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forever Score %1$@, %2$@."
+          }
+        }
+      }
+    },
+    "char.asOf": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As of %1$@"
+          }
+        }
+      }
+    },
+    "char.bestMeta": {
+      "comment": "Arguments: 1 ruleset (string), 2 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "char.bests": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bests"
+          }
+        }
+      }
+    },
+    "char.buildMeta": {
+      "comment": "Arguments: 1 spec (string), 2 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · first seen %2$@"
+          }
+        }
+      }
+    },
+    "char.builds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Builds seen"
+          }
+        }
+      }
+    },
+    "char.component.attendance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attendance"
+          }
+        }
+      }
+    },
+    "char.component.discipline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discipline"
+          }
+        }
+      }
+    },
+    "char.component.experience": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Experience"
+          }
+        }
+      }
+    },
+    "char.component.gear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gear"
+          }
+        }
+      }
+    },
+    "char.component.parses": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parses"
+          }
+        }
+      }
+    },
+    "char.descriptor": {
+      "comment": "Arguments: 1 race (string), 2 spec (string), 3 class (string), 4 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ %3$@ · Level %4$lld"
+          }
+        }
+      }
+    },
+    "char.descriptorNoLevel": {
+      "comment": "Arguments: 1 race (string), 2 spec (string), 3 class (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ %3$@"
+          }
+        }
+      }
+    },
+    "char.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That character did not load."
+          }
+        }
+      }
+    },
+    "char.fightMeta": {
+      "comment": "Arguments: 1 result (string), 2 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "char.gap": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gear gap"
+          }
+        }
+      }
+    },
+    "char.gapPoints": {
+      "comment": "Arguments: 1 points (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ points"
+          }
+        }
+      }
+    },
+    "char.gear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gear"
+          }
+        }
+      }
+    },
+    "char.goldDot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gold dot: the BiS list has a better item for this slot."
+          }
+        }
+      }
+    },
+    "char.how": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How is this calculated?"
+          }
+        }
+      }
+    },
+    "char.kill": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kill"
+          }
+        }
+      }
+    },
+    "char.noGear": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ has not sent gear to Forever Sixty."
+          }
+        }
+      }
+    },
+    "char.noLogs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No logs yet."
+          }
+        }
+      }
+    },
+    "char.noScore": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ has no rated fight in a public report, so there is no score to show."
+          }
+        }
+      }
+    },
+    "char.notFound": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We have no character called %1$@."
+          }
+        }
+      }
+    },
+    "char.notFoundHelp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the spelling, the region and the ruleset."
+          }
+        }
+      }
+    },
+    "char.openPlanner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in planner"
+          }
+        }
+      }
+    },
+    "char.parseHistory": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parse history"
+          }
+        }
+      }
+    },
+    "char.percentile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "percentile"
+          }
+        }
+      }
+    },
+    "char.recent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent fights"
+          }
+        }
+      }
+    },
+    "char.score": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forever Score"
+          }
+        }
+      }
+    },
+    "char.searchAgain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search again"
+          }
+        }
+      }
+    },
+    "char.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "char.supporter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporter"
+          }
+        }
+      }
+    },
+    "char.tier.common": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Common"
+          }
+        }
+      }
+    },
+    "char.tier.epic": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Epic"
+          }
+        }
+      }
+    },
+    "char.tier.legendary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legendary"
+          }
+        }
+      }
+    },
+    "char.tier.rare": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rare"
+          }
+        }
+      }
+    },
+    "char.tier.uncommon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uncommon"
+          }
+        }
+      }
+    },
+    "char.unwatchA11y": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop watching %1$@"
+          }
+        }
+      }
+    },
+    "char.watch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch"
+          }
+        }
+      }
+    },
+    "char.watchA11y": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch %1$@"
+          }
+        }
+      }
+    },
+    "char.watchFailed": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ was not saved. Try again."
+          }
+        }
+      }
+    },
+    "char.watching": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watching"
+          }
+        }
+      }
+    },
+    "char.where": {
+      "comment": "Arguments: 1 guild (string), 2 region (string), 3 ruleset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ %3$@"
+          }
+        }
+      }
+    },
+    "char.whereNoGuild": {
+      "comment": "Arguments: 1 region (string), 2 ruleset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "char.wipe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wipe"
+          }
+        }
+      }
+    },
+    "char.you": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You"
+          }
+        }
+      }
+    },
     "coach.couldntCheck": {
       "extractionState": "manual",
       "localizations": {
@@ -3091,6 +3647,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next for %1$@"
+          }
+        }
+      }
+    },
+    "home.rankings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rankings"
+          }
+        }
+      }
+    },
+    "home.rankings.line": {
+      "comment": "Arguments: 1 ordinal (string), 2 total (int), 3 spec (string), 4 class (string), 5 encounter (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ of %2$lld %3$@ %4$@ characters on %5$@"
+          }
+        }
+      }
+    },
+    "home.rankings.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not ranked yet."
           }
         }
       }
@@ -4718,6 +5308,18 @@
         }
       }
     },
+    "items.unknownItem": {
+      "comment": "Arguments: 1 slot (string), 2 id (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Item %2$@"
+          }
+        }
+      }
+    },
     "items.weapon.damage": {
       "comment": "Arguments: 1 min (int), 2 max (int)",
       "extractionState": "manual",
@@ -6196,6 +6798,64 @@
           "stringUnit": {
             "state": "translated",
             "value": "The update did not finish. Try again."
+          }
+        }
+      }
+    },
+    "paperdoll.a11y.better": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A better item is on your best in slot list."
+          }
+        }
+      }
+    },
+    "paperdoll.a11y.empty": {
+      "comment": "Arguments: 1 slot (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, empty."
+          }
+        }
+      }
+    },
+    "paperdoll.a11y.socket": {
+      "comment": "Arguments: 1 slot (string), 2 item (string), 3 quality (string), 4 level (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@, item level %4$@."
+          }
+        }
+      }
+    },
+    "paperdoll.detail": {
+      "comment": "Arguments: 1 slot (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · ilvl %2$lld"
+          }
+        }
+      }
+    },
+    "paperdoll.twoHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two-hand in main hand"
           }
         }
       }
@@ -8284,6 +8944,689 @@
           "stringUnit": {
             "state": "translated",
             "value": " · %1$@"
+          }
+        }
+      }
+    },
+    "rank.a11y.executed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "percent executed"
+          }
+        }
+      }
+    },
+    "rank.a11y.perSecond.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "damage per second"
+          }
+        }
+      }
+    },
+    "rank.a11y.perSecond.dtps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "damage taken per second"
+          }
+        }
+      }
+    },
+    "rank.a11y.perSecond.hps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "healing per second"
+          }
+        }
+      }
+    },
+    "rank.a11y.row": {
+      "comment": "Arguments: 1 rank (int), 2 total (int), 3 name (string), 4 value (string), 5 unit (string), 6 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rank %1$lld of %2$lld, %3$@, %4$@ %5$@, %6$@"
+          }
+        }
+      }
+    },
+    "rank.a11y.yours": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "your character"
+          }
+        }
+      }
+    },
+    "rank.chooseSpec": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a class and spec"
+          }
+        }
+      }
+    },
+    "rank.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No ranked fights yet for this filter. Rankings fill in as reports are uploaded."
+          }
+        }
+      }
+    },
+    "rank.encounterMeta": {
+      "comment": "Arguments: 1 zone (string), 2 size (int), 3 kills (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld players · %3$@"
+          }
+        }
+      }
+    },
+    "rank.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The rankings did not load."
+          }
+        }
+      }
+    },
+    "rank.faction.alliance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alliance"
+          }
+        }
+      }
+    },
+    "rank.faction.both": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Both"
+          }
+        }
+      }
+    },
+    "rank.faction.horde": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horde"
+          }
+        }
+      }
+    },
+    "rank.filter.encounter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encounter"
+          }
+        }
+      }
+    },
+    "rank.filter.faction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faction"
+          }
+        }
+      }
+    },
+    "rank.filter.measure": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Measure"
+          }
+        }
+      }
+    },
+    "rank.filter.phase": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phase"
+          }
+        }
+      }
+    },
+    "rank.filter.region": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Region"
+          }
+        }
+      }
+    },
+    "rank.filter.ruleset": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruleset"
+          }
+        }
+      }
+    },
+    "rank.filter.today": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today only"
+          }
+        }
+      }
+    },
+    "rank.filters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filters"
+          }
+        }
+      }
+    },
+    "rank.jump": {
+      "comment": "Arguments: 1 ordinal (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jump to your row, %1$@"
+          }
+        }
+      }
+    },
+    "rank.kills": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 ranked kill"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld ranked kills"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "rank.label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your rank"
+          }
+        }
+      }
+    },
+    "rank.line.allRegions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All regions"
+          }
+        }
+      }
+    },
+    "rank.loadingMore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading more"
+          }
+        }
+      }
+    },
+    "rank.measure.damage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage"
+          }
+        }
+      }
+    },
+    "rank.measure.execution": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Execution"
+          }
+        }
+      }
+    },
+    "rank.measure.healing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healing"
+          }
+        }
+      }
+    },
+    "rank.measure.taken": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage taken"
+          }
+        }
+      }
+    },
+    "rank.menu.report": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the report"
+          }
+        }
+      }
+    },
+    "rank.menu.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "rank.menu.unwatch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop watching"
+          }
+        }
+      }
+    },
+    "rank.menu.watch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch"
+          }
+        }
+      }
+    },
+    "rank.meta": {
+      "comment": "Arguments: 1 encounter (string), 2 ruleset (string), 3 phase (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your best kill on %1$@, %2$@, %3$@."
+          }
+        }
+      }
+    },
+    "rank.metaNamed": {
+      "comment": "Arguments: 1 name (string), 2 encounter (string), 3 ruleset (string), 4 phase (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · best kill on %2$@, %3$@, %4$@."
+          }
+        }
+      }
+    },
+    "rank.none": {
+      "comment": "Arguments: 1 encounter (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not ranked yet on %1$@."
+          }
+        }
+      }
+    },
+    "rank.noneMeta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A logged kill puts you on the board."
+          }
+        }
+      }
+    },
+    "rank.phase.beta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beta"
+          }
+        }
+      }
+    },
+    "rank.phase.launch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Launch"
+          }
+        }
+      }
+    },
+    "rank.phase.preBeta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pre-beta"
+          }
+        }
+      }
+    },
+    "rank.phase.raids1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phase 1"
+          }
+        }
+      }
+    },
+    "rank.pin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your best kill"
+          }
+        }
+      }
+    },
+    "rank.region.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "rank.reset": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset filters"
+          }
+        }
+      }
+    },
+    "rank.rowMeta": {
+      "comment": "Arguments: 1 guild (string), 2 size (int), 3 time (string), 4 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld players · %3$@ · %4$@"
+          }
+        }
+      }
+    },
+    "rank.rowMetaNoGuild": {
+      "comment": "Arguments: 1 size (int), 2 time (string), 3 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld players · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "rank.ruleset.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every ruleset"
+          }
+        }
+      }
+    },
+    "rank.ruleset.hardcore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hardcore"
+          }
+        }
+      }
+    },
+    "rank.ruleset.normal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal"
+          }
+        }
+      }
+    },
+    "rank.ruleset.pvp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PvP"
+          }
+        }
+      }
+    },
+    "rank.ruleset.rp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RP"
+          }
+        }
+      }
+    },
+    "rank.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rankings"
+          }
+        }
+      }
+    },
+    "rank.unit": {
+      "comment": "Arguments: 1 total (int), 2 spec (string), 3 class (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of %1$lld %2$@ %3$@ characters"
+          }
+        }
+      }
+    },
+    "rank.unit.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DPS"
+          }
+        }
+      }
+    },
+    "rank.unit.dtps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DTPS"
+          }
+        }
+      }
+    },
+    "rank.unit.execution": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Executed"
+          }
+        }
+      }
+    },
+    "rank.unit.hps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HPS"
+          }
+        }
+      }
+    },
+    "rank.unitKills": {
+      "comment": "Arguments: 1 total (int), 2 spec (string), 3 class (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of %1$lld %2$@ %3$@ kills"
+          }
+        }
+      }
+    },
+    "rank.you": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You"
           }
         }
       }

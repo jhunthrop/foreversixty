@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
@@ -71,6 +72,10 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/rankings", s.rankings)
 	mux.HandleFunc("GET /v1/rankings/percentile", s.percentile)
 	mux.HandleFunc("GET /v1/rankings/guilds", s.guildRankings)
+	mux.HandleFunc("GET /v1/rankings/encounters", s.rankedEncounters)
+	mux.HandleFunc("GET /v1/me/watching", auth.RequireSession(s.watching))
+	mux.HandleFunc("PUT /v1/me/watching/{region}/{ruleset}/{name}", auth.RequireSession(s.watch))
+	mux.HandleFunc("DELETE /v1/me/watching/{region}/{ruleset}/{name}", auth.RequireSession(s.unwatch))
 	mux.HandleFunc("GET /v1/encounters", s.encounters)
 	mux.HandleFunc("GET /v1/characters/search", s.searchCharacters)
 	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}", s.character)

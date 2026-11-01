@@ -83,12 +83,15 @@ sealed interface HomeAnswerBody {
 
 /** One "Next for {name}" row. */
 data class HomeNextRow(val kind: Kind, val title: String, val line: String, val tag: Tag?) {
-    enum class Kind { Talents, Sims, Logs }
+    enum class Kind { Talents, Sims, Logs, Rankings }
     enum class Tag { Matches, Differs }
 }
 
 /** Lane F10: the Logs row's newest report; [latest] null means none yet. */
 data class HomeLogs(val latest: ReportRow?)
+
+/** Lane F11: the Rankings row's sub line; [line] null while it is unread (the row shows no sub line). */
+data class HomeRankings(val line: String?)
 
 /** Everything Home draws for one answer. Built by [HomePresenter], rendered by `HomeAnswer`. */
 data class HomeAnswerModel(
@@ -121,6 +124,8 @@ class HomePresenter(
     private val talentStatus: TalentStatusLine? = null,
     /** Lane F10: the Logs row, only while the `reports` switch is on (null hides it). */
     private val logs: HomeLogs? = null,
+    /** Lane F11: the Rankings row under Logs, only while the `rankings` switch is on (null hides it). */
+    private val rankings: HomeRankings? = null,
 ) {
     fun model(home: CharacterHome): HomeAnswerModel {
         val isAnswer = home.state == STATE_OK && home.upgradeCount > 0
@@ -135,12 +140,12 @@ class HomePresenter(
             body = body(home),
             already = already(home),
             nextTitle = res.getString(R.string.home_next_title, character.name),
-            next = listOfNotNull(talentsRow(home), simsRow(home.spec), logsRow()),
+            next = listOfNotNull(talentsRow(home), simsRow(home.spec), logsRow(), rankingsRow()),
         )
     }
 
     /** The Next rows alone, for the error state with nothing cached. */
-    fun nextRowsWithoutAnswer(): List<HomeNextRow> = listOfNotNull(talentStatus?.let(::talentsRow), simsRow(null), logsRow())
+    fun nextRowsWithoutAnswer(): List<HomeNextRow> = listOfNotNull(talentStatus?.let(::talentsRow), simsRow(null), logsRow(), rankingsRow())
 
     /** The Talents row from F6's status: its tag (Matches or Differs) and its sentence. */
     private fun talentsRow(status: TalentStatusLine): HomeNextRow {
@@ -267,6 +272,12 @@ class HomePresenter(
             res.getString(R.string.home_logs_last, it.zone, res.getQuantityString(R.plurals.reports_kills, it.killCount, it.killCount))
         } ?: res.getString(R.string.home_logs_none)
         return HomeNextRow(HomeNextRow.Kind.Logs, res.getString(R.string.home_logs), line, null)
+    }
+
+    /** `14th of 212 Elemental Shaman characters on Onyxia` or `Not ranked yet.` (spec F11.1); empty while unread. */
+    private fun rankingsRow(): HomeNextRow? {
+        val current = rankings ?: return null
+        return HomeNextRow(HomeNextRow.Kind.Rankings, res.getString(R.string.home_rankings), current.line.orEmpty(), null)
     }
 
     /** The newest unseen finished server run for this spec (`/v1/me` `finished_sims`, newest first). */

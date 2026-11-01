@@ -20,6 +20,10 @@ public enum DeepLink: Equatable, Sendable {
     case sim(id: String)
     /// Home, Your reports, the report (read only when it is not yours). /app/report/{id}
     case report(id: String)
+    /// Home, Rankings, on that encounter (its slug or id). /app/rankings/{encounter}
+    case rankings(encounter: String)
+    /// Home, that character's page (F11.4); the current character does not change. /app/player/{region}/{ruleset}/{name}
+    case player(region: String, ruleset: String, name: String)
     /// Guides tab. /app/guides
     case guides
     /// Guides tab, that spec's guide (class and spec are slugs). /app/guides/{class}/{spec}
@@ -47,6 +51,8 @@ public enum DeepLink: Equatable, Sendable {
             Self.matchBis,
             Self.matchSim,
             Self.matchReport,
+            Self.matchRankings,
+            Self.matchPlayer,
             Self.matchGuides,
             Self.matchGuide,
             Self.matchNotifications,
@@ -67,6 +73,8 @@ public enum DeepLink: Equatable, Sendable {
         case .bis: "bis"
         case .sim: "sim"
         case .report: "report"
+        case .rankings: "rankings"
+        case .player: "player"
         case .guides: "guides"
         case .guide: "guide"
         case .notifications: "notifications"
@@ -85,6 +93,8 @@ public enum DeepLink: Equatable, Sendable {
         case let .bis(spec, band): Self.link("/app/bis/\(spec)/\(band)", [])
         case let .sim(id): Self.link("/app/sim/\(id)", [])
         case let .report(id): Self.link("/app/report/\(id)", [])
+        case let .rankings(encounter): Self.link("/app/rankings/\(encounter)", [])
+        case let .player(region, ruleset, name): Self.link("/app/player/\(region)/\(ruleset)/\(name)", [])
         case .guides: Self.link("/app/guides", [])
         case let .guide(className, spec): Self.link("/app/guides/\(className)/\(spec)", [])
         case .notifications: Self.link("/app/you/notifications", [])
@@ -126,6 +136,16 @@ public enum DeepLink: Equatable, Sendable {
     private static func matchReport(_ s: [String], _ q: [String: String]) -> DeepLink? {
         guard s.count == 3, s[0] == "app", s[1] == "report" else { return nil }
         return .report(id: s[2])
+    }
+
+    private static func matchRankings(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 3, s[0] == "app", s[1] == "rankings" else { return nil }
+        return .rankings(encounter: s[2])
+    }
+
+    private static func matchPlayer(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 5, s[0] == "app", s[1] == "player" else { return nil }
+        return .player(region: s[2], ruleset: s[3], name: s[4])
     }
 
     private static func matchGuides(_ s: [String], _ q: [String: String]) -> DeepLink? {
