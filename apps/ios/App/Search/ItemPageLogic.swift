@@ -27,6 +27,8 @@ struct ItemSourceRow: Equatable, Identifiable, Sendable {
     let kind: String
     let title: String
     let meta: String
+    /// A boss drop whose chance the data does not have; the section says so once.
+    var chanceUnknown = false
 
     var accessibilityLabel: String { meta.isEmpty ? title : Copy.itemPageA11ySource(title: title, meta: meta) }
 }
@@ -74,16 +76,24 @@ enum ItemPageLogic {
 
     static func sources(_ sources: [ItemUseSource]) -> [ItemSourceRow] {
         sources.enumerated().map { index, source in
-            ItemSourceRow(id: index, kind: source.kind, title: source.title, meta: sourceMeta(source))
+            ItemSourceRow(
+                id: index, kind: source.kind, title: source.title, meta: sourceMeta(source),
+                chanceUnknown: bossKinds.contains(source.kind) && source.chance == nil
+            )
         }
     }
 
-    /// `{place} · {kind}`, then for a boss drop `{n}% from {boss}` or `Drop chance not known`
-    /// (never `0%`), and for a quest `Requires level {n}`.
+    /// `Drop chance not known`, once under the section, when any boss row has no chance.
+    static func chanceFootnote(_ rows: [ItemSourceRow]) -> String? {
+        rows.contains(where: \.chanceUnknown) ? Copy.itemPageChanceUnknown : nil
+    }
+
+    /// `{place} · {kind}`, then for a boss drop with a known chance `{n}% from {boss}` (never
+    /// `0%`; an unknown chance is the section's one footnote), and for a quest `Requires level {n}`.
     static func sourceMeta(_ source: ItemUseSource) -> String {
         var parts = [source.place, kindWord(source.kind)].compactMap { $0 }.filter { !$0.isEmpty && $0 != source.title }
-        if bossKinds.contains(source.kind) {
-            parts.append(source.chance.map { Copy.itemPageDropChance(chance: percent($0), boss: source.title) } ?? Copy.itemPageChanceUnknown)
+        if bossKinds.contains(source.kind), let chance = source.chance {
+            parts.append(Copy.itemPageDropChance(chance: percent(chance), boss: source.title))
         }
         if source.kind == "quest", let level = source.minLevel, level > 0 {
             parts.append(Copy.itemPageQuestLevel(n: level))

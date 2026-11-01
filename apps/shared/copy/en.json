@@ -752,6 +752,7 @@
     "itemPage.preset.raid": "Phase 1 raid",
     "itemPage.pickMetaBare": "{spec} · {band} · {faction}",
     "itemPage.bisForFailed": "Best in slot lists did not load.",
+    "itemPage.backPlain": "Back",
     "items.equip.spellPower": {"text": "Equip: Increases damage and healing done by magical spells and effects by up to {n}.", "notPlural": true, "args": {"n": "int"}},
     "items.equip.healing": {"text": "Equip: Increases healing done by spells and effects by up to {n}.", "notPlural": true, "args": {"n": "int"}},
     "items.equip.attackPower": {"text": "Equip: +{n} Attack Power.", "notPlural": true, "args": {"n": "int"}},

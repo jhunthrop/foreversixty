@@ -193,6 +193,8 @@ struct ItemTooltipPanel: View {
                 ForEach(model.setBonuses, id: \.self) { line($0, color: FSColor.muted) }
             }
             if let requires = model.requiresLevel { line(requires).padding(.top, 6) }
+            // The client prints its green `Equip:` sentences after Requires Level.
+            ForEach(model.equipLines, id: \.self) { line($0, color: FSColor.parseGreen) }
             if let level = model.itemLevel { line(level, color: FSColor.parseGold) }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

@@ -21,12 +21,25 @@ struct ItemPageLogicTests {
         #expect(card?.meta == "Elemental · 60 · Phase 1 raid · Horde")
     }
 
-    @Test("runner-up: on the bare 60 Horde list the Cape is runner-up 1 for Back")
+    @Test("runner-up: Satyrmane Sash is runner-up 2 for Waist, and Elemental's spec row agrees")
     func runnerUp() throws {
-        let bare = raid.withRange(BisRange(band: 60, preset: "bare"))
-        let card = ItemPageLogic.yourPick(itemID: SearchTestData.cape, band: try band(bare), selection: bare, specName: "Elemental", className: "shaman")
-        #expect(card?.title == "Runner-up 1 for Back")
-        #expect(card?.meta == "Elemental · 60 · Horde")
+        let card = ItemPageLogic.yourPick(itemID: SearchTestData.runnerUp, band: try band(raid), selection: raid, specName: "Elemental", className: "shaman")
+        #expect(card?.title == "Runner-up 2 for Waist")
+        #expect(card?.meta == "Elemental · 60 · Phase 1 raid · Horde")
+        let row = try SearchTestData.uses(SearchTestData.runnerUp).specs.first { $0.spec == "shaman-elemental" }
+        #expect(row?.rank == 2 && row?.band == 60 && row?.preset == "raid")
+        #expect(ItemSpecTag(rank: row?.rank ?? 0).text == "Runner-up 2")
+    }
+
+    @Test("bare list: the meta has no preset word")
+    func bareMeta() throws {
+        let bare = raid.withRange(BisRange(band: 50, preset: "bare"))
+        let band = BisBand(
+            spec: "shaman-elemental", band: 50, preset: "bare", faction: "horde", race: "troll", talents: "", talentPoints: 0,
+            scoreUnit: "dps", referenceDpsPerPoint: 1, role: "dps", slots: [BisSlot(slot: "back", verified: true, itemId: SearchTestData.cape)]
+        )
+        let card = ItemPageLogic.yourPick(itemID: SearchTestData.cape, band: band, selection: bare, specName: "Elemental", className: "shaman")
+        #expect(card?.meta == "Elemental · 50 to 59 · Horde")
     }
 
     @Test("not on the list, or no list: no card")
@@ -46,22 +59,41 @@ struct ItemPageLogicTests {
             ItemUseSource(kind: "vendor", title: "Meilosh"),
         ])
         #expect(rows.map(\.meta) == [
-            "Blackrock Depths · Dungeon · Drop chance not known",
+            "Blackrock Depths · Dungeon",
             "Onyxia's Lair · Raid · 20% from Onyxia",
             "Molten Core · Raid · <1% from Ragnaros",
             "Horde · Quest · Requires level 52",
             "",
             "Vendor",
         ])
-        #expect(!rows.contains { $0.meta.contains("0%") && !$0.meta.contains("20%") && !$0.meta.contains("<1%") })
+        #expect(rows.map(\.chanceUnknown) == [true, false, false, false, false, false])
         #expect(rows[4].accessibilityLabel == "World drop")
-        #expect(rows[0].accessibilityLabel == "High Interrogator Gerstahn, Blackrock Depths · Dungeon · Drop chance not known")
+        #expect(rows[0].accessibilityLabel == "High Interrogator Gerstahn, Blackrock Depths · Dungeon")
+    }
+
+    @Test("`Drop chance not known` prints once, only when a boss row has no chance")
+    func chanceFootnote() {
+        let unknown = ItemPageLogic.sources([
+            ItemUseSource(kind: "dungeon", title: "A", place: "P"), ItemUseSource(kind: "dungeon", title: "B", place: "P"),
+        ])
+        #expect(ItemPageLogic.chanceFootnote(unknown) == "Drop chance not known")
+        let known = ItemPageLogic.sources([ItemUseSource(kind: "raid", title: "Baron Geddon", place: "Molten Core", chance: 30)])
+        #expect(ItemPageLogic.chanceFootnote(known) == nil)
+        #expect(ItemPageLogic.chanceFootnote(ItemPageLogic.sources([ItemUseSource(kind: "vendor", title: "Meilosh")])) == nil)
+    }
+
+    @Test("not listed: Defiler's Mail Pauldrons is on no list at all, so no card and no rows")
+    func notListed() throws {
+        #expect(ItemPageLogic.yourPick(itemID: SearchTestData.notListed, band: try band(raid), selection: raid, specName: "Elemental", className: "shaman") == nil)
+        let uses = try SearchTestData.uses(SearchTestData.notListed)
+        #expect(uses.specs.isEmpty)
+        #expect(ItemPageLogic.sources(uses.sources).map(\.kind) == ["vendor", "rep"])
     }
 
     @Test("best in slot for: the file's order, Pick or Runner-up n, raid or bare meta, six then more")
     func specs() throws {
         let catalog = try BisTestData.catalog()
-        let rows = ItemPageLogic.specs(try SearchTestData.capeUses().specs, catalog: catalog)
+        let rows = ItemPageLogic.specs(try SearchTestData.uses(SearchTestData.cape).specs, catalog: catalog)
         #expect(rows.first?.title == "Balance Druid")
         #expect(rows.first?.tag == .pick)
         #expect(rows.first?.meta == "60 · Phase 1 raid")
@@ -75,6 +107,36 @@ struct ItemPageLogicTests {
         #expect(shown.rows.count == 6 && shown.hidden == 5)
         #expect(ItemPageLogic.visible(Array(many), expanded: true).hidden == 0)
         #expect(ItemPageLogic.visible(Array(rows.prefix(6)), expanded: false).hidden == 0)
+    }
+
+    @Test("on-equip shares print as the client's green Equip sentences, once; the rest stays white")
+    func equipLines() throws {
+        let corpus = try SearchTestData.corpus()
+        let cape = try #require(corpus.item(SearchTestData.cape))
+        let request = ItemPageLogic.tooltipRequest(item: cape, route: ItemPageRoute(itemID: cape.id), build: "b", character: SearchTestData.lightningbolltz, own: nil)
+        let model = ItemTooltipModel.build(request, sources: try SearchTestData.tooltipSources())
+        #expect(Set(model.stats) == ["+6 Intellect", "+6 Spirit", "+5 Stamina"])
+        #expect(model.equipLines == ["Equip: Increases damage and healing done by magical spells and effects by up to 14."])
+        #expect(model.binds == "Binds when picked up" && model.typeName == "Cloth")
+
+        // No equip_stats (older data): every stat white, no sentence.
+        let sash = try #require(try SearchTestData.itemsFile("shaman").items.first { $0.id == SearchTestData.runnerUp })
+        let plain = ItemTooltipModel.build(
+            ItemTooltipRequest(itemID: sash.id, fallback: HomeItemLook(id: sash.id, name: nil, quality: nil, icon: nil, itemLevel: nil),
+                               build: "b", classSlug: "shaman", spec: nil, specName: nil, band: nil, bandLabel: nil, preset: nil,
+                               faction: nil, sourceLine: nil, wornID: nil),
+            sources: try SearchTestData.tooltipSources()
+        )
+        #expect(plain.stats.contains("+14 \(Copy.itemsStatSpellPower)"))
+        #expect(plain.equipLines.isEmpty)
+    }
+
+    @Test("a rating stat is an Equip sentence only when percent_stats states the same figure")
+    func percentStats() {
+        #expect(ItemVocabulary.percentLine("crit", value: 1) == "Equip: Improves your chance to get a critical strike by 1%.")
+        #expect(ItemVocabulary.equipLine("crit", value: 1) == nil)
+        #expect(ItemVocabulary.percentLine("defense", value: 7) == "Equip: Increased Defense +7.")
+        #expect(ItemVocabulary.equipLine("defense", value: 7) == nil)
     }
 
     @Test("a spec row opens that list: its band, preset and faction, else the viewer's side")

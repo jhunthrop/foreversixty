@@ -2583,6 +2583,9 @@ enum Copy {
     /// Best in slot lists did not load.
     static var itemPageBisForFailed: String { text("itemPage.bisForFailed") }
 
+    /// Back
+    static var itemPageBackPlain: String { text("itemPage.backPlain") }
+
     /// Equip: Increases damage and healing done by magical spells and effects by up to {n}.
     static func itemsEquipSpellPower(n: Int) -> String {
         format("items.equip.spellPower", n)

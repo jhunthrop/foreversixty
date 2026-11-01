@@ -15,11 +15,44 @@ enum SearchLayout {
     static let sectionGap: CGFloat = 22
 }
 
-/// A result row's frame: icon, a name over a meta line that wraps, an optional chevron. The row
-/// reads as one element and its whole height is the 44 pt target.
+/// What a row ends with: nothing, a chevron (it opens in the app), or the external-link glyph
+/// (it opens the website).
+enum SearchRowTrailing {
+    case none, chevron, external
+}
+
+/// Where a result goes. The one place that says which screens are still the website's:
+/// guides until F9, characters and rankings until F11. Drop a case from `website` as its lane lands.
+enum SearchDestination {
+    case item, character, guide, talent, rankings, bis
+
+    private static let website: Set<SearchDestination> = [.character, .guide, .rankings]
+
+    init(_ target: SearchTarget) {
+        switch target {
+        case .item: self = .item
+        case .character: self = .character
+        case .guide: self = .guide
+        case .talent: self = .talent
+        }
+    }
+
+    var opensWebsite: Bool { Self.website.contains(self) }
+
+    var trailing: SearchRowTrailing {
+        if opensWebsite { return .external }
+        switch self {
+        case .guide, .character, .rankings, .bis: return .chevron
+        case .item, .talent: return .none
+        }
+    }
+}
+
+/// A result row's frame: icon, a name over a meta line that wraps, then its trailing glyph. The
+/// row reads as one element and its whole height is the 44 pt target.
 struct SearchRow<Icon: View, Title: View>: View {
     let meta: String?
-    var chevron = false
+    var trailing: SearchRowTrailing = .none
     let action: () -> Void
     @ViewBuilder let icon: () -> Icon
     @ViewBuilder let title: () -> Title
@@ -36,9 +69,10 @@ struct SearchRow<Icon: View, Title: View>: View {
                     }
                 }
                 Spacer(minLength: 8)
-                if chevron {
-                    Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(FSColor.muted).accessibilityHidden(true)
+                switch trailing {
+                case .none: EmptyView()
+                case .chevron: glyph("chevron.right")
+                case .external: glyph("arrow.up.right")
                 }
             }
             .padding(.horizontal, 14)
@@ -48,6 +82,11 @@ struct SearchRow<Icon: View, Title: View>: View {
         }
         .buttonStyle(RowPressStyle())
         .accessibilityElement(children: .combine)
+    }
+
+    private func glyph(_ name: String) -> some View {
+        Image(systemName: name).font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(FSColor.muted).accessibilityHidden(true)
     }
 }
 
@@ -91,7 +130,7 @@ enum SearchRows {
     }
 
     static func guide(_ hit: SearchGuideHit, build: String, action: @escaping () -> Void) -> some View {
-        SearchRow(meta: SearchWords.guideMeta(hit.guide), chevron: true, action: action) {
+        SearchRow(meta: SearchWords.guideMeta(hit.guide), trailing: SearchDestination.guide.trailing, action: action) {
             SpecIcon(icon: hit.guide.icon, build: build, size: SearchLayout.rowIcon)
         } title: {
             SearchRowName(text: hit.title, color: ClassColor.of(hit.guide.className))
@@ -108,7 +147,7 @@ enum SearchRows {
 
     /// The watch star (F11) joins this row when `/v1/me/watching` exists; until then no star.
     static func character(_ row: CharacterSearchRow, isYours: Bool, action: @escaping () -> Void) -> some View {
-        SearchRow(meta: SearchWords.characterMeta(row), action: action) {
+        SearchRow(meta: SearchWords.characterMeta(row), trailing: SearchDestination.character.trailing, action: action) {
             ClassCrest(className: row.className, size: SearchLayout.rowIcon)
         } title: {
             if isYours {
@@ -130,7 +169,7 @@ enum SearchRows {
     private static var youTag: some View { TagView(text: Copy.searchCharacterYou, color: FSColor.gold) }
 
     static func recent(_ entry: RecentSearch, build: String, action: @escaping () -> Void) -> some View {
-        SearchRow(meta: SearchWords.kind(entry.target), action: action) {
+        SearchRow(meta: SearchWords.kind(entry.target), trailing: SearchDestination(entry.target).trailing, action: action) {
             recentIcon(entry, build: build)
         } title: {
             SearchRowName(text: entry.title, color: recentColor(entry))
@@ -155,9 +194,9 @@ enum SearchRows {
         }
     }
 
-    /// A `For {name}` link: a 32 pt glyph tile, the label, a chevron.
-    static func link(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
-        SearchRow(meta: nil, chevron: true, action: action) {
+    /// A `For {name}` link: a 32 pt glyph tile, the label, its trailing glyph.
+    static func link(_ title: String, systemImage: String, trailing: SearchRowTrailing, action: @escaping () -> Void) -> some View {
+        SearchRow(meta: nil, trailing: trailing, action: action) {
             Image(systemName: systemImage)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(FSColor.gold)
