@@ -15,15 +15,15 @@ import (
 
 const raidConsumesPath = "raid-consumes.json"
 
-// publishedConsumes is what spec-breakdown and the ranker send at level under the raid
-// preset: the preset resolved for the spec, the class kit at that level layered on top.
-func publishedConsumes(t *testing.T, presets Presets, spec specs.Spec, level int) []string {
+// publishedConsumes is the raid setup at level: the preset resolved for the spec, cut to
+// the items the level can use, with the class kit at that level layered on top.
+func publishedConsumes(t *testing.T, presets Presets, levels ItemLevels, spec specs.Spec, level int) []string {
 	t.Helper()
 	resolved, err := presets.Resolve(RaidPreset, spec)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, want := resolved.Layer(leveling.KitBuffs(spec.Spec, level), leveling.KitConsumes(spec.Spec, level))
+	_, want := resolved.UsableAt(level, levels).Layer(leveling.KitBuffs(spec.Spec, level), leveling.KitConsumes(spec.Spec, level))
 	return want
 }
 
@@ -31,7 +31,7 @@ func publishedConsumes(t *testing.T, presets Presets, spec specs.Spec, level int
 // published level-60 numbers' own set, so the page and the published DPS agree by
 // default. A stale copy is a failing test here, not two numbers disagreeing quietly.
 func TestRaidConsumesJSONIsCommitted(t *testing.T) {
-	want, err := RaidConsumesJSON(loadRealPresets(t))
+	want, err := RaidConsumesJSON(loadRealPresets(t), loadRealItemLevels(t))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,7 +48,8 @@ func TestRaidConsumesJSONIsCommitted(t *testing.T) {
 // the raid preset resolved for the spec with the class kit of that level layered on top.
 func TestRaidConsumesAreThePublishedSetAtEveryLevel(t *testing.T) {
 	presets := loadRealPresets(t)
-	got, err := RaidConsumes(presets)
+	levels := loadRealItemLevels(t)
+	got, err := RaidConsumes(presets, levels)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -61,7 +62,7 @@ func TestRaidConsumesAreThePublishedSetAtEveryLevel(t *testing.T) {
 			t.Fatalf("%s: rows %+v do not start at level 1", spec.Spec, rows)
 		}
 		for level := 1; level <= api.MaxLevel; level++ {
-			if have, want := ConsumesAtLevel(rows, level), publishedConsumes(t, presets, spec, level); !slices.Equal(have, want) {
+			if have, want := ConsumesAtLevel(rows, level), publishedConsumes(t, presets, levels, spec, level); !slices.Equal(have, want) {
 				t.Errorf("%s level %d: %v, want %v", spec.Spec, level, have, want)
 			}
 		}
@@ -71,7 +72,7 @@ func TestRaidConsumesAreThePublishedSetAtEveryLevel(t *testing.T) {
 // The kit's level gates reach the rows: a rogue's Instant Poisons from 20, Deadly in the
 // main hand from 30; an Enhancement shaman's Rockbiter Weapon until 30, then Windfury.
 func TestRaidConsumesFollowTheKitsLevelGates(t *testing.T) {
-	got, err := RaidConsumes(loadRealPresets(t))
+	got, err := RaidConsumes(loadRealPresets(t), loadRealItemLevels(t))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -92,7 +93,7 @@ func TestRaidConsumesFollowTheKitsLevelGates(t *testing.T) {
 }
 
 func TestRaidConsumesGiveRoguesTheirPoisons(t *testing.T) {
-	all, err := RaidConsumes(loadRealPresets(t))
+	all, err := RaidConsumes(loadRealPresets(t), loadRealItemLevels(t))
 	if err != nil {
 		t.Fatal(err)
 	}

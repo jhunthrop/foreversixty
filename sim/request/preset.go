@@ -278,6 +278,21 @@ func publicEntries(entries []presetEntry) []PresetEntry {
 	return out
 }
 
+// UsableAt is the preset with only the consumables a character of level can use
+// (ItemSparse RequiredLevel, ItemLevels): a level-40 warrior carries no Elixir of the
+// Mongoose (46) or Flask of the Titans (50). Buffs are cast by raid members of any level
+// and stay.
+func (r ResolvedPreset) UsableAt(level int, levels ItemLevels) ResolvedPreset {
+	out := r
+	out.Consumes = make([]PresetEntry, 0, len(r.Consumes))
+	for _, entry := range r.Consumes {
+		if levels.Usable(entry.ID, level) {
+			out.Consumes = append(out.Consumes, entry)
+		}
+	}
+	return out
+}
+
 // Layer puts the class kit on top of the preset and returns the buff and
 // consumable ids a character carries. A buff the kit names (in either its
 // plain or its improved form) is carried once, in the kit's form; a

@@ -12,7 +12,9 @@ package main
 import (
 	"log"
 	"os"
+	"path/filepath"
 
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/request"
 )
 
@@ -25,7 +27,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	b, err := request.RaidConsumesJSON(presets)
+	build, err := leveling.ReadActiveBuild("..")
+	if err != nil {
+		log.Fatal(err)
+	}
+	levels, err := request.LoadItemLevelsFile(filepath.Join("..", "data", "builds", build, "items.json"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	b, err := request.RaidConsumesJSON(presets, levels)
 	if err != nil {
 		log.Fatal(err)
 	}

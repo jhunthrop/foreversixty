@@ -33,17 +33,17 @@ type raidConsumesFile struct {
 }
 
 // RaidConsumes is, per spec key, the consumable ids the raid preset sends at each level,
-// as rows that start where the set changes (the class kit's level gates): the raid preset
-// resolved for the spec with the kit of that level layered on top, as spec-breakdown and
-// the BiS ranker build it.
-func RaidConsumes(presets Presets) (map[string][]LevelConsumes, error) {
+// as rows that start where the set changes: the raid preset resolved for the spec, cut to
+// the items that level can use (levels, the client's RequiredLevel), with the class kit of
+// that level layered on top, as spec-breakdown and the BiS ranker build it at 60.
+func RaidConsumes(presets Presets, levels ItemLevels) (map[string][]LevelConsumes, error) {
 	out := make(map[string][]LevelConsumes, len(specs.All))
 	for _, spec := range specs.All {
 		resolved, err := presets.Resolve(RaidPreset, spec)
 		if err != nil {
 			return nil, fmt.Errorf("raid consumes for %s: %w", spec.Spec, err)
 		}
-		rows, err := levelRows(resolved, spec.Spec)
+		rows, err := levelRows(resolved, levels, spec.Spec)
 		if err != nil {
 			return nil, err
 		}
@@ -53,13 +53,10 @@ func RaidConsumes(presets Presets) (map[string][]LevelConsumes, error) {
 }
 
 // levelRows walks levels 1 to max and starts a row wherever the layered set changes.
-func levelRows(resolved ResolvedPreset, spec string) ([]LevelConsumes, error) {
+func levelRows(resolved ResolvedPreset, levels ItemLevels, spec string) ([]LevelConsumes, error) {
 	var rows []LevelConsumes
 	for level := 1; level <= api.MaxLevel; level++ {
-		_, consumeIDs := resolved.Layer(leveling.KitBuffs(spec, level), leveling.KitConsumes(spec, level))
-		if len(consumeIDs) == 0 {
-			return nil, fmt.Errorf("raid consumes for %s at level %d: the set is empty", spec, level)
-		}
+		_, consumeIDs := resolved.UsableAt(level, levels).Layer(leveling.KitBuffs(spec, level), leveling.KitConsumes(spec, level))
 		if len(rows) == 0 || !slices.Equal(rows[len(rows)-1].Consumes, consumeIDs) {
 			rows = append(rows, LevelConsumes{FromLevel: level, Consumes: consumeIDs})
 		}
@@ -80,8 +77,8 @@ func ConsumesAtLevel(rows []LevelConsumes, level int) []string {
 }
 
 // RaidConsumesJSON is RaidConsumes as the committed file states it.
-func RaidConsumesJSON(presets Presets) ([]byte, error) {
-	bySpec, err := RaidConsumes(presets)
+func RaidConsumesJSON(presets Presets, levels ItemLevels) ([]byte, error) {
+	bySpec, err := RaidConsumes(presets, levels)
 	if err != nil {
 		return nil, err
 	}
