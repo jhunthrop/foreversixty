@@ -313,6 +313,29 @@ func TestBuildRequestLayersEntryAndOverrides(t *testing.T) {
 	}
 }
 
+// -duration sets the DPS fight's length too, so a rotation gate can be
+// measured at the short fights the site's 20-600 s control allows; 0 keeps
+// the default encounter.
+func TestBuildRequestTakesTheFightLength(t *testing.T) {
+	root := bisFixture(t)
+	def, err := buildRequest(baseOptions(root))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if def.Encounter.DurationSec != api.DefaultEncounter().DurationSec {
+		t.Errorf("default fight = %d s, want %d", def.Encounter.DurationSec, api.DefaultEncounter().DurationSec)
+	}
+	o := baseOptions(root)
+	o.duration = 60
+	short, err := buildRequest(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if short.Encounter.DurationSec != 60 {
+		t.Errorf("-duration 60 fought %d s", short.Encounter.DurationSec)
+	}
+}
+
 // The ranker stands a caster out of melee range (leveling-bis's
 // bandCharacter), so the breakdown of its entry must too, or a range-gated
 // spell such as Cone of Cold would fire here and not in the ranker.
