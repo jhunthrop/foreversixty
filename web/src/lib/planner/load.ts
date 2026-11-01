@@ -59,6 +59,28 @@ export async function loadItems(build: string, classSlug: string): Promise<ItemF
 }
 
 /**
+ * A character's items read against its own build, with the current build's rows for every id
+ * that build lacks: an old export wearing an item added since (Quick Strike Ring 288927) is
+ * named and iconed rather than shown as "Item 288927". The own build's row wins where both
+ * have one. A build that ships no items file (404) reads the current build alone; any other
+ * failure of either fetch rejects.
+ */
+export async function loadItemsWithCurrentFallback(
+  build: string,
+  currentBuild: string,
+  classSlug: string,
+): Promise<ItemFile> {
+  if (build === currentBuild) return loadItems(build, classSlug);
+  const [own, current] = await Promise.all([
+    loadOptional<ItemFile | null>(dataUrl(build, `items/${classSlug}.json`), null),
+    loadItems(currentBuild, classSlug),
+  ]);
+  if (own === null) return current;
+  const ownIds = new Set(own.items.map((item) => item.id));
+  return { ...own, items: [...own.items, ...current.items.filter((item) => !ownIds.has(item.id))] };
+}
+
+/**
  * The shared shape of every optional build file: sets, loot, enchants, suffixes and
  * simbuffs are all "a build the data lane has not regenerated ships none of this," where
  * only a 404 means "absent" and every other failure (5xx, an unreachable network, a
