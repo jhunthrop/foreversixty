@@ -778,11 +778,27 @@ describe("the dungeon line", function()
 		assert.are.equal("icon-7230", model.chosen.icon)
 	end)
 
+	-- The hunter's picks are read from the shipped Data, which the nightly re-ranks, so only
+	-- the behaviour is pinned: the chip names the first of the band's Deadmines picks with its
+	-- boss and counts the rest.
 	it("names the hunter's band-20 pick in The Deadmines", function()
 		local Data = enter("HUNTER", "Hunter", 24, "The Deadmines", "party")
+		local bosses = {}
+		for _, entry in pairs(Data.bis["hunter-beast-mastery"][20].alliance) do
+			local id, boss = entry:match("^(%d+)|%a|The Deadmines: ([^|]+)")
+			if id ~= nil then
+				bosses[tonumber(id)] = boss
+			end
+		end
+		local picks = require("Progress").picksHere(Data, "hunter-beast-mastery", 20, "alliance", "The Deadmines", {})
+		assert(#picks > 0, "the shipped Data has no band-20 Deadmines pick for the hunter")
+		local first = picks[1].itemId
+		assert.is_not_nil(bosses[first])
+		local more = #picks > 1 and string.format(", %d more", #picks - 1) or ""
 		local model = Chip.model(Chip.inputs(Data))
 		assert.are.equal("here", model.chosen.kind)
-		assert.are.equal("Here for you: Blackened Defias Belt (Captain Greenskin), 1 more", model.chosen.text)
+		assert.are.equal(string.format("Here for you: %s (%s)%s", Data.bisNames[first], bosses[first], more),
+			model.chosen.text)
 	end)
 
 	it("takes the client's own name once it has it", function()

@@ -937,6 +937,8 @@ describe("SlotMarks", function()
 			return id, SHIPPED.bisNames[id]
 		end
 		local GLOVES_ID, GLOVES_NAME = bandPick(20, "hands")
+		local BELT_PICK_ID, BELT_PICK_NAME = bandPick(20, "waist")
+		local BELT_PICK_LINK = string.format("|cff1eff00|Hitem:%d::::::::24:::::|h[%s]|h|r", BELT_PICK_ID, BELT_PICK_NAME)
 		local _, NEXT_HANDS_NAME = bandPick(30, "hands")
 		local GLOVES = string.format("|cff1eff00|Hitem:%d::::::::24:::::|h[%s]|h|r", GLOVES_ID, GLOVES_NAME)
 		local BELT = "|cff1eff00|Hitem:4999::::::::24:::::|h[Azora's Will]|h|r"
@@ -946,12 +948,11 @@ describe("SlotMarks", function()
 			[BELT] = { id = 4999, slot = "INVTYPE_WAIST", name = "Azora's Will", stats = { ITEM_MOD_STAMINA_SHORT = 1 } },
 		}
 		local REAL_BY_ID = { [GLOVES_ID] = REAL[GLOVES], [4999] = REAL[BELT], [7358] = { name = "Pilferer's Gloves" },
-			[10403] = { name = "Blackened Defias Belt", stats = { ITEM_MOD_AGILITY_SHORT = 11 },
-				link = "|cff1eff00|Hitem:10403::::::::24:::::|h[Blackened Defias Belt]|h|r" } }
+			[BELT_PICK_ID] = { name = BELT_PICK_NAME, stats = { ITEM_MOD_AGILITY_SHORT = 11 }, link = BELT_PICK_LINK } }
 
 		local function hunter()
 			local itemStats = { [GLOVES] = REAL[GLOVES].stats, [BELT] = REAL[BELT].stats,
-				[REAL_BY_ID[10403].link] = REAL_BY_ID[10403].stats }
+				[BELT_PICK_LINK] = REAL_BY_ID[BELT_PICK_ID].stats }
 			mock.install({
 				class = { name = "Hunter", token = "HUNTER" }, level = 24,
 				equipped = { [10] = GLOVES, [6] = BELT },
@@ -1017,8 +1018,8 @@ describe("SlotMarks", function()
 			local Data = hunter()
 			local lines = ItemTooltip.sectionFor(BELT, ItemTooltip.baseContext(Data)).lines
 			assert.are.equal("next", lines[1].kind)
-			assert.are.equal(10403, lines[1].itemId)
-			assert.are.equal(10403, SlotMarks.compute(Data).targets.waist)
+			assert.are.equal(BELT_PICK_ID, lines[1].itemId)
+			assert.are.equal(BELT_PICK_ID, SlotMarks.compute(Data).targets.waist)
 		end)
 	end)
 
