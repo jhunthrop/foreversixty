@@ -167,6 +167,7 @@ export function summarySentence(summary: Summary, names: ActionNames | null): st
   // cooldowns. No own-spec buff aura is not "fall back to whichever raid buff is up
   // longest" -- it is nothing to say about uptime at all (2026-09-21 result-page review,
   // Defect 2).
+  const namedAbilities = new Set(top.map((ability) => ability.key));
   const playerCasts = new Set(
     summary.casts
       .filter((row) => row.guid === actor.guid && row.succeeded > 0)
@@ -178,6 +179,9 @@ export function summarySentence(summary: Summary, names: ActionNames | null): st
     // A buff that is always on (up the whole fight, or applied once and kept) is not a
     // finding about how the fight went, so the line names the biggest one that is not.
     .filter((track) => !alwaysOn(track, summary.duration_ms, playerCasts))
+    // An aura named for an ability the line already names is that ability's own state (a
+    // next-swing queue such as Raptor Strike's), not a second finding.
+    .filter((track) => !namedAbilities.has(sentenceKey(track.name)))
     .sort((a, b) => b.uptime_ms - a.uptime_ms)[0];
   if (aura === undefined || summary.duration_ms <= 0) return `${damage}.`;
 

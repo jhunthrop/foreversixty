@@ -101,6 +101,27 @@ describe('summarySentence', () => {
     );
   });
 
+  it('never names, as a buff, an ability the line already names (Raptor Strike’s next-swing queue)', () => {
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const queue = {
+      ...summary.auras[0],
+      target_guid: actor.guid,
+      name: 'spell:25286/2',
+      uptime_ms: summary.duration_ms * 0.3,
+    };
+    const flurry = {
+      ...summary.auras[0],
+      target_guid: actor.guid,
+      name: 'spell:12974',
+      uptime_ms: summary.duration_ms * 0.2,
+    };
+    const table: ActionNames = { spell: { ...names.spell, '12974': 'Flurry' }, item: {} };
+    expect(summarySentence({ ...base, auras: [queue, flurry] }, table)).toBe(
+      'Heroic Strike and white hits are 61% of your damage; Flurry is up 20% of the fight.',
+    );
+  });
+
   it('leaves a buff that is up the whole fight out: it is not a finding', () => {
     const base = twoAbilities();
     const actor = base.damage_done[0];
