@@ -64,23 +64,18 @@ enum SystemStory {
         return try WireFormat.decoder().decode(Envelope<CharacterHome>.self, from: JSONSerialization.data(withJSONObject: root)).data
     }
 
-    /// Your characters as the API names them (lead ruling): Lightningbolltz first, then Obnoxiousyell.
+    /// Your characters: the story's Lightningbolltz first, then me.json's own as the API names
+    /// them (lead ruling: `Obnoxious Yell`, level 58).
     static func ownCharacters() throws -> [AccountCharacter] {
         let me = try RaidFixture.load(Me.self, "me")
-        let base = try JSONSerialization.jsonObject(with: WireFormat.encoder().encode(try #require(me.characters.first))) as? [String: Any] ?? [:]
-        func make(_ key: String, _ name: String, _ className: String, _ spec: String) throws -> AccountCharacter {
-            var json = base
-            json["key"] = key
-            json["name"] = name
-            json["class"] = className
-            json["spec"] = spec
-            json["level"] = 60
-            return try WireFormat.decoder().decode(AccountCharacter.self, from: JSONSerialization.data(withJSONObject: json))
-        }
-        return [
-            try make(key, "Lightningbolltz", "shaman", "Elemental"),
-            try make("us/pvp/obnoxiousyell", "Obnoxiousyell", "warrior", "Fury"),
-        ]
+        var json = try JSONSerialization.jsonObject(with: WireFormat.encoder().encode(try #require(me.characters.first))) as? [String: Any] ?? [:]
+        json["key"] = key
+        json["name"] = "Lightningbolltz"
+        json["class"] = "shaman"
+        json["spec"] = "Elemental"
+        json["level"] = 60
+        let lightningbolltz = try WireFormat.decoder().decode(AccountCharacter.self, from: JSONSerialization.data(withJSONObject: json))
+        return [lightningbolltz] + me.characters
     }
 
     /// Lightningbolltz with a talent export of `order` less its last `dropping` points.
@@ -110,6 +105,14 @@ enum SystemStory {
             SavedStaticFile(relativePath: "\(build)/talents/shaman.json", bytes: 600_000, savedAt: savedAt),
             SavedStaticFile(relativePath: "\(build)/search.json", bytes: 400_000, savedAt: savedAt),
         ], iconBytes: 41_000_000, iconsUpdated: savedAt)
+    }
+
+    /// The compare's shared side (agreed with Android): builds.get.compare.json, `Fury raid`, 51 points.
+    static func sharedBuild() throws -> Build { try RaidFixture.load(Build.self, "builds.get.compare") }
+
+    /// The compare's your side: me.json's Obnoxious Yell and his talent export.
+    static func obnoxiousYell() throws -> AccountCharacter {
+        try #require(try RaidFixture.load(Me.self, "me").characters.first)
     }
 
     private struct Envelope<Value: Decodable>: Decodable { let data: Value }

@@ -116,7 +116,7 @@ private struct OfflineDataRow: View {
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(row.category.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                Text(meta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                MetaParts(meta: meta)
             }
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
@@ -124,6 +124,24 @@ private struct OfflineDataRow: View {
         .padding(.horizontal, FSSpacing.space4)
         .padding(.vertical, FSSpacing.space3)
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// A row line that wraps only between its ` · ` parts, each keeping its separator at the end, so
+/// a wrapped line never starts with a bare dot.
+private struct MetaParts: View {
+    let meta: String
+    @ScaledMetric(relativeTo: .footnote) private var gap: CGFloat = 3
+
+    var body: some View {
+        let parts = meta.components(separatedBy: " · ")
+        WrapLayout(spacing: gap) {
+            ForEach(Array(parts.enumerated()), id: \.offset) { index, part in
+                Text(index < parts.count - 1 ? part + " ·" : part).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(meta)
     }
 }
 

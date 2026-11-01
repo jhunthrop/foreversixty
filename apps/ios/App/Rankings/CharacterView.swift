@@ -30,6 +30,7 @@ struct CharacterView: View {
     let now: Date
     let clock: ReportsClock
     var actions = CharacterActions()
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -75,10 +76,9 @@ struct CharacterView: View {
             if !recent.isEmpty { section(Copy.charRecent) { fights(recent, recent: true) } }
             section(Copy.charGear) { gear(profile) }
             let builds = CharacterPage.builds(profile, clock: clock)
-            if !builds.isEmpty { section(Copy.charBuilds) { buildRows(builds) } }
-            if let openPlanner = actions.openPlanner, let link = CharacterPage.plannerLink(profile) {
-                // In the app: a chevron, not the external arrow.
-                linkRow(Copy.charOpenPlanner, glyph: "chevron.right") { openPlanner(link) }
+            if !builds.isEmpty {
+                let planner = actions.openPlanner.flatMap { open in CharacterPage.plannerLink(profile).map { link in { open(link) } } }
+                section(Copy.charBuilds) { buildRows(builds, openPlanner: planner) }
             }
             if account.history, CharacterPage.isYours(profile.character, keys: Set(account.characterKeys)) {
                 linkRow(Copy.charParseHistory, action: actions.openHistory)
@@ -148,11 +148,17 @@ struct CharacterView: View {
                 .padding(.vertical, 14)
                 .quietCard()
                 if let gap = CharacterPage.gap(profile.gearGapTotal) {
-                    HStack {
+                    // Accessibility sizes: the label above the value, so `36.0 points` never splits.
+                    let layout = typeSize.isAccessibilitySize
+                        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+                        : AnyLayout(HStackLayout())
+                    layout {
                         Text(Copy.charGap).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                        Spacer()
-                        Text(gap).font(ScaledType.mono).foregroundStyle(FSColor.strong)
+                        if !typeSize.isAccessibilitySize { Spacer() }
+                        Text(gap).font(ScaledType.mono).foregroundStyle(FSColor.strong).fixedSize()
                     }
+                    .padding(.vertical, typeSize.isAccessibilitySize ? 10 : 0)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
                     .frame(minHeight: 52)
                     .quietCard()
@@ -162,7 +168,9 @@ struct CharacterView: View {
         }
     }
 
-    private func buildRows(_ builds: [BuildLine]) -> some View {
+    /// The builds seen, and at the card's foot (lane F15) one `Open in planner` row: builds seen
+    /// carry no build code, so the planner opens on the class.
+    private func buildRows(_ builds: [BuildLine], openPlanner: (() -> Void)?) -> some View {
         VStack(spacing: 0) {
             ForEach(Array(builds.enumerated()), id: \.offset) { index, build in
                 if index > 0 { Divider().overlay(FSColor.lineSoft) }
@@ -183,16 +191,31 @@ struct CharacterView: View {
                 .frame(minHeight: 60)
                 .accessibilityElement(children: .combine)
             }
+            if let openPlanner {
+                Divider().overlay(FSColor.lineSoft)
+                Button(action: openPlanner) {
+                    HStack {
+                        Text(Copy.charOpenPlanner).font(ScaledType.bodyStrong).foregroundStyle(FSColor.gold)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer()
+                        Image(systemName: "chevron.right").foregroundStyle(FSColor.muted).accessibilityHidden(true)
+                    }
+                    .padding(.horizontal, 16)
+                    .frame(minHeight: 52)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(RowPressStyle())
+            }
         }
         .quietCard()
     }
 
-    private func linkRow(_ title: String, glyph: String = "arrow.up.right", action: @escaping () -> Void) -> some View {
+    private func linkRow(_ title: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
                 Text(title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.gold)
                 Spacer()
-                Image(systemName: glyph).foregroundStyle(FSColor.muted).accessibilityHidden(true)
+                Image(systemName: "arrow.up.right").foregroundStyle(FSColor.muted).accessibilityHidden(true)
             }
             .padding(.horizontal, 16)
             .frame(minHeight: 52)

@@ -39,6 +39,26 @@ struct PlannerFollowupTests {
         #expect(SharedBuildCompare.yourCharacter(classSlug: "mage", current: shaman, characters: [shaman]) == nil)
     }
 
+    @Test("the shared fixture pair prints what Android prints, line for line")
+    func androidParity() throws {
+        let file = try TalentTestData.warrior()
+        let build = try SystemStory.sharedBuild()
+        let summary = PlannerBuildSummary(
+            build: build, classSlug: "warrior", className: "Warrior", raceName: "Orc", raceSlug: "orc",
+            totals: PlannerRules.pointsPerTree(PlannerIndex(file), order: build.pointOrder)
+        )
+        #expect(summary.totals == [17, 34, 0])
+        let presenter = SharedBuildCompare.presenter(
+            content: SharedBuildContent(summary: summary, file: file), file: file, character: try SystemStory.obnoxiousYell()
+        )
+        #expect(presenter.status.tag == "Differs")
+        #expect(presenter.status.sentence == "3 of your 49 points differ from the shared build.")
+        #expect(presenter.notes == ["The shared build takes 5 points you have not."])
+        #expect(presenter.tabs(.yours).map(\.points) == [17, 32, 0])
+        #expect(presenter.tabs(.yours).map { $0.differing > 0 } == [true, true, false])
+        #expect(presenter.openingTree == 1)
+    }
+
     @Test("the compare reads the shared build in the guide's place, with its words")
     func compare() throws {
         let file = try PlannerTestData.shaman()

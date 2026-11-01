@@ -12,6 +12,8 @@ struct SearchFieldBar: View {
     var focused: FocusState<Bool>.Binding
     let cancel: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
         HStack(spacing: 12) {
             HStack(spacing: 8) {
@@ -21,7 +23,9 @@ struct SearchFieldBar: View {
                 // typed line break is dropped and the keyboard closes.
                 ZStack(alignment: .leading) {
                     if query.isEmpty {
-                        Text(Copy.searchPlaceholder).font(ScaledType.body).foregroundStyle(FSColor.muted)
+                        // At accessibility sizes the long placeholder would be cut: `Search`.
+                        Text(typeSize.isAccessibilitySize ? Copy.searchButton : Copy.searchPlaceholder)
+                            .font(ScaledType.body).foregroundStyle(FSColor.muted)
                             .lineLimit(1)
                             .minimumScaleFactor(Self.placeholderScale)
                             .accessibilityHidden(true)

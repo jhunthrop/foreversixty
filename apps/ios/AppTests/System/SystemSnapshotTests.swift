@@ -186,10 +186,11 @@ struct SystemSnapshotTests {
     func openInPlanner() throws {
         let profile = try RankingsTestData.lightningbolltz()
         let ref = try #require(CharacterRef(key: profile.character.key, name: profile.character.name))
+        let items = try RankingsTestData.items()
         let page = NavigationStack {
             ScrollView {
                 CharacterView(
-                    ref: ref, phase: .loaded(CharacterContent(profile: profile, offlineSince: nil)), items: [:],
+                    ref: ref, phase: .loaded(CharacterContent(profile: profile, offlineSince: nil)), items: items,
                     account: RankingsTestData.account(), specs: RankingsTestData.specs, build: RankingsTestData.build,
                     now: RankingsTestData.now, clock: RankingsTestData.clock, actions: CharacterActions(openPlanner: { _ in })
                 )
@@ -200,14 +201,14 @@ struct SystemSnapshotTests {
         both(page, "f15-char-open-planner")
     }
 
-    private func sharedContent(_ plannerFile: TalentsFile) -> SharedBuildContent {
-        let index = PlannerIndex(plannerFile)
-        let order = PlannerTestData.elementalOrder(index)
+    /// builds.get.json on the warrior trees (the fixture pair agreed with Android).
+    private func sharedContent(_ file: TalentsFile) throws -> SharedBuildContent {
+        let build = try SystemStory.sharedBuild()
         let summary = PlannerBuildSummary(
-            build: PlannerTestData.build(order: order), classSlug: "shaman", className: "Shaman",
-            raceName: "Orc", raceSlug: "orc", totals: PlannerRules.pointsPerTree(index, order: order)
+            build: build, classSlug: "warrior", className: "Warrior", raceName: "Orc", raceSlug: "orc",
+            totals: PlannerRules.pointsPerTree(PlannerIndex(file), order: build.pointOrder)
         )
-        return SharedBuildContent(summary: summary, file: plannerFile)
+        return SharedBuildContent(summary: summary, file: file)
     }
 
     private func viewer(_ content: SharedBuildContent, compare: Bool) -> some View {
@@ -219,16 +220,16 @@ struct SystemSnapshotTests {
 
     @Test("F13.5 Compare with mine: shown with an export of the class, hidden without")
     func compareButton() throws {
-        let content = sharedContent(try PlannerTestData.shaman())
+        let content = try sharedContent(try TalentTestData.warrior())
         both(viewer(content, compare: true), "f15-shared-build-compare-button")
         snap(viewer(content, compare: false), "f15-shared-build-compare-button-noexport-ios")
     }
 
     @Test("F13.5 the compare with the shared-build wording")
     func compareScreen() throws {
-        let file = try PlannerTestData.shaman()
-        let content = sharedContent(file)
-        let character = try SystemStory.exporter(dropping: 3, file: file, order: content.summary.build.pointOrder)
+        let file = try TalentTestData.warrior()
+        let content = try sharedContent(file)
+        let character = try SystemStory.obnoxiousYell()
         let presenter = SharedBuildCompare.presenter(content: content, file: file, character: character)
         let screen = NavigationStack { SharedBuildCompareScreen(presenter: presenter, characterName: character.name) }
         both(screen, "f15-shared-build-compare")
@@ -262,8 +263,10 @@ private struct SpotlightPreview: View {
         .background(FSColor.bg)
     }
 
+    /// A fixed 16 pt glyph in the 40 pt tile, the crests' size, at every text size.
     private func tile(_ symbol: String) -> some View {
-        Image(systemName: symbol).foregroundStyle(FSColor.gold).frame(width: Self.icon, height: Self.icon)
+        Image(systemName: symbol).font(.system(size: 16, weight: .semibold)).foregroundStyle(FSColor.gold)
+            .frame(width: Self.icon, height: Self.icon)
             .background(FSColor.raised, in: .rect(cornerRadius: 8))
     }
 

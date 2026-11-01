@@ -57,10 +57,10 @@ struct OfflineDataTests {
         #expect(report.rows.map(\.category) == [.guides, .bis, .talents, .search, .icons])
         let lines = report.rows.map { words.meta($0, now: now) }
         #expect(lines == [
-            "Shaman, Warrior · 2.4 MB · Updated today",
+            "Shaman, Warrior · 2.3 MB · Updated today",
             "Shaman · 3.1 MB · Updated today",
             "Shaman · 600 KB · Updated today",
-            "400 KB · Updated today",
+            "500 KB · Updated today",
             "41 MB",
         ])
         #expect(OfflineWords.size(report.totalBytes) == "48 MB")

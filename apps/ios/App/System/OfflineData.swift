@@ -30,7 +30,10 @@ enum OfflineCategory: String, CaseIterable, Sendable {
         let parts = relativePath.split(separator: "/").map(String.init)
         guard parts.count >= 2 else { return nil }
         switch parts[1] {
-        case "guides", "tiers.json", "changelog.json": return .guides
+        // The guide files alone, as the Guides root's `Saved on this phone` counts them; the index,
+        // tiers and changelog are shared files and join the search index's row.
+        case "guides" where parts.last != "index.json": return .guides
+        case "guides", "tiers.json", "changelog.json": return .search
         case "bis": return .bis
         case "talents": return .talents
         case "search.json", "items", "item-uses", "sets.json", "loot.json", "classes.json": return .search
