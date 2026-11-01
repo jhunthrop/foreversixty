@@ -117,10 +117,11 @@ for (const [label, viewport] of [
       await page.goto(PAGE);
       await expect(page.getByTestId('stat-priority-pills')).toBeVisible();
       await expect(page.getByTestId('guide-stat-table')).toBeVisible();
-      // The talent is named from the active build's trees (the unit test in
-      // src/pages/guides/_spec.test.ts pins which one), so a rename never fails this walk.
+      // Since 1.60.1.70707 Precision adds hit to every Mage spell, so it sits in the band's
+      // baseline and the line carries a talent split only when some spells out-hit the rest.
+      // The unit test in src/pages/guides/_spec.test.ts pins which talent a split names.
       await expect(page.getByTestId('guide-stat-table-hit-cap')).toHaveText(
-        /^Hit cap: \d+(\.\d)?% · \d+(\.\d)?% from [^,]+, \d+(\.\d)?% from gear$/,
+        /^Hit cap: \d+(\.\d)?%(?: · \d+(\.\d)?% from [^,]+, \d+(\.\d)?% from gear)?$/,
       );
       await expect(page.getByTestId('guide-stat-table')).toContainText('DPS per point');
       const pills = await page.locator('[data-testid^="stat-pill-"] span:last-child').allTextContents();
