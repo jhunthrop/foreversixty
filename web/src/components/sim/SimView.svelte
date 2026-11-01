@@ -457,6 +457,10 @@
   // click that never touched the button. Same guard, same spec-label.ts predicate.
   async function runPastedInput(code: string): Promise<void> {
     await store.loadAddon(code);
+    runLoadedIfSimulated();
+  }
+
+  function runLoadedIfSimulated(): void {
     if (store.character !== null && isSimulatedSpec(store.character.spec)) void store.run();
   }
 
@@ -477,6 +481,13 @@
     await store.loadStored(path);
     landingBusyKey = null;
     landingFailedKey = store.message === landingCopy.buildMissingFallback ? key : null;
+  }
+
+  // The Run block's "Run sim" says what it does: it loads the current character and runs it,
+  // the way the paste hero's Run does. The list's own picks below only load.
+  async function runStoredCharacter(path: CharacterPath): Promise<void> {
+    await pickCharacter(path);
+    runLoadedIfSimulated();
   }
 
   // `store.ready` already ran the URL's own bootstrap; `runBootstrapRestore` (shared with
@@ -636,7 +647,7 @@
             character={runBlockCharacter}
             path={runBlockPath}
             busy={landingBusyKey !== null}
-            onrun={(path) => void pickCharacter(path)}
+            onrun={(path) => void runStoredCharacter(path)}
           />
         {/if}
         <LandingState
