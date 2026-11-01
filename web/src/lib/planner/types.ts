@@ -202,9 +202,6 @@ export interface Item {
   /** The rating-family stats an on-equip spell states as a literal percent (`hit: 2` is "2%"),
    *  a subset of `stats`; the tooltip words these as the client does. */
   percent_stats?: Partial<Record<StatKey, number>>;
-  /** The part of each flat stat an on-equip spell states (`Item.equip_stats`, lane F12): the
-   *  client prints it as a green "Equip:" sentence. Absent on a build not yet regenerated. */
-  equip_stats?: Partial<Record<StatKey, number>>;
   /** ItemSparse `Bonding` as a word (api/openapi.yaml `Item.bonding`, spec C6). Absent or null
    *  when the data states none (a classic-db or wowhead row, or a build not yet regenerated). */
   bonding?: 'pickup' | 'equip' | 'use' | 'quest' | null;

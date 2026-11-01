@@ -1101,8 +1101,6 @@ data class Item(
     @SerialName("armor") val armor: Int,
     @SerialName("stats") val stats: Map<String, Int> = emptyMap(),
     @SerialName("percent_stats") val percentStats: Map<String, Int> = emptyMap(),
-    /** Lane F12: the part of each flat (non-rating) stats entry an on-equip spell states (spell_power, healing, attack_power, mp5, ...). The client prints it as a green "Equip: ..." sentence; the rest of stats[key] is a white "+N" line. One spell that states equal spell_power and healing is one "damage and healing" sentence. Absent on a build not yet regenerated and empty for a wowhead row: print every stat white then. */
-    @SerialName("equip_stats") val equipStats: Map<String, Int>? = null,
     @SerialName("damage_min") val damageMin: Double,
     @SerialName("damage_max") val damageMax: Double,
     @SerialName("speed") val speed: Double,

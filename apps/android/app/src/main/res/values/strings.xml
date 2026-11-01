@@ -157,11 +157,11 @@
     <string name="items_stat_mp5">Mana per 5</string>
     <string name="items_stat_spellPenetration">Spell penetration</string>
     <string name="items_stat_firePower">Fire spell damage</string>
-    <string name="items_stat_fireRes">Fire resistance</string>
-    <string name="items_stat_frostRes">Frost resistance</string>
-    <string name="items_stat_natureRes">Nature resistance</string>
-    <string name="items_stat_shadowRes">Shadow resistance</string>
-    <string name="items_stat_arcaneRes">Arcane resistance</string>
+    <string name="items_stat_fireRes">Fire Resistance</string>
+    <string name="items_stat_frostRes">Frost Resistance</string>
+    <string name="items_stat_natureRes">Nature Resistance</string>
+    <string name="items_stat_shadowRes">Shadow Resistance</string>
+    <string name="items_stat_arcaneRes">Arcane Resistance</string>
     <string name="items_standing_hated">Hated</string>
     <string name="items_standing_hostile">Hostile</string>
     <string name="items_standing_unfriendly">Unfriendly</string>

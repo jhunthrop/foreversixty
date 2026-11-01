@@ -409,12 +409,13 @@ describe('statLines sign', () => {
 
   it('words a percent stat as the client does, after the flat stats', () => {
     const shoulders = item({
-      stats: { hit: 2, attack_power: 24 },
+      stats: { stamina: 9, hit: 2, attack_power: 24 },
       percent_stats: { hit: 2 },
     });
     expect(itemTooltipModel(shoulders, NO_SOURCES).stats).toEqual([
-      '+24 Attack power',
+      '+9 Stamina',
       'Equip: Improves your chance to hit by 2%.',
+      'Equip: +24 Attack Power.',
     ]);
     const all = item({
       stats: { crit: 1, dodge: 1, parry: 2, block: 3, defense: 7 },
@@ -463,11 +464,8 @@ describe('statLines sign', () => {
     ]);
   });
 
-  it("prints an on-equip spell power as the client's one green damage-and-healing sentence", () => {
-    const cape = item({
-      stats: { stamina: 4, spell_power: 14, healing: 14 },
-      equip_stats: { spell_power: 14, healing: 14 },
-    });
+  it("prints spell power as the client's one green damage-and-healing sentence", () => {
+    const cape = item({ stats: { stamina: 4, spell_power: 14, healing: 14 } });
     expect(itemTooltipModel(cape, NO_SOURCES).stats).toEqual([
       '+4 Stamina',
       'Equip: Increases damage and healing done by magical spells and effects by up to 14.',
@@ -475,22 +473,16 @@ describe('statLines sign', () => {
   });
 
   it('prints only the healing beyond the spell power as its own sentence', () => {
-    const amulet = item({
-      stats: { spell_power: 4, healing: 13 },
-      equip_stats: { spell_power: 4, healing: 13 },
-    });
-    expect(itemTooltipModel(amulet, NO_SOURCES).stats).toEqual([
+    expect(itemTooltipModel(item({ stats: { spell_power: 4, healing: 13 } }), NO_SOURCES).stats).toEqual([
       'Equip: Increases damage and healing done by magical spells and effects by up to 4.',
       'Equip: Increases healing done by spells and effects by up to 9.',
     ]);
   });
 
-  it("keeps an item's own spell power stat white, and every stat white on data without equip_stats", () => {
-    expect(itemTooltipModel(item({ stats: { spell_power: 6 }, equip_stats: {} }), NO_SOURCES).stats).toEqual([
-      '+6 Spell power',
-    ]);
-    expect(itemTooltipModel(item({ stats: { spell_power: 6 } }), NO_SOURCES).stats).toEqual([
-      '+6 Spell power',
+  it("prints mana per 5 as an Equip sentence and a resistance in the client's casing", () => {
+    expect(itemTooltipModel(item({ stats: { shadow_res: 10, mp5: 4 } }), NO_SOURCES).stats).toEqual([
+      '+10 Shadow Resistance',
+      'Equip: Restores 4 mana per 5 sec.',
     ]);
   });
 

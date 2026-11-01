@@ -1,3 +1,59 @@
+# F12 build verdict, round 2
+
+Reviewer: ux-designer, 2026-11-01. Reviewed the refreshed captures in `build/ios/` and `build/android/` (commit 0b7f472c3) against the spec, the boards and my round 1 findings (kept below, unchanged).
+
+# HOLD (three small MUSTs; everything else is shippable)
+
+Round 1 closed: M1 (unknown item, both platforms now the sentence only), M3 (each region has its own error and `Try again`, `f12-4-uses-failed-ios.png`, `f12-4-uses-failed-and.png`), M4 (three real items: pick, Runner-up 2, on no list), M5 (Android Characters, iOS F12.5 with the chip on, iOS index-failed all exist). Chip capsules on iOS are clean. The field surface, one-line placeholder, labelled back pill, external-link glyphs, band in the runner-up meta, one `Drop chance not known` line, tags under the name at large text, rounded Android chips and matching guide colour are all in the captures.
+
+## MUST (round 2)
+
+**R2-M1. iOS: the stray end bars moved to the search field and the back pill.** Round 1 M2 is fixed on the chips but not elsewhere. Thin vertical lines still stand outside both ends of the `Search` back pill (`f12-unknown-ios.png` shows them plainest; also `f12-4-pick-ios.png`, `f12-4-not-listed-ios.png`, `f12-4-loading-ios.png`) and outside the left and right of the search field (`f12-1-empty-ios.png`, `f12-index-failed-ios.png`, `f12-6-offline-ios.png`, `f12-2-characters-ios.png`). Android has none. Fix: the same shape fix you applied to the chips: one capsule for fill, stroke and hit area; no rectangular border or focus rect behind it. Re-capture one screen of each.
+
+**R2-M2. Tooltip: the same stat prints two ways, and two lines do not match the client.** In `f12-4-runner-up-ios.png` and `f12-4-runner-up-and.png` the Satyrmane Sash prints `+14 Spell power` in white, while the Spritecaster Cape prints the green `Equip: Increases damage and healing done by magical spells and effects by up to 14.` (`f12-4-pick-ios.png`). The client prints spell power as the Equip sentence on both. Also in the same captures: `+10 Shadow resistance` (the client prints `+10 Shadow Resistance`, capital R) and, in `f12-4-not-listed-ios.png`, `+4 Mana per 5` (the client prints `Equip: Restores 4 mana per 5 sec.`, green). Spec §5.4: the F2.6 tooltip body exactly. Tenet: verified accuracy. Fix: one formatter keyed on the stat id, not on the item; add a unit test with these three items. Re-capture the Sash and the Pauldrons.
+
+**R2-M3. Android: the loading capture is the old one.** `f12-4-loading-and.png` (stamped before round 1) has no meta line, no chip strip, no pick-card slot, a flat 220 dp tooltip block (loaded is about 284 dp) and no `Best in slot for` block. iOS (`f12-4-loading-ios.png`) is right: meta kept, card slot, chips, tooltip block, two source rows, six spec rows. Spec §5.4 and §8: no layout shift. Fix: bring Android to the iOS skeleton and re-capture.
+
+## SHOULD
+
+1. **Both, vendor rows say little.** `f12-4-not-listed-ios.png`: `Rutherford Twing` with meta `Vendor`; spec meta is `{zone} · {kind}` and the vendor line carries the price (`Vendor: Meilosh · 8g 63s`). The missing price and standing are accepted for this lane because the data has neither field. The missing zone is not obviously a data gap; if the data has it, print it. When the fields land, re-capture; the same line serves Siri and the widgets.
+2. **iOS, source glyphs are small and dim.** The skull in `f12-4-pick-ios.png` is about half the size and brightness of Android's (`f12-4-pick-and.png`). The vendor and reputation glyphs are fine. Use one asset, same size and tint on both.
+3. **iOS, F12.5 chip strip is not pinned and the scrolled snapshot rendered blank.** Android pins the strip (`f12-5-bis-for-and.png`). Be sure tapping `Best in slot for` scrolls to the section on iOS; attach a short screen recording of it. If the blank snapshot was a capture-tool artefact say so; if it is a real blank render on scroll, it is a MUST.
+4. **Android, offline strip bottom edge.** `f12-6-offline-and.png`: rounded top, but the bottom corners are clipped square against the rule. Round all four corners as on iOS (`f12-6-offline-ios.png`).
+5. **Not-on-list copy.** `No best in slot list uses this item.` is clear. Keep it.
+
+## Deviations judged
+
+| Deviation | Call |
+|---|---|
+| iOS F12.5 is a full page with the chip on | Acceptable for the capture; see SHOULD 3 for the behaviour. |
+| iOS chip strip not pinned, Android's is | Acceptable if the tap scrolls; ship both with one rule when the guide page is next touched. |
+| Runner-up spec row under `3 more specs` | Acceptable. The spec orders Pick before Runner-up. Nice to have: the card's chevron jumps to the player's own spec row. |
+| No vendor price or standing | Accepted until the data carries them (SHOULD 1 for the zone). |
+
+## NICE
+
+- The set block in `f12-4-not-listed-ios.png` shows two bonuses but not the set's piece list; spec says `the set and its bonuses`. Add the piece list when `sets.json` carries it for the item.
+- iOS AX5 (`f12-2-all-ax5-ios.png`) still wraps names to three lines in a half-width column; stacking the icon above the text would calm it.
+
+## Checklist (round 2)
+
+- [x] Unknown id, both platforms.
+- [x] Sources and best-in-slot errors independent.
+- [x] Three distinct item states captured (pick, runner-up, none).
+- [x] Android Characters group, `You` only on the current character.
+- [x] External-link glyph on rows that leave the app.
+- [x] Binds, Cloth, Equip line (Cape).
+- [ ] No stray bars on iOS field and back pill (R2-M1).
+- [ ] Tooltip lines match the client on every stat (R2-M2).
+- [ ] Android loading matches loaded heights (R2-M3).
+
+Re-run after R2-M1 to R2-M3 with: `f12-unknown-ios` and `f12-1-empty-ios`, the Sash and Pauldrons on both platforms, `f12-4-loading-and`.
+
+---
+
+# Round 1 (kept for the record)
+
 # F12 search and the item page: ux-designer build verdict
 
 Reviewer: ux-designer, 2026-11-01. Reviewed what renders: `build/ios/*.png` (iPhone, default and AX5) and `build/android/*.png` (default and font scale 2.0) against spec §5.4, §3.2, §6, §7, §9, v1 shared rules and the boards `f12-search-ios.png` and `f12-search-and.png`. No diff was reviewed.

@@ -54,7 +54,8 @@ enum ItemVocabulary {
         ("arcane_res", Copy.itemsStatArcaneRes),
     ]
 
-    /// The client's green `Equip:` sentence for the share of a stat an on-equip spell gives (`equip_stats`).
+    /// The client's green `Equip:` sentence for a stat the Classic client prints only that way,
+    /// whatever states it (the site's `EQUIP_STAT_LINES`); nil for a white stat.
     static func equipLine(_ key: String, value: Int) -> String? {
         switch key {
         case "spell_power": Copy.itemsEquipSpellPower(n: value)

@@ -3724,7 +3724,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Arcane resistance"
+            "value": "Arcane Resistance"
           }
         }
       }
@@ -3812,7 +3812,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fire resistance"
+            "value": "Fire Resistance"
           }
         }
       }
@@ -3823,7 +3823,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Frost resistance"
+            "value": "Frost Resistance"
           }
         }
       }
@@ -3878,7 +3878,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nature resistance"
+            "value": "Nature Resistance"
           }
         }
       }
@@ -3911,7 +3911,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Shadow resistance"
+            "value": "Shadow Resistance"
           }
         }
       }

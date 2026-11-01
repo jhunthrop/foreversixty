@@ -140,21 +140,20 @@ struct ItemTooltipModel: Equatable {
         return item.slot == "ranged" ? Copy.itemsWeaponSlotRanged : Copy.itemsWeaponSlotOneHand
     }
 
-    /// `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order. A stat
-    /// prints white less the share an on-equip spell gives (`equip_stats`, the site's `statLines`);
-    /// a rating stat `percent_stats` states as a percent is an `Equip:` sentence instead. With no
-    /// `equip_stats` (older data) every stat prints white.
+    /// `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order (its
+    /// `statLines`). A stat the client prints as an `Equip:` sentence (spell power, healing, attack
+    /// power, mp5 and the rest, `ItemVocabulary.equipLine`) or a rating stat `percent_stats`
+    /// states as a percent is not a white line.
     private static func statLines(_ item: Item) -> [String] {
         ItemVocabulary.statOrder.compactMap { stat in
-            guard let total = item.stats[stat.key], percentLine(item, key: stat.key) == nil else { return nil }
-            let value = total - (item.equipStats?[stat.key] ?? 0)
-            guard value != 0 else { return nil }
+            guard let value = item.stats[stat.key], value != 0, percentLine(item, key: stat.key) == nil,
+                  ItemVocabulary.equipLine(stat.key, value: value) == nil else { return nil }
             return "\(value < 0 ? "-" : "+")\(abs(value)) \(stat.name)"
         }
     }
 
     /// The client's green `Equip:` sentences: the percent-stated rating stats, then one per positive
-    /// on-equip share. One spell that gives equal spell power and healing is one sentence (the
+    /// Equip stat share. One spell that gives equal spell power and healing is one sentence (the
     /// site's `equipShares`). A sentence the item's own effect text already says is not repeated.
     private static func equipLines(_ item: Item) -> [String] {
         let shares = equipShares(item)
@@ -169,8 +168,10 @@ struct ItemTooltipModel: Equatable {
 
     private static let equipPrefix = "Equip: "
 
-    private static func equipShares(_ item: Item) -> [String: Int] {
-        var shares = item.equipStats ?? [:]
+    /// The amount each Equip sentence states: one "Increase Spell Dam" spell gives equal spell power
+    /// and healing and is one sentence, so healing states only what it adds beyond spell power.
+    static func equipShares(_ item: Item) -> [String: Int] {
+        var shares = item.stats
         let spellPower = shares["spell_power"] ?? 0
         shares["healing"] = max(0, (shares["healing"] ?? 0) - spellPower)
         return shares

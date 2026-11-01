@@ -156,24 +156,23 @@ data class ItemTooltipModel(
         )
 
         /**
-         * `+22 Intellect`, `-15 Parry`: each stat's own share (the stat less what an on-equip spell
-         * states, `equip_stats`), the client's sign, the site's stat order. Without `equip_stats`
-         * (older data) every stat prints here.
+         * `+22 Intellect`, `-15 Parry`: the client's sign, the site's stat order (its `statLines`). A
+         * stat the client prints as an `Equip:` sentence (spell power, healing, attack power, mp5 and
+         * the rest, `ItemVocabulary.equipStats`) or a rating stat `percent_stats` states as a percent
+         * is not a white line.
          */
         private fun statLines(item: Item, res: Resources): List<String> =
             ItemVocabulary.statOrder.mapNotNull { (key, name) ->
-                val stat = item.stats[key]?.takeIf { it != 0 } ?: return@mapNotNull null
-                if (percentLine(item, key, res) != null) return@mapNotNull null
-                val value = stat - (item.equipStats?.get(key) ?: 0)
-                if (value == 0) return@mapNotNull null
+                val value = item.stats[key]?.takeIf { it != 0 } ?: return@mapNotNull null
+                if (percentLine(item, key, res) != null || key in ItemVocabulary.equipStats) return@mapNotNull null
                 "${if (value < 0) "-" else "+"}${abs(value)} ${res.getString(name)}"
             }
 
-        /** The green `Equip:` sentences: the percent ones, then one per positive on-equip share. */
+        /** The green `Equip:` sentences: the percent ones, then one per positive Equip stat share. */
         private fun equipLines(item: Item, res: Resources): List<String> {
             val keys = ItemVocabulary.statOrder.map { it.first }
             val percent = keys.filter { (item.stats[it] ?: 0) != 0 }.mapNotNull { percentLine(item, it, res) }
-            val shares = equipShares(item.equipStats.orEmpty())
+            val shares = equipShares(item.stats.filterKeys { it in ItemVocabulary.equipStats })
             val flat = keys.mapNotNull { key ->
                 val value = shares[key]?.takeIf { it > 0 } ?: return@mapNotNull null
                 ItemVocabulary.equipStats[key]?.let { res.getString(it, value) }
@@ -182,8 +181,8 @@ data class ItemTooltipModel(
         }
 
         /**
-         * What each on-equip spell states. One spell giving equal spell power and healing (`Increase
-         * Spell Dam`) is one sentence: healing keeps only what it adds beyond spell power.
+         * The amount each Equip sentence states. One spell giving equal spell power and healing
+         * (`Increase Spell Dam`) is one sentence: healing keeps only what it adds beyond spell power.
          */
         fun equipShares(equip: Map<String, Int>): Map<String, Int> {
             val spellPower = equip[SPELL_POWER] ?: 0

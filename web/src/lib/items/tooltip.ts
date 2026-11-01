@@ -143,7 +143,10 @@ function percentLineFor(item: Item, key: StatKey): string | null {
   return percent && line && percent === item.stats[key] ? line(percent) : null;
 }
 
-/** The client's green sentence for a flat stat an on-equip spell states (`equip_stats`). */
+/** The stats the Classic client prints only as a green "Equip:" sentence, whatever states
+ *  them (an item stat or an on-equip spell): "Equip: Increases damage and healing done by
+ *  magical spells and effects by up to 14.", "Equip: Restores 4 mana per 5 sec.", never a white
+ *  "+14" line. The apps' ItemTooltipModel keeps the same list. */
 const EQUIP_STAT_LINES: Partial<Record<StatKey, (value: number) => string>> = {
   spell_power: (value) =>
     `Equip: Increases damage and healing done by magical spells and effects by up to ${value}.`,
@@ -156,39 +159,47 @@ const EQUIP_STAT_LINES: Partial<Record<StatKey, (value: number) => string>> = {
   block_value: (value) => `Equip: Increases the block value of your shield by ${value}.`,
 };
 
+/** The client's casing for a white stat line ("+10 Shadow Resistance"); the site's own labels
+ *  (STAT_LABELS) are sentence case for its panels. */
+const CLIENT_STAT_LABELS: Partial<Record<StatKey, string>> = {
+  fire_res: 'Fire Resistance',
+  frost_res: 'Frost Resistance',
+  nature_res: 'Nature Resistance',
+  shadow_res: 'Shadow Resistance',
+  arcane_res: 'Arcane Resistance',
+};
+
 /**
- * Each flat stat's on-equip share as the amount its Equip sentence states. One spell that
- * states the same spell power and healing ("Increase Spell Dam 14") is the single "damage and
- * healing" sentence, so the healing sentence states only the healing beyond it.
+ * Each Equip stat as the amount its sentence states. A single "Increase Spell Dam" spell gives
+ * the same spell power and healing and is the one "damage and healing" sentence, so the healing
+ * sentence states only the healing beyond the spell power.
  */
-function equipShares(item: Pick<Item, 'equip_stats'>): Partial<Record<StatKey, number>> {
-  const equip = item.equip_stats ?? {};
-  const spellPower = equip.spell_power ?? 0;
-  const healing = Math.max(0, (equip.healing ?? 0) - spellPower);
-  return { ...equip, healing };
+function equipShares(stats: Item['stats']): Partial<Record<StatKey, number>> {
+  const spellPower = stats.spell_power ?? 0;
+  return { ...stats, healing: Math.max(0, (stats.healing ?? 0) - spellPower) };
 }
 
-/** "+10 Strength" / "-15 Parry" (the client's sign: never "+-15") for each stat's own share,
- *  then each percent stat and each on-equip flat stat in the client's "Equip:" words, in
- *  STAT_KEYS order within each group. */
+/** "+10 Strength" / "-15 Parry" (the client's sign: never "+-15") for each white stat, then each
+ *  percent stat and each Equip stat in the client's "Equip:" words, in STAT_KEYS order within
+ *  each group. */
 function statLines(item: Item): string[] {
   const keys = STAT_KEYS.filter((key) => key !== 'armor' && !!item.stats[key]);
-  const equip = item.equip_stats ?? {};
   const flat = keys
-    .filter((key) => percentLineFor(item, key) === null)
-    .map((key) => [key, (item.stats[key] as number) - (equip[key] ?? 0)] as const)
-    .filter(([, value]) => value !== 0)
-    .map(([key, value]) => `${value < 0 ? '-' : '+'}${Math.abs(value)} ${STAT_LABELS[key]}`);
+    .filter((key) => percentLineFor(item, key) === null && EQUIP_STAT_LINES[key] === undefined)
+    .map((key) => {
+      const value = item.stats[key] as number;
+      return `${value < 0 ? '-' : '+'}${Math.abs(value)} ${CLIENT_STAT_LABELS[key] ?? STAT_LABELS[key]}`;
+    });
   const percent = keys
     .map((key) => percentLineFor(item, key))
     .filter((line): line is string => line !== null);
-  const shares = equipShares(item);
-  const equipLines = STAT_KEYS.flatMap((key) => {
+  const shares = equipShares(item.stats);
+  const equip = STAT_KEYS.flatMap((key) => {
     const value = shares[key] ?? 0;
     const line = EQUIP_STAT_LINES[key];
     return value > 0 && line ? [line(value)] : [];
   });
-  return [...flat, ...percent, ...equipLines];
+  return [...flat, ...percent, ...equip];
 }
 
 function effectTextFor(item: Item): string | null {

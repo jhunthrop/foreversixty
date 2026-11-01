@@ -513,19 +513,19 @@ enum Copy {
     /// Fire spell damage
     static var itemsStatFirePower: String { text("items.stat.firePower") }
 
-    /// Fire resistance
+    /// Fire Resistance
     static var itemsStatFireRes: String { text("items.stat.fireRes") }
 
-    /// Frost resistance
+    /// Frost Resistance
     static var itemsStatFrostRes: String { text("items.stat.frostRes") }
 
-    /// Nature resistance
+    /// Nature Resistance
     static var itemsStatNatureRes: String { text("items.stat.natureRes") }
 
-    /// Shadow resistance
+    /// Shadow Resistance
     static var itemsStatShadowRes: String { text("items.stat.shadowRes") }
 
-    /// Arcane resistance
+    /// Arcane Resistance
     static var itemsStatArcaneRes: String { text("items.stat.arcaneRes") }
 
     /// Hated

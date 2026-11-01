@@ -59,9 +59,8 @@ object ItemVocabulary {
     )
 
     /**
-     * The flat stats an on-equip spell can state, and the client's green `Equip:` sentence for
-     * each. Only the item's `equip_stats` share prints this way; the rest of the stat is a real
-     * stat modifier and prints white (Forever items carry both; the site's `tooltip.ts` rule).
+     * The stats the Classic client prints only as a green `Equip:` sentence, whatever states them,
+     * and that sentence (the site's `EQUIP_STAT_LINES` in `tooltip.ts`).
      */
     val equipStats: Map<String, Int> = mapOf(
         "spell_power" to R.string.items_equip_spellPower, "healing" to R.string.items_equip_healing,

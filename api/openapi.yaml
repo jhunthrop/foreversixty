@@ -2907,15 +2907,6 @@ components:
         armor: { type: integer }
         stats: { type: object, additionalProperties: { type: integer } }
         percent_stats: { type: object, additionalProperties: { type: integer } }
-        equip_stats:
-          type: object
-          additionalProperties: { type: integer }
-          description: >-
-            Lane F12: the part of each flat (non-rating) stats entry an on-equip spell states
-            (spell_power, healing, attack_power, mp5, ...). The client prints it as a green
-            "Equip: ..." sentence; the rest of stats[key] is a white "+N" line. One spell that
-            states equal spell_power and healing is one "damage and healing" sentence. Absent on
-            a build not yet regenerated and empty for a wowhead row: print every stat white then.
         damage_min: { type: number }
         damage_max: { type: number }
         speed: { type: number }

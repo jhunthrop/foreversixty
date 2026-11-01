@@ -2893,8 +2893,6 @@ public struct Item: Codable, Sendable, Equatable {
     public let armor: Int
     public let stats: [String: Int]
     public let percentStats: [String: Int]
-    /// Lane F12: the part of each flat (non-rating) stats entry an on-equip spell states (spell_power, healing, attack_power, mp5, ...). The client prints it as a green "Equip: ..." sentence; the rest of stats[key] is a white "+N" line. One spell that states equal spell_power and healing is one "damage and healing" sentence. Absent on a build not yet regenerated and empty for a wowhead row: print every stat white then.
-    public let equipStats: [String: Int]?
     public let damageMin: Double
     public let damageMax: Double
     public let speed: Double
@@ -2931,7 +2929,6 @@ public struct Item: Codable, Sendable, Equatable {
         armor: Int,
         stats: [String: Int] = [:],
         percentStats: [String: Int] = [:],
-        equipStats: [String: Int]? = nil,
         damageMin: Double,
         damageMax: Double,
         speed: Double,
@@ -2962,7 +2959,6 @@ public struct Item: Codable, Sendable, Equatable {
         self.armor = armor
         self.stats = stats
         self.percentStats = percentStats
-        self.equipStats = equipStats
         self.damageMin = damageMin
         self.damageMax = damageMax
         self.speed = speed
@@ -2996,7 +2992,6 @@ public struct Item: Codable, Sendable, Equatable {
         armor = try c.decode(Int.self, forKey: .armor)
         stats = try c.decodeIfPresent([String: Int].self, forKey: .stats) ?? [:]
         percentStats = try c.decodeIfPresent([String: Int].self, forKey: .percentStats) ?? [:]
-        equipStats = try c.decodeIfPresent([String: Int].self, forKey: .equipStats)
         damageMin = try c.decode(Double.self, forKey: .damageMin)
         damageMax = try c.decode(Double.self, forKey: .damageMax)
         speed = try c.decode(Double.self, forKey: .speed)
