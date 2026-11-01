@@ -1,0 +1,1412 @@
+{
+  "sim_id": "simdemonolgy",
+  "engine_version": "17d31ecfa",
+  "request": {
+    "engine_version": "17d31ecfa",
+    "spec": "warlock-demonology",
+    "source": {
+      "kind": "manual",
+      "ref": "",
+      "captured_at": "2026-09-18T00:00:00Z"
+    },
+    "character": {
+      "name": "Demo",
+      "race": "orc",
+      "class": "warlock",
+      "level": 60,
+      "talents": "-2055220012510151-",
+      "gear": [],
+      "buffs": [
+        "curse_of_elements",
+        "curse_of_recklessness",
+        "curse_of_shadow",
+        "curse_of_weakness",
+        "demoralizing_roar",
+        "demoralizing_shout",
+        "expose_armor",
+        "faerie_fire",
+        "improved_scorch",
+        "improved_shadow_bolt",
+        "insect_swarm",
+        "judgement_of_light",
+        "judgement_of_the_crusader",
+        "judgement_of_wisdom",
+        "scorpid_sting",
+        "shadow_weaving",
+        "stormstrike",
+        "sunder_armor",
+        "thunder_clap",
+        "winters_chill",
+        "blessing_of_kings",
+        "blessing_of_might",
+        "blessing_of_sanctuary",
+        "blessing_of_wisdom",
+        "arcane_brilliance",
+        "battle_shout",
+        "blood_pact",
+        "devotion_aura",
+        "divine_spirit",
+        "fire_resistance_aura",
+        "fire_resistance_totem",
+        "frost_resistance_aura",
+        "frost_resistance_totem",
+        "gift_of_the_wild",
+        "grace_of_air_totem",
+        "leader_of_the_pack",
+        "mana_spring_totem",
+        "moonkin_aura",
+        "nature_resistance_totem",
+        "power_word_fortitude",
+        "retribution_aura",
+        "sanctity_aura",
+        "shadow_protection",
+        "strength_of_earth_totem",
+        "thorns",
+        "trueshot_aura"
+      ],
+      "consumes": []
+    },
+    "encounter": {
+      "duration_sec": 180,
+      "variation": 0.2,
+      "targets": 1,
+      "execute_ratio": 0.25,
+      "profile": ""
+    },
+    "iterations": 200,
+    "random_seed": 1
+  },
+  "lane": "server",
+  "dps": {
+    "mean": 243.25687256943792,
+    "stddev": 13.526982865705778,
+    "error": 0.9565021313334793,
+    "min": 193.53663234646177,
+    "max": 286.8016856419956
+  },
+  "iterations_run": 200,
+  "duration_ms": 34,
+  "summary": {
+    "engine_version": "sim:17d31ecfa",
+    "fight_index": 1,
+    "duration_ms": 181578,
+    "damage_done": [
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "class": "warlock",
+        "total": 24615,
+        "effective": 24615,
+        "active_ms": 181578,
+        "abilities": [
+          {
+            "spell_id": 11661,
+            "name": "spell:11661",
+            "school": 32,
+            "total": 7978,
+            "effective": 7978,
+            "hits": 20,
+            "crits": 4,
+            "ticks": 0,
+            "misses": {
+              "MISS": 4
+            },
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 11668,
+            "name": "spell:11668",
+            "school": 4,
+            "total": 5212,
+            "effective": 5212,
+            "hits": 10,
+            "crits": 9,
+            "ticks": 44,
+            "misses": {
+              "MISS": 2
+            },
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 603,
+            "name": "spell:603",
+            "school": 32,
+            "total": 5151,
+            "effective": 5151,
+            "hits": 0,
+            "crits": 0,
+            "ticks": 2,
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 11672,
+            "name": "spell:11672",
+            "school": 32,
+            "total": 3836,
+            "effective": 3836,
+            "hits": 0,
+            "crits": 8,
+            "ticks": 45,
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 17924,
+            "name": "spell:17924",
+            "school": 4,
+            "total": 2438,
+            "effective": 2438,
+            "hits": 4,
+            "crits": 1,
+            "ticks": 0,
+            "misses": {
+              "MISS": 1
+            },
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 712,
+            "name": "spell:712",
+            "school": 32,
+            "total": 0,
+            "effective": 0,
+            "hits": 0,
+            "crits": 0,
+            "ticks": 0,
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 22000005,
+            "name": "other:mana_gain",
+            "total": 0,
+            "effective": 0,
+            "hits": 0,
+            "crits": 0,
+            "ticks": 0,
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 20572,
+            "name": "spell:20572",
+            "total": 0,
+            "effective": 0,
+            "hits": 0,
+            "crits": 0,
+            "ticks": 0,
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 19028,
+            "name": "spell:19028",
+            "total": 0,
+            "effective": 0,
+            "hits": 0,
+            "crits": 0,
+            "ticks": 0,
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 688,
+            "name": "spell:688",
+            "school": 32,
+            "total": 0,
+            "effective": 0,
+            "hits": 0,
+            "crits": 0,
+            "ticks": 0,
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 11689,
+            "name": "spell:11689",
+            "school": 32,
+            "total": 0,
+            "effective": 0,
+            "hits": 0,
+            "crits": 0,
+            "ticks": 0,
+            "min": 0,
+            "max": 0
+          }
+        ],
+        "targets": [
+          {
+            "guid": "sim-target-0",
+            "name": "Target 1",
+            "total": 24615
+          }
+        ],
+        "series": []
+      },
+      {
+        "guid": "sim-player-pet-0",
+        "name": "Felhunter",
+        "class": "warlock",
+        "total": 0,
+        "effective": 0,
+        "active_ms": 0,
+        "abilities": [],
+        "targets": [],
+        "series": []
+      },
+      {
+        "guid": "sim-player-pet-1",
+        "name": "Imp",
+        "class": "warlock",
+        "total": 0,
+        "effective": 0,
+        "active_ms": 0,
+        "abilities": [],
+        "targets": [],
+        "series": []
+      },
+      {
+        "guid": "sim-player-pet-2",
+        "name": "Succubus",
+        "class": "warlock",
+        "total": 19555,
+        "effective": 19555,
+        "active_ms": 181578,
+        "abilities": [
+          {
+            "spell_id": 10022000007,
+            "name": "other:attack/1",
+            "school": 1,
+            "total": 17292,
+            "effective": 17292,
+            "hits": 78,
+            "crits": 13,
+            "ticks": 0,
+            "misses": {
+              "DODGE": 6,
+              "GLANCING": 36,
+              "MISS": 7
+            },
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 11780,
+            "name": "spell:11780",
+            "school": 32,
+            "total": 2263,
+            "effective": 2263,
+            "hits": 13,
+            "crits": 2,
+            "ticks": 0,
+            "misses": {
+              "MISS": 3
+            },
+            "min": 0,
+            "max": 0
+          },
+          {
+            "spell_id": 22000005,
+            "name": "other:mana_gain",
+            "total": 0,
+            "effective": 0,
+            "hits": 0,
+            "crits": 0,
+            "ticks": 0,
+            "min": 0,
+            "max": 0
+          }
+        ],
+        "targets": [
+          {
+            "guid": "sim-target-0",
+            "name": "Target 1",
+            "total": 19555
+          }
+        ],
+        "series": []
+      },
+      {
+        "guid": "sim-player-pet-3",
+        "name": "Voidwalker",
+        "class": "warlock",
+        "total": 0,
+        "effective": 0,
+        "active_ms": 0,
+        "abilities": [],
+        "targets": [],
+        "series": []
+      }
+    ],
+    "damage_taken": [],
+    "healing": [],
+    "healing_taken": [],
+    "deaths": [],
+    "auras": [
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 11735,
+        "name": "spell:11735",
+        "type": "BUFF",
+        "applications": 1,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 19028,
+        "name": "spell:19028",
+        "type": "BUFF",
+        "applications": 1,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 9910,
+        "name": "spell:9910",
+        "type": "BUFF",
+        "applications": 1,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 20906,
+        "name": "spell:20906",
+        "type": "BUFF",
+        "applications": 1,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 20217,
+        "name": "spell:20217",
+        "type": "BUFF",
+        "applications": 2,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 20218,
+        "name": "spell:20218",
+        "type": "BUFF",
+        "applications": 2,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 10293,
+        "name": "spell:10293",
+        "type": "BUFF",
+        "applications": 1,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 10301,
+        "name": "spell:10301",
+        "type": "BUFF",
+        "applications": 1,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 11551,
+        "name": "spell:11551",
+        "type": "BUFF",
+        "applications": 1,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 19838,
+        "name": "spell:19838",
+        "type": "BUFF",
+        "applications": 2,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 10442,
+        "name": "spell:10442",
+        "type": "BUFF",
+        "applications": 1,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 10627,
+        "name": "spell:10627",
+        "type": "BUFF",
+        "applications": 1,
+        "max_stacks": 0,
+        "uptime_ms": 181292,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 440873,
+        "name": "spell:440873",
+        "type": "BUFF",
+        "applications": 20,
+        "max_stacks": 0,
+        "uptime_ms": 129672,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 20572,
+        "name": "spell:20572",
+        "type": "BUFF",
+        "applications": 2,
+        "max_stacks": 0,
+        "uptime_ms": 30000,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 5740,
+        "name": "spell:5740",
+        "type": "BUFF",
+        "applications": 0,
+        "max_stacks": 0,
+        "uptime_ms": 0,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 6219,
+        "name": "spell:6219",
+        "type": "BUFF",
+        "applications": 0,
+        "max_stacks": 0,
+        "uptime_ms": 0,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 11677,
+        "name": "spell:11677",
+        "type": "BUFF",
+        "applications": 0,
+        "max_stacks": 0,
+        "uptime_ms": 0,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 11678,
+        "name": "spell:11678",
+        "type": "BUFF",
+        "applications": 0,
+        "max_stacks": 0,
+        "uptime_ms": 0,
+        "segments": [],
+        "appliers": ["Demo"]
+      },
+      {
+        "target_guid": "sim-player",
+        "target_name": "Demo",
+        "spell_id": 22000014,
+        "name": "other:move",
+        "type": "BUFF",
+        "applications": 0,
+        "max_stacks": 0,
+        "uptime_ms": 0,
+        "segments": [],
+        "appliers": ["Demo"]
+      }
+    ],
+    "casts": [
+      {
+        "guid": "sim-player-pet-2",
+        "name": "Succubus",
+        "owner_guid": "sim-player",
+        "spell_id": 10022000007,
+        "spell_name": "other:attack/1",
+        "started": 91,
+        "succeeded": 91,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 11661,
+        "spell_name": "spell:11661",
+        "started": 24,
+        "succeeded": 24,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 11689,
+        "spell_name": "spell:11689",
+        "started": 21,
+        "succeeded": 21,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player-pet-2",
+        "name": "Succubus",
+        "owner_guid": "sim-player",
+        "spell_id": 11780,
+        "spell_name": "spell:11780",
+        "started": 16,
+        "succeeded": 16,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 11668,
+        "spell_name": "spell:11668",
+        "started": 12,
+        "succeeded": 12,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 11672,
+        "spell_name": "spell:11672",
+        "started": 10,
+        "succeeded": 10,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 17924,
+        "spell_name": "spell:17924",
+        "started": 5,
+        "succeeded": 5,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 603,
+        "spell_name": "spell:603",
+        "started": 3,
+        "succeeded": 3,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 20572,
+        "spell_name": "spell:20572",
+        "started": 2,
+        "succeeded": 2,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 712,
+        "spell_name": "spell:712",
+        "started": 1,
+        "succeeded": 1,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 19028,
+        "spell_name": "spell:19028",
+        "started": 1,
+        "succeeded": 1,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      },
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "owner_guid": "sim-player",
+        "spell_id": 688,
+        "spell_name": "spell:688",
+        "started": 1,
+        "succeeded": 1,
+        "failed": 0,
+        "cast_time_ms": 0,
+        "sequence": []
+      }
+    ],
+    "interrupts": [],
+    "dispels": [],
+    "resources": [
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "power_type": 0,
+        "series": [],
+        "gained": 15854,
+        "spent": 18771,
+        "zero_ms": 0,
+        "max": 0,
+        "at_max_ms": 0,
+        "wasted": 403
+      }
+    ],
+    "threat": [],
+    "threat_by_target": [],
+    "taunts": [],
+    "combatants": [],
+    "roster": [
+      {
+        "guid": "sim-player",
+        "name": "Demo",
+        "class": "warlock",
+        "class_source": "sim",
+        "spec": "demonology",
+        "role": "dps",
+        "active_ms": 181578,
+        "activity_pct": 100,
+        "deaths": 0,
+        "damage_done": 44170,
+        "healing_done": 0,
+        "damage_taken": 0,
+        "dps": 243.25687256943792,
+        "hps": 0,
+        "dtps": 0
+      }
+    ],
+    "mechanics": {
+      "table_found": false,
+      "rows": []
+    },
+    "phases": []
+  },
+  "sample": [
+    {
+      "at_ms": -60000,
+      "action": "spell:688",
+      "target": "Target 1",
+      "resources": {
+        "mana": 3634
+      }
+    },
+    {
+      "at_ms": -44000,
+      "action": "spell:712",
+      "target": "Target 1",
+      "resources": {
+        "mana": 3634
+      }
+    },
+    {
+      "at_ms": -2000,
+      "action": "spell:19028",
+      "target": "Target 1",
+      "resources": {
+        "mana": 3359
+      }
+    },
+    {
+      "at_ms": 0,
+      "action": "spell:20572",
+      "target": "Target 1",
+      "resources": {
+        "mana": 3388
+      }
+    },
+    {
+      "at_ms": 7500,
+      "action": "spell:17924",
+      "target": "Target 1",
+      "resources": {
+        "mana": 3202
+      }
+    },
+    {
+      "at_ms": 9500,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 2986
+      }
+    },
+    {
+      "at_ms": 11500,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 2769
+      }
+    },
+    {
+      "at_ms": 11500,
+      "action": "spell:603",
+      "target": "Target 1",
+      "resources": {
+        "mana": 2469
+      }
+    },
+    {
+      "at_ms": 15000,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 2187
+      }
+    },
+    {
+      "at_ms": 18000,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 1846
+      }
+    },
+    {
+      "at_ms": 21000,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 1490
+      }
+    },
+    {
+      "at_ms": 24000,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 1208
+      }
+    },
+    {
+      "at_ms": 27000,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 852
+      }
+    },
+    {
+      "at_ms": 29000,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 497
+      }
+    },
+    {
+      "at_ms": 32000,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 156
+      }
+    },
+    {
+      "at_ms": 32000,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 771
+      }
+    },
+    {
+      "at_ms": 35500,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 554
+      }
+    },
+    {
+      "at_ms": 38500,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 213
+      }
+    },
+    {
+      "at_ms": 38500,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 829
+      }
+    },
+    {
+      "at_ms": 43000,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 546
+      }
+    },
+    {
+      "at_ms": 47800,
+      "action": "spell:17924",
+      "target": "Target 1",
+      "resources": {
+        "mana": 307
+      }
+    },
+    {
+      "at_ms": 47800,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 923
+      }
+    },
+    {
+      "at_ms": 51300,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 640
+      }
+    },
+    {
+      "at_ms": 54300,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 299
+      }
+    },
+    {
+      "at_ms": 54300,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 915
+      }
+    },
+    {
+      "at_ms": 57800,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 698
+      }
+    },
+    {
+      "at_ms": 60800,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 357
+      }
+    },
+    {
+      "at_ms": 60800,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 972
+      }
+    },
+    {
+      "at_ms": 65300,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 690
+      }
+    },
+    {
+      "at_ms": 67300,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 334
+      }
+    },
+    {
+      "at_ms": 67300,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 950
+      }
+    },
+    {
+      "at_ms": 71800,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 609
+      }
+    },
+    {
+      "at_ms": 71800,
+      "action": "spell:603",
+      "target": "Target 1",
+      "resources": {
+        "mana": 309
+      }
+    },
+    {
+      "at_ms": 73300,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 938
+      }
+    },
+    {
+      "at_ms": 77800,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 597
+      }
+    },
+    {
+      "at_ms": 79800,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 322
+      }
+    },
+    {
+      "at_ms": 79800,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 937
+      }
+    },
+    {
+      "at_ms": 86100,
+      "action": "spell:17924",
+      "target": "Target 1",
+      "resources": {
+        "mana": 780
+      }
+    },
+    {
+      "at_ms": 88100,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 563
+      }
+    },
+    {
+      "at_ms": 90100,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 267
+      }
+    },
+    {
+      "at_ms": 90100,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 882
+      }
+    },
+    {
+      "at_ms": 94600,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 541
+      }
+    },
+    {
+      "at_ms": 97600,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 185
+      }
+    },
+    {
+      "at_ms": 97600,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 801
+      }
+    },
+    {
+      "at_ms": 102100,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 533
+      }
+    },
+    {
+      "at_ms": 104100,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 236
+      }
+    },
+    {
+      "at_ms": 104100,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 852
+      }
+    },
+    {
+      "at_ms": 108600,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 511
+      }
+    },
+    {
+      "at_ms": 110600,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 294
+      }
+    },
+    {
+      "at_ms": 110600,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 909
+      }
+    },
+    {
+      "at_ms": 115100,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 568
+      }
+    },
+    {
+      "at_ms": 118100,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 286
+      }
+    },
+    {
+      "at_ms": 118100,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 901
+      }
+    },
+    {
+      "at_ms": 124400,
+      "action": "spell:17924",
+      "target": "Target 1",
+      "resources": {
+        "mana": 789
+      }
+    },
+    {
+      "at_ms": 124400,
+      "action": "spell:20572",
+      "target": "Target 1",
+      "resources": {
+        "mana": 789
+      }
+    },
+    {
+      "at_ms": 127900,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 433
+      }
+    },
+    {
+      "at_ms": 130900,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 92
+      }
+    },
+    {
+      "at_ms": 130900,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 707
+      }
+    },
+    {
+      "at_ms": 134400,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 505
+      }
+    },
+    {
+      "at_ms": 134400,
+      "action": "spell:603",
+      "target": "Target 1",
+      "resources": {
+        "mana": 205
+      }
+    },
+    {
+      "at_ms": 135900,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 821
+      }
+    },
+    {
+      "at_ms": 140400,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 547
+      }
+    },
+    {
+      "at_ms": 142400,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 309
+      }
+    },
+    {
+      "at_ms": 142400,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 925
+      }
+    },
+    {
+      "at_ms": 146900,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 584
+      }
+    },
+    {
+      "at_ms": 149900,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 287
+      }
+    },
+    {
+      "at_ms": 149900,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 902
+      }
+    },
+    {
+      "at_ms": 154400,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 576
+      }
+    },
+    {
+      "at_ms": 156400,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 300
+      }
+    },
+    {
+      "at_ms": 156400,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 915
+      }
+    },
+    {
+      "at_ms": 162700,
+      "action": "spell:17924",
+      "target": "Target 1",
+      "resources": {
+        "mana": 744
+      }
+    },
+    {
+      "at_ms": 164700,
+      "action": "spell:11672",
+      "target": "Target 1",
+      "resources": {
+        "mana": 586
+      }
+    },
+    {
+      "at_ms": 166700,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 290
+      }
+    },
+    {
+      "at_ms": 166700,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 905
+      }
+    },
+    {
+      "at_ms": 171200,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 564
+      }
+    },
+    {
+      "at_ms": 174200,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 282
+      }
+    },
+    {
+      "at_ms": 174200,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 897
+      }
+    },
+    {
+      "at_ms": 178700,
+      "action": "spell:11661",
+      "target": "Target 1",
+      "resources": {
+        "mana": 556
+      }
+    },
+    {
+      "at_ms": 180700,
+      "action": "spell:11668",
+      "target": "Target 1",
+      "resources": {
+        "mana": 200
+      }
+    },
+    {
+      "at_ms": 180700,
+      "action": "spell:11689",
+      "target": "Target 1",
+      "resources": {
+        "mana": 816
+      }
+    }
+  ]
+}

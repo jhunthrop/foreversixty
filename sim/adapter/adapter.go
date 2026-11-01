@@ -164,8 +164,9 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	// See the package comment for why.
 	durationMS := DeriveDurationMS(SumActorTotals(out.DamageDone), DPS(res).Mean, avgIterationMS)
 	out.DurationMS = durationMS
-	for i := range out.DamageDone {
-		out.DamageDone[i].ActiveMS = durationMS
+	out.DamageDone[0].ActiveMS = durationMS
+	for i, pet := range player.Pets {
+		out.DamageDone[i+1].ActiveMS = petActiveMS(pet, res.AvgIterationDuration, durationMS)
 	}
 
 	out.Auras = auras(player)
@@ -260,6 +261,20 @@ func targetNames(res *proto.RaidSimResult) map[int32]string {
 		out[t.UnitIndex] = t.Name
 	}
 	return out
+}
+
+// petActiveMS is the time a pet was summoned inside the fight. The engine's
+// pet_active_seconds_avg is measured on its own iteration clock, so it is
+// taken as a share of that clock and laid on the summary's derived one: a
+// pet out for the whole fight reads exactly the fight, never a hair under
+// or past it. A warlock registers every demon as a pet; the ones it never
+// summons, and an Imp sacrificed before the pull, read zero.
+func petActiveMS(pet *proto.UnitMetrics, avgIterationSeconds float64, durationMS int64) int64 {
+	if avgIterationSeconds <= 0 {
+		return 0
+	}
+	share := min(pet.PetActiveSecondsAvg/avgIterationSeconds, 1)
+	return int64(math.Round(share * float64(durationMS)))
 }
 
 // actors builds the damage table: one row for the player, then one per pet.
