@@ -68,10 +68,11 @@ The cherry-picked casters commit 9a5c25dff also touches `sim/mage/*` and `sim/pr
 |---|---|---|---|---|
 | S1 | **The list ended every fight with mana unspent while damage went unhealed:** mana lasted 337 s of 300, with 0.3% overheal. Chain Heal waited for a member under 70% and for half the mana bar; the list's own notes said a retune "was not done". Chain Heal now opens when any of the five (the shaman counted) is under 90%, on the fight-clock pace (mana at least 90% of the share of the fight left): **+6%**. This came from a grid of 72 variants on thresholds and gates; the plateau is flat within 0.5%. | runs (lane scratch `sham/`, `sham2/`). | CONFIRMED-BUG (rotation) | S 8f4cddded |
 | S2 | Riptide, Chain Heal, Healing Wave, Lesser Healing Wave, Healing Stream, Mana Tide, Water Shield and Nature's Swiftness: trainable, implemented and cast. Earth Shield is a `class_spell` with no skill line (like Sacred Shield at 80), so it is not trainable. Healing Rain and Ancestral Guidance have no row. Chain Heal's jumps can reach the healer (its comment says otherwise; the code checks health bars). | trainables/shaman.json; `sim/shaman/chain_heal.go:62`. | Aligned | - |
+| S3 | **Mana Tide Totem was cast at rank 3** (17359, 197 mana a tick to the party), although Forever's rank 4 (1325256, learned at 58, 290 a tick, 60 mana) is a trainer rank. The engine already registers rank 4 (`ManaTideTotemSpellId`, client rows 1325256 and 1325257). But the site runs a healer list as written at band 60, and the list predates rank 4. It now names rank 4: **+1.6%** (alliance 680.6 → 691.3, horde 677.1 → 687.9; seeds 1 and 50001 within 0.1). Routed from the hybrids lane. | trainables/shaman.json (ranks 16190, 17354, 17359, 1325256 at 1, 38, 48, 58; the push changes only Attributes_14 on ranks 1 to 3). Test first: `TestHealerListsCastTheTopTrainerRankUnlessChosen` (site), which holds every healer list to the top trainer rank unless the notes choose a lower one. | CONFIRMED-BUG (rotation rank) | E 3b4efb55a, S 2035c9f8a |
 
 ## Before/after
 
-Fork 8baffe5fc and origin/main 21d97955f, against fork 671990588 and site c8e762ec1. Raid preset, band 60, heal profile, 10,000 iterations, effective HPS.
+Fork 8baffe5fc and origin/main 21d97955f, against fork 671990588 and site c8e762ec1 (the shaman row against fork 3b4efb55a and site 2035c9f8a, with S3). Raid preset, band 60, heal profile, 10,000 iterations, effective HPS.
 
 | spec | alliance s1 | alliance s50001 | horde s1 | horde s50001 |
 |---|---|---|---|---|
@@ -79,7 +80,7 @@ Fork 8baffe5fc and origin/main 21d97955f, against fork 671990588 and site c8e762
 | Holy priest | 641.4 → 680.7 (+6.1%) | +6.0% | 623.2 → 662.6 (+6.3%) | +6.3% |
 | Discipline priest | 538.4 → 611.9 (+13.7%) | +13.6% | 548.0 → 621.2 (+13.4%) | +13.3% |
 | Holy paladin | 553.8 → 497.9 (-10.1%) | -10.2% | 544.2 → 487.0 (-10.5%) | -10.5% |
-| Restoration shaman | 641.9 → 680.6 (+6.0%) | +5.9% | 640.2 → 677.1 (+5.8%) | +5.8% |
+| Restoration shaman | 641.9 → 691.3 (+7.7%) | +7.6% | 640.2 → 687.9 (+7.5%) | +7.4% |
 
 Each step's share (2,000 iterations, seed 1, alliance):
 - X1 alone: druid +0.3, Holy +6.1, Discipline +1.5, paladin 0.0, shaman -0.3.
