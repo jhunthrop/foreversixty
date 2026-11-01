@@ -105,7 +105,7 @@ function healerNotes(ctx: NoteContext): NoteSegment[][] {
       { text: ' is less healing in this fight, not a verdict on the class. ' },
       { text: '≈ tie', strong: true },
       {
-        text: ` marks healers the sim cannot tell apart: within its measurement error of each other, and never less than ${TIE_MARGIN_PERCENT}%. Tied healers share a rank.`,
+        text: ' marks healers the sim cannot tell apart: within its measurement error, or ordered differently at the two ends of the fight profile’s tuning. Tied healers share a rank.',
       },
     ],
   ];
@@ -155,7 +155,7 @@ export function ordinal(n: number): string {
 function tieTitle(tie: TierTie, role: BisRole = 'dps'): string {
   if (role === 'healer') {
     const neighbour = tie === 'both' ? 'healers above and below' : `healer ${tie}`;
-    return `Within the measurement error of the ${neighbour}: tied`;
+    return `Not told apart from the ${neighbour} by the error or the profile’s tuning: tied`;
   }
   if (tie === 'both') return `Within ${TIE_MARGIN_PERCENT}% of the specs above and below: a tie`;
   return `Within ${TIE_MARGIN_PERCENT}% of the spec ${tie}: a tie`;

@@ -69,13 +69,13 @@ describe('the healer tie rule (owner ruling, round 5)', () => {
       .map(flat)
       .join(' ');
     expect(healer).toContain(
-      '≈ tie marks healers the sim cannot tell apart: within its measurement error of each other, and never less than 1%. Tied healers share a rank.',
+      '≈ tie marks healers the sim cannot tell apart: within its measurement error, or ordered differently at the two ends of the fight profile’s tuning. Tied healers share a rank.',
     );
   });
 
-  it('titles a healer tie by the error, not the DPS margin', () => {
+  it('titles a healer tie by the error and the tuning, not the DPS margin', () => {
     expect(tiersCopy.tieTitle('above', 'healer')).toBe(
-      'Within the measurement error of the healer above: tied',
+      'Not told apart from the healer above by the error or the profile’s tuning: tied',
     );
     expect(tiersCopy.tieTitle('both', 'healer')).toContain('healers above and below');
     expect(tiersCopy.tieTitle('above', 'dps')).toBe('Within 1% of the spec above: a tie');

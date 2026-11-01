@@ -52,13 +52,15 @@ export function dpsInput(classSlug: string, specSlug: string, name: string, setD
 }
 
 /** A healer row: `hps` as the band's `set_dps` and metrics, `hpsError` its standard error
- *  (omitted: a file ranked before the error was published). */
+ *  and `atBounds` the same set at the profile's tuning bounds (omitted: a file ranked before
+ *  they were published). */
 export function healerInput(
   classSlug: string,
   specSlug: string,
   name: string,
   hps: number,
   hpsError?: number,
+  atBounds?: { scale: number; hps: number; hps_error: number }[],
 ): TierInput {
   const entry = catalogEntry(classSlug, specSlug, name, 'healer');
   const metrics = {
@@ -68,6 +70,7 @@ export function healerInput(
     mana_lasts_sec: 300,
     hpm: 1,
     ...(hpsError === undefined ? {} : { hps_error: hpsError }),
+    ...(atBounds === undefined ? {} : { hps_at_bounds: atBounds }),
   };
   return { entry, band: band(entry, { set_dps: hps, metrics }) };
 }

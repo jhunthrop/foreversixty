@@ -264,6 +264,9 @@ export interface BisHealMetrics {
   /** The standard error of `hps` in the same run. Absent on a file ranked before
    *  2026-11-01, which published no error; /tiers/healer then ties on its 1% floor alone. */
   hps_error?: number;
+  /** The same set with the heal profile scaled to each of its tuning bounds
+   *  (`heal_profile.tuning.bounds`). Absent on a file ranked before 2026-11-01. */
+  hps_at_bounds?: { scale: number; hps: number; hps_error: number }[];
   raw_hps: number;
   /** 0..1 share of raw healing that landed on full health. */
   overheal_pct: number;
@@ -282,6 +285,15 @@ export interface BisHealProfile {
   notes: string;
   duration_sec: number;
   damage_spread: number;
+  /** The multiplier the tank hit and pulse are scaled by and the bounds it was tuned between.
+   *  Absent on a file published before 2026-11-01. */
+  tuning?: {
+    scale: number;
+    bounds: number[];
+    base_tank_hit_damage: number;
+    base_pulse_damage: number;
+    reason: string;
+  };
   tank: { health: number; hit_damage: number; swing_seconds: number; reason: string };
   members: { health: number; reason: string };
   pulse: { damage: number; interval_seconds: number; members: number; reason: string };

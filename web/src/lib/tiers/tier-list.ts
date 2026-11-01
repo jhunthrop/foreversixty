@@ -125,21 +125,38 @@ function tieMarks(metrics: readonly number[], enabled: boolean): (TierTie | null
   });
 }
 
-/** A healer row's standard error as a percent of its figure; 0 when the file has none. */
-function errorPercentOf(band: BisBand, metric: number): number {
-  const metrics = band.metrics;
-  const error = metrics !== null && metrics !== undefined && 'hps' in metrics ? metrics.hps_error : undefined;
-  return error === undefined || metric <= 0 ? 0 : (error / metric) * PERCENT;
+/** One measurement of a healer: effective HPS and its standard error. */
+interface HealerPoint {
+  hps: number;
+  error: number;
 }
 
-/** Whether the healer below is told apart from the one above: its gap is beyond both the
- *  site's tie margin and HEALER_ERROR_Z standard errors of the difference. */
+/** A healer's measurements: the tuned profile and each tuning bound. `null` when the file
+ *  publishes no error, which leaves only the fixed margin to go on. */
+function healerPoints(band: BisBand, metric: number): HealerPoint[] | null {
+  const metrics = band.metrics;
+  if (metrics === null || metrics === undefined || !('hps' in metrics) || metrics.hps_error === undefined) {
+    return null;
+  }
+  const bounds = (metrics.hps_at_bounds ?? []).map((row) => ({ hps: row.hps, error: row.hps_error }));
+  return [{ hps: metric, error: metrics.hps_error }, ...bounds];
+}
+
+/** Whether the healer above leads the one below at one measurement, beyond the error. */
+function leadsBeyondError(above: HealerPoint, below: HealerPoint): boolean {
+  return above.hps - below.hps > HEALER_ERROR_Z * Math.hypot(above.error, below.error);
+}
+
+/** Whether two neighbouring healers tie: unless the one above leads beyond the error at the
+ *  tuned profile and at every tuning bound, the order is the error's or the tuning's, not the
+ *  healers'. A file with no error ties on the site's fixed margin. */
 function healerTiedWith(above: Scored, below: Scored): boolean {
-  const gap = (1 - below.metric / above.metric) * PERCENT;
-  const errorAbove = errorPercentOf(above.input.band, above.metric);
-  const errorBelow = errorPercentOf(below.input.band, below.metric);
-  const margin = Math.max(TIE_MARGIN_PERCENT, HEALER_ERROR_Z * Math.hypot(errorAbove, errorBelow));
-  return gap <= margin;
+  const pointsAbove = healerPoints(above.input.band, above.metric);
+  const pointsBelow = healerPoints(below.input.band, below.metric);
+  if (pointsAbove === null || pointsBelow === null || pointsAbove.length !== pointsBelow.length) {
+    return (1 - below.metric / above.metric) * PERCENT <= TIE_MARGIN_PERCENT;
+  }
+  return !pointsAbove.every((point, index) => leadsBeyondError(point, pointsBelow[index]!));
 }
 
 /** Healer tie marks and ranks. A healer within error of the one above shares its rank, and
