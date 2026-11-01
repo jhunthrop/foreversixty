@@ -109,6 +109,22 @@ describe('syncData', () => {
     );
   });
 
+  // bis.yml deletes dps-per-point.carried-from once it re-measures a moved build, and the
+  // manifest data.yml wrote while the marker existed still lists it: bookkeeping, not a
+  // published file, so its absence never blocks a deploy.
+  it('does not count the re-measure marker as a missing file', async () => {
+    const dir = scaffoldRealBuild();
+    const manifest = JSON.parse(readFileSync(path.join(dir, 'manifest.json'), 'utf8')) as {
+      files: Record<string, string>;
+    };
+    writeJson(path.join(dir, 'manifest.json'), {
+      ...manifest,
+      files: { ...manifest.files, 'dps-per-point.carried-from': 'ee' },
+    });
+    const result = await syncData({ repoRoot, webRoot, allowFixture: true, log: silent });
+    expect(result.usedFixture).toBe(false);
+  });
+
   it('fails when a required file is absent from the source directory', async () => {
     const dir = scaffoldRealBuild();
     rmSync(path.join(dir, 'combos.json'));
