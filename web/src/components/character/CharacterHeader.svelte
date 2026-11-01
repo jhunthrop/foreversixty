@@ -267,7 +267,10 @@
         {/if}
       </span>
       {#if syncLine !== null}
-        <span class="ch-sync" data-testid={ghost ? undefined : 'character-header-sync'}
+        <span
+          class="ch-sync"
+          class:ch-ghost-geared={ghost}
+          data-testid={ghost ? undefined : 'character-header-sync'}
           >{@render txt(syncText(syncLine), ghost)}{#if syncLine.staleTail !== null}{STALE_SEPARATOR}<span
               class="ch-stale"
               data-testid={ghost ? undefined : 'character-header-stale'}>{syncLine.staleTail}</span
@@ -464,13 +467,20 @@
     data-testid="character-header-loading"
     data-layout={layout}
   >
-    <!-- Two ghosts, one shown: the geared box (sync line, figures) when the pre-paint script
-         hinted data-ch-gear, else the gearless box (lib/character-header/gear-hint.ts). -->
-    <div class="ch-hidden ch-ghost-geared" aria-hidden="true">
-      {@render panel(PLACEHOLDER_CHARACTER, placeholderView, PLACEHOLDER_ACTION, PLACEHOLDER_SYNC, true)}
-    </div>
-    <div class="ch-hidden ch-ghost-gearless" aria-hidden="true">
-      {@render panel(PLACEHOLDER_GEARLESS_CHARACTER, gearlessPlaceholderView, PLACEHOLDER_ACTION, null, true)}
+    <!-- One ghost; the parts a gearless header lacks (the sync line, the figures answer) carry
+         .ch-ghost-geared and show only when the pre-paint script hinted data-ch-gear, the
+         gearless answer .ch-ghost-gearless the other way round (lib/character-header/gear-hint.ts). -->
+    <div class="ch-hidden" aria-hidden="true">
+      {@render identity(PLACEHOLDER_CHARACTER, PLACEHOLDER_ACTION.href, PLACEHOLDER_SYNC, true)}
+      {#if placeholderView !== null && gearlessPlaceholderView === placeholderView}
+        {@render answerSlot(placeholderView, true)}
+      {:else if placeholderView !== null}
+        <div class="ch-hidden ch-ghost-geared">{@render answerSlot(placeholderView, true)}</div>
+        {#if gearlessPlaceholderView !== null}
+          <div class="ch-hidden ch-ghost-gearless">{@render answerSlot(gearlessPlaceholderView, true)}</div>
+        {/if}
+      {/if}
+      {@render button(PLACEHOLDER_ACTION, true)}
     </div>
     <div class="ch-overlay" aria-hidden="true">
       <span class="ch-sk-identity">
