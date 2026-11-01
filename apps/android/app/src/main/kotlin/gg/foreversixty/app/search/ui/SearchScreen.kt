@@ -2,7 +2,6 @@ package gg.foreversixty.app.search.ui
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.search.logic.WebHandoff
@@ -324,8 +323,9 @@ private fun NoResults(query: String) {
 /** The offline strip inside the results (spec F12.6), a rounded card like the board's. */
 @Composable
 private fun InsetStrip() {
-    Box(Modifier.padding(horizontal = SearchLayout.margin).padding(top = 16.dp).clip(RoundedCornerShape(FsRadius.panel))) {
-        OfflineStrip(stringResource(R.string.search_offline))
+    // All four corners round, as on iOS.
+    Box(Modifier.padding(horizontal = SearchLayout.margin).padding(top = 16.dp)) {
+        OfflineStrip(stringResource(R.string.search_offline), RoundedCornerShape(FsRadius.panel))
     }
 }
 
