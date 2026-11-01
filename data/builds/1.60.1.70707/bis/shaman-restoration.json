@@ -1,8 +1,8 @@
 {
   "spec": "shaman-restoration",
   "build": "1.60.1.70707",
-  "engine_version": "c99fb94b4",
-  "generated_at": "2026-10-31T21:11:51Z",
+  "engine_version": "84994235d",
+  "generated_at": "2026-11-01T01:05:55Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -668,7 +668,7 @@
         }
       ],
       "set_dps": 26.711028971100603,
-      "no_source_count": 220,
+      "no_source_count": 227,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "3738 Brewing Rod",
@@ -701,8 +701,8 @@
         "finger2: Band of Purification",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 3.887903779,
-      "verify_run_seconds": 13.892289764000001,
+      "weights_run_seconds": 6.151541292,
+      "verify_run_seconds": 23.079125422,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -720,12 +720,12 @@
           "rare_spawn_skipped": 4
         },
         "finger1": {
-          "eligible": 32,
+          "eligible": 37,
           "sourced": 17,
           "rare_spawn_skipped": 3
         },
         "finger2": {
-          "eligible": 32,
+          "eligible": 37,
           "sourced": 17,
           "rare_spawn_skipped": 3
         },
@@ -744,12 +744,12 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 246,
+          "eligible": 247,
           "sourced": 181,
           "rare_spawn_skipped": 28
         },
         "neck": {
-          "eligible": 15,
+          "eligible": 16,
           "sourced": 3
         },
         "off_hand": {
@@ -1463,7 +1463,7 @@
         }
       ],
       "set_dps": 26.24103804247454,
-      "no_source_count": 209,
+      "no_source_count": 216,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1496,8 +1496,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 3.887903779,
-      "verify_run_seconds": 12.502325155,
+      "weights_run_seconds": 6.151541292,
+      "verify_run_seconds": 20.623176708,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -1515,12 +1515,12 @@
           "rare_spawn_skipped": 4
         },
         "finger1": {
-          "eligible": 33,
+          "eligible": 38,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
         "finger2": {
-          "eligible": 33,
+          "eligible": 38,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
@@ -1539,12 +1539,12 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 250,
+          "eligible": 251,
           "sourced": 195,
           "rare_spawn_skipped": 28
         },
         "neck": {
-          "eligible": 15,
+          "eligible": 16,
           "sourced": 3
         },
         "off_hand": {
@@ -2322,7 +2322,7 @@
         }
       ],
       "set_dps": 46.70500882174239,
-      "no_source_count": 420,
+      "no_source_count": 427,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2355,8 +2355,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 3.866709073,
-      "verify_run_seconds": 14.323350465,
+      "weights_run_seconds": 6.229601187,
+      "verify_run_seconds": 22.824398497,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -2374,12 +2374,12 @@
           "rare_spawn_skipped": 4
         },
         "finger1": {
-          "eligible": 86,
+          "eligible": 91,
           "sourced": 45,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 86,
+          "eligible": 91,
           "sourced": 45,
           "rare_spawn_skipped": 5
         },
@@ -2399,12 +2399,12 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 390,
+          "eligible": 391,
           "sourced": 286,
           "rare_spawn_skipped": 39
         },
         "neck": {
-          "eligible": 39,
+          "eligible": 40,
           "sourced": 14,
           "rare_spawn_skipped": 3
         },
@@ -3186,7 +3186,7 @@
         }
       ],
       "set_dps": 46.32664973479938,
-      "no_source_count": 413,
+      "no_source_count": 420,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3219,8 +3219,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 3.866709073,
-      "verify_run_seconds": 13.228187859,
+      "weights_run_seconds": 6.229601187,
+      "verify_run_seconds": 21.809724709,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3238,12 +3238,12 @@
           "rare_spawn_skipped": 4
         },
         "finger1": {
-          "eligible": 87,
+          "eligible": 92,
           "sourced": 49,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 87,
+          "eligible": 92,
           "sourced": 49,
           "rare_spawn_skipped": 5
         },
@@ -3263,12 +3263,12 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 385,
+          "eligible": 386,
           "sourced": 291,
           "rare_spawn_skipped": 39
         },
         "neck": {
-          "eligible": 39,
+          "eligible": 40,
           "sourced": 13,
           "rare_spawn_skipped": 3
         },
@@ -4058,7 +4058,7 @@
         }
       ],
       "set_dps": 78.08979627660624,
-      "no_source_count": 669,
+      "no_source_count": 676,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4093,8 +4093,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Battered Viking Shield"
       ],
-      "weights_run_seconds": 4.520623818,
-      "verify_run_seconds": 19.055879471,
+      "weights_run_seconds": 7.29241516,
+      "verify_run_seconds": 31.013965027,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4112,12 +4112,12 @@
           "rare_spawn_skipped": 8
         },
         "finger1": {
-          "eligible": 123,
+          "eligible": 128,
           "sourced": 65,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 123,
+          "eligible": 128,
           "sourced": 65,
           "rare_spawn_skipped": 5
         },
@@ -4137,12 +4137,12 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 512,
+          "eligible": 513,
           "sourced": 365,
           "rare_spawn_skipped": 43
         },
         "neck": {
-          "eligible": 56,
+          "eligible": 57,
           "sourced": 22,
           "rare_spawn_skipped": 4
         },
@@ -4931,7 +4931,7 @@
         }
       ],
       "set_dps": 77.32657402587321,
-      "no_source_count": 651,
+      "no_source_count": 658,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4966,8 +4966,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Battered Viking Shield"
       ],
-      "weights_run_seconds": 4.520623818,
-      "verify_run_seconds": 17.951932867,
+      "weights_run_seconds": 7.29241516,
+      "verify_run_seconds": 28.212992827,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -4985,12 +4985,12 @@
           "rare_spawn_skipped": 8
         },
         "finger1": {
-          "eligible": 122,
+          "eligible": 127,
           "sourced": 67,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 122,
+          "eligible": 127,
           "sourced": 67,
           "rare_spawn_skipped": 5
         },
@@ -5010,12 +5010,12 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 509,
+          "eligible": 510,
           "sourced": 372,
           "rare_spawn_skipped": 43
         },
         "neck": {
-          "eligible": 56,
+          "eligible": 57,
           "sourced": 21,
           "rare_spawn_skipped": 4
         },
@@ -5688,7 +5688,6 @@
           "source_kind": "world_drop",
           "verified": true,
           "effect_unmodelled": true,
-          "faction_note": "Ankh of Life (from horde) and alliance's own pick Uther's Strength measure statistically indistinguishable on dwarf (1.90 ± 0.32 vs 2.04 ± 0.33 DPS gain) -- each faction's own tournament winner kept",
           "alternatives": [
             {
               "item_id": 744,
@@ -5723,7 +5722,8 @@
               "source_kind": "quest",
               "source": "Look at the Size of It!"
             }
-          ]
+          ],
+          "faction_note": "Ankh of Life (from horde) and alliance's own pick Uther's Strength measure statistically indistinguishable on dwarf (1.90 ± 0.32 vs 2.04 ± 0.33 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "trinket2",
@@ -5834,7 +5834,7 @@
           "waist"
         ]
       },
-      "no_source_count": 872,
+      "no_source_count": 879,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5869,8 +5869,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 7.203726425,
-      "verify_run_seconds": 30.132660473,
+      "weights_run_seconds": 10.94813587,
+      "verify_run_seconds": 46.96192076,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5888,12 +5888,12 @@
           "rare_spawn_skipped": 9
         },
         "finger1": {
-          "eligible": 148,
+          "eligible": 153,
           "sourced": 77,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 148,
+          "eligible": 153,
           "sourced": 77,
           "rare_spawn_skipped": 5
         },
@@ -5913,12 +5913,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 611,
-          "sourced": 434,
+          "eligible": 613,
+          "sourced": 435,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 71,
+          "eligible": 72,
           "sourced": 29,
           "rare_spawn_skipped": 5
         },
@@ -6726,7 +6726,7 @@
           "waist"
         ]
       },
-      "no_source_count": 842,
+      "no_source_count": 849,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6761,8 +6761,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 7.203726425,
-      "verify_run_seconds": 29.65462539,
+      "weights_run_seconds": 10.94813587,
+      "verify_run_seconds": 46.306782203,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6780,12 +6780,12 @@
           "rare_spawn_skipped": 9
         },
         "finger1": {
-          "eligible": 149,
+          "eligible": 154,
           "sourced": 81,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 149,
+          "eligible": 154,
           "sourced": 81,
           "rare_spawn_skipped": 5
         },
@@ -6805,12 +6805,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 611,
-          "sourced": 444,
+          "eligible": 613,
+          "sourced": 445,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 73,
+          "eligible": 74,
           "sourced": 30,
           "rare_spawn_skipped": 5
         },
@@ -7616,7 +7616,7 @@
           "trinket2"
         ]
       },
-      "no_source_count": 1819,
+      "no_source_count": 1826,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7648,8 +7648,8 @@
         "finger2: Eye of Adaegus",
         "trinket1: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 7.021661745,
-      "verify_run_seconds": 51.81641274,
+      "weights_run_seconds": 11.045174175,
+      "verify_run_seconds": 81.80056088,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7667,12 +7667,12 @@
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 318,
+          "eligible": 323,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 318,
+          "eligible": 323,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
@@ -7692,12 +7692,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 784,
-          "sourced": 504,
+          "eligible": 786,
+          "sourced": 505,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 151,
+          "eligible": 152,
           "sourced": 41,
           "rare_spawn_skipped": 5
         },
@@ -8420,7 +8420,6 @@
           "source_kind": "world_drop",
           "verified": true,
           "effect_unmodelled": true,
-          "faction_note": "Uther's Strength (from alliance) and horde's own pick Ankh of Life measure statistically indistinguishable on tauren (2.56 ± 0.61 vs 2.98 ± 0.60 DPS gain) -- each faction's own tournament winner kept",
           "alternatives": [
             {
               "item_id": 18951,
@@ -8456,7 +8455,8 @@
               "source_kind": "crafted",
               "source": "Alchemy"
             }
-          ]
+          ],
+          "faction_note": "Uther's Strength (from alliance) and horde's own pick Ankh of Life measure statistically indistinguishable on tauren (2.56 ± 0.61 vs 2.98 ± 0.60 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -8510,7 +8510,6 @@
         {
           "slot": "ranged",
           "verified": false,
-          "empty_reason": "no_dps_value",
           "alternatives": [
             {
               "item_id": 272432,
@@ -8519,11 +8518,12 @@
               "source": "World drop",
               "dps_delta": 0
             }
-          ]
+          ],
+          "empty_reason": "no_dps_value"
         }
       ],
       "set_dps": 220.21710540463732,
-      "no_source_count": 1775,
+      "no_source_count": 1782,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8554,8 +8554,8 @@
         "finger2: Eye of Adaegus",
         "trinket1: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 7.021661745,
-      "verify_run_seconds": 50.560270247,
+      "weights_run_seconds": 11.045174175,
+      "verify_run_seconds": 79.909048894,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -8573,12 +8573,12 @@
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
@@ -8598,12 +8598,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 789,
-          "sourced": 518,
+          "eligible": 791,
+          "sourced": 519,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 157,
+          "eligible": 158,
           "sourced": 42,
           "rare_spawn_skipped": 5
         },
@@ -8915,11 +8915,6 @@
           "source_kind": "dungeon",
           "sim_dps": 612.3979374831463,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 10020,
@@ -8955,7 +8950,12 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "wrist",
@@ -8966,11 +8966,6 @@
           "chance": 0.0371,
           "sim_dps": 612.3979374831463,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 252543,
@@ -9006,7 +9001,12 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "hands",
@@ -9016,11 +9016,6 @@
           "source_kind": "dungeon",
           "sim_dps": 612.3979374831463,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 252587,
@@ -9056,7 +9051,12 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "waist",
@@ -9067,11 +9067,6 @@
           "chance": 0.0762,
           "sim_dps": 612.3979374831463,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 252477,
@@ -9107,7 +9102,12 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "legs",
@@ -9117,11 +9117,6 @@
           "source_kind": "dungeon",
           "sim_dps": 612.3979374831463,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 279254,
@@ -9157,7 +9152,12 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "feet",
@@ -9439,7 +9439,6 @@
         {
           "slot": "ranged",
           "verified": false,
-          "empty_reason": "no_dps_value",
           "alternatives": [
             {
               "item_id": 272432,
@@ -9448,11 +9447,12 @@
               "source": "World drop",
               "dps_delta": 0
             }
-          ]
+          ],
+          "empty_reason": "no_dps_value"
         }
       ],
       "set_dps": 612.420241410051,
-      "no_source_count": 1819,
+      "no_source_count": 1826,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9485,8 +9485,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Uther's Strength"
       ],
-      "weights_run_seconds": 5.019035794,
-      "verify_run_seconds": 39.48523567,
+      "weights_run_seconds": 7.946618145,
+      "verify_run_seconds": 63.051743808,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9504,12 +9504,12 @@
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 318,
+          "eligible": 323,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 318,
+          "eligible": 323,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
@@ -9529,12 +9529,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 784,
-          "sourced": 504,
+          "eligible": 786,
+          "sourced": 505,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 151,
+          "eligible": 152,
           "sourced": 41,
           "rare_spawn_skipped": 5
         },
@@ -9846,11 +9846,6 @@
           "source_kind": "dungeon",
           "sim_dps": 611.0390675568513,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 227171,
@@ -9886,7 +9881,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "wrist",
@@ -9897,11 +9897,6 @@
           "chance": 0.0371,
           "sim_dps": 611.0390675568513,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 252543,
@@ -9937,7 +9932,12 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "hands",
@@ -9947,11 +9947,6 @@
           "source_kind": "dungeon",
           "sim_dps": 611.0390675568513,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 231666,
@@ -9987,7 +9982,12 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "waist",
@@ -9998,11 +9998,6 @@
           "chance": 0.0762,
           "sim_dps": 611.0390675568513,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 252477,
@@ -10038,7 +10033,12 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "legs",
@@ -10048,11 +10048,6 @@
           "source_kind": "dungeon",
           "sim_dps": 611.0390675568513,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 6,
-            "bonus": "Restores 8 mana per 5 sec."
-          },
           "alternatives": [
             {
               "item_id": 227167,
@@ -10088,7 +10083,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 6,
+            "bonus": "Restores 8 mana per 5 sec."
+          }
         },
         {
           "slot": "feet",
@@ -10370,7 +10370,6 @@
         {
           "slot": "ranged",
           "verified": false,
-          "empty_reason": "no_dps_value",
           "alternatives": [
             {
               "item_id": 272432,
@@ -10379,11 +10378,12 @@
               "source": "World drop",
               "dps_delta": 0
             }
-          ]
+          ],
+          "empty_reason": "no_dps_value"
         }
       ],
       "set_dps": 611.0276567557335,
-      "no_source_count": 1775,
+      "no_source_count": 1782,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10416,8 +10416,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Uther's Strength"
       ],
-      "weights_run_seconds": 5.019035794,
-      "verify_run_seconds": 40.221150562,
+      "weights_run_seconds": 7.946618145,
+      "verify_run_seconds": 61.43763693,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -10435,12 +10435,12 @@
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
@@ -10460,12 +10460,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 789,
-          "sourced": 518,
+          "eligible": 791,
+          "sourced": 519,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 157,
+          "eligible": 158,
           "sourced": 42,
           "rare_spawn_skipped": 5
         },

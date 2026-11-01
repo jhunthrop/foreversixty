@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70707",
-  "engine_version": "c99fb94b4",
-  "generated_at": "2026-10-31T21:04:36Z",
+  "engine_version": "84994235d",
+  "generated_at": "2026-11-01T00:54:27Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -618,7 +618,7 @@
         }
       ],
       "set_dps": 37.159735445814704,
-      "no_source_count": 220,
+      "no_source_count": 227,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "3738 Brewing Rod",
@@ -651,8 +651,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.338257658,
-      "verify_run_seconds": 1.331432075,
+      "weights_run_seconds": 2.015514355,
+      "verify_run_seconds": 1.782835663,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -670,12 +670,12 @@
           "rare_spawn_skipped": 4
         },
         "finger1": {
-          "eligible": 32,
+          "eligible": 37,
           "sourced": 17,
           "rare_spawn_skipped": 3
         },
         "finger2": {
-          "eligible": 32,
+          "eligible": 37,
           "sourced": 17,
           "rare_spawn_skipped": 3
         },
@@ -694,12 +694,12 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 246,
+          "eligible": 247,
           "sourced": 181,
           "rare_spawn_skipped": 28
         },
         "neck": {
-          "eligible": 15,
+          "eligible": 16,
           "sourced": 3
         },
         "off_hand": {
@@ -1373,7 +1373,7 @@
         }
       ],
       "set_dps": 37.46887057925757,
-      "no_source_count": 209,
+      "no_source_count": 216,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1406,8 +1406,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.338257658,
-      "verify_run_seconds": 1.46647257,
+      "weights_run_seconds": 2.015514355,
+      "verify_run_seconds": 2.057590709,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -1425,12 +1425,12 @@
           "rare_spawn_skipped": 4
         },
         "finger1": {
-          "eligible": 33,
+          "eligible": 38,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
         "finger2": {
-          "eligible": 33,
+          "eligible": 38,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
@@ -1449,12 +1449,12 @@
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 250,
+          "eligible": 251,
           "sourced": 195,
           "rare_spawn_skipped": 28
         },
         "neck": {
-          "eligible": 15,
+          "eligible": 16,
           "sourced": 3
         },
         "off_hand": {
@@ -2191,7 +2191,7 @@
         }
       ],
       "set_dps": 89.62202499128404,
-      "no_source_count": 420,
+      "no_source_count": 427,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2224,8 +2224,8 @@
         "finger2: Tiger Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.372924177,
-      "verify_run_seconds": 1.449328041,
+      "weights_run_seconds": 2.064423389,
+      "verify_run_seconds": 1.98268054,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -2243,12 +2243,12 @@
           "rare_spawn_skipped": 4
         },
         "finger1": {
-          "eligible": 86,
+          "eligible": 91,
           "sourced": 45,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 86,
+          "eligible": 91,
           "sourced": 45,
           "rare_spawn_skipped": 5
         },
@@ -2268,12 +2268,12 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 390,
+          "eligible": 391,
           "sourced": 286,
           "rare_spawn_skipped": 39
         },
         "neck": {
-          "eligible": 39,
+          "eligible": 40,
           "sourced": 14,
           "rare_spawn_skipped": 3
         },
@@ -3003,7 +3003,7 @@
         }
       ],
       "set_dps": 89.98042733713943,
-      "no_source_count": 413,
+      "no_source_count": 420,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3036,8 +3036,8 @@
         "finger2: Band of the Fist",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.372924177,
-      "verify_run_seconds": 1.423447756,
+      "weights_run_seconds": 2.064423389,
+      "verify_run_seconds": 1.908604159,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3055,12 +3055,12 @@
           "rare_spawn_skipped": 4
         },
         "finger1": {
-          "eligible": 87,
+          "eligible": 92,
           "sourced": 49,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 87,
+          "eligible": 92,
           "sourced": 49,
           "rare_spawn_skipped": 5
         },
@@ -3080,12 +3080,12 @@
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 385,
+          "eligible": 386,
           "sourced": 291,
           "rare_spawn_skipped": 39
         },
         "neck": {
-          "eligible": 39,
+          "eligible": 40,
           "sourced": 13,
           "rare_spawn_skipped": 3
         },
@@ -3821,7 +3821,7 @@
         }
       ],
       "set_dps": 117.89789895790706,
-      "no_source_count": 669,
+      "no_source_count": 676,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -3852,8 +3852,8 @@
         "finger2: Assault Band",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 1.772804568,
-      "verify_run_seconds": 1.70028362,
+      "weights_run_seconds": 2.617820892,
+      "verify_run_seconds": 2.297311234,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -3871,12 +3871,12 @@
           "rare_spawn_skipped": 8
         },
         "finger1": {
-          "eligible": 123,
+          "eligible": 128,
           "sourced": 65,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 123,
+          "eligible": 128,
           "sourced": 65,
           "rare_spawn_skipped": 5
         },
@@ -3896,12 +3896,12 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 512,
+          "eligible": 513,
           "sourced": 365,
           "rare_spawn_skipped": 43
         },
         "neck": {
-          "eligible": 56,
+          "eligible": 57,
           "sourced": 22,
           "rare_spawn_skipped": 4
         },
@@ -4636,7 +4636,7 @@
         }
       ],
       "set_dps": 114.36968823357628,
-      "no_source_count": 651,
+      "no_source_count": 658,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4666,8 +4666,8 @@
         "finger2: Assault Band",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 1.772804568,
-      "verify_run_seconds": 1.6341233160000002,
+      "weights_run_seconds": 2.617820892,
+      "verify_run_seconds": 2.187978882,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -4685,12 +4685,12 @@
           "rare_spawn_skipped": 8
         },
         "finger1": {
-          "eligible": 122,
+          "eligible": 127,
           "sourced": 67,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 122,
+          "eligible": 127,
           "sourced": 67,
           "rare_spawn_skipped": 5
         },
@@ -4710,12 +4710,12 @@
           "rare_spawn_skipped": 8
         },
         "main_hand": {
-          "eligible": 509,
+          "eligible": 510,
           "sourced": 372,
           "rare_spawn_skipped": 43
         },
         "neck": {
-          "eligible": 56,
+          "eligible": 57,
           "sourced": 21,
           "rare_spawn_skipped": 4
         },
@@ -5419,7 +5419,6 @@
           "source": "Enchanting",
           "source_kind": "crafted",
           "verified": true,
-          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 2.14 vs 0.43 ± 0.44 DPS gain) -- each faction's own tournament winner kept",
           "alternatives": [
             {
               "item_id": 17774,
@@ -5435,7 +5434,8 @@
               "source_kind": "quest",
               "source": "The Pariah's Instructions"
             }
-          ]
+          ],
+          "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 2.14 vs 0.43 ± 0.44 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -5494,7 +5494,7 @@
         }
       ],
       "set_dps": 159.13519782173753,
-      "no_source_count": 872,
+      "no_source_count": 879,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5527,8 +5527,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.657290808,
-      "verify_run_seconds": 3.551766377,
+      "weights_run_seconds": 2.488882175,
+      "verify_run_seconds": 4.83462031,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5546,12 +5546,12 @@
           "rare_spawn_skipped": 9
         },
         "finger1": {
-          "eligible": 148,
+          "eligible": 153,
           "sourced": 77,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 148,
+          "eligible": 153,
           "sourced": 77,
           "rare_spawn_skipped": 5
         },
@@ -5571,12 +5571,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 611,
-          "sourced": 434,
+          "eligible": 613,
+          "sourced": 435,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 71,
+          "eligible": 72,
           "sourced": 29,
           "rare_spawn_skipped": 5
         },
@@ -6363,7 +6363,7 @@
         }
       ],
       "set_dps": 158.1758333859484,
-      "no_source_count": 842,
+      "no_source_count": 849,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6397,8 +6397,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.657290808,
-      "verify_run_seconds": 2.326520027,
+      "weights_run_seconds": 2.488882175,
+      "verify_run_seconds": 2.983543903,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6416,12 +6416,12 @@
           "rare_spawn_skipped": 9
         },
         "finger1": {
-          "eligible": 149,
+          "eligible": 154,
           "sourced": 81,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 149,
+          "eligible": 154,
           "sourced": 81,
           "rare_spawn_skipped": 5
         },
@@ -6441,12 +6441,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 611,
-          "sourced": 444,
+          "eligible": 613,
+          "sourced": 445,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 73,
+          "eligible": 74,
           "sourced": 30,
           "rare_spawn_skipped": 5
         },
@@ -6846,11 +6846,6 @@
           "source_kind": "crafted",
           "sim_dps": 224.18399260273242,
           "verified": true,
-          "set_bonus": {
-            "set": "Devilsaur Armor",
-            "pieces": 2,
-            "bonus": "Improves your chance to hit by 2%."
-          },
           "alternatives": [
             {
               "item_id": 867,
@@ -6886,7 +6881,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Devilsaur Armor",
+            "pieces": 2,
+            "bonus": "Improves your chance to hit by 2%."
+          }
         },
         {
           "slot": "waist",
@@ -6940,11 +6940,6 @@
           "source_kind": "crafted",
           "sim_dps": 224.18399260273242,
           "verified": true,
-          "set_bonus": {
-            "set": "Devilsaur Armor",
-            "pieces": 2,
-            "bonus": "Improves your chance to hit by 2%."
-          },
           "alternatives": [
             {
               "item_id": 252606,
@@ -6980,7 +6975,12 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Devilsaur Armor",
+            "pieces": 2,
+            "bonus": "Improves your chance to hit by 2%."
+          }
         },
         {
           "slot": "feet",
@@ -7205,7 +7205,6 @@
         {
           "slot": "ranged",
           "verified": false,
-          "empty_reason": "no_dps_value",
           "alternatives": [
             {
               "item_id": 228176,
@@ -7214,11 +7213,12 @@
               "source": "Enchanting",
               "dps_delta": 0
             }
-          ]
+          ],
+          "empty_reason": "no_dps_value"
         }
       ],
       "set_dps": 224.18399260273242,
-      "no_source_count": 1819,
+      "no_source_count": 1826,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7252,8 +7252,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 1.702835536,
-      "verify_run_seconds": 5.786733635,
+      "weights_run_seconds": 2.518545141,
+      "verify_run_seconds": 7.93557135,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7271,12 +7271,12 @@
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 318,
+          "eligible": 323,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 318,
+          "eligible": 323,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
@@ -7296,12 +7296,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 784,
-          "sourced": 504,
+          "eligible": 786,
+          "sourced": 505,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 151,
+          "eligible": 152,
           "sourced": 41,
           "rare_spawn_skipped": 5
         },
@@ -7701,11 +7701,6 @@
           "source_kind": "crafted",
           "sim_dps": 229.93647067535204,
           "verified": true,
-          "set_bonus": {
-            "set": "Devilsaur Armor",
-            "pieces": 2,
-            "bonus": "Improves your chance to hit by 2%."
-          },
           "alternatives": [
             {
               "item_id": 227159,
@@ -7741,7 +7736,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Devilsaur Armor",
+            "pieces": 2,
+            "bonus": "Improves your chance to hit by 2%."
+          }
         },
         {
           "slot": "waist",
@@ -7795,11 +7795,6 @@
           "source_kind": "crafted",
           "sim_dps": 229.93647067535204,
           "verified": true,
-          "set_bonus": {
-            "set": "Devilsaur Armor",
-            "pieces": 2,
-            "bonus": "Improves your chance to hit by 2%."
-          },
           "alternatives": [
             {
               "item_id": 227156,
@@ -7835,7 +7830,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Devilsaur Armor",
+            "pieces": 2,
+            "bonus": "Improves your chance to hit by 2%."
+          }
         },
         {
           "slot": "feet",
@@ -8060,7 +8060,6 @@
         {
           "slot": "ranged",
           "verified": false,
-          "empty_reason": "no_dps_value",
           "alternatives": [
             {
               "item_id": 272432,
@@ -8069,11 +8068,12 @@
               "source": "World drop",
               "dps_delta": 0
             }
-          ]
+          ],
+          "empty_reason": "no_dps_value"
         }
       ],
       "set_dps": 229.93647067535204,
-      "no_source_count": 1775,
+      "no_source_count": 1782,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8104,8 +8104,8 @@
         "finger2: Masons Fraternity Ring",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 1.702835536,
-      "verify_run_seconds": 5.819483775,
+      "weights_run_seconds": 2.518545141,
+      "verify_run_seconds": 7.37389584,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -8123,12 +8123,12 @@
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
@@ -8148,12 +8148,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 789,
-          "sourced": 518,
+          "eligible": 791,
+          "sourced": 519,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 157,
+          "eligible": 158,
           "sourced": 42,
           "rare_spawn_skipped": 5
         },
@@ -8900,7 +8900,6 @@
         {
           "slot": "ranged",
           "verified": false,
-          "empty_reason": "no_dps_value",
           "alternatives": [
             {
               "item_id": 228176,
@@ -8910,11 +8909,12 @@
               "dps_delta": -6.651795808,
               "verified": true
             }
-          ]
+          ],
+          "empty_reason": "no_dps_value"
         }
       ],
       "set_dps": 622.8915856856052,
-      "no_source_count": 1819,
+      "no_source_count": 1826,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -8946,8 +8946,8 @@
         "finger2: Ring of the Underwood",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 1.686781693,
-      "verify_run_seconds": 4.408152322,
+      "weights_run_seconds": 2.465228875,
+      "verify_run_seconds": 5.931576435,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8965,12 +8965,12 @@
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 318,
+          "eligible": 323,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 318,
+          "eligible": 323,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
@@ -8990,12 +8990,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 784,
-          "sourced": 504,
+          "eligible": 786,
+          "sourced": 505,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 151,
+          "eligible": 152,
           "sourced": 41,
           "rare_spawn_skipped": 5
         },
@@ -9766,7 +9766,6 @@
         {
           "slot": "ranged",
           "verified": false,
-          "empty_reason": "no_dps_value",
           "alternatives": [
             {
               "item_id": 272432,
@@ -9775,11 +9774,12 @@
               "source": "World drop",
               "dps_delta": 0
             }
-          ]
+          ],
+          "empty_reason": "no_dps_value"
         }
       ],
       "set_dps": 616.9625007369679,
-      "no_source_count": 1775,
+      "no_source_count": 1782,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -9812,8 +9812,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Forest Defender's Axe"
       ],
-      "weights_run_seconds": 1.686781693,
-      "verify_run_seconds": 4.343555235,
+      "weights_run_seconds": 2.465228875,
+      "verify_run_seconds": 5.811143676,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9831,12 +9831,12 @@
           "rare_spawn_skipped": 10
         },
         "finger1": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
@@ -9856,12 +9856,12 @@
           "rare_spawn_skipped": 9
         },
         "main_hand": {
-          "eligible": 789,
-          "sourced": 518,
+          "eligible": 791,
+          "sourced": 519,
           "rare_spawn_skipped": 45
         },
         "neck": {
-          "eligible": 157,
+          "eligible": 158,
           "sourced": 42,
           "rare_spawn_skipped": 5
         },

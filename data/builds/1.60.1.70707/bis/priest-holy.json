@@ -1,8 +1,8 @@
 {
   "spec": "priest-holy",
   "build": "1.60.1.70707",
-  "engine_version": "c99fb94b4",
-  "generated_at": "2026-10-31T20:58:20Z",
+  "engine_version": "84994235d",
+  "generated_at": "2026-11-01T00:45:22Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -698,7 +698,7 @@
         }
       ],
       "set_dps": 40.054798524027014,
-      "no_source_count": 157,
+      "no_source_count": 163,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "3738 Brewing Rod",
@@ -732,8 +732,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 6.455916287,
-      "verify_run_seconds": 16.998510428,
+      "weights_run_seconds": 10.358247979,
+      "verify_run_seconds": 28.267130099,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -751,12 +751,12 @@
           "rare_spawn_skipped": 2
         },
         "finger1": {
-          "eligible": 32,
+          "eligible": 37,
           "sourced": 17,
           "rare_spawn_skipped": 3
         },
         "finger2": {
-          "eligible": 32,
+          "eligible": 37,
           "sourced": 17,
           "rare_spawn_skipped": 3
         },
@@ -780,7 +780,7 @@
           "rare_spawn_skipped": 17
         },
         "neck": {
-          "eligible": 15,
+          "eligible": 16,
           "sourced": 3
         },
         "off_hand": {
@@ -1524,7 +1524,7 @@
         }
       ],
       "set_dps": 38.18155990326498,
-      "no_source_count": 150,
+      "no_source_count": 156,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1558,8 +1558,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 6.455916287,
-      "verify_run_seconds": 17.1293973,
+      "weights_run_seconds": 10.358247979,
+      "verify_run_seconds": 28.73063011,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -1577,12 +1577,12 @@
           "rare_spawn_skipped": 2
         },
         "finger1": {
-          "eligible": 33,
+          "eligible": 38,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
         "finger2": {
-          "eligible": 33,
+          "eligible": 38,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
@@ -1606,7 +1606,7 @@
           "rare_spawn_skipped": 17
         },
         "neck": {
-          "eligible": 15,
+          "eligible": 16,
           "sourced": 3
         },
         "off_hand": {
@@ -2388,7 +2388,7 @@
         }
       ],
       "set_dps": 63.82316542736004,
-      "no_source_count": 288,
+      "no_source_count": 294,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2420,8 +2420,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 6.865254536,
-      "verify_run_seconds": 20.60590435,
+      "weights_run_seconds": 10.953261616,
+      "verify_run_seconds": 33.673777728,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -2439,12 +2439,12 @@
           "rare_spawn_skipped": 2
         },
         "finger1": {
-          "eligible": 86,
+          "eligible": 91,
           "sourced": 45,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 86,
+          "eligible": 91,
           "sourced": 45,
           "rare_spawn_skipped": 5
         },
@@ -2469,7 +2469,7 @@
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 39,
+          "eligible": 40,
           "sourced": 14,
           "rare_spawn_skipped": 3
         },
@@ -3251,7 +3251,7 @@
         }
       ],
       "set_dps": 60.989725557385945,
-      "no_source_count": 280,
+      "no_source_count": 286,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3283,8 +3283,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 6.865254536,
-      "verify_run_seconds": 20.989147344,
+      "weights_run_seconds": 10.953261616,
+      "verify_run_seconds": 34.004188419,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3302,12 +3302,12 @@
           "rare_spawn_skipped": 2
         },
         "finger1": {
-          "eligible": 87,
+          "eligible": 92,
           "sourced": 49,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 87,
+          "eligible": 92,
           "sourced": 49,
           "rare_spawn_skipped": 5
         },
@@ -3332,7 +3332,7 @@
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 39,
+          "eligible": 40,
           "sourced": 13,
           "rare_spawn_skipped": 3
         },
@@ -4154,7 +4154,7 @@
         }
       ],
       "set_dps": 109.08900223823747,
-      "no_source_count": 390,
+      "no_source_count": 396,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4189,8 +4189,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 6.991113421,
-      "verify_run_seconds": 20.326063076,
+      "weights_run_seconds": 11.386665482,
+      "verify_run_seconds": 33.761060534,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4208,12 +4208,12 @@
           "rare_spawn_skipped": 2
         },
         "finger1": {
-          "eligible": 123,
+          "eligible": 128,
           "sourced": 65,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 123,
+          "eligible": 128,
           "sourced": 65,
           "rare_spawn_skipped": 5
         },
@@ -4238,7 +4238,7 @@
           "rare_spawn_skipped": 28
         },
         "neck": {
-          "eligible": 56,
+          "eligible": 57,
           "sourced": 22,
           "rare_spawn_skipped": 4
         },
@@ -5062,7 +5062,7 @@
         }
       ],
       "set_dps": 103.47126769921161,
-      "no_source_count": 382,
+      "no_source_count": 388,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -5097,8 +5097,8 @@
         "off_hand: Orb of Souls",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 6.991113421,
-      "verify_run_seconds": 20.887302887,
+      "weights_run_seconds": 11.386665482,
+      "verify_run_seconds": 34.44904625,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5116,12 +5116,12 @@
           "rare_spawn_skipped": 2
         },
         "finger1": {
-          "eligible": 122,
+          "eligible": 127,
           "sourced": 67,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 122,
+          "eligible": 127,
           "sourced": 67,
           "rare_spawn_skipped": 5
         },
@@ -5146,7 +5146,7 @@
           "rare_spawn_skipped": 28
         },
         "neck": {
-          "eligible": 56,
+          "eligible": 57,
           "sourced": 21,
           "rare_spawn_skipped": 4
         },
@@ -6003,7 +6003,7 @@
         }
       ],
       "set_dps": 213.49191465874924,
-      "no_source_count": 509,
+      "no_source_count": 515,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -6037,8 +6037,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 6.718229937,
-      "verify_run_seconds": 21.648198054,
+      "weights_run_seconds": 10.989786187,
+      "verify_run_seconds": 35.168730274,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6056,12 +6056,12 @@
           "rare_spawn_skipped": 2
         },
         "finger1": {
-          "eligible": 148,
+          "eligible": 153,
           "sourced": 77,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 148,
+          "eligible": 153,
           "sourced": 77,
           "rare_spawn_skipped": 5
         },
@@ -6086,7 +6086,7 @@
           "rare_spawn_skipped": 30
         },
         "neck": {
-          "eligible": 71,
+          "eligible": 72,
           "sourced": 29,
           "rare_spawn_skipped": 5
         },
@@ -6927,7 +6927,7 @@
         }
       ],
       "set_dps": 202.75503641991617,
-      "no_source_count": 501,
+      "no_source_count": 507,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6960,8 +6960,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 6.718229937,
-      "verify_run_seconds": 21.863311392,
+      "weights_run_seconds": 10.989786187,
+      "verify_run_seconds": 35.811669604,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6979,12 +6979,12 @@
           "rare_spawn_skipped": 2
         },
         "finger1": {
-          "eligible": 149,
+          "eligible": 154,
           "sourced": 81,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 149,
+          "eligible": 154,
           "sourced": 81,
           "rare_spawn_skipped": 5
         },
@@ -7009,7 +7009,7 @@
           "rare_spawn_skipped": 30
         },
         "neck": {
-          "eligible": 73,
+          "eligible": 74,
           "sourced": 30,
           "rare_spawn_skipped": 5
         },
@@ -7370,11 +7370,6 @@
           "chance": 0.0371,
           "sim_dps": 350.025065367977,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 17606,
@@ -7410,7 +7405,12 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "hands",
@@ -7420,11 +7420,6 @@
           "source_kind": "dungeon",
           "sim_dps": 350.025065367977,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 227128,
@@ -7460,7 +7455,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "waist",
@@ -7742,7 +7742,6 @@
           "sim_dps": 350.025065367977,
           "verified": true,
           "effect_unmodelled": true,
-          "faction_note": "Ankh of Life (from horde) and alliance's own pick Uther's Strength measure statistically indistinguishable on gnome (4.21 ± 0.44 vs 4.80 ± 0.45 DPS gain) -- each faction's own tournament winner kept",
           "alternatives": [
             {
               "item_id": 1713,
@@ -7778,7 +7777,8 @@
               "source_kind": "quest",
               "source": "Look at the Size of It!"
             }
-          ]
+          ],
+          "faction_note": "Ankh of Life (from horde) and alliance's own pick Uther's Strength measure statistically indistinguishable on gnome (4.21 ± 0.44 vs 4.80 ± 0.45 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -7877,7 +7877,7 @@
         }
       ],
       "set_dps": 349.96273215724034,
-      "no_source_count": 1194,
+      "no_source_count": 1200,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7911,8 +7911,8 @@
         "trinket1: Shard of the Splithooves",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.920524169,
-      "verify_run_seconds": 38.59145258,
+      "weights_run_seconds": 9.44196,
+      "verify_run_seconds": 62.954181257,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -7930,12 +7930,12 @@
           "rare_spawn_skipped": 3
         },
         "finger1": {
-          "eligible": 319,
+          "eligible": 324,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 319,
+          "eligible": 324,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
@@ -7960,7 +7960,7 @@
           "rare_spawn_skipped": 30
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 156,
           "sourced": 41,
           "rare_spawn_skipped": 5
         },
@@ -8321,11 +8321,6 @@
           "chance": 0.0371,
           "sim_dps": 339.229276570261,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 17619,
@@ -8361,7 +8356,12 @@
               "source_kind": "crafted",
               "source": "Tailoring"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "hands",
@@ -8371,11 +8371,6 @@
           "source_kind": "dungeon",
           "sim_dps": 339.229276570261,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 227126,
@@ -8411,7 +8406,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "waist",
@@ -8694,7 +8694,6 @@
           "sim_dps": 339.229276570261,
           "verified": true,
           "effect_unmodelled": true,
-          "faction_note": "Uther's Strength (from alliance) and horde's own pick Ankh of Life measure statistically indistinguishable on troll (4.76 ± 0.46 vs 5.14 ± 0.45 DPS gain) -- each faction's own tournament winner kept",
           "alternatives": [
             {
               "item_id": 11302,
@@ -8730,7 +8729,8 @@
               "source_kind": "quest",
               "source": "Look at the Size of It!"
             }
-          ]
+          ],
+          "faction_note": "Uther's Strength (from alliance) and horde's own pick Ankh of Life measure statistically indistinguishable on troll (4.76 ± 0.46 vs 5.14 ± 0.45 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -8829,7 +8829,7 @@
         }
       ],
       "set_dps": 339.1616517283254,
-      "no_source_count": 1187,
+      "no_source_count": 1193,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8863,8 +8863,8 @@
         "trinket2: Ankh of Life",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.920524169,
-      "verify_run_seconds": 37.883195754,
+      "weights_run_seconds": 9.44196,
+      "verify_run_seconds": 62.601842921,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -8882,12 +8882,12 @@
           "rare_spawn_skipped": 3
         },
         "finger1": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
@@ -8912,7 +8912,7 @@
           "rare_spawn_skipped": 30
         },
         "neck": {
-          "eligible": 157,
+          "eligible": 158,
           "sourced": 42,
           "rare_spawn_skipped": 5
         },
@@ -9046,11 +9046,6 @@
           "source_kind": "dungeon",
           "sim_dps": 673.5904557348573,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 227121,
@@ -9086,7 +9081,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "neck",
@@ -9141,11 +9141,6 @@
           "source_kind": "dungeon",
           "sim_dps": 673.5904557348573,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 227119,
@@ -9181,7 +9176,12 @@
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "back",
@@ -9283,11 +9283,6 @@
           "chance": 0.0371,
           "sim_dps": 673.5904557348573,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 254061,
@@ -9323,7 +9318,12 @@
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "hands",
@@ -9333,11 +9333,6 @@
           "source_kind": "dungeon",
           "sim_dps": 673.5904557348573,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 227128,
@@ -9373,7 +9368,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "waist",
@@ -9790,7 +9790,7 @@
         }
       ],
       "set_dps": 673.6314900654381,
-      "no_source_count": 1194,
+      "no_source_count": 1200,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9824,8 +9824,8 @@
         "trinket1: Shard of the Splithooves",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 3.834779467,
-      "verify_run_seconds": 18.423048776,
+      "weights_run_seconds": 6.226719353,
+      "verify_run_seconds": 29.219335628,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9843,12 +9843,12 @@
           "rare_spawn_skipped": 3
         },
         "finger1": {
-          "eligible": 319,
+          "eligible": 324,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 319,
+          "eligible": 324,
           "sourced": 92,
           "rare_spawn_skipped": 5
         },
@@ -9873,7 +9873,7 @@
           "rare_spawn_skipped": 30
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 156,
           "sourced": 41,
           "rare_spawn_skipped": 5
         },
@@ -10007,11 +10007,6 @@
           "source_kind": "dungeon",
           "sim_dps": 657.3326194986628,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 227118,
@@ -10047,7 +10042,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "neck",
@@ -10101,11 +10101,6 @@
           "source_kind": "dungeon",
           "sim_dps": 657.3326194986628,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 227120,
@@ -10141,7 +10136,12 @@
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "back",
@@ -10243,11 +10243,6 @@
           "chance": 0.0371,
           "sim_dps": 657.3326194986628,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 254061,
@@ -10283,7 +10278,12 @@
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "hands",
@@ -10293,11 +10293,6 @@
           "source_kind": "dungeon",
           "sim_dps": 657.3326194986628,
           "verified": true,
-          "set_bonus": {
-            "set": "Vestments of the Devout",
-            "pieces": 5,
-            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
-          },
           "alternatives": [
             {
               "item_id": 227126,
@@ -10333,7 +10328,12 @@
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde"
             }
-          ]
+          ],
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
         },
         {
           "slot": "waist",
@@ -10750,7 +10750,7 @@
         }
       ],
       "set_dps": 657.2675352471839,
-      "no_source_count": 1187,
+      "no_source_count": 1193,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10784,8 +10784,8 @@
         "trinket1: Shard of the Splithooves",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 3.834779467,
-      "verify_run_seconds": 20.119778519,
+      "weights_run_seconds": 6.226719353,
+      "verify_run_seconds": 31.547855264,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10803,12 +10803,12 @@
           "rare_spawn_skipped": 3
         },
         "finger1": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
         "finger2": {
-          "eligible": 320,
+          "eligible": 325,
           "sourced": 96,
           "rare_spawn_skipped": 5
         },
@@ -10833,7 +10833,7 @@
           "rare_spawn_skipped": 30
         },
         "neck": {
-          "eligible": 157,
+          "eligible": 158,
           "sourced": 42,
           "rare_spawn_skipped": 5
         },
