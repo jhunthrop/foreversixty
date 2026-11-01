@@ -79,6 +79,7 @@ ITEM_TEMPLATE_COLUMNS = [
     "stat_value10",
     "dmg_min1",
     "dmg_max1",
+    "dmg_type1",
     "armor",
     "fire_res",
     "nature_res",
@@ -703,6 +704,28 @@ def test_item_from_row_reads_required_honor_rank():
     records, _ = extract_records(_sql([row]))
     assert [r.id for r in records] == [16465]
     assert records[0].required_honor_rank == 17
+
+
+def test_extract_records_reads_a_wands_dmg_type1():
+    """Sim audit round 6, warlock T4: a wand's school is `dmg_type1` (Skul's
+    Ghastly Touch 13396: 5, Shadow; Wowhead Classic "Shadow Damage")."""
+    row = _row_sql(
+        entry=13396,
+        name="Skuls Ghastly Touch",
+        **{"class": 2, "subclass": 19},
+        Quality=3,
+        InventoryType=26,
+        AllowableClass=-1,
+        AllowableRace=-1,
+        ItemLevel=59,
+        RequiredLevel=54,
+        dmg_min1=60,
+        dmg_max1=112,
+        dmg_type1=5,
+        delay=1500,
+    )
+    records, _ = extract_records(_sql([row]))
+    assert records[0].damage_type == 5
 
 
 def test_item_defaults_required_honor_rank_to_zero():

@@ -225,3 +225,28 @@ def test_a_client_row_wins_over_a_classicdb_row_for_the_same_id(tmp_path: Path):
     simitems = json.loads((build_dir / "simitems.json").read_text(encoding="utf-8"))
     assert simitems["sim_source"][str(CLIENT_ITEM_ID)] == "client"
     assert simitems["sim_source"]["9990001"] == "classic-db"
+
+
+def test_a_classicdb_wand_carries_its_dmg_type1_school():
+    """Sim audit round 6, warlock T4: classic-db's `dmg_type1` is the same
+    school index as the client's ItemSparse.DamageType (Skul's Ghastly Touch
+    13396: 5, Shadow)."""
+    wand = _trinket(
+        id=13396,
+        class_id=2,
+        subclass_id=19,
+        inventory_type=26,
+        damage_min=60,
+        damage_max=112,
+        delay=1500,
+        damage_type=5,
+    )
+    built = build_classicdb_sim_items([wand], {}, RATING_FACTORS)
+    assert built[0].damage_school == pb.SpellSchool.Value("SpellSchoolShadow")
+
+
+def test_an_extract_written_before_dmg_type1_was_read_is_physical():
+    """`fetch-classic-sources` re-reads the dump on every data.yml run; an
+    extract older than the column loads as school 0, which the engine
+    treats as physical, as before."""
+    assert _trinket().damage_type == 0

@@ -326,3 +326,52 @@ def test_the_faction_vocabulary_is_the_same_on_both_ends():
     restriction to one without the other should get a red test here, not a
     SystemExit the first time someone builds a simdb with that item."""
     assert set(FACTION_RESTRICTIONS.values()) | {""} == set(FACTION_RESTRICTION_BY_SLUG)
+
+
+def _as_wand(item_id: int, damage_type: str):
+    """`item_id`'s fixture row turned into a wand (Item subclass 19,
+    InventoryType 26) whose ItemSparse states `damage_type`."""
+    rows = []
+    for sparse, item_row in pairs():
+        if int(sparse["ID"]) == item_id:
+            sparse = {**sparse, "InventoryType": "26", "DamageType": damage_type}
+            item_row = {**item_row, "SubclassID": "19"}
+        rows.append((sparse, item_row))
+    items = build_sim_items(rows, {}, {}, curves(), weapon_curves(), RATING_FACTORS, {})
+    return next(item for item in items if item.id == item_id)
+
+
+@pytest.mark.parametrize(
+    ("damage_type", "school"),
+    [
+        ("1", "SpellSchoolHoly"),
+        ("2", "SpellSchoolFire"),
+        ("3", "SpellSchoolNature"),
+        ("4", "SpellSchoolFrost"),
+        ("5", "SpellSchoolShadow"),
+        ("6", "SpellSchoolArcane"),
+        ("0", "SpellSchoolPhysical"),
+    ],
+)
+def test_a_wand_carries_the_school_its_item_sparse_damage_type_states(damage_type, school):
+    """Sim audit round 6, warlock T4: Shoot casts in the wand's own school
+    (engine `SimItem.damage_school`, field 24). ItemSparse.DamageType is the
+    client's school index (1 Holy, 2 Fire, 3 Nature, 4 Frost, 5 Shadow,
+    6 Arcane; Torch of Light 279246 states 6 and its tooltip "Arcane
+    Damage"), which is not the engine's SpellSchool order."""
+    wand = _as_wand(12798, damage_type)
+    assert wand.ranged_weapon_type == pb.RangedWeaponType.Value("RangedWeaponTypeWand")
+    assert wand.damage_school == pb.SpellSchool.Value(school)
+
+
+def test_only_a_wand_carries_a_damage_school():
+    """The engine reads the field for every weapon, and no melee row was
+    checked, so a melee weapon's DamageType is never written."""
+    rows = []
+    for sparse, item_row in pairs():
+        if int(sparse["ID"]) == 12798:
+            sparse = {**sparse, "DamageType": "2"}
+        rows.append((sparse, item_row))
+    items = build_sim_items(rows, {}, {}, curves(), weapon_curves(), RATING_FACTORS, {})
+    axe = next(item for item in items if item.id == 12798)
+    assert axe.damage_school == pb.SpellSchool.Value("SpellSchoolPhysical")

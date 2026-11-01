@@ -190,6 +190,37 @@ def _class_allowlist(allowable: int) -> list[int]:
     )
 
 
+#: ItemSparse.DamageType (and classic-db's `dmg_type1`, the same enum) ->
+#: the engine's SpellSchool. The client counts Holy, Fire, Nature, Frost,
+#: Shadow, Arcane from 1; the engine's enum is Arcane, Fire, Frost, Holy,
+#: Nature, Shadow from 1. 0 is physical in both and is never written.
+SPELL_SCHOOL_BY_DAMAGE_TYPE: dict[int, str] = {
+    1: "SpellSchoolHoly",
+    2: "SpellSchoolFire",
+    3: "SpellSchoolNature",
+    4: "SpellSchoolFrost",
+    5: "SpellSchoolShadow",
+    6: "SpellSchoolArcane",
+}
+
+WEAPON_SUBCLASS_WAND = 19
+
+
+def _apply_wand_school(item: pb.SimItem, class_id: int, subclass: int, damage_type: int) -> None:
+    """A wand's Shoot deals its stated school (engine `SimItem.damage_school`,
+    sim audit round 6 warlock T4: every playable client wand is magical, and
+    a Physical Shoot lost about 40% of each hit to armor). Wands only: the
+    engine reads the field for every weapon, and no melee row was checked.
+    An unknown DamageType raises rather than guessing a school."""
+    if class_id != ITEM_CLASS_WEAPON or subclass != WEAPON_SUBCLASS_WAND or damage_type == 0:
+        return
+    if damage_type not in SPELL_SCHOOL_BY_DAMAGE_TYPE:
+        raise SystemExit(
+            f"item {item.id} states DamageType {damage_type}; pipeline/simdb/items.py knows 0-6"
+        )
+    item.damage_school = pb.SpellSchool.Value(SPELL_SCHOOL_BY_DAMAGE_TYPE[damage_type])
+
+
 def _apply_class_subclass(item: pb.SimItem, class_id: int, subclass: int, inventory: int) -> None:
     """Armour type, weapon type, hand type and ranged weapon type from
     Item.ClassID/SubclassID and InventoryType.
@@ -278,6 +309,8 @@ def build_sim_items(
             required_level=int_column(sparse, "RequiredLevel"),
         )
         _apply_class_subclass(item, class_id, subclass, inventory)
+        damage_type = int_column(sparse, "DamageType") if "DamageType" in sparse else 0
+        _apply_wand_school(item, class_id, subclass, damage_type)
         if class_id == ITEM_CLASS_WEAPON:
             damage = weapon_damage(sparse, subclass, weapon_curves)
             if damage is not None:
@@ -469,6 +502,7 @@ def build_classicdb_sim_items(
             required_level=row.required_level,
         )
         _apply_class_subclass(item, row.class_id, row.subclass_id, inventory)
+        _apply_wand_school(item, row.class_id, row.subclass_id, row.damage_type)
         if row.class_id == ITEM_CLASS_WEAPON and row.delay > 0:
             item.weapon_damage_min = float(row.damage_min)
             item.weapon_damage_max = float(row.damage_max)

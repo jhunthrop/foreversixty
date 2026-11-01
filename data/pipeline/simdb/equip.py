@@ -415,11 +415,32 @@ def area_conditional_spells(spell_rows: Iterable[dict[str, str]]) -> set[int]:
 
 
 def _unify_school_keys(spell_stats: dict[str, float]) -> dict[str, float]:
-    """One spell's stats with each unified pair collapsed to its larger amount."""
+    """One spell's stats with each unified pair collapsed to its larger amount,
+    and its generic attack power stated once (`_generic_attack_power`)."""
     out = dict(spell_stats)
     for school_key, unified_key in UNIFIED_SCHOOL_KEYS.items():
         if school_key in out and unified_key in out:
             out[unified_key] = max(out[unified_key], out.pop(school_key))
+    return _generic_attack_power(out)
+
+
+def _generic_attack_power(spell_stats: dict[str, float]) -> dict[str, float]:
+    """The client states "+N Attack Power" as one spell with aura 99 N and
+    aura 124 N (14027 "Attack Power 24"; Forever's 1318000 on Rune of the
+    Guard Captain). `statmap.stat_array` already mirrors attack_power into
+    ranged attack power, so the 124 amount the 99 amount covers is that
+    mirror, and only an excess is a ranged-only bonus. Sim audit round 6:
+    without this the rune carried 84 ranged attack power for its 42."""
+    melee = spell_stats.get("attack_power", 0.0)
+    ranged = spell_stats.get("ranged_attack_power", 0.0)
+    if melee <= 0 or ranged <= 0:
+        return spell_stats
+    out = dict(spell_stats)
+    excess = ranged - min(melee, ranged)
+    if excess:
+        out["ranged_attack_power"] = excess
+    else:
+        del out["ranged_attack_power"]
     return out
 
 

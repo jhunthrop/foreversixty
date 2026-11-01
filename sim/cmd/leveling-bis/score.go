@@ -74,74 +74,36 @@ func statWeight(stat string, weights map[string]float64) float64 {
 	return total
 }
 
-// score is the weighted sum of an item's resolved stats against a
-// spec's stat weights, plus its weapon DPS (if any, converted through
-// attackPowerPerDPS into the attack-power stat the slot it is
-// equipped in cares about).
+// wandScorePerDPS is the score a caster's ranged slot earns per point of a
+// wand's tooltip DPS. A wand is only worth the damage the rotation actually
+// shoots with it, so the credit is measured, not assumed: shootDPS is the
+// Shoot damage per second a sim of the band's own set dealt (shootDPS,
+// wand_credit.go), wandDPS the tooltip DPS of the wand that set wore. Their
+// ratio is the band's Shoot time share times everything that scales a shot
+// (hit, crit, partial resists, Wand Specialization), so another wand's DPS
+// times it is the damage that wand would add. Dividing by
+// referenceDPSPerPoint turns that DPS into reference-stat points, the unit
+// every other stat scores in. A warlock raid set that never shoots measures
+// 0 and its wand scores on its stats alone (round 6, Torch of Light).
 //
-// weights is stat id -> normalised weight (sim/adapter.Weights'
-// output: the reference stat weighs exactly 1). slot is the planner
-// slot this score is being computed for - the same item can score
-// differently in main_hand versus off_hand only in that its DPS
-// converts through a different weaponAPStat entry, which for this
-// engine build never actually differs (both are "attack_power"); the
-// parameter exists so a future ranged-vs-melee split in the engine's
-// own AttackPowerPerDPS does not require changing this function's
-// signature.
-//
-// referenceDPSPerPoint is runWeights' own second return (simrun.go,
-// bandReport.ReferenceDPSPerPoint's own source) - this lane's brief,
-// item 1: "does a wand's/weapon's damage count for casters the way
-// weaponScore counts it for melee?" It did not. weaponAPStat's
-// conversion above only ever lands on "attack_power" or
-// "ranged_attack_power" - the two weight_stats entries every hunter/
-// melee/hybrid spec's own data/curated/specs.json row carries, and
-// NO caster spec (mage/priest/warlock/shaman-elemental/druid-balance)
-// carries EITHER (confirmed against specs.json directly: their own
-// weight_stats lists spell_power/intellect/crit/hit/spell_haste/
-// spell_penetration/<school>_power only), so weights[apStat] is
-// always the Go zero value for them and this term was always exactly
-// 0 - not a data gap on any one item, a structural one in score()
-// itself: a caster's weapon slot had NO path for its damage to count
-// at all, confirmed by wowsims-forever's own sim/core/wand.go/
-// sim/mage/shoot.go doc comments ("wand damage in Classic never
-// scales off AP... a mage with a wand equipped dealt zero wand damage
-// until [Shoot was modeled]") - wand/melee weapon damage for a caster
-// is flat, unscaled output, never an attack-power-derived quantity,
-// so no weight_stats entry could ever give it one even if added.
-//
-// The fix, narrowed by the fourth wow-player sweep's own caster-sweep
-// finding (bis-ranker-integrity-4, 2026-09-30): a caster never swings
-// their main_hand/off_hand weapon, so its flat DPS must never convert
-// into score at all there, regardless of referenceDPSPerPoint - the
-// broader "any zero-AP-weight weapon slot" fallback this lane's own
-// prior round shipped let a purely physical stick (Manual Crowd
-// Pummeler: Str/Agi/a melee-haste proc, zero caster stats) outscore a
-// real caster weapon (Staff of Jordan: spell power) at band 30/40 for
-// shaman-elemental and druid-balance, because BOTH specs have zero
-// attack_power weight and the old code could not tell "a caster's
-// unswung melee weapon" from "a caster's wand, actually fired by the
-// rotation" apart. The one real case a caster's weapon DPS is live
-// damage is its ranged slot's wand, autoshot through the Shoot spell
-// (id 5019) - and only for a spec whose OWN rotation casts it
-// (castsShoot, weapon_requirements.go's aplRotationCastsShoot; mage/
-// priest-shadow/warlock all do, shaman-elemental/druid-balance do
-// not, matching every caster APL this build has curated). Dividing by
-// referenceDPSPerPoint converts that wand DPS into this band's own
-// score unit (reference-stat points) directly, the same unit
-// conversion buildAlternatives (report.go) already applies in the
-// other direction (score * referenceDPSPerPoint -> DPS). A
-// main_hand/off_hand weapon with no AP weight at all (every caster,
-// and any melee/hybrid item whose AP weight the run measured as
-// exactly zero or insignificant - effectiveWeights already zeroed a
-// non-positive one before this function ever sees it) instead
-// contributes nothing from DPS, falling through to whatever its own
-// Stats total, and pick.go's promoteLowValueWeapon takes over from
-// there when that total is exactly 0 (its own doc: "the best by item
-// level among sourced candidates carrying any of the spec's weight
-// stats"). referenceDPSPerPoint <= 0 or castsShoot == false (every
-// test that does not pass both) leaves the ranged branch a no-op too,
-// matching the pre-fallback behaviour exactly.
+// A caster never swings a main or off hand weapon, so score() applies this
+// to the ranged slot only, and only for a spec whose rotation casts Shoot
+// (main.go passes 0 otherwise).
+func wandScorePerDPS(shootDPS, wandDPS, referenceDPSPerPoint float64) float64 {
+	if shootDPS <= 0 || wandDPS <= 0 || referenceDPSPerPoint <= 0 {
+		return 0
+	}
+	return shootDPS / wandDPS / referenceDPSPerPoint
+}
+
+// fullWandScorePerDPS is the credit of a wand fired the whole fight at its
+// tooltip DPS. It is the first pass only: it makes the band's first set wear
+// the hardest-hitting wand, so the sim that measures wandScorePerDPS has a
+// wand to shoot.
+func fullWandScorePerDPS(referenceDPSPerPoint float64) float64 {
+	return wandScorePerDPS(1, 1, referenceDPSPerPoint)
+}
+
 // deadStatCount counts how many of c's own positive-amount stats this
 // spec's weights do not value at all (statWeight <= 0) -
 // bis-ranker-integrity-12 lane, item 5: an exact score() tie between
@@ -161,7 +123,11 @@ func deadStatCount(c candidate, weights map[string]float64) int {
 	return count
 }
 
-func score(c candidate, slot string, weights map[string]float64, referenceDPSPerPoint float64, castsShoot bool) float64 {
+// score is the weighted sum of an item's resolved stats against a spec's
+// stat weights, plus its weapon DPS: through attackPowerPerDPS for a slot
+// whose attack-power weight is positive, or, for a caster's ranged wand,
+// through wandScorePerDPS (wandCredit; 0 for every spec that never shoots).
+func score(c candidate, slot string, weights map[string]float64, wandCredit float64) float64 {
 	// Summed in sorted stat order (task L1.7 fix round 3): a Go map ranges
 	// in a random order, and a float sum taken in another order can differ
 	// by an ulp, so two items with the same stats did not always tie.
@@ -181,8 +147,8 @@ func score(c candidate, slot string, weights map[string]float64, referenceDPSPer
 		if apStat, ok := weaponAPStat[slot]; ok {
 			if apWeight := weights[apStat]; apWeight > 0 {
 				total += c.DPS * attackPowerPerDPS * apWeight
-			} else if slot == "ranged" && castsShoot && referenceDPSPerPoint > 0 {
-				total += c.DPS / referenceDPSPerPoint
+			} else if slot == "ranged" && wandCredit > 0 {
+				total += c.DPS * wandCredit
 			}
 		}
 	}

@@ -970,14 +970,14 @@ func TestBuildBandPoolExcludesAClassRestrictedQuestRewardForTheWrongClass(t *tes
 		20036: {{Kind: "quest", Label: "Destroy Morphaz", Classes: []string{"mage"}}},
 	}
 	weights := map[string]float64{}
-	hunterPool := buildBandPool(items, idx, "hunter", 50, "alliance", weights, 0, false)
+	hunterPool := buildBandPool(items, idx, "hunter", 50, "alliance", weights, 0)
 	if len(hunterPool.Scored) != 0 {
 		t.Fatalf("hunter pool.Scored = %+v, want empty: Fire Ruby's own quest is mage-only", hunterPool.Scored)
 	}
 	if len(hunterPool.NoSource) != 1 || hunterPool.NoSource[0].ID != 20036 {
 		t.Fatalf("hunter pool.NoSource = %+v, want Fire Ruby (class-excluded, same bucket as no source at all)", hunterPool.NoSource)
 	}
-	magePool := buildBandPool(items, idx, "mage", 50, "alliance", weights, 0, false)
+	magePool := buildBandPool(items, idx, "mage", 50, "alliance", weights, 0)
 	if len(magePool.Scored) != 1 || magePool.Scored[0].ID != 20036 {
 		t.Fatalf("mage pool.Scored = %+v, want Fire Ruby (the quest's own class)", magePool.Scored)
 	}
@@ -1389,9 +1389,9 @@ func TestScoreAgreesForARatingItemOnceConvertedAtFactor(t *testing.T) {
 	converted := convertCandidateRatings(ratingItem, ratingFactors{"crit": 14})
 	weights := map[string]float64{"crit": 1.0}
 
-	got := score(converted[0], "neck", weights, 0, false)
+	got := score(converted[0], "neck", weights, 0)
 	statUnitItem := candidate{Stats: map[string]float64{"crit": 1}}
-	want := score(statUnitItem, "neck", weights, 0, false)
+	want := score(statUnitItem, "neck", weights, 0)
 
 	if got != want || got != 1.0 {
 		t.Fatalf("score(converted +14 crit rating) = %v, want %v (== 1.0, matching +1 crit stat unit at weight 1.0)", got, want)

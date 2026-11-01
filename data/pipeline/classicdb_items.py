@@ -316,6 +316,10 @@ class ClassicDbItem(BaseModel):
     #: effect-text fallback and the name-match check `effect_text`'s own doc
     #: describes.
     spells: list[ItemSpellSlot]
+    #: `item_template.dmg_type1`, the same school enum as the client's
+    #: ItemSparse.DamageType (`pipeline.simdb.items.SPELL_SCHOOL_BY_DAMAGE_TYPE`).
+    #: 0 (physical) in an extract written before this column was read.
+    damage_type: int = 0
 
 
 def _stats(row: dict[str, str]) -> dict[int, int]:
@@ -374,6 +378,7 @@ def _item_from_row(row: dict[str, str], spell_names: dict[int, str]) -> ClassicD
         damage_min=round(float(row["dmg_min1"])),
         damage_max=round(float(row["dmg_max1"])),
         delay=int(row["delay"]),
+        damage_type=int(row.get("dmg_type1", "0") or 0),
         set_id=int(row["itemset"]) or None,
         unique=int(row["maxcount"]) == 1,
         bonding=int(row["bonding"]),

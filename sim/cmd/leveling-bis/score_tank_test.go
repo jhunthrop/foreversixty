@@ -153,10 +153,10 @@ func TestADamageSpecsWeightsCharacterIsUntouched(t *testing.T) {
 
 func TestAnItemsArmorScoresAtTheArmorWeightAndNowhereElse(t *testing.T) {
 	c := candidate{Armor: 100, Stats: map[string]float64{"stamina": 10}}
-	if got := score(c, "head", map[string]float64{"stamina": 1, "armor": 0.1}, 0, false); math.Abs(got-20) > 1e-9 {
+	if got := score(c, "head", map[string]float64{"stamina": 1, "armor": 0.1}, 0); math.Abs(got-20) > 1e-9 {
 		t.Errorf("score = %v, want 10 stamina + 100 armor at 0.1 = 20", got)
 	}
-	if got := score(c, "head", map[string]float64{"stamina": 1}, 0, false); got != 10 {
+	if got := score(c, "head", map[string]float64{"stamina": 1}, 0); got != 10 {
 		t.Errorf("score = %v, want armor to add nothing without a weight", got)
 	}
 }

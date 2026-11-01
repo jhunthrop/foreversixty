@@ -1032,3 +1032,64 @@ func TestRankTrinketSlotAdaptiveGainFailureKeepsOriginalMeasurementAndNotes(t *t
 		t.Fatalf("item gain = (measured=%v dps=%v stdErr=%v), want the ordering pass's own (true, 10, 3.5) kept on a failed re-run", item.GainMeasured, item.MeasuredGainDPS, item.MeasuredGainStdErr)
 	}
 }
+
+// Round 6 (ranker re-rank): warlock-demonology horde band 60 raid published
+// trinket2 empty. The 100-iteration ordering's winner measured at or below
+// the empty slot (0.00 +/- 5.71), so its gain was never refined and the slot
+// went empty, while Rune of the Guard Captain sims +0.7% over it at 10,000
+// iterations. When the winner's gain is not significant, the top of the
+// shortlist is re-measured at the ceiling and the best significant gain
+// takes the slot.
+func TestRankByMeasuredGainFallsBackToARealGainWhenTheNoisyWinnerHasNone(t *testing.T) {
+	noisy, gainer := trinket(1, "Noisy", 60), trinket(2, "Real", 60)
+	picks := map[string]slotPick{"head": {Item: p(9, false)}}
+	byGear := func(id int) string {
+		return gearKey([]api.GearSlot{{Slot: "head", ItemID: 9}, {Slot: "trinket2", ItemID: id}})
+	}
+	fake := &fakeEngine{
+		DPSFunc: func(req api.SimRequest) (float64, error) {
+			precise := req.Iterations >= trinketGainAdaptiveIterationCeiling
+			switch gearKey(req.Character.Gear) {
+			case byGear(1):
+				return 100.0, nil
+			case byGear(2):
+				if precise {
+					return 101.0, nil
+				}
+				return 99.0, nil
+			default:
+				if precise {
+					return 100.0, nil
+				}
+				return 100.5, nil
+			}
+		},
+		StdErrFunc: func(req api.SimRequest) float64 {
+			if req.Iterations >= trinketGainAdaptiveIterationCeiling {
+				return 0.3
+			}
+			return 3
+		},
+	}
+	out, _ := rankByMeasuredGain(fake, specInfo{}, "troll", "warlock", 60, "", picks, "trinket2", []scored{noisy, gainer})
+	got := out["trinket2"]
+	if got.Item == nil || got.Item.ID != 2 {
+		t.Fatalf("trinket2 = %+v, want Real (+1.0 +/- 0.42 at the ceiling)", got.Item)
+	}
+	if !trinketGainSignificant(got.Item.MeasuredGainDPS, got.Item.MeasuredGainStdErr) {
+		t.Errorf("gain %v +/- %v, want significant", got.Item.MeasuredGainDPS, got.Item.MeasuredGainStdErr)
+	}
+	if got.RunnerUp == nil || got.RunnerUp.ID != 1 {
+		t.Errorf("runner-up = %+v, want the demoted noisy winner", got.RunnerUp)
+	}
+}
+
+func TestRankByMeasuredGainKeepsTheWinnerWhenNothingGainsAtTheCeiling(t *testing.T) {
+	a, b := trinket(1, "A", 60), trinket(2, "B", 60)
+	picks := map[string]slotPick{"head": {Item: p(9, false)}}
+	fake := &fakeEngine{DefaultDPS: 100, DefaultStdErr: 0.3}
+	out, _ := rankByMeasuredGain(fake, specInfo{}, "troll", "warlock", 60, "", picks, "trinket2", []scored{a, b})
+	if got := out["trinket2"].Item; got == nil || got.ID != 1 || trinketGainSignificant(got.MeasuredGainDPS, got.MeasuredGainStdErr) {
+		t.Fatalf("trinket2 = %+v, want A kept with no significant gain (the slot publishes empty)", got)
+	}
+}

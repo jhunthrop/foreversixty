@@ -189,6 +189,10 @@ func (h healEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, f
 	return h.backend.Weights(h.forProfile(req), h.profile)
 }
 
+// RunShootDPS is 0: no healer rotation casts Shoot, and a healer's score is
+// healing, so a wand's damage is worth nothing to it.
+func (healEngine) RunShootDPS(api.SimRequest) (float64, error) { return 0, nil }
+
 // HitProfileFor is empty: a healer has no miss table to cap against.
 func (healEngine) HitProfileFor(api.SimRequest) (core.HitProfile, error) {
 	return core.HitProfile{}, nil
