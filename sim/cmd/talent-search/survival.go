@@ -26,6 +26,11 @@ import (
 // Shadows, Sacrifice, Suffering) are survival-only. Demonic Brand, which
 // names Searing Pain, is not; nor is Molten Skin, which names no spell.
 //
+// A talent whose rows are only proc triggers is survival-only on the same
+// tooltip test when the tooltip also names no gain: Improved Concussive
+// Shot, a stun on Concussive Shot (a snare), which Survival takes only to
+// open the Marksmanship tree's second row.
+//
 // The adoption rule keeps every unmodeled guide talent because the
 // engine may simply be missing its damage. A survival-only talent has
 // no damage to miss, so a candidate may re-spend it.
@@ -148,6 +153,26 @@ func contributesDamage(effects []spellconstEffect) bool {
 	}
 	return false
 }
+
+// onlyProcTriggers reports whether a talent's own row is nothing but proc
+// triggers (Improved Concussive Shot's stun on Concussive Shot). What the
+// proc does is read from the tooltip (gainWords).
+func onlyProcTriggers(effects []spellconstEffect) bool {
+	if len(effects) == 0 {
+		return false
+	}
+	for _, e := range effects {
+		if e.Effect != effectApplyAura || e.Aura != auraProcTrigger {
+			return false
+		}
+	}
+	return true
+}
+
+// gainWords are what a proc's tooltip says when it can raise damage or a
+// resource; a crowd-control proc ("a 20% chance to stun the target for 3
+// sec") says none of them.
+var gainWords = regexp.MustCompile(`(?i)\b(damage|attack|critical|haste|speed|power|mana|energy|rage|focus|health|heal\w*|armor|resist\w*|hit|strength|agility|intellect|spirit|stamina|threat)\b`)
 
 // onlyModifiers reports whether a talent's own row grants nothing but
 // spell modifiers.
@@ -308,16 +333,29 @@ func newSurvivalRule(spells map[string]spellconstSpell, talents map[int]tooltipT
 }
 
 // survivalOnly applies both halves of the rule to one talent. A rank
-// whose row spellconst does not carry fails: nothing vouches for it.
+// whose row spellconst does not carry fails: nothing vouches for it. Every
+// rank is either all spell modifiers or all proc triggers; a proc talent's
+// tooltip must also name no gain (gainWords).
 func (r survivalRule) survivalOnly(t tooltipTalent) bool {
 	if len(t.spellIDs) == 0 {
 		return false
 	}
+	procs := false
 	for _, id := range t.spellIDs {
 		row, ok := r.spells[strconv.Itoa(id)]
-		if !ok || !onlyModifiers(row.Effects) {
+		if !ok {
 			return false
 		}
+		switch {
+		case onlyModifiers(row.Effects):
+		case onlyProcTriggers(row.Effects):
+			procs = true
+		default:
+			return false
+		}
+	}
+	if procs && gainWords.MatchString(t.tooltip) {
+		return false
 	}
 	return r.damage.namesOnlySafeSpells(t.tooltip, t.name)
 }
