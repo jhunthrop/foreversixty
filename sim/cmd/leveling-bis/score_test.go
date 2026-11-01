@@ -8,7 +8,7 @@ func TestScoreStatsOnly(t *testing.T) {
 	// stamina has no weight entry, so weights["stamina"] is the zero
 	// value and contributes nothing - an unweighted stat scores zero
 	// rather than panicking on a missing map key.
-	got := score(c, "chest", weights, 0, false)
+	got := score(c, "chest", weights, 0)
 	want := 10*2.0 + 5*1.5
 	if got != want {
 		t.Errorf("score = %v, want %v", got, want)
@@ -44,7 +44,7 @@ func TestDeadStatCount(t *testing.T) {
 func TestScoreWeaponDPSConvertsThroughAttackPowerPerDPS(t *testing.T) {
 	c := candidate{DPS: 20, Stats: map[string]float64{"agility": 4}}
 	weights := map[string]float64{"ranged_attack_power": 0.5, "agility": 2.0}
-	got := score(c, "ranged", weights, 0, false)
+	got := score(c, "ranged", weights, 0)
 	want := 4*2.0 + 20*attackPowerPerDPS*0.5
 	if got != want {
 		t.Errorf("score = %v, want %v", got, want)
@@ -57,7 +57,7 @@ func TestScoreWeaponDPSIgnoredInANonWeaponSlot(t *testing.T) {
 	// consults weaponAPStat.
 	c := candidate{DPS: 20}
 	weights := map[string]float64{"attack_power": 1.0, "ranged_attack_power": 1.0}
-	got := score(c, "trinket1", weights, 0, false)
+	got := score(c, "trinket1", weights, 0)
 	if got != 0 {
 		t.Errorf("score = %v, want 0 (trinket1 is not in weaponAPStat)", got)
 	}
@@ -67,7 +67,7 @@ func TestScoreMainHandAndOffHandUseMeleeAttackPower(t *testing.T) {
 	c := candidate{DPS: 10}
 	weights := map[string]float64{"attack_power": 1.0}
 	for _, slot := range []string{"main_hand", "off_hand"} {
-		got := score(c, slot, weights, 0, false)
+		got := score(c, slot, weights, 0)
 		want := 10 * attackPowerPerDPS * 1.0
 		if got != want {
 			t.Errorf("score(%q) = %v, want %v", slot, got, want)
@@ -78,7 +78,7 @@ func TestScoreMainHandAndOffHandUseMeleeAttackPower(t *testing.T) {
 func TestScoreZeroDPSAddsNothing(t *testing.T) {
 	c := candidate{DPS: 0, Stats: map[string]float64{"agility": 1}}
 	weights := map[string]float64{"agility": 1, "ranged_attack_power": 100}
-	got := score(c, "ranged", weights, 0, false)
+	got := score(c, "ranged", weights, 0)
 	if got != 1 {
 		t.Errorf("score = %v, want 1 (no DPS contribution)", got)
 	}
@@ -92,7 +92,7 @@ func TestScoreGenericAttackPowerCountsTowardRangedAttackPowerWeight(t *testing.T
 	// per data/curated/specs.json) must still value it.
 	c := candidate{Stats: map[string]float64{"attack_power": 18}}
 	weights := map[string]float64{"ranged_attack_power": 3.0}
-	got := score(c, "waist", weights, 0, false)
+	got := score(c, "waist", weights, 0)
 	want := 18 * 3.0
 	if got != want {
 		t.Errorf("score = %v, want %v", got, want)
@@ -102,7 +102,7 @@ func TestScoreGenericAttackPowerCountsTowardRangedAttackPowerWeight(t *testing.T
 func TestScoreGenericAttackPowerStillCountsTowardMeleeAttackPowerWeight(t *testing.T) {
 	c := candidate{Stats: map[string]float64{"attack_power": 18}}
 	weights := map[string]float64{"attack_power": 2.0}
-	got := score(c, "waist", weights, 0, false)
+	got := score(c, "waist", weights, 0)
 	want := 18 * 2.0
 	if got != want {
 		t.Errorf("score = %v, want %v", got, want)
@@ -116,7 +116,7 @@ func TestScoreGenericAttackPowerDoesNotDoubleCountWhenASpecWeighsBoth(t *testing
 	// bonus is one physical quantity, valued once per weight it feeds.
 	c := candidate{Stats: map[string]float64{"attack_power": 10}}
 	weights := map[string]float64{"attack_power": 1.0, "ranged_attack_power": 4.0}
-	got := score(c, "waist", weights, 0, false)
+	got := score(c, "waist", weights, 0)
 	want := 10 * (1.0 + 4.0)
 	if got != want {
 		t.Errorf("score = %v, want %v", got, want)
@@ -135,7 +135,7 @@ func TestScoreCasterWandDPSFallsBackToReferenceDPSPerPointWhenSpecCastsShoot(t *
 	c := candidate{DPS: 10}
 	weights := map[string]float64{"spell_power": 2.0}
 	referenceDPSPerPoint := 0.5
-	got := score(c, "ranged", weights, referenceDPSPerPoint, true)
+	got := score(c, "ranged", weights, fullWandScorePerDPS(referenceDPSPerPoint))
 	want := 10 / referenceDPSPerPoint
 	if got != want {
 		t.Errorf("score = %v, want %v", got, want)
@@ -146,7 +146,7 @@ func TestScoreCasterWandFallbackAddsToStats(t *testing.T) {
 	c := candidate{DPS: 10, Stats: map[string]float64{"spell_power": 5}}
 	weights := map[string]float64{"spell_power": 2.0}
 	referenceDPSPerPoint := 0.5
-	got := score(c, "ranged", weights, referenceDPSPerPoint, true)
+	got := score(c, "ranged", weights, fullWandScorePerDPS(referenceDPSPerPoint))
 	want := 5*2.0 + 10/referenceDPSPerPoint
 	if got != want {
 		t.Errorf("score = %v, want %v", got, want)
@@ -163,9 +163,9 @@ func TestScoreWandFallbackNeverFiresWithoutCastsShoot(t *testing.T) {
 	// same as it never counted before this fallback existed.
 	c := candidate{DPS: 10}
 	weights := map[string]float64{"spell_power": 2.0}
-	got := score(c, "ranged", weights, 0.5, false)
+	got := score(c, "ranged", weights, 0)
 	if got != 0 {
-		t.Errorf("score = %v, want 0 (castsShoot is false)", got)
+		t.Errorf("score = %v, want 0 (no wand credit)", got)
 	}
 }
 
@@ -181,12 +181,12 @@ func TestScoreMainHandOrOffHandWeaponDPSNeverCountsWithoutAPWeight(t *testing.T)
 	// referenceDPSPerPoint is - only the ranged slot's wand is ever a
 	// real damage source for these specs.
 	for _, slot := range []string{"main_hand", "off_hand"} {
-		for _, castsShoot := range []bool{true, false} {
+		for _, wandCredit := range []float64{2, 0} {
 			c := candidate{DPS: 50, Stats: map[string]float64{"strength": 16, "agility": 5}}
 			weights := map[string]float64{"spell_power": 2.0}
-			got := score(c, slot, weights, 0.5, castsShoot)
+			got := score(c, slot, weights, wandCredit)
 			if got != 0 {
-				t.Errorf("score(%q, castsShoot=%v) = %v, want 0 (a caster's melee weapon DPS must never count, strength/agility are unweighted)", slot, castsShoot, got)
+				t.Errorf("score(%q, wandCredit=%v) = %v, want 0 (a caster's melee weapon DPS must never count, strength/agility are unweighted)", slot, wandCredit, got)
 			}
 		}
 	}
@@ -201,7 +201,7 @@ func TestScoreWeaponFallbackNeverFiresWhenAPWeightIsPositive(t *testing.T) {
 	// weapon's damage twice.
 	c := candidate{DPS: 10}
 	weights := map[string]float64{"attack_power": 1.0}
-	got := score(c, "main_hand", weights, 0.5, false)
+	got := score(c, "main_hand", weights, 0)
 	want := 10 * attackPowerPerDPS * 1.0
 	if got != want {
 		t.Errorf("score = %v, want %v (fallback must not also fire)", got, want)
@@ -215,7 +215,7 @@ func TestScoreWeaponFallbackIsNoOpWhenReferenceDPSPerPointIsZero(t *testing.T) {
 	// caster) must hold exactly, not divide by zero.
 	c := candidate{DPS: 10}
 	weights := map[string]float64{"spell_power": 2.0}
-	got := score(c, "ranged", weights, 0, true)
+	got := score(c, "ranged", weights, fullWandScorePerDPS(0))
 	if got != 0 {
 		t.Errorf("score = %v, want 0 (no reference DPS/point available)", got)
 	}
@@ -231,7 +231,7 @@ func TestScoreARelicWithNoStatsAndNoDPSIsZero(t *testing.T) {
 	// flag) can ever distinguish one relic from another.
 	c := candidate{ClassID: armorClassID, SubclassID: armorSublibramID, Stats: map[string]float64{}}
 	weights := map[string]float64{"agility": 2.0, "ranged_attack_power": 100}
-	got := score(c, "ranged", weights, 0, false)
+	got := score(c, "ranged", weights, 0)
 	if got != 0 {
 		t.Errorf("score = %v, want 0 for a zero-stat relic", got)
 	}

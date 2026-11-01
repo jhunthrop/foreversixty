@@ -114,6 +114,15 @@ type fakeEngine struct {
 	// WeightsBuffsSeen records req.Character.Buffs for every RunWeights
 	// call, parallel to WeightsIterationsSeen.
 	WeightsBuffsSeen [][]string
+	// ShootDPS is what RunShootDPS returns; ShootCalls records the gear of
+	// every RunShootDPS call.
+	ShootDPS   float64
+	ShootCalls []string
+}
+
+func (f *fakeEngine) RunShootDPS(req api.SimRequest) (float64, error) {
+	f.ShootCalls = append(f.ShootCalls, gearKey(req.Character.Gear))
+	return f.ShootDPS, nil
 }
 
 // gearKey fingerprints a gear list as a stable, comparable string:

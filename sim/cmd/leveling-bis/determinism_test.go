@@ -44,7 +44,7 @@ func TestScoreIsBitIdenticalWhateverTheStatMapOrder(t *testing.T) {
 			fresh[keys[j]] = stats[keys[j]]
 		}
 		c := candidate{Stats: fresh, Armor: 37, DPS: 12.3}
-		seen[math.Float64bits(score(c, "main_hand", weights, 0.5, false))]++
+		seen[math.Float64bits(score(c, "main_hand", weights, 0))]++
 	}
 	if len(seen) != 1 {
 		got := map[float64]int{}
@@ -63,11 +63,11 @@ func TestStoredScoresTieWhenTheSumsAreEqualUpToRounding(t *testing.T) {
 	weights := map[string]float64{"agility": 0.1, "crit": 0.2, "hit": 0.3}
 	a := candidate{ID: 2, Name: "A", Slots: []string{"wrist"}, Stats: map[string]float64{"agility": 1, "crit": 1}}
 	b := candidate{ID: 1, Name: "B", Slots: []string{"wrist"}, Stats: map[string]float64{"hit": 1}}
-	if score(a, "wrist", weights, 0, false) == score(b, "wrist", weights, 0, false) {
+	if score(a, "wrist", weights, 0) == score(b, "wrist", weights, 0) {
 		t.Fatal("the raw sums agree; the fixture no longer shows the float gap")
 	}
-	if roundScore(score(a, "wrist", weights, 0, false)) != roundScore(score(b, "wrist", weights, 0, false)) {
-		t.Fatalf("rounded scores differ: %v vs %v", roundScore(score(a, "wrist", weights, 0, false)), roundScore(score(b, "wrist", weights, 0, false)))
+	if roundScore(score(a, "wrist", weights, 0)) != roundScore(score(b, "wrist", weights, 0)) {
+		t.Fatalf("rounded scores differ: %v vs %v", roundScore(score(a, "wrist", weights, 0)), roundScore(score(b, "wrist", weights, 0)))
 	}
 	if got := roundScore(-1e-15); math.Signbit(got) || got != 0 {
 		t.Fatalf("roundScore(-1e-15) = %v, want a positive 0", got)
@@ -77,7 +77,7 @@ func TestStoredScoresTieWhenTheSumsAreEqualUpToRounding(t *testing.T) {
 		1: {{Kind: "quest", Label: "A Quest"}},
 		2: {{Kind: "quest", Label: "A Quest"}},
 	}
-	pool := buildBandPool([]candidate{a, b}, idx, "hunter", 20, "alliance", weights, 1, false)
+	pool := buildBandPool([]candidate{a, b}, idx, "hunter", 20, "alliance", weights, 0)
 	if len(pool.Scored) != 2 {
 		t.Fatalf("scored %d candidates, want 2", len(pool.Scored))
 	}

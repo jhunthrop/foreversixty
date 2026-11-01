@@ -500,11 +500,12 @@ func crossClassSetItem(c candidate, classSlug string) bool {
 }
 
 // buildBandPool applies eligible(), the source rule, and score(), in
-// that order, to the full candidate list for one band and faction. It
+// that order, to the full candidate list for one band and faction.
+// wandCredit is score()'s: wandScorePerDPS for a spec that shoots, else 0. It
 // does not pick: bandSlotPools turns Scored into the per-slot pools
 // (the weapon limits, then the rare-spawn rule) and pick (pick.go)
 // reads those.
-func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int, faction string, weights map[string]float64, referenceDPSPerPoint float64, castsShoot bool) bandPool {
+func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int, faction string, weights map[string]float64, wandCredit float64) bandPool {
 	var out bandPool
 	out.Coverage = make(map[string]coverageRow)
 	for _, c := range items {
@@ -555,7 +556,7 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 		}
 		out.Scored = append(out.Scored, scored{
 			candidate:     c,
-			Score:         roundScore(score(c, c.Slots[0], weights, referenceDPSPerPoint, castsShoot)),
+			Score:         roundScore(score(c, c.Slots[0], weights, wandCredit)),
 			Source:        src,
 			HasSource:     true,
 			DeadStatCount: deadStatCount(c, weights),
@@ -851,4 +852,46 @@ func addCoverage(cov map[string]coverageRow, slots []string, sourced bool) {
 		}
 		cov[slot] = row
 	}
+}
+
+// bandPicks is one band and faction's first pass: the scored pool, the
+// per-slot pools and pick()'s set.
+type bandPicks struct {
+	pool       bandPool
+	bySlot     map[string][]scored
+	pickBySlot map[string][]scored
+	picks      map[string]slotPick
+}
+
+// pickBand scores the band's candidates (buildBandPool, wandCredit as
+// score() takes it), builds the per-slot pools and picks the set.
+func pickBand(items []candidate, lootIdx lootIndex, spec specInfo, band int, faction string, weights map[string]float64, wandCredit float64, weaponSubclasses map[int]bool, requiresDagger bool) bandPicks {
+	pool := buildBandPool(items, lootIdx, spec.ClassSlug, band, faction, weights, wandCredit)
+	// The weapon limits, then the rare-spawn rule over what they
+	// leave (band.go's bandSlotPools).
+	bySlot := bandSlotPools(&pool, spec, weaponSubclasses, requiresDagger)
+
+	// pickBySlot is bySlot's own candidates, further narrowed for
+	// the DECISION passes only (pick(), rankTrinketSlot,
+	// rankSlotWithEffects, trySetCompletion) - bySlot itself stays
+	// unfiltered because buildReport (below) reads it for
+	// buildAlternatives, and a PvP reward above band.go's
+	// pvpRankCap must still be able to appear there, labelled by
+	// rank, even though it must never be a DEFAULT pick (this
+	// lane's brief, item 3). promoteLowValueWeapon additionally
+	// reorders a weapon slot whose every candidate scored exactly
+	// 0 (pick.go's own doc; this lane's brief, item 1's second
+	// half) - reordering only ever changes which zero-scoring
+	// candidate wins a tie, so running it on bySlot too would be
+	// harmless, but pickBySlot is the one map every decision pass
+	// actually reads, so that is the only copy that needs it.
+	pickBySlot := make(map[string][]scored, len(bySlot))
+	for slot, list := range bySlot {
+		filtered := excludeAbovePvpRankCap(list)
+		if weaponSlots[slot] {
+			filtered = promoteLowValueWeapon(filtered, spec.WeightStats)
+		}
+		pickBySlot[slot] = filtered
+	}
+	return bandPicks{pool: pool, bySlot: bySlot, pickBySlot: pickBySlot, picks: pick(spec.Spec, pickBySlot)}
 }

@@ -441,7 +441,7 @@ func TestBandSlotPoolsKeepThrownForWarriorsNotHunters(t *testing.T) {
 		{"hunter", "hunter-survival", false},
 		{"warrior", "warrior-arms", true},
 	} {
-		pool := buildBandPool(items, idx, c.class, 20, "horde", map[string]float64{"agility": 1, "strength": 1}, 0, false)
+		pool := buildBandPool(items, idx, c.class, 20, "horde", map[string]float64{"agility": 1, "strength": 1}, 0)
 		got := idsOf(bandSlotPools(&pool, specInfo{Spec: c.spec, ClassSlug: c.class}, every, false)["ranged"])
 		if got[285279] != c.thrown || !got[2100] {
 			t.Errorf("%s ranged pool %v, want thrown kept = %v and the bow kept", c.spec, got, c.thrown)

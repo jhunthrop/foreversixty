@@ -604,34 +604,24 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 
 			work := make(map[string]*factionWork, len(factions))
 			for _, f := range factions {
-				pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, bandReferenceDPSPerPoint, castsShoot)
-				// The weapon limits, then the rare-spawn rule over what they
-				// leave (band.go's bandSlotPools).
-				bySlot := bandSlotPools(&pool, specInfo, weaponSubclasses, requiresDagger)
-
-				// pickBySlot is bySlot's own candidates, further narrowed for
-				// the DECISION passes only (pick(), rankTrinketSlot,
-				// rankSlotWithEffects, trySetCompletion) - bySlot itself stays
-				// unfiltered because buildReport (below) reads it for
-				// buildAlternatives, and a PvP reward above band.go's
-				// pvpRankCap must still be able to appear there, labelled by
-				// rank, even though it must never be a DEFAULT pick (this
-				// lane's brief, item 3). promoteLowValueWeapon additionally
-				// reorders a weapon slot whose every candidate scored exactly
-				// 0 (pick.go's own doc; this lane's brief, item 1's second
-				// half) - reordering only ever changes which zero-scoring
-				// candidate wins a tie, so running it on bySlot too would be
-				// harmless, but pickBySlot is the one map every decision pass
-				// actually reads, so that is the only copy that needs it.
-				pickBySlot := make(map[string][]scored, len(bySlot))
-				for slot, list := range bySlot {
-					filtered := excludeAbovePvpRankCap(list)
-					if weaponSlots[slot] {
-						filtered = promoteLowValueWeapon(filtered, specInfo.WeightStats)
-					}
-					pickBySlot[slot] = filtered
+				// A wand is worth what the band's own set shoots with it
+				// (wand_credit.go): the first pass credits a whole fight of
+				// shooting so the set wears a wand, a sim of that set
+				// measures the credit, and the band is picked again at it.
+				wandCredit := 0.0
+				if castsShoot {
+					wandCredit = fullWandScorePerDPS(bandReferenceDPSPerPoint)
 				}
-				picks := pick(spec, pickBySlot)
+				first := pickBand(items, lootIdx, specInfo, band, f.name, weights, wandCredit, weaponSubclasses, requiresDagger)
+				if castsShoot {
+					credit, err := measureWandCredit(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, first.picks, bandReferenceDPSPerPoint)
+					if err != nil {
+						return fmt.Errorf("band %d %s: %w", band, f.name, err)
+					}
+					log.Printf("leveling-bis: %s band %d %s %s: wand credit %.4f score per wand DPS (whole fight %.4f)", spec, band, f.name, pass.name, credit, fullWandScorePerDPS(bandReferenceDPSPerPoint))
+					first = pickBand(items, lootIdx, specInfo, band, f.name, weights, credit, weaponSubclasses, requiresDagger)
+				}
+				pool, bySlot, pickBySlot, picks := first.pool, first.bySlot, first.pickBySlot, first.picks
 
 				// Trinkets carry no scorable stats (score.go's own doc), so
 				// pick()'s score-based choice for trinket1/trinket2 is

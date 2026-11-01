@@ -58,6 +58,9 @@ type engineRunner interface {
 	// HitProfileFor reads where req's character stands against the miss
 	// table's caps, without simulating: the distance hit_to_cap publishes.
 	HitProfileFor(req api.SimRequest) (core.HitProfile, error)
+	// RunShootDPS runs req as a plain sim and returns the damage per second
+	// its Shoot casts dealt (wand_credit.go's shootDPS).
+	RunShootDPS(req api.SimRequest) (float64, error)
 }
 
 // realEngine is the engineRunner backed by the actual wowsims-classic
@@ -77,6 +80,14 @@ func (realEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, flo
 
 func (realEngine) HitProfileFor(req api.SimRequest) (core.HitProfile, error) {
 	return hitProfileFor(req)
+}
+
+func (realEngine) RunShootDPS(req api.SimRequest) (float64, error) {
+	_, player, err := inproc.PlainRunWithRotation(req, nil)
+	if err != nil {
+		return 0, err
+	}
+	return shootDPS(player), nil
 }
 
 // registerEngine registers every spec's agent factory exactly once

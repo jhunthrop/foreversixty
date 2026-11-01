@@ -101,7 +101,7 @@ func TestPercentSharedScoreMatchesAStatUnitItem(t *testing.T) {
 	rating := candidate{Stats: map[string]float64{"hit": 10}}
 	weights := map[string]float64{"hit": 1.5}
 	converted := convertCandidateRatings([]candidate{aura, rating}, wantRatingFactors)
-	a, r := score(converted[0], "head", weights, 0, false), score(converted[1], "head", weights, 0, false)
+	a, r := score(converted[0], "head", weights, 0), score(converted[1], "head", weights, 0)
 	if a != 1.5 || r != 1.5 {
 		t.Fatalf("1%% aura hit scored %v and 10-rating hit scored %v, both want 1.5", a, r)
 	}
