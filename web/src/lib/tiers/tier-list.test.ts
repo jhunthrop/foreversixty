@@ -1,6 +1,6 @@
 // web/src/lib/tiers/tier-list.test.ts
 import { describe, expect, it } from 'vitest';
-import { band, catalogEntry, dpsInput, tankInput } from './tier-test-support';
+import { band, catalogEntry, dpsInput, healerInput, tankInput } from './tier-test-support';
 import {
   hrefsFor,
   groupByTier,
@@ -138,6 +138,104 @@ describe('ties', () => {
       'tank',
     );
     expect(rows.map((r) => r.tie)).toEqual([null, null]);
+  });
+});
+
+/**
+ * Owner ruling (round 5): /tiers/healer never orders healers by a margin smaller than the
+ * measurement's error, or by a tuned profile. Two healers are ordered only when the gap is
+ * beyond the error at the tuned profile AND at both tuning bounds, the same way round;
+ * otherwise they share a rank and are marked tied.
+ */
+describe('healer ties within error and across the profile’s tuning', () => {
+  type Healer = { hps: number; error?: number; bounds?: [number, number, number, number] };
+  // bounds: [hps at 1.5, error, hps at 1.65, error]
+  const ranked = (rows: Healer[]) =>
+    rankRole(
+      rows.map((row, i) =>
+        healerInput(
+          'c',
+          `h${i}`,
+          `H${i}`,
+          row.hps,
+          row.error,
+          row.bounds && [
+            { scale: 1.5, hps: row.bounds[0], hps_error: row.bounds[1] },
+            { scale: 1.65, hps: row.bounds[2], hps_error: row.bounds[3] },
+          ],
+        ),
+      ),
+      'healer',
+    );
+
+  it('orders two healers whose gap is beyond two standard errors of the difference', () => {
+    const rows = ranked([
+      { hps: 1000, error: 1 },
+      { hps: 995, error: 1 },
+    ]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 2]);
+    expect(rows.map((r) => r.tie)).toEqual([null, null]);
+  });
+
+  it('ties two healers whose gap the error cannot tell apart, with no fixed floor', () => {
+    const rows = ranked([
+      { hps: 1000, error: 6 },
+      { hps: 985, error: 6 },
+    ]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 1]);
+    expect(rows.map((r) => r.tie)).toEqual(['below', 'above']);
+  });
+
+  it('ties two healers the tuning bounds order the other way round (hybrids lane, Alliance, 2026-11-01)', () => {
+    // Restoration shaman and Holy priest: 640.0 against 636.4 at x1.65, 617.4 against 657.1 at x1.5.
+    const rows = ranked([
+      { hps: 640.0, error: 0.6, bounds: [617.4, 0.6, 640.0, 0.6] },
+      { hps: 636.4, error: 0.6, bounds: [657.1, 0.6, 636.4, 0.6] },
+    ]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 1]);
+  });
+
+  it('orders two healers the bounds agree on, beyond the error at both', () => {
+    // Restoration druid over Restoration shaman at both bounds.
+    const rows = ranked([
+      { hps: 741.5, error: 0.7, bounds: [731.1, 0.7, 741.5, 0.7] },
+      { hps: 640.0, error: 0.6, bounds: [617.4, 0.6, 640.0, 0.6] },
+    ]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 2]);
+  });
+
+  it('ranks the hybrids lane’s Alliance measurement: druid, shaman and Holy priest tied, then paladin over Discipline at both bounds', () => {
+    // Holy paladin leads Discipline by 3.1 at x1.5 and 15.6 at x1.65, each beyond two errors of the difference (1.6).
+    const rows = ranked([
+      { hps: 741.5, error: 0.7, bounds: [731.1, 0.7, 741.5, 0.7] },
+      { hps: 640.0, error: 0.6, bounds: [617.4, 0.6, 640.0, 0.6] },
+      { hps: 636.4, error: 0.6, bounds: [657.1, 0.6, 636.4, 0.6] },
+      { hps: 551.6, error: 0.6, bounds: [540.5, 0.6, 551.6, 0.6] },
+      { hps: 536.0, error: 0.5, bounds: [537.4, 0.5, 536.0, 0.5] },
+    ]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 2, 2, 4, 5]);
+  });
+
+  it('chains a tie, so no two neighbours are ordered by less than the error', () => {
+    const rows = ranked([
+      { hps: 1000, error: 3 },
+      { hps: 993, error: 3 },
+      { hps: 986, error: 3 },
+      { hps: 900, error: 3 },
+    ]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 1, 1, 4]);
+    expect(rows.map((r) => r.tie)).toEqual(['below', 'both', 'above', null]);
+  });
+
+  it('falls back to the site’s 1% tie margin only for a file that publishes no error', () => {
+    expect(ranked([{ hps: 1000 }, { hps: 992 }]).map((r) => r.rank)).toEqual([1, 1]);
+    expect(ranked([{ hps: 1000 }, { hps: 980 }]).map((r) => r.rank)).toEqual([1, 2]);
+  });
+
+  it('leaves the DPS list on its own fixed margin and its own ranks', () => {
+    const rows = rankRole([dpsInput('a', 'a', 'A', 100), dpsInput('b', 'b', 'B', 99.5)], 'dps');
+    expect(rows.map((r) => r.rank)).toEqual([1, 2]);
+    expect(rows.map((r) => r.tie)).toEqual(['below', 'above']);
   });
 });
 

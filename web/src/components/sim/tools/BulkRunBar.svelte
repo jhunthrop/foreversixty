@@ -106,6 +106,7 @@
 <SettingsBar
   settings={store.settings}
   spec={store.character?.spec ?? ''}
+  characterLevel={store.character?.level}
   disabled={running}
   onchange={(next) => store.setSettings(next)}
   names={store.simBuffs}

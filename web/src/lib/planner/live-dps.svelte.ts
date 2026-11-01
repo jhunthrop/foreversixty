@@ -15,7 +15,6 @@ import type { TalentIndex } from './rules';
 import { EMPTY_ESTIMATE } from '../sim/estimate';
 import { runSim, SimRunError, type RunHandle } from '../sim/run';
 import { defaultSettings } from '../sim/settings';
-import { referenceStatOf } from '../sim/spec-label';
 import { toCharacterSpec, type SimCharacter } from '../sim/character';
 import { ITERATIONS, type Estimate } from '../sim/types';
 import { createPool, type SimPool } from '../sim/worker';
@@ -45,7 +44,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
   async function start(character: SimCharacter, index: TalentIndex): Promise<void> {
     state = 'running';
     const unit = scoreUnitForSpec(character.spec);
-    const settings = defaultSettings(referenceStatOf(character.spec));
+    const settings = defaultSettings(character.spec, character.level);
     handle = runSim(
       poolOnce(),
       {

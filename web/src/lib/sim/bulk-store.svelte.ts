@@ -137,7 +137,7 @@ export function createBulkStore(init: BulkStoreInit) {
 
   let phase = $state<BulkPhase>('idle');
   let character = $state<SimCharacter | null>(null);
-  let settings = $state<SimSettings>(defaultSettings('attack_power'));
+  let settings = $state<SimSettings>(defaultSettings());
   let message = $state<string | null>(null);
   let detail = $state('');
   let premium = $state(false);
@@ -221,7 +221,7 @@ export function createBulkStore(init: BulkStoreInit) {
       return;
     }
     character = outcome.character;
-    settings = withSpecForPreset(settings, outcome.character.spec);
+    settings = withSpecForPreset(settings, outcome.character.spec, outcome.character.level);
     result = null;
     progress = null;
     capNotice = null;

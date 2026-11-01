@@ -102,7 +102,11 @@ function healerNotes(ctx: NoteContext): NoteSegment[][] {
     [
       { text: `${raceSentence(ctx.faction)} ` },
       { text: 'Gap to the top', strong: true },
-      { text: ' is less healing in this fight, not a verdict on the class.' },
+      { text: ' is less healing in this fight, not a verdict on the class. ' },
+      { text: '≈ tie', strong: true },
+      {
+        text: ' marks healers the sim cannot tell apart: within its measurement error, or ordered differently at the two ends of the fight profile’s tuning. Tied healers share a rank.',
+      },
     ],
   ];
 }
@@ -148,7 +152,11 @@ export function ordinal(n: number): string {
   return `${n}${teen ? 'th' : (ORDINAL_SUFFIXES[n % ORDINAL_DIGIT_BASE] ?? 'th')}`;
 }
 
-function tieTitle(tie: TierTie): string {
+function tieTitle(tie: TierTie, role: BisRole = 'dps'): string {
+  if (role === 'healer') {
+    const neighbour = tie === 'both' ? 'healers above and below' : `healer ${tie}`;
+    return `Not told apart from the ${neighbour} by the error or the profile’s tuning: tied`;
+  }
   if (tie === 'both') return `Within ${TIE_MARGIN_PERCENT}% of the specs above and below: a tie`;
   return `Within ${TIE_MARGIN_PERCENT}% of the spec ${tie}: a tie`;
 }
@@ -226,7 +234,9 @@ export function formatMetric(role: BisRole, value: number): string {
 
 /** The gap column's text for a row: "Top"/"Least" on the leader, "−4.8%"/"+15.2%" below. */
 export function gapText(row: Pick<TierRow, 'rank' | 'role' | 'gapPercent'>): string {
-  if (row.rank === 1) return row.role === 'tank' ? tiersCopy.leastGap : tiersCopy.topGap;
+  // A healer tied for the top shares rank 1 but still has a gap; only the leader reads Top.
+  if (row.rank === 1 && row.gapPercent === 0)
+    return row.role === 'tank' ? tiersCopy.leastGap : tiersCopy.topGap;
   const figure = row.gapPercent.toFixed(1);
   return row.role === 'tank' ? `+${figure}%` : `−${figure}%`;
 }

@@ -14,6 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"os"
 	"time"
 
@@ -46,6 +47,16 @@ type HealPulse struct {
 	Reason          string  `json:"reason"`
 }
 
+// HealTuning is the multiplier the tank hit and the raid pulse are scaled by (the retune
+// rule), the bounds it was tuned between, and the unscaled figures it multiplies.
+type HealTuning struct {
+	Scale             float64   `json:"scale"`
+	Bounds            []float64 `json:"bounds"`
+	BaseTankHitDamage float64   `json:"base_tank_hit_damage"`
+	BasePulseDamage   float64   `json:"base_pulse_damage"`
+	Reason            string    `json:"reason"`
+}
+
 // HealProfileSource is where a profile figure comes from.
 type HealProfileSource struct {
 	Label string `json:"label"`
@@ -61,6 +72,7 @@ type HealProfile struct {
 	Notes        string              `json:"notes"`
 	DurationSec  int                 `json:"duration_sec"`
 	DamageSpread float64             `json:"damage_spread"`
+	Tuning       HealTuning          `json:"tuning"`
 	Tank         HealTank            `json:"tank"`
 	Members      HealMembers         `json:"members"`
 	Pulse        HealPulse           `json:"pulse"`
@@ -127,7 +139,37 @@ func (p HealProfile) validate() error {
 	if p.Tank.Reason == "" || p.Members.Reason == "" || p.Pulse.Reason == "" {
 		return fmt.Errorf("%w: every figure group states its reason", ErrBadHealProfile)
 	}
+	return p.Tuning.validate(p.Tank.HitDamage, p.Pulse.Damage)
+}
+
+// validate checks the bounds and that the tuned figures are the base figures times the scale.
+func (t HealTuning) validate(hitDamage, pulseDamage float64) error {
+	if len(t.Bounds) != 2 || t.Bounds[0] <= 0 || t.Bounds[0] > t.Bounds[1] {
+		return fmt.Errorf("%w: tuning.bounds must be two positive scales, low first", ErrBadHealProfile)
+	}
+	if t.Scale < t.Bounds[0] || t.Scale > t.Bounds[1] {
+		return fmt.Errorf("%w: tuning.scale %v is outside its bounds %v", ErrBadHealProfile, t.Scale, t.Bounds)
+	}
+	if t.Reason == "" {
+		return fmt.Errorf("%w: tuning states its reason", ErrBadHealProfile)
+	}
+	if scaled(t.BaseTankHitDamage, t.Scale) != hitDamage || scaled(t.BasePulseDamage, t.Scale) != pulseDamage {
+		return fmt.Errorf("%w: tank.hit_damage and pulse.damage must be the base figures times tuning.scale", ErrBadHealProfile)
+	}
 	return nil
+}
+
+// scaled is a base figure times a scale, to the whole point of damage the profile states.
+func scaled(base, scale float64) float64 { return math.Round(base * scale) }
+
+// AtScale is the profile with the tank hit and the raid pulse scaled by scale in place of
+// the tuned one; everything else is kept. The receiver is not changed.
+func (p HealProfile) AtScale(scale float64) HealProfile {
+	out := p
+	out.Tuning.Scale = scale
+	out.Tank.HitDamage = scaled(p.Tuning.BaseTankHitDamage, scale)
+	out.Pulse.Damage = scaled(p.Tuning.BasePulseDamage, scale)
+	return out
 }
 
 // Model is the engine's raid damage model for the profile.

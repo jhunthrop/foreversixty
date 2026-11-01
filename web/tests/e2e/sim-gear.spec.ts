@@ -32,6 +32,9 @@ const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_h
 // loadout is deliberately named "Deep Fury" -- the same title the mocked
 // `/v1/builds?mine=1` row below uses -- so the same fixture also exercises the
 // saved-vs-exported name collision fix.
+// The same character recorded at level 60: Top Gear offers the Raid-buffed consumables of
+// the character's level, and a fresh 33 can use no Elixir of the Mongoose (RequiredLevel 46).
+const FURY_60 = `${FURY}|level=60`;
 const FURY_V2 = `${FURY}|loadouts=Deep Fury=5530515/0/0|sets=Alt Set=head=12640:2543:1`;
 
 export async function loadGear(page: Page, at = '/sim/gear', code = FURY): Promise<void> {
@@ -132,18 +135,17 @@ test('usable-only is on by default and can be turned off', async ({ page }) => {
 });
 
 test('a ticked consumable multiplies the combination count (contract 10.1 A5)', async ({ page }) => {
-  await loadGear(page);
+  await loadGear(page, '/sim/gear', FURY_60);
   await page.getByTestId('sim-search-add-16963').click();
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1), {
     // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
     // give it the same allowance a run gets, not the 5 s default.
     timeout: 20_000,
   });
-  // FURY is warrior-fury (reference_stat attack_power), so the candidates offered are the
-  // physical consumable set (settings.ts's PHYSICAL_CONSUMABLES) -- flask_of_the_titans and
-  // elixir_of_the_mongoose replace the pre-Task-4 flask_of_supreme_power (now caster-only),
-  // same two Consumes fields (flask, battle-elixir) the multiplier below counts on.
-  await page.getByTestId('sim-consumable-flask_of_the_titans').check();
+  // FURY is warrior-fury, so the candidates offered are Fury's published raid set
+  // (sim/request/raid-consumes.json) -- elixir_of_the_mongoose and food_grilled_squid fill
+  // two different Consumes fields (agility elixir, food), which the multiplier counts on.
+  await page.getByTestId('sim-consumable-food_grilled_squid').check();
   await page.getByTestId('sim-consumable-elixir_of_the_mongoose').check();
   // (1 head + 1) x 2 alternatives
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(4), {
@@ -154,7 +156,7 @@ test('a ticked consumable multiplies the combination count (contract 10.1 A5)', 
 });
 
 test('a consumable candidate is named, not spelled as an id', async ({ page }) => {
-  await loadGear(page);
+  await loadGear(page, '/sim/gear', FURY_60);
   await expect(page.getByTestId('sim-consumables')).toContainText('Elixir of the Mongoose');
 });
 
