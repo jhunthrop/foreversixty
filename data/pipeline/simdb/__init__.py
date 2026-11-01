@@ -50,7 +50,12 @@ from pipeline.normalize import write_json
 from pipeline.normalize.gear import MAX_PLAYER_LEVEL, column_value, int_column, is_junk_name
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.enchants import build_sim_enchants
-from pipeline.simdb.equip import equip_bonuses, index_spell_effects, item_effect_spells
+from pipeline.simdb.equip import (
+    area_conditional_spells,
+    equip_bonuses,
+    index_spell_effects,
+    item_effect_spells,
+)
 from pipeline.simdb.equip_fill import with_wowhead_equip_stats
 from pipeline.simdb.items import (
     build_classicdb_sim_items,
@@ -59,7 +64,11 @@ from pipeline.simdb.items import (
     simdb_item_rows,
 )
 from pipeline.simdb.ratings import load_rating_factors
-from pipeline.simdb.shield_block import shield_block_values, with_shield_block
+from pipeline.simdb.shield_block import (
+    classicdb_shield_block_values,
+    shield_block_values,
+    with_shield_block,
+)
 from pipeline.simdb.weapons import load_weapon_curves
 from pipeline.simproto import pb
 
@@ -223,7 +232,13 @@ def build_sim_database(
 
     pairs = simdb_item_rows(sparse_rows, item_rows)
     kept_ids = {int_column(sparse, "ID") for sparse, _ in pairs}
-    equip = equip_bonuses(item_effect_rows, link_rows, effects_by_spell, kept_ids)
+    equip = equip_bonuses(
+        item_effect_rows,
+        link_rows,
+        effects_by_spell,
+        kept_ids,
+        area_conditional_spells(_optional(raw, "Spell")),
+    )
     rating_factors = load_rating_factors(build_dir)
     fork_columns = _fork_columns(build_dir)
     items = build_sim_items(
@@ -298,9 +313,13 @@ def build_sim_database(
         )
 
     # Every shield's own block value, which the client does not state
-    # (pipeline/simdb/shield_block.py); Wowhead Forever's feed carries it.
+    # (pipeline/simdb/shield_block.py): Wowhead Forever's feed, else classic-db's.
+    block_values: dict[int, float] = {}
+    if classicdb_extract is not None:
+        block_values.update(classicdb_shield_block_values(classicdb_extract[0]))
     if wowhead_path.exists():
-        items = with_shield_block(items, shield_block_values(wh.load_items(wowhead_path)))
+        block_values.update(shield_block_values(wh.load_items(wowhead_path)))
+    items = with_shield_block(items, block_values)
 
     database = pb.SimDatabase(
         items=items,

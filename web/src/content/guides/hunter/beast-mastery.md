@@ -4,10 +4,11 @@ classSlug: hunter
 spec: beast-mastery
 role: dps
 build: 'FS1:1.60.1.70707:hunter:dwarf:5420001505001251/00524510012/0:'
+raidBuild: 'FS1:1.60.1.70707:hunter:dwarf:5420001505001251/00523500014/0:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Agility, Critical strike, Ranged attack power, Hit, Attack speed]
 description: 'Beast Mastery Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-10-31
+updated: 2026-11-01
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -74,7 +75,7 @@ Beast Mastery is the pet-focused ranged Hunter spec: the pet, drawing its stats 
 
 Reading the Beast Mastery tree in priority order for a pet-damage build: **Unleashed Fury** (a flat damage increase for pets and hawks) and **Ferocity** (pet critical strike chance) come first, since both scale every hit the pet lands afterward. **Focused Fire** follows — its damage bonus applies to the Hunter as well as the pet, unlike the two talents above it. **Frenzy** gives the pet a chance at bonus attack speed off its own critical strikes, compounding with Ferocity. **Bestial Discipline** helps mana sustain by letting some regeneration continue through casting. The tree's capstone, **Bestial Wrath**, is the spec's defining cooldown: an 18-second window of 50% additional pet damage.
 
-To pay for that, the build drops **Hawk Eye** (ranged weapon range) and **Improved Concussive Shot** (a stun chance on Concussive Shot) entirely, and **Deflection** (parry chance) entirely — all three measured no damage benefit at all in the sim, so the points are better spent elsewhere for a pure DPS build even though they're real defensive or utility effects in a fight where parrying or kiting matters. In Marksmanship the build takes **Careful Aim** (5/5), which turns Intellect into melee and ranged attack power, and **Mortal Shots** (2/5), more critical strike damage on ranged abilities, in place of Improved Tracking, Improved Stings, Efficiency and Rapid Killing: about +1.9% in our level-60 raid run. In Forever the pet takes a tenth of your attack power and all of your critical strike chance, and it gets no raid buffs of its own, so the Hunter's own gear and talents now raise the pet's damage too. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
+To pay for that, the build drops **Hawk Eye** (ranged weapon range) and **Improved Concussive Shot** (a stun chance on Concussive Shot) entirely, and **Deflection** (parry chance) entirely — all three measured no damage benefit at all in the sim, so the points are better spent elsewhere for a pure DPS build even though they're real defensive or utility effects in a fight where parrying or kiting matters. In Marksmanship the build takes **Careful Aim** (5/5), which turns Intellect into melee and ranged attack power, and **Mortal Shots** (2/5), more critical strike damage on ranged abilities, in place of Improved Tracking, Improved Stings, Efficiency and Rapid Killing: about +1.9% in our level-60 raid run. The raid build moves one point from **Efficiency** and the point in **Rapid Killing** into two more ranks of Mortal Shots: with raid buffs and Judgement of Wisdom a Beast Mastery Hunter rarely runs short of mana, and the swap measures about +1.4% in our raid search run. Without raid buffs the hunter runs low on mana, so the leveling build keeps Efficiency. In Forever the pet takes a tenth of your attack power and all of your critical strike chance, and it gets no raid buffs of its own, so the Hunter's own gear and talents now raise the pet's damage too. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
 
 ## Rotation and priority
 

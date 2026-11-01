@@ -99,6 +99,7 @@ ITEM_TEMPLATE_COLUMNS = [
     "itemset",
     "requiredhonorrank",
     "bonding",
+    "block",
 ]
 
 _SCHEMA = (
@@ -857,3 +858,22 @@ def test_extract_records_reads_the_bonding_column():
     )
     records, _ = extract_records(_sql([row]))
     assert records[0].bonding == 2
+
+
+def test_extract_records_reads_a_shields_block():
+    """`item_template.block` is a shield's own block value (Skullflame Shield
+    1168: 40 in cmangos classic-db). The extract dropped the column, so every
+    classic-db-only shield reached simdb blocking nothing (sim-accuracy round 6,
+    physical lane: 34 such shields, Crest of Retribution among them)."""
+    row = _row_sql(
+        entry=1168,
+        name="Skullflame Shield",
+        **{"class": 4, "subclass": 6},
+        Quality=4,
+        InventoryType=14,
+        AllowableClass=-1,
+        AllowableRace=-1,
+        block=40,
+    )
+    records, _ = extract_records(_sql([row]))
+    assert records[0].block == 40

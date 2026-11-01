@@ -766,6 +766,32 @@ def test_curve_tables_resolve_a_primary_and_a_secondary_stat():
     assert items[30006].armor == 0  # misc subclass (rings): no armour curve applies
 
 
+def test_a_curve_stat_exactly_half_way_rounds_up():
+    """The client rounds a curve stat half up, floor(x + 0.5), as SimulationCraft's
+    scaled_stat does (util::round) and as Wowhead Forever shows on every one of
+    the 32 exact halves among 1.60.1.70707's client items: Theramore Gauntlets
+    271941 is 30 * 7500 / 10000 = 22.5 Strength and reads "+23 Strength".
+    Python's round() is banker's rounding and gave 22. The helm's budget is 47;
+    an editor of 15000 makes 70.5 stamina, whose even floor exposes the
+    difference."""
+    rows = read_csv(HERE / "fixtures/ItemSparse_1_60.csv")
+    row = next(r for r in rows if r["ID"] == "16866")  # Helm of Might, stamina in slot 0
+    row["StatPercentEditor_0"] = "15000"
+    items = {
+        i.id: i
+        for r in build_class_items(
+            rows,
+            read_csv(HERE / "fixtures/Item.csv"),
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.60.1.69893",
+            fixture_curves(),
+        )
+        for i in r.items
+    }
+    assert items[16866].stats["stamina"] == 71
+
+
 def test_an_era_shaped_row_still_uses_the_literal_path_even_when_curves_are_given():
     """Curves are only a fallback for a row with no literal columns: passing them
     alongside an Era-shaped fixture must not change Era's own golden output."""

@@ -33,6 +33,35 @@ func TestContributesDamageReadsDamageResourcesAndProcs(t *testing.T) {
 	}
 }
 
+// A proc that only crowd-controls through a spell with no damage of its own
+// is survival-only: Improved Concussive Shot 19407 (aura 42, triggering the
+// 19410 stun) on Concussive Shot 5116, a snare. A proc whose text gives
+// anything that can raise damage, or that rides a damage spell, is not.
+func TestSurvivalOnlyAcceptsACrowdControlProcOnANonDamageSpell(t *testing.T) {
+	proc := []spellconstEffect{{Effect: effectApplyAura, Aura: auraProcTrigger}}
+	spells := map[string]spellconstSpell{
+		"5116":  {Name: "Concussive Shot", Effects: []spellconstEffect{aura(33)}},
+		"3044":  {Name: "Arcane Shot", Effects: []spellconstEffect{{Effect: effectSchoolDamage}}},
+		"19407": {Name: "Improved Concussive Shot", Effects: proc},
+		"20":    {Name: "Concussive Burn", Effects: proc},
+		"21":    {Name: "Arcane Daze", Effects: proc},
+		"22":    {Name: "Concussive Mix", Effects: append(append([]spellconstEffect{}, proc...), aura(auraAddPctModifier))},
+	}
+	talents := map[int]tooltipTalent{
+		1: {name: "Improved Concussive Shot", spellIDs: []int{19407}, tooltip: "Gives your Concussive Shot a 20% chance to stun the target for 3 sec."},
+		2: {name: "Concussive Burn", spellIDs: []int{20}, tooltip: "Gives your Concussive Shot a 20% chance to deal 50 Fire damage."},
+		3: {name: "Arcane Daze", spellIDs: []int{21}, tooltip: "Gives your Arcane Shot a 20% chance to stun the target for 3 sec."},
+		4: {name: "Concussive Mix", spellIDs: []int{22}, tooltip: "Gives your Concussive Shot a 20% chance to stun the target for 3 sec."},
+	}
+	rule := newSurvivalRule(spells, talents)
+	want := map[int]bool{1: true}
+	for id, tt := range talents {
+		if got := rule.survivalOnly(tt); got != want[id] {
+			t.Errorf("%s: survivalOnly = %v, want %v", tt.name, got, want[id])
+		}
+	}
+}
+
 func TestSurvivalOnlyNeedsModifierRowsAndOnlySafeNamedSpells(t *testing.T) {
 	mod := []spellconstEffect{aura(auraAddPctModifier)}
 	spells := map[string]spellconstSpell{
@@ -102,6 +131,48 @@ func TestWarlockSurvivalOnlyTalentsFromTheActiveBuild(t *testing.T) {
 		id, ok := byName[name]
 		if !ok {
 			t.Fatalf("the active build has no warlock talent %q", name)
+		}
+		if got[id] != want {
+			t.Errorf("%s: survival-only = %v, want %v (tooltip %q)", name, got[id], want, talents[id].tooltip)
+		}
+	}
+}
+
+// Improved Concussive Shot is the hunter's survival-only talent in the active
+// build: the melee Survival build spends two points there only to open the
+// tree's second row, and the adoption rule must not protect them. Hawk Eye
+// (range) and the modeled talents are not survival-only.
+func TestHunterSurvivalOnlyTalentsFromTheActiveBuild(t *testing.T) {
+	root := filepath.Join("..", "..", "..")
+	build, err := leveling.ReadActiveBuild(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	buildDir := filepath.Join(root, "data", "builds", build)
+	got, err := survivalOnlyTalents(buildDir, "hunter")
+	if err != nil {
+		t.Fatal(err)
+	}
+	talents, err := loadTooltipTalents(buildDir, "hunter")
+	if err != nil {
+		t.Fatal(err)
+	}
+	byName := map[string]int{}
+	for id, tt := range talents {
+		byName[tt.name] = id
+	}
+	for name, want := range map[string]bool{
+		"Improved Concussive Shot": true,
+		"Hawk Eye":                 false,
+		"Efficiency":               false,
+		"Deadly Aspects":           false,
+		"Lethal Attacks":           false,
+		"Improved Wing Clip":       false,
+		"Expose Prey":              false,
+	} {
+		id, ok := byName[name]
+		if !ok {
+			t.Fatalf("the active build has no hunter talent %q", name)
 		}
 		if got[id] != want {
 			t.Errorf("%s: survival-only = %v, want %v (tooltip %q)", name, got[id], want, talents[id].tooltip)

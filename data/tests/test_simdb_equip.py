@@ -5,6 +5,7 @@ import pytest
 from pipeline.csvio import read_csv
 from pipeline.simdb.equip import (
     EquipEffectError,
+    area_conditional_spells,
     equip_bonuses,
     index_spell_effects,
     item_effect_spells,
@@ -42,7 +43,6 @@ def test_a_flat_stat_aura_is_read_as_the_client_states_it():
 def test_two_effects_of_one_spell_and_two_spells_of_one_item_both_land():
     assert bonuses()[100001].stats == {
         "attack_power": 24.0,
-        "ranged_attack_power": 24.0,
         "spell_power": 85.0,
         "healing": 85.0,
     }
@@ -254,3 +254,64 @@ def test_the_forever_feral_combat_skill_line_is_feral_combat():
     }
     effects_index = index_spell_effects([row])
     assert spell_bonus([1320726], effects_index).weapon_skills == {"WeaponSkillFeralCombat": 1.0}
+
+
+def _aura(spell_id: int, aura: int, amount: int) -> dict[str, str]:
+    return {
+        "SpellID": str(spell_id),
+        "Effect": "6",
+        "EffectAura": str(aura),
+        "EffectBasePointsF": str(amount),
+        "EffectBasePoints": str(amount),
+        "EffectMiscValue_0": "0",
+    }
+
+
+def test_one_spells_attack_power_and_ranged_attack_power_are_one_generic_line():
+    """Rune of the Guard Captain's 1318000 is "+14 Attack Power" (Wowhead Forever
+    19120) and carries aura 99 and aura 124 at 14 each. simdb mirrors generic
+    attack power into ranged attack power (statmap.stat_array), so keeping the
+    124 half as well gave 28 ranged attack power for one line: the item read 42 /
+    84 in round 6. A spell's ranged half up to its attack power is that mirror."""
+    rows = index_spell_effects([_aura(1318000, 99, 14), _aura(1318000, 124, 14)])
+    assert spell_bonus([1318000], rows).stats == {"attack_power": 14.0}
+    ranged_only = index_spell_effects([_aura(7, 124, 20)])
+    assert spell_bonus([7], ranged_only).stats == {"ranged_attack_power": 20.0}
+
+
+def test_area_conditional_equip_spells_are_named_by_their_client_text():
+    """Forever's environment riders state their condition in Spell.csv: 1287704
+    (
+                "In a Forest or Grassland area, Attack Power increased by an additional $w1."
+            )
+    The published numbers fight in no such area, so they are not on-equip stats."""
+    spells = [
+        {
+            "ID": "1287704",
+            "Description_lang": "",
+            "AuraDescription_lang": (
+                "In a Forest or Grassland area, Attack Power increased by an additional $w1."
+            ),
+        },
+        {
+            "ID": "1308764",
+            "Description_lang": "Strength increased by $s1 in Mountainous areas.",
+            "AuraDescription_lang": "In a Mountainous area, Strength increased by $s1.",
+        },
+        {
+            "ID": "1318003",
+            "Description_lang": "",
+            "AuraDescription_lang": (
+                "In a Forest or Grassland, damage and healing done by magical spells and effects"
+                " increased by an additional $w1."
+            ),
+        },
+        {
+            "ID": "1318000",
+            "Description_lang": (
+                "+$s1 Attack Power. This effect is tripled in Forest and Grassland areas."
+            ),
+            "AuraDescription_lang": "",
+        },
+    ]
+    assert area_conditional_spells(spells) == {1287704, 1308764, 1318003}

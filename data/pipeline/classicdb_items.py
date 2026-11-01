@@ -307,6 +307,9 @@ class ClassicDbItem(BaseModel):
     #: an extract written before this column was read: no Binds line is
     #: invented for it.
     bonding: int | None = None
+    #: `item_template.block`, a shield's own block value (Skullflame Shield
+    #: 1168: 40). 0 in an extract written before this column was read.
+    block: int = 0
     #: Every non-zero `spellid_<n>` (1-5), classic-db's own `spelltrigger_<n>`
     #: for it (`TRIGGER_ON_USE`/`TRIGGER_ON_EQUIP`/`TRIGGER_CHANCE_ON_HIT`)
     #: and classic-db's own `spell_template.SpellName` -- the last-resort
@@ -374,6 +377,7 @@ def _item_from_row(row: dict[str, str], spell_names: dict[int, str]) -> ClassicD
         set_id=int(row["itemset"]) or None,
         unique=int(row["maxcount"]) == 1,
         bonding=int(row["bonding"]),
+        block=int(row.get("block", "0") or 0),
         spells=_spells(row, spell_names),
     )
 
