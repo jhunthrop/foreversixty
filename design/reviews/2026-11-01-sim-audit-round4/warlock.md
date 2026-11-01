@@ -51,7 +51,7 @@ The Stamina (75%) and Intellect (30%) shares stay. The client sheet says pets ha
 | # | finding | evidence and source | confirmed? | fix sha |
 |---|---|---|---|---|
 | C1 | **Shadow Vulnerability (Improved Shadow Bolt) raised every attacker's Shadow damage, the demon's Lash of Pain included.** It is aura 270 (school-mask damage taken from the caster) and reads "from your attacks". It is now a per-caster multiplier, the hook Wrack uses. Affliction and Demonology -0.12%. | client 17794 effect 0: aura 270, misc 32, base 4 a rank, 12 s, no charges; test `TestImprovedShadowBoltReachesOnlyTheWarlocksOwnShadowDamage` | CONFIRMED-BUG (client only) | E 501786aa8 |
-| C2 | **Eureka! (Gnome, the published alliance race) is modeled as +10% to every magic spell for 3 costed casts.** The warlock row 1259821 limits its effects by class mask. The damage effect (misc 0) covers Shadow Bolt, Immolate's hit, Rain of Fire, Soul Fire, Shadowburn, Searing Pain, Death Coil and Conflagrate. The periodic effect (misc 22) covers Drain Life, Drain Soul and Wrack, and the cost effect covers a similar set. Corruption, Agony, Doom and Incinerate get nothing and should not spend a charge. My estimate is that the engine overstates gnome warlocks by about 0.5%: the opener's Corruption and Doom take the 10%. | client 1259821 effects 0-2 masks; `core/racials.go:459-505`; the racial review of 2026-10-07 already lists "the charge is still spent on any costed cast" | CONFIRMED (not fixed: a core change for every class's variant, outside this lane) | - |
+| C2 | **Eureka! (Gnome) was one row read wrong for every class.** The engine gave every class the warlock row, read as 15 s and 3 charges, applied to every magic spell, and gave warriors and rogues nothing. The 70707 client has one row per class (SpellClassSet): Warrior 1259813, Rogue 1259812, Mage 1259817, Priest 1259823 and Warlock 1259821. Those are the five classes combos.json lets be Gnome. Each row lasts 8 s (DurationIndex 31), has no SpellAuraOptions row (so no charges) and a 2 min cooldown. Its add-percent effects reach only the spells their class masks name: +10% damage or healing (misc 0), +10% periodic damage (misc 22) and -10% cost (misc 14). For warlocks the damage mask covers Shadow Bolt, Immolate's hit, Rain of Fire, Soul Fire, Shadowburn, Searing Pain, Death Coil and Conflagrate; the periodic mask covers Drain Life, Drain Soul and Wrack. Corruption, the Banes and Incinerate get nothing. Warriors get Bloodthirst, Mortal Strike, Heroic Strike, Whirlwind, Execute and more; rogues get Sinister Strike, Backstab, Eviscerate, Mutilate and more. A new generator, `tools/eureka/gen.py` (`make eureka`, run by `follow`), writes `core/eureka_auto_gen.go`. A covered channel (Arcane Missiles, Blizzard, Rain of Fire, Hellfire) takes the damage bonus on its ticks, because its client damage comes from a triggered spell's direct hits. Only the Gnome mage goldens move (TestP1Mage, regenerated). | client 1259812, 1259813, 1259817, 1259821 and 1259823 (SpellMisc, SpellEffect, SpellClassOptions, no SpellAuraOptions row); Wowhead Forever 1259821 "deal 10% more damage for 8 sec" (read 2026-11-01); tests `TestEurekaMatchesTheClientRow`, `TestEurekaReachesOnlyItsClassMasks` and `TestEurekaReachesWarriorAbilities` (failed, then passed) | CONFIRMED-BUG | E d6af3eef1 |
 | C3 | Racials. Troll Berserking (20554: 10%, 10 s, 3 min) matches. The Gnome entry is C2. Orc, Undead and Human are not published for warlocks. | client 20554; `core/racials.go:538-620` | Aligned | - |
 | C4 | Set bonuses on the published BiS. Only the horde Affliction and Demonology sets carry one: Vestments of the Devout 3/8 (2: +8 resistances, 3: +18 spell damage), modeled as client stats. | `data/builds/1.60.1.70707/bis/warlock-*.json`, `sets.json`; `core/client_sets_gen.go:24` | Aligned | - |
 | C5 | Round 3 side effects: demons still refuse player buffs (the auras table lists the player's only), Lash is 50 at rank 6, Firebolt uses the client range, and Unholy Power is pet-wide. | baseline runs `runs/base-*` | Aligned | - |
@@ -66,15 +66,33 @@ The Stamina (75%) and Intellect (30%) shares stay. The client sheet says pets ha
 | Demonology | shares + hit / Shadow Vulnerability / Doom rotation (S d8d8127f3) | -3.09% / -0.12% / +2.55% | -3.06% / -0.12% / +2.50% |
 | Destruction | shares + hit / Doom rotation | -2.57% / +1.38% | -2.59% / +1.44% |
 | **All steps, horde** | Affliction / Demonology / Destruction | **-3.09% / -0.74% / -1.23%** | **-3.08% / -0.75% / -1.18%** |
-| **All steps, alliance (gnome)** | Affliction / Demonology / Destruction | **-2.88% / -0.36% / -0.99%** | **-3.01% / -0.47% / -0.96%** |
+| Alliance (gnome), all warlock steps before Eureka! | Affliction / Demonology / Destruction | -2.88% / -0.36% / -0.99% | -3.01% / -0.47% / -0.96% |
+| Alliance (gnome), + Eureka! (E d6af3eef1) | Affliction / Demonology / Destruction | -0.75% / -1.06% / -0.76% | -0.66% / -0.94% / -0.67% |
+| **All steps, alliance (gnome)** | Affliction / Demonology / Destruction | **-3.60% / -1.42% / -1.74%** | **-3.65% / -1.41% / -1.62%** |
 
-Absolute DPS at seed 1, horde: Affliction 601.0 to 582.4, Demonology 664.1 to 659.2, Destruction 676.3 to 668.0. Alliance: 605.2 to 587.8, 661.1 to 658.7, 678.2 to 671.5. The order is still Destruction, then Demonology, then Affliction. The demon's share of damage is now about 12% (Affliction), 12% (Demonology) and 11% (Destruction), against 15%, 15% and 12% before.
+Absolute DPS at seed 1, horde: Affliction 601.0 to 582.4, Demonology 664.1 to 659.2, Destruction 676.3 to 668.0. Alliance: 605.2 to 583.4, 661.1 to 651.7, 678.2 to 666.4. The order is still Destruction, then Demonology, then Affliction. The demon's share of damage is now about 12% (Affliction), 12% (Demonology) and 11% (Destruction), against 15%, 15% and 12% before.
+
+## Eureka! across the Gnome-published specs (E d6af3eef1)
+
+Every spec whose published band-60 alliance race is Gnome (`data/builds/1.60.1.70707/bis/*.json`). Raid preset, 10000 iterations. Before is the lane engine at 6f5d65cb6 and after is d6af3eef1, both on this branch's data. No Gnome warrior or rogue is published, so the new Rage and Energy rows move no published number.
+
+| Spec | Seed 1 | Seed 50001 |
+|---|---|---|
+| mage-arcane | 663.6 to 665.9 (+0.35%) | 664.8 to 667.1 (+0.35%) |
+| mage-fire | 714.7 to 717.8 (+0.43%) | 717.0 to 720.0 (+0.42%) |
+| mage-frost | 559.3 to 559.0 (-0.05%) | 559.1 to 558.9 (-0.04%) |
+| priest-shadow | 668.1 to 665.4 (-0.40%) | 668.4 to 665.8 (-0.39%) |
+| priest-holy (effective HPS, heal profile) | 651.1 to 651.2 (+0.02%) | 651.3 to 651.7 (+0.06%) |
+| warlock-affliction | 587.8 to 583.4 (-0.75%) | 587.0 to 583.1 (-0.66%) |
+| warlock-demonology | 658.7 to 651.7 (-1.06%) | 658.2 to 652.0 (-0.94%) |
+| warlock-destruction | 671.5 to 666.4 (-0.76%) | 671.3 to 666.8 (-0.67%) |
+
+Mages gain because 8 s of uncharged casts outlasts three charges. Warlocks and Shadow lose because their DoTs and Bane of Doom no longer take the 10%. The holy priest gains a little because its heals now take the bonus.
 
 ## Still open
 
 - Pet crit: Blizzard's stated intent is not live (X3; +1.7 to +2.6% if it ships). Pet haste (X4). A launch-build log settles both.
 - Pet hit (X2) rests on one Blizzard statement and has not been read on a sheet.
-- Eureka! class masks (C2) need a core fix for every class.
 - The demon sheets at 60 (base attack power and weapon) are wowsims' Classic figures. wowsims/forever extrapolates a fixed 186 attack power for the Sayaad from levels 20 and 30, which is single-source and not read at 60.
 - Demonic Brand stays unmodeled. Siphon Life tick crit stays held for the owner.
 - The published BiS json still carries the pre-round-3 Destruction string (nightly-owned). sim/request TestRotationLadder goldens are not regenerated, as the brief requires.
