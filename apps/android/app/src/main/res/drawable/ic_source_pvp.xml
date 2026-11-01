@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Crossed swords, each with its crossguard and grip: a boss drop on the item page's Where it comes from rows. -->
+<!-- Crossed swords: a PvP source on the item page. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"

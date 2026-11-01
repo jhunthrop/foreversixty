@@ -220,15 +220,17 @@ fun ItemTooltipPanel(model: ItemTooltipModel) {
         if (damage != null && speed != null) Split(damage, speed)
         model.weaponDps?.let { Line(it) }
         model.stats.forEach { Line(it) }
+        // The client's order: requirements, then the green Equip and Use lines, then the set.
+        model.requiresLevel?.let {
+            Spacer(Modifier.height(4.dp))
+            Line(it)
+        }
+        model.equipLines.forEach { Line(it, FsColor.parseGreen) }
         model.effect?.let { Line(it, FsColor.parseGreen) }
         model.setName?.let {
             Spacer(Modifier.height(4.dp))
             Line(it, FsColor.parseGold)
             model.setBonuses.forEach { bonus -> Line(bonus, FsColor.muted) }
-        }
-        model.requiresLevel?.let {
-            Spacer(Modifier.height(4.dp))
-            Line(it)
         }
         model.itemLevel?.let { Line(it, FsColor.parseGold) }
     }

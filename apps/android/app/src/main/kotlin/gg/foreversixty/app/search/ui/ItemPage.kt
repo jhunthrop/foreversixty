@@ -75,7 +75,6 @@ import gg.foreversixty.app.search.logic.ItemSourceLine
 import gg.foreversixty.app.search.logic.ItemSpecLine
 import gg.foreversixty.app.search.logic.ItemUsesPhase
 import gg.foreversixty.app.sims.ui.Bar
-import java.util.Locale
 import kotlinx.coroutines.launch
 
 /** The page's sections, in order, each a strip chip (spec F12.4). */
@@ -103,8 +102,10 @@ fun ItemPage(
     startAt: ItemSection? = null,
 ) {
     val list = rememberLazyListState()
+    // The name sits in the head; the bar repeats it only once the head has scrolled away (P S7).
+    val headGone by remember { derivedStateOf { list.firstVisibleItemIndex > 0 } }
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-        ItemBar(titleOf(phase), backLabel, actions.onBack)
+        ItemBar(titleOf(phase)?.takeIf { headGone }, backLabel, actions.onBack)
         Box(Modifier.weight(1f)) {
             when (phase) {
                 ItemPagePhase.Unknown -> Text(
@@ -130,7 +131,7 @@ private fun titleOf(phase: ItemPagePhase): String? = when (phase) {
 @Composable
 private fun ItemBar(title: String?, backLabel: String, onBack: () -> Unit) {
     TopAppBar(
-        title = { title?.let { Text(it.uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong, maxLines = 2) } },
+        title = { title?.let { Text(it, style = FsType.sec, color = FsColor.strong, maxLines = 2) } },
         navigationIcon = {
             IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = backLabel, tint = FsColor.strong) }
         },
@@ -177,18 +178,20 @@ private fun LoadedBody(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
+                    val stacked = isLargeText()
                     ClassCrest(pick.className, 40.dp)
-                    Column(Modifier.weight(1f)) {
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(pick.title, style = FsType.bodyStrong, color = FsColor.strong)
                         Text(pick.meta, style = FsType.body, color = FsColor.muted)
+                        if (stacked) Tag(stringResource(R.string.itemPage_yours), FsColor.gold)
                     }
-                    Tag(stringResource(R.string.itemPage_yours), FsColor.gold)
+                    if (!stacked) Tag(stringResource(R.string.itemPage_yours), FsColor.gold)
                 }
             }
         }
         item(key = "tooltip") { Box(Modifier.padding(horizontal = SearchLayout.margin)) { ItemTooltipPanel(model.tooltip) } }
         item(key = "sources") { Sources(uses, actions.onRetryUses) }
-        item(key = "specs") { Specs(uses, build, expanded, { expanded = true }, actions.onOpenSpec) }
+        item(key = "specs") { Specs(uses, build, expanded, { expanded = true }, actions.onOpenSpec, actions.onRetryUses) }
         item { Spacer(Modifier.height(32.dp)) }
     }
     if (pinned) {
@@ -280,7 +283,8 @@ private fun Sources(uses: ItemUsesPhase, onRetry: () -> Unit) {
                 Foot(stringResource(R.string.itemPage_noSources))
             } else {
                 RowCard(uses.sources.size) { i -> SourceRow(uses.sources[i]) }
-                Foot(stringResource(R.string.itemPage_sourcesFoot))
+                // An unknown chance is said once for the group, never per row and never as 0%.
+                if (uses.chanceUnknown) Foot(stringResource(R.string.itemPage_chanceUnknown))
             }
         }
     }
@@ -308,29 +312,50 @@ private fun SourceRow(line: ItemSourceLine) {
     }
 }
 
-/** A source's tile glyph: swords for a boss or PvP, the book for a quest, the shield otherwise. */
+/**
+ * A source's tile glyph by kind, the one set both apps draw: a skull for a boss, a coin for a
+ * vendor, a scroll for a quest, a wrench for a recipe, a globe for a world drop, a banner for a
+ * reputation, crossed swords for PvP, a pin for a zone.
+ */
 @DrawableRes
 private fun sourceGlyph(kind: String): Int = when (kind) {
-    "raid", "dungeon", "pvp" -> R.drawable.ic_swords
-    "quest" -> R.drawable.ic_guide
-    else -> R.drawable.ic_shield
+    "raid", "dungeon" -> R.drawable.ic_source_boss
+    "vendor" -> R.drawable.ic_source_vendor
+    "quest" -> R.drawable.ic_source_quest
+    "crafted" -> R.drawable.ic_source_recipe
+    "rep" -> R.drawable.ic_source_rep
+    "pvp" -> R.drawable.ic_source_pvp
+    "zone" -> R.drawable.ic_source_zone
+    else -> R.drawable.ic_source_world
 }
 
+/** From font scale 1.5 a row's trailing tag drops under its meta (spec §9, as iOS at AX sizes). */
 @Composable
-private fun Specs(uses: ItemUsesPhase, build: String, expanded: Boolean, onExpand: () -> Unit, onOpen: (ItemSpecLine) -> Unit) {
+private fun isLargeText(): Boolean = LocalDensity.current.fontScale >= STACK_FONT_SCALE
+
+private const val STACK_FONT_SCALE = 1.5f
+
+@Composable
+private fun Specs(
+    uses: ItemUsesPhase,
+    build: String,
+    expanded: Boolean,
+    onExpand: () -> Unit,
+    onOpen: (ItemSpecLine) -> Unit,
+    onRetry: () -> Unit,
+) {
     Column {
         SectionLabel(stringResource(R.string.itemPage_bisFor))
         when (uses) {
             ItemUsesPhase.Loading -> SkeletonRows()
-            // The sources region carries the error and its Try again; one error per failure.
-            ItemUsesPhase.Failed -> Unit
+            // Both regions read the same file; each says so in its own words, never a bare heading.
+            ItemUsesPhase.Failed -> RegionError(stringResource(R.string.itemPage_bisForFailed), onRetry)
             is ItemUsesPhase.Loaded -> if (uses.specs.isEmpty()) {
                 Foot(stringResource(R.string.itemPage_bisForNone))
             } else {
                 val (shown, more) = ItemPageCopy.visibleSpecs(uses.specs, expanded)
                 RowCard(shown.size) { i -> SpecRow(shown[i], build) { onOpen(shown[i]) } }
                 if (more > 0) MoreSpecs(more, onExpand)
-                Foot(stringResource(R.string.itemPage_bisForFoot))
             }
         }
     }
@@ -347,12 +372,16 @@ private fun SpecRow(line: ItemSpecLine, build: String, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
+        val stacked = isLargeText()
+        val tagColor = if (line.isPick) FsColor.kill else FsColor.muted
         line.icon?.let { SpecIcon(it, build, SearchLayout.icon) } ?: ClassCrest(line.classSlug, SearchLayout.icon)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(line.title, style = FsType.bodyStrong, color = classColor(line.classSlug))
             Text(line.meta, style = FsType.body, color = FsColor.muted)
+            // At large text the tag goes under the meta so the name keeps the width (§9).
+            if (stacked) Tag(line.tag, tagColor)
         }
-        Tag(line.tag, if (line.isPick) FsColor.kill else FsColor.muted)
+        if (!stacked) Tag(line.tag, tagColor)
         Chevron()
     }
 }

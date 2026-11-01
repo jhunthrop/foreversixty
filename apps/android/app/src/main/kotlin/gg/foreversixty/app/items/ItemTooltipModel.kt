@@ -70,7 +70,10 @@ data class ItemTooltipModel(
     val weaponDamage: String? = null,
     val weaponSpeed: String? = null,
     val weaponDps: String? = null,
+    /** The white `+N Stat` lines. */
     val stats: List<String> = emptyList(),
+    /** The client's green `Equip:` sentences for spell power, healing, mp5 and the rest. */
+    val equipLines: List<String> = emptyList(),
     val effect: String? = null,
     val setName: String? = null,
     val setBonuses: List<String> = emptyList(),
@@ -112,6 +115,7 @@ data class ItemTooltipModel(
                 weaponSpeed = if (weapon) res.getString(R.string.items_weapon_speed, ItemNumbers.hundredths(item.speed)) else null,
                 weaponDps = if (weapon) res.getString(R.string.items_weapon_dps, ItemNumbers.tenths(item.dps)) else null,
                 stats = statLines(item, res),
+                equipLines = equipLines(item, res),
                 effect = item.effectText.split(Regex("\\s+")).filter { it.isNotEmpty() }.joinToString(" ").ifEmpty { null },
                 setName = set?.name,
                 setBonuses = set?.bonuses.orEmpty().map { res.getString(R.string.items_setBonus, it.pieces, it.description) },
@@ -151,12 +155,28 @@ data class ItemTooltipModel(
             },
         )
 
-        /** `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order. */
+        /** `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order; no Equip stat. */
         private fun statLines(item: Item, res: Resources): List<String> =
             ItemVocabulary.statOrder.mapNotNull { (key, name) ->
                 val value = item.stats[key]?.takeIf { it != 0 } ?: return@mapNotNull null
+                if (key in ItemVocabulary.equipStats || percentLine(item, key, res) != null) return@mapNotNull null
                 "${if (value < 0) "-" else "+"}${abs(value)} ${res.getString(name)}"
             }
+
+        /** The green `Equip:` sentences, flat stats first, then the percent ones, each in stat order. */
+        private fun equipLines(item: Item, res: Resources): List<String> {
+            val keys = ItemVocabulary.statOrder.map { it.first }.filter { (item.stats[it] ?: 0) != 0 }
+            val flat = keys.mapNotNull { key ->
+                ItemVocabulary.equipStats[key]?.let { res.getString(it, item.stats.getValue(key)) }
+            }
+            return flat + keys.mapNotNull { percentLine(item, it, res) }
+        }
+
+        private fun percentLine(item: Item, key: String, res: Resources): String? {
+            val line = ItemVocabulary.percentEquipStats[key] ?: return null
+            val percent = item.percentStats[key]?.takeIf { it != 0 && it == item.stats[key] } ?: return null
+            return res.getString(line, "$percent%")
+        }
 
         /**
          * Where it comes from: the site's formatted line (the BiS row's, else the caller's, which

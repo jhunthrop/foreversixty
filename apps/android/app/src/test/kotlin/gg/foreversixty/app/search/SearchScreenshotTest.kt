@@ -19,6 +19,8 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.home.HomeFixtures
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.LocalItemIconPainter
+import gg.foreversixty.app.network.ApiError
+import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.raids.resources
 import gg.foreversixty.app.search.logic.CharacterPhase
 import gg.foreversixty.app.search.logic.IndexPhase
@@ -95,13 +97,18 @@ class SearchScreenshotTest {
             recents = recents,
             forCharacter = ForCharacter(LIGHTNINGBOLLTZ, "Elemental Shaman guide"),
             build = build,
-            ownKeys = setOf(OWN_ALT.key),
+            ownKeys = setOf(CURRENT.key),
         )
     }
 
-    /** Invented characters (captions say so): two strangers and the account's own alt. */
-    private val characters = CharacterPhase.Loaded(
-        listOf(data.character("Elementalx", "mage", level = 58), OWN_ALT, data.character("Elemental", "druid", "eu", level = 44)),
+    /** Invented strangers (captions say so) for `ele`: no row is the account's. */
+    private val strangers = CharacterPhase.Loaded(
+        listOf(data.character("Elementalx", "mage", level = 58), data.character("Elemental", "druid", "eu", level = 44)),
+    )
+
+    /** `lightn`: the current character first (the `You` row), then two invented strangers. */
+    private val lightn = CharacterPhase.Loaded(
+        listOf(CURRENT, data.character("Lightningrod", "mage", level = 60), data.character("Lightnin", "warrior", "eu", level = 52)),
     )
 
     private fun cape() = requireNotNull(index.item(SearchTestData.SPRITECASTER_CAPE))
@@ -115,10 +122,15 @@ class SearchScreenshotTest {
 
     // F12.2 All results
 
-    @Test fun all() = search("f12-2-all-and", state("ele", characters = characters))
+    @Test fun all() = search("f12-2-all-and", state("ele", characters = strangers))
 
-    @Test @Config(qualifiers = PIXEL_9_TALL)
-    fun allLarge() = search("f12-2-all-large-and", state("ele", characters = characters), large = true)
+    @Test @Config(qualifiers = PIXEL_9_XL)
+    fun allFull() = search("f12-2-all-full-and", state("ele", characters = strangers))
+
+    @Test @Config(qualifiers = PIXEL_9_XL)
+    fun allLarge() = search("f12-2-all-large-and", state("ele", characters = strangers), large = true)
+
+    @Test fun characters() = search("f12-2-characters-and", state("lightn", SearchScope.Characters, lightn))
 
     // F12.3 Items
 
@@ -128,6 +140,8 @@ class SearchScreenshotTest {
 
     @Test fun noResults() = search("f12-6-none-and", state("xqz", characters = CharacterPhase.Loaded(emptyList())))
 
+    @Test fun charactersAllScope() = search("f12-2-all-lightn-and", state("lightn", characters = lightn))
+
     @Test fun noResultsOffline() = search("f12-6-offline-and", state("xqz", characters = CharacterPhase.Offline))
 
     @Test fun indexFailed() = search("f12-index-failed-and", state("ele").copy(indexPhase = IndexPhase.Failed, sections = emptyList()))
@@ -136,8 +150,8 @@ class SearchScreenshotTest {
 
     private fun owner(preset: String) = ItemPageOwner("shaman", BisSelection("shaman", "shaman-elemental", BisRange(60, preset), "horde"))
 
-    private fun page(id: Int, owner: ItemPageOwner): ItemPageStore = runBlocking {
-        ItemPageStore(id, ItemLook(id), SearchTestSource(), owner, data.specs(), resources()).also { it.load() }
+    private fun page(id: Int, owner: ItemPageOwner, source: SearchTestSource = SearchTestSource()): ItemPageStore = runBlocking {
+        ItemPageStore(id, ItemLook(id), source, owner, data.specs(), resources()).also { it.load() }
     }
 
     private fun item(name: String, store: ItemPageStore, large: Boolean = false, startAt: ItemSection? = null) = capture(name, large) {
@@ -146,11 +160,20 @@ class SearchScreenshotTest {
 
     @Test fun pick() = item("f12-4-pick-and", page(SearchTestData.SPRITECASTER_CAPE, owner(BisRange.RAID)))
 
-    @Test fun runnerUp() = item("f12-4-runner-up-and", page(SearchTestData.SPRITECASTER_CAPE, owner(BisRange.BARE)))
+    @Test @Config(qualifiers = PIXEL_9_TALL)
+    fun runnerUp() = item("f12-4-runner-up-and", page(SearchTestData.SATYRMANE_SASH, owner(BisRange.RAID)))
 
-    @Test fun notOnList() = item("f12-4-not-listed-and", page(SearchTestData.SPRITECASTER_CAPE, ItemPageOwner("mage", null)))
+    /** A Horde vendor and reputation set piece no list places: no card, the set lines, two source kinds. */
+    @Test @Config(qualifiers = PIXEL_9_TALL)
+    fun notOnList() = item("f12-4-not-listed-and", page(SearchTestData.DEFILERS_MAIL_PAULDRONS, owner(BisRange.RAID)))
 
     @Test @Config(qualifiers = PIXEL_9_TALL)
+    fun usesFailed() = item(
+        "f12-4-uses-failed-and",
+        page(SearchTestData.SPRITECASTER_CAPE, owner(BisRange.RAID), SearchTestSource(uses = ApiResult.Failure(ApiError.Status(HTTP_UNAVAILABLE)))),
+    )
+
+    @Test @Config(qualifiers = PIXEL_9_XL)
     fun pickLarge() = item("f12-4-pick-large-and", page(SearchTestData.SPRITECASTER_CAPE, owner(BisRange.RAID)), large = true)
 
     @Test fun bisFor() = item("f12-5-bis-for-and", page(SearchTestData.SPRITECASTER_CAPE, owner(BisRange.RAID)), startAt = ItemSection.BisFor)
@@ -163,7 +186,10 @@ class SearchScreenshotTest {
 
     private companion object {
         const val LIGHTNINGBOLLTZ = "Lightningbolltz"
-        val OWN_ALT = SearchTestData.character("Elekk", "shaman", level = 41)
+        const val HTTP_UNAVAILABLE = 503
+
+        /** The signed-in account's current character, an Elemental Shaman: the one `You` row. */
+        val CURRENT = SearchTestData.character(LIGHTNINGBOLLTZ, "shaman", level = 60)
     }
 }
 
@@ -173,5 +199,8 @@ private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.Compar
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 
-/** Pixel 9's width, tall enough for the largest text. */
+/** Pixel 9's width, tall enough for a whole item page. */
 private const val PIXEL_9_TALL = "w412dp-h2000dp-normal-long-notround-any-420dpi-keyshidden-nonav"
+
+/** Pixel 9's width, tall enough for every group and the largest text. */
+private const val PIXEL_9_XL = "w412dp-h3200dp-normal-long-notround-any-420dpi-keyshidden-nonav"

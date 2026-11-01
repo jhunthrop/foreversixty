@@ -93,6 +93,22 @@ class PreparedIndex(
     fun shardOf(id: Int): Int = Math.floorMod(id, itemUsesShards.coerceAtLeast(1))
 }
 
+/**
+ * What leaves the app for the website until its screen ships (UX S5): guides until F9, characters
+ * and Rankings until F11. Drop an entry as its lane lands; the rows' external-link glyph follows.
+ */
+object WebHandoff {
+    fun opensWebsite(target: SearchTarget): Boolean = when (target) {
+        is SearchTarget.Guide -> GUIDES
+        is SearchTarget.Character -> CHARACTERS
+        is SearchTarget.Item, is SearchTarget.Talent -> false
+    }
+
+    const val GUIDES = true
+    const val CHARACTERS = true
+    const val RANKINGS = true
+}
+
 /** The phone-side matches for one query, each group in its final order and uncapped. */
 data class LocalResults(
     val guides: List<SearchGuide> = emptyList(),

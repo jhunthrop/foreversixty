@@ -3,6 +3,7 @@ package gg.foreversixty.app.search
 import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.CharacterSearchRow
+import gg.foreversixty.app.model.ItemUses
 import gg.foreversixty.app.model.ItemUsesShard
 import gg.foreversixty.app.model.ItemsFile
 import gg.foreversixty.app.model.SearchGuide
@@ -20,14 +21,26 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.search.logic.ItemPageSource
 import java.io.File
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 
 /**
  * F12's test data, the same as iOS's SearchTestData: the contract fixtures, plus a rich index made
- * from build 70658's own files (items, talents, the spec catalogue) for the boards.
+ * from the active build's own files (items, talents, the spec catalogue) for the boards, and the
+ * site generator's item-uses rows for the three item states (`resources/search/item-uses-70707.json`,
+ * written by `web/src/lib/search/item-uses.ts` over build 70707).
  */
 object SearchTestData {
-    const val BUILD = "1.60.1.70658"
+    const val BUILD = "1.60.1.70707"
+
+    /** Lightningbolltz's Back pick on the Horde 60 raid list. */
     const val SPRITECASTER_CAPE = 11623
+
+    /** Runner-up 2 for Waist on the same list, and Elemental's row says so too. */
+    const val SATYRMANE_SASH = 17755
+
+    /** A Horde vendor and reputation set piece no best in slot list places. */
+    const val DEFILERS_MAIL_PAULDRONS = 20203
     private val repo = File("../../..")
     val buildDir = File(repo, "data/builds/$BUILD")
 
@@ -39,6 +52,13 @@ object SearchTestData {
     fun fixtureIndex(): SearchIndex = ApiJson.decodeFromString(SearchIndex.serializer(), RaidFixture.text("cdn.search"))
 
     fun fixtureUses(): ItemUsesShard = ApiJson.decodeFromString(ItemUsesShard.serializer(), RaidFixture.text("cdn.item-uses"))
+
+    /** The generator's rows for the three board items, as one shard answer. */
+    fun realUses(): ItemUsesShard {
+        val text = requireNotNull(javaClass.classLoader?.getResource("search/item-uses-70707.json")) { "no item-uses resource" }.readText()
+        val items = ApiJson.decodeFromString(MapSerializer(String.serializer(), ItemUses.serializer()), text)
+        return ItemUsesShard(BUILD, 0, 64, items)
+    }
 
     fun item(id: Int, name: String, quality: Int = 3, level: Int = 52, slot: String = "back", classes: List<String> = listOf("shaman")) =
         SearchItem(id, name, "inv_misc_cape_20", quality, slot, level, 47, classes)
@@ -78,8 +98,8 @@ object SearchTestData {
 }
 
 /**
- * The item page's files from the repo's build 70658 (items, sets, BiS lists) and the item-uses
- * fixture; [uses] replaces the shard's answer.
+ * The item page's files from the repo's build 70707 (items, sets, BiS lists) and the generator's
+ * item-uses rows; [uses] replaces the shard's answer.
  */
 class SearchTestSource(
     private val uses: ApiResult<ItemUsesShard>? = null,
@@ -91,22 +111,12 @@ class SearchTestSource(
         if (tooltipFails) return null
         val dir = SearchTestData.buildDir
         val items = ApiJson.decodeFromString(ItemsFile.serializer(), File(dir, "items/${request.classSlug}.json").readText()).items
-            .map { if (it.id == SearchTestData.SPRITECASTER_CAPE) it.copy(bonding = CAPE_BONDING, armorType = CAPE_ARMOR) else it }
         val sets = ApiJson.decodeFromString(ListSerializer(ItemSet.serializer()), File(dir, "sets.json").readText())
         val bis = request.spec?.let { ApiJson.decodeFromString(BisFile.serializer(), File(dir, "bis/$it.json").readText()) }
         return ItemTooltipSources(items.associateBy { it.id }, sets, bis)
     }
 
-    private companion object {
-        /**
-         * The cape's C6 fields as the next data run publishes them (commit 7d25700a6: classic-db's
-         * item_template.bonding, `Binds when picked up`, and `Cloth` for a cloak); build 70658's
-         * committed files predate the column.
-         */
-        const val CAPE_BONDING = "pickup"
-        const val CAPE_ARMOR = "cloth"
-    }
 
     override suspend fun uses(build: String, shard: Int): ApiResult<ItemUsesShard> =
-        uses ?: ApiResult.Success(SearchTestData.fixtureUses(), requestId = "")
+        uses ?: ApiResult.Success(SearchTestData.realUses(), requestId = "")
 }

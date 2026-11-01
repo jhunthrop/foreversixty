@@ -2580,6 +2580,79 @@ enum Copy {
         format("itemPage.pickMetaBare", spec, band, faction)
     }
 
+    /// Best in slot lists did not load.
+    static var itemPageBisForFailed: String { text("itemPage.bisForFailed") }
+
+    /// Equip: Increases damage and healing done by magical spells and effects by up to {n}.
+    static func itemsEquipSpellPower(n: Int) -> String {
+        format("items.equip.spellPower", n)
+    }
+
+    /// Equip: Increases healing done by spells and effects by up to {n}.
+    static func itemsEquipHealing(n: Int) -> String {
+        format("items.equip.healing", n)
+    }
+
+    /// Equip: +{n} Attack Power.
+    static func itemsEquipAttackPower(n: Int) -> String {
+        format("items.equip.attackPower", n)
+    }
+
+    /// Equip: +{n} ranged Attack Power.
+    static func itemsEquipRangedAttackPower(n: Int) -> String {
+        format("items.equip.rangedAttackPower", n)
+    }
+
+    /// Equip: Restores {n} mana per 5 sec.
+    static func itemsEquipMp5(n: Int) -> String {
+        format("items.equip.mp5", n)
+    }
+
+    /// Equip: Decreases the magical resistances of your spell targets by {n}.
+    static func itemsEquipSpellPenetration(n: Int) -> String {
+        format("items.equip.spellPenetration", n)
+    }
+
+    /// Equip: Increases damage done by Fire spells and effects by up to {n}.
+    static func itemsEquipFirePower(n: Int) -> String {
+        format("items.equip.firePower", n)
+    }
+
+    /// Equip: Increases the block value of your shield by {n}.
+    static func itemsEquipBlockValue(n: Int) -> String {
+        format("items.equip.blockValue", n)
+    }
+
+    /// Equip: Increased Defense +{n}.
+    static func itemsEquipDefense(n: Int) -> String {
+        format("items.equip.defense", n)
+    }
+
+    /// Equip: Improves your chance to get a critical strike by {percent}.
+    static func itemsEquipCrit(percent: String) -> String {
+        format("items.equip.crit", percent)
+    }
+
+    /// Equip: Improves your chance to hit by {percent}.
+    static func itemsEquipHit(percent: String) -> String {
+        format("items.equip.hit", percent)
+    }
+
+    /// Equip: Increases your chance to dodge an attack by {percent}.
+    static func itemsEquipDodge(percent: String) -> String {
+        format("items.equip.dodge", percent)
+    }
+
+    /// Equip: Increases your chance to parry an attack by {percent}.
+    static func itemsEquipParry(percent: String) -> String {
+        format("items.equip.parry", percent)
+    }
+
+    /// Equip: Increases your chance to block attacks with a shield by {percent}.
+    static func itemsEquipBlock(percent: String) -> String {
+        format("items.equip.block", percent)
+    }
+
     /// Logs
     static var homeLogs: String { text("home.logs") }
 
