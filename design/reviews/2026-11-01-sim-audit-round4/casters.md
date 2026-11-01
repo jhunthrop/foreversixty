@@ -89,7 +89,92 @@ On the published gear (spec-breakdown, 10,000 iterations, seeds 1 and 50001), on
 
 Destruction losing 0.3 to 0.5% means the ranker scored Elemental Mage Staff above Kindling Stave on its weights, and the verified sim then disagreed. Destruction's published weights give fire_power 0.63, and the fork's Destruction list casts mostly Shadow Bolt. That is a weights question for the warlock lane, not a stat bug.
 
-Not fixed, and outside this change: on the wowhead supplement, `critstrkpct` (15 planner items) and `hitpct` (23) are flat percentages. Mapping them to `crit`/`hit` would run them through the rating conversion, so they need their own path. `def`, `armorbonus` and `blockamount` are also dropped on that path.
+| S2 | Wowhead's percentage stats were dropped on the supplement path, which feeds both the planner json (`to_gear_item`) and simdb.bin (`build_wowhead_sim_items`, via `planner_stats`). `critstrkpct` (15 planner items) and `hitpct` (23) were dropped; so were `dodgepct`, `parrypct`, `blockpct` and `def`. | Fletcher's Gloves 7348 has critstrkpct 1 on wowhead and 14 crit rating on its client row, so the key is a flat percentage. Greatflank Flayer 281587 has def 3 on wowhead and defense 3 on its client row, the same unit as `defrtng`. The percent keys now count in `stats` and are recorded in `percent_stats`, the client path's own contract. simdb divides only the rating part of each entry and adds the percentage undivided. `def` maps to `defense`. `armorbonus` was already added to armor on load (`wowhead_items.py:226`; Enchanted Sandals 36 + 50 = the client's 86). `blockamount` is a shield's intrinsic block value, which 274 of the 286 client shields do not carry either, so it stays unmapped. Tests: `data/tests/test_wowhead_percent_stats.py` (2 failed, then passed). A local simdb regeneration adds defense to 30 items, hit to 14, crit to 11, and dodge, parry and block to 2 each. | CONFIRMED-BUG | S c4235a57b |
+
+S2 measured the same way as S1 (local data, not committed). The baseline is S1's data, and the engine is the same.
+
+- **Published gear (spec-breakdown, 10,000 iterations, seeds 1 and 50001, both factions).**
+  - Fire +1.3 to +1.5%.
+  - Frost +0.7%.
+  - Affliction +0.8%.
+  - Demonology +0.8%.
+  - Destruction +0.65%.
+  - These five wear Kindling Stave, which now has its 1% crit.
+  - Every other spec 0.0.
+- **Ranker re-rank (`leveling-bis`, band 60 raid, verified `set_dps`, alliance / horde).**
+  - Gains:
+    - Assassination +2.9 / +2.0%.
+    - Combat +1.5 / +0.7%.
+    - Subtlety +1.7 / +0.4%.
+    - Marksmanship +0.7 / +1.2%.
+    - Beast Mastery +0.7 / +0.6%.
+    - Fury +1.0 / +0.6%.
+    - Arms +0.5 / +0.2%.
+    - Affliction +1.5 / +1.2%.
+    - Demonology +0.8 / +0.7%.
+    - Feral bear -0.6 / +1.4%.
+  - The new picks are Blackcrow, Blackstone Ring, Band of the Penitent, Mask of the Unforgiven, Brigam Girdle, Vambraces of the Sadist, Cloak of Flames and Kindling Stave.
+  - Losses:
+    - Survival -1.5 / -1.8%.
+    - Arcane -2.7 / -1.4%: Kindling Stave over Glowing Brightwood Staff.
+    - Enhancement -1.3 / -0.7%.
+    - Retribution +0.4 / -1.1%.
+    - Protection paladin threat -1.5 / -0.4%, and Protection warrior -0.8 / -0.5%: Ornate Adamantium Breastplate and Talvash's Gold Ring, both for defense.
+    - Feral cat -0.2 / +0.2%.
+  - No change: Fire, Frost, Shadow, Destruction, Balance, Elemental and every healer.
+  - The losses have the shape of S1's Destruction result. The ranker picks on its weights, and its own verified sim then scores the set lower. The stats themselves are now right. Ranker picks that lose on verify are open for the ranker owner.
+
+
+## Arcane mana (wow-player review hold)
+
+One logged iteration (horde, raid, seed 1) of the fixed list. The fight starts at 7,503 mana, and the bar reads 5,524 at 30 s, 5,337 at 60 s, 2,289 at 120 s, 2,090 at 150 s and about 2,100 at 180 s, with a floor of 688. Over 10,000 iterations it is out of mana for 3.1 s of 180.
+
+Arcane Blast costs 15% of base mana, 181.9, plus 100% a stack, with Arcane Power's +30% adding on top:
+
+| Stacks | 0 | 1 | 2 | 3 | 4 |
+|---|---|---|---|---|---|
+| Arcane Blast | 181.9 | 363.9 | 545.9 | 727.8 | 909.8 |
+| Arcane Blast under Arcane Power | 236.5 | 418.5 | 600.4 | 782.2 | 964.2 |
+
+- Missile Barrage's Arcane Missiles are free, or 178.5 under Arcane Power (30% of 595).
+- Frostbolt costs 221 (299 under Arcane Power).
+- That iteration spent 18,359 mana on 37 Arcane Blasts and 4,368 on 18 Frostbolts.
+
+Regen sources:
+
+| Source | Mana |
+|---|---|
+| Judgement of Wisdom | 5,900 |
+| Spirit and mp5, regen row 1 | 4,138 |
+| Major Mana Potion | 3,701 |
+| Spirit and mp5, regen row 2 | 1,069 |
+| Mana Ruby | 1,107 |
+| Mana Jade | 402 |
+
+**Why Arcane needs no Evocation.** The list paces itself. It blasts past three stacks only while the mana bar is ahead of the fight, and otherwise falls back to Frostbolt, at 221 mana for 1,360 a hit. A fourth-stack Arcane Blast spends 910 mana for about 750. So the list does burn its pool, down to about 700 to 2,100 at the end, but it is never forced idle.
+
+Evocation adds about 4,400 mana, which the list turns into about 6.6 more Arcane Blasts. The 8 s channel costs about 7.6 Frostbolts. Measured at 10,000 iterations, horde, at seeds 1 / 50001:
+
+| Evocation below | DPS | Change |
+|---|---|---|
+| 5% mana | 594.9 / 595.1 | -1.0% |
+| 30% mana | 590.3 / 590.4 | -1.7% |
+| 50% mana | 586.8 / 586.0 | -2.4% |
+
+Fire runs dry for the opposite reason: its cheap filler, Scorch, sits behind Fire Blast and Pyroblast casts that the list never paces.
+
+**The -9.8% split.** Horde, mean of seeds 1 and 50001, on the published gear:
+
+| Step | DPS | Change |
+|---|---|---|
+| Pin | 666.1 | - |
+| Arcane Missiles rank 7 (X8) | 636.0 | -4.5% |
+| Arcane Blast and Missile Barrage cost fixes (X6, X7), without X5 | 634.2 | -0.3% |
+| Clearcasting spent by one spell (X5) | 600.8 | -5.3% |
+
+X6 and X7 cannot be backed out on their own once X5 is in, because the old overwrites would then strand Clearcasting's -100. With X5 in, removing X6 gives 595.8 and removing X7 gives 591.5.
+
+The costs above match the client rows: Arcane Blast PowerCostPct 15, 400573 +100% a stack, 12042 +30%, 400589 -100% and 12536's single charge. No further fix.
 
 ## Before/after (raid, band 60, 10,000 iterations; pin and origin/main against lane engine plus site branch)
 

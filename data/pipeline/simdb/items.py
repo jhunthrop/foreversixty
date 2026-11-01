@@ -334,9 +334,17 @@ def build_wowhead_sim_items(
     set_names = set_names or {}
     out: list[pb.SimItem] = []
     for w in items:
+        # A percent stat (`wh.PERCENT_STAT_KEYS`) is already a percentage:
+        # only the rating part of each entry is divided down.
+        percent = wh.planner_percent_stats(w)
+        ratings = {
+            key: amount - percent.get(key, 0)
+            for key, amount in wh.planner_stats(w, untracked).items()
+        }
         stat_pairs: list[tuple[str, float]] = list(
-            convert_rating_stats(wh.planner_stats(w, untracked), rating_factors).items()
+            convert_rating_stats(ratings, rating_factors).items()
         )
+        stat_pairs.extend((key, float(amount)) for key, amount in percent.items())
         if w.armor:
             stat_pairs.append(("armor", float(w.armor)))
 
