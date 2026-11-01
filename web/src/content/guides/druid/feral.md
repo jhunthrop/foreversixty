@@ -79,6 +79,8 @@ The Restoration points reach **Naturalist**, 2% more damage a rank (10% at 5/5).
 
 ## Stat priority
 
+Weapon damage per second matters in Forever. In Cat Form your auto attack has your weapon's DPS at one swing a second, and Shred deals 155% of that hit, so a high-DPS two-hander beats a caster staff that carries more Strength and Agility.
+
 ## Best in slot
 
 For Bear tanking, look for armor, stamina, and defense skill first.
