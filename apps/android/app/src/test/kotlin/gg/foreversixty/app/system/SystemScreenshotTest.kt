@@ -264,7 +264,7 @@ class SystemScreenshotTest {
 
     // Round 2: F13.5 `Compare with mine` and the compare it opens
 
-    private val sharedView = SharedBuildView(RaidFixture.load(Build.serializer(), "builds.get"), TalentTestData.warrior(), "warrior", "Warrior", "Orc")
+    private val sharedView = SharedBuildView(RaidFixture.load(Build.serializer(), "builds.get.compare"), TalentTestData.warrior(), "warrior", "Warrior", "Orc")
     private val mine = RaidFixture.load(Me.serializer(), "me").characters.first { it.name == "Obnoxious Yell" }
 
     private fun compareButton(name: String, large: Boolean, canCompare: Boolean) = capture(name, large, ForeverTab.Home) {
