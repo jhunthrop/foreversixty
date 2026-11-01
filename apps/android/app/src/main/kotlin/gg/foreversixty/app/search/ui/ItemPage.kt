@@ -238,15 +238,15 @@ private fun Head(look: ItemLook, meta: String?, build: String) {
 }
 
 /**
- * The tile at its real size with the index's name and meta, the chip strip, then each region at
- * its loaded height (spec §8, no layout shift): the pick card's slot when the character has a
- * list, the tooltip block, two source rows and six spec rows.
+ * The tile at its real size with the index's name and meta, then each region at its loaded
+ * height and in the loaded order (spec §11, no layout shift): the pick card's slot when the
+ * character has a list, the tooltip block, two source rows and six spec rows. The chip strip
+ * is not drawn: the loaded page pins it only once the head scrolls away.
  */
 @Composable
 private fun LoadingBody(phase: ItemPagePhase.Loading, build: String) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
         Head(phase.look, phase.meta, build)
-        StripChips(ItemSection.Item) {}
         if (phase.reservesPick) {
             Box(Modifier.padding(horizontal = SearchLayout.margin).padding(bottom = 16.dp).fillMaxWidth().height(PICK_CARD_HEIGHT).primaryCard())
         }

@@ -1,5 +1,29 @@
 # F12 Search and the item page: player verdict on the build captures
 
+**SHIP (round 3, 2026-11-01).** Every round 2 MUST is fixed. Round 3 notes are below; rounds 1 and 2 follow, kept for the record, and their HOLD lines are superseded by this one.
+
+## Round 3
+
+Read: iOS runner-up (Satyrmane Sash) and not-listed (Defiler's Mail Pauldrons), Android runner-up and not-listed. Android files are re-recorded and carry the same 12:09 stamp as iOS. I did not reopen the other captures; the agent says all were re-recorded and the ones I read in round 2 were already right.
+
+**Round 2 MUST: fixed.**
+- Sash: "+7 Stamina", "+10 Intellect", "+10 Shadow Resistance", then the green "Equip: Increases damage and healing done by magical spells and effects by up to 14." after "Requires Level 45". That is how the client prints it.
+- Pauldrons: "Equip: Restores 4 mana per 5 sec." in green, no white mana line.
+- "Legionite Glaive" as "Equip: +54 Attack Power." is also how the Classic client prints it.
+
+**SHOULD (none blocks the ship)**
+1. **The iOS Pauldrons tooltip is in the wrong order.** f12-4-not-listed-ios.png puts the set block ("The Defiler's Fortitude", the two Set lines) above "Requires Level 60" and the Equip line. The client prints Requires Level, then the Equip lines, then the set block, then the item level. Android (f12-4-not-listed-and.png) has it right. The two apps must print one tooltip. Match iOS to Android.
+2. **Vendor row still has no price, zone or faction**, and the reputation is still its own row ("The Defilers — Revered · Reputation"). You say the data has none of it yet. Join the two rows when the data lands: "Rutherford Twing · Vendor · The Defilers, Revered", with the zone and the Horde label. A player taps this row to learn what it costs.
+3. **Set piece has no piece list or count.** The client prints "The Defiler's Fortitude (0/5)" with the piece names. Add it with the vendor data.
+4. **Largest text icons** still shrink (carried from round 2). Re-check once the ax5 captures are on the next run.
+5. **"Unique" on the Pauldrons** is for the accuracy reviewer.
+
+**Accuracy hand-off (unchanged).** The cape as Pick for eight specs; "37 Armor" on the cape; the Sash as Pick for Frost Mage, Shadow Priest and the three Warlock specs while Elemental has it as Runner-up 2; "312 Armor" and the stat block on the Pauldrons; the Back-slot pair with Arcanoweave Cloak on F10/F14.
+
+One note for you beyond F12: the equip-sentence rule now also changes the Home and BiS tooltips. Check one BiS capture on the next pass. A raw "+54 Attack Power" line there would now be the odd one out.
+
+---
+
 Reviewer: wow-player, 2026-11-01. I read the iOS and Android captures in build/ios and build/android: empty, all, items scope, loading, pick, runner-up, not-on-list, unknown id, sources failed, best-in-slot-for, no results, offline and the largest-text pair. I did not see a vendor source row, a set piece or an Unique line in any capture.
 
 **HOLD (round 2: see the Round 2 section at the bottom; one small MUST left)**

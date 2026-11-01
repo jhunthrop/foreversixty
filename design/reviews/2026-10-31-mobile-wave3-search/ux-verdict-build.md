@@ -1,3 +1,43 @@
+# F12 build verdict, round 3
+
+Reviewer: ux-designer, 2026-11-01. Reviewed the re-recorded captures in `build/ios/` and `build/android/`. Rounds 2 and 1 are kept below.
+
+# HOLD (two small MUSTs)
+
+Round 2 closed:
+- **R2-M1:** the iOS back pill and the search field are clean capsules (`f12-unknown-ios.png`, `f12-1-empty-ios.png`). No end bars anywhere.
+- **R2-M2:** the Sash now prints the green `Equip: Increases damage and healing done by magical spells and effects by up to 14.` on both platforms, `+10 Shadow Resistance` has its capital R, and the Pauldrons print the green `Equip: Restores 4 mana per 5 sec.` (`f12-4-runner-up-ios.png`, `f12-4-runner-up-and.png`, `f12-4-not-listed-ios.png`, `f12-4-not-listed-and.png`). The Cape and the Sash read the same way.
+- **R2-M3:** the Android skeleton has the meta line, a pick slot, the tooltip block at the loaded height (about 284 dp, matching `f12-4-pick-and.png`), both source rows and the spec rows (`f12-4-loading-and.png`).
+- **Android offline strip:** all four corners rounded.
+- **iOS skull glyph:** larger and bolder.
+- **F12.5 tap-to-scroll:** accepted. `f12-5-bis-for-scrolled-ios.png` shows the page scrolled to `Best in slot for` with the back pill pinned and the first spec row on screen. The `Not in our item data yet` tooltip in that capture is the warrior fixture and is not judged.
+- **Vendor zone:** accepted as a data gap.
+
+## MUST (round 3)
+
+**R3-M1. The Pauldrons' tooltip lines are in a different order on each platform.** `f12-4-not-listed-ios.png`: set block (name, `(2) Set`, `(3) Set`), then `Requires Level 60`, then the green `Equip:` line, then `Item Level 65`. `f12-4-not-listed-and.png`: `Requires Level 60`, the green `Equip:` line, then the set block, then `Item Level 65`. The Cape and the Sash have no set block and agree. Spec §5.4: the F2.6 tooltip body exactly, and the rule is shared with the site. Fix: one order, built in the shared formatter that also feeds the website tooltip and the F2.6 sheet, in the client's order; add a golden test with a set item. Re-capture both platforms.
+
+**R3-M2. Android: the skeleton still shifts the page when it loads.** `f12-4-loading-and.png` draws the chip strip (`Item`, `Source`, `Best in slot for`) under the head and the pick slot below it. The loaded page (`f12-4-pick-and.png`) shows the head, then the pick card directly, with no chip strip until the page is scrolled (`f12-5-bis-for-and.png` shows it pinned). The pick card therefore jumps up about 56 dp on arrival. iOS is consistent (`f12-4-loading-ios.png` and `f12-4-pick-ios.png` both put the card above the chips). Spec §8: no layout shift. Fix: make the skeleton's order the loaded order on Android (head, card slot, tooltip, sources, spec rows) and draw no chips until they pin. If the strip is meant to be inline, draw it inline when loaded.
+
+## SHOULD and NICE
+
+- NICE: the dungeon-boss glyph is an outlined skull and crossbones on iOS and a filled skull on Android (`f12-5-bis-for-scrolled-ios.png`, `f12-4-pick-and.png`). One asset when next touched.
+- NICE: vendor rows still read `Vendor` with no zone or price. Re-capture when the data carries them; the spec line is `Vendor: {name} · {price}` plus the standing.
+- The iOS chip strip is unpinned and Android's is pinned; ship with one rule when the guide page is next touched.
+
+## Checklist (round 3)
+
+- [x] No stray bars on iOS field, back pill or chips.
+- [x] Every flat stat prints as the client's Equip sentence; resistances capitalised.
+- [x] Android loading has real heights and both sections.
+- [x] iOS tap on `Best in slot for` scrolls to the section.
+- [ ] Tooltip order identical across platforms (R3-M1).
+- [ ] Skeleton order equals loaded order on Android (R3-M2).
+
+Re-run after R3-M1 and R3-M2 with: `f12-4-not-listed-ios`, `f12-4-not-listed-and`, `f12-4-loading-and`, `f12-4-pick-and`.
+
+---
+
 # F12 build verdict, round 2
 
 Reviewer: ux-designer, 2026-11-01. Reviewed the refreshed captures in `build/ios/` and `build/android/` (commit 0b7f472c3) against the spec, the boards and my round 1 findings (kept below, unchanged).

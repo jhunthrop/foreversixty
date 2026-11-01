@@ -175,15 +175,10 @@ class BisModel(
     private var generation = 0
     private var requested: BisSelection? = null
 
-    /** Another tab's link (a guide's Gear row): the next [start] opens on this list, not the character's. */
-    fun request(selection: BisSelection) {
-        requested = selection
-    }
-
-    /** A list Search asked for (F12): the next [start] opens it instead of the character's own. */
-    private var requested: BisSelection? = null
-
-    /** Search's `Best in slot for` rows and For card (F12): the tab opens on [selection] next time it starts. */
+    /**
+     * Another tab's link (a guide's Gear row, Search's `Best in slot for` rows and For card): the
+     * next [start] opens on this list, not the character's.
+     */
     fun request(selection: BisSelection) {
         requested = selection
     }
@@ -193,7 +188,6 @@ class BisModel(
 
     /** The first load: the character, then the saved list at once, then the network. */
     suspend fun start() {
-        val asked = requested.also { requested = null }
         val character = source.currentCharacter()
         val own = character?.let { BisSelection.forCharacter(it, catalog) }
         val asked = requested.also { requested = null }

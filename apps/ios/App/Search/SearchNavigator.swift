@@ -3,7 +3,7 @@ import Observation
 import SwiftUI
 
 /// A list the BiS tab is asked to open: a spec's list, or nil for the character's own.
-struct BisRequest: Equatable, Sendable {
+struct SearchBisRequest: Equatable, Sendable {
     let id = UUID()
     let selection: BisSelection?
 }
@@ -17,7 +17,7 @@ final class SearchNavigator {
     let dependencies: SearchDependencies
     var isPresented = false
     /// RootView selects the BiS tab for it; the BiS screen opens the list and clears it.
-    var bisRequest: BisRequest?
+    var bisRequest: SearchBisRequest?
 
     init(dependencies: SearchDependencies) {
         self.dependencies = dependencies
@@ -28,11 +28,11 @@ final class SearchNavigator {
     /// Leaves search (when it is up) for a list in the BiS tab.
     func openList(_ selection: BisSelection?) {
         isPresented = false
-        bisRequest = BisRequest(selection: selection)
+        bisRequest = SearchBisRequest(selection: selection)
     }
 
     /// The request, once: the BiS screen takes it when it is ready to select.
-    func takeBisRequest() -> BisRequest? {
+    func takeBisRequest() -> SearchBisRequest? {
         defer { bisRequest = nil }
         return bisRequest
     }
