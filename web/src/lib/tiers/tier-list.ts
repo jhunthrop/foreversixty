@@ -22,6 +22,9 @@ export type TierTie = 'above' | 'below' | 'both';
 export interface TierRow {
   /** 1-based. Healers the error cannot tell apart share the rank of the first of them. */
   rank: number;
+  /** False on a healer list published without the measured error and tuning bounds: the
+   *  rows are sorted by value, but the page claims neither an order nor a tie. */
+  ranked: boolean;
   spec: string;
   classSlug: string;
   specSlug: string;
@@ -190,7 +193,9 @@ function healerTiesAndRanks(sorted: readonly Scored[]): { ties: (TierTie | null)
 function tiesAndRanks(
   sorted: readonly Scored[],
   role: BisRole,
+  ranked: boolean,
 ): { ties: (TierTie | null)[]; ranks: number[] } {
+  if (!ranked) return { ties: sorted.map(() => null), ranks: sorted.map((_scored, index) => index + 1) };
   if (role === 'healer') return healerTiesAndRanks(sorted);
   return {
     ties: tieMarks(
@@ -215,7 +220,9 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
     tank,
   );
   const top = sorted[0]!.metric;
-  const { ties, ranks } = tiesAndRanks(sorted, role);
+  // A healer list published without the measured error claims neither an order nor a tie.
+  const ranked = role !== 'healer' || healerOrderMeasured(pool);
+  const { ties, ranks } = tiesAndRanks(sorted, role, ranked);
   const bestEffectiveHealth = tank
     ? bestOf(sorted.map((s) => tankMetricsOf(s.input.band).effective_health))
     : 0;
@@ -225,6 +232,7 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
     const { gap, fraction } = gapAndFraction(metric, top, tank);
     const row: TierRow = {
       rank: ranks[index]!,
+      ranked,
       spec: entry.spec,
       classSlug: entry.class_slug,
       specSlug: entry.spec_slug,

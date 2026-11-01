@@ -233,20 +233,32 @@ describe('healer ties within error and across the profile’s tuning', () => {
     expect(rows.map((r) => r.tie)).toEqual(['below', 'both', 'above', null]);
   });
 
-  it('never orders a pair without the error and both bounds: a file ranked before they were published ties every healer', () => {
-    expect(ranked([{ hps: 1000 }, { hps: 700 }, { hps: 500 }]).map((r) => r.rank)).toEqual([1, 1, 1]);
-    expect(
+  it('claims neither an order nor a tie for a list published without the error and both bounds', () => {
+    for (const rows of [
+      ranked([{ hps: 1000 }, { hps: 700 }, { hps: 500 }]),
       ranked([
         { hps: 1000, error: 1 },
         { hps: 700, error: 1 },
-      ]).map((r) => r.rank),
-    ).toEqual([1, 1]);
-    expect(
+      ]),
       ranked([
         { hps: 1000, error: 1, bounds: 'flat' },
         { hps: 700, error: 1 },
-      ]).map((r) => r.rank),
-    ).toEqual([1, 1]);
+      ]),
+    ]) {
+      expect(rows.map((r) => r.ranked)).toEqual(rows.map(() => false));
+      expect(rows.map((r) => r.tie)).toEqual(rows.map(() => null));
+      // Still sorted by value, bars as before.
+      expect(rows[0]!.metric).toBe(1000);
+    }
+  });
+
+  it('marks every row of a measured list, and every DPS and tank row, as ranked', () => {
+    const healers = ranked([
+      { hps: 1000, error: 1, bounds: 'flat' },
+      { hps: 900, error: 1, bounds: 'flat' },
+    ]);
+    expect(healers.map((r) => r.ranked)).toEqual([true, true]);
+    expect(rankRole([dpsInput('a', 'a', 'A', 100)], 'dps')[0]!.ranked).toBe(true);
   });
 
   it('says whether a healer list’s order is measured: every band with its error and both bounds', () => {

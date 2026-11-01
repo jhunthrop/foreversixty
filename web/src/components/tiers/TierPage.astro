@@ -166,7 +166,7 @@ const stampTitle =
               >
                 <div class="tier-list" data-role={role}>
                   <div class="tier-heads" aria-hidden="true">
-                    <span class="quiet-label">{tiersCopy.headers.rank}</span>
+                    <span class="quiet-label">{rows[0]?.ranked === false ? '' : tiersCopy.headers.rank}</span>
                     <span class="quiet-label"></span>
                     <span class="quiet-label">{tiersCopy.headers.spec}</span>
                     <span class="quiet-label">{tiersCopy.headers.bar[role]}</span>
