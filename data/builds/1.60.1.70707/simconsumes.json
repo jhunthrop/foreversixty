@@ -11196,6 +11196,15 @@
     ]
   },
   {
+    "id": 250952,
+    "name": "Disorienting Smog Potion",
+    "quality": 1,
+    "required_level": 45,
+    "spell_ids": [
+      1252544
+    ]
+  },
+  {
     "id": 250953,
     "name": "Dragonfire Potion",
     "quality": 1,
