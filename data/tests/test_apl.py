@@ -275,6 +275,7 @@ EXPECTED_ABILITY_NAMES = {
         11551: "Battle Shout",
         2687: "Bloodrage",
         12328: "Death Wish",
+        1719: "Recklessness",
         23894: "Bloodthirst",
         1680: "Whirlwind",
         20662: "Execute",
