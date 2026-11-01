@@ -171,11 +171,42 @@ The tank talent search was not re-run. Tanks have no raid keeps, and the tank sc
 
 | # | finding | evidence and source | confirmed? | fix sha |
 |---|---|---|---|---|
-| L1 | **Illumination's 20272 also gives 15 s of 50% regeneration while casting**, new in Forever. The engine gave the mana only. | SpellEffect 1237075 (aura 134, 50), SpellMisc DurationIndex 8 (15 s); Wowhead buff "Regenerating at 50% of normal rate while casting spells. 15 seconds remaining"; Era 20272 has only the energize. Test first: `TestIlluminationOpensFifteenSecondsOfCastingRegen` (0 procs, then 1). | CONFIRMED-BUG (fresh, client plus Wowhead) | E 26088c6c6 |
+| L1 | **Illumination's 20272 also gives 15 s of 50% regeneration while casting**, new in Forever. The engine gave the mana only. | SpellEffect 1237075 (aura 134, 50), SpellMisc DurationIndex 8 (15 s); Wowhead buff "Regenerating at 50% of normal rate while casting spells. 15 seconds remaining"; Era 20272 has only the energize. Test first: `TestIlluminationOpensFifteenSecondsOfCastingRegen` (0 procs, then 1). | CONFIRMED-BUG (fresh, client tables; Wowhead's buff is the same data, so one source; see the split below) | E 26088c6c6 |
 | L2 | Benediction on Holy Shock (P3). | | CONFIRMED-BUG (P3) | E a3e569f13 |
 | L3 | Blessing of Light is gone (X3). The Holy rotation's Greater Blessing of Light precast falls with it. | | CONFIRMED-BUG (X3) | E 5b79f29fd |
 | L4 | Holy Power's crit-heal bonus: the push turns 5923 into aura 50 and removes the 15% crit effect (1340809). The engine adds +50% to the crit bonus (×1.75). TrinityCore's `SpellCriticalHealingBonus` would multiply the whole crit (×2.25). The talent text supports the engine. | Push 683158, 1340809 | OPEN. One in-game crit against a non-crit Flash of Light settles it (about +12% raw HPS if multiplied). | - |
 | L5 | Checked and aligned: Holy Light 1 to 9, Flash of Light 1 to 6, Holy Shock, Light's Vigil, Divine Favor; Healing Light, Infusion of Light, Boundless Light, Illumination's mana half. | Sub-audit | Aligned | - |
+
+### Holy paladin split (wow-player review request)
+
+Each of the three Holy fixes is reverted from, or kept alone on, the lane head (25ea37277). Raid preset, band 60, 10,000 iterations, effective HPS on the heal profile. "Rest of lane" is the lane head with all three reverted; it equals the pin.
+
+| change | alone (alliance s1 / s50001; horde s1 / s50001) | cumulative | effective HPS, seed 1 (alliance; horde) |
+|---|---|---|---|
+| Pin 8baffe5fc | - | - | 553.8; 544.2 |
+| Rest of the lane (P1 to P3 and the pipeline follow) | 0.0 / 0.0; 0.0 / 0.0 | 0.0 | 553.8; 544.2 |
+| Blessing of Light removed (X3) | -10.1 / -10.2; -10.5 / -10.4 | -10.1 / -10.5 | 497.8; 487.1 |
+| + Benediction on Holy Shock (P3) | +0.3 / +0.3; +0.3 / +0.3 | -10.0 / -10.3 | 498.4; 488.0 |
+| + Illumination's casting regen (L1) | +13.2 / +13.1; +12.9 / +13.0 | **+4.5 / +3.7** | 578.7; 564.5 |
+
+Other orders give the same totals: all but Blessing of Light is +13.7 / +13.4; all but Benediction is +4.1 / +3.5.
+
+**Illumination, re-checked:**
+- **The rows.** 20272 effect 1 is SpellEffect 1237075: aura 134 (SPELL_AURA_MOD_MANA_REGEN_INTERRUPT), 50, with SpellMisc 330180 DurationIndex 8 (15,000 ms) in the shipped 70707 tables. The push does not touch them.
+  - Wowhead Forever's buff text: "Regenerating at 50% of normal rate while casting spells. 15 seconds remaining." That is the same server data.
+  - Era's 20272 has the energize only (Wowhead Classic shows no buff), so the buff is Forever-new.
+  - The talent text (20210) mentions only the mana, and wowforevertalents' notes have no Illumination line.
+- **No second source.** I found no Forever log, patch note or guide that shows the buff:
+  - The only cached logs with Illumination events (`scratchpad/r3/casters/fl/2807`, 1127 mana gains, no buff applied) are a Burning Crusade report (Light's Grace, Seal of the Martyr), so they say nothing about Forever.
+  - Forever's beta logs stop near level 30, before a Holy paladin has the talent.
+  - The fix therefore rests on the client tables alone, the same standard as round 5's Healing Stream crit.
+- **How aura 134 combines.** cmangos classic (`StatSystem.cpp` `Player::UpdateManaRegen`, read 2026-11-01) sums every aura 134 (`GetTotalAuraModifier`), caps the total at 100, and applies it to spirit regen only; mp5 runs regardless.
+  - The engine does the same (`core/mana.go:172`): Reverence 30 (1310899, aura 134) plus Illumination's 50 is 80% of spirit regen while casting, and mp5 is separate.
+- **Whether the regen is big enough to matter.** At 346 Spirit the paladin's full spirit regen is 7.5 + Spirit/10 = 42.1 mana a second (Era's paladin rate, 15 + Spirit/5 per 2 s tick).
+  - 30% of that is 12.6 a second; 80% is 33.7.
+  - The breakdown shows casting regen going from 27.8 to 47.7 mana a second (mp5 is the other 15). The buff is up about 95% of the fight, since procs come every 5 s or so and it lasts 15.
+  - That is about 6000 more mana in the 300 s fight on an 8677 pool, and the profile is mana-bound: mana lasts 205 s without the buff and 259 s with it. So +13% is the mechanism working as the rows say.
+- **Classification.** CONFIRMED-BUG on the client tables, single source for the existence of the buff; the additive stacking has two sources (cmangos and the engine's own Reverence handling). A launch Holy paladin log showing a 20272 buff_applied confirms it.
 
 ## Shaman: Elemental
 
