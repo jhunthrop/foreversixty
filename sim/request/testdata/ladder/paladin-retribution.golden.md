@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-00000000000000000-01000000000000000 | main_hand:263407 | 14.4 | 5 | other:attack/1=61.0, spell:25740=52.3, spell:20271=18.6, spell:20280=18.6, spell:679=18.6 | - |
-| 20 | 00000000000000000-00000000000000000-05231000000000000 | main_hand:6953 | 31.1 | 6 | other:attack/1=57.3, spell:25739=45.5, spell:20271=18.5, spell:20281=18.5, spell:1866=17.2 | - |
-| 30 | 00000000000000000-00000000000000000-05233301001300000 | main_hand:13045 | 49.3 | 6 | other:attack/1=63.1, spell:25738=54.0, other:mana_gain=23.1, spell:20271=23.1, spell:20282=23.1 | - |
-| 38 | 00000000000000000-00000000000000000-05233301001301340 | main_hand:10758 | 71.6 | 6 | other:attack/1=55.5, spell:25737=47.3, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | - |
-| 40 | 01000000000000000-00000000000000000-05233301001301350 | main_hand:1982 | 83.8 | 6 | other:attack/1=52.4, spell:25737=44.6, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | - |
-| 50 | 05024000000000000-00000000000000000-05233301001301350 | main_hand:2915 | 109.0 | 7 | other:attack/1=79.4, spell:25735=63.8, other:mana_gain=21.0, spell:20271=21.0, spell:20285=21.0 | - |
-| 60 | 05025000200000000-50200000000000000-05233301001301350 | main_hand:22798 | 190.3 | 7 | other:attack/1=48.3, spell:25713=40.4, other:mana_gain=21.5, spell:20271=21.5, spell:20286=21.5 | - |
+| 10 | 00000000000000000-00000000000000000-01000000000000000 | main_hand:263407 | 14.4 | 5 | other:attack/1=61.0, spell:25740=52.3, spell:20271=18.6, spell:20280=18.6, spell:679=18.6 | {SpellID: 1310735}, {SpellID: 20920} |
+| 20 | 00000000000000000-00000000000000000-05231000000000000 | main_hand:6953 | 31.1 | 6 | other:attack/1=57.3, spell:25739=45.5, spell:20271=18.5, spell:20281=18.5, spell:1866=17.2 | {SpellID: 1310735}, {SpellID: 20375} |
+| 30 | 00000000000000000-00000000000000000-05233301001300000 | main_hand:13045 | 49.3 | 6 | other:attack/1=63.1, spell:25738=54.0, other:mana_gain=23.1, spell:20271=23.1, spell:20282=23.1 | {SpellID: 1310735} |
+| 38 | 00000000000000000-00000000000000000-05233301001301340 | main_hand:10758 | 71.6 | 6 | other:attack/1=55.5, spell:25737=47.3, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | {SpellID: 1310735} |
+| 40 | 01000000000000000-00000000000000000-05233301001301350 | main_hand:1982 | 83.8 | 6 | other:attack/1=52.4, spell:25737=44.6, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | {SpellID: 1310735} |
+| 50 | 05024000000000000-00000000000000000-05233301001301350 | main_hand:2915 | 109.0 | 7 | other:attack/1=79.4, spell:25735=63.8, other:mana_gain=21.0, spell:20271=21.0, spell:20285=21.0 | {SpellID: 1310735} |
+| 60 | 05025000200000000-50200000000000000-05233301001301350 | main_hand:22798 | 190.3 | 7 | other:attack/1=48.3, spell:25713=40.4, other:mana_gain=21.5, spell:20271=21.5, spell:20286=21.5 | {SpellID: 1310735} |
 
 ## Learned but unused (informational)
 
@@ -153,4 +153,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- paladin-retribution level=30 kind=zero_casts spell="Seal of Command" id=20915 authored=20920
+- paladin-retribution level=38 kind=zero_casts spell="Seal of Command" id=20915 authored=20920
+- paladin-retribution level=40 kind=zero_casts spell="Seal of Command" id=20918 authored=20920
+- paladin-retribution level=50 kind=zero_casts spell="Seal of Command" id=20919 authored=20920
+- paladin-retribution level=60 kind=zero_casts spell="Seal of Command" id=20920 authored=20920

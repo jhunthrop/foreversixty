@@ -53,7 +53,7 @@ Method: the client tables come from wago.tools for build 1.60.1.70707: SpellEffe
 |---|---|---|---|---|
 | S1 | Incinerate gets +25% with Immolate up, a 2.5 s base cast and 2.0 s with Bane, coefficient 0.714. Conflagrate keeps Immolate (Shadow and Flame 100%). Shadowburn's shard refund is 100%, so it is cast on cooldown. Shadow and Flame keeps +10% Shadow and +10% Fire up 94% and 86% of the fight. | Client 1293813, 426316, 18932. `incinerate.go:50` | Aligned | - |
 | S2 | Agonizing Flames (+10% direct damage on Destruction spells, +10% periodic on Immolate) and Ruin (crit bonus on the Destruction mask, Immolate ticks included) match their masks. | 17927, 17959 masks | Aligned | - |
-| S3 | Raid search: `2550000002/0/2053345103101351` (Pandemic 2 and Cataclysm 3 for Unholy Power 5) gains +0.9% at 10000 iterations (721.4 to 727.8 and 728.1), below the 1% bar. Held. Unholy Power's value also depends on the open pet-scaling question. | `r2/warlock/ts/warlock-destruction-raid.md` | Hold (below 1%) | - |
+| S3 | Raid search: `2550000002/0/2053345103101351` (Pandemic 2 and Cataclysm 3 for Unholy Power 5). With buffed demons it gains +0.9%, below the bar. With demons refusing player buffs (X3) it gains **+1.9%** at 10000 iterations (652.4 to 665.1 at seed 1, 653.0 to 665.6 at 50001) and passes the adoption rule. Adopted, but it depends on fork dfbb63ae3: drop this commit if that one is dropped. | `r2/warlock/ts3/warlock-destruction-raid.md` | OPEN (conditional on X3, held with it) | held (lane S 5d013a9c0, not merged) |
 
 ## Cross-cutting
 
@@ -61,7 +61,7 @@ Method: the client tables come from wago.tools for build 1.60.1.70707: SpellEffe
 |---|---|---|---|---|
 | X1 | **Blood Fury triggered a 1.5 s global cooldown.** Its 2 min cooldown, 15 s duration and +10% spell power (aura 317), attack power and ranged attack power were already right. The published horde warlocks are troll, so warlock DPS does not move. Orc goldens move: Enhancement, Fury/Arms, Protection warrior. | SpellCooldowns 20572: StartRecoveryTime 0, as for Berserking 20554. `core/racial_blood_fury.go` | CONFIRMED-BUG | E f44ba933d, c20b3e345 |
 | X2 | Pets inherit nothing from the warlock (`pet.go`, `makeStatInheritance` returns empty stats), although the deep dive says pets scale from their summoner. The client has Warlock Pet Scaling 416189, with channels for spell power, attack power, hit (54 and 55), crit (52 and 57), haste (319 and 65), stamina and resistances, but every amount is computed on the server and no figure is published. Hunter pets use guide figures (10% AP, 100% crit). Lash of Pain misses 17% because the pet has no hit. | Client 416189; Blizzard deep dive 2026-10-07 | OPEN: needs level-60 logs (pet hit and crit against warlock gear) or a published coefficient | - |
-| X3 | Pets receive Windfury Totem from the raid preset: the Succubus' extra attacks are 2.8% of Affliction's DPS. Classic's Windfury enchants party members' weapons, and pets have none. This also affects hunter pets. | `core/buffs.go:347` (`windfuryTotemReaches` does not exclude pets). No pet-specific source found. | OPEN (likely bug, cross-class) | - |
+| X3 | Demons took every player buff, including Windfury Totem extra attacks (2.8% of Affliction's DPS), Battle Shout, Blessings and Heart of the Lion. Hunter pets already refuse them (`hunter/pet.go:110`). The evidence for demons is indirect. Blizzard's hunter deep dive (2026-09-30) says pets that scale from their owner "can no longer receive player buffs that increase their stats". The warlock deep dive (2026-10-07) says only "Pets now scale from their summoner's stats". The client's Warlock Pet Scaling 416189 carries the same effect list as Hunter Pet Scaling 415429. Kargoz's Forever Demonology guide (kami-labs.fr) says demons scale "exactly like hunter pets". Demons now refuse player buffs; test `pet_buffs_test.go`. **Caveat:** the inheritance in X2 is still zero, so the demon now has neither the buffs nor its scaling. Pet share falls to about 9 to 11%, against "around 35%" in Kargoz's guide and 6 to 20% in the low-level logs. The integrator may prefer to land this together with an inheritance model. | Blizzard hunter and warlock deep dives; client 416189 and 415429; kami-labs.fr Kargoz Demonology leveling | OPEN (indirect evidence; held by the integrator) | held (lane E dfbb63ae3, not merged): refusing buffs while demons still inherit nothing leaves pet share at 9-11% against about 35% in guides and 6-20% in low-level logs, further from the truth than today. Lands together with a pet-inheritance model. |
 | X4 | Siphon Life ticks never crit in 772 logged ticks (foreverlogs, levels 13 to 30), against 6% for the other DoTs. Siphon Life is aura 53 (periodic leech). The owner rule says every non-channelled DoT crits, so the engine is unchanged. | foreverlogs.gg ability breakdowns | OPEN for the owner | - |
 | X5 | spec-breakdown left pet rows out, so a warlock table summed to about 80%. Pet actions are now listed under the pet's name. | `sim/cmd/spec-breakdown/main.go` | Tool fix | S 24d977725 |
 | R | Round-one regressions on the 70707 engine. W1: Siphon Life upkeep is still cast (6.4 casts a fight). W2: Agony over Doom still holds. W3: DoT ticks crit at about 16%. X1: wand Shoot is still gated by the global cooldown (no Shoot casts with mana above 10%). D2: Pact flow holds. S1: Shadowburn refund holds. All still hold. | Baseline runs `r2/warlock/runs/base-*` | Aligned | - |
@@ -75,13 +75,18 @@ Haste weights are not re-measured here, because the nightly owns the weights. Th
 | Affliction | Wrack channel, vulnerability scope, Nightfall, Shadow Mastery, APL drops Wrack | -15.9% | -15.9% |
 | Affliction | plus the adopted raid build | **-11.6%** | **-11.7%** |
 | Demonology | Decimation gate, cast time, cost, APL gates Soul Fire | **-4.8%** | **-5.0%** |
-| Destruction | none of the fixes reach its build | 0.0% | 0.0% |
+| Destruction | none of the fixes above reach its build | 0.0% | 0.0% |
+| Affliction | demons refuse player buffs (X3) | -10.9% | -10.8% |
+| Demonology | demons refuse player buffs (X3) | -10.0% | -10.1% |
+| Destruction | demons refuse player buffs (X3) | -9.6% | -9.5% |
+| Destruction | plus the adopted raid build | +1.9% | +1.9% |
+| **All steps** | Affliction / Demonology / Destruction | **-21.2% / -14.3% / -7.8%** | **-21.2% / -14.5% / -7.7%** |
 
-Absolute DPS, for the integrator only: Affliction 719.5 to 636.2, Demonology 737.6 to 702.1, Destruction 721.4. The new order puts Destruction first, then Demonology, then Affliction. Two competing community sims (SixtySim, MythicSim) rank Demonology first.
+Absolute DPS at seed 1, for the integrator only: Affliction 719.5 to 567.0, Demonology 737.6 to 631.8, Destruction 721.4 to 665.1. With X3 in place, the Affliction raid re-search's best variant that keeps every unmodeled guide talent gains only +0.7%, so the A6 build stands, and Demonology still has no winner. The new order puts Destruction first, then Demonology, then Affliction. Two competing community sims (SixtySim, MythicSim) rank Demonology first.
 
 ## Still open
 
-- Pet scaling from gear (X2) and Windfury on pets (X3): together they decide pet damage, and so Unholy Power and Destruction's held build.
+- Pet scaling from gear (X2): the largest open warlock question now that demons take no buffs. It decides pet damage, Unholy Power and Destruction's build.
 - Siphon Life tick crits (X4), for the owner.
 - Improved Drains, text against mask (A12).
 - sim/request TestRotationLadder goldens are not regenerated, as the brief requires. The integrator regenerates them at the pin.

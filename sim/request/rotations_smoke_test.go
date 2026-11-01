@@ -187,21 +187,22 @@ var smokeBuildWarnings = map[string]map[string]string{
 	},
 	"shaman-elemental": {
 		"{SpellID: 1326047}": "Lava Burst is a capstone talent (sim/shaman/lava_burst.go, Forever's tree); this build takes none.",
+		"{SpellID: 16246}":   "Clearcasting comes from Elemental Focus, a talent (sim/shaman/talents.go); this build takes none.",
 	},
 	"shaman-enhancement": {
 		"{SpellID: 17364}":  "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
 		"{SpellID: 408498}": "Maelstrom Weapon is a talent (sim/shaman/talents.go); this build takes none, and the Lightning Bolt line's auraIsKnown gate skips it.",
 	},
 	"warlock-affliction": {
-		"{SpellID: 1316697}": "Wrack is a talent (sim/warlock/wrack.go, Forever's tree); this build takes none.",
-		"{OtherID: 13}":      noPotionWarning,
-		"{SpellID: 18288}":   "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
-		"{SpellID: 18881}":   "Siphon Life is a talent (sim/warlock/siphon_life.go); this build takes none.",
+		"{OtherID: 13}":    noPotionWarning,
+		"{SpellID: 18288}": "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
+		"{SpellID: 18881}": "Siphon Life is a talent (sim/warlock/siphon_life.go); this build takes none.",
 	},
 	"warlock-demonology": {
-		"{OtherID: 13}":    noPotionWarning,
-		"{SpellID: 19028}": "Soul Link is a talent (sim/warlock/talents.go's applySoulLink); this build takes none.",
-		"{SpellID: 18788}": "Demonic Sacrifice is a talent (sim/warlock/talents.go's applyDemonicSacrifice); this build takes none.",
+		"{OtherID: 13}":     noPotionWarning,
+		"{SpellID: 19028}":  "Soul Link is a talent (sim/warlock/talents.go's applySoulLink); this build takes none.",
+		"{SpellID: 18788}":  "Demonic Sacrifice is a talent (sim/warlock/talents.go's applyDemonicSacrifice); this build takes none.",
+		"{SpellID: 440873}": "Decimation's buff comes from its talent (sim/warlock/talents.go); this build takes none.",
 	},
 	"warlock-destruction": {
 		"{SpellID: 1293813}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
@@ -209,6 +210,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{OtherID: 13}":      noPotionWarning,
 		"{SpellID: 18871}":   "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
 		"{SpellID: 18932}":   "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
+	},
+	"paladin-retribution": {
+		"{SpellID: 1310735}": "Unsealed Wrath is a talent (sim/paladin/unsealed_wrath.go, Forever's tree); this build takes none.",
+		"{SpellID: 20920}":   "Seal of Command is a talent (sim/paladin/sotc.go); this build takes none.",
 	},
 	"warrior-arms": {
 		"{SpellID: 21553}": "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",
