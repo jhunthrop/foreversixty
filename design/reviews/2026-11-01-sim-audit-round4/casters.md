@@ -145,9 +145,9 @@ Regen sources:
 | Source | Mana |
 |---|---|
 | Judgement of Wisdom | 5,900 |
-| Spirit while casting (Arcane Meditation) | 4,138 |
+| Spirit and mp5, regen row 1 | 4,138 |
 | Major Mana Potion | 3,701 |
-| Spirit, five-second rule | 1,069 |
+| Spirit and mp5, regen row 2 | 1,069 |
 | Mana Ruby | 1,107 |
 | Mana Jade | 402 |
 
