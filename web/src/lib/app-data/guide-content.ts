@@ -41,9 +41,12 @@ export function readSpecGuides(root: string = repoRoot()): GuideSource[] {
         .sort()
         .map((name): GuideSource => {
           const id = `${classDir.name}/${name.replace(/\.md$/, '')}`;
-          const { frontmatter, body } = splitFrontmatter(readFileSync(path.join(dir, classDir.name, name), 'utf8'));
+          const { frontmatter, body } = splitFrontmatter(
+            readFileSync(path.join(dir, classDir.name, name), 'utf8'),
+          );
           const parsed = guideSchema.safeParse(frontmatter);
-          if (!parsed.success) throw new Error(`guide content: ${id} fails the guide schema: ${parsed.error.message}`);
+          if (!parsed.success)
+            throw new Error(`guide content: ${id} fails the guide schema: ${parsed.error.message}`);
           return { id, data: parsed.data, body };
         }),
     );

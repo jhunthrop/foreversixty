@@ -251,7 +251,9 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
   });
 
   it('never lists a long-cast utility spell as a fight cooldown', () => {
-    const shaman = specCooldowns(BUILD, 'shaman', new Set(), spellLookupFor(BUILD, 'shaman')).map((item) => item.name);
+    const shaman = specCooldowns(BUILD, 'shaman', new Set(), spellLookupFor(BUILD, 'shaman')).map(
+      (item) => item.name,
+    );
     expect(shaman).not.toContain('Astral Recall');
   });
 
