@@ -95,12 +95,12 @@ func TestCDNItemsFixtureMatchesTheGenerator(t *testing.T) {
 	}
 }
 
-// itemFactsPending are the spec's C6 item facts (bonding, armor type, minimum standing) and the
-// weapon's subclass and slot words (lane F2's fix round). The
-// hunter fixture carries them, read from the client's Item and ItemSparse tables, so the apps'
-// tooltips draw them; the generator does not publish them yet, so they are optional here.
+// itemFactsPending are the spec's C6 minimum standing and the weapon's subclass and slot words
+// (lane F2's fix round). The hunter fixture carries them, read from the client's Item and
+// ItemSparse tables, so the apps' tooltips draw them; the generator does not publish them yet,
+// so they are optional here. `bonding` and `armor_type` are published (lane F12) and required.
 var itemFactsPending = []string{
-	"items[].bonding", "items[].armor_type", "items[].min_standing", "items[].subclass", "items[].weapon_slot",
+	"items[].min_standing", "items[].subclass", "items[].weapon_slot",
 }
 
 func TestCDNHunterItemsFixtureMatchesTheGenerator(t *testing.T) {
@@ -205,6 +205,63 @@ func TestCDNGeneratorFilesMatchTheOpenAPISpec(t *testing.T) {
 				}
 				assertSchema(t, proxy.Schema(), body)
 			})
+		}
+	}
+}
+
+// lootOptional are the source, boss and quest fields loot.json writes only where they apply.
+var lootOptional = []string{
+	"sources[].items", "sources[].trash", "sources[].bosses", "sources[].item_chances", "sources[].zone_id",
+	"sources[].npc_id", "sources[].opens", "sources[].profession", "sources[].faction_id", "sources[].standing",
+	"sources[].rank", "sources[].faction", "sources[].faction_source", "sources[].title", "sources[].level_min",
+	"sources[].level_max", "sources[].rare_spawn", "sources[].source_origin", "sources[].source_note",
+	"sources[].reitemised_from", "sources[].bosses[].item_chances", "sources[].bosses[].item_source_origin",
+	"sources[].bosses[].reitemised_from", "sources[].bosses[].rank", "sources[].bosses[].rare_spawn",
+}
+
+// W3-C8: the loot file the site already publishes, now an app contract.
+func TestCDNLootFixtureMatchesTheGenerator(t *testing.T) {
+	got := readJSON(t, filepath.Join(activeBuildDir(t), "loot.json"))
+	opts := Options{
+		Optional: lootOptional,
+		Open:     []string{"quests", "factions", "sources[].item_chances", "sources[].reitemised_from", "sources[].bosses[].item_chances", "sources[].bosses[].item_source_origin", "sources[].bosses[].reitemised_from"},
+	}
+	if diffs := Compare(Load(t, "cdn.loot"), got, opts); len(diffs) > 0 {
+		t.Fatalf("loot.json: %v", diffs)
+	}
+}
+
+// minBondingShare is the floor on the share of item rows whose Binds line is known (spec F12.4:
+// the tooltip prints the client's Binds line). 70707 publishes it for 97% of rows; the rest are
+// wowhead-only rows with no classic-db twin, which print no line rather than a guess.
+const minBondingShare = 0.9
+
+func TestCDNItemsCarryTheBindsLine(t *testing.T) {
+	files, err := filepath.Glob(filepath.Join(activeBuildDir(t), "items", "*.json"))
+	if err != nil || len(files) == 0 {
+		t.Fatalf("no items files: %v", err)
+	}
+	for _, file := range files {
+		var doc struct {
+			Items []struct {
+				Bonding *string `json:"bonding"`
+			} `json:"items"`
+		}
+		raw, err := os.ReadFile(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			t.Fatalf("%s: %v", file, err)
+		}
+		known := 0
+		for _, item := range doc.Items {
+			if item.Bonding != nil {
+				known++
+			}
+		}
+		if share := float64(known) / float64(len(doc.Items)); share < minBondingShare {
+			t.Errorf("%s: %.0f%% of items state a binding, under the %.0f%% floor", filepath.Base(file), share*100, minBondingShare*100)
 		}
 	}
 }

@@ -15,6 +15,7 @@ import gg.foreversixty.app.network.ClasspathFixtureSource
 import gg.foreversixty.app.network.FixtureEngine
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.TokenProvider
 import gg.foreversixty.app.rankings.logic.LiveRankingsService
 import gg.foreversixty.app.rankings.logic.BoardPhase
@@ -372,7 +373,7 @@ class RankingsLogicTest {
         val source = ClasspathFixtureSource(requireNotNull(javaClass.classLoader))
         val config = ApiConfig(baseUrl = "https://api.example.test", mode = ApiMode.Fixture)
         val client = ApiClient(ForeverHttpClient.create(config, NoToken, FixtureEngine.create(source)))
-        val catalog = ItemCatalog(StaticDataClient(FixtureEngine.create(source)))
+        val catalog = ItemCatalog(StaticDataStore(StaticDataClient(FixtureEngine.create(source))))
         val feature = RankingsFeature(LiveRankingsService(client), MemoryRaidCache(), specs, catalog, { null }, { true }, { now })
         assertEquals("14th of 212 Elemental Shaman characters on Onyxia", feature.homeLine(RankingsTestData.viewer(), resources()))
         assertTrue(catalog.items(RankingsTestData.BUILD, "shaman").orEmpty().containsKey(RankingsTestData.voltaris().gear.first().worn?.id))

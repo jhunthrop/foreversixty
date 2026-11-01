@@ -87,7 +87,7 @@ STAT_KEYS: dict[str, str | None] = {
     "spldmg": "spell_power",
     "splheal": "healing",
     "atkpwr": "attack_power",
-    "rgdatkpwr": None,  # ranged attack power: STAT_BY_MODIFIER_ID maps 39 to None too
+    "rgdatkpwr": "ranged_attack_power",  # the client's ItemSparse stat 39
     "feratkpwr": None,
     "manargn": "mp5",
     "healthrgn": None,
@@ -97,8 +97,17 @@ STAT_KEYS: dict[str, str | None] = {
     "hastertng": None,
     "exprtng": None,
     "armorpenrtng": None,
-    "splpen": None,
+    "splpen": "spell_penetration",
+    "holsplpwr": "holy_power",
+    "firsplpwr": "fire_power",
+    "natsplpwr": "nature_power",
+    "frosplpwr": "frost_power",
+    "shasplpwr": "shadow_power",
+    "arcsplpwr": "arcane_power",
     "defrtng": "defense",
+    # The defense an item shows: Greatflank Flayer (281587) is wowhead 3 and
+    # the client row's own `defense` 3, the same unit as `defrtng`.
+    "def": "defense",
     "dodgertng": "dodge",
     "parryrtng": "parry",
     "blockrtng": "block",
@@ -335,6 +344,29 @@ def class_allowed(item: WowheadItem, class_id: int) -> bool:
     return can_equip(class_id, item.class_id, item.subclass_id)
 
 
+#: Wowhead keys that state a rating-family stat as a flat percentage (an
+#: on-equip "+1% crit"), not rating points. They count in `stats` like any
+#: other amount and are also recorded in `GearItem.percent_stats`, the client
+#: path's contract, so no consumer divides them by a rating factor. Fletcher's
+#: Gloves (7348) is wowhead critstrkpct 1 against the client's 14 crit rating.
+PERCENT_STAT_KEYS: dict[str, str] = {
+    "critstrkpct": "crit",
+    "hitpct": "hit",
+    "dodgepct": "dodge",
+    "parrypct": "parry",
+    "blockpct": "block",
+}
+
+
+def planner_percent_stats(item: WowheadItem) -> dict[str, int]:
+    """The item's flat-percentage rating-family stats (``PERCENT_STAT_KEYS``)."""
+    out: dict[str, int] = {}
+    for key, planner_key in PERCENT_STAT_KEYS.items():
+        if key in item.stats:
+            out[planner_key] = out.get(planner_key, 0) + int(round(item.stats[key]))
+    return {key: amount for key, amount in out.items() if amount}
+
+
 def planner_stats(item: WowheadItem, untracked: Counter[str] | None = None) -> dict[str, int]:
     """The item's stats in the planner's vocabulary. A wowhead key the planner does not
     track is counted in ``untracked`` (when given) and dropped, never raised on."""
@@ -348,6 +380,8 @@ def planner_stats(item: WowheadItem, untracked: Counter[str] | None = None) -> d
                 untracked[key] += 1
             continue
         out[planner_key] = out.get(planner_key, 0) + int(round(value))
+    for key, amount in planner_percent_stats(item).items():
+        out[key] = out.get(key, 0) + amount
     return out
 
 
@@ -381,6 +415,7 @@ def to_gear_item(item: WowheadItem, untracked: Counter[str] | None = None) -> Ge
         item_level=item.item_level,
         armor=item.armor,
         stats=planner_stats(item, untracked),
+        percent_stats=planner_percent_stats(item),
         damage_min=item.damage_min if is_weapon else 0,
         damage_max=item.damage_max if is_weapon else 0,
         speed=item.speed if is_weapon else 0.0,

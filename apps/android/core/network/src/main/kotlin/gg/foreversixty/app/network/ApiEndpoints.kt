@@ -13,6 +13,8 @@ import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.model.BuildInput
 import gg.foreversixty.app.model.BuildList
 import gg.foreversixty.app.model.BuildSaved
+import gg.foreversixty.app.model.CalendarFeed
+import gg.foreversixty.app.model.Changelog
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.CharacterProfile
 import gg.foreversixty.app.model.CharacterSearch
@@ -22,14 +24,18 @@ import gg.foreversixty.app.model.CoachRecent
 import gg.foreversixty.app.model.CoachReview
 import gg.foreversixty.app.model.Device
 import gg.foreversixty.app.model.FightMeters
+import gg.foreversixty.app.model.GuideFile
+import gg.foreversixty.app.model.GuideIndex
 import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildLoot
 import gg.foreversixty.app.model.GuildRaids
 import gg.foreversixty.app.model.ItemSet
+import gg.foreversixty.app.model.ItemUsesShard
 import gg.foreversixty.app.model.ItemsFile
 import gg.foreversixty.app.model.KeyDate
 import gg.foreversixty.app.model.LiveActivityRegistered
 import gg.foreversixty.app.model.LiveActivityRequest
+import gg.foreversixty.app.model.LootFile
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.MePatch
 import gg.foreversixty.app.model.NotificationSettings
@@ -47,6 +53,7 @@ import gg.foreversixty.app.model.RankingsPage
 import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.model.ReportList
 import gg.foreversixty.app.model.ReportMe
+import gg.foreversixty.app.model.SearchIndex
 import gg.foreversixty.app.model.SignedOut
 import gg.foreversixty.app.model.SignupAnswer
 import gg.foreversixty.app.model.SignupRequest
@@ -56,6 +63,7 @@ import gg.foreversixty.app.model.SimProgress
 import gg.foreversixty.app.model.SimResult
 import gg.foreversixty.app.model.SimStarted
 import gg.foreversixty.app.model.TalentsFile
+import gg.foreversixty.app.model.TiersFile
 import gg.foreversixty.app.model.WatchedCharacter
 import gg.foreversixty.app.model.WatchingList
 import gg.foreversixty.app.model.Widget
@@ -267,6 +275,14 @@ object ApiEndpoints {
     fun deleteLiveActivity(id: Long): Endpoint<Unit> =
         Endpoint(HttpMethod.Delete, "/v1/me/live-activities/$id", Unit.serializer())
 
+    /** GET /v1/me/calendar-feed: Your calendar link, made on first call (W3-C17; session or app token) */
+    fun getCalendarFeed(): Endpoint<CalendarFeed> =
+        Endpoint(HttpMethod.Get, "/v1/me/calendar-feed", CalendarFeed.serializer())
+
+    /** POST /v1/me/calendar-feed/reset: Replace your calendar link; the old one stops working (W3-C17; session or app token) */
+    fun resetCalendarFeed(): Endpoint<CalendarFeed> =
+        Endpoint(HttpMethod.Post, "/v1/me/calendar-feed/reset", CalendarFeed.serializer())
+
     /** GET /v1/app/config: What the apps read once at launch (APP_API) */
     fun getAppConfig(): Endpoint<AppConfig> =
         Endpoint(HttpMethod.Get, "/v1/app/config", AppConfig.serializer())
@@ -281,6 +297,22 @@ object StaticEndpoints {
     /** /data/dates.json: The key dates */
     fun getKeyDates(): StaticResource<List<KeyDate>> =
         StaticResource("/data/dates.json", ListSerializer(KeyDate.serializer()))
+
+    /** /data/changelog.json: The site's changelog, newest first (W3-C1) */
+    fun getChangelog(): StaticResource<Changelog> =
+        StaticResource("/data/changelog.json", Changelog.serializer())
+
+    /** /data/{build}/guides/index.json: Every spec guide of a build (W3-C1) */
+    fun getGuideIndex(build: String): StaticResource<GuideIndex> =
+        StaticResource("/data/${build.encodeURLPathPart()}/guides/index.json", GuideIndex.serializer())
+
+    /** /data/{build}/guides/{spec}.json: One spec guide (W3-C1) */
+    fun getGuide(build: String, spec: String): StaticResource<GuideFile> =
+        StaticResource("/data/${build.encodeURLPathPart()}/guides/${spec.encodeURLPathPart()}.json", GuideFile.serializer())
+
+    /** /data/{build}/tiers.json: The ranked tier lists (W3-C1; the apps show them only behind guide_tiers) */
+    fun getTiers(build: String): StaticResource<TiersFile> =
+        StaticResource("/data/${build.encodeURLPathPart()}/tiers.json", TiersFile.serializer())
 
     /** /data/{build}/classes.json: Every class of a build */
     fun getClasses(build: String): StaticResource<List<ClassInfo>> =
@@ -297,6 +329,18 @@ object StaticEndpoints {
     /** /data/{build}/sets.json: Every item set of a build, for the tooltip's set lines */
     fun getSets(build: String): StaticResource<List<ItemSet>> =
         StaticResource("/data/${build.encodeURLPathPart()}/sets.json", ListSerializer(ItemSet.serializer()))
+
+    /** /data/{build}/loot.json: Where every item of a build comes from (W3-C8) */
+    fun getLoot(build: String): StaticResource<LootFile> =
+        StaticResource("/data/${build.encodeURLPathPart()}/loot.json", LootFile.serializer())
+
+    /** /data/{build}/search.json: The apps' offline search index (W3-C8) */
+    fun getSearchIndex(build: String): StaticResource<SearchIndex> =
+        StaticResource("/data/${build.encodeURLPathPart()}/search.json", SearchIndex.serializer())
+
+    /** /data/{build}/item-uses/{shard}.json: Item sources and the best-in-slot lists that use each item, one shard (W3-C8) */
+    fun getItemUses(build: String, shard: Int): StaticResource<ItemUsesShard> =
+        StaticResource("/data/${build.encodeURLPathPart()}/item-uses/$shard.json", ItemUsesShard.serializer())
 
     /** /data/{build}/talents/{class}.json: A class's talent trees */
     fun getTalents(build: String, className: String): StaticResource<TalentsFile> =
@@ -355,16 +399,25 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/v1/me/widget", "widget.get", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/me/live-activities", "live.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/live-activities/{id}", null, HttpStatusCode.fromValue(204)),
+        FixtureRoute(HttpMethod.Get, "/v1/me/calendar-feed", "calendar.feed", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/me/calendar-feed/reset", "calendar.feed", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/app/config", "app.config", HttpStatusCode.fromValue(200)),
     )
 
     val staticData: List<FixtureRoute> = listOf(
         FixtureRoute(HttpMethod.Get, "/data/active-build.json", "cdn.active-build", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/dates.json", "cdn.dates", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/changelog.json", "cdn.changelog", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/guides/index.json", "cdn.guides.index", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/guides/{spec}.json", "cdn.guides.{spec}", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/tiers.json", "cdn.tiers", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/classes.json", "cdn.classes", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/bis/{spec}.json", "cdn.bis.{spec}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/items/{class}.json", "cdn.items.{class}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/sets.json", "cdn.sets", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/loot.json", "cdn.loot", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/search.json", "cdn.search", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/item-uses/{shard}.json", "cdn.item-uses", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/talents/{class}.json", "cdn.talents.{class}", HttpStatusCode.fromValue(200)),
     )
 }

@@ -87,6 +87,47 @@ func Known(id int32) bool {
 	return ok
 }
 
+// WeaponDamage is one weapon row's swing as the engine reads it, and
+// whether the engine lets it go only in the main hand (a "Main Hand"
+// weapon, which the planner's item file cannot tell from a one-hander).
+type WeaponDamage struct {
+	Min, Max, Speed float64
+	MainHandOnly    bool
+}
+
+// weaponDamage is every embedded row with a swing speed, by item id,
+// built once beside the database.
+var weaponDamage = sync.OnceValues(func() (map[int32]WeaponDamage, error) {
+	db, err := load()
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[int32]WeaponDamage)
+	for _, item := range db.Items {
+		if item.WeaponSpeed > 0 {
+			out[item.Id] = WeaponDamage{
+				Min: item.WeaponDamageMin, Max: item.WeaponDamageMax, Speed: item.WeaponSpeed,
+				MainHandOnly: item.HandType == proto.HandType_HandTypeMainHand,
+			}
+		}
+	}
+	return out, nil
+})
+
+// Weapon reports the damage range and speed the engine swings for id,
+// false when the database carries no weapon row for it (or fails to
+// load: Attach reports that failure first). A ranker that scores weapon
+// DPS must read this rather than the planner's item file, whose damage
+// can come from a different source than the row the engine sims.
+func Weapon(id int32) (WeaponDamage, bool) {
+	rows, err := weaponDamage()
+	if err != nil {
+		return WeaponDamage{}, false
+	}
+	w, ok := rows[id]
+	return w, ok
+}
+
 // Attach puts the database on every player of a built request, which is
 // what makes an item id resolve. It is called once per request rather
 // than once per process because the engine offers no other way in.

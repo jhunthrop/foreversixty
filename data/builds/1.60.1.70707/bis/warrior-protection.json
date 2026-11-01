@@ -1,8 +1,8 @@
 {
   "spec": "warrior-protection",
   "build": "1.60.1.70707",
-  "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T15:08:44Z",
+  "engine_version": "640da215f",
+  "generated_at": "2026-11-01T17:25:44Z",
   "bands": [
     {
       "spec": "warrior-protection",
@@ -714,21 +714,22 @@
               "item_name": "Night Watch Shortsword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -25.523426275
-            },
-            {
-              "item_id": 1483,
-              "item_name": "Face Smasher",
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep",
-              "dps_delta": -34.137628612
+              "dps_delta": -25.511033676
             },
             {
               "item_id": 6633,
               "item_name": "Butcher's Slicer",
               "source_kind": "dungeon",
               "source": "Shadowfang Keep: Razorclaw the Butcher",
-              "dps_delta": -54.195037087
+              "dps_delta": -26.404651852
+            },
+            {
+              "item_id": 1937,
+              "item_name": "Buzz Saw",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Sneed's Shredder",
+              "dps_delta": -26.406423158,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -738,9 +739,9 @@
               "source": "World drop"
             },
             {
-              "item_id": 1483,
+              "item_id": 6633,
               "source_kind": "dungeon",
-              "source": "Shadowfang Keep"
+              "source": "Shadowfang Keep: Razorclaw the Butcher"
             }
           ]
         },
@@ -871,8 +872,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Calibrated Blunderbuss"
       ],
-      "weights_run_seconds": 5.329584941,
-      "verify_run_seconds": 2.057968124,
+      "weights_run_seconds": 4.923257605,
+      "verify_run_seconds": 2.02876167,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1664,7 +1665,7 @@
           "item_name": "The Stitcher",
           "source": "Light's Justice",
           "source_kind": "quest",
-          "score": 13.516951668,
+          "score": 13.519357863,
           "verified": true,
           "alternatives": [
             {
@@ -1672,21 +1673,21 @@
               "item_name": "Diamond Hammer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -25.352633234
+              "dps_delta": -25.392909163
+            },
+            {
+              "item_id": 1937,
+              "item_name": "Buzz Saw",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Sneed's Shredder",
+              "dps_delta": -43.705472301
             },
             {
               "item_id": 6504,
               "item_name": "Wingblade",
               "source_kind": "quest",
               "source": "Leaders of the Fang",
-              "dps_delta": -50.148440052
-            },
-            {
-              "item_id": 935,
-              "item_name": "Night Watch Shortsword",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -50.876059509
+              "dps_delta": -50.174070205
             }
           ],
           "runners_up": [
@@ -1696,9 +1697,9 @@
               "source": "World drop"
             },
             {
-              "item_id": 6504,
-              "source_kind": "quest",
-              "source": "Leaders of the Fang"
+              "item_id": 1937,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Sneed's Shredder"
             }
           ]
         },
@@ -1830,8 +1831,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Satchel of Copper Bombs"
       ],
-      "weights_run_seconds": 5.329584941,
-      "verify_run_seconds": 2.022812473,
+      "weights_run_seconds": 4.923257605,
+      "verify_run_seconds": 1.922686847,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2647,18 +2648,18 @@
           "dps_delta": 109.86463351412658,
           "alternatives": [
             {
+              "item_id": 3414,
+              "item_name": "Crested Scepter",
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps",
+              "dps_delta": -49.417669097
+            },
+            {
               "item_id": 8226,
               "item_name": "The Butcher",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery",
-              "dps_delta": -49.460060276
-            },
-            {
-              "item_id": 7786,
-              "item_name": "Headsplitter",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery",
-              "dps_delta": -60.484881154
+              "dps_delta": -49.439722118
             },
             {
               "item_id": 6691,
@@ -2671,12 +2672,12 @@
           ],
           "runners_up": [
             {
-              "item_id": 8226,
+              "item_id": 3414,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery"
+              "source": "Blackfathom Deeps"
             },
             {
-              "item_id": 7786,
+              "item_id": 8226,
               "source_kind": "dungeon",
               "source": "Scarlet Monastery"
             }
@@ -2809,8 +2810,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.21681334,
-      "verify_run_seconds": 2.256871427,
+      "weights_run_seconds": 4.68479257,
+      "verify_run_seconds": 2.1485322,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3631,18 +3632,18 @@
           "dps_delta": 114.73551998721086,
           "alternatives": [
             {
+              "item_id": 3414,
+              "item_name": "Crested Scepter",
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps",
+              "dps_delta": -49.417669097
+            },
+            {
               "item_id": 8226,
               "item_name": "The Butcher",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery",
-              "dps_delta": -49.460060276
-            },
-            {
-              "item_id": 7786,
-              "item_name": "Headsplitter",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery",
-              "dps_delta": -60.484881154
+              "dps_delta": -49.439722118
             },
             {
               "item_id": 6691,
@@ -3655,12 +3656,12 @@
           ],
           "runners_up": [
             {
-              "item_id": 8226,
+              "item_id": 3414,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery"
+              "source": "Blackfathom Deeps"
             },
             {
-              "item_id": 7786,
+              "item_id": 8226,
               "source_kind": "dungeon",
               "source": "Scarlet Monastery"
             }
@@ -3794,8 +3795,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 5.21681334,
-      "verify_run_seconds": 2.18969571,
+      "weights_run_seconds": 4.68479257,
+      "verify_run_seconds": 2.131057895,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4621,14 +4622,14 @@
               "item_name": "Steelclaw Reaver",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery",
-              "dps_delta": -78.483679567
+              "dps_delta": -78.436124379
             },
             {
-              "item_id": 7721,
-              "item_name": "Hand of Righteousness",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane",
-              "dps_delta": -90.937230067
+              "item_id": 19808,
+              "item_name": "Rockhide Strongfish",
+              "source_kind": "world",
+              "source": "Wooden Chair",
+              "dps_delta": -92.619574069
             },
             {
               "item_id": 10761,
@@ -4646,9 +4647,9 @@
               "source": "Scarlet Monastery"
             },
             {
-              "item_id": 7721,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane"
+              "item_id": 19808,
+              "source_kind": "world",
+              "source": "Wooden Chair"
             }
           ]
         },
@@ -4780,8 +4781,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.899728657,
-      "verify_run_seconds": 2.24320514,
+      "weights_run_seconds": 4.515414689,
+      "verify_run_seconds": 2.181920895,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5608,18 +5609,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7721,
-              "item_name": "Hand of Righteousness",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane",
-              "dps_delta": -12.453550499
-            },
-            {
               "item_id": 19808,
               "item_name": "Rockhide Strongfish",
               "source_kind": "world",
               "source": "Wooden Chair",
-              "dps_delta": -14.135894502
+              "dps_delta": -14.18344969
+            },
+            {
+              "item_id": 9401,
+              "item_name": "Nordic Longshank",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Baelog",
+              "dps_delta": -40.754532577
             },
             {
               "item_id": 2164,
@@ -5632,14 +5633,14 @@
           ],
           "runners_up": [
             {
-              "item_id": 7721,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: High Inquisitor Whitemane"
-            },
-            {
               "item_id": 19808,
               "source_kind": "world",
               "source": "Wooden Chair"
+            },
+            {
+              "item_id": 9401,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Baelog"
             }
           ]
         },
@@ -5771,8 +5772,8 @@
         "main_hand: Steelclaw Reaver",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.899728657,
-      "verify_run_seconds": 2.303134428,
+      "weights_run_seconds": 4.515414689,
+      "verify_run_seconds": 2.207402489,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6682,14 +6683,14 @@
               "item_name": "Viking Warhammer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -29.553357772
+              "dps_delta": -29.504041772
             },
             {
               "item_id": 10750,
               "item_name": "Lifeforce Dirk",
               "source_kind": "quest",
               "source": "The God Hakkar",
-              "dps_delta": -42.337183893
+              "dps_delta": -42.374170843
             },
             {
               "item_id": 810,
@@ -6844,8 +6845,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.160601083,
-      "verify_run_seconds": 4.754610772,
+      "weights_run_seconds": 4.747795127,
+      "verify_run_seconds": 4.596095257,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7748,14 +7749,14 @@
               "item_name": "Viking Warhammer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -29.553357772
+              "dps_delta": -29.504041772
             },
             {
               "item_id": 10750,
               "item_name": "Lifeforce Dirk",
               "source_kind": "quest",
               "source": "The God Hakkar",
-              "dps_delta": -42.337183893
+              "dps_delta": -42.374170843
             },
             {
               "item_id": 810,
@@ -7909,8 +7910,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 5.160601083,
-      "verify_run_seconds": 4.793379247,
+      "weights_run_seconds": 4.747795127,
+      "verify_run_seconds": 4.626589668,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8820,11 +8821,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 1728,
-              "item_name": "Teebu's Blazing Longsword",
+              "item_id": 6622,
+              "item_name": "Sword of Zeal",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -876.98651663,
+              "dps_delta": -921.264005201,
               "verified": true
             }
           ],
@@ -8968,8 +8969,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Gorewood Bow"
       ],
-      "weights_run_seconds": 5.275266462,
-      "verify_run_seconds": 7.187635307,
+      "weights_run_seconds": 4.792330601,
+      "verify_run_seconds": 6.891304724,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9887,11 +9888,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 1728,
-              "item_name": "Teebu's Blazing Longsword",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1101.663190244,
+              "item_id": 12797,
+              "item_name": "Frostguard",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -793.818754097,
               "verified": true
             }
           ],
@@ -10033,8 +10034,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Gorewood Bow"
       ],
-      "weights_run_seconds": 5.275266462,
-      "verify_run_seconds": 7.057204446,
+      "weights_run_seconds": 4.792330601,
+      "verify_run_seconds": 6.8361898530000005,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10949,11 +10950,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 1728,
-              "item_name": "Teebu's Blazing Longsword",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1639.632695078,
+              "item_id": 12797,
+              "item_name": "Frostguard",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -1469.510942237,
               "verified": true
             }
           ],
@@ -11096,8 +11097,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.079248091,
-      "verify_run_seconds": 7.707426725,
+      "weights_run_seconds": 5.417027571,
+      "verify_run_seconds": 7.369818682,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -12007,11 +12008,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 1728,
-              "item_name": "Teebu's Blazing Longsword",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1778.127221842,
+              "item_id": 12797,
+              "item_name": "Frostguard",
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "dps_delta": -1522.603988865,
               "verified": true
             }
           ],
@@ -12154,8 +12155,8 @@
         "off_hand: Evergreen Shield",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.079248091,
-      "verify_run_seconds": 7.694344587,
+      "weights_run_seconds": 5.417027571,
+      "verify_run_seconds": 7.226978192,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -12342,6 +12343,10 @@
         {
           "id": "judgement_of_wisdom",
           "label": "Judgement of Wisdom"
+        },
+        {
+          "id": "judgement_of_the_crusader",
+          "label": "Judgement of the Crusader"
         },
         {
           "id": "judgement_of_light",

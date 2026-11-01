@@ -61,6 +61,18 @@
       "example": "/app/player/us/normal/voltaris"
     },
     {
+      "path": "/app/guides",
+      "screen": "guides",
+      "opens": "Guides tab.",
+      "example": "/app/guides"
+    },
+    {
+      "path": "/app/guides/{class}/{spec}",
+      "screen": "guide",
+      "opens": "Guides tab, that spec's guide (class and spec are slugs).",
+      "example": "/app/guides/shaman/elemental"
+    },
+    {
       "path": "/app/you/notifications",
       "screen": "notifications",
       "opens": "You, Notifications.",

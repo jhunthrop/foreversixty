@@ -157,11 +157,11 @@
     <string name="items_stat_mp5">Mana per 5</string>
     <string name="items_stat_spellPenetration">Spell penetration</string>
     <string name="items_stat_firePower">Fire spell damage</string>
-    <string name="items_stat_fireRes">Fire resistance</string>
-    <string name="items_stat_frostRes">Frost resistance</string>
-    <string name="items_stat_natureRes">Nature resistance</string>
-    <string name="items_stat_shadowRes">Shadow resistance</string>
-    <string name="items_stat_arcaneRes">Arcane resistance</string>
+    <string name="items_stat_fireRes">Fire Resistance</string>
+    <string name="items_stat_frostRes">Frost Resistance</string>
+    <string name="items_stat_natureRes">Nature Resistance</string>
+    <string name="items_stat_shadowRes">Shadow Resistance</string>
+    <string name="items_stat_arcaneRes">Arcane Resistance</string>
     <string name="items_standing_hated">Hated</string>
     <string name="items_standing_hostile">Hostile</string>
     <string name="items_standing_unfriendly">Unfriendly</string>
@@ -688,6 +688,107 @@
     <string name="account_ruleset_rp">Roleplay</string>
     <string name="account_ruleset_hardcore">Hardcore</string>
     <string name="account_version_noData">Version %1$s (%2$s)</string>
+    <string name="search_button">Search</string>
+    <string name="search_placeholder">Search items, characters, guides, talents</string>
+    <string name="search_cancel">Cancel</string>
+    <string name="search_clear">Clear the search</string>
+    <string name="search_scope_all">All</string>
+    <string name="search_scope_items">Items</string>
+    <string name="search_scope_characters">Characters</string>
+    <string name="search_scope_guides">Guides</string>
+    <string name="search_scope_talents">Talents</string>
+    <string name="search_group_forCharacter">For %1$s</string>
+    <string name="search_forCharacter_bis">Best in slot for %1$s</string>
+    <string name="search_forCharacter_guide">%1$s %2$s guide</string>
+    <string name="search_forCharacter_rankings">Rankings</string>
+    <string name="search_group_watching">Watching</string>
+    <string name="search_group_recent">Recent</string>
+    <string name="search_recent_clear">Clear</string>
+    <string name="search_recent_item">Item</string>
+    <string name="search_recent_character">Character</string>
+    <string name="search_recent_guide">Guide</string>
+    <string name="search_recent_talent">Talent</string>
+    <string name="search_group_guides">Guides</string>
+    <string name="search_group_talents">Talents</string>
+    <string name="search_group_items">Items</string>
+    <string name="search_group_characters">Characters</string>
+    <string name="search_showAll" tools:ignore="PluralsCandidate">Show all %1$d</string>
+    <string name="search_item_meta" tools:ignore="PluralsCandidate">%1$s · item level %2$d · requires level %3$d</string>
+    <string name="search_item_metaNoLevel" tools:ignore="PluralsCandidate">%1$s · item level %2$d</string>
+    <string name="search_character_meta" tools:ignore="PluralsCandidate">%1$s · Level %2$d · %3$s %4$s</string>
+    <string name="search_character_metaNoLevel">%1$s · %2$s %3$s</string>
+    <string name="search_character_you">You</string>
+    <string name="search_guide_meta">Guide · %1$s</string>
+    <plurals name="search_talent_ranks">
+        <item quantity="one">1 rank</item>
+        <item quantity="other">%1$d ranks</item>
+    </plurals>
+    <string name="search_talent_meta">%1$s %2$s · %3$s · %4$s</string>
+    <string name="search_noResults_title">Nothing matches “%1$s”.</string>
+    <string name="search_noResults_body">Check the spelling. Characters need at least two letters and a connection.</string>
+    <string name="search_offline">Offline. Items, guides and talents still search; characters need a connection.</string>
+    <string name="search_charactersFailed">Characters did not load.</string>
+    <string name="search_indexLoading">Loading the search…</string>
+    <string name="search_indexFailed">Search did not load.</string>
+    <string name="search_tryAgain">Try again</string>
+    <string name="search_talent_openPlanner">Open in planner</string>
+    <string name="search_talent_rank" tools:ignore="PluralsCandidate">Rank %1$d/%2$d</string>
+    <string name="itemPage_back">Search</string>
+    <string name="itemPage_meta" tools:ignore="PluralsCandidate">%1$s · %2$s · item level %3$d</string>
+    <string name="itemPage_pick">Your %1$s pick</string>
+    <string name="itemPage_runnerUp" tools:ignore="PluralsCandidate">Runner-up %1$d for %2$s</string>
+    <string name="itemPage_pickMeta">%1$s · %2$s · %3$s · %4$s</string>
+    <string name="itemPage_yours">Yours</string>
+    <string name="itemPage_chip_item">Item</string>
+    <string name="itemPage_chip_source">Source</string>
+    <string name="itemPage_chip_bisFor">Best in slot for</string>
+    <string name="itemPage_sources">Where it comes from</string>
+    <string name="itemPage_noSources">No source is in our data for this item yet.</string>
+    <string name="itemPage_dropChance">%1$s from %2$s</string>
+    <string name="itemPage_chanceUnknown">Drop chance not known</string>
+    <string name="itemPage_questLevel" tools:ignore="PluralsCandidate">Requires level %1$d</string>
+    <string name="itemPage_kind_raid">Raid</string>
+    <string name="itemPage_kind_dungeon">Dungeon</string>
+    <string name="itemPage_kind_world">World drop</string>
+    <string name="itemPage_kind_zone">Zone</string>
+    <string name="itemPage_kind_vendor">Vendor</string>
+    <string name="itemPage_kind_crafted">Crafted</string>
+    <string name="itemPage_kind_rep">Reputation</string>
+    <string name="itemPage_kind_pvp">PvP</string>
+    <string name="itemPage_kind_quest">Quest</string>
+    <string name="itemPage_bisFor">Best in slot for</string>
+    <string name="itemPage_bisForNone">No best in slot list uses this item.</string>
+    <string name="itemPage_tag_pick">Pick</string>
+    <string name="itemPage_tag_runnerUp" tools:ignore="PluralsCandidate">Runner-up %1$d</string>
+    <string name="itemPage_specMeta_raid" tools:ignore="PluralsCandidate">%1$d · Phase 1 raid</string>
+    <string name="itemPage_specMeta_bare" tools:ignore="PluralsCandidate">%1$d</string>
+    <plurals name="itemPage_moreSpecs">
+        <item quantity="one">1 more spec</item>
+        <item quantity="other">%1$d more specs</item>
+    </plurals>
+    <string name="itemPage_unknown">This item is not in our data.</string>
+    <string name="itemPage_usesFailed">Sources did not load.</string>
+    <string name="itemPage_moreAbout">More about this item</string>
+    <string name="itemPage_a11y_source">%1$s, %2$s</string>
+    <string name="itemPage_a11y_spec">%1$s, %2$s, %3$s. Opens that list</string>
+    <string name="itemPage_preset_raid">Phase 1 raid</string>
+    <string name="itemPage_pickMetaBare">%1$s · %2$s · %3$s</string>
+    <string name="itemPage_bisForFailed">Best in slot lists did not load.</string>
+    <string name="itemPage_backPlain">Back</string>
+    <string name="items_equip_spellPower" tools:ignore="PluralsCandidate">Equip: Increases damage and healing done by magical spells and effects by up to %1$d.</string>
+    <string name="items_equip_healing" tools:ignore="PluralsCandidate">Equip: Increases healing done by spells and effects by up to %1$d.</string>
+    <string name="items_equip_attackPower" tools:ignore="PluralsCandidate">Equip: +%1$d Attack Power.</string>
+    <string name="items_equip_rangedAttackPower" tools:ignore="PluralsCandidate">Equip: +%1$d ranged Attack Power.</string>
+    <string name="items_equip_mp5" tools:ignore="PluralsCandidate">Equip: Restores %1$d mana per 5 sec.</string>
+    <string name="items_equip_spellPenetration" tools:ignore="PluralsCandidate">Equip: Decreases the magical resistances of your spell targets by %1$d.</string>
+    <string name="items_equip_firePower" tools:ignore="PluralsCandidate">Equip: Increases damage done by Fire spells and effects by up to %1$d.</string>
+    <string name="items_equip_blockValue" tools:ignore="PluralsCandidate">Equip: Increases the block value of your shield by %1$d.</string>
+    <string name="items_equip_defense" tools:ignore="PluralsCandidate">Equip: Increased Defense +%1$d.</string>
+    <string name="items_equip_crit">Equip: Improves your chance to get a critical strike by %1$s.</string>
+    <string name="items_equip_hit">Equip: Improves your chance to hit by %1$s.</string>
+    <string name="items_equip_dodge">Equip: Increases your chance to dodge an attack by %1$s.</string>
+    <string name="items_equip_parry">Equip: Increases your chance to parry an attack by %1$s.</string>
+    <string name="items_equip_block">Equip: Increases your chance to block attacks with a shield by %1$s.</string>
     <string name="home_logs">Logs</string>
     <string name="home_logs_last">Your last raid: %1$s, %2$s</string>
     <string name="home_logs_none">No reports yet.</string>
@@ -1015,4 +1116,199 @@
     <string name="live_a11y_raidPull">%1$s starts in %2$s. You are %3$s.</string>
     <string name="live_tile_title">Next raid</string>
     <string name="live_tile_sub">%1$s · %2$s</string>
+    <string name="tab_guides">Guides</string>
+    <string name="guides_title">Guides</string>
+    <string name="guides_segment_guides">Guides</string>
+    <string name="guides_segment_tiers">Tier lists</string>
+    <string name="guides_segment_changes">What changed</string>
+    <string name="guides_yours">Your guide</string>
+    <string name="guides_saved">Saved on this phone</string>
+    <string name="guides_savedShort">Saved</string>
+    <string name="guides_notSaved">Not saved</string>
+    <string name="guides_classes">All classes</string>
+    <string name="guides_footer">Saved on this phone: %1$s · %2$s. Guides update by themselves when the game data does.</string>
+    <string name="guides_footerNone">Nothing is saved on this phone yet. Open a guide once and it stays.</string>
+    <string name="guides_notCached">This guide is not on your phone yet. Connect once to save it.</string>
+    <string name="guides_listNotCached">This list is not on your phone yet. Connect once to save it.</string>
+    <string name="guides_error">This guide did not load.</string>
+    <string name="guides_loading">Loading the guides…</string>
+    <string name="guides_sources">Sources</string>
+    <string name="guides_share">Share</string>
+    <string name="guides_cardMeta">%1$s · Updated %2$s</string>
+    <string name="guides_headMeta">Updated %1$s · Recommended races: %2$s</string>
+    <string name="guides_headMetaNoRaces">Updated %1$s</string>
+    <string name="guides_role_dps">DPS</string>
+    <string name="guides_role_healer">Healer</string>
+    <string name="guides_role_tank">Tank</string>
+    <string name="guides_section_overview">Overview</string>
+    <string name="guides_section_talents">Talents</string>
+    <string name="guides_section_rotation">Rotation</string>
+    <string name="guides_section_stats">Stats</string>
+    <string name="guides_section_gear">Gear</string>
+    <string name="guides_section_races">Races</string>
+    <string name="guides_a11y_section" tools:ignore="PluralsCandidate">%1$s, section %2$d of %3$d</string>
+    <string name="guides_a11y_stat" tools:ignore="PluralsCandidate">Priority %1$d, %2$s</string>
+    <string name="guides_glance">At a glance</string>
+    <string name="guides_role">Role</string>
+    <string name="guides_statPriority">Stat priority</string>
+    <string name="guides_strengths">Strengths</string>
+    <string name="guides_weaknesses">Weaknesses</string>
+    <string name="guides_inRaid">In a raid</string>
+    <plurals name="guides_ranks">
+        <item quantity="one">1 rank</item>
+        <item quantity="other">%1$d ranks</item>
+    </plurals>
+    <string name="guides_rank" tools:ignore="PluralsCandidate">Rank %1$d</string>
+    <string name="guides_raidBuild">Raid build</string>
+    <string name="guides_levelingBuild">Leveling build</string>
+    <string name="guides_buildLevel">Level 60</string>
+    <string name="guides_opener">Opener</string>
+    <string name="guides_priority">Priority</string>
+    <string name="guides_cooldowns">Cooldowns</string>
+    <string name="guides_rotationFooter">Ranks are the ones you have at 60.</string>
+    <string name="guides_gearRow">Best in slot for %1$s · 60 · %2$s</string>
+    <string name="guides_recommended">Recommended</string>
+    <string name="tiers_yours">Your spec</string>
+    <string name="tiers_yoursTag">Yours</string>
+    <string name="tiers_top">Top</string>
+    <string name="tiers_tie">≈</string>
+    <string name="tiers_loading">Loading the tier list…</string>
+    <string name="tiers_error">The tier list did not load.</string>
+    <string name="tiers_faction_alliance">Alliance</string>
+    <string name="tiers_faction_horde">Horde</string>
+    <string name="tiers_a11y_top">%1$s, rank 1 of %2$s, %3$stop spec, %4$s</string>
+    <string name="tiers_a11y_behind">%1$s, rank %2$s of %3$s, %4$s%5$s behind the top, %6$s</string>
+    <string name="tiers_a11y_tier">"tier %1$s, "</string>
+    <string name="tiers_a11y_gap">%1$s percent</string>
+    <string name="tiers_a11y_tie">Within 1 percent of the next spec</string>
+    <string name="tiers_a11y_opens">Opens the guide</string>
+    <string name="changes_dates">Key dates</string>
+    <string name="changes_list">What changed</string>
+    <string name="changes_error">What changed did not load.</string>
+    <string name="changes_tag_site">Site</string>
+    <string name="changes_tag_game">Game</string>
+    <string name="offline_newData">New game data is ready.</string>
+    <string name="offline_update">Update</string>
+    <string name="offline_updateFailed">The update did not finish. Try again.</string>
+    <string name="raids_rosterRow">Roster</string>
+    <plurals name="raids_rosterRow_sub">
+        <item quantity="one">1 on the roster · attendance</item>
+        <item quantity="other">%1$d on the roster · attendance</item>
+    </plurals>
+    <string name="raids_historyRow">Raid history</string>
+    <string name="raids_historyRow_sub">Logged raid nights</string>
+    <string name="roster_title">Roster</string>
+    <string name="roster_counts_onRoster">on the roster</string>
+    <string name="roster_counts_noAccount">in game, no account</string>
+    <string name="roster_counts_waiting">waiting</string>
+    <string name="roster_chip_all">All</string>
+    <string name="roster_chip_tanks">Tanks</string>
+    <string name="roster_chip_healers">Healers</string>
+    <string name="roster_chip_dps">DPS</string>
+    <string name="roster_sort">Sort: %1$s</string>
+    <string name="roster_sort_rank">Rank</string>
+    <string name="roster_sort_className">Class</string>
+    <string name="roster_sort_name">Name</string>
+    <string name="roster_sort_attendance">Attendance</string>
+    <string name="roster_sort_level">Level</string>
+    <string name="roster_rank_leader">Guild Master</string>
+    <string name="roster_rank_officer">Officer</string>
+    <string name="roster_rank_member">Member</string>
+    <string name="roster_meta" tools:ignore="PluralsCandidate">%1$s · %2$d · %3$s</string>
+    <string name="roster_metaNoLevel">%1$s · %2$s</string>
+    <string name="roster_attendance" tools:ignore="PluralsCandidate">%1$d of %2$d nights</string>
+    <string name="roster_waitingTag">Waiting</string>
+    <string name="roster_noAccountTag">No account</string>
+    <string name="roster_noNights">No logged nights yet.</string>
+    <string name="roster_empty_title">No raiders match.</string>
+    <string name="roster_empty_body">Change the role or clear the search.</string>
+    <string name="roster_footer">Attendance is the last 8 raid nights with a log. Tap a raider for their page.</string>
+    <string name="roster_error">The roster did not load.</string>
+    <string name="roster_search">Search the roster</string>
+    <string name="roster_supporter">Supporter</string>
+    <string name="roster_a11y_attended" tools:ignore="PluralsCandidate">attended %1$d of %2$d recent raid nights</string>
+    <string name="roster_a11y_waiting">waiting for approval</string>
+    <string name="roster_a11y_level" tools:ignore="PluralsCandidate">level %1$d</string>
+    <string name="history_title">Raid history</string>
+    <string name="history_label">Logged raid nights</string>
+    <string name="history_there">You were there</string>
+    <string name="history_more">Load more</string>
+    <string name="history_empty_title">No logged raid nights yet.</string>
+    <string name="history_empty_body">Nights show here once someone uploads a log.</string>
+    <string name="history_footer">A night opens your raid night when you were in it, otherwise its report.</string>
+    <string name="history_error">Raid history did not load.</string>
+    <string name="history_moreError">The next nights did not load.</string>
+    <plurals name="history_bosses">
+        <item quantity="one">1 boss</item>
+        <item quantity="other">%1$d bosses</item>
+    </plurals>
+    <plurals name="history_kills">
+        <item quantity="one">1 kill</item>
+        <item quantity="other">%1$d kills</item>
+    </plurals>
+    <plurals name="history_wipes">
+        <item quantity="one">1 wipe</item>
+        <item quantity="other">%1$d wipes</item>
+    </plurals>
+    <string name="history_noWipes">no wipes</string>
+    <plurals name="history_raiders">
+        <item quantity="one">1 raider</item>
+        <item quantity="other">%1$d raiders</item>
+    </plurals>
+    <plurals name="history_players">
+        <item quantity="one">1 player</item>
+        <item quantity="other">%1$d players</item>
+    </plurals>
+    <string name="history_length" tools:ignore="PluralsCandidate">%1$d h %2$d m</string>
+    <string name="history_lengthMinutes" tools:ignore="PluralsCandidate">%1$d m</string>
+    <plurals name="history_a11y_hours">
+        <item quantity="one">1 hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
+    <plurals name="history_a11y_minutes">
+        <item quantity="one">1 minute</item>
+        <item quantity="other">%1$d minutes</item>
+    </plurals>
+    <string name="history_a11y_there">You were there.</string>
+    <string name="calendar_title">Calendar</string>
+    <string name="calendar_youRow_sub">Raids in your calendar</string>
+    <string name="calendar_section">Calendar</string>
+    <string name="calendar_switch">Raids in my calendar</string>
+    <string name="calendar_switchNote">A calendar called Forever Sixty raids. The app keeps it up to date.</string>
+    <string name="calendar_which">Which raids</string>
+    <string name="calendar_which_all">All planned</string>
+    <string name="calendar_which_mine">Only ones I am In or Late for</string>
+    <string name="calendar_alert">Alert</string>
+    <string name="calendar_alert_none">None</string>
+    <string name="calendar_alert_minutes15">15 minutes before</string>
+    <string name="calendar_alert_hourBeforeInvites">1 hour before invites</string>
+    <string name="calendar_alert_day">1 day before</string>
+    <string name="calendar_off">Calendar access is off for Forever Sixty.</string>
+    <string name="calendar_offBody">Turn it on in Settings to add raids to your calendar.</string>
+    <string name="calendar_openSettings">Open Settings</string>
+    <string name="calendar_removed">The calendar was removed. Turn it on again.</string>
+    <string name="calendar_syncFailed">The calendar did not update. It tries again on the next refresh.</string>
+    <string name="calendar_share">Share</string>
+    <string name="calendar_link">Calendar link</string>
+    <string name="calendar_linkNote">For Google Calendar on the web, Outlook and other people. Anyone with the link sees your guild\'s raid times.</string>
+    <string name="calendar_copy">Copy link</string>
+    <string name="calendar_reset">Reset link</string>
+    <string name="calendar_addToCalendar">Add to Calendar</string>
+    <string name="calendar_copied">Link copied.</string>
+    <string name="calendar_resetAsk">Reset the link? The old link stops working.</string>
+    <string name="calendar_resetConfirm">Reset</string>
+    <string name="calendar_linkElsewhere">This link was shown on another phone or browser. Reset it to copy a link here.</string>
+    <string name="calendar_linkError">The link did not load. Try again.</string>
+    <string name="calendar_resetError">The link was not reset. Try again.</string>
+    <string name="calendar_footer">Your sign-up shows in the event title: “Onyxia\'s Lair · In”. Changing it in the app changes the event.</string>
+    <string name="calendar_name">Forever Sixty raids</string>
+    <string name="calendar_event_title">%1$s · %2$s</string>
+    <string name="calendar_event_in">In</string>
+    <string name="calendar_event_late">Late</string>
+    <string name="calendar_event_bench">Bench</string>
+    <string name="calendar_event_out">Out</string>
+    <string name="calendar_event_notSigned">Not signed up</string>
+    <string name="calendar_event_location">%1$s · %2$s</string>
+    <string name="calendar_event_notes" tools:ignore="PluralsCandidate">Pull %1$s. %2$d of %3$d signed up.</string>
+    <string name="calendar_event_notesNoSize" tools:ignore="PluralsCandidate">Pull %1$s. %2$d signed up.</string>
 </resources>

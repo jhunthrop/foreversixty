@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 00000000000000000-15302000000000000-00000000000000000)
 
-Set DPS (verified): 20.5. Weights run: 6.5s. Verify run: 2.4s. 232 eligible items had no known source.
+Set DPS (verified): 20.5. Weights run: 5.6s. Verify run: 2.2s. 232 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.027, armor=0.033 ± 0.002, defense=0.223 ± 0.040 per rating point (1 rating = 1%, 0.223 per %), dodge=0.098 ± 0.009 per rating point (12 rating = 1%, 1.172 per %), parry=0.079 ± 0.007 per rating point (15 rating = 1%, 1.186 per %), block=not significant (0.000 ± 0.000) per rating point (5 rating = 1%, 0.000 per %), block_value=not significant (0.000 ± 0.000), strength=0.031 ± 0.000, agility=0.155 ± 0.006, attack_power=0.015 ± 0.000, hit=0.029 ± 0.006 per rating point (10 rating = 1%, 0.285 per %), crit=0.018 ± 0.000 per rating point (14 rating = 1%, 0.245 per %), expertise=0.982 ± 0.068
 
@@ -28,7 +28,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Slain Baron's Signet (279867) | Abominable Creatures [quest] | 5.4 stamina points (74.53 DPS) | yes | Blood Ring (4998, -6.11 DPS) [world_drop]; Ring of the Moon (12052, -33.06 DPS) [world_drop]; Deep Fathom Ring (6463, -33.47 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Diamond Hammer (2194) | World drop [world_drop] | 7.6 stamina points (103.45 DPS) | yes | Face Smasher (1483, -20.01 DPS) [dungeon]; Night Watch Shortsword (935, -25.04 DPS, sim-verified) [world_drop]; Buzz Saw (1937, -25.50 DPS) [dungeon] |
+| main_hand | Diamond Hammer (2194) | World drop [world_drop] | 7.6 stamina points (103.45 DPS) | yes | Buzz Saw (1937, -11.45 DPS) [dungeon]; Butcher's Slicer (6633, -17.20 DPS) [dungeon]; Night Watch Shortsword (935, -25.04 DPS, sim-verified) [world_drop] |
 | off_hand | Redbeard Crest (12997) | World drop [world_drop] | 21.2 stamina points (289.78 DPS) | yes | Thornwoven Shield (276889, -24.51 DPS, sim-verified) [quest]; Guardian Buckler (4820, -25.92 DPS) [vendor]; Kresh's Back (13245, -36.85 DPS) [dungeon] |
 | ranged | - | - |  |  |  |
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 232, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 00000000000000000-15302102511000000-00000000000000000)
 
-Set DPS (verified): 32.8. Weights run: 7.0s. Verify run: 2.5s. 454 eligible items had no known source.
+Set DPS (verified): 32.8. Weights run: 6.1s. Verify run: 2.3s. 454 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.036, armor=0.024 ± 0.003, defense=0.288 ± 0.070 per rating point (1 rating = 1%, 0.288 per %), dodge=0.099 ± 0.013 per rating point (12 rating = 1%, 1.189 per %), parry=0.086 ± 0.010 per rating point (15 rating = 1%, 1.287 per %), block=not significant (0.022 ± 0.024) per rating point (5 rating = 1%, 0.109 per %), block_value=not significant (0.068 ± 0.026), strength=0.035 ± 0.001, agility=0.131 ± 0.008, attack_power=0.016 ± 0.000, hit=0.050 ± 0.011 per rating point (10 rating = 1%, 0.505 per %), crit=0.026 ± 0.002 per rating point (14 rating = 1%, 0.358 per %), expertise=1.346 ± 0.123
 
@@ -58,7 +58,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Sustaining Ring (6743) | Knowledge in the Deeps [quest] | 6.0 stamina points (128.93 DPS) | yes | Defias Renegade Ring (1076, -7.46 DPS) [dungeon]; Slain Baron's Signet (279867, -9.11 DPS) [quest]; Boar Signet (274078, -21.49 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Looming Gavel (13048) | World drop [world_drop] | 10.9 stamina points (234.49 DPS) | yes | Crested Scepter (3414, -21.53 DPS) [dungeon]; The Butcher (8226, -38.10 DPS) [dungeon]; Hardened Iron Shortsword (3849, -45.22 DPS) [crafted] |
+| main_hand | Looming Gavel (13048) | World drop [world_drop] | 10.9 stamina points (234.50 DPS) | yes | Crested Scepter (3414, -15.89 DPS) [dungeon]; The Butcher (8226, -38.10 DPS) [dungeon]; Hardened Iron Shortsword (3849, -45.25 DPS) [crafted] |
 | off_hand | Heart of Agamaggan (6694) | Razorfen Kraul: Charlga Razorflank [dungeon] | 24.8 stamina points (533.25 DPS) | yes | Resplendent Guardian (7787, -38.94 DPS) [dungeon]; Crest of Darkshire (6223, -47.03 DPS) [quest]; Arctic Buckler (7002, -62.37 DPS, sim-verified) [quest] |
 | ranged | - | - |  |  |  |
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 454, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 00000000000000000-15302102513501011-00000000000000000)
 
-Set DPS (verified): 66.5. Weights run: 8.1s. Verify run: 3.1s. 643 eligible items had no known source.
+Set DPS (verified): 66.5. Weights run: 7.0s. Verify run: 2.8s. 643 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.055, armor=0.018 ± 0.004, defense=not significant (0.247 ± 0.144) per rating point (1 rating = 1%, 0.247 per %), dodge=0.136 ± 0.027 per rating point (12 rating = 1%, 1.631 per %), parry=0.125 ± 0.021 per rating point (15 rating = 1%, 1.873 per %), block=not significant (0.144 ± 0.054) per rating point (5 rating = 1%, 0.719 per %), block_value=not significant (0.181 ± 0.054), strength=0.041 ± 0.002, agility=0.143 ± 0.017, attack_power=0.018 ± 0.000, hit=not significant (0.039 ± 0.027) per rating point (10 rating = 1%, 0.392 per %), crit=0.025 ± 0.002 per rating point (14 rating = 1%, 0.355 per %), expertise=1.337 ± 0.311
 
@@ -88,7 +88,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Talvash's Gold Ring (9538) | Gnome Improvement [quest] | 10.0 stamina points (304.22 DPS) | yes | Plains Ring (2039, -60.84 DPS) [dungeon]; Trader's Ring (15689, -60.84 DPS) [quest]; Field Researcher's Loop (281634, -60.87 DPS) [quest] |
 | trinket1 | Arena Master (18706) | Arena Treasure Chest [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
 | trinket2 | - | - |  |  |  |
-| main_hand | Sword of Serenity (6829) | In the Name of the Light [quest] | 16.5 stamina points (500.80 DPS) | yes | Rockhide Strongfish (19808, -52.20 DPS, sim-verified) [world]; Hand of Righteousness (7721, -62.28 DPS) [dungeon]; Nordic Longshank (9401, -92.09 DPS) [dungeon] |
+| main_hand | Sword of Serenity (6829) | In the Name of the Light [quest] | 16.5 stamina points (500.80 DPS) | yes | Rockhide Strongfish (19808, -52.20 DPS, sim-verified) [world]; Nordic Longshank (9401, -92.10 DPS) [dungeon]; Annealed Blade (9392, -104.74 DPS) [dungeon] |
 | off_hand | The Green Tower (1204) | World drop [world_drop] | 36.3 stamina points (1103.84 DPS) | yes | Aegis of the Scarlet Commander (7726, +0.00 DPS, sim-verified) [dungeon]; Olaf's All Purpose Shield (9404, -72.22 DPS) [dungeon]; Thrash's Trash (276204, -96.07 DPS) [vendor] |
 | ranged | - | - |  |  |  |
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 643, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 05003000000000000-15302102513501031-00000000000000000)
 
-Set DPS (verified): 101.0. Weights run: 8.3s. Verify run: 6.4s. 840 eligible items had no known source.
+Set DPS (verified): 101.0. Weights run: 7.1s. Verify run: 5.8s. 840 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.087, armor=0.032 ± 0.007, defense=not significant (0.104 ± 0.218) per rating point (1 rating = 1%, 0.104 per %), dodge=not significant (0.139 ± 0.042) per rating point (12 rating = 1%, 1.663 per %), parry=not significant (0.120 ± 0.032) per rating point (15 rating = 1%, 1.798 per %), block=not significant (0.112 ± 0.080) per rating point (5 rating = 1%, 0.561 per %), block_value=not significant (0.149 ± 0.080), strength=0.046 ± 0.004, agility=0.160 ± 0.026, attack_power=0.018 ± 0.000, hit=not significant (0.057 ± 0.044) per rating point (10 rating = 1%, 0.567 per %), crit=0.033 ± 0.001 per rating point (14 rating = 1%, 0.461 per %), expertise=2.281 ± 0.479
 
@@ -118,7 +118,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Underworld Band (1980) | World drop [world_drop] | 12.0 stamina points (407.32 DPS) | yes | Seafire Band (4549, -53.93 DPS) [quest]; Talvash's Gold Ring (9538, -67.89 DPS) [quest]; Ring of Fortitude (10739, -67.89 DPS) [quest] |
 | trinket1 | Guardian Talisman (1490) | Into The Temple of Atal'Hakkar [quest] | sim-verified (10113.8 DPS) | yes | Arena Master (18706, -67.89 DPS) [world]; Smotts' Compass (4130, -249.03 DPS) [quest]; Frozen Heart of the Mountain (249469, -288.17 DPS) [crafted] |
 | trinket2 | Mark of the Chosen (17774) | The Pariah's Instructions [quest] | sim-verified (10113.8 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Arena Master (18706, +0.00 DPS) [world]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| main_hand | Viking Warhammer (1721) | World drop [world_drop] | sim-verified (10113.8 DPS) | yes | Might of Hakkar (10838, -7.79 DPS) [world]; Sword of Serenity (6829, -124.22 DPS) [quest]; Hammer of the Northern Wind (810, -227.49 DPS, sim-verified) [world_drop] |
+| main_hand | Viking Warhammer (1721) | World drop [world_drop] | sim-verified (10113.8 DPS) | yes | Might of Hakkar (10838, -7.79 DPS) [world]; Sword of Serenity (6829, -124.25 DPS) [quest]; The Hand of Antu'sul (9639, -197.96 DPS, sim-verified) [dungeon] |
 | off_hand | Wall of the Dead (1979) | World drop [world_drop] | 76.6 stamina points (2601.66 DPS) | yes | Aegis of Stormwind (1203, -100.36 DPS, sim-verified) [world_drop]; Stoneshell Guard (11631, -246.32 DPS) [dungeon]; Sunscale Shield (14852, -472.64 DPS) [world_drop] |
 | ranged | - | - |  |  |  |
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 840, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (dwarf, 05005000000000000-15302102513501031-50030000000000000)
 
-Set DPS (verified): 139.3. Weights run: 8.3s. Verify run: 10.2s. 1762 eligible items had no known source.
+Set DPS (verified): 139.3. Weights run: 7.2s. Verify run: 9.3s. 1762 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.047 ± 0.000, defense=2.036 ± 0.253 per rating point (1 rating = 1%, 2.036 per %), dodge=1.087 ± 0.050 per rating point (12 rating = 1%, 13.048 per %), parry=0.890 ± 0.038 per rating point (15 rating = 1%, 13.343 per %), block=1.345 ± 0.071 per rating point (5 rating = 1%, 6.725 per %), block_value=0.794 ± 0.002, strength=0.100 ± 0.000, agility=0.793 ± 0.030, attack_power=0.030 ± 0.000, hit=not significant (0.144 ± 0.055) per rating point (10 rating = 1%, 1.443 per %), crit=0.071 ± 0.001 per rating point (14 rating = 1%, 0.988 per %), expertise=6.010 ± 0.601
 
@@ -148,7 +148,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Ring of the Dawn (13812) (or Ring of Saviors (1447)) | <NYI> <TXT> Ring of the Dawn [quest] | 14.0 stamina points (1094.43 DPS) | yes | Ring of Saviors (1447, +0.00 DPS) [world_drop]; Dragonscale Band (12057, -78.17 DPS) [dungeon]; Dalson Family Wedding Ring (13475, -78.17 DPS) [quest] |
 | trinket1 | Guardian Talisman (1490) | Into The Temple of Atal'Hakkar [quest] | sim-verified (14141.3 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Arena Grand Master (19024, +0.00 DPS) [quest]; Arena Master (18706, -156.35 DPS) [world] |
 | trinket2 | Demon's Blood (10779) | You Are Rakh'likh, Demon [quest] | sim-verified (14141.3 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Arena Grand Master (19024, +0.00 DPS) [quest]; Arena Master (18706, -89.37 DPS) [world] |
-| main_hand | Greenhammer (279261) | Blacksmithing [crafted] | sim-verified (14141.3 DPS) | yes | Grand Marshal's Warhammer (234576, +0.00 DPS) [vendor]; Grand Marshal's Swiftblade (234579, +0.00 DPS) [pvp]; Teebu's Blazing Longsword (1728, -470.98 DPS, sim-verified) [world_drop] |
+| main_hand | Greenhammer (279261) | Blacksmithing [crafted] | sim-verified (14141.3 DPS) | yes | Grand Marshal's Warhammer (234576, +0.00 DPS) [vendor]; Grand Marshal's Swiftblade (234579, +0.00 DPS) [pvp]; Frostguard (12797, -373.61 DPS, sim-verified) [crafted] |
 | off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | 133.3 stamina points (10422.78 DPS) | yes | Grand Marshal's Aegis (234588, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, +0.00 DPS) [vendor]; Sacred Protector (16998, -459.47 DPS, sim-verified) [quest] |
 | ranged | - | - |  |  |  |
 
@@ -158,31 +158,31 @@ No-known-source sample (15 of 1762, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 05005000000000000-15302102513501031-50030000000000000)
 
-Set DPS (verified): 402.4. Weights run: 8.4s. Verify run: 9.7s. 1762 eligible items had no known source.
+Set DPS (verified): 432.2. Weights run: 7.3s. Verify run: 8.9s. 1762 eligible items had no known source.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.063 ± 0.000, defense=2.310 ± 0.215 per rating point (1 rating = 1%, 2.310 per %), dodge=1.581 ± 0.049 per rating point (12 rating = 1%, 18.967 per %), parry=1.282 ± 0.036 per rating point (15 rating = 1%, 19.226 per %), block=1.707 ± 0.057 per rating point (5 rating = 1%, 8.535 per %), block_value=1.178 ± 0.003, strength=0.141 ± 0.000, agility=1.256 ± 0.031, attack_power=0.036 ± 0.000, hit=0.237 ± 0.056 per rating point (10 rating = 1%, 2.372 per %), crit=0.113 ± 0.002 per rating point (14 rating = 1%, 1.575 per %), expertise=9.154 ± 0.613
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.064 ± 0.000, defense=2.329 ± 0.216 per rating point (1 rating = 1%, 2.329 per %), dodge=1.591 ± 0.049 per rating point (12 rating = 1%, 19.087 per %), parry=1.289 ± 0.036 per rating point (15 rating = 1%, 19.338 per %), block=1.728 ± 0.057 per rating point (5 rating = 1%, 8.638 per %), block_value=1.193 ± 0.003, strength=0.135 ± 0.000, agility=1.268 ± 0.031, attack_power=0.033 ± 0.000, hit=0.244 ± 0.056 per rating point (10 rating = 1%, 2.443 per %), crit=0.118 ± 0.002 per rating point (14 rating = 1%, 1.648 per %), expertise=9.321 ± 0.616
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Enchanted Thorium Helm (12620) | Blacksmithing [crafted] | 80.6 stamina points (8906.00 DPS) | yes | Helm of Valor (16731, +0.00 DPS) [dungeon]; Field Marshal's Lamellar Helmet (231640, +0.00 DPS) [vendor]; Field Marshal's Lamellar Headguard (231648, +0.00 DPS) [vendor] |
-| neck | Medallion of Grand Marshal Morris (13091) | World drop [world_drop] | 30.1 stamina points (3324.43 DPS) | yes | Sunprism Pendant (20649, -887.45 DPS) [quest]; Skibi's Pendant (13089, -1443.89 DPS) [world_drop]; Master Sergeant's Insignia (18443, -1447.14 DPS) [vendor] |
-| shoulder | Spaulders of Valor (16733) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | 68.7 stamina points (7589.38 DPS) | yes | Field Marshal's Lamellar Pauldrons (231645, +0.00 DPS) [pvp]; Field Marshal's Lamellar Shoulders (231651, +0.00 DPS) [vendor]; Sentinel's Pauldrons (250577, -274.08 DPS, sim-verified) [crafted] |
-| back | Deep River Cloak (15789) | Strange Sources [quest] | 23.1 stamina points (2548.95 DPS) | yes | Cape of the Black Baron (13340, -76.95 DPS) [dungeon]; Sergeant Major's Cape (16337, -132.19 DPS) [pvp]; Dark Phantom Cape (13122, -197.46 DPS) [world_drop] |
-| chest | Enchanted Thorium Breastplate (12618) | Blacksmithing [crafted] | 89.9 stamina points (9928.45 DPS) | yes | Field Marshal's Lamellar Chestplate (231641, +0.00 DPS) [pvp]; Field Marshal's Lamellar Breastplate (231649, +0.00 DPS) [vendor]; Enriched Thorium Breastplate (250595, -367.01 DPS) [crafted] |
-| wrist | Sentinel's Wristguards (250582) | Blacksmithing [crafted] | 44.9 stamina points (4957.57 DPS) | yes | Warder's Wristguards (250583, -93.48 DPS) [crafted]; Marshal's Lamellar Armguards (16469, -392.56 DPS) [pvp]; Bracers of Valor (16735, -559.13 DPS) [dungeon] |
-| hands | Heavy Thorium Gauntlets (279264) | Blacksmithing [crafted] | 73.8 stamina points (8144.40 DPS) | yes | Stronghold Gauntlets (12639, -789.36 DPS) [crafted]; Sentinel's Gloves (250552, -917.45 DPS) [crafted]; Warder's Gloves (250553, -1057.67 DPS) [crafted] |
-| waist | Sentinel's Waistguard (250572) | Blacksmithing [crafted] | 59.4 stamina points (6555.67 DPS) | yes | Belt of Valor (16736, -136.84 DPS) [dungeon]; Warder's Waistguard (250573, -202.54 DPS) [crafted]; Marshal's Lamellar Belt (16470, -665.61 DPS) [pvp] |
-| legs | Azerothium Legplates (279265) | Blacksmithing [crafted] | 93.7 stamina points (10348.94 DPS) | yes | Marshal's Lamellar Legguards (231639, -200.96 DPS) [vendor]; Legplates of Valor (16732, -705.11 DPS, sim-verified) [dungeon]; Cloudkeeper Legplates (14554, -759.89 DPS) [world_drop] |
-| feet | Boots of Avoidance (14549) | World drop [world_drop] | 89.2 stamina points (9851.45 DPS) | yes | Marshal's Lamellar Greaves (231646, -1259.97 DPS) [vendor]; Marshal's Lamellar Sabatons (231652, -2304.68 DPS) [vendor]; Sentinel's Sabatons (250562, -3314.91 DPS) [crafted] |
-| finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 22.6 stamina points (2493.45 DPS) | yes | Field Researcher's Loop (281634, -749.79 DPS) [quest]; Ring of Saviors (1447, -947.45 DPS) [world_drop]; Ring of the Dawn (13812, -947.45 DPS) [quest] |
-| finger2 | Ring of the Underwood (2951) | World drop [world_drop] | 15.8 stamina points (1749.09 DPS) | yes | Field Researcher's Loop (281634, -5.44 DPS) [quest]; Ring of Saviors (1447, -203.09 DPS) [world_drop]; Ring of the Dawn (13812, -203.09 DPS) [quest] |
-| trinket1 | Guardian Talisman (1490) | Into The Temple of Atal'Hakkar [quest] | sim-verified (32526.1 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Demon's Blood (10779, +0.00 DPS) [quest]; Arena Grand Master (19024, +0.00 DPS) [quest] |
-| trinket2 | Mark of the Chosen (17774) | The Pariah's Instructions [quest] | sim-verified (32526.1 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Demon's Blood (10779, +0.00 DPS) [quest]; Arena Grand Master (19024, +0.00 DPS) [quest] |
-| main_hand | Greenhammer (279261) | Blacksmithing [crafted] | sim-verified (32526.1 DPS) | yes | Grand Marshal's Warhammer (234576, +0.00 DPS) [vendor]; Grand Marshal's Swiftblade (234579, -174.70 DPS) [pvp]; Teebu's Blazing Longsword (1728, -539.66 DPS, sim-verified) [world_drop] |
-| off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | 173.2 stamina points (19123.10 DPS) | yes | Grand Marshal's Aegis (234588, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, +0.00 DPS) [vendor]; Sacred Protector (16998, -1160.77 DPS, sim-verified) [quest] |
+| head | Enchanted Thorium Helm (12620) | Blacksmithing [crafted] | 81.2 stamina points (9279.68 DPS) | yes | Helm of Valor (16731, +0.00 DPS) [dungeon]; Field Marshal's Lamellar Helmet (231640, +0.00 DPS) [vendor]; Field Marshal's Lamellar Headguard (231648, +0.00 DPS) [vendor] |
+| neck | Medallion of Grand Marshal Morris (13091) | World drop [world_drop] | 30.3 stamina points (3463.15 DPS) | yes | Sunprism Pendant (20649, -312.56 DPS, sim-verified) [quest]; Skibi's Pendant (13089, -1501.55 DPS) [world_drop]; Master Sergeant's Insignia (18443, -1519.29 DPS) [vendor] |
+| shoulder | Spaulders of Valor (16733) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | 69.2 stamina points (7914.13 DPS) | yes | Field Marshal's Lamellar Pauldrons (231645, +0.00 DPS) [pvp]; Field Marshal's Lamellar Shoulders (231651, +0.00 DPS) [vendor]; Sentinel's Pauldrons (250577, -559.34 DPS, sim-verified) [crafted] |
+| back | Deep River Cloak (15789) | Strange Sources [quest] | 23.2 stamina points (2657.96 DPS) | yes | Sergeant Major's Cape (16337, -146.41 DPS) [pvp]; Dark Phantom Cape (13122, -198.61 DPS) [world_drop]; Cape of the Black Baron (13340, -292.95 DPS, sim-verified) [dungeon] |
+| chest | Enchanted Thorium Breastplate (12618) | Blacksmithing [crafted] | 90.5 stamina points (10350.37 DPS) | yes | Field Marshal's Lamellar Chestplate (231641, +0.00 DPS) [pvp]; Field Marshal's Lamellar Breastplate (231649, +0.00 DPS) [vendor]; Enriched Thorium Breastplate (250595, -371.95 DPS) [crafted] |
+| wrist | Sentinel's Wristguards (250582) | Blacksmithing [crafted] | 45.2 stamina points (5166.67 DPS) | yes | Warder's Wristguards (250583, -92.30 DPS) [crafted]; Marshal's Lamellar Armguards (16469, -420.73 DPS) [pvp]; Bracers of Valor (16735, -585.29 DPS) [dungeon] |
+| hands | Heavy Thorium Gauntlets (279264) | Blacksmithing [crafted] | 74.2 stamina points (8484.64 DPS) | yes | Stronghold Gauntlets (12639, -807.30 DPS) [crafted]; Sentinel's Gloves (250552, -952.23 DPS) [crafted]; Warder's Gloves (250553, -1090.68 DPS) [crafted] |
+| waist | Sentinel's Waistguard (250572) | Blacksmithing [crafted] | 59.7 stamina points (6828.87 DPS) | yes | Belt of Valor (16736, -139.46 DPS) [dungeon]; Warder's Waistguard (250573, -199.99 DPS) [crafted]; Marshal's Lamellar Belt (16470, -686.83 DPS) [pvp] |
+| legs | Azerothium Legplates (279265) | Blacksmithing [crafted] | 94.3 stamina points (10782.12 DPS) | yes | Marshal's Lamellar Legguards (231639, -201.62 DPS) [vendor]; Legplates of Valor (16732, -753.22 DPS, sim-verified) [dungeon]; Cloudkeeper Legplates (14554, -783.71 DPS) [world_drop] |
+| feet | Boots of Avoidance (14549) | World drop [world_drop] | 89.9 stamina points (10280.56 DPS) | yes | Sentinel's Sabatons (250562, -351.44 DPS, sim-verified) [crafted]; Marshal's Lamellar Greaves (231646, -1333.94 DPS) [vendor]; Marshal's Lamellar Sabatons (231652, -2429.16 DPS) [vendor] |
+| finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 22.8 stamina points (2601.39 DPS) | yes | Field Researcher's Loop (281634, -786.14 DPS) [quest]; Ring of Saviors (1447, -1000.56 DPS) [world_drop]; Ring of the Dawn (13812, -1000.56 DPS) [quest] |
+| finger2 | Ring of the Underwood (2951) | World drop [world_drop] | 15.9 stamina points (1823.56 DPS) | yes | Field Researcher's Loop (281634, -8.32 DPS) [quest]; Ring of Saviors (1447, -222.73 DPS) [world_drop]; Ring of the Dawn (13812, -222.73 DPS) [quest] |
+| trinket1 | Guardian Talisman (1490) | Into The Temple of Atal'Hakkar [quest] | sim-verified (33651.0 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Demon's Blood (10779, +0.00 DPS) [quest]; Mark of the Chosen (17774, +0.00 DPS) [quest] |
+| trinket2 | Arena Grand Master (19024) | Arena Grandmaster [quest] | sim-verified (33651.0 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Demon's Blood (10779, -1117.39 DPS) [quest]; Arena Master (18706, -1382.07 DPS) [world] |
+| main_hand | Greenhammer (279261) | Blacksmithing [crafted] | sim-verified (33651.0 DPS) | yes | Frostguard (12797, +0.00 DPS) [crafted]; Grand Marshal's Warhammer (234576, +0.00 DPS) [vendor]; Grand Marshal's Swiftblade (234579, -271.04 DPS) [pvp] |
+| off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | 175.2 stamina points (20035.29 DPS) | yes | Grand Marshal's Aegis (234588, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, +0.00 DPS) [vendor]; Sacred Protector (16998, -1105.79 DPS, sim-verified) [quest] |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Enchanted Thorium Helm; neck: Medallion of Grand Marshal Morris; shoulder: Spaulders of Valor; back: Deep River Cloak; chest: Enchanted Thorium Breastplate; wrist: Sentinel's Wristguards; hands: Heavy Thorium Gauntlets; legs: Azerothium Legplates; feet: Boots of Avoidance; finger1: Masons Fraternity Ring; finger2: Ring of the Underwood; main_hand: Greenhammer; off_hand: Evergreen Shield
+**New at 60:** head: Enchanted Thorium Helm; neck: Medallion of Grand Marshal Morris; shoulder: Spaulders of Valor; back: Deep River Cloak; chest: Enchanted Thorium Breastplate; wrist: Sentinel's Wristguards; hands: Heavy Thorium Gauntlets; legs: Azerothium Legplates; feet: Boots of Avoidance; finger1: Masons Fraternity Ring; finger2: Ring of the Underwood; trinket2: Arena Grand Master; main_hand: Greenhammer; off_hand: Evergreen Shield
 
 No-known-source sample (15 of 1762, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1762, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 00000000000000000-15302000000000000-00000000000000000)
 
-Set DPS (verified): 24.1. Weights run: 6.5s. Verify run: 2.3s. 222 eligible items had no known source.
+Set DPS (verified): 24.1. Weights run: 5.6s. Verify run: 2.1s. 222 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.027, armor=0.033 ± 0.002, defense=0.223 ± 0.040 per rating point (1 rating = 1%, 0.223 per %), dodge=0.098 ± 0.009 per rating point (12 rating = 1%, 1.172 per %), parry=0.079 ± 0.007 per rating point (15 rating = 1%, 1.186 per %), block=not significant (0.000 ± 0.000) per rating point (5 rating = 1%, 0.000 per %), block_value=not significant (0.000 ± 0.000), strength=0.031 ± 0.000, agility=0.155 ± 0.006, attack_power=0.015 ± 0.000, hit=0.029 ± 0.006 per rating point (10 rating = 1%, 0.285 per %), crit=0.018 ± 0.000 per rating point (14 rating = 1%, 0.245 per %), expertise=0.982 ± 0.068
 
@@ -210,7 +210,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Blood Ring (4998) | World drop [world_drop] | 5.0 stamina points (68.42 DPS) | yes | Ring of Scorn (3235, -16.16 DPS, sim-verified) [quest]; Ring of the Moon (12052, -26.95 DPS) [world_drop]; Deep Fathom Ring (6463, -27.37 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | The Stitcher (279874) | Light's Justice [quest] | 9.3 stamina points (127.86 DPS) | yes | Diamond Hammer (2194, -13.69 DPS, sim-verified) [world_drop]; Night Watch Shortsword (935, -33.69 DPS) [world_drop]; Wingblade (6504, -43.95 DPS) [quest] |
+| main_hand | The Stitcher (279874) | Light's Justice [quest] | 9.3 stamina points (127.87 DPS) | yes | Diamond Hammer (2194, -13.69 DPS, sim-verified) [world_drop]; Night Watch Shortsword (935, -33.70 DPS) [world_drop]; Buzz Saw (1937, -35.88 DPS) [dungeon] |
 | off_hand | Redbeard Crest (12997) | World drop [world_drop] | 21.2 stamina points (289.78 DPS) | yes | Thornwoven Shield (276889, -19.21 DPS, sim-verified) [quest]; Guardian Buckler (4820, -25.92 DPS) [vendor]; Kresh's Back (13245, -36.85 DPS) [dungeon] |
 | ranged | - | - |  |  |  |
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 222, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-15302102511000000-00000000000000000)
 
-Set DPS (verified): 39.2. Weights run: 7.0s. Verify run: 2.5s. 443 eligible items had no known source.
+Set DPS (verified): 39.2. Weights run: 6.1s. Verify run: 2.3s. 443 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.036, armor=0.024 ± 0.003, defense=0.288 ± 0.070 per rating point (1 rating = 1%, 0.288 per %), dodge=0.099 ± 0.013 per rating point (12 rating = 1%, 1.189 per %), parry=0.086 ± 0.010 per rating point (15 rating = 1%, 1.287 per %), block=not significant (0.022 ± 0.024) per rating point (5 rating = 1%, 0.109 per %), block_value=not significant (0.068 ± 0.026), strength=0.035 ± 0.001, agility=0.131 ± 0.008, attack_power=0.016 ± 0.000, hit=0.050 ± 0.011 per rating point (10 rating = 1%, 0.505 per %), crit=0.026 ± 0.002 per rating point (14 rating = 1%, 0.358 per %), expertise=1.346 ± 0.123
 
@@ -240,7 +240,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Plains Ring (2039) | Razorfen Kraul [dungeon] | 8.0 stamina points (171.91 DPS) | yes | Defias Renegade Ring (1076, -27.44 DPS, sim-verified) [dungeon]; Slain Baron's Signet (279867, -52.09 DPS) [quest]; Boar Signet (274078, -64.47 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Looming Gavel (13048) | World drop [world_drop] | 10.9 stamina points (234.49 DPS) | yes | Crested Scepter (3414, -21.53 DPS) [dungeon]; The Stitcher (279874, -28.89 DPS) [quest]; The Butcher (8226, -38.10 DPS) [dungeon] |
+| main_hand | Looming Gavel (13048) | World drop [world_drop] | 10.9 stamina points (234.50 DPS) | yes | Crested Scepter (3414, -15.89 DPS) [dungeon]; The Stitcher (279874, -28.87 DPS) [quest]; The Butcher (8226, -38.10 DPS) [dungeon] |
 | off_hand | Heart of Agamaggan (6694) | Razorfen Kraul: Charlga Razorflank [dungeon] | 24.8 stamina points (533.25 DPS) | yes | Resplendent Guardian (7787, -38.94 DPS) [dungeon]; Bonepile Gaze (273055, -58.91 DPS) [world]; Arctic Buckler (7002, -65.00 DPS, sim-verified) [quest] |
 | ranged | - | - |  |  |  |
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 443, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 00000000000000000-15302102513501011-00000000000000000)
 
-Set DPS (verified): 75.2. Weights run: 8.1s. Verify run: 3.1s. 629 eligible items had no known source.
+Set DPS (verified): 75.2. Weights run: 7.0s. Verify run: 2.8s. 629 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.055, armor=0.018 ± 0.004, defense=not significant (0.247 ± 0.144) per rating point (1 rating = 1%, 0.247 per %), dodge=0.136 ± 0.027 per rating point (12 rating = 1%, 1.631 per %), parry=0.125 ± 0.021 per rating point (15 rating = 1%, 1.873 per %), block=not significant (0.144 ± 0.054) per rating point (5 rating = 1%, 0.719 per %), block_value=not significant (0.181 ± 0.054), strength=0.041 ± 0.002, agility=0.143 ± 0.017, attack_power=0.018 ± 0.000, hit=not significant (0.039 ± 0.027) per rating point (10 rating = 1%, 0.392 per %), crit=0.025 ± 0.002 per rating point (14 rating = 1%, 0.355 per %), expertise=1.337 ± 0.311
 
@@ -270,7 +270,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Nogg's Gold Ring (9588) | Nogg's Ring Redo [quest] | 10.0 stamina points (304.22 DPS) | yes | Seal of Sylvanas (6414, -52.30 DPS, sim-verified) [quest]; Plains Ring (2039, -60.84 DPS) [dungeon]; Trader's Ring (15689, -60.84 DPS) [quest] |
 | trinket1 | Arena Master (18706) | Arena Treasure Chest [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
 | trinket2 | - | - |  |  |  |
-| main_hand | Rockhide Strongfish (19808) | Wooden Chair [world] | 14.6 stamina points (444.66 DPS) | yes | Hand of Righteousness (7721, -6.13 DPS) [dungeon]; Nordic Longshank (9401, -35.94 DPS) [dungeon]; Annealed Blade (9392, -48.61 DPS) [dungeon] |
+| main_hand | Rockhide Strongfish (19808) | Wooden Chair [world] | 14.6 stamina points (444.66 DPS) | yes | Nordic Longshank (9401, -35.95 DPS) [dungeon]; Annealed Blade (9392, -48.59 DPS) [dungeon]; Southsea Lamp (9359, -53.58 DPS) [world_drop] |
 | off_hand | Aegis of the Scarlet Commander (7726) | Scarlet Monastery: Scarlet Commander Mograine [dungeon] | sim-verified (+85.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Olaf's All Purpose Shield (9404, -58.88 DPS) [dungeon]; Thrash's Trash (276204, -82.74 DPS) [vendor]; The Green Tower (1204, -85.46 DPS, sim-verified) [world_drop] |
 | ranged | - | - |  |  |  |
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 629, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 05003000000000000-15302102513501031-00000000000000000)
 
-Set DPS (verified): 117.0. Weights run: 8.3s. Verify run: 6.3s. 839 eligible items had no known source.
+Set DPS (verified): 117.0. Weights run: 7.1s. Verify run: 5.8s. 839 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.087, armor=0.032 ± 0.007, defense=not significant (0.104 ± 0.218) per rating point (1 rating = 1%, 0.104 per %), dodge=not significant (0.139 ± 0.042) per rating point (12 rating = 1%, 1.663 per %), parry=not significant (0.120 ± 0.032) per rating point (15 rating = 1%, 1.798 per %), block=not significant (0.112 ± 0.080) per rating point (5 rating = 1%, 0.561 per %), block_value=not significant (0.149 ± 0.080), strength=0.046 ± 0.004, agility=0.160 ± 0.026, attack_power=0.018 ± 0.000, hit=not significant (0.057 ± 0.044) per rating point (10 rating = 1%, 0.567 per %), crit=0.033 ± 0.001 per rating point (14 rating = 1%, 0.461 per %), expertise=2.281 ± 0.479
 
@@ -300,7 +300,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Underworld Band (1980) | World drop [world_drop] | 12.0 stamina points (407.32 DPS) | yes | Seafire Band (4549, -53.93 DPS) [quest]; Nogg's Gold Ring (9588, -67.89 DPS) [quest]; Sha'ni's Ring (11869, -67.89 DPS) [quest] |
 | trinket1 | Guardian Talisman (1490) | The Temple of Atal'Hakkar [quest] | sim-verified (10271.0 DPS) | yes | Arena Master (18706, -67.89 DPS) [world]; Smotts' Compass (4130, -249.03 DPS) [quest]; Rune of the Guard Captain (19120, -267.04 DPS) [quest] |
 | trinket2 | Mark of the Chosen (17774) | The Pariah's Instructions [quest] | sim-verified (10271.0 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Arena Master (18706, +0.00 DPS) [world]; Rune of the Guard Captain (19120, +0.00 DPS) [quest] |
-| main_hand | Viking Warhammer (1721) | World drop [world_drop] | sim-verified (10271.0 DPS) | yes | Might of Hakkar (10838, -7.79 DPS) [world]; Spirit of the Faerie Dragon (9686, -121.06 DPS) [quest]; Thrash Blade (17705, -282.61 DPS, sim-verified) [quest] |
+| main_hand | Viking Warhammer (1721) | World drop [world_drop] | sim-verified (10271.0 DPS) | yes | Might of Hakkar (10838, -7.79 DPS) [world]; Spirit of the Faerie Dragon (9686, -121.04 DPS) [quest]; The Hand of Antu'sul (9639, -190.37 DPS, sim-verified) [dungeon] |
 | off_hand | Wall of the Dead (1979) | World drop [world_drop] | 76.6 stamina points (2601.66 DPS) | yes | Aegis of Stormwind (1203, -82.79 DPS) [world_drop]; Stoneshell Guard (11631, -246.32 DPS) [dungeon]; Sunscale Shield (14852, -472.64 DPS) [world_drop] |
 | ranged | - | - |  |  |  |
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 839, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 05005000000000000-15302102513501031-50030000000000000)
 
-Set DPS (verified): 156.4. Weights run: 8.3s. Verify run: 9.8s. 1781 eligible items had no known source.
+Set DPS (verified): 156.4. Weights run: 7.2s. Verify run: 8.9s. 1781 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.047 ± 0.000, defense=2.036 ± 0.253 per rating point (1 rating = 1%, 2.036 per %), dodge=1.087 ± 0.050 per rating point (12 rating = 1%, 13.048 per %), parry=0.890 ± 0.038 per rating point (15 rating = 1%, 13.343 per %), block=1.345 ± 0.071 per rating point (5 rating = 1%, 6.725 per %), block_value=0.794 ± 0.002, strength=0.100 ± 0.000, agility=0.793 ± 0.030, attack_power=0.030 ± 0.000, hit=not significant (0.144 ± 0.055) per rating point (10 rating = 1%, 1.443 per %), crit=0.071 ± 0.001 per rating point (14 rating = 1%, 0.988 per %), expertise=6.010 ± 0.601
 
@@ -330,7 +330,7 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | finger2 | Ring of the Dawn (13812) (or Ring of Saviors (1447)) | <NYI> <TXT> Ring of the Dawn [quest] | 14.0 stamina points (1094.43 DPS) | yes | Ring of Saviors (1447, +0.00 DPS) [world_drop]; Dragonscale Band (12057, -78.17 DPS) [dungeon]; Dalson Family Wedding Ring (13475, -78.17 DPS) [quest] |
 | trinket1 | Guardian Talisman (1490) | The Temple of Atal'Hakkar [quest] | sim-verified (14316.3 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Arena Grand Master (19024, +0.00 DPS) [quest]; Arena Master (18706, -156.35 DPS) [world] |
 | trinket2 | Demon's Blood (10779) | You Are Rakh'likh, Demon [quest] | sim-verified (14316.3 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Arena Grand Master (19024, +0.00 DPS) [quest]; Arena Master (18706, -89.37 DPS) [world] |
-| main_hand | Greenhammer (279261) | Blacksmithing [crafted] | sim-verified (14316.3 DPS) | yes | High Warlord's Battle Mace (234551, +0.00 DPS) [vendor]; High Warlord's Quickblade (234553, +0.00 DPS) [pvp]; Teebu's Blazing Longsword (1728, -532.88 DPS, sim-verified) [world_drop] |
+| main_hand | Greenhammer (279261) | Blacksmithing [crafted] | sim-verified (14316.3 DPS) | yes | High Warlord's Battle Mace (234551, +0.00 DPS) [vendor]; High Warlord's Quickblade (234553, +0.00 DPS) [pvp]; Frostguard (12797, -506.69 DPS, sim-verified) [crafted] |
 | off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | 133.3 stamina points (10422.78 DPS) | yes | High Warlord's Shield Wall (234562, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, +0.00 DPS) [vendor]; Sacred Protector (16998, -505.33 DPS, sim-verified) [quest] |
 | ranged | - | - |  |  |  |
 
@@ -340,31 +340,31 @@ No-known-source sample (15 of 1781, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 05005000000000000-15302102513501031-50030000000000000)
 
-Set DPS (verified): 436.2. Weights run: 8.4s. Verify run: 9.6s. 1781 eligible items had no known source.
+Set DPS (verified): 471.5. Weights run: 7.3s. Verify run: 8.8s. 1781 eligible items had no known source.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.063 ± 0.000, defense=2.310 ± 0.215 per rating point (1 rating = 1%, 2.310 per %), dodge=1.581 ± 0.049 per rating point (12 rating = 1%, 18.967 per %), parry=1.282 ± 0.036 per rating point (15 rating = 1%, 19.226 per %), block=1.707 ± 0.057 per rating point (5 rating = 1%, 8.535 per %), block_value=1.178 ± 0.003, strength=0.141 ± 0.000, agility=1.256 ± 0.031, attack_power=0.036 ± 0.000, hit=0.237 ± 0.056 per rating point (10 rating = 1%, 2.372 per %), crit=0.113 ± 0.002 per rating point (14 rating = 1%, 1.575 per %), expertise=9.154 ± 0.613
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.064 ± 0.000, defense=2.329 ± 0.216 per rating point (1 rating = 1%, 2.329 per %), dodge=1.591 ± 0.049 per rating point (12 rating = 1%, 19.087 per %), parry=1.289 ± 0.036 per rating point (15 rating = 1%, 19.338 per %), block=1.728 ± 0.057 per rating point (5 rating = 1%, 8.638 per %), block_value=1.193 ± 0.003, strength=0.135 ± 0.000, agility=1.268 ± 0.031, attack_power=0.033 ± 0.000, hit=0.244 ± 0.056 per rating point (10 rating = 1%, 2.443 per %), crit=0.118 ± 0.002 per rating point (14 rating = 1%, 1.648 per %), expertise=9.321 ± 0.616
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Enchanted Thorium Helm (12620) | Blacksmithing [crafted] | 80.6 stamina points (8906.00 DPS) | yes | Helm of Valor (16731, -780.70 DPS) [dungeon]; Enriched Thorium Helm (250597, -828.12 DPS) [crafted]; Outlaw's Collar (279253, -1195.90 DPS) [crafted] |
-| neck | Medallion of Grand Marshal Morris (13091) | World drop [world_drop] | 30.1 stamina points (3324.43 DPS) | yes | Woven Ivy Necklace (19159, -878.68 DPS) [quest]; Sunprism Pendant (20649, -887.45 DPS) [quest]; Skibi's Pendant (13089, -1443.89 DPS) [world_drop] |
-| shoulder | Spaulders of Valor (16733) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | 68.7 stamina points (7589.38 DPS) | yes | Sentinel's Pauldrons (250577, -474.09 DPS, sim-verified) [crafted]; Warder's Pauldrons (250578, -991.62 DPS) [crafted]; Lightforge Spaulders (16729, -1591.50 DPS) [dungeon] |
-| back | Deep River Cloak (15789) | Strange Sources [quest] | 23.1 stamina points (2548.95 DPS) | yes | Dark Phantom Cape (13122, -197.46 DPS) [world_drop]; Fel Cape (279269, -260.04 DPS) [crafted]; Cape of the Black Baron (13340, -535.45 DPS, sim-verified) [dungeon] |
-| chest | Enchanted Thorium Breastplate (12618) | Blacksmithing [crafted] | 89.9 stamina points (9928.45 DPS) | yes | Enriched Thorium Breastplate (250595, -367.01 DPS) [crafted]; Breastplate of Valor (16730, -1083.76 DPS) [dungeon]; Ursa's Embrace (21322, -1176.68 DPS) [quest] |
-| wrist | Sentinel's Wristguards (250582) | Blacksmithing [crafted] | 44.9 stamina points (4957.57 DPS) | yes | Warder's Wristguards (250583, -93.48 DPS) [crafted]; Bracers of Valor (16735, -559.13 DPS) [dungeon]; Beaststalker's Bindings (16681, -963.79 DPS) [dungeon] |
-| hands | Heavy Thorium Gauntlets (279264) | Blacksmithing [crafted] | 73.8 stamina points (8144.40 DPS) | yes | Stronghold Gauntlets (12639, +0.00 DPS, sim-verified) [crafted]; Sentinel's Gloves (250552, -917.45 DPS) [crafted]; Warder's Gloves (250553, -1057.67 DPS) [crafted] |
-| waist | Sentinel's Waistguard (250572) | Blacksmithing [crafted] | 59.4 stamina points (6555.67 DPS) | yes | Belt of Valor (16736, -136.84 DPS) [dungeon]; Warder's Waistguard (250573, -202.54 DPS) [crafted]; Officer's Waistguard (250571, -1259.63 DPS) [crafted] |
-| legs | Azerothium Legplates (279265) | Blacksmithing [crafted] | 93.7 stamina points (10348.94 DPS) | yes | Legplates of Valor (16732, -570.06 DPS, sim-verified) [dungeon]; Cloudkeeper Legplates (14554, -759.89 DPS) [world_drop]; Enriched Thorium Leggings (250596, -1178.34 DPS) [crafted] |
-| feet | Boots of Avoidance (14549) | World drop [world_drop] | 89.2 stamina points (9851.45 DPS) | yes | Sentinel's Sabatons (250562, -3314.91 DPS) [crafted]; Boots of Valor (16734, -3347.15 DPS) [dungeon]; Warder's Sabatons (250563, -3501.87 DPS) [crafted] |
-| finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 22.6 stamina points (2493.45 DPS) | yes | Ring of the Underwood (2951, -517.93 DPS, sim-verified) [world_drop]; Ring of Saviors (1447, -947.45 DPS) [world_drop]; Ring of the Dawn (13812, -947.45 DPS) [quest] |
-| finger2 | Field Researcher's Loop (281634) | Greater Friend of the Library [quest] | sim-verified (33235.9 DPS) | yes | Ring of Saviors (1447, -197.65 DPS) [world_drop]; Ring of the Dawn (13812, -197.65 DPS) [quest]; Ring of the Underwood (2951, -340.63 DPS, sim-verified) [world_drop] |
-| trinket1 | Guardian Talisman (1490) | The Temple of Atal'Hakkar [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Arena Grand Master (19024, +0.00 DPS) [quest]; Arena Master (18706, -220.86 DPS) [world] |
-| trinket2 | Demon's Blood (10779) | You Are Rakh'likh, Demon [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Arena Master (18706, +0.00 DPS, sim-verified) [world]; Arena Grand Master (19024, +0.00 DPS) [quest] |
-| main_hand | Greenhammer (279261) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Battle Mace (234551, +0.00 DPS) [vendor]; High Warlord's Quickblade (234553, -174.70 DPS) [pvp]; Teebu's Blazing Longsword (1728, -868.79 DPS, sim-verified) [world_drop] |
-| off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | 173.2 stamina points (19123.10 DPS) | yes | High Warlord's Shield Wall (234562, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, +0.00 DPS) [vendor]; Sacred Protector (16998, -1053.49 DPS, sim-verified) [quest] |
+| head | Enchanted Thorium Helm (12620) | Blacksmithing [crafted] | 81.2 stamina points (9279.68 DPS) | yes | Helm of Valor (16731, -816.84 DPS) [dungeon]; Enriched Thorium Helm (250597, -849.86 DPS) [crafted]; Outlaw's Collar (279253, -1239.70 DPS) [crafted] |
+| neck | Medallion of Grand Marshal Morris (13091) | World drop [world_drop] | 30.3 stamina points (3463.15 DPS) | yes | Woven Ivy Necklace (19159, -922.62 DPS) [quest]; Sunprism Pendant (20649, -923.03 DPS) [quest]; Skibi's Pendant (13089, -1501.55 DPS) [world_drop] |
+| shoulder | Spaulders of Valor (16733) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | 69.2 stamina points (7914.13 DPS) | yes | Sentinel's Pauldrons (250577, -538.54 DPS, sim-verified) [crafted]; Warder's Pauldrons (250578, -1027.28 DPS) [crafted]; Lightforge Spaulders (16729, -1653.07 DPS) [dungeon] |
+| back | Deep River Cloak (15789) | Strange Sources [quest] | 23.2 stamina points (2657.96 DPS) | yes | Dark Phantom Cape (13122, -198.61 DPS) [world_drop]; Fel Cape (279269, -274.94 DPS) [crafted]; Cape of the Black Baron (13340, -469.15 DPS, sim-verified) [dungeon] |
+| chest | Enchanted Thorium Breastplate (12618) | Blacksmithing [crafted] | 90.5 stamina points (10350.37 DPS) | yes | Enriched Thorium Breastplate (250595, -371.95 DPS) [crafted]; Breastplate of Valor (16730, -1129.24 DPS) [dungeon]; Ursa's Embrace (21322, -1193.25 DPS) [quest] |
+| wrist | Sentinel's Wristguards (250582) | Blacksmithing [crafted] | 45.2 stamina points (5166.67 DPS) | yes | Warder's Wristguards (250583, -92.30 DPS) [crafted]; Bracers of Valor (16735, -585.29 DPS) [dungeon]; Beaststalker's Bindings (16681, -996.82 DPS) [dungeon] |
+| hands | Heavy Thorium Gauntlets (279264) | Blacksmithing [crafted] | 74.2 stamina points (8484.64 DPS) | yes | Stronghold Gauntlets (12639, -807.30 DPS) [crafted]; Sentinel's Gloves (250552, -952.23 DPS) [crafted]; Warder's Gloves (250553, -1090.68 DPS) [crafted] |
+| waist | Sentinel's Waistguard (250572) | Blacksmithing [crafted] | 59.7 stamina points (6828.87 DPS) | yes | Belt of Valor (16736, -139.46 DPS) [dungeon]; Warder's Waistguard (250573, -199.99 DPS) [crafted]; Officer's Waistguard (250571, -1311.94 DPS) [crafted] |
+| legs | Azerothium Legplates (279265) | Blacksmithing [crafted] | 94.3 stamina points (10782.12 DPS) | yes | Cloudkeeper Legplates (14554, -783.71 DPS) [world_drop]; Legplates of Valor (16732, -805.64 DPS, sim-verified) [dungeon]; Enriched Thorium Leggings (250596, -1214.98 DPS) [crafted] |
+| feet | Boots of Avoidance (14549) | World drop [world_drop] | 89.9 stamina points (10280.56 DPS) | yes | Sentinel's Sabatons (250562, -577.47 DPS, sim-verified) [crafted]; Boots of Valor (16734, -3502.43 DPS) [dungeon]; Warder's Sabatons (250563, -3652.68 DPS) [crafted] |
+| finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 22.8 stamina points (2601.39 DPS) | yes | Field Researcher's Loop (281634, -786.14 DPS) [quest]; Ring of Saviors (1447, -1000.56 DPS) [world_drop]; Ring of the Dawn (13812, -1000.56 DPS) [quest] |
+| finger2 | Ring of the Underwood (2951) | World drop [world_drop] | 15.9 stamina points (1823.56 DPS) | yes | Field Researcher's Loop (281634, -8.32 DPS) [quest]; Ring of Saviors (1447, -222.73 DPS) [world_drop]; Ring of the Dawn (13812, -222.73 DPS) [quest] |
+| trinket1 | Guardian Talisman (1490) | The Temple of Atal'Hakkar [quest] | sim-verified (34298.9 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Demon's Blood (10779, +0.00 DPS) [quest]; Arena Grand Master (19024, +0.00 DPS) [quest] |
+| trinket2 | Arena Master (18706) | Arena Treasure Chest [world] | sim-verified (34298.9 DPS) | yes | Smotts' Compass (4130, +0.00 DPS) [quest]; Arena Grand Master (19024, +0.00 DPS) [quest]; Demon's Blood (10779, -456.49 DPS, sim-verified) [quest] |
+| main_hand | Greenhammer (279261) | Blacksmithing [crafted] | sim-verified (34298.9 DPS) | yes | Frostguard (12797, +0.00 DPS) [crafted]; High Warlord's Battle Mace (234551, +0.00 DPS) [vendor]; High Warlord's Quickblade (234553, -271.04 DPS) [pvp] |
+| off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | 175.2 stamina points (20035.29 DPS) | yes | High Warlord's Shield Wall (234562, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, +0.00 DPS) [vendor]; Sacred Protector (16998, -1300.94 DPS, sim-verified) [quest] |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Enchanted Thorium Helm; neck: Medallion of Grand Marshal Morris; shoulder: Spaulders of Valor; back: Deep River Cloak; chest: Enchanted Thorium Breastplate; hands: Heavy Thorium Gauntlets; legs: Azerothium Legplates; feet: Boots of Avoidance; finger1: Masons Fraternity Ring; finger2: Field Researcher's Loop; trinket2: Demon's Blood; main_hand: Greenhammer; off_hand: Evergreen Shield
+**New at 60:** head: Enchanted Thorium Helm; neck: Medallion of Grand Marshal Morris; shoulder: Spaulders of Valor; back: Deep River Cloak; chest: Enchanted Thorium Breastplate; hands: Heavy Thorium Gauntlets; legs: Azerothium Legplates; feet: Boots of Avoidance; finger1: Masons Fraternity Ring; finger2: Ring of the Underwood; trinket2: Arena Master; main_hand: Greenhammer; off_hand: Evergreen Shield
 
 No-known-source sample (15 of 1781, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 

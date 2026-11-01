@@ -513,19 +513,19 @@ enum Copy {
     /// Fire spell damage
     static var itemsStatFirePower: String { text("items.stat.firePower") }
 
-    /// Fire resistance
+    /// Fire Resistance
     static var itemsStatFireRes: String { text("items.stat.fireRes") }
 
-    /// Frost resistance
+    /// Frost Resistance
     static var itemsStatFrostRes: String { text("items.stat.frostRes") }
 
-    /// Nature resistance
+    /// Nature Resistance
     static var itemsStatNatureRes: String { text("items.stat.natureRes") }
 
-    /// Shadow resistance
+    /// Shadow Resistance
     static var itemsStatShadowRes: String { text("items.stat.shadowRes") }
 
-    /// Arcane resistance
+    /// Arcane Resistance
     static var itemsStatArcaneRes: String { text("items.stat.arcaneRes") }
 
     /// Hated
@@ -2282,6 +2282,371 @@ enum Copy {
         format("account.version.noData", version, build)
     }
 
+    /// Search
+    static var searchButton: String { text("search.button") }
+
+    /// Search items, characters, guides, talents
+    static var searchPlaceholder: String { text("search.placeholder") }
+
+    /// Cancel
+    static var searchCancel: String { text("search.cancel") }
+
+    /// Clear the search
+    static var searchClear: String { text("search.clear") }
+
+    /// All
+    static var searchScopeAll: String { text("search.scope.all") }
+
+    /// Items
+    static var searchScopeItems: String { text("search.scope.items") }
+
+    /// Characters
+    static var searchScopeCharacters: String { text("search.scope.characters") }
+
+    /// Guides
+    static var searchScopeGuides: String { text("search.scope.guides") }
+
+    /// Talents
+    static var searchScopeTalents: String { text("search.scope.talents") }
+
+    /// For {name}
+    static func searchGroupForCharacter(name: String) -> String {
+        format("search.group.forCharacter", name)
+    }
+
+    /// Best in slot for {name}
+    static func searchForCharacterBis(name: String) -> String {
+        format("search.forCharacter.bis", name)
+    }
+
+    /// {spec} {className} guide
+    static func searchForCharacterGuide(spec: String, className: String) -> String {
+        format("search.forCharacter.guide", spec, className)
+    }
+
+    /// Rankings
+    static var searchForCharacterRankings: String { text("search.forCharacter.rankings") }
+
+    /// Watching
+    static var searchGroupWatching: String { text("search.group.watching") }
+
+    /// Recent
+    static var searchGroupRecent: String { text("search.group.recent") }
+
+    /// Clear
+    static var searchRecentClear: String { text("search.recent.clear") }
+
+    /// Item
+    static var searchRecentItem: String { text("search.recent.item") }
+
+    /// Character
+    static var searchRecentCharacter: String { text("search.recent.character") }
+
+    /// Guide
+    static var searchRecentGuide: String { text("search.recent.guide") }
+
+    /// Talent
+    static var searchRecentTalent: String { text("search.recent.talent") }
+
+    /// Guides
+    static var searchGroupGuides: String { text("search.group.guides") }
+
+    /// Talents
+    static var searchGroupTalents: String { text("search.group.talents") }
+
+    /// Items
+    static var searchGroupItems: String { text("search.group.items") }
+
+    /// Characters
+    static var searchGroupCharacters: String { text("search.group.characters") }
+
+    /// Show all {n}
+    static func searchShowAll(n: Int) -> String {
+        format("search.showAll", n)
+    }
+
+    /// {slot} · item level {ilvl} · requires level {level}
+    static func searchItemMeta(slot: String, ilvl: Int, level: Int) -> String {
+        format("search.item.meta", slot, ilvl, level)
+    }
+
+    /// {slot} · item level {ilvl}
+    static func searchItemMetaNoLevel(slot: String, ilvl: Int) -> String {
+        format("search.item.metaNoLevel", slot, ilvl)
+    }
+
+    /// {className} · Level {level} · {region} {ruleset}
+    static func searchCharacterMeta(className: String, level: Int, region: String, ruleset: String) -> String {
+        format("search.character.meta", className, level, region, ruleset)
+    }
+
+    /// {className} · {region} {ruleset}
+    static func searchCharacterMetaNoLevel(className: String, region: String, ruleset: String) -> String {
+        format("search.character.metaNoLevel", className, region, ruleset)
+    }
+
+    /// You
+    static var searchCharacterYou: String { text("search.character.you") }
+
+    /// Guide · {role}
+    static func searchGuideMeta(role: String) -> String {
+        format("search.guide.meta", role)
+    }
+
+    /// {n} ranks
+    static func searchTalentRanks(n: Int) -> String {
+        format("search.talent.ranks", n)
+    }
+
+    /// {spec} {className} · {tree} · {ranks}
+    static func searchTalentMeta(spec: String, className: String, tree: String, ranks: String) -> String {
+        format("search.talent.meta", spec, className, tree, ranks)
+    }
+
+    /// Nothing matches “{query}”.
+    static func searchNoResultsTitle(query: String) -> String {
+        format("search.noResults.title", query)
+    }
+
+    /// Check the spelling. Characters need at least two letters and a connection.
+    static var searchNoResultsBody: String { text("search.noResults.body") }
+
+    /// Offline. Items, guides and talents still search; characters need a connection.
+    static var searchOffline: String { text("search.offline") }
+
+    /// Characters did not load.
+    static var searchCharactersFailed: String { text("search.charactersFailed") }
+
+    /// Loading the search…
+    static var searchIndexLoading: String { text("search.indexLoading") }
+
+    /// Search did not load.
+    static var searchIndexFailed: String { text("search.indexFailed") }
+
+    /// Try again
+    static var searchTryAgain: String { text("search.tryAgain") }
+
+    /// Open in planner
+    static var searchTalentOpenPlanner: String { text("search.talent.openPlanner") }
+
+    /// Rank {rank}/{max}
+    static func searchTalentRank(rank: Int, max: Int) -> String {
+        format("search.talent.rank", rank, max)
+    }
+
+    /// Search
+    static var itemPageBack: String { text("itemPage.back") }
+
+    /// {quality} · {slot} · item level {ilvl}
+    static func itemPageMeta(quality: String, slot: String, ilvl: Int) -> String {
+        format("itemPage.meta", quality, slot, ilvl)
+    }
+
+    /// Your {slot} pick
+    static func itemPagePick(slot: String) -> String {
+        format("itemPage.pick", slot)
+    }
+
+    /// Runner-up {n} for {slot}
+    static func itemPageRunnerUp(n: Int, slot: String) -> String {
+        format("itemPage.runnerUp", n, slot)
+    }
+
+    /// {spec} · {band} · {preset} · {faction}
+    static func itemPagePickMeta(spec: String, band: String, preset: String, faction: String) -> String {
+        format("itemPage.pickMeta", spec, band, preset, faction)
+    }
+
+    /// Yours
+    static var itemPageYours: String { text("itemPage.yours") }
+
+    /// Item
+    static var itemPageChipItem: String { text("itemPage.chip.item") }
+
+    /// Source
+    static var itemPageChipSource: String { text("itemPage.chip.source") }
+
+    /// Best in slot for
+    static var itemPageChipBisFor: String { text("itemPage.chip.bisFor") }
+
+    /// Where it comes from
+    static var itemPageSources: String { text("itemPage.sources") }
+
+    /// No source is in our data for this item yet.
+    static var itemPageNoSources: String { text("itemPage.noSources") }
+
+    /// {chance} from {boss}
+    static func itemPageDropChance(chance: String, boss: String) -> String {
+        format("itemPage.dropChance", chance, boss)
+    }
+
+    /// Drop chance not known
+    static var itemPageChanceUnknown: String { text("itemPage.chanceUnknown") }
+
+    /// Requires level {n}
+    static func itemPageQuestLevel(n: Int) -> String {
+        format("itemPage.questLevel", n)
+    }
+
+    /// Raid
+    static var itemPageKindRaid: String { text("itemPage.kind.raid") }
+
+    /// Dungeon
+    static var itemPageKindDungeon: String { text("itemPage.kind.dungeon") }
+
+    /// World drop
+    static var itemPageKindWorld: String { text("itemPage.kind.world") }
+
+    /// Zone
+    static var itemPageKindZone: String { text("itemPage.kind.zone") }
+
+    /// Vendor
+    static var itemPageKindVendor: String { text("itemPage.kind.vendor") }
+
+    /// Crafted
+    static var itemPageKindCrafted: String { text("itemPage.kind.crafted") }
+
+    /// Reputation
+    static var itemPageKindRep: String { text("itemPage.kind.rep") }
+
+    /// PvP
+    static var itemPageKindPvp: String { text("itemPage.kind.pvp") }
+
+    /// Quest
+    static var itemPageKindQuest: String { text("itemPage.kind.quest") }
+
+    /// Best in slot for
+    static var itemPageBisFor: String { text("itemPage.bisFor") }
+
+    /// No best in slot list uses this item.
+    static var itemPageBisForNone: String { text("itemPage.bisForNone") }
+
+    /// Pick
+    static var itemPageTagPick: String { text("itemPage.tag.pick") }
+
+    /// Runner-up {n}
+    static func itemPageTagRunnerUp(n: Int) -> String {
+        format("itemPage.tag.runnerUp", n)
+    }
+
+    /// {band} · Phase 1 raid
+    static func itemPageSpecMetaRaid(band: Int) -> String {
+        format("itemPage.specMeta.raid", band)
+    }
+
+    /// {band}
+    static func itemPageSpecMetaBare(band: Int) -> String {
+        format("itemPage.specMeta.bare", band)
+    }
+
+    /// {n} more specs
+    static func itemPageMoreSpecs(n: Int) -> String {
+        format("itemPage.moreSpecs", n)
+    }
+
+    /// This item is not in our data.
+    static var itemPageUnknown: String { text("itemPage.unknown") }
+
+    /// Sources did not load.
+    static var itemPageUsesFailed: String { text("itemPage.usesFailed") }
+
+    /// More about this item
+    static var itemPageMoreAbout: String { text("itemPage.moreAbout") }
+
+    /// {title}, {meta}
+    static func itemPageA11ySource(title: String, meta: String) -> String {
+        format("itemPage.a11y.source", title, meta)
+    }
+
+    /// {spec}, {meta}, {tag}. Opens that list
+    static func itemPageA11ySpec(spec: String, meta: String, tag: String) -> String {
+        format("itemPage.a11y.spec", spec, meta, tag)
+    }
+
+    /// Phase 1 raid
+    static var itemPagePresetRaid: String { text("itemPage.preset.raid") }
+
+    /// {spec} · {band} · {faction}
+    static func itemPagePickMetaBare(spec: String, band: String, faction: String) -> String {
+        format("itemPage.pickMetaBare", spec, band, faction)
+    }
+
+    /// Best in slot lists did not load.
+    static var itemPageBisForFailed: String { text("itemPage.bisForFailed") }
+
+    /// Back
+    static var itemPageBackPlain: String { text("itemPage.backPlain") }
+
+    /// Equip: Increases damage and healing done by magical spells and effects by up to {n}.
+    static func itemsEquipSpellPower(n: Int) -> String {
+        format("items.equip.spellPower", n)
+    }
+
+    /// Equip: Increases healing done by spells and effects by up to {n}.
+    static func itemsEquipHealing(n: Int) -> String {
+        format("items.equip.healing", n)
+    }
+
+    /// Equip: +{n} Attack Power.
+    static func itemsEquipAttackPower(n: Int) -> String {
+        format("items.equip.attackPower", n)
+    }
+
+    /// Equip: +{n} ranged Attack Power.
+    static func itemsEquipRangedAttackPower(n: Int) -> String {
+        format("items.equip.rangedAttackPower", n)
+    }
+
+    /// Equip: Restores {n} mana per 5 sec.
+    static func itemsEquipMp5(n: Int) -> String {
+        format("items.equip.mp5", n)
+    }
+
+    /// Equip: Decreases the magical resistances of your spell targets by {n}.
+    static func itemsEquipSpellPenetration(n: Int) -> String {
+        format("items.equip.spellPenetration", n)
+    }
+
+    /// Equip: Increases damage done by Fire spells and effects by up to {n}.
+    static func itemsEquipFirePower(n: Int) -> String {
+        format("items.equip.firePower", n)
+    }
+
+    /// Equip: Increases the block value of your shield by {n}.
+    static func itemsEquipBlockValue(n: Int) -> String {
+        format("items.equip.blockValue", n)
+    }
+
+    /// Equip: Increased Defense +{n}.
+    static func itemsEquipDefense(n: Int) -> String {
+        format("items.equip.defense", n)
+    }
+
+    /// Equip: Improves your chance to get a critical strike by {percent}.
+    static func itemsEquipCrit(percent: String) -> String {
+        format("items.equip.crit", percent)
+    }
+
+    /// Equip: Improves your chance to hit by {percent}.
+    static func itemsEquipHit(percent: String) -> String {
+        format("items.equip.hit", percent)
+    }
+
+    /// Equip: Increases your chance to dodge an attack by {percent}.
+    static func itemsEquipDodge(percent: String) -> String {
+        format("items.equip.dodge", percent)
+    }
+
+    /// Equip: Increases your chance to parry an attack by {percent}.
+    static func itemsEquipParry(percent: String) -> String {
+        format("items.equip.parry", percent)
+    }
+
+    /// Equip: Increases your chance to block attacks with a shield by {percent}.
+    static func itemsEquipBlock(percent: String) -> String {
+        format("items.equip.block", percent)
+    }
+
     /// Logs
     static var homeLogs: String { text("home.logs") }
 
@@ -3373,6 +3738,576 @@ enum Copy {
     /// {time} · {answer}
     static func liveTileSub(time: String, answer: String) -> String {
         format("live.tile.sub", time, answer)
+    }
+
+    /// Guides
+    static var tabGuides: String { text("tab.guides") }
+
+    /// Guides
+    static var guidesTitle: String { text("guides.title") }
+
+    /// Guides
+    static var guidesSegmentGuides: String { text("guides.segment.guides") }
+
+    /// Tier lists
+    static var guidesSegmentTiers: String { text("guides.segment.tiers") }
+
+    /// What changed
+    static var guidesSegmentChanges: String { text("guides.segment.changes") }
+
+    /// Your guide
+    static var guidesYours: String { text("guides.yours") }
+
+    /// Saved on this phone
+    static var guidesSaved: String { text("guides.saved") }
+
+    /// Saved
+    static var guidesSavedShort: String { text("guides.savedShort") }
+
+    /// Not saved
+    static var guidesNotSaved: String { text("guides.notSaved") }
+
+    /// All classes
+    static var guidesClasses: String { text("guides.classes") }
+
+    /// Saved on this phone: {classes} · {size}. Guides update by themselves when the game data does.
+    static func guidesFooter(classes: String, size: String) -> String {
+        format("guides.footer", classes, size)
+    }
+
+    /// Nothing is saved on this phone yet. Open a guide once and it stays.
+    static var guidesFooterNone: String { text("guides.footerNone") }
+
+    /// This guide is not on your phone yet. Connect once to save it.
+    static var guidesNotCached: String { text("guides.notCached") }
+
+    /// This list is not on your phone yet. Connect once to save it.
+    static var guidesListNotCached: String { text("guides.listNotCached") }
+
+    /// This guide did not load.
+    static var guidesError: String { text("guides.error") }
+
+    /// Loading the guides…
+    static var guidesLoading: String { text("guides.loading") }
+
+    /// Sources
+    static var guidesSources: String { text("guides.sources") }
+
+    /// Share
+    static var guidesShare: String { text("guides.share") }
+
+    /// {role} · Updated {date}
+    static func guidesCardMeta(role: String, date: String) -> String {
+        format("guides.cardMeta", role, date)
+    }
+
+    /// Updated {date} · Recommended races: {races}
+    static func guidesHeadMeta(date: String, races: String) -> String {
+        format("guides.headMeta", date, races)
+    }
+
+    /// Updated {date}
+    static func guidesHeadMetaNoRaces(date: String) -> String {
+        format("guides.headMetaNoRaces", date)
+    }
+
+    /// DPS
+    static var guidesRoleDps: String { text("guides.role.dps") }
+
+    /// Healer
+    static var guidesRoleHealer: String { text("guides.role.healer") }
+
+    /// Tank
+    static var guidesRoleTank: String { text("guides.role.tank") }
+
+    /// Overview
+    static var guidesSectionOverview: String { text("guides.section.overview") }
+
+    /// Talents
+    static var guidesSectionTalents: String { text("guides.section.talents") }
+
+    /// Rotation
+    static var guidesSectionRotation: String { text("guides.section.rotation") }
+
+    /// Stats
+    static var guidesSectionStats: String { text("guides.section.stats") }
+
+    /// Gear
+    static var guidesSectionGear: String { text("guides.section.gear") }
+
+    /// Races
+    static var guidesSectionRaces: String { text("guides.section.races") }
+
+    /// {name}, section {n} of {total}
+    static func guidesA11ySection(name: String, n: Int, total: Int) -> String {
+        format("guides.a11y.section", name, n, total)
+    }
+
+    /// Priority {n}, {stat}
+    static func guidesA11yStat(n: Int, stat: String) -> String {
+        format("guides.a11y.stat", n, stat)
+    }
+
+    /// At a glance
+    static var guidesGlance: String { text("guides.glance") }
+
+    /// Role
+    static var guidesRole: String { text("guides.role") }
+
+    /// Stat priority
+    static var guidesStatPriority: String { text("guides.statPriority") }
+
+    /// Strengths
+    static var guidesStrengths: String { text("guides.strengths") }
+
+    /// Weaknesses
+    static var guidesWeaknesses: String { text("guides.weaknesses") }
+
+    /// In a raid
+    static var guidesInRaid: String { text("guides.inRaid") }
+
+    /// {n} ranks
+    static func guidesRanks(n: Int) -> String {
+        format("guides.ranks", n)
+    }
+
+    /// Rank {n}
+    static func guidesRank(n: Int) -> String {
+        format("guides.rank", n)
+    }
+
+    /// Raid build
+    static var guidesRaidBuild: String { text("guides.raidBuild") }
+
+    /// Leveling build
+    static var guidesLevelingBuild: String { text("guides.levelingBuild") }
+
+    /// Level 60
+    static var guidesBuildLevel: String { text("guides.buildLevel") }
+
+    /// Opener
+    static var guidesOpener: String { text("guides.opener") }
+
+    /// Priority
+    static var guidesPriority: String { text("guides.priority") }
+
+    /// Cooldowns
+    static var guidesCooldowns: String { text("guides.cooldowns") }
+
+    /// Ranks are the ones you have at 60.
+    static var guidesRotationFooter: String { text("guides.rotationFooter") }
+
+    /// Best in slot for {spec} · 60 · {preset}
+    static func guidesGearRow(spec: String, preset: String) -> String {
+        format("guides.gearRow", spec, preset)
+    }
+
+    /// Recommended
+    static var guidesRecommended: String { text("guides.recommended") }
+
+    /// Your spec
+    static var tiersYours: String { text("tiers.yours") }
+
+    /// Yours
+    static var tiersYoursTag: String { text("tiers.yoursTag") }
+
+    /// Top
+    static var tiersTop: String { text("tiers.top") }
+
+    /// ≈
+    static var tiersTie: String { text("tiers.tie") }
+
+    /// Loading the tier list…
+    static var tiersLoading: String { text("tiers.loading") }
+
+    /// The tier list did not load.
+    static var tiersError: String { text("tiers.error") }
+
+    /// Alliance
+    static var tiersFactionAlliance: String { text("tiers.faction.alliance") }
+
+    /// Horde
+    static var tiersFactionHorde: String { text("tiers.faction.horde") }
+
+    /// {name}, rank 1 of {count}, {tier}top spec, {race}
+    static func tiersA11yTop(name: String, count: String, tier: String, race: String) -> String {
+        format("tiers.a11y.top", name, count, tier, race)
+    }
+
+    /// {name}, rank {rank} of {count}, {tier}{gap} behind the top, {race}
+    static func tiersA11yBehind(name: String, rank: String, count: String, tier: String, gap: String, race: String) -> String {
+        format("tiers.a11y.behind", name, rank, count, tier, gap, race)
+    }
+
+    /// tier {letter},
+    static func tiersA11yTier(letter: String) -> String {
+        format("tiers.a11y.tier", letter)
+    }
+
+    /// {n} percent
+    static func tiersA11yGap(n: String) -> String {
+        format("tiers.a11y.gap", n)
+    }
+
+    /// Within 1 percent of the next spec
+    static var tiersA11yTie: String { text("tiers.a11y.tie") }
+
+    /// Opens the guide
+    static var tiersA11yOpens: String { text("tiers.a11y.opens") }
+
+    /// Key dates
+    static var changesDates: String { text("changes.dates") }
+
+    /// What changed
+    static var changesList: String { text("changes.list") }
+
+    /// What changed did not load.
+    static var changesError: String { text("changes.error") }
+
+    /// Site
+    static var changesTagSite: String { text("changes.tag.site") }
+
+    /// Game
+    static var changesTagGame: String { text("changes.tag.game") }
+
+    /// New game data is ready.
+    static var offlineNewData: String { text("offline.newData") }
+
+    /// Update
+    static var offlineUpdate: String { text("offline.update") }
+
+    /// The update did not finish. Try again.
+    static var offlineUpdateFailed: String { text("offline.updateFailed") }
+
+    /// Roster
+    static var raidsRosterRow: String { text("raids.rosterRow") }
+
+    /// {n} on the roster · attendance
+    static func raidsRosterRowSub(n: Int) -> String {
+        format("raids.rosterRow.sub", n)
+    }
+
+    /// Raid history
+    static var raidsHistoryRow: String { text("raids.historyRow") }
+
+    /// Logged raid nights
+    static var raidsHistoryRowSub: String { text("raids.historyRow.sub") }
+
+    /// Roster
+    static var rosterTitle: String { text("roster.title") }
+
+    /// on the roster
+    static var rosterCountsOnRoster: String { text("roster.counts.onRoster") }
+
+    /// in game, no account
+    static var rosterCountsNoAccount: String { text("roster.counts.noAccount") }
+
+    /// waiting
+    static var rosterCountsWaiting: String { text("roster.counts.waiting") }
+
+    /// All
+    static var rosterChipAll: String { text("roster.chip.all") }
+
+    /// Tanks
+    static var rosterChipTanks: String { text("roster.chip.tanks") }
+
+    /// Healers
+    static var rosterChipHealers: String { text("roster.chip.healers") }
+
+    /// DPS
+    static var rosterChipDps: String { text("roster.chip.dps") }
+
+    /// Sort: {by}
+    static func rosterSort(by: String) -> String {
+        format("roster.sort", by)
+    }
+
+    /// Rank
+    static var rosterSortRank: String { text("roster.sort.rank") }
+
+    /// Class
+    static var rosterSortClassName: String { text("roster.sort.className") }
+
+    /// Name
+    static var rosterSortName: String { text("roster.sort.name") }
+
+    /// Attendance
+    static var rosterSortAttendance: String { text("roster.sort.attendance") }
+
+    /// Level
+    static var rosterSortLevel: String { text("roster.sort.level") }
+
+    /// Guild Master
+    static var rosterRankLeader: String { text("roster.rank.leader") }
+
+    /// Officer
+    static var rosterRankOfficer: String { text("roster.rank.officer") }
+
+    /// Member
+    static var rosterRankMember: String { text("roster.rank.member") }
+
+    /// {spec} · {level} · {rank}
+    static func rosterMeta(spec: String, level: Int, rank: String) -> String {
+        format("roster.meta", spec, level, rank)
+    }
+
+    /// {spec} · {rank}
+    static func rosterMetaNoLevel(spec: String, rank: String) -> String {
+        format("roster.metaNoLevel", spec, rank)
+    }
+
+    /// {present} of {nights} nights
+    static func rosterAttendance(present: Int, nights: Int) -> String {
+        format("roster.attendance", present, nights)
+    }
+
+    /// Waiting
+    static var rosterWaitingTag: String { text("roster.waitingTag") }
+
+    /// No account
+    static var rosterNoAccountTag: String { text("roster.noAccountTag") }
+
+    /// No logged nights yet.
+    static var rosterNoNights: String { text("roster.noNights") }
+
+    /// No raiders match.
+    static var rosterEmptyTitle: String { text("roster.empty.title") }
+
+    /// Change the role or clear the search.
+    static var rosterEmptyBody: String { text("roster.empty.body") }
+
+    /// Attendance is the last 8 raid nights with a log. Tap a raider for their page.
+    static var rosterFooter: String { text("roster.footer") }
+
+    /// The roster did not load.
+    static var rosterError: String { text("roster.error") }
+
+    /// Search the roster
+    static var rosterSearch: String { text("roster.search") }
+
+    /// Supporter
+    static var rosterSupporter: String { text("roster.supporter") }
+
+    /// attended {present} of {nights} recent raid nights
+    static func rosterA11yAttended(present: Int, nights: Int) -> String {
+        format("roster.a11y.attended", present, nights)
+    }
+
+    /// waiting for approval
+    static var rosterA11yWaiting: String { text("roster.a11y.waiting") }
+
+    /// level {level}
+    static func rosterA11yLevel(level: Int) -> String {
+        format("roster.a11y.level", level)
+    }
+
+    /// Raid history
+    static var historyTitle: String { text("history.title") }
+
+    /// Logged raid nights
+    static var historyLabel: String { text("history.label") }
+
+    /// You were there
+    static var historyThere: String { text("history.there") }
+
+    /// Load more
+    static var historyMore: String { text("history.more") }
+
+    /// No logged raid nights yet.
+    static var historyEmptyTitle: String { text("history.empty.title") }
+
+    /// Nights show here once someone uploads a log.
+    static var historyEmptyBody: String { text("history.empty.body") }
+
+    /// A night opens your raid night when you were in it, otherwise its report.
+    static var historyFooter: String { text("history.footer") }
+
+    /// Raid history did not load.
+    static var historyError: String { text("history.error") }
+
+    /// The next nights did not load.
+    static var historyMoreError: String { text("history.moreError") }
+
+    /// {n} bosses
+    static func historyBosses(n: Int) -> String {
+        format("history.bosses", n)
+    }
+
+    /// {n} kills
+    static func historyKills(n: Int) -> String {
+        format("history.kills", n)
+    }
+
+    /// {n} wipes
+    static func historyWipes(n: Int) -> String {
+        format("history.wipes", n)
+    }
+
+    /// no wipes
+    static var historyNoWipes: String { text("history.noWipes") }
+
+    /// {n} raiders
+    static func historyRaiders(n: Int) -> String {
+        format("history.raiders", n)
+    }
+
+    /// {n} players
+    static func historyPlayers(n: Int) -> String {
+        format("history.players", n)
+    }
+
+    /// {h} h {m} m
+    static func historyLength(h: Int, m: Int) -> String {
+        format("history.length", h, m)
+    }
+
+    /// {m} m
+    static func historyLengthMinutes(m: Int) -> String {
+        format("history.lengthMinutes", m)
+    }
+
+    /// {n} hours
+    static func historyA11yHours(n: Int) -> String {
+        format("history.a11y.hours", n)
+    }
+
+    /// {n} minutes
+    static func historyA11yMinutes(n: Int) -> String {
+        format("history.a11y.minutes", n)
+    }
+
+    /// You were there.
+    static var historyA11yThere: String { text("history.a11y.there") }
+
+    /// Calendar
+    static var calendarTitle: String { text("calendar.title") }
+
+    /// Raids in your calendar
+    static var calendarYouRowSub: String { text("calendar.youRow.sub") }
+
+    /// Calendar
+    static var calendarSection: String { text("calendar.section") }
+
+    /// Raids in my calendar
+    static var calendarSwitch: String { text("calendar.switch") }
+
+    /// A calendar called Forever Sixty raids. The app keeps it up to date.
+    static var calendarSwitchNote: String { text("calendar.switchNote") }
+
+    /// Which raids
+    static var calendarWhich: String { text("calendar.which") }
+
+    /// All planned
+    static var calendarWhichAll: String { text("calendar.which.all") }
+
+    /// Only ones I am In or Late for
+    static var calendarWhichMine: String { text("calendar.which.mine") }
+
+    /// Alert
+    static var calendarAlert: String { text("calendar.alert") }
+
+    /// None
+    static var calendarAlertNone: String { text("calendar.alert.none") }
+
+    /// 15 minutes before
+    static var calendarAlertMinutes15: String { text("calendar.alert.minutes15") }
+
+    /// 1 hour before invites
+    static var calendarAlertHourBeforeInvites: String { text("calendar.alert.hourBeforeInvites") }
+
+    /// 1 day before
+    static var calendarAlertDay: String { text("calendar.alert.day") }
+
+    /// Calendar access is off for Forever Sixty.
+    static var calendarOff: String { text("calendar.off") }
+
+    /// Turn it on in Settings to add raids to your calendar.
+    static var calendarOffBody: String { text("calendar.offBody") }
+
+    /// Open Settings
+    static var calendarOpenSettings: String { text("calendar.openSettings") }
+
+    /// The calendar was removed. Turn it on again.
+    static var calendarRemoved: String { text("calendar.removed") }
+
+    /// The calendar did not update. It tries again on the next refresh.
+    static var calendarSyncFailed: String { text("calendar.syncFailed") }
+
+    /// Share
+    static var calendarShare: String { text("calendar.share") }
+
+    /// Calendar link
+    static var calendarLink: String { text("calendar.link") }
+
+    /// For Google Calendar on the web, Outlook and other people. Anyone with the link sees your guild's raid times.
+    static var calendarLinkNote: String { text("calendar.linkNote") }
+
+    /// Copy link
+    static var calendarCopy: String { text("calendar.copy") }
+
+    /// Reset link
+    static var calendarReset: String { text("calendar.reset") }
+
+    /// Add to Calendar
+    static var calendarAddToCalendar: String { text("calendar.addToCalendar") }
+
+    /// Link copied.
+    static var calendarCopied: String { text("calendar.copied") }
+
+    /// Reset the link? The old link stops working.
+    static var calendarResetAsk: String { text("calendar.resetAsk") }
+
+    /// Reset
+    static var calendarResetConfirm: String { text("calendar.resetConfirm") }
+
+    /// This link was shown on another phone or browser. Reset it to copy a link here.
+    static var calendarLinkElsewhere: String { text("calendar.linkElsewhere") }
+
+    /// The link did not load. Try again.
+    static var calendarLinkError: String { text("calendar.linkError") }
+
+    /// The link was not reset. Try again.
+    static var calendarResetError: String { text("calendar.resetError") }
+
+    /// Your sign-up shows in the event title: “Onyxia's Lair · In”. Changing it in the app changes the event.
+    static var calendarFooter: String { text("calendar.footer") }
+
+    /// Forever Sixty raids
+    static var calendarName: String { text("calendar.name") }
+
+    /// {zone} · {state}
+    static func calendarEventTitle(zone: String, state: String) -> String {
+        format("calendar.event.title", zone, state)
+    }
+
+    /// In
+    static var calendarEventIn: String { text("calendar.event.in") }
+
+    /// Late
+    static var calendarEventLate: String { text("calendar.event.late") }
+
+    /// Bench
+    static var calendarEventBench: String { text("calendar.event.bench") }
+
+    /// Out
+    static var calendarEventOut: String { text("calendar.event.out") }
+
+    /// Not signed up
+    static var calendarEventNotSigned: String { text("calendar.event.notSigned") }
+
+    /// {guild} · {zone}
+    static func calendarEventLocation(guild: String, zone: String) -> String {
+        format("calendar.event.location", guild, zone)
+    }
+
+    /// Pull {time}. {n} of {size} signed up.
+    static func calendarEventNotes(time: String, n: Int, size: Int) -> String {
+        format("calendar.event.notes", time, n, size)
+    }
+
+    /// Pull {time}. {n} signed up.
+    static func calendarEventNotesNoSize(time: String, n: Int) -> String {
+        format("calendar.event.notesNoSize", time, n)
     }
 
     private static func text(_ key: String) -> String {

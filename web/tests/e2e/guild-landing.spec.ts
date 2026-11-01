@@ -76,7 +76,7 @@ test.describe('guild landing', () => {
     await expect(page).toHaveURL(/\/guild\/eu\/normal\/the-last-watch$/);
   });
 
-  test('a signed-in member with a verified guild lands on that guild', async ({ page }) => {
+  test("a signed-in member lands on their current character's guild", async ({ page }) => {
     await stubRankings(page);
     await page.route('**/v1/me', (route) =>
       route.fulfill(
@@ -89,7 +89,17 @@ test.describe('guild landing', () => {
             anonymize: false,
             premium: false,
           },
-          characters: [],
+          characters: [
+            {
+              key: 'us/pvp/kraggor',
+              region: 'us',
+              ruleset: 'pvp',
+              name: 'Kraggor',
+              class: 'warrior',
+              guild: { id: 3, name: 'Olympus XXVII', verified: true },
+            },
+          ],
+          main_character_key: 'us/pvp/kraggor',
           guilds: [
             { id: 3, region: 'us', ruleset: 'pvp', name: 'Olympus XXVII', rank: 'member', verified: true },
           ],

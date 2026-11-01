@@ -58,7 +58,17 @@ function meFor(viewer: Exclude<Viewer, 'visitor'>) {
   return {
     user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
     characters: [
-      { key: `us/pvp/${name.toLowerCase()}`, region: 'us', ruleset: 'pvp', name, class: 'warrior' },
+      {
+        key: `us/pvp/${name.toLowerCase()}`,
+        region: 'us',
+        ruleset: 'pvp',
+        name,
+        class: 'warrior',
+        // The header's Guild menu follows the current character's own guild line.
+        ...(viewer === 'stranger'
+          ? {}
+          : { guild: { id: GUILD_ID, name: 'Olympus XXVII', verified: viewer !== 'unverified' } }),
+      },
     ],
     guilds,
   };

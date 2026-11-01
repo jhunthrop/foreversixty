@@ -4,11 +4,23 @@ The 1.60 client (Forever beta) states no literal weapon damage in ItemSparse
 (no `MinDamage_0`/`MaxDamage_0`, see `row_has_literal_weapon_damage`): damage
 comes off a curve, exactly as armour and stats do in `item_curves.py`:
 
-    dps   = ItemDamage<kind>[item level][quality]
-    avg   = dps * ItemDelay / 1000
-    min   = int(avg * (1 - DmgVariance / 2))     # truncated
-    max   = round(avg * (1 + DmgVariance / 2))
+    dps   = ItemDamage<kind>[item level][quality] * caster factor
+    base  = dps * ItemDelay / 1000
+    avg   = (dps + QualityModifier) * ItemDelay / 1000
+    min   = int(avg - base * DmgVariance / 2)     # truncated
+    max   = round(avg + base * DmgVariance / 2)
     speed = ItemDelay / 1000
+
+QualityModifier is a flat DPS offset on hand-tuned weapons (Thunderfury
+-20, Benediction -14, the Ahn'Qiraj caster maces -10); it moves the average
+and leaves the spread the curve's own. A melee weapon with the caster bit
+(0x100 in ItemSparse.Flags_4) deals 2/3 of the one-hand curve or 29/39 of
+the two-hand curve. On 1.60.1.70707 this reproduces wowhead Forever's
+damage exactly on 1,027 of the 1,036 uncommon-and-better melee weapons both
+sources carry (the nine misses are hotfix rows newer than our 70685 seed);
+without the two rules it matched 868 (sim-audit round 4, physical X1).
+Elemental Mage Staff (944) is 109 - 164 in Forever, not Era's 147 - 221.
+Ranged, wand and thrown weapons carry neither rule on this build.
 
 Verified against Classic Era's own literal MinDamage_0/MaxDamage_0 on the 478
 quality-2-and-better weapons whose id, name, item level, quality and delay are
@@ -18,8 +30,8 @@ the minimum and rounding the maximum is load-bearing -- rounding both ends
 matches 47% of the same set instead of 98.5%.
 
 ItemDamageOneHandCaster and ItemDamageTwoHandCaster are byte-identical to
-their non-caster twins on this build, so the caster distinction is not
-modelled and those two tables are not fetched.
+their non-caster twins (still true on 70707), so those two tables are not
+fetched; the caster reduction is the constant factor below instead.
 
 Two callers share this module rather than one importing the other:
 `pipeline.simdb.weapons` (the simulator's SimItem rows) and
@@ -54,6 +66,15 @@ DAMAGE_KIND_BY_SUBCLASS: dict[int, str] = {
 TWO_HAND_INVENTORY_TYPE = 17
 
 _QUALITY_COLUMNS = range(7)
+
+#: ItemSparse.Flags_4's caster-weapon bit. Every melee weapon that carries it
+#: (155 on 70707) is reduced in wowhead Forever; none without it is.
+CASTER_WEAPON_FLAG = 0x100
+
+#: The share of the melee curve a caster weapon deals, by curve. Fitted on
+#: 70707's caster weapons of item level 30 and up against wowhead Forever:
+#: the one-hand interval is [0.6663, 0.6668], the two-hand one 0.7436.
+CASTER_DPS_FACTOR: dict[str, float] = {"one_hand": 2 / 3, "two_hand": 29 / 39}
 
 
 @dataclass(frozen=True)
@@ -132,6 +153,8 @@ def resolve_weapon_damage(
     quality: int,
     speed: float,
     variance: float,
+    quality_modifier: float = 0.0,
+    flags_4: int = 0,
 ) -> WeaponDamage | None:
     """The curve-resolved damage for one weapon, or None when the curve
     tables cannot answer (unavailable, no row for this item level, or a
@@ -146,12 +169,23 @@ def resolve_weapon_damage(
     """
     if not curves.available or speed <= 0:
         return None
-    row = nearest_row(curves.table(damage_kind(subclass_id, inventory_type)), item_level)
+    kind = damage_kind(subclass_id, inventory_type)
+    row = nearest_row(curves.table(kind), item_level)
     if row is None or not 0 <= quality < len(row):
         return None
-    average = row[quality] * speed
+    dps = row[quality] * caster_factor(kind, flags_4)
+    base = dps * speed
+    average = (dps + quality_modifier) * speed
     return WeaponDamage(
-        minimum=float(int(average * (1 - variance / 2))),
-        maximum=float(round(average * (1 + variance / 2))),
+        minimum=float(int(average - base * variance / 2)),
+        maximum=float(round(average + base * variance / 2)),
         speed=speed,
     )
+
+
+def caster_factor(kind: str, flags_4: int) -> float:
+    """The share of the curve this weapon deals: below 1 only for a melee
+    weapon with the caster bit."""
+    if not flags_4 & CASTER_WEAPON_FLAG:
+        return 1.0
+    return CASTER_DPS_FACTOR.get(kind, 1.0)

@@ -193,7 +193,7 @@ BUILDS = Path(__file__).parent.parent / "builds"
 #: never a census: the curated file may name more, never fewer.
 ENGINE_GATED_BOOK_IDS = {
     25307, 25311, 25309, 25306, 25304, 31016, 25300, 25347, 25295, 25296, 25286, 25288,
-    31018, 25298, 25289, 25291, 25361, 25359, 25290,
+    31018, 25298, 25289, 25291, 25361, 25359, 25290, 25345,
 }  # fmt: skip
 
 

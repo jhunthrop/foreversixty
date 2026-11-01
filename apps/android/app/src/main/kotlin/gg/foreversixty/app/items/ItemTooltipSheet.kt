@@ -3,6 +3,12 @@ package gg.foreversixty.app.items
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -57,6 +63,12 @@ sealed interface ItemTooltipPhase {
  * The item tooltip as a bottom sheet (spec F2.6), opening partly expanded and dragging to full.
  * It reads only the build's static files, cached per build, so it needs no API request.
  */
+/**
+ * Opens the item page (Search, F12.4) from the sheet's `More about this item` row. The app shell
+ * provides it while the `search` switch is on; null otherwise, and the row is not drawn.
+ */
+val LocalItemPageOpener = staticCompositionLocalOf<((ItemLook) -> Unit)?> { null }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemTooltipSheet(request: ItemTooltipRequest, catalog: ItemCatalog, onDismiss: () -> Unit) {
@@ -73,13 +85,25 @@ fun ItemTooltipSheet(request: ItemTooltipRequest, catalog: ItemCatalog, onDismis
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
         containerColor = FsColor.raised,
     ) {
-        ItemTooltipContent(request, phase, retry = { attempt++ })
+        val opener = LocalItemPageOpener.current
+        val more = opener?.let { open ->
+            { look: ItemLook ->
+                onDismiss()
+                open(look)
+            }
+        }
+        ItemTooltipContent(request, phase, retry = { attempt++ }, onMore = more)
     }
 }
 
 /** The sheet's body, pure over its phase so the screenshot tests draw it directly. */
 @Composable
-fun ItemTooltipContent(request: ItemTooltipRequest, phase: ItemTooltipPhase, retry: () -> Unit = {}) {
+fun ItemTooltipContent(
+    request: ItemTooltipRequest,
+    phase: ItemTooltipPhase,
+    retry: () -> Unit = {},
+    onMore: ((ItemLook) -> Unit)? = null,
+) {
     Column(
         Modifier.fillMaxWidth().background(FsColor.raised).verticalScroll(rememberScrollState())
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 32.dp),
@@ -96,7 +120,10 @@ fun ItemTooltipContent(request: ItemTooltipRequest, phase: ItemTooltipPhase, ret
                 Text(stringResource(R.string.items_failed), style = FsType.body, color = FsColor.wipe)
                 BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
             }
-            is ItemTooltipPhase.Loaded -> Loaded(phase.model, request.build)
+            is ItemTooltipPhase.Loaded -> {
+                Loaded(phase.model, request.build)
+                if (onMore != null && phase.model.known) MoreAboutRow { onMore(phase.model.look) }
+            }
         }
     }
 }
@@ -137,6 +164,19 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
         }
     }
     model.pickFooter?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+}
+
+/** `More about this item`: opens the item page (spec §3.1, F12.4). */
+@Composable
+private fun MoreAboutRow(onClick: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(role = Role.Button, onClick = onClick)
+            .semantics(mergeDescendants = true) {},
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(stringResource(R.string.itemPage_moreAbout), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted)
+    }
 }
 
 @Composable
@@ -180,15 +220,17 @@ fun ItemTooltipPanel(model: ItemTooltipModel) {
         if (damage != null && speed != null) Split(damage, speed)
         model.weaponDps?.let { Line(it) }
         model.stats.forEach { Line(it) }
+        // The client's order: requirements, then the green Equip and Use lines, then the set.
+        model.requiresLevel?.let {
+            Spacer(Modifier.height(4.dp))
+            Line(it)
+        }
+        model.equipLines.forEach { Line(it, FsColor.parseGreen) }
         model.effect?.let { Line(it, FsColor.parseGreen) }
         model.setName?.let {
             Spacer(Modifier.height(4.dp))
             Line(it, FsColor.parseGold)
             model.setBonuses.forEach { bonus -> Line(bonus, FsColor.muted) }
-        }
-        model.requiresLevel?.let {
-            Spacer(Modifier.height(4.dp))
-            Line(it)
         }
         model.itemLevel?.let { Line(it, FsColor.parseGold) }
     }

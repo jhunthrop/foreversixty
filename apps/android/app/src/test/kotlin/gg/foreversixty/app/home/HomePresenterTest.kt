@@ -19,6 +19,7 @@ import gg.foreversixty.app.network.ClasspathFixtureSource
 import gg.foreversixty.app.network.FixtureEngine
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.TokenProvider
 import gg.foreversixty.app.network.ApiResult
 import java.io.IOException
@@ -217,7 +218,7 @@ class HomeStoreTest {
         store.load(HomeFixtures.velaren)
         val home = (store.phase.value as HomePhase.Loaded).home
         assertEquals(12, home.upgradeCount)
-        val catalog = ItemCatalog(StaticDataClient(FixtureEngine.create(source)))
+        val catalog = ItemCatalog(StaticDataStore(StaticDataClient(FixtureEngine.create(source))))
         val sources = catalog.sources(HomePresenter.tooltipRequest(ItemLook(252605), home, HomeFixtures.velaren, ApplicationProvider.getApplicationContext<android.content.Context>().resources))
         assertTrue(sources?.items?.containsKey(252605) == true)
         assertTrue(sources?.bis != null && sources.sets.isNotEmpty())

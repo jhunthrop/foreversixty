@@ -1,0 +1,2382 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "id": "5owictw7n3jw",
+        "title": "Upper Blackrock Spire, Friday",
+        "zone": "Upper Blackrock Spire",
+        "created_at": "2026-12-19T03:28:00Z",
+        "duration_ms": 6720000,
+        "fight_count": 21,
+        "kill_count": 5,
+        "wipe_count": 1,
+        "raiders": 10,
+        "deaths": 11,
+        "top_parse": {
+          "name": "Pyrelle",
+          "class": "mage",
+          "metric": "dps",
+          "value": 480.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Pyroguard Emberseer",
+            "encounter_id": 276,
+            "kill": true,
+            "duration_ms": 60000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 3,
+            "name": "Solakar Flamewreath",
+            "encounter_id": 277,
+            "kill": true,
+            "duration_ms": 83000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 5,
+            "name": "Warchief Rend Blackhand",
+            "encounter_id": 278,
+            "kill": true,
+            "duration_ms": 106000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 7,
+            "name": "The Beast",
+            "encounter_id": 279,
+            "kill": true,
+            "duration_ms": 129000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 9,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": false,
+            "duration_ms": 76000,
+            "deaths": 9,
+            "players": 10
+          },
+          {
+            "index": 11,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": true,
+            "duration_ms": 152000,
+            "deaths": 0,
+            "players": 10
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "k6opku5uoucu",
+        "title": "Blackrock Depths, Friday",
+        "zone": "Blackrock Depths",
+        "created_at": "2026-12-18T22:14:00Z",
+        "duration_ms": 7680000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Morvane",
+          "class": "warlock",
+          "metric": "dps",
+          "value": 533.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Lord Roccor",
+            "encounter_id": 228,
+            "kill": true,
+            "duration_ms": 83000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Ring of Law",
+            "encounter_id": 230,
+            "kill": true,
+            "duration_ms": 106000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "General Angerforge",
+            "encounter_id": 236,
+            "kill": true,
+            "duration_ms": 129000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Golem Lord Argelmach",
+            "encounter_id": 237,
+            "kill": true,
+            "duration_ms": 152000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Ambassador Flamelash",
+            "encounter_id": 242,
+            "kill": true,
+            "duration_ms": 175000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": true,
+            "duration_ms": 198000,
+            "deaths": 0,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/hexmire",
+            "name": "Hexmire",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "iwrenafdb73z",
+        "title": "Upper Blackrock Spire, Thursday",
+        "zone": "Upper Blackrock Spire",
+        "created_at": "2026-12-18T04:48:00Z",
+        "duration_ms": 6120000,
+        "fight_count": 20,
+        "kill_count": 5,
+        "wipe_count": 0,
+        "raiders": 10,
+        "deaths": 2,
+        "top_parse": {
+          "name": "Skarn",
+          "class": "rogue",
+          "metric": "dps",
+          "value": 586.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Pyroguard Emberseer",
+            "encounter_id": 276,
+            "kill": true,
+            "duration_ms": 106000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 3,
+            "name": "Solakar Flamewreath",
+            "encounter_id": 277,
+            "kill": true,
+            "duration_ms": 129000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 5,
+            "name": "Warchief Rend Blackhand",
+            "encounter_id": 278,
+            "kill": true,
+            "duration_ms": 152000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 7,
+            "name": "The Beast",
+            "encounter_id": 279,
+            "kill": true,
+            "duration_ms": 175000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 9,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": true,
+            "duration_ms": 198000,
+            "deaths": 0,
+            "players": 10
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/ursoka",
+            "name": "Ursoka",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/zuljak",
+            "name": "Zul'jak",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/talonstrike",
+            "name": "Talonstrike",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/embersong",
+            "name": "Embersong",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/vashkar",
+            "name": "Vashkar",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/duskwhisper",
+            "name": "Duskwhisper",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/skarn",
+            "name": "Skarn",
+            "class": "rogue"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "vetyf5wtpycq",
+        "title": "Lower Blackrock Spire, Thursday",
+        "zone": "Lower Blackrock Spire",
+        "created_at": "2026-12-18T03:05:00Z",
+        "duration_ms": 4440000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Kraggor",
+          "class": "warrior",
+          "metric": "dps",
+          "value": 639.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Highlord Omokk",
+            "encounter_id": 267,
+            "kill": true,
+            "duration_ms": 129000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Shadow Hunter Vosh'gajin",
+            "encounter_id": 268,
+            "kill": true,
+            "duration_ms": 152000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "War Master Voone",
+            "encounter_id": 269,
+            "kill": true,
+            "duration_ms": 175000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Mother Smolderweb",
+            "encounter_id": 270,
+            "kill": true,
+            "duration_ms": 198000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Quartermaster Zigris",
+            "encounter_id": 272,
+            "kill": true,
+            "duration_ms": 71000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Overlord Wyrmthalak",
+            "encounter_id": 275,
+            "kill": true,
+            "duration_ms": 94000,
+            "deaths": 0,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/zekra",
+            "name": "Zekra",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/sennari",
+            "name": "Sennari",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/grizzlepaw",
+            "name": "Grizzlepaw",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
+            "class": "warlock"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "lngwtcgp7lpl",
+        "title": "Blackrock Depths, Thursday",
+        "zone": "Blackrock Depths",
+        "created_at": "2026-12-17T23:57:00Z",
+        "duration_ms": 8460000,
+        "fight_count": 25,
+        "kill_count": 6,
+        "wipe_count": 1,
+        "raiders": 5,
+        "deaths": 7,
+        "top_parse": {
+          "name": "Pyrelle",
+          "class": "mage",
+          "metric": "dps",
+          "value": 692.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Lord Roccor",
+            "encounter_id": 228,
+            "kill": true,
+            "duration_ms": 152000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Ring of Law",
+            "encounter_id": 230,
+            "kill": true,
+            "duration_ms": 175000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "General Angerforge",
+            "encounter_id": 236,
+            "kill": true,
+            "duration_ms": 198000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Golem Lord Argelmach",
+            "encounter_id": 237,
+            "kill": true,
+            "duration_ms": 71000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Ambassador Flamelash",
+            "encounter_id": 242,
+            "kill": true,
+            "duration_ms": 94000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": false,
+            "duration_ms": 58500,
+            "deaths": 4,
+            "players": 5
+          },
+          {
+            "index": 13,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": true,
+            "duration_ms": 117000,
+            "deaths": 1,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "damvysyjsuam",
+        "title": "Upper Blackrock Spire, Wednesday",
+        "zone": "Upper Blackrock Spire",
+        "created_at": "2026-12-17T03:28:00Z",
+        "duration_ms": 5820000,
+        "fight_count": 20,
+        "kill_count": 5,
+        "wipe_count": 0,
+        "raiders": 10,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Morvane",
+          "class": "warlock",
+          "metric": "dps",
+          "value": 485.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Pyroguard Emberseer",
+            "encounter_id": 276,
+            "kill": true,
+            "duration_ms": 175000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 3,
+            "name": "Solakar Flamewreath",
+            "encounter_id": 277,
+            "kill": true,
+            "duration_ms": 198000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 5,
+            "name": "Warchief Rend Blackhand",
+            "encounter_id": 278,
+            "kill": true,
+            "duration_ms": 71000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 7,
+            "name": "The Beast",
+            "encounter_id": 279,
+            "kill": true,
+            "duration_ms": 94000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 9,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": true,
+            "duration_ms": 117000,
+            "deaths": 1,
+            "players": 10
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/shadeleaf",
+            "name": "Shadeleaf",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/stormhide",
+            "name": "Stormhide",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
+            "class": "mage"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "dpcgyg7xl7nz",
+        "title": "Blackrock Depths, Wednesday",
+        "zone": "Blackrock Depths",
+        "created_at": "2026-12-16T22:01:00Z",
+        "duration_ms": 6900000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Skarn",
+          "class": "rogue",
+          "metric": "dps",
+          "value": 538.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Lord Roccor",
+            "encounter_id": 228,
+            "kill": true,
+            "duration_ms": 198000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Ring of Law",
+            "encounter_id": 230,
+            "kill": true,
+            "duration_ms": 71000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "General Angerforge",
+            "encounter_id": 236,
+            "kill": true,
+            "duration_ms": 94000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Golem Lord Argelmach",
+            "encounter_id": 237,
+            "kill": true,
+            "duration_ms": 117000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Ambassador Flamelash",
+            "encounter_id": 242,
+            "kill": true,
+            "duration_ms": 140000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": true,
+            "duration_ms": 163000,
+            "deaths": 1,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/hexmire",
+            "name": "Hexmire",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/tazzlo",
+            "name": "Tazzlo",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/gruzz",
+            "name": "Gruzz",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/fernhoof",
+            "name": "Fernhoof",
+            "class": "druid"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "q33uzvkzj4bs",
+        "title": "Lower Blackrock Spire, Tuesday",
+        "zone": "Lower Blackrock Spire",
+        "created_at": "2026-12-16T03:42:00Z",
+        "duration_ms": 4860000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Kraggor",
+          "class": "warrior",
+          "metric": "dps",
+          "value": 591.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Highlord Omokk",
+            "encounter_id": 267,
+            "kill": true,
+            "duration_ms": 71000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Shadow Hunter Vosh'gajin",
+            "encounter_id": 268,
+            "kill": true,
+            "duration_ms": 94000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "War Master Voone",
+            "encounter_id": 269,
+            "kill": true,
+            "duration_ms": 117000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Mother Smolderweb",
+            "encounter_id": 270,
+            "kill": true,
+            "duration_ms": 140000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Quartermaster Zigris",
+            "encounter_id": 272,
+            "kill": true,
+            "duration_ms": 163000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Overlord Wyrmthalak",
+            "encounter_id": 275,
+            "kill": true,
+            "duration_ms": 186000,
+            "deaths": 0,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/brokkar",
+            "name": "Brokkar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/ursoka",
+            "name": "Ursoka",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/zuljak",
+            "name": "Zul'jak",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/embersong",
+            "name": "Embersong",
+            "class": "mage"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "ip54k6vacqt5",
+        "title": "Blackrock Depths, Tuesday",
+        "zone": "Blackrock Depths",
+        "created_at": "2026-12-15T21:25:00Z",
+        "duration_ms": 5940000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Pyrelle",
+          "class": "mage",
+          "metric": "dps",
+          "value": 644.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Lord Roccor",
+            "encounter_id": 228,
+            "kill": true,
+            "duration_ms": 94000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Ring of Law",
+            "encounter_id": 230,
+            "kill": true,
+            "duration_ms": 117000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "General Angerforge",
+            "encounter_id": 236,
+            "kill": true,
+            "duration_ms": 140000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Golem Lord Argelmach",
+            "encounter_id": 237,
+            "kill": true,
+            "duration_ms": 163000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Ambassador Flamelash",
+            "encounter_id": 242,
+            "kill": true,
+            "duration_ms": 186000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": true,
+            "duration_ms": 209000,
+            "deaths": 1,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/talonstrike",
+            "name": "Talonstrike",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/zekra",
+            "name": "Zekra",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
+            "class": "warlock"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "ewlrx3enxbeb",
+        "title": "Onyxia, Monday",
+        "zone": "Onyxia's Lair",
+        "created_at": "2026-12-15T02:04:00Z",
+        "duration_ms": 4080000,
+        "fight_count": 6,
+        "kill_count": 1,
+        "wipe_count": 2,
+        "raiders": 38,
+        "deaths": 42,
+        "top_parse": {
+          "name": "Morvane",
+          "class": "warlock",
+          "metric": "dps",
+          "value": 697.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Onyxia",
+            "encounter_id": 1084,
+            "kill": false,
+            "duration_ms": 141500,
+            "deaths": 19,
+            "players": 37
+          },
+          {
+            "index": 3,
+            "name": "Onyxia",
+            "encounter_id": 1084,
+            "kill": false,
+            "duration_ms": 141500,
+            "deaths": 19,
+            "players": 37
+          },
+          {
+            "index": 5,
+            "name": "Onyxia",
+            "encounter_id": 1084,
+            "kill": true,
+            "duration_ms": 283000,
+            "deaths": 2,
+            "players": 38
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/vashkar",
+            "name": "Vashkar",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/korrakh",
+            "name": "Korrakh",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/skarn",
+            "name": "Skarn",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/duskwhisper",
+            "name": "Duskwhisper",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/hexmire",
+            "name": "Hexmire",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/ursoka",
+            "name": "Ursoka",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/sennari",
+            "name": "Sennari",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/grizzlepaw",
+            "name": "Grizzlepaw",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/zuljak",
+            "name": "Zul'jak",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/embersong",
+            "name": "Embersong",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/talonstrike",
+            "name": "Talonstrike",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/quillara",
+            "name": "Quillara",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/brokkar",
+            "name": "Brokkar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/gruzz",
+            "name": "Gruzz",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/tazzlo",
+            "name": "Tazzlo",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/zekra",
+            "name": "Zekra",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/fernhoof",
+            "name": "Fernhoof",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/shadeleaf",
+            "name": "Shadeleaf",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/stormhide",
+            "name": "Stormhide",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/moonveil",
+            "name": "Moonveil",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/voidsong",
+            "name": "Voidsong",
+            "class": "priest"
+          }
+        ],
+        "raid_id": 29
+      },
+      {
+        "id": "4wrlglbngxrc",
+        "title": "Blackrock Depths, Monday",
+        "zone": "Blackrock Depths",
+        "created_at": "2026-12-14T21:05:00Z",
+        "duration_ms": 7140000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Skarn",
+          "class": "rogue",
+          "metric": "dps",
+          "value": 490.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Lord Roccor",
+            "encounter_id": 228,
+            "kill": true,
+            "duration_ms": 140000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Ring of Law",
+            "encounter_id": 230,
+            "kill": true,
+            "duration_ms": 163000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "General Angerforge",
+            "encounter_id": 236,
+            "kill": true,
+            "duration_ms": 186000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Golem Lord Argelmach",
+            "encounter_id": 237,
+            "kill": true,
+            "duration_ms": 209000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Ambassador Flamelash",
+            "encounter_id": 242,
+            "kill": true,
+            "duration_ms": 82000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": true,
+            "duration_ms": 105000,
+            "deaths": 1,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "di3syqnewnrs",
+        "title": "Upper Blackrock Spire, Sunday",
+        "zone": "Upper Blackrock Spire",
+        "created_at": "2026-12-14T02:17:00Z",
+        "duration_ms": 7860000,
+        "fight_count": 22,
+        "kill_count": 5,
+        "wipe_count": 2,
+        "raiders": 10,
+        "deaths": 21,
+        "top_parse": {
+          "name": "Kraggor",
+          "class": "warrior",
+          "metric": "dps",
+          "value": 543.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Pyroguard Emberseer",
+            "encounter_id": 276,
+            "kill": true,
+            "duration_ms": 163000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 3,
+            "name": "Solakar Flamewreath",
+            "encounter_id": 277,
+            "kill": true,
+            "duration_ms": 186000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 5,
+            "name": "Warchief Rend Blackhand",
+            "encounter_id": 278,
+            "kill": true,
+            "duration_ms": 209000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 7,
+            "name": "The Beast",
+            "encounter_id": 279,
+            "kill": true,
+            "duration_ms": 82000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 9,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": false,
+            "duration_ms": 52500,
+            "deaths": 9,
+            "players": 10
+          },
+          {
+            "index": 11,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": false,
+            "duration_ms": 52500,
+            "deaths": 9,
+            "players": 10
+          },
+          {
+            "index": 13,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": true,
+            "duration_ms": 105000,
+            "deaths": 1,
+            "players": 10
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/skarn",
+            "name": "Skarn",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/hexmire",
+            "name": "Hexmire",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/vashkar",
+            "name": "Vashkar",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "pnjza2qpxjf6",
+        "title": "Lower Blackrock Spire, Sunday",
+        "zone": "Lower Blackrock Spire",
+        "created_at": "2026-12-13T20:53:00Z",
+        "duration_ms": 4620000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Pyrelle",
+          "class": "mage",
+          "metric": "dps",
+          "value": 596.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Highlord Omokk",
+            "encounter_id": 267,
+            "kill": true,
+            "duration_ms": 186000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Shadow Hunter Vosh'gajin",
+            "encounter_id": 268,
+            "kill": true,
+            "duration_ms": 209000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "War Master Voone",
+            "encounter_id": 269,
+            "kill": true,
+            "duration_ms": 82000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Mother Smolderweb",
+            "encounter_id": 270,
+            "kill": true,
+            "duration_ms": 105000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Quartermaster Zigris",
+            "encounter_id": 272,
+            "kill": true,
+            "duration_ms": 128000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Overlord Wyrmthalak",
+            "encounter_id": 275,
+            "kill": true,
+            "duration_ms": 151000,
+            "deaths": 1,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/duskwhisper",
+            "name": "Duskwhisper",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/ursoka",
+            "name": "Ursoka",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "7q7pob3bevhb",
+        "title": "Upper Blackrock Spire, Saturday",
+        "zone": "Upper Blackrock Spire",
+        "created_at": "2026-12-13T04:34:00Z",
+        "duration_ms": 7080000,
+        "fight_count": 21,
+        "kill_count": 5,
+        "wipe_count": 1,
+        "raiders": 10,
+        "deaths": 12,
+        "top_parse": {
+          "name": "Morvane",
+          "class": "warlock",
+          "metric": "dps",
+          "value": 649.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Pyroguard Emberseer",
+            "encounter_id": 276,
+            "kill": true,
+            "duration_ms": 209000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 3,
+            "name": "Solakar Flamewreath",
+            "encounter_id": 277,
+            "kill": true,
+            "duration_ms": 82000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 5,
+            "name": "Warchief Rend Blackhand",
+            "encounter_id": 278,
+            "kill": true,
+            "duration_ms": 105000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 7,
+            "name": "The Beast",
+            "encounter_id": 279,
+            "kill": true,
+            "duration_ms": 128000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 9,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": false,
+            "duration_ms": 75500,
+            "deaths": 9,
+            "players": 10
+          },
+          {
+            "index": 11,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": true,
+            "duration_ms": 151000,
+            "deaths": 1,
+            "players": 10
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/embersong",
+            "name": "Embersong",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/zuljak",
+            "name": "Zul'jak",
+            "class": "shaman"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "xkrkqi323j6f",
+        "title": "Blackrock Depths, Saturday",
+        "zone": "Blackrock Depths",
+        "created_at": "2026-12-13T02:50:00Z",
+        "duration_ms": 6240000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Skarn",
+          "class": "rogue",
+          "metric": "dps",
+          "value": 702.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Lord Roccor",
+            "encounter_id": 228,
+            "kill": true,
+            "duration_ms": 82000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Ring of Law",
+            "encounter_id": 230,
+            "kill": true,
+            "duration_ms": 105000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "General Angerforge",
+            "encounter_id": 236,
+            "kill": true,
+            "duration_ms": 128000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Golem Lord Argelmach",
+            "encounter_id": 237,
+            "kill": true,
+            "duration_ms": 151000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Ambassador Flamelash",
+            "encounter_id": 242,
+            "kill": true,
+            "duration_ms": 174000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": true,
+            "duration_ms": 197000,
+            "deaths": 1,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/talonstrike",
+            "name": "Talonstrike",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/sennari",
+            "name": "Sennari",
+            "class": "priest"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "bdpdr2uhcagl",
+        "title": "Lower Blackrock Spire, Saturday",
+        "zone": "Lower Blackrock Spire",
+        "created_at": "2026-12-12T21:53:00Z",
+        "duration_ms": 5520000,
+        "fight_count": 25,
+        "kill_count": 6,
+        "wipe_count": 1,
+        "raiders": 5,
+        "deaths": 7,
+        "top_parse": {
+          "name": "Kraggor",
+          "class": "warrior",
+          "metric": "dps",
+          "value": 495.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Highlord Omokk",
+            "encounter_id": 267,
+            "kill": true,
+            "duration_ms": 105000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Shadow Hunter Vosh'gajin",
+            "encounter_id": 268,
+            "kill": true,
+            "duration_ms": 128000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "War Master Voone",
+            "encounter_id": 269,
+            "kill": true,
+            "duration_ms": 151000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Mother Smolderweb",
+            "encounter_id": 270,
+            "kill": true,
+            "duration_ms": 174000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Quartermaster Zigris",
+            "encounter_id": 272,
+            "kill": true,
+            "duration_ms": 197000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Overlord Wyrmthalak",
+            "encounter_id": 275,
+            "kill": false,
+            "duration_ms": 35000,
+            "deaths": 4,
+            "players": 5
+          },
+          {
+            "index": 13,
+            "name": "Overlord Wyrmthalak",
+            "encounter_id": 275,
+            "kill": true,
+            "duration_ms": 70000,
+            "deaths": 0,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/grizzlepaw",
+            "name": "Grizzlepaw",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/draknar",
+            "name": "Draknar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/ursoka",
+            "name": "Ursoka",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/pyrelle",
+            "name": "Pyrelle",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/tidecaller",
+            "name": "Tidecaller",
+            "class": "shaman"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "4neemvyz4s7t",
+        "title": "Upper Blackrock Spire, Friday",
+        "zone": "Upper Blackrock Spire",
+        "created_at": "2026-12-12T03:55:00Z",
+        "duration_ms": 7440000,
+        "fight_count": 21,
+        "kill_count": 5,
+        "wipe_count": 1,
+        "raiders": 10,
+        "deaths": 11,
+        "top_parse": {
+          "name": "Pyrelle",
+          "class": "mage",
+          "metric": "dps",
+          "value": 548.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Pyroguard Emberseer",
+            "encounter_id": 276,
+            "kill": true,
+            "duration_ms": 128000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 3,
+            "name": "Solakar Flamewreath",
+            "encounter_id": 277,
+            "kill": true,
+            "duration_ms": 151000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 5,
+            "name": "Warchief Rend Blackhand",
+            "encounter_id": 278,
+            "kill": true,
+            "duration_ms": 174000,
+            "deaths": 0,
+            "players": 10
+          },
+          {
+            "index": 7,
+            "name": "The Beast",
+            "encounter_id": 279,
+            "kill": true,
+            "duration_ms": 197000,
+            "deaths": 1,
+            "players": 10
+          },
+          {
+            "index": 9,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": false,
+            "duration_ms": 35000,
+            "deaths": 9,
+            "players": 10
+          },
+          {
+            "index": 11,
+            "name": "General Drakkisath",
+            "encounter_id": 280,
+            "kill": true,
+            "duration_ms": 70000,
+            "deaths": 0,
+            "players": 10
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/hexmire",
+            "name": "Hexmire",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/sliverfang",
+            "name": "Sliverfang",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/mendara",
+            "name": "Mendara",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/ombrewood",
+            "name": "Ombrewood",
+            "class": "druid"
+          },
+          {
+            "character_key": "us/pvp/frostmaw",
+            "name": "Frostmaw",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/arrowmane",
+            "name": "Arrowmane",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/nightvex",
+            "name": "Nightvex",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/vashkar",
+            "name": "Vashkar",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/grimtusk",
+            "name": "Grimtusk",
+            "class": "warrior"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "rxzfzvlzbgle",
+        "title": "Blackrock Depths, Friday",
+        "zone": "Blackrock Depths",
+        "created_at": "2026-12-11T22:53:00Z",
+        "duration_ms": 8220000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Morvane",
+          "class": "warlock",
+          "metric": "dps",
+          "value": 601.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Lord Roccor",
+            "encounter_id": 228,
+            "kill": true,
+            "duration_ms": 151000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Ring of Law",
+            "encounter_id": 230,
+            "kill": true,
+            "duration_ms": 174000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "General Angerforge",
+            "encounter_id": 236,
+            "kill": true,
+            "duration_ms": 197000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Golem Lord Argelmach",
+            "encounter_id": 237,
+            "kill": true,
+            "duration_ms": 70000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Ambassador Flamelash",
+            "encounter_id": 242,
+            "kill": true,
+            "duration_ms": 93000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": true,
+            "duration_ms": 116000,
+            "deaths": 0,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/duskwhisper",
+            "name": "Duskwhisper",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/morvane",
+            "name": "Morvane",
+            "class": "warlock"
+          },
+          {
+            "character_key": "us/pvp/korrakh",
+            "name": "Korrakh",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/thokgar",
+            "name": "Thokgar",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/skarn",
+            "name": "Skarn",
+            "class": "rogue"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "sj4jmydwq2y4",
+        "title": "Lower Blackrock Spire, Thursday",
+        "zone": "Lower Blackrock Spire",
+        "created_at": "2026-12-11T03:29:00Z",
+        "duration_ms": 4980000,
+        "fight_count": 24,
+        "kill_count": 6,
+        "wipe_count": 0,
+        "raiders": 5,
+        "deaths": 3,
+        "top_parse": {
+          "name": "Skarn",
+          "class": "rogue",
+          "metric": "dps",
+          "value": 654.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Highlord Omokk",
+            "encounter_id": 267,
+            "kill": true,
+            "duration_ms": 174000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Shadow Hunter Vosh'gajin",
+            "encounter_id": 268,
+            "kill": true,
+            "duration_ms": 197000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "War Master Voone",
+            "encounter_id": 269,
+            "kill": true,
+            "duration_ms": 70000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Mother Smolderweb",
+            "encounter_id": 270,
+            "kill": true,
+            "duration_ms": 93000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Quartermaster Zigris",
+            "encounter_id": 272,
+            "kill": true,
+            "duration_ms": 116000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Overlord Wyrmthalak",
+            "encounter_id": 275,
+            "kill": true,
+            "duration_ms": 139000,
+            "deaths": 1,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/obnoxious-yell",
+            "name": "Obnoxious Yell",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "warrior"
+          },
+          {
+            "character_key": "us/pvp/hollowmere",
+            "name": "Hollowmere",
+            "class": "priest"
+          },
+          {
+            "character_key": "us/pvp/zekra",
+            "name": "Zekra",
+            "class": "rogue"
+          },
+          {
+            "character_key": "us/pvp/rainspeaker",
+            "name": "Rainspeaker",
+            "class": "shaman"
+          }
+        ],
+        "raid_id": null
+      },
+      {
+        "id": "lt4wtxlm6dlj",
+        "title": "Blackrock Depths, Thursday",
+        "zone": "Blackrock Depths",
+        "created_at": "2026-12-10T23:45:00Z",
+        "duration_ms": 8940000,
+        "fight_count": 25,
+        "kill_count": 6,
+        "wipe_count": 1,
+        "raiders": 5,
+        "deaths": 7,
+        "top_parse": {
+          "name": "Kraggor",
+          "class": "warrior",
+          "metric": "dps",
+          "value": 707.4
+        },
+        "fights": [
+          {
+            "index": 1,
+            "name": "Lord Roccor",
+            "encounter_id": 228,
+            "kill": true,
+            "duration_ms": 197000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 3,
+            "name": "Ring of Law",
+            "encounter_id": 230,
+            "kill": true,
+            "duration_ms": 70000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 5,
+            "name": "General Angerforge",
+            "encounter_id": 236,
+            "kill": true,
+            "duration_ms": 93000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 7,
+            "name": "Golem Lord Argelmach",
+            "encounter_id": 237,
+            "kill": true,
+            "duration_ms": 116000,
+            "deaths": 0,
+            "players": 5
+          },
+          {
+            "index": 9,
+            "name": "Ambassador Flamelash",
+            "encounter_id": 242,
+            "kill": true,
+            "duration_ms": 139000,
+            "deaths": 1,
+            "players": 5
+          },
+          {
+            "index": 11,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": false,
+            "duration_ms": 81000,
+            "deaths": 4,
+            "players": 5
+          },
+          {
+            "index": 13,
+            "name": "Emperor Dagran Thaurissan",
+            "encounter_id": 245,
+            "kill": true,
+            "duration_ms": 162000,
+            "deaths": 0,
+            "players": 5
+          }
+        ],
+        "present": [
+          {
+            "character_key": "us/pvp/embersong",
+            "name": "Embersong",
+            "class": "mage"
+          },
+          {
+            "character_key": "us/pvp/lightningbolltz",
+            "name": "Lightningbolltz",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/talonstrike",
+            "name": "Talonstrike",
+            "class": "hunter"
+          },
+          {
+            "character_key": "us/pvp/zuljak",
+            "name": "Zul'jak",
+            "class": "shaman"
+          },
+          {
+            "character_key": "us/pvp/tazzlo",
+            "name": "Tazzlo",
+            "class": "mage"
+          }
+        ],
+        "raid_id": null
+      }
+    ],
+    "next_cursor": "MjAyNi0xMi0xMFQyMzo0NTowMFp8bHQ0d3R4bG02ZGxq",
+    "planned": [],
+    "zones": [
+      {
+        "key": "raid:barrow-deeps",
+        "name": "Barrow Deeps",
+        "size": null
+      },
+      {
+        "key": "raid:hyjal-summit",
+        "name": "Hyjal Summit",
+        "size": null
+      },
+      {
+        "key": "raid:onyxias-lair",
+        "name": "Onyxia's Lair",
+        "size": 40
+      }
+    ],
+    "guild_timezone": "America/Chicago",
+    "discord": {
+      "available": true,
+      "connected": true,
+      "post_default": true,
+      "remind_default": true,
+      "channel_name": "raid-signups"
+    }
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

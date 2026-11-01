@@ -25,13 +25,15 @@ const pages = defineCollection({
   schema: factSchema,
 });
 
+export const changelogSchema = factSchema.extend({
+  date: z.coerce.date(),
+  kind: z.enum(sourceKinds),
+  note: z.string().optional(),
+});
+
 const changelog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/changelog' }),
-  schema: factSchema.extend({
-    date: z.coerce.date(),
-    kind: z.enum(sourceKinds),
-    note: z.string().optional(),
-  }),
+  schema: changelogSchema,
 });
 
 // Exported (not just used inline below) so a plain Node test can validate a guide's raw

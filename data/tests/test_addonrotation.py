@@ -87,6 +87,67 @@ def test_an_ability_not_learned_yet_is_left_out_of_that_band_only(tmp_path):
     assert [line.spell_id for line in bands[60]] == [23894]
 
 
+#: Recklessness as the 70707 client lists it: the trainable 1719 at 50, and a
+#: copy (13847) at 22 with no SkillLineAbility row.
+_RECKLESSNESS_RANKS = {
+    "build": BUILD,
+    "classes": {
+        "warrior": {
+            "Recklessness": [{"id": 1719, "level": 50}, {"id": 13847, "level": 22}],
+        }
+    },
+}
+
+
+def test_an_unranked_ability_joins_a_band_at_its_trainable_ids_level(tmp_path):
+    """Round 5 integration: the addon told a level-30 Fury warrior to press
+    Recklessness, which is trained at 50, because a copy with no trainer row
+    sits at 22. The class's trainables (SkillLineAbility) decide which id of
+    an unranked family the player learns, and when."""
+    _write_apl(tmp_path, "warrior-fury", [_cast(1719, notes="Recklessness.")])
+    bands = {
+        band.level: band.lines
+        for band in build_rotation(
+            "warrior-fury", tmp_path, _RECKLESSNESS_RANKS, trainable_ids=frozenset({1719})
+        )
+    }
+    assert bands[40] == []
+    assert [line.spell_id for line in bands[50]] == [1719]
+
+
+def test_an_unranked_family_with_no_trainable_id_keeps_its_rows(tmp_path):
+    """A rune or talent spell the trainables never list keeps resolving as before."""
+    _write_apl(tmp_path, "warrior-fury", [_cast(1719, notes="Recklessness.")])
+    bands = {
+        band.level: band.lines
+        for band in build_rotation("warrior-fury", tmp_path, _RECKLESSNESS_RANKS)
+    }
+    assert [line.spell_id for line in bands[30]] == [13847]
+
+
+def test_the_committed_rotations_never_show_an_ability_before_its_trainer_level():
+    """Every rotation line on the active build is an id the class learns from a
+    trainer by that band, whenever its family has a trainable id at all."""
+    build = json.loads(Path("../web/src/data/active-build.json").read_text())["build"]
+    rotations = build_rotations(Path("builds"), build)
+    trainable_level: dict[str, dict[int, int]] = {}
+    for spec, bands in rotations.items():
+        class_slug = spec.split("-", 1)[0]
+        if class_slug not in trainable_level:
+            path = Path("builds") / build / "trainables" / f"{class_slug}.json"
+            entries = json.loads(path.read_text(encoding="utf-8"))["trainables"]
+            trainable_level[class_slug] = {
+                rank["id"]: rank["level"] for entry in entries for rank in entry["ranks"]
+            }
+        levels = trainable_level[class_slug]
+        for band in bands:
+            for line in band.lines:
+                if line.spell_id in levels:
+                    assert levels[line.spell_id] <= band.level, (spec, band.level, line)
+    fury = {band.level: [line.name for line in band.lines] for band in rotations["warrior-fury"]}
+    assert "Recklessness" not in fury[40]
+
+
 def test_a_strict_sequence_unfolds_into_one_line_per_step_sharing_the_notes(tmp_path):
     _write_apl(tmp_path, "warrior-fury", [
         {

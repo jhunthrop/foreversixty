@@ -60,3 +60,18 @@ func TestRunSimRef_NoPlayerIsAnError(t *testing.T) {
 		t.Fatal("a summary with no player must not store a reference")
 	}
 }
+
+// The reference is the published number's setup (the band's BiS gear, preset and race), so
+// it fights the published numbers' target: no creature type (sim/leveling RankerEncounter).
+// An empty type is the engine's Humanoid, where a rogue's Murder adds 4% the tier list
+// never shows.
+func TestSimRefRequest_FightsThePublishedNumbersTypeNeutralTarget(t *testing.T) {
+	k := SimRefKey{EngineVersion: "abc", Build: "1.60.1.70707", Spec: "rogue-combat", Band: 60, DurationBucket: 180}
+	req := simRefRequest(k, simapi.CharacterSpec{Class: "rogue", Level: 60}, time.Unix(0, 0))
+	if req.Encounter.TargetType != simapi.TargetTypeUnknown {
+		t.Errorf("target type = %q, want %q", req.Encounter.TargetType, simapi.TargetTypeUnknown)
+	}
+	if req.Encounter.DurationSec != 180 {
+		t.Errorf("duration = %d, want the bucket's 180", req.Encounter.DurationSec)
+	}
+}

@@ -80,6 +80,20 @@ sealed interface DeepLink {
         override fun url(): String = link("/app/player/${enc(region)}/${enc(ruleset)}/${enc(name)}")
     }
 
+    /** Guides tab. /app/guides */
+    data object Guides : DeepLink {
+        override val screen: String get() = "guides"
+
+        override fun url(): String = link("/app/guides")
+    }
+
+    /** Guides tab, that spec's guide (class and spec are slugs). /app/guides/{class}/{spec} */
+    data class Guide(val className: String, val spec: String) : DeepLink {
+        override val screen: String get() = "guide"
+
+        override fun url(): String = link("/app/guides/${enc(className)}/${enc(spec)}")
+    }
+
     /** You, Notifications. /app/you/notifications */
     data object Notifications : DeepLink {
         override val screen: String get() = "notifications"
@@ -119,6 +133,8 @@ sealed interface DeepLink {
                 ?: matchReport(s)
                 ?: matchRankings(s)
                 ?: matchPlayer(s)
+                ?: matchGuides(s)
+                ?: matchGuide(s)
                 ?: matchNotifications(s)
                 ?: matchPlan(s)
                 ?: matchSignIn(s, q)
@@ -172,6 +188,16 @@ sealed interface DeepLink {
         private fun matchPlayer(s: List<String>): DeepLink? {
             if (s.size != 5 || s[0] != "app" || s[1] != "player") return null
             return Player(s[2], s[3], s[4])
+        }
+
+        private fun matchGuides(s: List<String>): DeepLink? {
+            if (s.size != 2 || s[0] != "app" || s[1] != "guides") return null
+            return Guides
+        }
+
+        private fun matchGuide(s: List<String>): DeepLink? {
+            if (s.size != 4 || s[0] != "app" || s[1] != "guides") return null
+            return Guide(s[2], s[3])
         }
 
         private fun matchNotifications(s: List<String>): DeepLink? {

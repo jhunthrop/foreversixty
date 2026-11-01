@@ -10,6 +10,8 @@
     "/app/report/*",
     "/app/rankings/*",
     "/app/player/*/*/*",
+    "/app/guides",
+    "/app/guides/*/*",
     "/app/you/notifications",
     "/app/you/plan",
     "/app/auth"

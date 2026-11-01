@@ -961,6 +961,516 @@
         }
       }
     },
+    "calendar.addToCalendar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Calendar"
+          }
+        }
+      }
+    },
+    "calendar.alert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alert"
+          }
+        }
+      }
+    },
+    "calendar.alert.day": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 day before"
+          }
+        }
+      }
+    },
+    "calendar.alert.hourBeforeInvites": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 hour before invites"
+          }
+        }
+      }
+    },
+    "calendar.alert.minutes15": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "15 minutes before"
+          }
+        }
+      }
+    },
+    "calendar.alert.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None"
+          }
+        }
+      }
+    },
+    "calendar.copied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Link copied."
+          }
+        }
+      }
+    },
+    "calendar.copy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy link"
+          }
+        }
+      }
+    },
+    "calendar.event.bench": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bench"
+          }
+        }
+      }
+    },
+    "calendar.event.in": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In"
+          }
+        }
+      }
+    },
+    "calendar.event.late": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Late"
+          }
+        }
+      }
+    },
+    "calendar.event.location": {
+      "comment": "Arguments: 1 guild (string), 2 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "calendar.event.notes": {
+      "comment": "Arguments: 1 time (string), 2 n (int), 3 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pull %1$@. %2$lld of %3$lld signed up."
+          }
+        }
+      }
+    },
+    "calendar.event.notesNoSize": {
+      "comment": "Arguments: 1 time (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pull %1$@. %2$lld signed up."
+          }
+        }
+      }
+    },
+    "calendar.event.notSigned": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not signed up"
+          }
+        }
+      }
+    },
+    "calendar.event.out": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Out"
+          }
+        }
+      }
+    },
+    "calendar.event.title": {
+      "comment": "Arguments: 1 zone (string), 2 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "calendar.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your sign-up shows in the event title: “Onyxia's Lair · In”. Changing it in the app changes the event."
+          }
+        }
+      }
+    },
+    "calendar.link": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendar link"
+          }
+        }
+      }
+    },
+    "calendar.linkElsewhere": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This link was shown on another phone or browser. Reset it to copy a link here."
+          }
+        }
+      }
+    },
+    "calendar.linkError": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The link did not load. Try again."
+          }
+        }
+      }
+    },
+    "calendar.linkNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For Google Calendar on the web, Outlook and other people. Anyone with the link sees your guild's raid times."
+          }
+        }
+      }
+    },
+    "calendar.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forever Sixty raids"
+          }
+        }
+      }
+    },
+    "calendar.off": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendar access is off for Forever Sixty."
+          }
+        }
+      }
+    },
+    "calendar.offBody": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn it on in Settings to add raids to your calendar."
+          }
+        }
+      }
+    },
+    "calendar.openSettings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings"
+          }
+        }
+      }
+    },
+    "calendar.removed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The calendar was removed. Turn it on again."
+          }
+        }
+      }
+    },
+    "calendar.reset": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset link"
+          }
+        }
+      }
+    },
+    "calendar.resetAsk": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset the link? The old link stops working."
+          }
+        }
+      }
+    },
+    "calendar.resetConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset"
+          }
+        }
+      }
+    },
+    "calendar.resetError": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The link was not reset. Try again."
+          }
+        }
+      }
+    },
+    "calendar.section": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendar"
+          }
+        }
+      }
+    },
+    "calendar.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "calendar.switch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raids in my calendar"
+          }
+        }
+      }
+    },
+    "calendar.switchNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A calendar called Forever Sixty raids. The app keeps it up to date."
+          }
+        }
+      }
+    },
+    "calendar.syncFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The calendar did not update. It tries again on the next refresh."
+          }
+        }
+      }
+    },
+    "calendar.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendar"
+          }
+        }
+      }
+    },
+    "calendar.which": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which raids"
+          }
+        }
+      }
+    },
+    "calendar.which.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All planned"
+          }
+        }
+      }
+    },
+    "calendar.which.mine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only ones I am In or Late for"
+          }
+        }
+      }
+    },
+    "calendar.youRow.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raids in your calendar"
+          }
+        }
+      }
+    },
+    "changes.dates": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Key dates"
+          }
+        }
+      }
+    },
+    "changes.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What changed did not load."
+          }
+        }
+      }
+    },
+    "changes.list": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What changed"
+          }
+        }
+      }
+    },
+    "changes.tag.game": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game"
+          }
+        }
+      }
+    },
+    "changes.tag.site": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Site"
+          }
+        }
+      }
+    },
     "char.a11y.component": {
       "comment": "Arguments: 1 component (string), 2 value (int), 3 cap (int)",
       "extractionState": "manual",
@@ -1878,6 +2388,868 @@
         }
       }
     },
+    "guides.a11y.section": {
+      "comment": "Arguments: 1 name (string), 2 n (int), 3 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, section %2$lld of %3$lld"
+          }
+        }
+      }
+    },
+    "guides.a11y.stat": {
+      "comment": "Arguments: 1 n (int), 2 stat (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priority %1$lld, %2$@"
+          }
+        }
+      }
+    },
+    "guides.buildLevel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level 60"
+          }
+        }
+      }
+    },
+    "guides.cardMeta": {
+      "comment": "Arguments: 1 role (string), 2 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Updated %2$@"
+          }
+        }
+      }
+    },
+    "guides.classes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All classes"
+          }
+        }
+      }
+    },
+    "guides.cooldowns": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cooldowns"
+          }
+        }
+      }
+    },
+    "guides.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This guide did not load."
+          }
+        }
+      }
+    },
+    "guides.footer": {
+      "comment": "Arguments: 1 classes (string), 2 size (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved on this phone: %1$@ · %2$@. Guides update by themselves when the game data does."
+          }
+        }
+      }
+    },
+    "guides.footerNone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing is saved on this phone yet. Open a guide once and it stays."
+          }
+        }
+      }
+    },
+    "guides.gearRow": {
+      "comment": "Arguments: 1 spec (string), 2 preset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot for %1$@ · 60 · %2$@"
+          }
+        }
+      }
+    },
+    "guides.glance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At a glance"
+          }
+        }
+      }
+    },
+    "guides.headMeta": {
+      "comment": "Arguments: 1 date (string), 2 races (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$@ · Recommended races: %2$@"
+          }
+        }
+      }
+    },
+    "guides.headMetaNoRaces": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$@"
+          }
+        }
+      }
+    },
+    "guides.inRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In a raid"
+          }
+        }
+      }
+    },
+    "guides.levelingBuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leveling build"
+          }
+        }
+      }
+    },
+    "guides.listNotCached": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This list is not on your phone yet. Connect once to save it."
+          }
+        }
+      }
+    },
+    "guides.loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading the guides…"
+          }
+        }
+      }
+    },
+    "guides.notCached": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This guide is not on your phone yet. Connect once to save it."
+          }
+        }
+      }
+    },
+    "guides.notSaved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not saved"
+          }
+        }
+      }
+    },
+    "guides.opener": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opener"
+          }
+        }
+      }
+    },
+    "guides.priority": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priority"
+          }
+        }
+      }
+    },
+    "guides.raidBuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid build"
+          }
+        }
+      }
+    },
+    "guides.rank": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rank %1$lld"
+          }
+        }
+      }
+    },
+    "guides.ranks": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 rank"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld ranks"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "guides.recommended": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recommended"
+          }
+        }
+      }
+    },
+    "guides.role": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Role"
+          }
+        }
+      }
+    },
+    "guides.role.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DPS"
+          }
+        }
+      }
+    },
+    "guides.role.healer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healer"
+          }
+        }
+      }
+    },
+    "guides.role.tank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tank"
+          }
+        }
+      }
+    },
+    "guides.rotationFooter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranks are the ones you have at 60."
+          }
+        }
+      }
+    },
+    "guides.saved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved on this phone"
+          }
+        }
+      }
+    },
+    "guides.savedShort": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved"
+          }
+        }
+      }
+    },
+    "guides.section.gear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gear"
+          }
+        }
+      }
+    },
+    "guides.section.overview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overview"
+          }
+        }
+      }
+    },
+    "guides.section.races": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Races"
+          }
+        }
+      }
+    },
+    "guides.section.rotation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rotation"
+          }
+        }
+      }
+    },
+    "guides.section.stats": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stats"
+          }
+        }
+      }
+    },
+    "guides.section.talents": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents"
+          }
+        }
+      }
+    },
+    "guides.segment.changes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What changed"
+          }
+        }
+      }
+    },
+    "guides.segment.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
+    "guides.segment.tiers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tier lists"
+          }
+        }
+      }
+    },
+    "guides.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "guides.sources": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources"
+          }
+        }
+      }
+    },
+    "guides.statPriority": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stat priority"
+          }
+        }
+      }
+    },
+    "guides.strengths": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strengths"
+          }
+        }
+      }
+    },
+    "guides.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
+    "guides.weaknesses": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weaknesses"
+          }
+        }
+      }
+    },
+    "guides.yours": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guide"
+          }
+        }
+      }
+    },
+    "history.a11y.hours": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 hour"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld hours"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "history.a11y.minutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 minute"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld minutes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "history.a11y.there": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You were there."
+          }
+        }
+      }
+    },
+    "history.bosses": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 boss"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld bosses"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "history.empty.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nights show here once someone uploads a log."
+          }
+        }
+      }
+    },
+    "history.empty.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No logged raid nights yet."
+          }
+        }
+      }
+    },
+    "history.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid history did not load."
+          }
+        }
+      }
+    },
+    "history.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A night opens your raid night when you were in it, otherwise its report."
+          }
+        }
+      }
+    },
+    "history.kills": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 kill"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld kills"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "history.label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logged raid nights"
+          }
+        }
+      }
+    },
+    "history.length": {
+      "comment": "Arguments: 1 h (int), 2 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld h %2$lld m"
+          }
+        }
+      }
+    },
+    "history.lengthMinutes": {
+      "comment": "Arguments: 1 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld m"
+          }
+        }
+      }
+    },
+    "history.more": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Load more"
+          }
+        }
+      }
+    },
+    "history.moreError": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The next nights did not load."
+          }
+        }
+      }
+    },
+    "history.noWipes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "no wipes"
+          }
+        }
+      }
+    },
+    "history.players": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 player"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld players"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "history.raiders": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 raider"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld raiders"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "history.there": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You were there"
+          }
+        }
+      }
+    },
+    "history.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid history"
+          }
+        }
+      }
+    },
+    "history.wipes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 wipe"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld wipes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "home.answer.allMatch": {
       "comment": "Arguments: 1 band (string)",
       "extractionState": "manual",
@@ -2417,6 +3789,460 @@
         }
       }
     },
+    "itemPage.a11y.source": {
+      "comment": "Arguments: 1 title (string), 2 meta (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "itemPage.a11y.spec": {
+      "comment": "Arguments: 1 spec (string), 2 meta (string), 3 tag (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@. Opens that list"
+          }
+        }
+      }
+    },
+    "itemPage.back": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        }
+      }
+    },
+    "itemPage.backPlain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        }
+      }
+    },
+    "itemPage.bisFor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot for"
+          }
+        }
+      }
+    },
+    "itemPage.bisForFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot lists did not load."
+          }
+        }
+      }
+    },
+    "itemPage.bisForNone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No best in slot list uses this item."
+          }
+        }
+      }
+    },
+    "itemPage.chanceUnknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drop chance not known"
+          }
+        }
+      }
+    },
+    "itemPage.chip.bisFor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot for"
+          }
+        }
+      }
+    },
+    "itemPage.chip.item": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item"
+          }
+        }
+      }
+    },
+    "itemPage.chip.source": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source"
+          }
+        }
+      }
+    },
+    "itemPage.dropChance": {
+      "comment": "Arguments: 1 chance (string), 2 boss (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ from %2$@"
+          }
+        }
+      }
+    },
+    "itemPage.kind.crafted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crafted"
+          }
+        }
+      }
+    },
+    "itemPage.kind.dungeon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dungeon"
+          }
+        }
+      }
+    },
+    "itemPage.kind.pvp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PvP"
+          }
+        }
+      }
+    },
+    "itemPage.kind.quest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quest"
+          }
+        }
+      }
+    },
+    "itemPage.kind.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid"
+          }
+        }
+      }
+    },
+    "itemPage.kind.rep": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reputation"
+          }
+        }
+      }
+    },
+    "itemPage.kind.vendor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vendor"
+          }
+        }
+      }
+    },
+    "itemPage.kind.world": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "World drop"
+          }
+        }
+      }
+    },
+    "itemPage.kind.zone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zone"
+          }
+        }
+      }
+    },
+    "itemPage.meta": {
+      "comment": "Arguments: 1 quality (string), 2 slot (string), 3 ilvl (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · item level %3$lld"
+          }
+        }
+      }
+    },
+    "itemPage.moreAbout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More about this item"
+          }
+        }
+      }
+    },
+    "itemPage.moreSpecs": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 more spec"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld more specs"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "itemPage.noSources": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No source is in our data for this item yet."
+          }
+        }
+      }
+    },
+    "itemPage.pick": {
+      "comment": "Arguments: 1 slot (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your %1$@ pick"
+          }
+        }
+      }
+    },
+    "itemPage.pickMeta": {
+      "comment": "Arguments: 1 spec (string), 2 band (string), 3 preset (string), 4 faction (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@ · %4$@"
+          }
+        }
+      }
+    },
+    "itemPage.pickMetaBare": {
+      "comment": "Arguments: 1 spec (string), 2 band (string), 3 faction (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "itemPage.preset.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phase 1 raid"
+          }
+        }
+      }
+    },
+    "itemPage.questLevel": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Requires level %1$lld"
+          }
+        }
+      }
+    },
+    "itemPage.runnerUp": {
+      "comment": "Arguments: 1 n (int), 2 slot (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runner-up %1$lld for %2$@"
+          }
+        }
+      }
+    },
+    "itemPage.sources": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where it comes from"
+          }
+        }
+      }
+    },
+    "itemPage.specMeta.bare": {
+      "comment": "Arguments: 1 band (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld"
+          }
+        }
+      }
+    },
+    "itemPage.specMeta.raid": {
+      "comment": "Arguments: 1 band (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld · Phase 1 raid"
+          }
+        }
+      }
+    },
+    "itemPage.tag.pick": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick"
+          }
+        }
+      }
+    },
+    "itemPage.tag.runnerUp": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runner-up %1$lld"
+          }
+        }
+      }
+    },
+    "itemPage.unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This item is not in our data."
+          }
+        }
+      }
+    },
+    "itemPage.usesFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources did not load."
+          }
+        }
+      }
+    },
+    "itemPage.yours": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yours"
+          }
+        }
+      }
+    },
     "items.a11y.hint": {
       "extractionState": "manual",
       "localizations": {
@@ -2435,6 +4261,174 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quest Item"
+          }
+        }
+      }
+    },
+    "items.equip.attackPower": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: +%1$lld Attack Power."
+          }
+        }
+      }
+    },
+    "items.equip.block": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases your chance to block attacks with a shield by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.blockValue": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases the block value of your shield by %1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.crit": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Improves your chance to get a critical strike by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.defense": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increased Defense +%1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.dodge": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases your chance to dodge an attack by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.firePower": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases damage done by Fire spells and effects by up to %1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.healing": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases healing done by spells and effects by up to %1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.hit": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Improves your chance to hit by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.mp5": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Restores %1$lld mana per 5 sec."
+          }
+        }
+      }
+    },
+    "items.equip.parry": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases your chance to parry an attack by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.rangedAttackPower": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: +%1$lld ranged Attack Power."
+          }
+        }
+      }
+    },
+    "items.equip.spellPenetration": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Decreases the magical resistances of your spell targets by %1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.spellPower": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases damage and healing done by magical spells and effects by up to %1$lld."
           }
         }
       }
@@ -2924,7 +4918,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Arcane resistance"
+            "value": "Arcane Resistance"
           }
         }
       }
@@ -3012,7 +5006,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fire resistance"
+            "value": "Fire Resistance"
           }
         }
       }
@@ -3023,7 +5017,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Frost resistance"
+            "value": "Frost Resistance"
           }
         }
       }
@@ -3078,7 +5072,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nature resistance"
+            "value": "Nature Resistance"
           }
         }
       }
@@ -3111,7 +5105,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Shadow resistance"
+            "value": "Shadow Resistance"
           }
         }
       }
@@ -4763,6 +6757,17 @@
         }
       }
     },
+    "offline.newData": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New game data is ready."
+          }
+        }
+      }
+    },
     "offline.strip": {
       "comment": "Arguments: 1 time (string)",
       "extractionState": "manual",
@@ -4771,6 +6776,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Offline. Showing what you had at %1$@."
+          }
+        }
+      }
+    },
+    "offline.update": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update"
+          }
+        }
+      }
+    },
+    "offline.updateFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The update did not finish. Try again."
           }
         }
       }
@@ -6385,6 +8412,28 @@
         }
       }
     },
+    "raids.historyRow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid history"
+          }
+        }
+      }
+    },
+    "raids.historyRow.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logged raid nights"
+          }
+        }
+      }
+    },
     "raids.next": {
       "extractionState": "manual",
       "localizations": {
@@ -6613,6 +8662,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "Also planned"
+          }
+        }
+      }
+    },
+    "raids.rosterRow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roster"
+          }
+        }
+      }
+    },
+    "raids.rosterRow.sub": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 on the roster · attendance"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld on the roster · attendance"
+                }
+              }
+            }
           }
         }
       }
@@ -8426,6 +10510,851 @@
         }
       }
     },
+    "roster.a11y.attended": {
+      "comment": "Arguments: 1 present (int), 2 nights (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "attended %1$lld of %2$lld recent raid nights"
+          }
+        }
+      }
+    },
+    "roster.a11y.level": {
+      "comment": "Arguments: 1 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "level %1$lld"
+          }
+        }
+      }
+    },
+    "roster.a11y.waiting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "waiting for approval"
+          }
+        }
+      }
+    },
+    "roster.attendance": {
+      "comment": "Arguments: 1 present (int), 2 nights (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld nights"
+          }
+        }
+      }
+    },
+    "roster.chip.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "roster.chip.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DPS"
+          }
+        }
+      }
+    },
+    "roster.chip.healers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healers"
+          }
+        }
+      }
+    },
+    "roster.chip.tanks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanks"
+          }
+        }
+      }
+    },
+    "roster.counts.noAccount": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in game, no account"
+          }
+        }
+      }
+    },
+    "roster.counts.onRoster": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "on the roster"
+          }
+        }
+      }
+    },
+    "roster.counts.waiting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "waiting"
+          }
+        }
+      }
+    },
+    "roster.empty.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change the role or clear the search."
+          }
+        }
+      }
+    },
+    "roster.empty.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No raiders match."
+          }
+        }
+      }
+    },
+    "roster.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The roster did not load."
+          }
+        }
+      }
+    },
+    "roster.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attendance is the last 8 raid nights with a log. Tap a raider for their page."
+          }
+        }
+      }
+    },
+    "roster.meta": {
+      "comment": "Arguments: 1 spec (string), 2 level (int), 3 rank (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld · %3$@"
+          }
+        }
+      }
+    },
+    "roster.metaNoLevel": {
+      "comment": "Arguments: 1 spec (string), 2 rank (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "roster.noAccountTag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No account"
+          }
+        }
+      }
+    },
+    "roster.noNights": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No logged nights yet."
+          }
+        }
+      }
+    },
+    "roster.rank.leader": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guild Master"
+          }
+        }
+      }
+    },
+    "roster.rank.member": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Member"
+          }
+        }
+      }
+    },
+    "roster.rank.officer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Officer"
+          }
+        }
+      }
+    },
+    "roster.search": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search the roster"
+          }
+        }
+      }
+    },
+    "roster.sort": {
+      "comment": "Arguments: 1 by (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sort: %1$@"
+          }
+        }
+      }
+    },
+    "roster.sort.attendance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attendance"
+          }
+        }
+      }
+    },
+    "roster.sort.className": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class"
+          }
+        }
+      }
+    },
+    "roster.sort.level": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level"
+          }
+        }
+      }
+    },
+    "roster.sort.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        }
+      }
+    },
+    "roster.sort.rank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rank"
+          }
+        }
+      }
+    },
+    "roster.supporter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporter"
+          }
+        }
+      }
+    },
+    "roster.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roster"
+          }
+        }
+      }
+    },
+    "roster.waitingTag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting"
+          }
+        }
+      }
+    },
+    "search.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        }
+      }
+    },
+    "search.cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "search.character.meta": {
+      "comment": "Arguments: 1 className (string), 2 level (int), 3 region (string), 4 ruleset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Level %2$lld · %3$@ %4$@"
+          }
+        }
+      }
+    },
+    "search.character.metaNoLevel": {
+      "comment": "Arguments: 1 className (string), 2 region (string), 3 ruleset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ %3$@"
+          }
+        }
+      }
+    },
+    "search.character.you": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You"
+          }
+        }
+      }
+    },
+    "search.charactersFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Characters did not load."
+          }
+        }
+      }
+    },
+    "search.clear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the search"
+          }
+        }
+      }
+    },
+    "search.forCharacter.bis": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot for %1$@"
+          }
+        }
+      }
+    },
+    "search.forCharacter.guide": {
+      "comment": "Arguments: 1 spec (string), 2 className (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ guide"
+          }
+        }
+      }
+    },
+    "search.forCharacter.rankings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rankings"
+          }
+        }
+      }
+    },
+    "search.group.characters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Characters"
+          }
+        }
+      }
+    },
+    "search.group.forCharacter": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For %1$@"
+          }
+        }
+      }
+    },
+    "search.group.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
+    "search.group.items": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Items"
+          }
+        }
+      }
+    },
+    "search.group.recent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent"
+          }
+        }
+      }
+    },
+    "search.group.talents": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents"
+          }
+        }
+      }
+    },
+    "search.group.watching": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watching"
+          }
+        }
+      }
+    },
+    "search.guide.meta": {
+      "comment": "Arguments: 1 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guide · %1$@"
+          }
+        }
+      }
+    },
+    "search.indexFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search did not load."
+          }
+        }
+      }
+    },
+    "search.indexLoading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading the search…"
+          }
+        }
+      }
+    },
+    "search.item.meta": {
+      "comment": "Arguments: 1 slot (string), 2 ilvl (int), 3 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · item level %2$lld · requires level %3$lld"
+          }
+        }
+      }
+    },
+    "search.item.metaNoLevel": {
+      "comment": "Arguments: 1 slot (string), 2 ilvl (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · item level %2$lld"
+          }
+        }
+      }
+    },
+    "search.noResults.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the spelling. Characters need at least two letters and a connection."
+          }
+        }
+      }
+    },
+    "search.noResults.title": {
+      "comment": "Arguments: 1 query (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing matches “%1$@”."
+          }
+        }
+      }
+    },
+    "search.offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline. Items, guides and talents still search; characters need a connection."
+          }
+        }
+      }
+    },
+    "search.placeholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search items, characters, guides, talents"
+          }
+        }
+      }
+    },
+    "search.recent.character": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Character"
+          }
+        }
+      }
+    },
+    "search.recent.clear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
+          }
+        }
+      }
+    },
+    "search.recent.guide": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guide"
+          }
+        }
+      }
+    },
+    "search.recent.item": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item"
+          }
+        }
+      }
+    },
+    "search.recent.talent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talent"
+          }
+        }
+      }
+    },
+    "search.scope.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "search.scope.characters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Characters"
+          }
+        }
+      }
+    },
+    "search.scope.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
+    "search.scope.items": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Items"
+          }
+        }
+      }
+    },
+    "search.scope.talents": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents"
+          }
+        }
+      }
+    },
+    "search.showAll": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show all %1$lld"
+          }
+        }
+      }
+    },
+    "search.talent.meta": {
+      "comment": "Arguments: 1 spec (string), 2 className (string), 3 tree (string), 4 ranks (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ · %3$@ · %4$@"
+          }
+        }
+      }
+    },
+    "search.talent.openPlanner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in planner"
+          }
+        }
+      }
+    },
+    "search.talent.rank": {
+      "comment": "Arguments: 1 rank (int), 2 max (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rank %1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "search.talent.ranks": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 rank"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld ranks"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "search.tryAgain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        }
+      }
+    },
     "selector.a11y": {
       "comment": "Arguments: 1 name (string), 2 spec (string), 3 class (string), 4 n (int)",
       "extractionState": "manual",
@@ -9247,6 +12176,17 @@
         }
       }
     },
+    "tab.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
     "tab.home": {
       "extractionState": "manual",
       "localizations": {
@@ -9691,6 +12631,164 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your build"
+          }
+        }
+      }
+    },
+    "tiers.a11y.behind": {
+      "comment": "Arguments: 1 name (string), 2 rank (string), 3 count (string), 4 tier (string), 5 gap (string), 6 race (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, rank %2$@ of %3$@, %4$@%5$@ behind the top, %6$@"
+          }
+        }
+      }
+    },
+    "tiers.a11y.gap": {
+      "comment": "Arguments: 1 n (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ percent"
+          }
+        }
+      }
+    },
+    "tiers.a11y.opens": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the guide"
+          }
+        }
+      }
+    },
+    "tiers.a11y.tie": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Within 1 percent of the next spec"
+          }
+        }
+      }
+    },
+    "tiers.a11y.tier": {
+      "comment": "Arguments: 1 letter (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tier %1$@, "
+          }
+        }
+      }
+    },
+    "tiers.a11y.top": {
+      "comment": "Arguments: 1 name (string), 2 count (string), 3 tier (string), 4 race (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, rank 1 of %2$@, %3$@top spec, %4$@"
+          }
+        }
+      }
+    },
+    "tiers.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The tier list did not load."
+          }
+        }
+      }
+    },
+    "tiers.faction.alliance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alliance"
+          }
+        }
+      }
+    },
+    "tiers.faction.horde": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horde"
+          }
+        }
+      }
+    },
+    "tiers.loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading the tier list…"
+          }
+        }
+      }
+    },
+    "tiers.tie": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "≈"
+          }
+        }
+      }
+    },
+    "tiers.top": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top"
+          }
+        }
+      }
+    },
+    "tiers.yours": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spec"
+          }
+        }
+      }
+    },
+    "tiers.yoursTag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yours"
           }
         }
       }

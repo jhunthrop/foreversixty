@@ -48,10 +48,10 @@ import gg.foreversixty.app.reports.logic.ParseTier
 import gg.foreversixty.app.reports.logic.Visibility
 import java.util.Locale
 
-/** A pushed screen's bar: back with its label, the uppercase title, and one trailing action. */
+/** A pushed screen's bar: back with its label, the uppercase title (a guide's in its class colour), and one trailing action. */
 @Composable
-fun ReportsBar(title: String, backLabel: String, back: () -> Unit, trailing: BarAction? = null) {
-    ReportsBar(title, backLabel, back) {
+fun ReportsBar(title: String, backLabel: String, back: () -> Unit, trailing: BarAction? = null, titleColor: Color = FsColor.strong) {
+    ReportsBar(title, backLabel, back, titleColor) {
         trailing?.let { action ->
             IconButton(onClick = action.run) { Icon(action.icon(), contentDescription = action.label, tint = FsColor.strong) }
         }
@@ -61,11 +61,17 @@ fun ReportsBar(title: String, backLabel: String, back: () -> Unit, trailing: Bar
 /** The same bar with any trailing controls (lane F11's character page: the Watch star and Share). */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReportsBar(title: String, backLabel: String, back: () -> Unit, actions: @Composable RowScope.() -> Unit) {
+fun ReportsBar(
+    title: String,
+    backLabel: String,
+    back: () -> Unit,
+    titleColor: Color = FsColor.strong,
+    actions: @Composable RowScope.() -> Unit,
+) {
     TopAppBar(
         title = {
             Text(
-                title.uppercase(Locale.ROOT), style = FsType.h2, color = FsColor.strong, maxLines = 2, overflow = TextOverflow.Clip,
+                title.uppercase(Locale.ROOT), style = FsType.h2, color = titleColor, maxLines = 2, overflow = TextOverflow.Clip,
                 modifier = Modifier.semantics { heading() },
             )
         },

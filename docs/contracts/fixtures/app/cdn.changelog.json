@@ -1,0 +1,172 @@
+{
+  "entries": [
+    {
+      "id": "2026-10-28-log-coach",
+      "date": "2026-10-28",
+      "title": "The log coach is here.",
+      "kind": "site",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Added the log coach for Premium. After every logged raid it tells you what to fix first: the casts you missed, the buffs you let drop and the consumables you skipped, learned from the engine and from the top logs on the site. It reviews every spec; damage specs get the most findings."
+        }
+      ],
+      "sources": [
+        {
+          "label": "This site, Plans",
+          "url": "https://foreversixty.gg/premium",
+          "kind": "site"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-27-launch-pricing",
+      "date": "2026-10-27",
+      "title": "Premium, Guild and Raid guild: the launch plans and founder prices.",
+      "kind": "site",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Premium is $6 a month or $50 a year, one price for everyone. Guilds pick Guild, $15 a month or $150 a year for up to 25 verified members with one Premium seat, or Raid guild, $25 a month or $250 a year for any size with three seats, the loot council helper, the readiness board and consumables. Officers give seats to any verified member and can move each one once every 30 days. A guild's first 7 days are free. Subscribe before 6 January 2027 and you keep the founder price. A guild's history is never locked: a lapsed plan keeps its raids and logs readable and downloadable, and the plan can be handed to another officer."
+        }
+      ],
+      "sources": [
+        {
+          "label": "This site, Premium",
+          "url": "https://foreversixty.gg/premium",
+          "kind": "site"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-27-guild-raids",
+      "date": "2026-10-27",
+      "title": "Guilds can now plan raids and members sign up in one tap.",
+      "kind": "site",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Added raid sign-ups. Officers plan raids on the guild's Raids tab and members sign up in one tap, from the raid page or the guild page."
+        }
+      ],
+      "sources": [
+        {
+          "label": "This site, Guild",
+          "url": "https://foreversixty.gg/guild",
+          "kind": "site"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-27-guild-attendance",
+      "date": "2026-10-27",
+      "title": "Raid pages now show who came and how the night went.",
+      "kind": "site",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Added attendance and raid-night reports. A raid's log is matched when it is uploaded, and the raid page shows who came, kill times, deaths, loot and the biggest changes since last time."
+        }
+      ],
+      "sources": [
+        {
+          "label": "This site, Guild",
+          "url": "https://foreversixty.gg/guild",
+          "kind": "site"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-27-discord-bot",
+      "date": "2026-10-27",
+      "title": "The Forever Sixty Discord bot is here.",
+      "kind": "site",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Added the Forever Sixty Discord bot. Raid posts carry In, Late, Bench and Out buttons, and /raid, /bis, /char and more answer in your guild's Discord. Officers add it from guild settings; members link Discord on the account page."
+        }
+      ],
+      "sources": [
+        {
+          "label": "This site, Guild",
+          "url": "https://foreversixty.gg/guild",
+          "kind": "site"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-26-officer-tools-gate",
+      "date": "2026-10-26",
+      "title": "Officer tools are now part of the guild plan.",
+      "kind": "site",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Award and Undo on the loot council helper and Nudge on the raid readiness board are part of the guild plan. Every guild claimed before today keeps them through the first raid nights, until 12 December."
+        },
+        {
+          "type": "p",
+          "text": "The guild settings page shows what your guild has and until when. An officer of a guild without the plan sees the tools read-only, with a sentence saying how to subscribe."
+        }
+      ],
+      "sources": [
+        {
+          "label": "This site, Account",
+          "url": "https://foreversixty.gg/account",
+          "kind": "site"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-25-discord-notifications",
+      "date": "2026-10-25",
+      "title": "Premium members can now get a Discord message when a server sim or a log upload finishes.",
+      "kind": "site",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Added Discord notifications. Premium members can paste a Discord webhook on the account page and get a message when a server sim finishes or a log finishes parsing. Pick which of the two you want, and send a test message to see it arrive. The link is encrypted and never shown again; the page shows the webhook's own name (the one you gave it in Discord) and the channel's id."
+        },
+        {
+          "type": "p",
+          "text": "If Discord refuses five posts in a row, the messages switch off and the account page says why. Fix the channel, press Test and switch on, and they resume. If your plan ends, your webhook is kept and posts start again when you are back on Premium. You can remove the webhook at any time. Free members see one line pointing to the plans, and the Premium rows on the account page now show whether Discord messages are on."
+        },
+        {
+          "type": "p",
+          "text": "Private logs are your choice. New webhooks leave them off; a webhook saved before today keeps posting them until you untick Include private logs on the account page. You can also connect a channel in one click from the account page: pick the server and channel in Discord and the webhook is made for you, with the paste form still there if you prefer it."
+        }
+      ],
+      "sources": [
+        {
+          "label": "This site, Account",
+          "url": "https://foreversixty.gg/account",
+          "kind": "site"
+        }
+      ]
+    },
+    {
+      "id": "2026-10-25-character-history",
+      "date": "2026-10-25",
+      "title": "Premium members can now see their score and parses over time on their character page.",
+      "kind": "site",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Premium members now see a History section on their own character page, between the Forever Score card and Gear. Score over time draws each day's last rated fight as a dated point on the tier bands, with a labelled gap wherever no fight was rated, and lists the fights behind the selected point. Parse by boss draws the parse of every kill of a boss you pick, with its kills listed underneath. The section includes your private and guild reports, and only you see it."
+        },
+        {
+          "type": "p",
+          "text": "Free members and visitors keep the sparkline on the Forever Score card, and a free owner sees one line pointing to the plans. The account page's History row now reads Open on your main character for Premium members and Sparkline only for everyone else."
+        }
+      ],
+      "sources": [
+        {
+          "label": "This site, Character",
+          "url": "https://foreversixty.gg/character",
+          "kind": "site"
+        }
+      ]
+    }
+  ]
+}

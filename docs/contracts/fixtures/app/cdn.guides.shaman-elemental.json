@@ -1,0 +1,320 @@
+{
+  "build": "1.60.1.70707",
+  "spec": "shaman-elemental",
+  "class": "shaman",
+  "spec_slug": "elemental",
+  "class_name": "Shaman",
+  "spec_name": "Elemental",
+  "role": "dps",
+  "icon": "spell_nature_wispsplode",
+  "title": "Elemental Shaman in Forever",
+  "updated": "2026-11-01",
+  "summary": "Elemental is Shaman's ranged spellcasting spec, dealing damage with Lightning Bolt, Chain Lightning, Flame Shock and Lava Burst, backed by fire totems.",
+  "role_line": "Ranged spell damage",
+  "recommended_races": [
+    {
+      "slug": "dwarf",
+      "name": "Dwarf",
+      "faction": "alliance"
+    },
+    {
+      "slug": "orc",
+      "name": "Orc",
+      "faction": "horde"
+    }
+  ],
+  "stat_priority": [
+    "Spell power",
+    "Hit",
+    "Nature power",
+    "Intellect",
+    "Critical strike",
+    "Spell haste",
+    "Spell penetration"
+  ],
+  "hit_cap": "Hit cap: 10%",
+  "overview": {
+    "strengths": [
+      "Forever's baseline cast-time cut to Lightning Bolt and Chain Lightning",
+      "Lava Burst hits harder when Flame Shock is already on the target",
+      "Chain Lightning hits every target for close to single-target Lightning Bolt damage",
+      "Searing Totem for one target and Magma Totem for several add steady damage"
+    ],
+    "weaknesses": [
+      "Slower leveling than Enhancement, because its damage depends on cast times",
+      "Hard casts leave it idle while moving",
+      "Raid build spends points in Restoration to reach spell hit"
+    ],
+    "raid": [
+      "Brings: Party totems alongside its own damage; no raid-wide buff or debuff"
+    ]
+  },
+  "talents": {
+    "key": [
+      {
+        "name": "Elemental Fury",
+        "icon": "spell_fire_volcano",
+        "rank": 5,
+        "max_rank": 5,
+        "text": "Increases the critical strike damage bonus of your Searing and Magma Totems and your Fire, Frost, and Nature spells by 100%.",
+        "why": null
+      },
+      {
+        "name": "Lightning Overload",
+        "icon": "spell_nature_lightningoverload",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Gives your Lightning Bolt and Chain Lightning spells a 10% chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.",
+        "why": null
+      },
+      {
+        "name": "Lava Burst",
+        "icon": "spell_shaman_lavaburst",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "You hurl molten lava at the target, dealing 114 to 145 Fire damage. If your Flame Shock is on the target, Lava Burst deals 20% increased damage.",
+        "why": null
+      },
+      {
+        "name": "Elemental Warding",
+        "icon": "spell_nature_spiritarmor",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Reduces damage taken from Fire, Frost, and Nature effects by 10%.",
+        "why": null
+      },
+      {
+        "name": "Elemental Focus",
+        "icon": "spell_shadow_manaburn",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "Gives you a 10% chance to enter a Clearcasting state after casting any Fire, Frost, or Nature damage spell.  The Clearcasting state reduces the mana cost of your next damage spell by 100%.",
+        "why": null
+      },
+      {
+        "name": "Elemental Alacrity",
+        "icon": "spell_lightning_lightningbolt01",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.50 sec.",
+        "why": null
+      },
+      {
+        "name": "Elemental Mastery",
+        "icon": "spell_nature_wispheal",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "Gain mastery over Fire and Lightning, reducing the cast time of Lightning Bolt and Lava Burst by 0.5 sec, and removing the cooldown from Chain Lightning. Lasts 15 sec.",
+        "why": null
+      }
+    ],
+    "leveling_build": {
+      "code": "FS1:1.60.1.70707:shaman:dwarf:551033130000135/03/503352:",
+      "totals": [
+        30,
+        3,
+        18
+      ],
+      "tree_names": [
+        "Elemental",
+        "Enhancement",
+        "Restoration"
+      ]
+    },
+    "raid_build": {
+      "code": "FS1:1.60.1.70707:shaman:dwarf:5510331300001351/055/053002:",
+      "totals": [
+        31,
+        10,
+        10
+      ],
+      "tree_names": [
+        "Elemental",
+        "Enhancement",
+        "Restoration"
+      ]
+    }
+  },
+  "rotation": {
+    "opener": [
+      {
+        "spell_id": 15208,
+        "name": "Lightning Bolt",
+        "rank": 10,
+        "icon": "spell_nature_lightning",
+        "clause": "2.5 s before the pull"
+      }
+    ],
+    "priority": [
+      {
+        "spell_id": 1326047,
+        "name": "Lava Burst",
+        "rank": 4,
+        "icon": "spell_shaman_lavaburst",
+        "clause": "On cooldown while your Flame Shock is on the target"
+      },
+      {
+        "spell_id": 10497,
+        "name": "Mana Spring Totem",
+        "rank": 4,
+        "icon": "spell_nature_manaregentotem",
+        "clause": "Restores 10 mana every 2 seconds for its five-minute life"
+      },
+      {
+        "spell_id": 29228,
+        "name": "Flame Shock",
+        "rank": 6,
+        "icon": "spell_fire_flameshock",
+        "clause": "Keep Flame Shock on the target"
+      },
+      {
+        "spell_id": 10438,
+        "name": "Searing Totem",
+        "rank": 6,
+        "icon": "spell_fire_searingtotem",
+        "clause": "Single target"
+      },
+      {
+        "spell_id": 10587,
+        "name": "Magma Totem",
+        "rank": 4,
+        "icon": "spell_fire_selfdestruct",
+        "clause": "2 or more targets"
+      },
+      {
+        "spell_id": 10605,
+        "name": "Chain Lightning",
+        "rank": 4,
+        "icon": "spell_nature_chainlightning",
+        "clause": "2 or more targets"
+      },
+      {
+        "spell_id": 408345,
+        "name": "Fire Nova",
+        "rank": 5,
+        "icon": null,
+        "clause": "On a Clearcasting proc"
+      },
+      {
+        "spell_id": 15208,
+        "name": "Lightning Bolt",
+        "rank": 10,
+        "icon": "spell_nature_lightning",
+        "clause": "The rest of the single-target rotation"
+      }
+    ],
+    "cooldowns": [
+      {
+        "spell_id": 16166,
+        "name": "Elemental Mastery",
+        "rank": null,
+        "icon": "spell_nature_wispheal",
+        "clause": "3 min cooldown"
+      },
+      {
+        "spell_id": null,
+        "name": "Trinkets, racials and potions",
+        "rank": null,
+        "icon": null,
+        "clause": "On cooldown, with your biggest damage"
+      }
+    ]
+  },
+  "races": [
+    {
+      "slug": "orc",
+      "name": "Orc",
+      "faction": "horde",
+      "recommended": true,
+      "racials": [
+        {
+          "name": "Blood Fury",
+          "effect": "Grants 10% Attack Power and Spell Power for 15 seconds on a 2 minute cooldown"
+        }
+      ]
+    },
+    {
+      "slug": "dwarf",
+      "name": "Dwarf",
+      "faction": "alliance",
+      "recommended": true,
+      "racials": [
+        {
+          "name": "Stoneform",
+          "effect": "Reduces physical damage taken instead of raising armor"
+        }
+      ]
+    },
+    {
+      "slug": "tauren",
+      "name": "Tauren",
+      "faction": "horde",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Endurance",
+          "effect": "Grants 5% Health and 1% Hit chance"
+        }
+      ]
+    },
+    {
+      "slug": "troll",
+      "name": "Troll",
+      "faction": "horde",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Berserking",
+          "effect": "Grants 10% casting and attack speed on a 3 minute cooldown"
+        }
+      ]
+    },
+    {
+      "slug": "windshaper-skyborne",
+      "name": "Windshaper Skyborne",
+      "faction": "horde",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Read Ley Line",
+          "effect": "100% health and mana regeneration for 15 seconds"
+        }
+      ]
+    }
+  ],
+  "gear": {
+    "spec": "shaman-elemental",
+    "band": 60,
+    "preset_label": "Raid-ready, Phase 1"
+  },
+  "sources": [
+    {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard"
+    },
+    {
+      "label": "Talents Forever (demo transcription)",
+      "url": "https://talentsforever.com/data.json",
+      "kind": "community"
+    },
+    {
+      "label": "This site, stat weights",
+      "url": "https://foreversixty.gg/sim/weights",
+      "kind": "site"
+    },
+    {
+      "label": "This site, character planner",
+      "url": "https://foreversixty.gg/planner",
+      "kind": "site"
+    }
+  ],
+  "sections": [
+    "overview",
+    "talents",
+    "rotation",
+    "stats",
+    "gear",
+    "races"
+  ]
+}

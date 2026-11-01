@@ -40,11 +40,14 @@ class AuditContext:
         curated_dir: Path = Path("curated"),
         engine: Path | None = None,
         classicdb_dump: Path | None = None,
+        lua_path: Path | None = None,
     ) -> None:
         self.build = build
         self.root = root
         self.build_dir = root / build
         self.curated_dir = curated_dir
+        # The addon's Data.lua; None is the committed one (pipeline.addonlua.LUA_PATH).
+        self.lua_path = lua_path
         self.engine = engine
         self.classicdb_dump = classicdb_dump
 

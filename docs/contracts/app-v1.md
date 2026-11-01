@@ -289,6 +289,16 @@ may_approve, addon }` plus omitted `class`, `spec`, `role`, `item_level` (withhe
 consent), `attendance_30`, `best_parse`, `rating`, `professions`. Draw Remove and Approve exactly
 when `may_remove` and `may_approve`.
 
+**Wave 3 W3-C16 (lane F16, the app's roster).** Each roster row also carries omitted `spec_name`
+(the full spec name, catalogue name then class: `Fury Warrior`, never a bare `Fury`) and
+`spec_icon` (the talent-tab icon stem), both withheld with `spec`. Each `members[]` entry carries
+`role` (`tank|healer|dps`), `spec_name` and `spec_icon`, always present and null when unknown:
+read from the entry's own `spec` (the addon snapshot's specs.json key), else from its roster row's
+logged spec, and withheld with them. The role chips read `role`; the app never derives a role or a
+name from a spec word. `members[].character_key` is absent for a `no_account` name. Fixture
+`guild.home.roster` is a 38-person guild for the roster screen (4 in game with no account, 2
+waiting).
+
 ### GET /v1/guilds/{id}/raids
 Auth none required (the actor is read if present). Caching private. Query `limit` (default 20,
 max 50), `cursor` (the `next_cursor` of a previous page). Answer `{ rows[], next_cursor (omitted at
@@ -364,6 +374,42 @@ character not verified in the guild; 403 `guild_plan_required` for an officer si
 without the plan; 404 `not_found` for a raid you cannot see or a character not in the guild
 (`...error-character-not-found`); 409 `raid_locked` (`...error-raid-locked`), `raid_cancelled`,
 `claim_contested`; 429 `rate_limited`.
+
+### Raid history (Wave 3 F16)
+The app's Raid history reads `GET /v1/guilds/{id}/raids` above, 20 rows a page, `next_cursor` for
+Load more. Fixtures `guild.raids.history` (a first page from Wed 9 Dec 2026, when raids open, to
+31 Dec, with Onyxia at 38 to 40 raiders, Upper Blackrock Spire at 10 and five-player Blackrock
+Depths and Lower Blackrock Spire runs, every night a different length) and `guild.raids.history-2`
+(the last page, no `next_cursor`). A row's boss count is the distinct `fights[].name`; its size is
+`raiders`, which is never below a fight's `players`.
+
+### Calendar link (Wave 3 W3-C17)
+- `GET /v1/me/calendar-feed`: auth session or app token. Caching `private, no-store`. Answer
+  `{ url, created_at }` (schema `CalendarFeed`). The first call makes the link and answers its
+  `url`; every later call answers `url: null` with the same `created_at`, because only the token's
+  SHA-256 is stored. Keep the url you were shown in the secure store (Keychain, Android's encrypted
+  store), clear it at sign-out, and offer Reset link when you have none. Fixtures `calendar.feed`
+  and `calendar.feed.shown`.
+- `POST /v1/me/calendar-feed/reset`: revokes the live link and answers a new `{ url, created_at }`
+  in one transaction; the old link answers 404 at once. 10 an hour per account (429
+  `rate_limited`). Fixture `calendar.feed`.
+- `GET /v1/calendar/{token}.ics`: public by token, opened by calendar apps (tag `app-browser`).
+  `text/calendar; charset=utf-8`, `Cache-Control: private, max-age=300`, `Referrer-Policy:
+  no-referrer`. RFC 5545, one `VEVENT` per planned, locked or done raid of every guild where the
+  account is a verified member, from 30 days back; cancelled raids are left out so a subscribed
+  calendar drops them; membership is read on every fetch. `UID raid-{id}@foreversixty.gg`,
+  `SUMMARY {zone} · {In|Late|Bench|Out|Not signed up}`, `DTSTART` the start, `DTEND` the end,
+  `LOCATION {guild} · {zone}`, `DESCRIPTION Pull {time}. {n} of {size} signed up.`, `URL` the raid
+  page, no `VALARM`. Golden body: `docs/contracts/fixtures/app/calendar.ics`. 404 `not_found`,
+  one body, for a malformed, unknown or revoked token (`calendar.ics.error-not-found`); 60 reads an
+  hour per live token, and 30 misses an hour per address (429): only a link that does not exist
+  spends the address budget, so calendar services fetching many real links from one address are
+  never refused.
+- **Security.** The token is 256 random bits (base64url, 43 characters), shown once, stored only
+  as its SHA-256 (`calendar_feeds`, migration 0064, one live row per account), revocable, and never
+  logged: the API's request and panic logs write the route as `/v1/calendar/:redacted`
+  (`httpx.LogPath`). The feed carries the guild's raid times and your own answers, nothing else:
+  no raid notes, no other player's name.
 
 ### GET /v1/me/raid-nights/{raid}
 Your raid night (lane F4 contract; dark, handler pending): the after-raid summary behind the app's
@@ -590,11 +636,73 @@ The game icon for any item, talent or spell: `icon` is the stem a JSON file carr
 never reinterpret or re-badge. A build that does not carry an icon answers 404: fall back to the
 neutral placeholder. Tree art is `/data/<build>/trees/<background>.webp`.
 
+### /data/{build}/loot.json (W3-C8, lane F12)
+
+`{ sources[], quests?, factions? }`: the site's loot file, now an app contract. A source is
+`{ id, kind, name, items?, trash?, bosses?[{ id, name, npc_id?, items, item_chances? }],
+item_chances?, … }` with `kind` one of `raid|dungeon|world|world_drop|zone|vendor|crafted|rep|pvp|quest`.
+`quests` maps an item id (string key) to the quests that reward it (`{ quest_id, name, faction,
+min_level, level, … }`). Drop chances are percents, absent when unknown, never 0 for unknown.
+The item page reads `item-uses` instead; this is for anything that needs the raw sources. Fixture
+`cdn.loot`, held to the generator's file by `TestCDNLootFixtureMatchesTheGenerator`.
+
+### /data/{build}/search.json (W3-C8, lane F12)
+
+`{ build, item_uses_shards, items[], talents[], guides[] }`, the apps' offline search. An item is
+`{ id, name, icon, quality, slot, item_level, required_level, classes[] }` (the class slugs whose
+items file carries it); a talent `{ id, name, icon, class, tree, spec_name, max_rank }`; a guide
+`{ class, spec, spec_name, role, icon }` for every spec with a written guide (`/guides/{class}/{spec}`).
+Emitted by the site build (`web/src/pages/data/[build]/search.json.ts`) for the active build, not
+by the data pipeline, so nothing is committed; the build fails when it gzips over 300 KB (215 KB
+on 70658). Fixture `cdn.search`, held to the generator by `web/src/lib/search/contract-fixtures.test.ts`.
+
+### /data/{build}/item-uses/{shard}.json (W3-C8, lane F12)
+
+`{ build, shard, shards, items: { "<id>": { sources[], specs[] } } }`. An item's shard is
+`id % search.item_uses_shards` (64). `sources[]` is `{ kind, title, place?, chance?, min_level? }`,
+ranked as the site tooltip ranks them (boss kills and quest rewards first, a known chance before an
+unknown one) and in its words (`web/src/lib/items/item-sources.ts`, which the tooltip also reads):
+`title` is the boss, vendor, quest, recipe, faction and standing or `World drop`; `place` the
+instance of a boss drop or the side of a quest. Print `Drop chance not known` for a boss drop with
+no `chance`, never `0%`. `specs[]` is `{ spec, class, spec_name, band, preset, faction, rank }`, one
+row per spec at its best placement (lower rank, then higher band, then the raid preset); `rank` 0 is
+the pick and n is runner-up n; `faction` is null when both sides place it the same. Picks come
+before runners-up, then class and spec in `data/curated/specs.json`'s order. An item with no source
+and no list is absent. Fixture `cdn.item-uses`.
+
 ### /data/dates.json
 The key dates (see the open item above). `[{ key, value, ... }]`: `key` (a display date, "Nov 4"),
 `value` (the label), omitted `note`, `iso` (YYYY-MM-DD), `endIso`, `time`, `running` (the sentence
 while the date is in progress), `role`, `highlight`. Sort and compare by `iso`/`endIso`, never by
 `key`. Fixture `cdn.dates`.
+
+### Guides, tier lists and the changelog (W3-C1, Wave 3 lane F9)
+Written at site build time by `web/src/lib/app-data` (Astro endpoints under `web/src/pages/data`)
+from the guide Markdown and the BiS files, through the same `lib/guides` and `lib/tiers` functions
+the web's guide and tier pages call. Public, no envelope. The site build fails a file over its
+gzipped budget: a guide 60 KB, `tiers.json` 40 KB, the index 10 KB.
+
+- `/data/{build}/guides/index.json`: `{ build, classes: [{ class, class_name, specs: [{ spec,
+  spec_slug, spec_name, role, icon, updated, path }] }] }`. Classes in `classes.json` order, specs in
+  tree order; `path` is the guide's file under `/data/{build}/`. Fixture `cdn.guides.index`.
+- `/data/{build}/guides/{class}-{spec}.json`: one guide. `updated` is the web header's stamp (the
+  later of the guide's date and its BiS file's). `stat_priority` is the web's pill order.
+  `overview { strengths, weaknesses, raid }` are plain-text lines; `role_line` is the raid block's
+  Role line. `talents { key[], leveling_build, raid_build }`: a key talent is `{ name, icon, rank,
+  max_rank, text, why }` (`text` the top rank's game text, `why` null when it would repeat it); a
+  build is `{ code, totals[], tree_names[] }` with `raid_build` null when it is the leveling build.
+  `rotation { opener, priority, cooldowns }` (null with no rotation) lists `{ spell_id, name, rank,
+  icon, clause }`, the rank the top one learned by 60. `gear { spec, band, preset_label }` names the
+  BiS list the Gear row opens. `sections` are the sections the guide has, in reading order. Fixtures
+  `cdn.guides.shaman-elemental`, `cdn.guides.mage-fire`, `cdn.guides.warrior-protection`.
+- `/data/{build}/tiers.json`: `{ build, updated, preset_label, factions: { alliance|horde: { dps|tank|healer:
+  { notes[], rows[] } } } }`. A row carries the web's rank, gap, bar fraction, tie, tier letter (null
+  on tank and healer lists), `metric_text`, `gap_text` and the callout's `title` and `detail`
+  sentences, so the apps never sort, gap or letter. The apps show it only behind the `guide_tiers`
+  switch, off until the accuracy reviewer verifies every DPS band. Fixture `cdn.tiers`.
+- `/data/changelog.json`: `{ entries: [{ id, date, title, kind, blocks: [{ type: p|h|li, text }],
+  sources[] }] }`, newest first. `kind` `site` is a change to this site; the rest are game news.
+  Fixture `cdn.changelog`.
 
 ## App sign-in and notifications (lanes A1 and A2)
 

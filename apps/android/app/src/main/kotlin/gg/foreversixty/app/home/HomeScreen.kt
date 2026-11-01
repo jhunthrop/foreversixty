@@ -62,6 +62,8 @@ import gg.foreversixty.app.rankings.RankingsFeature
 import gg.foreversixty.app.rankings.RankingsReports
 import gg.foreversixty.app.rankings.RankingsRoute
 import gg.foreversixty.app.rankings.logic.RankingsViewer
+import gg.foreversixty.app.network.StaticDataStore
+import gg.foreversixty.app.search.ui.RootSearchBar
 import gg.foreversixty.app.reports.ReportsFeature
 import gg.foreversixty.app.reports.ReportsRoute
 import gg.foreversixty.app.reports.logic.ReportsViewer
@@ -113,6 +115,7 @@ class HomeDependencies(
             accountApi: AccountApi,
             client: ApiClient,
             talents: TalentsFeature?,
+            statics: StaticDataStore,
             isSimsOn: () -> Boolean = { false },
             isReportsOn: () -> Boolean = { false },
             isRankingsOn: () -> Boolean = { false },
@@ -120,7 +123,7 @@ class HomeDependencies(
             isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
-            val catalog = ItemCatalog(StaticDataClient(engine), File(context.cacheDir, "static-data"))
+            val catalog = ItemCatalog(statics)
             val sims = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn, mayLinkToPlans)
             return HomeDependencies(
                 accountApi = accountApi,
@@ -147,6 +150,8 @@ fun HomeRoute(
     dependencies: HomeDependencies,
     session: SessionManager? = null,
     openBis: () -> Unit = {},
+    /** Lane F12: the bar's search button; null while the `search` switch is off. */
+    onSearch: (() -> Unit)? = null,
     /** Lane F10: Your reports' signed-out state signs in here. */
     signIn: () -> Unit = {},
     placeholder: @Composable () -> Unit,
@@ -163,12 +168,12 @@ fun HomeRoute(
         if (character != null) {
             val reports = HomeReports(ReportsViewer.of(sessionMe, character.key), signIn, RankingsViewer.of(sessionMe, character.key))
             HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis, sessionMe.entitlements.serverSims, reports) {
-                CharacterSelectorBar(session)
+                RootSearchBar(onSearch) { CharacterSelectorBar(session) }
             }
             return
         }
     }
-    HomeFromMe(dependencies, openBis, signIn) { if (session != null) CharacterSelectorBar(session) }
+    HomeFromMe(dependencies, openBis, signIn) { RootSearchBar(onSearch) { if (session != null) CharacterSelectorBar(session) } }
 }
 
 /**

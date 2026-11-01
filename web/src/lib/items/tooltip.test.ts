@@ -58,6 +58,19 @@ describe('itemTooltipModel', () => {
     expect(model.stats).toEqual(['+18 Strength', '+20 Stamina', '+14 Crit']);
   });
 
+  it('renders school spell damage and spell penetration (Elemental Mage Staff)', () => {
+    const model = itemTooltipModel(
+      item({ stats: { intellect: 26, fire_power: 100, frost_power: 100, spell_penetration: 8 } }),
+      NO_SOURCES,
+    );
+    expect(model.stats).toEqual([
+      '+26 Intellect',
+      'Equip: Decreases the magical resistances of your spell targets by 8.',
+      'Equip: Increases damage done by Fire spells and effects by up to 100.',
+      'Equip: Increases damage done by Frost spells and effects by up to 100.',
+    ]);
+  });
+
   it('shows armor only when the row carries some', () => {
     expect(itemTooltipModel(item({ armor: 400 }), NO_SOURCES).armor).toBe(400);
     expect(itemTooltipModel(item({ armor: 0 }), NO_SOURCES).armor).toBeNull();
@@ -409,12 +422,13 @@ describe('statLines sign', () => {
 
   it('words a percent stat as the client does, after the flat stats', () => {
     const shoulders = item({
-      stats: { hit: 2, attack_power: 24 },
+      stats: { stamina: 9, hit: 2, attack_power: 24 },
       percent_stats: { hit: 2 },
     });
     expect(itemTooltipModel(shoulders, NO_SOURCES).stats).toEqual([
-      '+24 Attack power',
+      '+9 Stamina',
       'Equip: Improves your chance to hit by 2%.',
+      'Equip: +24 Attack Power.',
     ]);
     const all = item({
       stats: { crit: 1, dodge: 1, parry: 2, block: 3, defense: 7 },
@@ -460,6 +474,28 @@ describe('statLines sign', () => {
       'Back',
       'Cloth',
       'Binds when picked up',
+    ]);
+  });
+
+  it("prints spell power as the client's one green damage-and-healing sentence", () => {
+    const cape = item({ stats: { stamina: 4, spell_power: 14, healing: 14 } });
+    expect(itemTooltipModel(cape, NO_SOURCES).stats).toEqual([
+      '+4 Stamina',
+      'Equip: Increases damage and healing done by magical spells and effects by up to 14.',
+    ]);
+  });
+
+  it('prints only the healing beyond the spell power as its own sentence', () => {
+    expect(itemTooltipModel(item({ stats: { spell_power: 4, healing: 13 } }), NO_SOURCES).stats).toEqual([
+      'Equip: Increases damage and healing done by magical spells and effects by up to 4.',
+      'Equip: Increases healing done by spells and effects by up to 9.',
+    ]);
+  });
+
+  it("prints mana per 5 as an Equip sentence and a resistance in the client's casing", () => {
+    expect(itemTooltipModel(item({ stats: { shadow_res: 10, mp5: 4 } }), NO_SOURCES).stats).toEqual([
+      '+10 Shadow Resistance',
+      'Equip: Restores 4 mana per 5 sec.',
     ]);
   });
 

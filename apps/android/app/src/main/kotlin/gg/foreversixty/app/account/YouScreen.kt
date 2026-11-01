@@ -88,6 +88,8 @@ class YouActions(
     val onAbout: () -> Unit,
     val onDeleteAccount: () -> Unit,
     val onSignOut: () -> Unit,
+    /** Lane F16: You › Calendar; null hides the row while `guild_extras` is off. */
+    val onCalendar: (() -> Unit)? = null,
 )
 
 /**
@@ -121,6 +123,16 @@ fun YouScreen(
             }
             HorizontalDivider(color = FsColor.lineSoft)
             AccountRow(painterResource(R.drawable.ic_smartphone), stringResource(R.string.you_devices), subtitle = summary.devices, chevron = true, onClick = actions.onDevices)
+            actions.onCalendar?.let { onCalendar ->
+                HorizontalDivider(color = FsColor.lineSoft)
+                AccountRow(
+                    painterResource(R.drawable.ic_calendar),
+                    stringResource(R.string.calendar_title),
+                    subtitle = stringResource(R.string.calendar_youRow_sub),
+                    chevron = true,
+                    onClick = onCalendar,
+                )
+            }
         }
         liveSurfaces?.invoke()
         AccountCard {

@@ -1,0 +1,346 @@
+{
+  "build": "1.60.1.70707",
+  "spec": "mage-fire",
+  "class": "mage",
+  "spec_slug": "fire",
+  "class_name": "Mage",
+  "spec_name": "Fire",
+  "role": "dps",
+  "icon": "spell_fire_flameshock",
+  "title": "Fire Mage in Forever",
+  "updated": "2026-11-01",
+  "summary": "Fire is the Mage sustained single-target spec: Scorch stacks a Fire vulnerability debuff, and Combustion turns it into guaranteed critical strikes.",
+  "role_line": "Steady single-target caster DPS",
+  "recommended_races": [
+    {
+      "slug": "gnome",
+      "name": "Gnome",
+      "faction": "alliance"
+    },
+    {
+      "slug": "orc",
+      "name": "Orc",
+      "faction": "horde"
+    }
+  ],
+  "stat_priority": [
+    "Hit",
+    "Spell power",
+    "Fire power",
+    "Critical strike",
+    "Intellect",
+    "Spell haste",
+    "Spell penetration"
+  ],
+  "hit_cap": "Hit cap: 10%",
+  "overview": {
+    "strengths": [
+      "Combustion makes Fire spell hits critical until three non-periodic crits land",
+      "Ignite turns every Fire crit into extra damage over time",
+      "Scorch is cheap, at 150 mana for a 1.5 second cast",
+      "Fire Blast adds a free hit without competing for a global"
+    ],
+    "weaknesses": [
+      "Mana runs short before a long fight ends",
+      "Damage is confined to the Fire school",
+      "Pyroblast pays off only on three stacks of Heating Up"
+    ],
+    "raid": [
+      "Brings: Improved Scorch, a Fire vulnerability debuff of 3% per stack, up to 5 stacks, on the target"
+    ]
+  },
+  "talents": {
+    "key": [
+      {
+        "name": "Accelerant",
+        "icon": "spell_fire_flamebolt",
+        "rank": 1,
+        "max_rank": 5,
+        "text": "Reduces the casting time of your Fireball, Frostfire Bolt, and Arcane Wrath spells by 0.5 sec.",
+        "why": "Up to 0.5 seconds off Fireball's, Frostfire Bolt's and Arcane Wrath's cast time at rank 5. It is Improved Fireball renamed, with Arcane Wrath added, in the same slot. Fireball is the filler only until you train Scorch: from then on Scorch is the filler, so Accelerant speeds up nothing the level-60 rotation casts. The leveling build keeps one point, to open the tree's second row. The raid build's four are spare points: with raid buffs and a mana potion, moving them to Arcane measured under 1%, too little to change the build, so they stay"
+      },
+      {
+        "name": "Incineration",
+        "icon": "spell_fire_flameshock",
+        "rank": 5,
+        "max_rank": 5,
+        "text": "Increases the critical strike chance of your Fire Blast, Ice Lance, Arcane Blast, and Scorch spells by 10%.",
+        "why": "Up to 10% more critical strike chance on Fire Blast and Scorch at rank 5. The client gave it two more ranks when it took two from Critical Mass, and the build moves its two points with them: 5/5"
+      },
+      {
+        "name": "Ignite",
+        "icon": "spell_fire_incinerate",
+        "rank": 5,
+        "max_rank": 5,
+        "text": "Your critical strikes from Fire damage spells cause the target to burn for an additional 40% of your spell's damage over 4 sec.",
+        "why": "Fire critical strikes burn the target for a further 40% of the spell's damage over 4 seconds at rank 5, turning every crit into extra sustained damage"
+      },
+      {
+        "name": "Improved Scorch",
+        "icon": "spell_fire_soulburn",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Your Scorch spell has a 100% chance to cause your target to be vulnerable to Fire damage. This vulnerability increases all Fire damage you deal to your target by 3% and lasts 30 sec, stacking up to 5 times.",
+        "why": "Up to a guaranteed chance for Scorch to stack a 3%-per-stack Fire vulnerability debuff, up to 5 stacks, on the target"
+      },
+      {
+        "name": "Critical Mass",
+        "icon": "spell_nature_wispheal",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Increases the critical strike chance of your Fire spells by 6%.",
+        "why": "More Fire critical strike chance, feeding both Ignite and Combustion. The current client gives it three ranks and makes all three the prerequisite for Combustion, so the build takes it at 3/3"
+      },
+      {
+        "name": "Fire Power",
+        "icon": "spell_fire_immolation",
+        "rank": 3,
+        "max_rank": 3,
+        "text": "Increases the damage done by your Fire spells by 3% per your Fire effects on the target, up to a maximum increase of 12%. Effects which mix multiple schools of magic do not qualify.",
+        "why": "A flat Fire damage bonus, the tree's biggest raw damage talent, now capped at three ranks"
+      },
+      {
+        "name": "Pyroblast",
+        "icon": "spell_fire_fireball02",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "Hurls an immense fiery boulder that causes 101 to 131 Fire damage and an additional 44 Fire damage over 12 sec.",
+        "why": "A pair of points in the middle of the tree. Heating Up is the renamed Hot Streak: every non-periodic critical strike with Fireball, Frostfire Bolt, Fire Blast, or Scorch cuts the cast time of your next Pyroblast by 25% for 20 seconds, stacking up to three times, so a Pyroblast cast on three stacks takes a quarter of its usual 6 seconds. Casting Pyroblast spends every stack"
+      },
+      {
+        "name": "Heating Up",
+        "icon": "spell_fire_firebolt",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "Non-periodic critical strikes with Fireball, Frostfire Bolt, Fire Blast, and Scorch reduce the cast time of your next Pyroblast cast within 20 sec by 25%, stacking up to 3 times. Fire Blast grants an additional stack every time it deals damage.",
+        "why": "A pair of points in the middle of the tree. Heating Up is the renamed Hot Streak: every non-periodic critical strike with Fireball, Frostfire Bolt, Fire Blast, or Scorch cuts the cast time of your next Pyroblast by 25% for 20 seconds, stacking up to three times, so a Pyroblast cast on three stacks takes a quarter of its usual 6 seconds. Casting Pyroblast spends every stack"
+      },
+      {
+        "name": "Combustion",
+        "icon": "spell_fire_sealoffire",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "When activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%.  This effect lasts until you have caused 3 non-periodic critical strikes with Fire spells.",
+        "why": "The capstone: each Fire spell hit adds 10% Fire crit chance, lasting until you land three non-periodic Fire crits"
+      }
+    ],
+    "leveling_build": {
+      "code": "FS1:1.60.1.70707:mage:gnome:2520150000002/51521001230133031/003:",
+      "totals": [
+        17,
+        31,
+        3
+      ],
+      "tree_names": [
+        "Arcane",
+        "Fire",
+        "Frost"
+      ]
+    },
+    "raid_build": {
+      "code": "FS1:1.60.1.70707:mage:gnome:251015/54521001230133031/003:",
+      "totals": [
+        14,
+        34,
+        3
+      ],
+      "tree_names": [
+        "Arcane",
+        "Fire",
+        "Frost"
+      ]
+    }
+  },
+  "rotation": {
+    "opener": [],
+    "priority": [
+      {
+        "spell_id": 28682,
+        "name": "Combustion",
+        "rank": null,
+        "icon": "spell_fire_sealoffire",
+        "clause": "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target"
+      },
+      {
+        "spell_id": 10207,
+        "name": "Scorch",
+        "rank": 7,
+        "icon": "spell_fire_soulburn",
+        "clause": "To apply or refresh the five stacks of Improved Scorch's debuff before it falls off"
+      },
+      {
+        "spell_id": 18809,
+        "name": "Pyroblast",
+        "rank": 8,
+        "icon": "spell_fire_fireball02",
+        "clause": "Only when Heating Up has stacked three times"
+      },
+      {
+        "spell_id": 400623,
+        "name": "Fire Blast",
+        "rank": 7,
+        "icon": "spell_fire_fireball",
+        "clause": "On cooldown as a free extra nuke that does not compete for Scorch or Fireball casts"
+      },
+      {
+        "spell_id": 10207,
+        "name": "Scorch",
+        "rank": 7,
+        "icon": "spell_fire_soulburn",
+        "clause": "The filler"
+      },
+      {
+        "spell_id": 25306,
+        "name": "Fireball",
+        "rank": 12,
+        "icon": "spell_fire_flamebolt",
+        "clause": "Only before Scorch is trained (it comes at level 22)"
+      }
+    ],
+    "cooldowns": [
+      {
+        "spell_id": 11129,
+        "name": "Combustion",
+        "rank": null,
+        "icon": "spell_fire_sealoffire",
+        "clause": "3 min cooldown"
+      },
+      {
+        "spell_id": 12051,
+        "name": "Evocation",
+        "rank": null,
+        "icon": "spell_nature_purge",
+        "clause": "8 min cooldown"
+      },
+      {
+        "spell_id": null,
+        "name": "Trinkets, racials and potions",
+        "rank": null,
+        "icon": null,
+        "clause": "On cooldown, with your biggest damage"
+      }
+    ]
+  },
+  "races": [
+    {
+      "slug": "human",
+      "name": "Human",
+      "faction": "alliance",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Perception",
+          "effect": "Gives 20 seconds of stealth detection"
+        },
+        {
+          "name": "The Human Spirit",
+          "effect": "Grants 5% Spirit"
+        }
+      ]
+    },
+    {
+      "slug": "orc",
+      "name": "Orc",
+      "faction": "horde",
+      "recommended": true,
+      "racials": [
+        {
+          "name": "Blood Fury",
+          "effect": "Grants 10% Attack Power and Spell Power for 15 seconds on a 2 minute cooldown"
+        }
+      ]
+    },
+    {
+      "slug": "undead",
+      "name": "Undead",
+      "faction": "horde",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Will of the Forsaken",
+          "effect": "Removes Charm, Fear, and Sleep"
+        }
+      ]
+    },
+    {
+      "slug": "gnome",
+      "name": "Gnome",
+      "faction": "alliance",
+      "recommended": true,
+      "racials": [
+        {
+          "name": "Escape Artist",
+          "effect": "Breaks and grants brief immunity to movement impairment on a 2 minute cooldown"
+        },
+        {
+          "name": "Expansive Mind",
+          "effect": "Grants 5% Mana, Rage and Energy"
+        }
+      ]
+    },
+    {
+      "slug": "troll",
+      "name": "Troll",
+      "faction": "horde",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Berserking",
+          "effect": "Grants 10% casting and attack speed on a 3 minute cooldown"
+        }
+      ]
+    },
+    {
+      "slug": "high-order-skyborne",
+      "name": "High Order Skyborne",
+      "faction": "alliance",
+      "recommended": false,
+      "racials": [
+        {
+          "name": "Read Ley Line",
+          "effect": "100% health and mana regeneration for 15 seconds"
+        }
+      ]
+    }
+  ],
+  "gear": {
+    "spec": "mage-fire",
+    "band": 60,
+    "preset_label": "Raid-ready, Phase 1"
+  },
+  "sources": [
+    {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard"
+    },
+    {
+      "label": "Talents Forever (demo transcription)",
+      "url": "https://talentsforever.com/data.json",
+      "kind": "community"
+    },
+    {
+      "label": "Forever Sixty stat weights, data/curated/stat-weights.json",
+      "url": "https://foreversixty.gg/sources",
+      "kind": "site"
+    },
+    {
+      "label": "Forever Sixty rotation data, data/curated/apl/mage-fire.json",
+      "url": "https://foreversixty.gg/sources",
+      "kind": "site"
+    },
+    {
+      "label": "Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json",
+      "url": "https://foreversixty.gg/sources",
+      "kind": "site"
+    }
+  ],
+  "sections": [
+    "overview",
+    "talents",
+    "rotation",
+    "stats",
+    "gear",
+    "races"
+  ]
+}

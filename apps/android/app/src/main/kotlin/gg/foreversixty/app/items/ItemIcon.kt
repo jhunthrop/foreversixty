@@ -114,9 +114,12 @@ fun ItemIcon(icon: String?, quality: Int?, build: String, size: Dp, modifier: Mo
     }
 }
 
-/** A spec's talent-tab icon (spec §4.3): square, the pill radius, a 1 dp line; from the same loader. */
+/**
+ * A spec's talent-tab icon (spec §4.3): square, the pill radius, a 1 dp line; from the same loader.
+ * Spell and talent icons use it too; a null or missing icon leaves the bordered tile.
+ */
 @Composable
-fun SpecIcon(icon: String, build: String, size: Dp, modifier: Modifier = Modifier) {
+fun SpecIcon(icon: String?, build: String, size: Dp, modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(FsRadius.pill)
     Box(modifier.size(size).clip(shape).background(FsColor.cardTop).border(1.dp, GameColors.iconLine, shape)) {
         GameIconImage(icon, build, size)

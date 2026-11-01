@@ -58,9 +58,14 @@ jobs:
       - run: uv run python -m pipeline phases --check
       # addon-data.json and addon/ForeverSixty/Data.lua are generated from the
       # build directory and curated/stat-weights.json and committed, so the
-      # addon is installable from a checkout with no build step. This is the
-      # gate that neither was hand-edited and that a curated weight change was
-      # re-emitted.
+      # addon is installable from a checkout with no build step. The nightly
+      # bis.yml and, on a push to main, the `addon-data` job below own them:
+      # nobody regenerates them by hand (a local regen collided with the
+      # nightly's rebase on 2026-09-29). So a push is never failed for drift
+      # (rounds 3 and 4 of the sim audit edited curated rotations and left main
+      # red until the next nightly); the push job regenerates and commits
+      # instead. A pull request, which no bot regenerates, keeps the strict
+      # check below.
       # The gates check the ACTIVE build, read from active-build.json the way the
       # Makefile does, so a build move (tools/activate-build.sh) needs no edit here.
       - name: the active build
@@ -70,7 +75,8 @@ jobs:
           test -n "$build" || { echo "web/src/data/active-build.json names no build"; exit 1; }
           echo "build=$build" >> "$GITHUB_OUTPUT"
       - run: uv run python -m pipeline weights --build "${{ steps.active.outputs.build }}" --check
-      - run: uv run python -m pipeline addon-data --build "${{ steps.active.outputs.build }}" --check
+      - if: github.event_name == 'pull_request'
+        run: uv run python -m pipeline addon-data --build "${{ steps.active.outputs.build }}" --check
       - run: uv run python -m pipeline coach-rules --build "${{ steps.active.outputs.build }}" --check
       # test_addondata.py gates the generated Data.lua on a real `load()`, so the
       # suite needs an interpreter; ubuntu-latest ships none and the test skips
@@ -79,6 +85,57 @@ jobs:
       - name: Install Lua for the Data.lua load gate
         run: sudo apt-get update && sudo apt-get install -y lua5.4
       - run: uv run pytest
+  addon-data:
+    # The push-time owner of addon-data.json and Data.lua (see the `test` job's
+    # note): regenerate them from what main now holds and commit them when they
+    # moved. A push made with the workflow's own token starts no new run, so
+    # the bot's commit never loops back here.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults: { run: { working-directory: data } }
+    permissions: { contents: write }
+    concurrency: { group: addon-data-regen, cancel-in-progress: false }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+      - name: the active build
+        id: active
+        run: |
+          build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' ../web/src/data/active-build.json)
+          test -n "$build" || { echo "web/src/data/active-build.json names no build"; exit 1; }
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+      - name: regenerate and commit the addon data when it moved
+        env: { BUILD: '${{ steps.active.outputs.build }}' }
+        run: |
+          if uv run python -m pipeline addon-data --build "$BUILD" --check; then
+            echo "addon data is in step with its inputs"; exit 0
+          fi
+          uv run python -m pipeline addon-data --build "$BUILD"
+          git config user.name "forever-data-bot"
+          git config user.email "bot@foreversixty.gg"
+          git add "builds/$BUILD/addon-data.json" ../addon/ForeverSixty/Data.lua
+          git commit -q -m "chore(addon): addon data for $BUILD after ${GITHUB_SHA::9}"
+          # main moves under a push (bis.yml's own retry loop has the history):
+          # rebase the one commit and retry. On a conflict in the two generated
+          # files, regenerate them on top of the newer main instead of picking a side.
+          for attempt in 1 2 3 4 5; do
+            if git pull --rebase --quiet origin main; then
+              git push --quiet && exit 0
+            else
+              git rebase --abort || true
+              git reset -q --hard origin/main
+              uv run python -m pipeline addon-data --build "$BUILD" --check && exit 0
+              uv run python -m pipeline addon-data --build "$BUILD"
+              git add "builds/$BUILD/addon-data.json" ../addon/ForeverSixty/Data.lua
+              git commit -q -m "chore(addon): addon data for $BUILD after ${GITHUB_SHA::9}"
+            fi
+            echo "push attempt $attempt failed; retrying"
+            sleep 20
+          done
+          exit 1
   fetch:
     # A dispatch or a call from client.yml names a product; a push or pull request never does.
     if: inputs.product != ''

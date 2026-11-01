@@ -48,6 +48,7 @@ import gg.foreversixty.app.network.CachedStaticDataClient
 import gg.foreversixty.app.network.FileStaticFileCache
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.dataOrNull
+import gg.foreversixty.app.search.ui.RootSearchBar
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
@@ -67,7 +68,14 @@ data class BisOwner(val characterKey: String? = null, val waiting: Boolean = fal
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BisRoute(model: BisModel, catalog: ItemCatalog, owner: BisOwner = BisOwner(), selector: @Composable () -> Unit = {}) {
+fun BisRoute(
+    model: BisModel,
+    catalog: ItemCatalog,
+    owner: BisOwner = BisOwner(),
+    /** Lane F12: the universal search replaces this tab's own filter; null while `search` is off. */
+    onSearch: (() -> Unit)? = null,
+    selector: @Composable () -> Unit = {},
+) {
     val state by model.state.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var query by rememberSaveable { mutableStateOf("") }
@@ -77,10 +85,14 @@ fun BisRoute(model: BisModel, catalog: ItemCatalog, owner: BisOwner = BisOwner()
     LaunchedEffect(model, owner) { if (!owner.waiting) model.start() }
 
     Column(Modifier.fillMaxSize()) {
-        SearchBar(searching, query, selector, onQuery = { query = it }, onToggle = {
-            searching = !searching
-            if (!searching) query = ""
-        })
+        if (onSearch != null) {
+            RootSearchBar(onSearch, selector)
+        } else {
+            SearchBar(searching, query, selector, onQuery = { query = it }, onToggle = {
+                searching = !searching
+                if (!searching) query = ""
+            })
+        }
         PullToRefreshBox(
             isRefreshing = refreshing,
             onRefresh = {
@@ -180,7 +192,12 @@ fun createBisDataSource(
 
 /** The static files with their offline copies, one cache folder for every screen that reads them. */
 fun staticFiles(context: Context, engine: HttpClientEngine): CachedStaticDataClient =
-    CachedStaticDataClient(StaticDataClient(engine), FileStaticFileCache(File(context.noBackupFilesDir, "static-data")))
+    CachedStaticDataClient(StaticDataClient(engine), staticFileCache(context))
+
+/** The one folder of saved static files; the Guides tab also sizes what is in it. */
+fun staticFileCache(context: Context): FileStaticFileCache = FileStaticFileCache(File(context.noBackupFilesDir, STATIC_DATA_DIR))
+
+private const val STATIC_DATA_DIR = "static-data"
 
 /** The spec catalogue bundled with the app (data/curated/specs.json). */
 fun bundledSpecCatalog(context: Context): SpecCatalog = SpecCatalog.decode(readAsset(context, SpecCatalog.ASSET).orEmpty())

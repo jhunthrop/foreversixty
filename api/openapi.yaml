@@ -2023,16 +2023,19 @@ components:
           items:
             type: object
             title: GuildMember
-            required: [name, character_key, state, rank]
+            required: [name, state, rank, role, spec_name, spec_icon]
             properties:
               name: { type: string }
-              character_key: { type: string }
+              character_key: { type: string, description: "Absent for a name the addon sees in game that no account has claimed (no_account) and for an invited member." }
               state: { type: string, enum: [approved, waiting, no_account, not_seen] }
-              rank: { type: string }
+              rank: { type: string, description: "leader, officer or member." }
               class: { type: string, x-name: className }
               level: { type: integer }
               spec: { type: string }
               seen_at: { type: string }
+              role: { type: [string, "null"], enum: [tank, healer, dps, null], description: "W3-C16: the spec catalogue's role for spec, else for the character's roster row; null when neither is known or consent withholds it. The apps' role chips read it, never a spec word." }
+              spec_name: { type: [string, "null"], description: "W3-C16: the full spec name, catalogue name then class (\"Holy Priest\", \"Feral Bear Druid\"); null with role." }
+              spec_icon: { type: [string, "null"], description: "W3-C16: the spec's talent-tab icon stem; null with role." }
         counts:
           type: object
           title: GuildMemberCounts
@@ -2069,6 +2072,8 @@ components:
         class: { type: string, x-name: className }
         spec: { type: string }
         role: { type: string }
+        spec_name: { type: string, description: "W3-C16: the full spec name (\"Fury Warrior\"), withheld with spec." }
+        spec_icon: { type: string, description: "W3-C16: the spec's talent-tab icon stem, withheld with spec." }
         item_level: { type: integer, description: Withheld without gear consent. }
         attendance_30: { $ref: '#/components/schemas/GuildAttendance' }
         best_parse:
@@ -2760,6 +2765,17 @@ components:
       properties:
         platform: { type: string }
         app_version: { type: string }
+    CalendarFeed:
+      type: object
+      description: >-
+        The calendar link (W3-C17). url is the link a calendar app subscribes to, shown once: it
+        is non-null on the call that makes the link and on a reset, and null on every later read,
+        because only the token's SHA-256 is stored. An app keeps the url it was shown in its secure
+        store; with none, it offers Reset link to show a new one.
+      required: [url, created_at]
+      properties:
+        url: { type: [string, "null"], description: "https://api.foreversixty.gg/v1/calendar/{token}.ics; the token is 256 random bits, base64url (43 characters)." }
+        created_at: { type: string, format: date-time, description: "When the live link was made." }
     AppConfig:
       type: object
       description: >-
@@ -2804,6 +2820,234 @@ components:
         running: { type: string, description: The sentence while the date is in progress. }
         role: { type: string }
         highlight: { type: boolean }
+    # W3-C1 (lane F9): guides, tier lists and the changelog, written by web/src/lib/app-data.
+    GuideIndex:
+      type: object
+      description: /data/{build}/guides/index.json. Classes in classes.json order, specs in tree order.
+      required: [build, classes]
+      properties:
+        build: { type: string }
+        classes: { type: array, items: { $ref: '#/components/schemas/GuideIndexClass' } }
+    GuideIndexClass:
+      type: object
+      required: [class, class_name, specs]
+      properties:
+        class: { type: string, x-name: classSlug, description: "Class slug, shaman." }
+        class_name: { type: string }
+        specs: { type: array, items: { $ref: '#/components/schemas/GuideIndexSpec' } }
+    GuideIndexSpec:
+      type: object
+      required: [spec, spec_slug, spec_name, role, icon, updated, path]
+      properties:
+        spec: { type: string, description: "shaman-elemental, the BiS file's spec id." }
+        spec_slug: { type: string }
+        spec_name: { type: string }
+        role: { type: string, enum: [dps, healer, tank] }
+        icon: { type: [string, "null"], description: "The spec's icon stem, /data/{build}/icons/{stem}.webp." }
+        updated: { type: string, format: date }
+        path: { type: string, description: "The guide's file, relative to /data/{build}/: guides/shaman-elemental.json." }
+    GuideFile:
+      type: object
+      description: /data/{build}/guides/{spec}.json. One spec guide, composed by the web guide page's own functions.
+      required: [build, spec, class, spec_slug, class_name, spec_name, role, icon, title, updated, summary, role_line, recommended_races, stat_priority, hit_cap, overview, talents, rotation, races, gear, sources, sections]
+      properties:
+        build: { type: string }
+        spec: { type: string }
+        class: { type: string, x-name: classSlug }
+        spec_slug: { type: string }
+        class_name: { type: string }
+        spec_name: { type: string }
+        role: { type: string, enum: [dps, healer, tank] }
+        icon: { type: [string, "null"] }
+        title: { type: string }
+        updated: { type: string, format: date, description: "The later of the guide's date and its BiS file's." }
+        summary: { type: string }
+        role_line: { type: [string, "null"], description: "The In a raid block's Role line." }
+        recommended_races: { type: array, items: { $ref: '#/components/schemas/GuideRace' } }
+        stat_priority: { type: array, items: { type: string }, description: "The web's pill order: the sim's per-point order, else the guide's list." }
+        hit_cap: { type: [string, "null"], description: "Hit cap: 10%." }
+        overview: { $ref: '#/components/schemas/GuideOverview' }
+        talents: { $ref: '#/components/schemas/GuideTalents' }
+        rotation:
+          oneOf:
+            - { $ref: '#/components/schemas/GuideRotation' }
+            - { type: "null" }
+        races: { type: array, items: { $ref: '#/components/schemas/GuideRaceRow' } }
+        gear:
+          oneOf:
+            - { $ref: '#/components/schemas/GuideGear' }
+            - { type: "null" }
+        sources: { type: array, items: { $ref: '#/components/schemas/GuideSourceLink' } }
+        sections:
+          type: array
+          description: The sections the guide has, in reading order; the strip draws exactly these.
+          items: { type: string, enum: [overview, talents, rotation, stats, gear, races] }
+    GuideRace:
+      type: object
+      required: [slug, name, faction]
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        faction: { type: string }
+    GuideOverview:
+      type: object
+      required: [strengths, weaknesses, raid]
+      properties:
+        strengths: { type: array, items: { type: string } }
+        weaknesses: { type: array, items: { type: string } }
+        raid: { type: array, items: { type: string }, description: "The In a raid lines other than Role." }
+    GuideTalents:
+      type: object
+      required: [key, leveling_build, raid_build]
+      properties:
+        key: { type: array, items: { $ref: '#/components/schemas/GuideKeyTalent' } }
+        leveling_build:
+          oneOf:
+            - { $ref: '#/components/schemas/GuideBuild' }
+            - { type: "null" }
+        raid_build:
+          description: Null when the raid build is the leveling build.
+          oneOf:
+            - { $ref: '#/components/schemas/GuideBuild' }
+            - { type: "null" }
+    GuideKeyTalent:
+      type: object
+      required: [name, icon, rank, max_rank, text, why]
+      properties:
+        name: { type: string }
+        icon: { type: [string, "null"] }
+        rank: { type: [integer, "null"], description: "Points the guide's build spends in it." }
+        max_rank: { type: [integer, "null"] }
+        text: { type: [string, "null"], description: "The game's own text for the top rank." }
+        why: { type: [string, "null"], description: "The guide's line on why; null when it would repeat text." }
+    GuideBuild:
+      type: object
+      required: [code, totals, tree_names]
+      properties:
+        code: { type: string, description: The FS1 code the planner loads. }
+        totals: { type: array, items: { type: integer }, description: Points per tree, left to right. }
+        tree_names: { type: array, items: { type: string } }
+    GuideRotation:
+      type: object
+      required: [opener, priority, cooldowns]
+      properties:
+        opener: { type: array, items: { $ref: '#/components/schemas/GuideSpell' } }
+        priority: { type: array, items: { $ref: '#/components/schemas/GuideSpell' } }
+        cooldowns: { type: array, items: { $ref: '#/components/schemas/GuideSpell' } }
+    GuideSpell:
+      type: object
+      required: [spell_id, name, rank, icon, clause]
+      properties:
+        spell_id: { type: [integer, "null"] }
+        name: { type: string }
+        rank: { type: [integer, "null"], description: "The top rank learned by level 60." }
+        icon: { type: [string, "null"] }
+        clause: { type: string, description: "One clause, sentence case, no final stop." }
+    GuideRaceRow:
+      type: object
+      required: [slug, name, faction, recommended, racials]
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        faction: { type: string }
+        recommended: { type: boolean }
+        racials:
+          type: array
+          items:
+            type: object
+            title: GuideRacial
+            required: [name, effect]
+            properties:
+              name: { type: string }
+              effect: { type: string }
+    GuideGear:
+      type: object
+      required: [spec, band, preset_label]
+      properties:
+        spec: { type: string }
+        band: { type: integer }
+        preset_label: { type: string, description: "Raid-ready, Phase 1." }
+    GuideSourceLink:
+      type: object
+      required: [label, url, kind]
+      properties:
+        label: { type: string }
+        url: { type: string }
+        kind: { type: string, enum: [blizzard, datamined, community, site] }
+    TiersFile:
+      type: object
+      description: /data/{build}/tiers.json. The web's ranked tier lists; the apps never sort, gap or letter.
+      required: [build, updated, preset_label, factions]
+      properties:
+        build: { type: string }
+        updated: { type: [string, "null"], format: date }
+        preset_label: { type: [string, "null"] }
+        factions:
+          type: object
+          title: TierFactions
+          required: [alliance, horde]
+          properties:
+            alliance: { $ref: '#/components/schemas/TierRoles' }
+            horde: { $ref: '#/components/schemas/TierRoles' }
+    TierRoles:
+      type: object
+      required: [dps, tank, healer]
+      properties:
+        dps: { $ref: '#/components/schemas/TierList' }
+        tank: { $ref: '#/components/schemas/TierList' }
+        healer: { $ref: '#/components/schemas/TierList' }
+    TierList:
+      type: object
+      required: [notes, rows]
+      properties:
+        notes: { type: array, items: { type: string }, description: "The web's lines above the list; the last is the role's race line." }
+        rows: { type: array, items: { $ref: '#/components/schemas/TierRow' } }
+    TierRow:
+      type: object
+      required: [rank, spec, class, spec_slug, name, race, icon, metric, metric_text, unit, gap_percent, gap_text, fraction, tie, tier, low_confidence, title, detail]
+      properties:
+        rank: { type: integer }
+        spec: { type: string }
+        class: { type: string, x-name: classSlug }
+        spec_slug: { type: string }
+        name: { type: string, description: "Fury Warrior." }
+        race: { type: string }
+        icon: { type: [string, "null"] }
+        metric: { type: number }
+        metric_text: { type: string }
+        unit: { type: string }
+        gap_percent: { type: number }
+        gap_text: { type: string, description: "Top, −2.8%, +15.2%." }
+        fraction: { type: number }
+        tie: { type: [string, "null"], enum: [above, below, both, null] }
+        tier: { type: [string, "null"], enum: [S, A, B, C, D, null] }
+        low_confidence: { type: boolean }
+        title: { type: string, description: "The callout: Fire Mage is 6th of 20 DPS specs." }
+        detail: { type: string, description: "9.1% behind Fury Warrior." }
+    Changelog:
+      type: object
+      description: /data/changelog.json. Newest first.
+      required: [entries]
+      properties:
+        entries: { type: array, items: { $ref: '#/components/schemas/ChangelogEntry' } }
+    ChangelogEntry:
+      type: object
+      required: [id, date, title, kind, blocks, sources]
+      properties:
+        id: { type: string }
+        date: { type: string, format: date }
+        title: { type: string }
+        kind: { type: string, enum: [blizzard, datamined, community, site], description: "site is a change to this site; the rest are game news." }
+        blocks:
+          type: array
+          items:
+            type: object
+            title: ChangelogBlock
+            required: [type, text]
+            properties:
+              type: { type: string, enum: [p, h, li], x-name: kind }
+              text: { type: string }
+        sources: { type: array, items: { $ref: '#/components/schemas/GuideSourceLink' } }
     ClassInfo:
       type: object
       required: [id, name, slug, color, forever_changes]
@@ -3026,6 +3270,169 @@ components:
             properties:
               pieces: { type: integer }
               description: { type: string }
+    LootFile:
+      type: object
+      description: /data/{build}/loot.json (W3-C8). Every source of every item, the quest rewards and the factions' sides.
+      required: [sources]
+      properties:
+        sources: { type: array, items: { $ref: '#/components/schemas/LootSource' } }
+        quests:
+          type: object
+          description: Item id (string key) -> the quests that reward it.
+          additionalProperties: { type: array, items: { $ref: '#/components/schemas/LootQuest' } }
+        factions:
+          type: object
+          description: Reputation faction id (string key) -> alliance, horde or both.
+          additionalProperties: { type: string }
+    LootSource:
+      type: object
+      required: [id, kind, name]
+      properties:
+        id: { type: string, description: "raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, …" }
+        kind: { type: string, enum: [raid, dungeon, world, world_drop, zone, vendor, crafted, rep, pvp, quest] }
+        name: { type: string }
+        items: { type: array, items: { type: integer } }
+        trash: { type: array, items: { type: integer } }
+        bosses: { type: array, items: { $ref: '#/components/schemas/LootBoss' } }
+        item_chances: { type: object, additionalProperties: { type: number }, description: "Item id -> percent; absent when unknown." }
+        zone_id: { type: integer }
+        npc_id: { type: integer }
+        opens: { type: string, description: "A phase name, or later; absent means open from launch." }
+        profession: { type: string }
+        faction_id: { type: integer }
+        standing: { type: string }
+        rank: { type: integer }
+        faction: { type: string, enum: [alliance, horde] }
+        faction_source: { type: string }
+        title: { type: string }
+        level_min: { type: integer }
+        level_max: { type: integer }
+        rare_spawn: { type: boolean }
+        source_origin: { type: string }
+        source_note: { type: string }
+        reitemised_from: { type: object, additionalProperties: { type: integer } }
+    LootBoss:
+      type: object
+      required: [id, name, items]
+      properties:
+        id: { type: string }
+        name: { type: string, description: "Empty for an unnamed pool." }
+        npc_id: { type: integer }
+        items: { type: array, items: { type: integer } }
+        item_chances: { type: object, additionalProperties: { type: number } }
+        item_source_origin: { type: object, additionalProperties: { type: string } }
+        reitemised_from: { type: object, additionalProperties: { type: integer } }
+        rank: { type: integer }
+        rare_spawn: { type: boolean }
+    LootQuest:
+      type: object
+      required: [quest_id, name, faction, min_level, level]
+      properties:
+        quest_id: { type: integer }
+        name: { type: string }
+        faction: { type: string }
+        faction_source: { type: string }
+        min_level: { type: integer }
+        level: { type: integer }
+        level_source: { type: string }
+        opens: { type: string }
+        classes: { type: array, items: { type: string } }
+        required_rep_faction: { type: integer }
+        required_rep_standing: { type: string }
+        profession: { type: string }
+        skill: { type: integer }
+    SearchIndex:
+      type: object
+      description: /data/{build}/search.json (W3-C8), the apps' offline search.
+      required: [build, item_uses_shards, items, talents, guides]
+      properties:
+        build: { type: string }
+        item_uses_shards: { type: integer, description: "How many item-uses files; an item's shard is id % this." }
+        items:
+          type: array
+          items:
+            type: object
+            title: SearchItem
+            required: [id, name, icon, quality, slot, item_level, required_level, classes]
+            properties:
+              id: { type: integer }
+              name: { type: string }
+              icon: { type: string }
+              quality: { type: integer, minimum: 0, maximum: 5 }
+              slot: { type: string }
+              item_level: { type: integer }
+              required_level: { type: integer }
+              classes: { type: array, items: { type: string }, description: "Class slugs whose items file carries it." }
+        talents:
+          type: array
+          items:
+            type: object
+            title: SearchTalent
+            required: [id, name, icon, class, tree, spec_name, max_rank]
+            properties:
+              id: { type: integer }
+              name: { type: string }
+              icon: { type: string }
+              class: { type: string, x-name: className }
+              tree: { type: string, description: "The talent tree's own name." }
+              spec_name: { type: string, description: "The spec the tree is played as; the tree's name when none is written." }
+              max_rank: { type: integer }
+        guides:
+          type: array
+          items:
+            type: object
+            title: SearchGuide
+            required: [class, spec, spec_name, role, icon]
+            properties:
+              class: { type: string, x-name: className }
+              spec: { type: string, description: "The spec's slug inside its class, the guide's path segment." }
+              spec_name: { type: string }
+              role: { type: string }
+              icon: { type: string }
+    ItemUsesShard:
+      type: object
+      description: /data/{build}/item-uses/{shard}.json (W3-C8).
+      required: [build, shard, shards, items]
+      properties:
+        build: { type: string }
+        shard: { type: integer }
+        shards: { type: integer }
+        items:
+          type: object
+          description: Item id (string key) -> its uses.
+          additionalProperties: { $ref: '#/components/schemas/ItemUses' }
+    ItemUses:
+      type: object
+      required: [sources, specs]
+      properties:
+        sources:
+          type: array
+          description: Ranked; boss kills and quest rewards first, a known chance before an unknown one.
+          items:
+            type: object
+            title: ItemUseSource
+            required: [kind, title]
+            properties:
+              kind: { type: string, enum: [raid, dungeon, world, world_drop, zone, vendor, crafted, rep, pvp, quest] }
+              title: { type: string, description: "The boss, vendor, quest, recipe, faction and standing, or World drop." }
+              place: { type: string, description: "The instance of a boss drop, the side of a quest; absent when none." }
+              chance: { type: number, description: "Percent; absent when the data has none. Print Drop chance not known then." }
+              min_level: { type: integer, description: "A quest's minimum level; absent when unknown." }
+        specs:
+          type: array
+          description: One row per spec; picks before runners-up, then class and spec in the catalog's order.
+          items:
+            type: object
+            title: ItemUseSpec
+            required: [spec, class, spec_name, band, preset, faction, rank]
+            properties:
+              spec: { type: string, description: "The BiS file key, shaman-elemental." }
+              class: { type: string, x-name: className }
+              spec_name: { type: string }
+              band: { type: integer }
+              preset: { type: string }
+              faction: { type: [string, "null"], enum: [alliance, horde, null], description: "Null when both factions place it the same." }
+              rank: { type: integer, description: "0 is the pick; n is runner-up n." }
     TalentsFile:
       type: object
       required: [build, class_id, class_slug, trees]
@@ -5140,7 +5547,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The guild's home"
-          x-fixtures: [guild.home]
+          x-fixtures: [guild.home, guild.home.roster]
           content:
             application/json:
               schema:
@@ -5391,7 +5798,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "One page of raid nights"
-          x-fixtures: [guild.raids, guild.raids.public, guild.raids.empty]
+          x-fixtures: [guild.raids, guild.raids.public, guild.raids.empty, guild.raids.history, guild.raids.history-2]
           content:
             application/json:
               schema:
@@ -5937,6 +6344,90 @@ paths:
       responses:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '204': { description: "Gone" }
+  /v1/me/calendar-feed:
+    get:
+      summary: Your calendar link, made on first call (W3-C17; session or app token)
+      description: >-
+        Makes the account's calendar link the first time and answers its url once; later reads
+        answer url null and the link's created_at (the token is stored as its SHA-256 only).
+        Cache-Control private, no-store. The link lists the planned raids of every guild where
+        the account is a verified member, titled "{zone} · {your answer}".
+      operationId: getCalendarFeed
+      tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The link; url only on the call that made it"
+          x-fixtures: [calendar.feed, calendar.feed.shown]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CalendarFeed' } } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/calendar-feed/reset:
+    post:
+      summary: Replace your calendar link; the old one stops working (W3-C17; session or app token)
+      description: >-
+        Revokes the live link and makes a new one in one transaction, answering the new url.
+        Cache-Control private, no-store. 10 resets an hour per account (429 rate_limited).
+      operationId: resetCalendarFeed
+      tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The new link"
+          x-fixtures: [calendar.feed]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CalendarFeed' } } }
+        '401':
+          description: "No session or app token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/calendar/{token}.ics:
+    get:
+      summary: The calendar link itself, public by token (W3-C17)
+      description: >-
+        RFC 5545, text/calendar; charset=utf-8, Cache-Control private, max-age=300. One VEVENT per
+        planned, locked or done raid of the account's guilds from 30 days back: UID
+        raid-{id}@foreversixty.gg, SUMMARY "{zone} · {In|Late|Bench|Out|Not signed up}", DTSTART
+        the raid's start, DTEND its end, LOCATION "{guild} · {zone}", DESCRIPTION "Pull {time}.
+        {n} of {size} signed up.", URL the raid page, no VALARM. Cancelled raids are left out, so
+        a subscribed calendar drops them. Membership is read on every fetch. The golden body is
+        docs/contracts/fixtures/app/calendar.ics. 404 not_found, one body, for a malformed,
+        unknown or revoked token; 60 reads an hour per live token, and 30 misses an hour per
+        address (429; a real link is never refused for its address). The path is redacted in
+        the API's logs. Opened by calendar apps, never by the API client.
+      operationId: getCalendarICS
+      tags: [app-browser]
+      parameters:
+        - { name: token, in: path, required: true, schema: { type: string, pattern: '^[A-Za-z0-9_-]{43}$' } }
+      responses:
+        '200':
+          description: "The calendar"
+          content: { text/calendar: { schema: { type: string } } }
+        '404':
+          description: "not_found: no live link with this token"
+          x-fixtures: [calendar.ics.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/app/config:
     get:
       summary: What the apps read once at launch (APP_API)
@@ -5988,6 +6479,58 @@ paths:
           description: "The dates"
           x-fixtures: [cdn.dates]
           content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/KeyDate' } } } }
+  /data/changelog.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The site's changelog, newest first (W3-C1)
+      operationId: getChangelog
+      tags: [app-static]
+      responses:
+        '200':
+          description: "The changelog"
+          x-fixtures: [cdn.changelog]
+          content: { application/json: { schema: { $ref: '#/components/schemas/Changelog' } } }
+  /data/{build}/guides/index.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Every spec guide of a build (W3-C1)
+      operationId: getGuideIndex
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The guide list"
+          x-fixtures: [cdn.guides.index]
+          content: { application/json: { schema: { $ref: '#/components/schemas/GuideIndex' } } }
+  /data/{build}/guides/{spec}.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: One spec guide (W3-C1)
+      operationId: getGuide
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+        - { name: spec, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The guide"
+          x-fixture-route: cdn.guides.{spec}
+          x-fixtures: [cdn.guides.shaman-elemental, cdn.guides.mage-fire, cdn.guides.warrior-protection]
+          content: { application/json: { schema: { $ref: '#/components/schemas/GuideFile' } } }
+  /data/{build}/tiers.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The ranked tier lists (W3-C1; the apps show them only behind guide_tiers)
+      operationId: getTiers
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "Both factions, every role"
+          x-fixtures: [cdn.tiers]
+          content: { application/json: { schema: { $ref: '#/components/schemas/TiersFile' } } }
   /data/{build}/classes.json:
     servers: [{ url: 'https://foreversixty.gg' }]
     get:
@@ -6044,6 +6587,62 @@ paths:
           description: "One entry per set"
           x-fixtures: [cdn.sets]
           content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ItemSet' } } } }
+  /data/{build}/loot.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Where every item of a build comes from (W3-C8)
+      description: >-
+        Lane F12. The site's loot file, documented for the apps: one entry per source (a raid or
+        dungeon with its bosses, a vendor, a reputation, a recipe, a world-drop pool, a PvP rank),
+        the quests that reward each item, and each reputation faction's side. Drop chances are
+        percents and are absent when unknown, never 0 for unknown. The item page reads the
+        formatted rows of item-uses instead; this file is for anything that needs the raw sources.
+      operationId: getLoot
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The loot file"
+          x-fixtures: [cdn.loot]
+          content: { application/json: { schema: { $ref: '#/components/schemas/LootFile' } } }
+  /data/{build}/search.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: The apps' offline search index (W3-C8)
+      description: >-
+        Lane F12. Every item the class files carry (name, icon, quality, slot, item level,
+        required level and the classes that may use it), every talent and every written guide,
+        searched on the phone with no request. Emitted by the site build for the active build;
+        the build fails when it gzips over 300 KB.
+      operationId: getSearchIndex
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The index"
+          x-fixtures: [cdn.search]
+          content: { application/json: { schema: { $ref: '#/components/schemas/SearchIndex' } } }
+  /data/{build}/item-uses/{shard}.json:
+    servers: [{ url: 'https://foreversixty.gg' }]
+    get:
+      summary: Item sources and the best-in-slot lists that use each item, one shard (W3-C8)
+      description: >-
+        Lane F12. An item's shard is its id modulo SearchIndex.item_uses_shards. Each item lists
+        its sources in the site tooltip's words (boss and instance, vendor, quest, recipe,
+        reputation, world drop) and one row per spec whose lists place it, at that spec's best
+        placement. An item with no source and no list is absent from its shard.
+      operationId: getItemUses
+      tags: [app-static]
+      parameters:
+        - { name: build, in: path, required: true, schema: { type: string } }
+        - { name: shard, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: "One shard"
+          x-fixtures: [cdn.item-uses]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ItemUsesShard' } } }
   /data/{build}/talents/{class}.json:
     servers: [{ url: 'https://foreversixty.gg' }]
     get:

@@ -174,7 +174,7 @@ func TestLadderMeleeWeaponsArmsTheWeightsCharacterForMelee(t *testing.T) {
 }
 
 func TestRankerEncounterHasNoCreatureType(t *testing.T) {
-	if got := rankerEncounter().TargetType; got != api.TargetTypeUnknown {
+	if got := leveling.RankerEncounter().TargetType; got != api.TargetTypeUnknown {
 		t.Fatalf("ranker target type = %q, want %q so no slaying bonus is credited", got, api.TargetTypeUnknown)
 	}
 }

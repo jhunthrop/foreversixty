@@ -126,11 +126,14 @@ struct APIClientTests {
         }
     }
 
-    /// Sample values for a route's `{name}` segments; the CDN fixtures are for one spec and class.
-    private static let sampleParams = ["spec": "warrior-fury", "class": "warrior"]
+    /// Sample values for a route's `{name}` segments. The CDN fixtures cover a few specs: the BiS
+    /// and item files are Fury Warrior's, the guide files (W3-C1) Protection Warrior's among others.
+    private static let sampleSpecs = ["warrior-fury", "warrior-protection"]
+    private static let sampleClass = "warrior"
+    private static let sampleBuild = "1.60.1.70658"
 
-    private static func samplePath(_ pattern: String) -> String {
-        sampleParams.merging(["build": "1.60.1.70658"]) { first, _ in first }
+    private static func samplePath(_ pattern: String, spec: String) -> String {
+        ["spec": spec, "class": sampleClass, "build": sampleBuild]
             .reduce(pattern) { $0.replacingOccurrences(of: "{\($1.key)}", with: $1.value) }
             .replacing(/\{[a-z]+\}/, with: "1")
     }
@@ -138,14 +141,14 @@ struct APIClientTests {
     @Test("every catalogued route reads a fixture lane C wrote", arguments: FixtureCatalog.app)
     func catalogFilesExist(route: FixtureRoute) throws {
         let transport = FixtureTransport(directory: FixtureLocation.directory)
-        let path = Self.samplePath(route.pattern)
+        let paths = Self.sampleSpecs.map { Self.samplePath(route.pattern, spec: $0) }
         guard route.fixture != nil else {
-            #expect(transport.fileName(method: route.method, path: path) == nil)
+            #expect(paths.allSatisfy { transport.fileName(method: route.method, path: $0) == nil })
             return
         }
-        let file = try #require(transport.fileName(method: route.method, path: path), "\(route.pattern) unmatched")
-        let url = FixtureLocation.directory.appending(path: file)
-        #expect(FileManager.default.fileExists(atPath: url.path), "missing \(file)")
+        let files = try paths.map { path in try #require(transport.fileName(method: route.method, path: path), "\(route.pattern) unmatched") }
+        let found = files.contains { FileManager.default.fileExists(atPath: FixtureLocation.directory.appending(path: $0).path) }
+        #expect(found, "missing every sample of \(files)")
     }
 
     @Test("a success variant reads <endpoint>.<variant>.json")

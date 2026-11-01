@@ -101,10 +101,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 000000000000000000-00000000000000000-100000000000000000 | main_hand:263937 ranged:263430 | 7.7 | 2 | spell:5019=71.6, spell:205=36.8 | {SpellID: 400589} |
 | 20 | 000000000000000000-00000000000000000-253100000000000000 | main_hand:890 ranged:5243 | 19.0 | 2 | spell:5019=68.6, spell:7322=30.5 | {SpellID: 1312002}, {SpellID: 400589}, {SpellID: 400669} |
 | 30 | 000000000000000000-00000000000000000-253510130100000000 | main_hand:273040 ranged:5213 | 34.0 | 2 | spell:5019=75.0, spell:8406=33.3, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 12579}, {SpellID: 400589}, {SpellID: 400669} |
-| 38 | 000000000000000000-00000000000000000-253510130100301220 | main_hand:7714 ranged:13064 | 56.1 | 5 | spell:5019=63.0, spell:8408=28.7, spell:1240044=5.0, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 400589} |
-| 40 | 000000000000000000-00000000000000000-253510130100301231 | main_hand:7714 ranged:5216 | 58.0 | 6 | spell:5019=72.1, spell:8408=25.4, spell:1240044=4.7, other:mana_gain=2.0, spell:11426=2.0 | {SpellID: 400589} |
-| 50 | 230005000000000000-00000000000000000-253510130100301231 | main_hand:812 ranged:249232 | 146.0 | 6 | spell:10180=39.5, spell:5019=33.6, spell:1240046=6.5, spell:13031=2.8, other:mana_gain=2.0 | {SpellID: 400589} |
-| 60 | 230005000000000000-23023000000000000-253510130100301231 | main_hand:22589 ranged:22821 | 236.1 | 6 | spell:10181=41.8, spell:5019=40.4, spell:1240047=7.1, spell:13033=2.8, other:mana_gain=2.0 | {SpellID: 400589} |
+| 38 | 000000000000000000-00000000000000000-253510130100301220 | main_hand:7714 ranged:13064 | 55.4 | 5 | spell:5019=63.1, spell:8408=29.4, spell:1240044=3.8, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 400589} |
+| 40 | 000000000000000000-00000000000000000-253510130100301231 | main_hand:7714 ranged:5216 | 57.5 | 6 | spell:5019=72.2, spell:8408=26.0, spell:1240044=3.5, other:mana_gain=2.0, spell:11426=2.0 | {SpellID: 400589} |
+| 50 | 230005000000000000-00000000000000000-253510130100301231 | main_hand:812 ranged:249232 | 103.6 | 6 | spell:5019=52.3, spell:10180=27.2, spell:1240046=3.7, other:mana_gain=2.0, spell:13031=2.0 | {SpellID: 400589} |
+| 60 | 230005000000000000-23023000000000000-253510130100301231 | main_hand:22589 ranged:22821 | 178.6 | 6 | spell:5019=68.4, spell:10181=28.2, spell:1240047=3.7, other:mana_gain=2.0, spell:13033=2.0 | {SpellID: 400589} |
 
 ## Learned but unused (informational)
 
@@ -224,16 +224,16 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ## Violations found in this run
 
 - mage-frost level=10 kind=unresolved_id action={SpellID: 400589}
-- mage-frost level=10 kind=zero_casts spell="Arcane Missiles" id=5143 authored=25345
+- mage-frost level=10 kind=zero_casts spell="Arcane Missiles" id=5143 authored=10212
 - mage-frost level=20 kind=unresolved_id action={SpellID: 400589}
-- mage-frost level=20 kind=zero_casts spell="Arcane Missiles" id=5144 authored=25345
+- mage-frost level=20 kind=zero_casts spell="Arcane Missiles" id=5144 authored=10212
 - mage-frost level=30 kind=unresolved_id action={SpellID: 400589}
-- mage-frost level=30 kind=zero_casts spell="Arcane Missiles" id=5145 authored=25345
+- mage-frost level=30 kind=zero_casts spell="Arcane Missiles" id=5145 authored=10212
 - mage-frost level=38 kind=unresolved_id action={SpellID: 400589}
-- mage-frost level=38 kind=zero_casts spell="Arcane Missiles" id=8416 authored=25345
+- mage-frost level=38 kind=zero_casts spell="Arcane Missiles" id=8416 authored=10212
 - mage-frost level=40 kind=unresolved_id action={SpellID: 400589}
-- mage-frost level=40 kind=zero_casts spell="Arcane Missiles" id=8417 authored=25345
+- mage-frost level=40 kind=zero_casts spell="Arcane Missiles" id=8417 authored=10212
 - mage-frost level=50 kind=unresolved_id action={SpellID: 400589}
-- mage-frost level=50 kind=zero_casts spell="Arcane Missiles" id=10211 authored=25345
+- mage-frost level=50 kind=zero_casts spell="Arcane Missiles" id=10211 authored=10212
 - mage-frost level=60 kind=unresolved_id action={SpellID: 400589}
-- mage-frost level=60 kind=zero_casts spell="Arcane Missiles" id=25345 authored=25345
+- mage-frost level=60 kind=zero_casts spell="Arcane Missiles" id=10212 authored=10212

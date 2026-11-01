@@ -370,6 +370,14 @@ public extension Endpoint where Response == LiveActivityRegistered {
     }
 }
 
+public extension Endpoint where Response == CalendarFeed {
+    /// GET /v1/me/calendar-feed: Your calendar link, made on first call (W3-C17; session or app token)
+    static var getCalendarFeed: Endpoint { Endpoint(method: .get, path: "/v1/me/calendar-feed") }
+
+    /// POST /v1/me/calendar-feed/reset: Replace your calendar link; the old one stops working (W3-C17; session or app token)
+    static var resetCalendarFeed: Endpoint { Endpoint(method: .post, path: "/v1/me/calendar-feed/reset") }
+}
+
 public extension Endpoint where Response == AppConfig {
     /// GET /v1/app/config: What the apps read once at launch (APP_API)
     static var getAppConfig: Endpoint { Endpoint(method: .get, path: "/v1/app/config", authenticated: false) }
@@ -383,6 +391,32 @@ public extension StaticResource where Response == ActiveBuild {
 public extension StaticResource where Response == [KeyDate] {
     /// /data/dates.json: The key dates
     static var getKeyDates: StaticResource { StaticResource(path: "/data/dates.json") }
+}
+
+public extension StaticResource where Response == Changelog {
+    /// /data/changelog.json: The site's changelog, newest first (W3-C1)
+    static var getChangelog: StaticResource { StaticResource(path: "/data/changelog.json") }
+}
+
+public extension StaticResource where Response == GuideIndex {
+    /// /data/{build}/guides/index.json: Every spec guide of a build (W3-C1)
+    static func getGuideIndex(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/guides/index.json")
+    }
+}
+
+public extension StaticResource where Response == GuideFile {
+    /// /data/{build}/guides/{spec}.json: One spec guide (W3-C1)
+    static func getGuide(build: String, spec: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/guides/\(spec).json")
+    }
+}
+
+public extension StaticResource where Response == TiersFile {
+    /// /data/{build}/tiers.json: The ranked tier lists (W3-C1; the apps show them only behind guide_tiers)
+    static func getTiers(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/tiers.json")
+    }
 }
 
 public extension StaticResource where Response == [ClassInfo] {
@@ -410,6 +444,27 @@ public extension StaticResource where Response == [ItemSet] {
     /// /data/{build}/sets.json: Every item set of a build, for the tooltip's set lines
     static func getSets(build: String) -> StaticResource {
         StaticResource(path: "/data/\(build)/sets.json")
+    }
+}
+
+public extension StaticResource where Response == LootFile {
+    /// /data/{build}/loot.json: Where every item of a build comes from (W3-C8)
+    static func getLoot(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/loot.json")
+    }
+}
+
+public extension StaticResource where Response == SearchIndex {
+    /// /data/{build}/search.json: The apps' offline search index (W3-C8)
+    static func getSearchIndex(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/search.json")
+    }
+}
+
+public extension StaticResource where Response == ItemUsesShard {
+    /// /data/{build}/item-uses/{shard}.json: Item sources and the best-in-slot lists that use each item, one shard (W3-C8)
+    static func getItemUses(build: String, shard: Int) -> StaticResource {
+        StaticResource(path: "/data/\(build)/item-uses/\(shard).json")
     }
 }
 
@@ -472,16 +527,25 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/v1/me/widget", fixture: "widget.get", status: 200),
         FixtureRoute(.post, "/v1/me/live-activities", fixture: "live.register", status: 201),
         FixtureRoute(.delete, "/v1/me/live-activities/{id}", fixture: nil, status: 204),
+        FixtureRoute(.get, "/v1/me/calendar-feed", fixture: "calendar.feed", status: 200),
+        FixtureRoute(.post, "/v1/me/calendar-feed/reset", fixture: "calendar.feed", status: 200),
         FixtureRoute(.get, "/v1/app/config", fixture: "app.config", status: 200),
     ]
 
     public static let staticData: [FixtureRoute] = [
         FixtureRoute(.get, "/data/active-build.json", fixture: "cdn.active-build", status: 200),
         FixtureRoute(.get, "/data/dates.json", fixture: "cdn.dates", status: 200),
+        FixtureRoute(.get, "/data/changelog.json", fixture: "cdn.changelog", status: 200),
+        FixtureRoute(.get, "/data/{build}/guides/index.json", fixture: "cdn.guides.index", status: 200),
+        FixtureRoute(.get, "/data/{build}/guides/{spec}.json", fixture: "cdn.guides.{spec}", status: 200),
+        FixtureRoute(.get, "/data/{build}/tiers.json", fixture: "cdn.tiers", status: 200),
         FixtureRoute(.get, "/data/{build}/classes.json", fixture: "cdn.classes", status: 200),
         FixtureRoute(.get, "/data/{build}/bis/{spec}.json", fixture: "cdn.bis.{spec}", status: 200),
         FixtureRoute(.get, "/data/{build}/items/{class}.json", fixture: "cdn.items.{class}", status: 200),
         FixtureRoute(.get, "/data/{build}/sets.json", fixture: "cdn.sets", status: 200),
+        FixtureRoute(.get, "/data/{build}/loot.json", fixture: "cdn.loot", status: 200),
+        FixtureRoute(.get, "/data/{build}/search.json", fixture: "cdn.search", status: 200),
+        FixtureRoute(.get, "/data/{build}/item-uses/{shard}.json", fixture: "cdn.item-uses", status: 200),
         FixtureRoute(.get, "/data/{build}/talents/{class}.json", fixture: "cdn.talents.{class}", status: 200),
     ]
 }

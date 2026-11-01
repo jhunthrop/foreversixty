@@ -1,8 +1,8 @@
 {
   "spec": "mage-fire",
   "build": "1.60.1.70707",
-  "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T13:59:43Z",
+  "engine_version": "640da215f",
+  "generated_at": "2026-11-01T16:25:56Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -152,7 +152,7 @@
               "item_name": "Reinforced Woolen Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.500505598,
+              "dps_delta": -0.650043583,
               "verified": true
             }
           ],
@@ -285,7 +285,7 @@
               "item_name": "Bright Bracers",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.498653455,
+              "dps_delta": -0.444630192,
               "verified": true
             }
           ],
@@ -418,7 +418,7 @@
               "item_name": "Phoenix Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.515601937,
+              "dps_delta": -0.570044737,
               "verified": true
             }
           ],
@@ -487,8 +487,8 @@
           "source_kind": "quest",
           "score": 5.707142648,
           "verified": true,
-          "swap_note": "confirmed by the sim against Lavishly Jeweled Ring (id 1156): kept the pick, +0.7 DPS (27.2 vs 26.5 set DPS)",
-          "dps_delta": 0.7467718450995413,
+          "swap_note": "confirmed by the sim against Lavishly Jeweled Ring (id 1156): kept the pick, +0.9 DPS (27.4 vs 26.6 set DPS)",
+          "dps_delta": 0.8831815055966921,
           "alternatives": [
             {
               "item_id": 12053,
@@ -540,7 +540,7 @@
               "item_name": "Volcanic Rock Ring",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.340731574,
+              "dps_delta": -0.500579608,
               "verified": true
             }
           ],
@@ -595,7 +595,7 @@
               "item_name": "Lesser Staff of the Spire",
               "source_kind": "world",
               "source": "Blackrock Shadowcaster",
-              "dps_delta": -0.296178665,
+              "dps_delta": -0.473574636,
               "verified": true
             }
           ],
@@ -619,53 +619,51 @@
         },
         {
           "slot": "ranged",
-          "item_id": 5198,
-          "item_name": "Cookie's Stirring Rod",
-          "source": "The Deadmines: Cookie",
-          "source_kind": "dungeon",
-          "chance": 0.35,
-          "score": 320.167766353,
+          "item_id": 8071,
+          "item_name": "Sizzle Stick",
+          "source": "Deviate Eradication",
+          "source_kind": "quest",
+          "score": 335.322112767,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 5198,
+              "item_name": "Cookie's Stirring Rod",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Cookie",
+              "dps_delta": -0.188827112,
+              "verified": true
+            },
+            {
+              "item_id": 7607,
+              "item_name": "Sable Wand",
+              "source_kind": "quest",
+              "source": "Underground Assault",
+              "dps_delta": -1.153754539
+            },
             {
               "item_id": 12984,
               "item_name": "Skycaller",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.936797415,
-              "verified": true
-            },
-            {
-              "item_id": 279896,
-              "item_name": "Deepblaze",
-              "source_kind": "quest",
-              "source": "Old Ironforge Incursion",
-              "dps_delta": -3.991023966
-            },
-            {
-              "item_id": 8071,
-              "item_name": "Sizzle Stick",
-              "source_kind": "quest",
-              "source": "Deviate Eradication",
-              "dps_delta": -4.519317356
+              "dps_delta": -2.024500728
             }
           ],
           "runners_up": [
             {
-              "item_id": 12984,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 5198,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Cookie"
             },
             {
-              "item_id": 279896,
+              "item_id": 7607,
               "source_kind": "quest",
-              "source": "Old Ironforge Incursion"
+              "source": "Underground Assault"
             }
           ]
         }
       ],
-      "set_dps": 27.244896530835153,
+      "set_dps": 27.4337236426669,
       "no_source_count": 160,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -697,10 +695,10 @@
         "finger1: Minor Channeling Ring",
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Twisted Chanter's Staff",
-        "ranged: Cookie's Stirring Rod"
+        "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.088720421,
-      "verify_run_seconds": 0.7084079,
+      "weights_run_seconds": 1.00453753,
+      "verify_run_seconds": 0.714933489,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -942,7 +940,7 @@
               "item_name": "Reinforced Woolen Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.349044185,
+              "dps_delta": -0.727534682,
               "verified": true
             }
           ],
@@ -987,7 +985,7 @@
               "item_name": "Pearl-clasped Cloak",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.22465232,
+              "dps_delta": -0.625590207,
               "verified": true
             }
           ],
@@ -1102,13 +1100,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 253917,
-              "item_name": "Flame Gloves",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -0.066070621
-            },
-            {
               "item_id": 5970,
               "item_name": "Serpent Gloves",
               "source_kind": "dungeon",
@@ -1121,18 +1112,26 @@
               "source_kind": "world",
               "source": "Mosshide Mistweaver",
               "dps_delta": -0.211023966
+            },
+            {
+              "item_id": 253917,
+              "item_name": "Flame Gloves",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.63453145,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 253917,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            {
               "item_id": 5970,
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Lord Serpentis"
+            },
+            {
+              "item_id": 892,
+              "source_kind": "world",
+              "source": "Mosshide Mistweaver"
             }
           ]
         },
@@ -1197,19 +1196,19 @@
               "dps_delta": -0.35170661
             },
             {
-              "item_id": 4317,
-              "item_name": "Phoenix Pants",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -0.404042366,
-              "verified": true
-            },
-            {
               "item_id": 1929,
               "item_name": "Silk-threaded Trousers",
               "source_kind": "dungeon",
               "source": "The Deadmines: Defias Evoker",
               "dps_delta": -0.430589334
+            },
+            {
+              "item_id": 4317,
+              "item_name": "Phoenix Pants",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.764566264,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -1219,9 +1218,9 @@
               "source": "Tailoring"
             },
             {
-              "item_id": 4317,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 1929,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Defias Evoker"
             }
           ]
         },
@@ -1235,14 +1234,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 253893,
-              "item_name": "Flame Boots",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -0.247881497,
-              "verified": true
-            },
-            {
               "item_id": 253889,
               "item_name": "Pristine Boots",
               "source_kind": "crafted",
@@ -1255,16 +1246,24 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "dps_delta": -0.310506664
+            },
+            {
+              "item_id": 253893,
+              "item_name": "Flame Boots",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.4905372,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 253893,
+              "item_id": 253889,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
             {
-              "item_id": 253889,
+              "item_id": 4313,
               "source_kind": "crafted",
               "source": "Tailoring"
             }
@@ -1279,8 +1278,8 @@
           "chance": 0.45,
           "score": 2.121427944,
           "verified": true,
-          "swap_note": "confirmed by the sim against Loop of Sacrifice (id 281673): kept the pick, +0.4 DPS (25.4 vs 25.0 set DPS)",
-          "dps_delta": 0.43488669979873507,
+          "swap_note": "confirmed by the sim against Loop of Sacrifice (id 281673): kept the pick, +0.6 DPS (26.0 vs 25.3 set DPS)",
+          "dps_delta": 0.6484585347660534,
           "alternatives": [
             {
               "item_id": 12053,
@@ -1331,7 +1330,7 @@
               "item_name": "Volcanic Rock Ring",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.197632308,
+              "dps_delta": -0.628630676,
               "verified": true
             }
           ],
@@ -1416,53 +1415,51 @@
         },
         {
           "slot": "ranged",
-          "item_id": 5198,
-          "item_name": "Cookie's Stirring Rod",
-          "source": "The Deadmines: Cookie",
-          "source_kind": "dungeon",
-          "chance": 0.35,
-          "score": 320.167766353,
+          "item_id": 8071,
+          "item_name": "Sizzle Stick",
+          "source": "Deviate Eradication",
+          "source_kind": "quest",
+          "score": 335.322112767,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 5198,
+              "item_name": "Cookie's Stirring Rod",
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Cookie",
+              "dps_delta": -0.541660256,
+              "verified": true
+            },
             {
               "item_id": 12984,
               "item_name": "Skycaller",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.739196256,
-              "verified": true
-            },
-            {
-              "item_id": 8071,
-              "item_name": "Sizzle Stick",
-              "source_kind": "quest",
-              "source": "Deviate Eradication",
-              "dps_delta": -4.519317356
+              "dps_delta": -2.024500728
             },
             {
               "item_id": 11288,
               "item_name": "Greater Magic Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -4.880341322
+              "dps_delta": -5.946318084
             }
           ],
           "runners_up": [
             {
+              "item_id": 5198,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Cookie"
+            },
+            {
               "item_id": 12984,
               "source_kind": "world_drop",
               "source": "World drop"
-            },
-            {
-              "item_id": 8071,
-              "source_kind": "quest",
-              "source": "Deviate Eradication"
             }
           ]
         }
       ],
-      "set_dps": 25.437542658311077,
+      "set_dps": 25.979202913854554,
       "no_source_count": 154,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1494,10 +1491,10 @@
         "finger1: Lavishly Jeweled Ring",
         "finger2: Loop of Sacrifice",
         "main_hand: Gnarled Necromancer's Staff",
-        "ranged: Cookie's Stirring Rod"
+        "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.088720421,
-      "verify_run_seconds": 0.734820016,
+      "weights_run_seconds": 1.00453753,
+      "verify_run_seconds": 0.722627658,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2278,7 +2275,7 @@
           "item_name": "Starfaller",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 326.581110901,
+          "score": 326.552972516,
           "verified": true,
           "alternatives": [
             {
@@ -2286,21 +2283,21 @@
               "item_name": "Wand of Mana Concentration",
               "source_kind": "world",
               "source": "Arcanic Enigma",
-              "dps_delta": -1.68
+              "dps_delta": -1.680672269
+            },
+            {
+              "item_id": 9489,
+              "item_name": "Gyromatic Icemaker",
+              "source_kind": "dungeon",
+              "source": "Gnomeregan",
+              "dps_delta": -2.800711829
             },
             {
               "item_id": 217287,
               "item_name": "Greater Mystic Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -3.653016945
-            },
-            {
-              "item_id": 5213,
-              "item_name": "Scorching Wand",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -3.701477969
+              "dps_delta": -3.650159802
             }
           ],
           "runners_up": [
@@ -2310,9 +2307,9 @@
               "source": "Arcanic Enigma"
             },
             {
-              "item_id": 217287,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 9489,
+              "source_kind": "dungeon",
+              "source": "Gnomeregan"
             }
           ]
         }
@@ -2352,8 +2349,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.214388913,
-      "verify_run_seconds": 0.799790446,
+      "weights_run_seconds": 1.202717558,
+      "verify_run_seconds": 0.816212866,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3137,7 +3134,7 @@
           "item_name": "Starfaller",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 326.581110901,
+          "score": 326.552972516,
           "verified": true,
           "alternatives": [
             {
@@ -3145,21 +3142,21 @@
               "item_name": "Wand of Mana Concentration",
               "source_kind": "world",
               "source": "Arcanic Enigma",
-              "dps_delta": -1.68
+              "dps_delta": -1.680672269
+            },
+            {
+              "item_id": 9489,
+              "item_name": "Gyromatic Icemaker",
+              "source_kind": "dungeon",
+              "source": "Gnomeregan",
+              "dps_delta": -2.800711829
             },
             {
               "item_id": 279847,
               "item_name": "Unstable Power Core",
               "source_kind": "quest",
               "source": "Source of Power",
-              "dps_delta": -3.450711829
-            },
-            {
-              "item_id": 217287,
-              "item_name": "Greater Mystic Wand",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -3.653016945
+              "dps_delta": -3.451972333
             }
           ],
           "runners_up": [
@@ -3169,9 +3166,9 @@
               "source": "Arcanic Enigma"
             },
             {
-              "item_id": 279847,
-              "source_kind": "quest",
-              "source": "Source of Power"
+              "item_id": 9489,
+              "source_kind": "dungeon",
+              "source": "Gnomeregan"
             }
           ]
         }
@@ -3211,8 +3208,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.214388913,
-      "verify_run_seconds": 0.810349445,
+      "weights_run_seconds": 1.202717558,
+      "verify_run_seconds": 0.821273657,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4040,7 +4037,7 @@
           "item_name": "Jaina's Firestarter",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 301.603235778,
+          "score": 301.5655318,
           "verified": true,
           "alternatives": [
             {
@@ -4048,21 +4045,21 @@
               "item_name": "Ragefire Wand",
               "source_kind": "quest",
               "source": "Mage's Wand",
-              "dps_delta": -1.354596289
+              "dps_delta": -1.346739146
             },
             {
               "item_id": 11263,
               "item_name": "Nether Force Wand",
               "source_kind": "quest",
               "source": "Mage's Wand",
-              "dps_delta": -2.358104297
+              "dps_delta": -2.349770964
             },
             {
               "item_id": 7514,
               "item_name": "Icefury Wand",
               "source_kind": "quest",
               "source": "Mage's Wand",
-              "dps_delta": -2.498104297
+              "dps_delta": -2.495604297
             }
           ],
           "runners_up": [
@@ -4114,8 +4111,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.347918095,
-      "verify_run_seconds": 0.962171687,
+      "weights_run_seconds": 1.287644728,
+      "verify_run_seconds": 0.958052517,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4943,7 +4940,7 @@
           "item_name": "Jaina's Firestarter",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 301.603235778,
+          "score": 301.5655318,
           "verified": true,
           "alternatives": [
             {
@@ -4951,21 +4948,21 @@
               "item_name": "Ragefire Wand",
               "source_kind": "quest",
               "source": "Mage's Wand",
-              "dps_delta": -1.354596289
+              "dps_delta": -1.346739146
             },
             {
               "item_id": 11263,
               "item_name": "Nether Force Wand",
               "source_kind": "quest",
               "source": "Mage's Wand",
-              "dps_delta": -2.358104297
+              "dps_delta": -2.349770964
             },
             {
               "item_id": 7514,
               "item_name": "Icefury Wand",
               "source_kind": "quest",
               "source": "Mage's Wand",
-              "dps_delta": -2.498104297
+              "dps_delta": -2.495604297
             }
           ],
           "runners_up": [
@@ -5017,8 +5014,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.347918095,
-      "verify_run_seconds": 1.032935243,
+      "weights_run_seconds": 1.287644728,
+      "verify_run_seconds": 0.958047559,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5841,7 +5838,7 @@
               "item_name": "Wand of Allistarj",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -4.08
+              "dps_delta": -4.078947368
             },
             {
               "item_id": 249232,
@@ -5900,8 +5897,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.279337513,
-      "verify_run_seconds": 1.175772197,
+      "weights_run_seconds": 1.226187384,
+      "verify_run_seconds": 1.12538566,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6741,7 +6738,7 @@
               "item_name": "Wand of Allistarj",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -4.08
+              "dps_delta": -4.078947368
             },
             {
               "item_id": 249232,
@@ -6800,8 +6797,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.279337513,
-      "verify_run_seconds": 1.16295234,
+      "weights_run_seconds": 1.226187384,
+      "verify_run_seconds": 1.09492748,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7629,7 +7626,7 @@
           "item_name": "Torch of Light",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "score": 242.490045715,
+          "score": 242.504544078,
           "verified": true,
           "alternatives": [
             {
@@ -7637,21 +7634,21 @@
               "item_name": "Brilliant Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -14.460748605
+              "dps_delta": -14.462121154
             },
             {
               "item_id": 16997,
               "item_name": "Stormrager",
               "source_kind": "quest",
               "source": "Order Must Be Restored",
-              "dps_delta": -14.770688246
+              "dps_delta": -14.773086436
             },
             {
               "item_id": 13004,
               "item_name": "Torch of Austen",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -21.917481547
+              "dps_delta": -21.926473143
             }
           ],
           "runners_up": [
@@ -7704,8 +7701,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.463679771,
-      "verify_run_seconds": 3.648945466,
+      "weights_run_seconds": 1.424072105,
+      "verify_run_seconds": 3.579809886,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8592,7 +8589,7 @@
           "item_name": "Torch of Light",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "score": 242.490045715,
+          "score": 242.504544078,
           "verified": true,
           "alternatives": [
             {
@@ -8600,21 +8597,21 @@
               "item_name": "Brilliant Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -14.460748605
+              "dps_delta": -14.462121154
             },
             {
               "item_id": 16997,
               "item_name": "Stormrager",
               "source_kind": "quest",
               "source": "The Scarlet Oracle, Demetria",
-              "dps_delta": -14.770688246
+              "dps_delta": -14.773086436
             },
             {
               "item_id": 13004,
               "item_name": "Torch of Austen",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -21.917481547
+              "dps_delta": -21.926473143
             }
           ],
           "runners_up": [
@@ -8666,8 +8663,8 @@
         "trinket2: Mark of the Chosen",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.463679771,
-      "verify_run_seconds": 3.281450386,
+      "weights_run_seconds": 1.424072105,
+      "verify_run_seconds": 3.258031505,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9479,7 +9476,7 @@
           "item_name": "Torch of Light",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "score": 144.352815789,
+          "score": 144.361297708,
           "verified": true,
           "alternatives": [
             {
@@ -9487,21 +9484,21 @@
               "item_name": "Brilliant Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -13.826771835
+              "dps_delta": -13.828144385
             },
             {
               "item_id": 16997,
               "item_name": "Stormrager",
               "source_kind": "quest",
               "source": "Order Must Be Restored",
-              "dps_delta": -16.192603511
+              "dps_delta": -16.195001701
             },
             {
               "item_id": 249237,
               "item_name": "Greater Eternal Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -21.765559716
+              "dps_delta": -21.766932265
             }
           ],
           "runners_up": [
@@ -9549,8 +9546,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.6384544779999999,
-      "verify_run_seconds": 2.201734141,
+      "weights_run_seconds": 1.577543791,
+      "verify_run_seconds": 2.113625682,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10374,7 +10371,7 @@
           "item_name": "Torch of Light",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "score": 144.352815789,
+          "score": 144.361297708,
           "verified": true,
           "alternatives": [
             {
@@ -10382,21 +10379,21 @@
               "item_name": "Brilliant Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -13.826771835
+              "dps_delta": -13.828144385
             },
             {
               "item_id": 16997,
               "item_name": "Stormrager",
               "source_kind": "quest",
               "source": "The Scarlet Oracle, Demetria",
-              "dps_delta": -16.192603511
+              "dps_delta": -16.195001701
             },
             {
               "item_id": 249237,
               "item_name": "Greater Eternal Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -21.765559716
+              "dps_delta": -21.766932265
             }
           ],
           "runners_up": [
@@ -10445,8 +10442,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.6384544779999999,
-      "verify_run_seconds": 2.465948287,
+      "weights_run_seconds": 1.577543791,
+      "verify_run_seconds": 2.343317016,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10621,6 +10618,10 @@
         {
           "id": "judgement_of_wisdom",
           "label": "Judgement of Wisdom"
+        },
+        {
+          "id": "judgement_of_the_crusader",
+          "label": "Judgement of the Crusader"
         },
         {
           "id": "judgement_of_light",

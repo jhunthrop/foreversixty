@@ -55,6 +55,51 @@ def test_a_one_hander_uses_the_one_hand_curve():
     assert (damage.minimum, damage.maximum, damage.speed) == (93.0, 175.0, 2.6)
 
 
+def test_a_quality_modifier_moves_the_average_but_not_the_spread():
+    """Thunderfury (19019) on 1.60.1.70707: item level 80, legendary, 1.9 s
+    one-hander, variance 0.6, QualityModifier -20. The curve is 61.85 DPS;
+    the modifier takes 20 DPS off the average, and the spread stays the
+    curve's own. Wowhead Forever's tooltip (2026-11-01): 44 - 115, 41.84 DPS,
+    the same as Classic Era's literal row."""
+    damage = weapon_damage(
+        row(ID=19019, ItemLevel=80, OverallQualityID=5, InventoryType=13, ItemDelay=1900,
+            DmgVariance="0.60000002384", QualityModifier="-20", Flags_4="0"),
+        7,
+        curves(),
+    )
+    assert damage is not None
+    assert (damage.minimum, damage.maximum, damage.speed) == (44.0, 115.0, 1.9)
+
+
+def test_a_caster_one_hander_deals_two_thirds_of_the_curve():
+    """Mace of Unending Life (21407) on 1.60.1.70707: item level 70, epic,
+    2.6 s one-hander, variance 0.6, QualityModifier -10, and the caster-weapon
+    bit (0x100) in Flags_4. Wowhead Forever's tooltip (2026-11-01): 36 - 90,
+    24.23 DPS. The full curve with the modifier would be 44 - 83 at 41.6 DPS."""
+    damage = weapon_damage(
+        row(ID=21407, ItemLevel=70, OverallQualityID=4, InventoryType=21, ItemDelay=2600,
+            DmgVariance="0.60000002384", QualityModifier="-10", Flags_4="768"),
+        MACE_ONE_HAND,
+        curves(),
+    )
+    assert damage is not None
+    assert (damage.minimum, damage.maximum, damage.speed) == (36.0, 90.0, 2.6)
+
+
+def test_a_caster_two_hander_deals_29_39ths_of_the_curve():
+    """Benediction (18608) on 1.60.1.70707: item level 75, epic, 3.0 s staff,
+    variance 0.4, QualityModifier -14, caster bit set (Flags_4 1280).
+    Wowhead Forever's tooltip (2026-11-01): 89 - 155, 40.67 DPS."""
+    damage = weapon_damage(
+        row(ID=18608, ItemLevel=75, OverallQualityID=4, InventoryType=17, ItemDelay=3000,
+            DmgVariance="0.40000000596", QualityModifier="-14", Flags_4="1280"),
+        10,
+        curves(),
+    )
+    assert damage is not None
+    assert (damage.minimum, damage.maximum, damage.speed) == (89.0, 155.0, 3.0)
+
+
 def test_a_gun_uses_the_ranged_curve_not_the_one_hand_one():
     damage = weapon_damage(
         row(ID=217314, ItemLevel=27, OverallQualityID=2, InventoryType=26, ItemDelay=1700,

@@ -162,6 +162,9 @@ type candidate struct {
 	Speed        float64
 	DPS          float64
 	TwoHand      bool
+	// MainHandOnly is a "Main Hand" weapon, from the engine's own row
+	// (withEngineWeaponDamage): it never goes in the off hand.
+	MainHandOnly bool
 	Unique       bool
 	Slots        []string
 	SetID        *int
@@ -220,6 +223,28 @@ func markNotInSimDB(items []candidate) []candidate {
 	out := make([]candidate, len(items))
 	for i, c := range items {
 		c.NotInSimDB = !simdb.Known(int32(c.ID))
+		out[i] = c
+	}
+	return out
+}
+
+// withEngineWeaponDamage replaces each weapon candidate's damage, speed
+// and DPS with the row the engine itself swings (lookup; simdb.Weapon in
+// production). score() converts weapon DPS into attack power and every
+// verification sim equips the engine's row, so both must read one
+// number: items/<class>.json can take a weapon's damage from classic-db
+// while simdb.bin takes it from wowhead (Elemental Mage Staff 944:
+// 147-221 against 109-164), and the ranker then picks a weapon on DPS
+// the sim never swings. An id the engine lacks keeps the item file's
+// numbers (markNotInSimDB already flags it).
+func withEngineWeaponDamage(items []candidate, lookup func(int32) (simdb.WeaponDamage, bool)) []candidate {
+	out := make([]candidate, len(items))
+	for i, c := range items {
+		if w, ok := lookup(int32(c.ID)); ok {
+			c.DamageMin, c.DamageMax, c.Speed = w.Min, w.Max, w.Speed
+			c.DPS = (w.Min + w.Max) / 2 / w.Speed
+			c.MainHandOnly = w.MainHandOnly
+		}
 		out[i] = c
 	}
 	return out

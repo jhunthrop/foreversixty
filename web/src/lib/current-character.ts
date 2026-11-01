@@ -48,7 +48,10 @@ export {
   announcePageLoadedCharacter,
   announceSessionHeal,
   onCurrentCharacterChange,
+  onCurrentCharacterSwitch,
+  readCurrentRaw,
   type CurrentCharacterChange,
+  type CurrentCharacterSwitch,
 } from './current-character-events';
 
 /**
@@ -83,11 +86,18 @@ export function readCurrent(storage?: Storage): CurrentCharacter | null {
   const target = storageOf(storage);
   if (target === null) return null;
   try {
-    const raw = target.getItem(STORAGE_KEY);
-    if (raw === null) return null;
+    return parseCurrentCharacter(target.getItem(STORAGE_KEY));
+  } catch {
+    return null;
+  }
+}
+
+/** A stored pointer's text read back (`readCurrentRaw`, `onCurrentCharacterSwitch`); null for none or anything else. */
+export function parseCurrentCharacter(raw: string | null): CurrentCharacter | null {
+  if (raw === null) return null;
+  try {
     const parsed: unknown = JSON.parse(raw);
-    if (!isCurrentCharacter(parsed)) return null;
-    return parsed;
+    return isCurrentCharacter(parsed) ? parsed : null;
   } catch {
     return null;
   }

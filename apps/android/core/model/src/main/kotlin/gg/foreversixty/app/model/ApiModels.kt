@@ -322,6 +322,15 @@ data class BulkSpec(
     @SerialName("cap") val cap: Int? = null,
 )
 
+/** The calendar link (W3-C17). url is the link a calendar app subscribes to, shown once: it is non-null on the call that makes the link and on a reset, and null on every later read, because only the token's SHA-256 is stored. An app keeps the url it was shown in its secure store; with none, it offers Reset link to show a new one. */
+@Serializable
+data class CalendarFeed(
+    /** https://api.foreversixty.gg/v1/calendar/{token}.ics; the token is 256 random bits, base64url (43 characters). */
+    @SerialName("url") val url: String? = null,
+    /** When the live link was made. */
+    @SerialName("created_at") val createdAt: String,
+)
+
 /** One item the planner may substitute in. */
 @Serializable
 data class Candidate(
@@ -335,6 +344,29 @@ data class Candidate(
     @SerialName("origin") val origin: String,
     /** The human name of the place the candidate came from - "Lucifron", "my AQ set". It travels into the result's substitution and into the row's headline, so nothing downstream has to join an origin id back to a name. */
     @SerialName("source_name") val sourceName: String? = null,
+)
+
+/** /data/changelog.json. Newest first. */
+@Serializable
+data class Changelog(
+    @SerialName("entries") val entries: List<ChangelogEntry> = emptyList(),
+)
+
+@Serializable
+data class ChangelogBlock(
+    @SerialName("type") val kind: String,
+    @SerialName("text") val text: String,
+)
+
+@Serializable
+data class ChangelogEntry(
+    @SerialName("id") val id: String,
+    @SerialName("date") val date: String,
+    @SerialName("title") val title: String,
+    /** site is a change to this site; the rest are game news. */
+    @SerialName("kind") val kind: String,
+    @SerialName("blocks") val blocks: List<ChangelogBlock> = emptyList(),
+    @SerialName("sources") val sources: List<GuideSourceLink> = emptyList(),
 )
 
 @Serializable
@@ -795,6 +827,160 @@ data class GearSlot(
     @SerialName("suffix") val suffix: Int? = null,
 )
 
+@Serializable
+data class GuideBuild(
+    /** The FS1 code the planner loads. */
+    @SerialName("code") val code: String,
+    /** Points per tree */
+    @SerialName("totals") val totals: List<Int> = emptyList(),
+    @SerialName("tree_names") val treeNames: List<String> = emptyList(),
+)
+
+/** /data/{build}/guides/{spec}.json. One spec guide, composed by the web guide page's own functions. */
+@Serializable
+data class GuideFile(
+    @SerialName("build") val build: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("class") val classSlug: String,
+    @SerialName("spec_slug") val specSlug: String,
+    @SerialName("class_name") val className: String,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("role") val role: String,
+    @SerialName("icon") val icon: String? = null,
+    @SerialName("title") val title: String,
+    /** The later of the guide's date and its BiS file's. */
+    @SerialName("updated") val updated: String,
+    @SerialName("summary") val summary: String,
+    /** The In a raid block's Role line. */
+    @SerialName("role_line") val roleLine: String? = null,
+    @SerialName("recommended_races") val recommendedRaces: List<GuideRace> = emptyList(),
+    /** The web's pill order: the sim's per-point order, else the guide's list. */
+    @SerialName("stat_priority") val statPriority: List<String> = emptyList(),
+    /** Hit cap: 10%. */
+    @SerialName("hit_cap") val hitCap: String? = null,
+    @SerialName("overview") val overview: GuideOverview,
+    @SerialName("talents") val talents: GuideTalents,
+    @SerialName("rotation") val rotation: GuideRotation? = null,
+    @SerialName("races") val races: List<GuideRaceRow> = emptyList(),
+    @SerialName("gear") val gear: GuideGear? = null,
+    @SerialName("sources") val sources: List<GuideSourceLink> = emptyList(),
+    /** The sections the guide has, in reading order; the strip draws exactly these. */
+    @SerialName("sections") val sections: List<String> = emptyList(),
+)
+
+@Serializable
+data class GuideGear(
+    @SerialName("spec") val spec: String,
+    @SerialName("band") val band: Int,
+    /** Raid-ready, Phase 1. */
+    @SerialName("preset_label") val presetLabel: String,
+)
+
+/** /data/{build}/guides/index.json. Classes in classes.json order, specs in tree order. */
+@Serializable
+data class GuideIndex(
+    @SerialName("build") val build: String,
+    @SerialName("classes") val classes: List<GuideIndexClass> = emptyList(),
+)
+
+@Serializable
+data class GuideIndexClass(
+    /** Class slug, shaman. */
+    @SerialName("class") val classSlug: String,
+    @SerialName("class_name") val className: String,
+    @SerialName("specs") val specs: List<GuideIndexSpec> = emptyList(),
+)
+
+@Serializable
+data class GuideIndexSpec(
+    /** shaman-elemental, the BiS file's spec id. */
+    @SerialName("spec") val spec: String,
+    @SerialName("spec_slug") val specSlug: String,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("role") val role: String,
+    /** The spec's icon stem, /data/{build}/icons/{stem}.webp. */
+    @SerialName("icon") val icon: String? = null,
+    @SerialName("updated") val updated: String,
+    /** The guide's file, relative to /data/{build}/: guides/shaman-elemental.json. */
+    @SerialName("path") val path: String,
+)
+
+@Serializable
+data class GuideKeyTalent(
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String? = null,
+    /** Points the guide's build spends in it. */
+    @SerialName("rank") val rank: Int? = null,
+    @SerialName("max_rank") val maxRank: Int? = null,
+    /** The game's own text for the top rank. */
+    @SerialName("text") val text: String? = null,
+    /** The guide's line on why; null when it would repeat text. */
+    @SerialName("why") val why: String? = null,
+)
+
+@Serializable
+data class GuideOverview(
+    @SerialName("strengths") val strengths: List<String> = emptyList(),
+    @SerialName("weaknesses") val weaknesses: List<String> = emptyList(),
+    /** The In a raid lines other than Role. */
+    @SerialName("raid") val raid: List<String> = emptyList(),
+)
+
+@Serializable
+data class GuideRace(
+    @SerialName("slug") val slug: String,
+    @SerialName("name") val name: String,
+    @SerialName("faction") val faction: String,
+)
+
+@Serializable
+data class GuideRaceRow(
+    @SerialName("slug") val slug: String,
+    @SerialName("name") val name: String,
+    @SerialName("faction") val faction: String,
+    @SerialName("recommended") val recommended: Boolean,
+    @SerialName("racials") val racials: List<GuideRacial> = emptyList(),
+)
+
+@Serializable
+data class GuideRacial(
+    @SerialName("name") val name: String,
+    @SerialName("effect") val effect: String,
+)
+
+@Serializable
+data class GuideRotation(
+    @SerialName("opener") val opener: List<GuideSpell> = emptyList(),
+    @SerialName("priority") val priority: List<GuideSpell> = emptyList(),
+    @SerialName("cooldowns") val cooldowns: List<GuideSpell> = emptyList(),
+)
+
+@Serializable
+data class GuideSourceLink(
+    @SerialName("label") val label: String,
+    @SerialName("url") val url: String,
+    @SerialName("kind") val kind: String,
+)
+
+@Serializable
+data class GuideSpell(
+    @SerialName("spell_id") val spellId: Int? = null,
+    @SerialName("name") val name: String,
+    /** The top rank learned by level 60. */
+    @SerialName("rank") val rank: Int? = null,
+    @SerialName("icon") val icon: String? = null,
+    /** One clause, sentence case, no final stop. */
+    @SerialName("clause") val clause: String,
+)
+
+@Serializable
+data class GuideTalents(
+    @SerialName("key") val key: List<GuideKeyTalent> = emptyList(),
+    @SerialName("leveling_build") val levelingBuild: GuideBuild? = null,
+    /** Null when the raid build is the leveling build. */
+    @SerialName("raid_build") val raidBuild: GuideBuild? = null,
+)
+
 /** addon_snapshot on GET /v1/guilds/{id}/home: the guild's newest addon roster snapshot, null when it has none. The newest snapshot wins even when it lists nobody (members is then 0 and every roster[].addon is null). */
 @Serializable
 data class GuildAddonSnapshot(
@@ -880,13 +1066,21 @@ data class GuildLoot(
 @Serializable
 data class GuildMember(
     @SerialName("name") val name: String,
-    @SerialName("character_key") val characterKey: String,
+    /** Absent for a name the addon sees in game that no account has claimed (no_account) and for an invited member. */
+    @SerialName("character_key") val characterKey: String? = null,
     @SerialName("state") val state: String,
+    /** leader, officer or member. */
     @SerialName("rank") val rank: String,
     @SerialName("class") val className: String? = null,
     @SerialName("level") val level: Int? = null,
     @SerialName("spec") val spec: String? = null,
     @SerialName("seen_at") val seenAt: String? = null,
+    /** W3-C16: the spec catalogue's role for spec, else for the character's roster row; null when neither is known or consent withholds it. The apps' role chips read it, never a spec word. */
+    @SerialName("role") val role: String? = null,
+    /** W3-C16: the full spec name, catalogue name then class ("Holy Priest", "Feral Bear Druid"); null with role. */
+    @SerialName("spec_name") val specName: String? = null,
+    /** W3-C16: the spec's talent-tab icon stem; null with role. */
+    @SerialName("spec_icon") val specIcon: String? = null,
 )
 
 @Serializable
@@ -974,6 +1168,10 @@ data class GuildRosterRow(
     @SerialName("class") val className: String? = null,
     @SerialName("spec") val spec: String? = null,
     @SerialName("role") val role: String? = null,
+    /** W3-C16: the full spec name ("Fury Warrior"), withheld with spec. */
+    @SerialName("spec_name") val specName: String? = null,
+    /** W3-C16: the spec's talent-tab icon stem, withheld with spec. */
+    @SerialName("spec_icon") val specIcon: String? = null,
     /** Withheld without gear consent. */
     @SerialName("item_level") val itemLevel: Int? = null,
     @SerialName("attendance_30") val attendance30: GuildAttendance? = null,
@@ -1136,6 +1334,51 @@ data class ItemsFile(
     @SerialName("items") val items: List<Item> = emptyList(),
 )
 
+@Serializable
+data class ItemUses(
+    /** Ranked; boss kills and quest rewards first, a known chance before an unknown one. */
+    @SerialName("sources") val sources: List<ItemUseSource> = emptyList(),
+    /** One row per spec; picks before runners-up, then class and spec in the catalog's order. */
+    @SerialName("specs") val specs: List<ItemUseSpec> = emptyList(),
+)
+
+@Serializable
+data class ItemUseSource(
+    @SerialName("kind") val kind: String,
+    /** The boss, vendor, quest, recipe, faction and standing, or World drop. */
+    @SerialName("title") val title: String,
+    /** The instance of a boss drop, the side of a quest; absent when none. */
+    @SerialName("place") val place: String? = null,
+    /** Percent; absent when the data has none. Print Drop chance not known then. */
+    @SerialName("chance") val chance: Double? = null,
+    /** A quest's minimum level; absent when unknown. */
+    @SerialName("min_level") val minLevel: Int? = null,
+)
+
+@Serializable
+data class ItemUseSpec(
+    /** The BiS file key, shaman-elemental. */
+    @SerialName("spec") val spec: String,
+    @SerialName("class") val className: String,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("band") val band: Int,
+    @SerialName("preset") val preset: String,
+    /** Null when both factions place it the same. */
+    @SerialName("faction") val faction: String? = null,
+    /** 0 is the pick; n is runner-up n. */
+    @SerialName("rank") val rank: Int,
+)
+
+/** /data/{build}/item-uses/{shard}.json (W3-C8). */
+@Serializable
+data class ItemUsesShard(
+    @SerialName("build") val build: String,
+    @SerialName("shard") val shard: Int,
+    @SerialName("shards") val shards: Int,
+    /** Item id (string key) -> its uses. */
+    @SerialName("items") val items: Map<String, ItemUses> = emptyMap(),
+)
+
 /** One key date. Sort and compare by iso and endIso, never by key. */
 @Serializable
 data class KeyDate(
@@ -1185,6 +1428,20 @@ data class LootAward(
 )
 
 @Serializable
+data class LootBoss(
+    @SerialName("id") val id: String,
+    /** Empty for an unnamed pool. */
+    @SerialName("name") val name: String,
+    @SerialName("npc_id") val npcId: Int? = null,
+    @SerialName("items") val items: List<Int> = emptyList(),
+    @SerialName("item_chances") val itemChances: Map<String, Double>? = null,
+    @SerialName("item_source_origin") val itemSourceOrigin: Map<String, String>? = null,
+    @SerialName("reitemised_from") val reitemisedFrom: Map<String, Int>? = null,
+    @SerialName("rank") val rank: Int? = null,
+    @SerialName("rare_spawn") val rareSpawn: Boolean? = null,
+)
+
+@Serializable
 data class LootCandidate(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
@@ -1207,6 +1464,16 @@ data class LootEncounter(
     @SerialName("killed") val killed: Boolean,
 )
 
+/** /data/{build}/loot.json (W3-C8). Every source of every item, the quest rewards and the factions' sides. */
+@Serializable
+data class LootFile(
+    @SerialName("sources") val sources: List<LootSource> = emptyList(),
+    /** Item id (string key) -> the quests that reward it. */
+    @SerialName("quests") val quests: Map<String, List<LootQuest>>? = null,
+    /** Reputation faction id (string key) -> alliance, horde or both. */
+    @SerialName("factions") val factions: Map<String, String>? = null,
+)
+
 @Serializable
 data class LootItem(
     @SerialName("item_id") val itemId: Int,
@@ -1218,6 +1485,53 @@ data class LootItem(
     @SerialName("awarded_to") val awardedTo: LootAward? = null,
     /** Ranked best first. */
     @SerialName("candidates") val candidates: List<LootCandidate> = emptyList(),
+)
+
+@Serializable
+data class LootQuest(
+    @SerialName("quest_id") val questId: Int,
+    @SerialName("name") val name: String,
+    @SerialName("faction") val faction: String,
+    @SerialName("faction_source") val factionSource: String? = null,
+    @SerialName("min_level") val minLevel: Int,
+    @SerialName("level") val level: Int,
+    @SerialName("level_source") val levelSource: String? = null,
+    @SerialName("opens") val opens: String? = null,
+    @SerialName("classes") val classes: List<String>? = null,
+    @SerialName("required_rep_faction") val requiredRepFaction: Int? = null,
+    @SerialName("required_rep_standing") val requiredRepStanding: String? = null,
+    @SerialName("profession") val profession: String? = null,
+    @SerialName("skill") val skill: Int? = null,
+)
+
+@Serializable
+data class LootSource(
+    /** raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, … */
+    @SerialName("id") val id: String,
+    @SerialName("kind") val kind: String,
+    @SerialName("name") val name: String,
+    @SerialName("items") val items: List<Int>? = null,
+    @SerialName("trash") val trash: List<Int>? = null,
+    @SerialName("bosses") val bosses: List<LootBoss>? = null,
+    /** Item id -> percent; absent when unknown. */
+    @SerialName("item_chances") val itemChances: Map<String, Double>? = null,
+    @SerialName("zone_id") val zoneId: Int? = null,
+    @SerialName("npc_id") val npcId: Int? = null,
+    /** A phase name, or later; absent means open from launch. */
+    @SerialName("opens") val opens: String? = null,
+    @SerialName("profession") val profession: String? = null,
+    @SerialName("faction_id") val factionId: Int? = null,
+    @SerialName("standing") val standing: String? = null,
+    @SerialName("rank") val rank: Int? = null,
+    @SerialName("faction") val faction: String? = null,
+    @SerialName("faction_source") val factionSource: String? = null,
+    @SerialName("title") val title: String? = null,
+    @SerialName("level_min") val levelMin: Int? = null,
+    @SerialName("level_max") val levelMax: Int? = null,
+    @SerialName("rare_spawn") val rareSpawn: Boolean? = null,
+    @SerialName("source_origin") val sourceOrigin: String? = null,
+    @SerialName("source_note") val sourceNote: String? = null,
+    @SerialName("reitemised_from") val reitemisedFrom: Map<String, Int>? = null,
 )
 
 /** GET /v1/me's data (Go auth.Me): who you are, your characters, your guilds and what you may use. The apps gate a feature on entitlements only. */
@@ -2009,6 +2323,53 @@ data class ScorePoint(
     @SerialName("tier") val tier: String,
 )
 
+@Serializable
+data class SearchGuide(
+    @SerialName("class") val className: String,
+    /** The spec's slug inside its class, the guide's path segment. */
+    @SerialName("spec") val spec: String,
+    @SerialName("spec_name") val specName: String,
+    @SerialName("role") val role: String,
+    @SerialName("icon") val icon: String,
+)
+
+/** /data/{build}/search.json (W3-C8), the apps' offline search. */
+@Serializable
+data class SearchIndex(
+    @SerialName("build") val build: String,
+    /** How many item-uses files; an item's shard is id % this. */
+    @SerialName("item_uses_shards") val itemUsesShards: Int,
+    @SerialName("items") val items: List<SearchItem> = emptyList(),
+    @SerialName("talents") val talents: List<SearchTalent> = emptyList(),
+    @SerialName("guides") val guides: List<SearchGuide> = emptyList(),
+)
+
+@Serializable
+data class SearchItem(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String,
+    @SerialName("quality") val quality: Int,
+    @SerialName("slot") val slot: String,
+    @SerialName("item_level") val itemLevel: Int,
+    @SerialName("required_level") val requiredLevel: Int,
+    /** Class slugs whose items file carries it. */
+    @SerialName("classes") val classes: List<String> = emptyList(),
+)
+
+@Serializable
+data class SearchTalent(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String,
+    @SerialName("class") val className: String,
+    /** The talent tree's own name. */
+    @SerialName("tree") val tree: String,
+    /** The spec the tree is played as; the tree's name when none is written. */
+    @SerialName("spec_name") val specName: String,
+    @SerialName("max_rank") val maxRank: Int,
+)
+
 /** Omitted when the server has no sims store configured. */
 @Serializable
 data class ServerSimsUsage(
@@ -2273,6 +2634,61 @@ data class TankResult(
     @SerialName("chance_of_death") val chanceOfDeath: Double,
     /** The tank score. A bulk-pooled run computes it after pooling the three measured terms, because it is nonlinear in them. */
     @SerialName("score") val score: Estimate,
+)
+
+@Serializable
+data class TierFactions(
+    @SerialName("alliance") val alliance: TierRoles,
+    @SerialName("horde") val horde: TierRoles,
+)
+
+@Serializable
+data class TierList(
+    /** The web's lines above the list; the last is the role's race line. */
+    @SerialName("notes") val notes: List<String> = emptyList(),
+    @SerialName("rows") val rows: List<TierRow> = emptyList(),
+)
+
+@Serializable
+data class TierRoles(
+    @SerialName("dps") val dps: TierList,
+    @SerialName("tank") val tank: TierList,
+    @SerialName("healer") val healer: TierList,
+)
+
+@Serializable
+data class TierRow(
+    @SerialName("rank") val rank: Int,
+    @SerialName("spec") val spec: String,
+    @SerialName("class") val classSlug: String,
+    @SerialName("spec_slug") val specSlug: String,
+    /** Fury Warrior. */
+    @SerialName("name") val name: String,
+    @SerialName("race") val race: String,
+    @SerialName("icon") val icon: String? = null,
+    @SerialName("metric") val metric: Double,
+    @SerialName("metric_text") val metricText: String,
+    @SerialName("unit") val unit: String,
+    @SerialName("gap_percent") val gapPercent: Double,
+    /** Top, −2.8%, +15.2%. */
+    @SerialName("gap_text") val gapText: String,
+    @SerialName("fraction") val fraction: Double,
+    @SerialName("tie") val tie: String? = null,
+    @SerialName("tier") val tier: String? = null,
+    @SerialName("low_confidence") val lowConfidence: Boolean,
+    /** The callout: Fire Mage is 6th of 20 DPS specs. */
+    @SerialName("title") val title: String,
+    /** 9.1% behind Fury Warrior. */
+    @SerialName("detail") val detail: String,
+)
+
+/** /data/{build}/tiers.json. The web's ranked tier lists; the apps never sort, gap or letter. */
+@Serializable
+data class TiersFile(
+    @SerialName("build") val build: String,
+    @SerialName("updated") val updated: String? = null,
+    @SerialName("preset_label") val presetLabel: String? = null,
+    @SerialName("factions") val factions: TierFactions,
 )
 
 @Serializable

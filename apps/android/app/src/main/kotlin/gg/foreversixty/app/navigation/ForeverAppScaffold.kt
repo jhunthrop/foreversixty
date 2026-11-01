@@ -29,14 +29,28 @@ import gg.foreversixty.app.account.CharacterSelectorBar
 import gg.foreversixty.app.account.HomeAccountGate
 import gg.foreversixty.app.account.YouRoute
 import gg.foreversixty.app.auth.session.SessionPhase
+import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.home.HomeDependencies
 import gg.foreversixty.app.bis.BisModel
 import gg.foreversixty.app.bis.BisOwner
 import gg.foreversixty.app.bis.BisRoute
+import gg.foreversixty.app.bis.BisSelection
+import gg.foreversixty.app.guides.GuidesFeature
+import gg.foreversixty.app.guides.GuidesRoute
 import gg.foreversixty.app.home.HomeRoute
 import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.raids.RaidsReports
 import gg.foreversixty.app.raids.RaidsRoute
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import gg.foreversixty.app.items.LocalItemPageOpener
+import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.search.SearchExits
+import gg.foreversixty.app.search.SearchFeature
+import gg.foreversixty.app.search.SearchOverlay
+import gg.foreversixty.app.search.SearchOwner
+import gg.foreversixty.app.search.ui.RootSearchBar
+import kotlinx.coroutines.launch
 import gg.foreversixty.app.reports.ReportsFeature
 import gg.foreversixty.app.reports.logic.ReportsViewer
 
@@ -50,9 +64,30 @@ fun ForeverAppScaffold(
     bis: BisModel? = null,
     account: AccountDeps? = null,
     raids: RaidsFeature? = null,
+    search: SearchFeature? = null,
+    guides: GuidesFeature? = null,
 ) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Home) }
     val openBis = { selected = ForeverTab.Bis }
+    // Lane F9: a guide link selects the Guides tab, where the guide is pushed.
+    val wantsGuides = guides?.navigator?.wantsTab == true
+    LaunchedEffect(wantsGuides) {
+        if (wantsGuides) {
+            selected = ForeverTab.Guides
+            guides.navigator.wantsTab = false
+        }
+    }
+    val scope = rememberCoroutineScope()
+    // Lane F12: the root bars' search button and the tooltips' `More about this item` row.
+    val onSearch = search?.let { feature -> { feature.navigator.openSearch() } }
+    val openItemPage = search?.let { feature -> { look: ItemLook -> feature.navigator.openItem(look, selected.label) } }
+    val exits = SearchExits { asked ->
+        if (bis != null && asked != null) {
+            val selection = if (asked.faction.isEmpty()) asked.copy(faction = bis.currentFaction) else asked
+            if (selected == ForeverTab.Bis) scope.launch { bis.select(selection) } else bis.request(selection)
+        }
+        selected = ForeverTab.Bis
+    }
     // Lane F4: a raid link or notification selects the Raids tab.
     val wantsRaids = raids?.navigator?.wantsTab == true
     LaunchedEffect(wantsRaids) {
@@ -73,25 +108,35 @@ fun ForeverAppScaffold(
         }
     }
     val context = LocalContext.current
-    ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
-        // The tab slots. Each lane replaces its placeholder branch: F2 Home, F4 Raids, F3 BiS, F1 You.
-        when (selected) {
-            ForeverTab.Home ->
-                if (account == null) {
-                    HomeRoute(home, openBis = openBis) { ComingSoon(selected) }
-                } else {
-                    HomeAccountGate(account, openBis) {
-                        HomeRoute(home, account.session, openBis, signIn = { account.session.beginSignIn(account.browser(context)) }) { ComingSoon(selected) }
+    val searchOpen = search?.navigator?.stack?.isNotEmpty() == true
+    CompositionLocalProvider(LocalItemPageOpener provides openItemPage) {
+        Box(Modifier.fillMaxSize()) {
+            // While Search covers the app, the tabs under it are hidden from TalkBack.
+            Box(if (searchOpen) Modifier.fillMaxSize().clearAndSetSemantics {} else Modifier.fillMaxSize()) {
+                ForeverTabScaffold(selected = selected, onSelect = { selected = it }, tabs = ForeverTab.visible(guides != null)) {
+                    // The tab slots. Each lane replaces its placeholder branch: F2 Home, F4 Raids, F3 BiS, F1 You.
+                    when (selected) {
+                        ForeverTab.Home ->
+                            if (account == null) {
+                                HomeRoute(home, openBis = openBis, onSearch = onSearch) { ComingSoon(selected) }
+                            } else {
+                                HomeAccountGate(account, openBis) {
+                                    HomeRoute(home, account.session, openBis, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }) { ComingSoon(selected) }
+                                }
+                            }
+                        ForeverTab.Raids -> if (raids == null) ComingSoon(selected) else RaidsTab(raids, account, home.reports, onSearch)
+                        ForeverTab.Bis ->
+                            if (bis == null) {
+                                ComingSoon(selected)
+                            } else {
+                                BisTab(bis, home, account, onSearch)
+                            }
+                        ForeverTab.Guides -> if (guides == null) ComingSoon(selected) else GuidesTab(guides, account, bis) { selected = ForeverTab.Bis }
+                        ForeverTab.You -> if (account == null) ComingSoon(selected) else YouRoute(account, openBis)
                     }
                 }
-            ForeverTab.Raids -> if (raids == null) ComingSoon(selected) else RaidsTab(raids, account, home.reports)
-            ForeverTab.Bis ->
-                if (bis == null) {
-                    ComingSoon(selected)
-                } else {
-                    BisTab(bis, home, account)
-                }
-            ForeverTab.You -> if (account == null) ComingSoon(selected) else YouRoute(account, openBis)
+            }
+            if (search != null) SearchOverlay(search, searchOwner(account), exits)
         }
     }
 }
@@ -101,13 +146,35 @@ fun ForeverAppScaffold(
  * character, and waits while a signed-in session's characters are still on their way.
  */
 @Composable
-private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?) {
+private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?, onSearch: (() -> Unit)?) {
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
     val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
     val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
-    BisRoute(bis, home.catalog, BisOwner(characterKey, waiting)) { if (session != null) CharacterSelectorBar(session) }
+    BisRoute(bis, home.catalog, BisOwner(characterKey, waiting), onSearch) { if (session != null) CharacterSelectorBar(session) }
+}
+
+/**
+ * Guides (lane F9) for the session's current character, under the same selector as Home and BiS.
+ * A guide's Gear row asks BiS for that spec's level-60 raid list and switches to it.
+ */
+@Composable
+private fun GuidesTab(guides: GuidesFeature, account: AccountDeps?, bis: BisModel?, showBis: () -> Unit) {
+    val session = account?.session
+    val phase = session?.phase?.collectAsStateWithLifecycle()?.value
+    val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
+    val character = phase?.let { session.currentCharacter(it, picked) }
+    GuidesRoute(
+        guides,
+        character,
+        openBis = { guide ->
+            if (bis != null) {
+                bis.request(BisSelection.forGuide(guide.classSlug, guide.gear?.spec ?: guide.spec, character?.faction))
+                showBis()
+            }
+        },
+    ) { if (session != null) CharacterSelectorBar(session) }
 }
 
 /**
@@ -115,7 +182,7 @@ private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?)
  * and BiS; signed out or with sign-in off, it follows `/v1/me`'s main character.
  */
 @Composable
-private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?, reports: ReportsFeature?) {
+private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?, reports: ReportsFeature?, onSearch: (() -> Unit)?) {
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
@@ -123,7 +190,16 @@ private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?, reports: Report
     // Lane F10: Your raid night's `Open the full report` pushes the report on this stack.
     val me = (phase as? SessionPhase.SignedIn)?.me
     val reportsLink = reports?.let { RaidsReports(it, me?.let { m -> ReportsViewer.of(m, characterKey) } ?: ReportsViewer.SignedOut) }
-    RaidsRoute(raids, characterKey, reportsLink) { if (session != null) CharacterSelectorBar(session) }
+    RaidsRoute(raids, characterKey, reportsLink) { RootSearchBar(onSearch) { if (session != null) CharacterSelectorBar(session) } }
+}
+
+/** Search's owner: the session's current character and the account's character keys (`You`). */
+@Composable
+private fun searchOwner(account: AccountDeps?): SearchOwner {
+    val session = account?.session ?: return SearchOwner()
+    val phase = session.phase.collectAsStateWithLifecycle().value
+    val picked = session.pickedKey.collectAsStateWithLifecycle().value
+    return SearchOwner(session.currentCharacter(phase, picked), phase.me?.characters?.map { it.key }?.toSet().orEmpty())
 }
 
 /** The scaffold with a navigation bar, stateless so screenshot tests can drive it. */
@@ -131,17 +207,18 @@ private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?, reports: Report
 fun ForeverTabScaffold(
     selected: ForeverTab,
     onSelect: (ForeverTab) -> Unit,
+    tabs: List<ForeverTab> = ForeverTab.visible(guides = false),
     content: @Composable () -> Unit,
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-                ForeverTab.entries.forEach { tab ->
+                tabs.forEach { tab ->
                     NavigationBarItem(
                         selected = tab == selected,
                         onClick = { onSelect(tab) },
-                        icon = { Icon(tab.icon, contentDescription = null) },
+                        icon = { Icon(tab.icon.painter(), contentDescription = null) },
                         label = { TabLabel(stringResource(tab.label)) },
                     )
                 }

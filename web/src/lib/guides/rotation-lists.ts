@@ -63,7 +63,11 @@ function escapeRegExp(text: string): string {
  */
 export function clauseOf(note: string, name: string): string {
   const first = note.split(/(?<=[.!?])\s|:\s|\s--\s|\s—\s|;\s/)[0] ?? '';
-  let text = first.trim().replace(/[.\s]+$/, '');
+  // A split inside a parenthesis ("for its five-minute life (client data; Era is 60 s)") leaves
+  // the aside unclosed: the clause ends before it.
+  const open = first.lastIndexOf('(');
+  const unclosed = open >= 0 && first.indexOf(')', open) < 0;
+  let text = (unclosed ? first.slice(0, open) : first).trim().replace(/[.\s]+$/, '');
   const lead = new RegExp(`^${escapeRegExp(name)}(?:\\s+\\(rank \\d+\\))?\\s*`, 'i');
   text = text
     .replace(lead, '')
@@ -245,6 +249,8 @@ export function loadApl(spec: string): unknown {
 const BASELINE_COOLDOWN_FLOOR_MS = 180_000;
 const TALENT_COOLDOWN_FLOOR_MS = 60_000;
 const COOLDOWN_CEILING_MS = 1_800_000;
+/** A spell with a cast this long (Astral Recall's 10 s, a summoning ritual) is never a fight cooldown. */
+const MAX_COOLDOWN_CAST_MS = 3_000;
 const MAX_LEVEL = 60;
 
 interface TrainableFile {
@@ -252,6 +258,7 @@ interface TrainableFile {
     name: string;
     active: boolean;
     cooldown_ms: number;
+    cast_time_ms?: number;
     ranks: { id: number; rank: number; level: number }[];
   }[];
 }
@@ -290,7 +297,7 @@ export function specCooldowns(
   const items: (RotationItem & { cooldownMs: number; lit: boolean })[] = [];
   const seen = new Set<string>();
   for (const spell of trainables) {
-    if (!spell.active || seen.has(spell.name)) continue;
+    if (!spell.active || seen.has(spell.name) || (spell.cast_time_ms ?? 0) > MAX_COOLDOWN_CAST_MS) continue;
     const isTalent = talentNames.has(spell.name);
     if (isTalent && !litTalents.has(spell.name)) continue;
     const learned = spell.ranks.filter((rank) => rank.level <= MAX_LEVEL);

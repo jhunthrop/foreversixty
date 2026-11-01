@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A skull: a boss drop on the item page's Where it comes from rows. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd" android:pathData="M12,2C7.03,2 3,5.58 3,10c0,2.4 1.2,4.55 3,6v3c0,0.55 0.45,1 1,1h2v-2h2v2h2v-2h2v2h2c0.55,0 1,-0.45 1,-1v-3c1.8,-1.45 3,-3.6 3,-6C21,5.58 16.97,2 12,2zM8.5,13C7.67,13 7,12.33 7,11.5S7.67,10 8.5,10 10,10.67 10,11.5 9.33,13 8.5,13zM15.5,13c-0.83,0 -1.5,-0.67 -1.5,-1.5s0.67,-1.5 1.5,-1.5 1.5,0.67 1.5,1.5 -0.67,1.5 -1.5,1.5z" />
+</vector>

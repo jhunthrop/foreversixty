@@ -91,8 +91,9 @@ struct ItemIconView: View {
 }
 
 /// A spec's talent-tab icon (spec §4.3): square, the pill radius, a 1 pt line; the same loader.
+/// A missing icon (nil, or a 404) leaves the bordered tile, never a broken image or a letter.
 struct SpecIcon: View {
-    let icon: String
+    let icon: String?
     let build: String
     var size: CGFloat = 28
 
@@ -100,7 +101,7 @@ struct SpecIcon: View {
         let shape = RoundedRectangle(cornerRadius: FSRadius.pill)
         GameIconImage(icon: icon, build: build)
             // A new icon is a new image: a reused row never keeps the last one's art.
-            .id("\(build)/\(icon)")
+            .id("\(build)/\(icon ?? "")")
             .frame(width: size, height: size)
             .clipShape(shape)
             .overlay(shape.stroke(GameColors.iconLine, lineWidth: 1))

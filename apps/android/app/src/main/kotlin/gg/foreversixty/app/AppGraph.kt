@@ -11,6 +11,7 @@ import gg.foreversixty.app.auth.TokenStore
 import gg.foreversixty.app.auth.session.FixtureBrowser
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.SessionTokens
+import gg.foreversixty.app.guides.GuidesFeature
 import gg.foreversixty.app.home.HomeDependencies
 import gg.foreversixty.app.premium.DebugStorefront
 import gg.foreversixty.app.premium.PlansLink
@@ -18,7 +19,9 @@ import gg.foreversixty.app.premium.PlayStorefront
 import gg.foreversixty.app.network.ApiMode
 import kotlinx.coroutines.MainScope
 import gg.foreversixty.app.bis.BisModel
+import gg.foreversixty.app.bis.createBisDataSource
 import gg.foreversixty.app.bis.createBisModel
+import gg.foreversixty.app.search.SearchFeature
 import gg.foreversixty.app.network.AccountApi
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.AppConfigRepository
@@ -30,8 +33,12 @@ import gg.foreversixty.app.network.FileAppConfigCache
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.talents.TalentsFeature
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.UpdateGate
 import gg.foreversixty.app.raids.RaidsFeature
+import gg.foreversixty.app.raids.logic.LiveRaidService
+import gg.foreversixty.app.auth.EncryptedSecretStore
+import gg.foreversixty.app.guild.GuildExtrasFeature
 import gg.foreversixty.app.update.InstallId
 import gg.foreversixty.app.widgets.WidgetsFeature
 import gg.foreversixty.app.auth.session.me
@@ -79,6 +86,15 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         null
     }
 
+    /**
+     * The per-build static data store (lane F12): the tooltip's files, the search index and the
+     * item pages, saved for offline use until a newer build swaps them out; cleared at sign-out.
+     */
+    val statics = StaticDataStore(
+        StaticDataClient(ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))),
+        File(context.noBackupFilesDir, "static-store"),
+    )
+
     /** Lane F8: whether See plans may link to web checkout here (decision P, fail closed). */
     val plansLink = PlansLink(appConfig, DebugStorefront.reader(PlayStorefront(context))) { isAvailable(Feature.PremiumLink) }
 
@@ -89,6 +105,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         accountApi,
         apiClient,
         talents,
+        statics,
         isSimsOn = { isAvailable(Feature.Sims) },
         isReportsOn = { isAvailable(Feature.Reports) },
         isRankingsOn = { isAvailable(Feature.Rankings) },
@@ -100,12 +117,37 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         isAvailable(Feature.CharacterHome)
     }
 
+    /** Lane F16: roster, raid history, calendar sync and link; null while `guild_extras` is off. */
+    val guildExtras: GuildExtrasFeature? = if (isAvailable(Feature.GuildExtras)) {
+        GuildExtrasFeature(
+            context = context,
+            apiClient = apiClient,
+            raids = LiveRaidService(apiClient),
+            secrets = EncryptedSecretStore.create(context, CALENDAR_LINK_FILE, CALENDAR_LINK_PURPOSE),
+        )
+    } else {
+        null
+    }
+
     /** Lane F4: guild raids and sign-up; their own static client reads the active build for icons. */
     val raids = RaidsFeature(
         context = context,
         apiClient = apiClient,
         statics = StaticDataClient(ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))),
+        extras = guildExtras,
     ) { isAvailable(Feature.Raids) }
+
+    /**
+     * Lane F12: universal search and the item page, over [statics]; the build is the one the BiS
+     * tab reads (the app config's, else the bundled copy).
+     */
+    val search = SearchFeature.create(
+        context = context,
+        apiClient = apiClient,
+        statics = statics,
+        catalog = home.catalog,
+        activeBuild = createBisDataSource(context, ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)), appConfig)::activeBuild,
+    ) { isAvailable(Feature.Search) }
 
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,
@@ -125,9 +167,12 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
             home.cache.removeAll()
             raids.cache.removeAll()
             home.sims?.cache?.removeAll()
+            statics.deleteAll()
+            search.clear()
             home.reports?.cache?.removeAll()
             home.rankings?.cache?.removeAll()
             widgets?.signOut()
+            guildExtras?.clear()
         },
     )
 
@@ -162,7 +207,23 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         dataBuild = { appConfig.current?.activeBuild },
         plansLink = plansLink,
         liveSurfaces = widgets?.settings,
+        guildExtras = guildExtras,
     )
+
+    /**
+     * Lane F9: the Guides tab and its offline guides; null while the `guides` switch is off. Tier
+     * lists show only with `guide_tiers` on.
+     */
+    val guides: GuidesFeature? = if (isAvailable(Feature.Guides)) {
+        GuidesFeature.create(
+            context = context,
+            engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets)),
+            tiersOn = { isAvailable(Feature.GuideTiers) },
+            characters = { session.phase.value.me?.characters.orEmpty() },
+        )
+    } else {
+        null
+    }
 
     /**
      * BiS (lane F3): the static files through their offline cache; null while the switch is off.
@@ -179,3 +240,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         null
     }
 }
+
+/** The calendar link's sealed store (W3-C17): beside the device token, under the same keyset. */
+private const val CALENDAR_LINK_FILE = "datastore/calendar_link.bin"
+private const val CALENDAR_LINK_PURPOSE = "gg.foreversixty.app/calendar-link/v1"
