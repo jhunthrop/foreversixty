@@ -71,6 +71,7 @@ from pipeline.simdb.equip import (
     MOD_STAT_ALL,
     MOD_STAT_BY_INDEX,
     SCHOOL_ALL_MAGIC,
+    SCHOOL_POWER,
     SCHOOL_RESISTANCE,
 )
 from pipeline.spelltext import SpellText
@@ -737,9 +738,13 @@ def _equip_stats(spell: ClassicDbSpell, item_id: int, item_name: str) -> dict[st
         elif aura == AURA_MOD_DAMAGE_DONE:
             if misc == SCHOOL_ALL_MAGIC:
                 stats["spell_power"] = stats.get("spell_power", 0) + amount
-            # A single-school or physical damage-done bonus has no planner
-            # stat key either on a client row (pipeline.simdb.equip's own
-            # per-school SCHOOL_POWER split is sim-only); dropped, not raised.
+            else:
+                # Each school bit is that school's power, as on a client row
+                # (`pipeline.simdb.equip`'s split); a physical bit has no key.
+                for bit in _mask_bits(misc):
+                    key = SCHOOL_POWER.get(bit)
+                    if key:
+                        stats[key] = stats.get(key, 0) + amount
         elif aura == AURA_MOD_RESISTANCE:
             for bit in _mask_bits(misc):
                 key = SCHOOL_RESISTANCE.get(bit)
@@ -805,6 +810,12 @@ _STAT_PHRASE: dict[str, str] = {
     "spirit": "Spirit",
     "attack_power": "Attack Power",
     "spell_power": "Spell Damage",
+    "holy_power": "Holy Spell Damage",
+    "fire_power": "Fire Spell Damage",
+    "nature_power": "Nature Spell Damage",
+    "frost_power": "Frost Spell Damage",
+    "shadow_power": "Shadow Spell Damage",
+    "arcane_power": "Arcane Spell Damage",
     "healing": "Healing",
     "mp5": "Mana per 5 sec",
     "defense": "Defense",
