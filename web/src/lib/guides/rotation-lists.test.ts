@@ -250,6 +250,11 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
     expect(names).not.toContain('Blink');
   });
 
+  it('never lists a long-cast utility spell as a fight cooldown', () => {
+    const shaman = specCooldowns(BUILD, 'shaman', new Set(), spellLookupFor(BUILD, 'shaman')).map((item) => item.name);
+    expect(shaman).not.toContain('Astral Recall');
+  });
+
   it('gives Evocation its icon from the spell icon data', () => {
     expect(items.find((item) => item.name === 'Evocation')?.icon).toBe('spell_nature_purge');
   });

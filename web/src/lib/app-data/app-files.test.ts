@@ -92,6 +92,18 @@ describe.skipIf(!hasBuild)('W3-C1 generator', () => {
     }
   });
 
+  it('names the raid-build talents the rotation casts among the key talents', () => {
+    const elemental = guides.find((guide) => guide.spec === 'shaman-elemental')!;
+    expect(elemental.talents.key.map((talent) => talent.name)).toContain('Elemental Mastery');
+  });
+
+  it('never hands the apps the client placeholder icon', () => {
+    for (const guide of guides) {
+      const spells = [...(guide.rotation?.opener ?? []), ...(guide.rotation?.priority ?? []), ...(guide.rotation?.cooldowns ?? [])];
+      for (const spell of spells) expect(spell.icon, `${guide.spec} ${spell.name}`).not.toBe('inv_misc_questionmark');
+    }
+  });
+
   it('never repeats a talent text as its why', () => {
     for (const guide of guides) {
       for (const talent of guide.talents.key) {

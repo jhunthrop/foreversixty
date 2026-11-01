@@ -98,6 +98,14 @@
         "max_rank": 3,
         "text": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.50 sec.",
         "why": null
+      },
+      {
+        "name": "Elemental Mastery",
+        "icon": "spell_nature_wispheal",
+        "rank": 1,
+        "max_rank": 1,
+        "text": "Gain mastery over Fire and Lightning, reducing the cast time of Lightning Bolt and Lava Burst by 0.5 sec, and removing the cooldown from Chain Lightning. Lasts 15 sec.",
+        "why": null
       }
     ],
     "leveling_build": {
@@ -184,7 +192,7 @@
         "spell_id": 408345,
         "name": "Fire Nova",
         "rank": 5,
-        "icon": "inv_misc_questionmark",
+        "icon": null,
         "clause": "On a Clearcasting proc"
       },
       {
@@ -202,13 +210,6 @@
         "rank": null,
         "icon": "spell_nature_wispheal",
         "clause": "3 min cooldown"
-      },
-      {
-        "spell_id": 556,
-        "name": "Astral Recall",
-        "rank": null,
-        "icon": null,
-        "clause": "15 min cooldown"
       },
       {
         "spell_id": null,

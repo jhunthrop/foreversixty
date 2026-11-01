@@ -149,12 +149,16 @@ function buildOf(code: string | undefined, trees: readonly DecodedTreeView[] | u
   return { code, totals: trees.map((tree) => tree.points), tree_names: trees.map((tree) => tree.name) };
 }
 
+/** The client's own art for a spell it has no icon for (data/pipeline/icons.py). The apps draw
+ *  their neutral bordered tile for a null icon, never the red question mark. */
+export const PLACEHOLDER_ICON = 'inv_misc_questionmark';
+
 function spellOf(item: RotationItem): AppGuideSpell {
   return {
     spell_id: item.spellId ?? null,
     name: item.name,
     rank: item.rank ?? null,
-    icon: item.icon ?? null,
+    icon: item.icon === undefined || item.icon === PLACEHOLDER_ICON ? null : item.icon,
     clause: item.clause,
   };
 }
@@ -185,6 +189,29 @@ function keyTalents(prose: string, trees: readonly DecodedTreeView[]): AppGuideK
       why: repeatsText(entry.why, topRankText(trees, ref.name)) ? null : entry.why,
     })),
   );
+}
+
+/** Spec F9.2: the key talents also name every talent of the raid build that the rotation casts
+ *  (Elemental adds Elemental Mastery), after the guide's own. */
+function withCastTalents(
+  key: readonly AppGuideKeyTalent[],
+  raidTrees: readonly DecodedTreeView[],
+  rotation: AppGuideFile['rotation'],
+): AppGuideKeyTalent[] {
+  const cast = new Set([...(rotation?.priority ?? []), ...(rotation?.cooldowns ?? [])].map((spell) => spell.name));
+  const named = new Set(key.map((talent) => talent.name));
+  const added = raidTrees
+    .flatMap((tree) => tree.talents)
+    .filter((talent) => talent.rank > 0 && cast.has(talent.name) && !named.has(talent.name))
+    .map((talent) => ({
+      name: talent.name,
+      icon: talent.icon,
+      rank: talent.rank,
+      max_rank: talent.max_rank,
+      text: topRankText(raidTrees, talent.name),
+      why: null,
+    }));
+  return [...key, ...added];
 }
 
 interface RotationContext {
@@ -260,6 +287,8 @@ export function buildGuideFile(
     [...levelingTrees, ...(raidTrees ?? [])].flatMap((tree) => tree.talents.filter((t) => t.rank > 0).map((t) => t.name)),
   );
 
+  const rotation = rotationOf({ build, classSlug, spec, litTalents });
+
   const guide: Omit<AppGuideFile, 'sections'> = {
     build,
     spec,
@@ -285,11 +314,11 @@ export function buildGuideFile(
       raid: raid.filter((line) => !ROLE_LINE.test(line)),
     },
     talents: {
-      key: keyTalents(prose('Talents and builds'), levelingTrees),
+      key: withCastTalents(keyTalents(prose('Talents and builds'), levelingTrees), raidTrees ?? levelingTrees, rotation),
       leveling_build: buildOf(data.build, levelingTrees),
       raid_build: buildOf(data.raidBuild, raidTrees),
     },
-    rotation: rotationOf({ build, classSlug, spec, litTalents }),
+    rotation,
     races: raceRows.map((row) => ({ ...row, racials: [...row.racials] })),
     gear: gearOf(build, spec, classSlug, data.recommendedRaces),
     sources: data.sources.map((link) => ({ label: link.label, url: link.url, kind: link.kind })),
