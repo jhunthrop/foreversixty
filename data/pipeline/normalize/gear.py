@@ -182,15 +182,16 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     37: None,  # expertise rating
     44: None,  # armor penetration rating
     46: None,  # health regen
-    47: None,  # spell penetration
+    47: "spell_penetration",  # Doomcaller's Robes, the PvP silk spaulders (build 1.60.1.70707)
     50: None,  # mastery rating
     83: None,
-    84: None,
-    85: "fire_power",  # fire spell damage (Inferno Robe, Phoenix set; build 1.60.1.70291)
-    86: None,
-    87: None,
-    88: None,
-    89: None,
+    # School spell damage, 84 to 89 in school order (build 1.60.1.70707):
+    84: "holy_power",  # Shining set
+    85: "fire_power",  # Inferno Robe, Phoenix set (build 1.60.1.70291)
+    86: "nature_power",  # Stormcloth Boots, Green Whelp Bracers
+    87: "frost_power",  # Azure Silk set, Icicle Rod
+    88: "shadow_power",  # Shadow Hood, Orb of Soran'ruk
+    89: "arcane_power",  # Nether Force Wand, Tome of Arcane Domination
     90: None,
     91: None,
     92: None,
