@@ -42,10 +42,7 @@ async function readHead(reader: ReadableStreamDefaultReader<Bytes>, count: numbe
  * The body again, whole: the bytes already read, then the rest of the reader. Typed as
  * BufferSource chunks because that is what DecompressionStream's writable side takes.
  */
-function rejoin(
-  head: Bytes,
-  reader: ReadableStreamDefaultReader<Bytes>,
-): ReadableStream<BufferSource> {
+function rejoin(head: Bytes, reader: ReadableStreamDefaultReader<Bytes>): ReadableStream<BufferSource> {
   return new ReadableStream<BufferSource>({
     start(controller) {
       controller.enqueue(head);
