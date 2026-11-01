@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
@@ -133,10 +134,11 @@ fun CharacterContent(state: CharacterScreenState, specs: SpecCatalog, now: Insta
     val loaded = state.phase as? CharacterPhase.Loaded
     val offline = loaded?.offlineSince
     Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
-        val title = loaded?.profile?.character?.name ?: state.route.name
-        ReportsBar(title, stringResource(R.string.rank_title), actions.back) {
+        val name = loaded?.profile?.character?.name ?: state.route.name
+        // The head right under the bar names the character, so the bar title stays empty while it shows.
+        ReportsBar(if (loaded != null) "" else name, stringResource(R.string.rank_title), actions.back) {
             if (loaded != null) {
-                state.watch?.let { WatchStar(it, title, enabled = offline == null, actions.toggleWatch) }
+                state.watch?.let { WatchStar(it, name, enabled = offline == null, actions.toggleWatch) }
                 IconButton(onClick = actions.share) { Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.char_share), tint = FsColor.strong) }
             }
         }
@@ -240,7 +242,11 @@ private fun ScoreCard(profile: CharacterProfile, copy: CharacterCopy, actions: C
         return
     }
     val label = copy.scoreLabel(profile).orEmpty()
-    Column(Modifier.fillMaxWidth().primaryCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    // The link's 48 dp target supplies the space under it, so the card's bottom padding is trimmed to match the others.
+    Column(
+        Modifier.fillMaxWidth().primaryCard().padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = LINK_INSET),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
         Row(Modifier.clearAndSetSemantics { contentDescription = label }, verticalAlignment = Alignment.Top) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 MicroLabel(stringResource(R.string.char_score))
@@ -257,7 +263,7 @@ private fun ScoreCard(profile: CharacterProfile, copy: CharacterCopy, actions: C
         }
         Text(
             stringResource(R.string.char_how), style = FsType.bodyStrong, color = FsColor.gold,
-            modifier = Modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = actions.openHow).padding(vertical = 12.dp),
+            modifier = Modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = actions.openHow).wrapContentHeight(Alignment.CenterVertically),
         )
     }
 }
@@ -411,6 +417,9 @@ private fun Skeleton() {
 }
 
 private const val DISABLED_ALPHA = 0.5f
+
+/** The score card's bottom inset: the link's 48 dp row centres its words, leaving about the card's 16 dp below them. */
+private val LINK_INSET = 2.dp
 
 /** Mono at 36 sets the comma in a full cell; a little negative tracking keeps `1,830` one figure. */
 private val SCORE_TRACKING = (-0.08).em
