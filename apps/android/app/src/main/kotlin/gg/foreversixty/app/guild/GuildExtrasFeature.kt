@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guild
 
+import gg.foreversixty.app.common.Connectivity
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
@@ -81,6 +82,9 @@ class GuildExtrasFeature(
     val now: () -> Instant = Instant::now
     private val app = context.applicationContext
 
+    /** Lane F15: whether a failed refresh is offline or stale. */
+    private val connectivity = Connectivity.of(app)
+
     val calendar = CalendarSync(
         writer = AndroidCalendarWriter(app),
         store = PrefsCalendarSettingsStore(app.getSharedPreferences("forever_calendar", Context.MODE_PRIVATE)),
@@ -99,9 +103,9 @@ class GuildExtrasFeature(
     private val rosters = mutableMapOf<Long, RosterStore>()
 
     /** One roster per guild, shared by the Raids tab's row and the Roster screen. */
-    fun roster(guild: Long): RosterStore = rosters.getOrPut(guild) { RosterStore(guild, service, cache, now) }
+    fun roster(guild: Long): RosterStore = rosters.getOrPut(guild) { RosterStore(guild, service, cache, connectivity, now) }
 
-    fun history(guild: Long): HistoryPager = HistoryPager(guild, service, cache, now)
+    fun history(guild: Long): HistoryPager = HistoryPager(guild, service, cache, connectivity, now)
 
     fun link(accountKey: String): CalendarLinkModel = CalendarLinkModel(service, secrets, accountKey)
 

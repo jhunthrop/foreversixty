@@ -183,7 +183,7 @@ fun CharacterRouteScreen(
     val view = LocalView.current
     val res = LocalResources.current
     val scope = rememberCoroutineScope()
-    val store = remember(route, viewer) { CharacterStore(route, feature.service, feature.cache, viewer, feature.now) }
+    val store = remember(route, viewer) { CharacterStore(route, feature.service, feature.cache, viewer, feature.connectivity, feature.now) }
     val haptics = remember(view) { ViewRaidHaptics(view) }
     var refreshing by remember { mutableStateOf(false) }
     var tooltip by remember { mutableStateOf<ItemTooltipRequest?>(null) }

@@ -1,5 +1,8 @@
 package gg.foreversixty.app.rankings.logic
 
+import gg.foreversixty.app.common.StripDecision
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.common.CacheLimits
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,8 +16,8 @@ import java.time.Instant
 sealed interface CharacterPhase {
     data object Loading : CharacterPhase
 
-    /** [offlineSince] is set while the cached card shows because a read could not connect. */
-    data class Loaded(val profile: CharacterProfile, val offlineSince: Instant? = null) : CharacterPhase
+    /** [offlineSince] is set while the cached card shows under a strip: offline, or [stale] (W3 §5.7). */
+    data class Loaded(val profile: CharacterProfile, val offlineSince: Instant? = null, val stale: Boolean = false) : CharacterPhase
 
     /** 404, also an anonymous account's character (F11.7). */
     data object NotFound : CharacterPhase
@@ -30,6 +33,7 @@ class CharacterStore(
     private val service: RankingsService,
     private val cache: RaidCache,
     private val viewer: RankingsViewer,
+    private val connectivity: Connectivity = Connectivity.Unknown,
     private val now: () -> Instant,
 ) {
     var phase: CharacterPhase by mutableStateOf(CharacterPhase.Loading)
@@ -53,9 +57,10 @@ class CharacterStore(
 
     private fun fail(error: ApiError) {
         val cached = cache.read(cacheKey, CharacterProfile.serializer())
+        val saved = StripDecision.savedView(error, cached?.value, cached?.savedAt, now(), CacheLimits.CHARACTER, connectivity.isConnected())
         phase = when {
             error is ApiError.Server && error.status == NOT_FOUND -> CharacterPhase.NotFound
-            error is ApiError.Network && cached != null -> CharacterPhase.Loaded(cached.value, cached.savedAt)
+            saved != null -> CharacterPhase.Loaded(saved.value, saved.since, saved.stale)
             phase is CharacterPhase.Loaded -> phase
             else -> CharacterPhase.Failed
         }

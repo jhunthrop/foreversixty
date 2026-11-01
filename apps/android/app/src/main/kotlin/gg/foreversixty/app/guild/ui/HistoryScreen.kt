@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guild.ui
 
+import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +39,6 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsType
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.guild.logic.HistoryCopy
 import gg.foreversixty.app.guild.logic.Loadable
@@ -75,7 +75,7 @@ fun HistoryContent(
                 Loadable.Loading -> skeleton()
                 Loadable.Failed -> item { Box(Modifier.padding(16.dp)) { ErrorRegion(stringResource(R.string.history_error), retry) } }
                 is Loadable.Loaded -> {
-                    state.offlineSince?.let { since -> item { OfflineStrip(stringResource(R.string.offline_strip, stripTime(since))) } }
+                    state.offlineSince?.let { since -> item { SavedAnswerStrip(stripTime(since), state.stale, retry) } }
                     if (state.value.isEmpty()) item { Empty() } else nights(state.value, more, mine, copy, clock, open, loadMore)
                 }
             }

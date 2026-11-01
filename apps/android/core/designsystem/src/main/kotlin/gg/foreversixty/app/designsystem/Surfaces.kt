@@ -58,67 +58,6 @@ fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Bool
     }
 }
 
-/** The offline strip (§5.0): 36 dp, `#11151f`, the wifi-off glyph, then [text]; announced politely. */
-@Composable
-fun OfflineStrip(text: String, shape: Shape? = null) {
-    // Full width it is a band with a bottom rule; given a [shape] (inside a list) it is a card,
-    // its line all the way round so every corner rounds.
-    val ground = if (shape == null) {
-        Modifier
-            .background(GameColors.offlineGround)
-            .drawBehind { drawLine(FsColor.line, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx()) }
-    } else {
-        Modifier.background(GameColors.offlineGround, shape).border(1.dp, FsColor.line, shape)
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 36.dp)
-            .then(ground)
-            .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2)
-            .semantics { liveRegion = LiveRegionMode.Polite },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space2),
-    ) {
-        Icon(painterResource(R.drawable.ic_wifi_off), contentDescription = null, tint = FsColor.nav, modifier = Modifier.size(16.dp))
-        Text(text, style = FsType.meta, color = FsColor.nav)
-    }
-}
-
-/**
- * The new-data strip (W3 §5.7): 36 dp on a gold 10% ground, [text] and a trailing gold [action]
- * (a 48 dp target). It only ever appears above content; nothing under it changes until [onAction].
- * Lane F15 extends this same component with the stale state.
- */
-@Composable
-fun NewDataStrip(text: String, action: String, onAction: () -> Unit, failed: Boolean = false) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 36.dp)
-            .background(FsColor.gold.copy(alpha = NEW_DATA_GROUND_ALPHA))
-            .drawBehind { drawLine(FsColor.line, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx()) }
-            .padding(start = FsSpacing.space4)
-            .semantics { liveRegion = LiveRegionMode.Polite },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space2),
-    ) {
-        Text(text, style = FsType.meta, color = if (failed) FsColor.wipe else FsColor.text, modifier = Modifier.weight(1f).padding(vertical = FsSpacing.space2))
-        Text(
-            action,
-            style = FsType.bodyStrong,
-            color = FsColor.gold,
-            modifier = Modifier
-                .heightIn(min = 48.dp)
-                .clickable(role = Role.Button, onClick = onAction)
-                .padding(horizontal = FsSpacing.space4)
-                .wrapContentHeight(Alignment.CenterVertically),
-        )
-    }
-}
-
-private const val NEW_DATA_GROUND_ALPHA = 0.10f
-
 /** The primary card (`--surface-card`): the warm gradient and its gold border. */
 fun Modifier.primaryCard(): Modifier = this
     .clip(RoundedCornerShape(FsRadius.panel))

@@ -1,5 +1,8 @@
 package gg.foreversixty.app.rankings.logic
 
+import gg.foreversixty.app.common.StripDecision
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.common.CacheLimits
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -56,10 +59,11 @@ data class Board(
     val page: Int,
     val deduped: Boolean,
     val characterRank: CharacterRank?,
-    /** Set while the cached board shows because a read could not connect. */
+    /** Set while the cached board shows under a strip: offline, or [stale] (W3 §5.7). */
     val offlineSince: Instant?,
     /** False once a page read adds no row (fixture mode answers the same page). */
     val exhausted: Boolean = false,
+    val stale: Boolean = false,
 ) {
     val hasMore: Boolean get() = !exhausted && offlineSince == null && rows.size < total
 
@@ -85,6 +89,7 @@ class RankingsStore(
     private val cache: RaidCache,
     val viewer: RankingsViewer,
     private val specs: SpecCatalog,
+    private val connectivity: Connectivity = Connectivity.Unknown,
     private val now: () -> Instant,
 ) {
     var phase: BoardPhase by mutableStateOf(BoardPhase.Loading)
@@ -195,8 +200,9 @@ class RankingsStore(
             }
             is ApiResult.Failure -> {
                 val cached = cache.read(key, RankingsPage.serializer())
+                val saved = StripDecision.savedView(answer.error, cached?.value, cached?.savedAt, now(), CacheLimits.RANKINGS, connectivity.isConnected())
                 phase = when {
-                    answer.error is ApiError.Network && cached != null -> BoardPhase.Loaded(Board.of(cached.value, cached.savedAt))
+                    saved != null -> BoardPhase.Loaded(Board.of(saved.value, saved.since).copy(stale = saved.stale))
                     keepOnFailure && board != null -> phase
                     else -> BoardPhase.Failed
                 }

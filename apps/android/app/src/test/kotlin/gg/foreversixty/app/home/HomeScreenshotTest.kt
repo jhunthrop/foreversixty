@@ -74,7 +74,7 @@ class HomeScreenshotTest {
 
     @Test
     fun `F2_3 offline with the stamp`() = capture("home-offline") {
-        Answer(HomePhase.Loaded(HomeFixtures.home(), Instant.parse("2026-10-29T21:41:00Z")), "Offline. Showing what you had at Thu 9:41 pm.")
+        Answer(HomePhase.Loaded(HomeFixtures.home(), Instant.parse("2026-10-29T21:41:00Z")), "Thu 9:41 pm")
     }
 
     @Test

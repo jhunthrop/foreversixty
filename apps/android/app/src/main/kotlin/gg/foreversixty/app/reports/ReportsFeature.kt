@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports
 
+import gg.foreversixty.app.common.Connectivity
 import android.content.Context
 import android.view.View
 import androidx.activity.compose.BackHandler
@@ -86,6 +87,8 @@ class ReportsFeature(
     val now: () -> Instant = Instant::now,
     /** The zone dates and the offline stamp read in. */
     val zone: ZoneId = ZoneId.systemDefault(),
+    /** Lane F15: whether a failed refresh is offline or stale. */
+    val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     val navigator = ReportsNavigator()
 
@@ -98,12 +101,20 @@ class ReportsFeature(
     suspend fun lastRaid(): ReportRow? = ReportsStore(service, cache, now).lastRaid()
 
     companion object {
-        fun create(context: Context, apiClient: ApiClient, statics: StaticDataClient, specs: SpecCatalog, isAvailable: () -> Boolean) = ReportsFeature(
+        fun create(
+            context: Context,
+            apiClient: ApiClient,
+            statics: StaticDataClient,
+            specs: SpecCatalog,
+            isAvailable: () -> Boolean,
+            connectivity: Connectivity = Connectivity.Unknown,
+        ) = ReportsFeature(
             service = LiveReportsService(apiClient),
             cache = FileRaidCache(File(context.filesDir, "reports")),
             specs = specs,
             build = { statics.activeBuild().dataOrNull()?.build },
             isAvailable = isAvailable,
+            connectivity = connectivity,
         )
     }
 }
@@ -114,7 +125,7 @@ class ReportsFeature(
 fun ReportsRoute(feature: ReportsFeature, viewer: ReportsViewer, signIn: () -> Unit, onBack: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val store = remember(feature) { ReportsStore(feature.service, feature.cache, feature.now) }
+    val store = remember(feature) { ReportsStore(feature.service, feature.cache, feature.now, connectivity = feature.connectivity) }
     var refreshing by remember { mutableStateOf(false) }
     LaunchedEffect(store) { store.load() }
     val route = feature.navigator.report
@@ -146,7 +157,7 @@ fun ReportRouteScreen(feature: ReportsFeature, route: ReportRoute, viewer: Repor
     val context = LocalContext.current
     val view = LocalView.current
     val scope = rememberCoroutineScope()
-    val store = remember(route.id, viewer) { ReportStore(route.id, feature.service, feature.cache, viewer, feature.now) }
+    val store = remember(route.id, viewer) { ReportStore(route.id, feature.service, feature.cache, viewer, feature.connectivity, feature.now) }
     val build by produceState<String?>(null, feature) { value = feature.iconBuild() }
     var refreshing by remember { mutableStateOf(false) }
     var active by remember { mutableStateOf(true) }

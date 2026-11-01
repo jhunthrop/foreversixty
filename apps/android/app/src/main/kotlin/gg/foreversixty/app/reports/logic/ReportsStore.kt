@@ -1,5 +1,8 @@
 package gg.foreversixty.app.reports.logic
 
+import gg.foreversixty.app.common.StripDecision
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.common.CacheLimits
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -54,8 +57,9 @@ data class ReportsContent(
     val rows: List<ReportRow>,
     val total: Int,
     val page: Int,
-    /** Set while the cached answer shows because a refresh could not connect. */
+    /** Set while the cached answer shows under a strip: offline, or [stale] (W3 §5.7). */
     val offlineSince: Instant?,
+    val stale: Boolean = false,
 ) {
     val hasMorePages: Boolean get() = rows.size < total
 }
@@ -73,6 +77,7 @@ class ReportsStore(
     private val cache: RaidCache,
     private val now: () -> Instant,
     initial: ReportsPhase = ReportsPhase.Loading,
+    private val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     var phase: ReportsPhase by mutableStateOf(initial)
         private set
@@ -99,9 +104,10 @@ class ReportsStore(
 
     private fun fail(error: ApiError) {
         val cached = cache.read(CACHE_KEY, ReportList.serializer())
+        val saved = StripDecision.savedView(error, cached?.value, cached?.savedAt, now(), CacheLimits.REPORTS, connectivity.isConnected())
         phase = when {
             error is ApiError.Server && error.isUnauthorized -> ReportsPhase.SignedOut
-            error is ApiError.Network && cached != null -> ReportsPhase.Loaded(cached.value.content(cached.savedAt))
+            saved != null -> ReportsPhase.Loaded(saved.value.content(saved.since).copy(stale = saved.stale))
             // A refresh that fails keeps what is drawn; only a first load shows the error.
             content != null -> phase
             else -> ReportsPhase.Failed

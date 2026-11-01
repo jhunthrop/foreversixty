@@ -1,5 +1,9 @@
 package gg.foreversixty.app.home
 
+import gg.foreversixty.app.common.CacheLimits
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.common.FailedRefresh
+import gg.foreversixty.app.common.StripDecision
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.network.ApiClient
@@ -103,8 +107,11 @@ sealed interface HomePhase {
     /** First load, nothing cached: skeletons. */
     data object Loading : HomePhase
 
-    /** An answer; [offlineSince] is the cached answer's time when the last fetch had no connection. */
-    data class Loaded(val home: CharacterHome, val offlineSince: Instant? = null) : HomePhase
+    /**
+     * An answer; [offlineSince] is the saved answer's time while it shows under a strip: offline, or
+     * [stale] when the server did not answer and the answer is past its limit (W3 §5.7).
+     */
+    data class Loaded(val home: CharacterHome, val offlineSince: Instant? = null, val stale: Boolean = false) : HomePhase
 
     /** The server failed. A cached answer still feeds the Next rows. */
     data class Failed(val cached: CharacterHome?) : HomePhase
@@ -119,6 +126,7 @@ class HomeStore(
     private val fetch: suspend (HomeCharacter) -> ApiResult<CharacterHome>,
     private val cache: HomeCache,
     private val now: () -> Instant = Instant::now,
+    private val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     private val state = MutableStateFlow<HomePhase>(HomePhase.Loading)
     val phase: StateFlow<HomePhase> = state.asStateFlow()
@@ -156,10 +164,12 @@ class HomeStore(
     }
 
     private fun fail(error: ApiError, cached: HomeCacheEntry?) {
-        state.value = if (error is ApiError.Network && cached != null) {
-            HomePhase.Loaded(cached.home, offlineSince = cached.fetchedAt)
-        } else {
-            HomePhase.Failed(cached?.home)
+        val decision = StripDecision.afterFailure(error, cached?.fetchedAt, now(), CacheLimits.HOME, connectivity.isConnected())
+        state.value = when (decision) {
+            is FailedRefresh.Offline -> HomePhase.Loaded(requireNotNull(cached).home, offlineSince = decision.since)
+            is FailedRefresh.Stale -> HomePhase.Loaded(requireNotNull(cached).home, offlineSince = decision.since, stale = true)
+            FailedRefresh.KeepSaved -> HomePhase.Loaded(requireNotNull(cached).home)
+            FailedRefresh.Error -> HomePhase.Failed(cached?.home)
         }
     }
 
@@ -167,9 +177,10 @@ class HomeStore(
         const val STALE_AFTER_MILLIS = 5L * 60L * 1000L
 
         /** The live store: `GET /v1/characters/{region}/{ruleset}/{name}/home`. */
-        fun live(client: ApiClient, cache: HomeCache) = HomeStore(
+        fun live(client: ApiClient, cache: HomeCache, connectivity: Connectivity = Connectivity.Unknown) = HomeStore(
             fetch = { client.send(ApiEndpoints.getCharacterHome(it.region, it.ruleset, it.slug)) },
             cache = cache,
+            connectivity = connectivity,
         )
     }
 }

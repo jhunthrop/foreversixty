@@ -1,5 +1,6 @@
 package gg.foreversixty.app.rankings.ui
 
+import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -63,7 +64,6 @@ import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.primaryCard
@@ -128,7 +128,7 @@ fun RankingsContent(state: RankingsScreenState, now: Instant, actions: RankingsA
     Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
         ReportsBar(stringResource(R.string.rank_title), stringResource(R.string.tab_home), actions.back)
         val board = (state.phase as? BoardPhase.Loaded)?.board
-        board?.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now, zone))) }
+        board?.offlineSince?.let { SavedAnswerStrip(OfflineStamp.format(it, now, zone), board.stale, actions.retry) }
         Column(Modifier.padding(horizontal = 16.dp).padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             when (val phase = state.phase) {
                 BoardPhase.Loading -> Skeleton(state.viewer.signedIn)

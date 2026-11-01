@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +25,6 @@ import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.model.Report
@@ -69,7 +69,7 @@ fun ReportContent(state: ReportScreenState, now: Instant, actions: ReportActions
             ReportPhase.Failed -> ErrorRegion(stringResource(R.string.report_failed), actions.retry)
             ReportPhase.NotYours -> Notice(stringResource(R.string.report_notYours_title), stringResource(R.string.report_notYours_body), FsColor.strong)
             is ReportPhase.Loaded -> {
-                phase.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now, zone))) }
+                phase.offlineSince?.let { SavedAnswerStrip(OfflineStamp.format(it, now, zone), phase.stale, actions.retry) }
                 Loaded(phase.report, state, now, copy, actions)
             }
         }

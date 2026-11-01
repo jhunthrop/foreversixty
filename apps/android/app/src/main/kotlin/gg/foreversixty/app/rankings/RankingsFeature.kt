@@ -1,5 +1,6 @@
 package gg.foreversixty.app.rankings
 
+import gg.foreversixty.app.common.Connectivity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -66,6 +67,8 @@ class RankingsFeature(
     private val isAvailable: () -> Boolean,
     val now: () -> Instant = Instant::now,
     val zone: ZoneId = ZoneId.systemDefault(),
+    /** Lane F15: whether a failed refresh is offline or stale. */
+    val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     val navigator = RankingsNavigator()
 
@@ -74,7 +77,7 @@ class RankingsFeature(
 
     suspend fun iconBuild(): String? = build()
 
-    fun store(viewer: RankingsViewer) = RankingsStore(service, cache, viewer, specs, now)
+    fun store(viewer: RankingsViewer) = RankingsStore(service, cache, viewer, specs, connectivity, now)
 
     /**
      * Home's Rankings row (spec F11.1): one read of the current character's board with its
@@ -96,6 +99,7 @@ class RankingsFeature(
             specs: SpecCatalog,
             catalog: ItemCatalog,
             isAvailable: () -> Boolean,
+            connectivity: Connectivity = Connectivity.Unknown,
         ) = RankingsFeature(
             service = LiveRankingsService(apiClient),
             cache = FileRaidCache(File(context.filesDir, "rankings")),
@@ -103,6 +107,7 @@ class RankingsFeature(
             catalog = catalog,
             build = { statics.activeBuild().dataOrNull()?.build },
             isAvailable = isAvailable,
+            connectivity = connectivity,
         )
 
         /** The system share sheet with a web link. */

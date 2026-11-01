@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalView
+import gg.foreversixty.app.common.Connectivity
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.guild.GuildExtrasFeature
 import gg.foreversixty.app.guild.GuildExtrasRows
@@ -124,6 +125,9 @@ class RaidsFeature(
     val navigator = RaidsNavigator()
     val now: () -> Instant = Instant::now
 
+    /** Lane F15: whether a failed refresh is offline or stale. */
+    val connectivity: Connectivity = Connectivity.of(context)
+
     /** The Raids tab ships dark behind `raids` (AppGraph.isAvailable: on in debug and fixture builds). */
     val enabled: Boolean get() = isAvailable()
 
@@ -161,7 +165,7 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: Rai
             hold = HOLD,
         )
     }
-    val tab = remember(feature) { RaidsTabModel(feature.service, feature.cache, res, feature.now) }
+    val tab = remember(feature) { RaidsTabModel(feature.service, feature.cache, res, feature.now, connectivity = feature.connectivity) }
     var next by remember { mutableStateOf<SignupController?>(null) }
     var iconBuild by remember { mutableStateOf<String?>(null) }
 
@@ -237,7 +241,7 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: Rai
                 )
             }
             is RaidsDestination.Raid -> {
-                val model = remember(top) { RaidPageModel(top.guild, top.raid, deps, feature.cache, top.open, replaced) }
+                val model = remember(top) { RaidPageModel(top.guild, top.raid, deps, feature.cache, top.open, replaced, feature.connectivity) }
                 RaidPageScreen(
                     model = model,
                     clock = clock,
@@ -251,7 +255,7 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: Rai
                 )
             }
             is RaidsDestination.Night -> {
-                val model = remember(top) { RaidNightModel(top.raid, feature.service, feature.cache, feature.now) }
+                val model = remember(top) { RaidNightModel(top.raid, feature.service, feature.cache, feature.now, connectivity = feature.connectivity) }
                 val openReport: ((String) -> Unit)? = reports?.let { { id -> feature.navigator.push(RaidsDestination.Report(id)) } }
                 RaidNightScreen(model, clock, feature.now, openReport) { feature.navigator.pop() }
             }

@@ -41,8 +41,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import gg.foreversixty.app.R
+import gg.foreversixty.app.common.SavedAnswerStrip
 import gg.foreversixty.app.common.FactionMark
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.model.RaidNightRow
@@ -74,8 +74,8 @@ fun RaidsTabContentView(
     guildRows: @Composable (RaidsTabContent) -> Unit = {},
 ) {
     Column(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
-        (state as? RaidsTabState.Loaded)?.content?.offlineSince?.let {
-            OfflineStrip(stringResource(R.string.offline_strip, clock.stripTime(it, now())))
+        (state as? RaidsTabState.Loaded)?.content?.let { content ->
+            content.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), content.stale, retry) }
         }
         Column(verticalArrangement = Arrangement.spacedBy(22.dp), modifier = Modifier.padding(16.dp)) {
             when (state) {

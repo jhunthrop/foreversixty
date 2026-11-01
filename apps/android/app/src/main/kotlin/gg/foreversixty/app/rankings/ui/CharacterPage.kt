@@ -1,5 +1,6 @@
 package gg.foreversixty.app.rankings.ui
 
+import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -59,7 +60,6 @@ import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.primaryCard
@@ -138,11 +138,11 @@ fun CharacterContent(state: CharacterScreenState, specs: SpecCatalog, now: Insta
         // The head right under the bar names the character, so the bar title stays empty while it shows.
         ReportsBar(if (loaded != null) "" else name, stringResource(R.string.rank_title), actions.back) {
             if (loaded != null) {
-                state.watch?.let { WatchStar(it, name, enabled = offline == null, actions.toggleWatch) }
+                state.watch?.let { WatchStar(it, name, enabled = offline == null || loaded.stale, actions.toggleWatch) }
                 IconButton(onClick = actions.share) { Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.char_share), tint = FsColor.strong) }
             }
         }
-        offline?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now, zone))) }
+        offline?.let { SavedAnswerStrip(OfflineStamp.format(it, now, zone), loaded.stale, actions.retry) }
         Column(Modifier.padding(horizontal = 16.dp).padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(22.dp)) {
             when (val phase = state.phase) {
                 CharacterPhase.Loading -> Skeleton()

@@ -1,5 +1,8 @@
 package gg.foreversixty.app.guild.logic
 
+import gg.foreversixty.app.common.StripDecision
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.common.CacheLimits
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,7 +13,6 @@ import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.ApiEndpoints
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.raids.logic.RaidCache
-import gg.foreversixty.app.raids.logic.SignupRefusal
 import java.time.Instant
 import kotlinx.serialization.KSerializer
 
@@ -33,7 +35,8 @@ class LiveGuildService(private val client: ApiClient) : GuildService {
 /** A screen's one load: the skeleton, the answer (possibly cached under the strip), or the error. */
 sealed interface Loadable<out T> {
     data object Loading : Loadable<Nothing>
-    data class Loaded<T>(val value: T, val offlineSince: Instant? = null) : Loadable<T>
+    /** [offlineSince] is set while the saved answer shows under a strip: offline, or [stale] (W3 §5.7). */
+    data class Loaded<T>(val value: T, val offlineSince: Instant? = null, val stale: Boolean = false) : Loadable<T>
     data object Failed : Loadable<Nothing>
 }
 
@@ -46,6 +49,7 @@ class CacheFirst<T>(
     private val serializer: KSerializer<T>,
     private val cache: RaidCache,
     private val now: () -> Instant,
+    private val connectivity: Connectivity = Connectivity.Unknown,
     private val fetch: suspend () -> ApiResult<T>,
 ) {
     var state: Loadable<T> by mutableStateOf(Loadable.Loading)
@@ -60,8 +64,9 @@ class CacheFirst<T>(
             }
             is ApiResult.Failure -> {
                 val cached = cache.read(key, serializer)
+                val saved = StripDecision.savedView(result.error, cached?.value, cached?.savedAt, now(), CacheLimits.GUILD, connectivity.isConnected())
                 when {
-                    SignupRefusal.isOffline(result.error) && cached != null -> Loadable.Loaded(cached.value, cached.savedAt)
+                    saved != null -> Loadable.Loaded(saved.value, saved.since, saved.stale)
                     state is Loadable.Loaded -> state
                     else -> Loadable.Failed
                 }

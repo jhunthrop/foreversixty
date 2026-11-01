@@ -1,5 +1,8 @@
 package gg.foreversixty.app.sims.logic
 
+import gg.foreversixty.app.common.StripDecision
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.common.CacheLimits
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,11 +44,12 @@ data class SimsContent(
     /** `GET /v1/sims`'s total, so the list knows whether another page exists. */
     val total: Int,
     val page: Int,
-    /** Set while the cached answer shows because a refresh could not connect. */
+    /** Set while the cached answer shows under a strip: offline, or [stale] (W3 §5.7). */
     val offlineSince: Instant?,
     /** A section that did not load says so on its own; the other keeps its rows (spec F5 States). */
     val serverFailed: Boolean = false,
     val mineFailed: Boolean = false,
+    val stale: Boolean = false,
 ) {
     val hasMorePages: Boolean get() = mine.size < total
 }
@@ -70,6 +74,7 @@ class SimsStore(
     initial: SimsPhase = SimsPhase.Loading,
     /** Lane F14: each in-flight server run's poll answer, for its ongoing notification. */
     private val onProgress: suspend (SimRow, SimProgress) -> Unit = { _, _ -> },
+    private val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     var phase: SimsPhase by mutableStateOf(initial)
         private set
@@ -104,8 +109,9 @@ class SimsStore(
 
     private fun fail(error: ApiError, server: SimList?, mine: SimList?) {
         val cached = cache.read(CACHE_KEY, CachedSims.serializer())
-        if (error is ApiError.Network && cached != null) {
-            phase = SimsPhase.Loaded(cached.value.content(cached.savedAt))
+        val saved = StripDecision.savedView(error, cached?.value, cached?.savedAt, now(), CacheLimits.SIMS, connectivity.isConnected())
+        if (saved != null) {
+            phase = SimsPhase.Loaded(saved.value.content(saved.since).copy(stale = saved.stale))
         } else if (server != null || mine != null) {
             phase = SimsPhase.Loaded(
                 SimsContent(

@@ -42,7 +42,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
-import gg.foreversixty.app.designsystem.OfflineStrip
+import gg.foreversixty.app.common.SavedAnswerStrip
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.model.RaidNightBest
@@ -73,7 +73,7 @@ fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant,
             windowInsets = WindowInsets(0, 0, 0, 0),
         )
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            model.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, clock.stripTime(it, now()))) }
+            model.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), model.stale, onRetry = { scope.launch { model.load() } }) }
             Column(verticalArrangement = Arrangement.spacedBy(22.dp), modifier = Modifier.padding(16.dp)) {
                 when (val state = model.state) {
                     RaidNightModel.State.Loading -> Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.clearAndSetSemantics {}) {

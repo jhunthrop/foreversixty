@@ -194,6 +194,17 @@ class HomeStoreTest {
     }
 
     @Test
+    fun `connected, a server outage past five minutes keeps the answer under the stale strip`() = runTest {
+        val home = HomeFixtures.home()
+        val at = HomeFixtures.now.minusSeconds(600)
+        val cache = MemoryHomeCache(mapOf(HomeFixtures.velaren.key to HomeCacheEntry(home, at.toEpochMilli())))
+        val failure = ApiResult.Failure(ApiError.Server(503, "unavailable", "x", emptyMap(), "r"))
+        val store = HomeStore(fetch = { failure }, cache = cache, now = { HomeFixtures.now }, connectivity = gg.foreversixty.app.common.Connectivity.fixed(true))
+        store.load(HomeFixtures.velaren)
+        assertEquals(HomePhase.Loaded(home, offlineSince = at, stale = true), store.phase.value)
+    }
+
+    @Test
     fun `no connection and nothing cached is the error state`() = runTest {
         val store = store(ApiResult.Failure(ApiError.Network(IOException("offline"))), MemoryHomeCache())
         store.load(HomeFixtures.velaren)

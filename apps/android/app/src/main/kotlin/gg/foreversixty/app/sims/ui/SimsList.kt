@@ -1,5 +1,6 @@
 package gg.foreversixty.app.sims.ui
 
+import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,7 +38,6 @@ import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
-import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.model.SimProgress
 import gg.foreversixty.app.model.SimRow
@@ -77,7 +77,7 @@ fun SimsList(phase: SimsPhase, state: SimsListState, specs: SpecCatalog, build: 
             SimsPhase.Failed -> { ScreenTitle(); ErrorBlock(stringResource(R.string.sims_failedLoad), actions.retry) }
             is SimsPhase.Loaded -> {
                 ScreenTitle()
-                phase.content.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now))) }
+                phase.content.offlineSince?.let { SavedAnswerStrip(OfflineStamp.format(it, now), phase.content.stale, actions.retry) }
                 Loaded(phase.content, state, specs, build, now, copy, actions)
             }
         }
@@ -124,7 +124,7 @@ private fun ServerSection(content: SimsContent, state: SimsListState, specs: Spe
                         ServerRunRowView(
                             SimRowFace(row, specs, now, copy), copy, now, build,
                             progress = id?.let { state.progress[it] }, rerun = id?.let { state.rerun[it] } ?: RerunStatus.Idle,
-                            offline = content.offlineSince != null, mayLinkToPlans = state.mayLinkToPlans, actions = actions,
+                            offline = content.offlineSince != null && !content.stale, mayLinkToPlans = state.mayLinkToPlans, actions = actions,
                         )
                     }
                     if (hasMore) {

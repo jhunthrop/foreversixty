@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guild.logic
 
+import gg.foreversixty.app.common.Connectivity
 import android.content.res.Resources
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -101,8 +102,14 @@ class HistoryCopy(private val res: Resources, private val clock: RaidClock) {
 enum class MoreState { Idle, Loading, Failed, End }
 
 /** `GET /v1/guilds/{id}/raids` paged by `next_cursor`, 20 a page; the first page is cached. */
-class HistoryPager(val guild: Long, private val service: GuildService, cache: RaidCache, now: () -> Instant) {
-    private val first = CacheFirst("guild-$guild-history", GuildRaids.serializer(), cache, now) { service.history(guild, null) }
+class HistoryPager(
+    val guild: Long,
+    private val service: GuildService,
+    cache: RaidCache,
+    connectivity: Connectivity = Connectivity.Unknown,
+    now: () -> Instant,
+) {
+    private val first = CacheFirst("guild-$guild-history", GuildRaids.serializer(), cache, now, connectivity) { service.history(guild, null) }
     private var extra by mutableStateOf<List<RaidNightRow>>(emptyList())
     private var cursor: String? = null
 
@@ -113,7 +120,7 @@ class HistoryPager(val guild: Long, private val service: GuildService, cache: Ra
         get() = when (val page = first.state) {
             Loadable.Loading -> Loadable.Loading
             Loadable.Failed -> Loadable.Failed
-            is Loadable.Loaded -> Loadable.Loaded(page.value.rows + extra, page.offlineSince)
+            is Loadable.Loaded -> Loadable.Loaded(page.value.rows + extra, page.offlineSince, page.stale)
         }
 
     suspend fun load() {

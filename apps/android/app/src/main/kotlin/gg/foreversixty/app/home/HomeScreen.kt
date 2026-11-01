@@ -34,6 +34,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
+import gg.foreversixty.app.common.Connectivity
 import gg.foreversixty.app.account.CharacterSelectorBar
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.me
@@ -99,6 +100,8 @@ class HomeDependencies(
     private val reportsFeature: ReportsFeature? = null,
     /** Lane F11: Rankings and character pages, pushed from the Rankings row; null while its switch is off. */
     private val rankingsFeature: RankingsFeature? = null,
+    /** Lane F15: whether a failed refresh is offline or stale. */
+    val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     val sims: SimsFeature? get() = simsFeature?.takeIf { it.enabled }
 
@@ -120,11 +123,12 @@ class HomeDependencies(
             isReportsOn: () -> Boolean = { false },
             isRankingsOn: () -> Boolean = { false },
             mayLinkToPlans: suspend () -> Boolean = { false },
+            connectivity: Connectivity = Connectivity.of(context),
             isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
             val catalog = ItemCatalog(statics)
-            val sims = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn, mayLinkToPlans)
+            val sims = SimsFeature(context, client, StaticDataClient(engine), catalog, isSimsOn, mayLinkToPlans, connectivity)
             return HomeDependencies(
                 accountApi = accountApi,
                 client = client,
@@ -133,8 +137,9 @@ class HomeDependencies(
                 talents = talents,
                 isOn = isOn,
                 simsFeature = sims,
-                reportsFeature = ReportsFeature.create(context, client, StaticDataClient(engine), sims.specs, isReportsOn),
-                rankingsFeature = RankingsFeature.create(context, client, StaticDataClient(engine), sims.specs, catalog, isRankingsOn),
+                reportsFeature = ReportsFeature.create(context, client, StaticDataClient(engine), sims.specs, isReportsOn, connectivity),
+                rankingsFeature = RankingsFeature.create(context, client, StaticDataClient(engine), sims.specs, catalog, isRankingsOn, connectivity),
+                connectivity = connectivity,
             )
         }
     }
@@ -220,7 +225,7 @@ fun HomeCharacterScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val store = remember(character.key) { HomeStore.live(dependencies.client, dependencies.cache) }
+    val store = remember(character.key) { HomeStore.live(dependencies.client, dependencies.cache, dependencies.connectivity) }
     val phase by store.phase.collectAsStateWithLifecycle()
     var refreshing by remember { mutableStateOf(false) }
     var showGear by rememberSaveable { mutableStateOf(false) }
@@ -249,9 +254,7 @@ fun HomeCharacterScreen(
         value = rankingsFeature?.let { HomeRankings(it.homeLine(reports.rankings, res)) }
     }
     val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res, talentStatus, newestReport, rankingsLine)
-    val offline = (phase as? HomePhase.Loaded)?.offlineSince?.let {
-        stringResource(R.string.offline_strip, HomeTime(Instant.now()).stamp(it))
-    }
+    val stripStamp = (phase as? HomePhase.Loaded)?.offlineSince?.let { HomeTime(Instant.now()).stamp(it) }
     val openItem = { look: ItemLook, sourceLine: String?, wornId: Int? ->
         home?.let { tooltip = HomePresenter.tooltipRequest(look, it, character, res, sourceLine, wornId) }
     }
@@ -283,7 +286,7 @@ fun HomeCharacterScreen(
                     refreshing = false
                 }
             }) {
-                HomeAnswer(phase, presenter, home?.dataBuild.orEmpty(), offline) { intent ->
+                HomeAnswer(phase, presenter, home?.dataBuild.orEmpty(), stripStamp) { intent ->
                     when (intent) {
                         is HomeIntent.OpenItem -> openItem(intent.look, intent.sourceLine, intent.wornId)
                         HomeIntent.OpenGear -> showGear = true

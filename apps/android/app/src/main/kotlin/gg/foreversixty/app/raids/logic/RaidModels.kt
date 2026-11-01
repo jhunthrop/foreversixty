@@ -5,6 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import gg.foreversixty.app.R
+import gg.foreversixty.app.common.CacheLimits
+import gg.foreversixty.app.common.Connectivity
+import gg.foreversixty.app.common.FailedRefresh
+import gg.foreversixty.app.common.StripDecision
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.AccountGuild
 import gg.foreversixty.app.model.CharacterGuild
@@ -69,8 +73,9 @@ data class RaidsTabContent(
     val nights: List<RaidNightRow>,
     /** The officer's waiting count; null for anyone who cannot approve. */
     val waiting: Int?,
-    /** Set while the cached answer shows because a refresh could not connect. */
+    /** Set while the cached answer shows under a strip: offline, or [stale] (W3 §5.7). */
     val offlineSince: Instant?,
+    val stale: Boolean = false,
 ) {
     fun replacing(raid: RaidView) = copy(planned = planned.map { if (it.id == raid.id) raid else it })
 }
@@ -82,6 +87,7 @@ class RaidsTabModel(
     private val res: Resources,
     private val now: () -> Instant,
     initial: RaidsTabState = RaidsTabState.Loading,
+    private val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     var state: RaidsTabState by mutableStateOf(initial)
         private set
@@ -138,10 +144,11 @@ class RaidsTabModel(
             }
             is ApiResult.Failure -> {
                 val cached = cache.read(key, GuildRaids.serializer())
-                if (SignupRefusal.isOffline(result.error) && cached != null) {
-                    RaidsTabState.Loaded(content(head, character, cached.value, cached.savedAt))
-                } else {
-                    RaidsTabState.Failed
+                when (val decision = StripDecision.afterFailure(result.error, cached?.savedAt, now(), CacheLimits.RAIDS, connectivity.isConnected())) {
+                    is FailedRefresh.Offline -> RaidsTabState.Loaded(content(head, character, requireNotNull(cached).value, decision.since))
+                    is FailedRefresh.Stale -> RaidsTabState.Loaded(content(head, character, requireNotNull(cached).value, decision.since).copy(stale = true))
+                    FailedRefresh.KeepSaved -> RaidsTabState.Loaded(content(head, character, requireNotNull(cached).value, null))
+                    FailedRefresh.Error -> RaidsTabState.Failed
                 }
             }
         }
@@ -180,6 +187,7 @@ class RaidPageModel(
     private val cache: RaidCache,
     private var openAction: RaidOpenAction? = null,
     private val onChange: (RaidView) -> Unit = {},
+    private val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     sealed interface State {
         data object Loading : State
@@ -191,6 +199,10 @@ class RaidPageModel(
     var state: State by mutableStateOf(State.Loading)
         private set
     var offlineSince: Instant? by mutableStateOf(null)
+        private set
+
+    /** The strip over [offlineSince] is the stale one (W3 §5.7): connected, the server did not answer. */
+    var stale: Boolean by mutableStateOf(false)
         private set
 
     private val key get() = "guild-$guild-raid-$raidId"
@@ -214,6 +226,7 @@ class RaidPageModel(
             is ApiResult.Success -> {
                 cache.write(key, RaidView.serializer(), result.data, deps.now())
                 offlineSince = null
+                stale = false
                 show(result.data)
                 runOpenAction()
             }
@@ -247,9 +260,17 @@ class RaidPageModel(
     private fun fail(error: ApiError) {
         val loaded = state as? State.Loaded
         if (loaded != null) {
-            if (SignupRefusal.isOffline(error)) {
-                loaded.controller.offline = true
-                offlineSince = cache.read(key, RaidView.serializer())?.savedAt ?: deps.now()
+            val savedAt = cache.read(key, RaidView.serializer())?.savedAt ?: deps.now()
+            when (val decision = StripDecision.afterFailure(error, savedAt, deps.now(), CacheLimits.RAIDS, connectivity.isConnected())) {
+                is FailedRefresh.Offline -> {
+                    loaded.controller.offline = true
+                    offlineSince = decision.since
+                }
+                is FailedRefresh.Stale -> {
+                    offlineSince = decision.since
+                    stale = true
+                }
+                FailedRefresh.KeepSaved, FailedRefresh.Error -> Unit
             }
             return
         }
@@ -289,6 +310,7 @@ class RaidNightModel(
     private val cache: RaidCache,
     private val now: () -> Instant,
     initial: State = State.Loading,
+    private val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     sealed interface State {
         data object Loading : State
@@ -301,6 +323,10 @@ class RaidNightModel(
     var offlineSince: Instant? by mutableStateOf(null)
         private set
 
+    /** The strip over [offlineSince] is the stale one (W3 §5.7). */
+    var stale: Boolean by mutableStateOf(false)
+        private set
+
     private val key get() = "night-$raidId"
 
     suspend fun load() {
@@ -309,17 +335,19 @@ class RaidNightModel(
             is ApiResult.Success -> {
                 cache.write(key, RaidNightSummary.serializer(), result.data, now())
                 offlineSince = null
+                stale = false
                 state = State.Loaded(result.data)
             }
             is ApiResult.Failure -> {
                 val cached = cache.read(key, RaidNightSummary.serializer())
-                when {
-                    SignupRefusal.isOffline(result.error) && cached != null -> {
-                        offlineSince = cached.savedAt
-                        state = State.Loaded(cached.value)
+                when (val decision = StripDecision.afterFailure(result.error, cached?.savedAt, now(), CacheLimits.RAIDS, connectivity.isConnected())) {
+                    is FailedRefresh.Offline, is FailedRefresh.Stale -> {
+                        offlineSince = cached?.savedAt
+                        stale = decision is FailedRefresh.Stale
+                        cached?.let { state = State.Loaded(it.value) }
                     }
-                    state is State.Loaded -> Unit
-                    else -> state = State.Failed
+                    FailedRefresh.KeepSaved -> cached?.let { state = State.Loaded(it.value) }
+                    FailedRefresh.Error -> if (state !is State.Loaded) state = State.Failed
                 }
             }
         }

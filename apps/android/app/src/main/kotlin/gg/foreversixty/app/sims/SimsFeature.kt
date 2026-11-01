@@ -1,5 +1,6 @@
 package gg.foreversixty.app.sims
 
+import gg.foreversixty.app.common.Connectivity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.BackHandler
@@ -83,6 +84,8 @@ class SimsFeature(
     private val isAvailable: () -> Boolean,
     /** Lane F8's rule: See plans only where the storefront may link to web checkout (fail closed). */
     val mayLinkToPlans: suspend () -> Boolean = { false },
+    /** Lane F15: whether a failed refresh is offline or stale. */
+    val connectivity: Connectivity = Connectivity.Unknown,
 ) {
     val service: SimsService = LiveSimsService(apiClient)
 
@@ -114,10 +117,10 @@ fun SimsRoute(feature: SimsFeature, entitled: Boolean, onBack: () -> Unit) {
     val scope = rememberCoroutineScope()
     val res = LocalResources.current
     val store = remember(feature) {
-        SimsStore(feature.service, feature.cache, feature.now) { row, progress ->
+        SimsStore(feature.service, feature.cache, feature.now, connectivity = feature.connectivity, onProgress = { row, progress ->
             val face = SimRowFace(row, feature.specs, feature.now(), SimsCopy(res))
             feature.liveProgress?.invoke(row, progress, "${face.specName} · ${face.kind}")
-        }
+        })
     }
     val build by produceState<String?>(null, feature) { value = feature.iconBuild() }
     val plans by produceState(false, feature) { value = feature.mayLinkToPlans() }
@@ -170,7 +173,7 @@ private fun SimResultRoute(feature: SimsFeature, route: SimResultRoute, markSeen
     val res = LocalResources.current
     val scope = rememberCoroutineScope()
     val store = remember(route.id) {
-        SimResultStore(route.id, route.row, feature.service, feature.cache, feature.specs, res, feature.now, markSeen)
+        SimResultStore(route.id, route.row, feature.service, feature.cache, feature.specs, res, feature.now, feature.connectivity, markSeen)
     }
     val build by produceState<String?>(null, feature) { value = feature.iconBuild() }
     var tooltip by remember { mutableStateOf<ItemTooltipRequest?>(null) }
