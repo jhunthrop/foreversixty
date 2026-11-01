@@ -30,6 +30,14 @@ def build_parser() -> argparse.ArgumentParser:
         "fails when there is no cache",
     )
 
+    pc = sub.add_parser(
+        "push-check",
+        help="whether wago.tools lists a hotfix push for the build that its committed "
+        "hotfix-push.json was not layered from; prints moved=true|false and writes it "
+        "to GITHUB_OUTPUT when set",
+    )
+    pc.add_argument("--build", required=True)
+
     fw = sub.add_parser(
         "fetch-wowhead",
         help="download wowhead's Forever gear planner, the items the client's ItemSparse lacks",
@@ -404,6 +412,16 @@ def main(argv: list[str] | None = None) -> int:
         build_dir = wago.fetch_build(args.product, args.build)
         build = build_dir.name if build_dir is not None else args.build
         _log_layer(hotfix_push.layer_hotfix_push(build))
+    elif args.command == "push-check":
+        import os
+
+        from pipeline import hotfix_push
+
+        line = f"moved={'true' if hotfix_push.check_push(args.build) else 'false'}"
+        print(line)
+        if github_output := os.environ.get("GITHUB_OUTPUT"):
+            with open(github_output, "a", encoding="utf-8") as f:
+                f.write(line + "\n")
     elif args.command == "layer-hotfix-push":
         from pipeline import hotfix_push
 

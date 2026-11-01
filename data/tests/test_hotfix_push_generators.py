@@ -24,13 +24,13 @@ from pipeline.hotfix_push import STATUS_REMOVED, STATUS_VALID, PushEntry, layer_
 from pipeline.simconst import build_spell_constants
 from pipeline.spelltext import ExtraRows, load_spell_text
 from pipeline.trainables import build_trainables
-from tests.test_hotfix_push import BUILD, build_root, fixture_push  # noqa: F401
+from tests.test_hotfix_push import BUILD, build_root, fixture_push, fixture_totals  # noqa: F401
 
 ICE_BARRIER, FRIGID_POWER, TOUCH_OF_THE_GRAVE = "11426", "1326891", 1260189
 
 
 def layered(root: Path) -> Path:
-    layer_hotfix_push(BUILD, root=root, fetch=lambda b, t: fixture_push())
+    layer_hotfix_push(BUILD, root=root, fetch=lambda b, t: fixture_push(), totals=fixture_totals)
     return root / BUILD / "raw"
 
 
@@ -127,7 +127,7 @@ def test_trainables_follow_a_skill_line_row_the_push_removes_or_adds(mage_root):
         ]
     }
     assert frostbolt_ranks(mage_root / BUILD / "raw") == [FROSTBOLT_1, FROSTBOLT_2]
-    layer_hotfix_push(BUILD, root=mage_root, fetch=lambda b, t: push)
+    layer_hotfix_push(BUILD, root=mage_root, fetch=lambda b, t: push, totals=fixture_totals)
     assert frostbolt_ranks(mage_root / BUILD / "raw") == [FROSTBOLT_1, FROSTBOLT_3]
 
 
@@ -164,7 +164,7 @@ def test_simconst_drops_a_spell_the_push_removes(build_root):  # noqa: F811
     SpellClassOptions rows: a removed spell is gone, not a nameless constant."""
     push = fixture_push()
     push["SpellName"] = [PushEntry(1, 113400, int(FRIGID_POWER), STATUS_REMOVED, None)]
-    layer_hotfix_push(BUILD, root=build_root, fetch=lambda b, t: push)
+    layer_hotfix_push(BUILD, root=build_root, fetch=lambda b, t: push, totals=fixture_totals)
     mage = next(
         r
         for r in build_spell_constants(BUILD, build_root / BUILD / "raw")
@@ -172,3 +172,14 @@ def test_simconst_drops_a_spell_the_push_removes(build_root):  # noqa: F811
     )
     assert ICE_BARRIER in mage.spells
     assert FRIGID_POWER not in mage.spells
+
+
+def test_push_check_writes_the_step_output(monkeypatch, tmp_path):
+    output = tmp_path / "out"
+    monkeypatch.setenv("GITHUB_OUTPUT", str(output))
+    monkeypatch.setattr("pipeline.hotfix_push.check_push", lambda build: True)
+    cli.main(["push-check", "--build", BUILD])
+    assert output.read_text() == "moved=true\n"
+    monkeypatch.setattr("pipeline.hotfix_push.check_push", lambda build: False)
+    cli.main(["push-check", "--build", BUILD])
+    assert output.read_text() == "moved=true\nmoved=false\n"

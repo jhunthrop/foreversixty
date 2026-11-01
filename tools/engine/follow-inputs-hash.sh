@@ -11,11 +11,15 @@
 #
 # The same shape as bis.yml's "Inputs:" hash: git object ids, not file
 # contents, so the hash reads only what is committed. The raw tables are not
-# in the tree and are not hashed; a new build always follows because its id is.
+# in the tree and are not hashed; a new build always follows because its id is,
+# and a new hotfix push for the same build because hotfix-push.json moves.
 set -euo pipefail
 
 # The build's inputs a follow copies or generates from, relative to data/builds/<build>/.
-readonly SITE_INPUTS=(spellconst talents trainables gametables levels.json sets.json races.json)
+# hotfix-push.json stands in for the raw tables the fork's relicmods, periodiccrit,
+# eureka and set rows read: they are not committed, and the server's hotfix push
+# (data/pipeline/hotfix_push.py) is all that moves them within one build.
+readonly SITE_INPUTS=(spellconst talents trainables gametables levels.json sets.json races.json hotfix-push.json)
 # The fork's generator sources: a change to them can change every generated file.
 readonly FORK_GENERATORS=(tools sim/core/spellconst/gen)
 # Under tools/ but written by the follow itself (follow.sh copies the build's

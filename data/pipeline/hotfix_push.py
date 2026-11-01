@@ -70,6 +70,10 @@ PUSH_TABLES: tuple[str, ...] = tuple(t for t in TABLES if t not in ITEM_HOTFIX_T
 #: Under raw/: the cached push per table and the layer record.
 PUSH_DIR = "wago-push"
 LAYER_RECORD = "LAYERED.json"
+#: Beside the build's committed outputs: the layer record plus the search
+#: totals it was taken at. `check_push` compares the totals with wago's live
+#: ones, and the engine follow's skip hash reads the file.
+PUSH_RECORD = "hotfix-push.json"
 #: Under raw/: each layered table as it was fetched.
 SHIPPED_DIR = "shipped"
 
@@ -84,6 +88,8 @@ _WORKERS = 6
 
 #: (build, tables) -> the build's push per table.
 PushFetcher = Callable[[str, tuple[str, ...]], Mapping[str, list["PushEntry"]]]
+#: (build, tables) -> how many entries wago lists for each search term.
+TotalsFetcher = Callable[[str, tuple[str, ...]], Mapping[str, int]]
 
 
 @dataclass(frozen=True)
@@ -317,6 +323,44 @@ def fetch_push(
     }
 
 
+def push_totals(
+    build: str, tables: tuple[str, ...], client: httpx.Client | None = None
+) -> dict[str, int]:
+    """How many entries wago lists for each of `tables`' search terms: one
+    request a term. Every push adds entries, so a moved total is a new push."""
+    own = client is None
+    client = client or httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+    number = _build_number(build)
+    try:
+        return {
+            term: _ask(client, f"{number} {term.lower()}").total for term in search_terms(tables)
+        }
+    finally:
+        if own:
+            client.close()
+
+
+def push_moved(record: Mapping[str, Any] | None, live: Mapping[str, int]) -> bool:
+    """Whether wago lists a push the record was not layered from (or there is
+    no record yet)."""
+    return record is None or dict(record.get("search_totals", {})) != dict(live)
+
+
+def read_push_record(build_dir: Path) -> dict[str, Any] | None:
+    path = build_dir / PUSH_RECORD
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+def check_push(
+    build: str, root: Path = Path("builds"), totals: TotalsFetcher = push_totals
+) -> bool:
+    """`python -m pipeline push-check`: whether the build's committed push
+    record trails what wago lists now."""
+    record = read_push_record(root / build)
+    tables = tuple(record["tables"]) if record else PUSH_TABLES
+    return push_moved(record, totals(build, tables))
+
+
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -366,9 +410,14 @@ def layer_hotfix_push(
     fetch: PushFetcher = fetch_push,
     offline: bool = False,
     tables: tuple[str, ...] = PUSH_TABLES,
+    totals: TotalsFetcher = push_totals,
 ) -> dict[str, Any]:
     """`python -m pipeline layer-hotfix-push` (and the tail of `fetch`): layer
-    the build's push into `<root>/<build>/raw/` and return the layer record."""
+    the build's push into `<root>/<build>/raw/`, write the layer record to
+    raw/ and `PUSH_RECORD` beside the build, and return the record.
+
+    The totals are read before the push, so a push landing between the two
+    reads shows as moved on the next check rather than as already layered."""
     raw = root / build / "raw"
     if not raw.is_dir():
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
@@ -376,10 +425,14 @@ def layer_hotfix_push(
     record_path = push_dir / LAYER_RECORD
     previous = json.loads(record_path.read_text()) if record_path.exists() else {}
     present = tuple(t for t in tables if (raw / f"{t}.csv").exists())
-    pushed = _cached(push_dir, present) if offline else dict(fetch(build, present))
-    if not offline:
+    if offline:
+        search = dict(previous.get("search_totals", {}))
+        pushed = _cached(push_dir, present)
+    else:
+        search = dict(totals(build, present))
+        pushed = dict(fetch(build, present))
         _cache(push_dir, {t: pushed.get(t, []) for t in present})
-    summary: dict[str, Any] = {"build": build, "tables": {}}
+    summary: dict[str, Any] = {"build": build, "search_totals": search, "tables": {}}
     for table in present:
         layered_sha = previous.get("tables", {}).get(table, {}).get("sha256")
         shipped_path = _shipped_copy(raw, table, layered_sha)
@@ -394,5 +447,7 @@ def layer_hotfix_push(
         summary["tables"][table] = {**asdict(counts), "sha256": _sha256(target)}
         if counts != LayerCounts():
             logger.info("layered the %s push over %s: %s", build, table, asdict(counts))
-    record_path.write_text(json.dumps(summary, indent=1, sort_keys=True) + "\n")
+    text = json.dumps(summary, indent=1, sort_keys=True) + "\n"
+    record_path.write_text(text, encoding="utf-8")
+    (root / build / PUSH_RECORD).write_text(text, encoding="utf-8")
     return summary

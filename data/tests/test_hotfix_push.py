@@ -23,6 +23,7 @@ from pipeline.csvio import read_csv
 from pipeline.hotfix_push import (
     LAYER_RECORD,
     PUSH_DIR,
+    PUSH_RECORD,
     PUSH_TABLES,
     SHIPPED_DIR,
     STATUS_INVALID,
@@ -30,9 +31,13 @@ from pipeline.hotfix_push import (
     STATUS_REMOVED,
     STATUS_VALID,
     PushEntry,
+    check_push,
     fetch_push,
     layer_hotfix_push,
     layer_rows,
+    push_moved,
+    push_totals,
+    read_push_record,
     search_terms,
 )
 from pipeline.wago import TABLES
@@ -271,7 +276,16 @@ def build_root(tmp_path: Path) -> Path:
     return tmp_path
 
 
+#: wago's answer to each search term's root search, the change signal.
+FIXTURE_TOTALS = {"CurvePoint": 212, "Spell": 6134}
+
+
+def fixture_totals(build: str, tables: tuple[str, ...]) -> dict[str, int]:
+    return dict(FIXTURE_TOTALS)
+
+
 def layer(root: Path, **kwargs) -> dict:
+    kwargs.setdefault("totals", fixture_totals)
     return layer_hotfix_push(BUILD, root=root, fetch=lambda b, t: fixture_push(), **kwargs)
 
 
@@ -324,7 +338,7 @@ def test_offline_layering_without_a_cached_push_fails_loudly(build_root):
 
 def test_layering_a_build_without_raw_fails_loudly(tmp_path):
     with pytest.raises(SystemExit, match="no raw data"):
-        layer_hotfix_push(BUILD, root=tmp_path, fetch=lambda b, t: {})
+        layer_hotfix_push(BUILD, root=tmp_path, fetch=lambda b, t: {}, totals=fixture_totals)
 
 
 def test_a_table_the_build_does_not_have_is_skipped(build_root):
@@ -340,3 +354,82 @@ def test_the_layered_csv_keeps_the_shipped_header_order(build_root):
         header = next(csv.reader(f))
     with (FIXTURE / "raw" / "SpellEffect.csv").open(newline="") as f:
         assert header == next(csv.reader(f))
+
+
+# --- noticing a new push for a build that is already fetched ----------------
+
+
+def test_push_totals_is_one_search_per_term():
+    wago = FakeWago(
+        [wago_entry(n, 1000 + n, "SpellEffect") for n in range(40)]
+        + [wago_entry(100, 7, "CurvePoint"), wago_entry(101, 8, "CurvePoint", build=70685)]
+    )
+    totals = push_totals("1.60.1.70707", ("SpellEffect", "Spell", "CurvePoint"), wago.client())
+    assert totals == {"CurvePoint": 1, "Spell": 40}
+    assert sorted(wago.searches) == ["70707 curvepoint", "70707 spell"]
+
+
+def test_layering_commits_a_push_record_beside_the_build(build_root):
+    layer(build_root)
+    record = json.loads((build_root / BUILD / PUSH_RECORD).read_text())
+    assert record["build"] == BUILD
+    assert record["search_totals"] == FIXTURE_TOTALS
+    assert record["tables"]["SpellEffect"]["changed"] == 4
+    assert read_push_record(build_root / BUILD) == record
+
+
+def test_the_push_record_is_deterministic(build_root):
+    layer(build_root)
+    first = (build_root / BUILD / PUSH_RECORD).read_bytes()
+    layer(build_root)
+    assert (build_root / BUILD / PUSH_RECORD).read_bytes() == first
+
+
+def test_the_totals_are_read_before_the_push(build_root):
+    """A push landing between the two reads then shows as moved the next night,
+    never as already layered."""
+    calls: list[str] = []
+
+    def totals(b, t):
+        calls.append("totals")
+        return dict(FIXTURE_TOTALS)
+
+    def fetch(b, t):
+        calls.append("fetch")
+        return fixture_push()
+
+    layer_hotfix_push(BUILD, root=build_root, fetch=fetch, totals=totals)
+    assert calls == ["totals", "fetch"]
+
+
+def test_offline_layering_keeps_the_recorded_totals(build_root):
+    layer(build_root)
+    layer_hotfix_push(BUILD, root=build_root, offline=True)
+    assert read_push_record(build_root / BUILD)["search_totals"] == FIXTURE_TOTALS
+
+
+@pytest.mark.parametrize(
+    ("record", "live", "moved"),
+    [
+        (None, FIXTURE_TOTALS, True),
+        ({"search_totals": FIXTURE_TOTALS}, dict(FIXTURE_TOTALS), False),
+        ({"search_totals": FIXTURE_TOTALS}, {**FIXTURE_TOTALS, "Spell": 6135}, True),
+        ({"search_totals": FIXTURE_TOTALS}, {"Spell": 6134}, True),
+    ],
+)
+def test_push_moved(record, live, moved):
+    assert push_moved(record, live) is moved
+
+
+def test_check_push_compares_the_committed_record_with_wago(build_root):
+    asked: list[tuple[str, ...]] = []
+
+    def live(b, tables):
+        asked.append(tables)
+        return {**FIXTURE_TOTALS, "Spell": 6135}
+
+    assert check_push(BUILD, root=build_root, totals=live) is True  # no record yet
+    layer(build_root)
+    assert check_push(BUILD, root=build_root, totals=fixture_totals) is False
+    assert check_push(BUILD, root=build_root, totals=live) is True
+    assert set(asked[-1]) == set(read_push_record(build_root / BUILD)["tables"])

@@ -23,6 +23,10 @@
 # (and `product` when wago lists it under a key the config does not know) to move
 # to a specific build by hand; `inspect` stops before anything is committed.
 #
+#   push     -- when no newer build exists: asks whether the server pushed hotfixes for
+#               the active build since it was layered (pipeline push-check) and, if so,
+#               runs data.yml's fetch job for the active build again (refetch).
+#
 # A stopped move (the watch, the fetch or the activation) opens the issue "Client build
 # <build> is blocked" (label client-build-blocked) with the step, the reason, the hand
 # command, the run and how many days the site has been behind; each later failing run
@@ -135,6 +139,48 @@ jobs:
     with:
       product: ${{ needs.watch.outputs.product }}
       build: ${{ needs.watch.outputs.build }}
+
+  # A new hotfix push for the ACTIVE build. Blizzard changes most Forever spells by
+  # server push, which no client build carries (pipeline/hotfix_push.py layers it
+  # into the raw tables at fetch time). push-check compares wago.tools' entry totals
+  # for the build with the committed data/builds/<build>/hotfix-push.json (about 15
+  # requests); when they moved, refetch runs data.yml's fetch job for the active
+  # build, which re-layers the push, regenerates every output and commits it as
+  # forever-data-bot. Its new hotfix-push.json moves engine.yml's follow hash, so the
+  # 05:07 follow regenerates the fork from it. Skipped while a newer build moves in.
+  push:
+    needs: watch
+    if: needs.watch.outputs.newer != 'true' && inputs.inspect != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      moved: ${{ steps.check.outputs.moved }}
+      product: ${{ steps.check.outputs.product }}
+    defaults: { run: { working-directory: data } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+      - name: has the server pushed since the active build was layered?
+        id: check
+        env:
+          ACTIVE: ${{ needs.watch.outputs.active }}
+        run: |
+          manifest="builds/$ACTIVE/manifest.json"
+          product=$(sed -n 's/.*"product"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$manifest")
+          test -n "$product" || { echo "$manifest names no product"; exit 1; }
+          echo "product=$product" >> "$GITHUB_OUTPUT"
+          uv run python -m pipeline push-check --build "$ACTIVE"
+
+  refetch:
+    needs: [watch, push]
+    if: needs.push.outputs.moved == 'true'
+    uses: ./.github/workflows/data.yml
+    permissions: { contents: write }
+    secrets: inherit
+    with:
+      product: ${{ needs.push.outputs.product }}
+      build: ${{ needs.watch.outputs.active }}
 
   activate:
     needs: [watch, fetch]
