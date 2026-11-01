@@ -55,6 +55,10 @@ def test_stats_map_to_the_planner_vocabulary_and_count_what_it_does_not_track() 
     assert untracked == {"hastertng": 1}
 
 
+def test_ranged_attack_power_maps_like_the_clients_stat_39() -> None:
+    assert wh.STAT_KEYS["rgdatkpwr"] == "ranged_attack_power"
+
+
 def test_gear_item_carries_weapon_damage_set_and_uniqueness() -> None:
     sword = next(item for item in wh.load_items(FIXTURE) if item.id == 271218)
     gear = wh.to_gear_item(sword)

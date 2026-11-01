@@ -4,11 +4,9 @@ The engine fork's `assets/database/db.json` (`pipeline.forkdb.ForkDatabase`)
 carries a `weaponDamageMin`/`weaponDamageMax`/`weaponSpeed` per item it has
 itemised by hand -- numbers independent of the client's own `ItemDamage*`
 curve tables (`pipeline.normalize.weapon_curves`, which `normalize` already
-used to fill every weapon `items/<class-slug>.json` had no damage for). A
-30-row spot check against the pinned fork agreed with the curve formula on
-29 of 30 (see data/README.md); the one miss (Balanced Fighting Stick, 6215:
-derived 15-24, fork 18-21) is real hand-authored data the curve's generic
-formula cannot reproduce, not a bug in either side.
+used to fill every weapon `items/<class-slug>.json` had no damage for). The fork's
+numbers are Classic Era's, so they only fill a weapon `normalize` could not
+resolve (`apply_fork_weapon_damage`).
 
 This module is `loot`'s, not `normalize`'s, for the same reason
 `pipeline/loot/gear.py`'s suffixes and faction restrictions are: nothing but
@@ -22,7 +20,7 @@ import json
 from pathlib import Path
 
 from pipeline.forkdb import ForkDatabase
-from pipeline.models import ClassItems
+from pipeline.models import ClassItems, GearItem
 from pipeline.normalize import write_model
 
 
@@ -48,15 +46,23 @@ def fork_weapon_damage(fork: ForkDatabase) -> dict[int, tuple[int, int, float]]:
     return damage
 
 
-def apply_fork_weapon_damage(build_dir: Path, damage: dict[int, tuple[int, int, float]]) -> int:
-    """Overwrite `items/<class-slug>.json`'s damage_min/damage_max/speed/dps
-    with the fork's own numbers for every weapon id it itemises.
+def _has_resolved_damage(item: GearItem) -> bool:
+    """True when `normalize` already gave the row real damage (the client's
+    curve, wowhead Forever or classic-db), which the fork must not replace."""
+    return item.damage_min > 0 and item.damage_max > 0
 
-    Every other row -- `normalize`'s curve-derived value, or an honest zero
-    the client's own `ItemDamage*` tables state no dps for -- is left exactly
-    as `normalize` wrote it: "keep the derived value only for rows the fork
-    lacks" (rotation accuracy program design, item 1). Returns the number of
-    (item, class) rows the fork's numbers won, across every class file.
+
+def apply_fork_weapon_damage(build_dir: Path, damage: dict[int, tuple[int, int, float]]) -> int:
+    """Fill `items/<class-slug>.json`'s damage_min/damage_max/speed/dps with
+    the fork's own numbers for every weapon id it itemises that `normalize`
+    left without damage.
+
+    The fork's db.json is Classic Era's itemisation, not Forever's. Until
+    sim-audit round 4 it won over every row, and 225 weapons on 1.60.1.70707
+    showed Era damage the sim never swings (Elemental Mage Staff 147 - 221
+    against Forever's 109 - 164; Thunderfury 60 - 145 against 44 - 115). A
+    row `normalize` resolved keeps its value; the fork fills only the zeros.
+    Returns the number of (item, class) rows the fork's numbers filled.
 
     Read-modify-write through `ClassItems`/`GearItem` rather than the raw
     dicts, the same discipline `pipeline.loot.gear.apply_fork_columns` uses
@@ -70,7 +76,7 @@ def apply_fork_weapon_damage(build_dir: Path, damage: dict[int, tuple[int, int, 
         updated = []
         for item in record.items:
             fork_damage = damage.get(item.id)
-            if fork_damage is None:
+            if fork_damage is None or _has_resolved_damage(item):
                 updated.append(item)
                 continue
             damage_min, damage_max, speed = fork_damage

@@ -119,6 +119,23 @@ def test_a_curve_only_row_resolves_damage_off_the_curve_tables():
     assert fields.dps == pytest.approx((153 + 256) / 2 / 3.8, abs=0.01)
 
 
+def test_the_planner_reads_the_caster_bit_and_quality_modifier_like_the_sim():
+    """Mace of Unending Life (21407) on 1.60.1.70707 (see test_simdb_weapons.py):
+    the item file and simdb.bin must show the same 36 - 90."""
+    sparse = curve_row(
+        ID="21407",
+        ItemLevel="70",
+        OverallQualityID="4",
+        InventoryType="21",
+        ItemDelay="2600",
+        DmgVariance="0.60000002384",
+        QualityModifier="-10",
+        Flags_4="768",
+    )
+    fields = weapon_fields(sparse, MACE_ONE_HAND, curves())
+    assert (fields.damage_min, fields.damage_max) == (36, 90)
+
+
 def test_an_unavailable_curve_set_leaves_a_curve_only_row_at_zero():
     """A build whose fetch could not supply every ItemDamage* table resolves
     nothing rather than guessing -- the row stays a documented zero, exactly
