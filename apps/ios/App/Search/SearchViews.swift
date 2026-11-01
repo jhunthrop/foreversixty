@@ -5,6 +5,9 @@ import SwiftUI
 
 /// The glass field (spec F12.1): 44 pt, magnifier, placeholder, clear button, then gold `Cancel`.
 struct SearchFieldBar: View {
+    /// The placeholder keeps one line at the default size by scaling down this far at most.
+    private static let placeholderScale = 0.7
+
     @Binding var query: String
     var focused: FocusState<Bool>.Binding
     let cancel: () -> Void
@@ -13,13 +16,14 @@ struct SearchFieldBar: View {
         HStack(spacing: 12) {
             HStack(spacing: 8) {
                 Image(systemName: "magnifyingglass").foregroundStyle(FSColor.muted).accessibilityHidden(true)
-                // The placeholder is drawn under the field so it wraps rather than being cut
-                // (spec §9). Vertical, so a long query wraps too; Return still searches: a typed
-                // line break is dropped and the keyboard closes.
+                // The placeholder is drawn under the field so it scales to one line rather than
+                // being cut (spec §9). Vertical, so a long query wraps; Return still searches: a
+                // typed line break is dropped and the keyboard closes.
                 ZStack(alignment: .leading) {
                     if query.isEmpty {
                         Text(Copy.searchPlaceholder).font(ScaledType.body).foregroundStyle(FSColor.muted)
-                            .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(1)
+                            .minimumScaleFactor(Self.placeholderScale)
                             .accessibilityHidden(true)
                     }
                     TextField(text: $query, prompt: Text(verbatim: ""), axis: .vertical) { Text(Copy.searchPlaceholder) }
@@ -48,6 +52,10 @@ struct SearchFieldBar: View {
             .padding(.trailing, query.isEmpty ? 14 : 0)
             .padding(.vertical, 4)
             .frame(minHeight: SearchLayout.fieldHeight)
+            // The field's own surface under the glass, so it reads as a field wherever the
+            // material is dropped (spec §7: glass, placeholder muted).
+            .background(FSColor.raised, in: .rect(cornerRadius: SearchLayout.fieldHeight / 2))
+            .overlay(RoundedRectangle(cornerRadius: SearchLayout.fieldHeight / 2).strokeBorder(FSColor.lineSoft))
             .glassEffect(.regular, in: .rect(cornerRadius: SearchLayout.fieldHeight / 2))
             Button(Copy.searchCancel, action: cancel)
                 .font(ScaledType.bodyStrong)
@@ -86,7 +94,7 @@ struct SearchScopeChips: View {
 
     var body: some View {
         ScrollView(.horizontal) {
-            HStack(spacing: 8) {
+            HStack(spacing: SearchChip.spacing) {
                 ForEach(SearchScope.allCases, id: \.self) { chip in
                     SearchChip(title: SearchWords.scope(chip), isOn: chip == scope) { scope = chip }
                 }
@@ -102,23 +110,30 @@ struct SearchChip: View {
     let isOn: Bool
     let action: () -> Void
 
+    /// Five chips fit across 402 pt at the default size (spec F12.1); smaller phones scroll.
+    static let sidePadding: CGFloat = 12
+    static let spacing: CGFloat = 6
+
     var body: some View {
         Button(action: action) {
             Text(title)
                 .font(ScaledType.segment)
                 .foregroundStyle(isOn ? FSColor.gold : FSColor.text)
-                .padding(.horizontal, 14)
+                .lineLimit(1)
+                .padding(.horizontal, Self.sidePadding)
                 .padding(.vertical, 8)
                 .frame(minHeight: SearchLayout.target)
                 .background {
-                    let shape = RoundedRectangle(cornerRadius: SearchLayout.chipHeight / 2)
+                    // The 1 pt ring is the line colour showing round an inset fill: one capsule
+                    // shape for ring, fill and target, no stroked edge to render apart.
                     ZStack {
-                        shape.fill(isOn ? GameColors.pressedWash : GameColors.controlFill)
-                        shape.strokeBorder(isOn ? FSColor.gold : FSColor.line, lineWidth: 1)
+                        Capsule().fill(isOn ? FSColor.gold : FSColor.line)
+                        Capsule().fill(FSColor.bg).padding(1)
+                        Capsule().fill(isOn ? GameColors.pressedWash : GameColors.controlFill).padding(1)
                     }
                     .padding(.vertical, (SearchLayout.target - SearchLayout.chipHeight) / 2)
                 }
-                .contentShape(.rect)
+                .contentShape(.capsule)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isOn ? .isSelected : [])
@@ -190,11 +205,13 @@ struct SearchContentView: View {
         if let forCharacter {
             SearchSection(title: Copy.searchGroupForCharacter(name: forCharacter.name)) {
                 SearchCard {
-                    SearchRows.link(Copy.searchForCharacterBis(name: forCharacter.name), systemImage: "shield", action: actions.openMyBis)
+                    SearchRows.link(Copy.searchForCharacterBis(name: forCharacter.name), systemImage: "shield", trailing: SearchDestination.bis.trailing, action: actions.openMyBis)
                     if let title = forCharacter.guideTitle, let url = forCharacter.guideURL {
-                        SearchRows.link(title, systemImage: "book.closed") { actions.openURL(url) }
+                        SearchRows.link(title, systemImage: "book.closed", trailing: SearchDestination.guide.trailing) { actions.openURL(url) }
                     }
-                    SearchRows.link(Copy.searchForCharacterRankings, systemImage: "trophy") { actions.openURL(SearchLinks.rankings) }
+                    SearchRows.link(Copy.searchForCharacterRankings, systemImage: "trophy", trailing: SearchDestination.rankings.trailing) {
+                        actions.openURL(SearchLinks.rankings)
+                    }
                 }
             }
         }
@@ -219,11 +236,6 @@ struct SearchContentView: View {
         group(.guides, results.guides) { hit in SearchRows.guide(hit, build: build) { actions.openGuide(hit) } }
         group(.talents, results.talents) { talent in SearchRows.talent(talent, build: build) { actions.openTalent(talent) } }
         group(.items, results.items) { item in SearchRows.item(item, build: build) { actions.openItem(item) } }
-        if scope == .items, !results.items.rows.isEmpty {
-            Text(Copy.searchItemsFoot).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, -14)
-        }
         group(.characters, results.characters) { row in
             SearchRows.character(row, isYours: viewer.ownKeys.contains(row.key)) { actions.openCharacter(row) }
         }

@@ -18,6 +18,8 @@ struct ItemPageState: Equatable, Sendable {
     /// False once the index is read and does not list the item (an old link).
     var isKnown = true
     var pick: YourPickCard?
+    /// The character has a list, so the pick card's slot is held while the page loads.
+    var reservesPick = false
     var tooltip: ItemPageSection<ItemTooltipModel> = .loading
     var sources: ItemPageSection<[ItemSourceRow]> = .loading
     var specs: ItemPageSection<[ItemSpecRow]> = .loading
@@ -70,15 +72,18 @@ final class ItemPageStore {
     private func loadTooltip(_ item: SearchItem, build: String) async {
         let character = dependencies.context().character
         let own = character.flatMap { BisSelection.forCharacter($0, catalog: dependencies.specs) }
+        state.reservesPick = own != nil
         let request = ItemPageLogic.tooltipRequest(item: item, route: route, build: build, character: character, own: own)
         do {
             let sources = try await dependencies.catalog.sources(for: request)
             state.tooltip = .loaded(.build(request, sources: sources))
+            state.reservesPick = false
             state.pick = ItemPageLogic.yourPick(
                 itemID: item.id, band: ItemTooltipModel.band(for: request, in: sources.bis), selection: own,
                 specName: own.flatMap { dependencies.specs.spec($0.spec)?.name }, className: character?.className
             )
         } catch {
+            state.reservesPick = false
             state.tooltip = .failed
         }
     }

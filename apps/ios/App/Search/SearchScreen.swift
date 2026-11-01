@@ -47,7 +47,7 @@ struct SearchScreen: View {
             .navigationTitle(Copy.itemPageBack)
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: ItemPageRoute.self) { route in
-                ItemPageScreen(route: route, dependencies: dependencies) { navigator.openList($0) }
+                ItemPageScreen(route: route, dependencies: dependencies, backTitle: Copy.itemPageBack) { navigator.openList($0) }
             }
         }
         .sheet(item: $talent) { route in

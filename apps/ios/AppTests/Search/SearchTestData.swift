@@ -24,7 +24,7 @@ enum SearchTestData {
     )
 
     static var context: SearchContext {
-        SearchContext(character: lightningbolltz, ownKeys: [lightningbolltz.key, "us/normal/elegy"])
+        SearchContext(character: lightningbolltz, ownKeys: [lightningbolltz.key])
     }
 
     // MARK: The index
@@ -90,6 +90,20 @@ enum SearchTestData {
 
     // MARK: Item uses and the tooltip
 
+    /// The five items the captures use (pick, runner-up, not on the list, set piece, vendor), from
+    /// the site's item-uses generator over the committed build (`item-uses.70658.json` beside this file).
+    static let runnerUp = 11196 // Mindburst Medallion: Elemental 60 raid, runner-up 2 for Neck
+    static let notListed = 11841 // Senior Designer's Pantaloons: Restoration lists it, Elemental never
+    static let setPiece = 16844 // Earthfury Epaulets: Baron Geddon, 30%
+    static let vendorItem = 228190 // Knowledge of the Timbermaw: Meilosh
+
+    static func uses(_ id: Int) throws -> ItemUses {
+        struct File: Decodable { let items: [String: ItemUses] }
+        let url = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appending(path: "item-uses.70658.json")
+        let file = try WireFormat.decoder().decode(File.self, from: Data(contentsOf: url))
+        return try requireValue(file.items[String(id)])
+    }
+
     static func capeUses() throws -> ItemUses {
         let shard = try BisTestData.fixture("cdn.item-uses", as: ItemUsesShard.self)
         return try requireValue(shard.items[String(cape)])
@@ -110,6 +124,12 @@ enum SearchTestData {
             className: className, level: level, spec: nil
         )
     }
+
+    static let lightningCharacters = [
+        row("Lightningbolltz", className: "shaman", level: 60),
+        row("Lightningrod", className: "mage", level: 52),
+        row("Lightningpaw", className: "druid", level: 60, region: "eu", ruleset: "pvp"),
+    ]
 
     static let eleCharacters = [
         row("Elementalx", className: "shaman", level: 60),

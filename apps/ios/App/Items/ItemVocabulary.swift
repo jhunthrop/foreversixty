@@ -54,6 +54,36 @@ enum ItemVocabulary {
         ("arcane_res", Copy.itemsStatArcaneRes),
     ]
 
+    /// The stats the client prints as a green `Equip:` sentence rather than `+n Name`.
+    static func equipLine(_ key: String, value: Int) -> String? {
+        switch key {
+        case "spell_power": Copy.tooltipEquipSpellPower(n: value)
+        case "healing": Copy.tooltipEquipHealing(n: value)
+        case "attack_power": Copy.tooltipEquipAttackPower(n: value)
+        case "ranged_attack_power": Copy.tooltipEquipRangedAttackPower(n: value)
+        case "mp5": Copy.tooltipEquipMp5(n: value)
+        case "spell_penetration": Copy.tooltipEquipSpellPenetration(n: value)
+        case "fire_power": Copy.tooltipEquipFirePower(n: value)
+        case "block_value": Copy.tooltipEquipBlockValue(n: value)
+        default: nil
+        }
+    }
+
+    /// A rating-family stat the data states as a literal percent (`percent_stats`): the client's
+    /// `Equip:` sentence (the site's `PERCENT_STAT_LINES`); nil prints it as `+n Name`.
+    static func percentLine(_ key: String, value: Int) -> String? {
+        let percent = "\(value)%"
+        return switch key {
+        case "crit": Copy.tooltipEquipCrit(percent: percent)
+        case "hit": Copy.tooltipEquipHit(percent: percent)
+        case "defense": Copy.tooltipEquipDefense(n: value)
+        case "dodge": Copy.tooltipEquipDodge(percent: percent)
+        case "parry": Copy.tooltipEquipParry(percent: percent)
+        case "block": Copy.tooltipEquipBlock(percent: percent)
+        default: nil
+        }
+    }
+
     static func standingName(_ standing: String) -> String? {
         switch standing {
         case "hated": Copy.itemsStandingHated

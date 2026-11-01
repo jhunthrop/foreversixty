@@ -2,6 +2,7 @@ import DesignSystem
 import DesignTokens
 import Models
 import SwiftUI
+import UIKit
 
 /// The item page's three regions, which the strip chips scroll to.
 enum ItemPageAnchor: CaseIterable, Hashable {
@@ -17,18 +18,20 @@ enum ItemPageAnchor: CaseIterable, Hashable {
 }
 
 /// F12.4 and F12.5, pushed from Search, from F2.6's `More about this item` and from a BiS row's
-/// sheet. Back only; no share (no web item page).
+/// sheet. Back only, titled `Search` from search and `Back` elsewhere; no share (no web item page).
 struct ItemPageScreen: View {
     let route: ItemPageRoute
     let dependencies: SearchDependencies
+    let backTitle: String
     /// A spec row's chevron: that spec's list in the BiS tab.
     let openList: (BisSelection) -> Void
 
     @State private var store: ItemPageStore
 
-    init(route: ItemPageRoute, dependencies: SearchDependencies, openList: @escaping (BisSelection) -> Void) {
+    init(route: ItemPageRoute, dependencies: SearchDependencies, backTitle: String = Copy.itemPageBackPlain, openList: @escaping (BisSelection) -> Void) {
         self.route = route
         self.dependencies = dependencies
+        self.backTitle = backTitle
         self.openList = openList
         _store = State(initialValue: ItemPageStore(route: route, dependencies: dependencies))
     }
@@ -39,10 +42,52 @@ struct ItemPageScreen: View {
             openSpec: { row in openList(ItemPageLogic.selection(row.use, viewerFaction: dependencies.context().character?.faction)) },
             retry: { Task { await store.load() } }
         )
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(FSColor.bg, for: .navigationBar)
+        .itemPageBar(backTitle: backTitle)
         .task { await store.load() }
+    }
+}
+
+extension View {
+    /// The item page's bar: no title, and a back control that names where it returns to (the
+    /// iOS 26 bar draws a bare chevron otherwise). The edge swipe still goes back.
+    func itemPageBar(backTitle: String) -> some View {
+        modifier(ItemPageBar(backTitle: backTitle))
+    }
+}
+
+private struct ItemPageBar: ViewModifier {
+    let backTitle: String
+    @Environment(\.dismiss) private var dismiss
+
+    func body(content: Content) -> some View {
+        content
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button { dismiss() } label: {
+                        Label(backTitle, systemImage: "chevron.left").labelStyle(.titleAndIcon)
+                    }
+                    .frame(minHeight: SearchLayout.target)
+                }
+            }
+            .toolbarBackground(FSColor.bg, for: .navigationBar)
+            .background(SwipeBackKeeper())
+    }
+}
+
+/// A hidden system back button also turns the edge swipe off; this turns it back on.
+private struct SwipeBackKeeper: UIViewControllerRepresentable {
+    func makeUIViewController(context _: Context) -> Keeper { Keeper() }
+    func updateUIViewController(_: Keeper, context _: Context) {}
+
+    final class Keeper: UIViewController {
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+            navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        }
     }
 }
 
@@ -52,39 +97,59 @@ struct ItemPageView: View {
     let openSpec: (ItemSpecRow) -> Void
     let retry: () -> Void
 
-    @State private var anchor: ItemPageAnchor = .item
+    @State private var anchor: ItemPageAnchor
+    @State private var position: ScrollPosition
     @State private var specsExpanded: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(state: ItemPageState, specsExpanded: Bool = false, openSpec: @escaping (ItemSpecRow) -> Void = { _ in }, retry: @escaping () -> Void = {}) {
+    /// Rows a skeleton holds, so the loaded page does not move (spec §11).
+    private static let skeletonSources = 2
+    private static let tooltipHeight: CGFloat = 260
+    private static let pickHeight: CGFloat = 66
+
+    init(
+        state: ItemPageState, initialAnchor: ItemPageAnchor = .item, specsExpanded: Bool = false,
+        openSpec: @escaping (ItemSpecRow) -> Void = { _ in }, retry: @escaping () -> Void = {}
+    ) {
         self.state = state
         self.openSpec = openSpec
         self.retry = retry
+        _anchor = State(initialValue: initialAnchor)
+        _position = State(initialValue: initialAnchor == .item ? ScrollPosition(edge: .top) : ScrollPosition(id: initialAnchor, anchor: .top))
         _specsExpanded = State(initialValue: specsExpanded)
     }
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 16, pinnedViews: state.isKnown ? [.sectionHeaders] : []) {
+        ScrollView {
+            if state.isKnown {
+                LazyVStack(alignment: .leading, spacing: 16, pinnedViews: [.sectionHeaders]) {
                     head
-                    if !state.isKnown {
-                        Text(Copy.itemPageUnknown).font(ScaledType.body).foregroundStyle(FSColor.muted)
-                            .fixedSize(horizontal: false, vertical: true)
-                    } else {
-                        if let pick = state.pick { ItemPickCardView(card: pick) }
-                        Section {
-                            sections
-                        } header: {
-                            chips(proxy)
-                        }
+                    pickSlot
+                    Section {
+                        tooltip.id(ItemPageAnchor.item)
+                        sourcesSection.id(ItemPageAnchor.source).padding(.top, 6)
+                        specsSection.id(ItemPageAnchor.bisFor).padding(.top, 6)
+                    } header: {
+                        chips
                     }
                 }
+                .scrollTargetLayout()
                 .padding(.horizontal, 16)
                 .padding(.bottom, 32)
+            } else {
+                Text(Copy.itemPageUnknown)
+                    .font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
             }
-            .background(FSColor.bg)
         }
+        .scrollPosition($position)
+        .onScrollTargetVisibilityChange(idType: ItemPageAnchor.self, threshold: 0.3) { visible in
+            if let first = ItemPageAnchor.allCases.first(where: visible.contains) { anchor = first }
+        }
+        .background(FSColor.bg)
     }
 
     // MARK: Head
@@ -103,7 +168,7 @@ struct ItemPageView: View {
                 }
                 if let meta = state.meta {
                     Text(meta).font(ScaledType.meta).foregroundStyle(FSColor.muted).fixedSize(horizontal: false, vertical: true)
-                } else if state.isKnown {
+                } else {
                     SkeletonBar(width: 140, height: 12)
                 }
             }
@@ -113,18 +178,27 @@ struct ItemPageView: View {
         .accessibilityAddTraits(.isHeader)
     }
 
+    @ViewBuilder
+    private var pickSlot: some View {
+        if let pick = state.pick {
+            ItemPickCardView(card: pick)
+        } else if state.reservesPick {
+            SkeletonBar(width: nil, height: Self.pickHeight)
+        }
+    }
+
     // MARK: Strip
 
-    private func chips(_ proxy: ScrollViewProxy) -> some View {
+    private var chips: some View {
         ScrollView(.horizontal) {
-            HStack(spacing: 8) {
+            HStack(spacing: 6) {
                 ForEach(ItemPageAnchor.allCases, id: \.self) { chip in
                     SearchChip(title: chip.title, isOn: chip == anchor) {
                         anchor = chip
                         if reduceMotion {
-                            proxy.scrollTo(chip, anchor: .top)
+                            position.scrollTo(id: chip, anchor: .top)
                         } else {
-                            withAnimation { proxy.scrollTo(chip, anchor: .top) }
+                            withAnimation { position.scrollTo(id: chip, anchor: .top) }
                         }
                     }
                 }
@@ -138,17 +212,10 @@ struct ItemPageView: View {
     // MARK: Sections
 
     @ViewBuilder
-    private var sections: some View {
-        tooltip.id(ItemPageAnchor.item)
-        sourcesSection.id(ItemPageAnchor.source).padding(.top, 6)
-        specsSection.id(ItemPageAnchor.bisFor).padding(.top, 6)
-    }
-
-    @ViewBuilder
     private var tooltip: some View {
         switch state.tooltip {
         case .loading:
-            SkeletonBar(width: nil, height: 220)
+            SkeletonBar(width: nil, height: Self.tooltipHeight)
         case let .loaded(model):
             ItemTooltipPanel(model: model)
         case .failed:
@@ -161,7 +228,7 @@ struct ItemPageView: View {
             MicroLabel(Copy.itemPageSources).accessibilityAddTraits(.isHeader)
             switch state.sources {
             case .loading:
-                SkeletonBar(width: nil, height: 120)
+                skeletonRows(Self.skeletonSources)
             case .failed:
                 failure(Copy.itemPageUsesFailed)
             case let .loaded(rows) where rows.isEmpty:
@@ -170,8 +237,9 @@ struct ItemPageView: View {
                 SearchCard {
                     ForEach(rows) { ItemSourceRowView(row: $0) }
                 }
-                Text(Copy.itemPageSourcesFoot).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
+                if let footnote = ItemPageLogic.chanceFootnote(rows) {
+                    Text(footnote).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                }
             }
         }
     }
@@ -181,10 +249,9 @@ struct ItemPageView: View {
             MicroLabel(Copy.itemPageBisFor).accessibilityAddTraits(.isHeader)
             switch state.specs {
             case .loading:
-                SkeletonBar(width: nil, height: 120)
+                skeletonRows(ItemPageLogic.visibleSpecs)
             case .failed:
-                // The sources region already carries the error and its Try again.
-                EmptyView()
+                failure(Copy.itemPageBisForFailed)
             case let .loaded(rows) where rows.isEmpty:
                 Text(Copy.itemPageBisForNone).font(ScaledType.body).foregroundStyle(FSColor.muted)
             case let .loaded(rows):
@@ -197,10 +264,26 @@ struct ItemPageView: View {
                         moreSpecs(shown.hidden)
                     }
                 }
-                Text(Copy.itemPageBisForFoot).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
             }
         }
+    }
+
+    private func skeletonRows(_ count: Int) -> some View {
+        SearchCard {
+            ForEach(0..<count, id: \.self) { _ in
+                HStack(spacing: 12) {
+                    SkeletonBar(width: SearchLayout.rowIcon, height: SearchLayout.rowIcon)
+                    VStack(alignment: .leading, spacing: 8) {
+                        SkeletonBar(width: 180, height: 15)
+                        SkeletonBar(width: 120, height: 12)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, 14)
+                .frame(minHeight: SearchLayout.rowMinHeight + 10)
+            }
+        }
+        .accessibilityHidden(true)
     }
 
     private func moreSpecs(_ hidden: Int) -> some View {
@@ -264,14 +347,32 @@ struct ItemPickCardView: View {
     }
 }
 
-/// One source: its kind's tile, the boss, vendor or quest, and `{place} · {kind} · {chance}`.
+/// A source's tile: one glyph per kind, the same on both apps (a boss is crossed swords, as the
+/// board draws it; a vendor a bag; a quest the giver's `!`).
+enum SourceGlyph {
+    case symbol(String)
+    case text(String)
+
+    static func of(_ kind: String) -> SourceGlyph {
+        switch kind {
+        case "raid", "dungeon": .text("\u{2694}\u{FE0E}")
+        case "vendor": .symbol("bag.fill")
+        case "quest": .symbol("exclamationmark")
+        case "crafted": .symbol("hammer.fill")
+        case "rep": .symbol("flag.fill")
+        case "pvp": .symbol("flag.2.crossed.fill")
+        default: .symbol("globe")
+        }
+    }
+}
+
+/// One source: its kind's tile, the boss, vendor or quest, and `{place} · {kind}`.
 struct ItemSourceRowView: View {
     let row: ItemSourceRow
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: Self.glyph(row.kind))
-                .font(.system(size: 14, weight: .semibold))
+            glyph
                 .foregroundStyle(FSColor.gold)
                 .frame(width: SearchLayout.rowIcon, height: SearchLayout.rowIcon)
                 .background(FSColor.cardTop, in: .rect(cornerRadius: FSRadius.pill))
@@ -287,20 +388,16 @@ struct ItemSourceRowView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
-        .frame(maxWidth: .infinity, minHeight: SearchLayout.rowMinHeight, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: SearchLayout.rowMinHeight + 10, alignment: .leading)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(row.accessibilityLabel)
     }
 
-    static func glyph(_ kind: String) -> String {
-        switch kind {
-        case "raid", "dungeon": "shield.lefthalf.filled"
-        case "vendor": "bag"
-        case "quest": "exclamationmark.bubble"
-        case "crafted": "hammer"
-        case "rep": "flag"
-        case "pvp": "flag.2.crossed"
-        default: "globe"
+    @ViewBuilder
+    private var glyph: some View {
+        switch SourceGlyph.of(row.kind) {
+        case let .symbol(name): Image(systemName: name).font(.system(size: 14, weight: .semibold))
+        case let .text(text): Text(text).font(.system(size: 18, weight: .semibold))
         }
     }
 }
@@ -362,18 +459,5 @@ struct ItemSpecRowView: View {
 
     private var chevron: some View {
         Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundStyle(FSColor.muted)
-    }
-}
-
-/// A skeleton block at its real size.
-struct SkeletonBar: View {
-    let width: CGFloat?
-    let height: CGFloat
-
-    var body: some View {
-        RoundedRectangle(cornerRadius: FSRadius.control).fill(FSColor.cardTop)
-            .frame(maxWidth: width ?? .infinity, minHeight: height, maxHeight: height)
-            .frame(width: width)
-            .accessibilityHidden(true)
     }
 }

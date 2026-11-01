@@ -81,70 +81,103 @@ struct SearchSnapshotTests {
         snap(try search(query: "xqz", characters: .offline), "f12.6-offline-ios")
     }
 
+    /// The account's own character carries `You`; nobody else does.
+    @Test func f12_2_characters() throws {
+        let rows = SearchTestData.lightningCharacters
+        snap(try search(query: "lightning", scope: .characters, characters: .loaded(query: "lightning", rows: rows)), "f12.2-characters-ios")
+    }
+
+    @Test func f12_indexFailed() throws {
+        let context = SearchTestData.context
+        let view = SearchHost(query: "ele", scope: .all) {
+            SearchContentView(
+                hasQuery: true, query: "ele", scope: .all, index: .failed, results: .empty, characters: .idle, recent: [],
+                forCharacter: nil, viewer: context.viewer, build: SearchTestData.build
+            )
+        }
+        snap(view, "f12.index-failed-ios")
+    }
+
     // MARK: The item page
 
-    private func capeState(viewer: BisSelection?, className: String = "shaman") throws -> ItemPageState {
+    private let raid = BisSelection(classSlug: "shaman", spec: "shaman-elemental", range: BisRange(band: 60, preset: "raid"), faction: "horde")
+
+    /// A page as it loads for Lightningbolltz (60, Phase 1 raid, Horde) from the repo's build 70658.
+    private func itemState(_ id: Int, uses: ItemUses) throws -> ItemPageState {
         let corpus = try SearchTestData.corpus()
-        let item = try #require(corpus.item(SearchTestData.cape))
+        let item = try #require(corpus.item(id))
         var state = ItemPageState(route: ItemPageRoute(itemID: item.id), build: build)
         state.look = HomeItemLook(id: item.id, name: item.name, quality: item.quality, icon: item.icon, itemLevel: item.itemLevel)
         state.meta = ItemPageLogic.meta(item)
-        let character = viewer == nil ? SearchTestData.fury : SearchTestData.lightningbolltz
-        let request = ItemPageLogic.tooltipRequest(item: item, route: ItemPageRoute(itemID: item.id), build: build, character: character, own: viewer)
+        let request = ItemPageLogic.tooltipRequest(
+            item: item, route: ItemPageRoute(itemID: item.id), build: build, character: SearchTestData.lightningbolltz, own: raid
+        )
         let sources = try SearchTestData.tooltipSources(classSlug: request.classSlug)
         state.tooltip = .loaded(.build(request, sources: sources))
-        if let viewer {
-            let band = sources.bis?.bands.first { $0.band == viewer.range.band && $0.preset == viewer.range.preset && $0.faction == viewer.faction }
-            state.pick = ItemPageLogic.yourPick(itemID: item.id, band: band, selection: viewer, specName: "Elemental", className: className)
-        }
-        let uses = try SearchTestData.capeUses()
+        state.pick = ItemPageLogic.yourPick(
+            itemID: item.id, band: ItemTooltipModel.band(for: request, in: sources.bis), selection: raid,
+            specName: "Elemental", className: "shaman"
+        )
         state.sources = .loaded(ItemPageLogic.sources(uses.sources))
         state.specs = .loaded(ItemPageLogic.specs(uses.specs, catalog: try BisTestData.catalog()))
         return state
     }
 
-    private let raid = BisSelection(classSlug: "shaman", spec: "shaman-elemental", range: BisRange(band: 60, preset: "raid"), faction: "horde")
+    private func capeState() throws -> ItemPageState {
+        try itemState(SearchTestData.cape, uses: SearchTestData.capeUses())
+    }
 
-    private func page(_ state: ItemPageState, specsExpanded: Bool = false) -> some View {
+    private func page(_ state: ItemPageState, anchor: ItemPageAnchor = .item, specsExpanded: Bool = false) -> some View {
         Pushed(back: Copy.itemPageBack) {
-            ItemPageView(state: state, specsExpanded: specsExpanded)
-                .navigationTitle("")
-                .navigationBarTitleDisplayMode(.inline)
+            ItemPageView(state: state, initialAnchor: anchor, specsExpanded: specsExpanded)
+                .itemPageBar(backTitle: Copy.itemPageBack)
         }
     }
 
     @Test func f12_4_pick() throws {
-        snap(page(try capeState(viewer: raid)), "f12.4-pick-ios", height: 1400)
+        snap(page(try capeState()), "f12.4-pick-ios", height: 1400)
     }
 
     @Test func f12_4_pick_ax5() throws {
-        snap(page(try capeState(viewer: raid)), "f12.4-pick-ax5-ios", height: 3800, large: true)
+        snap(page(try capeState()), "f12.4-pick-ax5-ios", height: 3800, large: true)
     }
 
     @Test func f12_4_runnerUp() throws {
-        snap(page(try capeState(viewer: raid.withRange(BisRange(band: 60, preset: "bare")))), "f12.4-runner-up-ios", height: 1400)
+        snap(page(try itemState(SearchTestData.runnerUp, uses: SearchTestData.uses(SearchTestData.runnerUp))), "f12.4-runner-up-ios", height: 1400)
     }
 
     @Test func f12_4_notOnList() throws {
-        snap(page(try capeState(viewer: nil)), "f12.4-not-on-list-ios", height: 1400)
+        snap(page(try itemState(SearchTestData.notListed, uses: SearchTestData.uses(SearchTestData.notListed))), "f12.4-not-on-list-ios", height: 1400)
+    }
+
+    @Test func f12_4_setPiece() throws {
+        snap(page(try itemState(SearchTestData.setPiece, uses: SearchTestData.uses(SearchTestData.setPiece))), "f12.4-set-piece-ios", height: 1300)
+    }
+
+    @Test func f12_4_vendor() throws {
+        snap(page(try itemState(SearchTestData.vendorItem, uses: SearchTestData.uses(SearchTestData.vendorItem))), "f12.4-vendor-ios", height: 1200)
     }
 
     @Test func f12_5_bisFor() throws {
-        // Every spec that lists the Cape, after `5 more specs` (F12.5's section in full).
-        snap(page(try capeState(viewer: raid), specsExpanded: true), "f12.5-bis-for-ios", height: 1900)
+        snap(page(try capeState(), anchor: .bisFor), "f12.5-bis-for-ios")
+    }
+
+    @Test func f12_5_bisFor_expanded() throws {
+        snap(page(try capeState(), specsExpanded: true), "f12.5-bis-for-expanded-ios", height: 1900)
     }
 
     @Test func f12_4_loading() throws {
-        var state = try capeState(viewer: raid)
+        var state = try capeState()
         state.pick = nil
+        state.reservesPick = true
         state.tooltip = .loading
         state.sources = .loading
         state.specs = .loading
-        snap(page(state), "f12.4-loading-ios")
+        snap(page(state), "f12.4-loading-ios", height: 1400)
     }
 
     @Test func f12_4_usesFailed() throws {
-        var state = try capeState(viewer: raid)
+        var state = try capeState()
         state.sources = .failed
         state.specs = .failed
         snap(page(state), "f12.4-uses-failed-ios", height: 1200)

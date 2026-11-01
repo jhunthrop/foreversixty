@@ -46,16 +46,40 @@ struct ItemPageLogicTests {
             ItemUseSource(kind: "vendor", title: "Meilosh"),
         ])
         #expect(rows.map(\.meta) == [
-            "Blackrock Depths · Dungeon · Drop chance not known",
+            "Blackrock Depths · Dungeon",
             "Onyxia's Lair · Raid · 20% from Onyxia",
             "Molten Core · Raid · <1% from Ragnaros",
             "Horde · Quest · Requires level 52",
             "",
             "Vendor",
         ])
-        #expect(!rows.contains { $0.meta.contains("0%") && !$0.meta.contains("20%") && !$0.meta.contains("<1%") })
+        #expect(rows.map(\.chanceUnknown) == [true, false, false, false, false, false])
         #expect(rows[4].accessibilityLabel == "World drop")
-        #expect(rows[0].accessibilityLabel == "High Interrogator Gerstahn, Blackrock Depths · Dungeon · Drop chance not known")
+        #expect(rows[0].accessibilityLabel == "High Interrogator Gerstahn, Blackrock Depths · Dungeon")
+    }
+
+    @Test("`Drop chance not known` prints once, only when a boss row has no chance")
+    func chanceFootnote() {
+        let unknown = ItemPageLogic.sources([
+            ItemUseSource(kind: "dungeon", title: "A", place: "P"), ItemUseSource(kind: "dungeon", title: "B", place: "P"),
+        ])
+        #expect(ItemPageLogic.chanceFootnote(unknown) == "Drop chance not known")
+        let known = ItemPageLogic.sources([ItemUseSource(kind: "raid", title: "Baron Geddon", place: "Molten Core", chance: 30)])
+        #expect(ItemPageLogic.chanceFootnote(known) == nil)
+        #expect(ItemPageLogic.chanceFootnote(ItemPageLogic.sources([ItemUseSource(kind: "vendor", title: "Meilosh")])) == nil)
+    }
+
+    @Test("three real items: the Cape is the pick, Mindburst Medallion runner-up 2, the Pantaloons on no Elemental list")
+    func threeItems() throws {
+        let raidBand = try band(raid)
+        #expect(ItemPageLogic.placement(of: SearchTestData.cape, in: raidBand)?.rank == 0)
+        let runner = ItemPageLogic.yourPick(itemID: SearchTestData.runnerUp, band: raidBand, selection: raid, specName: "Elemental", className: "shaman")
+        #expect(runner?.title == "Runner-up 2 for Neck")
+        #expect(runner?.meta == "Elemental · 60 · Phase 1 raid · Horde")
+        let runnerRow = try SearchTestData.uses(SearchTestData.runnerUp).specs.first { $0.spec == "shaman-elemental" }
+        #expect(runnerRow?.rank == 2 && runnerRow?.preset == "raid")
+        #expect(ItemPageLogic.yourPick(itemID: SearchTestData.notListed, band: raidBand, selection: raid, specName: "Elemental", className: "shaman") == nil)
+        #expect(try SearchTestData.uses(SearchTestData.notListed).specs.allSatisfy { $0.spec != "shaman-elemental" })
     }
 
     @Test("best in slot for: the file's order, Pick or Runner-up n, raid or bare meta, six then more")

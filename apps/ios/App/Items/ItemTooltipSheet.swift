@@ -187,6 +187,7 @@ struct ItemTooltipPanel: View {
             }
             if let dps = model.weaponDPS { line(dps) }
             ForEach(model.stats, id: \.self) { line($0) }
+            ForEach(model.equipLines, id: \.self) { line($0, color: FSColor.parseGreen) }
             if let effect = model.effect { line(effect, color: FSColor.parseGreen) }
             if let set = model.setName {
                 line(set, color: FSColor.parseGold).padding(.top, 6)

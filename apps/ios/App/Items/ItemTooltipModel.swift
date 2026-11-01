@@ -62,7 +62,10 @@ struct ItemTooltipModel: Equatable {
     let weaponDamage: String?
     let weaponSpeed: String?
     let weaponDPS: String?
+    /// White `+n Name` lines.
     let stats: [String]
+    /// Green `Equip:` sentences, as the client prints spell power, healing, attack power, mp5…
+    let equipLines: [String]
     let effect: String?
     let setName: String?
     let setBonuses: [String]
@@ -93,6 +96,7 @@ struct ItemTooltipModel: Equatable {
             weaponSpeed: weapon ? Copy.itemsWeaponSpeed(speed: String(format: "%.2f", item.speed)) : nil,
             weaponDPS: weapon ? Copy.itemsWeaponDps(dps: String(format: "%.1f", item.dps)) : nil,
             stats: Self.statLines(item),
+            equipLines: Self.equipLines(item),
             effect: Self.effect(item),
             setName: set?.name,
             setBonuses: set?.bonuses.map { Copy.itemsSetBonus(n: $0.pieces, text: $0.description) } ?? [],
@@ -109,7 +113,7 @@ struct ItemTooltipModel: Equatable {
         return ItemTooltipModel(
             look: request.fallback, headerMeta: quality.name, known: false, binds: nil, unique: false,
             slotName: nil, typeName: nil, armor: nil, weaponDamage: nil, weaponSpeed: nil, weaponDPS: nil,
-            stats: [], effect: nil, setName: nil, setBonuses: [], requiresLevel: nil,
+            stats: [], equipLines: [], effect: nil, setName: nil, setBonuses: [], requiresLevel: nil,
             itemLevel: request.fallback.itemLevel.map { Copy.tooltipItemLevel(n: $0) },
             source: request.sourceLine, alternatives: [], pickFooter: nil
         )
@@ -136,12 +140,32 @@ struct ItemTooltipModel: Equatable {
         return item.slot == "ranged" ? Copy.itemsWeaponSlotRanged : Copy.itemsWeaponSlotOneHand
     }
 
-    /// `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order.
+    /// `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order; the
+    /// stats the client words as `Equip:` sentences are left to `equipLines`.
     private static func statLines(_ item: Item) -> [String] {
         ItemVocabulary.statOrder.compactMap { stat in
-            guard let value = item.stats[stat.key], value != 0 else { return nil }
+            guard let value = item.stats[stat.key], value != 0, equipLine(item, key: stat.key, value: value) == nil else { return nil }
             return "\(value < 0 ? "-" : "+")\(abs(value)) \(stat.name)"
         }
+    }
+
+    /// The client's green `Equip:` sentences in the site's stat order; one the item's own effect
+    /// text already says is not printed twice.
+    private static func equipLines(_ item: Item) -> [String] {
+        let effect = Self.effect(item) ?? ""
+        return ItemVocabulary.statOrder.compactMap { stat in
+            guard let value = item.stats[stat.key], value != 0, let line = equipLine(item, key: stat.key, value: value)
+            else { return nil }
+            return effect.localizedCaseInsensitiveContains(line.dropFirst(Self.equipPrefix.count)) ? nil : line
+        }
+    }
+
+    private static let equipPrefix = "Equip: "
+
+    private static func equipLine(_ item: Item, key: String, value: Int) -> String? {
+        if let line = ItemVocabulary.equipLine(key, value: value) { return line }
+        guard item.percentStats[key] == value else { return nil }
+        return ItemVocabulary.percentLine(key, value: value)
     }
 
     private static func effect(_ item: Item) -> String? {
