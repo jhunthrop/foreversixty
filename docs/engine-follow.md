@@ -83,6 +83,8 @@ cd /path/to/wowsims-forever
 make follow SITE_DIR=/path/to/forever BUILD=<build>
 ```
 
+`fetch` also layers the server's hotfix push for the build into the raw tables (`data/pipeline/hotfix_push.py`; the file as fetched stays in `raw/shipped/`), so the fork's raw-table generators (relicmods, periodiccrit, eureka, the set rows) read the server's rows. `uv run python -m pipeline layer-hotfix-push --build <build> --offline` re-layers from the cached push without the network.
+
 `make follow` runs `tools/follow.sh`, which refuses a dirty checkout, stops at the first failing generator, writes `assets/db_inputs/FOREVER_BUILD` and the report at `dist/FOLLOW-REPORT.md`, and lists the paths it wrote in `dist/FOLLOW-PATHS`. The script exits 0 for clean and 3 for review. `make` cannot pass 3 through, so `make follow` exits 2 on review; run `tools/follow.sh` directly when the code matters.
 
 Run the fork's suite (`go test --tags=with_db ./sim/... ./tools/...`) and commit the paths in `dist/FOLLOW-PATHS`. To pin that fork commit on the site, from the site root:

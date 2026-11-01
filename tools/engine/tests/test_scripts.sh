@@ -134,6 +134,21 @@ test_hash_is_stable_and_follows_the_inputs() {
 		differ "$first" "$(bash "$HASH" "$site" "$fork" "$BUILD")"
 }
 
+# The raw tables are not committed, but the fork's relicmods, periodiccrit,
+# eureka and the set rows read them, and pipeline/hotfix_push.py layers the
+# server's push into them. Its committed record (hotfix-push.json) moves with
+# every push, so a push that changes only those generators still follows.
+test_hash_follows_the_hotfix_push_record() {
+	local site=$SCRATCH/push-site fork=$SCRATCH/push-fork first
+	make_site "$site" aaaaaaaaa
+	make_fork "$fork" "$BUILD"
+	first=$(bash "$HASH" "$site" "$fork" "$BUILD")
+	echo '{"search_totals": {"Spell": 6134}}' >"$site/data/builds/$BUILD/hotfix-push.json"
+	commit_all "$site" "the server pushed"
+	assert "a new hotfix push record changes the hash" \
+		differ "$first" "$(bash "$HASH" "$site" "$fork" "$BUILD")"
+}
+
 test_hash_refuses_a_build_the_site_does_not_have() {
 	local site=$SCRATCH/missing-site fork=$SCRATCH/missing-fork out status
 	make_site "$site" aaaaaaaaa
@@ -360,6 +375,7 @@ test_check_checkout_warns_off_the_pin() {
 }
 
 test_hash_is_stable_and_follows_the_inputs
+test_hash_follows_the_hotfix_push_record
 test_hash_refuses_a_build_the_site_does_not_have
 test_last_reads_the_newest_follow_inputs_trailer
 test_pin_holds_when_all_three_conditions_do

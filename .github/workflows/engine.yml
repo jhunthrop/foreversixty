@@ -154,7 +154,9 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
       # The raw tables are not committed; the relic mods and the set rows
-      # are generated from them, so every follow refetches them.
+      # are generated from them, so every follow refetches them. `fetch` also
+      # layers the server's hotfix push into them (pipeline/hotfix_push.py),
+      # so relicmods, periodiccrit and eureka read the server's rows.
       - name: fetch the build's raw tables
         if: steps.inputs.outputs.skip != 'true'
         working-directory: data

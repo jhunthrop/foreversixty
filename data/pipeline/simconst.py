@@ -117,6 +117,11 @@ def build_spell_constants(build: str, raw: Path) -> list[ClassSpellConstants]:
         if slug is None:
             continue
         spell_id = int(row["SpellID"])
+        if spell_id not in names:
+            # The server's hotfix push removed the spell (pipeline.hotfix_push):
+            # 1.60.1.70707 drops Blessing of Light's and Salvation's SpellName
+            # rows and keeps their class rows. A removed spell is not a constant.
+            continue
         spell_misc = misc.get(spell_id)
         cast = cast_times.get(_int(spell_misc, "CastingTimeIndex"))
         duration = durations.get(_int(spell_misc, "DurationIndex"))

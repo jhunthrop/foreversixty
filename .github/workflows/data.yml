@@ -148,6 +148,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
+      # `fetch` downloads the shipped tables and then layers the server's hotfix
+      # push for the build into every spell-side, talent and skill table
+      # (pipeline/hotfix_push.py): round 6 found Ice Barrier, Frigid Power and
+      # Touch of the Grave among the pushed rows no generator read. A push it
+      # cannot read fails this step rather than leaving the build shipped-only.
       - name: Fetch build
         env:
           PRODUCT: ${{ inputs.product }}
