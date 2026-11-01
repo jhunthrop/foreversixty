@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import math
 import re
 from collections import Counter
 from typing import TYPE_CHECKING, NamedTuple
@@ -652,6 +653,14 @@ def weapon_curve_modifiers(row: dict[str, str]) -> dict[str, float | int]:
     }
 
 
+def round_half_up(value: float) -> int:
+    """The client's rounding of a curve stat: floor(x + 0.5), as SimulationCraft's
+    scaled_stat does and as Wowhead Forever shows on every exact half (Theramore
+    Gauntlets 271941: 22.5 Strength reads +23). Python's round() rounds a half to
+    the even neighbour and gave 22."""
+    return math.floor(value + 0.5)
+
+
 def _curve_stats(
     row: dict[str, str], curves: ItemCurves, item_level: int, quality: int, inventory_type: int
 ) -> dict[str, int]:
@@ -670,7 +679,9 @@ def _curve_stats(
             break
         editor_column = f"StatPercentEditor_{index}"
         amount = (
-            round(budget * int_column(row, editor_column) / 10000) if editor_column in row else 0
+            round_half_up(budget * int_column(row, editor_column) / 10000)
+            if editor_column in row
+            else 0
         )
         _apply_stat(stats, row, index, amount)
     return stats
