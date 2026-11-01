@@ -65,9 +65,9 @@ describe('itemTooltipModel', () => {
     );
     expect(model.stats).toEqual([
       '+26 Intellect',
-      '+8 Spell penetration',
-      '+100 Fire spell damage',
-      '+100 Frost spell damage',
+      'Equip: Decreases the magical resistances of your spell targets by 8.',
+      'Equip: Increases damage done by Fire spells and effects by up to 100.',
+      'Equip: Increases damage done by Frost spells and effects by up to 100.',
     ]);
   });
 

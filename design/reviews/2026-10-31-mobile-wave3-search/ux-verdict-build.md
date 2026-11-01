@@ -1,3 +1,27 @@
+# F12 build verdict, round 4
+
+Reviewer: ux-designer, 2026-11-01. Reviewed the refreshed captures (commit dc236cbd0). Rounds 3, 2 and 1 are kept below.
+
+# SHIP
+
+Both round 3 MUSTs are closed.
+
+- **R3-M1:** `f12-4-not-listed-ios.png` now prints Requires Level 60, the green `Equip: Restores 4 mana per 5 sec.`, the set block (`The Defiler's Fortitude`, `(2) Set`, `(3) Set`), then `Item Level 65`. `f12-4-not-listed-and.png` prints the same order. The Cape agrees on both (`f12-4-pick-and.png`: Requires, Equip, Item Level).
+- **R3-M2:** `f12-4-loading-and.png` draws head, pick slot, tooltip block, sources, best in slot for, with no inline chip strip. The pick slot starts at the same y as the loaded card (`f12-4-pick-and.png`), and the tooltip block matches the loaded tooltip height to within a few pixels. No jump on arrival.
+
+No MUST is open. Every spec §5.4 acceptance capture exists on both platforms at default and largest text.
+
+## Follow-ups (not blocking this lane)
+
+- **Website tooltip order** (the build agent flagged it): the site still prints Equip lines inside the stats block, before Requires and the set block. Both apps and the F2.6 sheet now follow the client's order; the site should follow the same shared formatter. Track it as a site task; the apps are the reference.
+- Vendor rows read `Vendor` with no zone or price; re-capture when the data carries them (spec line `Vendor: {name} · {price}` plus the standing).
+- Watching group and star on character rows: re-capture F12.1 and F12.2 when F11 lands.
+- Characters, guides, Rankings and the planner still open the website (external-link glyph is on each); remove the glyph row by row as F9, F11 and F13 land.
+- The boss glyph is an outlined skull on iOS and a filled skull on Android; one asset when next touched.
+- Update the board copy `equipped` to `Binds when picked up` the next time the F12 board is regenerated.
+
+---
+
 # F12 build verdict, round 3
 
 Reviewer: ux-designer, 2026-11-01. Reviewed the re-recorded captures in `build/ios/` and `build/android/`. Rounds 2 and 1 are kept below.

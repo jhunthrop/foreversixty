@@ -156,6 +156,11 @@ const EQUIP_STAT_LINES: Partial<Record<StatKey, (value: number) => string>> = {
   mp5: (value) => `Equip: Restores ${value} mana per 5 sec.`,
   spell_penetration: (value) => `Equip: Decreases the magical resistances of your spell targets by ${value}.`,
   fire_power: (value) => `Equip: Increases damage done by Fire spells and effects by up to ${value}.`,
+  frost_power: (value) => `Equip: Increases damage done by Frost spells and effects by up to ${value}.`,
+  shadow_power: (value) => `Equip: Increases damage done by Shadow spells and effects by up to ${value}.`,
+  arcane_power: (value) => `Equip: Increases damage done by Arcane spells and effects by up to ${value}.`,
+  nature_power: (value) => `Equip: Increases damage done by Nature spells and effects by up to ${value}.`,
+  holy_power: (value) => `Equip: Increases damage done by Holy spells and effects by up to ${value}.`,
   block_value: (value) => `Equip: Increases the block value of your shield by ${value}.`,
 };
 
