@@ -30,7 +30,13 @@ describe('SimResults', () => {
     const { body } = render(SimResults, {
       props: {
         ...BASE_PROPS,
-        topUpgrade: { itemName: 'Bracers of X', sourceName: 'Blackfathom Deeps', gain: '+14', savedAt: '' },
+        topUpgrade: {
+          itemName: 'Bracers of X',
+          sourceName: 'Blackfathom Deeps',
+          gain: '+14',
+          savedAt: '',
+          characterKey: 'k',
+        },
       },
     });
     expect(body).toContain('Upgrade: Bracers of X from Blackfathom Deeps, +14 DPS.');

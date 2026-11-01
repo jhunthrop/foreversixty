@@ -188,6 +188,11 @@ export function createSimStore(init: SimStoreInit) {
   // that a resolved handle.result means the player's Stop click was too late to matter.
   let stopRequested = false;
 
+  // Bumped by adopt(): a browser run still in flight for the character before is cancelled
+  // and writes nothing more (store-request.ts runAndSettle), so its result can never show
+  // under the character that replaced it.
+  let browserRunGeneration = 0;
+
   // True for the duration of a runOnServer() call, set synchronously before its first
   // `await` -- both the reentrancy guard (a second call while one is in flight is a no-op)
   // and what RunControl disables the primary button on, the server lane's own equivalent
@@ -261,6 +266,9 @@ export function createSimStore(init: SimStoreInit) {
       phase = 'idle';
       return;
     }
+    browserRunGeneration += 1;
+    handle?.cancel();
+    handle = null;
     character = outcome.character;
     settings = withSpecForPreset(settings, outcome.character.spec, outcome.character.level);
     result = null;
@@ -359,6 +367,7 @@ export function createSimStore(init: SimStoreInit) {
     setPrecisionId: (value) => {
       precisionId = value;
     },
+    getRunGeneration: () => browserRunGeneration,
     getResult: () => result,
     setResult: (value) => {
       result = value;

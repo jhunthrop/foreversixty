@@ -47,6 +47,9 @@ export interface RunSettleDeps {
   setHandle(value: RunHandle | null): void;
   /** Puts the figure back to the last completed result after a cancelled run. */
   restorePreviousResult(): void;
+  /** Bumped whenever the character on screen changes. A run captures it when it starts and
+   *  writes nothing once it has moved: a result belongs to the character it was run for. */
+  getRunGeneration(): number;
 }
 
 /**
@@ -82,18 +85,22 @@ export interface StoreRequestDeps extends RunSettleDeps {
  * the edited text); from `phase: 'running'` on, there is exactly one rule, here.
  */
 export async function runAndSettle(deps: RunSettleDeps, pool: SimPool, input: RunInput): Promise<void> {
+  const generation = deps.getRunGeneration();
+  const current = (): boolean => deps.getRunGeneration() === generation;
   deps.setPhase('running');
   const handle = runSim(pool, input, (update) => {
     // A shard can still report progress after stop() fires and before the engine has
     // noticed the abort message; the figure on screen must not keep moving once the
-    // player has asked it to stop.
-    if (deps.getStopRequested()) return;
+    // player has asked it to stop -- or once another character is on screen.
+    if (deps.getStopRequested() || !current()) return;
     deps.setProgress(update);
   });
   deps.setHandle(handle);
 
   try {
     const finished = await handle.result;
+    // Another character was loaded while this ran: its page is not this run's to write.
+    if (!current()) return;
     // handle.result can resolve with a real result even after stop(): the abort message
     // and the engine's own last tick can cross in flight, and a shard mid-tick when the
     // message arrives finishes it rather than discarding the work. The player's Stop
@@ -108,6 +115,7 @@ export async function runAndSettle(deps: RunSettleDeps, pool: SimPool, input: Ru
     deps.setResult(finished);
     deps.setPhase('done');
   } catch (error) {
+    if (!current()) return;
     const failure = error instanceof SimRunError ? error : null;
     deps.setMessage(failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? simCopy.failed));
     // The engine's own words, kept beside ours: sim/request names the buff or consumable
@@ -119,7 +127,7 @@ export async function runAndSettle(deps: RunSettleDeps, pool: SimPool, input: Ru
     if (failure?.cancelled === true) deps.restorePreviousResult();
     deps.setPhase(failure?.cancelled === true && deps.getResult() !== null ? 'done' : 'error');
   } finally {
-    deps.setHandle(null);
+    if (current()) deps.setHandle(null);
   }
 }
 

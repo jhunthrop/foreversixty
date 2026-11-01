@@ -11,6 +11,14 @@ export interface LastUpgrade {
   /** Already formatted, e.g. "+14 ± 3" -- combos.ts's own deltaLabel(). */
   gain: string;
   savedAt: string; // ISO
+  /** The character and spec the run was for (`upgradeKeyOf`): an upgrade is read back only
+   *  for that character, never shown under another one or another spec. */
+  characterKey: string;
+}
+
+/** The character an upgrade belongs to: its source and spec. */
+export function upgradeKeyOf(character: { spec: string; source: { kind: string; ref: string } }): string {
+  return `${character.source.kind}:${character.source.ref}:${character.spec}`;
 }
 
 const STORAGE_KEY = 'fs.lastDroptimizerUpgrade';
@@ -31,18 +39,20 @@ function isLastUpgrade(value: unknown): value is LastUpgrade {
     typeof candidate.itemName === 'string' &&
     typeof candidate.sourceName === 'string' &&
     typeof candidate.gain === 'string' &&
-    typeof candidate.savedAt === 'string'
+    typeof candidate.savedAt === 'string' &&
+    typeof candidate.characterKey === 'string'
   );
 }
 
-export function readLastUpgrade(storage?: Storage): LastUpgrade | null {
+/** The last upgrade recorded for `characterKey`, or null (none, or another character's). */
+export function readLastUpgrade(characterKey: string, storage?: Storage): LastUpgrade | null {
   const target = storageOf(storage);
   if (target === null) return null;
   try {
     const raw = target.getItem(STORAGE_KEY);
     if (raw === null) return null;
     const parsed: unknown = JSON.parse(raw);
-    return isLastUpgrade(parsed) ? parsed : null;
+    return isLastUpgrade(parsed) && parsed.characterKey === characterKey ? parsed : null;
   } catch {
     return null;
   }

@@ -102,6 +102,7 @@ function harness(pool: SimPool, initialResult: SimResult | null): Harness {
     restorePreviousResult: () => {
       restoreCalls.count += 1;
     },
+    getRunGeneration: () => 0,
     fromPlannerCode: unused('fromPlannerCode'),
     treeVersion: '1.15.9.69722',
   };
