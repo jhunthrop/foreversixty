@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import gg.foreversixty.app.bis.BisRange
 import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.items.ItemTooltipModel
 import gg.foreversixty.app.model.ItemUseSource
 import gg.foreversixty.app.model.ItemUseSpec
 import gg.foreversixty.app.network.ApiError
@@ -77,11 +78,18 @@ class ItemPageTest {
         assertEquals("Requires Level 47", tooltip.requiresLevel)
     }
 
-    @Test fun `a set piece names its set, and mp5 reads as the client's Equip line`() = runTest {
+    @Test fun `a set piece names its set, and without equip_stats every stat prints white`() = runTest {
         val tooltip = load(pauldrons, raid).loaded().tooltip
         assertEquals("The Defiler's Fortitude", tooltip.setName)
         assertTrue(tooltip.setBonuses.isNotEmpty())
-        assertEquals(listOf("Equip: Restores 4 mana per 5 sec."), tooltip.equipLines)
+        assertTrue(tooltip.equipLines.isEmpty())
+        assertTrue(tooltip.stats.any { it.startsWith("+4 ") })
+    }
+
+    @Test fun `one spell stating equal spell power and healing is one sentence`() {
+        assertEquals(mapOf("spell_power" to 14, "healing" to 0), ItemTooltipModel.equipShares(mapOf("spell_power" to 14, "healing" to 14)))
+        assertEquals(mapOf("spell_power" to 6, "healing" to 12), ItemTooltipModel.equipShares(mapOf("spell_power" to 6, "healing" to 18)))
+        assertEquals(mapOf("healing" to 0), ItemTooltipModel.equipShares(emptyMap()))
     }
 
     @Test fun `an id the index does not carry is unknown`() = runTest {

@@ -111,11 +111,21 @@ class SearchTestSource(
         if (tooltipFails) return null
         val dir = SearchTestData.buildDir
         val items = ApiJson.decodeFromString(ItemsFile.serializer(), File(dir, "items/${request.classSlug}.json").readText()).items
+            .map { if (it.id == SearchTestData.SPRITECASTER_CAPE) it.copy(equipStats = CAPE_EQUIP_STATS) else it }
         val sets = ApiJson.decodeFromString(ListSerializer(ItemSet.serializer()), File(dir, "sets.json").readText())
         val bis = request.spec?.let { ApiJson.decodeFromString(BisFile.serializer(), File(dir, "bis/$it.json").readText()) }
         return ItemTooltipSources(items.associateBy { it.id }, sets, bis)
     }
 
+
+    private companion object {
+        /**
+         * The cape's `equip_stats` as the next data run publishes them (6128776a1): its one
+         * `Increase Spell Dam 14` spell states spell power and healing 14. Build 70707's committed
+         * files predate the field.
+         */
+        val CAPE_EQUIP_STATS = mapOf("spell_power" to 14, "healing" to 14)
+    }
 
     override suspend fun uses(build: String, shard: Int): ApiResult<ItemUsesShard> =
         uses ?: ApiResult.Success(SearchTestData.realUses(), requestId = "")

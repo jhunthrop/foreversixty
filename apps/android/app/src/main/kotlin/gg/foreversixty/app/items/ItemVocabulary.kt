@@ -59,25 +59,24 @@ object ItemVocabulary {
     )
 
     /**
-     * The stats the client prints as a green `Equip:` sentence rather than a white `+N Stat`
-     * line (the Classic tooltip's own words): spell power, healing, attack power and the rest.
+     * The flat stats an on-equip spell can state, and the client's green `Equip:` sentence for
+     * each. Only the item's `equip_stats` share prints this way; the rest of the stat is a real
+     * stat modifier and prints white (Forever items carry both; the site's `tooltip.ts` rule).
      */
     val equipStats: Map<String, Int> = mapOf(
         "spell_power" to R.string.items_equip_spellPower, "healing" to R.string.items_equip_healing,
         "attack_power" to R.string.items_equip_attackPower, "ranged_attack_power" to R.string.items_equip_rangedAttackPower,
         "mp5" to R.string.items_equip_mp5, "spell_penetration" to R.string.items_equip_spellPenetration,
         "fire_power" to R.string.items_equip_firePower, "block_value" to R.string.items_equip_blockValue,
-        "defense" to R.string.items_equip_defense,
     )
 
     /**
-     * Rating stats the client states as a percent (`Equip: Improves your chance to hit by 1%.`),
-     * printed that way only when the row's `percent_stats` gives the same figure (the site's
-     * `tooltip.ts` rule); otherwise the stat stays a white line.
+     * Defense and the rating family, which the client states as an Equip sentence only when the
+     * row's `percent_stats` gives the same figure; otherwise the stat stays a white line.
      */
     val percentEquipStats: Map<String, Int> = mapOf(
         "crit" to R.string.items_equip_crit, "hit" to R.string.items_equip_hit, "dodge" to R.string.items_equip_dodge,
-        "parry" to R.string.items_equip_parry, "block" to R.string.items_equip_block,
+        "parry" to R.string.items_equip_parry, "block" to R.string.items_equip_block, "defense" to R.string.items_equip_defense,
     )
 
     private val standings = mapOf(
