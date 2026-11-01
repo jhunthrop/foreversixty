@@ -9,6 +9,179 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 3 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round3/ (warlock, physical, hybrids, casters) | 22 fixed (12 from the fresh re-audit, 1 from the wow-player review); round 2's two holds landed | 640da215f | no |
 | 4 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round4/ (warlock, physical, hybrids, casters, integration) | 33 fixed (warlock 6, physical 6, hybrids 8, casters 7, integrator 6); 1 from the wow-player review | f8a5f94ce | no |
 | 5 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round5/ (warlock, physical, hybrids, casters, ranker, page, integration) | 30 fixed (warlock 1, casters 8, hybrids 4, physical 6, ranker 3, page 5, integrator 1); 2 more from the wow-player review | 8baffe5fc | no |
+| 6 | 2026-11-01 to 2026-11-02 | design/reviews/2026-11-02-sim-audit-round6/ (warlock, casters, physical, hybrids, healers, ranker, pipeline, wasm, page, integration) | 71 fixed (warlock 5, casters 11, physical 10, hybrids 17, healers 10, pipeline 5, ranker 4, wasm 3, page 5, integrator 1) | b57765fb9 | no |
+
+## Round 6 at a glance
+
+The owner's rulings this round:
+- **/sim below 60 defaults to the preset the band publishes** (bare below 60, raid at 60). The ranker's rule lives once in `sim/request.PublishedPreset`; Raid-buffed stays a choice.
+- **Horde race picks within 1% stay as published.** The adoption rule's bar applies to race.
+- **Restoration druid's lead stays,** blocked on launch logs.
+
+The owner's priorities:
+- **Protection paladin +50% stands.** Righteous Fury alone is +50.7%, and every input has two sources. This round's two threat bugs take 3.4% back off, leaving the paladin at 96 to 98% of a Protection warrior.
+- **Torch of Light leaves the raid sets.** The ranker credited wand DPS that raid warlocks never shoot, and wand shots were Physical.
+- **The hotfix push is layered into every generator** and re-fetched when it moves.
+- **sim.wasm was at 94% of Cloudflare's limit.** It ships gzipped now, under a 20 MiB budget check.
+- **The header layout shift is fixed at its two causes,** with the limit unchanged.
+
+The owner's questions, answered:
+- **Survival's Improved Concussive Shot did nothing.** It now goes to Deadly Aspects (+4% leveling, +8% new raid build). Efficiency is worth nothing because Resourcefulness already cuts melee mana by 60%.
+- **Wild Growth is modelled right but loses to Rejuvenation on mana.** Raid damage now reaches the healer.
+- **The bear was in form all along.** Maul and Swipe lacked Classic's 1.75x threat (+29.5% now).
+
+Confirmed and fixed, by group (rows and evidence in each report):
+- **Warlock (5).**
+  - Wand shots were Physical.
+  - Classic-db items lost single-school spell damage.
+  - Forever's dynamic DoTs for warlock, druid and shaman.
+  - Balance and Feral registered Moonfire and Wrath twice, casting the talent-less copies.
+- **Casters (11).**
+  - Ignite rolls into one burn and is registered once.
+  - Improved Scorch benefits only its mage, so it is out of the raid preset.
+  - Ice Lance's Frozen x4 covers spell power.
+  - Arcane Blast lands on cast.
+  - Robe of the Archmage's use.
+  - Mage and priest DoTs are dynamic.
+  - The Mental Agility and Spiritual Healing masks.
+  - The addon's stale default builds.
+- **Physical (10).**
+  - The build search protected Improved Concussive Shot.
+  - The Resourcefulness proc mask.
+  - Aspect of the Beast.
+  - Bestial Discipline's mana half.
+  - Claw ranks.
+  - Defensive Stance and Defiance multiply.
+  - Mana regen reads its rates each tick.
+  - Rune of the Guard Captain is 14 attack power, and terrain riders are dropped.
+  - Classic-db shield block.
+  - Half-up stat rounding.
+- **Hybrids (17).**
+  - Maul and Swipe threat.
+  - Moonkin crit counted twice, Vengeance on Insect Swarm, Nature's Reach.
+  - Natural Instinct on Rip.
+  - Genesis off Tranquility.
+  - Illumination's casting regen.
+  - Benediction on Holy Shock.
+  - Shield Specialization mana threat, and mana-gain threat multipliers.
+  - Judgements on the melee table, Hammer of Wrath's hit, the Benediction mask.
+  - Windfury's Elemental Weapons, Stormstrike's charge, Flurry's 15 s.
+  - Purification off Healing Stream.
+  - Blessing of Light and Salvation removed.
+- **Healers (10).**
+  - Raid damage reaches the healer.
+  - HoTs are dynamic.
+  - Discipline casts Greater Heal; Binding Heal is trainable.
+  - The Greater Blessing of Light precast is removed.
+  - Chain Heal pacing.
+  - Mana Tide rank 4.
+  - Coach book ranks and priest rank notes.
+  - The rotations heal the healer.
+- **Pipeline (5).**
+  - Generators read only the shipped tables.
+  - The hand dump was incomplete.
+  - Removed spells stayed as nameless constants.
+  - Nothing re-fetched on a new push.
+  - The follow hash ignored the push.
+- **Ranker (4).**
+  - Wand credit by Shoot time.
+  - Verify's flat 1% gate.
+  - Empty trinket slots.
+  - Doubled ranged attack power.
+- **Wasm (3).**
+  - The deployed module was at 94% of the limit.
+  - The local toolchain differed from CI's.
+  - The dev replace built the fork checkout silently.
+- **Page (5).**
+  - /sim defaulted to Raid-buffed below 60.
+  - Header layout shift.
+  - Stale real-engine e2e specs.
+  - From the wow-player review: an off hand under a two-hander drew an empty socket.
+  - From the wow-player review: /sim's Damage tab opened collapsed on a nameless "Build" row.
+- **Integrator (1).** web.yml had been red on prettier since f95ff8e77, so round 5's pin never deployed. It was pushed alone (bef2cb599), and web has deployed since.
+
+Before and after, pin 8baffe5fc against b57765fb9, raid preset, band 60, 10,000 iterations. Alliance / horde, seed 1; seed 50001 is within 0.2:
+- **Bear threat:** +29.5 / +29.7.
+- **Discipline:** +11.1 / +11.0 HPS.
+- **Frost:** +7.8 / +7.9.
+- **Destruction:** -7.8 / -7.8.
+- **Restoration shaman:** +7.6 / +7.4 HPS.
+- **Holy priest:** +6.1 / +6.3 HPS.
+- **Fire:** -5.7 / -6.1.
+- **Elemental:** -5.5 / -5.5.
+- **Balance:** +5.3 / +5.0.
+- **Holy paladin:** +4.5 / +3.7 HPS.
+- **Enhancement:** -3.5 / -3.4.
+- **Protection paladin threat:** -3.4 / -3.4.
+- **Protection warrior threat:** +3.1 / +3.1.
+- **Demonology:** -2.9 / -2.8.
+- **Retribution:** +2.1 / +1.6.
+- **Beast Mastery:** +1.6 / +1.7.
+- **Affliction:** -1.6 / -1.6.
+- **Feral:** +1.4 / +1.3.
+- **Every other spec:** within 0.5.
+
+The item-data fixes and the re-ranks reach published numbers only after data.yml's fetch and bis.yml run on the pin. Those are:
+- wand school
+- classic-db spell damage
+- the doubled ranged attack power
+- Guard Captain
+- classic-db shield block
+- rounding
+- Torch out of the raid sets
+- trinket slots
+- the new Survival and Beast Mastery builds
+
+Open going into round 7:
+- **Owner decisions.**
+  - Hawk Eye to Deadly Aspects for Survival: +5% bare, at the cost of range utility, the same class of choice as Grim Reach.
+  - The gzipped sim.wasm transfer is at 95% of its 4.5 MB budget.
+- **After this round's nightly, check:**
+  - The first client.yml push job re-fetches 70707. Its fetch-wowhead step may go red: a local run got 397 of 689 items, under the 90% floor.
+  - /tiers/healer reorders, with Discipline passing Holy paladin.
+  - The warlock and raid caster ranged slots leave Torch of Light.
+  - The new Survival and Beast Mastery builds publish.
+  - Horde hunters drop about 1.2% from the ranged attack power fix.
+- **Blocked on level-60 logs** (launch is 2026-11-04):
+  - Ice Lance's coefficient: the client says 0, the engine 0.4286. At 0, Frost is 9.7% lower.
+  - Illumination's casting regen, client rows only.
+  - Lacerate and Primal Bite's high-threat factor.
+  - Holy Shield's flat threat.
+  - Elemental Mastery: one charge, or 15 s.
+  - Windfury swings: white or not.
+  - Holy Power's crit-heal bonus.
+  - Arcanite Champion's proc rate.
+  - Ignite's logged 0.73 ratio.
+  - Missile Barrage on a miss.
+  - Arcane Concentration per missile.
+  - Master of Elements on Clearcasting.
+  - Prayer of Mending's bounce mask.
+  - Binding Heal's crit rolls.
+  - Wild Growth under burst damage.
+  - Revenge, Shield Slam and Thunder Clap threat.
+  - Venom and Rupture attack power.
+  - Improved Corruption: add or multiply.
+  - Serpent Sting's 0.2 spell power, where the client row has none.
+  - Righteous Fury's multiplication.
+  - Round 5's demon, pet and rage items.
+- **Single source or open:**
+  - Shadowfiend at launch.
+  - The heal profile's coverage sits outside its 60 to 85% rule: druid about 86%, paladin about 57%.
+- **Held under the adoption rule:**
+  - Marksmanship's search winner, +0.9%.
+  - Fire dropping its Improved Scorch upkeep line, +0.4%.
+  - Affliction, +0.7%.
+- **Pipeline and page follow-ups:**
+  - Items still use the useHotfixes CSV without removals.
+  - ChrRaceRacialAbility and the other unfetched tables are hand-written.
+  - 24 aura-99-only spells still mirror into ranged attack power.
+  - Benediction's planner row lacks its healing line.
+  - The real-engine e2e specs need a wasm build in CI (build-real has none).
+  - sim-island has 12 bytes of headroom.
+  - Raid-buffed doesn't add the class kit (Protection paladin's Devotion Aura at 60).
+  - Copy: why Torch loses in raid on BiS.
+  - 36 action ids read "An unnamed spell" on /sim's Damage tab: simnames pruning, plus engine ids like Ignite 12654 that the client's SpellName lacks.
+  - Ignite and Shoot show as Physical: the result carries no school for them. The engine deals Ignite as Fire, and Shoot's school arrives with damage_school at the data run.
 
 ## Round 5 at a glance
 
