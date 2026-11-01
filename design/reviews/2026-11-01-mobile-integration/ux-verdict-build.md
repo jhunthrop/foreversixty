@@ -92,3 +92,47 @@ Reviewed: the round-2 captures in `build/ios/` and `build/and/` against spec §5
 - Both platforms tell the same story: no on the compare and gear-gap fixtures (SHOULD 3, 4).
 
 Verdict: HOLD
+Verdict (round 2): HOLD
+
+## Round 3
+
+Reviewed: the round-3 captures in `build/ios/` and `build/and/` against spec §5.7 F15, §6, F11.4, F13.5 and the F15 Copy keys. Rulings and lead notes applied, not re-raised.
+
+### Round 2 MUST
+
+1. iOS character page gear icons and quality colours: FIXED. `f15-char-open-planner-ios.png` and `-large-ios.png` show real icons, quality borders (green, blue, purple) and quality-coloured names, with gold better-item dots. Matches Android (`f15-char-open-planner-and.png`).
+
+### Round 2 SHOULDs
+
+1. Dynamic shortcut order (Android): FIXED. `f15-launcher-shortcuts-signedin-emulator-and.png` shows the current character first, then `Onyxia's Lair · Thu 8 pm`, under the two static slots.
+2. Android disabled `Remove downloaded data` at 2.0: FIXED. `f15-offline-data-empty-large-and.png` grows to the two-line label with padding; the glyphs clear the border.
+3. Compare fixtures: FIXED. `f15-shared-build-compare-ios.png` and `-and.png` both read `3 of your 49 points differ from the shared build.` and `The shared build takes 5 points you have not.`, with the same Arms 17 / Fury 32 tabs and the same dashed -1, -3, +1, +1 nodes.
+4. Gear gap: FIXED. 36.0 points on both; iOS stacks label over value at AX5 (`f15-char-open-planner-large-ios.png`), Android keeps one row and fits.
+5. `Open in planner`: FIXED. One chevron row inside the Builds seen card on both platforms, under the build it opens.
+6. Shared-build title: FIXED. `f15-shared-build-compare-button-large-and.png` and `-large-ios.png` put the totals on their own line on both.
+7. Android share capture context: FIXED. `f15-share-character-emulator-and.png` is taken over the character page; text and link are right for the fixture user (per lead note).
+
+### MUST (block ship)
+
+None.
+
+### SHOULD (polish, not blocking)
+
+1. **Builds seen row differs.** `f15-char-open-planner-ios.png` shows a 40 pt build glyph tile and spaced `30 / 0 / 21`; `f15-char-open-planner-and.png` shows no tile and `30/0/21`. Use one row anatomy. Same story, different dress.
+2. **Segment selected mark.** `f15-shared-build-compare-and.png` puts a check on `Your build`; `f15-shared-build-compare-ios.png` does not. Platform convention is acceptable; confirm iOS selection does not rely on fill alone (VoiceOver trait selected).
+3. **iOS Compare with mine at AX5.** `f15-shared-build-compare-button-large-ios.png` wraps to two lines with about 8 pt vertical padding. Raise to 12 pt, as the Android button.
+4. **Open items carried from round 2.** Wrapped lines that start with a bare dot separator in `f15-offlinedata-data-large-ios.png`; the empty and up-to-date copy keys are now in the spec's F15 Copy keys, so tests must pin them.
+5. **On-device gaps.** Siri, Assistant, per-shortcut launcher search stay on the device pass, per ruling.
+
+### Checklist
+
+- Siri, snippet, refusal and who-is-coming copy verbatim: yes.
+- Strips, three states, `Retry` and `Update` at the largest text: yes.
+- Offline data data, empty, offline, remove: yes on both.
+- Spotlight crests, launcher statics and dynamic order: yes.
+- Share text for character, guide, tier list, report: yes.
+- Planner follow-ups render, wrap and match across platforms: yes.
+- iOS gear icons and quality colours: yes.
+- Both platforms tell the same story: yes.
+
+Verdict: SHIP

@@ -75,3 +75,35 @@ Unchanged from round 1 (Legionite Glaive, Ironfeather set, Nature power third in
 
 Verdict: HOLD
 
+
+## Round 3
+
+Reviewer: same veteran raider. Judged on the new captures; rulings in the brief not re-raised.
+
+### Round 2 check
+- M1 gear gap and worn chest: FIXED. `f15-char-open-planner-ios.png` and `-and.png` both show Lightningbolltz in `Vest of Elements`, `Gear gap 36.0 points`, gold dots on the same slots, real icons on both. Same story on both phones.
+- M2 Compare with mine: FIXED. `f15-shared-build-compare-ios.png` and `-and.png` (and both `-large`) print `3 of your 49 points differ from the shared build.` and `The shared build takes 5 points you have not.`, Arms 17 / Fury 32 / Protection 0, and the same dashed talents (-1, -3, +1, +1). The numbers add up for a level-58 warrior (49 points against the 51-point shared build), and the page now tells the player which talents to change. Largest text wraps whole words on both apps.
+- S1 level: `Obnoxious Yell` is `Fury Warrior · 58` in Spotlight, and 49 talent points match level 58. Consistent. Android Search no longer lists him, so no conflict is on screen.
+- S2 iOS Spotlight at AX5: FIXED (`f15-spotlight-entries-large-ios.png`): icons are capped, titles wrap at the word.
+- S3 sizes: Offline data (`f15-offlinedata-data-ios.png`) says `Guides ... 2.4 MB`; I did not re-check the Guides footer, see SHOULD 1.
+- S4 `Item icons` row still ends at `41 MB` with no `Updated` on both apps. Still a SHOULD.
+- S5 AX5 Search placeholder: not re-opened, unchanged SHOULD.
+- S6 Open in planner: now one chevron row at the foot of Builds seen on both apps. Good. Remaining difference below.
+- S7 Android character share captured over the signed-out landing: not changed.
+
+### MUSTs (block ship)
+None.
+
+### SHOULDs
+1. Offline data and Guides footer should quote one number for the same phone (iOS Offline data `2.4 MB`; re-check the Guides footer against it).
+2. `Item icons` row has no `Updated {when}` on either app (`f15-offlinedata-data-ios.png`, `f15-offline-data-and.png`); spec row is `{what} · {size} · Updated {when}`.
+3. iOS character page (`f15-char-open-planner-ios.png`) has no `Parse history` row and a long blank band below; Android shows it. Probably the drawn view; confirm on a real build.
+4. Builds seen: iOS row has a build icon, Android does not. Pick one.
+5. Android Search watching (`f15-search-watching-and.png`) lists `Voltaris`, `Stormwrath`, `Kraggor`; the iOS Search watching names differ. One story for both phones.
+6. iOS AX5 Search placeholder and chip clipping (`f15-search-watching-large-ios.png`) tolerable, shorten the placeholder.
+7. Android character share sheet is still over the signed-out screen (`f15-share-character-emulator-and.png`).
+
+### Data a player will doubt (accuracy reviewer)
+Legionite Glaive, the Ironfeather set, `Nature power` third in the guide, the `14 Dec` report against Thursday raids, and `Vest of Elements` at ilvl 63 against `Hand of Edward the Odd` at ilvl 62.
+
+Verdict: SHIP
