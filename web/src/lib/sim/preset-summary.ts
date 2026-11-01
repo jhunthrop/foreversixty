@@ -8,7 +8,7 @@
 // table has no row for rather than printing it bare (the raid-leader review's own finding).
 import { buffLabel, type BuffNames } from './buff-names';
 import { BUFF_GROUPS, rowsIn, type BuffGroupId } from './buffs';
-import { presetConsumables, PRESET_BUFFS, type BuffPresetId } from './settings';
+import { presetBuffs, presetConsumables, type BuffPresetId } from './settings';
 
 export interface PresetSummaryRow {
   id: string;
@@ -21,7 +21,7 @@ export interface PresetSummaryGroup {
 }
 
 /**
- * The preset's own ids, named and grouped. Solo carries none, so it always answers `[]`.
+ * The preset's own ids, named and grouped. Bare carries the class kit, and a class with no kit answers `[]`.
  * An id the synced catalogue does not carry (a build ahead of the IDS.md this ran
  * `sync:sim-ids` against) is silently absent from every group rather than shown ungrouped --
  * `settings.test.ts`'s own catalogue check is what keeps that from happening in practice.
@@ -32,7 +32,7 @@ export function presetSummary(
   level: number,
   names: BuffNames | null,
 ): PresetSummaryGroup[] {
-  const applied = new Set([...PRESET_BUFFS[preset], ...presetConsumables(preset, spec, level)]);
+  const applied = new Set([...presetBuffs(preset, spec, level), ...presetConsumables(preset, spec, level)]);
   return BUFF_GROUPS.map((group) => ({
     group,
     rows: rowsIn(group)

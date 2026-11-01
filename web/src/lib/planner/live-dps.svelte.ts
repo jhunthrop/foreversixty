@@ -14,7 +14,7 @@
 import type { TalentIndex } from './rules';
 import { EMPTY_ESTIMATE } from '../sim/estimate';
 import { runSim, SimRunError, type RunHandle } from '../sim/run';
-import { loadRaidConsumes } from '../sim/raid-consumes';
+import { loadPresetSets } from '../sim/preset-sets';
 import { defaultSettings } from '../sim/settings';
 import { toCharacterSpec, type SimCharacter } from '../sim/character';
 import { ITERATIONS, type Estimate } from '../sim/types';
@@ -51,7 +51,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
     state = 'running';
     const unit = scoreUnitForSpec(character.spec);
     try {
-      await loadRaidConsumes();
+      await loadPresetSets();
     } catch {
       if (generation !== startGeneration) return;
       message = plannerScoreCopy.failed(unit);

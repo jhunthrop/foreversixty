@@ -31,7 +31,7 @@
   import { characterFromPlanner, toCharacterSpec } from '../../lib/sim/character';
   import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import { runSim } from '../../lib/sim/run';
-  import { loadRaidConsumes } from '../../lib/sim/raid-consumes';
+  import { loadPresetSets } from '../../lib/sim/preset-sets';
   import { defaultSettings } from '../../lib/sim/settings';
   import { ITERATIONS } from '../../lib/sim/types';
   import { createPool, type SimPool } from '../../lib/sim/worker';
@@ -196,7 +196,7 @@
     // planner has no settings bar of its own, and inventing one here would put two
     // vocabularies on one page; `/sim` is where settings are chosen.
     try {
-      await loadRaidConsumes();
+      await loadPresetSets();
       const settings = defaultSettings(character.spec, character.level);
       const result = await runSim(
         poolOnce(),

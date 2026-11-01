@@ -76,6 +76,7 @@ export function settingsFromRequest(request: SimRequest): SimSettings {
   return {
     encounter: withDefined(base.encounter, request.encounter),
     preset: 'custom',
+    presetChosen: true,
     buffs: [...(request.character.buffs ?? [])],
     consumables: [...(request.character.consumes ?? [])],
     cooldowns: (request.character.cooldowns ?? []).map((row) => ({ ...row, at_sec: [...row.at_sec] })),

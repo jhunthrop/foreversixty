@@ -1,0 +1,319 @@
+{
+  "published": [
+    {
+      "from_level": 1,
+      "preset": "bare"
+    },
+    {
+      "from_level": 60,
+      "preset": "raid"
+    }
+  ],
+  "bare": {
+    "druid-balance": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "gift_of_the_wild"
+        ],
+        "consumes": []
+      }
+    ],
+    "druid-feral": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "gift_of_the_wild"
+        ],
+        "consumes": []
+      }
+    ],
+    "druid-feral-bear": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "gift_of_the_wild"
+        ],
+        "consumes": []
+      }
+    ],
+    "druid-restoration": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "gift_of_the_wild"
+        ],
+        "consumes": []
+      }
+    ],
+    "hunter-beast-mastery": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "heart_of_the_lion"
+        ],
+        "consumes": []
+      }
+    ],
+    "hunter-marksmanship": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "heart_of_the_lion"
+        ],
+        "consumes": []
+      }
+    ],
+    "hunter-survival": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "heart_of_the_lion"
+        ],
+        "consumes": []
+      },
+      {
+        "from_level": 6,
+        "buffs": [
+          "heart_of_the_lion",
+          "hunters_mark"
+        ],
+        "consumes": []
+      }
+    ],
+    "mage-arcane": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "arcane_brilliance"
+        ],
+        "consumes": []
+      }
+    ],
+    "mage-fire": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "arcane_brilliance"
+        ],
+        "consumes": []
+      }
+    ],
+    "mage-frost": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "arcane_brilliance"
+        ],
+        "consumes": []
+      }
+    ],
+    "paladin-holy": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      },
+      {
+        "from_level": 4,
+        "buffs": [
+          "blessing_of_might"
+        ],
+        "consumes": []
+      }
+    ],
+    "paladin-protection": [
+      {
+        "from_level": 1,
+        "buffs": [
+          "devotion_aura"
+        ],
+        "consumes": []
+      },
+      {
+        "from_level": 4,
+        "buffs": [
+          "blessing_of_might",
+          "devotion_aura"
+        ],
+        "consumes": []
+      }
+    ],
+    "paladin-retribution": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      },
+      {
+        "from_level": 4,
+        "buffs": [
+          "blessing_of_might"
+        ],
+        "consumes": []
+      }
+    ],
+    "priest-discipline": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "priest-holy": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "priest-shadow": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "rogue-assassination": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      },
+      {
+        "from_level": 20,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:instant_poison",
+          "off_hand_imbue:instant_poison"
+        ]
+      },
+      {
+        "from_level": 30,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison"
+        ]
+      }
+    ],
+    "rogue-combat": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      },
+      {
+        "from_level": 20,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:instant_poison",
+          "off_hand_imbue:instant_poison"
+        ]
+      },
+      {
+        "from_level": 30,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison"
+        ]
+      }
+    ],
+    "rogue-subtlety": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      },
+      {
+        "from_level": 20,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:instant_poison",
+          "off_hand_imbue:instant_poison"
+        ]
+      },
+      {
+        "from_level": 30,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:deadly_poison",
+          "off_hand_imbue:instant_poison"
+        ]
+      }
+    ],
+    "shaman-elemental": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "shaman-enhancement": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:rockbiter_weapon"
+        ]
+      },
+      {
+        "from_level": 30,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:windfury_weapon"
+        ]
+      }
+    ],
+    "shaman-restoration": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "warlock-affliction": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "warlock-demonology": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "warlock-destruction": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "warrior-arms": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "warrior-fury": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ],
+    "warrior-protection": [
+      {
+        "from_level": 1,
+        "buffs": [],
+        "consumes": []
+      }
+    ]
+  }
+}

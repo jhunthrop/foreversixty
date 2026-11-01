@@ -16,10 +16,10 @@ import { specLabel } from './spec-label';
 import { WEIGHTS_BROWSER_DEFAULT_ITERATIONS } from './weights';
 import type { SimCharacter } from './character';
 import type { SimPool } from './worker';
-import { loadRaidConsumes } from './raid-consumes';
+import { loadPresetSets } from './preset-sets';
 
-// The Raid-buffed consumables are a chunk loaded on demand (raid-consumes.ts).
-beforeAll(() => loadRaidConsumes());
+// The Raid-buffed consumables are a chunk loaded on demand (preset-sets.ts).
+beforeAll(() => loadPresetSets());
 
 const warriorTalents = warriorTalentsJson as unknown as TalentFile;
 

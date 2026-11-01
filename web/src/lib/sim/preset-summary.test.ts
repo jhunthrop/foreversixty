@@ -2,14 +2,18 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { EMPTY_BUFF_NAMES } from './buff-names';
 import { presetSummary } from './preset-summary';
 import { presetConsumables, RAID_BUFFS } from './settings';
-import { loadRaidConsumes } from './raid-consumes';
+import { loadPresetSets } from './preset-sets';
 
-// The Raid-buffed consumables are a chunk loaded on demand (raid-consumes.ts).
-beforeAll(() => loadRaidConsumes());
+// The Raid-buffed consumables are a chunk loaded on demand (preset-sets.ts).
+beforeAll(() => loadPresetSets());
 
 describe('presetSummary', () => {
-  it('is empty for solo, which applies nothing', () => {
-    expect(presetSummary('solo', 'warrior-fury', 60, null)).toEqual([]);
+  it('is empty for a bare warrior, whose class kit is nothing, and names a bare rogue’s poisons', () => {
+    expect(presetSummary('bare', 'warrior-fury', 60, null)).toEqual([]);
+    const rogue = presetSummary('bare', 'rogue-combat', 40, null).flatMap((group) =>
+      group.rows.map((row) => row.id),
+    );
+    expect(rogue).toEqual(['main_hand_imbue:deadly_poison', 'off_hand_imbue:instant_poison']);
   });
 
   it('carries every raid-buffed id, grouped, none lost and none invented', () => {

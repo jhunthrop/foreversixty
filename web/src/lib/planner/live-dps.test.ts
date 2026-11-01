@@ -8,10 +8,10 @@ import { createBrokenWorker, createFakeWorker } from '../../test-support/fake-wo
 import { createPool, type PoolWorker } from '../sim/worker';
 import type { SimCharacter } from '../sim/character';
 import { LIVE_DEBOUNCE_MS, createLiveDps } from './live-dps.svelte';
-import { loadRaidConsumes } from '../sim/raid-consumes';
+import { loadPresetSets } from '../sim/preset-sets';
 
 // The Raid-buffed consumables are a chunk loaded on demand; load it before the fake clock.
-beforeAll(() => loadRaidConsumes());
+beforeAll(() => loadPresetSets());
 
 const character: SimCharacter = {
   name: 'Thrallgar',
