@@ -724,7 +724,6 @@
         <item quantity="other">%1$d ranks</item>
     </plurals>
     <string name="search_talent_meta">%1$s %2$s · %3$s · %4$s</string>
-    <string name="search_itemsFoot">Items from the game\'s own data. Tap one for its tooltip, where it drops and which best in slot lists use it.</string>
     <string name="search_noResults_title">Nothing matches “%1$s”.</string>
     <string name="search_noResults_body">Check the spelling. Characters need at least two letters and a connection.</string>
     <string name="search_offline">Offline. Items, guides and talents still search; characters need a connection.</string>
@@ -744,7 +743,6 @@
     <string name="itemPage_chip_source">Source</string>
     <string name="itemPage_chip_bisFor">Best in slot for</string>
     <string name="itemPage_sources">Where it comes from</string>
-    <string name="itemPage_sourcesFoot">A drop chance prints when the game\'s data has one.</string>
     <string name="itemPage_noSources">No source is in our data for this item yet.</string>
     <string name="itemPage_dropChance">%1$s from %2$s</string>
     <string name="itemPage_chanceUnknown">Drop chance not known</string>
@@ -759,7 +757,6 @@
     <string name="itemPage_kind_pvp">PvP</string>
     <string name="itemPage_kind_quest">Quest</string>
     <string name="itemPage_bisFor">Best in slot for</string>
-    <string name="itemPage_bisForFoot">Each row opens that list. The best placement of each spec is shown.</string>
     <string name="itemPage_bisForNone">No best in slot list uses this item.</string>
     <string name="itemPage_tag_pick">Pick</string>
     <string name="itemPage_tag_runnerUp" tools:ignore="PluralsCandidate">Runner-up %1$d</string>

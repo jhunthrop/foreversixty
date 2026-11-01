@@ -1895,17 +1895,6 @@
         }
       }
     },
-    "itemPage.bisForFoot": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Each row opens that list. The best placement of each spec is shown."
-          }
-        }
-      }
-    },
     "itemPage.bisForNone": {
       "extractionState": "manual",
       "localizations": {
@@ -2208,17 +2197,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Where it comes from"
-          }
-        }
-      }
-    },
-    "itemPage.sourcesFoot": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A drop chance prints when the game's data has one."
           }
         }
       }
@@ -7973,17 +7951,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · item level %2$lld"
-          }
-        }
-      }
-    },
-    "search.itemsFoot": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Items from the game's own data. Tap one for its tooltip, where it drops and which best in slot lists use it."
           }
         }
       }

@@ -2403,9 +2403,6 @@ enum Copy {
         format("search.talent.meta", spec, className, tree, ranks)
     }
 
-    /// Items from the game's own data. Tap one for its tooltip, where it drops and which best in slot lists use it.
-    static var searchItemsFoot: String { text("search.itemsFoot") }
-
     /// Nothing matches “{query}”.
     static func searchNoResultsTitle(query: String) -> String {
         format("search.noResults.title", query)
@@ -2475,9 +2472,6 @@ enum Copy {
     /// Where it comes from
     static var itemPageSources: String { text("itemPage.sources") }
 
-    /// A drop chance prints when the game's data has one.
-    static var itemPageSourcesFoot: String { text("itemPage.sourcesFoot") }
-
     /// No source is in our data for this item yet.
     static var itemPageNoSources: String { text("itemPage.noSources") }
 
@@ -2523,9 +2517,6 @@ enum Copy {
 
     /// Best in slot for
     static var itemPageBisFor: String { text("itemPage.bisFor") }
-
-    /// Each row opens that list. The best placement of each spec is shown.
-    static var itemPageBisForFoot: String { text("itemPage.bisForFoot") }
 
     /// No best in slot list uses this item.
     static var itemPageBisForNone: String { text("itemPage.bisForNone") }
