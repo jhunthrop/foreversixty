@@ -73,6 +73,12 @@ describe('racialEffects', () => {
     expect(effect('undead', 'Touch of the Grave')).toMatch(/once every 15 seconds/);
     expect(effect('human', 'The Human Spirit')).toMatch(/Spirit by 10%/);
     expect(effect('high-order-skyborne', 'Wind Blessed')).toMatch(/2% haste/);
+    expect(effect('dwarf', "Artisan's Precision")).toMatch(/hit chance with spells and attacks by 1%/);
+    expect(effect('tauren', 'Endurance')).toMatch(/Health by 5%/);
+    expect(effect('tauren', 'Endurance')).not.toMatch(/Hit/);
+    expect(effect('windshaper-skyborne', 'Skysight')).toMatch(
+      /15% movement and mounted speed for 30 seconds/,
+    );
   });
 });
 

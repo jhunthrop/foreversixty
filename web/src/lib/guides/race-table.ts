@@ -15,21 +15,22 @@ export type SpecKind = 'caster' | 'melee' | 'ranged' | 'healer' | 'tank';
 export const RACIAL_NAMES: Readonly<Record<string, readonly string[]>> = {
   human: ['Will to Survive', 'Perception', 'Ruthless', 'The Human Spirit'],
   orc: ['Blood Fury', 'Shatter Curse', 'Command', 'Hardiness'],
-  dwarf: ['Stoneform', 'Find Treasure', 'Mace Specialization', 'Big Game Hunter'],
+  dwarf: ['Stoneform', 'Find Treasure', "Artisan's Precision", 'Big Game Hunter'],
   'night-elf': ["Elune's Light", 'Shadowmeld', 'Quickness', 'Wisp Spirit'],
   undead: ['Will of the Forsaken', 'Cannibalize', 'Touch of the Grave'],
   tauren: ['War Stomp', 'Cultivation', 'Plainsrunning', 'Endurance'],
   gnome: ['Escape Artist', 'Eureka!', 'Expansive Mind', 'Engineering Specialization'],
   troll: ['Berserking', 'Rapid Regeneration', 'Beast Slaying', 'Regeneration'],
   'high-order-skyborne': ['Walk on Air', 'Read Ley Line', 'Wind Blessed', 'Elemental Insight'],
-  'windshaper-skyborne': ['Walk on Air', 'Read Ley Line', 'Wind Blessed', 'Elemental Insight'],
+  'windshaper-skyborne': ['Walk on Air', 'Skysight', 'Wind Blessed', 'Elemental Insight'],
 };
 
 type Picks = { default: string[] } & Partial<Record<SpecKind, string[]>>;
 
 /** The racials that matter, by kind of spec: Gnome Escape Artist and Expansive Mind, Troll
  *  Berserking, Undead Will of the Forsaken, Human Perception and The Human Spirit, Orc Blood
- *  Fury, Skyborne Read Ley Line; the rest follow the same rule. Names are the race data's own. */
+ *  Fury, Alliance Skyborne Read Ley Line, Horde Skyborne Wind Blessed; the rest follow the same
+ *  rule. Names are the race data's own. */
 export const RACIAL_PICKS: Readonly<Record<string, Picks>> = {
   human: {
     default: ['Perception', 'The Human Spirit'],
@@ -39,7 +40,7 @@ export const RACIAL_PICKS: Readonly<Record<string, Picks>> = {
   },
   orc: { default: ['Blood Fury'], tank: ['Shatter Curse'] },
   dwarf: {
-    default: ['Mace Specialization'],
+    default: ["Artisan's Precision"],
     healer: ['Stoneform'],
     caster: ['Stoneform'],
     tank: ['Stoneform'],
@@ -54,7 +55,7 @@ export const RACIAL_PICKS: Readonly<Record<string, Picks>> = {
   gnome: { default: ['Escape Artist', 'Expansive Mind'] },
   troll: { default: ['Berserking'], tank: ['Rapid Regeneration'] },
   'high-order-skyborne': { default: ['Read Ley Line'] },
-  'windshaper-skyborne': { default: ['Read Ley Line'] },
+  'windshaper-skyborne': { default: ['Wind Blessed'] },
 };
 
 const CASTER_CLASSES = new Set(['mage', 'warlock']);
