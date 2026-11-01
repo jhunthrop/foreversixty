@@ -129,7 +129,7 @@ struct SearchSnapshotTests {
 
     private func page(_ state: ItemPageState, anchor: ItemPageAnchor = .item, specsExpanded: Bool = false) -> some View {
         Pushed(back: Copy.itemPageBack) {
-            ItemPageView(state: state, initialAnchor: anchor, specsExpanded: specsExpanded)
+            ItemPageView(state: state, selectedChip: anchor, specsExpanded: specsExpanded)
                 .itemPageBar(backTitle: Copy.itemPageBack)
         }
     }
@@ -152,7 +152,8 @@ struct SearchSnapshotTests {
     }
 
     @Test func f12_5_bisFor() throws {
-        snap(page(try capeState(), anchor: .bisFor), "f12-5-bis-for-ios")
+        // The whole page with the `Best in slot for` chip on; a snapshot cannot scroll.
+        snap(page(try capeState(), anchor: .bisFor), "f12-5-bis-for-ios", height: 1400)
     }
 
     @Test func f12_5_bisFor_expanded() throws {

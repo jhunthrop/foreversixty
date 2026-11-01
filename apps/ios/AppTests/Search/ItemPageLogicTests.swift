@@ -109,7 +109,7 @@ struct ItemPageLogicTests {
         #expect(ItemPageLogic.visible(Array(rows.prefix(6)), expanded: false).hidden == 0)
     }
 
-    @Test("the tooltip prints spell power, mp5 and the like as the client's green Equip sentences, never twice")
+    @Test("on-equip shares print as the client's green Equip sentences, once; the rest stays white")
     func equipLines() throws {
         let corpus = try SearchTestData.corpus()
         let cape = try #require(corpus.item(SearchTestData.cape))
@@ -119,22 +119,24 @@ struct ItemPageLogicTests {
         #expect(model.equipLines == ["Equip: Increases damage and healing done by magical spells and effects by up to 14."])
         #expect(model.binds == "Binds when picked up" && model.typeName == "Cloth")
 
-        let pauldrons = try #require(try SearchTestData.itemsFile("shaman").items.first { $0.id == SearchTestData.notListed })
-        let lines = ItemTooltipModel.build(
-            ItemTooltipRequest(itemID: pauldrons.id, fallback: HomeItemLook(id: pauldrons.id, name: nil, quality: nil, icon: nil, itemLevel: nil),
+        // No equip_stats (older data): every stat white, no sentence.
+        let sash = try #require(try SearchTestData.itemsFile("shaman").items.first { $0.id == SearchTestData.runnerUp })
+        let plain = ItemTooltipModel.build(
+            ItemTooltipRequest(itemID: sash.id, fallback: HomeItemLook(id: sash.id, name: nil, quality: nil, icon: nil, itemLevel: nil),
                                build: "b", classSlug: "shaman", spec: nil, specName: nil, band: nil, bandLabel: nil, preset: nil,
                                faction: nil, sourceLine: nil, wornID: nil),
             sources: try SearchTestData.tooltipSources()
         )
-        #expect(lines.equipLines == ["Equip: Restores 4 mana per 5 sec."])
-        #expect(lines.setName != nil)
+        #expect(plain.stats.contains("+14 \(Copy.itemsStatSpellPower)"))
+        #expect(plain.equipLines.isEmpty)
     }
 
     @Test("a rating stat is an Equip sentence only when percent_stats states the same figure")
     func percentStats() {
         #expect(ItemVocabulary.percentLine("crit", value: 1) == "Equip: Improves your chance to get a critical strike by 1%.")
         #expect(ItemVocabulary.equipLine("crit", value: 1) == nil)
-        #expect(ItemVocabulary.equipLine("defense", value: 7) == "Equip: Increased Defense +7.")
+        #expect(ItemVocabulary.percentLine("defense", value: 7) == "Equip: Increased Defense +7.")
+        #expect(ItemVocabulary.equipLine("defense", value: 7) == nil)
     }
 
     @Test("a spec row opens that list: its band, preset and faction, else the viewer's side")

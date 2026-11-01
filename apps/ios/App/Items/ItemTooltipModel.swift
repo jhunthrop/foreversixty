@@ -140,31 +140,44 @@ struct ItemTooltipModel: Equatable {
         return item.slot == "ranged" ? Copy.itemsWeaponSlotRanged : Copy.itemsWeaponSlotOneHand
     }
 
-    /// `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order; the
-    /// stats the client words as `Equip:` sentences are left to `equipLines`.
+    /// `+22 Intellect`, `-15 Parry`: the client's sign convention, in the site's stat order. A stat
+    /// prints white less the share an on-equip spell gives (`equip_stats`, the site's `statLines`);
+    /// a rating stat `percent_stats` states as a percent is an `Equip:` sentence instead. With no
+    /// `equip_stats` (older data) every stat prints white.
     private static func statLines(_ item: Item) -> [String] {
         ItemVocabulary.statOrder.compactMap { stat in
-            guard let value = item.stats[stat.key], value != 0, equipLine(item, key: stat.key, value: value) == nil else { return nil }
+            guard let total = item.stats[stat.key], percentLine(item, key: stat.key) == nil else { return nil }
+            let value = total - (item.equipStats?[stat.key] ?? 0)
+            guard value != 0 else { return nil }
             return "\(value < 0 ? "-" : "+")\(abs(value)) \(stat.name)"
         }
     }
 
-    /// The client's green `Equip:` sentences in the site's stat order; one the item's own effect
-    /// text already says is not printed twice.
+    /// The client's green `Equip:` sentences: the percent-stated rating stats, then one per positive
+    /// on-equip share. One spell that gives equal spell power and healing is one sentence (the
+    /// site's `equipShares`). A sentence the item's own effect text already says is not repeated.
     private static func equipLines(_ item: Item) -> [String] {
-        let effect = Self.effect(item) ?? ""
-        return ItemVocabulary.statOrder.compactMap { stat in
-            guard let value = item.stats[stat.key], value != 0, let line = equipLine(item, key: stat.key, value: value)
-            else { return nil }
-            return effect.localizedCaseInsensitiveContains(line.dropFirst(Self.equipPrefix.count)) ? nil : line
+        let shares = equipShares(item)
+        let percent = ItemVocabulary.statOrder.compactMap { percentLine(item, key: $0.key) }
+        let spells = ItemVocabulary.statOrder.compactMap { stat -> String? in
+            guard let share = shares[stat.key], share > 0 else { return nil }
+            return ItemVocabulary.equipLine(stat.key, value: share)
         }
+        let effect = Self.effect(item) ?? ""
+        return (percent + spells).filter { !effect.localizedCaseInsensitiveContains($0.dropFirst(equipPrefix.count)) }
     }
 
     private static let equipPrefix = "Equip: "
 
-    private static func equipLine(_ item: Item, key: String, value: Int) -> String? {
-        if let line = ItemVocabulary.equipLine(key, value: value) { return line }
-        guard item.percentStats[key] == value else { return nil }
+    private static func equipShares(_ item: Item) -> [String: Int] {
+        var shares = item.equipStats ?? [:]
+        let spellPower = shares["spell_power"] ?? 0
+        shares["healing"] = max(0, (shares["healing"] ?? 0) - spellPower)
+        return shares
+    }
+
+    private static func percentLine(_ item: Item, key: String) -> String? {
+        guard let value = item.stats[key], value != 0, item.percentStats[key] == value else { return nil }
         return ItemVocabulary.percentLine(key, value: value)
     }
 

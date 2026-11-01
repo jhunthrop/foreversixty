@@ -61,23 +61,37 @@ private struct ItemPageBar: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+            // The board's back pill (`‹ Search`) in place of the system bar, whose iOS 26 back
+            // button draws a bare chevron.
+            .toolbar(.hidden, for: .navigationBar)
+            .safeAreaInset(edge: .top, spacing: 0) {
+                HStack {
                     Button { dismiss() } label: {
-                        Label(backTitle, systemImage: "chevron.left").labelStyle(.titleAndIcon)
+                        HStack(spacing: 4) {
+                            Image(systemName: "chevron.left").font(.system(size: 15, weight: .semibold))
+                            Text(backTitle).font(ScaledType.bodyStrong).lineLimit(1)
+                        }
+                        .foregroundStyle(FSColor.strong)
+                        .padding(.horizontal, 14)
+                        .frame(minHeight: SearchLayout.target)
+                        .background(FSColor.raised, in: .capsule)
+                        .overlay(Capsule().strokeBorder(FSColor.lineSoft))
+                        .glassEffect(.regular, in: .capsule)
+                        .contentShape(.capsule)
                     }
-                    .frame(minHeight: SearchLayout.target)
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(backTitle)
+                    Spacer()
                 }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 6)
+                .background(FSColor.bg)
             }
-            .toolbarBackground(FSColor.bg, for: .navigationBar)
             .background(SwipeBackKeeper())
     }
 }
 
-/// A hidden system back button also turns the edge swipe off; this turns it back on.
+/// A hidden navigation bar also turns the edge swipe off; this turns it back on.
 private struct SwipeBackKeeper: UIViewControllerRepresentable {
     func makeUIViewController(context _: Context) -> Keeper { Keeper() }
     func updateUIViewController(_: Keeper, context _: Context) {}
@@ -98,8 +112,8 @@ struct ItemPageView: View {
     let retry: () -> Void
 
     @State private var anchor: ItemPageAnchor
-    @State private var position: ScrollPosition
     @State private var specsExpanded: Bool
+    @State private var hasScrolled = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Rows a skeleton holds, so the loaded page does not move (spec §11).
@@ -108,46 +122,50 @@ struct ItemPageView: View {
     private static let pickHeight: CGFloat = 66
 
     init(
-        state: ItemPageState, initialAnchor: ItemPageAnchor = .item, specsExpanded: Bool = false,
+        state: ItemPageState, selectedChip: ItemPageAnchor = .item, specsExpanded: Bool = false,
         openSpec: @escaping (ItemSpecRow) -> Void = { _ in }, retry: @escaping () -> Void = {}
     ) {
         self.state = state
         self.openSpec = openSpec
         self.retry = retry
-        _anchor = State(initialValue: initialAnchor)
-        _position = State(initialValue: initialAnchor == .item ? ScrollPosition(edge: .top) : ScrollPosition(id: initialAnchor, anchor: .top))
+        _anchor = State(initialValue: selectedChip)
         _specsExpanded = State(initialValue: specsExpanded)
     }
 
     var body: some View {
-        ScrollView {
-            if state.isKnown {
-                LazyVStack(alignment: .leading, spacing: 16, pinnedViews: [.sectionHeaders]) {
-                    head
-                    pickSlot
-                    Section {
+        ScrollViewReader { proxy in
+            ScrollView {
+                if state.isKnown {
+                    // Not lazy: the page is short, and every section must exist for the strip's
+                    // jumps. The strip sits under the head and pick card, as on Android.
+                    VStack(alignment: .leading, spacing: 16) {
+                        head
+                        pickSlot
+                        chips(proxy)
                         tooltip.id(ItemPageAnchor.item)
                         sourcesSection.id(ItemPageAnchor.source).padding(.top, 6)
                         specsSection.id(ItemPageAnchor.bisFor).padding(.top, 6)
-                    } header: {
-                        chips
                     }
-                }
-                .scrollTargetLayout()
-                .padding(.horizontal, 16)
-                .padding(.bottom, 32)
-            } else {
-                Text(Copy.itemPageUnknown)
-                    .font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .scrollTargetLayout()
                     .padding(.horizontal, 16)
-                    .padding(.top, 16)
+                    .padding(.bottom, 32)
+                } else {
+                    Text(Copy.itemPageUnknown)
+                        .font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
+                }
             }
-        }
-        .scrollPosition($position)
-        .onScrollTargetVisibilityChange(idType: ItemPageAnchor.self, threshold: 0.3) { visible in
-            if let first = ItemPageAnchor.allCases.first(where: visible.contains) { anchor = first }
+            // The chip follows the reader's scrolling, never the first layout.
+            .onScrollPhaseChange { _, phase in
+                if phase != .idle { hasScrolled = true }
+            }
+            .onScrollTargetVisibilityChange(idType: ItemPageAnchor.self, threshold: 0.5) { visible in
+                guard hasScrolled, let first = ItemPageAnchor.allCases.first(where: visible.contains) else { return }
+                anchor = first
+            }
         }
         .background(FSColor.bg)
     }
@@ -189,16 +207,16 @@ struct ItemPageView: View {
 
     // MARK: Strip
 
-    private var chips: some View {
+    private func chips(_ proxy: ScrollViewProxy) -> some View {
         ScrollView(.horizontal) {
             HStack(spacing: 6) {
                 ForEach(ItemPageAnchor.allCases, id: \.self) { chip in
                     SearchChip(title: chip.title, isOn: chip == anchor) {
                         anchor = chip
                         if reduceMotion {
-                            position.scrollTo(id: chip, anchor: .top)
+                            proxy.scrollTo(chip, anchor: .top)
                         } else {
-                            withAnimation { position.scrollTo(id: chip, anchor: .top) }
+                            withAnimation { proxy.scrollTo(chip, anchor: .top) }
                         }
                     }
                 }

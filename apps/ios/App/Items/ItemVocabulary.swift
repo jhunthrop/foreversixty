@@ -54,7 +54,7 @@ enum ItemVocabulary {
         ("arcane_res", Copy.itemsStatArcaneRes),
     ]
 
-    /// The stats the client prints as a green `Equip:` sentence rather than `+n Name`.
+    /// The client's green `Equip:` sentence for the share of a stat an on-equip spell gives (`equip_stats`).
     static func equipLine(_ key: String, value: Int) -> String? {
         switch key {
         case "spell_power": Copy.itemsEquipSpellPower(n: value)
@@ -65,7 +65,6 @@ enum ItemVocabulary {
         case "spell_penetration": Copy.itemsEquipSpellPenetration(n: value)
         case "fire_power": Copy.itemsEquipFirePower(n: value)
         case "block_value": Copy.itemsEquipBlockValue(n: value)
-        case "defense": Copy.itemsEquipDefense(n: value)
         default: nil
         }
     }
@@ -77,6 +76,7 @@ enum ItemVocabulary {
         return switch key {
         case "crit": Copy.itemsEquipCrit(percent: percent)
         case "hit": Copy.itemsEquipHit(percent: percent)
+        case "defense": Copy.itemsEquipDefense(n: value)
         case "dodge": Copy.itemsEquipDodge(percent: percent)
         case "parry": Copy.itemsEquipParry(percent: percent)
         case "block": Copy.itemsEquipBlock(percent: percent)
