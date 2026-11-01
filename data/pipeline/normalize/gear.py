@@ -610,7 +610,27 @@ def _curve_weapon_damage(
         quality=int_column(row, "OverallQualityID"),
         speed=speed,
         variance=float(column_value(row, "DmgVariance")),
+        **weapon_curve_modifiers(row),
     )
+
+
+def weapon_curve_modifiers(row: dict[str, str]) -> dict[str, float | int]:
+    """`resolve_weapon_damage`'s QualityModifier and Flags_4 keywords, read
+    off one ItemSparse row. Both are absent on an older schema, which then
+    resolves exactly as before (no offset, no caster bit)."""
+    quality_modifier = 0.0
+    if "QualityModifier" in row:
+        value = column_value(row, "QualityModifier")
+        try:
+            quality_modifier = float(value)
+        except ValueError as error:
+            raise ItemDataError(
+                f"item {row.get('ID', '?')} has a non-numeric QualityModifier {value!r}"
+            ) from error
+    return {
+        "quality_modifier": quality_modifier,
+        "flags_4": _optional_int(row, "Flags_4") or 0,
+    }
 
 
 def _curve_stats(
