@@ -17,6 +17,7 @@ the columns it cares about.
 from pipeline.classicdb_items import (
     AURA_MOD_ATTACK_POWER,
     AURA_MOD_CRIT_PERCENT,
+    AURA_MOD_DAMAGE_DONE,
     AURA_MOD_STAT,
     AURA_PROC_TRIGGER_SPELL,
     EFFECT_ADD_EXTRA_ATTACKS,
@@ -389,6 +390,33 @@ def test_equip_stats_drops_the_proc_trigger_aura_but_keeps_a_sibling_stat():
         9331: _spell(9331, _effect(AURA_MOD_ATTACK_POWER, 19, 1)),
     }
     assert equip_stats(item, spells) == {"attack_power": 20}
+
+
+def test_equip_stats_maps_a_single_school_damage_aura_to_its_school_power():
+    """Skul's Ghastly Touch (spell 9414, "+14 Shadow" on Wowhead Classic) and
+    Flaming Band (17866, "+24 Fire") carry aura 13 on one school bit. The
+    client path splits that mask into school power (`pipeline.simdb.equip`),
+    so the classic-db path must too, or the item scores and sims as nothing.
+    A physical bit stays dropped; a two-school mask grants both."""
+    item = _item(
+        spells=[
+            _slot(9414, trigger=TRIGGER_ON_EQUIP),
+            _slot(17866, trigger=TRIGGER_ON_EQUIP),
+            _slot(2, trigger=TRIGGER_ON_EQUIP),
+            _slot(3, trigger=TRIGGER_ON_EQUIP),
+        ]
+    )
+    spells = {
+        9414: _spell(9414, _effect(AURA_MOD_DAMAGE_DONE, 13, 1, misc_value=32)),
+        17866: _spell(17866, _effect(AURA_MOD_DAMAGE_DONE, 23, 1, misc_value=4)),
+        2: _spell(2, _effect(AURA_MOD_DAMAGE_DONE, 9, 1, misc_value=16 | 32)),
+        3: _spell(3, _effect(AURA_MOD_DAMAGE_DONE, 4, 1, misc_value=1)),
+    }
+    assert equip_stats(item, spells) == {
+        "shadow_power": 24,
+        "fire_power": 24,
+        "frost_power": 10,
+    }
 
 
 def test_equip_stats_raises_on_an_unclassified_aura():
