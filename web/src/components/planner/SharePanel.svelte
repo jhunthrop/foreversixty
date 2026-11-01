@@ -31,6 +31,7 @@
   import { characterFromPlanner, toCharacterSpec } from '../../lib/sim/character';
   import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import { runSim } from '../../lib/sim/run';
+  import { loadRaidConsumes } from '../../lib/sim/raid-consumes';
   import { defaultSettings } from '../../lib/sim/settings';
   import { ITERATIONS } from '../../lib/sim/types';
   import { createPool, type SimPool } from '../../lib/sim/worker';
@@ -194,8 +195,9 @@
     // minutes, single target, with this build's spec and level's own raid consumables. The
     // planner has no settings bar of its own, and inventing one here would put two
     // vocabularies on one page; `/sim` is where settings are chosen.
-    const settings = defaultSettings(character.spec, character.level);
     try {
+      await loadRaidConsumes();
+      const settings = defaultSettings(character.spec, character.level);
       const result = await runSim(
         poolOnce(),
         {

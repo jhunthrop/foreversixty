@@ -12,6 +12,7 @@
 //     page has the site's 1.6 s mobile LCP budget, so nothing touches the engine until the
 //     player asks for a number. `init.pool` exists for tests and for the planner, which
 //     brings its own.
+import { loadRaidConsumes } from './raid-consumes';
 import { loadItemsWithCurrentFallback, loadReference, loadTalents } from '../planner/load';
 import type { Item, RaceRow, TalentFile } from '../planner/types';
 import { indexTalents } from '../planner/rules';
@@ -269,6 +270,14 @@ export function createSimStore(init: SimStoreInit) {
     browserRunGeneration += 1;
     handle?.cancel();
     handle = null;
+    try {
+      // The Raid-buffed preset's consumables load on demand (raid-consumes.ts).
+      await loadRaidConsumes();
+    } catch {
+      message = simCopy.failed;
+      phase = 'idle';
+      return;
+    }
     character = outcome.character;
     settings = withSpecForPreset(settings, outcome.character.spec, outcome.character.level);
     result = null;

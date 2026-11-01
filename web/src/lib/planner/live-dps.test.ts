@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { beforeAll, afterEach, describe, expect, it, vi } from 'vitest';
 import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
 import { indexTalents, type TalentIndex } from './rules';
 import type { TalentFile } from './types';
@@ -8,6 +8,10 @@ import { createBrokenWorker, createFakeWorker } from '../../test-support/fake-wo
 import { createPool, type PoolWorker } from '../sim/worker';
 import type { SimCharacter } from '../sim/character';
 import { LIVE_DEBOUNCE_MS, createLiveDps } from './live-dps.svelte';
+import { loadRaidConsumes } from '../sim/raid-consumes';
+
+// The Raid-buffed consumables are a chunk loaded on demand; load it before the fake clock.
+beforeAll(() => loadRaidConsumes());
 
 const character: SimCharacter = {
   name: 'Thrallgar',

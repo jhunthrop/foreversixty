@@ -5,6 +5,7 @@ import { MAX_LEVEL } from './character';
 import { durationLabel, encounterLabel } from './encounter';
 import { applyFightStyle, DEFAULT_STYLE_ID, type FightStyleId } from './styles';
 import raidPreset from '../../data/generated/raid-preset.json';
+import { raidConsumesAt } from './raid-consumes';
 import { DEFAULT_ENCOUNTER, TARGET_TYPE_IDS, type CooldownSpec, type EncounterSpec } from './types';
 
 export { durationLabel, encounterLabel };
@@ -139,25 +140,9 @@ export const PRESET_BUFFS: Record<Exclude<BuffPresetId, 'custom'>, readonly stri
   solo: [],
 };
 
-/** One row of a spec's raid set: in force from `from_level` until the next row's level. */
-interface LevelConsumes {
-  from_level: number;
-  consumes: readonly string[];
-}
-
 /**
- * The raid set's consumables per spec key and level (owner ruling, round 5): the raid
- * preset resolved for each spec with the class kit of the character's level on top -- a
- * rogue's poisons (Instant from 20, Deadly in the main hand from 30) and Thistle Tea, an
- * Enhancement shaman's Rockbiter then Windfury, a Survival hunter's ranged group -- exactly
- * what the BiS ranker, the tier list and spec-breakdown send, so the page's default figure
- * is the published one. Generated in Go (sim/request/raid-consumes.json, held to the
- * published setup at every level by its tests) and synced by scripts/sync-raid-preset.mjs.
- */
-const RAID_CONSUMES: Readonly<Record<string, readonly LevelConsumes[]>> = raidPreset.consumes;
-
-/**
- * The preset's consumable half for one spec key ("rogue-combat") at the character's level.
+ * The preset's consumable half for one spec key ("rogue-combat") at the character's level,
+ * from the raid consumables table (raid-consumes.ts; load it first).
  * Solo carries none. A spec the raid set does not know (no character yet, or a malformed
  * one) carries none either, rather than another spec's set: the request then sims what it
  * says it does.
@@ -168,7 +153,7 @@ export function presetConsumables(
   level: number,
 ): readonly string[] {
   if (preset === 'solo') return [];
-  return (RAID_CONSUMES[spec] ?? []).filter((row) => row.from_level <= level).at(-1)?.consumes ?? [];
+  return raidConsumesAt(spec, level);
 }
 
 export interface SimSettings {
