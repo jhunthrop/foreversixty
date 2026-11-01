@@ -47,29 +47,7 @@ func run(args []string) error {
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
-	active, err := leveling.ReadActiveBuild(*repoRoot)
-	if err != nil {
-		return err
-	}
-	out := make(map[string]map[string]build, len(specs.All))
-	var failed []string
-	for _, spec := range specs.All {
-		levelingBuild, levelingErr := specBuild(*repoRoot, active, spec, leveling.GuideBuildTalents, spec.Name+" leveling")
-		if levelingErr != nil {
-			failed = append(failed, fmt.Sprintf("%s leveling: %v", spec.Spec, levelingErr))
-		}
-		raidBuild, raidErr := specBuild(*repoRoot, active, spec, leveling.GuideRaidBuildTalents, spec.Name+" raid")
-		if raidErr != nil {
-			failed = append(failed, fmt.Sprintf("%s raid: %v", spec.Spec, raidErr))
-		}
-		if levelingErr == nil && raidErr == nil {
-			out[spec.Spec] = map[string]build{"leveling": levelingBuild, "raid": raidBuild}
-		}
-	}
-	if len(failed) > 0 {
-		return fmt.Errorf("addon-builds: %d guide build(s) have no usable point order for %s:\n  %s", len(failed), active, strings.Join(failed, "\n  "))
-	}
-	b, err := render(out)
+	active, b, err := generate(*repoRoot)
 	if err != nil {
 		return err
 	}
@@ -79,6 +57,35 @@ func run(args []string) error {
 	}
 	fmt.Println(path)
 	return nil
+}
+
+// generate orders every spec's guide builds for the active client build
+// and renders addon-builds.json's bytes.
+func generate(repoRoot string) (string, []byte, error) {
+	active, err := leveling.ReadActiveBuild(repoRoot)
+	if err != nil {
+		return "", nil, err
+	}
+	out := make(map[string]map[string]build, len(specs.All))
+	var failed []string
+	for _, spec := range specs.All {
+		levelingBuild, levelingErr := specBuild(repoRoot, active, spec, leveling.GuideBuildTalents, spec.Name+" leveling")
+		if levelingErr != nil {
+			failed = append(failed, fmt.Sprintf("%s leveling: %v", spec.Spec, levelingErr))
+		}
+		raidBuild, raidErr := specBuild(repoRoot, active, spec, leveling.GuideRaidBuildTalents, spec.Name+" raid")
+		if raidErr != nil {
+			failed = append(failed, fmt.Sprintf("%s raid: %v", spec.Spec, raidErr))
+		}
+		if levelingErr == nil && raidErr == nil {
+			out[spec.Spec] = map[string]build{"leveling": levelingBuild, "raid": raidBuild}
+		}
+	}
+	if len(failed) > 0 {
+		return "", nil, fmt.Errorf("addon-builds: %d guide build(s) have no usable point order for %s:\n  %s", len(failed), active, strings.Join(failed, "\n  "))
+	}
+	b, err := render(out)
+	return active, b, err
 }
 
 // specBuild reads one of spec's guide builds against the active build's

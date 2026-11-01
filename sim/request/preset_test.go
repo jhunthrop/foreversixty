@@ -98,8 +98,12 @@ func TestRaidPresetNamesTheRequiredBuffsAndExcludesTheForbiddenOnes(t *testing.T
 		}
 	}
 	// Sanctity Aura (spell 20218) has no SkillLineAbility row in the Forever
-	// client: no paladin can learn it, so no raid carries it.
-	for _, banned := range []string{"shadow_weaving", "blessing_of_kings", "sanctity_aura"} {
+	// client: no paladin can learn it, so no raid carries it. Improved
+	// Scorch's Fire Vulnerability (22959, aura 270) is "Fire damage taken
+	// from the Mage": Blizzard's Mage deep dive says it now benefits only
+	// the casting mage, who stacks it herself, so a raid mage gives no
+	// one else a thing.
+	for _, banned := range []string{"shadow_weaving", "blessing_of_kings", "sanctity_aura", "improved_scorch"} {
 		if slices.Contains(have, banned) {
 			t.Errorf("the raid preset carries %q", banned)
 		}

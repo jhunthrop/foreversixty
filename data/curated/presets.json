@@ -125,11 +125,6 @@
           "reason": "Ranged attack power from a raid hunter. Plain version: the live Marksmanship tree has no Improved Hunter's Mark."
         },
         {
-          "id": "improved_scorch",
-          "label": "Improved Scorch",
-          "reason": "Fire vulnerability from a raid fire mage; the engine exposes it as a raid debuff and the live Fire tree carries the talent."
-        },
-        {
           "id": "curse_of_recklessness",
           "label": "Curse of Recklessness",
           "reason": "Armor reduction from a raid warlock."
