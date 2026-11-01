@@ -271,6 +271,14 @@ class GearItem(BaseModel):
     #: adds `percent_stats[key]` back unchanged. Empty for a wowhead row (all
     #: ratings) and for every item with no aura-sourced rating-family stat.
     percent_stats: dict[str, int] = {}
+    #: Wave 3 F12, 2026-11-01: the part of each flat (non-rating) `stats` entry
+    #: an on-equip spell states -- spell power, healing, attack power, mp5 and
+    #: the rest -- which the client prints as a green "Equip: ..." sentence
+    #: rather than a white "+N" stat line. The remainder `stats[key] -
+    #: equip_stats[key]` is the item's own stat modifier, printed white. Empty
+    #: for a wowhead row (its feed does not say which is which) and for every
+    #: item whose flat stats all come from ItemSparse's stat columns.
+    equip_stats: dict[str, int] = {}
     #: classicdb-fidelity lane, 2026-09-30: where `icon` actually came from --
     #: `"client"` (the client's own `IconFileDataID`, resolved through
     #: `ManifestInterfaceData`), `"fork"` (the engine fork's own

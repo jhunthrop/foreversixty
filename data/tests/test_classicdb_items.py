@@ -829,3 +829,25 @@ def test_extract_records_reads_the_bonding_column():
     )
     records, _ = extract_records(_sql([row]))
     assert records[0].bonding == 2
+
+
+def test_to_gear_item_records_an_equip_spells_flat_stats_as_equip_stats():
+    """Wave 3 F12: an on-equip spell's attack power is the client's green
+    "Equip: +19 Attack Power." line, so it is named in `equip_stats`; an item
+    stat modifier (Strength here) is not."""
+    item = _item(
+        id=7,
+        raw_stats={4: 10},  # ITEM_MOD_STRENGTH
+        spells=[_slot(9331, trigger=TRIGGER_ON_EQUIP)],
+    )
+    spells = {9331: _spell(9331, _effect(AURA_MOD_ATTACK_POWER, 19, 1))}
+    gear = to_gear_item(item, _FakeSpellText({}), spells, fork_icons={}, wowhead_icons={})
+    assert gear.stats["attack_power"] == 20 and gear.stats["strength"] == 10
+    assert gear.equip_stats == {"attack_power": 20}
+
+
+def test_a_rating_aura_is_a_percent_stat_not_an_equip_stat():
+    item = _item(id=13965, spells=[_slot(7598, trigger=TRIGGER_ON_EQUIP)])
+    spells = {7598: _spell(7598, _effect(AURA_MOD_CRIT_PERCENT, 1, 1))}
+    gear = to_gear_item(item, _FakeSpellText({}), spells, fork_icons={}, wowhead_icons={})
+    assert (gear.percent_stats, gear.equip_stats) == ({"crit": 2}, {})

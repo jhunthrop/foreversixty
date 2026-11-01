@@ -1330,6 +1330,25 @@ def test_percent_stats_names_an_on_equip_aura_hit_as_a_literal_percent():
     assert item.percent_stats == {"hit": 5}
 
 
+def test_equip_stats_names_an_on_equip_auras_attack_power():
+    """Wave 3 F12: an on-equip spell's attack power is the client's green Equip
+    line; the item's own stat modifier columns name nothing here."""
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    item_id = int(rows[0]["ID"])
+    item = _first_fixture_item(rows, _single_aura_effects(item_id, 99, "30"))
+    assert item.equip_stats == {"attack_power": item.stats["attack_power"]}
+    assert item.percent_stats == {}
+
+
+def test_equip_stats_is_empty_for_an_itemsparse_stat():
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    rows[0]["StatModifier_bonusStat_0"] = "45"  # ITEM_MOD_SPELL_POWER: a white "+N Spell Power"
+    rows[0]["StatModifier_bonusAmount_0"] = "12"
+    item = _first_fixture_item(rows, None)
+    assert item.stats["spell_power"] == 12
+    assert item.equip_stats == {}
+
+
 def _shield_row(modifier_id: int, amount: int) -> dict[str, str]:
     return {
         "ID": "1",

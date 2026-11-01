@@ -143,20 +143,52 @@ function percentLineFor(item: Item, key: StatKey): string | null {
   return percent && line && percent === item.stats[key] ? line(percent) : null;
 }
 
-/** "+10 Strength" / "-15 Parry" (the client's sign: never "+-15"), then each percent stat in
- *  the client's "Equip:" words, in STAT_KEYS order within each group. */
+/** The client's green sentence for a flat stat an on-equip spell states (`equip_stats`). */
+const EQUIP_STAT_LINES: Partial<Record<StatKey, (value: number) => string>> = {
+  spell_power: (value) =>
+    `Equip: Increases damage and healing done by magical spells and effects by up to ${value}.`,
+  healing: (value) => `Equip: Increases healing done by spells and effects by up to ${value}.`,
+  attack_power: (value) => `Equip: +${value} Attack Power.`,
+  ranged_attack_power: (value) => `Equip: +${value} ranged Attack Power.`,
+  mp5: (value) => `Equip: Restores ${value} mana per 5 sec.`,
+  spell_penetration: (value) => `Equip: Decreases the magical resistances of your spell targets by ${value}.`,
+  fire_power: (value) => `Equip: Increases damage done by Fire spells and effects by up to ${value}.`,
+  block_value: (value) => `Equip: Increases the block value of your shield by ${value}.`,
+};
+
+/**
+ * Each flat stat's on-equip share as the amount its Equip sentence states. One spell that
+ * states the same spell power and healing ("Increase Spell Dam 14") is the single "damage and
+ * healing" sentence, so the healing sentence states only the healing beyond it.
+ */
+function equipShares(item: Pick<Item, 'equip_stats'>): Partial<Record<StatKey, number>> {
+  const equip = item.equip_stats ?? {};
+  const spellPower = equip.spell_power ?? 0;
+  const healing = Math.max(0, (equip.healing ?? 0) - spellPower);
+  return { ...equip, healing };
+}
+
+/** "+10 Strength" / "-15 Parry" (the client's sign: never "+-15") for each stat's own share,
+ *  then each percent stat and each on-equip flat stat in the client's "Equip:" words, in
+ *  STAT_KEYS order within each group. */
 function statLines(item: Item): string[] {
   const keys = STAT_KEYS.filter((key) => key !== 'armor' && !!item.stats[key]);
+  const equip = item.equip_stats ?? {};
   const flat = keys
     .filter((key) => percentLineFor(item, key) === null)
-    .map((key) => {
-      const value = item.stats[key] as number;
-      return `${value < 0 ? '-' : '+'}${Math.abs(value)} ${STAT_LABELS[key]}`;
-    });
+    .map((key) => [key, (item.stats[key] as number) - (equip[key] ?? 0)] as const)
+    .filter(([, value]) => value !== 0)
+    .map(([key, value]) => `${value < 0 ? '-' : '+'}${Math.abs(value)} ${STAT_LABELS[key]}`);
   const percent = keys
     .map((key) => percentLineFor(item, key))
     .filter((line): line is string => line !== null);
-  return [...flat, ...percent];
+  const shares = equipShares(item);
+  const equipLines = STAT_KEYS.flatMap((key) => {
+    const value = shares[key] ?? 0;
+    const line = EQUIP_STAT_LINES[key];
+    return value > 0 && line ? [line(value)] : [];
+  });
+  return [...flat, ...percent, ...equipLines];
 }
 
 function effectTextFor(item: Item): string | null {

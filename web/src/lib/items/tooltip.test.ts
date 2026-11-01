@@ -463,6 +463,37 @@ describe('statLines sign', () => {
     ]);
   });
 
+  it("prints an on-equip spell power as the client's one green damage-and-healing sentence", () => {
+    const cape = item({
+      stats: { stamina: 4, spell_power: 14, healing: 14 },
+      equip_stats: { spell_power: 14, healing: 14 },
+    });
+    expect(itemTooltipModel(cape, NO_SOURCES).stats).toEqual([
+      '+4 Stamina',
+      'Equip: Increases damage and healing done by magical spells and effects by up to 14.',
+    ]);
+  });
+
+  it('prints only the healing beyond the spell power as its own sentence', () => {
+    const amulet = item({
+      stats: { spell_power: 4, healing: 13 },
+      equip_stats: { spell_power: 4, healing: 13 },
+    });
+    expect(itemTooltipModel(amulet, NO_SOURCES).stats).toEqual([
+      'Equip: Increases damage and healing done by magical spells and effects by up to 4.',
+      'Equip: Increases healing done by spells and effects by up to 9.',
+    ]);
+  });
+
+  it("keeps an item's own spell power stat white, and every stat white on data without equip_stats", () => {
+    expect(itemTooltipModel(item({ stats: { spell_power: 6 }, equip_stats: {} }), NO_SOURCES).stats).toEqual([
+      '+6 Spell power',
+    ]);
+    expect(itemTooltipModel(item({ stats: { spell_power: 6 } }), NO_SOURCES).stats).toEqual([
+      '+6 Spell power',
+    ]);
+  });
+
   it('writes a negative stat as "-15 Parry", never "+-15"', () => {
     const model = itemTooltipModel(item({ id: 9, stats: { crit: 14, parry: -15 } }), {
       loot: { sources: [], quests: {} },
