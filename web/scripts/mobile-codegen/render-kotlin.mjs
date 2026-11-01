@@ -45,9 +45,34 @@ export function serializerOf(type) {
 
 // Kotlin's hard keywords: an OpenAPI name that is one (`class`) is written in backticks.
 const HARD_KEYWORDS = new Set([
-  'as', 'break', 'class', 'continue', 'do', 'else', 'false', 'for', 'fun', 'if', 'in', 'interface', 'is',
-  'null', 'object', 'package', 'return', 'super', 'this', 'throw', 'true', 'try', 'typealias', 'typeof',
-  'val', 'var', 'when', 'while',
+  'as',
+  'break',
+  'class',
+  'continue',
+  'do',
+  'else',
+  'false',
+  'for',
+  'fun',
+  'if',
+  'in',
+  'interface',
+  'is',
+  'null',
+  'object',
+  'package',
+  'return',
+  'super',
+  'this',
+  'throw',
+  'true',
+  'try',
+  'typealias',
+  'typeof',
+  'val',
+  'var',
+  'when',
+  'while',
 ]);
 const ident = (name) => (HARD_KEYWORDS.has(name) ? `\`${name}\`` : name);
 
