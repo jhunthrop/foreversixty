@@ -424,8 +424,8 @@ private val LINK_INSET = 2.dp
 /** Mono at 36 sets the comma in a full cell; a little negative tracking keeps `1,830` one figure. */
 private val SCORE_TRACKING = (-0.08).em
 
-/** Material's `star_border` (the core icon set's outlined star is solid). */
-private val StarOutline: ImageVector by lazy {
+/** Material's `star_border` (the core icon set's outlined star is solid); the Watch star and a row's `Watch`. */
+internal val StarOutline: ImageVector by lazy {
     materialIcon(name = "Outlined.StarBorder") { addPath(addPathNodes(STAR_BORDER_PATH), fill = SolidColor(Color.Black)) }
 }
 

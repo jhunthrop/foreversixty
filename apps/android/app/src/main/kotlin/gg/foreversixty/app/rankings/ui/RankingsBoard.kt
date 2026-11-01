@@ -16,9 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,9 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.Role
@@ -276,7 +283,7 @@ private fun RankRow(
                 .clearAndSetSemantics {
                     contentDescription = label
                     role = Role.Button
-                    customActions = menuActions.map { (name, run) -> CustomAccessibilityAction(name) { run(); true } }
+                    customActions = menuActions.map { CustomAccessibilityAction(it.name) { it.run(); true } }
                 },
             verticalAlignment = if (isLargeText()) Alignment.Top else Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -326,26 +333,33 @@ private fun Value(row: RankingRow, filters: RankingsFilters, copy: RankingsCopy,
  * Open the report (with the reports switch on), Share.
  */
 @Composable
-private fun rowActions(row: RankingRow, state: RankingsScreenState, actions: RankingsActions): List<Pair<String, () -> Unit>> {
+private fun rowActions(row: RankingRow, state: RankingsScreenState, actions: RankingsActions): List<RowAction> {
     val watching = row.player.key in state.watched
     val watch = stringResource(if (watching) R.string.rank_menu_unwatch else R.string.rank_menu_watch)
     val report = stringResource(R.string.rank_menu_report)
     val share = stringResource(R.string.rank_menu_share)
     return listOfNotNull(
-        if (state.viewer.signedIn) watch to { actions.watch(row) } else null,
-        if (state.reportsOn) report to { actions.openReport(row) } else null,
-        share to { actions.share(row) },
+        if (state.viewer.signedIn) RowAction(watch, rememberVectorPainter(if (watching) Icons.Filled.Star else StarOutline)) { actions.watch(row) } else null,
+        if (state.reportsOn) RowAction(report, painterResource(R.drawable.ic_logs)) { actions.openReport(row) } else null,
+        RowAction(share, rememberVectorPainter(Icons.Filled.Share)) { actions.share(row) },
     )
 }
 
+/** One entry of a row's menu and TalkBack actions: its words, its glyph and what it does. */
+private class RowAction(val name: String, val icon: Painter, val run: () -> Unit)
+
 @Composable
-private fun RowMenu(expanded: Boolean, items: List<Pair<String, () -> Unit>>, close: () -> Unit) {
+private fun RowMenu(expanded: Boolean, items: List<RowAction>, close: () -> Unit) {
     DropdownMenu(
         expanded = expanded, onDismissRequest = close, offset = MENU_OFFSET,
         containerColor = FsColor.cardTop, border = BorderStroke(1.dp, FsColor.line),
     ) {
-        items.forEach { (name, run) ->
-            DropdownMenuItem(text = { Text(name) }, onClick = { close(); run() })
+        items.forEach { item ->
+            DropdownMenuItem(
+                text = { Text(item.name, style = FsType.body, color = FsColor.strong) },
+                leadingIcon = { Icon(item.icon, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(20.dp)) },
+                onClick = { close(); item.run() },
+            )
         }
     }
 }

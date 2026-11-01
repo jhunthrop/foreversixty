@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +28,7 @@ import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
+import gg.foreversixty.app.account.CharacterSelector
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.GameColors
@@ -246,8 +249,15 @@ class RankingsScreenshotTest {
             LIGHTNINGBOLLTZ, emptyList(), HomeTime(HomeFixtures.now, ZoneOffset.UTC), res,
             logs = HomeLogs(Reports.lastRaid(ReportsTestData.list().rows)), rankings = HomeRankings(line),
         )
-        // The home fixture's upgrades are a hunter's; the shaman's answer is drawn with every slot at its best.
-        HomeAnswer(HomePhase.Loaded(HomeFixtures.home(state = "ok")), presenter, HomeFixtures.BUILD, null)
+        // Lightningbolltz's own Home answer (character.home.yours): the six upgrades behind his six gold dots.
+        val home = HomeFixtures.home("character.home.yours")
+        Column {
+            // The selector row as CharacterSelectorBar draws it for the session's current character.
+            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
+                CharacterSelector(LIGHTNINGBOLLTZ_ACCOUNT, open = false, onClick = {})
+            }
+            HomeAnswer(HomePhase.Loaded(home), presenter, home.dataBuild, null)
+        }
     }
 
     @Test @Config(qualifiers = PIXEL_9_TALL)
@@ -275,6 +285,13 @@ class RankingsScreenshotTest {
 private val LIGHTNINGBOLLTZ = gg.foreversixty.app.home.HomeCharacter(
     key = "us/normal/lightningbolltz", region = "us", ruleset = "normal", name = "Lightningbolltz", race = "troll",
     className = "shaman", specName = "Elemental", level = 60, guild = "Hordebreakers", faction = "horde",
+)
+
+/** The same character as the account's, for the selector. */
+private val LIGHTNINGBOLLTZ_ACCOUNT = gg.foreversixty.app.model.AccountCharacter(
+    key = LIGHTNINGBOLLTZ.key, region = LIGHTNINGBOLLTZ.region, ruleset = LIGHTNINGBOLLTZ.ruleset, name = LIGHTNINGBOLLTZ.name,
+    source = "addon", className = LIGHTNINGBOLLTZ.className, level = LIGHTNINGBOLLTZ.level, faction = LIGHTNINGBOLLTZ.faction,
+    race = LIGHTNINGBOLLTZ.race, spec = LIGHTNINGBOLLTZ.specName,
 )
 
 /** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
