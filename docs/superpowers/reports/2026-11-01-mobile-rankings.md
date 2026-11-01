@@ -50,11 +50,19 @@ Captures (default and largest text, both apps; the apps are dark only) are in
   card, the ordinal's colour. All fixed (`fix-round-1.md`), plus the two UX minors.
 - **Round 2:** ux-designer SHIP; wow-player HOLD on Home mixing characters, fixed with Lightningbolltz's
   own Home answer.
-- **Round 3:** see `player-verdict-build.md`.
+- **Round 3:** wow-player SHIP. Both apps' Home reads Lightningbolltz alone, his six upgrades
+  matching the six dots on his character page.
 
 ## Gates
 
-ROUND3_GATES
+Each run on the merged branch (origin/main with F9, F12 and F16) on its own, exit code checked:
+
+- `go test -count=1 -p 1` rankings, rating, contract, app, server, cmd/api, db against a fresh
+  private database (`forever_test_f11f`): exit 0. The rankings harness now truncates what it seeded
+  when a test ends; its leftover reports were stale fights to the rating backfill tests.
+- `npx vitest run src/lib/mobile src/styles/mobile-tokens.test.ts`: 36 passed, exit 0.
+- `./gradlew test :app:verifyRoborazziDebug lint assembleDebug`: exit 0.
+- `make -C apps/ios test`: TEST SUCCEEDED (701 app tests plus the package suites), exit 0.
 
 ## Turning it on
 
@@ -79,5 +87,5 @@ the API deploy (after the deploy that applies migration 0065). Not done from thi
    rows, the Home fixture's older build, and the data items for the accuracy reviewer (the
    Leatherworking picks and Uther's Strength on an Elemental list, Totem of Thunder at 65, a five-man
    boss ranked beside Onyxia, the KR, TW and CN chips).
-8. **Rating test hygiene:** two `rating` tests fail on a reused test database (rows left by earlier
-   runs) and pass on a fresh one.
+8. **Merge with F12:** Search's own `Rankings` quick link and Watching group can now open these
+   screens; wiring them is F12's follow-up (the `rankings` switch and `/app/player` link exist).
