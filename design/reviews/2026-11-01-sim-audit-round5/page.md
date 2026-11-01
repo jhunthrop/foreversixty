@@ -41,5 +41,13 @@ In the lane scratch `r5/page/shots/`: `sim-rogue-combat-{1440,2000}.png` and `si
 
 - The ranker lane owns `sim/cmd/leveling-bis`; this lane added one field there (`hps_error` in `score_heal.go`), additive, for the integrator to merge with the ranker's branch. The tier json picks it up at the next nightly; until then /tiers/healer ties on the 1% floor, which already ties both pairs above once the ×1.65 files publish.
 - The hybrids lane's ×1.5/×1.65 sensitivity: if a pair flips between profiles by more than 1% plus error, the floor should be raised to that figure (`TIE_MARGIN_PERCENT` floor in `tier-list.ts`, one constant `HEALER_ERROR_Z` in `tier-rules.ts`).
-- Below 60 the published BiS bands are bare-preset (kit only, no raid buffs or raid consumables), while the page's default preset is Raid-buffed at every level. The page's consumables now match the raid setup at each band (P1b), but a page figure below 60 is a raid-buffed figure and the published one is bare; matching those needs a design call (Solo by default below 60, or raid bands below 60).
+- Below 60, published and page figures differ by preset. The published BiS bands below 60 are bare-preset: class kit only, no raid buffs or raid consumables. The /sim page defaults to Raid-buffed at every level. The consumables now match the raid setup at each band (P1b), but the default preset does not match the published one below 60. Ruling 3 keeps the controls as they are, so this is left to the owner (integrator ledger). Measured at band 40, horde, 10,000 iterations, seeds 1 and 50001 (spec-breakdown -band 40; "page" is the bare entry plus the raid buffs and the band's raid consumables):
+
+  | spec | published (bare) | page default | page over published |
+  |---|---|---|---|
+  | Combat | 109.7 / 109.7 | 311.6 / 311.6 | +184.0% / +184.1% |
+  | Fury | 124.8 / 124.8 | 428.7 / 428.4 | +243.6% / +243.4% |
+  | Fire | 109.0 / 108.9 | 334.9 / 334.8 | +207.3% / +207.3% |
+
+  The committed band-40 files read 109.2 (Combat), 124.5 (Fury) and 85.5 (Fire). Fire's file predates this round's engine; the nightly reranks it.
 - Protection paladin's kit Devotion Aura is not in the raid buff list the page sends (kit buffs only matter for that spec at 60); the tank list is not on /sim's DPS comparison.
