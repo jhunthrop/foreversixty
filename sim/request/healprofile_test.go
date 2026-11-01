@@ -171,3 +171,20 @@ func TestHealProfileRefusesATuningThatDisagreesWithItsFigures(t *testing.T) {
 		}
 	}
 }
+
+// Raid-wide pulses land on the healer standing in the group as well as on
+// the other members (round 6 healers): the curated profile says so and the
+// engine model carries it, or every party heal puts a fifth of its healing
+// on a healer who is never hurt.
+func TestCuratedHealProfilePulsesReachTheHealer(t *testing.T) {
+	profile, err := LoadHealProfile(curatedHealProfile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !profile.Pulse.ReachesHealer {
+		t.Error("the curated pulse does not reach the healer")
+	}
+	if !profile.Model().PulsesReachHealer {
+		t.Error("the engine model does not carry pulse.reaches_healer")
+	}
+}
