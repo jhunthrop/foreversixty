@@ -17,6 +17,15 @@ Logs: still no level-55+ Forever log. Our `/v1/reports/recent` has nothing newer
 | C5 | Champion of the Light's 70707 row (1311084) carries only the damage aura (174), and its tooltip says "spell damage". The engine still gives Holy paladins the healing half from an older tooltip. C1 keeps today's totals. | client SpellEffect 1341129 | OPEN, for the hybrids lane | - |
 | C6 | Racials: Troll Berserking and Gnome Eureka! are unchanged since round 4. Set bonuses: the horde Affliction and Demonology sets in round 4 carried Vestments of the Devout. Today's published raid sets carry no set bonus. The only on-use is Frozen Heart of the Mountain: Chthonic Power, +29 Frost and Shadow damage for 15 s on a 5 min cooldown (client 1249110 aura 13, misc 48), modeled as written (`common/item_effects.go:3707`). | bis json; client rows | Aligned | - |
 
+## The 30 October hotfix (integrator follow-up)
+
+wowforevertalents.com's patch notes ("31 October 2026, hotfix over build 1.60.1.70685", read 2026-11-01) list the server's 30 October hotfix cache. Its warlock section has 3 changes, all to one talent. I scanned the entry for every warlock spell, talent and pet name; nothing else matches.
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| H1 | Improved Drains. Old text: "health drained or damage done by your Drain Life, Drain Soul, and Wrack spells by 20%". New text: "Health drained, damage done, or Mana drained by your Drain Life, Drain Soul, and Drain Mana spells by 20%". The engine already follows the new text. Its list is Drain Life and Drain Soul, at 7/13/20% (`talents.go:932`, `:971`; test `TestImprovedDrainsLeavesWrackAlone`). Drain Mana has no damage term. The shipped 403511 row still carries Wrack's mask bit, and the comment records that the text is the source. No rotation casts a drain or Wrack, so nothing moves. The Affliction raid search re-run with the racial fix merged gives the same hold: +4.0 ± 1.4 (+0.7%) for 1 Improved Drains moved to Improved Bane of Agony. | patch notes, 31 October entry; talents/warlock.json 70707 (already the new text) | Aligned | - |
+| H2 | Racials from the same hotfix, fixed by the casters lane in E e4d9ff60c. Troll Berserking lasts 15 s (was 10), which moves every published horde warlock. Orc Command adds +5% pet damage in place of Savage, but no Orc warlock is published. | casters.md X2, X3 | CONFIRMED-BUG (casters lane) | E e4d9ff60c |
+
 ## Pets (assigned item 1)
 
 | # | finding | evidence and source | confirmed? | fix sha |
@@ -59,6 +68,14 @@ Logs: still no level-55+ Forever log. Our `/v1/reports/recent` has nothing newer
 | Affliction | 577.0 to 559.7 (-3.00%) | -3.00% | 572.4 to 558.3 (-2.46%) | -2.48% |
 | Demonology | 664.9 to 637.3 (-4.15%) | -4.16% | 655.7 to 636.9 (-2.87%) | -2.86% |
 | Destruction | 688.8 to 668.0 (-3.02%) | -3.02% | 682.2 to 665.3 (-2.48%) | -2.49% |
+
+With the casters lane's e4d9ff60c merged as well (a scratch merge; the only conflicts are goldens), horde rises by +0.2 to +0.3% from Berserking's 15 s. Alliance (gnome) is unchanged. At seed 1, against the pin:
+
+| Spec | Alliance seed 1 | Horde seed 1 | Horde seed 50001 |
+|---|---|---|---|
+| Affliction | 577.0 to 559.7 (-3.00%) | 572.4 to 559.5 (-2.25%) | 572.4 to 559.3 (-2.29%) |
+| Demonology | 664.9 to 637.3 (-4.15%) | 655.7 to 638.9 (-2.56%) | 656.4 to 639.0 (-2.65%) |
+| Destruction | 688.8 to 668.0 (-3.02%) | 682.2 to 666.7 (-2.27%) | 682.2 to 666.7 (-2.27%) |
 
 These are measured on today's published sets, which the ranker chose with healing-hybrid pieces in them: Torch of Light, Uther's Strength, Spire of Hakkar, Kindling Stave and the alliance Demonology Devout pieces. The next bis.yml run re-ranks without the phantom third and will win some of this back.
 
