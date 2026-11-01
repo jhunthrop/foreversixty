@@ -41,6 +41,9 @@ struct CharacterView: View {
                 if let since = content.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now)))
                 }
+                if let since = content.staleSince {
+                    StaleStrip(time: OfflineStamp.format(since, now: now), retry: actions.retry)
+                }
                 loaded(content.profile)
             }
         }

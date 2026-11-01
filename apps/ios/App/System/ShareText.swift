@@ -32,7 +32,7 @@ enum ShareText {
     /// `/guides/{class}/{spec}`, `Elemental Shaman guide`.
     static func guide(_ guide: GuideFile) -> ShareItem {
         ShareItem(
-            url: url("/guides/\(guide.classSlug)/\(guide.specSlug)"),
+            url: GuideCopy.shareURL(guide),
             text: Copy.shareGuide(spec: guide.specName, className: guide.className)
         )
     }
@@ -51,4 +51,9 @@ enum ShareText {
     }
 
     static let sharedVisibilities: Set<String> = ["public", "unlisted"]
+
+    /// A loaded report's share, nil for a guild or private one.
+    static func report(_ report: Report) -> ShareItem? {
+        Self.report(id: report.id, zone: report.zone ?? report.title, visibility: report.visibility, createdAt: report.createdAt)
+    }
 }

@@ -58,7 +58,7 @@ enum SpecAsk: Equatable, Sendable, Identifiable {
 final class SignupController {
     struct Dependencies {
         let service: any RaidService
-        let haptics: any RaidHaptics
+        let haptics: any Haptics
         let permission: any NotificationPermission
         let askStore: any ReminderAskStore
         let now: @Sendable () -> Date

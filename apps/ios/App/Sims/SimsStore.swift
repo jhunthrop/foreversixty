@@ -12,6 +12,8 @@ struct SimsContent: Equatable, Sendable {
     let page: Int
     /// Set while the cached answer shows because a refresh could not connect.
     let offlineSince: Date?
+    /// Lane F15: set while the cached answer shows because Forever Sixty did not answer.
+    var staleSince: Date?
     /// A section that did not load says so on its own; the other keeps its rows (spec F5 States).
     var serverFailed = false
     var mineFailed = false
@@ -40,6 +42,8 @@ final class SimsStore {
     private let service: any SimsService
     private let cache: any RaidCache
     private let now: @Sendable () -> Date
+    /// Lane F15: the connection, for the stale strip; the screen sets it, nil keeps v1's rule.
+    var connectivity: (any Connectivity)?
 
     static let cacheKey = "sims"
 
@@ -77,7 +81,13 @@ final class SimsStore {
 
     private func fail(_ error: APIError, server: SimList?, mine: SimList?) {
         let cached = cache.read(CachedSims.self, key: Self.cacheKey)
-        if SignupRefusal.isOffline(error), let cached {
+        if let cached, let since = CacheFreshness.staleSince(
+            error, connectivity: connectivity, savedAt: cached.savedAt, limit: .pages, now: now()
+        ) {
+            var shown = cached.value.content(offlineSince: nil)
+            shown.staleSince = since
+            phase = .loaded(shown)
+        } else if SignupRefusal.isOffline(error), let cached {
             phase = .loaded(cached.value.content(offlineSince: cached.savedAt))
         } else if server != nil || mine != nil {
             phase = .loaded(SimsContent(

@@ -136,7 +136,7 @@ struct CharacterSelectorToolbar: ViewModifier {
                     }
                 }
             }
-            .sensoryFeedback(.selection, trigger: session.pickedKey)
+            .haptic(.selection, trigger: session.pickedKey)
     }
 }
 

@@ -43,6 +43,6 @@ struct SegmentBar<Item: Hashable>: View {
         .background(FSColor.raised)
         .clipShape(.rect(cornerRadius: FSRadius.control))
         .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line, lineWidth: 1))
-        .sensoryFeedback(.selection, trigger: selection)
+        .haptic(.selection, trigger: selection)
     }
 }

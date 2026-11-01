@@ -2,21 +2,6 @@ import Foundation
 import UIKit
 import UserNotifications
 
-/// The sign-up's haptics (spec 7): selection on a press, success on a save, error on a refusal.
-@MainActor
-protocol RaidHaptics {
-    func selection()
-    func success()
-    func error()
-}
-
-@MainActor
-struct SystemRaidHaptics: RaidHaptics {
-    func selection() { UISelectionFeedbackGenerator().selectionChanged() }
-    func success() { UINotificationFeedbackGenerator().notificationOccurred(.success) }
-    func error() { UINotificationFeedbackGenerator().notificationOccurred(.error) }
-}
-
 /// Whether notification permission is still undecided, and the system prompt.
 protocol NotificationPermission: Sendable {
     func isUndetermined() async -> Bool

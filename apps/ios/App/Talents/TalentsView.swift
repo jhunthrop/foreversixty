@@ -196,8 +196,8 @@ struct TalentCompareBar: View {
         .padding(EdgeInsets(top: 12, leading: 16, bottom: 8, trailing: 16))
         .background(FSColor.bg)
         .overlay(alignment: .bottom) { if !isLarge { FSColor.lineSoft.frame(height: 1) } }
-        .sensoryFeedback(.selection, trigger: shown)
-        .sensoryFeedback(.selection, trigger: tree)
+        .haptic(.selection, trigger: shown)
+        .haptic(.selection, trigger: tree)
     }
 
     private var segments: some View {

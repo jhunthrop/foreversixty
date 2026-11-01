@@ -96,3 +96,26 @@ struct FixedConnectivity: Connectivity {
     var isConnected = true
     var isExpensive = false
 }
+
+/// A store with a time-limited cache that draws the stale strip (lane F15).
+@MainActor
+protocol StaleAware: AnyObject {
+    var connectivity: (any Connectivity)? { get set }
+}
+
+extension StaleAware {
+    /// The live store: the phone's connection decides offline or stale. Tests leave it nil.
+    func connected(_ connectivity: (any Connectivity)? = PathConnectivity.shared) -> Self {
+        self.connectivity = connectivity
+        return self
+    }
+}
+
+extension RankingsStore: StaleAware {}
+extension CharacterStore: StaleAware {}
+extension ReportsStore: StaleAware {}
+extension ReportStore: StaleAware {}
+extension SimsStore: StaleAware {}
+extension SimResultStore: StaleAware {}
+extension RosterStore: StaleAware {}
+extension HistoryStore: StaleAware {}

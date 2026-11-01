@@ -134,7 +134,7 @@ struct MeterSegments: View {
         .background(FSColor.raised)
         .clipShape(.rect(cornerRadius: FSRadius.control))
         .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line, lineWidth: 1))
-        .sensoryFeedback(.selection, trigger: metric)
+        .haptic(.selection, trigger: metric)
     }
 }
 

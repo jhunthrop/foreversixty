@@ -125,7 +125,7 @@ struct GuideSectionStrip: View {
         }
         .background(FSColor.bg)
         .overlay(alignment: .bottom) { FSColor.lineSoft.frame(height: 1) }
-        .sensoryFeedback(.selection, trigger: current)
+        .haptic(.selection, trigger: current)
     }
 
     private func chip(_ section: GuideSection) -> some View {

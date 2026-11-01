@@ -74,7 +74,7 @@ struct BisPickerSheet: View {
         .background(GameColors.sheet)
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
-        .sensoryFeedback(.selection, trigger: selection)
+        .haptic(.selection, trigger: selection)
     }
 
     private var classSlugs: [String] {

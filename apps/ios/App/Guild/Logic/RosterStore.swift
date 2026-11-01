@@ -22,6 +22,10 @@ final class RosterStore {
     private let cache: any RaidCache
     private let now: @Sendable () -> Date
 
+    /// Lane F15: the stale strip's time, and the connection that decides it (nil keeps v1's rule).
+    private(set) var staleSince: Date?
+    var connectivity: (any Connectivity)?
+
     init(guild: Int64, service: any GuildExtrasService, cache: any RaidCache, now: @escaping @Sendable () -> Date) {
         self.guild = guild
         self.service = service
@@ -53,9 +57,16 @@ final class RosterStore {
         do {
             let home = try await service.home(guild: guild)
             cache.write(home, key: cacheKey, at: now())
+            staleSince = nil
             phase = .loaded(home, offlineSince: nil)
         } catch {
-            if SignupRefusal.isOffline(error), let cached = cache.read(GuildHome.self, key: cacheKey) {
+            let cached = cache.read(GuildHome.self, key: cacheKey)
+            if let cached, let since = CacheFreshness.staleSince(
+                error, connectivity: connectivity, savedAt: cached.savedAt, limit: .pages, now: now()
+            ) {
+                staleSince = since
+                phase = .loaded(cached.value, offlineSince: nil)
+            } else if SignupRefusal.isOffline(error), let cached {
                 phase = .loaded(cached.value, offlineSince: cached.savedAt)
             } else if home == nil {
                 phase = .failed

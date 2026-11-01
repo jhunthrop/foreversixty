@@ -7,6 +7,8 @@ import Observation
 struct ReportContent: Equatable, Sendable {
     let report: Report
     let offlineSince: Date?
+    /// Lane F15: set while the cached answer shows because Forever Sixty did not answer.
+    var staleSince: Date?
 
     var fightRows: [FightRow] { FightRows.rows(report) }
     var pullNumbers: [Int: PullNumber] { FightRows.pullNumbers(report) }
@@ -38,6 +40,8 @@ final class ReportStore {
     private let service: any ReportsService
     private let cache: any RaidCache
     private let now: @Sendable () -> Date
+    /// Lane F15: the connection, for the stale strip; the screen sets it, nil keeps v1's rule.
+    var connectivity: (any Connectivity)?
 
     static let notFound = 404
 
@@ -77,6 +81,10 @@ final class ReportStore {
         } catch {
             if case let .server(status, _, _) = error, status == Self.notFound {
                 phase = .notYours
+            } else if let cached = cache.read(Report.self, key: reportKey), let since = CacheFreshness.staleSince(
+                error, connectivity: connectivity, savedAt: cached.savedAt, limit: .pages, now: now()
+            ) {
+                phase = .loaded(ReportContent(report: cached.value, offlineSince: nil, staleSince: since))
             } else if SignupRefusal.isOffline(error), let cached = cache.read(Report.self, key: reportKey) {
                 phase = .loaded(ReportContent(report: cached.value, offlineSince: cached.savedAt))
             } else if report == nil {

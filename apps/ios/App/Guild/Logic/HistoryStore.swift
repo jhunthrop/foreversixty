@@ -27,6 +27,10 @@ final class HistoryStore {
     private let cache: any RaidCache
     private let now: @Sendable () -> Date
 
+    /// Lane F15: the stale strip's time, and the connection that decides it (nil keeps v1's rule).
+    private(set) var staleSince: Date?
+    var connectivity: (any Connectivity)?
+
     init(guild: Int64, service: any GuildExtrasService, cache: any RaidCache, now: @escaping @Sendable () -> Date) {
         self.guild = guild
         self.service = service
@@ -49,9 +53,16 @@ final class HistoryStore {
             let page = try await service.history(guild: guild, cursor: nil)
             cache.write(page, key: cacheKey, at: now())
             moreFailed = false
+            staleSince = nil
             phase = .loaded(Self.content(page, offlineSince: nil), offlineSince: nil)
         } catch {
-            if SignupRefusal.isOffline(error), let cached = cache.read(GuildRaids.self, key: cacheKey) {
+            let cached = cache.read(GuildRaids.self, key: cacheKey)
+            if let cached, let since = CacheFreshness.staleSince(
+                error, connectivity: connectivity, savedAt: cached.savedAt, limit: .homeAndRaids, now: now()
+            ) {
+                staleSince = since
+                phase = .loaded(Self.content(cached.value, offlineSince: nil), offlineSince: nil)
+            } else if SignupRefusal.isOffline(error), let cached {
                 let content = Self.content(cached.value, offlineSince: cached.savedAt)
                 phase = .loaded(content, offlineSince: cached.savedAt)
             } else if content == nil {

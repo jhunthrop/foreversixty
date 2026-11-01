@@ -30,7 +30,7 @@ struct SimsScreen: View {
         self.dependencies = dependencies
         self.entitled = entitled
         self.router = router
-        _store = State(initialValue: SimsStore(service: dependencies.service, cache: dependencies.cache, now: dependencies.now))
+        _store = State(initialValue: SimsStore(service: dependencies.service, cache: dependencies.cache, now: dependencies.now).connected())
     }
 
     var body: some View {
@@ -113,7 +113,7 @@ struct SimResultScreen: View {
         _store = State(initialValue: SimResultStore(
             id: route.id, row: route.row, service: dependencies.service, cache: dependencies.cache,
             specs: dependencies.specs, now: dependencies.now, markSeen: markSeen
-        ))
+        ).connected())
     }
 
     var body: some View {
@@ -122,7 +122,8 @@ struct SimResultScreen: View {
                 phase: store.phase, looks: looks, build: build, now: dependencies.now(),
                 openItem: { cell in tooltip = request(for: cell) },
                 openBreakdown: { openURL($0) },
-                retry: { Task { await store.load() } }
+                retry: { Task { await store.load() } },
+                staleSince: store.staleSince
             )
         }
         .background(FSColor.bg)

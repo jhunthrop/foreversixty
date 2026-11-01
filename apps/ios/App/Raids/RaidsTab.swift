@@ -11,7 +11,7 @@ import SwiftUI
 struct RaidsDependencies {
     let service: any RaidService
     let cache: any RaidCache
-    let haptics: any RaidHaptics
+    let haptics: any Haptics
     let permission: any NotificationPermission
     let askStore: any ReminderAskStore
     let now: @Sendable () -> Date
@@ -39,7 +39,7 @@ struct RaidsDependencies {
         return RaidsDependencies(
             service: service,
             cache: DiskRaidCache.standard(),
-            haptics: SystemRaidHaptics(),
+            haptics: SystemHaptics(),
             permission: SystemNotificationPermission(),
             askStore: UserDefaultsReminderAskStore(),
             now: AppClock.now,

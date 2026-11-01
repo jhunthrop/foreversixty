@@ -20,11 +20,13 @@ struct RosterContentView: View {
     let retry: () -> Void
     /// The trailing search button: shows the field, or hides and clears it.
     var toggleSearch: () -> Void = {}
+    /// Lane F15: the stale strip's time.
+    var staleSince: Date?
     @FocusState private var searchFocused: Bool
     @State private var width: CGFloat = 402
 
     var body: some View {
-        GuildScreenScroll(title: Copy.rosterTitle, offlineStrip: offlineStrip, trailing: { searchButton }) {
+        GuildScreenScroll(title: Copy.rosterTitle, offlineStrip: offlineStrip, trailing: { searchButton }, content: {
             switch phase {
             case .loading:
                 GuildSkeletonRows(count: 8, height: 64)
@@ -33,7 +35,7 @@ struct RosterContentView: View {
             case let .loaded(home, _):
                 loaded(RosterList(home: home))
             }
-        }
+        }, stale: staleSince.map { StaleStrip(time: clock.stripTime($0, now: now()), retry: retry) })
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
     }
 
@@ -279,7 +281,8 @@ struct RosterScreen: View {
             toggleSearch: {
                 query.searching.toggle()
                 if !query.searching { query.search = "" }
-            }
+            },
+            staleSince: store.staleSince
         )
         .refreshable { await store.load() }
         .guildPushedBar(Copy.rosterTitle)
