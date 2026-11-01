@@ -57,8 +57,13 @@ func TestResendNon2xxIsError(t *testing.T) {
 }
 
 func TestResendTransportErrorIsWrapped(t *testing.T) {
+	// A closed local server refuses the connection; an unresolvable host name is not hermetic
+	// (a proxy can answer it with a 502 instead of failing the dial).
+	srv := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	closedURL := srv.URL
+	srv.Close()
 	m := NewResend("key", "sender@example.com", http.DefaultClient)
-	m.endpoint = "http://invalid.example.test:1"
+	m.endpoint = closedURL
 	err := m.Send(context.Background(), Message{To: "user@example.com", Subject: "Test", Text: "body"})
 	if err == nil {
 		t.Fatal("expected transport error")
