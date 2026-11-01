@@ -73,3 +73,26 @@ Checked and fixed:
 - The "pick for 60 · raid" intro line is still on Home.
 - Your note calls Voltaris's set a "nearly complete raid set". It reads as dungeon and crafted gear: Band of the Unicorn (ilvl 48), Rune of the Guard Captain (green), Totem of Thunder (ilvl 65). That is fine for a launch-week Onyxia kill, but don't promise a raid set in the copy.
 - The data items for the accuracy reviewer (Uther's Strength, leather picks, ilvl-65 totem, Emperor Dagran Thaurissan, KR/TW/CN) still stand.
+
+---
+
+# Round 3
+
+## Verdict: SHIP (with the SHOULDs below, none blocking)
+
+Both round-2 MUSTs are closed. Home now tells one story about one character, and it agrees with his character page.
+
+Checked:
+- **Home reads Lightningbolltz in both apps.** `home-rankings-ios.png`: title "Lightningbolltz", "Troll Elemental Shaman · Level 60 · Hordebreakers", six upgrades, +14.4 DPS, Rankings "14th of 212 Elemental Shaman characters on Onyxia". `home-rankings-and.png`: the same, with the selector chip. No hunter items remain.
+- **Home agrees with the character page.** The six upgrades (Ironfeather Breastplate, Living Crown, Ironfeather Leggings, Ironfeather Shoulders, Skycaller's Leather Waistguard, plus one more) match the six gold dots on `character-yours-and.png` (Head, Shoulder, Chest, Waist, Legs, Trinket 2) and on `home-gear-yours-ios.png`. The "Replaces" lines name what he wears (Coif of Elements ilvl 62, Kilt of Elements ilvl 61, Cord of Elements ilvl 58). The five shown gains (+3.8, +3.1, +2.7, +2.0, +1.6) add to 13.2, and the hidden sixth makes the +14.4 headline.
+- **"Already best in slot"** lists the other 11 slots, so 6 + 11 = 17.
+- **Talents** reads "MATCHES"; it no longer says "DIFFERS" on a build that matches.
+- **`rankings-menu-and.png`:** the menu now has icons (Stop watching, Open the report, Share), and the page behind it reads correctly.
+
+## SHOULD (none block shipping)
+
+1. **Two units for one idea.** Home says "+14.4 DPS"; the character page says "Gear gap 36.0 points". A player will ask whether 36 is 14.4 in different clothes. Label the points ("score points") or show DPS on both. `character-yours-and.png`, `character-gear-ios.png`.
+2. **"Already best in slot" includes Trinket 1: Rune of the Guard Captain (green, ilvl 51), Finger 2: Band of the Unicorn (ilvl 48) and Wrist: Runecloth Cuffs** for an Elemental shaman. Those read like leveling gear. This is for the accuracy reviewer: confirm the Elemental raid list really has no better launch-legal option in those slots.
+3. **Rankings rows still show no ilvl or talent split**, though the data has both; a raider scanning for "what does that player wear" still has to open each row.
+4. **"What you wear, and the pick for 60 · raid."** The stray middle dot is still there (`home-gear-yours-ios.png`).
+5. **Carried over for the accuracy reviewer:** Uther's Strength as a caster trinket, ilvl-65 Totem of Thunder, Emperor Dagran Thaurissan ranked next to Onyxia, and the KR/TW/CN region chips.
