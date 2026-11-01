@@ -1,5 +1,6 @@
 package gg.foreversixty.app.system
 
+import gg.foreversixty.app.model.Widget
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import gg.foreversixty.app.model.GuildRaids
 import gg.foreversixty.app.model.Me
@@ -142,7 +143,8 @@ class ShortcutLogicTest {
         val me = RaidFixture.load(Me.serializer(), "me")
         val current = me.characters.first()
         val watched = RaidFixture.load(WatchingList.serializer(), "watching.list").rows
-        val list = DynamicShortcuts.list(current, watched, GUILD to onyxia, resources(), chicago)
+        val next = RaidFixture.load(Widget.serializer(), "widget.get").nextRaid
+        val list = DynamicShortcuts.list(current, watched, next, resources(), chicago)
         assertTrue(list.size <= DynamicShortcuts.MAX)
         assertEquals("character:${current.key}", list.first().id)
         assertEquals("${current.name} · Forever Sixty · character", list.first().longLabel)
@@ -150,8 +152,9 @@ class ShortcutLogicTest {
         // Rank 0 is the current character, rank 1 the next raid, then the watched characters.
         val raid = list[1]
         assertEquals("Next raid", raid.shortLabel)
-        assertEquals("Onyxia's Lair · Sat 7 pm", raid.longLabel)
-        assertEquals(DeepLink.Raid(GUILD, ONYXIA), raid.link)
+        // The widget's next raid: the story's Thursday 8 pm in the phone's zone.
+        assertEquals("Onyxia's Lair · Thu 8 pm", raid.longLabel)
+        assertEquals(DeepLink.Raid(GUILD, WIDGET_RAID), raid.link)
         assertEquals(minOf(watched.count { it.key != current.key }, 2), list.count { it.id.startsWith("character:") } - 1)
     }
 
@@ -174,6 +177,7 @@ class ShortcutLogicTest {
     private companion object {
         const val GUILD = 2L
         const val ONYXIA = 31L
+        const val WIDGET_RAID = 7L
         const val HOUR = 3_600L
         const val HALF_HOUR = 1_800L
     }

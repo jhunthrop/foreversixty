@@ -67,6 +67,8 @@ class MainActivity : ComponentActivity() {
             graph.session.refresh()
         }
         lifecycleScope.launch { graph.session.watchForDeadTokens() }
+        // Lane F15: the dynamic shortcuts follow the session too (its characters arrive after launch).
+        lifecycleScope.launch { graph.session.phase.collect { graph.system.refreshShortcuts() } }
         // Lane F14: the 30-minute snapshot refresh behind the widgets, tile and countdown.
         if (graph.widgets != null) gg.foreversixty.app.widgets.WidgetRefreshWork.periodic(this)
     }

@@ -1,5 +1,6 @@
 package gg.foreversixty.app
 
+import gg.foreversixty.app.network.ApiEndpoints
 import gg.foreversixty.app.network.StaticEndpoints
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.rankings.logic.LiveRankingsService
@@ -298,6 +299,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         guides = guides,
         raids = raids.service,
         watching = { (LiveRankingsService(apiClient).watching() as? ApiResult.Success)?.data?.rows.orEmpty() },
+        nextRaid = { key -> (apiClient.send(ApiEndpoints.getWidget(key)) as? ApiResult.Success)?.data?.nextRaid },
         signedIn = { tokens.bearerToken() != null },
         currentCharacter = { session.currentCharacter() },
         connectivity = Connectivity.of(context),

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.system
 
+import gg.foreversixty.app.model.WidgetNextRaid
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,8 +17,6 @@ import gg.foreversixty.app.network.StaticEndpoints
 import gg.foreversixty.app.raids.logic.RaidService
 import gg.foreversixty.app.system.logic.AppShortcut
 import gg.foreversixty.app.system.logic.DynamicShortcuts
-import gg.foreversixty.app.system.logic.IntentRaid
-import gg.foreversixty.app.system.logic.RaidPick
 import gg.foreversixty.app.system.logic.ShortcutSignup
 import gg.foreversixty.app.system.offline.FolderIconCache
 import gg.foreversixty.app.system.offline.OfflineDataModel
@@ -56,6 +55,8 @@ class SystemFeature(
     private val guides: GuidesFeature?,
     private val raids: RaidService,
     private val watching: suspend () -> List<WatchedCharacter>,
+    /** `GET /v1/me/widget`'s next raid for a character (W3-C12). */
+    private val nextRaid: suspend (String?) -> WidgetNextRaid?,
     private val signedIn: suspend () -> Boolean,
     private val currentCharacter: () -> AccountCharacter?,
     val connectivity: Connectivity,
@@ -109,11 +110,13 @@ class SystemFeature(
         }
         val current = currentCharacter()
         val watched = watching()
-        val next = current?.guild?.takeIf { it.verified }?.let { guild ->
-            val planned = (raids.raids(guild.id) as? ApiResult.Success)?.data?.planned.orEmpty()
-            (IntentRaid.pick(planned, java.time.Instant.now()) as? RaidPick.One)?.let { guild.id to it.raid }
-        }
+        // The same next raid the widget, voice answers and Spotlight read (one story, one clock).
+        val next = nextRaid(current?.key)?.takeUnless { it.status == CANCELLED }
         publisher.publish(DynamicShortcuts.list(current, watched, next, app.resources))
+    }
+
+    private companion object {
+        const val CANCELLED = "cancelled"
     }
 
     /** Sign-out: the dynamic shortcuts go with the account. */

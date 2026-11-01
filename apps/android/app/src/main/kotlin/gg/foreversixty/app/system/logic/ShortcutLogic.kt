@@ -1,5 +1,6 @@
 package gg.foreversixty.app.system.logic
 
+import gg.foreversixty.app.model.WidgetNextRaid
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.model.AccountCharacter
@@ -137,7 +138,7 @@ object DynamicShortcuts {
     fun list(
         current: AccountCharacter?,
         watched: List<WatchedCharacter>,
-        nextRaid: Pair<Long, RaidView>?,
+        nextRaid: WidgetNextRaid?,
         res: Resources,
         zone: ZoneId = ZoneId.systemDefault(),
     ): List<DynamicShortcut> {
@@ -145,7 +146,7 @@ object DynamicShortcuts {
         // Rank order (lead ruling, review round 2): the current character, the next raid, then the
         // watched ones; the launcher's two dynamic slots then show the character and the raid.
         val mine = current?.let { character(it.key, it.region, it.ruleset, it.name, it.className, sub) }
-        val raid = nextRaid?.let { (guild, view) -> raid(guild, view, res, zone) }
+        val raid = nextRaid?.let { raid(it, res, zone) }
         val others = watched.filter { it.key != current?.key }.take(WATCHED).map { character(it.key, it.region, it.ruleset, it.name, it.className, sub) }
         return (listOfNotNull(mine, raid) + others).take(MAX)
     }
@@ -158,13 +159,14 @@ object DynamicShortcuts {
         crestClass = className,
     )
 
-    private fun raid(guild: Long, view: RaidView, res: Resources, zone: ZoneId): DynamicShortcut {
-        val starts = Instant.parse(view.startsAt)
+    /** The widget snapshot's next raid (`GET /v1/me/widget`): the raid the widget, voice and Spotlight name. */
+    private fun raid(next: WidgetNextRaid, res: Resources, zone: ZoneId): DynamicShortcut {
+        val starts = Instant.parse(next.startsAt)
         return DynamicShortcut(
             id = "raid:next",
             shortLabel = res.getString(R.string.shortcut_nextRaid),
-            longLabel = res.getString(R.string.spotlight_raidTitle, view.zoneName, IntentTime.weekdayShort(starts, zone), IntentTime.time(starts, zone)),
-            link = DeepLink.Raid(guild, view.id),
+            longLabel = res.getString(R.string.spotlight_raidTitle, next.zoneName, IntentTime.weekdayShort(starts, zone), IntentTime.time(starts, zone)),
+            link = DeepLink.Raid(next.guildId, next.raidId),
             crestClass = null,
         )
     }
