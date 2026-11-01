@@ -14,6 +14,15 @@ local L = require("Locale")
 
 local WORN_LINK = "|cff1eff00|Hitem:50::::::::20:::::|h[Chausses of Westfall]|h|r"
 
+-- The shipped Arms band-20 figures. The nightly owns them, so a test builds
+-- its expected values from these and never quotes the numbers themselves.
+local ARMS_BAND20 = require("Data").dpsPerPoint["warrior-arms"][20]
+
+-- The Downgrade line a hovered item `delta` DPS below the worn `wornName` reads.
+local function downLine(delta, wornName)
+	return string.format(L.tooltipDown, math.abs(Progress.roundedGain(-delta, "dps")), L.tooltipUnitDps, wornName)
+end
+
 describe("ItemTooltip.verdictLine", function()
 	-- Progress.slotVerdict is called with the HOVERED item as `plan`, so
 	-- its delta is worn minus hovered: the hovered item's gain is -delta.
@@ -523,12 +532,15 @@ describe("the band's DPS figures", function()
 			end
 		end)
 
-		it("reads Arms band 20 as the measured 0.0385 DPS per attack power and 0.5432 per weapon DPS", function()
+		-- The figures themselves are the nightly's; the test holds the band rule.
+		it("reads Arms at 12 and 21 as band 20's measured figures, and at 60 as band 60's", function()
+			local bands = Data.dpsPerPoint["warrior-arms"]
 			local current = Gear.currentWeights(Data, "warrior-arms", nil, KEY, 21)
-			assert.are.equal(0.0385, current.dpsPerPoint)
-			assert.are.equal(0.5432, current.weaponDps)
-			assert.are.equal(0.0385, Gear.currentWeights(Data, "warrior-arms", nil, KEY, 12).dpsPerPoint)
-			assert.are.equal(0.1064, Gear.currentWeights(Data, "warrior-arms", nil, KEY, 60).dpsPerPoint)
+			assert.is_true(bands[20].dps > 0 and bands[20].weaponDps > 0)
+			assert.are.equal(bands[20].dps, current.dpsPerPoint)
+			assert.are.equal(bands[20].weaponDps, current.weaponDps)
+			assert.are.equal(bands[20].dps, Gear.currentWeights(Data, "warrior-arms", nil, KEY, 12).dpsPerPoint)
+			assert.are.equal(bands[60].dps, Gear.currentWeights(Data, "warrior-arms", nil, KEY, 60).dpsPerPoint)
 		end)
 	end)
 end)
@@ -680,7 +692,7 @@ describe("ItemTooltip.section", function()
 		-- Abomination Bones (+8 Strength; its +4 attack power enchant is not
 		-- an item stat) against Mutant Scale Breastplate (+10 Strength, +4
 		-- Stamina) under the shipped Arms weights: 2 Strength x 2 = 4 attack
-		-- power x 0.0385 (band 20, L3.6) = 0.15 DPS, under the 1.0 floor, so round 1
+		-- power x band 20's DPS per attack power (L3.6), well under the 1.0 floor, so round 1
 		-- printed the name with no figure. Below the floor it is "Best for now".
 		it("says Best for now when the next pick gains under the floor: the live chest", function()
 			local Data = require("Data")
@@ -1656,10 +1668,10 @@ describe("ItemTooltip.section", function()
 	end)
 end)
 
--- The tip2-mace figure ("Downgrade −5.7 DPS over Smite's Mighty Hammer" in
--- game) under the shipped Arms figures for band 20 (L3.6): the stat line at the
--- band's DPS per attack power, the weapon's own DPS at the band's measured DPS
--- per weapon DPS, never through attack power.
+-- The tip2-mace figure under the shipped Arms figures for band 20 (L3.6): the
+-- stat line at the band's DPS per attack power, the weapon's own DPS at the
+-- band's measured DPS per weapon DPS, never through attack power. The figures
+-- are the nightly's, so the expected values are built from them, never quoted.
 describe("the weapon figure under the shipped Arms band-20 figures", function()
 	local Data = require("Data")
 	local current = Gear.currentWeights(Data, "warrior-arms", nil, KEY, 21)
@@ -1673,27 +1685,29 @@ describe("the weapon figure under the shipped Arms band-20 figures", function()
 		assert.are.equal("weapon_dps", Rules.STAT_KEYS.ITEM_MOD_DAMAGE_PER_SECOND_SHORT)
 	end)
 
-	-- Hammer over Tenderizer: 11 Str x 2 + 4 Agi x 0.6 = 24.4 AP x 0.0385 = 0.94
-	-- DPS, plus (19.7 - 13.9) = 5.8 weapon DPS x 0.5432 = 3.15 DPS: 4.09 DPS.
-	it("nets 24.4 AP x 0.0385 + 5.8 weapon DPS x 0.5432 = Downgrade 4.1 DPS", function()
-		assert.are.equal(0.0385, perPoint)
+	-- Hammer over Tenderizer: 11 Str x 2 + 4 Agi x 0.6 = 24.4 AP at the band's
+	-- DPS per attack power, plus (19.7 - 13.9) = 5.8 weapon DPS at the band's
+	-- DPS per weapon DPS.
+	it("nets 24.4 AP and 5.8 weapon DPS at the band's two figures into a Downgrade", function()
+		assert.are.equal(ARMS_BAND20.dps, perPoint)
 		assert.are.equal("main_hand", weapon.slot)
 		local verdict = Progress.itemVerdict("main_hand", tenderizer, { main_hand = hammer }, weights, perPoint, weapon)
 		assert.are.equal("better", verdict.state)
-		assert.is_true(math.abs(verdict.delta - (24.4 * 0.0385 + 5.8 * 0.5432)) < 1e-9)
-		assert.are.equal(string.format(L.tooltipDown, 4.1, L.tooltipUnitDps, "Smite's Mighty Hammer"),
+		local expected = 24.4 * ARMS_BAND20.dps + 5.8 * ARMS_BAND20.weaponDps
+		assert.is_true(math.abs(verdict.delta - expected) < 1e-9)
+		assert.are.equal(downLine(expected, "Smite's Mighty Hammer"),
 			ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text)
 	end)
 
 	-- The pair as worn in game, Smite's "Weapon Damage +4" at 3.50 netted (tip4):
-	-- 24.4 x 0.0385 + (5.8 + 4 / 3.5) x 0.5432 = 0.94 + 3.77 = 4.7 DPS, the
-	-- the -4.8 L1.5 expected was its 14-AP-per-weapon-DPS figure (125.6 AP x 0.0385); the
-	-- measured weapon term (0.5432 a point) gives 4.7.
-	it("prices the enchanted pair as Downgrade 4.7 DPS", function()
+	-- the enchant's 4 / 3.5 weapon DPS adds to the weapon term at the band's
+	-- measured DPS per weapon DPS, never through attack power.
+	it("prices the enchanted pair with the enchant's weapon DPS added", function()
 		local smite = Gear.netEnchant(hammer, { stats = { weapon_dps = 4 / 3.5 }, unparsed = false })
 		local verdict = Progress.itemVerdict("main_hand", tenderizer, { main_hand = smite }, weights, perPoint, weapon)
-		assert.is_true(math.abs(verdict.delta - (24.4 * 0.0385 + (5.8 + 4 / 3.5) * 0.5432)) < 1e-9)
-		assert.are.equal(string.format(L.tooltipDown, 4.7, L.tooltipUnitDps, "Smite's Mighty Hammer"),
+		local expected = 24.4 * ARMS_BAND20.dps + (5.8 + 4 / 3.5) * ARMS_BAND20.weaponDps
+		assert.is_true(math.abs(verdict.delta - expected) < 1e-9)
+		assert.are.equal(downLine(expected, "Smite's Mighty Hammer"),
 			ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text)
 	end)
 
@@ -2045,7 +2059,7 @@ describe("the worn item's enchant", function()
 		assert.is_true(math.abs(enchant.stats.weapon_dps - 4 / 3.5) < 1e-9)
 		local band20 = Gear.currentWeights(require("Data"), "warrior-arms", nil, KEY, 25)
 		assert.is_true(math.abs(Progress.itemScore(enchant.stats, arms, "main_hand", band20.weapon)
-			* band20.dpsPerPoint - 4 / 3.5 * 0.5432) < 1e-9)
+			* band20.dpsPerPoint - 4 / 3.5 * ARMS_BAND20.weaponDps) < 1e-9)
 	end)
 
 	it("keeps the note for an enchant it cannot read, and has nothing to say with none", function()
@@ -2074,7 +2088,7 @@ describe("the worn item's enchant", function()
 	end)
 
 	-- tip4-mace with Smite's "Weapon Damage +4" at 3.50 netted, at band 20: 24.4
-	-- AP x 0.0385 + (5.8 + 4 / 3.5) weapon DPS x 0.5432 = 4.7 DPS.
+	-- AP and (5.8 + 4 / 3.5) weapon DPS at the band's two figures.
 	it("nets the worn weapon's enchant into the mace's verdict", function()
 		local smite = Gear.netEnchant({ itemId = 7230, equipLoc = "INVTYPE_2HWEAPON",
 			stats = { strength = 11, agility = 4, weapon_dps = 19.7 } }, { stats = { weapon_dps = 4 / 3.5 }, unparsed = false })
@@ -2082,8 +2096,9 @@ describe("the worn item's enchant", function()
 		local band20 = Gear.currentWeights(require("Data"), "warrior-arms", nil, KEY, 25)
 		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, band20.dpsPerPoint,
 			band20.weapon)
-		assert.is_true(math.abs(verdict.delta - (24.4 * 0.0385 + (5.8 + 4 / 3.5) * 0.5432)) < 1e-9)
-		assert.are.equal(string.format(L.tooltipDown, 4.7, L.tooltipUnitDps, "Smite's Mighty Hammer"),
+		local expected = 24.4 * ARMS_BAND20.dps + (5.8 + 4 / 3.5) * ARMS_BAND20.weaponDps
+		assert.is_true(math.abs(verdict.delta - expected) < 1e-9)
+		assert.are.equal(downLine(expected, "Smite's Mighty Hammer"),
 			ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text)
 	end)
 end)
