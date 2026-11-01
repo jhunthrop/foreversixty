@@ -291,6 +291,14 @@ struct WidgetClock: Sendable {
     func spokenDayTime(_ date: Date) -> String { onTheHour(date) ? format("EEEE h a", date) : format("EEEE h:mm a", date) }
     /// `10 Dec`
     func dayMonth(_ date: Date) -> String { format("d MMM", date) }
+    /// `24 Sep 2026`
+    func fullDate(_ date: Date) -> String { format("d MMM yyyy", date) }
+    /// `Thursday` (lane F15's spoken answers).
+    func weekday(_ date: Date) -> String { format("EEEE", date) }
+    /// `Thu`
+    func shortWeekday(_ date: Date) -> String { format("EEE", date) }
+    /// `8 pm`, minutes kept when not on the hour (`8:30 pm`).
+    func hourTime(_ date: Date) -> String { onTheHour(date) ? format("h a", date) : time(date) }
 }
 
 /// The upgrade widgets' words, from the same snapshot.

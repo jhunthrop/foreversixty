@@ -8,12 +8,17 @@ struct CharacterEntity: AppEntity {
 
     let id: String
     let name: String
+    /// Lane F15: the Spotlight line, `Elemental Shaman · 60 · Olympus XXVII`.
+    var subtitle: String?
 
     // App Intents metadata takes literal keys; each is a key of the copy catalog (Localizable.xcstrings).
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.characterSetting")
 
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: LocalizedStringResource(stringLiteral: name))
+        DisplayRepresentation(
+            title: LocalizedStringResource(stringLiteral: name),
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
+        )
     }
 
     static let defaultQuery = CharacterQuery()
@@ -27,7 +32,9 @@ struct CharacterEntity: AppEntity {
 /// The account's characters, as the app last wrote them to the App Group.
 struct CharacterQuery: EntityQuery {
     func entities(for identifiers: [String]) async throws -> [CharacterEntity] {
-        let all = try await suggestedEntities()
+        // Lane F15: a Spotlight tap on a watched character resolves through the indexed list too.
+        let indexed = WidgetSnapshotStore.shared().spotlightCharacters().map { CharacterEntity(id: $0.key, name: $0.name) }
+        let all = try await suggestedEntities() + indexed
         return identifiers.compactMap { id in all.first { $0.id == id } }
     }
 

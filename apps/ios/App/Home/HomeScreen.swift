@@ -189,6 +189,8 @@ struct HomeCharacterScreen: View {
                     ),
                     build: home?.dataBuild ?? "",
                     offlineStamp: offlineStamp,
+                    staleStamp: store.staleSince.map { HomeTime(now: Date()).stamp($0) },
+                    retry: { Task { await store.refresh(character) } },
                     send: handle
                 )
             }

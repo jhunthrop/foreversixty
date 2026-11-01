@@ -41,7 +41,8 @@ struct RaidPageScreen: View {
             case let .loaded(controller):
                 RaidPageContent(
                     controller: controller, clock: clock, now: now, currentKey: currentKey,
-                    offlineSince: model.offlineSince, guildName: guildName, guildURL: guildURL, openNight: openNight, scrollToRoster: scrollToRoster
+                    offlineSince: model.offlineSince, guildName: guildName, guildURL: guildURL, openNight: openNight, scrollToRoster: scrollToRoster,
+                    staleSince: model.staleSince, retry: { Task { await model.load() } }
                 )
                 .refreshable { await model.load() }
             case .failed:
@@ -74,6 +75,9 @@ struct RaidPageContent: View {
     var guildURL: URL?
     let openNight: (Int64) -> Void
     var scrollToRoster = false
+    /// Lane F15: the stale strip's time and its Retry.
+    var staleSince: Date?
+    var retry: () -> Void = {}
     @State private var showsCalendar = false
     @Environment(\.openURL) private var openURL
 
@@ -86,6 +90,9 @@ struct RaidPageContent: View {
                 VStack(alignment: .leading, spacing: 0) {
                     if let offlineSince {
                         OfflineStrip(text: Copy.offlineStrip(time: clock.stripTime(offlineSince, now: now())))
+                    }
+                    if let staleSince {
+                        StaleStrip(time: clock.stripTime(staleSince, now: now()), retry: retry)
                     }
                     VStack(alignment: .leading, spacing: 22) {
                         RaidHead(raid: raid, facts: facts, clock: clock, now: now, guildName: guildName)

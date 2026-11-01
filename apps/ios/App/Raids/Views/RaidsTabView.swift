@@ -23,6 +23,9 @@ struct RaidsTabContentView: View {
                 if case let .loaded(content) = state, let since = content.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: clock.stripTime(since, now: now())))
                 }
+                if case let .loaded(content) = state, let since = content.staleSince {
+                    StaleStrip(time: clock.stripTime(since, now: now()), retry: retry)
+                }
                 VStack(alignment: .leading, spacing: 22) { stateContent }
                     .padding(16)
             }

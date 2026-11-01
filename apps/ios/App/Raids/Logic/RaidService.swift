@@ -27,8 +27,7 @@ struct LiveRaidService: RaidService {
     }
 
     func signup(guild: Int64, raid: Int64, characterKey: String, _ request: SignupRequest) async throws(APIError) -> SignupAnswer {
-        let key = try CharacterKey(characterKey)
-        return try await client.send(.putRaidSignup(id: guild, raid: raid, region: key.region, ruleset: key.ruleset, name: key.name, request))
+        try await RaidSignupPUT.send(client, guild: guild, raid: raid, characterKey: characterKey, request)
     }
 
     func lock(guild: Int64, raid: Int64) async throws(APIError) -> RaidView {

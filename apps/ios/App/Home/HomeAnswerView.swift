@@ -19,11 +19,15 @@ struct HomeAnswerView: View {
     let presenter: HomePresenter
     let build: String
     var offlineStamp: String?
+    /// Lane F15: the stale strip's time, and its Retry.
+    var staleStamp: String?
+    var retry: () -> Void = {}
     var send: (HomeIntent) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if let offlineStamp { OfflineStrip(text: Copy.offlineStrip(time: offlineStamp)) }
+            if let staleStamp { StaleStrip(time: staleStamp, retry: retry) }
             switch phase {
             case .loading:
                 HomeSkeleton()

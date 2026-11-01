@@ -23,6 +23,9 @@ final class RaidPageModel {
     let raidID: Int64
     private(set) var state: State = .loading
     private(set) var offlineSince: Date?
+    /// Lane F15: Forever Sixty did not answer and the saved raid is past five minutes.
+    private(set) var staleSince: Date?
+    private var connectivity: (any Connectivity)?
 
     private let deps: SignupController.Dependencies
     private let cache: any RaidCache
@@ -35,8 +38,10 @@ final class RaidPageModel {
 
     init(
         guild: Int64, raid: Int64, deps: SignupController.Dependencies, cache: any RaidCache,
-        openAction: RaidOpenAction? = nil, onChange: @escaping (RaidView) -> Void = { _ in }
+        openAction: RaidOpenAction? = nil, onChange: @escaping (RaidView) -> Void = { _ in },
+        connectivity: (any Connectivity)? = nil
     ) {
+        self.connectivity = connectivity
         self.guild = guild
         self.raidID = raid
         self.deps = deps
@@ -66,6 +71,7 @@ final class RaidPageModel {
             let view = try await deps.service.raid(guild: guild, raid: raidID)
             cache.write(view, key: cacheKey, at: deps.now())
             offlineSince = nil
+            staleSince = nil
             show(view)
             await runOpenAction()
         } catch {
@@ -99,6 +105,13 @@ final class RaidPageModel {
     }
 
     private func fail(_ error: APIError) {
+        if case .loaded = state, let since = CacheFreshness.staleSince(
+            error, connectivity: connectivity, savedAt: cache.read(RaidView.self, key: cacheKey)?.savedAt,
+            limit: .homeAndRaids, now: deps.now()
+        ) {
+            staleSince = since
+            return
+        }
         if case let .loaded(controller) = state {
             if SignupRefusal.isOffline(error) {
                 controller.offline = true

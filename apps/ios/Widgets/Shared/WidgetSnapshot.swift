@@ -94,6 +94,19 @@ struct WidgetSnapshotStore: Sendable {
         return (try? JSONDecoder().decode([WidgetCharacterChoice].self, from: data)) ?? []
     }
 
+    static let spotlightFile = "spotlight-characters.json"
+
+    /// Lane F15: the characters in Spotlight (yours and the watched), so an intent resolves a tap.
+    func saveSpotlightCharacters(_ characters: [WidgetCharacterChoice]) {
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try? JSONEncoder().encode(characters).write(to: directory.appending(path: Self.spotlightFile), options: .atomic)
+    }
+
+    func spotlightCharacters() -> [WidgetCharacterChoice] {
+        guard let data = try? Data(contentsOf: directory.appending(path: Self.spotlightFile)) else { return [] }
+        return (try? JSONDecoder().decode([WidgetCharacterChoice].self, from: data)) ?? []
+    }
+
     /// Sign-out: every surface returns to its signed-out words.
     func clear() {
         try? FileManager.default.removeItem(at: directory)

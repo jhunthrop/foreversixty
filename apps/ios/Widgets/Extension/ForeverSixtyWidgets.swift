@@ -15,6 +15,7 @@ struct ForeverSixtyWidgets: WidgetBundle {
         NextUpgradeWidget()
         RaidLiveActivity()
         SimLiveActivity()
+        RaidInControl()
     }
 }
 
