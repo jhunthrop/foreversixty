@@ -50,7 +50,8 @@ def test_no_downrank_is_judged_against_an_ahnqiraj_book_rank():
     """A Phase 1 player cannot learn a book rank (curated/book-ranks.json), so a downrank
     is judged against the top trainer rank (round 6 healers: Renew 25315, Prayer of
     Healing 25316)."""
-    books = {b["id"] for b in json.loads((DATA / "curated" / "book-ranks.json").read_text())["books"]}
+    book_ranks = json.loads((DATA / "curated" / "book-ranks.json").read_text())
+    books = {b["id"] for b in book_ranks["books"]}
     for spec in SPECS:
         doc = json.loads(render_spec(spec, ACTIVE, DATA))
         for key in ("downranks",):
