@@ -110,6 +110,11 @@
           "reason": "Mana returns from a raid paladin."
         },
         {
+          "id": "judgement_of_the_crusader",
+          "label": "Judgement of the Crusader",
+          "reason": "Holy damage taken from a raid paladin, who keeps it up on the boss (owner ruling, 2026-11-01). A level-60 paladin judges rank 6 (Seal of the Crusader 20308, learned at 52), whose Judgement 20303 adds 161 Holy damage taken in the Forever client (SpellEffect aura 14; Era's was 140). Plain version: the live trees have no Improved Seal of the Crusader."
+        },
+        {
           "id": "judgement_of_light",
           "label": "Judgement of Light",
           "reason": "Health returns from a raid paladin; no damage effect, listed because a raid carries it."
