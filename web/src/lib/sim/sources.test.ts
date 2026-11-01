@@ -1,4 +1,6 @@
 // @vitest-environment jsdom
+import { readFileSync } from 'node:fs';
+import path_ from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FIXTURE_BUILD_ID, createSimApi, envelope } from '../../test-support/sim-api';
 import { readCurrent, writeCurrent } from '../current-character';
@@ -539,6 +541,80 @@ describe('fromStoredCharacter, addon-sourced', () => {
       ref: 'us/normal/simfury',
       captured_at: '2026-09-20T09:00:00Z',
     });
+  });
+});
+
+// An export carries the client build it was written on, and a later build can lay a tree out
+// differently. Its digits only name the right talents read against its own build's tree: the
+// owner's level-24 hunter, exported on 1.60.1.70450, read as unreachable talents against the
+// current build's tree and would not load anywhere on /sim.
+describe('an export from an older client build', () => {
+  const OLD_BUILD = '1.60.1.70450';
+  const path: CharacterPath = { region: 'us', ruleset: 'normal', slug: 'oldfury' };
+  // Booming Voice (tier 0) sat last in the old build's Fury tab, where the current tree keeps
+  // Flurry (tier 3): read against the current tree, five points land in Flurry, unreachable.
+  const OLD_CODE = `FS1:${OLD_BUILD}:warrior:orc:0/0000005/0:head=12640`;
+
+  function oldWarriorTree(): Response {
+    const file = JSON.parse(
+      readFileSync(path_.join(import.meta.dirname, '../../fixtures/planner/talents/warrior.json'), 'utf8'),
+    ) as { build: string; trees: { talents: { id: number }[] }[] };
+    const swap = (talents: { id: number }[]) => [talents[6], ...talents.slice(1, 6), talents[0]];
+    const trees = file.trees.map((tree, index) =>
+      index === 1 ? { ...tree, talents: swap(tree.talents) } : tree,
+    );
+    const old = { ...file, build: OLD_BUILD, trees };
+    return new Response(JSON.stringify(old), {
+      status: 200,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
+
+  function routeOldTree(respond: () => Response): void {
+    api.route({
+      method: 'GET',
+      pattern: new RegExp(`/data/${OLD_BUILD.replace(/\./g, '\\.')}/talents/warrior\\.json$`),
+      respond,
+    });
+  }
+
+  function storedExport(code: string): void {
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
+      respond: () =>
+        envelope({
+          spec: 'warrior-fury',
+          gear: code,
+          talents: '',
+          buffs: [],
+          captured_at: '2026-10-22T23:34:45Z',
+          source: 'addon',
+        }),
+    });
+  }
+
+  it("a stored export decodes against its own build's tree", async () => {
+    routeOldTree(oldWarriorTree);
+    storedExport(OLD_CODE);
+    const result = await fromStoredCharacter(path, ctx);
+    expect(result.ok ? result.character : result.message).toMatchObject({
+      tree_version: OLD_BUILD,
+      spec: 'warrior-fury',
+      point_order: [2001, 2001, 2001, 2001, 2001],
+    });
+  });
+
+  it("a pasted export decodes against its own build's tree", async () => {
+    routeOldTree(oldWarriorTree);
+    const result = await fromAddonExport(OLD_CODE, ctx, fakeStorage());
+    expect(result.ok ? result.character.point_order : result.message).toEqual([2001, 2001, 2001, 2001, 2001]);
+  });
+
+  it("falls back to the current tree when the site ships no file for the export's build", async () => {
+    routeOldTree(() => new Response(null, { status: 404 }));
+    const result = await fromAddonExport(`FS1:${OLD_BUILD}:warrior:orc:0/5000000/0:`, ctx, fakeStorage());
+    expect(result.ok ? result.character.point_order : result.message).toEqual([2001, 2001, 2001, 2001, 2001]);
   });
 });
 
