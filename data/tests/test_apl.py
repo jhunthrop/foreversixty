@@ -266,6 +266,20 @@ def test_no_rotation_casts_a_spell_a_player_cannot_learn():
             )
 
 
+# Evocation (12051) is the one mana cooldown a mage has. Once Clearcasting
+# was spent by one cast (sim-accuracy round 4, casters), the Fire list ran
+# dry about 49 s into a 180 s fight; Evocating below 5% mana gains about 17%
+# on the level-60 raid character. Arcane and Frost measured no gain.
+MANA_COOLDOWN_CASTERS = {"mage-fire": 12051}
+
+
+def test_a_rotation_that_runs_dry_casts_its_mana_cooldown():
+    docs = documents()
+    for key, spell_id in MANA_COOLDOWN_CASTERS.items():
+        cast = {sid for sid, _rank, _tag in cast_spell_action_ids(docs[key].rotation)}
+        assert spell_id in cast, f"{key} never casts its mana cooldown {spell_id}"
+
+
 def test_cast_spell_action_ids_ignores_conditions_and_auras():
     """Only a `castSpell` action's own ActionID carries a tag that matters for
     casting; an `auraIsActive` condition referencing the same spell id is not
@@ -309,7 +323,7 @@ EXPECTED_ABILITY_NAMES = {
         13033: "Ice Barrier",
         10161: "Cone of Cold",
         12579: "Winter's Chill",
-        25345: "Arcane Missiles",
+        10212: "Arcane Missiles",
         400589: "Missile Barrage",
     },
 }
