@@ -124,6 +124,10 @@ WEAPON_SKILL_BY_SKILL_LINE: dict[int, str | None] = {
     393: None,  # skinning
     473: "WeaponSkillFeralCombat",
     633: None,  # lockpicking
+    # 1.60's own Feral Combat line, absent from SkillLine.csv: spell 1320726
+    # "Increased Feral Combat" names it, and Wowhead Forever lists the same
+    # item (Oilskin Leggings 9414) as +1 skillferalcombat.
+    3014: "WeaponSkillFeralCombat",
 }
 
 #: EffectAura -> stat key, for the auras whose amount is a flat stat. The four

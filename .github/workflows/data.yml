@@ -143,6 +143,12 @@ jobs:
       # supplement (allow_shrink accepts it and still carries the rest); normalize,
       # icons and simdb read the merged file.
       - run: uv run python -m pipeline fetch-wowhead --build "$BUILD" $SHRINK
+      # The hotfix dump above is one old play session's DBCache, seeded forward
+      # add-only, so every later push was missing (sim-accuracy round 5: Fiery
+      # War Axe 2.9 s against 3.6 s, Blade of Hanna's five dropped stats, 201
+      # rows on 70707). wago.tools records the pushes per build; this layers
+      # them newest-first into raw/wago-hotfixes/, which the hotfix merge reads.
+      - run: uv run python -m pipeline fetch-wago-hotfixes --build "$BUILD" --product "$PRODUCT"
       # The classic-db extracts are re-read from the pinned dump (one ~13 MB download),
       # so a column the reader gained since the seed was written reaches this build:
       # Wave 3 F12, 2026-10-31, item_template.bonding is the Binds line of every item
