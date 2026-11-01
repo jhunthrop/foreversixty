@@ -50,7 +50,12 @@ from pipeline.normalize import write_json
 from pipeline.normalize.gear import MAX_PLAYER_LEVEL, column_value, int_column, is_junk_name
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.enchants import build_sim_enchants
-from pipeline.simdb.equip import equip_bonuses, index_spell_effects, item_effect_spells
+from pipeline.simdb.equip import (
+    area_conditional_spells,
+    equip_bonuses,
+    index_spell_effects,
+    item_effect_spells,
+)
 from pipeline.simdb.equip_fill import with_wowhead_equip_stats
 from pipeline.simdb.items import (
     build_classicdb_sim_items,
@@ -227,7 +232,13 @@ def build_sim_database(
 
     pairs = simdb_item_rows(sparse_rows, item_rows)
     kept_ids = {int_column(sparse, "ID") for sparse, _ in pairs}
-    equip = equip_bonuses(item_effect_rows, link_rows, effects_by_spell, kept_ids)
+    equip = equip_bonuses(
+        item_effect_rows,
+        link_rows,
+        effects_by_spell,
+        kept_ids,
+        area_conditional_spells(_optional(raw, "Spell")),
+    )
     rating_factors = load_rating_factors(build_dir)
     fork_columns = _fork_columns(build_dir)
     items = build_sim_items(

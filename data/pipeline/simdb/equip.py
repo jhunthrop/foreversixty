@@ -42,6 +42,7 @@ which is the new-build workflow the README describes.
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from collections.abc import Container, Iterable
 from dataclasses import dataclass, field
@@ -361,6 +362,58 @@ def _add(target: dict[str, float], key: str, amount: float) -> None:
 UNIFIED_SCHOOL_KEYS: dict[str, str] = {"spell_hit": "hit", "spell_crit": "crit"}
 
 
+#: A spell's generic attack power and its ranged attack power. simdb mirrors the
+#: generic one into ranged attack power (`statmap.stat_array`), so a spell that
+#: states "+X Attack Power" with aura 99 and aura 124 at X each (Rune of the Guard
+#: Captain's 1318000) already has its ranged half: only ranged attack power
+#: beyond the generic amount is a separate stat.
+GENERIC_ATTACK_POWER = "attack_power"
+RANGED_ATTACK_POWER = "ranged_attack_power"
+
+
+def _without_mirrored_ranged_attack_power(spell_stats: dict[str, float]) -> dict[str, float]:
+    generic = spell_stats.get(GENERIC_ATTACK_POWER, 0.0)
+    if not generic or RANGED_ATTACK_POWER not in spell_stats:
+        return spell_stats
+    out = dict(spell_stats)
+    beyond = out.pop(RANGED_ATTACK_POWER) - generic
+    if beyond > 0:
+        out[RANGED_ATTACK_POWER] = beyond
+    return out
+
+
+#: Forever's environment riders state their condition in the client's own text:
+#: "In a Forest or Grassland area, Attack Power increased by an additional $w1."
+#: (Rune of the Guard Captain's 1287704), "In a Snowy area, ...", and once
+#: without the word ("In a Forest or Grassland, ...", 1318003). The terrains are
+#: the 1.60.1.70707 client's own. The published numbers fight in no such area,
+#: the same rule as the type-neutral target's slaying gear, so these are not
+#: on-equip stats.
+AREA_TERRAINS = (
+    "Forest",
+    "Grassland",
+    "Desert",
+    "Wasteland",
+    "Swamp",
+    "Mountainous",
+    "Snowy",
+    "Haunted",
+    "Cavernous",
+    "Underground",
+)
+AREA_CONDITION = re.compile(r"^In an? (?:" + "|".join(AREA_TERRAINS) + r")\b")
+
+
+def area_conditional_spells(spell_rows: Iterable[dict[str, str]]) -> set[int]:
+    """The ids of spells whose client text gates them on the area (Spell.csv)."""
+    return {
+        int(row["ID"])
+        for row in spell_rows
+        if AREA_CONDITION.match(row.get("AuraDescription_lang") or "")
+        or AREA_CONDITION.match(row.get("Description_lang") or "")
+    }
+
+
 def _unify_school_keys(spell_stats: dict[str, float]) -> dict[str, float]:
     """One spell's stats with each unified pair collapsed to its larger amount."""
     out = dict(spell_stats)
@@ -432,7 +485,8 @@ def spell_bonus(
                     # an item effect.
                     continue
                 _add(spell_stats, STAT_AURAS[aura], amount)
-        for key, amount in _unify_school_keys(spell_stats).items():
+        spell_stats = _without_mirrored_ranged_attack_power(_unify_school_keys(spell_stats))
+        for key, amount in spell_stats.items():
             _add(stats, key, amount)
     return SpellBonus(
         stats={key: value for key, value in stats.items() if value},
@@ -446,18 +500,21 @@ def equip_bonuses(
     item_x_item_effect_rows: list[dict[str, str]],
     effects_by_spell: dict[int, list[dict[str, str]]],
     item_ids: Container[int],
+    area_conditional: Container[int] = frozenset(),
 ) -> dict[int, SpellBonus]:
     """Item id -> what its on-equip spells grant, for the items the caller kept.
 
     `item_ids` is not an optimisation: the caller has already dropped the
     gamemaster, test and monster rows, and those carry auras nobody has
     reviewed. Checking them would fail the run over data that is never shipped.
+    A spell in `area_conditional` (`area_conditional_spells`) is left out.
     """
     bonuses: dict[int, SpellBonus] = {}
     for item_id, spell_ids in item_effect_spells(
         item_effect_rows, item_x_item_effect_rows, item_ids
     ).items():
-        bonus = spell_bonus(spell_ids, effects_by_spell)
+        unconditional = [spell for spell in spell_ids if spell not in area_conditional]
+        bonus = spell_bonus(unconditional, effects_by_spell)
         if not bonus.is_empty():
             bonuses[item_id] = bonus
     return bonuses
