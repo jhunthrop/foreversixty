@@ -269,11 +269,22 @@ struct RankingsSnapshotTests {
         var presenter = HomeFixtures.presenter(character: Self.lightningHome)
         presenter.logsLine = ReportsCopy.homeLine(try ReportsTestData.list())
         presenter.rankingsLine = RankingsCopy.homeLine(page: try RankingsTestData.page(), filters: RankingsTestData.filters, encounterName: "Onyxia")
-        let phase = HomePhase.loaded(try HomeFixtures.home(), offlineSince: nil)
-        let view = HomeCaptureFrame {
-            HomeAnswerView(phase: phase, presenter: presenter, build: build)
+        let home = try HomeFixtures.home("character.home.yours")
+        let view = HomeCaptureFrame(title: Self.lightningHome.name) {
+            HomeAnswerView(phase: .loaded(home, offlineSince: nil), presenter: presenter, build: home.dataBuild)
         }
         snap(view, "home-rankings-ios", height: 2200)
+    }
+
+    /// Lightningbolltz's Your gear: his Home answer's upgrades over the shaman items file, the
+    /// same dots his character page draws.
+    @Test func home_gearYours() throws {
+        let home = try HomeFixtures.home("character.home.yours")
+        let rows = GearModel.rows(home: home, gear: [:], items: try RankingsTestData.items())
+        let view = HomeCaptureFrame(title: Copy.gearTitle, large: true) {
+            GearView(rows: rows, intro: Copy.gearIntro(band: "60 · raid"), build: home.dataBuild)
+        }
+        snap(view, "home-gear-yours-ios", height: 1300)
     }
 }
 
