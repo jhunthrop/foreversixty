@@ -36,10 +36,10 @@ import {
   needsRace,
 } from './character';
 import type { CharacterSource, CharacterSpec } from './types';
-import { loadRaidConsumes } from './raid-consumes';
+import { loadPresetSets } from './preset-sets';
 
-// The Raid-buffed consumables are a chunk loaded on demand (raid-consumes.ts).
-beforeAll(() => loadRaidConsumes());
+// The Raid-buffed consumables are a chunk loaded on demand (preset-sets.ts).
+beforeAll(() => loadPresetSets());
 
 const WEB_ROOT = path.resolve(import.meta.dirname, '../../..');
 const BUILD = '1.15.9.69722';

@@ -162,7 +162,7 @@ test('a finished run can be named, and the saved link opens in a new tab', async
   await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
 
   const title = page.getByTestId('sim-report-title');
-  await expect(title).toHaveValue('Raid-buffed, 3:00, single target');
+  await expect(title).toHaveValue('Bare, 3:00, single target');
   await title.fill('Pre-raid, no world buffs');
   await page.getByTestId('sim-save-open').click();
   await expect(page.getByTestId('sim-save-title')).toHaveValue('Pre-raid, no world buffs');

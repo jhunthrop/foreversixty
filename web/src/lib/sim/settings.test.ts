@@ -19,7 +19,7 @@ import {
   MAX_TARGETS,
   MAX_VARIATION,
   MIN_DURATION_SEC,
-  PRESET_BUFFS,
+  presetBuffs,
   presetConsumables,
   RAID_BUFFS,
   settingsLabel,
@@ -44,10 +44,10 @@ import {
   withVariation,
 } from './settings';
 import { DEFAULT_ENCOUNTER } from './types';
-import { loadRaidConsumes } from './raid-consumes';
+import { loadPresetSets } from './preset-sets';
 
-// The Raid-buffed consumables are a chunk loaded on demand (raid-consumes.ts).
-beforeAll(() => loadRaidConsumes());
+// The Raid-buffed consumables are a chunk loaded on demand (preset-sets.ts).
+beforeAll(() => loadPresetSets());
 
 const CURATED_PRESETS = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -77,6 +77,11 @@ function publishedAt(spec: string, level: number): string[] {
     .at(-1)!.consumes;
 }
 
+/** The player's own Raid-buffed pick at a level (the default below 60 is Bare). */
+function raidBuffed(spec: string, level: number) {
+  return withPreset(defaultSettings(spec, level), 'raid-buffed', spec, level);
+}
+
 describe('defaultSettings', () => {
   it("is the contract's EncounterSpec defaults, raid-buffed, on Patchwerk", () => {
     const settings = defaultSettings(FURY, MAX);
@@ -100,32 +105,26 @@ describe('defaultSettings', () => {
     expect(settings.cooldowns).toEqual([]);
   });
 
-  it('carries each spec’s published level-60 raid consumables (round 5 ruling 3), so page and published DPS agree', () => {
+  it('carries each spec’s published raid consumables under Raid-buffed (round 5 ruling 3), so page and published DPS agree', () => {
     const specs = Object.keys(publishedRows());
     expect(specs.length).toBeGreaterThanOrEqual(27);
     for (const spec of specs) {
       for (const level of LADDER_BANDS) {
-        expect(defaultSettings(spec, level).consumables, `${spec} ${level}`).toEqual(
-          publishedAt(spec, level),
-        );
+        expect(raidBuffed(spec, level).consumables, `${spec} ${level}`).toEqual(publishedAt(spec, level));
       }
     }
   });
 
   it('follows the kit’s level gates: Instant Poisons from 20, Deadly from 30, Rockbiter before Windfury', () => {
-    expect(defaultSettings('rogue-combat', 25).consumables).toContain('main_hand_imbue:instant_poison');
-    expect(defaultSettings('rogue-combat', 25).consumables).not.toContain('main_hand_imbue:deadly_poison');
-    expect(defaultSettings('rogue-combat', 19).consumables.some((id) => id.endsWith('_poison'))).toBe(false);
-    expect(defaultSettings('shaman-enhancement', 29).consumables).toContain(
-      'main_hand_imbue:rockbiter_weapon',
-    );
-    expect(defaultSettings('shaman-enhancement', 30).consumables).toContain(
-      'main_hand_imbue:windfury_weapon',
-    );
+    expect(raidBuffed('rogue-combat', 25).consumables).toContain('main_hand_imbue:instant_poison');
+    expect(raidBuffed('rogue-combat', 25).consumables).not.toContain('main_hand_imbue:deadly_poison');
+    expect(raidBuffed('rogue-combat', 19).consumables.some((id) => id.endsWith('_poison'))).toBe(false);
+    expect(raidBuffed('shaman-enhancement', 29).consumables).toContain('main_hand_imbue:rockbiter_weapon');
+    expect(raidBuffed('shaman-enhancement', 30).consumables).toContain('main_hand_imbue:windfury_weapon');
   });
 
   it('carries only consumables the character’s level can use (the client’s RequiredLevel)', () => {
-    const fury40 = defaultSettings('warrior-fury', 40).consumables;
+    const fury40 = raidBuffed('warrior-fury', 40).consumables;
     for (const id of [
       'elixir_of_the_mongoose',
       'mighty_rage_potion',
@@ -133,7 +132,7 @@ describe('defaultSettings', () => {
     ]) {
       expect(fury40).not.toContain(id);
     }
-    expect(defaultSettings('warrior-fury', 60).consumables).toContain('elixir_of_the_mongoose');
+    expect(raidBuffed('warrior-fury', 60).consumables).toContain('elixir_of_the_mongoose');
   });
 
   it('gives rogues their poisons and Survival its ranged set, not a shared physical list', () => {
@@ -185,7 +184,8 @@ describe('the Raid-buffed preset', () => {
     };
     const raid = curated.presets.raid;
     expect([...RAID_BUFFS]).toEqual([...raid.buffs.map((b) => b.id), ...raid.debuffs.map((d) => d.id)]);
-    expect(PRESET_BUFFS['raid-buffed']).toBe(RAID_BUFFS);
+    expect(presetBuffs('raid-buffed', FURY, MAX)).toBe(RAID_BUFFS);
+    expect(presetBuffs('raid-buffed', 'paladin-protection', 40)).toBe(RAID_BUFFS);
   });
 
   it('carries Heart of the Lion and none of the buffs the raid preset refuses (round 3 C3)', () => {
@@ -213,10 +213,11 @@ describe('the Raid-buffed preset', () => {
     }
   });
 
-  it('solo stays self-only', () => {
-    expect(PRESET_BUFFS.solo).toEqual([]);
-    expect(presetConsumables('solo', FURY, MAX)).toEqual([]);
-    expect(presetConsumables('solo', FIRE, MAX)).toEqual([]);
+  it('bare is the class kit and nothing else', () => {
+    expect(presetBuffs('bare', FURY, MAX)).toEqual([]);
+    expect(presetConsumables('bare', FURY, MAX)).toEqual([]);
+    expect(presetBuffs('bare', FIRE, MAX)).toEqual(['arcane_brilliance']);
+    expect(presetConsumables('bare', FIRE, MAX)).toEqual([]);
   });
 
   /**
@@ -433,9 +434,10 @@ describe('the setters never mutate and always clamp', () => {
 
   it('swaps the whole buff and consumable list with the preset, keyed off the spec, and leaves it alone for custom', () => {
     const base = defaultSettings(FURY, MAX);
-    const solo = withPreset(base, 'solo', FURY, MAX);
-    expect(solo.buffs).toEqual([]);
-    expect(solo.consumables).toEqual([]);
+    const bare = withPreset(base, 'bare', FURY, MAX);
+    expect(bare.buffs).toEqual([]);
+    expect(bare.consumables).toEqual([]);
+    expect(bare.presetChosen).toBe(true);
     const caster = withPreset(base, 'raid-buffed', FIRE, MAX);
     expect(caster.consumables).toEqual(publishedAt(FIRE, MAX));
     expect(caster.buffs).toEqual([...RAID_BUFFS]);
@@ -446,7 +448,7 @@ describe('the setters never mutate and always clamp', () => {
   });
 
   it('offers exactly the three presets the design names', () => {
-    expect(BUFF_PRESETS.map((row) => row.id)).toEqual(['raid-buffed', 'solo', 'custom']);
+    expect(BUFF_PRESETS.map((row) => row.id)).toEqual(['raid-buffed', 'bare', 'custom']);
   });
 });
 
@@ -481,8 +483,8 @@ describe('withPreset(..., "custom")', () => {
  * the title and everything else the player already touched.
  */
 describe('withSpecForPreset', () => {
-  it('re-applies the current preset for the new spec', () => {
-    const forWarrior = defaultSettings(FURY, MAX);
+  it('re-applies a picked preset for the new spec', () => {
+    const forWarrior = raidBuffed(FURY, MAX);
     expect(forWarrior.consumables).toEqual(publishedAt(FURY, MAX));
     const forMage = withSpecForPreset(forWarrior, 'mage-frost', MAX);
     expect(forMage.consumables).toEqual(publishedAt('mage-frost', MAX));
@@ -586,8 +588,8 @@ describe('the style and the controls beside it', () => {
 describe('settingsLabel', () => {
   it('is the one line a saved sim is titled with, unchanged by the new controls', () => {
     expect(settingsLabel(defaultSettings(FURY, MAX))).toBe('Raid-buffed, 3:00, single target');
-    expect(settingsLabel(withTargets(withPreset(defaultSettings(FURY, MAX), 'solo', FURY, MAX), 4))).toBe(
-      'Solo, 3:00, 4 targets',
+    expect(settingsLabel(withTargets(withPreset(defaultSettings(FURY, MAX), 'bare', FURY, MAX), 4))).toBe(
+      'Bare, 3:00, 4 targets',
     );
   });
 });

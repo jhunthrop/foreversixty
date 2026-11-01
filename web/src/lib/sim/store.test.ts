@@ -229,7 +229,8 @@ describe('createSimStore', () => {
     // `reportTitle` the save form itself is pre-filled with (design 5.4), so a caller that
     // saves without a title still names the report rather than leaving it untitled.
     await sim.save();
-    expect((api.lastBody() as { title?: string }).title).toBe('Raid-buffed, 3:00, single target');
+    // The fixture Fury is below 60, so it starts on the Bare preset its band publishes.
+    expect((api.lastBody() as { title?: string }).title).toBe('Bare, 3:00, single target');
   });
 
   it('returns null on a failed save without touching the run message', async () => {
@@ -615,9 +616,9 @@ describe('createSimStore', () => {
     it('defaults to the settings clause and changes with the settings', async () => {
       const sim = store();
       await sim.loadAddon(FURY);
-      expect(sim.reportTitle).toBe('Raid-buffed, 3:00, single target');
+      expect(sim.reportTitle).toBe('Bare, 3:00, single target');
       sim.setSettings(withTargets(sim.settings, 4));
-      expect(sim.reportTitle).toBe('Raid-buffed, 3:00, 4 targets');
+      expect(sim.reportTitle).toBe('Bare, 3:00, 4 targets');
     });
 
     it('keeps what the player typed, and an emptied field falls back rather than saving nothing', async () => {
@@ -628,7 +629,7 @@ describe('createSimStore', () => {
       sim.setSettings(withTargets(sim.settings, 4));
       expect(sim.reportTitle).toBe('Pre-raid, no world buffs');
       sim.setReportTitle('   ');
-      expect(sim.reportTitle).toBe('Raid-buffed, 3:00, 4 targets');
+      expect(sim.reportTitle).toBe('Bare, 3:00, 4 targets');
     });
   });
 });

@@ -213,7 +213,7 @@ export const simCopy = {
 
   /** The engine panicked. Its stack trace is for us, not for the player. */
   engineCrashed:
-    'The engine hit a bug running this character. Try the Solo preset or a different setting, and tell us on Discord what you loaded so we can fix it.',
+    'The engine hit a bug running this character. Try the Bare preset or a different setting, and tell us on Discord what you loaded so we can fix it.',
 
   // 2026-09-21 result-page review round 2, Defect 2 continued: resolveActionName's own
   // fallback for a spell or item id the shared table has no row for at all -- real prose,
@@ -740,7 +740,7 @@ export const simCopy = {
    */
   whatsInIt: "What's in it",
   /** Solo's own answer: no groups, so the panel says so rather than rendering empty. */
-  whatsInItEmpty: 'Nothing. Solo applies no buffs and no consumables.',
+  whatsInItEmpty: 'Nothing. Bare applies only your class’s own buffs and weapon imbues, and this spec carries none.',
   /**
    * Task 6 (newcomer BLOCKER, tank MAJOR): RotationCard's "what it does" trigger
    * (`rotationLink`, unchanged) no longer navigates to /sim/specs#<spec>, which explains
@@ -814,7 +814,7 @@ export const simCopy = {
    * world buffs (2026-09-28), so the preset carries none and this never mentions them.
    */
   buffsHelp:
-    'Which buffs and consumables the run applies. Raid-buffed applies the full standard set: raid, party and self buffs, target debuffs, and the consumables in your own bags; Solo applies none; Custom lets you build your own list. "What\'s in it" shows exactly what the selected preset applies.',
+    'Which buffs and consumables the run applies. Raid-buffed applies the full standard set: raid, party and self buffs, target debuffs, and the consumables in your own bags. Bare applies only your class’s own buffs and weapon imbues, such as a rogue’s poisons. Custom lets you build your own list. A new character starts on the preset its level’s published numbers use: Bare below 60, Raid-buffed at 60. "What\'s in it" shows exactly what the selected preset applies.',
   targetLevelHelp: 'The boss level the run’s numbers — armor, resistances — are drawn from.',
   /**
    * Newcomer MINOR (213-216): the field showed 3,731 as placeholder text with a `title=`

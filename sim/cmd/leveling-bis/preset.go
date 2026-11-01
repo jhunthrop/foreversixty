@@ -16,10 +16,6 @@ const (
 	presetRaid = request.RaidPreset
 )
 
-// raidPresetBand is the one band that also gets a raid entry: level 60
-// is the headline number and the only band a raid context describes.
-const raidPresetBand = 60
-
 // presetsPath is where the curated presets live under the repository root.
 func presetsPath(repoRoot string) string {
 	return filepath.Join(repoRoot, "data", "curated", "presets.json")
@@ -49,12 +45,14 @@ type rankPass struct {
 }
 
 // passesFor lists the rankings a band gets: always the bare one, first,
-// and the raid one as well at raidPresetBand.
+// and the raid one as well at request.RaidPresetBand, the band whose
+// published number request.PublishedPreset names raid (the /sim page
+// defaults to the same preset through sim/request/published-presets.json).
 func passesFor(base specInfo, band int, raid request.ResolvedPreset) []rankPass {
 	bare := base
 	bare.Applied = nil
 	passes := []rankPass{{name: presetBare, spec: bare}}
-	if band != raidPresetBand {
+	if request.PublishedPreset(band) != presetRaid {
 		return passes
 	}
 	raided := base

@@ -5,7 +5,7 @@ import { MAX_LEVEL } from './character';
 import { durationLabel, encounterLabel } from './encounter';
 import { applyFightStyle, DEFAULT_STYLE_ID, type FightStyleId } from './styles';
 import raidPreset from '../../data/generated/raid-preset.json';
-import { raidConsumesAt } from './raid-consumes';
+import { bareSetAt, raidConsumesAt } from './preset-sets';
 import { DEFAULT_ENCOUNTER, TARGET_TYPE_IDS, type CooldownSpec, type EncounterSpec } from './types';
 
 export { durationLabel, encounterLabel };
@@ -110,7 +110,7 @@ export const TARGET_TYPES: readonly string[] = TARGET_TYPE_IDS;
 
 export const BUFF_PRESETS = [
   { id: 'raid-buffed', label: 'Raid-buffed' },
-  { id: 'solo', label: 'Solo' },
+  { id: 'bare', label: 'Bare' },
   { id: 'custom', label: 'Custom' },
 ] as const;
 export type BuffPresetId = (typeof BUFF_PRESETS)[number]['id'];
@@ -135,30 +135,52 @@ export type BuffPresetId = (typeof BUFF_PRESETS)[number]['id'];
 // (sim/request/preset.go) refuses an id the engine cannot map.
 export const RAID_BUFFS: readonly string[] = [...raidPreset.buffs, ...raidPreset.debuffs];
 
-export const PRESET_BUFFS: Record<Exclude<BuffPresetId, 'custom'>, readonly string[]> = {
-  'raid-buffed': RAID_BUFFS,
-  solo: [],
-};
+type StaticPresetId = Exclude<BuffPresetId, 'custom'>;
+
+/** The ranker's preset names (sim/request RaidPreset and BarePreset) to the page's ids. */
+const PAGE_PRESET: Readonly<Record<string, StaticPresetId>> = { raid: 'raid-buffed', bare: 'bare' };
+
+/**
+ * The preset the published number at `level` is simmed under (owner ruling, round 6): the
+ * ranker publishes every band below 60 bare and headlines 60 with the raid entry. The rule
+ * is the ranker's own (sim/request PublishedPreset), synced as raid-preset.json's
+ * `published` rows, so the page cannot keep a second copy of where the raid band starts.
+ */
+export function publishedPresetAt(level: number): StaticPresetId {
+  const row = raidPreset.published.filter((entry) => entry.from_level <= level).at(-1);
+  const preset = row === undefined ? undefined : PAGE_PRESET[row.preset];
+  if (preset === undefined) throw new Error(`no published preset for level ${level}`);
+  return preset;
+}
+
+/**
+ * The preset's buff half for one spec key at the character's level. Raid-buffed is the
+ * curated raid list for everyone; Bare is the spec's class kit at that level (a mage's Arcane
+ * Intellect, a Survival hunter's mark), from the bare table (preset-sets.ts; load it first).
+ */
+export function presetBuffs(preset: StaticPresetId, spec: string, level: number): readonly string[] {
+  return preset === 'bare' ? bareSetAt(spec, level).buffs : RAID_BUFFS;
+}
 
 /**
  * The preset's consumable half for one spec key ("rogue-combat") at the character's level,
- * from the raid consumables table (raid-consumes.ts; load it first).
- * Solo carries none. A spec the raid set does not know (no character yet, or a malformed
- * one) carries none either, rather than another spec's set: the request then sims what it
- * says it does.
+ * from the preset tables (preset-sets.ts; load them first): Raid-buffed's per-spec raid set,
+ * Bare's class kit (a rogue's poisons, an Enhancement shaman's imbue). A spec the tables do
+ * not know (no character yet, or a malformed one) carries none, rather than another spec's
+ * set: the request then sims what it says it does.
  */
-export function presetConsumables(
-  preset: Exclude<BuffPresetId, 'custom'>,
-  spec: string,
-  level: number,
-): readonly string[] {
-  if (preset === 'solo') return [];
-  return raidConsumesAt(spec, level);
+export function presetConsumables(preset: StaticPresetId, spec: string, level: number): readonly string[] {
+  return preset === 'bare' ? bareSetAt(spec, level).consumes : raidConsumesAt(spec, level);
 }
 
 export interface SimSettings {
   encounter: EncounterSpec;
   preset: BuffPresetId;
+  /**
+   * True once the player picked the preset (withPreset). Until then a character swap
+   * re-defaults to the preset the new character's band publishes (withSpecForPreset).
+   */
+  presetChosen: boolean;
   buffs: string[];
   consumables: string[];
   /** Cooldown timing rows (contract 1.7). Empty means "everything on cooldown". */
@@ -172,28 +194,45 @@ export interface SimSettings {
  * SharePanel.svelte from the character in hand; the sim/bulk stores own the re-apply, below).
  */
 export function defaultSettings(spec = '', level: number = MAX_LEVEL): SimSettings {
+  return applyPreset(
+    {
+      encounter: applyFightStyle({ ...DEFAULT_ENCOUNTER }, DEFAULT_STYLE_ID),
+      preset: 'raid-buffed',
+      presetChosen: false,
+      buffs: [],
+      consumables: [],
+      cooldowns: [],
+    },
+    publishedPresetAt(level),
+    spec,
+    level,
+  );
+}
+
+/** Writes a static preset's two halves for the spec and level; keeps `presetChosen`. */
+function applyPreset(
+  settings: SimSettings,
+  preset: StaticPresetId,
+  spec: string,
+  level: number,
+): SimSettings {
   return {
-    encounter: applyFightStyle({ ...DEFAULT_ENCOUNTER }, DEFAULT_STYLE_ID),
-    preset: 'raid-buffed',
-    buffs: [...PRESET_BUFFS['raid-buffed']],
-    consumables: [...presetConsumables('raid-buffed', spec, level)],
-    cooldowns: [],
+    ...settings,
+    preset,
+    buffs: [...presetBuffs(preset, spec, level)],
+    consumables: [...presetConsumables(preset, spec, level)],
   };
 }
 
+/** The player's own pick of a preset: it then holds across character swaps. */
 export function withPreset(
   settings: SimSettings,
   preset: BuffPresetId,
   spec: string,
   level: number,
 ): SimSettings {
-  if (preset === 'custom') return { ...settings, preset };
-  return {
-    ...settings,
-    preset,
-    buffs: [...PRESET_BUFFS[preset]],
-    consumables: [...presetConsumables(preset, spec, level)],
-  };
+  if (preset === 'custom') return { ...settings, preset, presetChosen: true };
+  return applyPreset({ ...settings, presetChosen: true }, preset, spec, level);
 }
 
 /**
@@ -206,7 +245,8 @@ export function withPreset(
  */
 export function withSpecForPreset(settings: SimSettings, spec: string, level: number): SimSettings {
   if (settings.preset === 'custom') return settings;
-  return withPreset(settings, settings.preset, spec, level);
+  const preset = settings.presetChosen ? settings.preset : publishedPresetAt(level);
+  return applyPreset(settings, preset, spec, level);
 }
 
 /**

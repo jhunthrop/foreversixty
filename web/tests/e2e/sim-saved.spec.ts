@@ -472,7 +472,7 @@ test.describe('saving a browser run from /sim', () => {
 
     await expect(page.getByTestId('sim-save-open')).toBeEnabled();
     await page.getByTestId('sim-save-open').click();
-    await expect(page.getByTestId('sim-save-title')).toHaveValue('Raid-buffed, 3:00, single target');
+    await expect(page.getByTestId('sim-save-title')).toHaveValue('Bare, 3:00, single target');
 
     await page.route('**/v1/sims', (route) => route.fulfill(envelope({ sim_id: 'simnew234567' }, 201)));
     await page.getByTestId('sim-save-confirm').click();

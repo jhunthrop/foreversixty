@@ -28,24 +28,15 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Browser } from '@playwright/test';
-import { expect, test } from './support/test';
-import { ENGINE_VERSION } from '../../src/lib/sim/version';
-import { artifactPublished as artifactPublishedAt, hasWasmExports } from './support/real-engine';
+import { apiUnreachable, expect, test } from './support/test';
+import { artifactPublished, E2E_ARTIFACT, hasWasmExports, realEngineSkipReason } from './support/real-engine';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const artifactPublished = artifactPublishedAt(WEB_ROOT, ENGINE_VERSION);
-const SKIP_REASON =
-  `real-engine Top Gear smoke; publish web/public/_sim/${ENGINE_VERSION}/ first ` +
-  '(make simdb && make artifacts && make publish-wasm) and run with npm run test:e2e:real-engine';
+const SKIP_REASON = realEngineSkipReason('Top Gear smoke');
 
-/**
- * Whether the published artifact registers the four bulk/weights exports, through the shared
- * real-engine probe (support/real-engine.ts), which instantiates it in an ephemeral page.
- */
-async function hasNewBulkExports(browser: Browser, baseURL: string, version: string): Promise<boolean> {
-  return hasWasmExports(browser, baseURL, version, ['simPlan', 'simRank', 'simCount', 'simWeights']);
-}
+// The saved-builds row (/v1/builds?mine=1) is a signed-in nicety the hermetic site cannot
+// reach; answer it unreachable, as sim-gear.spec.ts does, rather than let it hang the page.
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
 
 const activeBuild = JSON.parse(readFileSync(path.join(WEB_ROOT, 'src/data/active-build.json'), 'utf8')) as {
   build: string;
@@ -91,8 +82,13 @@ test('two candidates plan, run and rank against the equipped set', async ({ page
 
   const hasExports =
     process.env.PUBLIC_SIM_ENGINE === 'wasm' &&
-    artifactPublished &&
-    (await hasNewBulkExports(browser, baseURL ?? 'http://localhost:4340', ENGINE_VERSION));
+    artifactPublished(WEB_ROOT, E2E_ARTIFACT) &&
+    (await hasWasmExports(browser, baseURL ?? 'http://localhost:4340', E2E_ARTIFACT, [
+      'simPlan',
+      'simRank',
+      'simCount',
+      'simWeights',
+    ]));
   test.skip(!hasExports, SKIP_REASON);
 
   const pageErrors: string[] = [];

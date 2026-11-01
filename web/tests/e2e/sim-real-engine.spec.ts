@@ -22,17 +22,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { artifactPublished, E2E_ARTIFACT, realEngineSkipReason } from './support/real-engine';
 import { ENGINE_VERSION, engineLabel } from '../../src/lib/sim/version';
-import { artifactPublished as artifactPublishedAt } from './support/real-engine';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const artifactPublished = artifactPublishedAt(WEB_ROOT, ENGINE_VERSION);
 
 test.skip(
-  process.env.PUBLIC_SIM_ENGINE !== 'wasm' || !artifactPublished,
-  `real-engine smoke; publish web/public/_sim/${ENGINE_VERSION}/ first ` +
-    '(from the repository root: make simdb && make artifacts && make publish-wasm) and run ' +
-    'with npm run test:e2e:real-engine',
+  process.env.PUBLIC_SIM_ENGINE !== 'wasm' || !artifactPublished(WEB_ROOT, E2E_ARTIFACT),
+  realEngineSkipReason('smoke'),
 );
 
 const activeBuild = JSON.parse(readFileSync(path.join(WEB_ROOT, 'src/data/active-build.json'), 'utf8')) as {

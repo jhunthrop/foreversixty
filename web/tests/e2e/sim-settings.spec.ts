@@ -25,12 +25,13 @@ test('the settings bar reads the defaults and every control changes the settings
   const settings = page.getByTestId('sim-settings');
   await expect(settings).toBeVisible();
 
-  // Defaults: defaultSettings() (settings.ts) is Patchwerk, 3:00, single target,
-  // raid-buffed -- and the rotation names the spec the loaded character carries, Fury.
+  // Defaults: defaultSettings() (settings.ts) is Patchwerk, 3:00, single target, and the
+  // preset the character's band publishes -- Bare for this level-33 Fury (owner ruling,
+  // round 6) -- and the rotation names the spec the loaded character carries, Fury.
   await expect(page.getByTestId('sim-style')).toHaveValue('patchwerk');
   await expect(page.getByTestId('sim-duration')).toHaveValue('180');
   await expect(page.getByTestId('sim-targets')).toHaveValue('1');
-  await expect(page.getByTestId('sim-preset')).toHaveValue('raid-buffed');
+  await expect(page.getByTestId('sim-preset')).toHaveValue('bare');
   await expect(page.getByTestId('sim-rotation')).toHaveText('Default for Fury');
   // Final whole-branch review, C1: this trigger no longer navigates at all (it opens an
   // in-page drawer, tests/e2e/sim-rotation-drawer.spec.ts's own coverage) -- an `href`
