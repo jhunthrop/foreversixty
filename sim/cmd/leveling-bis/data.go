@@ -225,6 +225,27 @@ func markNotInSimDB(items []candidate) []candidate {
 	return out
 }
 
+// withEngineWeaponDamage replaces each weapon candidate's damage, speed
+// and DPS with the row the engine itself swings (lookup; simdb.Weapon in
+// production). score() converts weapon DPS into attack power and every
+// verification sim equips the engine's row, so both must read one
+// number: items/<class>.json can take a weapon's damage from classic-db
+// while simdb.bin takes it from wowhead (Elemental Mage Staff 944:
+// 147-221 against 109-164), and the ranker then picks a weapon on DPS
+// the sim never swings. An id the engine lacks keeps the item file's
+// numbers (markNotInSimDB already flags it).
+func withEngineWeaponDamage(items []candidate, lookup func(int32) (simdb.WeaponDamage, bool)) []candidate {
+	out := make([]candidate, len(items))
+	for i, c := range items {
+		if w, ok := lookup(int32(c.ID)); ok {
+			c.DamageMin, c.DamageMax, c.Speed = w.Min, w.Max, w.Speed
+			c.DPS = (w.Min + w.Max) / 2 / w.Speed
+		}
+		out[i] = c
+	}
+	return out
+}
+
 // loadCandidates merges items.json and items/<class>.json for one
 // class into the candidate pool. An id the class file carries but the
 // flat file does not (should not happen; every build ships both from
