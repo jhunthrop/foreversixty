@@ -76,6 +76,25 @@ func TestAPLRotationRequiresDaggerTrueForAmbush(t *testing.T) {
 	}
 }
 
+// Mutilate (every rank: 1310707, 399956, 1241582, 1241584) requires a
+// dagger in each hand (its SpellEquippedItems row is the dagger mask, the
+// same as Backstab's). Without it in the table the ranker handed
+// Assassination a mace and a sword, Mutilate was refused all fight and the
+// published 70707 raid set simmed white swings and poisons only.
+func TestAPLRotationRequiresDaggerTrueForMutilate(t *testing.T) {
+	for _, id := range []int{1310707, 399956, 1241582, 1241584} {
+		dir := t.TempDir()
+		writeAPLFixture(t, dir, "rogue-assassination", id, 11294)
+		got, err := aplRotationRequiresDagger(dir, "rogue-assassination")
+		if err != nil {
+			t.Fatalf("aplRotationRequiresDagger: %v", err)
+		}
+		if !got {
+			t.Errorf("aplRotationRequiresDagger = false for Mutilate %d, want true", id)
+		}
+	}
+}
+
 // A rotation that never names Backstab or Ambush at any rank (Ghostly
 // Strike, id 14278, is neither) must not be flagged - this is the
 // negative control every other rogue spec, and every other class

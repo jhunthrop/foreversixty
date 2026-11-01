@@ -76,6 +76,15 @@ func findEffect(spell spellconst.Spell, aura, misc int32) spellconst.Effect {
 	return spellconst.Effect{}
 }
 
+// clientScalingBaseLevel holds the SpellLevels BaseLevel for buffs whose
+// per-level points scale from it rather than from SpellLevel; spellconst
+// carries SpellLevel only. Heart of the Lion's area buff has BaseLevel 0
+// (SpellLevel 1), so it reads 280 attack power at 60, as Wowhead Forever's
+// tooltip does (fork 580225579).
+var clientScalingBaseLevel = map[int32]int{
+	core.HeartOfTheLionRanks[0].SpellID: 0,
+}
+
 func assertRanks(t *testing.T, label string, client spellconst.Class, ranks core.BuffRanks, aura, misc int32, checkMaxLevel bool) {
 	t.Helper()
 	for _, rank := range ranks {
@@ -84,8 +93,12 @@ func assertRanks(t *testing.T, label string, client spellconst.Class, ranks core
 			t.Errorf("%s: spell %d is not in the client table", label, rank.SpellID)
 			continue
 		}
-		if spell.SpellLevel != rank.Level {
-			t.Errorf("%s %d: engine learns at %d, client at %d", label, rank.SpellID, rank.Level, spell.SpellLevel)
+		clientLevel := spell.SpellLevel
+		if base, ok := clientScalingBaseLevel[rank.SpellID]; ok {
+			clientLevel = base
+		}
+		if clientLevel != rank.Level {
+			t.Errorf("%s %d: engine learns at %d, client at %d", label, rank.SpellID, rank.Level, clientLevel)
 		}
 		effect := findEffect(spell, aura, misc)
 		if effect.Amount != rank.Amount {
