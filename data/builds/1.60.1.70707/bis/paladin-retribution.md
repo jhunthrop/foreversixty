@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 00000000000000000-00000000000000000-05231000000000000)
 
-Set DPS (verified): 39.8. Weights run: 1.4s. Verify run: 2.4s. 232 eligible items had no known source.
+Set DPS (verified): 39.8. Weights run: 2.3s. Verify run: 3.5s. 232 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.491 ± 0.026, crit=0.844 ± 0.024 per rating point (14 rating = 1%, 11.816 per %), hit=1.363 ± 0.065 per rating point (10 rating = 1%, 13.628 per %), melee_haste=8.675 ± 0.564
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 232, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 00000000000000000-00000000000000000-05233301001300000)
 
-Set DPS (verified): 82.7. Weights run: 1.3s. Verify run: 2.5s. 454 eligible items had no known source.
+Set DPS (verified): 82.7. Weights run: 2.3s. Verify run: 3.9s. 454 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.267 ± 0.023, crit=0.964 ± 0.025 per rating point (14 rating = 1%, 13.497 per %), hit=1.585 ± 0.069 per rating point (10 rating = 1%, 15.846 per %), melee_haste=9.455 ± 0.568
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 454, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 01000000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 124.8. Weights run: 1.3s. Verify run: 2.5s. 643 eligible items had no known source.
+Set DPS (verified): 124.8. Weights run: 2.3s. Verify run: 3.9s. 643 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.040 ± 0.004, agility=1.541 ± 0.030, crit=1.490 ± 0.036 per rating point (14 rating = 1%, 20.865 per %), hit=2.006 ± 0.088 per rating point (10 rating = 1%, 20.059 per %), melee_haste=11.290 ± 0.657
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 643, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 05024000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 151.7. Weights run: 1.4s. Verify run: 3.1s. 840 eligible items had no known source.
+Set DPS (verified): 151.7. Weights run: 2.5s. Verify run: 4.8s. 840 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=1.509 ± 0.029, crit=1.792 ± 0.039 per rating point (14 rating = 1%, 25.091 per %), hit=2.283 ± 0.095 per rating point (10 rating = 1%, 22.826 per %), melee_haste=11.006 ± 0.993
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 840, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 05025000200000000-50200000000000000-05233301001301350)
 
-Set DPS (verified): 250.3. Weights run: 1.4s. Verify run: 7.2s. 1762 eligible items had no known source.
+Set DPS (verified): 250.3. Weights run: 2.5s. Verify run: 11.0s. 1762 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=2.015 ± 0.048, crit=2.840 ± 0.069 per rating point (14 rating = 1%, 39.761 per %), hit=4.097 ± 0.173 per rating point (10 rating = 1%, 40.969 per %), melee_haste=19.815 ± 1.945
 
@@ -156,33 +156,33 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 1762, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
-### Band 60, raid preset (human, 05015000200000000-50300000000000000-05233301001301350)
+### Band 60, raid preset (human, 05005000200000000-50300000000000000-05233301001301351)
 
-Set DPS (verified): 546.4. Weights run: 1.6s. Verify run: 7.5s. 1762 eligible items had no known source.
+Set DPS (verified): 543.7. Weights run: 2.5s. Verify run: 7.6s. 1762 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.420 ± 0.005, agility=2.013 ± 0.042, crit=2.593 ± 0.058 per rating point (14 rating = 1%, 36.300 per %), hit=4.456 ± 0.257 per rating point (10 rating = 1%, 44.557 per %), melee_haste=33.789 ± 2.838
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.420 ± 0.006, agility=1.960 ± 0.039, crit=2.526 ± 0.054 per rating point (14 rating = 1%, 35.369 per %), hit=4.813 ± 0.355 per rating point (10 rating = 1%, 48.127 per %), melee_haste=25.101 ± 4.434
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Stalwart Helm (250599) | Blacksmithing [crafted] | sim-verified (546.4 DPS) | yes | Knight-Lieutenant's Plate Helm (220804, -0.64 DPS) [vendor]; Outlaw's Collar (279253, -2.34 DPS) [crafted]; Lionheart Helm (12640, -5.43 DPS, sim-verified) [crafted] |
-| neck | Skibi's Pendant (13089) | World drop [world_drop] | 38.3 attack_power points (4.18 DPS) | yes | Sunprism Pendant (20649, -1.54 DPS) [quest]; Kaleidoscope Chain (13084, -2.24 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -2.87 DPS) [world] |
-| shoulder | Lightforge Spaulders (16729) | Blackrock Spire: The Beast [dungeon] | sim-verified (546.4 DPS) | yes | Knight-Lieutenant's Plate Pauldrons (220795, -0.99 DPS) [vendor]; Dark Warder's Pauldrons (22241, -1.21 DPS) [dungeon]; Magister's Mantle (16689, -6.24 DPS, sim-verified) [dungeon] |
-| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 50.2 attack_power points (5.48 DPS) | yes | Fel Cape (279269, -1.52 DPS) [crafted]; Sergeant Major's Cape (16337, -1.61 DPS) [pvp]; Dark Phantom Cape (13122, -2.18 DPS) [world_drop] |
-| chest | Dawn Armor (252483) | Leatherworking [crafted] | 155.3 attack_power points (16.95 DPS) | yes | Timbermaw Tunic (252484, -0.32 DPS) [crafted]; Field Marshal's Lamellar Breastplate (231649, -7.18 DPS) [vendor]; Shadowcraft Tunic (16721, -7.35 DPS) [dungeon] |
-| wrist | Lightforge Bracers (16722) | Scholomance: Lord Alexei Barov [dungeon] | sim-verified (546.4 DPS) | yes | Deepfury Bracers (13120, +0.00 DPS) [world_drop]; Tranquil Wristguards (279256, +0.00 DPS) [crafted]; Magister's Bindings (16683, -6.12 DPS, sim-verified) [dungeon] |
-| hands | Timbermaw Brawlers (19049) | Leatherworking [crafted] | 79.0 attack_power points (8.62 DPS) | yes | Devilsaur Gauntlets (15063, +0.00 DPS) [crafted]; Marshal's Lamellar Gauntlets (231650, -0.17 DPS) [vendor]; Knight-Lieutenant's Lamellar Gauntlets (23274, -1.49 DPS) [vendor] |
-| waist | Lightforge Belt (16723) | Stratholme: Rockwing Gargoyle [dungeon] | sim-verified (546.4 DPS) | yes | Prowler's Leather Waistguard (252473, +0.00 DPS) [crafted]; Skulker's Leather Waistguard (252474, +0.00 DPS) [crafted]; Might of the Timbermaw (19044, -9.14 DPS, sim-verified) [crafted] |
-| legs | Lightforge Legplates (16728) | Stratholme: Baron Rivendare [dungeon] | sim-verified (546.4 DPS) | yes | Warbear Woolies (15065, +0.00 DPS) [crafted]; Azerothium Legplates (279265, +0.00 DPS) [crafted]; Magister's Leggings (16687, -5.07 DPS, sim-verified) [dungeon] |
-| feet | Lightforge Boots (16725) | Stratholme: Balnazzar [dungeon] | sim-verified (546.4 DPS) | yes | Knight-Lieutenant's Lamellar Sabatons (227146, +0.00 DPS) [vendor]; Scalegut Treaders (275618, +0.00 DPS) [crafted]; Shadowcraft Boots (16711, -2.25 DPS, sim-verified) [dungeon] |
-| finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 28.2 attack_power points (3.08 DPS) | yes | Falcon's Hook (7552, -0.31 DPS) [dungeon]; Ring of the Underwood (2951, -0.35 DPS) [world_drop]; Ring of Living Stone (18400, -0.43 DPS) [quest] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 25.4 attack_power points (2.77 DPS) | yes | Falcon's Hook (7552, -0.00 DPS) [dungeon]; Ring of the Underwood (2951, -0.05 DPS) [world_drop]; Ring of Living Stone (18400, -0.13 DPS) [quest] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (546.4 DPS) | yes | - |
-| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (546.4 DPS) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest] |
-| main_hand | Blade of Hanna (2801) | World drop [world_drop] | sim-verified (546.4 DPS) | yes | Grand Marshal's Glaive (234569, +0.00 DPS) [pvp]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Arcanite Champion (12790, -6.52 DPS, sim-verified) [crafted] |
+| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 210.6 attack_power points (25.26 DPS) | yes | Stalwart Helm (250599, -10.23 DPS) [crafted]; Knight-Lieutenant's Plate Helm (220804, -11.47 DPS) [vendor]; Lieutenant Commander's Lamellar Headguard (227144, -13.68 DPS) [vendor] |
+| neck | Skibi's Pendant (13089) | World drop [world_drop] | 37.6 attack_power points (4.51 DPS) | yes | Sunprism Pendant (20649, -1.69 DPS) [quest]; Kaleidoscope Chain (13084, -2.41 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -3.07 DPS) [world] |
+| shoulder | Lightforge Spaulders (16729) | Blackrock Spire: The Beast [dungeon] | 74.9 attack_power points (8.98 DPS) | yes | Knight-Lieutenant's Plate Pauldrons (220795, -1.55 DPS) [vendor]; Golden Mantle of the Dawn (19058, -2.62 DPS) [crafted]; Dark Warder's Pauldrons (22241, -10.06 DPS, sim-verified) [dungeon] |
+| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 49.4 attack_power points (5.93 DPS) | yes | Fel Cape (279269, -1.68 DPS) [crafted]; Sergeant Major's Cape (16337, -1.72 DPS) [pvp]; Dark Phantom Cape (13122, -2.40 DPS) [world_drop] |
+| chest | Dawn Armor (252483) | Leatherworking [crafted] | 156.0 attack_power points (18.72 DPS) | yes | Timbermaw Tunic (252484, -0.66 DPS) [crafted]; Shadowcraft Tunic (16721, -7.98 DPS) [dungeon]; Field Marshal's Lamellar Breastplate (231649, -8.09 DPS) [vendor] |
+| wrist | Tranquil Wristguards (279256) | Leatherworking [crafted] | sim-verified (543.7 DPS) | yes | Officer's Wristguards (250581, -0.04 DPS) [crafted]; Prowler's Leather Bracers (252539, -0.39 DPS) [crafted]; Deepfury Bracers (13120, -7.09 DPS, sim-verified) [world_drop] |
+| hands | Timbermaw Brawlers (19049) | Leatherworking [crafted] | 78.3 attack_power points (9.39 DPS) | yes | Devilsaur Gauntlets (15063, +0.00 DPS) [crafted]; Marshal's Lamellar Gauntlets (231650, -0.21 DPS) [vendor]; Knight-Lieutenant's Lamellar Gauntlets (23274, -1.66 DPS) [vendor] |
+| waist | Might of the Timbermaw (19044) | Leatherworking [crafted] | 78.3 attack_power points (9.39 DPS) | yes | Prowler's Leather Waistguard (252473, -2.50 DPS) [crafted]; Skulker's Leather Waistguard (252474, -2.61 DPS) [crafted]; Officer's Waistguard (250571, -2.97 DPS) [crafted] |
+| legs | Warbear Woolies (15065) | Leatherworking [crafted] | 103.0 attack_power points (12.36 DPS) | yes | Azerothium Legplates (279265, -1.16 DPS) [crafted]; Knight-Captain's Lamellar Leggings (16435, -1.84 DPS) [pvp]; Cloudkeeper Legplates (14554, -1.85 DPS) [world_drop] |
+| feet | Shadowcraft Boots (16711) | Scholomance: Rattlegore [dungeon] | 55.6 attack_power points (6.67 DPS) | yes | Knight-Lieutenant's Lamellar Sabatons (227146, +0.00 DPS) [vendor]; Scalegut Treaders (275618, -0.23 DPS) [crafted]; Prowler's Leather Boots (252468, -0.31 DPS) [crafted] |
+| finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 27.4 attack_power points (3.29 DPS) | yes | Falcon's Hook (7552, -0.30 DPS) [dungeon]; Ring of the Underwood (2951, -0.36 DPS) [world_drop]; Ring of Living Stone (18400, -0.39 DPS) [quest] |
+| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 25.2 attack_power points (3.03 DPS) | yes | Falcon's Hook (7552, -0.04 DPS) [dungeon]; Ring of the Underwood (2951, -0.10 DPS) [world_drop]; Ring of Living Stone (18400, -0.12 DPS) [quest] |
+| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (+7.4 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest] |
+| main_hand | Arcanite Champion (12790) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Glaive (234569, +0.00 DPS) [pvp]; Grand Marshal's Polearm (234570, +0.00 DPS) [vendor]; Blade of Hanna (2801, -11.69 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Stalwart Helm; shoulder: Lightforge Spaulders; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Lightforge Bracers; hands: Timbermaw Brawlers; waist: Lightforge Belt; legs: Lightforge Legplates; feet: Lightforge Boots; finger1: Masons Fraternity Ring; finger2: Thunderbrow Ring; trinket1: Frozen Heart of the Mountain; trinket2: Molten Heart of the Mountain; main_hand: Blade of Hanna
+**New at 60:** head: Lionheart Helm; shoulder: Lightforge Spaulders; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Tranquil Wristguards; hands: Timbermaw Brawlers; waist: Might of the Timbermaw; legs: Warbear Woolies; feet: Shadowcraft Boots; finger1: Masons Fraternity Ring; finger2: Thunderbrow Ring; trinket1: Frozen Heart of the Mountain; trinket2: Molten Heart of the Mountain; main_hand: Arcanite Champion
 
 No-known-source sample (15 of 1762, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1762, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 00000000000000000-00000000000000000-05231000000000000)
 
-Set DPS (verified): 39.2. Weights run: 1.4s. Verify run: 2.3s. 222 eligible items had no known source.
+Set DPS (verified): 39.2. Weights run: 2.3s. Verify run: 3.4s. 222 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.491 ± 0.026, crit=0.844 ± 0.024 per rating point (14 rating = 1%, 11.816 per %), hit=1.363 ± 0.065 per rating point (10 rating = 1%, 13.628 per %), melee_haste=8.675 ± 0.564
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 222, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-00000000000000000-05233301001300000)
 
-Set DPS (verified): 88.0. Weights run: 1.3s. Verify run: 2.5s. 443 eligible items had no known source.
+Set DPS (verified): 88.0. Weights run: 2.3s. Verify run: 3.9s. 443 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.267 ± 0.023, crit=0.964 ± 0.025 per rating point (14 rating = 1%, 13.497 per %), hit=1.585 ± 0.069 per rating point (10 rating = 1%, 15.846 per %), melee_haste=9.455 ± 0.568
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 443, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 01000000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 131.3. Weights run: 1.3s. Verify run: 2.6s. 629 eligible items had no known source.
+Set DPS (verified): 131.3. Weights run: 2.3s. Verify run: 4.1s. 629 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.040 ± 0.004, agility=1.541 ± 0.030, crit=1.490 ± 0.036 per rating point (14 rating = 1%, 20.865 per %), hit=2.006 ± 0.088 per rating point (10 rating = 1%, 20.059 per %), melee_haste=11.290 ± 0.657
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 629, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 05024000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 157.6. Weights run: 1.4s. Verify run: 2.9s. 839 eligible items had no known source.
+Set DPS (verified): 157.6. Weights run: 2.5s. Verify run: 4.5s. 839 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=1.509 ± 0.029, crit=1.792 ± 0.039 per rating point (14 rating = 1%, 25.091 per %), hit=2.283 ± 0.095 per rating point (10 rating = 1%, 22.826 per %), melee_haste=11.006 ± 0.993
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 839, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 05025000200000000-50200000000000000-05233301001301350)
 
-Set DPS (verified): 265.7. Weights run: 1.4s. Verify run: 7.1s. 1781 eligible items had no known source.
+Set DPS (verified): 265.7. Weights run: 2.5s. Verify run: 10.8s. 1781 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=2.015 ± 0.048, crit=2.840 ± 0.069 per rating point (14 rating = 1%, 39.761 per %), hit=4.097 ± 0.173 per rating point (10 rating = 1%, 40.969 per %), melee_haste=19.815 ± 1.945
 
@@ -338,33 +338,33 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 1781, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 
-### Band 60, raid preset (undead, 05015000200000000-50300000000000000-05233301001301350)
+### Band 60, raid preset (undead, 05005000200000000-50300000000000000-05233301001301351)
 
-Set DPS (verified): 569.5. Weights run: 1.6s. Verify run: 7.3s. 1781 eligible items had no known source.
+Set DPS (verified): 585.5. Weights run: 2.5s. Verify run: 9.6s. 1781 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.420 ± 0.005, agility=2.013 ± 0.042, crit=2.593 ± 0.058 per rating point (14 rating = 1%, 36.300 per %), hit=4.456 ± 0.257 per rating point (10 rating = 1%, 44.557 per %), melee_haste=33.789 ± 2.838
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.420 ± 0.006, agility=1.960 ± 0.039, crit=2.526 ± 0.054 per rating point (14 rating = 1%, 35.369 per %), hit=4.813 ± 0.355 per rating point (10 rating = 1%, 48.127 per %), melee_haste=25.101 ± 4.434
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Lionheart Helm (12640) | Blacksmithing [crafted] | 205.3 attack_power points (22.41 DPS) | yes | Stalwart Helm (250599, +0.00 DPS, sim-verified) [crafted]; Blood Guard's Plate Helm (220803, -10.15 DPS) [vendor]; Outlaw's Collar (279253, -11.85 DPS) [crafted] |
-| neck | Skibi's Pendant (13089) | World drop [world_drop] | 38.3 attack_power points (4.18 DPS) | yes | Woven Ivy Necklace (19159, -0.61 DPS) [quest]; Sunprism Pendant (20649, -1.54 DPS) [quest]; Ethereal Talisman (4430, -1.98 DPS) [quest] |
-| shoulder | Lightforge Spaulders (16729) | Blackrock Spire: The Beast [dungeon] | sim-verified (569.5 DPS) | yes | Blood Guard's Plate Pauldrons (220796, -0.99 DPS) [vendor]; Dark Warder's Pauldrons (22241, -1.21 DPS) [dungeon]; Magister's Mantle (16689, -5.39 DPS, sim-verified) [dungeon] |
-| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 50.2 attack_power points (5.48 DPS) | yes | Fel Cape (279269, -1.52 DPS) [crafted]; Dark Phantom Cape (13122, -2.18 DPS) [world_drop]; Pridelord Cape (14673, -2.71 DPS) [world_drop] |
-| chest | Dawn Armor (252483) | Leatherworking [crafted] | 155.3 attack_power points (16.95 DPS) | yes | Timbermaw Tunic (252484, -0.32 DPS) [crafted]; Shadowcraft Tunic (16721, -7.35 DPS) [dungeon]; Stone Guard's Plate Armor (220801, -9.03 DPS) [vendor] |
-| wrist | Lightforge Bracers (16722) | Scholomance: Lord Alexei Barov [dungeon] | sim-verified (569.5 DPS) | yes | Deepfury Bracers (13120, +0.00 DPS) [world_drop]; Tranquil Wristguards (279256, +0.00 DPS) [crafted]; Magister's Bindings (16683, -5.74 DPS, sim-verified) [dungeon] |
-| hands | Timbermaw Brawlers (19049) | Leatherworking [crafted] | 79.0 attack_power points (8.62 DPS) | yes | Devilsaur Gauntlets (15063, -1.60 DPS) [crafted]; Officer's Gloves (250551, -2.42 DPS) [crafted]; Gloves of Holy Might (867, -2.48 DPS) [world_drop] |
-| waist | Lightforge Belt (16723) | Stratholme: Rockwing Gargoyle [dungeon] | sim-verified (569.5 DPS) | yes | Prowler's Leather Waistguard (252473, +0.00 DPS) [crafted]; Skulker's Leather Waistguard (252474, +0.00 DPS) [crafted]; Might of the Timbermaw (19044, -9.07 DPS, sim-verified) [crafted] |
-| legs | Lightforge Legplates (16728) | Stratholme: Baron Rivendare [dungeon] | sim-verified (569.5 DPS) | yes | Warbear Woolies (15065, +0.00 DPS) [crafted]; Azerothium Legplates (279265, +0.00 DPS) [crafted]; Magister's Leggings (16687, -8.50 DPS, sim-verified) [dungeon] |
-| feet | Lightforge Boots (16725) | Stratholme: Balnazzar [dungeon] | sim-verified (569.5 DPS) | yes | Prowler's Leather Boots (252468, +0.00 DPS) [crafted]; Scalegut Treaders (275618, +0.00 DPS) [crafted]; Shadowcraft Boots (16711, -3.02 DPS, sim-verified) [dungeon] |
-| finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 28.2 attack_power points (3.08 DPS) | yes | Falcon's Hook (7552, -0.31 DPS) [dungeon]; Ring of the Underwood (2951, -0.35 DPS) [world_drop]; Ring of Living Stone (18400, -0.43 DPS) [quest] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 25.4 attack_power points (2.77 DPS) | yes | Falcon's Hook (7552, -0.00 DPS) [dungeon]; Ring of the Underwood (2951, -0.05 DPS) [world_drop]; Ring of Living Stone (18400, -0.13 DPS) [quest] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (569.5 DPS) | yes | - |
-| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (569.5 DPS) | yes | Molten Heart of the Mountain (249470, -4.42 DPS, sim-verified) [crafted] |
-| main_hand | Blade of Hanna (2801) | World drop [world_drop] | sim-verified (569.5 DPS) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; Arcanite Champion (12790, -14.73 DPS, sim-verified) [crafted] |
+| head | Stalwart Helm (250599) | Blacksmithing [crafted] | sim-verified (585.5 DPS) | yes | Blood Guard's Plate Helm (220803, -1.24 DPS) [vendor]; Outlaw's Collar (279253, -3.73 DPS) [crafted]; Lionheart Helm (12640, -6.30 DPS, sim-verified) [crafted] |
+| neck | Skibi's Pendant (13089) | World drop [world_drop] | 37.6 attack_power points (4.51 DPS) | yes | Woven Ivy Necklace (19159, -0.65 DPS) [quest]; Sunprism Pendant (20649, -1.69 DPS) [quest]; Ethereal Talisman (4430, -2.12 DPS) [quest] |
+| shoulder | Lightforge Spaulders (16729) | Blackrock Spire: The Beast [dungeon] | sim-verified (585.5 DPS) | yes | Magister's Mantle (16689, +0.00 DPS) [dungeon]; Blood Guard's Plate Pauldrons (220796, -1.55 DPS) [vendor]; Dark Warder's Pauldrons (22241, -1.79 DPS) [dungeon] |
+| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 49.4 attack_power points (5.93 DPS) | yes | Fel Cape (279269, -1.68 DPS) [crafted]; Dark Phantom Cape (13122, -2.40 DPS) [world_drop]; Pridelord Cape (14673, -2.94 DPS) [world_drop] |
+| chest | Dawn Armor (252483) | Leatherworking [crafted] | 156.0 attack_power points (18.72 DPS) | yes | Timbermaw Tunic (252484, -0.66 DPS) [crafted]; Shadowcraft Tunic (16721, -7.98 DPS) [dungeon]; Stone Guard's Plate Armor (220801, -10.12 DPS) [vendor] |
+| wrist | Lightforge Bracers (16722) | Scholomance: Lord Alexei Barov [dungeon] | sim-verified (585.5 DPS) | yes | Deepfury Bracers (13120, +0.00 DPS) [world_drop]; Magister's Bindings (16683, +0.00 DPS) [dungeon]; Tranquil Wristguards (279256, +0.00 DPS) [crafted] |
+| hands | Lightforge Gauntlets (16724) | Stratholme: Timmy the Cruel [dungeon] | sim-verified (585.5 DPS) | yes | Devilsaur Gauntlets (15063, +0.00 DPS) [crafted]; Magister's Gloves (16684, +0.00 DPS, sim-verified) [dungeon]; Timbermaw Brawlers (19049, +0.00 DPS) [crafted] |
+| waist | Lightforge Belt (16723) | Stratholme: Rockwing Gargoyle [dungeon] | sim-verified (585.5 DPS) | yes | Prowler's Leather Waistguard (252473, +0.00 DPS) [crafted]; Skulker's Leather Waistguard (252474, +0.00 DPS) [crafted]; Might of the Timbermaw (19044, -5.49 DPS, sim-verified) [crafted] |
+| legs | Lightforge Legplates (16728) | Stratholme: Baron Rivendare [dungeon] | sim-verified (585.5 DPS) | yes | Warbear Woolies (15065, +0.00 DPS) [crafted]; Azerothium Legplates (279265, +0.00 DPS) [crafted]; Magister's Leggings (16687, -4.50 DPS, sim-verified) [dungeon] |
+| feet | Lightforge Boots (16725) | Stratholme: Balnazzar [dungeon] | sim-verified (585.5 DPS) | yes | Shadowcraft Boots (16711, +0.00 DPS) [dungeon]; Prowler's Leather Boots (252468, +0.00 DPS) [crafted]; Scalegut Treaders (275618, +0.00 DPS) [crafted] |
+| finger1 | Masons Fraternity Ring (9533) | Divino-matic Rod [quest] | 27.4 attack_power points (3.29 DPS) | yes | Falcon's Hook (7552, -0.30 DPS) [dungeon]; Ring of the Underwood (2951, -0.36 DPS) [world_drop]; Ring of Living Stone (18400, -0.39 DPS) [quest] |
+| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 25.2 attack_power points (3.03 DPS) | yes | Falcon's Hook (7552, -0.04 DPS) [dungeon]; Ring of the Underwood (2951, -0.10 DPS) [world_drop]; Ring of Living Stone (18400, -0.12 DPS) [quest] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (585.5 DPS) | yes | - |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (585.5 DPS) | yes | Molten Heart of the Mountain (249470, -5.23 DPS, sim-verified) [crafted] |
+| main_hand | Blade of Hanna (2801) | World drop [world_drop] | sim-verified (585.5 DPS) | yes | High Warlord's Pig Sticker (234547, +0.00 DPS) [pvp]; High Warlord's Pig Poker (234548, +0.00 DPS) [vendor]; The Needler (13060, -3.92 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Lionheart Helm; shoulder: Lightforge Spaulders; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Lightforge Bracers; hands: Timbermaw Brawlers; waist: Lightforge Belt; legs: Lightforge Legplates; feet: Lightforge Boots; finger1: Masons Fraternity Ring; main_hand: Blade of Hanna
+**New at 60:** head: Stalwart Helm; shoulder: Lightforge Spaulders; back: Cape of the Black Baron; chest: Dawn Armor; wrist: Lightforge Bracers; hands: Lightforge Gauntlets; waist: Lightforge Belt; legs: Lightforge Legplates; feet: Lightforge Boots; finger1: Masons Fraternity Ring; main_hand: Blade of Hanna
 
 No-known-source sample (15 of 1781, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 

@@ -1,8 +1,8 @@
 {
   "spec": "warlock-destruction",
   "build": "1.60.1.70707",
-  "engine_version": "17d31ecfa",
-  "generated_at": "2026-11-01T02:43:14Z",
+  "engine_version": "c8d29ea33",
+  "generated_at": "2026-11-01T05:28:43Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -1047,8 +1047,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.443863782,
-      "verify_run_seconds": 0.853348273,
+      "weights_run_seconds": 2.324739267,
+      "verify_run_seconds": 1.2426516539999999,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1754,8 +1754,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.443863782,
-      "verify_run_seconds": 0.894613665,
+      "weights_run_seconds": 2.324739267,
+      "verify_run_seconds": 1.270991537,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2630,8 +2630,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.450693418,
-      "verify_run_seconds": 0.791368387,
+      "weights_run_seconds": 2.2563620110000002,
+      "verify_run_seconds": 1.105904272,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3506,8 +3506,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.450693418,
-      "verify_run_seconds": 0.802688133,
+      "weights_run_seconds": 2.2563620110000002,
+      "verify_run_seconds": 1.136272398,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4421,8 +4421,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.32065311,
-      "verify_run_seconds": 0.864114845,
+      "weights_run_seconds": 1.943562985,
+      "verify_run_seconds": 1.177286581,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5337,8 +5337,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.32065311,
-      "verify_run_seconds": 0.898297412,
+      "weights_run_seconds": 1.943562985,
+      "verify_run_seconds": 1.224007716,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6233,8 +6233,8 @@
         "main_hand: Kindling Stave",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.292765025,
-      "verify_run_seconds": 0.9170033,
+      "weights_run_seconds": 1.9646206579999999,
+      "verify_run_seconds": 1.343730828,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7171,8 +7171,8 @@
         "main_hand: Kindling Stave",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.292765025,
-      "verify_run_seconds": 0.926933023,
+      "weights_run_seconds": 1.9646206579999999,
+      "verify_run_seconds": 1.34103502,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8069,8 +8069,8 @@
         "trinket2: Uther's Strength",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.278467343,
-      "verify_run_seconds": 1.692444048,
+      "weights_run_seconds": 2.023730219,
+      "verify_run_seconds": 2.330164059,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8993,8 +8993,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.278467343,
-      "verify_run_seconds": 1.642548456,
+      "weights_run_seconds": 2.023730219,
+      "verify_run_seconds": 2.3164291,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9103,56 +9103,56 @@
         {
           "stat": "spell_power",
           "weight": 1,
-          "error": 0.0014081929836182473,
+          "error": 0.0014081929836180266,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 5.554281185563989,
-          "dps_per_point": 0.5774873159684849,
-          "scale_error": 0.007821499794554048
+          "scale_factor": 5.55428118556399,
+          "dps_per_point": 0.5774873159684846,
+          "scale_error": 0.007821499794552825
         },
         {
           "stat": "intellect",
-          "weight": 0.18004129906117794,
-          "error": 0.02583110253952058,
+          "weight": 0.18004129906117788,
+          "error": 0.025831102539520596,
           "insignificant": false,
-          "weight_per_percent": 0.18004129906117794,
+          "weight_per_percent": 0.18004129906117788,
           "scale_factor": 1,
-          "dps_per_point": 0.10397156655831895,
-          "scale_error": 0.14347320683763332
+          "dps_per_point": 0.10397156655831885,
+          "scale_error": 0.14347320683763345
         },
         {
           "stat": "crit",
-          "weight": 0.31759568252256815,
-          "error": 0.008491312256493902,
+          "weight": 0.31759568252256826,
+          "error": 0.008491312256493914,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 4.446339555315954,
-          "scale_factor": 1.7640157240514538,
-          "dps_per_point": 0.18340747826313694,
-          "scale_error": 0.047163135906992976
+          "weight_per_percent": 4.446339555315956,
+          "scale_factor": 1.7640157240514551,
+          "dps_per_point": 0.18340747826313689,
+          "scale_error": 0.04716313590699306
         },
         {
           "stat": "hit",
-          "weight": 0.6917711686761449,
-          "error": 0.0363490306822455,
+          "weight": 0.691771168676145,
+          "error": 0.03634903068224553,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 6.917711686761448,
-          "scale_factor": 3.8422915868935235,
-          "dps_per_point": 0.3994890754631689,
-          "scale_error": 0.20189273723188433
+          "weight_per_percent": 6.917711686761449,
+          "scale_factor": 3.8422915868935252,
+          "dps_per_point": 0.39948907546316875,
+          "scale_error": 0.20189273723188456
         },
         {
           "stat": "spell_haste",
-          "weight": 0.28731478755690926,
-          "error": 0.4954609950769512,
+          "weight": 0.2873147875569055,
+          "error": 0.4954609950769514,
           "insignificant": true,
-          "weight_per_percent": 0.28731478755690926,
-          "scale_factor": 1.5958271188616555,
-          "dps_per_point": 0.16592064550429497,
-          "scale_error": 2.751929683136722
+          "weight_per_percent": 0.2873147875569055,
+          "scale_factor": 1.5958271188616349,
+          "dps_per_point": 0.1659206455042927,
+          "scale_error": 2.7519296831367237
         },
         {
           "stat": "spell_penetration",
@@ -9166,23 +9166,23 @@
         },
         {
           "stat": "shadow_power",
-          "weight": 0.30763544536922566,
-          "error": 0.0008517218636651308,
+          "weight": 0.30763544536922754,
+          "error": 0.0008517218636652458,
           "insignificant": false,
-          "weight_per_percent": 0.30763544536922566,
-          "scale_factor": 1.7086937662268882,
-          "dps_per_point": 0.1776555676430436,
-          "scale_error": 0.0047307027226887325
+          "weight_per_percent": 0.30763544536922754,
+          "scale_factor": 1.7086937662268993,
+          "dps_per_point": 0.17765556764304458,
+          "scale_error": 0.004730702722689373
         },
         {
           "stat": "fire_power",
-          "weight": 0.6923645546307741,
-          "error": 0.0011374760119521423,
+          "weight": 0.6923645546307732,
+          "error": 0.0011374760119521657,
           "insignificant": false,
-          "weight_per_percent": 0.6923645546307741,
-          "scale_factor": 3.8455874193370985,
-          "dps_per_point": 0.39983174832544116,
-          "scale_error": 0.0063178616122161425
+          "weight_per_percent": 0.6923645546307732,
+          "scale_factor": 3.845587419337095,
+          "dps_per_point": 0.3998317483254404,
+          "scale_error": 0.006317861612216274
         }
       ],
       "slots": [
@@ -9392,7 +9392,7 @@
               "item_name": "Robe of the Magi",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -13.761897211,
+              "dps_delta": -13.760099631,
               "verified": true
             }
           ],
@@ -9569,7 +9569,7 @@
               "item_name": "Cindercloth Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -8.198452778,
+              "dps_delta": -8.199393836,
               "verified": true
             }
           ],
@@ -9638,8 +9638,8 @@
           "source_kind": "world_drop",
           "score": 19.260289093,
           "verified": true,
-          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, +12.4 DPS (725.4 vs 713.1 set DPS)",
-          "dps_delta": 12.383379986648947,
+          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, +12.4 DPS (725.7 vs 713.3 set DPS)",
+          "dps_delta": 12.383029982137941,
           "alternatives": [
             {
               "item_id": 281635,
@@ -9726,7 +9726,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 725.4438990427589,
+          "sim_dps": 725.726859978201,
           "verified": true,
           "alternatives": [
             {
@@ -9751,7 +9751,7 @@
           "item_name": "Mark of the Chosen",
           "source": "The Pariah's Instructions",
           "source_kind": "quest",
-          "sim_dps": 725.4438990427589,
+          "sim_dps": 725.726859978201,
           "verified": true,
           "alternatives": [
             {
@@ -9778,7 +9778,7 @@
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 725.4438990427589,
+          "sim_dps": 725.726859978201,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -9801,7 +9801,7 @@
               "item_name": "Teebu's Blazing Longsword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -50.267367024,
+              "dps_delta": -50.266840976,
               "verified": true
             }
           ],
@@ -9837,7 +9837,7 @@
               "item_name": "Brilliant Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -3.545956924,
+              "dps_delta": -3.546243535,
               "verified": true
             },
             {
@@ -9869,7 +9869,7 @@
           ]
         }
       ],
-      "set_dps": 725.4438990427589,
+      "set_dps": 725.726859978201,
       "no_source_count": 1132,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -9901,8 +9901,8 @@
         "trinket2: Mark of the Chosen",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.4637082860000001,
-      "verify_run_seconds": 2.127259332,
+      "weights_run_seconds": 2.474632736,
+      "verify_run_seconds": 2.954783944,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9988,10 +9988,10 @@
           "rare_spawn_skipped": 3
         }
       },
-      "reference_dps_per_point": 0.5774873159684849,
+      "reference_dps_per_point": 0.5774873159684846,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
-      "haste_scale_factor": 1.5958271188616555,
+      "haste_scale_factor": 1.5958271188616349,
       "hit_to_cap": {
         "kind": "spell",
         "baseline": 5,
@@ -10011,56 +10011,56 @@
         {
           "stat": "spell_power",
           "weight": 1,
-          "error": 0.0014081929836182473,
+          "error": 0.0014081929836180266,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 5.554281185563989,
-          "dps_per_point": 0.5774873159684849,
-          "scale_error": 0.007821499794554048
+          "scale_factor": 5.55428118556399,
+          "dps_per_point": 0.5774873159684846,
+          "scale_error": 0.007821499794552825
         },
         {
           "stat": "intellect",
-          "weight": 0.18004129906117794,
-          "error": 0.02583110253952058,
+          "weight": 0.18004129906117788,
+          "error": 0.025831102539520596,
           "insignificant": false,
-          "weight_per_percent": 0.18004129906117794,
+          "weight_per_percent": 0.18004129906117788,
           "scale_factor": 1,
-          "dps_per_point": 0.10397156655831895,
-          "scale_error": 0.14347320683763332
+          "dps_per_point": 0.10397156655831885,
+          "scale_error": 0.14347320683763345
         },
         {
           "stat": "crit",
-          "weight": 0.31759568252256815,
-          "error": 0.008491312256493902,
+          "weight": 0.31759568252256826,
+          "error": 0.008491312256493914,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 4.446339555315954,
-          "scale_factor": 1.7640157240514538,
-          "dps_per_point": 0.18340747826313694,
-          "scale_error": 0.047163135906992976
+          "weight_per_percent": 4.446339555315956,
+          "scale_factor": 1.7640157240514551,
+          "dps_per_point": 0.18340747826313689,
+          "scale_error": 0.04716313590699306
         },
         {
           "stat": "hit",
-          "weight": 0.6917711686761449,
-          "error": 0.0363490306822455,
+          "weight": 0.691771168676145,
+          "error": 0.03634903068224553,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 10,
-          "weight_per_percent": 6.917711686761448,
-          "scale_factor": 3.8422915868935235,
-          "dps_per_point": 0.3994890754631689,
-          "scale_error": 0.20189273723188433
+          "weight_per_percent": 6.917711686761449,
+          "scale_factor": 3.8422915868935252,
+          "dps_per_point": 0.39948907546316875,
+          "scale_error": 0.20189273723188456
         },
         {
           "stat": "spell_haste",
-          "weight": 0.28731478755690926,
-          "error": 0.4954609950769512,
+          "weight": 0.2873147875569055,
+          "error": 0.4954609950769514,
           "insignificant": true,
-          "weight_per_percent": 0.28731478755690926,
-          "scale_factor": 1.5958271188616555,
-          "dps_per_point": 0.16592064550429497,
-          "scale_error": 2.751929683136722
+          "weight_per_percent": 0.2873147875569055,
+          "scale_factor": 1.5958271188616349,
+          "dps_per_point": 0.1659206455042927,
+          "scale_error": 2.7519296831367237
         },
         {
           "stat": "spell_penetration",
@@ -10074,23 +10074,23 @@
         },
         {
           "stat": "shadow_power",
-          "weight": 0.30763544536922566,
-          "error": 0.0008517218636651308,
+          "weight": 0.30763544536922754,
+          "error": 0.0008517218636652458,
           "insignificant": false,
-          "weight_per_percent": 0.30763544536922566,
-          "scale_factor": 1.7086937662268882,
-          "dps_per_point": 0.1776555676430436,
-          "scale_error": 0.0047307027226887325
+          "weight_per_percent": 0.30763544536922754,
+          "scale_factor": 1.7086937662268993,
+          "dps_per_point": 0.17765556764304458,
+          "scale_error": 0.004730702722689373
         },
         {
           "stat": "fire_power",
-          "weight": 0.6923645546307741,
-          "error": 0.0011374760119521423,
+          "weight": 0.6923645546307732,
+          "error": 0.0011374760119521657,
           "insignificant": false,
-          "weight_per_percent": 0.6923645546307741,
-          "scale_factor": 3.8455874193370985,
-          "dps_per_point": 0.39983174832544116,
-          "scale_error": 0.0063178616122161425
+          "weight_per_percent": 0.6923645546307732,
+          "scale_factor": 3.845587419337095,
+          "dps_per_point": 0.3998317483254404,
+          "scale_error": 0.006317861612216274
         }
       ],
       "slots": [
@@ -10299,7 +10299,7 @@
               "item_name": "Robe of the Magi",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -14.113786316,
+              "dps_delta": -14.113458259,
               "verified": true
             }
           ],
@@ -10476,7 +10476,7 @@
               "item_name": "Cindercloth Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -9.708860783,
+              "dps_delta": -9.709549708,
               "verified": true
             }
           ],
@@ -10521,7 +10521,7 @@
               "item_name": "Omnicast Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -4.291737383,
+              "dps_delta": -4.290216204,
               "verified": true
             }
           ],
@@ -10546,8 +10546,8 @@
           "source_kind": "world_drop",
           "score": 19.260289093,
           "verified": true,
-          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, +11.6 DPS (722.2 vs 710.6 set DPS)",
-          "dps_delta": 11.607865922781798,
+          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, +11.6 DPS (722.5 vs 710.8 set DPS)",
+          "dps_delta": 11.607028061869869,
           "alternatives": [
             {
               "item_id": 281635,
@@ -10612,7 +10612,7 @@
               "item_name": "Philanthropist's Ring",
               "source_kind": "quest",
               "source": "Greater Friend of the Library",
-              "dps_delta": -3.708294543,
+              "dps_delta": -3.709123607,
               "verified": true
             }
           ],
@@ -10635,7 +10635,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 722.172192633023,
+          "sim_dps": 722.4546609247839,
           "verified": true,
           "alternatives": [
             {
@@ -10660,7 +10660,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 722.172192633023,
+          "sim_dps": 722.4546609247839,
           "verified": true,
           "alternatives": [
             {
@@ -10686,7 +10686,7 @@
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 722.172192633023,
+          "sim_dps": 722.4546609247839,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -10709,7 +10709,7 @@
               "item_name": "Teebu's Blazing Longsword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -51.823977266,
+              "dps_delta": -51.825430749,
               "verified": true
             }
           ],
@@ -10745,7 +10745,7 @@
               "item_name": "Brilliant Wand",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -5.78360135,
+              "dps_delta": -5.784636149,
               "verified": true
             },
             {
@@ -10777,7 +10777,7 @@
           ]
         }
       ],
-      "set_dps": 722.172192633023,
+      "set_dps": 722.4546609247839,
       "no_source_count": 1124,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -10809,8 +10809,8 @@
         "trinket2: Rune of the Guard Captain",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.4637082860000001,
-      "verify_run_seconds": 2.20058019,
+      "weights_run_seconds": 2.474632736,
+      "verify_run_seconds": 3.19426585,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10896,10 +10896,10 @@
           "rare_spawn_skipped": 3
         }
       },
-      "reference_dps_per_point": 0.5774873159684849,
+      "reference_dps_per_point": 0.5774873159684846,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
-      "haste_scale_factor": 1.5958271188616555,
+      "haste_scale_factor": 1.5958271188616349,
       "hit_to_cap": {
         "kind": "spell",
         "baseline": 5,
