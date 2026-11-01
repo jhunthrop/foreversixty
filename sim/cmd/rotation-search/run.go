@@ -112,13 +112,18 @@ func simRotation(s simSetup, r rotation, iterations int) (api.Estimate, *proto.U
 	if err := protojson.Unmarshal(b, apl); err != nil {
 		return api.Estimate{}, nil, fmt.Errorf("the mutated rotation does not parse as an engine APL: %w", err)
 	}
-	return inproc.PlainRunWithRotation(api.SimRequest{
+	return inproc.PlainRunWithRotation(s.request(iterations), apl)
+}
+
+// request is the band's character against the ranker's encounter.
+func (s simSetup) request(iterations int) api.SimRequest {
+	return api.SimRequest{
 		EngineVersion: enginever.Version,
 		Spec:          s.spec.Spec,
 		Source:        api.CharacterSource{Kind: api.SourceBuild},
 		Character:     s.character(),
-		Encounter:     api.DefaultEncounter(),
+		Encounter:     leveling.RankerEncounter(),
 		Iterations:    iterations,
 		RandomSeed:    s.seed,
-	}, apl)
+	}
 }

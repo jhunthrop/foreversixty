@@ -51,6 +51,20 @@ func (s simSetup) character(talents string) api.CharacterSpec {
 // engineRun is the real dpsFunc: the build written in the compiled
 // engine's own layout (enginetalents), simmed in process, memoised by
 // build and iteration count.
+// request is one candidate's sim: the band's character with talents
+// against the ranker's encounter, so its baseline is the published number.
+func (s simSetup) request(talents string, iterations int) api.SimRequest {
+	return api.SimRequest{
+		EngineVersion: enginever.Version,
+		Spec:          s.spec.Spec,
+		Source:        api.CharacterSource{Kind: api.SourceBuild},
+		Character:     s.character(talents),
+		Encounter:     leveling.RankerEncounter(),
+		Iterations:    iterations,
+		RandomSeed:    s.seed,
+	}
+}
+
 func engineRun(s simSetup) dpsFunc {
 	cache := map[string]estimate{}
 	return func(b build, iterations int) (estimate, error) {
@@ -62,15 +76,7 @@ func engineRun(s simSetup) dpsFunc {
 		if err != nil {
 			return estimate{}, err
 		}
-		est, err := inproc.PlainDPS(api.SimRequest{
-			EngineVersion: enginever.Version,
-			Spec:          s.spec.Spec,
-			Source:        api.CharacterSource{Kind: api.SourceBuild},
-			Character:     s.character(talents),
-			Encounter:     api.DefaultEncounter(),
-			Iterations:    iterations,
-			RandomSeed:    s.seed,
-		})
+		est, err := inproc.PlainDPS(s.request(talents, iterations))
 		if err != nil {
 			return estimate{}, err
 		}

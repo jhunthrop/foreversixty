@@ -251,10 +251,7 @@ func buildRequest(o options) (api.SimRequest, error) {
 	if o.buffs != "" {
 		kitBuffs = append(kitBuffs, strings.Split(o.buffs, ",")...)
 	}
-	encounter := api.DefaultEncounter()
-	// The ranker's target has no creature type; "" (the engine's humanoid)
-	// is never what an unset option means here.
-	encounter.TargetType = api.TargetTypeUnknown
+	encounter := leveling.RankerEncounter()
 	if o.targetType != "" {
 		encounter.TargetType = o.targetType
 	}

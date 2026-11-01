@@ -373,8 +373,7 @@ func weightsRequest(spec specs.Spec, ch api.CharacterSpec, preset *request.Resol
 	if leveling.NoMeleeAutoAttackSpecs[spec.Spec] {
 		ch.DistanceFromTarget = leveling.CasterDistanceFromTarget
 	}
-	encounter := api.DefaultEncounter()
-	encounter.TargetType = api.TargetTypeUnknown
+	encounter := leveling.RankerEncounter()
 	if healing(spec) {
 		iterations *= healIterationScale
 	}
