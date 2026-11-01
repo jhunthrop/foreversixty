@@ -152,6 +152,27 @@ func TestNewReportSortsAndScalesRows(t *testing.T) {
 	}
 }
 
+func TestNewReportFoldsPetActionsUnderThePetName(t *testing.T) {
+	req := api.SimRequest{Spec: testSpec, Iterations: 2, Encounter: api.EncounterSpec{DurationSec: 10}}
+	m := sampleMetrics()
+	m.Pets = []*proto.UnitMetrics{{Name: "Succubus", Actions: []*proto.ActionMetrics{
+		{Id: spellID(4, 0), Targets: []*proto.TargetedActionMetrics{{Casts: 4, Hits: 4, Damage: 400}}},
+	}}}
+	r := newReport(req, api.Estimate{Mean: 100}, m, map[int32]string{4: "Lash of Pain"})
+	var pet *actionRow
+	for i := range r.Actions {
+		if r.Actions[i].Name == "Succubus: Lash of Pain (4)" {
+			pet = &r.Actions[i]
+		}
+	}
+	if pet == nil {
+		t.Fatalf("no pet row in %+v", r.Actions)
+	}
+	if !near(pet.DPS, 20) || !near(pet.Share, 20) {
+		t.Errorf("pet row dps/share = %v/%v, want 20/20", pet.DPS, pet.Share)
+	}
+}
+
 func TestMarkdownRendersTablesAndSkipsEmptyRows(t *testing.T) {
 	out := sampleReport().markdown()
 	for _, want := range []string{

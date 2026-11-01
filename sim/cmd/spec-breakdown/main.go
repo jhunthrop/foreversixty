@@ -338,6 +338,15 @@ func newReport(req api.SimRequest, est api.Estimate, p *proto.UnitMetrics, names
 	for _, a := range p.GetActions() {
 		r.Actions = append(r.Actions, foldAction(a, iters, secs, est.Mean, names))
 	}
+	// Pet damage counts toward the player's DPS, so its rows sit in the same
+	// table under the pet's name.
+	for _, pet := range p.GetPets() {
+		for _, a := range pet.GetActions() {
+			row := foldAction(a, iters, secs, est.Mean, names)
+			row.Name = pet.GetName() + ": " + row.Name
+			r.Actions = append(r.Actions, row)
+		}
+	}
 	sort.Slice(r.Actions, func(i, j int) bool { return r.Actions[i].DPS > r.Actions[j].DPS })
 	for _, a := range p.GetAuras() {
 		r.Auras = append(r.Auras, auraRow{
