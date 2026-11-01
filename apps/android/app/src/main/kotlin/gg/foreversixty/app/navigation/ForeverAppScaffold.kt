@@ -158,7 +158,6 @@ fun ForeverAppScaffold(
             }
             if (search != null) SearchOverlay(search, searchOwner(account), exits)
         }
-        }
     }
 }
 

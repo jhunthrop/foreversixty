@@ -225,6 +225,23 @@ extension PlannerState {
         TalentGuide.band(forLevel: spent + TalentRules.baseLevel).map { Copy.planLoadedNote(band: TalentGuide.label(band: $0)) }
     }
 
+    /// F6's rank sheet for one talent of the drawn build: its current and next rank text and the
+    /// requirements still unmet (the strip's text is clamped; the sheet has it all).
+    func sheet(talentID: Int) -> TalentSheetModel? {
+        guard let talent = index.byID[talentID], let treeIndex = index.treeOf[talentID] else { return nil }
+        let ranks = ranks
+        let rank = ranks[talentID] ?? 0
+        let text = { (position: Int) in talent.ranks.indices.contains(position) ? talent.ranks[position].description : nil }
+        return TalentSheetModel(
+            talent: talent, rank: rank,
+            state: PlannerRules.cellState(talent, index: index, order: order, ranks: ranks, left: left),
+            current: rank > 0 ? text(rank - 1) : nil,
+            next: rank < talent.maxRank ? text(rank) : nil,
+            requirements: TalentsPresenter.requirements(talent, in: index.trees[treeIndex], ranks: ranks),
+            guideLine: nil, isOver: false
+        )
+    }
+
     /// The draft this state saves.
     var draft: PlannerDraft {
         PlannerDraft(treeVersion: index.file.build, raceSlug: raceSlug, level: level, order: order)

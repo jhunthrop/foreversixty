@@ -34,7 +34,6 @@ import gg.foreversixty.app.planner.logic.PlannerScreen
 import gg.foreversixty.app.planner.logic.ShareOutcome
 import gg.foreversixty.app.planner.logic.SharedBuildModel
 import gg.foreversixty.app.planner.logic.SharedBuildPhase
-import gg.foreversixty.app.planner.logic.SharedBuildView
 import gg.foreversixty.app.planner.logic.ViewPlannerHaptics
 import gg.foreversixty.app.planner.logic.YourBuildsModel
 import gg.foreversixty.app.planner.logic.YourBuildsPhase
@@ -60,6 +59,8 @@ import gg.foreversixty.app.talents.TalentExport
 import gg.foreversixty.app.talents.TalentGuideBuild
 import gg.foreversixty.app.talents.TalentRankSheet
 import gg.foreversixty.app.talents.TalentsPresenter
+import gg.foreversixty.app.talents.TalentRules
+import gg.foreversixty.app.model.TalentsFile
 import java.time.Instant
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -92,6 +93,7 @@ private fun PlannerEditorRoute(feature: PlannerFeature, request: EditorRequest, 
     var keyboardTalent by remember { mutableStateOf<Int?>(null) }
     var sheet by rememberSaveable { mutableStateOf(EditorSheet.None) }
     var title by rememberSaveable { mutableStateOf("") }
+    var sheetId by remember { mutableStateOf<Int?>(null) }
     LaunchedEffect(model) {
         model.load()
         val ready = (model.phase.value as? EditorPhase.Ready)?.view
@@ -120,10 +122,16 @@ private fun PlannerEditorRoute(feature: PlannerFeature, request: EditorRequest, 
                     keyboardTalent = it
                 }
             },
+            openTalent = { sheetId = it },
         ),
         Modifier.systemBarsPadding(),
     )
     if (ready == null) return
+    sheetId?.let { talentId ->
+        rankSheet(ready.file, ready.state.ranks).sheet(TalentBuildKind.Yours, talentId, res)?.let {
+            TalentRankSheet(it, model.build) { sheetId = null }
+        }
+    }
     val dismiss = { sheet = EditorSheet.None }
     when (sheet) {
         EditorSheet.None -> Unit
@@ -201,15 +209,14 @@ private fun SharedBuildRoute(feature: PlannerFeature, id: String, back: () -> Un
             retry = { scope.launch { model.load() } },
         ),
     )
-    val sheet = loaded?.let { view -> sheetId?.let { talentId -> rankSheet(view).sheet(TalentBuildKind.Yours, talentId, res) } }
+    val sheet = loaded?.let { view -> sheetId?.let { talentId -> rankSheet(view.file, view.ranks).sheet(TalentBuildKind.Yours, talentId, res) } }
     sheet?.let { TalentRankSheet(it, loaded.build.treeVersion) { sheetId = null } }
 }
 
-/** F6's rank sheet over the shared build's ranks: the same sheet, read only. */
-private fun rankSheet(view: SharedBuildView): TalentsPresenter {
-    val ranks = view.ranks
-    val trees = view.index.trees.map { tree -> tree.talents.map { ranks[it.id] ?: 0 } }
-    return TalentsPresenter(view.file, TalentGuideBuild.None, TalentExport.Ranks(trees), level = null, specName = "")
+/** F6's rank sheet over a planner build's ranks (the editor's strip, a shared build): the same sheet, read only. */
+private fun rankSheet(file: TalentsFile, ranks: Map<Int, Int>): TalentsPresenter {
+    val trees = TalentRules.trees(file).map { tree -> tree.talents.map { ranks[it.id] ?: 0 } }
+    return TalentsPresenter(file, TalentGuideBuild.None, TalentExport.Ranks(trees), level = null, specName = "")
 }
 
 @Composable

@@ -1328,7 +1328,7 @@
     <string name="plan_a11yLeft" tools:ignore="PluralsCandidate">%1$d points left</string>
     <string name="plan_resetConfirm" tools:ignore="PluralsCandidate">Clear all %1$d points?</string>
     <string name="plan_resetProceed">Clear</string>
-    <string name="plan_refuse_tierLocked" tools:ignore="PluralsCandidate">Tier %1$d of %2$s needs %3$d points in %2$s first</string>
+    <string name="plan_refuse_tierLocked" tools:ignore="PluralsCandidate">Needs %1$d points in %2$s. You have %3$d.</string>
     <string name="plan_refuse_prereqOne">%1$s needs 1 point in %2$s first</string>
     <string name="plan_refuse_prereq" tools:ignore="PluralsCandidate">%1$s needs %2$d points in %3$s first</string>
     <string name="plan_refuse_maxRank" tools:ignore="PluralsCandidate">%1$s is already at %2$d of %2$d points</string>

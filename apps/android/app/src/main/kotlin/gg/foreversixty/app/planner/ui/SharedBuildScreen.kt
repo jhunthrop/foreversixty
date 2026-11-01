@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,7 +72,7 @@ fun SharedBuildPage(state: SharedPageState, actions: SharedActions) {
         when (val phase = state.phase) {
             SharedBuildPhase.Loading -> TalentsSkeleton()
             SharedBuildPhase.NotFound -> Message(stringResource(R.string.plan_shared_notFound))
-            SharedBuildPhase.Offline -> Message(stringResource(R.string.plan_shared_offline))
+            SharedBuildPhase.Offline -> Message(stringResource(R.string.plan_shared_offline), actions.retry)
             SharedBuildPhase.Failed -> ErrorRegion(stringResource(R.string.plan_shared_failed), actions.retry)
             is SharedBuildPhase.Loaded -> Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
                 state.offlineStamp?.let { OfflineStrip(stringResource(R.string.offline_strip, it)) }
@@ -86,9 +87,18 @@ fun SharedBuildPage(state: SharedPageState, actions: SharedActions) {
     }
 }
 
+/** A plain state in the muted body colour (not the error red); offline also offers Try again. */
 @Composable
-private fun Message(text: String) {
-    Text(text, style = FsType.lead, color = FsColor.text, modifier = Modifier.padding(16.dp))
+private fun Message(text: String, retry: (() -> Unit)? = null) {
+    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(text, style = FsType.body, color = FsColor.muted)
+        retry?.let {
+            BrandButton(
+                stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, it,
+                height = 48.dp, fill = false, leadingIcon = androidx.compose.material.icons.Icons.Filled.Refresh,
+            )
+        }
+    }
 }
 
 @Composable

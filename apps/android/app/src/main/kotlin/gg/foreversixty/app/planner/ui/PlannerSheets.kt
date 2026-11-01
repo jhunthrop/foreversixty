@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -16,7 +20,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.AlertDialog
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Surface
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -96,16 +102,36 @@ fun LevelSheetContent(level: Int, minLevel: Int, change: (Int) -> Unit) {
 }
 
 /** Reset asks once: `Clear all {n} points?`, Clear in the error colour, and Cancel. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResetDialog(points: Int, clear: () -> Unit, cancel: () -> Unit) {
-    AlertDialog(
+    // Material's alert with no body line: the question, Material's 24 dp, then the buttons. The
+    // stock AlertDialog keeps its body gap even with no body, so the frame is drawn here.
+    BasicAlertDialog(
         onDismissRequest = cancel,
-        containerColor = FsColor.raised,
-        title = { Text(stringResource(R.string.plan_resetConfirm, points), style = FsType.lead, color = FsColor.strong) },
-        confirmButton = { TextButton(onClick = clear) { Text(stringResource(R.string.plan_resetProceed), style = FsType.bodyStrong, color = FsColor.wipe) } },
-        dismissButton = { TextButton(onClick = cancel) { Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.text) } },
-    )
+        // A stray tap on the scrim never answers the question; Back still cancels.
+        properties = DialogProperties(dismissOnClickOutside = false),
+    ) {
+        Surface(Modifier.widthIn(min = DIALOG_MIN_WIDTH), shape = RoundedCornerShape(DIALOG_RADIUS), color = FsColor.raised) {
+            Column(
+                Modifier.width(IntrinsicSize.Max).padding(start = DIALOG_PADDING, end = DIALOG_PADDING, top = DIALOG_PADDING, bottom = 16.dp),
+            ) {
+                Text(stringResource(R.string.plan_resetConfirm, points), style = FsType.lead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+                Row(Modifier.fillMaxWidth().padding(top = DIALOG_PADDING - BUTTON_INSET), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
+                    TextButton(onClick = cancel) { Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.text) }
+                    TextButton(onClick = clear) { Text(stringResource(R.string.plan_resetProceed), style = FsType.bodyStrong, color = FsColor.wipe) }
+                }
+            }
+        }
+    }
 }
+
+/** Material's alert frame: 28 dp corners, 24 dp padding and gap. */
+private val DIALOG_RADIUS = 28.dp
+private val DIALOG_PADDING = 24.dp
+private val DIALOG_MIN_WIDTH = 280.dp
+/** A text button's 48 dp target pads its label: taken off the gap so title to label reads as the 24. */
+private val BUTTON_INSET = 22.dp
 
 /** The share sheet's state: the typed title and whether the POST is in flight. */
 data class ShareSheetState(val title: String, val sharing: Boolean, val signedIn: Boolean)
@@ -114,7 +140,11 @@ data class ShareSheetState(val title: String, val sharing: Boolean, val signedIn
 @Composable
 fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed: () -> Unit, cancel: () -> Unit) {
     Column(
-        Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 24.dp).verticalScroll(rememberScrollState()),
+        Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(start = 16.dp, end = 16.dp, bottom = 24.dp)
+            .navigationBarsPadding(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         SheetTitle(stringResource(R.string.plan_shareTitle))

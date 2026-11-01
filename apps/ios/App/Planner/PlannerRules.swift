@@ -80,23 +80,37 @@ enum PlannerRules {
 
     // MARK: Validation
 
-    /// `rules.ts` `validateOrder`: rules 2 to 5 point by point. Both counters advance even on a
-    /// refused point; only an unknown talent skips them, exactly as the web and the API replay it.
+    /// `rules.ts` `validateOrder`: rules 2 to 5 point by point.
     static func validate(_ index: PlannerIndex, order: [Int]) -> [PlannerFieldError] {
-        var errors: [PlannerFieldError] = []
+        violations(index, order: order).map { PlannerFieldError(field: $0.field, message: $0.message) }
+    }
+
+    /// One broken rule at one index; `rule` names the rule itself (`tier <treeId> <need>` for a
+    /// tier lock, the sentence for the others), so a removal compares rules, not sentences.
+    private struct Violation {
+        let field: String
+        let message: String
+        let rule: String
+    }
+
+    /// `rules.ts` `violations`. Both counters advance even on a refused point; only an unknown
+    /// talent skips them, exactly as the web and the API replay it.
+    private static func violations(_ index: PlannerIndex, order: [Int]) -> [Violation] {
+        var errors: [Violation] = []
         var pointsInTree: [Int: Int] = [:]
         var ranks: [Int: Int] = [:]
         for (position, id) in order.enumerated() {
             let field = "point_order[\(position)]"
             guard let talent = index.byID[id], let treeIndex = index.treeOf[id] else {
-                errors.append(PlannerFieldError(field: field, message: Copy.planRefuseUnknownTalent(id: String(id))))
+                let message = Copy.planRefuseUnknownTalent(id: String(id))
+                errors.append(Violation(field: field, message: message, rule: message))
                 continue
             }
             let tree = index.trees[treeIndex]
             let inTree = pointsInTree[treeIndex] ?? 0
             let rank = ranks[id] ?? 0
-            if let message = violation(talent, tree: tree, inTree: inTree, rank: rank, ranks: ranks, position: position, index: index) {
-                errors.append(PlannerFieldError(field: field, message: message))
+            if let (message, rule) = violation(talent, tree: tree, inTree: inTree, rank: rank, ranks: ranks, position: position, index: index) {
+                errors.append(Violation(field: field, message: message, rule: rule))
             }
             pointsInTree[treeIndex] = inTree + 1
             ranks[id] = rank + 1
@@ -107,17 +121,22 @@ enum PlannerRules {
     /// The first rule one point breaks: tier, prerequisite, max rank, then the cap.
     private static func violation(
         _ talent: Talent, tree: TalentTree, inTree: Int, rank: Int, ranks: [Int: Int], position: Int, index: PlannerIndex
-    ) -> String? {
-        if inTree < TalentRules.pointsPerTier * talent.tier {
-            return Copy.planRefuseTierLocked(tier: talent.tier, tree: tree.name, n: TalentRules.pointsPerTier * talent.tier)
+    ) -> (message: String, rule: String)? {
+        let need = TalentRules.pointsPerTier * talent.tier
+        if inTree < need {
+            return (Copy.planRefuseTierLocked(n: need, tree: tree.name, m: inTree), "tier \(tree.id) \(need)")
         }
+        let message: String
         if let prereqID = talent.prereqTalentId, (ranks[prereqID] ?? 0) < (talent.prereqRank ?? 0) {
-            let prereqName = index.byID[prereqID]?.name ?? String(prereqID)
-            return prereqMissing(talent.name, rank: talent.prereqRank ?? 0, prereq: prereqName)
+            message = prereqMissing(talent.name, rank: talent.prereqRank ?? 0, prereq: index.byID[prereqID]?.name ?? String(prereqID))
+        } else if rank >= talent.maxRank {
+            message = Copy.planRefuseMaxRank(talent: talent.name, max: talent.maxRank)
+        } else if position >= TalentRules.maxPoints {
+            message = Copy.planRefuseCap(n: TalentRules.maxPoints)
+        } else {
+            return nil
         }
-        if rank >= talent.maxRank { return Copy.planRefuseMaxRank(talent: talent.name, max: talent.maxRank) }
-        if position >= TalentRules.maxPoints { return Copy.planRefuseCap(n: TalentRules.maxPoints) }
-        return nil
+        return (message, message)
     }
 
     /// `messages.prereqMissing`: `point` for one, `points` otherwise.
@@ -161,12 +180,12 @@ enum PlannerRules {
         }
         let removedAt = order.lastIndex(of: id) ?? 0
         let before = Dictionary(
-            validate(index, order: order).map { (fieldIndex($0.field), $0.message) }, uniquingKeysWith: { first, _ in first }
+            violations(index, order: order).map { (fieldIndex($0.field), $0.rule) }, uniquingKeysWith: { first, _ in first }
         )
-        let after = validate(index, order: withoutLastPoint(order, id))
+        let after = violations(index, order: withoutLastPoint(order, id))
         let new = after.first { error in
             let position = fieldIndex(error.field)
-            return before[position < removedAt ? position : position + 1] != error.message
+            return before[position < removedAt ? position : position + 1] != error.rule
         }
         return new.map { .refused($0.message) } ?? .allowed
     }

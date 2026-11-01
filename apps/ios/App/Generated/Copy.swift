@@ -4377,9 +4377,9 @@ enum Copy {
     /// Clear
     static var planResetProceed: String { text("plan.resetProceed") }
 
-    /// Tier {tier} of {tree} needs {n} points in {tree} first
-    static func planRefuseTierLocked(tier: Int, tree: String, n: Int) -> String {
-        format("plan.refuse.tierLocked", tier, tree, n)
+    /// Needs {n} points in {tree}. You have {m}.
+    static func planRefuseTierLocked(n: Int, tree: String, m: Int) -> String {
+        format("plan.refuse.tierLocked", n, tree, m)
     }
 
     /// {talent} needs 1 point in {prereq} first

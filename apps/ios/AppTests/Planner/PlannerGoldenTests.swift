@@ -187,8 +187,8 @@ struct PlannerGoldenTests {
     @Test("a refusal of each kind is covered")
     func coverage() {
         let reasons = (Self.golden.add + Self.golden.remove).compactMap(\.reason)
-        #expect(reasons.contains { $0.hasPrefix("Tier ") })
-        #expect(reasons.contains { $0.contains(" first") && !$0.hasPrefix("Tier ") })
+        #expect(reasons.contains { $0.hasPrefix("Needs ") && $0.contains("You have") })
+        #expect(reasons.contains { $0.hasSuffix(" first") })
         #expect(reasons.contains(Self.golden.noneLeft))
         #expect(reasons.contains { $0.hasSuffix("has no points to remove") })
     }

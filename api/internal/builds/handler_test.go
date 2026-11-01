@@ -173,7 +173,7 @@ func TestSaveReturns400WithPerFieldMessages(t *testing.T) {
 	if env.Error.Code != "invalid" {
 		t.Fatalf("code = %q", env.Error.Code)
 	}
-	if got := env.Error.Fields["point_order[0]"]; got != "Tier 2 of Arms needs 10 points in Arms first" {
+	if got := env.Error.Fields["point_order[0]"]; got != "Needs 10 points in Arms. You have 0." {
 		t.Fatalf("fields = %v", env.Error.Fields)
 	}
 }

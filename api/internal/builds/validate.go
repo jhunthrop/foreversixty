@@ -70,7 +70,8 @@ func validatePoints(b *trees.Build, in Input, class trees.Class, fields map[stri
 		need := pointsPerTier * t.Tier
 		switch {
 		case perTree[t.TreeID] < need:
-			fields[key] = fmt.Sprintf("Tier %d of %s needs %d points in %s first", t.Tier, t.TreeName, need, t.TreeName)
+			// No tier number: a player counts rows from 1 and the data from 0 (web/src/lib/planner/rules.ts).
+			fields[key] = fmt.Sprintf("Needs %d points in %s. You have %d.", need, t.TreeName, perTree[t.TreeID])
 		case t.PrereqTalentID != nil && perTalent[*t.PrereqTalentID] < prereqRank(t):
 			prereq, _ := b.Talent(in.ClassID, *t.PrereqTalentID)
 			fields[key] = fmt.Sprintf("%s needs %d points in %s first", t.Name, prereqRank(t), prereq.Name)

@@ -138,7 +138,11 @@ private fun SwipeRow(row: BuildRow, zone: ZoneId, actions: BuildsActions) {
 private fun BuildRowView(row: BuildRow, zone: ZoneId, open: () -> Unit) {
     val copy = PlannerCopy(LocalResources.current)
     val totals = row.totals?.let(copy::totals) ?: row.build.pointOrder.size.toString()
-    val date = row.savedAt?.let { DAY_MONTH.withZone(zone).format(it) }.orEmpty()
+    // A non-breaking space: the date never splits across lines.
+    val date = row.savedAt?.let { DAY_MONTH.withZone(zone).format(it) }.orEmpty().replace(" ", NBSP)
+    val large = isLargeText()
+    val views = row.build.views.toInt()
+    val viewsText = pluralStringResource(R.plurals.plan_builds_views, views, views)
     val heading = stringResource(R.string.plan_builds_rowTitle, row.raceName, row.className, totals)
     Row(
         Modifier
@@ -155,10 +159,13 @@ private fun BuildRowView(row: BuildRow, zone: ZoneId, open: () -> Unit) {
             val title = row.build.title
             if (title != null) Text(title, style = FsType.bodyStrong, color = FsColor.strong)
             else Text(heading, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(stringResource(R.string.plan_builds_meta, row.raceName, row.className, totals, date), style = FsType.meta, color = FsColor.muted)
+            // An untitled row's heading already names the race, class and totals: its meta is the date.
+            val meta = if (title != null) stringResource(R.string.plan_builds_meta, row.raceName, row.className, totals, date) else date
+            // Each `·` keeps to the part after it, so no line ends on a dangling dot.
+            Text(meta.replace(SEPARATOR, SEPARATOR_KEPT), style = FsType.meta, color = FsColor.muted)
+            if (large) Text(viewsText, style = FsType.monoMeta, color = FsColor.text)
         }
-        val views = row.build.views.toInt()
-        Text(pluralStringResource(R.plurals.plan_builds_views, views, views), style = FsType.monoMeta, color = FsColor.text)
+        if (!large) Text(viewsText, style = FsType.monoMeta, color = FsColor.text)
         Chevron(20.dp)
     }
 }
@@ -182,3 +189,6 @@ private fun NewBuild(new: NewBuildRow, actions: BuildsActions) {
 }
 
 private const val REMOVE_ALPHA = 0.35f
+private const val NBSP = "\u00A0"
+private const val SEPARATOR = " · "
+private const val SEPARATOR_KEPT = " ·\u00A0"

@@ -26,8 +26,12 @@ struct PlannerBuildSummary: Equatable, Sendable, Identifiable {
             ?? Copy.planBuildsRowTitle(race: raceName, className: className, totals: totalsText)
     }
 
+    /// Under a titled row the meta carries race, class and totals; an untitled row's title already
+    /// says them, so its meta is the day alone.
     func rowMeta(timeZone: TimeZone = .current) -> String {
-        Copy.planBuildsMeta(race: raceName, className: className, totals: totalsText, date: PlannerCopy.day(build.createdAt, timeZone: timeZone))
+        let date = PlannerCopy.day(build.createdAt, timeZone: timeZone)
+        if (build.title ?? "").isEmpty { return date }
+        return Copy.planBuildsMeta(race: raceName, className: className, totals: totalsText, date: date)
     }
 
     func viewerMeta(timeZone: TimeZone = .current) -> String {

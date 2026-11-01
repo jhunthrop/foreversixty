@@ -78,20 +78,32 @@ struct PlannerSnapshotTests {
         snap(editor(state), named: "planner-zero")
     }
 
-    @Test("F13.2 a tier refusal")
-    func refusal() throws {
+    @Test("F13.2 a tier refusal, the reason in view", arguments: TextSize.allCases)
+    func refusal(size: TextSize) throws {
         var state = PlannerState(index: index, order: Array(PlannerTestData.elementalOrder(index).prefix(14)), raceSlug: "orc")
         let deep = try #require(index.trees[0].talents.first { $0.tier == 4 })
         #expect(state.add(deep.id) == .refused)
-        snap(editor(state), named: "planner-refusal")
+        snap(editor(state), size: size, named: "planner-refusal")
     }
 
+    /// The confirm as presented: over the dimmed planner, with the sheet's grab handle (a view
+    /// snapshot does not draw a real presentation, so the test composes the same layers).
     @Test("F13.3 the share confirm with a title")
     func share() {
-        snap(
-            PlannerShareSheet(title: .constant("Elemental raid"), signedIn: true, state: .idle, proceed: {}, cancel: {}),
-            named: "planner-share"
-        )
+        let sheet = VStack(spacing: 0) {
+            Capsule().fill(FSColor.muted.opacity(0.6)).frame(width: 36, height: 5).padding(.top, 6)
+            PlannerShareSheet(title: .constant("Elemental raid"), signedIn: true, state: .idle, proceed: {}, cancel: {})
+        }
+        .frame(height: 560)
+        .background(FSColor.bg)
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 22, topTrailingRadius: 22))
+        let composed = ZStack(alignment: .bottom) {
+            editor(twoLeft)
+            Color.black.opacity(0.55).ignoresSafeArea()
+            sheet
+        }
+        .ignoresSafeArea(edges: .bottom)
+        snap(composed, named: "planner-share")
     }
 
     private func summary(_ id: String, order: [Int], title: String?, views: Int64, race: (String, String) = ("Orc", "orc")) -> PlannerBuildSummary {
@@ -104,7 +116,16 @@ struct PlannerSnapshotTests {
     private func viewer(_ phase: SharedBuildPhase) -> some View {
         NavigationStack {
             SharedBuildView(phase: phase, tree: .constant(0), timeZone: .gmt)
+                .navigationTitle("")
                 .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {} label: { Label(Copy.tabHome, systemImage: "chevron.left").labelStyle(.titleAndIcon) }
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {} label: { Image(systemName: "square.and.arrow.up") }
+                    }
+                }
                 .toolbarBackground(FSColor.bg, for: .navigationBar)
                 .toolbarBackground(.visible, for: .navigationBar)
         }

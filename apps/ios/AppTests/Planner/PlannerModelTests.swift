@@ -49,7 +49,7 @@ struct PlannerEditorTests {
         #expect(model.state?.canUndo == false)
         #expect(haptics.played == [.reject])
         guard case let .refusal(line)? = model.state?.line else { Issue.record("no refusal"); return }
-        #expect(line.hasPrefix("Tier "))
+        #expect(line.hasPrefix("Needs ") && line.contains("You have"))
         #expect(model.state?.focus?.name == "Elemental Mastery")
     }
 
@@ -285,7 +285,7 @@ struct SharedBuildTests {
         await model.load()
         guard case let .loaded(rows) = model.phase else { Issue.record("not loaded"); return }
         #expect(rows.map(\.rowTitle) == ["First", "Orc Shaman 0 / 0 / 0"])
-        #expect(rows[1].rowMeta(timeZone: .gmt) == "Orc Shaman · 0 / 0 / 0 · 4 Nov")
+        #expect(rows[1].rowMeta(timeZone: .gmt) == "4 Nov")
         await model.remove(rows[0])
         #expect(source.removed == ["a"])
         #expect(model.removed?.summary.id == "a")

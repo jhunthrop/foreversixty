@@ -16,17 +16,29 @@ data class StripModel(
     /** The rank held's text, or the first rank's before any point. */
     val text: String?,
     val refusal: Refusal?,
-)
+    /** False when maxed or with no point left: `+` is dimmed (and still refuses aloud). */
+    val canAdd: Boolean = true,
+) {
+    /** False at rank 0: `−` is dimmed. */
+    val canRemove: Boolean get() = rank > 0
+}
 
 /** F6's drawing fed with the planner's ranks and its gold `available` state. iOS: PlannerCells.swift. */
 object PlannerCells {
-    fun cells(tree: TalentTree, ranks: Map<Int, Int>): List<TalentCellModel> = tree.talents.map { talent ->
-        TalentCellModel(talent, ranks[talent.id] ?: 0, state(talent, tree, ranks), delta = null, guideRank = null)
+    /** [canSpend] is false with no point left: then nothing empty is gold. */
+    fun cells(tree: TalentTree, ranks: Map<Int, Int>, canSpend: Boolean = true): List<TalentCellModel> = tree.talents.map { talent ->
+        TalentCellModel(talent, ranks[talent.id] ?: 0, state(talent, tree, ranks, canSpend), delta = null, guideRank = null)
     }
 
-    /** The planner's `cellState`: F6's, with an open cell drawn as available (gold). */
-    fun state(talent: Talent, tree: TalentTree, ranks: Map<Int, Int>): TalentCellState =
-        TalentRules.cellState(talent, tree, ranks).let { if (it == TalentCellState.Open) TalentCellState.Available else it }
+    /** The planner's `cellState`: F6's, with an open cell drawn as available (gold) while a point is left. */
+    fun state(talent: Talent, tree: TalentTree, ranks: Map<Int, Int>, canSpend: Boolean = true): TalentCellState =
+        TalentRules.cellState(talent, tree, ranks).let {
+            when {
+                it != TalentCellState.Open -> it
+                canSpend -> TalentCellState.Available
+                else -> TalentCellState.Locked
+            }
+        }
 
     fun connectors(tree: TalentTree, ranks: Map<Int, Int>): List<TalentConnector> = TalentRules.connectors(tree, ranks)
 
@@ -48,7 +60,7 @@ object PlannerCells {
         val ranks = state.ranks
         val rank = ranks[talent.id] ?: 0
         val text = talent.ranks.getOrNull((rank - 1).coerceAtLeast(0))?.description
-        return StripModel(talent, rank, state(talent, tree, ranks), text, state.refusal)
+        return StripModel(talent, rank, state(talent, tree, ranks, state.left > 0), text, state.refusal, canAdd = rank < talent.maxRank && state.left > 0)
     }
 
     /** The tree a talent sits in, left to right, or null. */

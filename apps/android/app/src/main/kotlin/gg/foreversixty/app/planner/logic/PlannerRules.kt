@@ -11,9 +11,16 @@ import gg.foreversixty.app.talents.TalentRules
  * words come from the shared catalog.
  */
 sealed interface Refusal {
-    /** `Tier {tier} of {tree} needs {n} points in {tree} first`. */
-    data class TierLocked(val tier: Int, val treeName: String) : Refusal {
-        val points: Int get() = TalentRules.POINTS_PER_TIER * tier
+    /**
+     * Which rule is broken, not the sentence (`rules.ts` `violations`): a removal is refused only for
+     * a rule it newly breaks. The tier sentence carries the tree's running count, which an earlier
+     * removal changes without a different rule being broken, so its rule is the tree and the need.
+     */
+    val rule: Any get() = this
+
+    /** `Needs {n} points in {tree}. You have {m}.`: [have] counts the tree's earlier points, refused ones included. */
+    data class TierLocked(val need: Int, val treeId: Int, val treeName: String, val have: Int) : Refusal {
+        override val rule: Any get() = "tier $treeId $need"
     }
 
     /** `{talent} needs {n} points in {prereq} first`. */
@@ -92,7 +99,8 @@ object PlannerRules {
     ): Refusal? {
         val prereqId = talent.prereqTalentId
         return when {
-            inTree < TalentRules.POINTS_PER_TIER * talent.tier -> Refusal.TierLocked(talent.tier, tree.name)
+            inTree < TalentRules.POINTS_PER_TIER * talent.tier ->
+                Refusal.TierLocked(TalentRules.POINTS_PER_TIER * talent.tier, tree.id, tree.name, inTree)
             prereqId != null && (ranks[prereqId] ?: 0) < (talent.prereqRank ?: 0) ->
                 Refusal.PrereqMissing(talent.name, talent.prereqRank ?: 0, index.byId[prereqId]?.name ?: prereqId.toString())
             rank >= talent.maxRank -> Refusal.MaxRank(talent.name, talent.maxRank)
@@ -128,11 +136,11 @@ object PlannerRules {
             if (dependant != null) return Refusal.PrereqMissing(dependant.name, dependant.prereqRank ?: 0, talent.name)
         }
         val removedAt = order.lastIndexOf(talentId)
-        val before = validate(index, order).associate { it.index to it.refusal }
+        val before = validate(index, order).associate { it.index to it.refusal.rule }
         val after = validate(index, withoutLastPoint(order, talentId))
         return after.firstOrNull { error ->
             val beforeIndex = if (error.index < removedAt) error.index else error.index + 1
-            before[beforeIndex] != error.refusal
+            before[beforeIndex] != error.refusal.rule
         }?.refusal
     }
 

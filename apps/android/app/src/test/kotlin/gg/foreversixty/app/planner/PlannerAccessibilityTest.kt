@@ -5,6 +5,7 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -39,6 +40,7 @@ class PlannerAccessibilityTest {
     private val convection = index.trees[0].talents.first { it.name == "Convection" }
     private val added = mutableListOf<Int>()
     private val removed = mutableListOf<Int>()
+    private val opened = mutableListOf<Int>()
 
     private fun show() {
         val state = EditorState("shaman", "orc", 60, emptyList())
@@ -46,7 +48,7 @@ class PlannerAccessibilityTest {
         compose.setContent {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
-                    PlannerEditorPage(EditorPageState(phase, BisTestData.BUILD, 0), EditorActions(add = { added += it }, remove = { removed += it }))
+                    PlannerEditorPage(EditorPageState(phase, BisTestData.BUILD, 0), EditorActions(add = { added += it }, remove = { removed += it }, openTalent = { opened += it }))
                 }
             }
         }
@@ -69,6 +71,12 @@ class PlannerAccessibilityTest {
         compose.runOnUiThread { actions.forEach { it.action() } }
         assertEquals(listOf(convection.id), added)
         assertEquals(listOf(convection.id), removed)
+    }
+
+    @Test fun `the strip's words open the rank sheet`() {
+        show()
+        compose.onNodeWithText(convection.name, substring = true).performClick()
+        assertEquals(listOf(convection.id), opened)
     }
 
     @Test fun `the class crest names the class`() {

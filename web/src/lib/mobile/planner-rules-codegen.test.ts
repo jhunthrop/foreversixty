@@ -22,8 +22,8 @@ describe('planner golden vectors', () => {
 
   it('cover every refusal and a legal guide build per FS1 code', () => {
     const reasons = golden.add.map((d) => d.reason ?? '');
-    expect(reasons.some((r) => r.startsWith('Tier '))).toBe(true);
-    expect(reasons.some((r) => / needs \d+ points? in /.test(r) && !r.startsWith('Tier '))).toBe(true);
+    expect(reasons.some((r) => /^Needs \d+ points in .+\. You have \d+\.$/.test(r))).toBe(true);
+    expect(reasons.some((r) => / needs \d+ points? in .+ first$/.test(r))).toBe(true);
     expect(reasons.some((r) => r.includes('is already at'))).toBe(true);
     expect(reasons).toContain(golden.none_left);
     expect(golden.remove.some((d) => d.reason?.endsWith('has no points to remove'))).toBe(true);

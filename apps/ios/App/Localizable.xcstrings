@@ -7547,13 +7547,13 @@
       }
     },
     "plan.refuse.tierLocked": {
-      "comment": "Arguments: 1 tier (int), 2 tree (string), 3 n (int)",
+      "comment": "Arguments: 1 n (int), 2 tree (string), 3 m (int)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tier %1$lld of %2$@ needs %3$lld points in %2$@ first"
+            "value": "Needs %1$lld points in %2$@. You have %3$lld."
           }
         }
       }

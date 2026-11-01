@@ -11,6 +11,8 @@ struct PlannerEditorActions {
     var reset: () -> Void = {}
     var share: () -> Void = {}
     var retry: () -> Void = {}
+    /// The strip's talent: F6's rank sheet with the full text.
+    var openTalent: (Int) -> Void = { _ in }
 }
 
 /// F13.1 Plan a build: the bar, the chips, the tabs, the tree, the stepper strip and the action
@@ -56,11 +58,17 @@ struct PlannerEditorView: View {
     @ViewBuilder
     private func ready(_ state: PlannerState) -> some View {
         if isLarge {
-            ScrollView {
-                VStack(spacing: 0) {
-                    chips(state)
-                    strip(state).padding(.top, 12)
-                    tree(state)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        chips(state)
+                        strip(state).padding(.top, 12).id(Self.stripAnchor)
+                        tree(state)
+                    }
+                }
+                .onChange(of: state.line) { _, line in
+                    // A refusal's reason scrolls into view even when the tapped cell was low.
+                    if case .refusal = line { withAnimation { proxy.scrollTo(Self.stripAnchor, anchor: .top) } }
                 }
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
@@ -91,8 +99,13 @@ struct PlannerEditorView: View {
         .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
     }
 
+    private static let stripAnchor = "planner-strip"
+
     private func strip(_ state: PlannerState) -> some View {
-        PlannerStrip(state: state, build: build, isLarge: isLarge, add: model.addFocused, remove: model.removeFocused)
+        PlannerStrip(
+            state: state, build: build, isLarge: isLarge, add: model.addFocused, remove: model.removeFocused,
+            open: actions.openTalent
+        )
     }
 
     @ViewBuilder
@@ -100,9 +113,10 @@ struct PlannerEditorView: View {
         TalentCompareBar(showsSegments: false, tabs: tabs(state), shown: .constant(.yours), tree: $tree, isLarge: isLarge)
         TalentTreeView(
             cells: cells(state), connectors: connectors(state), build: build,
-            selectedID: nil, open: model.add, remove: model.remove
+            selectedID: nil, open: model.add, remove: model.remove, tierPitch: TalentGeometry.compactTierPitch
         )
-        .padding(.vertical, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 4)
     }
 
     private var treeIndex: Int { tree }
@@ -186,8 +200,11 @@ struct PlannerChips: View {
         if isLarge {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 10) { crest; Spacer(minLength: 8); points }
-                if raceName != nil { raceChip }
-                levelChip
+                // One row when both fit, else one under the other.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) { if raceName != nil { raceChip }; levelChip }
+                    VStack(alignment: .leading, spacing: 8) { if raceName != nil { raceChip }; levelChip }
+                }
             }
         } else {
             HStack(spacing: 8) {
@@ -254,15 +271,24 @@ struct PlannerStrip: View {
     var isLarge = false
     let add: () -> Void
     let remove: () -> Void
+    var open: (Int) -> Void = { _ in }
+
+    /// The strip's fixed floor (spec §3 component table): 96 pt, the buttons 48.
+    static let minHeight: CGFloat = 96
+    /// The rank text and the refusal never push the tree off the screen; the rank sheet has it all.
+    /// At the accessibility sizes the strip scrolls, so a refusal is never cut there.
+    static let rankTextLines = 3
+    static let refusalLines = 2
 
     var body: some View {
         if let talent = state.focus {
             let rank = state.rank(of: talent.id)
-            let tile = TalentIconTile(
+            let icon = TalentIconTile(
                 talent: talent,
                 state: PlannerRules.cellState(talent, index: state.index, order: state.order, ranks: state.ranks, left: state.left),
                 build: build, size: 44
             )
+            let tile = icon.onTapGesture { open(talent.id) }.accessibilityHidden(true)
             let text = VStack(alignment: .leading, spacing: 3) {
                 ViewThatFits(in: .horizontal) {
                     HStack(alignment: .firstTextBaseline, spacing: 8) { name(talent); rankLabel(talent, rank: rank) }
@@ -271,9 +297,14 @@ struct PlannerStrip: View {
                 line(talent, rank: rank)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(.rect)
+            .onTapGesture { open(talent.id) }
             .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityHint(Copy.talentsA11yHint)
+            .accessibilityAction { open(talent.id) }
             let minus = stepper(systemImage: "minus", label: Copy.planRemovePoint, enabled: rank > 0, action: remove)
-            let plus = stepper(systemImage: "plus", label: Copy.planAddPoint, enabled: rank < talent.maxRank, action: add)
+            let plus = stepper(systemImage: "plus", label: Copy.planAddPoint, enabled: rank < talent.maxRank && state.left > 0, action: add)
             Group {
                 if isLarge {
                     VStack(alignment: .leading, spacing: 10) {
@@ -287,7 +318,7 @@ struct PlannerStrip: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .frame(minHeight: 96)
+            .frame(minHeight: Self.minHeight)
             .background(FSColor.raised)
             .overlay(alignment: .top) { FSColor.lineSoft.frame(height: 1) }
         }
@@ -305,12 +336,15 @@ struct PlannerStrip: View {
     private func line(_ talent: Talent, rank: Int) -> some View {
         switch state.line {
         case let .refusal(reason):
-            Text(reason).font(ScaledType.meta).foregroundStyle(FSColor.wipe).fixedSize(horizontal: false, vertical: true)
+            Text(reason).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
+                .lineLimit(isLarge ? nil : Self.refusalLines).truncationMode(.tail).fixedSize(horizontal: false, vertical: true)
         case let .note(note):
-            Text(note).font(ScaledType.meta).foregroundStyle(FSColor.nav).fixedSize(horizontal: false, vertical: true)
+            Text(note).font(ScaledType.meta).foregroundStyle(FSColor.nav)
+                .lineLimit(Self.rankTextLines).truncationMode(.tail).fixedSize(horizontal: false, vertical: true)
         case nil:
             if let text = Self.rankText(talent, rank: rank) {
-                Text(text).font(ScaledType.meta).foregroundStyle(FSColor.nav).fixedSize(horizontal: false, vertical: true)
+                Text(text).font(ScaledType.meta).foregroundStyle(FSColor.nav)
+                    .lineLimit(Self.rankTextLines).truncationMode(.tail).fixedSize(horizontal: false, vertical: true)
             }
         }
     }

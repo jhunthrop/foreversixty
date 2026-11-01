@@ -16,6 +16,8 @@ data class EditorState(
     val touched: Int? = null,
     /** Why the last touch changed nothing; null once a touch succeeds. */
     val refusal: Refusal? = null,
+    /** How many refusals so far: a repeated refusal is still a new one to bring into view. */
+    val refusals: Int = 0,
 ) {
     val spent: Int get() = order.size
     val left: Int get() = (PlannerRules.pointsAvailable(level) - spent).coerceAtLeast(0)
@@ -86,7 +88,7 @@ object PlannerEditor {
         Edit(state.copy(order = order, undo = pushed(state), touched = talentId, refusal = null), outcome)
 
     private fun refused(state: EditorState, talentId: Int, refusal: Refusal) =
-        Edit(state.copy(touched = talentId, refusal = refusal), EditOutcome.Refused)
+        Edit(state.copy(touched = talentId, refusal = refusal, refusals = state.refusals + 1), EditOutcome.Refused)
 
     private fun pushed(state: EditorState): List<List<Int>> = (state.undo + listOf(state.order)).takeLast(UNDO_LIMIT)
 }

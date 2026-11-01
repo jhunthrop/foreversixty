@@ -120,6 +120,40 @@ class PlannerEditorTest {
         assertEquals(TalentCellState.Available, strip?.state)
     }
 
+    @Test fun `with no point left nothing empty is available`() {
+        val full = fill(empty(), PlannerTestData.elementalOrder().size)
+        assertEquals(0, full.left)
+        val tree = trees[0]
+        val states = PlannerCells.cells(tree, full.ranks, canSpend = false).map { it.state }
+        assertTrue(TalentCellState.Available !in states)
+        assertTrue(TalentCellState.Available in PlannerCells.cells(tree, full.ranks, canSpend = true).map { it.state })
+    }
+
+    @Test fun `the strip's plus dims when maxed or out of points and minus at rank 0`() {
+        val fresh = requireNotNull(PlannerCells.strip(index, empty(), 0))
+        assertTrue(fresh.canAdd)
+        assertFalse(fresh.canRemove)
+        val full = fill(empty(), PlannerTestData.elementalOrder().size).copy(touched = id("Convection"))
+        val maxed = requireNotNull(PlannerCells.strip(index, full, 0))
+        assertFalse(maxed.canAdd)
+        assertTrue(maxed.canRemove)
+        val outOfPoints = requireNotNull(PlannerCells.strip(index, full.copy(touched = id("Elemental Mastery")), 0))
+        assertFalse(outOfPoints.canAdd)
+    }
+
+    @Test fun `each refusal counts, so a repeat still scrolls into view`() {
+        val once = PlannerEditor.add(index, empty(), id("Elemental Mastery")).state
+        val twice = PlannerEditor.add(index, once, id("Elemental Mastery")).state
+        assertEquals(2, twice.refusals)
+        assertTrue(twice != once)
+    }
+
+    @Test fun `the tier refusal says what the tree needs and has`() {
+        val refusal = PlannerEditor.add(index, empty(), id("Elemental Mastery")).state.refusal as Refusal.TierLocked
+        assertEquals(0, refusal.have)
+        assertEquals(trees[0].talents.first { it.name == "Elemental Mastery" }.tier * 5, refusal.need)
+    }
+
     @Test fun `arrows move in reading order and between tiers`() {
         val tree = trees[0]
         val first = PlannerCells.readingOrder(tree).first()

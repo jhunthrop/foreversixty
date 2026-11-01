@@ -252,8 +252,8 @@ function thin(decisions: Decision[], limit: number): Decision[] {
 }
 
 const KINDS: [string, RegExp][] = [
-  ['tier', /^Tier \d+ of .+ needs \d+ points in .+ first$/],
-  ['prerequisite', /^(?!Tier \d+ of ).+ needs \d+ points? in .+ first$/],
+  ['tier', /^Needs \d+ points in .+\. You have \d+\.$/],
+  ['prerequisite', /^.+ needs \d+ points? in .+ first$/],
   ['max rank', /^.+ is already at \d+ of \d+ points$/],
   ['no points to remove', /^.+ has no points to remove$/],
 ];

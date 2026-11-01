@@ -128,7 +128,8 @@ struct RootView: View {
             RaidNotificationCenter.shared.onOpen = openRaids
             #if DEBUG
                 // Review captures only: the launch arguments in Raids/Debug/RaidDebugLaunch.swift.
-                if let link = RaidDebugLaunch.link { openRaids(link) }
+                // Lane F13's captures open the planner the same way (UITests/PlannerCaptureTests).
+                if let link = RaidDebugLaunch.link { PlannerRouter.handles(link) ? openLink(link) : openRaids(link) }
                 await RaidDebugLaunch.postRaidPushIfAsked()
             #endif
         }

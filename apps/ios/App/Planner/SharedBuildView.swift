@@ -23,6 +23,7 @@ struct SharedBuildView: View {
                 content
             }
             .padding(.bottom, 40)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .background(FSColor.bg)
     }
@@ -37,15 +38,16 @@ struct SharedBuildView: View {
         case .offline:
             message(Copy.planSharedOffline, retry: true)
         case .failed:
-            message(Copy.planSharedFailed, retry: true)
+            message(Copy.planSharedFailed, retry: true, isError: true)
         case let .loaded(content):
             loaded(content)
         }
     }
 
-    private func message(_ text: String, retry showsRetry: Bool) -> some View {
+    /// Not found and offline are plain states (muted); only a failed load reads as an error.
+    private func message(_ text: String, retry showsRetry: Bool, isError: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(text).font(ScaledType.body).foregroundStyle(showsRetry ? FSColor.wipe : FSColor.text)
+            Text(text).font(ScaledType.body).foregroundStyle(isError ? FSColor.wipe : FSColor.muted)
                 .fixedSize(horizontal: false, vertical: true)
             if showsRetry { SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: retry) }
         }

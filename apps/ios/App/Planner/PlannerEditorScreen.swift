@@ -13,6 +13,7 @@ struct PlannerEditorScreen: View {
     @State private var sheet: Sheet?
     @State private var confirmReset = false
     @State private var shareTitle = ""
+    @State private var rankSheet: TalentSheetModel?
     @FocusState private var focused: Bool
     @Environment(\.dismiss) private var dismiss
     @Environment(SessionStore.self) private var session: SessionStore?
@@ -35,7 +36,8 @@ struct PlannerEditorScreen: View {
                 openLevel: { sheet = .level },
                 reset: { if (model.state?.spent ?? 0) > 0 { confirmReset = true } },
                 share: { sheet = .share },
-                retry: { Task { await model.load() } }
+                retry: { Task { await model.load() } },
+                openTalent: { id in rankSheet = model.state?.sheet(talentID: id) }
             )
         )
         .focusable()
@@ -50,6 +52,7 @@ struct PlannerEditorScreen: View {
             Button(Copy.commonCancel, role: .cancel) {}
         }
         .sheet(item: $sheet) { sheet in content(sheet) }
+        .sheet(item: $rankSheet) { TalentRankSheet(model: $0, build: model.state?.index.file.build ?? "") }
         .sheet(isPresented: systemShare) {
             if case let .shared(url) = model.share { SystemShareSheet(url: url).presentationDetents([.medium, .large]) }
         }
@@ -91,6 +94,7 @@ struct PlannerEditorScreen: View {
                 }
             )
             .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         }
     }
 

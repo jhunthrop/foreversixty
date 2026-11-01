@@ -76,14 +76,14 @@ describe('saveBuild', () => {
       data: null,
       error: {
         message: 'build is not valid',
-        fields: { 'point_order[7]': 'Tier 2 of Holy needs 10 points in Holy first' },
+        fields: { 'point_order[7]': 'Needs 10 points in Holy. You have 7.' },
       },
       request_id: 'r1',
     });
     await expect(saveBuild(draft, 'https://api.test')).resolves.toEqual({
       ok: false,
       message: 'build is not valid',
-      fields: { 'point_order[7]': 'Tier 2 of Holy needs 10 points in Holy first' },
+      fields: { 'point_order[7]': 'Needs 10 points in Holy. You have 7.' },
     });
   });
 

@@ -16,7 +16,10 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RoborazziOptions
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.captureRoboImage
+import com.github.takahirom.roborazzi.captureScreenRoboImage
+import gg.foreversixty.app.planner.ui.ResetDialog
 import gg.foreversixty.app.bis.BisTestData
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
@@ -72,17 +75,51 @@ class PlannerScreenshotTest {
     private val full = PlannerTestData.elementalOrder()
     private fun talent(name: String) = index.trees.flatMap { it.talents }.first { it.name == name }.id
 
-    private fun editor(order: List<Int>, touched: Int? = null, tree: Int = 0, refusalOf: Int? = null): @Composable () -> Unit {
-        var state = EditorState("shaman", "orc", PlannerEditor.MAX_LEVEL, order, undo = listOf(emptyList()), touched = touched)
+    private fun editor(
+        order: List<Int>,
+        touched: Int? = null,
+        tree: Int = 0,
+        refusalOf: Int? = null,
+        undo: List<List<Int>> = listOf(emptyList()),
+    ): @Composable () -> Unit {
+        var state = EditorState("shaman", "orc", PlannerEditor.MAX_LEVEL, order, undo = undo, touched = touched)
         if (refusalOf != null) state = PlannerEditor.add(index, state, refusalOf).state
         val phase = EditorPhase.Ready(EditorView(shaman, index, "Shaman", races, state))
         return { PlannerEditorPage(EditorPageState(phase, BisTestData.BUILD, tree), EditorActions()) }
     }
 
-    /** 49 of the raid build's 51 points, the strip on Elemental Fury: the board's `2 left`. */
-    private val planned = editor(full.dropLast(2), touched = talent("Elemental Fury"))
+    /** The Elemental talent with the longest rank text: the strip's clamp at its worst. */
+    private val longest = index.trees[0].talents.maxBy { talent -> talent.ranks.maxOfOrNull { it.description.length } ?: 0 }.id
+
+    /** 49 of the raid build's 51 points, the strip on the longest text: the board's `2 left`. */
+    private val planned = editor(full.dropLast(2), touched = longest)
 
     @Test fun `F13_1 plan a build with points left`() = both("f13-1-plan", planned)
+
+    /** Reset's alert over the editor: Clear in the error colour, and Cancel. */
+    @OptIn(ExperimentalRoborazziApi::class)
+    @Test fun `F13_1 the reset alert`() {
+        RuntimeEnvironment.setFontScale(1f)
+        compose.setContent {
+            ForeverTheme {
+                CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
+                    planned()
+                    ResetDialog(full.size - 2, {}, {})
+                }
+            }
+        }
+        compose.waitForIdle()
+        captureScreenRoboImage("src/test/screenshots/f13-1-reset_default.png", roborazziOptions = TOLERANT)
+    }
+
+    /** A fresh planner: nothing to undo, so Undo is at 40%. */
+    @Test fun `F13_1 fresh`() = capture("f13-1-fresh_default", 1f, page = editor(emptyList(), undo = emptyList()))
+
+    /** One tap later: the point, the strip on it, and Undo at full strength. */
+    @Test fun `F13_1 after one tap`() {
+        val tapped = PlannerEditor.add(index, EditorState("shaman", "orc", PlannerEditor.MAX_LEVEL, emptyList()), talent("Convection")).state
+        capture("f13-1-undo_default", 1f, page = editor(tapped.order, touched = tapped.touched, undo = tapped.undo))
+    }
 
     @Test fun `F13_1 at zero left`() = capture("f13-1-zero_default", 1f, page = editor(full, touched = talent("Elemental Mastery")))
 
@@ -90,7 +127,7 @@ class PlannerScreenshotTest {
     @Test fun `F13_2 a tier refusal`() {
         val elemental = index.trees[0].talents.map { it.id }.toSet()
         val fourteen = full.filter { it in elemental }.take(14) + full.filter { it !in elemental }
-        capture("f13-2-refusal_default", 1f, page = editor(fourteen, refusalOf = talent("Lightning Overload")))
+        both("f13-2-refusal", editor(fourteen, refusalOf = talent("Lightning Overload")))
     }
 
     @Test fun `F13_3 the share sheet with a title`() = capture("f13-3-share_default", 1f) {

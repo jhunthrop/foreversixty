@@ -77,7 +77,7 @@ func TestValidate(t *testing.T) {
 			name: "rule 3 fail: tier 1 with four points in the tree",
 			in: Input{ClassID: 1, RaceID: 1, TreeVersion: "test-1",
 				PointOrder: []int{201, 201, 201, 201, 202}},
-			want: map[string]string{"point_order[4]": "Tier 1 of Fury needs 5 points in Fury first"},
+			want: map[string]string{"point_order[4]": "Needs 5 points in Fury. You have 4."},
 		},
 		{
 			name: "rule 4 pass: prerequisite filled first",

@@ -27,6 +27,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -90,6 +98,8 @@ class EditorActions(
     val retry: () -> Unit = {},
     /** An arrow key: the talent it reaches is the strip's. */
     val move: (TreeDirection) -> Unit = {},
+    /** The strip's icon or text: F6's rank sheet with the full text. */
+    val openTalent: (Int) -> Unit = {},
 )
 
 /**
@@ -126,9 +136,10 @@ private fun EditorBar(canUndo: Boolean, actions: EditorActions) {
         },
         actions = {
             IconButton(onClick = actions.undo, enabled = canUndo) {
+                // An empty history is visibly off: the glyph at 40%.
                 Icon(
                     painterResource(R.drawable.ic_undo), contentDescription = stringResource(R.string.plan_undo),
-                    tint = if (canUndo) FsColor.strong else FsColor.muted,
+                    tint = FsColor.strong, modifier = Modifier.alpha(if (canUndo) 1f else DISABLED_ALPHA),
                 )
             }
         },
@@ -142,10 +153,14 @@ private fun EditorBody(view: EditorView, page: EditorPageState, actions: EditorA
     val res = LocalResources.current
     val copy = PlannerCopy(res)
     val editing = TalentEditing(actions.add, actions.remove, stringResource(R.string.plan_addPoint), stringResource(R.string.plan_removePoint))
-    // From 1.5x the strip grows past what a pinned bar can hold: it scrolls with the tree, and only
-    // the action bar stays pinned (spec §9, `the strip grows`).
+    // From 1.5x a pinned strip would leave no room for the tree: it heads the scroll, above the
+    // tree, and a refusal scrolls it back into view; Reset and Share stay pinned (spec §9).
     val large = isLargeText()
-    val under = @Composable {
+    val scroll = rememberScrollState()
+    LaunchedEffect(view.state.refusals) {
+        if (large && view.state.refusal != null) scroll.animateScrollTo(0)
+    }
+    val strip = @Composable {
         view.shareProblem?.let { problem ->
             Text(
                 shareProblemText(problem, res),
@@ -161,17 +176,17 @@ private fun EditorBody(view: EditorView, page: EditorPageState, actions: EditorA
             Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scroll)
                 .onKeyEvent { event -> treeKey(event, view, actions) }
                 .focusable(),
         ) {
+            if (large) strip()
             PlannerTree(
                 view.index, view.state.order, page.build, page.tree, actions.onTree,
-                Modifier.padding(bottom = 12.dp), selectedId = page.keyboardTalent, editing = editing,
+                Modifier.padding(bottom = 12.dp), selectedId = page.keyboardTalent, editing = editing, canSpend = view.state.left > 0,
             )
-            if (large) under()
         }
-        if (!large) under()
+        if (!large) strip()
         ActionBar(view.state.spent, actions)
     }
 }
@@ -239,32 +254,61 @@ private fun PointsLeft(left: Int) {
 @Composable
 private fun StepperStrip(strip: StripModel, build: String, copy: PlannerCopy, actions: EditorActions) {
     val talent = strip.talent
-    val line = strip.refusal?.let(copy::refusal) ?: strip.text
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .heightIn(min = 96.dp)
-            .background(FsColor.raised)
-            .drawBehind { drawLine(FsColor.line, Offset(0f, 0f), Offset(size.width, 0f), 1.dp.toPx()) }
-            .padding(horizontal = 16.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        TalentIconTile(talent, strip.state, build, size = 44.dp)
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(talent.name, style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f, fill = false))
-                Text(stringResource(R.string.plan_rank, strip.rank, talent.maxRank), style = FsType.mono, color = FsColor.text)
-            }
-            line?.let {
+    val refusal = strip.refusal?.let(copy::refusal)
+    val showsTalent = stringResource(R.string.talents_a11yHint)
+    // From 1.5x the buttons drop under the words, so the name and the reason get the full width.
+    val large = isLargeText()
+    val rank = stringResource(R.string.plan_rank, strip.rank, talent.maxRank)
+    val words = @Composable { modifier: Modifier ->
+        // The icon and the words open F6's rank sheet, so the clamped text is never lost.
+        Row(
+            modifier.clickable(onClickLabel = showsTalent, role = Role.Button) { actions.openTalent(talent.id) },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            TalentIconTile(talent, strip.state, build, size = 44.dp)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    it, style = FsType.meta, color = if (strip.refusal != null) FsColor.wipe else FsColor.muted,
-                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                    buildAnnotatedString {
+                        append(talent.name)
+                        append(NBSP)
+                        withStyle(SpanStyle(fontFamily = FsType.mono.fontFamily, color = FsColor.text)) { append(rank) }
+                    },
+                    style = FsType.bodyStrong, color = FsColor.strong,
                 )
+                if (refusal != null) {
+                    Text(
+                        refusal, style = FsType.meta, color = FsColor.wipe,
+                        maxLines = if (large) REFUSAL_LINES_LARGE else REFUSAL_LINES, overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                    )
+                } else {
+                    strip.text?.let { Text(it, style = FsType.meta, color = FsColor.muted, maxLines = TEXT_LINES, overflow = TextOverflow.Ellipsis) }
+                }
             }
         }
-        StepButton(painterResource(R.drawable.ic_minus), stringResource(R.string.plan_removePoint), strip.rank > 0, { actions.remove(talent.id) })
-        StepButton(rememberVectorPainter(Icons.Filled.Add), stringResource(R.string.plan_addPoint), true, { actions.add(talent.id) })
+    }
+    val buttons = @Composable {
+        // Dimmed when they cannot change anything, but still tappable: the refusal says why.
+        StepButton(painterResource(R.drawable.ic_minus), stringResource(R.string.plan_removePoint), true, { actions.remove(talent.id) }, dimmed = !strip.canRemove)
+        StepButton(rememberVectorPainter(Icons.Filled.Add), stringResource(R.string.plan_addPoint), true, { actions.add(talent.id) }, dimmed = !strip.canAdd)
+    }
+    val frame = Modifier
+        .fillMaxWidth()
+        .heightIn(min = STRIP_MIN_HEIGHT)
+        .background(FsColor.raised)
+        .drawBehind { drawLine(FsColor.line, Offset(0f, 0f), Offset(size.width, 0f), 1.dp.toPx()) }
+        .padding(horizontal = 16.dp, vertical = 10.dp)
+    if (large) {
+        Column(frame, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            words(Modifier.fillMaxWidth())
+            Row(Modifier.align(Alignment.End), horizontalArrangement = Arrangement.spacedBy(12.dp)) { buttons() }
+        }
+    } else {
+        Row(frame, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            words(Modifier.weight(1f))
+            buttons()
+        }
     }
 }
 
@@ -276,7 +320,10 @@ private fun ActionBar(spent: Int, actions: EditorActions) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         BrandButton(stringResource(R.string.plan_reset), BrandButtonKind.Secondary, actions.reset, Modifier.weight(RESET_WEIGHT), enabled = spent > 0, height = 48.dp)
-        BrandButton(stringResource(R.string.plan_share), BrandButtonKind.Primary, actions.share, Modifier.weight(1f), height = 48.dp, leadingIcon = Icons.Filled.Share)
+        BrandButton(
+            stringResource(R.string.plan_share), BrandButtonKind.Primary, actions.share, Modifier.weight(1f),
+            height = 48.dp, leadingIcon = Icons.Filled.Share, iconScalesWithText = true,
+        )
     }
 }
 
@@ -289,3 +336,12 @@ fun shareProblemText(problem: ShareOutcome, res: android.content.res.Resources):
 }
 
 private const val RESET_WEIGHT = 0.6f
+private const val DISABLED_ALPHA = 0.4f
+
+/** The stepper strip's fixed floor (spec §4), its rank text's lines and its refusal's lines. */
+private val STRIP_MIN_HEIGHT = 96.dp
+private const val TEXT_LINES = 3
+private const val REFUSAL_LINES = 2
+/** At 1.5x and over the refusal's words are twice the size: the same sentence needs more lines. */
+private const val REFUSAL_LINES_LARGE = 4
+private const val NBSP = "\u00A0"

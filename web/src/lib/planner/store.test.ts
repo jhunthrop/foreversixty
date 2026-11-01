@@ -134,7 +134,7 @@ describe('spending points', () => {
     const store = loaded();
     store.addPoint(1003);
     expect(store.order).toEqual([]);
-    expect(store.refusal).toBe(messages.tierLocked(1, 'Arms'));
+    expect(store.refusal).toBe(messages.tierLocked(5, 'Arms', 0));
     store.addPoint(1001);
     expect(store.order).toEqual([1001]);
     expect(store.refusal).toBeNull();
@@ -145,7 +145,7 @@ describe('spending points', () => {
     for (const id of [1001, 1001, 1001, 1002, 1002]) store.addPoint(id);
     store.addPoint(1003);
     store.removePoint(1001);
-    expect(store.refusal).toBe(messages.tierLocked(1, 'Arms'));
+    expect(store.refusal).toBe(messages.tierLocked(5, 'Arms', 4));
     expect(store.order).toHaveLength(6);
     store.removePoint(1003);
     expect(store.refusal).toBeNull();

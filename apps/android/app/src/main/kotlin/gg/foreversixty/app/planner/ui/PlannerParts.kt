@@ -59,13 +59,15 @@ fun PlannerTree(
     selectedId: Int? = null,
     open: (Int) -> Unit = {},
     editing: TalentEditing? = null,
+    /** False with no point left: no empty cell is drawn as available. */
+    canSpend: Boolean = true,
 ) {
     val ranks = gg.foreversixty.app.planner.logic.PlannerRules.ranks(order)
     val shown = index.trees.getOrNull(tree) ?: return
     Column(modifier) {
         TalentCompareBar(false, PlannerCells.tabs(index, order), TalentBuildKind.Yours, tree, {}, onTree, isLargeText())
         TalentTreeView(
-            PlannerCells.cells(shown, ranks),
+            PlannerCells.cells(shown, ranks, canSpend),
             PlannerCells.connectors(shown, ranks),
             build,
             selectedId,
@@ -102,16 +104,19 @@ fun PlannerChip(label: String, description: String, onClick: () -> Unit) {
     }
 }
 
-/** The strip's and the level sheet's round `−` and `+` (48). */
+/**
+ * The strip's and the level sheet's round `−` and `+` (48). [dimmed] draws it at 40% while it stays
+ * tappable (the strip's, so a refusal can explain itself); a disabled one is dimmed and inert.
+ */
 @Composable
-fun StepButton(icon: Painter, description: String, enabled: Boolean, onClick: () -> Unit, size: Dp = 48.dp) {
+fun StepButton(icon: Painter, description: String, enabled: Boolean, onClick: () -> Unit, size: Dp = 48.dp, dimmed: Boolean = !enabled) {
     Box(
         Modifier
             .size(size)
             .border(1.dp, FsColor.line, CircleShape)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .semantics { contentDescription = description }
-            .alpha(if (enabled) 1f else DISABLED_ALPHA),
+            .alpha(if (dimmed) DISABLED_ALPHA else 1f),
         contentAlignment = Alignment.Center,
     ) {
         Icon(icon, contentDescription = null, tint = FsColor.strong, modifier = Modifier.size(22.dp))

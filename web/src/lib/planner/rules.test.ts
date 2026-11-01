@@ -46,9 +46,9 @@ describe('rule 3: tier locks at 5 and 10 points in the tree', () => {
   it('refuses tier 1 until five points sit in the tree', () => {
     expect(canAddPoint(index, repeat(1001, 3).concat(repeat(1002, 1)), 1003)).toEqual({
       ok: false,
-      reason: messages.tierLocked(1, 'Arms'),
+      reason: messages.tierLocked(5, 'Arms', 4),
     });
-    expect(messages.tierLocked(1, 'Arms')).toBe('Tier 1 of Arms needs 5 points in Arms first');
+    expect(messages.tierLocked(5, 'Arms', 4)).toBe('Needs 5 points in Arms. You have 4.');
   });
 
   it('allows tier 1 on the fifth point in the tree', () => {
@@ -57,8 +57,8 @@ describe('rule 3: tier locks at 5 and 10 points in the tree', () => {
 
   it('refuses tier 2 until ten points sit in the tree', () => {
     const nine = repeat(1001, 3).concat(repeat(1002, 5), repeat(1003, 1));
-    expect(canAddPoint(index, nine, 1006)).toEqual({ ok: false, reason: messages.tierLocked(2, 'Arms') });
-    expect(messages.tierLocked(2, 'Arms')).toBe('Tier 2 of Arms needs 10 points in Arms first');
+    expect(canAddPoint(index, nine, 1006)).toEqual({ ok: false, reason: messages.tierLocked(10, 'Arms', 9) });
+    expect(messages.tierLocked(10, 'Arms', 9)).toBe('Needs 10 points in Arms. You have 9.');
     expect(canAddPoint(index, nine.concat(1003), 1006)).toEqual({ ok: true });
   });
 
@@ -66,7 +66,7 @@ describe('rule 3: tier locks at 5 and 10 points in the tree', () => {
     const tenInArms = repeat(1001, 3).concat(repeat(1002, 5), repeat(1003, 2));
     expect(canAddPoint(index, tenInArms, 2003)).toEqual({
       ok: false,
-      reason: messages.tierLocked(1, 'Fury'),
+      reason: messages.tierLocked(5, 'Fury', 0),
     });
   });
 });
@@ -158,7 +158,7 @@ describe('removal', () => {
     const order = repeat(1001, 3).concat(repeat(1002, 2), 1003);
     expect(canRemovePoint(index, order, 1001)).toEqual({
       ok: false,
-      reason: messages.tierLocked(1, 'Arms'),
+      reason: messages.tierLocked(5, 'Arms', 4),
     });
   });
 
