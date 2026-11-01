@@ -156,3 +156,19 @@ def test_layer_hotfix_push_has_an_explicit_offline_mode(monkeypatch):
     )
     cli.main(["layer-hotfix-push", "--build", BUILD, "--offline"])
     assert calls == [(BUILD, True)]
+
+
+def test_simconst_drops_a_spell_the_push_removes(build_root):  # noqa: F811
+    """The 70707 push removes Blessing of Light's and Salvation's SpellName and
+    Spell rows (Wowhead Forever has no page for them either), and keeps their
+    SpellClassOptions rows: a removed spell is gone, not a nameless constant."""
+    push = fixture_push()
+    push["SpellName"] = [PushEntry(1, 113400, int(FRIGID_POWER), STATUS_REMOVED, None)]
+    layer_hotfix_push(BUILD, root=build_root, fetch=lambda b, t: push)
+    mage = next(
+        r
+        for r in build_spell_constants(BUILD, build_root / BUILD / "raw")
+        if r.class_slug == "mage"
+    )
+    assert ICE_BARRIER in mage.spells
+    assert FRIGID_POWER not in mage.spells
