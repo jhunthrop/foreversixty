@@ -4310,6 +4310,328 @@ enum Copy {
         format("calendar.event.notesNoSize", time, n)
     }
 
+    /// Forever Sixty did not answer. Showing what you had at {time}.
+    static func offlineStale(time: String) -> String {
+        format("offline.stale", time)
+    }
+
+    /// Retry
+    static var offlineRetry: String { text("offline.retry") }
+
+    /// {thing} needs a connection.
+    static func offlineNeedsConnection(thing: String) -> String {
+        format("offline.needsConnection", thing)
+    }
+
+    /// Offline data
+    static var offlineDataTitle: String { text("offlineData.title") }
+
+    /// Guides, lists and talents on this phone
+    static var offlineDataYouRowSub: String { text("offlineData.youRow.sub") }
+
+    /// On this phone, {size}
+    static func offlineDataSection(size: String) -> String {
+        format("offlineData.section", size)
+    }
+
+    /// Guides
+    static var offlineDataGuides: String { text("offlineData.guides") }
+
+    /// Best in slot lists
+    static var offlineDataBis: String { text("offlineData.bis") }
+
+    /// Talents
+    static var offlineDataTalents: String { text("offlineData.talents") }
+
+    /// Search index
+    static var offlineDataSearch: String { text("offlineData.search") }
+
+    /// Item icons
+    static var offlineDataIcons: String { text("offlineData.icons") }
+
+    /// {what} · {size} · Updated {when}
+    static func offlineDataRowMeta(what: String, size: String, when: String) -> String {
+        format("offlineData.rowMeta", what, size, when)
+    }
+
+    /// {size} · Updated {when}
+    static func offlineDataRowMetaNoWhat(size: String, when: String) -> String {
+        format("offlineData.rowMetaNoWhat", size, when)
+    }
+
+    /// today
+    static var offlineDataToday: String { text("offlineData.today") }
+
+    /// yesterday
+    static var offlineDataYesterday: String { text("offlineData.yesterday") }
+
+    /// Nothing is saved on this phone yet.
+    static var offlineDataEmpty: String { text("offlineData.empty") }
+
+    /// Guides and lists save here the first time you open them.
+    static var offlineDataEmptySub: String { text("offlineData.emptySub") }
+
+    /// Updates
+    static var offlineDataUpdates: String { text("offlineData.updates") }
+
+    /// Keep my classes ready
+    static var offlineDataKeep: String { text("offlineData.keep") }
+
+    /// Saves the guide, lists and talents for every class you have a character in.
+    static var offlineDataKeepNote: String { text("offlineData.keepNote") }
+
+    /// Download on Wi-Fi only
+    static var offlineDataWifi: String { text("offlineData.wifi") }
+
+    /// Icons and new guides wait for Wi-Fi.
+    static var offlineDataWifiNote: String { text("offlineData.wifiNote") }
+
+    /// Update now
+    static var offlineDataUpdateNow: String { text("offlineData.updateNow") }
+
+    /// Updating
+    static var offlineDataUpdating: String { text("offlineData.updating") }
+
+    /// Everything on this phone is up to date.
+    static var offlineDataUpToDate: String { text("offlineData.upToDate") }
+
+    /// Remove downloaded data
+    static var offlineDataRemove: String { text("offlineData.remove") }
+
+    /// Remove downloaded data? It downloads again when you open a guide or list.
+    static var offlineDataRemoveConfirm: String { text("offlineData.removeConfirm") }
+
+    /// Remove
+    static var offlineDataRemoveAction: String { text("offlineData.removeAction") }
+
+    /// Checked {when}. Your characters, sign-ups and sims are not stored here; they load when you are online.
+    static func offlineDataFooter(when: String) -> String {
+        format("offlineData.footer", when)
+    }
+
+    /// Not checked yet. Your characters, sign-ups and sims are not stored here; they load when you are online.
+    static var offlineDataFooterNever: String { text("offlineData.footerNever") }
+
+    /// {day} at {time}
+    static func offlineDataCheckedAt(day: String, time: String) -> String {
+        format("offlineData.checkedAt", day, time)
+    }
+
+    /// Sign up for a raid
+    static var intentSignupTitle: String { text("intent.signup.title") }
+
+    /// Next upgrade
+    static var intentNextUpgradeTitle: String { text("intent.nextUpgrade.title") }
+
+    /// Next raid
+    static var intentNextRaidTitle: String { text("intent.nextRaid.title") }
+
+    /// Who is coming
+    static var intentWhoIsComingTitle: String { text("intent.whoIsComing.title") }
+
+    /// Open my best in slot list
+    static var intentOpenBisTitle: String { text("intent.openBis.title") }
+
+    /// In for the next raid
+    static var intentControlTitle: String { text("intent.control.title") }
+
+    /// In
+    static var intentStateIn: String { text("intent.state.in") }
+
+    /// Late
+    static var intentStateLate: String { text("intent.state.late") }
+
+    /// Out
+    static var intentStateOut: String { text("intent.state.out") }
+
+    /// Sign {name} up as {state} for {zone}, {weekday} {time}?
+    static func intentConfirmSignup(name: String, state: String, zone: String, weekday: String, time: String) -> String {
+        format("intent.confirmSignup", name, state, zone, weekday, time)
+    }
+
+    /// Sign up
+    static var intentConfirmAction: String { text("intent.confirmAction") }
+
+    /// Which raid?
+    static var intentWhich: String { text("intent.which") }
+
+    /// Which spec is {name} on {guild}?
+    static func intentSpec(name: String, guild: String) -> String {
+        format("intent.spec", name, guild)
+    }
+
+    /// You are {state} for {zone}, {weekday} at {time}, as {role} on {name}. {n} of {size} signed up.
+    static func intentSignedUp(state: String, zone: String, weekday: String, time: String, role: String, name: String, n: Int, size: Int) -> String {
+        format("intent.signedUp", state, zone, weekday, time, role, name, n, size)
+    }
+
+    /// {zone}, {weekday} at {time}. You are {state}. {n} of {size} signed up.
+    static func intentNextRaid(zone: String, weekday: String, time: String, state: String, n: Int, size: Int) -> String {
+        format("intent.nextRaid", zone, weekday, time, state, n, size)
+    }
+
+    /// {zone}, {weekday} at {time}. You have not signed up. {n} of {size} signed up.
+    static func intentNextRaidUnanswered(zone: String, weekday: String, time: String, n: Int, size: Int) -> String {
+        format("intent.nextRaidUnanswered", zone, weekday, time, n, size)
+    }
+
+    /// {n} of {size} signed up: {roles}.
+    static func intentWhoIsComing(n: Int, size: Int, roles: String) -> String {
+        format("intent.whoIsComing", n, size, roles)
+    }
+
+    /// {n} tanks
+    static func intentRolesTanks(n: Int) -> String {
+        format("intent.roles.tanks", n)
+    }
+
+    /// {n} healers
+    static func intentRolesHealers(n: Int) -> String {
+        format("intent.roles.healers", n)
+    }
+
+    /// {n} DPS
+    static func intentRolesDps(n: Int) -> String {
+        format("intent.roles.dps", n)
+    }
+
+    /// {n} late
+    static func intentRolesLate(n: Int) -> String {
+        format("intent.roles.late", n)
+    }
+
+    /// {slot} · item level {n} · {source}
+    static func intentUpgradeMeta(slot: String, n: Int, source: String) -> String {
+        format("intent.upgradeMeta", slot, n, source)
+    }
+
+    /// {slot} · item level {n}
+    static func intentUpgradeMetaNoSource(slot: String, n: Int) -> String {
+        format("intent.upgradeMetaNoSource", slot, n)
+    }
+
+    /// +{gain} DPS for {name}. Replaces {worn}.
+    static func intentUpgradeGain(gain: String, name: String, worn: String) -> String {
+        format("intent.upgradeGain", gain, name, worn)
+    }
+
+    /// +{gain} DPS for {name}. Fills an empty slot.
+    static func intentUpgradeGainEmpty(gain: String, name: String) -> String {
+        format("intent.upgradeGainEmpty", gain, name)
+    }
+
+    /// Gain not modelled yet for {name}. Replaces {worn}.
+    static func intentUpgradeNoGain(name: String, worn: String) -> String {
+        format("intent.upgradeNoGain", name, worn)
+    }
+
+    /// {name} has no upgrade on the list right now.
+    static func intentNoUpgrade(name: String) -> String {
+        format("intent.noUpgrade", name)
+    }
+
+    /// Sign in to Forever Sixty first.
+    static var intentSignedOut: String { text("intent.signedOut") }
+
+    /// Add a character in Forever Sixty first.
+    static var intentNoCharacter: String { text("intent.noCharacter") }
+
+    /// {name} is on no guild roster yet.
+    static func intentNoGuild(name: String) -> String {
+        format("intent.noGuild", name)
+    }
+
+    /// No raid planned.
+    static var intentNoRaid: String { text("intent.noRaid") }
+
+    /// {zone} on {weekday} is cancelled.
+    static func intentCancelled(zone: String, weekday: String) -> String {
+        format("intent.cancelled", zone, weekday)
+    }
+
+    /// Forever Sixty cannot do that yet.
+    static var intentOff: String { text("intent.off") }
+
+    /// Forever Sixty needs a connection for that.
+    static var intentOffline: String { text("intent.offline") }
+
+    /// Character
+    static var intentCharacter: String { text("intent.character") }
+
+    /// Raid
+    static var intentRaid: String { text("intent.raid") }
+
+    /// Next raid
+    static var shortcutNextRaid: String { text("shortcut.nextRaid") }
+
+    /// Sign up In
+    static var shortcutSignupIn: String { text("shortcut.signupIn") }
+
+    /// My upgrades
+    static var shortcutUpgrades: String { text("shortcut.upgrades") }
+
+    /// Search
+    static var shortcutSearch: String { text("shortcut.search") }
+
+    /// You are In for {zone}.
+    static func shortcutSignupToast(zone: String) -> String {
+        format("shortcut.signupToast", zone)
+    }
+
+    /// Forever Sixty · character
+    static var shortcutCharacterSub: String { text("shortcut.characterSub") }
+
+    /// Open Forever Sixty to use this shortcut.
+    static var shortcutDisabled: String { text("shortcut.disabled") }
+
+    /// {spec} {class} · {level} · {guild}
+    static func spotlightCharacterSub(spec: String, className: String, level: String, guild: String) -> String {
+        format("spotlight.characterSub", spec, className, level, guild)
+    }
+
+    /// {spec} {class} · {level}
+    static func spotlightCharacterSubNoGuild(spec: String, className: String, level: String) -> String {
+        format("spotlight.characterSubNoGuild", spec, className, level)
+    }
+
+    /// Guide · Updated {date}
+    static func spotlightGuideSub(date: String) -> String {
+        format("spotlight.guideSub", date)
+    }
+
+    /// {zone} · {weekday} {time}
+    static func spotlightRaidTitle(zone: String, weekday: String, time: String) -> String {
+        format("spotlight.raidTitle", zone, weekday, time)
+    }
+
+    /// Raid · {date}
+    static func spotlightRaidSub(date: String) -> String {
+        format("spotlight.raidSub", date)
+    }
+
+    /// {name}, {spec} {class}, level {n}
+    static func shareCharacter(name: String, spec: String, className: String, n: Int) -> String {
+        format("share.character", name, spec, className, n)
+    }
+
+    /// {spec} {class} guide
+    static func shareGuide(spec: String, className: String) -> String {
+        format("share.guide", spec, className)
+    }
+
+    /// {role} tier list
+    static func shareTiers(role: String) -> String {
+        format("share.tiers", role)
+    }
+
+    /// {zone} · {date}
+    static func shareReport(zone: String, date: String) -> String {
+        format("share.report", zone, date)
+    }
+
+    /// Share
+    static var shareAction: String { text("share.action") }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }

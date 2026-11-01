@@ -33,4 +33,6 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     GuideTiers("guide_tiers", false),
     /** F16: Guild roster with attendance, raid history, calendar sync and the calendar link */
     GuildExtras("guild_extras", false),
+    /** F15: System integration: Siri and App Shortcuts, the Control, Spotlight, the Android shortcuts and Assistant features, and You › Offline data. Share actions, the stale strip and haptics follow their own screens' switches */
+    System("system", false),
 }

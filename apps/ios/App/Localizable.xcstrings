@@ -3789,6 +3789,444 @@
         }
       }
     },
+    "intent.cancelled": {
+      "comment": "Arguments: 1 zone (string), 2 weekday (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ on %2$@ is cancelled."
+          }
+        }
+      }
+    },
+    "intent.character": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Character"
+          }
+        }
+      }
+    },
+    "intent.confirmAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign up"
+          }
+        }
+      }
+    },
+    "intent.confirmSignup": {
+      "comment": "Arguments: 1 name (string), 2 state (string), 3 zone (string), 4 weekday (string), 5 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign %1$@ up as %2$@ for %3$@, %4$@ %5$@?"
+          }
+        }
+      }
+    },
+    "intent.control.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In for the next raid"
+          }
+        }
+      }
+    },
+    "intent.nextRaid": {
+      "comment": "Arguments: 1 zone (string), 2 weekday (string), 3 time (string), 4 state (string), 5 n (int), 6 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@ at %3$@. You are %4$@. %5$lld of %6$lld signed up."
+          }
+        }
+      }
+    },
+    "intent.nextRaid.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next raid"
+          }
+        }
+      }
+    },
+    "intent.nextRaidUnanswered": {
+      "comment": "Arguments: 1 zone (string), 2 weekday (string), 3 time (string), 4 n (int), 5 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@ at %3$@. You have not signed up. %4$lld of %5$lld signed up."
+          }
+        }
+      }
+    },
+    "intent.nextUpgrade.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next upgrade"
+          }
+        }
+      }
+    },
+    "intent.noCharacter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a character in Forever Sixty first."
+          }
+        }
+      }
+    },
+    "intent.noGuild": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ is on no guild roster yet."
+          }
+        }
+      }
+    },
+    "intent.noRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No raid planned."
+          }
+        }
+      }
+    },
+    "intent.noUpgrade": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ has no upgrade on the list right now."
+          }
+        }
+      }
+    },
+    "intent.off": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forever Sixty cannot do that yet."
+          }
+        }
+      }
+    },
+    "intent.offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forever Sixty needs a connection for that."
+          }
+        }
+      }
+    },
+    "intent.openBis.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open my best in slot list"
+          }
+        }
+      }
+    },
+    "intent.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid"
+          }
+        }
+      }
+    },
+    "intent.roles.dps": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld DPS"
+          }
+        }
+      }
+    },
+    "intent.roles.healers": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 healer"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld healers"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "intent.roles.late": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld late"
+          }
+        }
+      }
+    },
+    "intent.roles.tanks": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 tank"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld tanks"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "intent.signedOut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to Forever Sixty first."
+          }
+        }
+      }
+    },
+    "intent.signedUp": {
+      "comment": "Arguments: 1 state (string), 2 zone (string), 3 weekday (string), 4 time (string), 5 role (string), 6 name (string), 7 n (int), 8 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are %1$@ for %2$@, %3$@ at %4$@, as %5$@ on %6$@. %7$lld of %8$lld signed up."
+          }
+        }
+      }
+    },
+    "intent.signup.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign up for a raid"
+          }
+        }
+      }
+    },
+    "intent.spec": {
+      "comment": "Arguments: 1 name (string), 2 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which spec is %1$@ on %2$@?"
+          }
+        }
+      }
+    },
+    "intent.state.in": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In"
+          }
+        }
+      }
+    },
+    "intent.state.late": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Late"
+          }
+        }
+      }
+    },
+    "intent.state.out": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Out"
+          }
+        }
+      }
+    },
+    "intent.upgradeGain": {
+      "comment": "Arguments: 1 gain (string), 2 name (string), 3 worn (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%1$@ DPS for %2$@. Replaces %3$@."
+          }
+        }
+      }
+    },
+    "intent.upgradeGainEmpty": {
+      "comment": "Arguments: 1 gain (string), 2 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%1$@ DPS for %2$@. Fills an empty slot."
+          }
+        }
+      }
+    },
+    "intent.upgradeMeta": {
+      "comment": "Arguments: 1 slot (string), 2 n (int), 3 source (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · item level %2$lld · %3$@"
+          }
+        }
+      }
+    },
+    "intent.upgradeMetaNoSource": {
+      "comment": "Arguments: 1 slot (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · item level %2$lld"
+          }
+        }
+      }
+    },
+    "intent.upgradeNoGain": {
+      "comment": "Arguments: 1 name (string), 2 worn (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gain not modelled yet for %1$@. Replaces %2$@."
+          }
+        }
+      }
+    },
+    "intent.which": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which raid?"
+          }
+        }
+      }
+    },
+    "intent.whoIsComing": {
+      "comment": "Arguments: 1 n (int), 2 size (int), 3 roles (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld signed up: %3$@."
+          }
+        }
+      }
+    },
+    "intent.whoIsComing.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who is coming"
+          }
+        }
+      }
+    },
     "itemPage.a11y.source": {
       "comment": "Arguments: 1 title (string), 2 meta (string)",
       "extractionState": "manual",
@@ -6757,6 +7195,18 @@
         }
       }
     },
+    "offline.needsConnection": {
+      "comment": "Arguments: 1 thing (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ needs a connection."
+          }
+        }
+      }
+    },
     "offline.newData": {
       "extractionState": "manual",
       "localizations": {
@@ -6764,6 +7214,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "New game data is ready."
+          }
+        }
+      }
+    },
+    "offline.retry": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retry"
+          }
+        }
+      }
+    },
+    "offline.stale": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forever Sixty did not answer. Showing what you had at %1$@."
           }
         }
       }
@@ -6798,6 +7271,319 @@
           "stringUnit": {
             "state": "translated",
             "value": "The update did not finish. Try again."
+          }
+        }
+      }
+    },
+    "offlineData.bis": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot lists"
+          }
+        }
+      }
+    },
+    "offlineData.checkedAt": {
+      "comment": "Arguments: 1 day (string), 2 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ at %2$@"
+          }
+        }
+      }
+    },
+    "offlineData.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing is saved on this phone yet."
+          }
+        }
+      }
+    },
+    "offlineData.emptySub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides and lists save here the first time you open them."
+          }
+        }
+      }
+    },
+    "offlineData.footer": {
+      "comment": "Arguments: 1 when (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checked %1$@. Your characters, sign-ups and sims are not stored here; they load when you are online."
+          }
+        }
+      }
+    },
+    "offlineData.footerNever": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not checked yet. Your characters, sign-ups and sims are not stored here; they load when you are online."
+          }
+        }
+      }
+    },
+    "offlineData.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
+    "offlineData.icons": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item icons"
+          }
+        }
+      }
+    },
+    "offlineData.keep": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep my classes ready"
+          }
+        }
+      }
+    },
+    "offlineData.keepNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saves the guide, lists and talents for every class you have a character in."
+          }
+        }
+      }
+    },
+    "offlineData.remove": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove downloaded data"
+          }
+        }
+      }
+    },
+    "offlineData.removeAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "offlineData.removeConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove downloaded data? It downloads again when you open a guide or list."
+          }
+        }
+      }
+    },
+    "offlineData.rowMeta": {
+      "comment": "Arguments: 1 what (string), 2 size (string), 3 when (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · Updated %3$@"
+          }
+        }
+      }
+    },
+    "offlineData.rowMetaNoWhat": {
+      "comment": "Arguments: 1 size (string), 2 when (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Updated %2$@"
+          }
+        }
+      }
+    },
+    "offlineData.search": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search index"
+          }
+        }
+      }
+    },
+    "offlineData.section": {
+      "comment": "Arguments: 1 size (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On this phone, %1$@"
+          }
+        }
+      }
+    },
+    "offlineData.talents": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents"
+          }
+        }
+      }
+    },
+    "offlineData.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline data"
+          }
+        }
+      }
+    },
+    "offlineData.today": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "today"
+          }
+        }
+      }
+    },
+    "offlineData.updateNow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update now"
+          }
+        }
+      }
+    },
+    "offlineData.updates": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates"
+          }
+        }
+      }
+    },
+    "offlineData.updating": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updating"
+          }
+        }
+      }
+    },
+    "offlineData.upToDate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything on this phone is up to date."
+          }
+        }
+      }
+    },
+    "offlineData.wifi": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download on Wi-Fi only"
+          }
+        }
+      }
+    },
+    "offlineData.wifiNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Icons and new guides wait for Wi-Fi."
+          }
+        }
+      }
+    },
+    "offlineData.yesterday": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yesterday"
+          }
+        }
+      }
+    },
+    "offlineData.youRow.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides, lists and talents on this phone"
           }
         }
       }
@@ -11367,6 +12153,65 @@
         }
       }
     },
+    "share.action": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "share.character": {
+      "comment": "Arguments: 1 name (string), 2 spec (string), 3 class (string), 4 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@ %3$@, level %4$lld"
+          }
+        }
+      }
+    },
+    "share.guide": {
+      "comment": "Arguments: 1 spec (string), 2 class (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ guide"
+          }
+        }
+      }
+    },
+    "share.report": {
+      "comment": "Arguments: 1 zone (string), 2 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "share.tiers": {
+      "comment": "Arguments: 1 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ tier list"
+          }
+        }
+      }
+    },
     "shell.arrivesNext": {
       "comment": "Arguments: 1 tab (string)",
       "extractionState": "manual",
@@ -11386,6 +12231,84 @@
           "stringUnit": {
             "state": "translated",
             "value": "Coming soon"
+          }
+        }
+      }
+    },
+    "shortcut.characterSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forever Sixty · character"
+          }
+        }
+      }
+    },
+    "shortcut.disabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Forever Sixty to use this shortcut."
+          }
+        }
+      }
+    },
+    "shortcut.nextRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next raid"
+          }
+        }
+      }
+    },
+    "shortcut.search": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        }
+      }
+    },
+    "shortcut.signupIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign up In"
+          }
+        }
+      }
+    },
+    "shortcut.signupToast": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are In for %1$@."
+          }
+        }
+      }
+    },
+    "shortcut.upgrades": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My upgrades"
           }
         }
       }
@@ -12116,6 +13039,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "Which spec tonight?"
+          }
+        }
+      }
+    },
+    "spotlight.characterSub": {
+      "comment": "Arguments: 1 spec (string), 2 class (string), 3 level (string), 4 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ · %3$@ · %4$@"
+          }
+        }
+      }
+    },
+    "spotlight.characterSubNoGuild": {
+      "comment": "Arguments: 1 spec (string), 2 class (string), 3 level (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "spotlight.guideSub": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guide · Updated %1$@"
+          }
+        }
+      }
+    },
+    "spotlight.raidSub": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid · %1$@"
+          }
+        }
+      }
+    },
+    "spotlight.raidTitle": {
+      "comment": "Arguments: 1 zone (string), 2 weekday (string), 3 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ %3$@"
           }
         }
       }
