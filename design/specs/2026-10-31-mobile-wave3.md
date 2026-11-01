@@ -643,7 +643,7 @@ F14.1 on a light and dark wallpaper, medium with each answer checked, the failur
 | Open my best in slot | `Open my best in slot list` | opens the BiS tab |
 
 - **Which raid.** The next raid starting within 24 hours; else the next planned one. If two raids are within 24 hours Siri asks `Which raid?` and lists them. The character is the current character; a `Character` parameter lets a Shortcut choose another.
-- **Confirmation by voice only.** Run by voice, a sign-up asks once (F15.1: `Sign Lightningbolltz up as In for Onyxia's Lair, Thursday 8 pm?` with `Sign up` and `Cancel`). Run from a Shortcut, the Action button, a widget or a Control it does not ask. A sign-up is reversible and one tap away, which is why one confirmation is enough.
+- **Confirmation by voice only.** Run by voice, a sign-up asks once (F15.1: `Sign Lightningbolltz up as In for Onyxia's Lair, Thursday 8 pm?` with `Cancel` and `Sign up`, the primary trailing as the platform orders them; amended 2026-11-01, F15 build review). Run from a Shortcut, the Action button, a widget or a Control it does not ask. A sign-up is reversible and one tap away, which is why one confirmation is enough.
 - **The same rules as the app.** An intent calls the same `PUT`, shows the same refusal sentences (`Sign-ups are locked. An officer can still change yours.`, `That did not save. Try again.`) and asks the spec question when the character has no spec (`Which spec is Lightningbolltz on Olympus XXVII?` with the specs as options).
 - **Controls (iOS 18+).** One Control Center control, `In for the next raid`, that answers `In`. It is the same intent.
 
