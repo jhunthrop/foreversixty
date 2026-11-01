@@ -35,7 +35,7 @@
     seenBuildSpec,
     seenSplits,
   } from '../lib/character-profile';
-  import { readCurrent } from '../lib/current-character';
+  import { onCurrentCharacterChange, onCurrentCharacterSwitch, readCurrent } from '../lib/current-character';
   import { factionOfRace } from '../lib/race-faction';
   import { sourcePill } from '../lib/sim/sources';
   import { foreverOf, hasScore, ownCharacter } from '../lib/score/score';
@@ -138,6 +138,30 @@
    *  2 item 3): "Every ranked fight" marks that row "rated 65". */
   let rated = $state<{ report_id: string; fight_index: number; overall: number } | null>(null);
 
+  /** The header selector's current character is this page's. */
+  function isActive(requested: CharacterPath): boolean {
+    const current = readCurrent();
+    return (
+      current?.source === 'armory' &&
+      current.ref === characterKey(requested.region, requested.ruleset, requested.slug)
+    );
+  }
+  // A choice in the header re-reads `owned` in place (the account's own rows have not changed).
+  $effect(() =>
+    onCurrentCharacterChange(() => {
+      if (resolved !== null) owned = isActive(resolved) || own !== null;
+    }),
+  );
+  // Your character's page moves to the newly chosen character's (character-selector/follow-page.ts);
+  // a character you looked up stays.
+  $effect(() =>
+    onCurrentCharacterSwitch((change) => {
+      void import('../lib/character-selector/follow-page-run').then(({ followCharacterPage }) =>
+        followCharacterPage(change),
+      );
+    }),
+  );
+
   $effect(() => {
     const requested = resolved;
     own = null;
@@ -146,18 +170,14 @@
     historyEntitled = false;
     coachEntitled = false;
     if (requested === null) return;
-    const current = readCurrent();
-    const active =
-      current?.source === 'armory' &&
-      current.ref === characterKey(requested.region, requested.ruleset, requested.slug);
-    owned = active;
+    owned = isActive(requested);
     void fetchMeOnce()
       .then((me) => {
         if (resolved !== requested) return;
         own = ownCharacter(me?.characters, requested);
         historyEntitled = me?.entitlements?.history === true;
         coachEntitled = viewerFromMe(me).premium;
-        owned = active || own !== null;
+        owned = isActive(requested) || own !== null;
         ownerKnown = true;
       })
       .catch(() => {

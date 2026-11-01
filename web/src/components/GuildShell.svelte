@@ -17,6 +17,7 @@
     parseGuildSettingsPath,
   } from '../lib/characters';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
+  import { onCurrentCharacterSwitch } from '../lib/current-character-events';
   import Guild from './Guild.svelte';
   import GuildLanding from './GuildLanding.svelte';
   import LoadError from './ui/LoadError.svelte';
@@ -41,6 +42,16 @@
   const inviteToken = $derived(parseGuildInviteToken(resolvedPath));
   const raidPath = $derived(parseGuildRaidPath(resolvedPath));
   const guildPath = $derived(parseGuildPath(resolvedPath));
+
+  // Every guild view follows the header selector (character-selector/follow-page.ts): your guild
+  // moves to the new character's, a guild you looked up stays. The work loads on the first choice.
+  $effect(() =>
+    onCurrentCharacterSwitch((change) => {
+      void import('../lib/character-selector/follow-page-run').then(({ followGuildPage }) =>
+        followGuildPage(change),
+      );
+    }),
+  );
 
   $effect(() => {
     if (isGuildLandingPath(resolvedPath)) return;

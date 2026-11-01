@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70707",
-  "engine_version": "c8d29ea33",
-  "generated_at": "2026-11-01T14:41:21Z",
+  "engine_version": "640da215f",
+  "generated_at": "2026-11-01T17:01:44Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -596,7 +596,7 @@
           "item_name": "Blackfang",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 228.62,
+          "score": 228.666666667,
           "verified": true,
           "swap_note": "confirmed by the sim against Assassin's Blade (id 1935): kept the pick, +5.2 DPS (38.1 vs 32.9 set DPS)",
           "dps_delta": 5.207487274970816,
@@ -606,21 +606,21 @@
               "item_name": "Evocator's Blade",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
-              "dps_delta": -0.920610844
+              "dps_delta": -0.075213304
+            },
+            {
+              "item_id": 6448,
+              "item_name": "Tail Spike",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Skum",
+              "dps_delta": -1.631132019
             },
             {
               "item_id": 2169,
               "item_name": "Buzzer Blade",
               "source_kind": "dungeon",
               "source": "The Deadmines: Sneed's Shredder",
-              "dps_delta": -2.102963987
-            },
-            {
-              "item_id": 3490,
-              "item_name": "Deadly Bronze Poniard",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -2.695127739
+              "dps_delta": -2.105972519
             }
           ],
           "runners_up": [
@@ -630,9 +630,9 @@
               "source": "Blackfathom Deeps"
             },
             {
-              "item_id": 2169,
+              "item_id": 6448,
               "source_kind": "dungeon",
-              "source": "The Deadmines: Sneed's Shredder"
+              "source": "Wailing Caverns: Skum"
             }
           ]
         },
@@ -642,7 +642,7 @@
           "item_name": "Assassin's Blade",
           "source": "Shadowfang Keep",
           "source_kind": "dungeon",
-          "score": 228.314687405,
+          "score": 228.263108458,
           "verified": true,
           "alternatives": [
             {
@@ -744,8 +744,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.067490166,
-      "verify_run_seconds": 3.8926723770000002,
+      "weights_run_seconds": 1.896947812,
+      "verify_run_seconds": 3.845926833,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1435,7 +1435,7 @@
           "item_name": "Blackfang",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 228.62,
+          "score": 228.666666667,
           "verified": true,
           "swap_note": "confirmed by the sim against Assassin's Blade (id 1935): kept the pick, +5.0 DPS (37.6 vs 32.6 set DPS)",
           "dps_delta": 5.040785713523903,
@@ -1445,21 +1445,21 @@
               "item_name": "Evocator's Blade",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps",
-              "dps_delta": -0.920610844
+              "dps_delta": -0.075213304
+            },
+            {
+              "item_id": 6448,
+              "item_name": "Tail Spike",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Skum",
+              "dps_delta": -1.631132019
             },
             {
               "item_id": 2169,
               "item_name": "Buzzer Blade",
               "source_kind": "dungeon",
               "source": "The Deadmines: Sneed's Shredder",
-              "dps_delta": -2.102963987
-            },
-            {
-              "item_id": 3490,
-              "item_name": "Deadly Bronze Poniard",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -2.695127739
+              "dps_delta": -2.105972519
             }
           ],
           "runners_up": [
@@ -1469,9 +1469,9 @@
               "source": "Blackfathom Deeps"
             },
             {
-              "item_id": 2169,
+              "item_id": 6448,
               "source_kind": "dungeon",
-              "source": "The Deadmines: Sneed's Shredder"
+              "source": "Wailing Caverns: Skum"
             }
           ]
         },
@@ -1481,7 +1481,7 @@
           "item_name": "Assassin's Blade",
           "source": "Shadowfang Keep",
           "source_kind": "dungeon",
-          "score": 228.314687405,
+          "score": 228.263108458,
           "verified": true,
           "alternatives": [
             {
@@ -1583,8 +1583,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.067490166,
-      "verify_run_seconds": 3.903307182,
+      "weights_run_seconds": 1.896947812,
+      "verify_run_seconds": 3.7959141499999998,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2345,21 +2345,21 @@
               "item_name": "Thornspike",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Aggem Thorncurse",
-              "dps_delta": -2.241273028
+              "dps_delta": -2.242914185
             },
             {
               "item_id": 2912,
               "item_name": "Claw of the Shadowmancer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.297072356
+              "dps_delta": -2.300498631
             },
             {
               "item_id": 9453,
               "item_name": "Toxic Revenger",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -2.297072356
+              "dps_delta": -2.300498631
             }
           ],
           "runners_up": [
@@ -2382,7 +2382,7 @@
           "source": "Scarlet Monastery: Interrogator Vishas",
           "source_kind": "dungeon",
           "chance": 0.1,
-          "score": 296.52,
+          "score": 308.823529412,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -2480,8 +2480,8 @@
         "off_hand: Torturing Poker",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.129800064,
-      "verify_run_seconds": 4.13922385,
+      "weights_run_seconds": 1.928330221,
+      "verify_run_seconds": 4.010938528,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3245,21 +3245,21 @@
               "item_name": "Thornspike",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Aggem Thorncurse",
-              "dps_delta": -2.241273028
+              "dps_delta": -2.242914185
             },
             {
               "item_id": 2912,
               "item_name": "Claw of the Shadowmancer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.297072356
+              "dps_delta": -2.300498631
             },
             {
               "item_id": 9453,
               "item_name": "Toxic Revenger",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -2.297072356
+              "dps_delta": -2.300498631
             }
           ],
           "runners_up": [
@@ -3282,7 +3282,7 @@
           "source": "Scarlet Monastery: Interrogator Vishas",
           "source_kind": "dungeon",
           "chance": 0.1,
-          "score": 296.52,
+          "score": 308.823529412,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -3381,8 +3381,8 @@
         "off_hand: Torturing Poker",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.129800064,
-      "verify_run_seconds": 4.090170294,
+      "weights_run_seconds": 1.928330221,
+      "verify_run_seconds": 3.9728854780000002,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4124,18 +4124,18 @@
               "verified": true
             },
             {
-              "item_id": 7714,
-              "item_name": "Hypnotic Blade",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -3.432722725
-            },
-            {
               "item_id": 8006,
               "item_name": "The Ziggler",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.587436989
+              "dps_delta": -3.586615385
+            },
+            {
+              "item_id": 3187,
+              "item_name": "Sacrificial Kris",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -3.952274097
             }
           ],
           "runners_up": [
@@ -4145,9 +4145,9 @@
               "source": "Razorfen Downs: Amnennar the Coldbringer"
             },
             {
-              "item_id": 7714,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Arcanist Doan"
+              "item_id": 8006,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -4157,15 +4157,9 @@
           "item_name": "Black Menace",
           "source": "In the Name of the Light",
           "source_kind": "quest",
-          "score": 415.38,
+          "score": 415.333333333,
           "verified": true,
           "effect_unmodelled": true,
-          "ties": [
-            {
-              "item_id": 10761,
-              "item_name": "Coldrage Dagger"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 10761,
@@ -4264,8 +4258,8 @@
         "off_hand: Black Menace",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.122369361,
-      "verify_run_seconds": 2.468632565,
+      "weights_run_seconds": 1.93767556,
+      "verify_run_seconds": 2.359840007,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4995,43 +4989,43 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 474.46,
+          "score": 474.444444444,
           "verified": true,
           "swap_note": "confirmed by the sim against Coldrage Dagger (id 10761): kept the pick, +53.8 DPS (97.9 vs 44.2 set DPS)",
           "dps_delta": 53.76949867530593,
           "alternatives": [
             {
-              "item_id": 7714,
-              "item_name": "Hypnotic Blade",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -3.432722725
-            },
-            {
               "item_id": 8006,
               "item_name": "The Ziggler",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.587436989
+              "dps_delta": -3.586615385
             },
             {
               "item_id": 3187,
               "item_name": "Sacrificial Kris",
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -3.954883365
+              "dps_delta": -3.952274097
+            },
+            {
+              "item_id": 9680,
+              "item_name": "Tok'kar's Murloc Shanker",
+              "source_kind": "quest",
+              "source": "Threat From the Sea",
+              "dps_delta": -3.964208171
             }
           ],
           "runners_up": [
             {
-              "item_id": 7714,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Arcanist Doan"
-            },
-            {
               "item_id": 8006,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            {
+              "item_id": 3187,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             }
           ]
         },
@@ -5041,23 +5035,23 @@
           "item_name": "Coldrage Dagger",
           "source": "Razorfen Downs: Amnennar the Coldbringer",
           "source_kind": "dungeon",
-          "score": 415.38,
+          "score": 406,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7714,
-              "item_name": "Hypnotic Blade",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -59.770931746,
+              "item_id": 8006,
+              "item_name": "The Ziggler",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.807611758,
               "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 7714,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Arcanist Doan"
+              "item_id": 8006,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -5140,8 +5134,8 @@
         "off_hand: Coldrage Dagger",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.122369361,
-      "verify_run_seconds": 2.454296381,
+      "weights_run_seconds": 1.93767556,
+      "verify_run_seconds": 2.36637422,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5910,13 +5904,6 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 17710,
-              "item_name": "Charstone Dirk",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.341965925
-            },
-            {
               "item_id": 2164,
               "item_name": "Gut Ripper",
               "source_kind": "world_drop",
@@ -5929,17 +5916,24 @@
               "item_name": "Widowmaker",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.005958544
+              "dps_delta": -2.005681648
+            },
+            {
+              "item_id": 9467,
+              "item_name": "Gahz'rilla Fang",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Gahz'rilla",
+              "dps_delta": -2.460011282
             }
           ],
           "runners_up": [
             {
-              "item_id": 17710,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 2164,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             {
-              "item_id": 2164,
+              "item_id": 4091,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -5951,24 +5945,23 @@
           "item_name": "Lifeforce Dirk",
           "source": "The God Hakkar",
           "source_kind": "quest",
-          "score": 503.16,
+          "score": 503.125,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 17710,
-              "item_name": "Charstone Dirk",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
-              "dps_delta": -92.670498631,
-              "verified": true
+              "item_id": 2164,
+              "item_name": "Gut Ripper",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0
             }
           ],
           "runners_up": [
             {
-              "item_id": 17710,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 2164,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -6054,8 +6047,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.663826332,
-      "verify_run_seconds": 2.9655721809999998,
+      "weights_run_seconds": 2.46042045,
+      "verify_run_seconds": 2.840079895,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6814,35 +6807,35 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 17710,
-              "item_name": "Charstone Dirk",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.341965925
-            },
-            {
               "item_id": 2164,
               "item_name": "Gut Ripper",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.510349501
+              "dps_delta": -1.510105936
             },
             {
               "item_id": 4091,
               "item_name": "Widowmaker",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.005958544
+              "dps_delta": -2.005681648
+            },
+            {
+              "item_id": 9467,
+              "item_name": "Gahz'rilla Fang",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Gahz'rilla",
+              "dps_delta": -2.460011282
             }
           ],
           "runners_up": [
             {
-              "item_id": 17710,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 2164,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             {
-              "item_id": 2164,
+              "item_id": 4091,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -6854,24 +6847,24 @@
           "item_name": "Lifeforce Dirk",
           "source": "The God Hakkar",
           "source_kind": "quest",
-          "score": 503.16,
+          "score": 503.125,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 17710,
-              "item_name": "Charstone Dirk",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
-              "dps_delta": -94.239712118,
+              "item_id": 2164,
+              "item_name": "Gut Ripper",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
               "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 17710,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 2164,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -6957,8 +6950,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.663826332,
-      "verify_run_seconds": 2.95150581,
+      "weights_run_seconds": 2.46042045,
+      "verify_run_seconds": 2.8408646539999998,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7760,23 +7753,23 @@
           "item_name": "Scarlet Kris",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 597.156195752,
+          "score": 597.202862419,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 24222,
-              "item_name": "The Shadowfoot Stabber",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -4.295859771,
+              "item_id": 12062,
+              "item_name": "Skilled Fighting Blade",
+              "source_kind": "quest",
+              "source": "Jail Break!",
+              "dps_delta": -2.7910666,
               "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 24222,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 12062,
+              "source_kind": "quest",
+              "source": "Jail Break!"
             }
           ]
         },
@@ -7858,8 +7851,8 @@
         "main_hand: Heartseeker",
         "off_hand: Scarlet Kris"
       ],
-      "weights_run_seconds": 2.557934073,
-      "verify_run_seconds": 4.545386604,
+      "weights_run_seconds": 2.338584172,
+      "verify_run_seconds": 4.417845089,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8662,7 +8655,7 @@
           "item_name": "Scarlet Kris",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 597.156195752,
+          "score": 597.202862419,
           "verified": true,
           "alternatives": [
             {
@@ -8761,8 +8754,8 @@
         "main_hand: Heartseeker",
         "off_hand: Scarlet Kris"
       ],
-      "weights_run_seconds": 2.557934073,
-      "verify_run_seconds": 4.559522673,
+      "weights_run_seconds": 2.338584172,
+      "verify_run_seconds": 4.467734711,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9579,23 +9572,23 @@
           "item_name": "Scarlet Kris",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 600.449358681,
+          "score": 600.496025347,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 24222,
-              "item_name": "The Shadowfoot Stabber",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -8.668222018,
+              "item_id": 12062,
+              "item_name": "Skilled Fighting Blade",
+              "source_kind": "quest",
+              "source": "Jail Break!",
+              "dps_delta": -3.949631444,
               "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 24222,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 12062,
+              "source_kind": "quest",
+              "source": "Jail Break!"
             }
           ]
         },
@@ -9677,8 +9670,8 @@
         "main_hand: Heartseeker",
         "off_hand: Scarlet Kris"
       ],
-      "weights_run_seconds": 2.98551263,
-      "verify_run_seconds": 7.614297422,
+      "weights_run_seconds": 2.77248624,
+      "verify_run_seconds": 7.300630593,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10494,7 +10487,7 @@
           "item_name": "Scarlet Kris",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 600.449358681,
+          "score": 600.496025347,
           "verified": true,
           "alternatives": [
             {
@@ -10593,8 +10586,8 @@
         "main_hand: Heartseeker",
         "off_hand: Scarlet Kris"
       ],
-      "weights_run_seconds": 2.98551263,
-      "verify_run_seconds": 7.575802801,
+      "weights_run_seconds": 2.77248624,
+      "verify_run_seconds": 7.319345456,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10773,6 +10766,10 @@
         {
           "id": "judgement_of_wisdom",
           "label": "Judgement of Wisdom"
+        },
+        {
+          "id": "judgement_of_the_crusader",
+          "label": "Judgement of the Crusader"
         },
         {
           "id": "judgement_of_light",

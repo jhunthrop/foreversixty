@@ -262,7 +262,8 @@ def test_no_rotation_casts_a_spell_a_player_cannot_learn():
     for key, document in documents().items():
         for spell_id, _rank, _tag in cast_spell_action_ids(document.rotation):
             assert spell_id not in NOT_LEARNABLE, (
-                f"{key} casts {NOT_LEARNABLE.get(spell_id)} ({spell_id}), which a Forever player cannot learn"
+                f"{key} casts {NOT_LEARNABLE.get(spell_id)} ({spell_id}), "
+                "which a Forever player cannot learn"
             )
 
 

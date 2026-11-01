@@ -76,3 +76,36 @@ export function onCurrentCharacterChange(listener: (change: CurrentCharacterChan
     window.removeEventListener('storage', onStorage);
   };
 }
+
+/** The stored pointer as written (current-character.ts's `parseCurrentCharacter` reads it), or
+ *  null when none is stored or storage is out of reach. */
+export function readCurrentRaw(): string | null {
+  try {
+    return globalThis.localStorage?.getItem(CURRENT_CHARACTER_STORAGE_KEY) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** A choice of character: the stored pointer just before it and just after it. */
+export interface CurrentCharacterSwitch {
+  readonly previousRaw: string | null;
+  readonly nextRaw: string | null;
+}
+
+/**
+ * `onCurrentCharacterChange` for a page that follows only when it showed the previous character
+ * (a guild or character page, character-selector/follow-page.ts): the listener learns the pointer
+ * before and after each change. A page-load write and the session settling its default are not
+ * choices and call nothing (the page must not leave the address the visitor opened), though each
+ * becomes the "before" of the next choice.
+ */
+export function onCurrentCharacterSwitch(listener: (change: CurrentCharacterSwitch) => void): () => void {
+  let previousRaw = readCurrentRaw();
+  return onCurrentCharacterChange((change) => {
+    const nextRaw = readCurrentRaw();
+    const switched = { previousRaw, nextRaw };
+    previousRaw = nextRaw;
+    if (!change.fromPageLoad && !change.fromSessionHeal) listener(switched);
+  });
+}

@@ -103,7 +103,7 @@
   import { deathKey, rateMarkers, threatMarkers } from '../../lib/chart/report-markers';
   import type { ChartEvent, ChartPhase } from '../../lib/chart/types';
   import type { ThreatPlayer } from '../../lib/chart/threat';
-  import { readCurrent } from '../../lib/current-character';
+  import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { dataUrl } from '../../lib/planner/load';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -651,18 +651,26 @@
   const sourcePlayer = $derived(playerSet.has(state.source) ? state.source : undefined);
   /** The viewer's own character in this fight, matched by name and class from the current character. */
   let youGuid = $state<string | undefined>(undefined);
+  /** The current character as last read; a choice in the header selector re-reads it. */
+  let current = $state<CurrentCharacter | null>(null);
+  $effect(() => {
+    current = readCurrent();
+    return onCurrentCharacterChange(() => {
+      current = readCurrent();
+    });
+  });
   $effect(() => {
     const rows = base?.roster ?? [];
-    const current = readCurrent();
-    if (current === null) {
+    const you = current;
+    if (you === null) {
       youGuid = undefined;
       return;
     }
-    const name = current.label.split(' · ')[0]?.trim().toLowerCase() ?? '';
+    const name = you.label.split(' · ')[0]?.trim().toLowerCase() ?? '';
     youGuid = rows.find(
       (row) =>
         splitUnitName(row.name).name.toLowerCase() === name &&
-        (row.class ?? '').toLowerCase().replace(/\s+/g, '-') === current.classSlug,
+        (row.class ?? '').toLowerCase().replace(/\s+/g, '-') === you.classSlug,
     )?.guid;
   });
   /** A death's link on the Deaths tab, keeping the fight and the window (spec §B6.6). */
