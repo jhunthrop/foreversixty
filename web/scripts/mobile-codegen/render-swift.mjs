@@ -101,7 +101,20 @@ export function renderSwiftModels(model, header) {
 
 // Swift keywords an OpenAPI name may be (`class`): fine as an argument label, but a reference in
 // the body is written in backticks.
-const KEYWORDS = new Set(['class', 'default', 'func', 'in', 'is', 'let', 'protocol', 'return', 'self', 'static', 'struct', 'var']);
+const KEYWORDS = new Set([
+  'class',
+  'default',
+  'func',
+  'in',
+  'is',
+  'let',
+  'protocol',
+  'return',
+  'self',
+  'static',
+  'struct',
+  'var',
+]);
 const ref = (name) => (KEYWORDS.has(name) ? `\`${name}\`` : name);
 
 function swiftPath(op) {
