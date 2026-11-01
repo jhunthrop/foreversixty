@@ -13,6 +13,7 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.toColorInt
+import androidx.core.graphics.withClip
 import androidx.core.net.toUri
 import gg.foreversixty.app.MainActivity
 import gg.foreversixty.app.R
@@ -57,10 +58,9 @@ class DynamicShortcutPublisher(private val context: Context) {
         val centre = size / 2f
         val circle = RectF(centre - radius, centre - radius, centre + radius, centre + radius)
         BitmapFactory.decodeResource(context.resources, crest)?.let { source ->
-            canvas.save()
-            canvas.clipPath(Path().apply { addOval(circle, Path.Direction.CW) })
-            canvas.drawBitmap(source, null, circle, Paint(Paint.FILTER_BITMAP_FLAG))
-            canvas.restore()
+            canvas.withClip(Path().apply { addOval(circle, Path.Direction.CW) }) {
+                drawBitmap(source, null, circle, Paint(Paint.FILTER_BITMAP_FLAG))
+            }
         }
         val stroke = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE

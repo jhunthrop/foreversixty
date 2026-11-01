@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ic_check in the brand gold, for a launcher shortcut icon (icons there take no tint). -->
+<!-- Feather-style check (MIT) in the brand gold, for a launcher shortcut icon (icons there take no tint). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
