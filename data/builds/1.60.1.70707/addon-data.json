@@ -4285,18 +4285,6 @@
         "level": 10,
         "lines": [
           {
-            "spell_id": 428713,
-            "name": "Barkskin",
-            "condition": "Barkskin on cooldown: 20% less physical damage for 15 s of every 60 (about 5% less damage taken measured against the tank fight).",
-            "icon": "spell_nature_stoneclawtotem"
-          },
-          {
-            "spell_id": 428708,
-            "name": "Frenzied Regeneration",
-            "condition": "Frenzied Regeneration as the emergency heal: under half health with 20 rage to convert.",
-            "icon": "ability_bullrush"
-          },
-          {
             "spell_id": 6807,
             "name": "Maul",
             "condition": "Queue Maul on the next swing whenever 15 rage is on hand, which keeps the rest for Primal Bite and Lacerate.",
@@ -4307,18 +4295,6 @@
       {
         "level": 20,
         "lines": [
-          {
-            "spell_id": 428713,
-            "name": "Barkskin",
-            "condition": "Barkskin on cooldown: 20% less physical damage for 15 s of every 60 (about 5% less damage taken measured against the tank fight).",
-            "icon": "spell_nature_stoneclawtotem"
-          },
-          {
-            "spell_id": 428708,
-            "name": "Frenzied Regeneration",
-            "condition": "Frenzied Regeneration as the emergency heal: under half health with 20 rage to convert.",
-            "icon": "ability_bullrush"
-          },
           {
             "spell_id": 6808,
             "name": "Maul",
@@ -4336,18 +4312,6 @@
       {
         "level": 30,
         "lines": [
-          {
-            "spell_id": 428713,
-            "name": "Barkskin",
-            "condition": "Barkskin on cooldown: 20% less physical damage for 15 s of every 60 (about 5% less damage taken measured against the tank fight).",
-            "icon": "spell_nature_stoneclawtotem"
-          },
-          {
-            "spell_id": 428708,
-            "name": "Frenzied Regeneration",
-            "condition": "Frenzied Regeneration as the emergency heal: under half health with 20 rage to convert.",
-            "icon": "ability_bullrush"
-          },
           {
             "spell_id": 407995,
             "name": "Primal Bite",
@@ -4371,12 +4335,6 @@
       {
         "level": 38,
         "lines": [
-          {
-            "spell_id": 428713,
-            "name": "Barkskin",
-            "condition": "Barkskin on cooldown: 20% less physical damage for 15 s of every 60 (about 5% less damage taken measured against the tank fight).",
-            "icon": "spell_nature_stoneclawtotem"
-          },
           {
             "spell_id": 22842,
             "name": "Frenzied Regeneration",
@@ -4406,12 +4364,6 @@
       {
         "level": 40,
         "lines": [
-          {
-            "spell_id": 428713,
-            "name": "Barkskin",
-            "condition": "Barkskin on cooldown: 20% less physical damage for 15 s of every 60 (about 5% less damage taken measured against the tank fight).",
-            "icon": "spell_nature_stoneclawtotem"
-          },
           {
             "spell_id": 22842,
             "name": "Frenzied Regeneration",
@@ -4526,13 +4478,7 @@
         "level": 10,
         "lines": [
           {
-            "spell_id": 456195,
-            "name": "Innervate",
-            "condition": "Innervate on self when the bar runs low; the major-cooldown pass above only catches it below 500 mana.",
-            "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 29274,
+            "spell_id": 17116,
             "name": "Nature's Swiftness",
             "condition": "Emergency: the tank under 35% gets Nature's Swiftness and, in the same instant, an instant Healing Touch.",
             "icon": "spell_nature_ravenform"
@@ -4591,13 +4537,7 @@
         "level": 20,
         "lines": [
           {
-            "spell_id": 456195,
-            "name": "Innervate",
-            "condition": "Innervate on self when the bar runs low; the major-cooldown pass above only catches it below 500 mana.",
-            "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 29274,
+            "spell_id": 17116,
             "name": "Nature's Swiftness",
             "condition": "Emergency: the tank under 35% gets Nature's Swiftness and, in the same instant, an instant Healing Touch.",
             "icon": "spell_nature_ravenform"
@@ -4662,13 +4602,7 @@
         "level": 30,
         "lines": [
           {
-            "spell_id": 456195,
-            "name": "Innervate",
-            "condition": "Innervate on self when the bar runs low; the major-cooldown pass above only catches it below 500 mana.",
-            "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 29274,
+            "spell_id": 17116,
             "name": "Nature's Swiftness",
             "condition": "Emergency: the tank under 35% gets Nature's Swiftness and, in the same instant, an instant Healing Touch.",
             "icon": "spell_nature_ravenform"
@@ -4739,13 +4673,7 @@
         "level": 38,
         "lines": [
           {
-            "spell_id": 456195,
-            "name": "Innervate",
-            "condition": "Innervate on self when the bar runs low; the major-cooldown pass above only catches it below 500 mana.",
-            "icon": "spell_nature_lightning"
-          },
-          {
-            "spell_id": 29274,
+            "spell_id": 17116,
             "name": "Nature's Swiftness",
             "condition": "Emergency: the tank under 35% gets Nature's Swiftness and, in the same instant, an instant Healing Touch.",
             "icon": "spell_nature_ravenform"
@@ -4822,7 +4750,7 @@
             "icon": "spell_nature_lightning"
           },
           {
-            "spell_id": 29274,
+            "spell_id": 17116,
             "name": "Nature's Swiftness",
             "condition": "Emergency: the tank under 35% gets Nature's Swiftness and, in the same instant, an instant Healing Touch.",
             "icon": "spell_nature_ravenform"
@@ -4899,7 +4827,7 @@
             "icon": "spell_nature_lightning"
           },
           {
-            "spell_id": 29274,
+            "spell_id": 17116,
             "name": "Nature's Swiftness",
             "condition": "Emergency: the tank under 35% gets Nature's Swiftness and, in the same instant, an instant Healing Touch.",
             "icon": "spell_nature_ravenform"
@@ -4976,7 +4904,7 @@
             "icon": "spell_nature_lightning"
           },
           {
-            "spell_id": 29274,
+            "spell_id": 17116,
             "name": "Nature's Swiftness",
             "condition": "Emergency: the tank under 35% gets Nature's Swiftness and, in the same instant, an instant Healing Touch.",
             "icon": "spell_nature_ravenform"
@@ -5934,6 +5862,12 @@
         "level": 20,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 11366,
             "name": "Pyroblast",
             "condition": "Pyroblast only when Heating Up has stacked three times: three Fire crits cut the 6 second cast to 1.5 seconds, and the cast spends the buff.",
@@ -5956,6 +5890,12 @@
       {
         "level": 30,
         "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
           {
             "spell_id": 8444,
             "name": "Scorch",
@@ -5992,6 +5932,12 @@
         "level": 38,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 8445,
             "name": "Scorch",
             "condition": "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.",
@@ -6027,7 +5973,13 @@
         "level": 40,
         "lines": [
           {
-            "spell_id": 28682,
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
+          {
+            "spell_id": 11129,
             "name": "Combustion",
             "condition": "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits.",
             "icon": "spell_fire_sealoffire"
@@ -6068,7 +6020,13 @@
         "level": 50,
         "lines": [
           {
-            "spell_id": 28682,
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
+          {
+            "spell_id": 11129,
             "name": "Combustion",
             "condition": "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits.",
             "icon": "spell_fire_sealoffire"
@@ -6109,7 +6067,13 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 28682,
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "icon": "spell_nature_purge"
+          },
+          {
+            "spell_id": 11129,
             "name": "Combustion",
             "condition": "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits.",
             "icon": "spell_fire_sealoffire"
@@ -6826,12 +6790,6 @@
             "icon": "classicon_paladin"
           },
           {
-            "spell_id": 409922,
-            "name": "Hammer of the Righteous",
-            "condition": "Hammer of the Righteous on cooldown, once the Holy Shield mana is safe.",
-            "icon": "ability_paladin_hammeroftherighteous"
-          },
-          {
             "spell_id": 1310994,
             "name": "Swift Judgement",
             "condition": "Swift Judgement whenever it is ready: since client 1.60.1.70707 it judges the active Seal on its own one minute cooldown, free and off the global cooldown, without touching Judgement's.",
@@ -6865,12 +6823,6 @@
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: the cheapest threat per mana the paladin has (20 mana).",
             "icon": "classicon_paladin"
-          },
-          {
-            "spell_id": 409922,
-            "name": "Hammer of the Righteous",
-            "condition": "Hammer of the Righteous on cooldown, once the Holy Shield mana is safe.",
-            "icon": "ability_paladin_hammeroftherighteous"
           },
           {
             "spell_id": 1310994,
@@ -6924,12 +6876,6 @@
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: the cheapest threat per mana the paladin has (20 mana).",
             "icon": "classicon_paladin"
-          },
-          {
-            "spell_id": 409922,
-            "name": "Hammer of the Righteous",
-            "condition": "Hammer of the Righteous on cooldown, once the Holy Shield mana is safe.",
-            "icon": "ability_paladin_hammeroftherighteous"
           },
           {
             "spell_id": 1310994,
@@ -6989,12 +6935,6 @@
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: the cheapest threat per mana the paladin has (20 mana).",
             "icon": "classicon_paladin"
-          },
-          {
-            "spell_id": 409922,
-            "name": "Hammer of the Righteous",
-            "condition": "Hammer of the Righteous on cooldown, once the Holy Shield mana is safe.",
-            "icon": "ability_paladin_hammeroftherighteous"
           },
           {
             "spell_id": 1310994,
@@ -7247,6 +7187,12 @@
             "icon": "spell_holy_righteousfury"
           },
           {
+            "spell_id": 20287,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 679,
             "name": "Holy Strike",
             "condition": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6.",
@@ -7270,9 +7216,21 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
+            "spell_id": 20288,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20375,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20375,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7305,9 +7263,21 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
+            "spell_id": 20289,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20915,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20915,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7340,9 +7310,21 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20915,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20915,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7375,9 +7357,21 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20918,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20918,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7416,9 +7410,21 @@
             "icon": "ability_thunderclap"
           },
           {
+            "spell_id": 20292,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20919,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20919,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -7457,9 +7463,21 @@
             "icon": "ability_thunderclap"
           },
           {
+            "spell_id": 20293,
+            "name": "Seal of Righteousness",
+            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command, switch to Seal of Righteousness: the next swing releases all three stored Seals of Command.",
+            "icon": "ability_thunderbolt"
+          },
+          {
             "spell_id": 20920,
             "name": "Seal of Command",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Righteousness, switch to Seal of Command: the next swing releases all three stored Seals of Righteousness.",
+            "condition": "After one swing under Seal of Righteousness, go straight back to Seal of Command, under the same mana and attack power gates.",
+            "icon": "inv_misc_questionmark"
+          },
+          {
+            "spell_id": 20920,
+            "name": "Seal of Command",
+            "condition": "With Seal of Command and Unsealed Wrath, above 30% mana and with raid-buffed attack power, Seal of Command is the seal to keep up: reapply it once it is about to expire (this also catches Judgement's own cast).",
             "icon": "inv_misc_questionmark"
           },
           {
@@ -11350,6 +11368,12 @@
             "icon": "spell_shadow_abominationexplosion"
           },
           {
+            "spell_id": 980,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 707,
             "name": "Immolate",
             "condition": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
@@ -11377,6 +11401,12 @@
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.",
             "icon": "spell_shadow_abominationexplosion"
+          },
+          {
+            "spell_id": 1014,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 1094,
@@ -11408,6 +11438,12 @@
             "icon": "spell_shadow_abominationexplosion"
           },
           {
+            "spell_id": 6217,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 2941,
             "name": "Immolate",
             "condition": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
@@ -11437,6 +11473,12 @@
             "icon": "spell_shadow_abominationexplosion"
           },
           {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 2941,
             "name": "Immolate",
             "condition": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
@@ -11464,6 +11506,12 @@
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.",
             "icon": "spell_shadow_abominationexplosion"
+          },
+          {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 11665,
@@ -11499,6 +11547,12 @@
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.",
             "icon": "spell_shadow_abominationexplosion"
+          },
+          {
+            "spell_id": 11712,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 11667,
@@ -11538,8 +11592,14 @@
           {
             "spell_id": 603,
             "name": "Bane of Doom",
-            "condition": "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires.",
+            "condition": "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains.",
             "icon": "spell_shadow_auraofdarkness"
+          },
+          {
+            "spell_id": 11713,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 25309,
@@ -11573,6 +11633,12 @@
             "icon": "spell_shadow_burningspirit"
           },
           {
+            "spell_id": 980,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 707,
             "name": "Immolate",
             "condition": "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is recast when under 3 seconds remain.",
@@ -11600,6 +11666,12 @@
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low.",
             "icon": "spell_shadow_burningspirit"
+          },
+          {
+            "spell_id": 1014,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 1094,
@@ -11635,6 +11707,12 @@
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low.",
             "icon": "spell_shadow_burningspirit"
+          },
+          {
+            "spell_id": 6217,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 2941,
@@ -11678,6 +11756,12 @@
             "icon": "spell_shadow_burningspirit"
           },
           {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
+          },
+          {
             "spell_id": 2941,
             "name": "Immolate",
             "condition": "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is recast when under 3 seconds remain.",
@@ -11717,6 +11801,12 @@
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low.",
             "icon": "spell_shadow_burningspirit"
+          },
+          {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 11665,
@@ -11764,6 +11854,12 @@
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low.",
             "icon": "spell_shadow_burningspirit"
+          },
+          {
+            "spell_id": 11712,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 11667,
@@ -11815,8 +11911,14 @@
           {
             "spell_id": 603,
             "name": "Bane of Doom",
-            "condition": "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires.",
+            "condition": "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains.",
             "icon": "spell_shadow_auraofdarkness"
+          },
+          {
+            "spell_id": 11713,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+            "icon": "spell_shadow_curseofsargeras"
           },
           {
             "spell_id": 25309,
@@ -11856,7 +11958,7 @@
         "level": 10,
         "lines": [
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource, same as Fury.",
             "icon": "ability_racial_bloodrage"
@@ -11885,7 +11987,7 @@
         "level": 20,
         "lines": [
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource, same as Fury.",
             "icon": "ability_racial_bloodrage"
@@ -11932,7 +12034,7 @@
             "icon": "ability_racial_avatar"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource, same as Fury.",
             "icon": "ability_racial_bloodrage"
@@ -11985,7 +12087,7 @@
             "icon": "ability_racial_avatar"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource, same as Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12038,7 +12140,7 @@
             "icon": "ability_racial_avatar"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource, same as Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12097,7 +12199,7 @@
             "icon": "ability_racial_avatar"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource, same as Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12156,7 +12258,7 @@
             "icon": "ability_racial_avatar"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource, same as Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12211,7 +12313,7 @@
         "level": 10,
         "lines": [
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource for Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12240,7 +12342,7 @@
         "level": 20,
         "lines": [
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource for Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12269,7 +12371,7 @@
         "level": 30,
         "lines": [
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource for Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12279,12 +12381,6 @@
             "name": "Death Wish",
             "condition": "Death Wish (30 s, 3 min cooldown) now if a second use still fits after it, otherwise held for the execute phase, or for the last 30 s when the execute phase is shorter than the buff.",
             "icon": "spell_shadow_deathpact"
-          },
-          {
-            "spell_id": 13847,
-            "name": "Recklessness",
-            "condition": "Recklessness (15 s, 30 min cooldown: one use a fight) in the execute phase, or in the last 15 s when the execute phase is shorter than the buff.",
-            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 6192,
@@ -12310,7 +12406,7 @@
         "level": 38,
         "lines": [
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource for Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12320,12 +12416,6 @@
             "name": "Death Wish",
             "condition": "Death Wish (30 s, 3 min cooldown) now if a second use still fits after it, otherwise held for the execute phase, or for the last 30 s when the execute phase is shorter than the buff.",
             "icon": "spell_shadow_deathpact"
-          },
-          {
-            "spell_id": 13847,
-            "name": "Recklessness",
-            "condition": "Recklessness (15 s, 30 min cooldown: one use a fight) in the execute phase, or in the last 15 s when the execute phase is shorter than the buff.",
-            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 11549,
@@ -12340,7 +12430,7 @@
             "icon": "inv_sword_48"
           },
           {
-            "spell_id": 462891,
+            "spell_id": 1680,
             "name": "Whirlwind",
             "condition": "Whirlwind while Bloodthirst is down.",
             "icon": "ability_whirlwind"
@@ -12357,7 +12447,7 @@
         "level": 40,
         "lines": [
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource for Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12367,12 +12457,6 @@
             "name": "Death Wish",
             "condition": "Death Wish (30 s, 3 min cooldown) now if a second use still fits after it, otherwise held for the execute phase, or for the last 30 s when the execute phase is shorter than the buff.",
             "icon": "spell_shadow_deathpact"
-          },
-          {
-            "spell_id": 13847,
-            "name": "Recklessness",
-            "condition": "Recklessness (15 s, 30 min cooldown: one use a fight) in the execute phase, or in the last 15 s when the execute phase is shorter than the buff.",
-            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 11549,
@@ -12393,7 +12477,7 @@
             "icon": "spell_nature_bloodlust"
           },
           {
-            "spell_id": 462891,
+            "spell_id": 1680,
             "name": "Whirlwind",
             "condition": "Whirlwind while Bloodthirst is down.",
             "icon": "ability_whirlwind"
@@ -12410,7 +12494,7 @@
         "level": 50,
         "lines": [
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource for Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12446,7 +12530,7 @@
             "icon": "spell_nature_bloodlust"
           },
           {
-            "spell_id": 462891,
+            "spell_id": 1680,
             "name": "Whirlwind",
             "condition": "Whirlwind while Bloodthirst is down.",
             "icon": "ability_whirlwind"
@@ -12463,7 +12547,7 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown: rage is the limiting resource for Fury.",
             "icon": "ability_racial_bloodrage"
@@ -12499,7 +12583,7 @@
             "icon": "spell_nature_bloodlust"
           },
           {
-            "spell_id": 462891,
+            "spell_id": 1680,
             "name": "Whirlwind",
             "condition": "Whirlwind while Bloodthirst is down.",
             "icon": "ability_whirlwind"
@@ -12530,7 +12614,7 @@
             "icon": "spell_holy_ashestoashes"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown while rage is under 60: ten rage now and one a second for ten seconds.",
             "icon": "ability_racial_bloodrage"
@@ -12571,7 +12655,7 @@
             "icon": "spell_holy_ashestoashes"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown while rage is under 60: ten rage now and one a second for ten seconds.",
             "icon": "ability_racial_bloodrage"
@@ -12630,7 +12714,7 @@
             "icon": "ability_warrior_shieldwall"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown while rage is under 60: ten rage now and one a second for ten seconds.",
             "icon": "ability_racial_bloodrage"
@@ -12689,7 +12773,7 @@
             "icon": "ability_warrior_shieldwall"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown while rage is under 60: ten rage now and one a second for ten seconds.",
             "icon": "ability_racial_bloodrage"
@@ -12748,7 +12832,7 @@
             "icon": "ability_warrior_shieldwall"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown while rage is under 60: ten rage now and one a second for ten seconds.",
             "icon": "ability_racial_bloodrage"
@@ -12813,7 +12897,7 @@
             "icon": "ability_warrior_shieldwall"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown while rage is under 60: ten rage now and one a second for ten seconds.",
             "icon": "ability_racial_bloodrage"
@@ -12878,7 +12962,7 @@
             "icon": "ability_warrior_shieldwall"
           },
           {
-            "spell_id": 29131,
+            "spell_id": 2687,
             "name": "Bloodrage",
             "condition": "Bloodrage on cooldown while rage is under 60: ten rage now and one a second for ten seconds.",
             "icon": "ability_racial_bloodrage"
@@ -108784,7 +108868,7 @@
     "769": 16,
     "779": 16,
     "780": 16,
-    "871": 24,
+    "871": 28,
     "913": 1,
     "915": 1,
     "930": 32,
@@ -108809,8 +108893,9 @@
     "1456": 6,
     "1495": 16,
     "1608": 1,
+    "1680": 36,
     "1715": 8,
-    "1719": 22,
+    "1719": 50,
     "1757": 1,
     "1758": 1,
     "1760": 1,
@@ -108822,6 +108907,7 @@
     "2495": 6,
     "2565": 16,
     "2643": 18,
+    "2687": 10,
     "2767": 4,
     "2860": 32,
     "2912": 20,
@@ -108993,6 +109079,7 @@
     "10945": 10,
     "10947": 10,
     "10960": 30,
+    "11129": 40,
     "11273": 20,
     "11275": 20,
     "11293": 1,
@@ -109025,6 +109112,7 @@
     "11713": 8,
     "12042": 1,
     "12043": 1,
+    "12051": 20,
     "12294": 40,
     "12328": 1,
     "12522": 20,
@@ -109038,7 +109126,6 @@
     "13552": 4,
     "13554": 4,
     "13795": 16,
-    "13847": 22,
     "14267": 12,
     "14269": 16,
     "14270": 16,
@@ -109058,6 +109145,7 @@
     "16188": 1,
     "16190": 1,
     "16511": 30,
+    "17116": 1,
     "17311": 20,
     "17312": 20,
     "17313": 20,
@@ -109093,6 +109181,12 @@
     "20116": 20,
     "20163": 10,
     "20271": 4,
+    "20287": 1,
+    "20288": 1,
+    "20289": 1,
+    "20290": 1,
+    "20292": 1,
+    "20293": 1,
     "20375": 20,
     "20419": 10,
     "20422": 10,
@@ -109118,10 +109212,10 @@
     "20930": 30,
     "21551": 40,
     "22568": 32,
-    "22812": 1,
+    "22812": 44,
     "22827": 32,
     "22828": 32,
-    "22842": 1,
+    "22842": 36,
     "23881": 40,
     "23892": 40,
     "23894": 40,
@@ -109162,11 +109256,8 @@
     "27621": 32,
     "27624": 20,
     "27633": 12,
-    "28682": 40,
-    "29131": 10,
-    "29166": 1,
+    "29166": 40,
     "29228": 10,
-    "29274": 1,
     "31016": 1,
     "31018": 32,
     "399956": 30,
@@ -109180,7 +109271,7 @@
     "400640": 20,
     "401859": 40,
     "402174": 30,
-    "407632": 1,
+    "407632": 40,
     "407995": 25,
     "408341": 12,
     "408342": 12,
@@ -109190,7 +109281,6 @@
     "408490": 30,
     "408511": 1,
     "408521": 40,
-    "409922": 1,
     "409941": 1,
     "412758": 40,
     "415068": 20,
@@ -109218,14 +109308,11 @@
     "425273": 8,
     "425275": 8,
     "425277": 8,
-    "428708": 1,
-    "428713": 1,
     "436938": 12,
     "436940": 12,
     "436942": 12,
     "436944": 12,
     "436946": 12,
-    "456195": 1,
     "461810": 6,
     "461826": 6,
     "461827": 6,
@@ -109238,7 +109325,6 @@
     "462713": 4,
     "462714": 4,
     "462717": 4,
-    "462891": 36,
     "1213278": 40,
     "1220746": 4,
     "1220747": 4,

@@ -107,14 +107,27 @@ def _class_slug(spec: str) -> str:
     return spec.split("-", 1)[0]
 
 
-def _family_ranks(spellranks: dict, class_slug: str) -> dict[str, list[tuple[int, int]]]:
+def _family_ranks(
+    spellranks: dict, class_slug: str, trainable_ids: frozenset[int] = frozenset()
+) -> dict[str, list[tuple[int, int]]]:
     """Spell family name -> every (level, id) pair it ranks up through,
     sorted ascending by level. Two ranks may share a level (spellranks.json
     sometimes lists an alternate id for the same rank); sorting is stable
     on that tie, which only matters for which of the two `_resolve` picks,
-    and either is a real, castable id for that rank."""
+    and either is a real, castable id for that rank.
+
+    An unranked family keeps only the ids the class's trainables list
+    (`trainable_ids`, from SkillLineAbility), when it has any: the client
+    carries copies with no trainer row at lower levels (Recklessness 13847
+    at 22 beside the trained 1719 at 50, Evocation 456397 at 1, Barkskin
+    428713 at 1), and the addon showed them bands before the player could
+    learn the spell. A family none of whose ids are trainable (a talent or
+    rune spell) keeps every row."""
     families: dict[str, list[tuple[int, int]]] = {}
     for name, ranks in spellranks.get("classes", {}).get(class_slug, {}).items():
+        if all(rank.get("rank", 0) == 0 for rank in ranks):
+            trained = [rank for rank in ranks if rank["id"] in trainable_ids]
+            ranks = trained or ranks
         pairs = sorted((rank["level"], rank["id"]) for rank in ranks)
         # A level-0 row is an alternate id the client carries with no learn
         # level of its own (Rapid Fire's 28755 beside the real 3045 at 26,
@@ -203,15 +216,17 @@ def build_rotation(
     curated_dir: Path,
     spellranks: dict,
     icon_of: Callable[[int], str] | None = None,
+    trainable_ids: frozenset[int] = frozenset(),
 ) -> list[AddonRotationBand]:
-    """One spec's rotation table, one band per LEVEL_BANDS entry."""
+    """One spec's rotation table, one band per LEVEL_BANDS entry.
+    `trainable_ids` is the class's trainer-learned ids (`load_trainable_ids`)."""
     apl_path = curated_dir / "apl" / f"{spec}.json"
     if not apl_path.exists():
         raise AddonRotationError(f"missing {apl_path}")
     curated = json.loads(apl_path.read_text(encoding="utf-8"))
     casts = _cast_lines(curated.get("rotation", {}))
 
-    families = _family_ranks(spellranks, _class_slug(spec))
+    families = _family_ranks(spellranks, _class_slug(spec), trainable_ids)
     id_to_family = _id_to_family(families)
 
     bands = []
@@ -326,7 +341,8 @@ def compute_spell_icons(
     specs = sorted(path.stem for path in apl_dir.glob("*.json")) if apl_dir.exists() else []
     icons: dict[int, str] = {}
     for spec in specs:
-        for band in build_rotation(spec, curated_dir, spellranks, icon_of):
+        trainable_ids = load_trainable_ids(root / build, _class_slug(spec))
+        for band in build_rotation(spec, curated_dir, spellranks, icon_of, trainable_ids):
             for line in band.lines:
                 icons.setdefault(line.spell_id, line.icon)
     # Spells a guide names that no rotation line does (the cooldown list: a trainer spell such as
@@ -400,6 +416,17 @@ def write_spell_icons(
     return path
 
 
+def load_trainable_ids(build_dir: Path, class_slug: str) -> frozenset[int]:
+    """Every spell id `class_slug` learns from a trainer on this build
+    (`builds/<build>/trainables/<class>.json`, pipeline.trainables), or none
+    when the build has no trainables file for the class."""
+    path = build_dir / "trainables" / f"{class_slug}.json"
+    if not path.exists():
+        return frozenset()
+    entries = json.loads(path.read_text(encoding="utf-8"))["trainables"]
+    return frozenset(rank["id"] for entry in entries for rank in entry["ranks"])
+
+
 def _load_spell_icons(build_dir: Path) -> dict[int, str] | None:
     """spell id -> icon name off the committed `build_dir/spellicons.json`
     (`write_spell_icons`), or `None` when this build predates that file.
@@ -428,7 +455,16 @@ def build_rotations(
     )
     apl_dir = curated_dir / "apl"
     specs = sorted(path.stem for path in apl_dir.glob("*.json")) if apl_dir.exists() else []
-    return {spec: build_rotation(spec, curated_dir, spellranks, icon_of) for spec in specs}
+    return {
+        spec: build_rotation(
+            spec,
+            curated_dir,
+            spellranks,
+            icon_of,
+            load_trainable_ids(root / build, _class_slug(spec)),
+        )
+        for spec in specs
+    }
 
 
 def build_ability_levels(
@@ -450,9 +486,10 @@ def build_ability_levels(
     specs = sorted(path.stem for path in apl_dir.glob("*.json")) if apl_dir.exists() else []
     levels: dict[int, int] = {}
     for spec in specs:
-        families = _family_ranks(spellranks, _class_slug(spec))
+        trainable_ids = load_trainable_ids(root / build, _class_slug(spec))
+        families = _family_ranks(spellranks, _class_slug(spec), trainable_ids)
         id_to_family = _id_to_family(families)
-        for band in build_rotation(spec, curated_dir, spellranks):
+        for band in build_rotation(spec, curated_dir, spellranks, trainable_ids=trainable_ids):
             for line in band.lines:
                 level = families[id_to_family[line.spell_id]][0][0]
                 if levels.setdefault(line.spell_id, level) != level:
