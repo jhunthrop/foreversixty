@@ -29,6 +29,34 @@ function prose(key: string, resolvedName: string): string {
 }
 
 /**
+ * The key one ability's rows share in the sentence: a spell, item or other action without
+ * its metric tag and rank, so "Raptor Strike" and "Raptor Strike (2)" are one ability there.
+ * An auto-attack keeps its tag, which names the hand: main-hand and off-hand white hits are
+ * two things a player reads apart.
+ */
+function sentenceKey(key: string): string {
+  const parsed = parseActionKey(key);
+  if (parsed === null || parsed.kind === 'unknown') return key;
+  if (parsed.kind === 'other' && parsed.label === 'attack') return key;
+  return `${parsed.kind}:${parsed.label}`;
+}
+
+interface SentenceAbility {
+  key: string;
+  total: number;
+}
+
+/** The actor's abilities with every row of one ability summed under its sentence key. */
+function mergedAbilities(abilities: readonly { name: string; total: number }[]): SentenceAbility[] {
+  const totals = new Map<string, number>();
+  for (const ability of abilities) {
+    const key = sentenceKey(ability.name);
+    totals.set(key, (totals.get(key) ?? 0) + ability.total);
+  }
+  return [...totals].map(([key, total]) => ({ key, total }));
+}
+
+/**
  * The same summary with every ability, aura and cast name resolved. Nothing else changes,
  * and the input is never mutated. Auras additionally pass through sanitizeAuraTracks
  * (aura-rows.ts, Task 4) first: the engine seeds a row for every rank or metric variant a
@@ -92,17 +120,21 @@ export function summarySentence(summary: Summary, names: ActionNames | null): st
   // The raw (unresolved) abilities, not namedSummary's copy: prose() needs each ability's
   // own key to read its tag, and a name already resolved to a display string cannot be
   // read back into a tag (Lane W1's own fix -- see prose's comment above).
-  const top = [...actor.abilities].sort((a, b) => b.total - a.total).slice(0, 2);
+  // Rows of one ability (a second metric tag, another rank) are summed first, so the line
+  // names an ability once rather than "Raptor Strike (2)" beside a smaller "Raptor Strike".
+  const top = mergedAbilities(actor.abilities)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 2);
   const share = percent(
     top.reduce((sum, ability) => sum + ability.total, 0),
     actor.total,
   );
-  const phrase = (ability: (typeof top)[number]): string =>
-    prose(ability.name, resolveActionName(ability.name, names));
+  const phrase = (ability: SentenceAbility): string =>
+    prose(ability.key, resolveActionName(ability.key, names));
   const damage =
     top.length >= 2
-      ? `${phrase(top[0])} and ${phrase(top[1])} are ${share}% of your damage`
-      : `${phrase(top[0])} is ${share}% of your damage`;
+      ? `${phrase(top[0]!)} and ${phrase(top[1]!)} are ${share}% of your damage`
+      : `${phrase(top[0]!)} is ${share}% of your damage`;
 
   // sanitizeAuraTracks, not the raw array: the BUFFS tab reads auras through it (namedSummary
   // above), and the sentence must pick the same row it does -- an engine-internal row
@@ -119,6 +151,9 @@ export function summarySentence(summary: Summary, names: ActionNames | null): st
   const aura = sanitizeAuraTracks(summary.auras)
     .filter((track) => track.target_guid === actor.guid && track.type === 'BUFF')
     .filter((track) => isOwnSpecAura(track.name, names))
+    // A buff up the whole fight (a self-buff cast at the pull, Heart of the Lion) is not a
+    // finding about how the fight went, so the line names the biggest one that is not.
+    .filter((track) => percent(track.uptime_ms, summary.duration_ms) < 100)
     .sort((a, b) => b.uptime_ms - a.uptime_ms)[0];
   if (aura === undefined || summary.duration_ms <= 0) return `${damage}.`;
 
