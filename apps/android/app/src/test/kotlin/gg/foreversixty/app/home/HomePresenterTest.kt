@@ -302,7 +302,7 @@ class ItemTooltipTest {
         assertEquals("Empty", trinket.wornName)
         assertEquals(249469, trinket.pick?.id)
         assertTrue(rows.first { it.slot == "shoulder" }.isBestInSlot)
-        assertEquals("Not in our item data yet", rows.first { it.slot == "wrist" }.wornName)
+        assertEquals("Wrist · Item 999999", rows.first { it.slot == "wrist" }.wornName)
         assertEquals("Mourning Handguards", rows.first { it.slot == "hands" }.wornName)
     }
 }

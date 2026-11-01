@@ -47,6 +47,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.SpecCatalog
@@ -244,7 +245,7 @@ private fun ScoreCard(profile: CharacterProfile, copy: CharacterCopy, actions: C
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 MicroLabel(stringResource(R.string.char_score))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text(copy.score(score), style = FsType.stat.copy(fontSize = CharacterLayout.scoreSize), color = FsColor.strong)
+                    Text(copy.score(score), style = FsType.mono.copy(fontSize = CharacterLayout.scoreSize, fontWeight = FontWeight.Bold, letterSpacing = SCORE_TRACKING), color = FsColor.strong)
                     Tag(copy.tier(profile.tier), ItemQuality(CharacterCard.tierQuality(profile.tier)).text)
                 }
                 copy.asOf(profile.asOf)?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
@@ -410,6 +411,9 @@ private fun Skeleton() {
 }
 
 private const val DISABLED_ALPHA = 0.5f
+
+/** Mono at 36 sets the comma in a full cell; a little negative tracking keeps `1,830` one figure. */
+private val SCORE_TRACKING = (-0.08).em
 
 /** Material's `star_border` (the core icon set's outlined star is solid). */
 private val StarOutline: ImageVector by lazy {

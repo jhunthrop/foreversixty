@@ -117,6 +117,7 @@ def page(rows, character_rank):
 
 def rankings():
     rows = board()
+    RANKED_ROWS.extend(rows)
     write("rankings.list", env(page(rows, {"rank": YOUR_RANK, "row": rows[YOUR_RANK - 1]})))
     spark = row(204, "Sparkwick", 210.4, "Hordebreakers", 6, 211)
     write("rankings.list.off-page", env(page(rows, {"rank": 204, "row": spark})))
@@ -151,28 +152,27 @@ def watching():
 
 
 # (slot, worn, pick or None when the worn item is the pick, gap); the picks are the Elemental
-# raid list's, with that list's source words.
+# raid list's, with that list's source words. Voltaris (first) wears nearly the whole list;
+# Lightningbolltz (14th) is a week behind him in the Elements set.
 PICK_SOURCES = {"Living Crown": "Leatherworking", "Ironfeather Breastplate": "Leatherworking",
+                "Ironfeather Shoulders": "Leatherworking", "Ironfeather Leggings": "Leatherworking",
                 "Skycaller's Leather Waistguard": "Leatherworking", "Uther's Strength": "World drop"}
-GEAR = [
-    ("head", "Blue Dragonscale Helm", "Living Crown", 6.2),
-    ("neck", "Archlight Talisman", None, None),
-    ("shoulder", "Ironfeather Shoulders", None, None),
-    ("back", "Spritecaster Cape", None, None),
-    ("chest", "Vest of Elements", "Ironfeather Breastplate", 9.4),
-    ("wrist", "Runecloth Cuffs", None, None),
-    ("hands", "Storm Gauntlets", None, None),
-    ("waist", "Cord of Elements", "Skycaller's Leather Waistguard", 4.1),
-    ("legs", "Ironfeather Leggings", None, None),
-    ("feet", "Omnicast Boots", None, None),
-    ("finger1", "Maiden's Circle", None, None),
-    ("finger2", "Band of the Unicorn", None, None),
-    ("trinket1", "Rune of the Guard Captain", None, None),
-    ("trinket2", "Briarwood Reed", "Uther's Strength", 3.0),
-    ("main_hand", "Hand of Edward the Odd", None, None),
-    ("off_hand", "Spirit of Aquementas", None, None),
-    ("ranged", "Totem of Thunder", None, None),
+BIS = [
+    ("head", "Living Crown"), ("neck", "Archlight Talisman"), ("shoulder", "Ironfeather Shoulders"),
+    ("back", "Spritecaster Cape"), ("chest", "Ironfeather Breastplate"), ("wrist", "Runecloth Cuffs"),
+    ("hands", "Storm Gauntlets"), ("waist", "Skycaller's Leather Waistguard"), ("legs", "Ironfeather Leggings"),
+    ("feet", "Omnicast Boots"), ("finger1", "Maiden's Circle"), ("finger2", "Band of the Unicorn"),
+    ("trinket1", "Rune of the Guard Captain"), ("trinket2", "Uther's Strength"),
+    ("main_hand", "Hand of Edward the Odd"), ("off_hand", "Spirit of Aquementas"), ("ranged", "Totem of Thunder"),
 ]
+# slot: (worn instead of the pick, gap)
+VOLTARIS_GAPS = {"trinket2": ("Briarwood Reed", 3.0)}
+YOURS_GAPS = {
+    "head": ("Coif of Elements", 7.8), "shoulder": ("Pauldrons of Elements", 5.1),
+    "chest": ("Vest of Elements", 9.4), "waist": ("Cord of Elements", 4.1),
+    "legs": ("Kilt of Elements", 6.6), "trinket2": ("Briarwood Reed", 3.0),
+}
+GEARS = (VOLTARIS_GAPS, YOURS_GAPS)
 
 
 def shaman_items():
@@ -183,17 +183,18 @@ def shaman_items():
     return data, by_name
 
 
-def gear_panel(by_name):
+def gear_panel(by_name, gaps):
     slots = []
-    for slot, worn_name, pick_name, gap in GEAR:
+    for slot, pick_name in BIS:
+        worn_name, gap = gaps.get(slot, (pick_name, None))
         worn = by_name[worn_name]
         entry = {"slot": slot, "worn": {"id": worn["id"], "name": worn["name"], "item_level": worn["item_level"]},
                  "pick": None, "gap": gap}
-        if pick_name:
+        if worn_name != pick_name:
             pick = by_name[pick_name]
             entry["pick"] = {"id": pick["id"], "name": pick["name"], "source": PICK_SOURCES[pick_name], "chance": None}
         slots.append(entry)
-    return slots, round(sum(g for *_, g in GEAR if g), 1)
+    return slots, round(sum(g for _, g in gaps.values()), 1)
 
 
 def card(name, key, race, guild, score_parts, bests, history, slots, gap_total, history_points):
@@ -215,10 +216,10 @@ def card(name, key, race, guild, score_parts, bests, history, slots, gap_total, 
     }
 
 
-def fight(encounter, encounter_id, kill, val, pct, days, ms, report, index):
+def fight(encounter, encounter_id, kill, val, pct, at, ms, report, index):
     out = {"encounter": encounter, "encounter_id": encounter_id, "difficulty": 8 if encounter_id == ONYXIA else 1,
            "kill": kill, "metric": "dps", "value": val, "spec": "Elemental", "talent_split": "30/0/21",
-           "duration_ms": ms, "fought_at": iso(TODAY - timedelta(days=days)), "report_id": report,
+           "duration_ms": ms, "fought_at": at, "report_id": report,
            "fight_index": index, "execution_score": 0.91}
     if pct is not None:
         out["percentile"] = pct
@@ -239,38 +240,54 @@ def score_points(final):
     return points
 
 
-def cards(by_name):
-    slots, gap_total = gear_panel(by_name)
+def ago(days):
+    return iso(TODAY - timedelta(days=days))
+
+
+def kill_of(board_row, pct):
+    """A character card's kill, the same fight as its board row: same value, time and report."""
+    return fight("Onyxia", ONYXIA, True, board_row["value"], pct, board_row["fought_at"],
+                 board_row["duration_ms"], board_row["report_id"], board_row["fight_index"])
+
+
+def cards(by_name, rows):
+    volt_slots, volt_gap = gear_panel(by_name, VOLTARIS_GAPS)
+    volt_kill = kill_of(rows[0], 99)
     volt_hist = [
-        fight("Onyxia", ONYXIA, True, 462.0, 99, 1, 192000, "onyx0001kill", 9),
-        fight("Onyxia", ONYXIA, False, 441.3, None, 1, 74000, "onyx0001kill", 7),
-        fight("Emperor Dagran Thaurissan", 227, True, 431.2, 81, 3, 96000, "brd0003run", 14),
+        volt_kill,
+        fight("Onyxia", ONYXIA, False, 441.3, None, volt_kill["fought_at"], 74000, volt_kill["report_id"], 7),
+        fight("Emperor Dagran Thaurissan", 227, True, 431.2, 81, ago(3), 96000, "brd0003run", 14),
     ]
     volt = card("Voltaris", "us/normal/voltaris", "Orc", "Hordebreakers",
                 {"gear": 412, "experience": 620, "parses": 540, "attendance": 180, "discipline": 78},
-                [best(volt_hist[0]), best(volt_hist[2])], volt_hist, slots, gap_total, score_points(1830))
+                [best(volt_hist[0]), best(volt_hist[2])], volt_hist, volt_slots, volt_gap, score_points(1830))
     write("character.card.ranked", env(volt))
+    your_slots, your_gap = gear_panel(by_name, YOURS_GAPS)
+    your_kill = kill_of(rows[YOUR_RANK - 1], 93)
     yours_hist = [
-        fight("Onyxia", ONYXIA, True, YOURS, 93, 1, 194000, "onyx0014kill", 9),
-        fight("Onyxia", ONYXIA, False, 377.9, None, 1, 71000, "onyx0014kill", 7),
+        your_kill,
+        fight("Onyxia", ONYXIA, False, 377.9, None, your_kill["fought_at"], 71000, your_kill["report_id"], 7),
     ]
     yours = card("Lightningbolltz", "us/normal/lightningbolltz", "Troll", "Hordebreakers",
                  {"gear": 371, "experience": 410, "parses": 498, "attendance": 160, "discipline": 71},
-                 [best(yours_hist[0])], yours_hist, slots, gap_total, score_points(1510))
+                 [best(yours_hist[0])], yours_hist, your_slots, your_gap, score_points(1510))
     write("character.card.yours", env(yours))
 
 
 def items_fixture(data, by_name):
-    wanted = {n for _, worn, pick, _ in GEAR for n in (worn, pick) if n}
+    wanted = {n for _, n in BIS} | {worn for gaps in GEARS for worn, _ in gaps.values()}
     items = sorted((by_name[n] for n in wanted), key=lambda i: i["id"])
     write("cdn.items.shaman", {"build": data["build"], "class_slug": "shaman", "items": items})
+
+
+RANKED_ROWS = []
 
 
 def main():
     rankings()
     watching()
     data, by_name = shaman_items()
-    cards(by_name)
+    cards(by_name, RANKED_ROWS)
     items_fixture(data, by_name)
 
 

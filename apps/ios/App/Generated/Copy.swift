@@ -2700,6 +2700,14 @@ enum Copy {
         format("paperdoll.a11y.empty", slot)
     }
 
+    /// Two-hand in main hand
+    static var paperdollTwoHand: String { text("paperdoll.twoHand") }
+
+    /// {slot} · Item {id}
+    static func itemsUnknownItem(slot: String, id: String) -> String {
+        format("items.unknownItem", slot, id)
+    }
+
     /// A better item is on your best in slot list.
     static var paperdollA11yBetter: String { text("paperdoll.a11y.better") }
 

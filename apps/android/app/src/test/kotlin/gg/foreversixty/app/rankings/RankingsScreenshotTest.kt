@@ -11,15 +11,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RoborazziOptions
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.captureRoboImage
+import com.github.takahirom.roborazzi.captureScreenRoboImage
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.GameColors
@@ -85,20 +91,24 @@ class RankingsScreenshotTest {
     private val phases = RankingsTestData.phases().phases
     private val names = RankingsTestData.encounters().encounters.associate { it.slug to it.name }
 
-    private fun capture(name: String, large: Boolean = false, scrolls: Boolean = true, screen: @Composable () -> Unit) {
+    private fun capture(name: String, large: Boolean = false, scrolls: Boolean = true, tabs: Boolean = true, screen: @Composable () -> Unit) {
+        setContent(large, scrolls, tabs, screen)
+        compose.onRoot().captureRoboImage("src/test/screenshots/rankings/$name.png", roborazziOptions = TOLERANT)
+    }
+
+    private fun setContent(large: Boolean, scrolls: Boolean, tabs: Boolean, screen: @Composable () -> Unit) {
         if (large) RuntimeEnvironment.setFontScale(2f)
         compose.setContent {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
-                    ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) {
-                        // The screens are given the scroll their route gives them; a sheet scrolls itself.
-                        val ground = Modifier.fillMaxSize().background(FsColor.bg)
-                        Box(if (scrolls) ground.verticalScroll(rememberScrollState()) else ground) { screen() }
-                    }
+                    // The screens are given the scroll their route gives them; a sheet scrolls itself.
+                    val ground = Modifier.fillMaxSize().background(FsColor.bg)
+                    val body = @Composable { Box(if (scrolls) ground.verticalScroll(rememberScrollState()) else ground) { screen() } }
+                    // A modal sheet covers the tab bar, as ModalBottomSheet does in the app.
+                    if (tabs) ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) { body() } else body()
                 }
             }
         }
-        compose.onRoot().captureRoboImage("src/test/screenshots/rankings/$name.png", roborazziOptions = TOLERANT)
     }
 
     // F11.1, F11.3 and the board's states
@@ -118,8 +128,19 @@ class RankingsScreenshotTest {
 
     @Test fun offPage() = board("rankings-offpage-and", loaded(RankingsTestData.offPage()), RankingsTestData.viewer(RankingsTestData.sparkwick))
 
-    /** The board aimed at another of the account's characters' cohort: the meta names the character. */
-    @Test fun named() = board("rankings-named-and", loaded(RankingsTestData.page()), RankingsTestData.viewer(RankingsTestData.sparkwick))
+    /** The long press on Stormwrath (watched): Stop watching, Open the report, Share. */
+    @OptIn(ExperimentalRoborazziApi::class)
+    @Test fun rowMenu() {
+        setContent(large = false, scrolls = true, tabs = true) {
+            val viewer = RankingsTestData.viewer()
+            val filters = Rankings.defaults(viewer, specs, phases, now, "onyxia")
+            val state = RankingsScreenState(loaded(RankingsTestData.page()), filters, names, viewer, watched = setOf("us/normal/stormwrath"), reportsOn = true)
+            RankingsContent(state, now, zone = zone)
+        }
+        compose.onNode(hasContentDescription("Rank 2 of", substring = true)).performTouchInput { longClick() }
+        compose.waitForIdle()
+        captureScreenRoboImage("src/test/screenshots/rankings/rankings-menu-and.png", roborazziOptions = TOLERANT)
+    }
 
     @Test fun unranked() = board("rankings-empty-and", loaded(RankingsTestData.empty()))
 
@@ -141,15 +162,26 @@ class RankingsScreenshotTest {
 
     // F11.2 Filters
 
-    private fun sheet(name: String, choosingEncounter: Boolean) = capture(name, scrolls = false) {
-        val filters = Rankings.defaults(RankingsTestData.viewer(), specs, phases, now, "onyxia")
-        Column(Modifier.padding(top = 24.dp).fillMaxWidth().background(GameColors.sheet, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))) {
-            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { MetersDragHandle() }
-            FiltersSheetContent(FiltersSheetState(filters, RankingsTestData.encounters().encounters, Rankings.phaseChoices(phases, now), choosingEncounter), FiltersActions())
+    /** The sheet at its large detent over the whole window (it covers the tab bar); [atEnd] scrolls to `Reset filters`. */
+    private fun sheet(name: String, choosingEncounter: Boolean, today: Boolean = false, atEnd: Boolean = false, large: Boolean = false) =
+        capture(name, large, scrolls = false, tabs = false) {
+            val filters = Rankings.defaults(RankingsTestData.viewer(), specs, phases, now, "onyxia").copy(todayOnly = today)
+            val scroll = rememberScrollState()
+            if (atEnd) LaunchedEffect(scroll.maxValue) { scroll.scrollTo(scroll.maxValue) }
+            Column(Modifier.padding(top = 24.dp).fillMaxSize().background(GameColors.sheet, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))) {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { MetersDragHandle() }
+                FiltersSheetContent(FiltersSheetState(filters, RankingsTestData.encounters().encounters, Rankings.phaseChoices(phases, now), choosingEncounter), FiltersActions(), scroll)
+            }
         }
-    }
 
     @Test fun filters() = sheet("filters-and", choosingEncounter = false)
+
+    @Test fun filtersTodayOff() = sheet("filters-today-off-and", choosingEncounter = false, atEnd = true)
+
+    @Test fun filtersTodayOn() = sheet("filters-today-on-and", choosingEncounter = false, today = true, atEnd = true)
+
+    @Test @Config(qualifiers = PIXEL_9_XL)
+    fun filtersLarge() = sheet("filters-large-and", choosingEncounter = false, large = true)
 
     @Test fun encounters() = sheet("filters-encounters-and", choosingEncounter = true)
 
@@ -211,10 +243,11 @@ class RankingsScreenshotTest {
         val viewer = RankingsTestData.viewer()
         val line = RankingsCopy(res, zone).homeLine(RankingsTestData.page(), Rankings.defaults(viewer, specs, phases, now, "onyxia"), names)
         val presenter = HomePresenter(
-            HomeFixtures.velaren, emptyList(), HomeTime(HomeFixtures.now, ZoneOffset.UTC), res,
+            LIGHTNINGBOLLTZ, emptyList(), HomeTime(HomeFixtures.now, ZoneOffset.UTC), res,
             logs = HomeLogs(Reports.lastRaid(ReportsTestData.list().rows)), rankings = HomeRankings(line),
         )
-        HomeAnswer(HomePhase.Loaded(HomeFixtures.home()), presenter, HomeFixtures.BUILD, null)
+        // The home fixture's upgrades are a hunter's; the shaman's answer is drawn with every slot at its best.
+        HomeAnswer(HomePhase.Loaded(HomeFixtures.home(state = "ok")), presenter, HomeFixtures.BUILD, null)
     }
 
     @Test @Config(qualifiers = PIXEL_9_TALL)
@@ -237,6 +270,12 @@ class RankingsScreenshotTest {
         )
     }
 }
+
+/** Home's character for the Rankings row: the board's own Elemental Shaman. */
+private val LIGHTNINGBOLLTZ = gg.foreversixty.app.home.HomeCharacter(
+    key = "us/normal/lightningbolltz", region = "us", ruleset = "normal", name = "Lightningbolltz", race = "troll",
+    className = "shaman", specName = "Elemental", level = 60, guild = "Hordebreakers", faction = "horde",
+)
 
 /** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
 private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))

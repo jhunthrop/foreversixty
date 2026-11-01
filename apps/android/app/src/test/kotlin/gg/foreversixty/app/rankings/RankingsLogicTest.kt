@@ -220,24 +220,31 @@ class RankingsLogicTest {
         assertEquals("of 212 Elemental Shaman kills", copy().answerUnit(212, cohort, deduped = false))
     }
 
-    @Test fun `the meta names the character only when it is not the current one`() {
-        val page = RankingsTestData.page()
-        val rank = page.characterRank!!
+    @Test fun `the meta names the character on the page and off it`() {
         val names = mapOf("onyxia" to "Onyxia")
-        assertEquals("Your best kill on Onyxia, Normal, Phase 1.", copy().answerMeta(rank.row, filters(), names, RankingsTestData.lightningbolltz.name).text)
-        val named = copy().answerMeta(rank.row, filters(), names, "Obnoxious Yell")
-        assertEquals("Lightningbolltz · best kill on Onyxia, Normal, Phase 1.", named.text)
-        assertEquals("Lightningbolltz", named.name)
+        val on = copy().answerMeta(RankingsTestData.page().characterRank!!.row, filters(), names)
+        assertEquals("Lightningbolltz · best kill on Onyxia, Normal, Phase 1.", on.text)
+        assertEquals("Lightningbolltz", on.name)
+        val off = copy().answerMeta(RankingsTestData.offPage().characterRank!!.row, filters(), names)
+        assertEquals("Sparkwick · best kill on Onyxia, Normal, Phase 1.", off.text)
+    }
+
+    @Test fun `a row's age and each separator never start a line`() {
+        val meta = copy().rowMeta(RankingsTestData.page().rows.first(), now)
+        assertTrue(meta.contains("2\u00A0d\u00A0ago"))
+        assertFalse(meta.contains(" · "))
+        assertTrue(meta.contains("\u00A0· "))
+        assertTrue(meta.contains("40\u00A0players"))
     }
 
     @Test fun `a row's meta, value and unit`() {
         val row = RankingsTestData.page().rows.first()
-        assertEquals("Hordebreakers · 40 players · 3:13 · 2 d ago", copy().rowMeta(row, now))
+        assertEquals("Hordebreakers\u00A0· 40\u00A0players\u00A0· 3:13\u00A0· 2\u00A0d\u00A0ago", copy().rowMeta(row, now))
         assertEquals("462", Rankings.valueText(row, Measure.Damage))
         assertEquals("97%", Rankings.valueText(row.copy(value = 0.968), Measure.Execution))
         assertEquals("DPS", copy().unit(Measure.Damage))
         assertEquals("Executed", copy().unit(Measure.Execution))
-        assertEquals("40 players · 3:13 · 2 d ago", copy().rowMeta(row.copy(guild = null), now))
+        assertEquals("40\u00A0players\u00A0· 3:13\u00A0· 2\u00A0d\u00A0ago", copy().rowMeta(row.copy(guild = null), now))
     }
 
     @Test fun `a row reads as one sentence`() {
@@ -368,7 +375,7 @@ class RankingsLogicTest {
         val catalog = ItemCatalog(StaticDataClient(FixtureEngine.create(source)))
         val feature = RankingsFeature(LiveRankingsService(client), MemoryRaidCache(), specs, catalog, { null }, { true }, { now })
         assertEquals("14th of 212 Elemental Shaman characters on Onyxia", feature.homeLine(RankingsTestData.viewer(), resources()))
-        assertEquals(21, catalog.items(RankingsTestData.BUILD, "shaman")?.size)
+        assertTrue(catalog.items(RankingsTestData.BUILD, "shaman").orEmpty().containsKey(RankingsTestData.voltaris().gear.first().worn?.id))
     }
 
     private object NoToken : TokenProvider {

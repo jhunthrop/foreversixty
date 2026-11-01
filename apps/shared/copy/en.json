@@ -788,6 +788,8 @@
     "char.a11y.component": {"text": "{component} {value} of {cap}.", "notPlural": true, "args": {"value": "int", "cap": "int"}},
     "paperdoll.a11y.socket": "{slot}, {item}, {quality}, item level {level}.",
     "paperdoll.a11y.empty": "{slot}, empty.",
+    "paperdoll.twoHand": "Two-hand in main hand",
+    "items.unknownItem": "{slot} · Item {id}",
     "paperdoll.a11y.better": "A better item is on your best in slot list.",
     "paperdoll.detail": {"text": "{slot} · ilvl {n}", "notPlural": true, "args": {"n": "int"}},
 

@@ -17,8 +17,8 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.roundToInt
 
-/** The answer card's meta: the sentence, and the character name it opens with (drawn in gold), if any. */
-data class AnswerMeta(val text: String, val name: String?)
+/** The answer card's meta: the sentence, and the character name it opens with (drawn in gold). */
+data class AnswerMeta(val text: String, val name: String)
 
 /** Every F11 sentence built from data (spec §5.3); the words themselves live in the copy catalog. */
 class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.systemDefault()) {
@@ -93,12 +93,11 @@ class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId
         return collapse(res.getString(id, total, spec, cls))
     }
 
-    /** `Your best kill on Onyxia, Normal, Phase 1.`, or `{name} · best kill on …` when the row is not [currentName]'s. */
-    fun answerMeta(row: RankingRow, filters: RankingsFilters, encounterNames: Map<String, String>, currentName: String?): AnswerMeta {
+    /** `Lightningbolltz · best kill on Onyxia, Normal, Phase 1.`: the card names its character on the page and off it. */
+    fun answerMeta(row: RankingRow, filters: RankingsFilters, encounterNames: Map<String, String>): AnswerMeta {
         val encounter = encounterNames[filters.encounter] ?: filters.encounter
         val ruleset = rulesetLabel(filters.ruleset)
         val phase = if (filters.phase.isEmpty()) "" else phaseLabel(filters.phase)
-        if (row.player.name == currentName) return AnswerMeta(res.getString(R.string.rank_meta, encounter, ruleset, phase), null)
         return AnswerMeta(res.getString(R.string.rank_metaNamed, row.player.name, encounter, ruleset, phase), row.player.name)
     }
 
@@ -126,12 +125,16 @@ class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId
 
     fun unit(measure: Measure): String = res.getString(measure.unit)
 
-    /** `Hordebreakers · 40 players · 3:13 · 2 d ago`. */
+    /**
+     * `Hordebreakers · 40 players · 3:13 · 2 d ago`. Each part is bound with no-break spaces and each
+     * separator stays at the end of its line, so a wrap never leaves `ago` or `· 2 d ago` an orphan.
+     */
     fun rowMeta(row: RankingRow, now: Instant): String {
         val time = FightRows.clock(row.durationMs.toLong())
-        val age = age(row.foughtAt, now)
+        val age = bind(age(row.foughtAt, now))
         val guild = row.guild?.name
-        return if (guild != null) res.getString(R.string.rank_rowMeta, guild, row.size, time, age) else res.getString(R.string.rank_rowMetaNoGuild, row.size, time, age)
+        val text = if (guild != null) res.getString(R.string.rank_rowMeta, guild, row.size, time, age) else res.getString(R.string.rank_rowMetaNoGuild, row.size, time, age)
+        return text.replace(SEPARATOR, BOUND_SEPARATOR).replace(PLAYERS_GAP, PLAYERS_BOUND)
     }
 
     /** `Rank 14 of 212, Lightningbolltz, 398 damage per second, Hordebreakers, your character`. */
@@ -154,6 +157,15 @@ class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId
 
     companion object {
         const val SEPARATOR = " · "
+        private const val NBSP = '\u00A0'
+
+        /** The separator bound to the word before it, so a line breaks after the dot, never before. */
+        private const val BOUND_SEPARATOR = "\u00A0· "
+        private const val PLAYERS_GAP = " players"
+        private const val PLAYERS_BOUND = "\u00A0players"
+
+        /** A phrase that must not wrap (`2 d ago`). */
+        fun bind(text: String): String = text.replace(' ', NBSP)
         private const val PERCENT = 100.0
         private val SHORT_DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", Locale.US)
 

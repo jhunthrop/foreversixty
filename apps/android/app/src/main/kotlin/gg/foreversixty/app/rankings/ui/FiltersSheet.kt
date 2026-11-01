@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -93,7 +94,7 @@ fun FiltersSheet(state: FiltersSheetState, actions: FiltersActions, onDismiss: (
 
 /** The sheet's body, apart from the sheet so screenshot tests draw it. */
 @Composable
-fun FiltersSheetContent(state: FiltersSheetState, actions: FiltersActions) {
+fun FiltersSheetContent(state: FiltersSheetState, actions: FiltersActions, scroll: ScrollState = rememberScrollState()) {
     if (state.choosingEncounter) {
         EncounterList(state, actions)
         return
@@ -102,7 +103,7 @@ fun FiltersSheetContent(state: FiltersSheetState, actions: FiltersActions) {
     val f = state.filters
     val apply = actions.apply
     Column(
-        Modifier.verticalScroll(rememberScrollState()).navigationBarsPadding().padding(horizontal = 16.dp).padding(bottom = 24.dp),
+        Modifier.verticalScroll(scroll).navigationBarsPadding().padding(horizontal = 16.dp).padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(22.dp),
     ) {
         Title(stringResource(R.string.rank_filters))

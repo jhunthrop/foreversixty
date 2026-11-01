@@ -117,7 +117,7 @@ private fun Words(slot: PaperdollSlot, horizontal: Alignment.Horizontal, align: 
             slot.name, style = PaperdollLayout.name, color = nameColor, textAlign = align,
             maxLines = PaperdollLayout.NAME_LINES, overflow = TextOverflow.Ellipsis,
         )
-        Text(slot.detail, style = PaperdollLayout.detail, color = FsColor.muted, textAlign = align)
+        slot.detail?.let { Text(it, style = PaperdollLayout.detail, color = FsColor.muted, textAlign = align) }
     }
 }
 

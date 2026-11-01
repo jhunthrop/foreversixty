@@ -1,6 +1,7 @@
 package gg.foreversixty.app.rankings.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -44,6 +45,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
@@ -173,34 +175,30 @@ private fun Loaded(board: Board, filters: RankingsFilters, state: RankingsScreen
 @Composable
 private fun AnswerCard(board: Board, filters: RankingsFilters, state: RankingsScreenState, copy: RankingsCopy) {
     Column(Modifier.fillMaxWidth().primaryCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        MicroLabel(stringResource(R.string.rank_label))
         val placed = board.characterRank
         if (placed == null) {
             Text(copy.unranked(filters, state.encounterNames), style = FsType.lead, color = FsColor.strong)
             Text(stringResource(R.string.rank_noneMeta), style = FsType.meta, color = FsColor.muted)
             return@Column
         }
-        MicroLabel(stringResource(R.string.rank_label))
         val unit = copy.answerUnit(board.total, filters.cohort, board.deduped)
         val ordinal = Rankings.ordinal(placed.rank)
+        val tier = parseColor(Rankings.rankTier(placed.rank, board.total))
         if (isLargeText()) {
-            Text(ordinal, style = FsType.stat, color = FsColor.strong)
+            Text(ordinal, style = FsType.stat, color = tier)
             Text(unit, style = FsType.body, color = FsColor.text)
         } else {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(ordinal, style = FsType.stat, color = FsColor.strong, modifier = Modifier.alignByBaseline())
+                Text(ordinal, style = FsType.stat, color = tier, modifier = Modifier.alignByBaseline())
                 Text(unit, style = FsType.body, color = FsColor.text, modifier = Modifier.alignByBaseline())
             }
         }
-        val meta = copy.answerMeta(placed.row, filters, state.encounterNames, state.viewer.current?.name)
+        val meta = copy.answerMeta(placed.row, filters, state.encounterNames)
         Text(
             buildAnnotatedString {
-                val name = meta.name
-                if (name != null && meta.text.startsWith(name)) {
-                    withStyle(SpanStyle(color = FsColor.gold, fontWeight = FontWeight.SemiBold)) { append(name) }
-                    append(meta.text.removePrefix(name))
-                } else {
-                    append(meta.text)
-                }
+                withStyle(SpanStyle(color = FsColor.gold, fontWeight = FontWeight.SemiBold)) { append(meta.name) }
+                append(meta.text.removePrefix(meta.name))
             },
             style = FsType.meta, color = FsColor.muted,
         )
@@ -342,7 +340,10 @@ private fun rowActions(row: RankingRow, state: RankingsScreenState, actions: Ran
 
 @Composable
 private fun RowMenu(expanded: Boolean, items: List<Pair<String, () -> Unit>>, close: () -> Unit) {
-    DropdownMenu(expanded = expanded, onDismissRequest = close) {
+    DropdownMenu(
+        expanded = expanded, onDismissRequest = close, offset = MENU_OFFSET,
+        containerColor = FsColor.cardTop, border = BorderStroke(1.dp, FsColor.line),
+    ) {
         items.forEach { (name, run) ->
             DropdownMenuItem(text = { Text(name) }, onClick = { close(); run() })
         }
@@ -397,4 +398,6 @@ private fun Skeleton(signedIn: Boolean) {
 }
 
 /** The rank numeral: mono 700. */
+private val MENU_OFFSET = DpOffset(56.dp, 0.dp)
+
 private val RankNumeral = FsType.mono.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp)

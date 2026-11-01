@@ -91,9 +91,9 @@ class CharacterLogicTest {
         val best = p.best.first()
         assertEquals("462", copy().value(best))
         assertEquals("DPS", copy().unit(best.metric))
-        assertEquals("Normal · 1 d ago", copy().bestMeta(p, best, now))
-        assertEquals("Kill · 1 d ago", copy().fightMeta(p.history[0], now))
-        assertEquals("Wipe · 1 d ago", copy().fightMeta(p.history[1], now))
+        assertEquals("Normal · 2 d ago", copy().bestMeta(p, best, now))
+        assertEquals("Kill · 2 d ago", copy().fightMeta(p.history[0], now))
+        assertEquals("Wipe · 2 d ago", copy().fightMeta(p.history[1], now))
         assertEquals("Elemental · first seen 10 Dec", copy().buildMeta("Elemental", p.buildsSeen.first().firstSeen))
     }
 
@@ -169,20 +169,19 @@ class CharacterLogicTest {
 
     // Paperdoll
 
-    @Test fun `the character's gear as 17 sockets with the gold dot on its 4 picks`() {
-        val p = RankingsTestData.voltaris()
-        val slots = Paperdoll.fromProfile(p.gear, RankingsTestData.items().items.associateBy { it.id }, res)
-        assertEquals(17, slots.size)
-        assertEquals(listOf("head", "chest", "waist", "trinket2"), slots.filter { it.better }.map { it.slot })
-        val head = slots.first()
-        assertEquals("Blue Dragonscale Helm", head.name)
+    @Test fun `the gold dot marks only the slots whose pick gains`() {
+        val items = RankingsTestData.items().items.associateBy { it.id }
+        val voltaris = Paperdoll.fromProfile(RankingsTestData.voltaris().gear, items, res)
+        assertEquals(17, voltaris.size)
+        assertEquals(listOf("trinket2"), voltaris.filter { it.better }.map { it.slot })
+        val yours = Paperdoll.fromProfile(RankingsTestData.yours().gear, items, res)
+        assertEquals(listOf("head", "shoulder", "chest", "waist", "legs", "trinket2"), yours.filter { it.better }.map { it.slot })
+        val head = voltaris.first()
+        assertEquals("Living Crown", head.name)
         assertEquals("Head · ilvl 61", head.detail)
-        assertEquals("inv_helmet_09", head.item?.icon)
-        assertEquals(4, head.item?.quality)
-        assertEquals(
-            "Head, Blue Dragonscale Helm, Epic, item level 61. A better item is on your best in slot list.",
-            Paperdoll.label(head, res),
-        )
+        assertEquals("inv_helmet_32", head.item?.icon)
+        assertEquals("Head, Living Crown, Epic, item level 61.", Paperdoll.label(head, res))
+        assertEquals("Head, Coif of Elements, Rare, item level 62. A better item is on your best in slot list.", Paperdoll.label(yours.first(), res))
     }
 
     @Test fun `the frame lays sockets out as the character frame`() {
@@ -200,7 +199,9 @@ class CharacterLogicTest {
         val gear = p.gear.map { if (it.slot == "off_hand") it.copy(worn = null, pick = null, gap = null) else it }
         val off = Paperdoll.fromProfile(gear, items + (mace.id to mace), res).first { it.slot == "off_hand" }
         assertTrue(off.isEmpty)
-        assertEquals("none: Hand of Edward the Odd is two-handed.", off.name)
+        assertEquals("Off hand", off.name)
+        assertEquals("Two-hand in main hand", off.detail)
+        assertFalse(off.better)
         assertEquals("Off hand, empty.", Paperdoll.label(off, res))
     }
 
@@ -213,6 +214,24 @@ class CharacterLogicTest {
         assertEquals("Neck", Paperdoll.fromProfile(gear, emptyMap(), res)[1].detail)
     }
 
+    @Test fun `a nameless item our data does not know reads its slot and id, printed once`() {
+        val gear = listOf(RankingsTestData.voltaris().gear.first { it.slot == "trinket2" }.copy(worn = CharacterGearSlotWorn(288887, null, null)))
+        val trinket = Paperdoll.fromProfile(gear, emptyMap(), res).first { it.slot == "trinket2" }
+        assertTrue(trinket.isUnknown)
+        assertEquals("Trinket 2 · Item 288887", trinket.name)
+        assertNull(trinket.detail)
+        assertEquals("Trinket 2 · Item 288887. A better item is on your best in slot list.", Paperdoll.label(trinket, res))
+    }
+
+    @Test fun `Home's unknown wrist is a nameless socket with its slot and id`() {
+        val home = HomeFixtures.home()
+        val rows = GearModel.rows(home, emptyMap(), HomeFixtures.tooltipSources().items, res)
+        val wrist = Paperdoll.fromGear(rows, res).first { it.slot == "wrist" }
+        assertEquals("Wrist · Item 999999", wrist.name)
+        assertTrue(wrist.isUnknown)
+        assertNull(wrist.detail)
+    }
+
     @Test fun `Home's Your gear as sockets keeps GearModel's rows, the gold dot where Home has an upgrade`() {
         val home = HomeFixtures.home()
         val sources = HomeFixtures.tooltipSources()
@@ -222,7 +241,10 @@ class CharacterLogicTest {
         val slots = Paperdoll.fromGear(rows, res)
         assertEquals(rows.map { it.slot }, slots.map { it.slot })
         assertEquals(rows.filter { it.pick != null }.map { it.slot }, slots.filter { it.better }.map { it.slot })
-        assertEquals("none: Legionite Glaive is two-handed.", slots.first { it.slot == "off_hand" }.name)
+        val off = slots.first { it.slot == "off_hand" }
+        assertEquals("Off hand", off.name)
+        assertEquals("Two-hand in main hand", off.detail)
+        assertFalse(off.better)
         assertFalse(slots.first { it.slot == "shoulder" }.better)
     }
 }

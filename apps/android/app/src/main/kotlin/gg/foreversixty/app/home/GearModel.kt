@@ -9,6 +9,7 @@ import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.HomeItem
 import gg.foreversixty.app.model.HomeUpgrade
 import gg.foreversixty.app.model.Item
+import gg.foreversixty.app.paperdoll.Paperdoll
 
 /** One of the 17 rows of Your gear (spec F2.7): what is worn and the band's pick. */
 data class GearRow(
@@ -22,6 +23,8 @@ data class GearRow(
     /** The pick when it differs from what is worn. */
     val pick: ItemLook?,
     val isBestInSlot: Boolean,
+    /** An empty off hand because the main hand is two-handed: the Paperdoll says `Two-hand in main hand`. */
+    val offHandBlocked: Boolean = false,
 )
 
 /**
@@ -47,6 +50,7 @@ object GearModel {
             if (slot == OFF_HAND && gear[slot] == null && offHandBlockedBy != null) {
                 return@map GearRow(
                     slot, name, null, res.getString(R.string.items_offHandTwoHand, offHandBlockedBy), null, null, isBestInSlot = false,
+                    offHandBlocked = true,
                 )
             }
             exportRow(gear[slot], slot, name, items, res)
@@ -84,8 +88,9 @@ object GearModel {
         return GearRow(
             slot = upgrade.slot,
             slotName = slotName,
-            worn = ItemLook(worn.id, worn.name, worn.quality, worn.icon, worn.itemLevel),
-            wornName = if (worn.known) worn.name ?: worn.label else worn.label,
+            // An unknown item carries no name, so it reads `{Slot} · Item {id}` everywhere it is drawn.
+            worn = ItemLook(worn.id, if (worn.known) worn.name else null, worn.quality, worn.icon, worn.itemLevel),
+            wornName = if (worn.known) worn.name ?: worn.label else Paperdoll.unknownName(slotName, worn.id, res),
             wornLevel = worn.itemLevel?.let { res.getString(R.string.items_ilvl, it) },
             pick = pick,
             isBestInSlot = false,
@@ -96,7 +101,7 @@ object GearModel {
         slot = slot,
         slotName = slotName,
         worn = ItemLook(item.id, item.name, item.quality, item.icon, item.itemLevel),
-        wornName = item.name ?: res.getString(R.string.items_notInData),
+        wornName = item.name ?: Paperdoll.unknownName(slotName, item.id, res),
         wornLevel = item.itemLevel?.let { res.getString(R.string.items_ilvl, it) },
         pick = null,
         isBestInSlot = true,
@@ -105,7 +110,7 @@ object GearModel {
     private fun exportRow(id: Int?, slot: String, slotName: String, items: Map<Int, Item>, res: Resources): GearRow {
         id ?: return GearRow(slot, slotName, null, res.getString(R.string.gear_emptySlot), null, null, isBestInSlot = false)
         val item = items[id] ?: return GearRow(
-            slot, slotName, ItemLook(id), res.getString(R.string.items_notInData), null, null, isBestInSlot = false,
+            slot, slotName, ItemLook(id), Paperdoll.unknownName(slotName, id, res), null, null, isBestInSlot = false,
         )
         return GearRow(
             slot = slot,

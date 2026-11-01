@@ -123,9 +123,9 @@
       {
         "slot": "head",
         "worn": {
-          "id": 252604,
-          "name": "Blue Dragonscale Helm",
-          "item_level": 61
+          "id": 16667,
+          "name": "Coif of Elements",
+          "item_level": 62
         },
         "pick": {
           "id": 252561,
@@ -133,7 +133,7 @@
           "source": "Leatherworking",
           "chance": null
         },
-        "gap": 6.2
+        "gap": 7.8
       },
       {
         "slot": "neck",
@@ -148,12 +148,17 @@
       {
         "slot": "shoulder",
         "worn": {
+          "id": 16669,
+          "name": "Pauldrons of Elements",
+          "item_level": 60
+        },
+        "pick": {
           "id": 15067,
           "name": "Ironfeather Shoulders",
-          "item_level": 54
+          "source": "Leatherworking",
+          "chance": null
         },
-        "pick": null,
-        "gap": null
+        "gap": 5.1
       },
       {
         "slot": "back",
@@ -218,12 +223,17 @@
       {
         "slot": "legs",
         "worn": {
-          "id": 252486,
-          "name": "Ironfeather Leggings",
+          "id": 16668,
+          "name": "Kilt of Elements",
           "item_level": 61
         },
-        "pick": null,
-        "gap": null
+        "pick": {
+          "id": 252486,
+          "name": "Ironfeather Leggings",
+          "source": "Leatherworking",
+          "chance": null
+        },
+        "gap": 6.6
       },
       {
         "slot": "feet",
@@ -311,7 +321,7 @@
         "gap": null
       }
     ],
-    "gear_gap_total": 22.7,
+    "gear_gap_total": 36.0,
     "gear_spec": "shaman-elemental",
     "gear_spec_source": "talents"
   },
