@@ -12,7 +12,12 @@ Value") and every block absorbed only Strength / 20.
 from __future__ import annotations
 
 from pipeline import wowhead_items as wh
-from pipeline.simdb.shield_block import shield_block_values, with_shield_block
+from pipeline.classicdb_items import ClassicDbItem
+from pipeline.simdb.shield_block import (
+    classicdb_shield_block_values,
+    shield_block_values,
+    with_shield_block,
+)
 from pipeline.simdb.statmap import stat_array, stat_index
 from pipeline.simproto import pb
 
@@ -60,3 +65,35 @@ def test_a_shield_with_no_stats_gains_its_block():
     (out,) = with_shield_block([shield], {279262: 44.0})
     assert out.stats[BLOCK] == 44.0
     assert out.stats[stat_index("stamina")] == 16.0
+
+
+def _classicdb(item_id: int, subclass_id: int, block: int) -> ClassicDbItem:
+    return ClassicDbItem(
+        id=item_id,
+        name="x",
+        quality=4,
+        item_level=59,
+        required_level=54,
+        class_id=4,
+        subclass_id=subclass_id,
+        inventory_type=14,
+        allowable_class=-1,
+        allowable_race=-1,
+        armor=2256,
+        raw_stats={},
+        resistances={},
+        damage_min=0,
+        damage_max=0,
+        delay=0,
+        set_id=None,
+        unique=False,
+        spells=[],
+        block=block,
+    )
+
+
+def test_classic_db_shields_carry_their_item_template_block():
+    """A shield Wowhead's feed does not carry still has its classic-db block
+    (Skullflame Shield 1168: 40); a non-shield's column is ignored."""
+    values = classicdb_shield_block_values([_classicdb(1168, 6, 40), _classicdb(2, 4, 9)])
+    assert values == {1168: 40.0}
