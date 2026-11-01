@@ -7,6 +7,107 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 1 | 2026-10-31 | design/reviews/2026-10-31-theorycraft-audit/ (casters, hybrids, physical) | every row in the reports' Fixed columns; the rest held under the adoption rule or open | 17d31ecfa (via 31fbe10e2, c99fb94b4, f923e1ad1, 09ca529f3 and the lane follows) | no |
 | 2 | 2026-10-31 to 2026-11-01 | design/reviews/2026-11-01-sim-audit-round2/ (warlock, casters, hybrids, physical) | about 35 fixed; 2 held (warlock demons refusing player buffs, and the Destruction build that depends on it) | c8d29ea33 | no |
 | 3 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round3/ (warlock, physical, hybrids, casters) | 22 fixed (12 from the fresh re-audit, 1 from the wow-player review); round 2's two holds landed | 640da215f | no |
+| 4 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round4/ (warlock, physical, hybrids, casters, integration) | 33 fixed (warlock 6, physical 6, hybrids 8, casters 7, integrator 6); 1 from the wow-player review | f8a5f94ce | no |
+
+## Round 4 at a glance
+
+Confirmed and fixed, by group (rows and evidence in each report):
+- **Warlock (6).**
+  - Demons take Forever's 17% attack power and 10% spell damage shares, not Classic's 56.5% and 15%. Sources: the Forever UI's `WARLOCK_PET_BONUS`, wowsims/forever's beta readings and the beta log fits.
+  - Demon melee takes 8/17 of the warlock's hit and spells all of it. This rests on one Blizzard statement, forever-bugs #394.
+  - Lash of Pain takes Malevolence's crit.
+  - Shadow Vulnerability raises only the warlock's own Shadow damage.
+  - Bane of Doom needs a minute left to be cast.
+  - Eureka! follows each Gnome class's own client row: 8 s, no charges, class masks. A new generator, `make eureka`, writes it.
+- **Physical (6).**
+  - Weapon damage: the item file was Era's `db.json`, and the client curve missed QualityModifier and the caster-weapon bit. 1,027 of 1,036 melee weapons now match Wowhead Forever.
+  - Items now carry ranged attack power (stat 39) and "+N Weapon Damage" (stat 83, Molten Heart).
+  - Hunter pets inherit hit.
+  - Wound Poison is outside Venom and Vile Poisons.
+- **Hybrids (8).**
+  - Heals over time crit; the client flags every trained one.
+  - Touch of the Grave, Orc Savage and Tauren Endurance follow the 70707 client.
+  - Maul spends Clearcasting.
+  - Bloom's heal rolls no cast procs.
+  - Seal of Righteousness takes spell power once. The Retribution list now keeps Seal of Command and twists to Righteousness, gated on mana and attack power.
+- **Casters (7).**
+  - Arcane Concentration's Clearcasting is one charge.
+  - Arcane Blast's stacks and Missile Barrage keep the other cost mods.
+  - Arcane Missiles rank 8 is an Ahn'Qiraj book.
+  - Fire casts Evocation below 5% mana. It also adopts a raid build with Arcane Meditation, +5.2%.
+  - Items keep holy, nature, frost, shadow and arcane spell damage and spell penetration (ItemSparse 84 to 89 and 47).
+  - Wowhead-only items keep their flat crit, hit, dodge, parry, block and defense.
+- **Integrator (6).**
+  - The /sim page defaults to the published numbers' type-neutral target.
+  - Its Raid-buffed buffs and debuffs come from the curated raid preset.
+  - The coach's sim reference fights the type-neutral target.
+  - A rage potion on a class with no rage bar no longer panics the engine.
+  - The /sim armor field names the armor of the target the character fights; found by the wow-player review.
+  - The BiS ranker kept main-hand-only weapons out of the off hand. The bis.yml run after round 3's weapon-DPS fix had put Teebu's Blazing Longsword in Survival's off hand, where the engine swings nothing: 653.7 against 768.6 on the re-rank. Otherwise that run's picks are sane: Feral takes Hammer of the Titans.
+
+The heal profile is retuned to ×1.65 by its own rule. The Restoration druid covered 91% after heal-over-time crits; raid sets now cover 60.4 to 84.0%.
+
+Before and after, pin 640da215f against f8a5f94ce on today's published data. Raid preset, band 60, 10,000 iterations, alliance / horde, seed 1 (seed 50001 within 0.2):
+- Arcane -9.3 / -9.0.
+- Fire -12.4 / -12.9 on the published build. The new build adds +5.2.
+- Frost -2.2 / -2.5.
+- Retribution +7.3 / -10.2. Horde is on Blade of Hanna; on Arcanite Champion it is +10.1.
+- Protection paladin threat 0.0 / -4.5.
+- Restoration shaman HPS +4.7 / +4.7.
+- Restoration druid HPS +2.8 / +2.4.
+- Holy paladin HPS +2.0 / +2.0.
+- Holy priest HPS -2.1 / -1.4.
+- Discipline HPS +0.7 / +0.5.
+- Affliction -3.6 / -3.1.
+- Demonology -1.4 / -0.7.
+- Destruction -1.7 / -1.2.
+- Balance 0.0 / -1.0.
+- Feral 0.0 / -0.6.
+- Feral bear threat -0.9 / -1.1.
+- Beast Mastery +0.7 / +0.6.
+- Marksmanship +0.5 / +0.7.
+- Shadow -0.4 / -0.1.
+- Elemental 0.0 / +0.8.
+- Enhancement 0.0 / +0.9.
+- Arms 0.0 / +0.8.
+- Protection warrior threat 0.0 / -1.2.
+- Every other spec 0.0.
+
+The item-data fixes reach published numbers only after data.yml and bis.yml regenerate simdb.bin and the BiS sets. integration.md lists the lane measurements.
+
+Open going into round 5:
+- **Owner decisions.**
+  - /tiers/healer ranks healers side by side. The ×1.65 retune puts Restoration shaman 0.8% above Holy priest, where ×1.5 had the priest 7% ahead. The wow-player review asks that healer scores stay out of a cross-class order.
+  - Power Infusion for healers is policy: it goes to a DPS. One self-cast would add at most about 1.7%.
+- **The /sim page's consumables** are its own list, not the per-spec curated groups plus the class kit. Combat reads 7.6% low on the page with no poisons, and Survival 4.1% high (integration I6). The page needs per-spec resolution.
+- **The BiS ranker's verify losses.** After the item-stat fixes, the ranker's weights pick sets its own verification scores lower: Survival, Arcane (Kindling Stave), Enhancement, Destruction (Elemental Mage Staff) and the tanks (defense items). Rhok'delar is not among Marksmanship's candidates.
+- **Blocked on level-60 logs** (launch is 2026-11-04):
+  - Demon crit (Blizzard's stated intent, not live; +1.7 to +2.6%) and haste.
+  - The demon level-60 sheets.
+  - Pet haste for hunters.
+  - The rage-crit factor and Sunder's AP threat.
+  - Holy Strike's flat bonus and Unsealed Wrath on special attacks.
+  - Omen's 4% at 60.
+- **Single source, one in-game look each:**
+  - Ice Lance's 8 s on ranks 2 to 6.
+  - Ice Barrier's +15% / +5%. The shipped tables say 3% / 3%; worth 9% of Frost.
+  - Touch of the Grave's cooldown, 25 s or 15 s.
+  - Blood Fury, 2 or 3 min.
+  - Endurance's 2% crit.
+  - The Human Spirit, 5 or 10%.
+  - Pet hit from forever-bugs #394.
+- **Carried over:**
+  - Kings with Heart of the Lion (moot for the preset and the page now).
+  - Shadowfiend at launch.
+  - Pet family.
+  - Demonic Brand unmodeled.
+  - Siphon Life crit held for the owner.
+  - Healing Stream tick crit.
+  - Master of Elements on a Clearcasting cast.
+  - Nine weapons on hotfix rows newer than the seed.
+  - Expertise (37) and haste (36) item stats unconfirmed.
+  - The fork's Settings suite stands melee at 30 yd.
+- **Pre-existing:** five data tests (`test_addondata`, `test_audit_addon`) already fail on origin/main.
 
 ## Round 3 at a glance
 
