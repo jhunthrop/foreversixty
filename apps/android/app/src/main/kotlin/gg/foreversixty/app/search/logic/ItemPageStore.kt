@@ -47,7 +47,8 @@ sealed interface ItemPagePhase {
 /** `Where it comes from` and `Best in slot for`, which fail on their own (spec F12.4). */
 sealed interface ItemUsesPhase {
     data object Loading : ItemUsesPhase
-    data class Loaded(val sources: List<ItemSourceLine>, val specs: List<ItemSpecLine>) : ItemUsesPhase
+    /** [chanceUnknown]: a boss drop has no chance in the data; said once under the sources. */
+    data class Loaded(val sources: List<ItemSourceLine>, val specs: List<ItemSpecLine>, val chanceUnknown: Boolean = false) : ItemUsesPhase
     data object Failed : ItemUsesPhase
 }
 
@@ -112,6 +113,7 @@ class ItemPageStore(
                 ItemUsesPhase.Loaded(
                     ItemPageCopy.sources(row?.sources.orEmpty(), res),
                     ItemPageCopy.specs(row?.specs.orEmpty(), catalog, SearchCopy(res), res),
+                    ItemPageCopy.chanceUnknown(row?.sources.orEmpty()),
                 )
             }
             is ApiResult.Failure -> ItemUsesPhase.Failed

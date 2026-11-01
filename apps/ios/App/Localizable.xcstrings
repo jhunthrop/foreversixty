@@ -1873,6 +1873,17 @@
         }
       }
     },
+    "itemPage.bisForFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot lists did not load."
+          }
+        }
+      }
+    },
     "itemPage.bisForFoot": {
       "extractionState": "manual",
       "localizations": {
@@ -2299,6 +2310,174 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quest Item"
+          }
+        }
+      }
+    },
+    "items.equip.attackPower": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: +%1$lld Attack Power."
+          }
+        }
+      }
+    },
+    "items.equip.block": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases your chance to block attacks with a shield by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.blockValue": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases the block value of your shield by %1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.crit": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Improves your chance to get a critical strike by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.defense": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increased Defense +%1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.dodge": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases your chance to dodge an attack by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.firePower": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases damage done by Fire spells and effects by up to %1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.healing": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases healing done by spells and effects by up to %1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.hit": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Improves your chance to hit by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.mp5": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Restores %1$lld mana per 5 sec."
+          }
+        }
+      }
+    },
+    "items.equip.parry": {
+      "comment": "Arguments: 1 percent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases your chance to parry an attack by %1$@."
+          }
+        }
+      }
+    },
+    "items.equip.rangedAttackPower": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: +%1$lld ranged Attack Power."
+          }
+        }
+      }
+    },
+    "items.equip.spellPenetration": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Decreases the magical resistances of your spell targets by %1$lld."
+          }
+        }
+      }
+    },
+    "items.equip.spellPower": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equip: Increases damage and healing done by magical spells and effects by up to %1$lld."
           }
         }
       }

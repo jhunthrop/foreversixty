@@ -1,5 +1,11 @@
 package gg.foreversixty.app.search.ui
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.sp
+import gg.foreversixty.app.designsystem.FsRadius
+import gg.foreversixty.app.search.logic.WebHandoff
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -155,7 +161,7 @@ private fun SearchField(query: String, actions: SearchActions, focus: Boolean) {
 private fun ScopeChips(selected: SearchScope, copy: SearchCopy, onScope: (SearchScope) -> Unit) {
     Row(
         Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = SearchLayout.margin),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(CHIP_GAP),
     ) {
         SearchScope.entries.forEach { scope ->
             ScopeChip(copy.scopeLabel(scope), scope == selected) { onScope(scope) }
@@ -175,12 +181,12 @@ fun ScopeChip(label: String, selected: Boolean, onClick: () -> Unit) {
             Modifier.heightIn(min = 36.dp)
                 .background(if (selected) FsColor.gold.copy(alpha = SELECTED_WASH) else Color.Transparent, CircleShape)
                 .border(1.dp, line, CircleShape)
-                .padding(horizontal = 16.dp, vertical = 6.dp),
+                .padding(horizontal = CHIP_PADDING, vertical = 6.dp),
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 label,
-                style = FsType.body.copy(fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal),
+                style = FsType.body.copy(fontSize = CHIP_TEXT, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal),
                 color = if (selected) FsColor.gold else FsColor.text,
             )
         }
@@ -189,17 +195,27 @@ fun ScopeChip(label: String, selected: Boolean, onClick: () -> Unit) {
 
 private const val SELECTED_WASH = 0.10f
 
+/** Sized so the five scope chips fit whole at 412 dp (S8); narrower phones and large text scroll. */
+private val CHIP_PADDING = 12.dp
+private val CHIP_GAP = 6.dp
+private val CHIP_TEXT = 15.sp
+
 /** F12.1: For {name}, then Recent with its Clear. A group with nothing in it is not drawn. */
 private fun LazyListScope.emptyState(state: SearchScreenState, copy: SearchCopy, actions: SearchActions) {
     state.forCharacter?.let { mine ->
         item(key = "for") {
             SectionLabel(stringResource(R.string.search_group_forCharacter, mine.name))
             val links = buildList {
-                add(Triple(R.drawable.ic_shield, stringResource(R.string.search_forCharacter_bis, mine.name), actions.onOpenBis))
-                mine.guideLabel?.let { add(Triple(R.drawable.ic_guide, it, actions.onOpenGuide)) }
-                add(Triple(R.drawable.ic_trophy, stringResource(R.string.search_forCharacter_rankings), actions.onOpenRankings))
+                add(QuickLink(R.drawable.ic_shield, stringResource(R.string.search_forCharacter_bis, mine.name), RowTrailing.Chevron, actions.onOpenBis))
+                mine.guideLabel?.let { add(QuickLink(R.drawable.ic_guide, it, RowTrailing.of(WebHandoff.GUIDES, RowTrailing.Chevron), actions.onOpenGuide)) }
+                add(
+                    QuickLink(
+                        R.drawable.ic_trophy, stringResource(R.string.search_forCharacter_rankings),
+                        RowTrailing.of(WebHandoff.RANKINGS, RowTrailing.Chevron), actions.onOpenRankings,
+                    ),
+                )
             }
-            RowCard(links.size) { i -> LinkRow(links[i].first, links[i].second, links[i].third) }
+            RowCard(links.size) { i -> LinkRow(links[i].icon, links[i].label, links[i].trailing, links[i].onClick) }
         }
     }
     // Watching (F11's /v1/me/watching) slots in here when that lane lands.
@@ -212,8 +228,10 @@ private fun LazyListScope.emptyState(state: SearchScreenState, copy: SearchCopy,
             }
             RowCard(state.recents.size) { i ->
                 val target = state.recents[i]
-                val color = if (target is SearchTarget.Item) titleColor(target) else FsColor.strong
-                TargetRow(target, copy.title(target), copy.kind(target), state.build, color) { actions.onOpen(target) }
+                TargetRow(
+                    target, copy.title(target), copy.kind(target), state.build, titleColor(target),
+                    trailing = RowTrailing.of(WebHandoff.opensWebsite(target)),
+                ) { actions.onOpen(target) }
             }
         }
     }
@@ -252,14 +270,6 @@ private fun LazyListScope.results(state: SearchScreenState, copy: SearchCopy, ac
             )
         }
     }
-    if (state.scope == SearchScope.Items && state.sections.isNotEmpty()) {
-        item(key = "itemsFoot") {
-            Text(
-                stringResource(R.string.search_itemsFoot), style = FsType.body, color = FsColor.muted,
-                modifier = Modifier.padding(horizontal = SearchLayout.margin, vertical = 14.dp),
-            )
-        }
-    }
 }
 
 @Composable
@@ -269,7 +279,7 @@ private fun ResultRow(target: SearchTarget, copy: SearchCopy, state: SearchScree
     // The watch star (F11) joins character rows when /v1/me/watching exists.
     TargetRow(
         target, copy.title(target), copy.meta(target), state.build, titleColor(target),
-        youTag = you, chevron = target is SearchTarget.Guide,
+        youTag = you, trailing = RowTrailing.of(WebHandoff.opensWebsite(target)),
     ) { actions.onOpen(target) }
 }
 
@@ -311,10 +321,13 @@ private fun NoResults(query: String) {
     }
 }
 
-/** The offline strip inside the results (spec F12.6). */
+/** The offline strip inside the results (spec F12.6), a rounded card like the board's. */
 @Composable
 private fun InsetStrip() {
-    Box(Modifier.padding(horizontal = SearchLayout.margin).padding(top = 16.dp)) {
+    Box(Modifier.padding(horizontal = SearchLayout.margin).padding(top = 16.dp).clip(RoundedCornerShape(FsRadius.panel))) {
         OfflineStrip(stringResource(R.string.search_offline))
     }
 }
+
+/** One For card link: its glyph, words, and where it goes (in the app or the website). */
+private data class QuickLink(@param:DrawableRes val icon: Int, val label: String, val trailing: RowTrailing, val onClick: () -> Unit)

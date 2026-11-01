@@ -31,6 +31,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
@@ -130,7 +131,7 @@ fun TargetRow(
     build: String,
     titleColor: Color,
     youTag: String? = null,
-    chevron: Boolean = false,
+    trailing: RowTrailing = RowTrailing.None,
     onClick: () -> Unit,
 ) {
     TappableRow(onClick) {
@@ -142,13 +143,13 @@ fun TargetRow(
             }
             Text(meta, style = FsType.body, color = FsColor.muted)
         }
-        if (chevron) Chevron()
+        Trailing(trailing)
     }
 }
 
 /** A quick link of the For card: a 32 tile with its glyph, the label, a chevron. */
 @Composable
-fun LinkRow(@DrawableRes icon: Int, label: String, onClick: () -> Unit) {
+fun LinkRow(@DrawableRes icon: Int, label: String, trailing: RowTrailing = RowTrailing.Chevron, onClick: () -> Unit) {
     TappableRow(onClick, minHeight = SearchLayout.linkRowHeight) {
         Box(
             Modifier.size(SearchLayout.tile).background(FsColor.cardTop, RoundedCornerShape(FsRadius.control)),
@@ -157,7 +158,30 @@ fun LinkRow(@DrawableRes icon: Int, label: String, onClick: () -> Unit) {
             Icon(painterResource(icon), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(18.dp))
         }
         Text(label, style = FsType.lead.copy(fontWeight = FontWeight.Medium), color = FsColor.strong, modifier = Modifier.weight(1f))
-        Chevron()
+        Trailing(trailing)
+    }
+}
+
+/** A row's end: nothing, a chevron (opens in the app) or the external-link glyph (opens the website). */
+enum class RowTrailing {
+    None,
+    Chevron,
+    External,
+    ;
+
+    companion object {
+        fun of(opensWebsite: Boolean, inApp: RowTrailing = None): RowTrailing = if (opensWebsite) External else inApp
+    }
+}
+
+@Composable
+fun Trailing(trailing: RowTrailing) {
+    when (trailing) {
+        RowTrailing.None -> Unit
+        RowTrailing.Chevron -> Chevron()
+        RowTrailing.External -> Icon(
+            painterResource(R.drawable.ic_open_external), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(18.dp),
+        )
     }
 }
 

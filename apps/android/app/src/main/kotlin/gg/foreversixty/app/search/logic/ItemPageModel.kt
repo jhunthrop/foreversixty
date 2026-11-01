@@ -92,20 +92,19 @@ object ItemPageCopy {
     fun percent(chance: Double): String = if (chance < 1) "<1%" else "${chance.roundToInt()}%"
 
     /**
-     * One row per source, in the file's order: the place and the kind word, then for a boss drop
-     * `{n}% from {boss}` or `Drop chance not known`, and a quest's `Requires level {n}`.
+     * One row per source, in the file's order: the place and the kind word, then for a known
+     * drop chance `{n}% from {boss}`, and a quest's `Requires level {n}`. An unknown chance is
+     * not printed per row: [chanceUnknown] says it once under the group (never `0%`).
      */
     fun sources(sources: List<ItemUseSource>, res: Resources): List<ItemSourceLine> = sources.map { source ->
         val kind = kindWord(source.kind, res)?.takeIf { word -> !source.title.startsWith(word) }
-        val known = source.chance
-        val chance = when {
-            known != null -> res.getString(R.string.itemPage_dropChance, percent(known), source.title)
-            source.kind in bossKinds -> res.getString(R.string.itemPage_chanceUnknown)
-            else -> null
-        }
+        val chance = source.chance?.let { res.getString(R.string.itemPage_dropChance, percent(it), source.title) }
         val quest = source.minLevel?.takeIf { it > 0 }?.let { res.getString(R.string.itemPage_questLevel, it) }
         ItemSourceLine(source.kind, source.title, listOfNotNull(source.place, kind, chance, quest).joinToString(SEPARATOR))
     }
+
+    /** Whether a boss drop has no chance in the data: the group then ends with one `Drop chance not known`. */
+    fun chanceUnknown(sources: List<ItemUseSource>): Boolean = sources.any { it.kind in bossKinds && it.chance == null }
 
     /** The kind word; null for a kind the app does not know yet. */
     fun kindWord(kind: String, res: Resources): String? = when (kind) {

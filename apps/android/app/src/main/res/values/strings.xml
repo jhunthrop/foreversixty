@@ -776,6 +776,21 @@
     <string name="itemPage_a11y_spec">%1$s, %2$s, %3$s. Opens that list</string>
     <string name="itemPage_preset_raid">Phase 1 raid</string>
     <string name="itemPage_pickMetaBare">%1$s · %2$s · %3$s</string>
+    <string name="itemPage_bisForFailed">Best in slot lists did not load.</string>
+    <string name="items_equip_spellPower" tools:ignore="PluralsCandidate">Equip: Increases damage and healing done by magical spells and effects by up to %1$d.</string>
+    <string name="items_equip_healing" tools:ignore="PluralsCandidate">Equip: Increases healing done by spells and effects by up to %1$d.</string>
+    <string name="items_equip_attackPower" tools:ignore="PluralsCandidate">Equip: +%1$d Attack Power.</string>
+    <string name="items_equip_rangedAttackPower" tools:ignore="PluralsCandidate">Equip: +%1$d ranged Attack Power.</string>
+    <string name="items_equip_mp5" tools:ignore="PluralsCandidate">Equip: Restores %1$d mana per 5 sec.</string>
+    <string name="items_equip_spellPenetration" tools:ignore="PluralsCandidate">Equip: Decreases the magical resistances of your spell targets by %1$d.</string>
+    <string name="items_equip_firePower" tools:ignore="PluralsCandidate">Equip: Increases damage done by Fire spells and effects by up to %1$d.</string>
+    <string name="items_equip_blockValue" tools:ignore="PluralsCandidate">Equip: Increases the block value of your shield by %1$d.</string>
+    <string name="items_equip_defense" tools:ignore="PluralsCandidate">Equip: Increased Defense +%1$d.</string>
+    <string name="items_equip_crit">Equip: Improves your chance to get a critical strike by %1$s.</string>
+    <string name="items_equip_hit">Equip: Improves your chance to hit by %1$s.</string>
+    <string name="items_equip_dodge">Equip: Increases your chance to dodge an attack by %1$s.</string>
+    <string name="items_equip_parry">Equip: Increases your chance to parry an attack by %1$s.</string>
+    <string name="items_equip_block">Equip: Increases your chance to block attacks with a shield by %1$s.</string>
     <string name="home_logs">Logs</string>
     <string name="home_logs_last">Your last raid: %1$s, %2$s</string>
     <string name="home_logs_none">No reports yet.</string>
