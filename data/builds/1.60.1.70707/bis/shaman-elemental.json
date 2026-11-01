@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70707",
-  "engine_version": "84994235d",
-  "generated_at": "2026-11-01T00:52:43Z",
+  "engine_version": "17d31ecfa",
+  "generated_at": "2026-11-01T02:33:38Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -675,8 +675,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.819096659,
-      "verify_run_seconds": 1.647512559,
+      "weights_run_seconds": 1.783822594,
+      "verify_run_seconds": 1.088942227,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1439,8 +1439,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.819096659,
-      "verify_run_seconds": 1.5426788500000002,
+      "weights_run_seconds": 1.783822594,
+      "verify_run_seconds": 1.074083163,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2253,8 +2253,8 @@
         "finger2: Ring of Power Regulation",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 3.099034934,
-      "verify_run_seconds": 1.698379713,
+      "weights_run_seconds": 1.8922442940000002,
+      "verify_run_seconds": 1.152456974,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3076,8 +3076,8 @@
         "finger2: Ring of Power Regulation",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 3.099034934,
-      "verify_run_seconds": 1.68429179,
+      "weights_run_seconds": 1.8922442940000002,
+      "verify_run_seconds": 1.102711788,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3942,8 +3942,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 3.385412707,
-      "verify_run_seconds": 2.093461556,
+      "weights_run_seconds": 2.09171507,
+      "verify_run_seconds": 1.417219844,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4809,8 +4809,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Thrash's Trash"
       ],
-      "weights_run_seconds": 3.385412707,
-      "verify_run_seconds": 2.149608437,
+      "weights_run_seconds": 2.09171507,
+      "verify_run_seconds": 1.470658442,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5657,8 +5657,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.377152889,
-      "verify_run_seconds": 2.399007612,
+      "weights_run_seconds": 2.107177431,
+      "verify_run_seconds": 1.651742278,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6552,8 +6552,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.377152889,
-      "verify_run_seconds": 2.362382108,
+      "weights_run_seconds": 2.107177431,
+      "verify_run_seconds": 1.636483472,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7477,8 +7477,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Spirit of Aquementas"
       ],
-      "weights_run_seconds": 3.360511967,
-      "verify_run_seconds": 7.337073727,
+      "weights_run_seconds": 2.06188311,
+      "verify_run_seconds": 4.925685309,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8416,8 +8416,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Spirit of Aquementas"
       ],
-      "weights_run_seconds": 3.360511967,
-      "verify_run_seconds": 7.258393083,
+      "weights_run_seconds": 2.06188311,
+      "verify_run_seconds": 4.968633342,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9330,8 +9330,8 @@
         "off_hand: Spirit of Aquementas",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 2.009978539,
-      "verify_run_seconds": 5.762611122,
+      "weights_run_seconds": 1.3685680900000001,
+      "verify_run_seconds": 4.14220903,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10252,8 +10252,8 @@
         "off_hand: Spirit of Aquementas",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 2.009978539,
-      "verify_run_seconds": 5.7504954999999995,
+      "weights_run_seconds": 1.3685680900000001,
+      "verify_run_seconds": 4.099074363,
       "coverage": {
         "back": {
           "eligible": 391,

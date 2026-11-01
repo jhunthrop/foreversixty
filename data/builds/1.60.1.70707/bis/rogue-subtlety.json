@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70707",
-  "engine_version": "84994235d",
-  "generated_at": "2026-11-01T00:51:16Z",
+  "engine_version": "17d31ecfa",
+  "generated_at": "2026-11-01T02:32:40Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -744,8 +744,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.358313572,
-      "verify_run_seconds": 4.193726387,
+      "weights_run_seconds": 1.4478288639999999,
+      "verify_run_seconds": 2.9200724559999998,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1583,8 +1583,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.358313572,
-      "verify_run_seconds": 4.266460074,
+      "weights_run_seconds": 1.4478288639999999,
+      "verify_run_seconds": 3.006190665,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2479,8 +2479,8 @@
         "off_hand: Torturing Poker",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.473934597,
-      "verify_run_seconds": 4.552115688,
+      "weights_run_seconds": 1.575596842,
+      "verify_run_seconds": 3.174928838,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3380,8 +3380,8 @@
         "off_hand: Torturing Poker",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 2.473934597,
-      "verify_run_seconds": 4.58607117,
+      "weights_run_seconds": 1.575596842,
+      "verify_run_seconds": 3.208577045,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4264,8 +4264,8 @@
         "off_hand: Black Menace",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.810556325,
-      "verify_run_seconds": 2.739894199,
+      "weights_run_seconds": 1.786316088,
+      "verify_run_seconds": 1.960464547,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5141,8 +5141,8 @@
         "off_hand: Coldrage Dagger",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.810556325,
-      "verify_run_seconds": 2.75779637,
+      "weights_run_seconds": 1.786316088,
+      "verify_run_seconds": 1.926926989,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6055,8 +6055,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.561842269,
-      "verify_run_seconds": 3.188814165,
+      "weights_run_seconds": 2.313735699,
+      "verify_run_seconds": 2.179663237,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6958,8 +6958,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.561842269,
-      "verify_run_seconds": 3.263902468,
+      "weights_run_seconds": 2.313735699,
+      "verify_run_seconds": 2.225300006,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7871,8 +7871,8 @@
         "main_hand: Heartseeker",
         "off_hand: Scarlet Kris"
       ],
-      "weights_run_seconds": 3.465734045,
-      "verify_run_seconds": 5.479134254,
+      "weights_run_seconds": 2.27030107,
+      "verify_run_seconds": 3.7954958850000002,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8773,8 +8773,8 @@
         "main_hand: Heartseeker",
         "off_hand: Scarlet Kris"
       ],
-      "weights_run_seconds": 3.465734045,
-      "verify_run_seconds": 5.181247443,
+      "weights_run_seconds": 2.27030107,
+      "verify_run_seconds": 3.62711974,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9674,8 +9674,8 @@
         "main_hand: Heartseeker",
         "off_hand: Scarlet Kris"
       ],
-      "weights_run_seconds": 3.69596796,
-      "verify_run_seconds": 5.730628542,
+      "weights_run_seconds": 2.3739315530000002,
+      "verify_run_seconds": 3.936644243,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10576,8 +10576,8 @@
         "main_hand: Heartseeker",
         "off_hand: Scarlet Kris"
       ],
-      "weights_run_seconds": 3.69596796,
-      "verify_run_seconds": 5.591620811,
+      "weights_run_seconds": 2.3739315530000002,
+      "verify_run_seconds": 3.738405737,
       "coverage": {
         "back": {
           "eligible": 390,

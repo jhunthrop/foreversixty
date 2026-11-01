@@ -1,8 +1,8 @@
 {
   "spec": "paladin-protection",
   "build": "1.60.1.70707",
-  "engine_version": "84994235d",
-  "generated_at": "2026-11-01T00:21:07Z",
+  "engine_version": "17d31ecfa",
+  "generated_at": "2026-11-01T02:14:06Z",
   "bands": [
     {
       "spec": "paladin-protection",
@@ -830,8 +830,8 @@
         "main_hand: Diamond Hammer",
         "off_hand: Redbeard Crest"
       ],
-      "weights_run_seconds": 6.302299631,
-      "verify_run_seconds": 2.315037906,
+      "weights_run_seconds": 4.130058357,
+      "verify_run_seconds": 1.683162885,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1748,8 +1748,8 @@
         "main_hand: The Stitcher",
         "off_hand: Redbeard Crest"
       ],
-      "weights_run_seconds": 6.302299631,
-      "verify_run_seconds": 2.276768561,
+      "weights_run_seconds": 4.130058357,
+      "verify_run_seconds": 1.667289844,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2684,8 +2684,8 @@
         "main_hand: Looming Gavel",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 6.862116117,
-      "verify_run_seconds": 2.444998533,
+      "weights_run_seconds": 4.503859269,
+      "verify_run_seconds": 1.7270461990000001,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3626,8 +3626,8 @@
         "main_hand: Looming Gavel",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 6.862116117,
-      "verify_run_seconds": 2.477904761,
+      "weights_run_seconds": 4.503859269,
+      "verify_run_seconds": 1.7837938150000001,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4570,8 +4570,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: The Green Tower"
       ],
-      "weights_run_seconds": 7.971793594,
-      "verify_run_seconds": 3.018641239,
+      "weights_run_seconds": 5.029735286,
+      "verify_run_seconds": 2.090347939,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5518,8 +5518,8 @@
         "main_hand: Rockhide Strongfish",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 7.971793594,
-      "verify_run_seconds": 3.071502242,
+      "weights_run_seconds": 5.029735286,
+      "verify_run_seconds": 2.142699499,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6549,8 +6549,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 8.14376538,
-      "verify_run_seconds": 6.340192255,
+      "weights_run_seconds": 5.188220086,
+      "verify_run_seconds": 4.267972856,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7577,8 +7577,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 8.14376538,
-      "verify_run_seconds": 6.232915471,
+      "weights_run_seconds": 5.188220086,
+      "verify_run_seconds": 4.262179624,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8600,8 +8600,8 @@
         "main_hand: Greenhammer",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 8.250605458,
-      "verify_run_seconds": 10.076446371,
+      "weights_run_seconds": 5.104018857,
+      "verify_run_seconds": 6.879114276,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9629,8 +9629,8 @@
         "main_hand: Greenhammer",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 8.250605458,
-      "verify_run_seconds": 9.691482623,
+      "weights_run_seconds": 5.104018857,
+      "verify_run_seconds": 6.968860311,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -10650,8 +10650,8 @@
         "main_hand: Greenhammer",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 8.307999929,
-      "verify_run_seconds": 9.461546591,
+      "weights_run_seconds": 5.095543254,
+      "verify_run_seconds": 6.580971773,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -11674,8 +11674,8 @@
         "main_hand: Greenhammer",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 8.307999929,
-      "verify_run_seconds": 9.486601155,
+      "weights_run_seconds": 5.095543254,
+      "verify_run_seconds": 6.629942347,
       "coverage": {
         "back": {
           "eligible": 389,

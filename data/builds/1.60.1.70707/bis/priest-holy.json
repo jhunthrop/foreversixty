@@ -1,8 +1,8 @@
 {
   "spec": "priest-holy",
   "build": "1.60.1.70707",
-  "engine_version": "84994235d",
-  "generated_at": "2026-11-01T00:45:22Z",
+  "engine_version": "17d31ecfa",
+  "generated_at": "2026-11-01T02:28:42Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -732,8 +732,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.358247979,
-      "verify_run_seconds": 28.267130099,
+      "weights_run_seconds": 6.203453479,
+      "verify_run_seconds": 16.398272335,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1558,8 +1558,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.358247979,
-      "verify_run_seconds": 28.73063011,
+      "weights_run_seconds": 6.203453479,
+      "verify_run_seconds": 17.119528224,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2420,8 +2420,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.953261616,
-      "verify_run_seconds": 33.673777728,
+      "weights_run_seconds": 6.753553986,
+      "verify_run_seconds": 20.615667056,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3283,8 +3283,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.953261616,
-      "verify_run_seconds": 34.004188419,
+      "weights_run_seconds": 6.753553986,
+      "verify_run_seconds": 20.784412929,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4189,8 +4189,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 11.386665482,
-      "verify_run_seconds": 33.761060534,
+      "weights_run_seconds": 6.943794802,
+      "verify_run_seconds": 20.582828201,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5097,8 +5097,8 @@
         "off_hand: Orb of Souls",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 11.386665482,
-      "verify_run_seconds": 34.44904625,
+      "weights_run_seconds": 6.943794802,
+      "verify_run_seconds": 21.131762093,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6037,8 +6037,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 10.989786187,
-      "verify_run_seconds": 35.168730274,
+      "weights_run_seconds": 6.910931018,
+      "verify_run_seconds": 21.789721626,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6960,8 +6960,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.989786187,
-      "verify_run_seconds": 35.811669604,
+      "weights_run_seconds": 6.910931018,
+      "verify_run_seconds": 22.274929617,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7911,8 +7911,8 @@
         "trinket1: Shard of the Splithooves",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.44196,
-      "verify_run_seconds": 62.954181257,
+      "weights_run_seconds": 5.794399753,
+      "verify_run_seconds": 37.797903603,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8863,8 +8863,8 @@
         "trinket2: Ankh of Life",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.44196,
-      "verify_run_seconds": 62.601842921,
+      "weights_run_seconds": 5.794399753,
+      "verify_run_seconds": 37.664457195,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9824,8 +9824,8 @@
         "trinket1: Shard of the Splithooves",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.226719353,
-      "verify_run_seconds": 29.219335628,
+      "weights_run_seconds": 3.864707547,
+      "verify_run_seconds": 17.932702877,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10784,8 +10784,8 @@
         "trinket1: Shard of the Splithooves",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.226719353,
-      "verify_run_seconds": 31.547855264,
+      "weights_run_seconds": 3.864707547,
+      "verify_run_seconds": 19.333958157,
       "coverage": {
         "back": {
           "eligible": 390,

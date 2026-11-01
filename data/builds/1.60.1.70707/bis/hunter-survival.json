@@ -1,8 +1,8 @@
 {
   "spec": "hunter-survival",
   "build": "1.60.1.70707",
-  "engine_version": "84994235d",
-  "generated_at": "2026-11-01T00:04:36Z",
+  "engine_version": "17d31ecfa",
+  "generated_at": "2026-11-01T02:04:00Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -739,8 +739,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.6875654129999997,
-      "verify_run_seconds": 5.022875379,
+      "weights_run_seconds": 2.420972003,
+      "verify_run_seconds": 3.3645720519999998,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1587,8 +1587,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.6875654129999997,
-      "verify_run_seconds": 4.834493624,
+      "weights_run_seconds": 2.420972003,
+      "verify_run_seconds": 3.251096889,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2484,8 +2484,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 3.848072355,
-      "verify_run_seconds": 5.341269992,
+      "weights_run_seconds": 2.460767132,
+      "verify_run_seconds": 3.499961031,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3370,8 +3370,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 3.848072355,
-      "verify_run_seconds": 5.148379513,
+      "weights_run_seconds": 2.460767132,
+      "verify_run_seconds": 3.419609872,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4257,8 +4257,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Swiftwind"
       ],
-      "weights_run_seconds": 3.980405148,
-      "verify_run_seconds": 3.27684291,
+      "weights_run_seconds": 2.482809654,
+      "verify_run_seconds": 2.127516748,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5132,8 +5132,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Swiftwind"
       ],
-      "weights_run_seconds": 3.980405148,
-      "verify_run_seconds": 3.216483278,
+      "weights_run_seconds": 2.482809654,
+      "verify_run_seconds": 2.173759079,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6053,8 +6053,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.96087376,
-      "verify_run_seconds": 3.673447182,
+      "weights_run_seconds": 2.497612248,
+      "verify_run_seconds": 2.549990304,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6973,8 +6973,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.96087376,
-      "verify_run_seconds": 3.828888009,
+      "weights_run_seconds": 2.497612248,
+      "verify_run_seconds": 2.606072604,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7903,8 +7903,8 @@
         "main_hand: Ironwood Blade",
         "off_hand: Heartseeker"
       ],
-      "weights_run_seconds": 2.911122741,
-      "verify_run_seconds": 8.302245994,
+      "weights_run_seconds": 1.820646406,
+      "verify_run_seconds": 5.793032771,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8834,8 +8834,8 @@
         "main_hand: Ironwood Blade",
         "off_hand: Heartseeker"
       ],
-      "weights_run_seconds": 2.911122741,
-      "verify_run_seconds": 8.010734789,
+      "weights_run_seconds": 1.820646406,
+      "verify_run_seconds": 5.369752664,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9748,8 +9748,8 @@
         "main_hand: Ironwood Blade",
         "off_hand: Heartseeker"
       ],
-      "weights_run_seconds": 2.321692493,
-      "verify_run_seconds": 5.423072739,
+      "weights_run_seconds": 1.459652185,
+      "verify_run_seconds": 3.907044767,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10662,8 +10662,8 @@
         "main_hand: Ironwood Blade",
         "off_hand: Heartseeker"
       ],
-      "weights_run_seconds": 2.321692493,
-      "verify_run_seconds": 5.439079719,
+      "weights_run_seconds": 1.459652185,
+      "verify_run_seconds": 3.942042481,
       "coverage": {
         "back": {
           "eligible": 390,

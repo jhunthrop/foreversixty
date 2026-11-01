@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 00000000000000000-32510000000000000-0000000000000000000)
 
-Set DPS (verified): 41.0. Weights run: 2.1s. Verify run: 4.5s. 215 eligible items had no known source.
+Set DPS (verified): 41.0. Weights run: 1.4s. Verify run: 3.1s. 215 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.938 ± 0.015, crit=0.594 ± 0.014 per rating point (14 rating = 1%, 8.317 per %), hit=0.619 ± 0.030 per rating point (10 rating = 1%, 6.194 per %), melee_haste=4.054 ± 0.376
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 215, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 00000000000000000-32530300001400000-0000000000000000000)
 
-Set DPS (verified): 67.2. Weights run: 2.2s. Verify run: 4.7s. 409 eligible items had no known source.
+Set DPS (verified): 67.2. Weights run: 1.4s. Verify run: 3.3s. 409 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.579 ± 0.013, crit=0.599 ± 0.014 per rating point (14 rating = 1%, 8.390 per %), hit=0.823 ± 0.033 per rating point (10 rating = 1%, 8.234 per %), melee_haste=6.231 ± 0.395
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 409, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 00000000000000000-32530300001515201-0000000000000000000)
 
-Set DPS (verified): 110.0. Weights run: 2.4s. Verify run: 2.7s. 559 eligible items had no known source.
+Set DPS (verified): 110.0. Weights run: 1.5s. Verify run: 1.9s. 559 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.425 ± 0.014, crit=0.548 ± 0.018 per rating point (14 rating = 1%, 7.678 per %), hit=0.963 ± 0.034 per rating point (10 rating = 1%, 9.635 per %), melee_haste=7.145 ± 0.468
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 559, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 32500000000000000-32530300001515201-0000000000000000000)
 
-Set DPS (verified): 151.6. Weights run: 3.0s. Verify run: 3.1s. 710 eligible items had no known source.
+Set DPS (verified): 151.6. Weights run: 2.0s. Verify run: 2.1s. 710 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.587 ± 0.014, crit=0.982 ± 0.021 per rating point (14 rating = 1%, 13.743 per %), hit=1.326 ± 0.054 per rating point (10 rating = 1%, 13.262 per %), melee_haste=5.808 ± 0.788
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 710, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 32531000000000000-32530300001515201-5100000000000000000)
 
-Set DPS (verified): 211.0. Weights run: 3.2s. Verify run: 5.3s. 1469 eligible items had no known source.
+Set DPS (verified): 211.0. Weights run: 2.1s. Verify run: 3.6s. 1469 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.807 ± 0.020, crit=1.638 ± 0.034 per rating point (14 rating = 1%, 22.928 per %), hit=2.109 ± 0.081 per rating point (10 rating = 1%, 21.090 per %), melee_haste=14.164 ± 1.216
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1469, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 00532010500000000-31530300001515231-0020000000000000000)
 
-Set DPS (verified): 590.9. Weights run: 3.4s. Verify run: 8.0s. 1469 eligible items had no known source.
+Set DPS (verified): 590.9. Weights run: 2.2s. Verify run: 5.7s. 1469 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.100 ± 0.001, agility=2.076 ± 0.023, crit=1.877 ± 0.039 per rating point (14 rating = 1%, 26.283 per %), hit=2.878 ± 0.133 per rating point (10 rating = 1%, 28.780 per %), melee_haste=22.001 ± 1.773
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1469, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 00000000000000000-32510000000000000-0000000000000000000)
 
-Set DPS (verified): 40.5. Weights run: 2.1s. Verify run: 4.6s. 214 eligible items had no known source.
+Set DPS (verified): 40.5. Weights run: 1.4s. Verify run: 3.1s. 214 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.938 ± 0.015, crit=0.594 ± 0.014 per rating point (14 rating = 1%, 8.317 per %), hit=0.619 ± 0.030 per rating point (10 rating = 1%, 6.194 per %), melee_haste=4.054 ± 0.376
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 214, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-32530300001400000-0000000000000000000)
 
-Set DPS (verified): 66.4. Weights run: 2.2s. Verify run: 4.7s. 408 eligible items had no known source.
+Set DPS (verified): 66.4. Weights run: 1.4s. Verify run: 3.2s. 408 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.579 ± 0.013, crit=0.599 ± 0.014 per rating point (14 rating = 1%, 8.390 per %), hit=0.823 ± 0.033 per rating point (10 rating = 1%, 8.234 per %), melee_haste=6.231 ± 0.395
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 408, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-32530300001515201-0000000000000000000)
 
-Set DPS (verified): 109.2. Weights run: 2.4s. Verify run: 2.7s. 556 eligible items had no known source.
+Set DPS (verified): 109.2. Weights run: 1.5s. Verify run: 1.9s. 556 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.425 ± 0.014, crit=0.548 ± 0.018 per rating point (14 rating = 1%, 7.678 per %), hit=0.963 ± 0.034 per rating point (10 rating = 1%, 9.635 per %), melee_haste=7.145 ± 0.468
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 556, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 32500000000000000-32530300001515201-0000000000000000000)
 
-Set DPS (verified): 155.1. Weights run: 3.0s. Verify run: 3.1s. 707 eligible items had no known source.
+Set DPS (verified): 155.1. Weights run: 2.0s. Verify run: 2.1s. 707 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.587 ± 0.014, crit=0.982 ± 0.021 per rating point (14 rating = 1%, 13.743 per %), hit=1.326 ± 0.054 per rating point (10 rating = 1%, 13.262 per %), melee_haste=5.808 ± 0.788
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 707, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 32531000000000000-32530300001515201-5100000000000000000)
 
-Set DPS (verified): 215.4. Weights run: 3.2s. Verify run: 4.9s. 1468 eligible items had no known source.
+Set DPS (verified): 215.4. Weights run: 2.1s. Verify run: 3.4s. 1468 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.807 ± 0.020, crit=1.638 ± 0.034 per rating point (14 rating = 1%, 22.928 per %), hit=2.109 ± 0.081 per rating point (10 rating = 1%, 21.090 per %), melee_haste=14.164 ± 1.216
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1468, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 00532010500000000-31530300001515231-0020000000000000000)
 
-Set DPS (verified): 605.1. Weights run: 3.4s. Verify run: 8.1s. 1468 eligible items had no known source.
+Set DPS (verified): 605.1. Weights run: 2.2s. Verify run: 5.5s. 1468 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.100 ± 0.001, agility=2.076 ± 0.023, crit=1.877 ± 0.039 per rating point (14 rating = 1%, 26.283 per %), hit=2.878 ± 0.133 per rating point (10 rating = 1%, 28.780 per %), melee_haste=22.001 ± 1.773
 

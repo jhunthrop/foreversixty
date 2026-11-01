@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70707",
-  "engine_version": "84994235d",
-  "generated_at": "2026-11-01T01:06:42Z",
+  "engine_version": "17d31ecfa",
+  "generated_at": "2026-11-01T02:42:08Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -1030,8 +1030,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.205168552,
-      "verify_run_seconds": 1.313307457,
+      "weights_run_seconds": 1.462819497,
+      "verify_run_seconds": 0.909860984,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -2205,8 +2205,8 @@
         "off_hand: Seer's Fine Stein",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.205168552,
-      "verify_run_seconds": 1.284746227,
+      "weights_run_seconds": 1.462819497,
+      "verify_run_seconds": 0.903293959,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -3067,8 +3067,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.17284728,
-      "verify_run_seconds": 1.145017147,
+      "weights_run_seconds": 1.422716987,
+      "verify_run_seconds": 0.774650606,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3937,8 +3937,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.17284728,
-      "verify_run_seconds": 1.242026264,
+      "weights_run_seconds": 1.422716987,
+      "verify_run_seconds": 0.857625851,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4852,8 +4852,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Earthen Rod"
       ],
-      "weights_run_seconds": 2.137501952,
-      "verify_run_seconds": 1.454218194,
+      "weights_run_seconds": 1.3218800609999999,
+      "verify_run_seconds": 1.021815061,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5761,8 +5761,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Earthen Rod"
       ],
-      "weights_run_seconds": 2.137501952,
-      "verify_run_seconds": 1.43987419,
+      "weights_run_seconds": 1.3218800609999999,
+      "verify_run_seconds": 1.029610535,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6655,8 +6655,8 @@
         "main_hand: Kindling Stave",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 2.104752405,
-      "verify_run_seconds": 1.5737366339999999,
+      "weights_run_seconds": 1.344362023,
+      "verify_run_seconds": 1.119356554,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7561,8 +7561,8 @@
         "main_hand: Kindling Stave",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 2.104752405,
-      "verify_run_seconds": 1.55048506,
+      "weights_run_seconds": 1.344362023,
+      "verify_run_seconds": 1.10916974,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8450,8 +8450,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 2.111433259,
-      "verify_run_seconds": 2.515086465,
+      "weights_run_seconds": 1.332242531,
+      "verify_run_seconds": 1.819768706,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -9374,8 +9374,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 2.111433259,
-      "verify_run_seconds": 4.13194276,
+      "weights_run_seconds": 1.332242531,
+      "verify_run_seconds": 2.944235155,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -10260,8 +10260,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 2.588601536,
-      "verify_run_seconds": 2.775001675,
+      "weights_run_seconds": 1.648689932,
+      "verify_run_seconds": 2.020015502,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -11158,8 +11158,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 2.588601536,
-      "verify_run_seconds": 2.804417907,
+      "weights_run_seconds": 1.648689932,
+      "verify_run_seconds": 2.035424742,
       "coverage": {
         "back": {
           "eligible": 390,

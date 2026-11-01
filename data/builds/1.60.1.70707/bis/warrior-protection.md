@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 00000000000000000-00000000000000000-250400000000000000)
 
-Set DPS (verified): 20.4. Weights run: 5.1s. Verify run: 2.0s. 300 eligible items had no known source.
+Set DPS (verified): 20.4. Weights run: 3.5s. Verify run: 1.4s. 300 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.037 ± 0.005, defense=not significant (0.183 ± 0.057) per rating point (1 rating = 1%, 0.183 per %), dodge=0.115 ± 0.012 per rating point (12 rating = 1%, 1.384 per %), parry=0.089 ± 0.009 per rating point (15 rating = 1%, 1.339 per %), block=not significant (0.000 ± 0.000) per rating point (5 rating = 1%, 0.000 per %), block_value=not significant (0.000 ± 0.000), strength=0.045 ± 0.000, agility=0.188 ± 0.008, attack_power=0.023 ± 0.000, hit=0.069 ± 0.011 per rating point (10 rating = 1%, 0.686 per %), crit=0.031 ± 0.004 per rating point (14 rating = 1%, 0.434 per %), expertise=1.410 ± 0.115
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 300, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 00000000000000000-00000000000000000-250533120000000000)
 
-Set DPS (verified): 30.4. Weights run: 5.1s. Verify run: 1.9s. 558 eligible items had no known source.
+Set DPS (verified): 30.4. Weights run: 3.4s. Verify run: 1.4s. 558 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.020, armor=not significant (0.025 ± 0.006), defense=0.506 ± 0.082 per rating point (1 rating = 1%, 0.506 per %), dodge=0.301 ± 0.014 per rating point (12 rating = 1%, 3.611 per %), parry=0.235 ± 0.011 per rating point (15 rating = 1%, 3.530 per %), block=0.392 ± 0.027 per rating point (5 rating = 1%, 1.959 per %), block_value=not significant (0.403 ± 0.120), strength=0.048 ± 0.006, agility=0.248 ± 0.009, attack_power=0.014 ± 0.000, hit=not significant (0.054 ± 0.017) per rating point (10 rating = 1%, 0.545 per %), crit=not significant (0.014 ± 0.005) per rating point (14 rating = 1%, 0.198 per %), expertise=1.848 ± 0.170
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 558, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 00000000000000000-00000000000000000-250533120330001201)
 
-Set DPS (verified): 93.9. Weights run: 4.7s. Verify run: 2.2s. 788 eligible items had no known source.
+Set DPS (verified): 93.9. Weights run: 3.2s. Verify run: 1.6s. 788 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.040, armor=not significant (0.024 ± 0.008), defense=0.417 ± 0.092 per rating point (1 rating = 1%, 0.417 per %), dodge=0.199 ± 0.019 per rating point (12 rating = 1%, 2.391 per %), parry=0.157 ± 0.013 per rating point (15 rating = 1%, 2.360 per %), block=not significant (-0.014 ± 0.026) per rating point (5 rating = 1%, -0.070 per %), block_value=not significant (0.361 ± 0.140), strength=0.033 ± 0.007, agility=0.187 ± 0.012, attack_power=0.008 ± 0.000, hit=not significant (0.064 ± 0.024) per rating point (10 rating = 1%, 0.635 per %), crit=not significant (0.026 ± 0.007) per rating point (14 rating = 1%, 0.360 per %), expertise=2.509 ± 0.257
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 788, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 31000000000000000-00000000000000000-250533120330001351)
 
-Set DPS (verified): 133.0. Weights run: 5.0s. Verify run: 4.7s. 1011 eligible items had no known source.
+Set DPS (verified): 133.0. Weights run: 3.3s. Verify run: 3.4s. 1011 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.064, armor=0.030 ± 0.007, defense=not significant (0.375 ± 0.121) per rating point (1 rating = 1%, 0.375 per %), dodge=0.225 ± 0.024 per rating point (12 rating = 1%, 2.704 per %), parry=0.183 ± 0.017 per rating point (15 rating = 1%, 2.741 per %), block=not significant (0.001 ± 0.032) per rating point (5 rating = 1%, 0.007 per %), block_value=not significant (0.303 ± 0.106), strength=0.030 ± 0.005, agility=0.222 ± 0.016, attack_power=0.007 ± 0.000, hit=not significant (0.032 ± 0.031) per rating point (10 rating = 1%, 0.316 per %), crit=0.029 ± 0.005 per rating point (14 rating = 1%, 0.411 per %), expertise=3.224 ± 0.340
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 1011, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 35300003000000000-00000000000000000-250533120330001351)
 
-Set DPS (verified): 162.1. Weights run: 5.1s. Verify run: 6.9s. 2022 eligible items had no known source.
+Set DPS (verified): 162.1. Weights run: 3.4s. Verify run: 5.2s. 2022 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.041 ± 0.010, defense=1.228 ± 0.213 per rating point (1 rating = 1%, 1.228 per %), dodge=0.971 ± 0.046 per rating point (12 rating = 1%, 11.651 per %), parry=0.773 ± 0.033 per rating point (15 rating = 1%, 11.600 per %), block=not significant (0.066 ± 0.034) per rating point (5 rating = 1%, 0.329 per %), block_value=not significant (0.689 ± 0.173), strength=0.065 ± 0.009, agility=0.729 ± 0.029, attack_power=0.015 ± 0.000, hit=not significant (0.092 ± 0.054) per rating point (10 rating = 1%, 0.922 per %), crit=0.079 ± 0.016 per rating point (14 rating = 1%, 1.108 per %), expertise=7.746 ± 0.587
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 2022, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 35300003000000000-00000000000000000-250533120330001351)
 
-Set DPS (verified): 309.5. Weights run: 5.9s. Verify run: 7.5s. 2022 eligible items had no known source.
+Set DPS (verified): 309.5. Weights run: 3.9s. Verify run: 5.7s. 2022 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.057 ± 0.010, defense=1.886 ± 0.239 per rating point (1 rating = 1%, 1.886 per %), dodge=1.305 ± 0.055 per rating point (12 rating = 1%, 15.665 per %), parry=1.020 ± 0.041 per rating point (15 rating = 1%, 15.299 per %), block=not significant (0.045 ± 0.038) per rating point (5 rating = 1%, 0.225 per %), block_value=0.798 ± 0.176, strength=0.100 ± 0.009, agility=1.097 ± 0.037, attack_power=0.024 ± 0.000, hit=not significant (0.203 ± 0.073) per rating point (10 rating = 1%, 2.030 per %), crit=0.103 ± 0.016 per rating point (14 rating = 1%, 1.439 per %), expertise=12.045 ± 0.794
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 2022, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 00000000000000000-00000000000000000-250400000000000000)
 
-Set DPS (verified): 20.4. Weights run: 5.1s. Verify run: 2.0s. 283 eligible items had no known source.
+Set DPS (verified): 20.4. Weights run: 3.5s. Verify run: 1.5s. 283 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.037 ± 0.005, defense=not significant (0.183 ± 0.057) per rating point (1 rating = 1%, 0.183 per %), dodge=0.115 ± 0.012 per rating point (12 rating = 1%, 1.384 per %), parry=0.089 ± 0.009 per rating point (15 rating = 1%, 1.339 per %), block=not significant (0.000 ± 0.000) per rating point (5 rating = 1%, 0.000 per %), block_value=not significant (0.000 ± 0.000), strength=0.045 ± 0.000, agility=0.188 ± 0.008, attack_power=0.023 ± 0.000, hit=0.069 ± 0.011 per rating point (10 rating = 1%, 0.686 per %), crit=0.031 ± 0.004 per rating point (14 rating = 1%, 0.434 per %), expertise=1.410 ± 0.115
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 283, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 00000000000000000-00000000000000000-250533120000000000)
 
-Set DPS (verified): 30.8. Weights run: 5.1s. Verify run: 1.9s. 541 eligible items had no known source.
+Set DPS (verified): 30.8. Weights run: 3.4s. Verify run: 1.4s. 541 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.020, armor=not significant (0.025 ± 0.006), defense=0.506 ± 0.082 per rating point (1 rating = 1%, 0.506 per %), dodge=0.301 ± 0.014 per rating point (12 rating = 1%, 3.611 per %), parry=0.235 ± 0.011 per rating point (15 rating = 1%, 3.530 per %), block=0.392 ± 0.027 per rating point (5 rating = 1%, 1.959 per %), block_value=not significant (0.403 ± 0.120), strength=0.048 ± 0.006, agility=0.248 ± 0.009, attack_power=0.014 ± 0.000, hit=not significant (0.054 ± 0.017) per rating point (10 rating = 1%, 0.545 per %), crit=not significant (0.014 ± 0.005) per rating point (14 rating = 1%, 0.198 per %), expertise=1.848 ± 0.170
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 541, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 00000000000000000-00000000000000000-250533120330001201)
 
-Set DPS (verified): 92.3. Weights run: 4.7s. Verify run: 2.3s. 768 eligible items had no known source.
+Set DPS (verified): 92.3. Weights run: 3.2s. Verify run: 1.7s. 768 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.040, armor=not significant (0.024 ± 0.008), defense=0.417 ± 0.092 per rating point (1 rating = 1%, 0.417 per %), dodge=0.199 ± 0.019 per rating point (12 rating = 1%, 2.391 per %), parry=0.157 ± 0.013 per rating point (15 rating = 1%, 2.360 per %), block=not significant (-0.014 ± 0.026) per rating point (5 rating = 1%, -0.070 per %), block_value=not significant (0.361 ± 0.140), strength=0.033 ± 0.007, agility=0.187 ± 0.012, attack_power=0.008 ± 0.000, hit=not significant (0.064 ± 0.024) per rating point (10 rating = 1%, 0.635 per %), crit=not significant (0.026 ± 0.007) per rating point (14 rating = 1%, 0.360 per %), expertise=2.509 ± 0.257
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 768, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 31000000000000000-00000000000000000-250533120330001351)
 
-Set DPS (verified): 132.2. Weights run: 5.0s. Verify run: 4.7s. 990 eligible items had no known source.
+Set DPS (verified): 132.2. Weights run: 3.3s. Verify run: 3.4s. 990 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.064, armor=0.030 ± 0.007, defense=not significant (0.375 ± 0.121) per rating point (1 rating = 1%, 0.375 per %), dodge=0.225 ± 0.024 per rating point (12 rating = 1%, 2.704 per %), parry=0.183 ± 0.017 per rating point (15 rating = 1%, 2.741 per %), block=not significant (0.001 ± 0.032) per rating point (5 rating = 1%, 0.007 per %), block_value=not significant (0.303 ± 0.106), strength=0.030 ± 0.005, agility=0.222 ± 0.016, attack_power=0.007 ± 0.000, hit=not significant (0.032 ± 0.031) per rating point (10 rating = 1%, 0.316 per %), crit=0.029 ± 0.005 per rating point (14 rating = 1%, 0.411 per %), expertise=3.224 ± 0.340
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 990, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 35300003000000000-00000000000000000-250533120330001351)
 
-Set DPS (verified): 162.6. Weights run: 5.1s. Verify run: 6.8s. 2005 eligible items had no known source.
+Set DPS (verified): 162.6. Weights run: 3.4s. Verify run: 5.3s. 2005 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.041 ± 0.010, defense=1.228 ± 0.213 per rating point (1 rating = 1%, 1.228 per %), dodge=0.971 ± 0.046 per rating point (12 rating = 1%, 11.651 per %), parry=0.773 ± 0.033 per rating point (15 rating = 1%, 11.600 per %), block=not significant (0.066 ± 0.034) per rating point (5 rating = 1%, 0.329 per %), block_value=not significant (0.689 ± 0.173), strength=0.065 ± 0.009, agility=0.729 ± 0.029, attack_power=0.015 ± 0.000, hit=not significant (0.092 ± 0.054) per rating point (10 rating = 1%, 0.922 per %), crit=0.079 ± 0.016 per rating point (14 rating = 1%, 1.108 per %), expertise=7.746 ± 0.587
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 2005, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 35300003000000000-00000000000000000-250533120330001351)
 
-Set DPS (verified): 309.3. Weights run: 5.9s. Verify run: 7.4s. 2005 eligible items had no known source.
+Set DPS (verified): 309.3. Weights run: 3.9s. Verify run: 5.4s. 2005 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.057 ± 0.010, defense=1.886 ± 0.239 per rating point (1 rating = 1%, 1.886 per %), dodge=1.305 ± 0.055 per rating point (12 rating = 1%, 15.665 per %), parry=1.020 ± 0.041 per rating point (15 rating = 1%, 15.299 per %), block=not significant (0.045 ± 0.038) per rating point (5 rating = 1%, 0.225 per %), block_value=0.798 ± 0.176, strength=0.100 ± 0.009, agility=1.097 ± 0.037, attack_power=0.024 ± 0.000, hit=not significant (0.203 ± 0.073) per rating point (10 rating = 1%, 2.030 per %), crit=0.103 ± 0.016 per rating point (14 rating = 1%, 1.439 per %), expertise=12.045 ± 0.794
 

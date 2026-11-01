@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70707",
-  "engine_version": "84994235d",
-  "generated_at": "2026-11-01T00:23:17Z",
+  "engine_version": "17d31ecfa",
+  "generated_at": "2026-11-01T02:15:32Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -706,8 +706,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 2.19519836,
-      "verify_run_seconds": 3.381138599,
+      "weights_run_seconds": 1.388602693,
+      "verify_run_seconds": 2.35366509,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1519,8 +1519,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 2.19519836,
-      "verify_run_seconds": 3.280171454,
+      "weights_run_seconds": 1.388602693,
+      "verify_run_seconds": 2.271566565,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2358,8 +2358,8 @@
         "finger2: Tiger Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.02369124,
-      "verify_run_seconds": 3.6684763030000003,
+      "weights_run_seconds": 1.305146526,
+      "verify_run_seconds": 2.54081971,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3190,8 +3190,8 @@
         "finger2: Band of the Fist",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.02369124,
-      "verify_run_seconds": 3.703508937,
+      "weights_run_seconds": 1.305146526,
+      "verify_run_seconds": 2.525594122,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4017,8 +4017,8 @@
         "feet: Officer's Boots",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 2.058311778,
-      "verify_run_seconds": 3.699346133,
+      "weights_run_seconds": 1.298077822,
+      "verify_run_seconds": 2.5082374400000003,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -4833,8 +4833,8 @@
         "feet: Officer's Boots",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 2.058311778,
-      "verify_run_seconds": 3.882761008,
+      "weights_run_seconds": 1.298077822,
+      "verify_run_seconds": 2.589763424,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5679,8 +5679,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.233920651,
-      "verify_run_seconds": 4.541428736,
+      "weights_run_seconds": 1.408259671,
+      "verify_run_seconds": 3.1004378519999998,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6548,8 +6548,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.233920651,
-      "verify_run_seconds": 4.276798815,
+      "weights_run_seconds": 1.408259671,
+      "verify_run_seconds": 2.918189072,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7442,8 +7442,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Blade of Hanna"
       ],
-      "weights_run_seconds": 2.23806047,
-      "verify_run_seconds": 10.575022396,
+      "weights_run_seconds": 1.395495501,
+      "verify_run_seconds": 7.19807883,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8324,8 +8324,8 @@
         "finger2: Falcon's Hook",
         "main_hand: Blade of Hanna"
       ],
-      "weights_run_seconds": 2.23806047,
-      "verify_run_seconds": 10.416762276,
+      "weights_run_seconds": 1.395495501,
+      "verify_run_seconds": 7.120651,
       "coverage": {
         "back": {
           "eligible": 389,
@@ -9200,8 +9200,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Blade of Hanna"
       ],
-      "weights_run_seconds": 2.583542252,
-      "verify_run_seconds": 11.415929297,
+      "weights_run_seconds": 1.638098201,
+      "verify_run_seconds": 7.547255415,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10073,8 +10073,8 @@
         "finger1: Masons Fraternity Ring",
         "main_hand: Blade of Hanna"
       ],
-      "weights_run_seconds": 2.583542252,
-      "verify_run_seconds": 10.74945213,
+      "weights_run_seconds": 1.638098201,
+      "verify_run_seconds": 7.272533963,
       "coverage": {
         "back": {
           "eligible": 389,

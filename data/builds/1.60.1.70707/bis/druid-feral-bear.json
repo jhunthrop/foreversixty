@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral-bear",
   "build": "1.60.1.70707",
-  "engine_version": "84994235d",
-  "generated_at": "2026-10-31T23:49:05Z",
+  "engine_version": "17d31ecfa",
+  "generated_at": "2026-11-01T01:54:13Z",
   "bands": [
     {
       "spec": "druid-feral-bear",
@@ -767,8 +767,8 @@
         "finger2: Slain Baron's Signet",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.586034095,
-      "verify_run_seconds": 1.715131418,
+      "weights_run_seconds": 2.256624095,
+      "verify_run_seconds": 1.238571946,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1624,8 +1624,8 @@
         "finger2: Blood Ring",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.586034095,
-      "verify_run_seconds": 1.752569645,
+      "weights_run_seconds": 2.256624095,
+      "verify_run_seconds": 1.24421224,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2485,8 +2485,8 @@
         "finger2: Sustaining Ring",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.375356239,
-      "verify_run_seconds": 1.747191505,
+      "weights_run_seconds": 2.124284568,
+      "verify_run_seconds": 1.264955656,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3352,8 +3352,8 @@
         "finger2: Plains Ring",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.375356239,
-      "verify_run_seconds": 1.7590371999999999,
+      "weights_run_seconds": 2.124284568,
+      "verify_run_seconds": 1.178692476,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4220,8 +4220,8 @@
         "trinket1: Arena Master",
         "main_hand: Ironshod Bludgeon"
       ],
-      "weights_run_seconds": 3.939922213,
-      "verify_run_seconds": 1.7843479960000002,
+      "weights_run_seconds": 2.478630238,
+      "verify_run_seconds": 1.242032806,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5088,8 +5088,8 @@
         "trinket1: Arena Master",
         "main_hand: Cragwood Maul"
       ],
-      "weights_run_seconds": 3.939922213,
-      "verify_run_seconds": 1.808771481,
+      "weights_run_seconds": 2.478630238,
+      "verify_run_seconds": 1.291065814,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6046,8 +6046,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Radiant Staff"
       ],
-      "weights_run_seconds": 4.359928285,
-      "verify_run_seconds": 4.174542622,
+      "weights_run_seconds": 2.738353115,
+      "verify_run_seconds": 2.800958765,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6989,8 +6989,8 @@
         "trinket1: Mark of the Chosen",
         "trinket2: Guardian Talisman"
       ],
-      "weights_run_seconds": 4.359928285,
-      "verify_run_seconds": 2.398872795,
+      "weights_run_seconds": 2.738353115,
+      "verify_run_seconds": 1.587450137,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7939,8 +7939,8 @@
         "finger2: Ring of Saviors",
         "main_hand: Twig of the World Tree"
       ],
-      "weights_run_seconds": 4.430205961,
-      "verify_run_seconds": 4.9108013889999995,
+      "weights_run_seconds": 2.6683703640000003,
+      "verify_run_seconds": 3.46993758,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8900,8 +8900,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Twig of the World Tree"
       ],
-      "weights_run_seconds": 4.430205961,
-      "verify_run_seconds": 4.818907531,
+      "weights_run_seconds": 2.6683703640000003,
+      "verify_run_seconds": 3.408598891,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -9852,8 +9852,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Twig of the World Tree"
       ],
-      "weights_run_seconds": 4.543749008,
-      "verify_run_seconds": 5.164586717,
+      "weights_run_seconds": 2.825877229,
+      "verify_run_seconds": 3.453603297,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10811,8 +10811,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Twig of the World Tree"
       ],
-      "weights_run_seconds": 4.543749008,
-      "verify_run_seconds": 4.96071886,
+      "weights_run_seconds": 2.825877229,
+      "verify_run_seconds": 3.518348679,
       "coverage": {
         "back": {
           "eligible": 391,

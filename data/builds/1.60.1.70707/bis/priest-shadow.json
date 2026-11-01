@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70707",
-  "engine_version": "84994235d",
-  "generated_at": "2026-11-01T00:45:59Z",
+  "engine_version": "17d31ecfa",
+  "generated_at": "2026-11-01T02:29:09Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -690,8 +690,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.180821832,
-      "verify_run_seconds": 0.754549992,
+      "weights_run_seconds": 0.788371218,
+      "verify_run_seconds": 0.560745054,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1484,8 +1484,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.180821832,
-      "verify_run_seconds": 0.794408714,
+      "weights_run_seconds": 0.788371218,
+      "verify_run_seconds": 0.57916966,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2359,8 +2359,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.180343647,
-      "verify_run_seconds": 0.806157454,
+      "weights_run_seconds": 0.747045071,
+      "verify_run_seconds": 0.598960632,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3235,8 +3235,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 1.180343647,
-      "verify_run_seconds": 0.822529094,
+      "weights_run_seconds": 0.747045071,
+      "verify_run_seconds": 0.58684922,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4150,8 +4150,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.193846803,
-      "verify_run_seconds": 0.893199874,
+      "weights_run_seconds": 0.80616346,
+      "verify_run_seconds": 0.610663513,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5062,8 +5062,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.193846803,
-      "verify_run_seconds": 0.929417674,
+      "weights_run_seconds": 0.80616346,
+      "verify_run_seconds": 0.699289603,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5954,8 +5954,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.151169277,
-      "verify_run_seconds": 1.111466414,
+      "weights_run_seconds": 0.730369652,
+      "verify_run_seconds": 0.835348335,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6863,8 +6863,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.151169277,
-      "verify_run_seconds": 1.12303784,
+      "weights_run_seconds": 0.730369652,
+      "verify_run_seconds": 0.788920847,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7831,8 +7831,8 @@
         "off_hand: Truesilver Conduit",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.251544407,
-      "verify_run_seconds": 3.369659123,
+      "weights_run_seconds": 0.831804987,
+      "verify_run_seconds": 2.459952206,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8812,8 +8812,8 @@
         "off_hand: Truesilver Conduit",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.251544407,
-      "verify_run_seconds": 3.404009735,
+      "weights_run_seconds": 0.831804987,
+      "verify_run_seconds": 2.47823027,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9755,8 +9755,8 @@
         "off_hand: Spirit of Aquementas",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.375463548,
-      "verify_run_seconds": 2.241271332,
+      "weights_run_seconds": 0.896013537,
+      "verify_run_seconds": 1.613481112,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10698,8 +10698,8 @@
         "off_hand: Spirit of Aquementas",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.375463548,
-      "verify_run_seconds": 2.212972685,
+      "weights_run_seconds": 0.896013537,
+      "verify_run_seconds": 1.620113567,
       "coverage": {
         "back": {
           "eligible": 390,
