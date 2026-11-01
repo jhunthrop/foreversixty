@@ -18,6 +18,7 @@ public enum ScaledType {
     private enum Size {
         static let name: CGFloat = 17
         static let lead: CGFloat = 17
+        static let socketName: CGFloat = 12
         static let tooltip: CGFloat = 16
         static let wordmark: CGFloat = 22
         static let button: CGFloat = 13
@@ -42,6 +43,10 @@ public enum ScaledType {
     /// A segmented control's label (the sign-up segments, spec F4.3).
     public static let segment = Font.custom(Face.bodySemibold, size: Size.segment, relativeTo: .subheadline)
     public static let wordmark = Font.custom(Face.wordmark, size: Size.wordmark, relativeTo: .title2)
+    /// A Paperdoll item name beside its socket (paperdoll spec §3.3 phone: 12 pt 600).
+    public static let socketName = Font.custom(Face.bodySemibold, size: Size.socketName, relativeTo: .caption)
+    /// The Forever Score figure (spec F11.4: mono 36; `.largeTitle` is the scaling role nearest it).
+    public static let scoreFigure = Font.system(.largeTitle, design: .monospaced, weight: .bold)
     /// Figures, counts and times: the system monospaced face at body size (15 pt, `.subheadline`),
     /// scaling with the text size like every other role.
     public static let mono = Font.system(.subheadline, design: .monospaced, weight: .semibold)

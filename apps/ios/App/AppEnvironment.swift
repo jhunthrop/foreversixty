@@ -70,6 +70,7 @@ struct AppEnvironment {
                 DiskRaidCache.standard().removeAll()
                 DiskRaidCache.sims().removeAll()
                 DiskRaidCache.reports().removeAll()
+                DiskRaidCache.rankings().removeAll()
                 widgets.clear()
                 Task { await liveActivities.endAll() }
             }

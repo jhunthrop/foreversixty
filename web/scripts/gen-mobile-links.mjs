@@ -133,8 +133,11 @@ export function renderSwift(model, banner) {
     '        let s = url.pathComponents.filter { $0 != "/" }',
     '        let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []',
     '        let q = Dictionary(items.compactMap { item in item.value.map { (item.name, $0) } }) { first, _ in first }',
-    `        guard let link = ${routes.map((r) => `Self.match${pascal(r.screen)}(s, q)`).join('\n            ?? ')}`,
-    '        else { return nil }',
+    // A list, not a `??` chain: a long chain is past the type checker's time limit.
+    '        let matchers: [([String], [String: String]) -> DeepLink?] = [',
+    ...routes.map((r) => `            Self.match${pascal(r.screen)},`),
+    '        ]',
+    '        guard let link = matchers.lazy.compactMap({ $0(s, q) }).first else { return nil }',
     '        self = link',
     '    }',
     '',

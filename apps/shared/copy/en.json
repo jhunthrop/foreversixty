@@ -789,6 +789,7 @@
     "paperdoll.a11y.socket": "{slot}, {item}, {quality}, item level {level}.",
     "paperdoll.a11y.empty": "{slot}, empty.",
     "paperdoll.a11y.better": "A better item is on your best in slot list.",
+    "paperdoll.detail": {"text": "{slot} · ilvl {n}", "notPlural": true, "args": {"n": "int"}},
 
     "reports.title": "Your reports",
     "reports.back": "Reports",

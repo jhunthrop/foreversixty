@@ -810,6 +810,7 @@
     <string name="paperdoll_a11y_socket">%1$s, %2$s, %3$s, item level %4$s.</string>
     <string name="paperdoll_a11y_empty">%1$s, empty.</string>
     <string name="paperdoll_a11y_better">A better item is on your best in slot list.</string>
+    <string name="paperdoll_detail" tools:ignore="PluralsCandidate">%1$s · ilvl %2$d</string>
     <string name="reports_title">Your reports</string>
     <string name="reports_back">Reports</string>
     <string name="reports_thisWeek">This week</string>

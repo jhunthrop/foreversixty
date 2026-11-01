@@ -91,6 +91,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         talents,
         isSimsOn = { isAvailable(Feature.Sims) },
         isReportsOn = { isAvailable(Feature.Reports) },
+        isRankingsOn = { isAvailable(Feature.Rankings) },
         mayLinkToPlans = {
             plansLink.resolve()
             plansLink.mayLink.value
@@ -125,6 +126,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
             raids.cache.removeAll()
             home.sims?.cache?.removeAll()
             home.reports?.cache?.removeAll()
+            home.rankings?.cache?.removeAll()
             widgets?.signOut()
         },
     )

@@ -48,6 +48,8 @@ struct RootView: View {
     @State private var simsRouter = SimsRouter()
     /// Lane F10: Home's Your reports stack, which report links push onto.
     @State private var reportsRouter = ReportsRouter()
+    /// Lane F11: Home's Rankings and character pages, which rankings and player links push onto.
+    @State private var rankingsRouter = RankingsRouter()
 
     var body: some View {
         if environment.updateGate.isRequired {
@@ -69,6 +71,7 @@ struct RootView: View {
         .environment(environment.session)
         .environment(simsRouter)
         .environment(reportsRouter)
+        .environment(rankingsRouter)
         .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
@@ -117,7 +120,8 @@ struct RootView: View {
 }
 
 extension RootView {
-    /// A link selects its tab: sim and report links Home (lanes F5, F10), raid links Raids (lane F4).
+    /// A link selects its tab: sim, report, rankings and player links Home (lanes F5, F10, F11),
+    /// raid links Raids (lane F4).
     private func openLink(_ link: DeepLink) {
         if SimsRouter.handles(link) {
             guard environment.isAvailable(.sims) else { return }
@@ -127,6 +131,10 @@ extension RootView {
             guard environment.isAvailable(.reports) else { return }
             selection = .home
             reportsRouter.open(link)
+        } else if RankingsRouter.handles(link) {
+            guard environment.isAvailable(.rankings) else { return }
+            selection = .home
+            rankingsRouter.open(link)
         } else {
             openRaids(link)
         }

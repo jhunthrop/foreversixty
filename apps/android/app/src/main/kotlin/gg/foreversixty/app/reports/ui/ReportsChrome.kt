@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,9 +49,19 @@ import gg.foreversixty.app.reports.logic.Visibility
 import java.util.Locale
 
 /** A pushed screen's bar: back with its label, the uppercase title, and one trailing action. */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportsBar(title: String, backLabel: String, back: () -> Unit, trailing: BarAction? = null) {
+    ReportsBar(title, backLabel, back) {
+        trailing?.let { action ->
+            IconButton(onClick = action.run) { Icon(action.icon(), contentDescription = action.label, tint = FsColor.strong) }
+        }
+    }
+}
+
+/** The same bar with any trailing controls (lane F11's character page: the Watch star and Share). */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ReportsBar(title: String, backLabel: String, back: () -> Unit, actions: @Composable RowScope.() -> Unit) {
     TopAppBar(
         title = {
             Text(
@@ -61,11 +72,7 @@ fun ReportsBar(title: String, backLabel: String, back: () -> Unit, trailing: Bar
         navigationIcon = {
             IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = backLabel, tint = FsColor.strong) }
         },
-        actions = {
-            trailing?.let { action ->
-                IconButton(onClick = action.run) { Icon(action.icon(), contentDescription = action.label, tint = FsColor.strong) }
-            }
-        },
+        actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
         // The app scaffold already pads for the status bar.
         windowInsets = WindowInsets(0, 0, 0, 0),

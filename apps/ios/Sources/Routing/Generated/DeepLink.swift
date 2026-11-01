@@ -39,19 +39,21 @@ public enum DeepLink: Equatable, Sendable {
         let s = url.pathComponents.filter { $0 != "/" }
         let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
         let q = Dictionary(items.compactMap { item in item.value.map { (item.name, $0) } }) { first, _ in first }
-        guard let link = Self.matchCharacter(s, q)
-            ?? Self.matchRaid(s, q)
-            ?? Self.matchRaidNight(s, q)
-            ?? Self.matchGuild(s, q)
-            ?? Self.matchBis(s, q)
-            ?? Self.matchSim(s, q)
-            ?? Self.matchReport(s, q)
-            ?? Self.matchRankings(s, q)
-            ?? Self.matchPlayer(s, q)
-            ?? Self.matchNotifications(s, q)
-            ?? Self.matchPlan(s, q)
-            ?? Self.matchSignIn(s, q)
-        else { return nil }
+        let matchers: [([String], [String: String]) -> DeepLink?] = [
+            Self.matchCharacter,
+            Self.matchRaid,
+            Self.matchRaidNight,
+            Self.matchGuild,
+            Self.matchBis,
+            Self.matchSim,
+            Self.matchReport,
+            Self.matchRankings,
+            Self.matchPlayer,
+            Self.matchNotifications,
+            Self.matchPlan,
+            Self.matchSignIn,
+        ]
+        guard let link = matchers.lazy.compactMap({ $0(s, q) }).first else { return nil }
         self = link
     }
 

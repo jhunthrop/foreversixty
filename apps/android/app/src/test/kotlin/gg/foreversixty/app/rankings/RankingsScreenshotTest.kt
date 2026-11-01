@@ -1,0 +1,250 @@
+package gg.foreversixty.app.rankings
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.unit.dp
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.takahirom.roborazzi.RoborazziOptions
+import com.github.takahirom.roborazzi.captureRoboImage
+import gg.foreversixty.app.designsystem.ForeverTheme
+import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.GameColors
+import gg.foreversixty.app.home.GearList
+import gg.foreversixty.app.home.GearModel
+import gg.foreversixty.app.home.HomeAnswer
+import gg.foreversixty.app.home.HomeFixtures
+import gg.foreversixty.app.home.HomeLogs
+import gg.foreversixty.app.home.HomePhase
+import gg.foreversixty.app.home.HomePresenter
+import gg.foreversixty.app.home.HomeRankings
+import gg.foreversixty.app.home.HomeTime
+import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.items.ItemTooltipModel
+import gg.foreversixty.app.items.LocalItemIconPainter
+import gg.foreversixty.app.model.CharacterProfile
+import gg.foreversixty.app.model.RankingsPage
+import gg.foreversixty.app.navigation.ForeverTab
+import gg.foreversixty.app.navigation.ForeverTabScaffold
+import gg.foreversixty.app.rankings.logic.Board
+import gg.foreversixty.app.rankings.logic.BoardPhase
+import gg.foreversixty.app.rankings.logic.CharacterPhase
+import gg.foreversixty.app.rankings.logic.CharacterRoute
+import gg.foreversixty.app.rankings.logic.Rankings
+import gg.foreversixty.app.rankings.logic.RankingsCopy
+import gg.foreversixty.app.rankings.logic.RankingsViewer
+import gg.foreversixty.app.rankings.logic.WatchState
+import gg.foreversixty.app.rankings.ui.CharacterContent
+import gg.foreversixty.app.rankings.ui.CharacterScreenState
+import gg.foreversixty.app.rankings.ui.FiltersActions
+import gg.foreversixty.app.rankings.ui.FiltersSheetContent
+import gg.foreversixty.app.rankings.ui.FiltersSheetState
+import gg.foreversixty.app.rankings.ui.RankingsContent
+import gg.foreversixty.app.rankings.ui.RankingsScreenState
+import gg.foreversixty.app.reports.logic.Reports
+import gg.foreversixty.app.reports.ReportsTestData
+import gg.foreversixty.app.reports.ui.MetersDragHandle
+import java.time.Instant
+import java.time.ZoneOffset
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
+
+/**
+ * Every F11 screen and state on a Pixel 9 (412 x 915 dp), at the default size and at font scale 2.0
+ * (spec W3 §9). Record: ./gradlew :app:recordRoborazziDebug   Verify: ./gradlew :app:verifyRoborazziDebug
+ * The PNGs double as the review captures in design/reviews/2026-10-31-mobile-wave3-rankings.
+ */
+@RunWith(AndroidJUnit4::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = PIXEL_9)
+class RankingsScreenshotTest {
+    @get:Rule
+    val compose = createComposeRule()
+
+    private val now = RankingsTestData.now
+    private val zone = RankingsTestData.zone
+    private val offlineAt: Instant = Instant.parse("2026-12-17T03:10:00Z")
+    private val specs = RankingsTestData.specs()
+    private val phases = RankingsTestData.phases().phases
+    private val names = RankingsTestData.encounters().encounters.associate { it.slug to it.name }
+
+    private fun capture(name: String, large: Boolean = false, scrolls: Boolean = true, screen: @Composable () -> Unit) {
+        if (large) RuntimeEnvironment.setFontScale(2f)
+        compose.setContent {
+            ForeverTheme {
+                CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
+                    ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) {
+                        // The screens are given the scroll their route gives them; a sheet scrolls itself.
+                        val ground = Modifier.fillMaxSize().background(FsColor.bg)
+                        Box(if (scrolls) ground.verticalScroll(rememberScrollState()) else ground) { screen() }
+                    }
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("src/test/screenshots/rankings/$name.png", roborazziOptions = TOLERANT)
+    }
+
+    // F11.1, F11.3 and the board's states
+
+    private fun board(name: String, phase: BoardPhase, viewer: RankingsViewer = RankingsTestData.viewer(), large: Boolean = false) =
+        capture(name, large) {
+            val filters = Rankings.defaults(viewer, specs, phases, now, "onyxia")
+            RankingsContent(RankingsScreenState(phase, filters, names, viewer, watched = setOf("us/normal/voltaris"), reportsOn = true), now, zone = zone)
+        }
+
+    private fun loaded(page: RankingsPage, offline: Instant? = null) = BoardPhase.Loaded(Board.of(page, offline))
+
+    @Test fun onPage() = board("rankings-onpage-and", loaded(RankingsTestData.page()))
+
+    @Test @Config(qualifiers = PIXEL_9_XL)
+    fun onPageLarge() = board("rankings-onpage-large-and", loaded(RankingsTestData.page()), large = true)
+
+    @Test fun offPage() = board("rankings-offpage-and", loaded(RankingsTestData.offPage()), RankingsTestData.viewer(RankingsTestData.sparkwick))
+
+    /** The board aimed at another of the account's characters' cohort: the meta names the character. */
+    @Test fun named() = board("rankings-named-and", loaded(RankingsTestData.page()), RankingsTestData.viewer(RankingsTestData.sparkwick))
+
+    @Test fun unranked() = board("rankings-empty-and", loaded(RankingsTestData.empty()))
+
+    @Test fun signedOut() = board("rankings-signedout-and", loaded(mixed()), RankingsViewer.SignedOut)
+
+    @Test fun offline() = board("rankings-offline-and", loaded(RankingsTestData.page(), offlineAt))
+
+    @Test fun error() = board("rankings-error-and", BoardPhase.Failed)
+
+    @Test fun loading() = board("rankings-loading-and", BoardPhase.Loading)
+
+    /** Signed out the board is every class: the fixture's rows with every other one a mage, so the crests show. */
+    private fun mixed(): RankingsPage = RankingsTestData.page().let { page ->
+        page.copy(
+            characterRank = null,
+            rows = page.rows.mapIndexed { i, r -> if (i % 2 == 1) r.copy(player = r.player.copy(className = "Mage", spec = "Fire")) else r },
+        )
+    }
+
+    // F11.2 Filters
+
+    private fun sheet(name: String, choosingEncounter: Boolean) = capture(name, scrolls = false) {
+        val filters = Rankings.defaults(RankingsTestData.viewer(), specs, phases, now, "onyxia")
+        Column(Modifier.padding(top = 24.dp).fillMaxWidth().background(GameColors.sheet, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))) {
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { MetersDragHandle() }
+            FiltersSheetContent(FiltersSheetState(filters, RankingsTestData.encounters().encounters, Rankings.phaseChoices(phases, now), choosingEncounter), FiltersActions())
+        }
+    }
+
+    @Test fun filters() = sheet("filters-and", choosingEncounter = false)
+
+    @Test fun encounters() = sheet("filters-encounters-and", choosingEncounter = true)
+
+    // F11.4 to F11.7 A character
+
+    private fun character(
+        name: String,
+        phase: CharacterPhase,
+        watch: WatchState? = WatchState(watching = false),
+        route: CharacterRoute = CharacterRoute("us", "normal", "Voltaris"),
+        large: Boolean = false,
+    ) = capture(name, large) {
+        val state = CharacterScreenState(
+            route, phase, watch, RankingsTestData.viewer(), RankingsTestData.items().items.associateBy { it.id }, RankingsTestData.BUILD, reportsOn = true,
+        )
+        CharacterContent(state, specs, now, zone = zone)
+    }
+
+    private fun profile(p: CharacterProfile, offline: Instant? = null) = CharacterPhase.Loaded(p, offline)
+
+    @Test fun other() = character("character-other-and", profile(RankingsTestData.voltaris()))
+
+    @Test fun watchOn() = character("character-watch-on-and", profile(RankingsTestData.voltaris()), WatchState(watching = true))
+
+    @Test fun watchFailed() = character("character-watch-failed-and", profile(RankingsTestData.voltaris()), WatchState(watching = false, failed = true))
+
+    @Test @Config(qualifiers = PIXEL_9_XTALL)
+    fun yours() = character(
+        "character-yours-and", profile(RankingsTestData.yours()), route = CharacterRoute("us", "normal", "Lightningbolltz"),
+    )
+
+    @Test @Config(qualifiers = PIXEL_9_XTALL)
+    fun gear() = character("character-gear-and", profile(RankingsTestData.voltaris()))
+
+    @Test @Config(qualifiers = PIXEL_9_TALL)
+    fun noGear() = character("character-nogear-and", profile(RankingsTestData.voltaris().copy(gear = emptyList(), gearGapTotal = null)))
+
+    @Test fun noLogs() = character("character-nologs-and", profile(RankingsTestData.noLogs()), route = CharacterRoute("us", "pvp", "Freshling"))
+
+    @Test fun notFound() = character("character-notfound-and", CharacterPhase.NotFound, watch = null, route = CharacterRoute("us", "normal", "Voltxris"))
+
+    @Test fun characterOffline() = character("character-offline-and", profile(RankingsTestData.voltaris(), offlineAt))
+
+    @Test fun characterLoading() = character("character-loading-and", CharacterPhase.Loading, watch = null)
+
+    @Test fun characterError() = character("character-error-and", CharacterPhase.Failed, watch = null)
+
+    @Test @Config(qualifiers = PIXEL_9_XL)
+    fun otherLarge() = character("character-other-large-and", profile(RankingsTestData.voltaris()), large = true)
+
+    @Test @Config(qualifiers = PIXEL_9_XXL)
+    fun gearLarge() = character("character-gear-large-and", profile(RankingsTestData.voltaris()), large = true)
+
+    // Home: the Rankings row under Logs, and Your gear as the Paperdoll
+
+    @Test @Config(qualifiers = PIXEL_9_HOME)
+    fun homeRankings() = capture("home-rankings-and") {
+        val res = LocalResources.current
+        val viewer = RankingsTestData.viewer()
+        val line = RankingsCopy(res, zone).homeLine(RankingsTestData.page(), Rankings.defaults(viewer, specs, phases, now, "onyxia"), names)
+        val presenter = HomePresenter(
+            HomeFixtures.velaren, emptyList(), HomeTime(HomeFixtures.now, ZoneOffset.UTC), res,
+            logs = HomeLogs(Reports.lastRaid(ReportsTestData.list().rows)), rankings = HomeRankings(line),
+        )
+        HomeAnswer(HomePhase.Loaded(HomeFixtures.home()), presenter, HomeFixtures.BUILD, null)
+    }
+
+    @Test @Config(qualifiers = PIXEL_9_TALL)
+    fun homeGear() = capture("home-gear-and") { HomeGear() }
+
+    @Test @Config(qualifiers = PIXEL_9_XL)
+    fun homeGearLarge() = capture("home-gear-large-and", large = true) { HomeGear() }
+
+    @Composable
+    private fun HomeGear() {
+        val res = LocalResources.current
+        val home = HomeFixtures.home()
+        val sources = HomeFixtures.tooltipSources()
+        val probe = HomePresenter.tooltipRequest(ItemLook(0), home, HomeFixtures.velaren, res)
+        val blocker = GearModel.offHandBlocker(home, emptyMap(), sources.items, ItemTooltipModel.band(probe, sources.bis))
+        GearList(
+            GearModel.rows(home, emptyMap(), sources.items, res, blocker),
+            "What you wear, and the pick for 60 · raid. Tap an item for its tooltip.",
+            home.dataBuild,
+        )
+    }
+}
+
+/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
+private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
+
+/** Pixel 9: 412 x 915 dp at 420 dpi. */
+private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"
+private const val PIXEL_9_TALL = "w412dp-h1300dp-normal-long-notround-any-420dpi-keyshidden-nonav"
+private const val PIXEL_9_XTALL = "w412dp-h2000dp-normal-long-notround-any-420dpi-keyshidden-nonav"
+private const val PIXEL_9_HOME = "w412dp-h2400dp-normal-long-notround-any-420dpi-keyshidden-nonav"
+private const val PIXEL_9_XL = "w412dp-h2600dp-normal-long-notround-any-420dpi-keyshidden-nonav"
+private const val PIXEL_9_XXL = "w412dp-h4400dp-normal-long-notround-any-420dpi-keyshidden-nonav"

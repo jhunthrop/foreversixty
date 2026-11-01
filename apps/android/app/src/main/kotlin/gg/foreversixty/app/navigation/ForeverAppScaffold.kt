@@ -61,13 +61,15 @@ fun ForeverAppScaffold(
             raids.navigator.wantsTab = false
         }
     }
-    // Lanes F5 and F10: a sim or report link selects Home, where its screens are pushed.
-    val wantsHome = home.sims?.navigator?.wantsHome == true || home.reports?.navigator?.wantsHome == true
+    // Lanes F5, F10 and F11: a sim, report, rankings or character link selects Home, where its screens are pushed.
+    val wantsHome = home.sims?.navigator?.wantsHome == true || home.reports?.navigator?.wantsHome == true ||
+        home.rankings?.navigator?.wantsHome == true
     LaunchedEffect(wantsHome) {
         if (wantsHome) {
             selected = ForeverTab.Home
             home.sims?.navigator?.wantsHome = false
             home.reports?.navigator?.wantsHome = false
+            home.rankings?.navigator?.wantsHome = false
         }
     }
     val context = LocalContext.current

@@ -90,7 +90,7 @@ struct HomeAction: Equatable {
 
 /// One "Next for {name}" row.
 struct HomeNextRow: Equatable, Identifiable {
-    enum Kind: Equatable { case talents, sims, logs }
+    enum Kind: Equatable { case talents, sims, logs, rankings }
     enum Tag: Equatable { case matches, differs }
     let kind: Kind
     let title: String
@@ -133,6 +133,8 @@ struct HomePresenter {
     var talentStatus: TalentStatusLine?
     /// Lane F10: the Logs row's sub (empty while unread); nil drops the row (the switch is off).
     var logsLine: String?
+    /// Lane F11: the Rankings row's sub (empty while unread); nil drops the row (the switch is off).
+    var rankingsLine: String?
 
     func model(_ home: CharacterHome) -> HomeAnswerModel {
         let isAnswer = home.state == "ok" && home.upgradeCount > 0
@@ -152,7 +154,7 @@ struct HomePresenter {
 
     /// The Next rows alone, for the error state with nothing cached.
     func nextRowsWithoutAnswer() -> [HomeNextRow] {
-        [talentStatus.map(Self.talentsRow), simsRow(spec: nil), logsRow].compactMap(\.self)
+        [talentStatus.map(Self.talentsRow), simsRow(spec: nil), logsRow, rankingsRow].compactMap(\.self)
     }
 
     /// The Talents row from F6's status: its tag (Matches or Differs) and its sentence.
@@ -281,12 +283,17 @@ struct HomePresenter {
     }
 
     private func next(_ home: CharacterHome) -> [HomeNextRow] {
-        [talentsRow(home), simsRow(spec: home.spec), logsRow].compactMap(\.self)
+        [talentsRow(home), simsRow(spec: home.spec), logsRow, rankingsRow].compactMap(\.self)
     }
 
     /// Lane F10: Logs, under Talents and Sims, while the reports switch is on.
     private var logsRow: HomeNextRow? {
         logsLine.map { HomeNextRow(kind: .logs, title: Copy.homeLogs, line: $0, tag: nil) }
+    }
+
+    /// Lane F11: Rankings, under Logs, while the rankings switch is on.
+    private var rankingsRow: HomeNextRow? {
+        rankingsLine.map { HomeNextRow(kind: .rankings, title: Copy.homeRankings, line: $0, tag: nil) }
     }
 
     private func talentsRow(_ home: CharacterHome) -> HomeNextRow {

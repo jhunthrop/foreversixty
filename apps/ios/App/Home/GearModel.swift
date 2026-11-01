@@ -13,6 +13,8 @@ struct GearRow: Equatable, Identifiable {
     /// The pick when it differs from what is worn.
     let pick: HomeItemLook?
     let isBestInSlot: Bool
+    /// The empty off hand under a two-handed main hand; `wornName` then carries its words.
+    var blockedByTwoHand = false
 
     var id: String { slot }
 }
@@ -31,7 +33,7 @@ enum GearModel {
             if let item = best[slot]?.item { return bestRow(item, slot: slot, slotName: name) }
             if slot == offHand, gear[slot] == nil, let blocker = offHandBlockedBy {
                 return GearRow(slot: slot, slotName: name, worn: nil, wornName: Copy.itemsOffHandTwoHand(item: blocker),
-                               wornLevel: nil, pick: nil, isBestInSlot: false)
+                               wornLevel: nil, pick: nil, isBestInSlot: false, blockedByTwoHand: true)
             }
             return exportRow(gear[slot], slot: slot, slotName: name, items: items)
         }

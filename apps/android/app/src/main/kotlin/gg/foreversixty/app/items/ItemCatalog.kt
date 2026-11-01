@@ -1,6 +1,7 @@
 package gg.foreversixty.app.items
 
 import gg.foreversixty.app.model.ApiJson
+import gg.foreversixty.app.model.Item
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.StaticEndpoints
@@ -34,6 +35,10 @@ class ItemCatalog(private val client: StaticDataClient, private val directory: F
         val bis = request.spec?.let { file(StaticEndpoints.getBis(request.build, it)) }
         return ItemTooltipSources(items.items.associateBy { it.id }, sets, bis)
     }
+
+    /** A class's items by id (lane F11: a character page's gear), or null when the file did not load. */
+    suspend fun items(build: String, classSlug: String): Map<Int, Item>? =
+        file(StaticEndpoints.getItems(build, classSlug))?.items?.associateBy { it.id }
 
     /** Forgets every build but [build] on disk, once a newer build is in use. */
     suspend fun prune(build: String) = withContext(Dispatchers.IO) {

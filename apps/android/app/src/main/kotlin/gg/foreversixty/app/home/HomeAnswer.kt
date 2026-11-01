@@ -305,6 +305,7 @@ private fun NextRow(row: HomeNextRow, send: (HomeIntent) -> Unit) {
                     HomeNextRow.Kind.Talents -> rememberVectorPainter(Icons.Filled.Star)
                     HomeNextRow.Kind.Sims -> rememberVectorPainter(Icons.Filled.PlayArrow)
                     HomeNextRow.Kind.Logs -> painterResource(R.drawable.ic_logs)
+                    HomeNextRow.Kind.Rankings -> painterResource(R.drawable.ic_rankings)
                 },
                 contentDescription = null,
                 tint = FsColor.goldHover,
@@ -313,7 +314,7 @@ private fun NextRow(row: HomeNextRow, send: (HomeIntent) -> Unit) {
         }
         Column(Modifier.weight(1f)) {
             Text(row.title, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(row.line, style = FsType.meta, color = FsColor.muted)
+            if (row.line.isNotEmpty()) Text(row.line, style = FsType.meta, color = FsColor.muted)
         }
         when (row.tag) {
             HomeNextRow.Tag.Matches -> Tag(stringResource(R.string.home_next_matches), FsColor.kill)

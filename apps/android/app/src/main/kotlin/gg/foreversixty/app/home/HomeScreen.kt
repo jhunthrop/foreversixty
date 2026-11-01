@@ -58,6 +58,10 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.AssetFixtureSource
 import gg.foreversixty.app.network.ForeverHttpClient
 import gg.foreversixty.app.network.StaticDataClient
+import gg.foreversixty.app.rankings.RankingsFeature
+import gg.foreversixty.app.rankings.RankingsReports
+import gg.foreversixty.app.rankings.RankingsRoute
+import gg.foreversixty.app.rankings.logic.RankingsViewer
 import gg.foreversixty.app.reports.ReportsFeature
 import gg.foreversixty.app.reports.ReportsRoute
 import gg.foreversixty.app.reports.logic.ReportsViewer
@@ -91,10 +95,14 @@ class HomeDependencies(
     private val simsFeature: SimsFeature? = null,
     /** Lane F10: Your reports, pushed from the Logs row; null while its feature switch is off. */
     private val reportsFeature: ReportsFeature? = null,
+    /** Lane F11: Rankings and character pages, pushed from the Rankings row; null while its switch is off. */
+    private val rankingsFeature: RankingsFeature? = null,
 ) {
     val sims: SimsFeature? get() = simsFeature?.takeIf { it.enabled }
 
     val reports: ReportsFeature? get() = reportsFeature?.takeIf { it.enabled }
+
+    val rankings: RankingsFeature? get() = rankingsFeature?.takeIf { it.enabled }
 
     val isEnabled: Boolean get() = isOn()
 
@@ -107,6 +115,7 @@ class HomeDependencies(
             talents: TalentsFeature?,
             isSimsOn: () -> Boolean = { false },
             isReportsOn: () -> Boolean = { false },
+            isRankingsOn: () -> Boolean = { false },
             mayLinkToPlans: suspend () -> Boolean = { false },
             isOn: () -> Boolean,
         ): HomeDependencies {
@@ -122,6 +131,7 @@ class HomeDependencies(
                 isOn = isOn,
                 simsFeature = sims,
                 reportsFeature = ReportsFeature.create(context, client, StaticDataClient(engine), sims.specs, isReportsOn),
+                rankingsFeature = RankingsFeature.create(context, client, StaticDataClient(engine), sims.specs, catalog, isRankingsOn),
             )
         }
     }
@@ -151,7 +161,7 @@ fun HomeRoute(
     if (session != null && sessionMe != null) {
         val character = session.currentCharacter(phase, picked)
         if (character != null) {
-            val reports = HomeReports(ReportsViewer.of(sessionMe, character.key), signIn)
+            val reports = HomeReports(ReportsViewer.of(sessionMe, character.key), signIn, RankingsViewer.of(sessionMe, character.key))
             HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis, sessionMe.entitlements.serverSims, reports) {
                 CharacterSelectorBar(session)
             }
@@ -172,7 +182,7 @@ private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit, sign
     val answer = me
     val character = (answer as? ApiResult.Success)?.data?.mainCharacter
     if (answer is ApiResult.Success && character != null) {
-        val reports = HomeReports(ReportsViewer.of(answer.data, character.key), signIn)
+        val reports = HomeReports(ReportsViewer.of(answer.data, character.key), signIn, RankingsViewer.of(answer.data, character.key))
         HomeCharacterScreen(HomeCharacter.from(character), answer.data.finishedSims, dependencies, openBis, answer.data.entitlements.serverSims, reports, topBar)
         return
     }
@@ -228,7 +238,12 @@ fun HomeCharacterScreen(
     val newestReport by produceState<HomeLogs?>(null, reportsFeature, character.key) {
         value = reportsFeature?.let { HomeLogs(it.lastRaid()) }
     }
-    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res, talentStatus, newestReport)
+    val rankingsFeature = dependencies.rankings
+    // Lane F11: the Rankings row reads the current character's board once with its defaults.
+    val rankingsLine by produceState<HomeRankings?>(rankingsFeature?.let { HomeRankings(null) }, rankingsFeature, character.key) {
+        value = rankingsFeature?.let { HomeRankings(it.homeLine(reports.rankings, res)) }
+    }
+    val presenter = HomePresenter(character, finishedSims, HomeTime(Instant.now()), res, talentStatus, newestReport, rankingsLine)
     val offline = (phase as? HomePhase.Loaded)?.offlineSince?.let {
         stringResource(R.string.offline_strip, HomeTime(Instant.now()).stamp(it))
     }
@@ -242,6 +257,9 @@ fun HomeCharacterScreen(
         SimsRoute(sims, serverSims, onBack = { sims.navigator.showsList = false })
     } else if (reportsFeature != null && reportsFeature.navigator.showsList) {
         ReportsRoute(reportsFeature, reports.viewer, reports.signIn, onBack = { reportsFeature.navigator.showsList = false })
+    } else if (rankingsFeature != null && (rankingsFeature.navigator.showsBoard || rankingsFeature.navigator.character != null)) {
+        val reportsLink = reportsFeature?.let { RankingsReports(it, reports.viewer) }
+        RankingsRoute(rankingsFeature, reports.rankings, reportsLink, onBack = { rankingsFeature.navigator.showsBoard = false })
     } else if (showTalents && talents != null) {
         BackHandler { showTalents = false }
         TalentsRoute(character, talentsModel ?: TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog)) {
@@ -269,6 +287,7 @@ fun HomeCharacterScreen(
                             HomeNextRow.Kind.Sims -> sims?.navigator?.showsList = true
                             HomeNextRow.Kind.Talents -> showTalents = talents != null
                             HomeNextRow.Kind.Logs -> reportsFeature?.navigator?.showsList = true
+                            HomeNextRow.Kind.Rankings -> rankingsFeature?.navigator?.showsBoard = true
                         }
                         is HomeIntent.Action -> when (intent.kind) {
                             HomeAction.Kind.GetAddon -> context.openInBrowser(HomeLinks.SETUP)
@@ -285,8 +304,15 @@ fun HomeCharacterScreen(
     }
 }
 
-/** Lane F10: who reads Your reports from Home, and how its signed-out state signs in. */
-data class HomeReports(val viewer: ReportsViewer = ReportsViewer.SignedOut, val signIn: () -> Unit = {})
+/**
+ * Who reads Home's pushed screens: Your reports (lane F10) and how its signed-out state signs in,
+ * and Rankings (lane F11).
+ */
+data class HomeReports(
+    val viewer: ReportsViewer = ReportsViewer.SignedOut,
+    val signIn: () -> Unit = {},
+    val rankings: RankingsViewer = RankingsViewer.SignedOut,
+)
 
 /** The answer under pull to refresh, scrolling on its own below the selector. */
 @OptIn(ExperimentalMaterial3Api::class)

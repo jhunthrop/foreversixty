@@ -2703,6 +2703,11 @@ enum Copy {
     /// A better item is on your best in slot list.
     static var paperdollA11yBetter: String { text("paperdoll.a11y.better") }
 
+    /// {slot} · ilvl {n}
+    static func paperdollDetail(slot: String, n: Int) -> String {
+        format("paperdoll.detail", slot, n)
+    }
+
     /// Your reports
     static var reportsTitle: String { text("reports.title") }
 

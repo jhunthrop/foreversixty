@@ -143,7 +143,7 @@ public extension Endpoint where Response == RankingsPage {
             difficulty.map { URLQueryItem(name: "difficulty", value: "\($0)") },
             metric.map { URLQueryItem(name: "metric", value: "\($0)") },
             spec.map { URLQueryItem(name: "spec", value: "\($0)") },
-            class.map { URLQueryItem(name: "class", value: "\($0)") },
+            `class`.map { URLQueryItem(name: "class", value: "\($0)") },
             phase.map { URLQueryItem(name: "phase", value: "\($0)") },
             region.map { URLQueryItem(name: "region", value: "\($0)") },
             ruleset.map { URLQueryItem(name: "ruleset", value: "\($0)") },
