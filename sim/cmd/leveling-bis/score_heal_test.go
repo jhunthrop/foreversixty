@@ -141,6 +141,11 @@ func TestMetricsForPublishesTheContractsFigures(t *testing.T) {
 	if metrics.HPS != 400 || metrics.RawHPS != 500 {
 		t.Errorf("hps/raw = %v/%v, want 400/500", metrics.HPS, metrics.RawHPS)
 	}
+	// The run's own standard error rides with the figure, so /tiers/healer never orders two
+	// healers by less than the measurement can tell (owner ruling, round 5).
+	if metrics.HPSError != result.Effective.Error || metrics.HPSError == 0 {
+		t.Errorf("hps_error = %v, want the run's %v", metrics.HPSError, result.Effective.Error)
+	}
 	if math.Abs(metrics.OverhealPct-0.2) > 1e-9 {
 		t.Errorf("overheal = %v, want 0.2", metrics.OverhealPct)
 	}

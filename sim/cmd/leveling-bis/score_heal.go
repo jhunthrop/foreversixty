@@ -96,6 +96,9 @@ func isHealer(spec specInfo) bool { return spec.Role == healerRole }
 type healingMetrics struct {
 	// HPS is effective healing per second: what landed.
 	HPS float64 `json:"hps"`
+	// HPSError is the standard error of HPS in the same run. /tiers/healer ties two
+	// healers whose gap the error cannot tell apart (owner ruling, 2026-11-01).
+	HPSError float64 `json:"hps_error"`
 	// RawHPS includes the overheal.
 	RawHPS float64 `json:"raw_hps"`
 	// OverhealPct is the share of raw healing that overhealed, 0 to 1.
@@ -184,6 +187,7 @@ func (healEngine) HitProfileFor(api.SimRequest) (core.HitProfile, error) {
 func metricsFor(result simscore.HealingResult) healingMetrics {
 	return healingMetrics{
 		HPS:          result.Effective.Mean,
+		HPSError:     result.Effective.Error,
 		RawHPS:       result.Raw.Mean,
 		OverhealPct:  result.OverhealShare(),
 		ManaLastsSec: math.Min(result.ManaLastsSec, maxManaLastsSec),
