@@ -1560,6 +1560,17 @@
         }
       }
     },
+    "guides.loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading the guides…"
+          }
+        }
+      }
+    },
     "guides.notCached": {
       "extractionState": "manual",
       "localizations": {
@@ -8997,6 +9008,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@, rank %2$@ of %3$@, %4$@%5$@ behind the top, %6$@"
+          }
+        }
+      }
+    },
+    "tiers.a11y.gap": {
+      "comment": "Arguments: 1 n (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ percent"
           }
         }
       }

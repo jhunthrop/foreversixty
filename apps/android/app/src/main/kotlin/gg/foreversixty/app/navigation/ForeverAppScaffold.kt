@@ -33,6 +33,9 @@ import gg.foreversixty.app.home.HomeDependencies
 import gg.foreversixty.app.bis.BisModel
 import gg.foreversixty.app.bis.BisOwner
 import gg.foreversixty.app.bis.BisRoute
+import gg.foreversixty.app.bis.BisSelection
+import gg.foreversixty.app.guides.GuidesFeature
+import gg.foreversixty.app.guides.GuidesRoute
 import gg.foreversixty.app.home.HomeRoute
 import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.raids.RaidsReports
@@ -50,9 +53,18 @@ fun ForeverAppScaffold(
     bis: BisModel? = null,
     account: AccountDeps? = null,
     raids: RaidsFeature? = null,
+    guides: GuidesFeature? = null,
 ) {
     var selected by rememberSaveable { mutableStateOf(ForeverTab.Home) }
     val openBis = { selected = ForeverTab.Bis }
+    // Lane F9: a guide link selects the Guides tab, where the guide is pushed.
+    val wantsGuides = guides?.navigator?.wantsTab == true
+    LaunchedEffect(wantsGuides) {
+        if (wantsGuides) {
+            selected = ForeverTab.Guides
+            guides.navigator.wantsTab = false
+        }
+    }
     // Lane F4: a raid link or notification selects the Raids tab.
     val wantsRaids = raids?.navigator?.wantsTab == true
     LaunchedEffect(wantsRaids) {
@@ -71,7 +83,7 @@ fun ForeverAppScaffold(
         }
     }
     val context = LocalContext.current
-    ForeverTabScaffold(selected = selected, onSelect = { selected = it }) {
+    ForeverTabScaffold(selected = selected, onSelect = { selected = it }, tabs = ForeverTab.visible(guides != null)) {
         // The tab slots. Each lane replaces its placeholder branch: F2 Home, F4 Raids, F3 BiS, F1 You.
         when (selected) {
             ForeverTab.Home ->
@@ -89,6 +101,7 @@ fun ForeverAppScaffold(
                 } else {
                     BisTab(bis, home, account)
                 }
+            ForeverTab.Guides -> if (guides == null) ComingSoon(selected) else GuidesTab(guides, account, bis) { selected = ForeverTab.Bis }
             ForeverTab.You -> if (account == null) ComingSoon(selected) else YouRoute(account, openBis)
         }
     }
@@ -106,6 +119,28 @@ private fun BisTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?)
     val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
     val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
     BisRoute(bis, home.catalog, BisOwner(characterKey, waiting)) { if (session != null) CharacterSelectorBar(session) }
+}
+
+/**
+ * Guides (lane F9) for the session's current character, under the same selector as Home and BiS.
+ * A guide's Gear row asks BiS for that spec's level-60 raid list and switches to it.
+ */
+@Composable
+private fun GuidesTab(guides: GuidesFeature, account: AccountDeps?, bis: BisModel?, showBis: () -> Unit) {
+    val session = account?.session
+    val phase = session?.phase?.collectAsStateWithLifecycle()?.value
+    val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
+    val character = phase?.let { session.currentCharacter(it, picked) }
+    GuidesRoute(
+        guides,
+        character,
+        openBis = { guide ->
+            if (bis != null) {
+                bis.request(BisSelection.forGuide(guide.classSlug, guide.gear?.spec ?: guide.spec, character?.faction))
+                showBis()
+            }
+        },
+    ) { if (session != null) CharacterSelectorBar(session) }
 }
 
 /**
@@ -129,17 +164,18 @@ private fun RaidsTab(raids: RaidsFeature, account: AccountDeps?, reports: Report
 fun ForeverTabScaffold(
     selected: ForeverTab,
     onSelect: (ForeverTab) -> Unit,
+    tabs: List<ForeverTab> = ForeverTab.visible(guides = false),
     content: @Composable () -> Unit,
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-                ForeverTab.entries.forEach { tab ->
+                tabs.forEach { tab ->
                     NavigationBarItem(
                         selected = tab == selected,
                         onClick = { onSelect(tab) },
-                        icon = { Icon(tab.icon, contentDescription = null) },
+                        icon = { Icon(tab.icon.painter(), contentDescription = null) },
                         label = { TabLabel(stringResource(tab.label)) },
                     )
                 }

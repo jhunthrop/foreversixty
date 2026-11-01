@@ -11,11 +11,14 @@ struct BisScreen: View {
     private let catalog: ItemCatalog
     /// Lane F1's account, nil while its feature switch is off.
     private let session: SessionStore?
+    /// Lists other tabs and links ask for (a guide's Gear row, `/app/bis`).
+    private let router: BisRouter?
 
-    init(model: BisModel, catalog: ItemCatalog, session: SessionStore? = nil) {
+    init(model: BisModel, catalog: ItemCatalog, session: SessionStore? = nil, router: BisRouter? = nil) {
         _model = State(initialValue: model)
         self.catalog = catalog
         self.session = session
+        self.router = router
     }
 
     /// The model restarts whenever the session's current character changes; nil while a signed-in
@@ -56,15 +59,25 @@ struct BisScreen: View {
             }
             .sheet(item: $tooltip) { ItemTooltipSheet(request: $0, catalog: catalog) }
         }
+        .onChange(of: router?.request) { _, request in Task { await apply(request) } }
         .task(id: owner) {
             guard owner != nil else { return }
             await model.start()
+            await apply(router?.request)
             #if DEBUG
                 // `-FSBisPicker open` opens the picker, so a capture script shows the real sheet.
                 if UserDefaults.standard.string(forKey: "FSBisPicker") == "open" { model.isPickerPresented = true }
                 await openFromLaunchArguments()
             #endif
         }
+    }
+
+    /// Shows the asked list in the faction on screen; the picker closes.
+    private func apply(_ request: BisRequest?) async {
+        guard let request, let spec = model.catalog.spec(request.spec) else { return }
+        model.isPickerPresented = false
+        let faction = model.context.selection.faction
+        await model.select(BisSelection(classSlug: spec.classSlug, spec: spec.spec, range: request.range, faction: faction))
     }
 
     #if DEBUG
@@ -91,7 +104,7 @@ struct BisScreen: View {
 extension BisScreen {
     /// The live tab: the CDN through the offline cache, the build from the app config.
     @MainActor
-    static func live(_ environment: AppEnvironment, session: SessionStore?) -> BisScreen {
+    static func live(_ environment: AppEnvironment, session: SessionStore?, router: BisRouter? = nil) -> BisScreen {
         let transport: any HTTPTransport = switch environment.configuration.mode {
         case .live: URLSessionTransport()
         case .fixture: FixtureTransport.bundled() ?? FixtureTransport(directory: Bundle.main.bundleURL)
@@ -104,6 +117,6 @@ extension BisScreen {
             bundledBuild: BundledBuild.read()
         )
         let model = BisModel(source: source, catalog: .bundled(), preferences: UserDefaultsBisPreferences())
-        return BisScreen(model: model, catalog: ItemCatalog(client: staticClient), session: session)
+        return BisScreen(model: model, catalog: ItemCatalog(client: staticClient), session: session, router: router)
     }
 }

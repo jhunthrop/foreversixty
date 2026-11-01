@@ -180,7 +180,12 @@ fun createBisDataSource(
 
 /** The static files with their offline copies, one cache folder for every screen that reads them. */
 fun staticFiles(context: Context, engine: HttpClientEngine): CachedStaticDataClient =
-    CachedStaticDataClient(StaticDataClient(engine), FileStaticFileCache(File(context.noBackupFilesDir, "static-data")))
+    CachedStaticDataClient(StaticDataClient(engine), staticFileCache(context))
+
+/** The one folder of saved static files; the Guides tab also sizes what is in it. */
+fun staticFileCache(context: Context): FileStaticFileCache = FileStaticFileCache(File(context.noBackupFilesDir, STATIC_DATA_DIR))
+
+private const val STATIC_DATA_DIR = "static-data"
 
 /** The spec catalogue bundled with the app (data/curated/specs.json). */
 fun bundledSpecCatalog(context: Context): SpecCatalog = SpecCatalog.decode(readAsset(context, SpecCatalog.ASSET).orEmpty())

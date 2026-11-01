@@ -909,6 +909,7 @@
     <string name="guides_notCached">This guide is not on your phone yet. Connect once to save it.</string>
     <string name="guides_listNotCached">This list is not on your phone yet. Connect once to save it.</string>
     <string name="guides_error">This guide did not load.</string>
+    <string name="guides_loading">Loading the guides…</string>
     <string name="guides_sources">Sources</string>
     <string name="guides_share">Share</string>
     <string name="guides_cardMeta">%1$s · Updated %2$s</string>
@@ -956,6 +957,7 @@
     <string name="tiers_a11y_top">%1$s, rank 1 of %2$s, %3$stop spec, %4$s</string>
     <string name="tiers_a11y_behind">%1$s, rank %2$s of %3$s, %4$s%5$s behind the top, %6$s</string>
     <string name="tiers_a11y_tier">"tier %1$s, "</string>
+    <string name="tiers_a11y_gap">%1$s percent</string>
     <string name="tiers_a11y_tie">Within 1 percent of the next spec</string>
     <string name="tiers_a11y_opens">Opens the guide</string>
     <string name="changes_dates">Key dates</string>

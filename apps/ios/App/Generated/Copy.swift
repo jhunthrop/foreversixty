@@ -3002,6 +3002,9 @@ enum Copy {
     /// This guide did not load.
     static var guidesError: String { text("guides.error") }
 
+    /// Loading the guides…
+    static var guidesLoading: String { text("guides.loading") }
+
     /// Sources
     static var guidesSources: String { text("guides.sources") }
 
@@ -3154,6 +3157,11 @@ enum Copy {
     /// tier {letter},
     static func tiersA11yTier(letter: String) -> String {
         format("tiers.a11y.tier", letter)
+    }
+
+    /// {n} percent
+    static func tiersA11yGap(n: String) -> String {
+        format("tiers.a11y.gap", n)
     }
 
     /// Within 1 percent of the next spec

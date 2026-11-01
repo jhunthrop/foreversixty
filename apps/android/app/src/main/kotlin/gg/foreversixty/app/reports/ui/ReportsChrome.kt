@@ -47,14 +47,14 @@ import gg.foreversixty.app.reports.logic.ParseTier
 import gg.foreversixty.app.reports.logic.Visibility
 import java.util.Locale
 
-/** A pushed screen's bar: back with its label, the uppercase title, and one trailing action. */
+/** A pushed screen's bar: back with its label, the uppercase title (a guide's in its class colour), and one trailing action. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReportsBar(title: String, backLabel: String, back: () -> Unit, trailing: BarAction? = null) {
+fun ReportsBar(title: String, backLabel: String, back: () -> Unit, trailing: BarAction? = null, titleColor: Color = FsColor.strong) {
     TopAppBar(
         title = {
             Text(
-                title.uppercase(Locale.ROOT), style = FsType.h2, color = FsColor.strong, maxLines = 2, overflow = TextOverflow.Clip,
+                title.uppercase(Locale.ROOT), style = FsType.h2, color = titleColor, maxLines = 2, overflow = TextOverflow.Clip,
                 modifier = Modifier.semantics { heading() },
             )
         },

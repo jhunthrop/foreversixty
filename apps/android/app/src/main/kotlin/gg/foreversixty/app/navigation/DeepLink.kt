@@ -74,10 +74,10 @@ sealed interface DeepLink {
     }
 
     /** Guides tab, that spec's guide (class and spec are slugs). /app/guides/{class}/{spec} */
-    data class Guide(val class: String, val spec: String) : DeepLink {
+    data class Guide(val className: String, val spec: String) : DeepLink {
         override val screen: String get() = "guide"
 
-        override fun url(): String = link("/app/guides/${enc(class)}/${enc(spec)}")
+        override fun url(): String = link("/app/guides/${enc(className)}/${enc(spec)}")
     }
 
     /** You, Notifications. /app/you/notifications */

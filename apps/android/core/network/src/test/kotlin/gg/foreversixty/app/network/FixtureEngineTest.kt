@@ -25,9 +25,12 @@ class FixtureEngineTest {
 
     /** A request path for a route pattern; the CDN fixtures are for one spec and one class. */
     private fun samplePath(pattern: String): String =
-        mapOf("spec" to "warrior-fury", "class" to "warrior", "build" to "1.60.1.70658")
+        mapOf("spec" to sampleSpec(pattern), "class" to "warrior", "build" to "1.60.1.70658")
             .entries.fold(pattern) { acc, (key, value) -> acc.replace("{$key}", value) }
             .replace(Regex("""\{[a-z_]+\}"""), "1")
+
+    /** A spec the route has a fixture for: the guide fixtures (W3-C1) are three specs, Fury not among them. */
+    private fun sampleSpec(pattern: String): String = if (pattern.contains("/guides/")) "warrior-protection" else "warrior-fury"
 
     @Test
     fun `routes use lane C's endpoint names`() {
