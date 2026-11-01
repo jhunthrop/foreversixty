@@ -65,6 +65,32 @@ Specs: priest-shadow, priest-discipline, priest-holy, mage-arcane, mage-fire, ma
 | R3 | Fresh: Ice Lance's coefficient. | The client column is 0 for every rank, and the engine uses 0.4286 (marked unconfirmed). Beta logs show spell power scaling: rank 1 non-frozen hits of 42-45 against a 34 ceiling (reports 2747, 2762, 2776), and rank 2 hits of 51-58 against 44 (2786). The value itself cannot be fitted without the casters' spell power. | Aligned that it scales; the 0.43 is unconfirmed | - |
 | R4 | Raid talent search after the fixes. | Best +0.2% (±0.3%). | Hold | - |
 
+## Item stats: school spell damage and spell penetration (integrator follow-up to physical row H3)
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| S1 | ItemSparse StatModifier 84, 86, 87, 88 and 89 (holy, nature, frost, shadow and arcane spell damage) and 47 (spell penetration) mapped to None in `normalize/gear.py` STAT_BY_MODIFIER_ID. Only 85 (fire) was mapped. Wowhead's supplement keys `holsplpwr`, `firsplpwr`, `natsplpwr`, `frosplpwr`, `shasplpwr`, `arcsplpwr` and `splpen` mapped to None in `wowhead_items.py`. | 70707 ItemSparse rows by name: 84 is the Shining set, 86 Stormcloth Boots, 87 the Azure Silk set and Icicle Rod, 88 Shadow Hood and Orb of Soran'ruk, 89 Nether Force Wand and Tome of Arcane Domination, 47 Doomcaller's Robes and the PvP silk spaulders. Wowhead: Elemental Mage Staff 944 is +100 fire, +100 frost and 8 penetration; Fel Cape 279269 is +15 shadow. A local simdb regeneration changes 273 items and only the seven stats (frost 84, shadow 78, penetration 55, arcane 29, holy 20, nature 12, fire 6). Weapon damage and every other stat are unchanged. Tests: `data/tests/test_school_power_stats.py` (2 of 3 failed, then passed). `test_build_stat_keys.py` and the tooltip test learn the new keys. The planner's STAT_KEYS and STAT_LABELS add frost, shadow, arcane, nature and holy spell damage. | CONFIRMED-BUG (the physical lane's find) | S 50bf6bd6e |
+
+Measured locally on the lane engine. The simdb and items json were regenerated but not committed: `items/<class>.json` was HEAD plus only the new stat values, because a full normalize also moved weapon damage and supersession rows that are not this change. Band 60, raid preset, `leveling-bis` re-ranked old against new on the same engine, and `set_dps` is the ranker's verified number:
+
+| Spec | alliance | horde | Picks that move |
+|---|---|---|---|
+| Shadow | 667.7 to 677.6 (+1.5%) | 669.1 to 679.6 (+1.6%) | Fel Cape, Robe of Winter Night, Underworld Band, Felcloth Hood and Pants, Black Waistcord, Netherpearl Cuffs |
+| Fire | 656.0 to 668.8 (+2.0%) | 643.7 to 672.0 (+4.4%) | Elemental Mage Staff; horde moves to the Devout set and Rune of the Guard Captain |
+| Frost | 549.2 to 552.2 (+0.5%) | 541.9 to 546.1 (+0.8%) | Elemental Mage Staff, Frigid Ring, Frothing Waistcord |
+| Affliction | 599.4 to 605.7 (+1.1%) | 590.4 to 596.3 (+1.0%) | Fel Cape, Felcloth Hood, Black Waistcord |
+| Demonology | 668.6 to 669.0 (+0.1%) | 657.3 to 664.2 (+1.0%) | Fel Cape, Black Waistcord |
+| Destruction | 696.9 to 693.7 (-0.5%) | 687.5 to 685.2 (-0.3%) | Elemental Mage Staff replaces Kindling Stave |
+| Elemental | 462.4 to 468.1 (+1.2%) | 461.4 to 470.3 (+1.9%) | Gloves of the Greatfather; horde trinkets |
+| Balance | 522.0 to 523.9 (+0.4%) | 515.2 to 517.2 (+0.4%) | none (the published gear itself gains stats) |
+| Arcane, Discipline, Holy priest, Restoration druid and shaman, Holy paladin | 0.0 | 0.0 | none |
+
+On the published gear (spec-breakdown, 10,000 iterations, seeds 1 and 50001), only Balance moves, by +0.4%. Every other gain needs the bis.yml re-rank.
+
+Destruction losing 0.3 to 0.5% means the ranker scored Elemental Mage Staff above Kindling Stave on its weights, and the verified sim then disagreed. Destruction's published weights give fire_power 0.63, and the fork's Destruction list casts mostly Shadow Bolt. That is a weights question for the warlock lane, not a stat bug.
+
+Not fixed, and outside this change: on the wowhead supplement, `critstrkpct` (15 planner items) and `hitpct` (23) are flat percentages. Mapping them to `crit`/`hit` would run them through the rating conversion, so they need their own path. `def`, `armorbonus` and `blockamount` are also dropped on that path.
+
 ## Before/after (raid, band 60, 10,000 iterations; pin and origin/main against lane engine plus site branch)
 
 | Spec | Faction | Before (seed 1 / 50001) | After | Change | Cause |
