@@ -261,6 +261,26 @@ func TestLayerKeepsTheKitOnTopOfThePreset(t *testing.T) {
 	}
 }
 
+// Forever lets a stone share a weapon with a rogue poison (the rogue and
+// warlock Deep Dive, 2026-10-07), so the raid preset's stones move beside
+// the kit's poisons instead of being dropped.
+func TestLayerPutsThePresetStoneBesideARoguePoison(t *testing.T) {
+	resolved, err := loadRealPresets(t).Resolve(RaidPreset, specs.ByKey["rogue-combat"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	kit := []string{"main_hand_imbue:deadly_poison", "off_hand_imbue:instant_poison"}
+	_, consumeIDs := resolved.Layer(nil, kit)
+	for _, want := range append(kit, "main_hand_stone:elemental_sharpening_stone", "off_hand_stone:dense_sharpening_stone") {
+		if !slices.Contains(consumeIDs, want) {
+			t.Errorf("%s is missing from %v", want, consumeIDs)
+		}
+	}
+	if _, err := consumes(consumeIDs, nil); err != nil {
+		t.Errorf("layered consumables do not map onto the engine: %v", err)
+	}
+}
+
 func TestLayerKitImprovedFormWinsOverThePresetPlainForm(t *testing.T) {
 	resolved, err := loadRealPresets(t).Resolve(RaidPreset, specs.ByKey["druid-feral"])
 	if err != nil {
