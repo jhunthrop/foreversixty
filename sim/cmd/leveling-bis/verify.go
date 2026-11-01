@@ -213,6 +213,9 @@ func swapSlot(picks map[string]slotPick, slot string, itemID int, itemIsTwoHand 
 func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick) (baselineDPS float64, swaps []swapResult, verifyErrors []string, err error) {
 	baseline := plainRequest(spec, bandCharacter("verify", race, classSlug, spec.Spec, level, talents, buildGear(picks)), verifyIterations, verifySeed)
 	var baselineStdErr float64
+	// guardBaseline is the baseline at the guard harness, measured the
+	// first time a runner-up needs confirming (confirmSwap).
+	var guardBaseline *[2]float64
 	baselineDPS, baselineStdErr, err = runner.RunPlainDPSWithError(baseline)
 	if err != nil {
 		return 0, nil, nil, err
@@ -243,9 +246,45 @@ func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, leve
 			BaselineStdErr: baselineStdErr,
 		}
 		sw.Beat = beatsByMargin(dps, baselineDPS) && sw.Significant()
+		if !sw.Beat && dps > baselineDPS {
+			if guardBaseline == nil {
+				mean, stdErr, gErr := runner.RunPlainDPSWithError(plainRequest(spec, baseline.Character, guardIterations(spec), verifySeed))
+				if gErr != nil {
+					return 0, nil, nil, fmt.Errorf("re-measuring the baseline at the guard harness: %w", gErr)
+				}
+				guardBaseline = &[2]float64{mean, stdErr}
+			}
+			confirmed, cErr := confirmSwap(runner, spec, req, sw, *guardBaseline)
+			if cErr != nil {
+				verifyErrors = append(verifyErrors, fmt.Sprintf("%s: runner-up %s (id %d) at the guard harness: %v", slot, runnerUp.Name, runnerUp.ID, cErr))
+			} else {
+				sw = confirmed
+			}
+		}
 		swaps = append(swaps, sw)
 	}
 	return baselineDPS, swaps, verifyErrors, nil
+}
+
+// confirmSwap re-measures a runner-up that ran ahead of the pick at
+// verifyIterations, but not by swapMargin, at the guard harness
+// (guardIterations, keepVerifyBest's), against the baseline measured the
+// same way. The swap is beaten when the runner-up is ahead beyond the two
+// runs' combined error there. Round 6: Brilliant Wand's +0.33% over Torch of
+// Light was beyond the error but under the flat 1% margin, so the pick a
+// wrong score had made stood, and the row published "dps_delta 0,
+// verified". The confirmed result carries the guard harness's numbers.
+func confirmSwap(runner engineRunner, spec specInfo, req api.SimRequest, sw swapResult, guardBaseline [2]float64) (swapResult, error) {
+	req.Iterations = guardIterations(spec)
+	dps, stdErr, err := runner.RunPlainDPSWithError(req)
+	if err != nil {
+		return sw, err
+	}
+	out := sw
+	out.SwapDPS, out.SwapStdErr = dps, stdErr
+	out.BaselineDPS, out.BaselineStdErr = guardBaseline[0], guardBaseline[1]
+	out.Beat = dps > guardBaseline[0] && out.Significant()
+	return out, nil
 }
 
 // wouldDuplicatePairMate reports whether promoting itemID/itemName

@@ -454,3 +454,64 @@ func TestARunnerUpWithinTheNoiseMarginDoesNotBeatTheScoredPick(t *testing.T) {
 		t.Fatal("1.8% is a real win")
 	}
 }
+
+// Round 6, warlock T3: Brilliant Wand measured +1.9 DPS (+0.33%) over Torch
+// of Light, beyond the runs' error, and the verify pass kept Torch because
+// the gain was under the flat 1% margin, then published the row as
+// "dps_delta 0, verified". A runner-up that measures ahead is re-measured at
+// the guard harness and promoted when it is ahead beyond that error.
+func confirmFake(swapAhead float64) *fakeEngine {
+	runnerUp := gearKey([]api.GearSlot{{Slot: "ranged", ItemID: 2}})
+	return &fakeEngine{
+		DPSFunc: func(req api.SimRequest) (float64, error) {
+			if gearKey(req.Character.Gear) == runnerUp {
+				return 570 + swapAhead, nil
+			}
+			return 570, nil
+		},
+		StdErrFunc: func(req api.SimRequest) float64 {
+			if req.Iterations >= guardIterations(specInfo{}) {
+				return 0.3
+			}
+			return 0.8
+		},
+	}
+}
+
+func TestVerifyBandPromotesARunnerUpAheadInsideTheMarginOnceTheGuardHarnessConfirmsIt(t *testing.T) {
+	picks := map[string]slotPick{"ranged": {Item: p(1, false), RunnerUp: p(2, false)}}
+	fake := confirmFake(1.9)
+	_, swaps, _, err := verifyBand(fake, specInfo{}, "gnome", "warlock", 60, "", picks)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(swaps) != 1 || !swaps[0].Beat {
+		t.Fatalf("swaps = %+v, want ranged beaten: +1.9 is beyond the guard harness's error", swaps)
+	}
+	if swaps[0].SwapStdErr != 0.3 || swaps[0].BaselineStdErr != 0.3 {
+		t.Errorf("swap errors = %v / %v, want the guard harness's 0.3", swaps[0].SwapStdErr, swaps[0].BaselineStdErr)
+	}
+}
+
+func TestVerifyBandKeepsThePickWhenTheGuardHarnessCallsItATie(t *testing.T) {
+	picks := map[string]slotPick{"ranged": {Item: p(1, false), RunnerUp: p(2, false)}}
+	fake := confirmFake(0.3)
+	_, swaps, _, err := verifyBand(fake, specInfo{}, "gnome", "warlock", 60, "", picks)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(swaps) != 1 || swaps[0].Beat {
+		t.Fatalf("swaps = %+v, want the pick kept: +0.3 is inside the guard harness's error", swaps)
+	}
+}
+
+func TestVerifyBandDoesNotReMeasureARunnerUpThatLoses(t *testing.T) {
+	picks := map[string]slotPick{"ranged": {Item: p(1, false), RunnerUp: p(2, false)}}
+	fake := confirmFake(-5)
+	if _, _, _, err := verifyBand(fake, specInfo{}, "gnome", "warlock", 60, "", picks); err != nil {
+		t.Fatal(err)
+	}
+	if len(fake.Calls) != 2 {
+		t.Errorf("runs = %d, want 2 (the baseline and the swap; a loser is not re-measured)", len(fake.Calls))
+	}
+}
