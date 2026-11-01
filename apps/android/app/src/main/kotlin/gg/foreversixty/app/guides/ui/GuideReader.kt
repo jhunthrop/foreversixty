@@ -80,6 +80,8 @@ class GuideReaderActions(
     val selected: () -> Unit = {},
     /** The Gear row: the BiS tab on that spec's list. */
     val openBis: (GuideFile) -> Unit = {},
+    /** Lane F13: `Open this build in the planner` under the builds; null while `planner` is off. */
+    val openPlanner: ((GuideFile) -> Unit)? = null,
 )
 
 /** F9.2: the head band, the sticky section strip, the at-a-glance card and the guide's sections. */

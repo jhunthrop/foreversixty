@@ -64,6 +64,17 @@ func (f *fakeStore) Get(_ context.Context, id string) (Build, error) {
 	return b, nil
 }
 
+func (f *fakeStore) Disown(_ context.Context, id string, userID int64) error {
+	if f.err != nil {
+		return f.err
+	}
+	if owner := f.owners[id]; owner == nil || *owner != userID {
+		return ErrNotFound
+	}
+	f.owners[id] = nil
+	return nil
+}
+
 func (f *fakeStore) Mine(_ context.Context, userID int64, page int) (Page, error) {
 	if f.err != nil {
 		return Page{}, f.err
@@ -380,5 +391,59 @@ func TestMyOwnBuildsClampAnAbsurdPage(t *testing.T) {
 	}
 	if env.Data.Page != MaxPage {
 		t.Errorf("page = %d, want it clamped to %d", env.Data.Page, MaxPage)
+	}
+}
+
+func deleteBuild(h http.Handler, id string, userID int64) *httptest.ResponseRecorder {
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodDelete, "/v1/builds/"+id, nil)
+	if userID != 0 {
+		req = signedInAs(req, userID)
+	}
+	h.ServeHTTP(rec, req)
+	return rec
+}
+
+// TestRemovingABuildTakesItOffMyListOnly is W3-C9: the caller's own row
+// leaves their list with a 204, and the record (the link) stays.
+func TestRemovingABuildTakesItOffMyListOnly(t *testing.T) {
+	const mine, theirs = int64(7), int64(8)
+	store := newFakeStore()
+	store.seed(Build{ID: "aaaaaaaa", Title: "my arms"}, mine)
+	store.seed(Build{ID: "cccccccc", Title: "their frost"}, theirs)
+	h := testRouter(t, store)
+
+	if rec := deleteBuild(h, "aaaaaaaa", mine); rec.Code != http.StatusNoContent || rec.Body.Len() != 0 {
+		t.Fatalf("own build: status %d body %q, want an empty 204", rec.Code, rec.Body.String())
+	}
+	if store.owners["aaaaaaaa"] != nil {
+		t.Error("the row is still mine")
+	}
+	if _, ok := store.rows["aaaaaaaa"]; !ok {
+		t.Error("the record went with the list row; the link must keep working")
+	}
+	for _, c := range []struct {
+		name string
+		id   string
+	}{{"another player's", "cccccccc"}, {"already removed", "aaaaaaaa"}, {"unknown", "zzzzzzzz"}} {
+		rec := deleteBuild(h, c.id, mine)
+		if rec.Code != http.StatusNotFound || errorCode(t, rec) != "not_found" {
+			t.Errorf("%s: status %d body %s, want 404 not_found", c.name, rec.Code, rec.Body.String())
+		}
+	}
+	if store.owners["cccccccc"] == nil || *store.owners["cccccccc"] != theirs {
+		t.Error("another player's build changed hands")
+	}
+}
+
+func TestRemovingABuildNeedsASessionAndReports500WhenTheStoreFails(t *testing.T) {
+	store := newFakeStore()
+	h := testRouter(t, store)
+	if rec := deleteBuild(h, "aaaaaaaa", 0); rec.Code != http.StatusUnauthorized {
+		t.Errorf("signed out: status %d, want 401", rec.Code)
+	}
+	store.err = errors.New("database is down")
+	if rec := deleteBuild(h, "aaaaaaaa", 7); rec.Code != http.StatusInternalServerError || errorCode(t, rec) != "internal" {
+		t.Errorf("store down: status %d body %s, want 500 internal", rec.Code, rec.Body.String())
 	}
 }

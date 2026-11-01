@@ -28,6 +28,8 @@ public enum Feature: String, CaseIterable, Sendable {
     case guideTiers = "guide_tiers"
     /// F16: Guild roster with attendance, raid history, calendar sync and the calendar link
     case guildExtras = "guild_extras"
+    /// F13: The talent planner: plan a build, share it, open a shared /b/ link, and Your builds
+    case planner = "planner"
 
     /// The value when the API has not said: what ships in the build.
     public var bundledDefault: Bool {
@@ -45,6 +47,7 @@ public enum Feature: String, CaseIterable, Sendable {
         case .guides: false
         case .guideTiers: false
         case .guildExtras: false
+        case .planner: false
         }
     }
 }

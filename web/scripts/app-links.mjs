@@ -5,8 +5,10 @@
 // Team ID, the bundle id, the package name and the signing fingerprints live, and written
 // into public/.well-known/ so the static build serves them at /.well-known/.
 //
-// Only the configured paths (/app/*) open the apps; every other URL stays on the site. The
-// API's app sign-in hands its one-time code to /app/auth (api/internal/auth/app_auth.go).
+// Only the configured paths open the apps: /app/*, plus the site pages apps/shared/links.json
+// marks `site: true` (a shared build's /b/*), which web/app-link-paths.json lists as
+// site_pages. Every other URL stays on the site. The API's app sign-in hands its one-time code
+// to /app/auth (api/internal/auth/app_auth.go).
 //
 // `npm run sync:app-links` rewrites the files. `npm run sync` (predev and prebuild) runs it,
 // so a deploy always carries the config's current values.
@@ -16,12 +18,20 @@ import { fileURLToPath } from 'node:url';
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const configPath = path.join(webRoot, 'app-links.json');
+export const linkPathsPath = path.join(webRoot, 'app-link-paths.json');
 export const wellKnownDir = path.join(webRoot, 'public', '.well-known');
 export const AASA_FILE = 'apple-app-site-association';
 export const ASSETLINKS_FILE = 'assetlinks.json';
 
+/** The site pages outside /app/ that open the apps (generated from apps/shared/links.json). */
+export function readSitePages(file = linkPathsPath) {
+  const pages = JSON.parse(readFileSync(file, 'utf8')).site_pages ?? [];
+  if (!Array.isArray(pages)) throw new Error('app-link-paths.json: site_pages must be a list');
+  return pages;
+}
+
 /** Reads and checks web/app-links.json; a missing or empty field fails loudly. */
-export function readAppLinksConfig(file = configPath) {
+export function readAppLinksConfig(file = configPath, sitePages = readSitePages()) {
   const cfg = JSON.parse(readFileSync(file, 'utf8'));
   for (const key of ['appleTeamId', 'iosBundleId', 'androidPackage']) {
     if (typeof cfg[key] !== 'string' || cfg[key] === '')
@@ -31,8 +41,11 @@ export function readAppLinksConfig(file = configPath) {
     if (!Array.isArray(cfg[key]) || cfg[key].length === 0)
       throw new Error(`app-links.json: ${key} must be a non-empty list`);
   }
-  if (!cfg.paths.every((p) => typeof p === 'string' && p.startsWith('/app/'))) {
-    throw new Error('app-links.json: every path must sit under /app/, so no other page opens the apps');
+  const allowed = (p) => typeof p === 'string' && (p.startsWith('/app/') || sitePages.includes(p));
+  if (!cfg.paths.every(allowed)) {
+    throw new Error(
+      'app-links.json: every path must sit under /app/ or be a site page of links.json, so no other page opens the apps',
+    );
   }
   return cfg;
 }

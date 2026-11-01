@@ -1,5 +1,5 @@
 {
-  "note": "Every https://foreversixty.gg/app/* deep link (design/specs/2026-10-30-mobile-apps.md section 6.4). web/scripts/gen-mobile-links.mjs generates both apps' parsers (iOS DeepLink, Android DeepLink) and web/app-link-paths.json, the path list the universal-link and App Link files serve. {param} is a path segment, a string unless params says int; query lists the optional query parameters, each with its allowed words or \"string\". example is a real link the tests parse.",
+  "note": "Every https://foreversixty.gg/app/* deep link (design/specs/2026-10-30-mobile-apps.md section 6.4). web/scripts/gen-mobile-links.mjs generates both apps' parsers (iOS DeepLink, Android DeepLink) and web/app-link-paths.json, the path list the universal-link and App Link files serve. A route is under /app/ unless site is true: a real site page (spec 2026-10-31-mobile-wave3 section 3.4) that also opens the apps. {param} is a path segment, a string unless params says int; query lists the optional query parameters, each with its allowed words or \"string\". example is a real link the tests parse.",
   "host": "foreversixty.gg",
   "routes": [
     {
@@ -59,6 +59,26 @@
       "screen": "guide",
       "opens": "Guides tab, that spec's guide (class and spec are slugs).",
       "example": "/app/guides/shaman/elemental"
+    },
+    {
+      "path": "/app/planner/{class}",
+      "query": { "code": "string", "race": "string" },
+      "screen": "planner",
+      "opens": "The talent planner for that class (a slug). code is an FS1 build code (a guide's build) loaded as one legal order; race is a race slug. With neither it reopens the class's draft.",
+      "example": "/app/planner/shaman?code=FS1:1.60.1.70707:shaman:orc:5510331300001351/055/053002:"
+    },
+    {
+      "path": "/app/builds",
+      "screen": "builds",
+      "opens": "Your builds.",
+      "example": "/app/builds"
+    },
+    {
+      "path": "/b/{id}",
+      "site": true,
+      "screen": "sharedBuild",
+      "opens": "The shared build viewer (read only; Edit a copy opens the planner). A real site page, so a pasted link opens the app when it is installed and the web page when it is not.",
+      "example": "/b/k7q2m9xa"
     },
     {
       "path": "/app/you/notifications",

@@ -9,6 +9,7 @@ import {
   appleAppSiteAssociation,
   assetLinks,
   readAppLinksConfig,
+  readSitePages,
   renderAppLinks,
   wellKnownDir,
 } from '../../../scripts/app-links.mjs';
@@ -16,10 +17,13 @@ import {
 const cfg = { ...readAppLinksConfig() };
 
 describe('app links', () => {
-  it('opens only /app/* on iOS, for the Team ID and bundle id', () => {
+  it('opens only /app/* and the shared build pages on iOS, for the Team ID and bundle id', () => {
     const aasa = appleAppSiteAssociation({ ...cfg, appleTeamId: 'ABCDE12345' });
     expect(aasa.applinks.details).toEqual([
-      { appIDs: ['ABCDE12345.gg.foreversixty.app'], components: [{ '/': '/app/*' }] },
+      {
+        appIDs: ['ABCDE12345.gg.foreversixty.app'],
+        components: [{ '/': '/app/*' }, { '/': '/b/*' }],
+      },
     ]);
     expect(aasa.webcredentials.apps).toEqual(['ABCDE12345.gg.foreversixty.app']);
   });
@@ -37,6 +41,13 @@ describe('app links', () => {
   it('refuses a path outside /app/', () => {
     const file = path.join(import.meta.dirname, 'bad-app-links.fixture.json');
     expect(() => readAppLinksConfig(file)).toThrow(/under \/app\//);
+  });
+
+  it('admits a page outside /app/ only when links.json names it a site page', () => {
+    expect(readSitePages()).toEqual(['/b/*']);
+    expect(cfg.paths).toContain('/b/*');
+    const file = path.join(import.meta.dirname, 'bad-app-links.fixture.json');
+    expect(() => readAppLinksConfig(file, ['/account'])).not.toThrow();
   });
 
   it('keeps the committed .well-known files in step with app-links.json', () => {

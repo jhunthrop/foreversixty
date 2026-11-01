@@ -1089,4 +1089,71 @@
     <string name="calendar_event_location">%1$s · %2$s</string>
     <string name="calendar_event_notes" tools:ignore="PluralsCandidate">Pull %1$s. %2$d of %3$d signed up.</string>
     <string name="calendar_event_notesNoSize" tools:ignore="PluralsCandidate">Pull %1$s. %2$d signed up.</string>
+    <string name="plan_title">Plan a build</string>
+    <string name="plan_left" tools:ignore="PluralsCandidate">%1$d left</string>
+    <string name="plan_level" tools:ignore="PluralsCandidate">Level %1$d</string>
+    <string name="plan_levelSheet">Level</string>
+    <string name="plan_levelSheetLine" tools:ignore="PluralsCandidate">%1$d talent points at this level.</string>
+    <string name="plan_raceSheet">Race</string>
+    <string name="plan_tab" tools:ignore="PluralsCandidate">%1$s %2$d</string>
+    <string name="plan_rank" tools:ignore="PluralsCandidate">%1$d/%2$d</string>
+    <string name="plan_share">Share</string>
+    <string name="plan_reset">Reset</string>
+    <string name="plan_undo">Undo</string>
+    <string name="plan_addPoint">Add a point</string>
+    <string name="plan_removePoint">Remove a point</string>
+    <string name="plan_a11yCell" tools:ignore="PluralsCandidate">%1$s, rank %2$d of %3$d</string>
+    <string name="plan_a11yLeft" tools:ignore="PluralsCandidate">%1$d points left</string>
+    <string name="plan_resetConfirm" tools:ignore="PluralsCandidate">Clear all %1$d points?</string>
+    <string name="plan_resetProceed">Clear</string>
+    <string name="plan_refuse_tierLocked" tools:ignore="PluralsCandidate">Tier %1$d of %2$s needs %3$d points in %2$s first</string>
+    <string name="plan_refuse_prereqOne">%1$s needs 1 point in %2$s first</string>
+    <string name="plan_refuse_prereq" tools:ignore="PluralsCandidate">%1$s needs %2$d points in %3$s first</string>
+    <string name="plan_refuse_maxRank" tools:ignore="PluralsCandidate">%1$s is already at %2$d of %2$d points</string>
+    <string name="plan_refuse_cap" tools:ignore="PluralsCandidate">A build spends at most %1$d points</string>
+    <string name="plan_refuse_noPoints">%1$s has no points to remove</string>
+    <string name="plan_refuse_unknownTalent">Talent %1$s is not in this class</string>
+    <string name="plan_refuse_noneLeft">No points left. Take one off first.</string>
+    <string name="plan_shareTitle">Share this build</string>
+    <string name="plan_shareIntro">Sharing posts the following to a link anyone can open. Once created, that link cannot be edited:</string>
+    <string name="plan_shareFieldClassRace">Class and race</string>
+    <string name="plan_shareFieldTalents">Talent order</string>
+    <string name="plan_shareFieldTitle">Title: “%1$s”</string>
+    <string name="plan_shareTitleField">Title (optional)</string>
+    <string name="plan_shareTitleCount" tools:ignore="PluralsCandidate">%1$d/%2$d</string>
+    <string name="plan_shareProceed">Share anyway</string>
+    <string name="plan_shareSignedIn">Signed in, it also appears in Your builds.</string>
+    <string name="plan_shareText">%1$s %2$s · %3$s</string>
+    <string name="plan_rateLimited">You have shared a lot of builds. Try again in an hour.</string>
+    <string name="plan_offline">Sharing needs a connection. Your build stays here.</string>
+    <string name="plan_shareFailed">That build did not share. Try again.</string>
+    <string name="plan_planBuild">Plan a build</string>
+    <string name="plan_yourBuilds">Your builds</string>
+    <string name="plan_openInPlanner">Open this build in the planner</string>
+    <string name="plan_loadedNote">Loaded the %1$s build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order.</string>
+    <string name="plan_shared_title">Shared build</string>
+    <string name="plan_shared_head">%1$s %2$s %3$s</string>
+    <string name="plan_shared_meta" tools:ignore="PluralsCandidate">%1$s · Saved %2$s · %3$d views</string>
+    <string name="plan_shared_metaNoTitle" tools:ignore="PluralsCandidate">Saved %1$s · %2$d views</string>
+    <string name="plan_edit">Edit a copy</string>
+    <string name="plan_compare">Compare with mine</string>
+    <string name="plan_shared_notFound">This build does not exist.</string>
+    <string name="plan_shared_offline">This build is not on your phone yet. Connect once to open it.</string>
+    <string name="plan_shared_failed">This build did not load.</string>
+    <string name="plan_builds_title">Your builds</string>
+    <string name="plan_builds_rowTitle">%1$s %2$s %3$s</string>
+    <string name="plan_builds_meta">%1$s %2$s · %3$s · %4$s</string>
+    <plurals name="plan_builds_views">
+        <item quantity="one">1 view</item>
+        <item quantity="other">%1$d views</item>
+    </plurals>
+    <string name="plan_builds_newHeader">Plan a new build</string>
+    <string name="plan_builds_newRow" tools:ignore="PluralsCandidate">%1$s, level %2$d</string>
+    <string name="plan_builds_footer">Remove only takes a build off your list. The link keeps working for anyone who has it.</string>
+    <string name="plan_builds_empty">No builds yet. Share one and it shows here.</string>
+    <string name="plan_builds_failed">Your builds did not load.</string>
+    <string name="plan_builds_remove">Remove</string>
+    <string name="plan_removed">Removed.</string>
+    <string name="plan_removedUndo">Undo</string>
+    <string name="plan_removeFailed">That build was not removed. Try again.</string>
 </resources>

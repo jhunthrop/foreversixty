@@ -40,6 +40,8 @@ import gg.foreversixty.app.model.NotificationSettings
 import gg.foreversixty.app.model.NotificationsPatch
 import gg.foreversixty.app.model.PushTokenRegistered
 import gg.foreversixty.app.model.PushTokenRequest
+import gg.foreversixty.app.model.RaceClassCombo
+import gg.foreversixty.app.model.RaceInfo
 import gg.foreversixty.app.model.RaidCancel
 import gg.foreversixty.app.model.RaidNightSummary
 import gg.foreversixty.app.model.RaidPatch
@@ -77,6 +79,10 @@ object ApiEndpoints {
     /** GET /v1/builds/{id}: Fetch a build record */
     fun getBuild(id: String): Endpoint<Build> =
         Endpoint(HttpMethod.Get, "/v1/builds/${id.encodeURLPathPart()}", Build.serializer())
+
+    /** DELETE /v1/builds/{id}: Take a build off the caller's own list (W3-C9) */
+    fun removeBuild(id: String): Endpoint<Unit> =
+        Endpoint(HttpMethod.Delete, "/v1/builds/${id.encodeURLPathPart()}", Unit.serializer())
 
     /** GET /v1/me: The signed-in account, its characters and its guilds */
     fun getMe(): Endpoint<Me> =
@@ -281,6 +287,14 @@ object StaticEndpoints {
     fun getClasses(build: String): StaticResource<List<ClassInfo>> =
         StaticResource("/data/${build.encodeURLPathPart()}/classes.json", ListSerializer(ClassInfo.serializer()))
 
+    /** /data/{build}/races.json: Every race of a build (W3-C10) */
+    fun getRaces(build: String): StaticResource<List<RaceInfo>> =
+        StaticResource("/data/${build.encodeURLPathPart()}/races.json", ListSerializer(RaceInfo.serializer()))
+
+    /** /data/{build}/combos.json: The legal race and class pairs of a build (W3-C10) */
+    fun getCombos(build: String): StaticResource<List<RaceClassCombo>> =
+        StaticResource("/data/${build.encodeURLPathPart()}/combos.json", ListSerializer(RaceClassCombo.serializer()))
+
     /** /data/{build}/bis/{spec}.json: The best-in-slot lists of one spec */
     fun getBis(build: String, spec: String): StaticResource<BisFile> =
         StaticResource("/data/${build.encodeURLPathPart()}/bis/${spec.encodeURLPathPart()}.json", BisFile.serializer())
@@ -303,6 +317,7 @@ object ContractRoutes {
     val api: List<FixtureRoute> = listOf(
         FixtureRoute(HttpMethod.Get, "/v1/builds", "builds.list", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/builds/{id}", "builds.get", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Delete, "/v1/builds/{id}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/me", "me", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Patch, "/v1/me", "me.patch", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Delete, "/v1/me", "me.delete", HttpStatusCode.fromValue(202)),
@@ -356,6 +371,8 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/data/{build}/guides/{spec}.json", "cdn.guides.{spec}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/tiers.json", "cdn.tiers", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/classes.json", "cdn.classes", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/races.json", "cdn.races", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/combos.json", "cdn.combos", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/bis/{spec}.json", "cdn.bis.{spec}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/items/{class}.json", "cdn.items.{class}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/sets.json", "cdn.sets", HttpStatusCode.fromValue(200)),

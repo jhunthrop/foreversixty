@@ -82,13 +82,18 @@ enum TalentGeometry {
     }
 }
 
-/// One tree: the prerequisite lines under the cells (spec F6 §5.2).
+/// One tree: the prerequisite lines under the cells (spec F6 §5.2). F6 draws it read-only (a tap
+/// opens the rank sheet); the planner (F13.1) passes `remove`, which makes each cell editable:
+/// a tap adds a point, a long press removes one, and VoiceOver gets both as named actions.
 struct TalentTreeView: View {
     let cells: [TalentCellModel]
     let connectors: [TalentConnector]
     let build: String
     let selectedID: Int?
+    /// A tap: F6 opens the rank sheet, the planner adds a point.
     let open: (Int) -> Void
+    /// The planner's long press: remove a point. Nil draws the read-only tree.
+    var remove: ((Int) -> Void)?
 
     var body: some View {
         GeometryReader { proxy in
@@ -97,8 +102,11 @@ struct TalentTreeView: View {
                 lines(width: width)
                 ForEach(cells) { cell in
                     let origin = TalentGeometry.origin(TalentCell(tier: cell.talent.tier, column: cell.talent.column), width: width)
-                    TalentCellView(cell: cell, build: build, isSelected: selectedID == cell.id) { open(cell.id) }
-                        .offset(x: origin.x, y: origin.y)
+                    TalentCellView(
+                        cell: cell, build: build, isSelected: selectedID == cell.id,
+                        open: { open(cell.id) }, remove: remove.map { remove in { remove(cell.id) } }
+                    )
+                    .offset(x: origin.x, y: origin.y)
                 }
             }
         }
@@ -144,24 +152,50 @@ struct TalentCellView: View {
     let build: String
     let isSelected: Bool
     let open: () -> Void
+    /// The planner's long press; nil for F6's read-only cell.
+    var remove: (() -> Void)?
 
+    /// The web planner's `LONG_PRESS_MS`.
+    static let longPress: Double = 0.5
+
+    @ViewBuilder
     var body: some View {
-        Button(action: open) {
-            TalentIconTile(talent: cell.talent, state: cell.state, build: build)
-                .overlay { ring }
-                .overlay(alignment: .bottomTrailing) { badge.offset(x: 6, y: 6) }
-                .overlay(alignment: .topLeading) { chip.offset(x: -8, y: -8) }
-                .overlay {
-                    if isSelected {
-                        RoundedRectangle(cornerRadius: FSRadius.control + 9)
-                            .stroke(FSColor.gold, lineWidth: 2)
-                            .padding(-9)
-                    }
-                }
+        if let remove {
+            editable(remove: remove)
+        } else {
+            Button(action: open) { face }
+                .buttonStyle(CellPressStyle())
+                .accessibilityLabel(cell.accessibilityLabel)
+                .accessibilityHint(Copy.talentsA11yHint)
         }
-        .buttonStyle(CellPressStyle())
-        .accessibilityLabel(cell.accessibilityLabel)
-        .accessibilityHint(Copy.talentsA11yHint)
+    }
+
+    private var face: some View {
+        TalentIconTile(talent: cell.talent, state: cell.state, build: build)
+            .overlay { ring }
+            .overlay(alignment: .bottomTrailing) { badge.offset(x: 6, y: 6) }
+            .overlay(alignment: .topLeading) { chip.offset(x: -8, y: -8) }
+            .overlay {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: FSRadius.control + 9)
+                        .stroke(FSColor.gold, lineWidth: 2)
+                        .padding(-9)
+                }
+            }
+    }
+
+    /// Tap adds, long press removes (spec F13.1); a long press never also fires the tap.
+    private func editable(remove: @escaping () -> Void) -> some View {
+        face
+            .contentShape(.rect)
+            .onTapGesture(perform: open)
+            .onLongPressGesture(minimumDuration: Self.longPress, perform: remove)
+            .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(Copy.planA11yCell(name: cell.talent.name, n: cell.rank, max: cell.talent.maxRank))
+            .accessibilityAction(.default, open)
+            .accessibilityAction(named: Copy.planAddPoint, open)
+            .accessibilityAction(named: Copy.planRemovePoint, remove)
     }
 
     private var deltaColor: Color { (cell.delta ?? 0) > 0 ? FSColor.wipe : FSColor.gold }
@@ -235,6 +269,7 @@ enum TalentColors {
         switch state {
         case .maxed, .filled: FSColor.kill
         case .open, .locked: FSColor.line
+        case .available: FSColor.gold
         }
     }
 
@@ -244,6 +279,7 @@ enum TalentColors {
         switch state {
         case .maxed: FSColor.kill
         case .filled: FSColor.text
+        case .available: FSColor.gold
         case .open, .locked: FSColor.muted
         }
     }

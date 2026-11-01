@@ -3525,6 +3525,250 @@ enum Copy {
         format("calendar.event.notesNoSize", time, n)
     }
 
+    /// Plan a build
+    static var planTitle: String { text("plan.title") }
+
+    /// {n} left
+    static func planLeft(n: Int) -> String {
+        format("plan.left", n)
+    }
+
+    /// Level {n}
+    static func planLevel(n: Int) -> String {
+        format("plan.level", n)
+    }
+
+    /// Level
+    static var planLevelSheet: String { text("plan.levelSheet") }
+
+    /// {n} talent points at this level.
+    static func planLevelSheetLine(n: Int) -> String {
+        format("plan.levelSheetLine", n)
+    }
+
+    /// Race
+    static var planRaceSheet: String { text("plan.raceSheet") }
+
+    /// {tree} {n}
+    static func planTab(tree: String, n: Int) -> String {
+        format("plan.tab", tree, n)
+    }
+
+    /// {n}/{max}
+    static func planRank(n: Int, max: Int) -> String {
+        format("plan.rank", n, max)
+    }
+
+    /// Share
+    static var planShare: String { text("plan.share") }
+
+    /// Reset
+    static var planReset: String { text("plan.reset") }
+
+    /// Undo
+    static var planUndo: String { text("plan.undo") }
+
+    /// Add a point
+    static var planAddPoint: String { text("plan.addPoint") }
+
+    /// Remove a point
+    static var planRemovePoint: String { text("plan.removePoint") }
+
+    /// {name}, rank {n} of {max}
+    static func planA11yCell(name: String, n: Int, max: Int) -> String {
+        format("plan.a11yCell", name, n, max)
+    }
+
+    /// {n} points left
+    static func planA11yLeft(n: Int) -> String {
+        format("plan.a11yLeft", n)
+    }
+
+    /// Clear all {n} points?
+    static func planResetConfirm(n: Int) -> String {
+        format("plan.resetConfirm", n)
+    }
+
+    /// Clear
+    static var planResetProceed: String { text("plan.resetProceed") }
+
+    /// Tier {tier} of {tree} needs {n} points in {tree} first
+    static func planRefuseTierLocked(tier: Int, tree: String, n: Int) -> String {
+        format("plan.refuse.tierLocked", tier, tree, n)
+    }
+
+    /// {talent} needs 1 point in {prereq} first
+    static func planRefusePrereqOne(talent: String, prereq: String) -> String {
+        format("plan.refuse.prereqOne", talent, prereq)
+    }
+
+    /// {talent} needs {n} points in {prereq} first
+    static func planRefusePrereq(talent: String, n: Int, prereq: String) -> String {
+        format("plan.refuse.prereq", talent, n, prereq)
+    }
+
+    /// {talent} is already at {max} of {max} points
+    static func planRefuseMaxRank(talent: String, max: Int) -> String {
+        format("plan.refuse.maxRank", talent, max)
+    }
+
+    /// A build spends at most {n} points
+    static func planRefuseCap(n: Int) -> String {
+        format("plan.refuse.cap", n)
+    }
+
+    /// {talent} has no points to remove
+    static func planRefuseNoPoints(talent: String) -> String {
+        format("plan.refuse.noPoints", talent)
+    }
+
+    /// Talent {id} is not in this class
+    static func planRefuseUnknownTalent(id: String) -> String {
+        format("plan.refuse.unknownTalent", id)
+    }
+
+    /// No points left. Take one off first.
+    static var planRefuseNoneLeft: String { text("plan.refuse.noneLeft") }
+
+    /// Share this build
+    static var planShareTitle: String { text("plan.shareTitle") }
+
+    /// Sharing posts the following to a link anyone can open. Once created, that link cannot be edited:
+    static var planShareIntro: String { text("plan.shareIntro") }
+
+    /// Class and race
+    static var planShareFieldClassRace: String { text("plan.shareFieldClassRace") }
+
+    /// Talent order
+    static var planShareFieldTalents: String { text("plan.shareFieldTalents") }
+
+    /// Title: “{title}”
+    static func planShareFieldTitle(title: String) -> String {
+        format("plan.shareFieldTitle", title)
+    }
+
+    /// Title (optional)
+    static var planShareTitleField: String { text("plan.shareTitleField") }
+
+    /// {n}/{max}
+    static func planShareTitleCount(n: Int, max: Int) -> String {
+        format("plan.shareTitleCount", n, max)
+    }
+
+    /// Share anyway
+    static var planShareProceed: String { text("plan.shareProceed") }
+
+    /// Signed in, it also appears in Your builds.
+    static var planShareSignedIn: String { text("plan.shareSignedIn") }
+
+    /// {race} {className} · {trees}
+    static func planShareText(race: String, className: String, trees: String) -> String {
+        format("plan.shareText", race, className, trees)
+    }
+
+    /// You have shared a lot of builds. Try again in an hour.
+    static var planRateLimited: String { text("plan.rateLimited") }
+
+    /// Sharing needs a connection. Your build stays here.
+    static var planOffline: String { text("plan.offline") }
+
+    /// That build did not share. Try again.
+    static var planShareFailed: String { text("plan.shareFailed") }
+
+    /// Plan a build
+    static var planPlanBuild: String { text("plan.planBuild") }
+
+    /// Your builds
+    static var planYourBuilds: String { text("plan.yourBuilds") }
+
+    /// Open this build in the planner
+    static var planOpenInPlanner: String { text("plan.openInPlanner") }
+
+    /// Loaded the {band} build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order.
+    static func planLoadedNote(band: String) -> String {
+        format("plan.loadedNote", band)
+    }
+
+    /// Shared build
+    static var planSharedTitle: String { text("plan.shared.title") }
+
+    /// {race} {className} {totals}
+    static func planSharedHead(race: String, className: String, totals: String) -> String {
+        format("plan.shared.head", race, className, totals)
+    }
+
+    /// {title} · Saved {date} · {n} views
+    static func planSharedMeta(title: String, date: String, n: Int) -> String {
+        format("plan.shared.meta", title, date, n)
+    }
+
+    /// Saved {date} · {n} views
+    static func planSharedMetaNoTitle(date: String, n: Int) -> String {
+        format("plan.shared.metaNoTitle", date, n)
+    }
+
+    /// Edit a copy
+    static var planEdit: String { text("plan.edit") }
+
+    /// Compare with mine
+    static var planCompare: String { text("plan.compare") }
+
+    /// This build does not exist.
+    static var planSharedNotFound: String { text("plan.shared.notFound") }
+
+    /// This build is not on your phone yet. Connect once to open it.
+    static var planSharedOffline: String { text("plan.shared.offline") }
+
+    /// This build did not load.
+    static var planSharedFailed: String { text("plan.shared.failed") }
+
+    /// Your builds
+    static var planBuildsTitle: String { text("plan.builds.title") }
+
+    /// {race} {className} {totals}
+    static func planBuildsRowTitle(race: String, className: String, totals: String) -> String {
+        format("plan.builds.rowTitle", race, className, totals)
+    }
+
+    /// {race} {className} · {totals} · {date}
+    static func planBuildsMeta(race: String, className: String, totals: String, date: String) -> String {
+        format("plan.builds.meta", race, className, totals, date)
+    }
+
+    /// {n} views
+    static func planBuildsViews(n: Int) -> String {
+        format("plan.builds.views", n)
+    }
+
+    /// Plan a new build
+    static var planBuildsNewHeader: String { text("plan.builds.newHeader") }
+
+    /// {className}, level {n}
+    static func planBuildsNewRow(className: String, n: Int) -> String {
+        format("plan.builds.newRow", className, n)
+    }
+
+    /// Remove only takes a build off your list. The link keeps working for anyone who has it.
+    static var planBuildsFooter: String { text("plan.builds.footer") }
+
+    /// No builds yet. Share one and it shows here.
+    static var planBuildsEmpty: String { text("plan.builds.empty") }
+
+    /// Your builds did not load.
+    static var planBuildsFailed: String { text("plan.builds.failed") }
+
+    /// Remove
+    static var planBuildsRemove: String { text("plan.builds.remove") }
+
+    /// Removed.
+    static var planRemoved: String { text("plan.removed") }
+
+    /// Undo
+    static var planRemovedUndo: String { text("plan.removedUndo") }
+
+    /// That build was not removed. Try again.
+    static var planRemoveFailed: String { text("plan.removeFailed") }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }

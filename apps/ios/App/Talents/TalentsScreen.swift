@@ -1,3 +1,4 @@
+import Auth
 import DesignSystem
 import DesignTokens
 import Networking
@@ -14,6 +15,9 @@ struct TalentsScreen: View {
     @State private var sheet: TalentSheetModel?
     @State private var settled = false
     @Environment(\.openURL) private var openURL
+    @Environment(PlannerRouter.self) private var planner: PlannerRouter?
+    @Environment(SessionStore.self) private var session: SessionStore?
+    @State private var showBuilds = false
 
     /// [model] is Home's, already loading for the Talents row, so the push draws at once.
     init(character: HomeCharacter, model: TalentsModel) {
@@ -31,13 +35,22 @@ struct TalentsScreen: View {
             selectedID: sheet?.id,
             openTalent: openTalent,
             retry: { Task { await model.load() } },
-            openPlanner: { openURL(TalentLinks.planner(classSlug: character.className, race: character.race)) }
+            openPlanner: { openURL(TalentLinks.planner(classSlug: character.className, race: character.race)) },
+            planner: plannerEntry
         )
         .navigationTitle(Copy.talentsTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(FSColor.bg, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .sheet(item: $sheet) { TalentRankSheet(model: $0, build: model.build ?? "") }
+        .navigationDestination(isPresented: $showBuilds) {
+            if let planner {
+                YourBuildsScreen(
+                    dependencies: planner.dependencies, router: planner,
+                    newBuild: PlannerNewBuild(className: character.className, race: character.race, level: character.level)
+                )
+            }
+        }
         .task {
             if model.phase.presenter == nil { await model.load() }
             settle()
@@ -55,6 +68,19 @@ struct TalentsScreen: View {
     private func openTalent(_ id: Int) {
         guard case let .loaded(presenter, _) = model.phase else { return }
         sheet = presenter.sheet(shown, talentID: id)
+    }
+
+    /// Lane F13: the planner rows while `planner` is on; Your builds only signed in.
+    private var plannerEntry: TalentPlannerEntry? {
+        guard let planner, planner.isOn, let launch = plannerLaunch else { return nil }
+        let signedIn = session?.phase.isSignedIn ?? false
+        return TalentPlannerEntry(plan: { planner.openEditor(launch) }, yourBuilds: signedIn ? { showBuilds = true } : nil)
+    }
+
+    /// The editor for the character's class, race and level; its draft when there is one.
+    private var plannerLaunch: PlannerLaunch? {
+        guard let classSlug = character.className, !classSlug.isEmpty else { return nil }
+        return PlannerLaunch(classSlug: classSlug, raceSlug: character.race.map(TalentLinks.raceSlug), level: character.level)
     }
 
     private var offlineStamp: String? {

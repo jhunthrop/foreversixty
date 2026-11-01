@@ -50,6 +50,7 @@ import gg.foreversixty.app.guides.ui.WhatChangedState
 import gg.foreversixty.app.guides.ui.screenMargins
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.GuideFile
+import gg.foreversixty.app.planner.PlannerFeature
 import gg.foreversixty.app.raids.logic.ViewRaidHaptics
 import gg.foreversixty.app.sims.ui.ScreenTitle
 import kotlinx.coroutines.launch
@@ -60,14 +61,20 @@ import kotlinx.coroutines.launch
  * tab on a guide's list; [selector] fills the root bar's leading slot, as on Home, Raids and BiS.
  */
 @Composable
-fun GuidesRoute(feature: GuidesFeature, character: AccountCharacter?, openBis: (GuideFile) -> Unit, selector: @Composable () -> Unit = {}) {
+fun GuidesRoute(
+    feature: GuidesFeature,
+    character: AccountCharacter?,
+    openBis: (GuideFile) -> Unit,
+    planner: PlannerFeature? = null,
+    selector: @Composable () -> Unit = {},
+) {
     val store = feature.store
     LaunchedEffect(feature) { if (store.build == null) store.start() }
     val navigator = feature.navigator
     BackHandler(enabled = navigator.top != null) { navigator.pop() }
     when (val top = navigator.top) {
         is GuidesScreen.ClassPage -> ClassPage(top.classSlug, store.index, store.saved, feature.now(), navigator::pop) { navigator.push(GuidesScreen.Guide(it)) }
-        is GuidesScreen.Guide -> GuideRoute(feature, top.spec, openBis)
+        is GuidesScreen.Guide -> GuideRoute(feature, top.spec, openBis, planner)
         is GuidesScreen.Change -> ChangeReader(store.changelog.valueOrNull?.entries?.firstOrNull { it.id == top.id }, navigator::pop)
         null -> GuidesRoot(feature, character, selector)
     }
@@ -143,7 +150,7 @@ fun GuidesRootLayout(
 
 /** F9.2 over the tab: the saved copy at once, then the network; a new build waits behind the strip. */
 @Composable
-private fun GuideRoute(feature: GuidesFeature, spec: String, openBis: (GuideFile) -> Unit) {
+private fun GuideRoute(feature: GuidesFeature, spec: String, openBis: (GuideFile) -> Unit, planner: PlannerFeature?) {
     val store = feature.store
     val context = LocalContext.current
     val view = LocalView.current
@@ -174,6 +181,7 @@ private fun GuideRoute(feature: GuidesFeature, spec: String, openBis: (GuideFile
             },
             selected = haptics::selection,
             openBis = openBis,
+            openPlanner = planner?.let { feature -> { guide -> Guides.plannerCode(guide.talents)?.let { feature.openCode(guide.classSlug, it) } } },
         ),
     )
 }

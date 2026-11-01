@@ -34,7 +34,11 @@ struct GuideBody: View {
             GuideSectionLabel(text: section.title)
             switch section {
             case .overview: GuideOverviewCard(guide: guide)
-            case .talents: GuideTalentsSection(talents: guide.talents, build: content.build)
+            case .talents:
+                GuideTalentsSection(
+                    talents: guide.talents, build: content.build,
+                    openPlanner: actions.openPlanner.map { open in { code in open(guide.classSlug, code) } }
+                )
             case .rotation: GuideRotationSection(rotation: guide.rotation, build: content.build)
             case .stats: GuideStatsCard(guide: guide)
             case .gear: GuideGearRow(guide: guide, open: actions.openGear)
@@ -82,15 +86,29 @@ struct GuideOverviewCard: View {
     }
 }
 
-/// The key talents and the build rows (F9.3). The planner link is lane F13's.
+/// The key talents and the build rows (F9.3), then lane F13's `Open this build in the planner`
+/// row: the raid build's code, else the leveling build's.
 struct GuideTalentsSection: View {
     let talents: GuideTalents
     let build: String
+    var openPlanner: ((String) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             GuideCardRows(items: talents.key.map(IdentifiedTalent.init)) { GuideTalentRow(talent: $0.talent, build: build) }
             GuideCardRows(items: GuideBuildRows.rows(talents)) { GuideBuildRowView(row: $0) }
+            if let openPlanner, let code = (talents.raidBuild ?? talents.levelingBuild)?.code {
+                Button { openPlanner(code) } label: {
+                    HStack(spacing: 6) {
+                        Text(Copy.planOpenInPlanner).multilineTextAlignment(.leading)
+                        Image(systemName: "chevron.right").font(.system(size: 14)).accessibilityHidden(true)
+                    }
+                    .font(ScaledType.bodyStrong)
+                    .foregroundStyle(FSColor.gold)
+                    .frame(minHeight: 48, alignment: .leading)
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
 }

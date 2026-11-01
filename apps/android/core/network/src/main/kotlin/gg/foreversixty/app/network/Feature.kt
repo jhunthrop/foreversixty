@@ -29,4 +29,6 @@ enum class Feature(val key: String, val bundledDefault: Boolean) {
     GuideTiers("guide_tiers", false),
     /** F16: Guild roster with attendance, raid history, calendar sync and the calendar link */
     GuildExtras("guild_extras", false),
+    /** F13: The talent planner: plan a build, share it, open a shared /b/ link, and Your builds */
+    Planner("planner", false),
 }

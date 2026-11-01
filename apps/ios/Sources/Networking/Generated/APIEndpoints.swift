@@ -27,6 +27,33 @@ public extension Endpoint where Response == Build {
     }
 }
 
+public extension Endpoint where Response == Empty {
+    /// DELETE /v1/builds/{id}: Take a build off the caller's own list (W3-C9)
+    static func removeBuild(id: String) -> Endpoint {
+        Endpoint(method: .delete, path: "/v1/builds/\(id)")
+    }
+
+    /// DELETE /v1/devices/{id}: Revoke a device; its token answers 401 at once
+    static func revokeDevice(id: String) -> Endpoint {
+        Endpoint(method: .delete, path: "/v1/devices/\(id)")
+    }
+
+    /// POST /v1/sims/{id}/seen: Mark the caller's finished server run as looked at
+    static func markSimSeen(id: String) -> Endpoint {
+        Endpoint(method: .post, path: "/v1/sims/\(id)/seen")
+    }
+
+    /// DELETE /v1/me/push-tokens/{token}: Drop this device's push token (dark, APP_NOTIFICATIONS_ENABLED; device token only)
+    static func deletePushToken(token: String) -> Endpoint {
+        Endpoint(method: .delete, path: "/v1/me/push-tokens/\(token)")
+    }
+
+    /// DELETE /v1/me/live-activities/{id}: End a live registration (dark, APP_WIDGETS)
+    static func deleteLiveActivity(id: Int64) -> Endpoint {
+        Endpoint(method: .delete, path: "/v1/me/live-activities/\(id)")
+    }
+}
+
 public extension Endpoint where Response == Me {
     /// GET /v1/me: The signed-in account, its characters and its guilds
     static var getMe: Endpoint { Endpoint(method: .get, path: "/v1/me") }
@@ -47,28 +74,6 @@ public extension Endpoint where Response == AccountDeletion {
 public extension Endpoint where Response == [Device] {
     /// GET /v1/devices: The account's devices
     static var listDevices: Endpoint { Endpoint(method: .get, path: "/v1/devices") }
-}
-
-public extension Endpoint where Response == Empty {
-    /// DELETE /v1/devices/{id}: Revoke a device; its token answers 401 at once
-    static func revokeDevice(id: String) -> Endpoint {
-        Endpoint(method: .delete, path: "/v1/devices/\(id)")
-    }
-
-    /// POST /v1/sims/{id}/seen: Mark the caller's finished server run as looked at
-    static func markSimSeen(id: String) -> Endpoint {
-        Endpoint(method: .post, path: "/v1/sims/\(id)/seen")
-    }
-
-    /// DELETE /v1/me/push-tokens/{token}: Drop this device's push token (dark, APP_NOTIFICATIONS_ENABLED; device token only)
-    static func deletePushToken(token: String) -> Endpoint {
-        Endpoint(method: .delete, path: "/v1/me/push-tokens/\(token)")
-    }
-
-    /// DELETE /v1/me/live-activities/{id}: End a live registration (dark, APP_WIDGETS)
-    static func deleteLiveActivity(id: Int64) -> Endpoint {
-        Endpoint(method: .delete, path: "/v1/me/live-activities/\(id)")
-    }
 }
 
 public extension Endpoint where Response == ReportList {
@@ -364,6 +369,20 @@ public extension StaticResource where Response == [ClassInfo] {
     }
 }
 
+public extension StaticResource where Response == [RaceInfo] {
+    /// /data/{build}/races.json: Every race of a build (W3-C10)
+    static func getRaces(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/races.json")
+    }
+}
+
+public extension StaticResource where Response == [RaceClassCombo] {
+    /// /data/{build}/combos.json: The legal race and class pairs of a build (W3-C10)
+    static func getCombos(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/combos.json")
+    }
+}
+
 public extension StaticResource where Response == BisFile {
     /// /data/{build}/bis/{spec}.json: The best-in-slot lists of one spec
     static func getBis(build: String, spec: String) -> StaticResource {
@@ -397,6 +416,7 @@ public enum ContractRoutes {
     public static let api: [FixtureRoute] = [
         FixtureRoute(.get, "/v1/builds", fixture: "builds.list", status: 200),
         FixtureRoute(.get, "/v1/builds/{id}", fixture: "builds.get", status: 200),
+        FixtureRoute(.delete, "/v1/builds/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/me", fixture: "me", status: 200),
         FixtureRoute(.patch, "/v1/me", fixture: "me.patch", status: 200),
         FixtureRoute(.delete, "/v1/me", fixture: "me.delete", status: 202),
@@ -450,6 +470,8 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/data/{build}/guides/{spec}.json", fixture: "cdn.guides.{spec}", status: 200),
         FixtureRoute(.get, "/data/{build}/tiers.json", fixture: "cdn.tiers", status: 200),
         FixtureRoute(.get, "/data/{build}/classes.json", fixture: "cdn.classes", status: 200),
+        FixtureRoute(.get, "/data/{build}/races.json", fixture: "cdn.races", status: 200),
+        FixtureRoute(.get, "/data/{build}/combos.json", fixture: "cdn.combos", status: 200),
         FixtureRoute(.get, "/data/{build}/bis/{spec}.json", fixture: "cdn.bis.{spec}", status: 200),
         FixtureRoute(.get, "/data/{build}/items/{class}.json", fixture: "cdn.items.{class}", status: 200),
         FixtureRoute(.get, "/data/{build}/sets.json", fixture: "cdn.sets", status: 200),

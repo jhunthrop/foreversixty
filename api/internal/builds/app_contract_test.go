@@ -68,3 +68,16 @@ func TestAppContractBuildList(t *testing.T) {
 	assertRecorder(t, "builds.list.empty", serveGet(h, "/v1/builds?mine=1", 2), http.StatusOK, pageOptional)
 	assertRecorder(t, "builds.list.error-invalid", serveGet(h, "/v1/builds", 1), http.StatusBadRequest, contract.Options{})
 }
+
+// W3-C9: DELETE /v1/builds/{id} answers an empty 204, and 404 for a build
+// that is not on the caller's list.
+func TestAppContractBuildDelete(t *testing.T) {
+	store := newFakeStore()
+	store.seed(Build{ID: "znorjmts", ClassID: 1, RaceID: 1, TreeVersion: "test-1"}, 1)
+	h := testRouter(t, store)
+
+	if rec := deleteBuild(h, "znorjmts", 1); rec.Code != http.StatusNoContent || rec.Body.Len() != 0 {
+		t.Fatalf("builds.delete = %d %q, want an empty 204", rec.Code, rec.Body.String())
+	}
+	assertRecorder(t, "builds.delete.error-not-found", deleteBuild(h, "znorjmts", 1), http.StatusNotFound, contract.Options{})
+}

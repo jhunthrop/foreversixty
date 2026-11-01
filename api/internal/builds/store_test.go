@@ -458,3 +458,62 @@ func TestAnOwnedBuildIsNotReassignedByASecondSaver(t *testing.T) {
 		t.Fatalf("the first saver keeps it: mine %d theirs %d", mine.Total, theirs.Total)
 	}
 }
+
+func TestDisownTakesABuildOffItsOwnersListAndKeepsTheRecord(t *testing.T) {
+	s, owner := storeWithUser(t)
+	b := aBuild("Fury")
+	if _, _, err := s.Save(t.Context(), b, &owner); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.Disown(t.Context(), b.ID, owner); err != nil {
+		t.Fatalf("disown: %v", err)
+	}
+	page, err := s.Mine(t.Context(), owner, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if page.Total != 0 {
+		t.Fatalf("a removed build is still listed: %+v", page)
+	}
+	// The link keeps working: the record stays.
+	if got, err := s.Get(t.Context(), b.ID); err != nil || got.ID != b.ID || got.Title != "Fury" {
+		t.Fatalf("the record went with the list row: %+v %v", got, err)
+	}
+	// Saving it again puts it back on the list (the app's Undo).
+	if _, created, err := s.Save(t.Context(), b, &owner); err != nil || created {
+		t.Fatalf("resave: created %v err %v", created, err)
+	}
+	if page, _ = s.Mine(t.Context(), owner, 1); page.Total != 1 {
+		t.Fatalf("a resave did not put the build back: %+v", page)
+	}
+}
+
+func TestDisownIsNotFoundForSomeoneElsesBuildAnUnownedOneOrAnUnknownID(t *testing.T) {
+	s, owner := storeWithUser(t)
+	other := anotherUser(t, s)
+	mine := aBuild("Fury")
+	if _, _, err := s.Save(t.Context(), mine, &owner); err != nil {
+		t.Fatal(err)
+	}
+	unowned := sampleBuild(t, "")
+	unowned.ID = "unowned1"
+	if _, _, err := s.Save(t.Context(), unowned, nil); err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		name string
+		id   string
+		user int64
+	}{
+		{"another player's", mine.ID, other},
+		{"unowned", unowned.ID, owner},
+		{"unknown", "zzzzzzzz", owner},
+	} {
+		if err := s.Disown(t.Context(), tc.id, tc.user); !errors.Is(err, ErrNotFound) {
+			t.Errorf("%s: err = %v, want ErrNotFound", tc.name, err)
+		}
+	}
+	if page, _ := s.Mine(t.Context(), owner, 1); page.Total != 1 {
+		t.Fatalf("a refused disown changed the owner's list: %+v", page)
+	}
+}

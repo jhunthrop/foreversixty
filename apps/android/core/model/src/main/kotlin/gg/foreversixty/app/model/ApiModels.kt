@@ -796,6 +796,7 @@ data class FinishedSim(
     @SerialName("finished_at") val finishedAt: String,
 )
 
+/** One sourced line about what Forever changed (classes.json and races.json). */
 @Serializable
 data class ForeverChange(
     @SerialName("text") val text: String,
@@ -1554,6 +1555,23 @@ data class QuietHours(
     @SerialName("start") val start: String,
     /** HH:MM in time_zone. */
     @SerialName("end") val end: String,
+)
+
+@Serializable
+data class RaceClassCombo(
+    @SerialName("race_id") val raceId: Int,
+    @SerialName("class_id") val classId: Int,
+    @SerialName("new_in_forever") val newInForever: Boolean,
+)
+
+@Serializable
+data class RaceInfo(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("slug") val slug: String,
+    @SerialName("faction") val faction: String,
+    @SerialName("placeholder") val placeholder: Boolean,
+    @SerialName("forever_changes") val foreverChanges: List<ForeverChange> = emptyList(),
 )
 
 @Serializable

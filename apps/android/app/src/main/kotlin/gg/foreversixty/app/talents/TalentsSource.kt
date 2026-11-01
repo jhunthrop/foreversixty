@@ -14,6 +14,7 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.CachedFile
 import gg.foreversixty.app.network.CachedStaticDataClient
 import gg.foreversixty.app.network.StaticEndpoints
+import gg.foreversixty.app.planner.PlannerFeature
 
 /**
  * What the Talents screen reads: the active build, the class's talent file and the spec's BiS
@@ -35,12 +36,16 @@ class LiveTalentsSource(
     override suspend fun bis(build: String, spec: String) = bisSource.bis(build, spec)
 }
 
-/** What the Talents screen needs from the app graph (lane F6): its files and the spec catalogue. */
-class TalentsFeature(val source: TalentsSource, val catalog: SpecCatalog) {
+/**
+ * What the Talents screen needs from the app graph (lane F6): its files and the spec catalogue; and
+ * lane F13's planner, whose `Plan a build` and `Your builds` it links to (null while `planner` is off).
+ */
+class TalentsFeature(val source: TalentsSource, val catalog: SpecCatalog, val planner: PlannerFeature? = null) {
     companion object {
-        fun create(context: Context, engine: HttpClientEngine, appConfig: AppConfigRepository) = TalentsFeature(
+        fun create(context: Context, engine: HttpClientEngine, appConfig: AppConfigRepository, planner: PlannerFeature? = null) = TalentsFeature(
             source = LiveTalentsSource(staticFiles(context, engine), createBisDataSource(context, engine, appConfig)),
             catalog = bundledSpecCatalog(context),
+            planner = planner,
         )
     }
 }

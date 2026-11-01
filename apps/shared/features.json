@@ -13,6 +13,7 @@
     "reports": { "default": false, "lane": "F10", "about": "Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach" },
     "guides": { "default": false, "lane": "F9", "about": "The Guides tab: your guide, every class's guides saved for offline, and What changed" },
     "guide_tiers": { "default": false, "lane": "F9", "about": "The Guides tab's Tier lists segment; on only after the accuracy reviewer verifies every DPS band (spec F9.4)" },
-    "guild_extras": { "default": false, "lane": "F16", "about": "Guild roster with attendance, raid history, calendar sync and the calendar link" }
+    "guild_extras": { "default": false, "lane": "F16", "about": "Guild roster with attendance, raid history, calendar sync and the calendar link" },
+    "planner": { "default": false, "lane": "F13", "about": "The talent planner: plan a build, share it, open a shared /b/ link, and Your builds" }
   }
 }

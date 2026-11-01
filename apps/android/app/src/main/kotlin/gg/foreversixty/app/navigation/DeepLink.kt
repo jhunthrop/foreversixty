@@ -80,6 +80,27 @@ sealed interface DeepLink {
         override fun url(): String = link("/app/guides/${enc(className)}/${enc(spec)}")
     }
 
+    /** The talent planner for that class (a slug). code is an FS1 build code (a guide's build) loaded as one legal order; race is a race slug. With neither it reopens the class's draft. /app/planner/{class} */
+    data class Planner(val className: String, val code: String? = null, val race: String? = null) : DeepLink {
+        override val screen: String get() = "planner"
+
+        override fun url(): String = link("/app/planner/${enc(className)}", "code" to code, "race" to race)
+    }
+
+    /** Your builds. /app/builds */
+    data object Builds : DeepLink {
+        override val screen: String get() = "builds"
+
+        override fun url(): String = link("/app/builds")
+    }
+
+    /** The shared build viewer (read only; Edit a copy opens the planner). A real site page, so a pasted link opens the app when it is installed and the web page when it is not. /b/{id} */
+    data class SharedBuild(val id: String) : DeepLink {
+        override val screen: String get() = "sharedBuild"
+
+        override fun url(): String = link("/b/${enc(id)}")
+    }
+
     /** You, Notifications. /app/you/notifications */
     data object Notifications : DeepLink {
         override val screen: String get() = "notifications"
@@ -119,6 +140,9 @@ sealed interface DeepLink {
                 ?: matchReport(s)
                 ?: matchGuides(s)
                 ?: matchGuide(s)
+                ?: matchPlanner(s, q)
+                ?: matchBuilds(s)
+                ?: matchSharedBuild(s)
                 ?: matchNotifications(s)
                 ?: matchPlan(s)
                 ?: matchSignIn(s, q)
@@ -172,6 +196,21 @@ sealed interface DeepLink {
         private fun matchGuide(s: List<String>): DeepLink? {
             if (s.size != 4 || s[0] != "app" || s[1] != "guides") return null
             return Guide(s[2], s[3])
+        }
+
+        private fun matchPlanner(s: List<String>, q: Map<String, String>): DeepLink? {
+            if (s.size != 3 || s[0] != "app" || s[1] != "planner") return null
+            return Planner(s[2], q["code"], q["race"])
+        }
+
+        private fun matchBuilds(s: List<String>): DeepLink? {
+            if (s.size != 2 || s[0] != "app" || s[1] != "builds") return null
+            return Builds
+        }
+
+        private fun matchSharedBuild(s: List<String>): DeepLink? {
+            if (s.size != 2 || s[0] != "b") return null
+            return SharedBuild(s[1])
         }
 
         private fun matchNotifications(s: List<String>): DeepLink? {

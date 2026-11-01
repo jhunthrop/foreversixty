@@ -256,6 +256,22 @@ func (s *Store) Mine(ctx context.Context, userID int64, page int) (Page, error) 
 	return out, rows.Err()
 }
 
+// Disown takes a build off its owner's list (W3-C9): the row loses its owner
+// and stays, so its link keeps working for anyone who has it. A build that is
+// not this player's (another's, nobody's, or no build at all) is ErrNotFound,
+// which never says whether the id exists. Saving it again claims it back.
+func (s *Store) Disown(ctx context.Context, id string, userID int64) error {
+	tag, err := s.Pool.Exec(ctx,
+		`update builds set user_id = null where id = $1 and user_id = $2`, id, userID)
+	if err != nil {
+		return fmt.Errorf("builds: disown %s: %w", id, err)
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
 // AddViews adds each count to the matching row's view counter in one round
 // trip. Ids that no longer exist are simply not updated.
 func (s *Store) AddViews(ctx context.Context, counts map[string]int64) error {

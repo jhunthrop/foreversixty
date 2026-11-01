@@ -5635,6 +5635,189 @@
         }
       }
     },
+    "plan.a11yCell": {
+      "comment": "Arguments: 1 name (string), 2 n (int), 3 max (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, rank %2$lld of %3$lld"
+          }
+        }
+      }
+    },
+    "plan.a11yLeft": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld points left"
+          }
+        }
+      }
+    },
+    "plan.addPoint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a point"
+          }
+        }
+      }
+    },
+    "plan.builds.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No builds yet. Share one and it shows here."
+          }
+        }
+      }
+    },
+    "plan.builds.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your builds did not load."
+          }
+        }
+      }
+    },
+    "plan.builds.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove only takes a build off your list. The link keeps working for anyone who has it."
+          }
+        }
+      }
+    },
+    "plan.builds.meta": {
+      "comment": "Arguments: 1 race (string), 2 className (string), 3 totals (string), 4 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ · %3$@ · %4$@"
+          }
+        }
+      }
+    },
+    "plan.builds.newHeader": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan a new build"
+          }
+        }
+      }
+    },
+    "plan.builds.newRow": {
+      "comment": "Arguments: 1 className (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, level %2$lld"
+          }
+        }
+      }
+    },
+    "plan.builds.remove": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "plan.builds.rowTitle": {
+      "comment": "Arguments: 1 race (string), 2 className (string), 3 totals (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ %3$@"
+          }
+        }
+      }
+    },
+    "plan.builds.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your builds"
+          }
+        }
+      }
+    },
+    "plan.builds.views": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 view"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld views"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "plan.compare": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare with mine"
+          }
+        }
+      }
+    },
+    "plan.edit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit a copy"
+          }
+        }
+      }
+    },
     "plan.ends": {
       "comment": "Arguments: 1 date (string)",
       "extractionState": "manual",
@@ -5768,6 +5951,53 @@
         }
       }
     },
+    "plan.left": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld left"
+          }
+        }
+      }
+    },
+    "plan.level": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld"
+          }
+        }
+      }
+    },
+    "plan.levelSheet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level"
+          }
+        }
+      }
+    },
+    "plan.levelSheetLine": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld talent points at this level."
+          }
+        }
+      }
+    },
     "plan.line.endsThenSeat": {
       "comment": "Arguments: 1 date (string), 2 guild (string)",
       "extractionState": "manual",
@@ -5827,6 +6057,18 @@
         }
       }
     },
+    "plan.loadedNote": {
+      "comment": "Arguments: 1 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loaded the %1$@ build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order."
+          }
+        }
+      }
+    },
     "plan.manage": {
       "extractionState": "manual",
       "localizations": {
@@ -5845,6 +6087,39 @@
           "stringUnit": {
             "state": "translated",
             "value": "Billing is managed on foreversixty.gg."
+          }
+        }
+      }
+    },
+    "plan.offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sharing needs a connection. Your build stays here."
+          }
+        }
+      }
+    },
+    "plan.openInPlanner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open this build in the planner"
+          }
+        }
+      }
+    },
+    "plan.planBuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan a build"
           }
         }
       }
@@ -5884,6 +6159,179 @@
         }
       }
     },
+    "plan.raceSheet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Race"
+          }
+        }
+      }
+    },
+    "plan.rank": {
+      "comment": "Arguments: 1 n (int), 2 max (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "plan.rateLimited": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have shared a lot of builds. Try again in an hour."
+          }
+        }
+      }
+    },
+    "plan.refuse.cap": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A build spends at most %1$lld points"
+          }
+        }
+      }
+    },
+    "plan.refuse.maxRank": {
+      "comment": "Arguments: 1 talent (string), 2 max (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ is already at %2$lld of %2$lld points"
+          }
+        }
+      }
+    },
+    "plan.refuse.noneLeft": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No points left. Take one off first."
+          }
+        }
+      }
+    },
+    "plan.refuse.noPoints": {
+      "comment": "Arguments: 1 talent (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ has no points to remove"
+          }
+        }
+      }
+    },
+    "plan.refuse.prereq": {
+      "comment": "Arguments: 1 talent (string), 2 n (int), 3 prereq (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ needs %2$lld points in %3$@ first"
+          }
+        }
+      }
+    },
+    "plan.refuse.prereqOne": {
+      "comment": "Arguments: 1 talent (string), 2 prereq (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ needs 1 point in %2$@ first"
+          }
+        }
+      }
+    },
+    "plan.refuse.tierLocked": {
+      "comment": "Arguments: 1 tier (int), 2 tree (string), 3 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tier %1$lld of %2$@ needs %3$lld points in %2$@ first"
+          }
+        }
+      }
+    },
+    "plan.refuse.unknownTalent": {
+      "comment": "Arguments: 1 id (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talent %1$@ is not in this class"
+          }
+        }
+      }
+    },
+    "plan.removed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removed."
+          }
+        }
+      }
+    },
+    "plan.removedUndo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo"
+          }
+        }
+      }
+    },
+    "plan.removeFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That build was not removed. Try again."
+          }
+        }
+      }
+    },
+    "plan.removePoint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove a point"
+          }
+        }
+      }
+    },
     "plan.renews": {
       "comment": "Arguments: 1 date (string)",
       "extractionState": "manual",
@@ -5896,6 +6344,40 @@
         }
       }
     },
+    "plan.reset": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset"
+          }
+        }
+      }
+    },
+    "plan.resetConfirm": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear all %1$lld points?"
+          }
+        }
+      }
+    },
+    "plan.resetProceed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
+          }
+        }
+      }
+    },
     "plan.seatGivenBy": {
       "comment": "Arguments: 1 name (string)",
       "extractionState": "manual",
@@ -5904,6 +6386,266 @@
           "stringUnit": {
             "state": "translated",
             "value": "Given by %1$@. It lasts while the guild's plan does; nothing is billed to you."
+          }
+        }
+      }
+    },
+    "plan.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "plan.shared.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This build did not load."
+          }
+        }
+      }
+    },
+    "plan.shared.head": {
+      "comment": "Arguments: 1 race (string), 2 className (string), 3 totals (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ %3$@"
+          }
+        }
+      }
+    },
+    "plan.shared.meta": {
+      "comment": "Arguments: 1 title (string), 2 date (string), 3 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Saved %2$@ · %3$lld views"
+          }
+        }
+      }
+    },
+    "plan.shared.metaNoTitle": {
+      "comment": "Arguments: 1 date (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved %1$@ · %2$lld views"
+          }
+        }
+      }
+    },
+    "plan.shared.notFound": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This build does not exist."
+          }
+        }
+      }
+    },
+    "plan.shared.offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This build is not on your phone yet. Connect once to open it."
+          }
+        }
+      }
+    },
+    "plan.shared.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shared build"
+          }
+        }
+      }
+    },
+    "plan.shareFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That build did not share. Try again."
+          }
+        }
+      }
+    },
+    "plan.shareFieldClassRace": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class and race"
+          }
+        }
+      }
+    },
+    "plan.shareFieldTalents": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talent order"
+          }
+        }
+      }
+    },
+    "plan.shareFieldTitle": {
+      "comment": "Arguments: 1 title (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title: “%1$@”"
+          }
+        }
+      }
+    },
+    "plan.shareIntro": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sharing posts the following to a link anyone can open. Once created, that link cannot be edited:"
+          }
+        }
+      }
+    },
+    "plan.shareProceed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share anyway"
+          }
+        }
+      }
+    },
+    "plan.shareSignedIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signed in, it also appears in Your builds."
+          }
+        }
+      }
+    },
+    "plan.shareText": {
+      "comment": "Arguments: 1 race (string), 2 className (string), 3 trees (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "plan.shareTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share this build"
+          }
+        }
+      }
+    },
+    "plan.shareTitleCount": {
+      "comment": "Arguments: 1 n (int), 2 max (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "plan.shareTitleField": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title (optional)"
+          }
+        }
+      }
+    },
+    "plan.tab": {
+      "comment": "Arguments: 1 tree (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$lld"
+          }
+        }
+      }
+    },
+    "plan.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan a build"
+          }
+        }
+      }
+    },
+    "plan.undo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo"
+          }
+        }
+      }
+    },
+    "plan.yourBuilds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your builds"
           }
         }
       }

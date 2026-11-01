@@ -244,7 +244,7 @@ fun HomeCharacterScreen(
         ReportsRoute(reportsFeature, reports.viewer, reports.signIn, onBack = { reportsFeature.navigator.showsList = false })
     } else if (showTalents && talents != null) {
         BackHandler { showTalents = false }
-        TalentsRoute(character, talentsModel ?: TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog)) {
+        TalentsRoute(character, talentsModel ?: TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog), talents.planner) {
             showTalents = false
         }
     } else if (showGear && home != null) {

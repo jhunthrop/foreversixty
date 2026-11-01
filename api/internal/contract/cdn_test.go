@@ -80,6 +80,20 @@ func TestCDNClassesFixtureMatchesTheGenerator(t *testing.T) {
 	}
 }
 
+// W3-C10: the planner's Race sheet reads races.json and combos.json.
+func TestCDNRacesAndCombosFixturesMatchTheGenerator(t *testing.T) {
+	dir := activeBuildDir(t)
+	for _, f := range []struct{ fixture, file string }{
+		{"cdn.races", "races.json"},
+		{"cdn.combos", "combos.json"},
+	} {
+		got := readJSON(t, filepath.Join(dir, f.file))
+		if diffs := Compare(Load(t, f.fixture), got, Options{}); len(diffs) > 0 {
+			t.Fatalf("%s: %v", f.file, diffs)
+		}
+	}
+}
+
 func TestCDNTalentsFixtureMatchesTheGenerator(t *testing.T) {
 	got := readJSON(t, filepath.Join(activeBuildDir(t), "talents", "warrior.json"))
 	if diffs := Compare(Load(t, "cdn.talents.warrior"), got, Options{}); len(diffs) > 0 {

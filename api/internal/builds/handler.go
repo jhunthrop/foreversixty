@@ -28,6 +28,7 @@ type Storer interface {
 	Save(ctx context.Context, b Build, userID *int64) (Build, bool, error)
 	Get(ctx context.Context, id string) (Build, error)
 	Mine(ctx context.Context, userID int64, page int) (Page, error)
+	Disown(ctx context.Context, id string, userID int64) error
 }
 
 // Service serves the JSON build endpoints.
@@ -38,14 +39,15 @@ type Service struct {
 	Log           *slog.Logger
 }
 
-// Mount registers POST /v1/builds, GET /v1/builds/{id}, and
-// GET /v1/builds?mine=1. Saves carry their own hourly per-IP limiter on
+// Mount registers POST /v1/builds, GET /v1/builds/{id}, GET /v1/builds?mine=1
+// and DELETE /v1/builds/{id}. Saves carry their own hourly per-IP limiter on
 // top of the router-wide per-minute one.
 func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	limited := httpx.RateLimitPer(savesPerHour, time.Hour, trustedProxyHops)
 	mux.Handle("POST /v1/builds", limited(http.HandlerFunc(s.save)))
 	mux.HandleFunc("GET /v1/builds/{id}", s.fetch)
 	mux.HandleFunc("GET /v1/builds", auth.RequireSession(s.mine))
+	mux.HandleFunc("DELETE /v1/builds/{id}", auth.RequireSession(s.remove))
 }
 
 func (s *Service) save(w http.ResponseWriter, r *http.Request) {
@@ -120,6 +122,22 @@ func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
 	}
 	httpx.SetPrivateListCache(w)
 	httpx.WriteOK(w, r, http.StatusOK, out)
+}
+
+// remove takes a build off the caller's own list (W3-C9). The record and its
+// link stay; a build that is not on the caller's list is 404, never 403.
+func (s *Service) remove(w http.ResponseWriter, r *http.Request) {
+	err := s.Store.Disown(r.Context(), r.PathValue("id"), auth.ActorFrom(r.Context()).UserID)
+	switch {
+	case errors.Is(err, ErrNotFound):
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such build on your list", nil)
+	case err != nil:
+		s.logger().Error("builds", "id", httpx.RequestIDFrom(r.Context()), "op", "remove", "err", err)
+		httpx.WriteError(w, r, http.StatusInternalServerError, "internal",
+			"could not remove that build just now", nil)
+	default:
+		w.WriteHeader(http.StatusNoContent)
+	}
 }
 
 func (s *Service) logger() *slog.Logger {

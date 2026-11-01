@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -80,6 +81,7 @@ import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.home.HomeCharacter
 import gg.foreversixty.app.home.HomeLinks
+import gg.foreversixty.app.planner.PlannerFeature
 import java.time.Instant
 import java.util.Locale
 import kotlinx.coroutines.launch
@@ -92,7 +94,7 @@ private const val LARGE_TEXT_SCALE = 1.5f
  * and tree, and the rank sheet. [model] is Home's, already loading for the Talents row. [back] returns to Home.
  */
 @Composable
-fun TalentsRoute(character: HomeCharacter, model: TalentsModel, back: () -> Unit) {
+fun TalentsRoute(character: HomeCharacter, model: TalentsModel, planner: PlannerFeature? = null, back: () -> Unit) {
     val phase by model.phase.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -128,6 +130,13 @@ fun TalentsRoute(character: HomeCharacter, model: TalentsModel, back: () -> Unit
             context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         },
         back = back,
+        planner = planner?.let { feature ->
+            val slug = character.className.orEmpty().lowercase(Locale.ROOT)
+            TalentsPlannerLinks(
+                plan = { feature.plan(slug, character.race?.let(TalentLinks::raceSlug), character.level) },
+                builds = if (feature.signedIn()) feature::openBuilds else null,
+            )
+        },
     )
     val sheet = (phase as? TalentsPhase.Loaded)?.presenter?.let { presenter -> sheetId?.let { presenter.sheet(shown, it, res) } }
     sheet?.let { TalentRankSheet(it, model.build) { sheetId = null } }
@@ -160,6 +169,7 @@ fun TalentsPage(
     retry: () -> Unit = {},
     openPlanner: () -> Unit = {},
     back: () -> Unit = {},
+    planner: TalentsPlannerLinks? = null,
 ) {
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
         TopAppBar(
@@ -171,9 +181,15 @@ fun TalentsPage(
             // The app scaffold already pads for the status bar.
             windowInsets = WindowInsets(0, 0, 0, 0),
         )
-        TalentsContent(phase, build, offlineStamp, shown, tree, onShow, onTree, selectedId, openTalent, retry, openPlanner)
+        TalentsContent(phase, build, offlineStamp, shown, tree, onShow, onTree, selectedId, openTalent, retry, openPlanner, planner)
     }
 }
+
+/**
+ * Lane F13: the in-app planner's links under the tree, replacing the web link while `planner` is on.
+ * [builds] is null signed out (Your builds is a signed-in list).
+ */
+class TalentsPlannerLinks(val plan: () -> Unit, val builds: (() -> Unit)?)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -189,6 +205,7 @@ private fun TalentsContent(
     openTalent: (Int) -> Unit,
     retry: () -> Unit,
     openPlanner: () -> Unit,
+    planner: TalentsPlannerLinks?,
 ) {
     val res = LocalResources.current
     val large = LocalDensity.current.fontScale >= LARGE_TEXT_SCALE
@@ -231,7 +248,7 @@ private fun TalentsContent(
                 }
             }
         }
-        item { TalentsFooter(openPlanner) }
+        item { TalentsFooter(openPlanner, planner) }
     }
 }
 
@@ -435,9 +452,14 @@ private fun DiffDot() {
 }
 
 @Composable
-private fun TalentsFooter(openPlanner: () -> Unit) {
+private fun TalentsFooter(openPlanner: () -> Unit, planner: TalentsPlannerLinks?) {
     Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(stringResource(R.string.talents_footer), style = FsType.meta, color = FsColor.muted)
+        if (planner != null) {
+            PlannerLinkRow(stringResource(R.string.plan_planBuild), planner.plan)
+            planner.builds?.let { PlannerLinkRow(stringResource(R.string.plan_yourBuilds), it) }
+            return@Column
+        }
         Row(
             Modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = openPlanner),
             verticalAlignment = Alignment.CenterVertically,
@@ -446,6 +468,19 @@ private fun TalentsFooter(openPlanner: () -> Unit) {
             Text(stringResource(R.string.talents_planLink), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f, fill = false))
             Icon(painterResource(R.drawable.ic_open_external), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(16.dp))
         }
+    }
+}
+
+/** One in-app planner link: gold text and a chevron, 48 tall. */
+@Composable
+private fun PlannerLinkRow(label: String, onClick: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(role = Role.Button, onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Text(label, style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(20.dp))
     }
 }
 

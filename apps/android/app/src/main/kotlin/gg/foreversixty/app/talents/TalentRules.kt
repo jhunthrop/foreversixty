@@ -116,8 +116,11 @@ object TalentRules {
     fun openingTree(points: List<Int>): Int = points.indices.maxWithOrNull(compareBy({ points[it] }, { -it })) ?: 0
 }
 
-/** A cell's state: the planner's `CellState` with `available` read as open (spec F6 §5.2). */
-enum class TalentCellState { Locked, Open, Filled, Maxed }
+/**
+ * A cell's state. F6 reads the planner's `available` as [Open] (a line-coloured border, spec F6
+ * §5.2); the planner itself (F13) draws it as [Available], the gold border.
+ */
+enum class TalentCellState { Locked, Open, Available, Filled, Maxed }
 
 /** A talent's place on the grid, 0-based; also a grid's size in tiers and columns. */
 data class TalentCell(val tier: Int, val column: Int)
