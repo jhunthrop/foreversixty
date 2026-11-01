@@ -50,7 +50,6 @@ import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.HeadingFamily
@@ -228,7 +227,7 @@ private fun Figure(model: TierRowModel, inline: Boolean) {
 @Composable
 private fun TierChip(letter: String, tone: TierTone) {
     val color = toneColor(tone) ?: FsColor.muted
-    val shape = RoundedCornerShape(FsRadius.pill)
+    val shape = RoundedCornerShape(percent = PILL_PERCENT)
     // 28 dp, growing with the letter at large text so it is never cut.
     Box(Modifier.defaultMinSize(CHIP, CHIP).border(1.5.dp, color, shape).padding(horizontal = 4.dp), contentAlignment = Alignment.Center) {
         Text(letter, style = FsType.bodyStrong.copy(fontFamily = HeadingFamily), color = color)
@@ -288,4 +287,5 @@ private val RANK_WIDTH = 20.dp
 private val FIGURE_WIDTH = 72.dp
 private val GOLD_EDGE = 3.dp
 private const val BAR_WIDTH = 0.85f
+private const val PILL_PERCENT = 50
 private const val SKELETON_ROWS = 6

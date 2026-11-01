@@ -130,7 +130,7 @@ private fun RotationGroupView(group: RotationGroup, build: String, copy: GuidesC
 
 @Composable
 private fun SpellRow(spell: GuideSpell, build: String, copy: GuidesCopy) {
-    IconRow(spell.icon, build, inset = false) {
+    IconRow(spell.icon, build, inset = false, tile = Guides.hasTile(spell)) {
         NameAndFigure(spell.name, copy.rank(spell.rank))
         Text(spell.clause, style = FsType.meta, color = FsColor.muted)
     }
@@ -173,15 +173,18 @@ private fun Races(races: List<GuideRaceRow>) {
     }
 }
 
-/** A row led by a 40 dp game icon (a missing icon leaves the bordered tile, never a letter). */
+/**
+ * A row led by a 40 dp game icon: a missing icon leaves the bordered tile, never a letter. Without
+ * [tile] (a line that names no spell) the words start where the tile would.
+ */
 @Composable
-private fun IconRow(icon: String?, build: String, inset: Boolean = true, words: @Composable () -> Unit) {
+private fun IconRow(icon: String?, build: String, inset: Boolean = true, tile: Boolean = true, words: @Composable () -> Unit) {
     Row(
         Modifier.fillMaxWidth().heightIn(min = ROW_MIN).then(if (inset) Modifier.cardInside() else Modifier.padding(end = GuideSpace.margin, top = GuideSpace.inCard, bottom = GuideSpace.inCard)),
         horizontalArrangement = Arrangement.spacedBy(GuideSpace.rowGap),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        SpecIcon(icon, build, ICON)
+        if (tile) SpecIcon(icon, build, ICON)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) { words() }
     }
 }

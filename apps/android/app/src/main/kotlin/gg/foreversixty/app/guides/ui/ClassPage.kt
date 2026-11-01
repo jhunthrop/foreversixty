@@ -41,8 +41,12 @@ fun ClassPage(classSlug: String, index: Loadable<GuideIndex>, saved: Map<String,
         ReportsBar(cls?.className.orEmpty(), stringResource(R.string.guides_title), back, titleColor = classColor(classSlug))
         loaded?.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now))) }
         if (cls != null) {
-            Column(Modifier.screenMargins().padding(top = GuideSpace.margin)) {
+            Column(Modifier.screenMargins().padding(top = GuideSpace.margin), verticalArrangement = Arrangement.spacedBy(GuideSpace.rowGap)) {
                 QuietRows(cls.specs) { spec -> SpecRow(spec, loaded.value.build, spec.spec in saved) { open(spec.spec) } }
+                // Offline with a guide not on the phone: say so under the card (board F9.6).
+                if (loaded.offlineSince != null && cls.specs.any { it.spec !in saved }) {
+                    Text(stringResource(R.string.guides_notCached), style = FsType.meta, color = FsColor.muted)
+                }
             }
         }
     }

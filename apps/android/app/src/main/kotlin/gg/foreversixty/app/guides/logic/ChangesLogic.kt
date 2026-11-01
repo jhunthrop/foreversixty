@@ -5,7 +5,10 @@ import gg.foreversixty.app.model.KeyDate
 import java.time.LocalDate
 
 /** A key date still ahead or in progress, with its gold `running` line while it runs. */
-data class KeyDateRow(val date: KeyDate, val running: String?)
+data class KeyDateRow(val date: KeyDate, val running: String?) {
+    /** The muted note, shown only while the date is not running: the running line replaces it, never both. */
+    val note: String? get() = if (running != null) null else date.note
+}
 
 /** F9.5's Key dates (the dates contract, app-v1.md): past dates omitted, sorted by `iso`. */
 object KeyDates {

@@ -119,6 +119,9 @@ object Guides {
 
     private fun totals(build: GuideBuild) = build.totals.joinToString(TOTALS_SEPARATOR)
 
+    /** A rotation line draws a tile when it names a spell (its icon, or the neutral tile); a general line has none. */
+    fun hasTile(spell: GuideSpell): Boolean = spell.spellId != null || spell.icon != null
+
     /** The new-data strip shows when a different build is found while a build's data is on screen. */
     fun isNewData(shown: String?, latest: String?): Boolean = shown != null && latest != null && shown != latest
 

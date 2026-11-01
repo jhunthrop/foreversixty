@@ -54,6 +54,7 @@ import gg.foreversixty.app.designsystem.pillSurface
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.model.GuideSourceLink
 import gg.foreversixty.app.raids.ui.SectionLabel
+import gg.foreversixty.app.reports.ui.isLargeText
 import gg.foreversixty.app.reports.ui.scaledSize
 
 /** Spacing of the guide screens (spec W3 §8): 22 before a section label, 14 inside cards, 16 margins. */
@@ -69,9 +70,19 @@ internal object GuideSpace {
 internal val TARGET = 48.dp
 internal val PILL = 36.dp
 
-/** Equal segments (spec F9.1), every one as tall as the tallest when a label wraps at large text. */
+/**
+ * Equal segments (spec F9.1). At the largest text a label would break mid-phrase in a third of the
+ * width, so the segments become one-line pills that wrap whole (spec W3 §9: never cut).
+ */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun EqualSegments(labels: List<String>, selected: Int, onSelect: (Int) -> Unit) {
+    if (isLargeText()) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            labels.forEachIndexed { index, label -> PillChip(label, selected = index == selected, onClick = { if (index != selected) onSelect(index) }) }
+        }
+        return
+    }
     SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
         labels.forEachIndexed { index, label ->
             SegmentedButton(

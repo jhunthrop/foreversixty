@@ -110,7 +110,7 @@ private fun DateRow(row: KeyDateRow) {
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(date.value, style = FsType.bodyStrong, color = FsColor.strong)
-            date.note?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+            row.note?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
             row.running?.let { Text(it, style = FsType.meta, color = FsColor.gold) }
         }
     }

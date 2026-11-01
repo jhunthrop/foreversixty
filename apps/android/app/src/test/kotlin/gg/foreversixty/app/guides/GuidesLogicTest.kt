@@ -121,6 +121,17 @@ class GuidesLogicTest {
     }
 
     @Test
+    fun `a spell with no icon keeps the neutral tile and a general line has none`() {
+        val rows = Guides.rotation(GuidesTestData.elemental().rotation).flatMap { it.rows }.map { it.spell }
+        val fireNova = rows.first { it.name == "Fire Nova" }
+        assertNull(fireNova.icon)
+        assertTrue(Guides.hasTile(fireNova))
+        val general = rows.first { it.spellId == null && it.icon == null }
+        assertFalse(Guides.hasTile(general))
+        assertTrue(Guides.hasTile(rows.first { it.name == "Lava Burst" }))
+    }
+
+    @Test
     fun `talents read their ranks with the plural rule`() {
         val key = GuidesTestData.elemental().talents.key
         assertEquals("5 ranks", copy().ranks(key.first { it.name == "Elemental Fury" }.maxRank))
@@ -199,7 +210,9 @@ class GuidesLogicTest {
         val rows = KeyDates.upcoming(GuidesTestData.dates(), LocalDate.of(2026, 11, 1))
         assertEquals(listOf("Oct 27", "Dec 9"), rows.map { it.date.key })
         assertEquals("Name reservation open through Nov 3", rows[0].running)
+        assertNull(rows[0].note)
         assertNull(rows[1].running)
+        assertEquals(rows[1].date.note, rows[1].note)
         val shuffled = KeyDates.upcoming(GuidesTestData.dates().reversed(), LocalDate.of(2026, 9, 1))
         assertEquals(shuffled.map { it.date.iso }, shuffled.map { it.date.iso }.sorted())
     }
