@@ -181,7 +181,7 @@ class SearchScreenshotTest {
     @Test fun unknown() = item("f12-unknown-and", page(999_999, owner(BisRange.RAID)))
 
     @Test fun loading() = capture("f12-4-loading-and") {
-        ItemPage(ItemPagePhase.Loading(ItemPageCopy.look(cape())), ItemUsesPhase.Loading, build, "Search", ItemPageActions())
+        ItemPage(ItemPagePhase.Loading(ItemPageCopy.look(cape()), ItemPageCopy.headMeta(cape(), resources()), reservesPick = true), ItemUsesPhase.Loading, build, "Search", ItemPageActions())
     }
 
     private companion object {

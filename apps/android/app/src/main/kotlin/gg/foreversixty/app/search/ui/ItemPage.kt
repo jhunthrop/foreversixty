@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -112,7 +113,7 @@ fun ItemPage(
                     stringResource(R.string.itemPage_unknown), style = FsType.lead, color = FsColor.strong,
                     modifier = Modifier.padding(SearchLayout.margin),
                 )
-                is ItemPagePhase.Loading -> LoadingBody(phase.look, build)
+                is ItemPagePhase.Loading -> LoadingBody(phase, build)
                 is ItemPagePhase.Failed -> FailedBody(phase.look, build, actions.onRetry)
                 is ItemPagePhase.Loaded -> LoadedBody(phase.model, uses, build, actions, list, startAt)
             }
@@ -236,19 +237,32 @@ private fun Head(look: ItemLook, meta: String?, build: String) {
     }
 }
 
-/** The tile at its real size with the index's name; the rest skeleton. */
+/**
+ * The tile at its real size with the index's name and meta, the chip strip, then each region at
+ * its loaded height (spec §8, no layout shift): the pick card's slot when the character has a
+ * list, the tooltip block, two source rows and six spec rows.
+ */
 @Composable
-private fun LoadingBody(look: ItemLook, build: String) {
-    Column {
-        Head(look, null, build)
-        Column(Modifier.padding(horizontal = SearchLayout.margin), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Bar(200.dp, 14.dp)
-            Box(Modifier.fillMaxWidth().height(220.dp).quietCard())
-            Bar(160.dp, 12.dp)
-            Box(Modifier.fillMaxWidth().height(128.dp).quietCard())
+private fun LoadingBody(phase: ItemPagePhase.Loading, build: String) {
+    Column(Modifier.verticalScroll(rememberScrollState())) {
+        Head(phase.look, phase.meta, build)
+        StripChips(ItemSection.Item) {}
+        if (phase.reservesPick) {
+            Box(Modifier.padding(horizontal = SearchLayout.margin).padding(bottom = 16.dp).fillMaxWidth().height(PICK_CARD_HEIGHT).primaryCard())
         }
+        Box(Modifier.padding(horizontal = SearchLayout.margin).fillMaxWidth().height(TOOLTIP_HEIGHT).quietCard())
+        SectionLabel(stringResource(R.string.itemPage_sources))
+        SkeletonRows(SOURCE_ROWS)
+        SectionLabel(stringResource(R.string.itemPage_bisFor))
+        SkeletonRows(ItemPageCopy.VISIBLE_SPECS)
+        Spacer(Modifier.height(32.dp))
     }
 }
+
+/** The loaded heights the skeleton reserves (the cape at the default text size). */
+private val PICK_CARD_HEIGHT = 72.dp
+private val TOOLTIP_HEIGHT = 284.dp
+private const val SOURCE_ROWS = 2
 
 @Composable
 private fun FailedBody(look: ItemLook, build: String, onRetry: () -> Unit) {
@@ -277,7 +291,7 @@ private fun Sources(uses: ItemUsesPhase, onRetry: () -> Unit) {
     Column {
         SectionLabel(stringResource(R.string.itemPage_sources))
         when (uses) {
-            ItemUsesPhase.Loading -> SkeletonRows()
+            ItemUsesPhase.Loading -> SkeletonRows(SOURCE_ROWS)
             ItemUsesPhase.Failed -> RegionError(stringResource(R.string.itemPage_usesFailed), onRetry)
             is ItemUsesPhase.Loaded -> if (uses.sources.isEmpty()) {
                 Foot(stringResource(R.string.itemPage_noSources))
@@ -347,7 +361,7 @@ private fun Specs(
     Column {
         SectionLabel(stringResource(R.string.itemPage_bisFor))
         when (uses) {
-            ItemUsesPhase.Loading -> SkeletonRows()
+            ItemUsesPhase.Loading -> SkeletonRows(ItemPageCopy.VISIBLE_SPECS)
             // Both regions read the same file; each says so in its own words, never a bare heading.
             ItemUsesPhase.Failed -> RegionError(stringResource(R.string.itemPage_bisForFailed), onRetry)
             is ItemUsesPhase.Loaded -> if (uses.specs.isEmpty()) {
@@ -399,8 +413,8 @@ private fun MoreSpecs(count: Int, onExpand: () -> Unit) {
 }
 
 @Composable
-private fun SkeletonRows() {
-    RowCard(2) {
+private fun SkeletonRows(count: Int) {
+    RowCard(count) {
         Row(Modifier.padding(horizontal = SearchLayout.margin, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             Bar(SearchLayout.itemIcon, SearchLayout.itemIcon)
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) { Bar(180.dp, 15.dp); Bar(120.dp, 12.dp) }

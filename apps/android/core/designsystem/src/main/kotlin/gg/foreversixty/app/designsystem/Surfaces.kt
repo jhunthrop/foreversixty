@@ -57,13 +57,21 @@ fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Bool
 
 /** The offline strip (§5.0): 36 dp, `#11151f`, the wifi-off glyph, then [text]; announced politely. */
 @Composable
-fun OfflineStrip(text: String) {
+fun OfflineStrip(text: String, shape: Shape? = null) {
+    // Full width it is a band with a bottom rule; given a [shape] (inside a list) it is a card,
+    // its line all the way round so every corner rounds.
+    val ground = if (shape == null) {
+        Modifier
+            .background(GameColors.offlineGround)
+            .drawBehind { drawLine(FsColor.line, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx()) }
+    } else {
+        Modifier.background(GameColors.offlineGround, shape).border(1.dp, FsColor.line, shape)
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 36.dp)
-            .background(GameColors.offlineGround)
-            .drawBehind { drawLine(FsColor.line, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx()) }
+            .then(ground)
             .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2)
             .semantics { liveRegion = LiveRegionMode.Polite },
         verticalAlignment = Alignment.CenterVertically,

@@ -35,8 +35,11 @@ class LiveItemPageSource(
 }
 
 sealed interface ItemPagePhase {
-    /** The tile at its real size, the name from the index; the rest skeleton (spec F12.4). */
-    data class Loading(val look: ItemLook) : ItemPagePhase
+    /**
+     * The tile at its real size, the name and meta from the index; the rest skeleton at the loaded
+     * heights (spec F12.4, §8). [reservesPick]: the character has a list, so the card's slot is kept.
+     */
+    data class Loading(val look: ItemLook, val meta: String? = null, val reservesPick: Boolean = false) : ItemPagePhase
     data class Loaded(val model: ItemPageModel) : ItemPagePhase
 
     /** An old link: `This item is not in our data.` */
@@ -84,7 +87,7 @@ class ItemPageStore(
             return
         }
         val look = ItemPageCopy.look(item)
-        phase = ItemPagePhase.Loading(look)
+        phase = ItemPagePhase.Loading(look, ItemPageCopy.headMeta(item, res), owner.selection != null)
         val request = request(item, prepared.build)
         val files = source.tooltip(request)
         if (files == null) {

@@ -78,12 +78,18 @@ class ItemPageTest {
         assertEquals("Requires Level 47", tooltip.requiresLevel)
     }
 
-    @Test fun `a set piece names its set, and without equip_stats every stat prints white`() = runTest {
+    @Test fun `a set piece names its set, and mp5 is only the client's Equip sentence`() = runTest {
         val tooltip = load(pauldrons, raid).loaded().tooltip
         assertEquals("The Defiler's Fortitude", tooltip.setName)
         assertTrue(tooltip.setBonuses.isNotEmpty())
-        assertTrue(tooltip.equipLines.isEmpty())
-        assertTrue(tooltip.stats.any { it.startsWith("+4 ") })
+        assertEquals(listOf("Equip: Restores 4 mana per 5 sec."), tooltip.equipLines)
+        assertTrue(tooltip.stats.none { it.contains("Mana") })
+    }
+
+    @Test fun `the sash's spell power is the Equip sentence and its resistance reads as the client's`() = runTest {
+        val tooltip = load(sash, raid).loaded().tooltip
+        assertEquals(listOf("+7 Stamina", "+10 Intellect", "+10 Shadow Resistance"), tooltip.stats)
+        assertEquals(listOf("Equip: Increases damage and healing done by magical spells and effects by up to 14."), tooltip.equipLines)
     }
 
     @Test fun `one spell stating equal spell power and healing is one sentence`() {
