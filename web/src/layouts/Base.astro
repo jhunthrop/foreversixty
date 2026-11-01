@@ -47,6 +47,7 @@ import { HISTORY_MAX_RESERVE_PX, HISTORY_RESERVE_KEY } from '../lib/character/hi
 import { ACCOUNT_RESERVE_KEY, ACCOUNT_RESERVE_MAX_PX } from '../lib/account/layout';
 import { API_BASE_URL } from '../lib/planner/config';
 import { SESSION_START_POINTER_KEY } from '../lib/character-selector/restored';
+import { HEADER_GEARED, HEADER_GEAR_HINT_KEY } from '../lib/character-header/gear-hint';
 import {
   LIVE_STORAGE_KEY as SERVER_RUNS_LIVE_KEY,
   LIVE_TTL_MS as SERVER_RUNS_LIVE_TTL_MS,
@@ -107,6 +108,8 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       data-account-reserve-key={ACCOUNT_RESERVE_KEY}
       data-account-max-reserve={ACCOUNT_RESERVE_MAX_PX}
       data-session-start-pointer-key={SESSION_START_POINTER_KEY}
+      data-header-gear-key={HEADER_GEAR_HINT_KEY}
+      data-header-geared={HEADER_GEARED}
     >
       // The hints the stylesheet keys off, before first paint. The readable half of the session
       // cookie (fs_csrf) means someone is signed in: anything marked data-session-hide (the
@@ -138,6 +141,20 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
         }
       } catch {
         /* storage unavailable or malformed: no pointer, no crest */
+      }
+      // The character header's skeleton shape (HEADER_GEAR_HINT_KEY's module): data-ch-gear
+      // when the last header drawn was for a character with gear on file, so the loading box
+      // reserves the sync line and the figures only when the header that replaces it has them.
+      try {
+        const el = document.currentScript;
+        const root = document.documentElement;
+        if (
+          root.dataset.session === '1' &&
+          localStorage.getItem(el.dataset.headerGearKey) === el.dataset.headerGeared
+        )
+          root.dataset.chGear = '1';
+      } catch {
+        /* storage unavailable: the skeleton takes the gearless box */
       }
       // The character this tab session started with (lib/character-selector/restored.ts),
       // recorded once per tab and before any island can write a pointer, as `source:ref` (its

@@ -101,11 +101,14 @@ jobs:
           path: web/dist
           retention-days: 1
   # BUILD MODE (owner, 2026-10-04): until the page pass is done, a push to main deploys on the
-  # `build` job alone (check, lint, format, unit tests, fixture build). build-real, e2e and
-  # lhci still run on schedule / workflow_dispatch so the suites keep being exercised, but
-  # they no longer gate deploy. To re-enable: restore `needs: [build, build-real, e2e, lhci]`
-  # on deploy and the three `if:` lines below to `github.event_name != 'schedule'` (e2e, lhci)
-  # and none (build-real).
+  # `build` job alone (check, lint, format, unit tests, fixture build). build-real and lhci
+  # still run on schedule / workflow_dispatch only, and none of the three gate deploy. e2e runs
+  # on every push as well (2026-10-31): skipped on push it sat red on dispatch and schedule from
+  # 10-29 to 10-31 while every push read green. Four shards of ~12 min of tests (~17 min a
+  # shard with setup, in parallel beside deploy) on a public repository's free runners, so a
+  # push's commit status is red the moment the suite is. To re-enable gating: restore
+  # `needs: [build, build-real, e2e, lhci]` on deploy, lhci's `if:` to
+  # `github.event_name != 'schedule'` and drop build-real's `if:`.
   build-real:
     needs: build
     if: github.event_name != 'push'
@@ -132,7 +135,6 @@ jobs:
       - run: npm run build
   e2e:
     needs: build
-    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     defaults: { run: { working-directory: web } }

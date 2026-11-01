@@ -9,7 +9,8 @@ import type { FiguresAnswer } from './types';
 /** Eleven characters wide, like the longest name the box is sized for; never rendered as text. */
 const GHOST_TEXT = 'Sizingtext1';
 
-export const PLACEHOLDER_CHARACTER: MeCharacter = {
+/** The same character with no gear on file: no sync line, and the page's no-gear answer. */
+export const PLACEHOLDER_GEARLESS_CHARACTER: MeCharacter = {
   key: 'placeholder',
   region: 'us',
   ruleset: 'normal',
@@ -18,6 +19,10 @@ export const PLACEHOLDER_CHARACTER: MeCharacter = {
   spec: 'Fury',
   level: 60,
   faction: 'alliance',
+};
+
+export const PLACEHOLDER_CHARACTER: MeCharacter = {
+  ...PLACEHOLDER_GEARLESS_CHARACTER,
   build: { source: 'addon', captured_at: '2026-01-01T00:00:00Z', gear: { head: 1 } },
 };
 

@@ -397,6 +397,11 @@ test.describe('signed in, desktop', () => {
     await signInWith(page, [FURY]);
     await storePointer(page, armoryPointer(FURY));
     await stubPublishedBis(page, [WARRIOR_SPEC]);
+    // The skeleton takes the shape of the header this browser last drew (lib/character-header/
+    // gear-hint.ts), so the first visit draws FURY's geared header once and the second, with
+    // /v1/me held, is the one measured.
+    await page.goto('/bis');
+    await expect(page.getByTestId('character-header-name')).toHaveText(FURY.name);
     let release: () => void = () => undefined;
     const held = new Promise<void>((resolve) => {
       release = resolve;
@@ -405,7 +410,7 @@ test.describe('signed in, desktop', () => {
       await held;
       await route.fallback();
     });
-    await page.goto('/bis');
+    await page.reload();
     await expect(page.getByTestId('character-header-loading')).toBeVisible();
     const before = await page.getByTestId('bis-class-warrior').boundingBox();
     release();
