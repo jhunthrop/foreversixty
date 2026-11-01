@@ -293,6 +293,18 @@ PHYSICAL_FORBIDDEN = {
     "shadow_power",
 }
 CASTER_FORBIDDEN = {"strength", "expertise", "armor_penetration", "feral_attack_power"}
+#: Forever's exceptions to the physical rule (round 5): its talents turn
+#: Intellect into attack power and spell power (Mental Dexterity and Mental
+#: Quickness for Enhancement, Careful Aim for hunters, Champion of the Light
+#: for Retribution), and the engine measures spell power on Retribution's
+#: seals and the hunters' rotations. Each spec is allowed exactly these.
+FOREVER_PHYSICAL_CASTER_STATS = {
+    "shaman-enhancement": {"intellect", "spell_power"},
+    "paladin-retribution": {"intellect", "spell_power"},
+    "hunter-marksmanship": {"intellect", "spell_power"},
+    "hunter-beast-mastery": {"intellect", "spell_power"},
+    "hunter-survival": {"intellect"},
+}
 
 
 def test_every_spec_has_a_nonempty_weight_stats():
@@ -321,7 +333,8 @@ def test_no_physical_spec_carries_a_caster_stat_and_no_caster_spec_carries_a_mel
             if record.reference_stat in PHYSICAL_REFERENCE_STATS
             else CASTER_FORBIDDEN
         )
-        carried = forbidden & set(record.weight_stats)
+        allowed = FOREVER_PHYSICAL_CASTER_STATS.get(record.spec, set())
+        carried = (forbidden - allowed) & set(record.weight_stats)
         assert not carried, f"{record.spec} carries {carried}"
 
 
