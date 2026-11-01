@@ -252,3 +252,39 @@ func TestAHealersItemHealingIsWeighedByTheHealingPowerRow(t *testing.T) {
 		t.Errorf("intellect weighs %v, want 0.4", got)
 	}
 }
+
+// The tuned profile must not set an order on its own (owner ruling, round 5): the metrics
+// carry the final set's effective HPS and error at each tuning bound as well, measured
+// under the profile scaled to that bound.
+func TestAttachHealerFieldsMeasuresTheSetAtBothTuningBounds(t *testing.T) {
+	profile := testHealProfile(t)
+	var scales []float64
+	backend := &fakeHealing{}
+	backend.byGear = func(api.SimRequest) simscore.HealingResult {
+		scale := backend.profile.Tuning.Scale
+		scales = append(scales, scale)
+		return healingResult(400*scale, 500, 300)
+	}
+	engine := healEngine{backend: backend, profile: profile}
+	var report bandReport
+	spec := specInfo{Spec: "priest-holy", ClassSlug: "priest", Role: "healer"}
+	if err := attachHealerFields(&report, engine, spec, "human", "priest", 60, "", map[string]slotPick{}); err != nil {
+		t.Fatal(err)
+	}
+	metrics := report.Metrics.(*healingMetrics)
+	if len(metrics.AtBounds) != len(profile.Tuning.Bounds) {
+		t.Fatalf("hps_at_bounds = %+v, want one row per bound %v", metrics.AtBounds, profile.Tuning.Bounds)
+	}
+	for i, bound := range profile.Tuning.Bounds {
+		row := metrics.AtBounds[i]
+		if row.Scale != bound || math.Abs(row.HPS-400*bound) > 1e-9 || row.HPSError == 0 {
+			t.Errorf("bound %v: %+v, want hps %v with its error", bound, row, 400*bound)
+		}
+	}
+	if metrics.HPS != 400*profile.Tuning.Scale {
+		t.Errorf("hps = %v, want the tuned profile's %v", metrics.HPS, 400*profile.Tuning.Scale)
+	}
+	if engine.profile.Tank.HitDamage != profile.Tank.HitDamage {
+		t.Error("measuring at the bounds changed the engine's profile")
+	}
+}
