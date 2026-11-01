@@ -1,3 +1,4 @@
+import Auth
 import DesignSystem
 import DesignTokens
 import Models
@@ -12,6 +13,8 @@ struct SharedBuildView: View {
     var timeZone: TimeZone = .current
     var editCopy: (PlannerBuildSummary) -> Void = { _ in }
     var retry: () -> Void = {}
+    /// Lane F15: `Compare with mine`, only when you have a talent export of the build's class.
+    var compare: (() -> Void)?
 
     var body: some View {
         ScrollView {
@@ -71,6 +74,10 @@ struct SharedBuildView: View {
             Button(Copy.planEdit) { editCopy(summary) }
                 .buttonStyle(BrandButtonStyle(.primary, height: 48))
                 .disabled(summary.classSlug.isEmpty)
+            if let compare, content.file != nil {
+                Button(Copy.planCmpTitle, action: compare)
+                    .buttonStyle(BrandButtonStyle(.secondary, height: 48))
+            }
         }
         .padding(.horizontal, 16)
         if let file = content.file {
@@ -117,6 +124,8 @@ struct SharedBuildScreen: View {
     @State private var model: SharedBuildModel
     @State private var tree = 0
     @State private var settled = false
+    @State private var comparing = false
+    @Environment(SessionStore.self) private var session: SessionStore?
     let router: PlannerRouter
 
     init(id: String, dependencies: PlannerDependencies, router: PlannerRouter) {
@@ -125,7 +134,13 @@ struct SharedBuildScreen: View {
     }
 
     var body: some View {
-        SharedBuildView(phase: model.phase, tree: $tree, editCopy: router.editCopy, retry: { Task { await model.load() } })
+        SharedBuildView(
+            phase: model.phase, tree: $tree, editCopy: router.editCopy, retry: { Task { await model.load() } },
+            compare: compareTarget == nil ? nil : { comparing = true }
+        )
+            .navigationDestination(isPresented: $comparing) {
+                if let target = compareTarget { SharedBuildCompareScreen(presenter: target.presenter, characterName: target.name) }
+            }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(FSColor.bg, for: .navigationBar)
@@ -141,6 +156,17 @@ struct SharedBuildScreen: View {
                 if case .loading = model.phase { await model.load() }
                 settle()
             }
+    }
+
+    /// The compare when one of your characters of the build's class has an export.
+    private var compareTarget: (presenter: TalentsPresenter, name: String)? {
+        guard case let .loaded(content) = model.phase, let file = content.file,
+              let character = SharedBuildCompare.yourCharacter(
+                  classSlug: content.summary.classSlug, current: session?.currentCharacter,
+                  characters: session?.phase.me?.characters ?? []
+              )
+        else { return nil }
+        return (SharedBuildCompare.presenter(content: content, file: file, character: character), character.name)
     }
 
     private func settle() {

@@ -25,7 +25,9 @@ struct SpotlightCatalogTests {
     @Test("your characters with spec, class, level and guild")
     func own() throws {
         let row = SpotlightCatalog.row(try character("Lightningbolltz", key: SystemStory.key))
-        #expect(row == SpotlightRow(id: SystemStory.key, title: "Lightningbolltz", subtitle: "Elemental Shaman · 60 · OLYMPUS XXVII"))
+        #expect(row == SpotlightRow(
+            id: SystemStory.key, title: "Lightningbolltz", subtitle: "Elemental Shaman · 60 · OLYMPUS XXVII", classSlug: "shaman"
+        ))
         let loner = SpotlightCatalog.row(try character("Lightningbolltz", key: SystemStory.key, guild: false))
         #expect(loner.subtitle == "Elemental Shaman · 60")
     }
@@ -49,11 +51,11 @@ struct SpotlightCatalogTests {
         #expect(catalog.raids.first == SpotlightRow(id: "2/10", title: "Onyxia's Lair · Wed 8 pm", subtitle: "Raid · Wed 9 Dec"))
     }
 
-    @Test("a saved guide")
+    @Test("a saved guide, dated by the guide index as the Guides root dates it")
     func guide() throws {
         let spec = try #require(SpecCatalog.bundled().spec("shaman-elemental"))
-        let row = SpotlightCatalog.guideRow(.init(spec: spec, savedAt: RaidTime.date("2026-09-24T15:00:00Z")), clock: answers.clock)
-        #expect(row == SpotlightRow(id: "shaman-elemental", title: "Elemental Shaman guide", subtitle: "Guide · Updated 24 Sep 2026"))
+        let row = SpotlightCatalog.guideRow(.init(spec: spec, updated: "2026-11-01"))
+        #expect(row == SpotlightRow(id: "shaman-elemental", title: "Elemental Shaman guide", subtitle: "Guide · Updated 1 Nov 2026"))
     }
 
     @Test("the entities open what they name")

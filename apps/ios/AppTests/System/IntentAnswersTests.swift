@@ -27,9 +27,9 @@ struct IntentAnswersTests {
     @Test("next raid, answered and unanswered")
     func nextRaid() throws {
         let raid = try #require(SystemStory.widget().nextRaid)
-        #expect(answers.nextRaid(raid) == "Onyxia's Lair, Thursday at 8 pm. You are In. 24 of 40 signed up.")
+        #expect(answers.nextRaid(raid) == "Onyxia's Lair, Thursday at 8 pm. You are In. 25 of 40 signed up.")
         let open = try #require(WidgetFixtures.widget("widget.get", patch: [
-            "my": .object(["state": .null, "spec": .string("Elemental"), "role": .string("dps")]),
+            "my": .object(["state": .null, "spec": .string("Elemental"), "role": .string("dps")]), "signed_up": .number(24),
         ]).nextRaid)
         #expect(answers.nextRaid(open) == "Onyxia's Lair, Thursday at 8 pm. You have not signed up. 24 of 40 signed up.")
     }
@@ -42,8 +42,7 @@ struct IntentAnswersTests {
 
     @Test("who is coming, with and without anyone late")
     func whoIsComing() throws {
-        let raid = try SystemStory.raid(counts: ["in": 23, "late": 1, "tanks": 3, "healers": 6, "dps": 14])
-        #expect(answers.whoIsComing(raid) == "24 of 40 signed up: 3 tanks, 6 healers, 14 DPS, 1 late.")
+        #expect(answers.whoIsComing(try SystemStory.raid()) == "25 of 40 signed up: 3 tanks, 6 healers, 15 DPS, 1 late.")
         let onTime = try SystemStory.raid(counts: ["in": 20, "late": 0, "tanks": 1, "healers": 5, "dps": 14])
         #expect(answers.whoIsComing(onTime) == "20 of 40 signed up: 1 tank, 5 healers, 14 DPS.")
     }

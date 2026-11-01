@@ -119,6 +119,8 @@ struct CharacterScreen: View {
     @Environment(\.openURL) private var openURL
     @Environment(\.dismiss) private var dismiss
     @Environment(\.searchNavigator) private var searchNavigator
+    /// Lane F13's planner, for `Open in planner` (lane F15); its switch decides the row.
+    @Environment(PlannerRouter.self) private var planner: PlannerRouter?
 
     var body: some View {
         ScrollView {
@@ -199,7 +201,8 @@ struct CharacterScreen: View {
             searchAgain: {
                 // Lane F15: Search with the name in the field, when Search is on; else back.
                 if let searchNavigator { searchNavigator.open(query: route.ref.name) } else { dismiss() }
-            }
+            },
+            openPlanner: planner.flatMap { router in router.isOn ? { link in _ = router.open(link) } : nil }
         )
     }
 }

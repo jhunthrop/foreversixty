@@ -153,7 +153,9 @@ struct SpotlightIndexer: Sendable {
         try? await index.deleteAppEntities(ofType: CharacterEntity.self)
         try? await index.deleteAppEntities(ofType: RaidEntity.self)
         try? await index.deleteAppEntities(ofType: GuideEntity.self)
-        try? await index.indexAppEntities(catalog.characters.map { CharacterEntity(id: $0.id, name: $0.title, subtitle: $0.subtitle) })
+        try? await index.indexAppEntities(catalog.characters.map {
+            CharacterEntity(id: $0.id, name: $0.title, subtitle: $0.subtitle, crest: $0.classSlug)
+        })
         try? await index.indexAppEntities(catalog.raids.map { RaidEntity(id: $0.id, title: $0.title, subtitle: $0.subtitle) })
         try? await index.indexAppEntities(catalog.guides.map { GuideEntity(id: $0.id, title: $0.title, subtitle: $0.subtitle) })
     }

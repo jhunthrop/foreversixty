@@ -16,6 +16,9 @@ struct OfflineDataView: View {
     let remove: () -> Void
     @State private var confirmingRemove = false
 
+    /// A write that needs a connection reads as disabled offline (spec §5.7 Writes).
+    private static let disabledOpacity = 0.4
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: FSSpacing.space4) {
@@ -42,7 +45,7 @@ struct OfflineDataView: View {
         VStack(spacing: 0) {
             ForEach(Array(report.rows.enumerated()), id: \.element.id) { index, row in
                 if index > 0 { Divider().overlay(FSColor.lineSoft) }
-                AccountRow(icon: row.category.systemImage, title: row.category.title, subtitle: words.meta(row, now: now))
+                OfflineDataRow(row: row, meta: words.meta(row, now: now))
             }
         }
         .quietCard()
@@ -75,6 +78,7 @@ struct OfflineDataView: View {
             }
             .buttonStyle(BrandButtonStyle(.primary, height: 48))
             .disabled(!online || update == .updating)
+            .opacity(online ? 1 : Self.disabledOpacity)
             if let status { Text(status).font(ScaledType.meta).foregroundStyle(FSColor.muted) }
             Button { confirmingRemove = true } label: {
                 Text(Copy.offlineDataRemove).foregroundStyle(FSColor.wipe)
@@ -92,6 +96,34 @@ struct OfflineDataView: View {
         case .failed: return Copy.offlineUpdateFailed
         default: return nil
         }
+    }
+}
+
+/// One saved kind: a 40 pt tile beside the name and its line at every size (board F15.4).
+private struct OfflineDataRow: View {
+    let row: OfflineRow
+    let meta: String
+
+    private static let tile: CGFloat = 40
+
+    var body: some View {
+        HStack(alignment: .top, spacing: FSSpacing.space3) {
+            Image(systemName: row.category.systemImage)
+                .font(.system(size: 16))
+                .foregroundStyle(FSColor.gold)
+                .frame(width: Self.tile, height: Self.tile)
+                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(row.category.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                Text(meta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, FSSpacing.space4)
+        .padding(.vertical, FSSpacing.space3)
+        .accessibilityElement(children: .combine)
     }
 }
 

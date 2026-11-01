@@ -31,13 +31,14 @@ struct SpotlightRefresher: Sendable {
         await indexer.index(catalog)
     }
 
-    /// The guides whose file is on the phone for the active build.
+    /// The guides whose file is on the phone for the active build, dated by the guide index.
     private func savedGuides() async -> [SpotlightCatalog.SavedGuide] {
         let build = await guides.activeBuild()
         let saved = guides.savedBytes(build: build, specs: specs.specs.map(\.spec))
+        let index = guides.cachedIndex(build: build)?.value.classes.flatMap(\.specs) ?? []
         return specs.specs.compactMap { spec in
-            guard saved.isSaved(spec.spec), let file = guides.cachedGuide(build: build, spec: spec.spec) else { return nil }
-            return SpotlightCatalog.SavedGuide(spec: spec, savedAt: file.savedAt)
+            guard saved.isSaved(spec.spec), let entry = index.first(where: { $0.spec == spec.spec }) else { return nil }
+            return SpotlightCatalog.SavedGuide(spec: spec, updated: entry.updated)
         }
     }
 }

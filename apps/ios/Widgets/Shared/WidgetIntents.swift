@@ -1,5 +1,6 @@
 import AppIntents
 import Foundation
+import UIKit
 import WidgetKit
 
 /// The widgets' one setting (spec §5.6 Configuration): which character, `Current character` by default.
@@ -10,6 +11,8 @@ struct CharacterEntity: AppEntity {
     let name: String
     /// Lane F15: the Spotlight line, `Elemental Shaman · 60 · Olympus XXVII`.
     var subtitle: String?
+    /// Lane F15: the class slug whose ringed crest is the entry's thumbnail (one crest language).
+    var crest: String?
 
     // App Intents metadata takes literal keys; each is a key of the copy catalog (Localizable.xcstrings).
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.characterSetting")
@@ -17,7 +20,8 @@ struct CharacterEntity: AppEntity {
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: LocalizedStringResource(stringLiteral: name),
-            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) }
+            subtitle: subtitle.map { LocalizedStringResource(stringLiteral: $0) },
+            image: BrandImages.crest(crest)?.pngData().map { DisplayRepresentation.Image(data: $0) }
         )
     }
 

@@ -116,11 +116,8 @@ struct IntentQueriesTests {
     @Test("next raid and who is coming")
     func raidAnswers() async throws {
         let calls = FakeIntentCalls()
-        calls.raidAnswer = { () throws(APIError) in
-            do { return try SystemStory.raid(counts: ["in": 23, "late": 1, "tanks": 3, "healers": 6, "dps": 14]) } catch { throw .missingFixture("\(error)") }
-        }
-        #expect(await queries(calls).nextRaid(character: nil) == "Onyxia's Lair, Thursday at 8 pm. You are In. 24 of 40 signed up.")
-        #expect(await queries(calls).whoIsComing(character: nil) == "24 of 40 signed up: 3 tanks, 6 healers, 14 DPS, 1 late.")
+        #expect(await queries(calls).nextRaid(character: nil) == "Onyxia's Lair, Thursday at 8 pm. You are In. 25 of 40 signed up.")
+        #expect(await queries(calls).whoIsComing(character: nil) == "25 of 40 signed up: 3 tanks, 6 healers, 15 DPS, 1 late.")
     }
 
     @Test("next upgrade: the snippet, or a sentence")

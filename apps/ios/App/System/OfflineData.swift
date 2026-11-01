@@ -119,7 +119,8 @@ struct OfflineWords: Sendable {
     /// `Shaman, Warrior · 2.4 MB · Updated today`; the search index and icons have no what.
     func meta(_ row: OfflineRow, now: Date) -> String {
         let size = Self.size(row.bytes)
-        guard let updated = row.updated else { return size }
+        // The board shows Item icons with their size only.
+        guard row.category != .icons, let updated = row.updated else { return size }
         let when = day(updated, now: now)
         if row.classes.isEmpty { return Copy.offlineDataRowMetaNoWhat(size: size, when: when) }
         return Copy.offlineDataRowMeta(what: row.classes.joined(separator: ", "), size: size, when: when)

@@ -1,5 +1,6 @@
 import DesignSystem
 import Models
+import Routing
 import SwiftUI
 
 /// What the character page hands back to its screen.
@@ -11,6 +12,8 @@ struct CharacterActions {
     var openReport: ((FightLine) -> Void)?
     var openHistory: () -> Void = {}
     var searchAgain: () -> Void = {}
+    /// Lane F15 (F11.4 follow-up): `Open in planner` under Builds seen; nil while `planner` is off.
+    var openPlanner: ((DeepLink) -> Void)?
 }
 
 /// F11.4 to F11.7 as drawn from the store: stateless, so snapshots drive every state. The bar
@@ -73,6 +76,9 @@ struct CharacterView: View {
             section(Copy.charGear) { gear(profile) }
             let builds = CharacterPage.builds(profile, clock: clock)
             if !builds.isEmpty { section(Copy.charBuilds) { buildRows(builds) } }
+            if let openPlanner = actions.openPlanner, let link = CharacterPage.plannerLink(profile) {
+                linkRow(Copy.charOpenPlanner) { openPlanner(link) }
+            }
             if account.history, CharacterPage.isYours(profile.character, keys: Set(account.characterKeys)) {
                 linkRow(Copy.charParseHistory, action: actions.openHistory)
             }

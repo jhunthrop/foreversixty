@@ -50,7 +50,7 @@ final class PlannerEditorModel {
         phase = .ready
     }
 
-    private var haptics: any PlannerHaptics { dependencies.haptics }
+    private var haptics: any Haptics { dependencies.haptics }
 
     // MARK: Loading
 
@@ -139,7 +139,7 @@ final class PlannerEditorModel {
                 return
             }
             share = .shared(url)
-            haptics.play(.confirm)
+            haptics.play(.success)
         } catch {
             handleShareError(error)
         }
@@ -150,7 +150,7 @@ final class PlannerEditorModel {
             // 400: the field's sentence goes under the editor (spec F13.4).
             state?.show(refusal: field)
             share = .idle
-            haptics.play(.reject)
+            haptics.play(.error)
             return
         }
         share = .failed(Self.shareMessage(error))

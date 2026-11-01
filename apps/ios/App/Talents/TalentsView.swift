@@ -18,6 +18,9 @@ struct TalentsView: View {
     /// Lane F13: with `planner` on, `Plan a build` opens the app's planner (not the site), and
     /// signed in, `Your builds` is pushed.
     var planner: TalentPlannerEntry?
+    /// Lane F15: Compare with mine's footer (`plan.cmp.on`), in place of the Talents footer and
+    /// its planner links.
+    var compareFooter: String?
 
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -95,7 +98,8 @@ struct TalentsView: View {
                     tabs: presenter.tabs(shown),
                     shown: $shown,
                     tree: $tree,
-                    isLarge: isLarge
+                    isLarge: isLarge,
+                    words: presenter.words
                 )
             }
         }
@@ -104,9 +108,11 @@ struct TalentsView: View {
 
     private var footer: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(Copy.talentsFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            Text(compareFooter ?? Copy.talentsFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 .fixedSize(horizontal: false, vertical: true)
-            if let planner {
+            if compareFooter != nil {
+                EmptyView()
+            } else if let planner {
                 footerLink(Copy.planPlanBuild, systemImage: "chevron.right", action: planner.plan)
                 if let yourBuilds = planner.yourBuilds {
                     footerLink(Copy.planYourBuilds, systemImage: "chevron.right", action: yourBuilds)
@@ -202,6 +208,8 @@ struct TalentCompareBar: View {
     @Binding var shown: TalentBuildKind
     @Binding var tree: Int
     let isLarge: Bool
+    /// Lane F15: the segments name the guide build, or a shared build.
+    var words: TalentCompareWords?
 
     var body: some View {
         VStack(spacing: 8) {
@@ -225,8 +233,8 @@ struct TalentCompareBar: View {
     private var segments: some View {
         let layout = isLarge ? AnyLayout(VStackLayout(spacing: 0)) : AnyLayout(HStackLayout(spacing: 0))
         return layout {
-            segment(.guide, Copy.talentsGuide)
-            segment(.yours, Copy.talentsYours)
+            segment(.guide, words?.side ?? Copy.talentsGuide)
+            segment(.yours, words?.yours ?? Copy.talentsYours)
         }
         .background(FSColor.raised)
         .clipShape(.rect(cornerRadius: FSRadius.control))

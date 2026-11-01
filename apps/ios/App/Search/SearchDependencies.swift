@@ -40,6 +40,8 @@ struct SearchDependencies {
     let context: @MainActor () -> SearchContext
     /// Lane F15: Rankings and character pages open in the app (F11) rather than the website.
     var nativeRankings = false
+    /// Lane F15: guides open in the app (F9) when `guides` is on.
+    var nativeGuides = false
     /// Lane F15: the CDN's active build now, for the item page's new-data strip; nil never shows it.
     var latestBuild: @Sendable () async -> String? = { nil }
     /// Lane F15: the characters you watch (`GET /v1/me/watching`), for the Watching group.
@@ -81,6 +83,7 @@ struct SearchDependencies {
                 )
             },
             nativeRankings: environment.isAvailable(.rankings),
+            nativeGuides: environment.isAvailable(.guides),
             latestBuild: { [store = environment.staticData] in await store.latestBuild() },
             watching: watchingLoader(environment)
         )

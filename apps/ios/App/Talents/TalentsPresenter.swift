@@ -24,6 +24,9 @@ enum TalentGuideBuild: Equatable, Sendable {
     case noSpec
     /// The BiS file failed to load.
     case failed
+    /// Lane F15 (spec F13.5 Compare with mine): a shared build's ranks per tree in the guide's
+    /// place, read on the active trees.
+    case shared(treeRanks: [[Int]])
 }
 
 /// The tag kinds the status line uses (spec F6 §5.1 item 3).
@@ -47,10 +50,13 @@ struct TalentTabModel: Equatable, Sendable, Identifiable {
     let name: String
     let points: Int
     let differing: Int
+    /// What the compare is against; nil reads as the guide build.
+    var words: TalentCompareWords?
 
     var id: Int { index }
     var accessibilityValue: String {
-        differing > 0 ? Copy.talentsA11yTabDiffers(n: points, k: differing) : Copy.talentsPoints(n: points)
+        guard differing > 0 else { return Copy.talentsPoints(n: points) }
+        return words?.tabValue(points: points, differing: differing) ?? Copy.talentsA11yTabDiffers(n: points, k: differing)
     }
 }
 
@@ -62,13 +68,15 @@ struct TalentCellModel: Equatable, Sendable, Identifiable {
     /// Your rank minus the guide's, on Your build when they differ; nil otherwise.
     let delta: Int?
     let guideRank: Int?
+    /// What the compare is against; nil reads as the guide build.
+    var words: TalentCompareWords?
 
     var id: Int { talent.id }
     var badge: String { "\(rank)/\(talent.maxRank)" }
     var chip: String? { delta.map { $0 > 0 ? "+\($0)" : "\u{2212}\(-$0)" } }
     var accessibilityLabel: String {
         guard let guideRank, delta != nil else { return Copy.talentsA11yCell(name: talent.name, n: rank, max: talent.maxRank) }
-        return Copy.talentsA11yCellGuide(name: talent.name, n: rank, max: talent.maxRank, g: guideRank)
+        return (words ?? .guide(spec: "", band: "")).cellLabel(name: talent.name, rank: rank, max: talent.maxRank, other: guideRank)
     }
 }
 
@@ -107,10 +115,10 @@ struct TalentsPresenter: Equatable, Sendable {
         self.export = export
         self.level = level
         self.specName = specName
-        if case let .build(talents, _) = guide {
-            guideRanks = TalentRules.rankByID(file, treeRanks: TalentRules.ranks(ofBand: talents))
-        } else {
-            guideRanks = nil
+        switch guide {
+        case let .build(talents, _): guideRanks = TalentRules.rankByID(file, treeRanks: TalentRules.ranks(ofBand: talents))
+        case let .shared(treeRanks): guideRanks = TalentRules.rankByID(file, treeRanks: treeRanks)
+        default: guideRanks = nil
         }
         if case let .ranks(ranks) = export {
             yourRanks = TalentRules.rankByID(file, treeRanks: ranks)
@@ -129,6 +137,15 @@ struct TalentsPresenter: Equatable, Sendable {
     var bandLabel: String? {
         guard case let .build(_, band) = guide else { return nil }
         return TalentGuide.label(band: band)
+    }
+
+    /// The compare's words: against the band's guide build, or a shared build.
+    var words: TalentCompareWords? {
+        switch guide {
+        case let .build(_, band): .guide(spec: specName, band: TalentGuide.label(band: band))
+        case .shared: .sharedBuild
+        default: nil
+        }
     }
 
     var yourTotal: Int? { yourRanks.map { $0.values.reduce(0, +) } }
@@ -160,32 +177,26 @@ struct TalentsPresenter: Equatable, Sendable {
             return TalentStatusLine(tag: Copy.talentsYours, tagKind: .muted, sentence: Copy.talentsPickSpec)
         case (.ranks, .none):
             return TalentStatusLine(tag: Copy.talentsYours, tagKind: .muted, sentence: Copy.talentsNoList)
-        case (.ranks, .build):
+        case (.ranks, .build), (.ranks, .shared):
             return compareStatus
         case (.stale, _):
-            return TalentStatusLine(tag: guideRanks == nil ? nil : Copy.talentsGuide, tagKind: .muted, sentence: Copy.talentsStaleExport)
+            return TalentStatusLine(tag: guideRanks == nil ? nil : words?.side, tagKind: .muted, sentence: Copy.talentsStaleExport)
         case (.none, _):
-            return TalentStatusLine(tag: guideRanks == nil ? nil : Copy.talentsGuide, tagKind: .muted, sentence: Copy.homeNextTalentsNone)
+            return TalentStatusLine(tag: guideRanks == nil ? nil : words?.side, tagKind: .muted, sentence: Copy.homeNextTalentsNone)
         }
     }
 
     private var compareStatus: TalentStatusLine {
-        guard let diff, let bandLabel else {
+        guard let diff, let words else {
             return TalentStatusLine(tag: Copy.talentsYours, tagKind: .muted, sentence: Copy.talentsNoList)
         }
         switch diff.status {
         case .matches:
-            let sentence = diff.extraCount > 0
-                ? Copy.talentsMatchBeyond(spec: specName, band: bandLabel)
-                : Copy.talentsMatch(spec: specName, band: bandLabel)
-            return TalentStatusLine(tag: Copy.talentsMatches, tagKind: .matches, sentence: sentence)
+            return TalentStatusLine(tag: Copy.talentsMatches, tagKind: .matches, sentence: words.match(beyond: diff.extraCount > 0))
         case let .differs(count):
-            return TalentStatusLine(
-                tag: Copy.talentsDiffers, tagKind: .differs,
-                sentence: Copy.talentsDiffer(n: count, m: yourTotal ?? 0, band: bandLabel)
-            )
+            return TalentStatusLine(tag: Copy.talentsDiffers, tagKind: .differs, sentence: words.differ(n: count, of: yourTotal ?? 0))
         case let .toTake(count):
-            return TalentStatusLine(tag: Copy.talentsDiffers, tagKind: .differs, sentence: Copy.talentsToTake(n: count, band: bandLabel))
+            return TalentStatusLine(tag: Copy.talentsDiffers, tagKind: .differs, sentence: words.toTake(count))
         }
     }
 
@@ -196,11 +207,11 @@ struct TalentsPresenter: Equatable, Sendable {
             let unspent = max(TalentRules.pointsAvailable(atLevel: level) - yourTotal, 0)
             if unspent > 0 { lines.append(Copy.talentsUnspent(n: unspent)) }
         }
-        if let diff, diff.diffCount > 0, diff.missingCount > 0 {
-            lines.append(Copy.talentsMissing(n: diff.missingCount))
+        if let diff, let words, diff.diffCount > 0, diff.missingCount > 0 {
+            lines.append(words.missing(diff.missingCount))
         }
-        if let diff, diff.extraCount > 0 {
-            lines.append(Copy.talentsBeyond(n: diff.extraCount))
+        if let diff, let words, diff.extraCount > 0 {
+            lines.append(words.beyond(diff.extraCount))
         }
         // No export and no guide either: say both, and draw no tree (spec F6 §6, No export).
         if !hasTree { lines.append(Copy.talentsNoList) }
@@ -216,7 +227,7 @@ struct TalentsPresenter: Equatable, Sendable {
         return trees.enumerated().map { index, tree in
             TalentTabModel(
                 index: index, name: tree.name, points: points[index],
-                differing: tree.talents.filter { differing.contains($0.id) }.count
+                differing: tree.talents.filter { differing.contains($0.id) }.count, words: words
             )
         }
     }
@@ -237,7 +248,7 @@ struct TalentsPresenter: Equatable, Sendable {
             let delta = guideRank.flatMap { rank == $0 ? nil : rank - $0 }
             return TalentCellModel(
                 talent: talent, rank: rank, state: TalentRules.cellState(talent, in: tree, ranks: ranks),
-                delta: delta, guideRank: guideRank
+                delta: delta, guideRank: guideRank, words: words
             )
         }
     }
@@ -248,7 +259,7 @@ struct TalentsPresenter: Equatable, Sendable {
     }
 
     func legend(_ build: TalentBuildKind) -> String {
-        differingIDs(build).isEmpty ? Copy.talentsTapHint : Copy.talentsLegend
+        differingIDs(build).isEmpty ? Copy.talentsTapHint : words?.legend ?? Copy.talentsLegend
     }
 
     private func differingIDs(_ build: TalentBuildKind) -> Set<Int> {
@@ -273,7 +284,7 @@ struct TalentsPresenter: Equatable, Sendable {
             current: rank > 0 ? description(rank - 1) : nil,
             next: rank < talent.maxRank ? description(rank) : nil,
             requirements: Self.requirements(talent, in: tree, ranks: ranks),
-            guideLine: differs ? guideRank.map { Copy.talentsGuideRank(g: $0, max: talent.maxRank) } : nil,
+            guideLine: differs ? guideRank.map { (words ?? .guide(spec: "", band: "")).otherRank($0, max: talent.maxRank) } : nil,
             isOver: differs && rank > (guideRank ?? 0)
         )
     }

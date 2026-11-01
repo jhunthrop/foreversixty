@@ -129,8 +129,11 @@ enum SearchRows {
         }
     }
 
-    static func guide(_ hit: SearchGuideHit, build: String, action: @escaping () -> Void) -> some View {
-        SearchRow(meta: SearchWords.guideMeta(hit.guide), trailing: SearchDestination.guide.trailing, action: action) {
+    static func guide(
+        _ hit: SearchGuideHit, build: String, trailing: SearchRowTrailing = SearchDestination.guide.trailing,
+        action: @escaping () -> Void
+    ) -> some View {
+        SearchRow(meta: SearchWords.guideMeta(hit.guide), trailing: trailing, action: action) {
             SpecIcon(icon: hit.guide.icon, build: build, size: SearchLayout.rowIcon)
         } title: {
             SearchRowName(text: hit.title, color: ClassColor.of(hit.guide.className))

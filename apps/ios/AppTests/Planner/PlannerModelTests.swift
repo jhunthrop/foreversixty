@@ -36,7 +36,7 @@ struct PlannerEditorTests {
         model.add(id("Convection"))
         model.remove(id("Convection"))
         #expect(model.state?.order == [])
-        #expect(haptics.played == [.segmentTick, .longPress])
+        #expect(haptics.played == [.selection, .impactMedium])
     }
 
     @Test("a refusal changes nothing, plays REJECT and says why in the strip")
@@ -47,7 +47,7 @@ struct PlannerEditorTests {
         model.add(id("Elemental Mastery"))
         #expect(model.state?.order == before?.order)
         #expect(model.state?.canUndo == false)
-        #expect(haptics.played == [.reject])
+        #expect(haptics.played == [.error])
         guard case let .refusal(line)? = model.state?.line else { Issue.record("no refusal"); return }
         #expect(line.hasPrefix("Needs ") && line.contains("You have"))
         #expect(model.state?.focus?.name == "Elemental Mastery")
@@ -185,7 +185,7 @@ struct PlannerEditorTests {
             classId: 7, raceId: 2, treeVersion: file.build, pointOrder: [id("Convection")], gear: [:], title: "Elemental raid"
         )])
         #expect(model.share == .shared(try #require(URL(string: "https://foreversixty.gg/b/k7q2m9xa"))))
-        #expect(haptics.played.last == .confirm)
+        #expect(haptics.played.last == .success)
         #expect(model.shareInput(title: "")?.title == nil)
         #expect(model.shareInput(title: String(repeating: "x", count: 80))?.title?.count == 60)
     }

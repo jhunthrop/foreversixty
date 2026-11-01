@@ -2,6 +2,7 @@
 import DesignSystem
 import Models
 import Networking
+import Routing
 import SnapshotTesting
 import SwiftUI
 import Testing
@@ -10,14 +11,17 @@ import UIKit
 /// F15's surfaces on iPhone 17 (402 x 874) at the default size and at AX5, from the spec's one
 /// story (Lightningbolltz, Onyxia's Lair, Thursday 8 pm, 25 of 40). The PNGs double as the review
 /// captures in design/reviews/2026-11-01-mobile-integration/build/ios. Siri's sheet, Spotlight,
-/// the alert and the share sheet are the system's: these draw our own words in stand-in frames.
+/// Shortcuts and Control Center are the system's: these draw our own words in stand-in frames
+/// (the real share sheet, alert and Guides bar are captured from the simulator by
+/// UITests/SystemCaptureTests).
 @MainActor
 @Suite("System integration snapshots")
 struct SystemSnapshotTests {
     private let now = RaidTime.date("2026-12-09T03:41:00Z")
     private let answers = SystemStory.answers
 
-    private func snap(_ view: some View, _ name: String, large: Bool = false) {
+    /// `keyWindow` draws through the window, so UIKit controls (the switches' knobs) render.
+    private func snap(_ view: some View, _ name: String, large: Bool = false, keyWindow: Bool = false) {
         let traits = UITraitCollection { traits in
             traits.userInterfaceStyle = .dark
             traits.preferredContentSizeCategory = large ? .accessibilityExtraExtraExtraLarge : .large
@@ -29,21 +33,21 @@ struct SystemSnapshotTests {
             .preferredColorScheme(.dark)
         assertSnapshot(
             of: sized,
-            as: .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits),
+            as: .image(drawHierarchyInKeyWindow: keyWindow, precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits),
             testName: name
         )
     }
 
-    private func both(_ view: some View, _name: String) {
-        snap(view, "\(_name)-ios")
-        snap(view, "\(_name)-large-ios", large: true)
+    private func both(_ view: some View, _ name: String, keyWindow: Bool = false) {
+        snap(view, "\(name)-ios", keyWindow: keyWindow)
+        snap(view, "\(name)-large-ios", large: true, keyWindow: keyWindow)
     }
 
-    // MARK: F15.1, F15.2 Siri and Shortcuts
+    // MARK: F15.1, F15.2 Siri, Shortcuts and the Control
 
     private func siri(_ said: String, _ card: IntentAnswerCard) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(said).font(ScaledType.lead).foregroundStyle(FSColor.strong)
+            Text(said).font(ScaledType.lead).foregroundStyle(FSColor.strong).fixedSize(horizontal: false, vertical: true)
             card
             Spacer(minLength: 0)
         }
@@ -52,41 +56,52 @@ struct SystemSnapshotTests {
         .background(FSColor.bg)
     }
 
-    @Test("F15.1 the voice confirmation, the answer and the refusal")
+    @Test("F15.1 the voice confirmation, the answer, the refusal and the two questions")
     func signup() throws {
         let start = RaidTime.date(SystemStory.thursday)
+        let said = "Sign me up for tonight's raid"
         let confirm = answers.confirm(name: "Lightningbolltz", state: "in", zone: "Onyxia's Lair", startsAt: start)
-        both(siri("Sign me up for tonight's raid", IntentAnswerCard(text: confirm, buttons: (Copy.intentConfirmAction, Copy.commonCancel))), _name: "f15-siri-confirm")
+        both(siri(said, IntentAnswerCard(text: confirm, buttons: (Copy.intentConfirmAction, Copy.commonCancel))), "f15-siri-confirm")
         let saved = answers.signedUp(state: "in", raid: try SystemStory.raid(), characterName: "Lightningbolltz", role: "dps")
-        both(siri("Sign me up for tonight's raid", IntentAnswerCard(text: saved)), _name: "f15-siri-signedup")
-        both(siri("Sign me up for tonight's raid", IntentAnswerCard(text: Copy.raidLocked)), _name: "f15-siri-refused")
+        both(siri(said, IntentAnswerCard(text: saved)), "f15-siri-signedup")
+        both(siri(said, IntentAnswerCard(text: Copy.raidLocked)), "f15-siri-refused")
+        let raids = [answers.raidTitle(zone: "Onyxia's Lair", startsAt: RaidTime.date("2026-12-09T02:00:00Z")),
+                     answers.raidTitle(zone: "Molten Core", startsAt: RaidTime.date("2026-12-09T05:00:00Z"))]
+        both(siri(said, IntentAnswerCard(text: Copy.intentWhich, options: raids)), "f15-siri-which")
+        let spec = Copy.intentSpec(name: "Lightningbolltz", guild: "OLYMPUS XXVII")
+        both(siri(said, IntentAnswerCard(text: spec, options: ["Elemental", "Enhancement", "Restoration"])), "f15-siri-spec")
     }
 
     @Test("F15.2 next upgrade, next raid, who is coming")
     func reads() throws {
-        let home = try HomeFixtures.home("character.home.yours")
-        let upgrade = try #require(UpgradeAnswer(home: home, characterName: "Lightningbolltz"))
+        let upgrade = try #require(UpgradeAnswer(home: try SystemStory.home(), characterName: "Lightningbolltz"))
         let iconURL = HomeFixtures.repoRoot.appending(path: "data/builds/\(SimsTestData.build)/icons/\(upgrade.icon ?? "").webp")
         let image = (try? Data(contentsOf: iconURL)).flatMap(UIImage.init(data:))
-        both(siri("What's my next upgrade", IntentAnswerCard(text: upgrade.sentence, snippet: upgrade, snippetImage: image)), _name: "f15-siri-upgrade")
+        both(siri("What's my next upgrade", IntentAnswerCard(text: upgrade.sentence, snippet: upgrade, snippetImage: image)), "f15-siri-upgrade")
         let next = try #require(SystemStory.widget().nextRaid)
-        both(siri("When is the next raid", IntentAnswerCard(text: answers.nextRaid(next))), _name: "f15-siri-nextraid")
-        let raid = try SystemStory.raid(counts: ["in": 23, "late": 1, "tanks": 3, "healers": 6, "dps": 14])
-        both(siri("Who is coming to raid", IntentAnswerCard(text: answers.whoIsComing(raid))), _name: "f15-siri-whoiscoming")
+        both(siri("When is the next raid", IntentAnswerCard(text: answers.nextRaid(next))), "f15-siri-nextraid")
+        both(siri("Who is coming to raid", IntentAnswerCard(text: answers.whoIsComing(try SystemStory.raid()))), "f15-siri-whoiscoming")
+    }
+
+    @Test("a Shortcuts run and the Control: no question, the answer at once")
+    func shortcutAndControl() throws {
+        let saved = answers.signedUp(state: "in", raid: try SystemStory.raid(), characterName: "Lightningbolltz", role: "dps")
+        both(siri(Copy.intentSignupTitle, IntentAnswerCard(text: saved)), "f15-shortcuts-run")
+        both(ControlPreview(), "f15-control")
     }
 
     // MARK: F15.3 Spotlight
 
     @Test("F15.3 the Spotlight entries")
     func spotlight() throws {
-        let me = try RaidFixture.load(Me.self, "me")
+        let watched = try RankingsTestData.watching().rows
         let raids = try [SystemStory.raid(id: 7), SystemStory.raid(id: 8, startsAt: "2026-12-18T02:00:00Z")]
         let spec = try #require(SpecCatalog.bundled().spec("shaman-elemental"))
         let catalog = SpotlightCatalog.build(
-            own: me.characters, watched: [], planned: raids, guildID: 2,
-            guides: [.init(spec: spec, savedAt: RaidTime.date("2026-09-24T15:00:00Z"))], answers: answers, now: SystemStory.now
+            own: try SystemStory.ownCharacters(), watched: watched, planned: raids, guildID: 2,
+            guides: [.init(spec: spec, updated: "2026-11-01")], answers: answers, now: SystemStory.now
         )
-        both(SpotlightPreview(catalog: catalog), _name: "f15-spotlight-entries")
+        both(SpotlightPreview(catalog: catalog), "f15-spotlight-entries")
     }
 
     // MARK: F15.4 Offline data
@@ -97,6 +112,7 @@ struct SystemSnapshotTests {
                 report: report, update: update, online: online, checkedAt: now, words: OfflineWords(calendar: chicago), now: now,
                 keepClassesReady: .constant(true), wifiOnly: .constant(true), updateNow: {}, remove: {}
             )
+            .navigationTitle(Copy.offlineDataTitle).navigationBarTitleDisplayMode(.inline).toolbar(removing: .title)
         }
     }
 
@@ -106,25 +122,14 @@ struct SystemSnapshotTests {
         return calendar
     }
 
-    private var savedReport: OfflineReport {
-        let build = "1.60.1.70707"
-        let saved = now.addingTimeInterval(-600)
-        return OfflineReport.build(files: [
-            SavedStaticFile(relativePath: "\(build)/guides/shaman-elemental.json", bytes: 1_300_000, savedAt: saved),
-            SavedStaticFile(relativePath: "\(build)/guides/warrior-fury.json", bytes: 1_100_000, savedAt: saved),
-            SavedStaticFile(relativePath: "\(build)/bis/shaman-elemental.json", bytes: 3_100_000, savedAt: saved),
-            SavedStaticFile(relativePath: "\(build)/talents/shaman.json", bytes: 600_000, savedAt: saved),
-            SavedStaticFile(relativePath: "\(build)/search.json", bytes: 400_000, savedAt: saved),
-        ], iconBytes: 41_000_000, iconsUpdated: saved)
-    }
-
-    @Test("F15.4 Offline data: with data, empty, offline, and the remove confirmation")
+    @Test("F15.4 Offline data: with data, empty, offline, up to date, and the remove confirmation")
     func offlineDataScreen() {
-        both(offlineData(savedReport), _name: "f15-offlinedata-data")
-        both(offlineData(OfflineReport(rows: [])), _name: "f15-offlinedata-empty")
-        snap(offlineData(savedReport, online: false), "f15-offlinedata-offline-ios")
-        snap(offlineData(savedReport, update: .upToDate), "f15-offlinedata-uptodate-ios")
-        both(AlertPreview(message: Copy.offlineDataRemoveConfirm, action: Copy.offlineDataRemoveAction), _name: "f15-offlinedata-remove")
+        let saved = SystemStory.offlineReport(savedAt: now.addingTimeInterval(-600))
+        both(offlineData(saved), "f15-offlinedata-data", keyWindow: true)
+        both(offlineData(OfflineReport(rows: [])), "f15-offlinedata-empty", keyWindow: true)
+        both(offlineData(saved, online: false), "f15-offlinedata-offline", keyWindow: true)
+        snap(offlineData(saved, update: .upToDate), "f15-offlinedata-uptodate-ios", keyWindow: true)
+        both(AlertPreview(message: Copy.offlineDataRemoveConfirm, action: Copy.offlineDataRemoveAction), "f15-offlinedata-remove")
     }
 
     // MARK: F15.5 Strips
@@ -141,144 +146,185 @@ struct SystemSnapshotTests {
 
     @Test("F15.5 each strip on a representative screen")
     func strips() throws {
-        both(try homeStrip(offline: "Thu 9:41 pm"), _name: "f15-strip-offline")
-        both(try homeStrip(stale: "9:41 pm"), _name: "f15-strip-stale")
+        both(try homeStrip(offline: "Thu 9:41 pm"), "f15-strip-offline")
+        both(try homeStrip(stale: "9:41 pm"), "f15-strip-stale")
         let guide = try GuidesTestData.elemental()
-        let reader = NavigationStack {
-            GuideReaderView(
-                phase: .loaded(GuideContent(guide: guide, build: GuidesTestData.build), offlineSince: nil),
-                newData: .ready("1.60.1.70800"), now: GuidesTestData.now
-            )
-            .background(FSColor.bg)
+        let reader = NavigationStack(path: .constant([1])) {
+            Color.clear.navigationTitle(Copy.guidesTitle).navigationDestination(for: Int.self) { _ in
+                GuideReaderView(
+                    phase: .loaded(GuideContent(guide: guide, build: GuidesTestData.build), offlineSince: nil),
+                    newData: .ready("1.60.1.70800"), now: GuidesTestData.now
+                )
+                .background(FSColor.bg)
+                .guideBar(guide)
+            }
         }
-        both(reader, _name: "f15-strip-newdata")
+        both(reader, "f15-strip-newdata")
     }
 
-    // MARK: Share
+    // MARK: Search
 
-    @Test("the share sheet text: a character, a guide, a report")
-    func shares() throws {
-        let character = ShareText.character(key: SystemStory.key, name: "Lightningbolltz", spec: "Elemental", className: "shaman", level: 60)
-        snap(SharePreview(item: character), "f15-share-character-ios")
-        snap(SharePreview(item: ShareText.guide(try GuidesTestData.elemental())), "f15-share-guide-ios")
-        let report = try #require(ShareText.report(
-            id: "ewlrx3enxbeb", zone: "Onyxia's Lair", visibility: "public", createdAt: RaidTime.date("2026-12-15T01:58:00Z"),
-            zoneOfPhone: SystemStory.zone
-        ))
-        snap(SharePreview(item: report), "f15-share-report-ios")
-        snap(SharePreview(item: ShareText.tiers(.healer)), "f15-share-tiers-ios")
-    }
-
-    // MARK: Follow-ups
-
-    @Test("Search with the Watching group and the Rankings link")
+    @Test("Search with the Watching group, the Rankings link and the in-app guide")
     func searchWatching() throws {
         let context = SearchTestData.context
-        let watching = [
-            CharacterSearchRow(key: "us/pvp/morvane", region: "us", ruleset: "pvp", name: "Morvane", className: "warlock", level: 60),
-            CharacterSearchRow(key: "us/pvp/kraggor", region: "us", ruleset: "pvp", name: "Kraggor", className: "warrior", level: 60),
-        ]
+        let watching = try RankingsTestData.watching().rows.map(SearchWords.row)
         let corpus = try SearchTestData.corpus()
         let forCharacter = SearchForCharacter(context, specs: try BisTestData.catalog())
         let view = SearchChromeHost {
             SearchContentView(
                 hasQuery: false, query: "", scope: .all, index: .ready(corpus), results: .empty,
                 characters: .idle, recent: [], forCharacter: forCharacter,
-                viewer: context.viewer, build: SearchTestData.build, watching: watching, nativeRankings: true
+                viewer: context.viewer, build: SearchTestData.build, watching: watching, nativeRankings: true, nativeGuides: true
             )
         }
-        both(view, _name: "f15-search-watching")
+        both(view, "f15-search-watching")
     }
 
-    @Test("the Guides root bar with the search button")
-    func guidesBar() throws {
-        let statics = StaticDataStore(client: StaticDataClient(transport: FixtureTransport(directory: HomeFixtures.directory)), directory: nil)
-        let navigator = SearchNavigator(dependencies: SearchDependencies(
-            index: SearchIndexReader(store: statics), catalog: ItemCatalog(store: statics), specs: try BisTestData.catalog(),
-            characters: FakeCharacterSearch(.success([])), recent: MemoryRecentSearches(),
-            build: { SearchTestData.build }, context: { SearchTestData.context }, sleep: { _ in }
-        ))
-        let index = try GuidesTestData.index()
-        let root = NavigationStack {
-            GuidesRootView(
-                segment: .guides, tiersOn: true,
-                homePhase: .loaded(GuidesHome(build: GuidesTestData.build, index: index, saved: GuidesTestData.saved()), offlineSince: nil),
-                character: nil, now: GuidesTestData.now
-            )
-            .navigationTitle(Copy.guidesTitle).navigationBarTitleDisplayMode(.inline).toolbar(removing: .title)
-            .searchButton()
+    // MARK: Round 2: the planner follow-ups
+
+    @Test("F11.4 Open in planner under Builds seen")
+    func openInPlanner() throws {
+        let profile = try RankingsTestData.lightningbolltz()
+        let ref = try #require(CharacterRef(key: profile.character.key, name: profile.character.name))
+        let page = NavigationStack {
+            ScrollView {
+                CharacterView(
+                    ref: ref, phase: .loaded(CharacterContent(profile: profile, offlineSince: nil)), items: [:],
+                    account: RankingsTestData.account(), specs: RankingsTestData.specs, build: RankingsTestData.build,
+                    now: RankingsTestData.now, clock: RankingsTestData.clock, actions: CharacterActions(openPlanner: { _ in })
+                )
+            }
+            .background(FSColor.bg)
+            .defaultScrollAnchor(.bottom)
         }
-        .environment(\.searchNavigator, navigator)
-        snap(root, "f15-guides-searchbutton-ios")
+        both(page, "f15-char-open-planner")
+    }
+
+    private func sharedContent(_ plannerFile: TalentsFile) -> SharedBuildContent {
+        let index = PlannerIndex(plannerFile)
+        let order = PlannerTestData.elementalOrder(index)
+        let summary = PlannerBuildSummary(
+            build: PlannerTestData.build(order: order), classSlug: "shaman", className: "Shaman",
+            raceName: "Orc", raceSlug: "orc", totals: PlannerRules.pointsPerTree(index, order: order)
+        )
+        return SharedBuildContent(summary: summary, file: plannerFile)
+    }
+
+    private func viewer(_ content: SharedBuildContent, compare: Bool) -> some View {
+        NavigationStack {
+            SharedBuildView(phase: .loaded(content), tree: .constant(0), timeZone: .gmt, compare: compare ? {} : nil)
+                .toolbarBackground(FSColor.bg, for: .navigationBar)
+        }
+    }
+
+    @Test("F13.5 Compare with mine: shown with an export of the class, hidden without")
+    func compareButton() throws {
+        let content = sharedContent(try PlannerTestData.shaman())
+        both(viewer(content, compare: true), "f15-shared-build-compare-button")
+        snap(viewer(content, compare: false), "f15-shared-build-compare-button-noexport-ios")
+    }
+
+    @Test("F13.5 the compare with the shared-build wording")
+    func compareScreen() throws {
+        let file = try PlannerTestData.shaman()
+        let content = sharedContent(file)
+        let character = try SystemStory.exporter(dropping: 3, file: file, order: content.summary.build.pointOrder)
+        let presenter = SharedBuildCompare.presenter(content: content, file: file, character: character)
+        let screen = NavigationStack { SharedBuildCompareScreen(presenter: presenter, characterName: character.name) }
+        both(screen, "f15-shared-build-compare")
     }
 }
 
-/// Spotlight's list as the system draws it under the app's name: our own rows' words.
+/// Spotlight's list as the system draws it under the app's name: our own rows' words, the ringed
+/// class crest on every character, and the app's shortcuts.
 private struct SpotlightPreview: View {
     let catalog: SpotlightCatalog
 
+    private static let icon: CGFloat = 40
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(Copy.appName).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-            ForEach(catalog.characters.prefix(2), id: \.id) { row($0, icon: "person.crop.circle") }
-            ForEach(catalog.guides, id: \.id) { row($0, icon: "book") }
-            ForEach(catalog.raids, id: \.id) { row($0, icon: "calendar") }
-            Spacer(minLength: 0)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(Copy.appName).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                ForEach(catalog.characters.prefix(3), id: \.id) { entry in
+                    row(entry) { ClassCrest(className: entry.classSlug, size: Self.icon) }
+                }
+                ForEach(catalog.guides, id: \.id) { entry in row(entry) { tile("book") } }
+                ForEach(catalog.raids, id: \.id) { entry in row(entry) { tile("calendar") } }
+                Text("Shortcuts").font(ScaledType.meta).foregroundStyle(FSColor.muted).padding(.top, 8)
+                ForEach(["Sign me up for tonight's raid", "What's my next upgrade"], id: \.self) { phrase in
+                    row(SpotlightRow(id: phrase, title: phrase, subtitle: Copy.appName)) { tile("checkmark.circle") }
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(FSColor.bg)
     }
 
-    private func row(_ row: SpotlightRow, icon: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon).foregroundStyle(FSColor.gold).frame(width: 36, height: 36)
-                .background(FSColor.raised, in: .rect(cornerRadius: 8))
+    private func tile(_ symbol: String) -> some View {
+        Image(systemName: symbol).foregroundStyle(FSColor.gold).frame(width: Self.icon, height: Self.icon)
+            .background(FSColor.raised, in: .rect(cornerRadius: 8))
+    }
+
+    private func row(_ entry: SpotlightRow, @ViewBuilder icon: () -> some View) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            icon().frame(width: Self.icon, height: Self.icon)
             VStack(alignment: .leading, spacing: 2) {
-                Text(row.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                Text(row.subtitle).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                Text(entry.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
+                Text(entry.subtitle).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
             .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
 
-/// The share sheet's header as the system draws it: the message over the link.
-private struct SharePreview: View {
-    let item: ShareItem
-
+/// The Control Center control as the system draws it: the glyph and `In for the next raid`.
+private struct ControlPreview: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(item.text).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-            Text(item.url.absoluteString).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+        VStack(spacing: 10) {
+            Image(systemName: "checkmark.circle").font(.system(size: 30)).foregroundStyle(FSColor.gold)
+                .frame(width: 72, height: 72).background(Color.white.opacity(0.12), in: .circle)
+            Text(Copy.intentControlTitle).font(ScaledType.meta).foregroundStyle(FSColor.strong)
+                .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(FSColor.bg)
+        .padding(.top, 60)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black)
     }
 }
 
-/// The remove confirmation's words, in a system alert's frame.
+/// The remove confirmation's words in a system alert's frame: side by side while they fit,
+/// stacked with equal heights at accessibility sizes.
 private struct AlertPreview: View {
     let message: String
     let action: String
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         VStack(spacing: 14) {
             Text(message).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong).multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            HStack(spacing: 10) {
-                Text(Copy.commonCancel).frame(maxWidth: .infinity, minHeight: 44).background(FSColor.line, in: .capsule)
-                Text(action).frame(maxWidth: .infinity, minHeight: 44).background(FSColor.line, in: .capsule).foregroundStyle(FSColor.wipe)
+            let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
+            layout {
+                button(action, color: FSColor.wipe)
+                button(Copy.commonCancel, color: FSColor.gold)
             }
             .font(ScaledType.bodyStrong)
         }
         .padding(20)
         .background(FSColor.raised, in: .rect(cornerRadius: 28))
-        .padding(32)
+        .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black.opacity(0.6))
+    }
+
+    private func button(_ title: String, color: Color) -> some View {
+        Text(title).foregroundStyle(color).multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, minHeight: 48)
+            .background(FSColor.line, in: .capsule)
     }
 }
 

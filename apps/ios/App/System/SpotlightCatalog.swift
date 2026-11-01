@@ -6,6 +6,8 @@ struct SpotlightRow: Codable, Equatable, Sendable {
     let id: String
     let title: String
     let subtitle: String
+    /// A character row's class slug, for its ringed crest (one crest language).
+    var classSlug: String?
 }
 
 /// What the app puts in Spotlight: your characters (up to 9) and the first 50 watched, the next
@@ -21,10 +23,10 @@ struct SpotlightCatalog: Codable, Equatable, Sendable {
 
     static let empty = SpotlightCatalog(characters: [], raids: [], guides: [])
 
-    /// A saved guide: its spec and when its file was saved.
+    /// A saved guide: its spec and the guide index's `updated` day (the Guides root's date).
     struct SavedGuide: Equatable, Sendable {
         let spec: SpecInfo
-        let savedAt: Date
+        let updated: String
     }
 
     static func build(
@@ -40,7 +42,7 @@ struct SpotlightCatalog: Codable, Equatable, Sendable {
                 .prefix(raidLimit)
                 .map { raidRow($0, guild: guild, answers: answers) }
         } ?? []
-        return SpotlightCatalog(characters: mine + others, raids: raids, guides: guides.map { guideRow($0, clock: answers.clock) })
+        return SpotlightCatalog(characters: mine + others, raids: raids, guides: guides.map(guideRow))
     }
 
     /// `Elemental Shaman · 60 · Olympus XXVII`.
@@ -51,14 +53,14 @@ struct SpotlightCatalog: Codable, Equatable, Sendable {
         let sub = character.guild.map {
             Copy.spotlightCharacterSub(spec: spec, className: className, level: level, guild: $0.name)
         } ?? Copy.spotlightCharacterSubNoGuild(spec: spec, className: className, level: level)
-        return SpotlightRow(id: character.key, title: character.name, subtitle: tidy(sub))
+        return SpotlightRow(id: character.key, title: character.name, subtitle: tidy(sub), classSlug: character.className)
     }
 
     /// A watched character has no spec on the list: `Shaman · 60`.
     static func row(_ character: WatchedCharacter) -> SpotlightRow {
         let className = SearchWords.className(character.className ?? "")
         let sub = Copy.spotlightCharacterSubNoGuild(spec: "", className: className, level: character.level.map(String.init) ?? "")
-        return SpotlightRow(id: character.key, title: character.name, subtitle: tidy(sub))
+        return SpotlightRow(id: character.key, title: character.name, subtitle: tidy(sub), classSlug: character.className)
     }
 
     /// `Onyxia's Lair · Thu 8 pm`, `Raid · Thu 10 Dec`. The id is `{guild}/{raid}`.
@@ -70,12 +72,13 @@ struct SpotlightCatalog: Codable, Equatable, Sendable {
         )
     }
 
-    /// `Elemental Shaman guide`, `Guide · Updated 24 Sep 2026`. The id is the guide file's key.
-    static func guideRow(_ guide: SavedGuide, clock: WidgetClock) -> SpotlightRow {
+    /// `Elemental Shaman guide`, `Guide · Updated 1 Nov 2026` (the index's date, as the Guides root
+    /// prints it). The id is the guide file's key.
+    static func guideRow(_ guide: SavedGuide) -> SpotlightRow {
         let className = SearchWords.className(guide.spec.classSlug)
         return SpotlightRow(
             id: guide.spec.spec, title: Copy.shareGuide(spec: guide.spec.name, className: className),
-            subtitle: Copy.spotlightGuideSub(date: clock.fullDate(guide.savedAt))
+            subtitle: Copy.spotlightGuideSub(date: GuideDates.long(guide.updated))
         )
     }
 

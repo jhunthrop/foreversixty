@@ -61,7 +61,7 @@ struct OfflineDataTests {
             "Shaman · 3.1 MB · Updated today",
             "Shaman · 600 KB · Updated today",
             "400 KB · Updated today",
-            "41 MB · Updated today",
+            "41 MB",
         ])
         #expect(OfflineWords.size(report.totalBytes) == "48 MB")
         #expect(lines.allSatisfy { !$0.contains(build) })

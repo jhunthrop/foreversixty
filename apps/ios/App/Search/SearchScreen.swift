@@ -44,7 +44,8 @@ struct SearchScreen: View {
                     results: store.results, characters: store.characters, recent: store.recent,
                     forCharacter: SearchForCharacter(store.context, specs: dependencies.specs),
                     viewer: store.context.viewer, build: build, actions: actions,
-                    watching: watching.map(SearchWords.row), nativeRankings: dependencies.nativeRankings
+                    watching: watching.map(SearchWords.row), nativeRankings: dependencies.nativeRankings,
+                    nativeGuides: dependencies.nativeGuides
                 )
             }
             .navigationTitle(Copy.itemPageBack)
@@ -79,7 +80,7 @@ struct SearchScreen: View {
             },
             openGuide: { hit in
                 store.opened(RecentSearch(guide: hit))
-                openURL(SearchLinks.guide(className: hit.guide.className, spec: hit.guide.spec))
+                openGuide(hit.guide.className, hit.guide.spec)
             },
             openTalent: { found in
                 store.opened(RecentSearch(talent: found))
@@ -94,10 +95,20 @@ struct SearchScreen: View {
                 navigator.openList(store.context.character.flatMap { BisSelection.forCharacter($0, catalog: dependencies.specs) })
             },
             openURL: { openURL($0) },
+            openGuideLink: { openGuide($0, $1) },
             openRankings: {
                 if dependencies.nativeRankings { navigator.leave(to: .rankingsBoard) } else { openURL(SearchLinks.rankings) }
             }
         )
+    }
+
+    /// F9 in the app when `guides` is on (lane F15), else the website as before.
+    private func openGuide(_ className: String, _ spec: String) {
+        guard dependencies.nativeGuides else {
+            openURL(SearchLinks.guide(className: className, spec: spec))
+            return
+        }
+        navigator.leave(to: .link(.guide(className: className, spec: spec)))
     }
 
     /// F11.4 in the app when `rankings` is on (lane F15), else the website as before.
@@ -120,7 +131,7 @@ struct SearchScreen: View {
         case let .character(key):
             openCharacter(key)
         case let .guide(className, spec):
-            openURL(SearchLinks.guide(className: className, spec: spec))
+            openGuide(className, spec)
         case let .talent(id, _):
             if let found = store.index.corpus?.talent(id) { talent = SearchTalentRoute(talent: found) }
         }
