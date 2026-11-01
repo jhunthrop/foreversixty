@@ -1,5 +1,6 @@
 package gg.foreversixty.app
 
+import gg.foreversixty.app.network.StaticEndpoints
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.rankings.logic.LiveRankingsService
 import gg.foreversixty.app.items.ItemIconLoader
@@ -81,6 +82,17 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
 
     /** Read at launch (MainActivity) and cached; feature lanes ask it `isEnabled(feature)`. */
     val appConfig = AppConfigRepository(apiClient, FileAppConfigCache(File(context.filesDir, "app-config.json")))
+
+    /**
+     * Lane F15: the active build fresh from the site (never a saved copy), for the new-data strip.
+     * A newer one than the config's refreshes the config, so an `Update` reloads on it.
+     */
+    suspend fun latestBuild(): String? {
+        val answer = statics.load(StaticEndpoints.getActiveBuild()) as? ApiResult.Success ?: return null
+        val build = answer.data.takeUnless { it.isFromCache }?.value?.build ?: return null
+        if (build != appConfig.current?.activeBuild) appConfig.refresh()
+        return build
+    }
 
     /** Whether a feature's screens show: on in debug and fixture builds, else as the config says. */
     fun isAvailable(feature: Feature): Boolean = appConfig.isAvailable(feature, config.mode, BuildConfig.DEBUG)

@@ -218,6 +218,14 @@ class BisModel(
     /** Pull to refresh and `Try again`: refetch the current list, keeping what is on screen. */
     suspend fun refresh() = load()
 
+    /** The new-data strip's `Update` (lane F15): the list again on the active build, now the newer one. */
+    suspend fun update() {
+        val build = source.activeBuild()
+        mutable.update { it.copy(build = build) }
+        drawSaved(build)
+        load()
+    }
+
     /** A picker choice: applies at once and the list redraws under the sheet. */
     suspend fun select(selection: BisSelection) {
         if (selection == state.value.context.selection) return

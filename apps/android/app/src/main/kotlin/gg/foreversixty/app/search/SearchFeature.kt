@@ -1,5 +1,7 @@
 package gg.foreversixty.app.search
 
+import androidx.compose.foundation.layout.Column
+import gg.foreversixty.app.common.NewBuildStrip
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.model.CharacterSearchRow
 import android.content.Context
@@ -316,6 +318,16 @@ private fun ItemPageRoute(feature: SearchFeature, page: SearchDestination.Item, 
     val scope = rememberCoroutineScope()
     val store = remember(look.id, owner) { ItemPageStore(look.id, look, feature.itemSource, owner, feature.specs, res) }
     LaunchedEffect(store) { store.load() }
+    // Lane F15: a newer build waits behind the strip; the page moves only on Update.
+    Column(Modifier.fillMaxSize()) {
+        NewBuildStrip(store) { scope.launch { store.load() } }
+        ItemPageBody(store, build, page, feature, exits)
+    }
+}
+
+@Composable
+private fun ItemPageBody(store: ItemPageStore, build: String, page: SearchDestination.Item, feature: SearchFeature, exits: SearchExits) {
+    val scope = rememberCoroutineScope()
     ItemPage(
         phase = store.phase,
         uses = store.uses,

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.bis
 
+import gg.foreversixty.app.common.NewBuildStrip
 import gg.foreversixty.app.network.StaticDataStore
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -93,6 +94,8 @@ fun BisRoute(
                 if (!searching) query = ""
             })
         }
+        // Lane F15: a newer build waits behind the strip; the list moves only on Update.
+        NewBuildStrip(model) { scope.launch { model.update() } }
         PullToRefreshBox(
             isRefreshing = refreshing,
             onRefresh = {

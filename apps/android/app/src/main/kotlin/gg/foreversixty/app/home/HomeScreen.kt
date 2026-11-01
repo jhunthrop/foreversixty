@@ -1,5 +1,6 @@
 package gg.foreversixty.app.home
 
+import gg.foreversixty.app.common.NewBuildStrip
 import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.BackHandler
@@ -270,8 +271,11 @@ fun HomeCharacterScreen(
         RankingsRoute(rankingsFeature, reports.rankings, reportsLink, onBack = { rankingsFeature.navigator.showsBoard = false })
     } else if (showTalents && talents != null) {
         BackHandler { showTalents = false }
-        TalentsRoute(character, talentsModel ?: TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog)) {
-            showTalents = false
+        val shownModel = talentsModel ?: remember(character.key) { TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog) }
+        // Lane F15: a newer build waits behind the strip above Talents; Update reloads it on that build.
+        Column(Modifier.fillMaxSize()) {
+            NewBuildStrip(shownModel) { scope.launch { shownModel.load() } }
+            TalentsRoute(character, shownModel) { showTalents = false }
         }
     } else if (showGear && home != null) {
         BackHandler { showGear = false }

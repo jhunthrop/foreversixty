@@ -1,5 +1,7 @@
 package gg.foreversixty.app
 
+import androidx.compose.runtime.CompositionLocalProvider
+import gg.foreversixty.app.common.LocalLatestBuild
 import gg.foreversixty.app.system.logic.AppShortcut
 import androidx.compose.runtime.getValue
 import android.content.Intent
@@ -38,6 +40,8 @@ class MainActivity : ComponentActivity() {
                 val gate by graph.updateGate.state.collectAsStateWithLifecycle()
                 val answer = gate
                 if (answer == null) {
+                    // Lane F15: the build-data screens' new-data strip reads the fresh active build.
+                    CompositionLocalProvider(LocalLatestBuild provides graph::latestBuild) {
                     ForeverAppScaffold(
                         home = graph.home,
                         bis = graph.bisModel,
@@ -47,6 +51,7 @@ class MainActivity : ComponentActivity() {
                         guides = graph.guides,
                         system = graph.system.navigator,
                     )
+                    }
                 } else {
                     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                         UpdateRequiredScreen(onOpenStore = { openStore(answer.storeUrl ?: PLAY_STORE_URL) })
