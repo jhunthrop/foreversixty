@@ -200,7 +200,9 @@ test('target armor: blank omits the override, a typed 0 sends an explicit zero',
   // The default fight has never had an override: the field reads blank (its placeholder,
   // not its value, carries the preset), and the request carries no target_armor key.
   await expect(armor).toHaveValue('');
-  await expect(armor).toHaveAttribute('placeholder', '3731');
+  // The fixture warrior is level 33, so its default target is level 36 and the preset is
+  // the engine's level-36 armor, not the level-63 boss's 3731.
+  await expect(armor).toHaveAttribute('placeholder', '1980');
   await expect(requestJson).not.toHaveValue(/"target_armor"/);
 
   // Typing 0 is a real, explicit request for no armor -- not a second way to clear it.

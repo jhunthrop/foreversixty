@@ -51,7 +51,7 @@
   // exactly the override (including "0") when there is one (2026-09-21 result-page review,
   // Defect 3). It is also the one source of both the preset figure and the level that
   // figure came from, for the help note below.
-  const armorField = $derived(targetArmorField(settings.encounter));
+  const armorField = $derived(targetArmorField(settings.encounter, characterLevel));
   // Contract A8's figure for whichever level is chosen, so an empty armor field says what
   // the engine will use instead of nothing at all. Fix round 1 Minor 1: derived from
   // `armorField.preset` -- settings.ts's own single source of truth for this number --

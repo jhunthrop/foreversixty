@@ -82,23 +82,20 @@ export function encounterFor(encounter: EncounterSpec, characterLevel: number): 
 
 /**
  * Contract A8's own rule -- the engine's boss preset, 3,731 at level 63, and a linear fall
- * to the level-60 figure, 3,300 (sim/api/envelope.go's own comment; ratified in
- * docs/superpowers/specs/2026-09-19-simulator-parity-interfaces.md, A8) -- extended down
- * through level 1 for a levelling character's target (design step 5: "the target armour
- * table extended by level"). This repository has no per-level source for a levelling
- * mob's own armour (the wowhead payload the level-aware design names for player base stats
- * carries nothing about NPCs), so this continues contract A8's already-documented rate
- * rather than inventing an unrelated curve, floored at zero once the line would otherwise
- * go negative -- a levelling-zone mob's armor being negligible next to a raid boss's is the
- * one fact about it this file can state without a better source, which "a better source
- * replaces the three interior numbers" (A8) already anticipated needing.
+ * to the level-60 figure, 3,300 (sim/api/envelope.go's TargetArmorByLevel) -- and below 60
+ * the engine's own estimate for a levelling character's target (design step 5: "the target
+ * armour table extended by level"): the level-60 figure scaled by level
+ * (envelope.go's armorBelowMaxLevel, rounded). No per-level source for a levelling mob's
+ * armour exists yet, so both sides derive it from the one number; this file mirrors the
+ * engine's rule so the field never names an armor the run does not use.
  */
 const ARMOR_LEVEL_60 = 3300;
 const ARMOR_BOSS_LEVEL = 63;
 const ARMOR_BOSS = 3731;
 function armorForLevel(level: number): number {
+  if (level < MAX_LEVEL) return Math.round((ARMOR_LEVEL_60 * level) / MAX_LEVEL);
   const raised = ((level - 60) * (ARMOR_BOSS - ARMOR_LEVEL_60)) / (ARMOR_BOSS_LEVEL - 60);
-  return Math.max(0, Math.ceil(ARMOR_LEVEL_60 + raised));
+  return Math.ceil(ARMOR_LEVEL_60 + raised);
 }
 export const TARGET_ARMOR_BY_LEVEL: Record<number, number> = Object.fromEntries(
   Array.from({ length: MAX_LEVEL + 3 }, (_, index) => index + 1).map((level) => [

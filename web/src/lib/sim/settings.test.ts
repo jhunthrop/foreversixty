@@ -241,16 +241,22 @@ describe('the setters never mutate and always clamp', () => {
   });
 
   // Level-aware sim design (2026-09-27), design step 5: extended down through level 1 for
-  // a levelling character's target (character level + 3), not just the raid range.
-  it('extends the armor table down through level 1, continuing the same rate, floored at zero', () => {
+  // a levelling character's target (character level + 3). Below 60 the figure is the one the
+  // engine runs (sim/api envelope.go armorBelowMaxLevel: the level-60 preset scaled by
+  // level), so the field never names an armor the run does not use.
+  it('extends the armor table down through level 1 with the engine’s own below-60 rule', () => {
     expect(Object.keys(TARGET_ARMOR_BY_LEVEL)).toHaveLength(63);
-    expect(TARGET_ARMOR_BY_LEVEL[1]).toBe(0);
-    expect(TARGET_ARMOR_BY_LEVEL[59]).toBeLessThan(TARGET_ARMOR_BY_LEVEL[60]);
-    // Every level's armor is non-negative and non-decreasing with level.
+    expect(TARGET_ARMOR_BY_LEVEL[41]).toBe(2255);
+    expect(TARGET_ARMOR_BY_LEVEL[36]).toBe(1980);
+    expect(TARGET_ARMOR_BY_LEVEL[1]).toBe(55);
     for (let level = 1; level < 63; level += 1) {
-      expect(TARGET_ARMOR_BY_LEVEL[level]).toBeGreaterThanOrEqual(0);
       expect(TARGET_ARMOR_BY_LEVEL[level + 1]).toBeGreaterThanOrEqual(TARGET_ARMOR_BY_LEVEL[level]);
     }
+  });
+
+  it('names the armor for the target level the character actually fights', () => {
+    // A level-33 character's default target is 36, not the level-63 boss.
+    expect(targetArmorField(DEFAULT_ENCOUNTER, 33)).toMatchObject({ level: 36, preset: 1980 });
   });
 
   describe('defaultTargetLevel', () => {
