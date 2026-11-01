@@ -63,7 +63,11 @@ function escapeRegExp(text: string): string {
  */
 export function clauseOf(note: string, name: string): string {
   const first = note.split(/(?<=[.!?])\s|:\s|\s--\s|\s—\s|;\s/)[0] ?? '';
-  let text = first.trim().replace(/[.\s]+$/, '');
+  // A split inside a parenthesis ("for its five-minute life (client data; Era is 60 s)") leaves
+  // the aside unclosed: the clause ends before it.
+  const open = first.lastIndexOf('(');
+  const unclosed = open >= 0 && first.indexOf(')', open) < 0;
+  let text = (unclosed ? first.slice(0, open) : first).trim().replace(/[.\s]+$/, '');
   const lead = new RegExp(`^${escapeRegExp(name)}(?:\\s+\\(rank \\d+\\))?\\s*`, 'i');
   text = text
     .replace(lead, '')

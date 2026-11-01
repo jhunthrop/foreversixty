@@ -2955,6 +2955,237 @@ enum Copy {
         format("live.tile.sub", time, answer)
     }
 
+    /// Guides
+    static var tabGuides: String { text("tab.guides") }
+
+    /// Guides
+    static var guidesTitle: String { text("guides.title") }
+
+    /// Guides
+    static var guidesSegmentGuides: String { text("guides.segment.guides") }
+
+    /// Tier lists
+    static var guidesSegmentTiers: String { text("guides.segment.tiers") }
+
+    /// What changed
+    static var guidesSegmentChanges: String { text("guides.segment.changes") }
+
+    /// Your guide
+    static var guidesYours: String { text("guides.yours") }
+
+    /// Saved on this phone
+    static var guidesSaved: String { text("guides.saved") }
+
+    /// Saved
+    static var guidesSavedShort: String { text("guides.savedShort") }
+
+    /// Not saved
+    static var guidesNotSaved: String { text("guides.notSaved") }
+
+    /// All classes
+    static var guidesClasses: String { text("guides.classes") }
+
+    /// Saved on this phone: {classes} · {size}. Guides update by themselves when the game data does.
+    static func guidesFooter(classes: String, size: String) -> String {
+        format("guides.footer", classes, size)
+    }
+
+    /// Nothing is saved on this phone yet. Open a guide once and it stays.
+    static var guidesFooterNone: String { text("guides.footerNone") }
+
+    /// This guide is not on your phone yet. Connect once to save it.
+    static var guidesNotCached: String { text("guides.notCached") }
+
+    /// This list is not on your phone yet. Connect once to save it.
+    static var guidesListNotCached: String { text("guides.listNotCached") }
+
+    /// This guide did not load.
+    static var guidesError: String { text("guides.error") }
+
+    /// Sources
+    static var guidesSources: String { text("guides.sources") }
+
+    /// Share
+    static var guidesShare: String { text("guides.share") }
+
+    /// {role} · Updated {date}
+    static func guidesCardMeta(role: String, date: String) -> String {
+        format("guides.cardMeta", role, date)
+    }
+
+    /// Updated {date} · Recommended races: {races}
+    static func guidesHeadMeta(date: String, races: String) -> String {
+        format("guides.headMeta", date, races)
+    }
+
+    /// Updated {date}
+    static func guidesHeadMetaNoRaces(date: String) -> String {
+        format("guides.headMetaNoRaces", date)
+    }
+
+    /// DPS
+    static var guidesRoleDps: String { text("guides.role.dps") }
+
+    /// Healer
+    static var guidesRoleHealer: String { text("guides.role.healer") }
+
+    /// Tank
+    static var guidesRoleTank: String { text("guides.role.tank") }
+
+    /// Overview
+    static var guidesSectionOverview: String { text("guides.section.overview") }
+
+    /// Talents
+    static var guidesSectionTalents: String { text("guides.section.talents") }
+
+    /// Rotation
+    static var guidesSectionRotation: String { text("guides.section.rotation") }
+
+    /// Stats
+    static var guidesSectionStats: String { text("guides.section.stats") }
+
+    /// Gear
+    static var guidesSectionGear: String { text("guides.section.gear") }
+
+    /// Races
+    static var guidesSectionRaces: String { text("guides.section.races") }
+
+    /// {name}, section {n} of {total}
+    static func guidesA11ySection(name: String, n: Int, total: Int) -> String {
+        format("guides.a11y.section", name, n, total)
+    }
+
+    /// Priority {n}, {stat}
+    static func guidesA11yStat(n: Int, stat: String) -> String {
+        format("guides.a11y.stat", n, stat)
+    }
+
+    /// At a glance
+    static var guidesGlance: String { text("guides.glance") }
+
+    /// Role
+    static var guidesRole: String { text("guides.role") }
+
+    /// Stat priority
+    static var guidesStatPriority: String { text("guides.statPriority") }
+
+    /// Strengths
+    static var guidesStrengths: String { text("guides.strengths") }
+
+    /// Weaknesses
+    static var guidesWeaknesses: String { text("guides.weaknesses") }
+
+    /// In a raid
+    static var guidesInRaid: String { text("guides.inRaid") }
+
+    /// {n} ranks
+    static func guidesRanks(n: Int) -> String {
+        format("guides.ranks", n)
+    }
+
+    /// Rank {n}
+    static func guidesRank(n: Int) -> String {
+        format("guides.rank", n)
+    }
+
+    /// Raid build
+    static var guidesRaidBuild: String { text("guides.raidBuild") }
+
+    /// Leveling build
+    static var guidesLevelingBuild: String { text("guides.levelingBuild") }
+
+    /// Level 60
+    static var guidesBuildLevel: String { text("guides.buildLevel") }
+
+    /// Opener
+    static var guidesOpener: String { text("guides.opener") }
+
+    /// Priority
+    static var guidesPriority: String { text("guides.priority") }
+
+    /// Cooldowns
+    static var guidesCooldowns: String { text("guides.cooldowns") }
+
+    /// Ranks are the ones you have at 60.
+    static var guidesRotationFooter: String { text("guides.rotationFooter") }
+
+    /// Best in slot for {spec} · 60 · {preset}
+    static func guidesGearRow(spec: String, preset: String) -> String {
+        format("guides.gearRow", spec, preset)
+    }
+
+    /// Recommended
+    static var guidesRecommended: String { text("guides.recommended") }
+
+    /// Your spec
+    static var tiersYours: String { text("tiers.yours") }
+
+    /// Yours
+    static var tiersYoursTag: String { text("tiers.yoursTag") }
+
+    /// Top
+    static var tiersTop: String { text("tiers.top") }
+
+    /// ≈
+    static var tiersTie: String { text("tiers.tie") }
+
+    /// Loading the tier list…
+    static var tiersLoading: String { text("tiers.loading") }
+
+    /// The tier list did not load.
+    static var tiersError: String { text("tiers.error") }
+
+    /// Alliance
+    static var tiersFactionAlliance: String { text("tiers.faction.alliance") }
+
+    /// Horde
+    static var tiersFactionHorde: String { text("tiers.faction.horde") }
+
+    /// {name}, rank 1 of {count}, {tier}top spec, {race}
+    static func tiersA11yTop(name: String, count: String, tier: String, race: String) -> String {
+        format("tiers.a11y.top", name, count, tier, race)
+    }
+
+    /// {name}, rank {rank} of {count}, {tier}{gap} behind the top, {race}
+    static func tiersA11yBehind(name: String, rank: String, count: String, tier: String, gap: String, race: String) -> String {
+        format("tiers.a11y.behind", name, rank, count, tier, gap, race)
+    }
+
+    /// tier {letter},
+    static func tiersA11yTier(letter: String) -> String {
+        format("tiers.a11y.tier", letter)
+    }
+
+    /// Within 1 percent of the next spec
+    static var tiersA11yTie: String { text("tiers.a11y.tie") }
+
+    /// Opens the guide
+    static var tiersA11yOpens: String { text("tiers.a11y.opens") }
+
+    /// Key dates
+    static var changesDates: String { text("changes.dates") }
+
+    /// What changed
+    static var changesList: String { text("changes.list") }
+
+    /// What changed did not load.
+    static var changesError: String { text("changes.error") }
+
+    /// Site
+    static var changesTagSite: String { text("changes.tag.site") }
+
+    /// Game
+    static var changesTagGame: String { text("changes.tag.game") }
+
+    /// New game data is ready.
+    static var offlineNewData: String { text("offline.newData") }
+
+    /// Update
+    static var offlineUpdate: String { text("offline.update") }
+
+    /// The update did not finish. Try again.
+    static var offlineUpdateFailed: String { text("offline.updateFailed") }
+
     private static func text(_ key: String) -> String {
         Bundle.main.localizedString(forKey: key, value: nil, table: nil)
     }

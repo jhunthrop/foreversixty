@@ -961,6 +961,61 @@
         }
       }
     },
+    "changes.dates": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Key dates"
+          }
+        }
+      }
+    },
+    "changes.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What changed did not load."
+          }
+        }
+      }
+    },
+    "changes.list": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What changed"
+          }
+        }
+      }
+    },
+    "changes.tag.game": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game"
+          }
+        }
+      }
+    },
+    "changes.tag.site": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Site"
+          }
+        }
+      }
+    },
     "coach.couldntCheck": {
       "extractionState": "manual",
       "localizations": {
@@ -1318,6 +1373,544 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your gear"
+          }
+        }
+      }
+    },
+    "guides.a11y.section": {
+      "comment": "Arguments: 1 name (string), 2 n (int), 3 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, section %2$lld of %3$lld"
+          }
+        }
+      }
+    },
+    "guides.a11y.stat": {
+      "comment": "Arguments: 1 n (int), 2 stat (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priority %1$lld, %2$@"
+          }
+        }
+      }
+    },
+    "guides.buildLevel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level 60"
+          }
+        }
+      }
+    },
+    "guides.cardMeta": {
+      "comment": "Arguments: 1 role (string), 2 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Updated %2$@"
+          }
+        }
+      }
+    },
+    "guides.classes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All classes"
+          }
+        }
+      }
+    },
+    "guides.cooldowns": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cooldowns"
+          }
+        }
+      }
+    },
+    "guides.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This guide did not load."
+          }
+        }
+      }
+    },
+    "guides.footer": {
+      "comment": "Arguments: 1 classes (string), 2 size (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved on this phone: %1$@ · %2$@. Guides update by themselves when the game data does."
+          }
+        }
+      }
+    },
+    "guides.footerNone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing is saved on this phone yet. Open a guide once and it stays."
+          }
+        }
+      }
+    },
+    "guides.gearRow": {
+      "comment": "Arguments: 1 spec (string), 2 preset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot for %1$@ · 60 · %2$@"
+          }
+        }
+      }
+    },
+    "guides.glance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At a glance"
+          }
+        }
+      }
+    },
+    "guides.headMeta": {
+      "comment": "Arguments: 1 date (string), 2 races (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$@ · Recommended races: %2$@"
+          }
+        }
+      }
+    },
+    "guides.headMetaNoRaces": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$@"
+          }
+        }
+      }
+    },
+    "guides.inRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In a raid"
+          }
+        }
+      }
+    },
+    "guides.levelingBuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leveling build"
+          }
+        }
+      }
+    },
+    "guides.listNotCached": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This list is not on your phone yet. Connect once to save it."
+          }
+        }
+      }
+    },
+    "guides.notCached": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This guide is not on your phone yet. Connect once to save it."
+          }
+        }
+      }
+    },
+    "guides.notSaved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not saved"
+          }
+        }
+      }
+    },
+    "guides.opener": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opener"
+          }
+        }
+      }
+    },
+    "guides.priority": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priority"
+          }
+        }
+      }
+    },
+    "guides.raidBuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid build"
+          }
+        }
+      }
+    },
+    "guides.rank": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rank %1$lld"
+          }
+        }
+      }
+    },
+    "guides.ranks": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 rank"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld ranks"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "guides.recommended": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recommended"
+          }
+        }
+      }
+    },
+    "guides.role": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Role"
+          }
+        }
+      }
+    },
+    "guides.role.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DPS"
+          }
+        }
+      }
+    },
+    "guides.role.healer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healer"
+          }
+        }
+      }
+    },
+    "guides.role.tank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tank"
+          }
+        }
+      }
+    },
+    "guides.rotationFooter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranks are the ones you have at 60."
+          }
+        }
+      }
+    },
+    "guides.saved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved on this phone"
+          }
+        }
+      }
+    },
+    "guides.savedShort": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved"
+          }
+        }
+      }
+    },
+    "guides.section.gear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gear"
+          }
+        }
+      }
+    },
+    "guides.section.overview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overview"
+          }
+        }
+      }
+    },
+    "guides.section.races": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Races"
+          }
+        }
+      }
+    },
+    "guides.section.rotation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rotation"
+          }
+        }
+      }
+    },
+    "guides.section.stats": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stats"
+          }
+        }
+      }
+    },
+    "guides.section.talents": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents"
+          }
+        }
+      }
+    },
+    "guides.segment.changes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What changed"
+          }
+        }
+      }
+    },
+    "guides.segment.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
+    "guides.segment.tiers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tier lists"
+          }
+        }
+      }
+    },
+    "guides.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "guides.sources": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources"
+          }
+        }
+      }
+    },
+    "guides.statPriority": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stat priority"
+          }
+        }
+      }
+    },
+    "guides.strengths": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strengths"
+          }
+        }
+      }
+    },
+    "guides.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
+    "guides.weaknesses": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weaknesses"
+          }
+        }
+      }
+    },
+    "guides.yours": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guide"
           }
         }
       }
@@ -4161,6 +4754,17 @@
         }
       }
     },
+    "offline.newData": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New game data is ready."
+          }
+        }
+      }
+    },
     "offline.strip": {
       "comment": "Arguments: 1 time (string)",
       "extractionState": "manual",
@@ -4169,6 +4773,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Offline. Showing what you had at %1$@."
+          }
+        }
+      }
+    },
+    "offline.update": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update"
+          }
+        }
+      }
+    },
+    "offline.updateFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The update did not finish. Try again."
           }
         }
       }
@@ -7904,6 +8530,17 @@
         }
       }
     },
+    "tab.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
     "tab.home": {
       "extractionState": "manual",
       "localizations": {
@@ -8348,6 +8985,152 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your build"
+          }
+        }
+      }
+    },
+    "tiers.a11y.behind": {
+      "comment": "Arguments: 1 name (string), 2 rank (string), 3 count (string), 4 tier (string), 5 gap (string), 6 race (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, rank %2$@ of %3$@, %4$@%5$@ behind the top, %6$@"
+          }
+        }
+      }
+    },
+    "tiers.a11y.opens": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the guide"
+          }
+        }
+      }
+    },
+    "tiers.a11y.tie": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Within 1 percent of the next spec"
+          }
+        }
+      }
+    },
+    "tiers.a11y.tier": {
+      "comment": "Arguments: 1 letter (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tier %1$@, "
+          }
+        }
+      }
+    },
+    "tiers.a11y.top": {
+      "comment": "Arguments: 1 name (string), 2 count (string), 3 tier (string), 4 race (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, rank 1 of %2$@, %3$@top spec, %4$@"
+          }
+        }
+      }
+    },
+    "tiers.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The tier list did not load."
+          }
+        }
+      }
+    },
+    "tiers.faction.alliance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alliance"
+          }
+        }
+      }
+    },
+    "tiers.faction.horde": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horde"
+          }
+        }
+      }
+    },
+    "tiers.loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading the tier list…"
+          }
+        }
+      }
+    },
+    "tiers.tie": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "≈"
+          }
+        }
+      }
+    },
+    "tiers.top": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top"
+          }
+        }
+      }
+    },
+    "tiers.yours": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spec"
+          }
+        }
+      }
+    },
+    "tiers.yoursTag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yours"
           }
         }
       }

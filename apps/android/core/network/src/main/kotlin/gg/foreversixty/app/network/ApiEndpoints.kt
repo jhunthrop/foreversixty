@@ -13,6 +13,7 @@ import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.model.BuildInput
 import gg.foreversixty.app.model.BuildList
 import gg.foreversixty.app.model.BuildSaved
+import gg.foreversixty.app.model.Changelog
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.CharacterProfile
 import gg.foreversixty.app.model.CharacterSearch
@@ -22,6 +23,8 @@ import gg.foreversixty.app.model.CoachRecent
 import gg.foreversixty.app.model.CoachReview
 import gg.foreversixty.app.model.Device
 import gg.foreversixty.app.model.FightMeters
+import gg.foreversixty.app.model.GuideFile
+import gg.foreversixty.app.model.GuideIndex
 import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildLoot
 import gg.foreversixty.app.model.GuildRaids
@@ -52,6 +55,7 @@ import gg.foreversixty.app.model.SimProgress
 import gg.foreversixty.app.model.SimResult
 import gg.foreversixty.app.model.SimStarted
 import gg.foreversixty.app.model.TalentsFile
+import gg.foreversixty.app.model.TiersFile
 import gg.foreversixty.app.model.Widget
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -248,6 +252,22 @@ object StaticEndpoints {
     fun getKeyDates(): StaticResource<List<KeyDate>> =
         StaticResource("/data/dates.json", ListSerializer(KeyDate.serializer()))
 
+    /** /data/changelog.json: The site's changelog, newest first (W3-C1) */
+    fun getChangelog(): StaticResource<Changelog> =
+        StaticResource("/data/changelog.json", Changelog.serializer())
+
+    /** /data/{build}/guides/index.json: Every spec guide of a build (W3-C1) */
+    fun getGuideIndex(build: String): StaticResource<GuideIndex> =
+        StaticResource("/data/${build.encodeURLPathPart()}/guides/index.json", GuideIndex.serializer())
+
+    /** /data/{build}/guides/{spec}.json: One spec guide (W3-C1) */
+    fun getGuide(build: String, spec: String): StaticResource<GuideFile> =
+        StaticResource("/data/${build.encodeURLPathPart()}/guides/${spec.encodeURLPathPart()}.json", GuideFile.serializer())
+
+    /** /data/{build}/tiers.json: The ranked tier lists (W3-C1; the apps show them only behind guide_tiers) */
+    fun getTiers(build: String): StaticResource<TiersFile> =
+        StaticResource("/data/${build.encodeURLPathPart()}/tiers.json", TiersFile.serializer())
+
     /** /data/{build}/classes.json: Every class of a build */
     fun getClasses(build: String): StaticResource<List<ClassInfo>> =
         StaticResource("/data/${build.encodeURLPathPart()}/classes.json", ListSerializer(ClassInfo.serializer()))
@@ -320,6 +340,10 @@ object ContractRoutes {
     val staticData: List<FixtureRoute> = listOf(
         FixtureRoute(HttpMethod.Get, "/data/active-build.json", "cdn.active-build", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/dates.json", "cdn.dates", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/changelog.json", "cdn.changelog", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/guides/index.json", "cdn.guides.index", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/guides/{spec}.json", "cdn.guides.{spec}", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/data/{build}/tiers.json", "cdn.tiers", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/classes.json", "cdn.classes", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/bis/{spec}.json", "cdn.bis.{spec}", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/data/{build}/items/{class}.json", "cdn.items.{class}", HttpStatusCode.fromValue(200)),

@@ -596,6 +596,34 @@ The key dates (see the open item above). `[{ key, value, ... }]`: `key` (a displ
 while the date is in progress), `role`, `highlight`. Sort and compare by `iso`/`endIso`, never by
 `key`. Fixture `cdn.dates`.
 
+### Guides, tier lists and the changelog (W3-C1, Wave 3 lane F9)
+Written at site build time by `web/src/lib/app-data` (Astro endpoints under `web/src/pages/data`)
+from the guide Markdown and the BiS files, through the same `lib/guides` and `lib/tiers` functions
+the web's guide and tier pages call. Public, no envelope. The site build fails a file over its
+gzipped budget: a guide 60 KB, `tiers.json` 40 KB, the index 10 KB.
+
+- `/data/{build}/guides/index.json`: `{ build, classes: [{ class, class_name, specs: [{ spec,
+  spec_slug, spec_name, role, icon, updated, path }] }] }`. Classes in `classes.json` order, specs in
+  tree order; `path` is the guide's file under `/data/{build}/`. Fixture `cdn.guides.index`.
+- `/data/{build}/guides/{class}-{spec}.json`: one guide. `updated` is the web header's stamp (the
+  later of the guide's date and its BiS file's). `stat_priority` is the web's pill order.
+  `overview { strengths, weaknesses, raid }` are plain-text lines; `role_line` is the raid block's
+  Role line. `talents { key[], leveling_build, raid_build }`: a key talent is `{ name, icon, rank,
+  max_rank, text, why }` (`text` the top rank's game text, `why` null when it would repeat it); a
+  build is `{ code, totals[], tree_names[] }` with `raid_build` null when it is the leveling build.
+  `rotation { opener, priority, cooldowns }` (null with no rotation) lists `{ spell_id, name, rank,
+  icon, clause }`, the rank the top one learned by 60. `gear { spec, band, preset_label }` names the
+  BiS list the Gear row opens. `sections` are the sections the guide has, in reading order. Fixtures
+  `cdn.guides.shaman-elemental`, `cdn.guides.mage-fire`, `cdn.guides.warrior-protection`.
+- `/data/{build}/tiers.json`: `{ build, updated, preset_label, factions: { alliance|horde: { dps|tank|healer:
+  { notes[], rows[] } } } }`. A row carries the web's rank, gap, bar fraction, tie, tier letter (null
+  on tank and healer lists), `metric_text`, `gap_text` and the callout's `title` and `detail`
+  sentences, so the apps never sort, gap or letter. The apps show it only behind the `guide_tiers`
+  switch, off until the accuracy reviewer verifies every DPS band. Fixture `cdn.tiers`.
+- `/data/changelog.json`: `{ entries: [{ id, date, title, kind, blocks: [{ type: p|h|li, text }],
+  sources[] }] }`, newest first. `kind` `site` is a change to this site; the rest are game news.
+  Fixture `cdn.changelog`.
+
 ## App sign-in and notifications (lanes A1 and A2)
 
 These routes ship dark: unmounted until `APP_SIGN_IN=true` (A1) and `APP_NOTIFICATIONS_ENABLED=1`

@@ -22,6 +22,10 @@ public enum Feature: String, CaseIterable, Sendable {
     case widgets = "widgets"
     /// F10: Your reports: the list, a report with your parses, a fight's meters, and the coach card with log_coach
     case reports = "reports"
+    /// F9: The Guides tab: your guide, every class's guides saved for offline, and What changed
+    case guides = "guides"
+    /// F9: The Guides tab's Tier lists segment; on only after the accuracy reviewer verifies every DPS band (spec F9.4)
+    case guideTiers = "guide_tiers"
 
     /// The value when the API has not said: what ships in the build.
     public var bundledDefault: Bool {
@@ -36,6 +40,8 @@ public enum Feature: String, CaseIterable, Sendable {
         case .premiumLink: false
         case .widgets: false
         case .reports: false
+        case .guides: false
+        case .guideTiers: false
         }
     }
 }

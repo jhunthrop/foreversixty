@@ -19,7 +19,7 @@ const BLOCKS: Readonly<Record<string, keyof Omit<OverviewParts, 'summary'>>> = {
 };
 
 /** Markdown inline marks off a sentence, for the header's plain-text summary. */
-function plainText(markdown: string): string {
+export function plainText(markdown: string): string {
   return markdown
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/[*_`]/g, '')

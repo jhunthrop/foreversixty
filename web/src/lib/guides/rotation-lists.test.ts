@@ -40,6 +40,15 @@ describe('clauseOf', () => {
     expect(clauseOf('Seal of Fury kept up. Then something else.', 'Seal of Fury')).toBe('Kept up');
   });
 
+  it('never ends inside a parenthesis the cut left open', () => {
+    expect(
+      clauseOf(
+        'Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client data; Era is 60 s).',
+        'Mana Spring Totem',
+      ),
+    ).toBe('Restores 10 mana every 2 seconds for its five-minute life');
+  });
+
   it('drops a leading parenthetical and comma', () => {
     expect(
       clauseOf(

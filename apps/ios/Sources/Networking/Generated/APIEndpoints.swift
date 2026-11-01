@@ -323,6 +323,32 @@ public extension StaticResource where Response == [KeyDate] {
     static var getKeyDates: StaticResource { StaticResource(path: "/data/dates.json") }
 }
 
+public extension StaticResource where Response == Changelog {
+    /// /data/changelog.json: The site's changelog, newest first (W3-C1)
+    static var getChangelog: StaticResource { StaticResource(path: "/data/changelog.json") }
+}
+
+public extension StaticResource where Response == GuideIndex {
+    /// /data/{build}/guides/index.json: Every spec guide of a build (W3-C1)
+    static func getGuideIndex(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/guides/index.json")
+    }
+}
+
+public extension StaticResource where Response == GuideFile {
+    /// /data/{build}/guides/{spec}.json: One spec guide (W3-C1)
+    static func getGuide(build: String, spec: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/guides/\(spec).json")
+    }
+}
+
+public extension StaticResource where Response == TiersFile {
+    /// /data/{build}/tiers.json: The ranked tier lists (W3-C1; the apps show them only behind guide_tiers)
+    static func getTiers(build: String) -> StaticResource {
+        StaticResource(path: "/data/\(build)/tiers.json")
+    }
+}
+
 public extension StaticResource where Response == [ClassInfo] {
     /// /data/{build}/classes.json: Every class of a build
     static func getClasses(build: String) -> StaticResource {
@@ -409,6 +435,10 @@ public enum ContractRoutes {
     public static let staticData: [FixtureRoute] = [
         FixtureRoute(.get, "/data/active-build.json", fixture: "cdn.active-build", status: 200),
         FixtureRoute(.get, "/data/dates.json", fixture: "cdn.dates", status: 200),
+        FixtureRoute(.get, "/data/changelog.json", fixture: "cdn.changelog", status: 200),
+        FixtureRoute(.get, "/data/{build}/guides/index.json", fixture: "cdn.guides.index", status: 200),
+        FixtureRoute(.get, "/data/{build}/guides/{spec}.json", fixture: "cdn.guides.{spec}", status: 200),
+        FixtureRoute(.get, "/data/{build}/tiers.json", fixture: "cdn.tiers", status: 200),
         FixtureRoute(.get, "/data/{build}/classes.json", fixture: "cdn.classes", status: 200),
         FixtureRoute(.get, "/data/{build}/bis/{spec}.json", fixture: "cdn.bis.{spec}", status: 200),
         FixtureRoute(.get, "/data/{build}/items/{class}.json", fixture: "cdn.items.{class}", status: 200),
