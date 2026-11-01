@@ -57,14 +57,15 @@ enum ItemVocabulary {
     /// The stats the client prints as a green `Equip:` sentence rather than `+n Name`.
     static func equipLine(_ key: String, value: Int) -> String? {
         switch key {
-        case "spell_power": Copy.tooltipEquipSpellPower(n: value)
-        case "healing": Copy.tooltipEquipHealing(n: value)
-        case "attack_power": Copy.tooltipEquipAttackPower(n: value)
-        case "ranged_attack_power": Copy.tooltipEquipRangedAttackPower(n: value)
-        case "mp5": Copy.tooltipEquipMp5(n: value)
-        case "spell_penetration": Copy.tooltipEquipSpellPenetration(n: value)
-        case "fire_power": Copy.tooltipEquipFirePower(n: value)
-        case "block_value": Copy.tooltipEquipBlockValue(n: value)
+        case "spell_power": Copy.itemsEquipSpellPower(n: value)
+        case "healing": Copy.itemsEquipHealing(n: value)
+        case "attack_power": Copy.itemsEquipAttackPower(n: value)
+        case "ranged_attack_power": Copy.itemsEquipRangedAttackPower(n: value)
+        case "mp5": Copy.itemsEquipMp5(n: value)
+        case "spell_penetration": Copy.itemsEquipSpellPenetration(n: value)
+        case "fire_power": Copy.itemsEquipFirePower(n: value)
+        case "block_value": Copy.itemsEquipBlockValue(n: value)
+        case "defense": Copy.itemsEquipDefense(n: value)
         default: nil
         }
     }
@@ -74,12 +75,11 @@ enum ItemVocabulary {
     static func percentLine(_ key: String, value: Int) -> String? {
         let percent = "\(value)%"
         return switch key {
-        case "crit": Copy.tooltipEquipCrit(percent: percent)
-        case "hit": Copy.tooltipEquipHit(percent: percent)
-        case "defense": Copy.tooltipEquipDefense(n: value)
-        case "dodge": Copy.tooltipEquipDodge(percent: percent)
-        case "parry": Copy.tooltipEquipParry(percent: percent)
-        case "block": Copy.tooltipEquipBlock(percent: percent)
+        case "crit": Copy.itemsEquipCrit(percent: percent)
+        case "hit": Copy.itemsEquipHit(percent: percent)
+        case "dodge": Copy.itemsEquipDodge(percent: percent)
+        case "parry": Copy.itemsEquipParry(percent: percent)
+        case "block": Copy.itemsEquipBlock(percent: percent)
         default: nil
         }
     }

@@ -8,7 +8,7 @@ import Testing
 import UIKit
 
 /// F12's boards on iPhone 17 (402 x 874) at the default size and at AX5 (spec §12), from the
-/// repo's build 70658 and the contract fixtures. Recorded on the shared iOS 26.5 simulator
+/// repo's active build 70707 and the contract fixtures. Recorded on the shared iOS 26.5 simulator
 /// (`SNAPSHOT_TESTING_RECORD=all` to re-record); the PNGs double as the review captures in
 /// design/reviews/2026-10-31-mobile-wave3-search/build/ios.
 @MainActor
@@ -58,33 +58,33 @@ struct SearchSnapshotTests {
     }
 
     @Test func f12_1_empty() throws {
-        snap(try search(query: "", recent: SearchTestData.recents), "f12.1-empty-ios")
+        snap(try search(query: "", recent: SearchTestData.recents), "f12-1-empty-ios")
     }
 
     @Test func f12_2_all() throws {
-        snap(try search(query: "ele"), "f12.2-all-ios", height: 1500)
+        snap(try search(query: "ele"), "f12-2-all-ios", height: 1500)
     }
 
     @Test func f12_2_all_ax5() throws {
-        snap(try search(query: "ele"), "f12.2-all-ax5-ios", height: 3600, large: true)
+        snap(try search(query: "ele"), "f12-2-all-ax5-ios", height: 3600, large: true)
     }
 
     @Test func f12_3_items() throws {
-        snap(try search(query: "devout", scope: .items), "f12.3-items-ios", height: 1100)
+        snap(try search(query: "devout", scope: .items), "f12-3-items-ios", height: 1100)
     }
 
     @Test func f12_6_noResults() throws {
-        snap(try search(query: "xqz", characters: .loaded(query: "xqz", rows: [])), "f12.6-no-results-ios")
+        snap(try search(query: "xqz", characters: .loaded(query: "xqz", rows: [])), "f12-6-none-ios")
     }
 
     @Test func f12_6_offline() throws {
-        snap(try search(query: "xqz", characters: .offline), "f12.6-offline-ios")
+        snap(try search(query: "xqz", characters: .offline), "f12-6-offline-ios")
     }
 
     /// The account's own character carries `You`; nobody else does.
     @Test func f12_2_characters() throws {
         let rows = SearchTestData.lightningCharacters
-        snap(try search(query: "lightning", scope: .characters, characters: .loaded(query: "lightning", rows: rows)), "f12.2-characters-ios")
+        snap(try search(query: "lightn", scope: .characters, characters: .loaded(query: "lightn", rows: rows)), "f12-2-characters-ios")
     }
 
     @Test func f12_indexFailed() throws {
@@ -95,7 +95,7 @@ struct SearchSnapshotTests {
                 forCharacter: nil, viewer: context.viewer, build: SearchTestData.build
             )
         }
-        snap(view, "f12.index-failed-ios")
+        snap(view, "f12-index-failed-ios")
     }
 
     // MARK: The item page
@@ -124,7 +124,7 @@ struct SearchSnapshotTests {
     }
 
     private func capeState() throws -> ItemPageState {
-        try itemState(SearchTestData.cape, uses: SearchTestData.capeUses())
+        try itemState(SearchTestData.cape, uses: SearchTestData.uses(SearchTestData.cape))
     }
 
     private func page(_ state: ItemPageState, anchor: ItemPageAnchor = .item, specsExpanded: Bool = false) -> some View {
@@ -135,35 +135,28 @@ struct SearchSnapshotTests {
     }
 
     @Test func f12_4_pick() throws {
-        snap(page(try capeState()), "f12.4-pick-ios", height: 1400)
+        snap(page(try capeState()), "f12-4-pick-ios", height: 1400)
     }
 
     @Test func f12_4_pick_ax5() throws {
-        snap(page(try capeState()), "f12.4-pick-ax5-ios", height: 3800, large: true)
+        snap(page(try capeState()), "f12-4-pick-ax5-ios", height: 3800, large: true)
     }
 
     @Test func f12_4_runnerUp() throws {
-        snap(page(try itemState(SearchTestData.runnerUp, uses: SearchTestData.uses(SearchTestData.runnerUp))), "f12.4-runner-up-ios", height: 1400)
+        snap(page(try itemState(SearchTestData.runnerUp, uses: SearchTestData.uses(SearchTestData.runnerUp))), "f12-4-runner-up-ios", height: 1400)
     }
 
-    @Test func f12_4_notOnList() throws {
-        snap(page(try itemState(SearchTestData.notListed, uses: SearchTestData.uses(SearchTestData.notListed))), "f12.4-not-on-list-ios", height: 1400)
-    }
-
-    @Test func f12_4_setPiece() throws {
-        snap(page(try itemState(SearchTestData.setPiece, uses: SearchTestData.uses(SearchTestData.setPiece))), "f12.4-set-piece-ios", height: 1300)
-    }
-
-    @Test func f12_4_vendor() throws {
-        snap(page(try itemState(SearchTestData.vendorItem, uses: SearchTestData.uses(SearchTestData.vendorItem))), "f12.4-vendor-ios", height: 1200)
+    /// On no list: no card; a vendor, a reputation source and the set's lines.
+    @Test func f12_4_notListed() throws {
+        snap(page(try itemState(SearchTestData.notListed, uses: SearchTestData.uses(SearchTestData.notListed))), "f12-4-not-listed-ios", height: 1300)
     }
 
     @Test func f12_5_bisFor() throws {
-        snap(page(try capeState(), anchor: .bisFor), "f12.5-bis-for-ios")
+        snap(page(try capeState(), anchor: .bisFor), "f12-5-bis-for-ios")
     }
 
     @Test func f12_5_bisFor_expanded() throws {
-        snap(page(try capeState(), specsExpanded: true), "f12.5-bis-for-expanded-ios", height: 1900)
+        snap(page(try capeState(), specsExpanded: true), "f12-5-bis-for-expanded-ios", height: 1900)
     }
 
     @Test func f12_4_loading() throws {
@@ -173,20 +166,20 @@ struct SearchSnapshotTests {
         state.tooltip = .loading
         state.sources = .loading
         state.specs = .loading
-        snap(page(state), "f12.4-loading-ios", height: 1400)
+        snap(page(state), "f12-4-loading-ios", height: 1400)
     }
 
     @Test func f12_4_usesFailed() throws {
         var state = try capeState()
         state.sources = .failed
         state.specs = .failed
-        snap(page(state), "f12.4-uses-failed-ios", height: 1200)
+        snap(page(state), "f12-4-uses-failed-ios", height: 1200)
     }
 
     @Test func f12_unknownItem() {
         var state = ItemPageState(route: ItemPageRoute(itemID: 999_999), build: build)
         state.isKnown = false
-        snap(page(state), "f12.4-unknown-ios")
+        snap(page(state), "f12-unknown-ios")
     }
 
     @Test func f2_6_moreAbout() throws {
@@ -194,7 +187,7 @@ struct SearchSnapshotTests {
         let item = try #require(corpus.item(SearchTestData.cape))
         let request = ItemPageLogic.tooltipRequest(item: item, route: ItemPageRoute(itemID: item.id), build: build, character: SearchTestData.lightningbolltz, own: raid)
         let model = ItemTooltipModel.build(request, sources: try SearchTestData.tooltipSources())
-        snap(ItemTooltipContent(request: request, phase: .loaded(model), moreAbout: {}), "f2.6-more-about-ios", height: 1100)
+        snap(ItemTooltipContent(request: request, phase: .loaded(model), moreAbout: {}), "f2-6-more-about-ios", height: 1100)
     }
 }
 

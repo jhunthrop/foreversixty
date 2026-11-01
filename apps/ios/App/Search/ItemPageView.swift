@@ -347,20 +347,23 @@ struct ItemPickCardView: View {
     }
 }
 
-/// A source's tile: one glyph per kind, the same on both apps (a boss is crossed swords, as the
-/// board draws it; a vendor a bag; a quest the giver's `!`).
+/// A source's tile: one glyph per kind, the same set as Android (a boss is a skull, a vendor a
+/// coin, a quest a scroll, crafting a wrench, a reputation a banner, PvP crossed swords, a zone
+/// a map pin, a world drop or anything else the globe). The skull and swords have no SF Symbol,
+/// so they are the text glyphs.
 enum SourceGlyph {
     case symbol(String)
     case text(String)
 
     static func of(_ kind: String) -> SourceGlyph {
         switch kind {
-        case "raid", "dungeon": .text("\u{2694}\u{FE0E}")
-        case "vendor": .symbol("bag.fill")
-        case "quest": .symbol("exclamationmark")
-        case "crafted": .symbol("hammer.fill")
+        case "raid", "dungeon": .text("\u{2620}\u{FE0E}")
+        case "vendor": .symbol("dollarsign.circle.fill")
+        case "quest": .symbol("scroll.fill")
+        case "crafted": .symbol("wrench.adjustable.fill")
         case "rep": .symbol("flag.fill")
-        case "pvp": .symbol("flag.2.crossed.fill")
+        case "pvp": .text("\u{2694}\u{FE0E}")
+        case "zone": .symbol("mappin.and.ellipse")
         default: .symbol("globe")
         }
     }

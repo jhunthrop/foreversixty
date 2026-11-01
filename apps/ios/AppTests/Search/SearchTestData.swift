@@ -3,11 +3,11 @@ import Foundation
 import Models
 import Networking
 
-/// F12's test data, from the repo's own build 70658 (the boards' build): every class's items
+/// F12's test data, from the repo's active build 70707: every class's items
 /// file folded into a search index as the site's generator does, the talents files, the spec
 /// catalogue's guides, and the contract fixtures for the item-uses shard and the characters.
 enum SearchTestData {
-    static let build = "1.60.1.70658"
+    static let build = "1.60.1.70707"
     static let classes = ["druid", "hunter", "mage", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"]
     static let cape = 11623
     private static var buildDir: URL { BisTestData.repo.appending(path: "data/builds/\(build)") }
@@ -30,17 +30,7 @@ enum SearchTestData {
     // MARK: The index
 
     static func itemsFile(_ classSlug: String) throws -> ItemsFile {
-        var root = try JSONSerialization.jsonObject(with: Data(contentsOf: buildDir.appending(path: "items/\(classSlug).json"))) as? [String: Any] ?? [:]
-        // Commit 7d25700a6 (spec C6): the data run gives Spritecaster Cape classic-db's Bonding
-        // (picked up) and Cloth; the committed 70658 files predate the run.
-        if var items = root["items"] as? [[String: Any]] {
-            items = items.map { item in
-                guard item["id"] as? Int == cape else { return item }
-                return item.merging(["bonding": "pickup", "armor_type": "cloth"]) { _, new in new }
-            }
-            root["items"] = items
-        }
-        return try WireFormat.decoder().decode(ItemsFile.self, from: JSONSerialization.data(withJSONObject: root))
+        try WireFormat.decoder().decode(ItemsFile.self, from: Data(contentsOf: buildDir.appending(path: "items/\(classSlug).json")))
     }
 
     static func talentsFile(_ classSlug: String) throws -> TalentsFile {
@@ -90,23 +80,15 @@ enum SearchTestData {
 
     // MARK: Item uses and the tooltip
 
-    /// The five items the captures use (pick, runner-up, not on the list, set piece, vendor), from
-    /// the site's item-uses generator over the committed build (`item-uses.70658.json` beside this file).
-    static let runnerUp = 11196 // Mindburst Medallion: Elemental 60 raid, runner-up 2 for Neck
-    static let notListed = 11841 // Senior Designer's Pantaloons: Restoration lists it, Elemental never
-    static let setPiece = 16844 // Earthfury Epaulets: Baron Geddon, 30%
-    static let vendorItem = 228190 // Knowledge of the Timbermaw: Meilosh
+    /// The three items the captures use, with the site generator's item-uses rows for them over
+    /// build 70707 (the file Android's tests read, one copy for both apps).
+    static let runnerUp = 17755 // Satyrmane Sash: Elemental 60 raid, runner-up 2 for Waist
+    static let notListed = 20203 // Defiler's Mail Pauldrons: on no list; a vendor, a reputation and a set
 
     static func uses(_ id: Int) throws -> ItemUses {
-        struct File: Decodable { let items: [String: ItemUses] }
-        let url = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appending(path: "item-uses.70658.json")
-        let file = try WireFormat.decoder().decode(File.self, from: Data(contentsOf: url))
-        return try requireValue(file.items[String(id)])
-    }
-
-    static func capeUses() throws -> ItemUses {
-        let shard = try BisTestData.fixture("cdn.item-uses", as: ItemUsesShard.self)
-        return try requireValue(shard.items[String(cape)])
+        let url = BisTestData.repo.appending(path: "apps/android/app/src/test/resources/search/item-uses-70707.json")
+        let file = try WireFormat.decoder().decode([String: ItemUses].self, from: Data(contentsOf: url))
+        return try requireValue(file[String(id)])
     }
 
     static func tooltipSources(classSlug: String = "shaman", spec: String = "shaman-elemental") throws -> ItemTooltipSources {
