@@ -268,8 +268,9 @@ class GearItem(BaseModel):
     #: Helm's 20 hit / 28 crit) that `gametables/combatratings.txt` divides down
     #: to a percent (`pipeline/simdb/ratings.py`). A consumer converting `stats`
     #: to percent divides `stats[key] - percent_stats[key]` by the factor and
-    #: adds `percent_stats[key]` back unchanged. Empty for a wowhead row (all
-    #: ratings) and for every item with no aura-sourced rating-family stat.
+    #: adds `percent_stats[key]` back unchanged. A wowhead row records its
+    #: `critstrkpct`/`hitpct`-style keys here (`wowhead_items.PERCENT_STAT_KEYS`).
+    #: Empty for every item with no percent-stated rating-family stat.
     percent_stats: dict[str, int] = {}
     #: classicdb-fidelity lane, 2026-09-30: where `icon` actually came from --
     #: `"client"` (the client's own `IconFileDataID`, resolved through
