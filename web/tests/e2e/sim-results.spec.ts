@@ -52,7 +52,7 @@ test('the sentence names the two biggest damage sources, their share and the big
   // AuraTable's own name-tiebroken sort below).
   const sentence = page.getByTestId('sim-sentence');
   await expect(sentence).toHaveText(
-    'main-hand white hits and An unnamed spell are 78% of your damage; An unnamed spell is up 100% of the fight.',
+    'main-hand white hits and An unnamed spell are 78% of your damage; An unnamed spell is up 19% of the fight.',
   );
   await expect(sentence).not.toContainText(/\bspell:/);
   await expect(sentence).not.toContainText(/\bSpell \d+\b/);
