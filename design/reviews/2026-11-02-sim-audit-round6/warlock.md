@@ -66,6 +66,36 @@ Logs: still no level-60 Forever log (launch is 2026-11-04).
 | S2 | Incinerate r3 (217 + 1.4 a level, variance 0.15, 0.714, 2.5 s, 325, +25% on an Immolated target), Conflagrate r6 (282 + 1.3, variance 0.219, 0.429, 10 s, 255), Shadowburn r6 (266 + 1.8, variance 0.109, 0.429, 15 s, 365): all match the engine. | client 1293813, 18932, 18871; incinerate.go, conflagrate.go, shadowburn.go | Aligned | - |
 | S3 | Agonizing Flames 3/3: +10% direct damage on the Destruction set (Shadow Bolt, Shadowburn, Soul Fire, Searing Pain, Immolate, Conflagrate, Incinerate, Rain of Fire) and +10% on Immolate's ticks, with +10% crit on Searing Pain. The engine's additive 10% on the Destruction-flagged spells covers both halves. Aftermath 4/5 is +40% on Immolate's initial hit only. Shadow and Flame 5/5 keeps Immolate after Conflagrate (100%), and gives +10% Shadow after Conflagrate and +10% Fire after Shadowburn for 20 s. Fire and Brimstone gives +25% crit on Conflagrate. Cataclysm is -10% cost. | client 17927, 18119, 426316, 412751, 17778; talents.go:806-1340 | Aligned | - |
 
+## Dynamic DoTs (integrator item, engine branch lane/r6-dots)
+
+`lane/r6-dots` starts at 8baffe5fc and carries the casters lane's 9a5c25dff as 834b67f0f (opt-in `DotConfig.Dynamic`, mage and priest DoTs). Then come the three commits below.
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| Y1 | **Warlock DoTs read spell power and the caster's multipliers at every tick.** The engine snapshotted both at the cast. Corruption, Immolate, Bane of Doom and Rain of Fire take `Dynamic`. Siphon Life, Drain Life, Drain Soul and Wrack take it too, and fold their own multiplier back in after the per-tick read: the target's modifiers for Siphon Life, Soul Siphon's count for the others. Bane of Agony is not the exception. #398 is a log of Agony snapshotting "unlike other dot spells", and Blizzard closed it saying Agony now gained "scripting to adjust every tick to the spell power of the caster" but still snapshots Amplify Curse. So Agony computes its ramp stage (half, whole, one and a half of the base) at each tick, on the base Amplify Curse may have raised at the cast. The old ramp also added the raw base on top, skipping the base-damage multiplier. Tests: `TestWarlockDotsReadSpellPowerEachTick` (7 DoTs) and `TestBaneOfAgonyRampsUnderTheDynamicRead` both fail on the pin plus 834b67f0f, and pass on the branch. | forever-bugs #137 (Blizzard 2026-10-01, "Since we've changed to dynamic DoTs"; crit also read live); #35 (Eureka! boosts DoTs already ticking); #398 (Blizzard 2026-10-26); read 2026-11-01 | CONFIRMED-BUG | E 280f20a9c |
+| Y2 | Moonfire, Hurricane and Flame Shock take `Dynamic`. Insect Swarm does too, and re-zeroes its crit chance outside Moonkin Form after the per-tick read. Tests: `TestBalanceDotsReadSpellPowerEachTick` and `TestFlameShockReadsSpellPowerEachTick` (failed, then passed). | same sources | CONFIRMED-BUG | E 2ab2479ba |
+| Y3 | **Balance and Feral registered Moonfire and Wrath twice.** Found while checking Y2's +7.9%. Both specs call `RegisterBalanceSpells` and `RegisterFeralCatSpells`, and both kits register the two spells. The APL cast the first set by spell id. `druid.Moonfire` and `druid.Wrath` pointed at the second set, where Improved Moonfire (+10% damage and crit), Vengeance and Improved Wrath are hooked, so the cast spells carried none of them. The second set's Moonfire dot also shared the first's aura and ticked beside it unsnapshotted: 0 damage on the pin (123.9 Moonfire "hits" from 14 casts), its spell power share under Y2. Both registrations are now idempotent. With one set, published horde Balance shows Moonfire crit 29.8% to 35.0% and Wrath's average hit 583 to 648. Test `TestBalanceRegistersMoonfireAndWrathOnce` (failed: 2 registrations each). A scan of all 28 specs' spellbooks at band 60 finds no other duplicate on the branch. On the pin it finds Balance, Feral and Fire mage (12654, Ignite, see Still open). | debug combat log of one iteration: two dot objects on one "Moonfire (Rank 10)-1" aura | CONFIRMED-BUG | E b6cc5c0a1 |
+| Y4 | Bleeds and attack-power DoTs stay as they are (Rake, Rip, Pounce, Lacerate, Rend, Rupture, Garrote, Deep Wounds, Serpent Sting, traps). No source says they read attack power each tick. #234 says Deep Wounds rolls its damage over and "doesn't scale with Attack Power" at all. Heals over time are left to the healers lane. | forever-bugs #234, #283 | Aligned (no source to change them) | - |
+| Y5 | The engine's Serpent Sting carries 0.2 spell power a tick (Season of Discovery's rune scaling). The client row has no coefficient (13555 and 25295: EffectBonusCoefficient 0, BonusCoefficientFromAP 0). Single source; hunters wear little spell power. | SpellEffect 70707; `sim/hunter/serpent_sting.go:15` | OPEN (for the physical lane) | - |
+
+Before and after (raid, band 60, 10000 iterations, DPS; pin 8baffe5fc against lane/r6-dots b6cc5c0a1 on the site's committed data). "Registration fix alone" is the pin plus Y3's two source files.
+
+| Spec | Alliance s1 | Alliance s50001 | Horde s1 | Horde s50001 | Registration fix alone |
+|---|---|---|---|---|---|
+| Affliction | 572.4 to 572.3 (-0.02%) | 0.00% | 0.00% | -0.02% | 0.00% |
+| Demonology | 644.3 to 643.2 (-0.17%) | -0.17% | 646.8 to 645.7 (-0.17%) | -0.17% | 0.00% |
+| Destruction | 670.2 to 673.0 (+0.42%) | +0.42% | 673.4 to 676.4 (+0.45%) | +0.43% | 0.00% |
+| Balance | 537.2 to 568.4 (+5.81%) | +5.71% | 540.3 to 570.2 (+5.53%) | +5.65% | the whole move |
+| Feral | 0.00% | 0.00% | 0.00% | 0.00% | 0.00% |
+| Elemental | 0.00% | 0.00% | -0.02% | -0.02% | 0.00% |
+| Enhancement | 0.00% | 0.00% | 0.00% | 0.00% | 0.00% |
+
+- Destruction gains because the Shadow and Flame buffs (+10% Shadow after Conflagrate, +10% Fire after Shadowburn) now reach Corruption and Immolate ticks that were cast before them.
+- Demonology loses a little because a Bane of Doom cast inside Chthonic Power (+29 Shadow, 15 s) no longer carries it to the hit a minute later.
+- Balance's per-tick read changes nothing on its own (568.4 either way).
+- The mage and priest moves from 834b67f0f are the casters lane's to report.
+- The fork suite passes with `-tags=with_db`, except `sim/web` (setup fails on the pin too). No golden moved.
+
 ## Before/after (relative, raid preset, band 60, 10000 iterations; pin 8baffe5fc against E ee0393589 + S 2df00eafd)
 
 | Spec | Alliance seed 1 | Alliance seed 50001 | Horde seed 1 | Horde seed 50001 |
@@ -94,6 +124,10 @@ Measured on scratch simdbs carrying both fixes (horde, band 60, seed 1):
   - Classic-db rows: `dmg_type1`.
   - Wands only. The engine reads the field for every weapon, and no melee row was checked.
 - A4: whether percent spell mods add or multiply on the server (about 0.1%).
+- Dynamic DoTs, follow-ups:
+  - Fire mage registers 12654 (Ignite) twice on the pin, the shape that hid Y3. That is the casters lane's to check.
+  - #340 (Amplify Curse adding only to Agony's base, "should be fixed in the future") and #398 (it is snapshotted) leave open whether Amplify Curse also scales Agony's spell-power share. The engine keeps base only (one Agony a fight).
+  - Serpent Sting's spell-power coefficient (Y5).
 - Carried: demon crit, haste, hit and the level-60 sheets; DoT spell power read per tick (forever-bugs #398); Demonic Brand unmodeled; Siphon Life crit held for the owner; Affliction's +0.7% swap held.
 - sim/request TestRotationLadder goldens are not regenerated, as the brief requires. Neither fix moves them today.
 
