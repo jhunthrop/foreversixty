@@ -84,7 +84,7 @@ Fix-sha column: "E" is a fork commit on `lane/r4-hybrids`, "S" is a site commit 
 | # | finding | evidence and source | confirmed? | fix sha |
 |---|---|---|---|---|
 | P1 | **Seal of Righteousness took spell damage twice.** The swing proc added its 0.1 coefficient to its base, then the spell added it again: 0.2 in all. | **Blizzard, 16 October:** "Fixed an issue causing Seal of Righteousness to gain almost twice as much benefit from Spell Damage than intended." The engine's own comment named the double ("effectively scales with coeff x 2", `sim/paladin/sor.go`). Judgement of Righteousness's 0.429 from the same notes was already in. **Test first:** `sor_coefficient_test.go` measured 0.200, then 0.100. | CONFIRMED-BUG | E bb9912dc0 |
-| P2 | **With P1, the Unsealed Wrath twist pays the other way.** Seal of Command kept up, three stored copies released by one swing under Seal of Righteousness: alliance 568.0 / 568.8 to 626.6 / 626.2 (+10.2%), horde 581.1 / 580.8 to 576.7 / 577.3 (-0.7%, before bis.yml re-picks the weapon). Seal of Command alone: 609.6 / 573.6. The old twist is still +3.1% / +1.9% over no twist. A build without Seal of Command or Unsealed Wrath keeps Seal of Righteousness, because Seal of Command alone measured 6% lower at band 40. Bands 20 to 50 are unchanged. The fork's copy is synced. | `-rotation` runs (`rot/ret-soc*.json`, lane scratch). | CONFIRMED-BUG (rotation, follows P1) | S 6494c1a30, E dc3d0a769 |
+| P2 | **With P1, the Unsealed Wrath twist pays the other way** (gated after review; see Review follow-up). Seal of Command kept up, three stored copies released by one swing under Seal of Righteousness: alliance 568.0 / 568.8 to 626.6 / 626.2 (+10.2%), horde 581.1 / 580.8 to 576.7 / 577.3 (-0.7%, before bis.yml re-picks the weapon). Seal of Command alone: 609.6 / 573.6. The old twist is still +3.1% / +1.9% over no twist. A build without Seal of Command or Unsealed Wrath keeps Seal of Righteousness, because Seal of Command alone measured 6% lower at band 40. Bands 20 to 50 are unchanged. The fork's copy is synced. | `-rotation` runs (`rot/ret-soc*.json`, lane scratch). | CONFIRMED-BUG (rotation, follows P1) | S 6494c1a30, E dc3d0a769 |
 | P3 | **Touch of the Grave (X2)** on the Undead horde set: 24 drains a fight (27 DPS, 4.2%) fall to the client's rate. | X2. | CONFIRMED-BUG (X2) | E 537622d34 |
 | P4 | **Assigned item 2, Holy Strike's flat bonus under the weapon percent:** no new log. Forever logs are still levels 13 to 30, and no training-dummy log exists. One structural point: 10333's flat bonus is effect 121 (normalized weapon damage) beside effect 31 (weapon percent), the same pairing whose flat part round 3's Shred logs showed is multiplied (F1 there). That fits the engine's reading, but it is an analogy, not a measurement. | SpellEffect 10333, 1866. | OPEN | - |
 | P5 | **Unsealed Wrath's reading:** Wowhead Forever 1310735 says "Your melee attacks store a copy of your active Seal for 15 sec, stacking up to 3 times. Landing an attack with a different Seal consumes all stacks". Whether a special attack stores or consumes is still unstated. | Wowhead 1310735. | OPEN: a Retribution log | - |
@@ -139,6 +139,53 @@ Fix-sha column: "E" is a fork commit on `lane/r4-hybrids`, "S" is a site commit 
 Heal profile at 1.65 (alliance, raid / bare, seed 1): druid 84.0% / 44.0%, shaman 73.5% / 25.3%, Holy paladin 63.0% / 18.9%, Holy priest 72.9% / 35.3%, Discipline 60.4% / 31.9%. At 1.6 the druid stays at 86.5%, so 1.65 is the smallest multiplier that fits.
 
 Nothing nightly-owned was committed. `TestRotationLadder` fails on this branch as expected; the integrator regenerates it at the pin. Fork goldens regenerated: TestElemental, TestEnhancement, TestFeralTank (twice), TestP1DPSWarrior and TestP1TankWarrior.
+
+## Review follow-up (wow-player hold, 2026-11-01)
+
+### Retribution (P2): bare preset, faction gap, Unsealed Wrath
+
+Seeds 1 / 50001, 10000 iterations, lane engine. "Old" is origin/main's list (Seal of Righteousness kept, twist to Command). "Final" is the list now committed.
+
+**Bare preset.** The published bare build has no Unsealed Wrath, so both lists keep Seal of Righteousness alone and tie: 234.1 / 234.3 alliance, 239.3 / 239.2 horde. To test the case the review raised, I ran the raid talents (with Unsealed Wrath) on the bare preset:
+
+| List | Alliance | Horde | Out of mana (s, of 180) |
+|---|---|---|---|
+| Seal of Righteousness, no twist | 230.4 / 230.5 | 236.0 / 236.2 | 0.5 |
+| Seal of Command, no twist | 217.3 / 217.4 | 223.7 / 223.8 | 0.2 |
+| Old twist (30% mana gate) | 209.2 / 209.5 | 212.8 / 212.8 | 21.7 |
+| First Seal of Command twist (6494c1a30) | 191.7 / 192.0 | 196.5 / 196.7 | 21.4 |
+| Final (adds 30% mana and 1200 attack power to all three Command lines) | 230.4 / 230.5 | 236.0 / 236.2 | 0.5 |
+
+The ungated list lost 17% on bare. A mana gate alone (30 to 80%) still lost 2 to 10%. The cause is the seal, not only the mana: Seal of Command deals a share of the weapon swing, so with little attack power it trails Seal of Righteousness even with mana to spare. An attack-power gate anywhere from 900 to 1500 gives the same results on both presets; 1200 sits in the middle. Raid with the final list: 632.7 / 631.8 alliance, 583.3 / 584.1 horde. Bands 20 to 50 are unchanged (37.8, 83.3, 118.0, 149.3). The fix is S 6660e6126, with the fork copy in E 10bb2a739.
+
+**Faction gap: it is the weapon.** Raid, seed 1:
+
+| | Arcanite Champion 12790 (3.0 s two-hander) | Blade of Hanna 2801 (faster; horde's pick) |
+|---|---|---|
+| Alliance (human), old → final | 568.0 → 632.7 (+11.4%) | 561.2 → 571.8 (+1.9%) |
+| Horde (undead, Lightforge 5-piece), old → final | 580.0 → 638.8 (+10.1%) | 581.1 → 583.3 (+0.4%) |
+
+Race moves the gain by at most 1.3 points; the weapon moves it by about 10. Horde's set swings Blade of Hanna 83 times a fight against Arcanite Champion's 50. Seal of Command's fixed procs a minute favour the slow weapon. On the final list, horde with Arcanite Champion (638.8) beats horde's published set (583.3), so bis.yml should re-pick horde's weapon.
+
+**How much rests on Unsealed Wrath's reading.** Alliance, against old 568.4: keeping Seal of Command without any twist gives 609.4 (+7.2%), and that part does not depend on Unsealed Wrath. The twist adds the remaining +3.8% (632.3). Alternative reading: the engine stores and consumes copies on white swings only. As a check I let Holy Strike, the APL's melee special, store and consume copies too (local build, not committed). Then old is 564.6, final 638.6 (+13.1%) and Seal of Command without the twist 609.3. Horde: old 584.4, final 589.5 (+0.9%). Under either reading the final list wins, and the seal choice alone, independent of the reading, is 7.2 of the 11 points.
+
+### Heal profile x1.65 (R3): ranking, gaps, and why it stays
+
+Lane engine, alliance, raid, seed 1 / 50001. The gear signal is effective HPS lost when three slots drop to the ranker's last-listed alternative (druid head 16720, neck 13085, chest 231702; shaman head 252605, neck 1714, chest 14138; Holy paladin head 252605, neck 13085, chest 250601; both priests neck 1714, chest 10020, back 8248).
+
+| Healer | x1.5 HPS (coverage) | x1.65 HPS (coverage) | Gear signal x1.5 | Gear signal x1.65 |
+|---|---|---|---|---|
+| Restoration druid | 723.9 (91.3%) | 732.2 (84.0%) | -13.2 (-1.8%) | -20.2 (-2.8%) |
+| Holy priest | 662.4 (83.6%) | 635.6 (72.9%) | -21.0 (-3.2%) | -14.7 (-2.3%) |
+| Restoration shaman | 618.9 (78.1%) | 640.9 (73.5%) | -12.4 (-2.0%) | -15.5 (-2.4%) |
+| Holy paladin | 538.5 (67.9%) | 549.5 (63.0%) | -26.2 (-4.9%) | -28.8 (-5.2%) |
+| Discipline | 528.8 (66.7%) | 526.5 (60.4%) | -11.6 (-2.2%) | -12.1 (-2.3%) |
+
+**The retune is not cosmetic.** The order changes: at x1.5 the Holy priest is second, 8.5% behind the druid and 7.0% ahead of the shaman. At x1.65 the shaman is second, 12.5% behind the druid and 0.8% ahead of the Holy priest. That cross-class order is not something the profile claims to measure ("it never says one healer class beats another"; heal-profile.json notes).
+
+**The reason that does not lean on the band.** The profile exists so that gear separates within each healer (2026-10-08 retune, section 1). At x1.5 the druid, the only set out of band, was nearing saturation: three slots of gear moved it 13.2 HPS. At x1.65 they move it 20.2 (+53%), the shaman +25%, the Holy paladin +10% and Discipline +4%, and the five signals sum 8% higher (84.4 to 91.3). Against that, the Holy priest's signal falls 30% (21.0 to 14.7). Its raid mana now runs out at 170 s instead of 227 s, so mana limits it more than gear does.
+
+**Choice: keep x1.65** (S 65199446b). The rule says retune when a set leaves the band, and the measured gain is in exactly the spec that left it. The Holy priest's lower signal is the cost, and it is recorded here for the casters lane and the integrator. Reverting is that one commit, plus `make heal-profile-sync`.
 
 ## Still open
 
