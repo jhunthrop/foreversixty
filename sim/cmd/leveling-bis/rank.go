@@ -193,7 +193,7 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 	var results []measured
 	var notes []string
 	for _, c := range candidates {
-		gear := swapSlot(picks, slot, c.ID, c.TwoHand)
+		gear := trialGear(spec.Spec, bySlot, picks, slot, c)
 		req := plainRequest(spec, bandCharacter("effect-rank", race, classSlug, spec.Spec, level, talents, gear), trinketRankIterations, verifySeed)
 		dps, err := runner.RunPlainDPS(req)
 		if err != nil {
@@ -264,5 +264,9 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 		sp.RunnerUp = &runnerUp
 	}
 	out[slot] = sp
+	if slot == "main_hand" {
+		// The off hand its trial wore (trialGear).
+		out = fillEmptyOffHand(spec.Spec, bySlot, out)
+	}
 	return out, notes
 }

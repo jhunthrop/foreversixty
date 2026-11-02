@@ -703,10 +703,12 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// two-hander without knowing off_hand exists (see pick.go's
 				// enforceTwoHandOffHandInvariant doc - this lane's report
 				// names every spec it found the gap on).
-				picks = enforceTwoHandOffHandInvariant(picks)
+				// The reverse too: a one-hander that replaced a two-hander
+				// gets the off hand the two-hander had emptied.
+				picks = fillEmptyOffHand(specInfo.Spec, pickBySlot, enforceTwoHandOffHandInvariant(picks))
 
 				verifyStart := time.Now()
-				verified, err := verifyAndSwap(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks)
+				verified, err := verifyAndSwap(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot)
 				if err != nil {
 					return fmt.Errorf("band %d %s: %w", band, f.name, err)
 				}

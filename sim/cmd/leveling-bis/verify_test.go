@@ -148,7 +148,7 @@ func TestBuildGearProducesAPIGearSlots(t *testing.T) {
 func TestVerifyBandNoRunnerUpsReturnsBaselineOnly(t *testing.T) {
 	picks := map[string]slotPick{"head": {Item: p(1, false)}}
 	fake := &fakeEngine{DefaultDPS: 100}
-	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{Spec: "hunter-marksmanship"}, "dwarf", "hunter", 20, "", picks)
+	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{Spec: "hunter-marksmanship"}, "dwarf", "hunter", 20, "", picks, nil)
 	if err != nil {
 		t.Fatalf("verifyBand: %v", err)
 	}
@@ -168,7 +168,7 @@ func TestVerifyBandRunnerUpBeatsThePick(t *testing.T) {
 		DefaultDPS: 100, // the baseline (head=1)
 		DPSByGear:  map[string]float64{gearKey([]api.GearSlot{{Slot: "head", ItemID: 2}}): 150},
 	}
-	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
+	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, nil)
 	if err != nil {
 		t.Fatalf("verifyBand: %v", err)
 	}
@@ -191,7 +191,7 @@ func TestVerifyBandRunnerUpLosesToThePick(t *testing.T) {
 		DefaultDPS: 100,
 		DPSByGear:  map[string]float64{gearKey([]api.GearSlot{{Slot: "head", ItemID: 2}}): 50},
 	}
-	_, swaps, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
+	_, swaps, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, nil)
 	if err != nil {
 		t.Fatalf("verifyBand: %v", err)
 	}
@@ -218,7 +218,7 @@ func TestVerifyBandRunnerUpNumericallyAheadButWithinNoiseIsNotBeat(t *testing.T)
 		DPSByGear:     map[string]float64{gearKey([]api.GearSlot{{Slot: "hands", ItemID: 2}}): 101.2},
 		StdErrByGear:  map[string]float64{gearKey([]api.GearSlot{{Slot: "hands", ItemID: 2}}): 1.0},
 	}
-	_, swaps, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
+	_, swaps, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, nil)
 	if err != nil {
 		t.Fatalf("verifyBand: %v", err)
 	}
@@ -236,7 +236,7 @@ func TestVerifyBandRunnerUpNumericallyAheadButWithinNoiseIsNotBeat(t *testing.T)
 func TestVerifyBandBaselineFailurePropagates(t *testing.T) {
 	picks := map[string]slotPick{"head": {Item: p(1, false)}}
 	fake := &fakeEngine{FailGear: gearKey(buildGear(picks))}
-	_, _, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
+	_, _, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, nil)
 	if err == nil {
 		t.Fatal("verifyBand with a failing baseline: want an error, got nil")
 	}
@@ -257,7 +257,7 @@ func TestVerifyBandSwapFailureIsCollectedNotFatal(t *testing.T) {
 		FailGear:   failingGear,
 		DPSByGear:  map[string]float64{gearKey(swapSlot(picks, "neck", 4, false)): 200},
 	}
-	_, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
+	_, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, nil)
 	if err != nil {
 		t.Fatalf("verifyBand: %v", err)
 	}
@@ -279,7 +279,7 @@ func TestApplySwapsPromotesTheMeasuredWinnerAndRemeasuresTheSet(t *testing.T) {
 	engine := &fakeEngine{DPSByGear: map[string]float64{gearKey(buildGear(map[string]slotPick{"head": {Item: better}})): 200}, DefaultDPS: 150}
 	spec := specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}
 
-	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, "", picks, []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, "", picks, nil, []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -308,7 +308,7 @@ func TestApplySwapsPromotesTheMeasuredWinnerAndRemeasuresTheSet(t *testing.T) {
 		t.Fatal("applySwaps mutated its input picks")
 	}
 
-	same, sameDPS, sameSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, "", picks, []swapResult{{Slot: "head", SwapDPS: 100, BaselineDPS: 150, Beat: false}}, 150)
+	same, sameDPS, sameSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, "", picks, nil, []swapResult{{Slot: "head", SwapDPS: 100, BaselineDPS: 150, Beat: false}}, 150)
 	if err != nil || sameDPS != 150 || same["head"].Item.ID != 1 || len(engine.Calls) != 1 {
 		t.Fatalf("a losing swap must leave picks and DPS alone without a sim: dps=%v item=%d calls=%d err=%v", sameDPS, same["head"].Item.ID, len(engine.Calls), err)
 	}
@@ -337,7 +337,7 @@ func TestApplySwapsRefusesToPromoteADuplicateOfItsPairMate(t *testing.T) {
 	engine := &fakeEngine{DefaultDPS: 999} // must never be called: nothing to re-measure once the only swap is refused
 	spec := specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}
 
-	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, "", picks, []swapResult{{Slot: "finger1", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, "", picks, nil, []swapResult{{Slot: "finger1", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -372,7 +372,7 @@ func TestApplySwapsRefusesToPromoteAMainHandDuplicateOfOffHand(t *testing.T) {
 	engine := &fakeEngine{DefaultDPS: 999}
 	spec := specInfo{Spec: "hunter-survival", ClassSlug: "hunter"}
 
-	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 35, "", picks, []swapResult{{Slot: "main_hand", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 35, "", picks, nil, []swapResult{{Slot: "main_hand", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -405,7 +405,7 @@ func TestApplySwapsPromotesATwoHanderAndEmptiesTheOffHand(t *testing.T) {
 	engine := &fakeEngine{DefaultDPS: 999}
 	spec := specInfo{Spec: "priest-shadow", ClassSlug: "priest"}
 
-	out, dps, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, "", picks, []swapResult{{Slot: "main_hand", SwapDPS: 23.4, BaselineDPS: 23.3, Beat: true}}, 23.3)
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, "", picks, nil, []swapResult{{Slot: "main_hand", SwapDPS: 23.4, BaselineDPS: 23.3, Beat: true}}, 23.3)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -436,7 +436,7 @@ func TestApplySwapsRefusesAnOffHandUnderATwoHandedMainHand(t *testing.T) {
 	engine := &fakeEngine{DefaultDPS: 999}
 	spec := specInfo{Spec: "priest-shadow", ClassSlug: "priest"}
 
-	out, _, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, "", picks, []swapResult{{Slot: "off_hand", SwapDPS: 24, BaselineDPS: 23, Beat: true}}, 23)
+	out, _, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, "", picks, nil, []swapResult{{Slot: "off_hand", SwapDPS: 24, BaselineDPS: 23, Beat: true}}, 23)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -481,7 +481,7 @@ func confirmFake(swapAhead float64) *fakeEngine {
 func TestVerifyBandPromotesARunnerUpAheadInsideTheMarginOnceTheGuardHarnessConfirmsIt(t *testing.T) {
 	picks := map[string]slotPick{"ranged": {Item: p(1, false), RunnerUp: p(2, false)}}
 	fake := confirmFake(1.9)
-	_, swaps, _, err := verifyBand(fake, specInfo{}, "gnome", "warlock", 60, "", picks)
+	_, swaps, _, err := verifyBand(fake, specInfo{}, "gnome", "warlock", 60, "", picks, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -496,7 +496,7 @@ func TestVerifyBandPromotesARunnerUpAheadInsideTheMarginOnceTheGuardHarnessConfi
 func TestVerifyBandKeepsThePickWhenTheGuardHarnessCallsItATie(t *testing.T) {
 	picks := map[string]slotPick{"ranged": {Item: p(1, false), RunnerUp: p(2, false)}}
 	fake := confirmFake(0.3)
-	_, swaps, _, err := verifyBand(fake, specInfo{}, "gnome", "warlock", 60, "", picks)
+	_, swaps, _, err := verifyBand(fake, specInfo{}, "gnome", "warlock", 60, "", picks, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -508,7 +508,7 @@ func TestVerifyBandKeepsThePickWhenTheGuardHarnessCallsItATie(t *testing.T) {
 func TestVerifyBandDoesNotReMeasureARunnerUpThatLoses(t *testing.T) {
 	picks := map[string]slotPick{"ranged": {Item: p(1, false), RunnerUp: p(2, false)}}
 	fake := confirmFake(-5)
-	if _, _, _, err := verifyBand(fake, specInfo{}, "gnome", "warlock", 60, "", picks); err != nil {
+	if _, _, _, err := verifyBand(fake, specInfo{}, "gnome", "warlock", 60, "", picks, nil); err != nil {
 		t.Fatal(err)
 	}
 	if len(fake.Calls) != 2 {

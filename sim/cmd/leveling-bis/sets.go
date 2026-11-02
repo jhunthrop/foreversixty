@@ -393,12 +393,12 @@ type verifiedBand struct {
 // every one the sim measured ahead of the pick: a runner-up the sim measured
 // ahead of the scored pick IS the pick, so the published row, the set DPS
 // and the next band's diff all name the item a player should wear.
-func verifyAndSwap(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick) (verifiedBand, error) {
-	setDPS, swaps, verifyErrors, err := verifyBand(runner, spec, race, classSlug, level, talents, picks)
+func verifyAndSwap(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, bySlot map[string][]scored) (verifiedBand, error) {
+	setDPS, swaps, verifyErrors, err := verifyBand(runner, spec, race, classSlug, level, talents, picks, bySlot)
 	if err != nil {
 		return verifiedBand{}, fmt.Errorf("verify run (baseline): %w", err)
 	}
-	picks, setDPS, swaps, err = applySwaps(runner, spec, race, classSlug, level, talents, picks, swaps, setDPS)
+	picks, setDPS, swaps, err = applySwaps(runner, spec, race, classSlug, level, talents, picks, bySlot, swaps, setDPS)
 	if err != nil {
 		return verifiedBand{}, fmt.Errorf("verify run (after swaps): %w", err)
 	}
@@ -426,7 +426,7 @@ func completeSets(runner engineRunner, spec specInfo, race, classSlug string, le
 	if !hasSetBonus(completed) {
 		return before, notes, nil
 	}
-	after, err := verifyAndSwap(runner, spec, race, classSlug, level, talents, enforceTwoHandOffHandInvariant(completed))
+	after, err := verifyAndSwap(runner, spec, race, classSlug, level, talents, fillEmptyOffHand(spec.Spec, bySlot, enforceTwoHandOffHandInvariant(completed)), bySlot)
 	if err != nil {
 		return verifiedBand{}, nil, err
 	}
