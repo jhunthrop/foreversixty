@@ -89,7 +89,7 @@ func TestRaidPresetNamesTheRequiredBuffsAndExcludesTheForbiddenOnes(t *testing.T
 		"arcane_brilliance", "gift_of_the_wild", "power_word_fortitude", "divine_spirit",
 		"blessing_of_might", "blessing_of_wisdom", "battle_shout", "trueshot_aura", "heart_of_the_lion",
 		"leader_of_the_pack", "strength_of_earth_totem",
-		"mana_spring_totem", "windfury_totem", "curse_of_elements", "sunder_armor", "faerie_fire",
+		"mana_spring_totem:improved", "windfury_totem", "curse_of_elements", "sunder_armor", "faerie_fire",
 		"judgement_of_wisdom", "judgement_of_light", "judgement_of_the_crusader", "hunters_mark",
 		"curse_of_recklessness",
 	} {
