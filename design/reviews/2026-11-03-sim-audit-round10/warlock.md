@@ -4,7 +4,7 @@ Specs: Affliction, Demonology, Destruction and their demons, bands 20 to 60, rai
 
 Method: spec-breakdown on the published band entries (`data/builds/1.60.1.70707/bis/warlock-*.json`), 10000 iterations, seeds 1 and 50001, horde troll and alliance gnome. "Before" is the shared baseline (`r10/sb-before` from `r10/site-before/sim`). Log evidence: the 31 cached foreverlogs.gg warlock character reports (scratch `fl/wl`, `r9/crit/fl`, `r9/crit/fl2`) with their roster snapshots (talent points per tree), aggregated by `r10/warlock/py/petcrit.py`; forever-bugs #331 read 2026-11-02.
 
-Totals: 2 CONFIRMED-BUGs, both fixed in the fork. One moves every published warlock number by -0.3 to -0.6% (the demons' crit); the other (Spellstone) moves none.
+Totals: 3 CONFIRMED-BUGs, all fixed in the fork. The demons' crit moves every published warlock number by -0.3 to -0.6%; Spellstone moves none; Touch of the Grave (the integrator's follow-up) moves the Undead-published priests and paladins by -0.1 to -1.4%.
 
 Note on spec-breakdown's "Crit %": it is crits over attempts, misses included (`cmd/spec-breakdown/main.go:409`). The logs' figure is crits over landed hits. At a +3 target a demon spell misses 10 to 17%, so 2.7% per attempt is 3.3% per landed hit.
 
@@ -65,6 +65,25 @@ Pet crit plumbing in core is untouched. Everything above is in `sim/warlock`, so
 | F5 | Gnome Eureka! for warlocks (1259821): its damage mask names Conflagrate, Death Coil, Immolate, Rain of Fire, Searing Pain, Shadow Bolt, Shadowburn and Soul Fire, and its periodic mask the drains and Wrack. It does not name Incinerate, so Destruction's filler rightly gets nothing (`core/eureka_auto_gen.go` has no 1293813). Troll Berserking is unchanged since round 9. | 1259821 masks | Aligned | - |
 | F6 | Items on the published sets: Frozen Heart of the Mountain (Chthonic Power, round 9), Kindling Stave (Ignition, round 8), Rune of the Guard Captain (Authority, equip), Robe of the Void (use: Heal Pet, no damage), Torch of Light (wand stats only). No set bonus is in a published set. | ItemXItemEffect, ItemEffect rows | Aligned | - |
 | F7 | Rotations by band (bare 20 to 60, horde): Affliction casts Shadow Bolt, Corruption, Agony, Immolate and from 40 Siphon Life, with Amplify Curse from 30 and Shadow Trance from 40. Demonology and Destruction cast what their builds take. Life Tap covers mana: out-of-mana time is 0.0 s at 30 and 0.4 s at 60 raid. | spec-breakdown | Aligned | - |
+
+## Integrator follow-up (items lane): Death Coil and Touch of the Grave
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| I1 | Death Coil. The damage spell is Shadow with DefenseType magic, as in the client (17926: SchoolMask 32, DefenseType 1), rolling spell hit and crit (`death_coil.go:53`). The Physical spell with no defense type is its companion self-heal (the same id tagged 1, `death_coil.go:42`). It heals the warlock for the damage dealt through `OutcomeHealing`, which rolls neither hit nor crit, so its school and defense type are never read. Shadow Mastery (18271 mask), Malevolence (mask names Death Coil; the engine gives it to every warlock Shadow spell) and Gnome Eureka! reach it. Forever has no Curse of Shadow, and Shadow Weaving is the priest's. No curated or fork APL casts Death Coil. | SpellCategories, SpellMisc 17926; masks via `py/mask.py`; `grep 6789\|17925\|17926` over the APLs finds nothing | Aligned (no change) | - |
+| I2 | **Touch of the Grave's drain never missed.** The drain 1260198 has DefenseType 1 (magic), and SpellMisc Attributes_2 0x20000000 (cannot crit). The engine registered it with no defense type and `OutcomeAlwaysHit`, so it landed on a +3 boss every time. Now it rolls the spell hit table (17% base miss at +3, less the character's hit) and still never crits. It reaches every Undead class, through the melee version (warrior, paladin, rogue, 20%) or the caster version (priest, mage, warlock, 30%). The published Undead picks are Shadow and Discipline priest and all three paladins. Test: `TestTouchOfTheGraveMatchesTheClientRows` now asserts the magic defense type; it failed first ("defense type is 0") and passes. | client rows above; `core/racial_touch_of_the_grave.go:80` | CONFIRMED-BUG (client tables) | E b93739272 |
+
+Touch of the Grave, before and after (horde, 10000 iterations, seed 1 / 50001; threat per second for Protection):
+
+| Spec | 20 bare | 30 bare | 40 bare | 50 bare | 60 bare | 60 raid | 60 raid s1 absolute |
+|---|---|---|---|---|---|---|---|
+| Shadow priest | -1.13 / -1.13 | -0.85 / -1.02 | -0.54 / -0.54 | -0.55 / -0.50 | -0.34 / -0.37 | -0.14 / -0.22 | 712.2 to 711.2 |
+| Retribution | -0.77 / -0.77 | -0.71 / -0.57 | -0.49 / -0.49 | -0.36 / -0.36 | -0.33 / -0.41 | -0.11 / -0.08 | 621.3 to 620.6 |
+| Protection paladin | -1.25 / -1.25 | -1.36 / -1.36 | -0.52 / -0.78 | -0.66 / -0.49 | -0.21 / -0.45 | -0.32 / -0.41 | 993.8 to 990.6 |
+
+Discipline and Holy paladin publish healing, which the drain does not touch. The fork suites for core, warlock, priest, paladin, mage, rogue and warrior pass with the database, and no golden moved. Their sim/request ladder goldens may move; they are not regenerated here.
+
+For the integrator: E b93739272 is in `sim/core` and moves the Undead specs above, outside the warlock group. The race picks within 1% stay under the owner's ruling, but a near tie could flip: re-check the race choice for Shadow priest and the paladins at the refresh.
 
 ## Before/after
 
