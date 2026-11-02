@@ -3,7 +3,7 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.70707:priest:human:02500503133001153/0350500303/0:'
+build: 'FS1:1.60.1.70707:priest:human:00500503133001143/3350500303/0:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Discipline Priest overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -52,8 +52,9 @@ The build spends its deep points in Discipline and fills Holy with the points th
 
 - **Twin Disciplines, Improved Power Word: Shield and Mental Agility** are the early rows: instant spells heal more, the shield absorbs more, and instants cost less.
 - **Meditation** keeps part of your regeneration running while you cast and **Mental Strength** lifts Intellect; **Inner Focus** is a free, extra-critical heal on demand.
-- **Penance**, **Renewed Hope** and **Divine Aegis** are the deep payoff: a channelled heal, a bigger critical chance on a target that carries Weakened Soul, and a shield from your critical heals. Divine Aegis takes all three ranks: the client removed Binding Heal, and its point measured about +1.7% healing as Divine Aegis's third rank in our run.
+- **Penance**, **Renewed Hope** and **Divine Aegis** are the deep payoff: a channelled heal, a bigger critical chance on a target that carries Weakened Soul, and a shield from your critical heals. Divine Aegis takes all three ranks (its third rank measured about +1.7% healing in our run); Renewed Hope takes four, and its fifth point goes to Twilight Focus below.
 - In Holy, **Holy Specialization, Divine Fury and Improved Healing** give critical chance, faster Heal and Greater Heal, and cheaper direct heals; **Inspiration** fills the row below, and **Improved Renew** makes the Renew you keep on the tank heal more (about +1% healing over spending those points elsewhere in our run).
+- **Twilight Focus** takes all three ranks. Raid-wide damage reaches you while you cast: each hit costs a Heal or Greater Heal part of its casting time and cuts a Penance short, and Twilight Focus prevents it 70% of the time (about +1.8% healing in our run, with the points from Wand Specialization and Renewed Hope's fifth rank).
 
 Open the planner at [/planner?class=priest](/planner?class=priest) to adjust it.
 
