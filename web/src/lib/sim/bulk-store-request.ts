@@ -43,7 +43,7 @@ import type { RequestValidation } from './engine';
 import { humaniseEngineError } from './engine-error';
 import type { Lane } from './precision';
 import { specLabel } from './spec-label';
-import { encounterFor, type SimSettings } from './settings';
+import { encounterFor, requestPresetFor, type SimSettings } from './settings';
 import type { CharacterSpec, SimResult, SpecFidelity } from './types';
 import { ENGINE_VERSION } from './version';
 import { defaultStatsFor, isDpsSpec, referenceFor, weightStatsFor, weightsIterationsFor } from './weights';
@@ -112,14 +112,18 @@ export function envelope(deps: BulkRequestDeps, iterations: number): Omit<BulkRe
   const character = deps.getCharacter();
   const spec = characterSpecOrNull(deps);
   if (spec === null || character === null) return null;
+  const settings = deps.getSettings();
+  // The preset the engine ranks spells under (round 9), the same rule /sim's run sends.
+  const preset = requestPresetFor(settings);
   return {
     engine_version: ENGINE_VERSION,
     spec: character.spec,
     source: character.source,
     character: spec,
-    encounter: encounterFor(deps.getSettings().encounter, character.level),
+    encounter: encounterFor(settings.encounter, character.level),
     iterations,
     random_seed: 0,
+    ...(preset === undefined ? {} : { preset }),
   };
 }
 

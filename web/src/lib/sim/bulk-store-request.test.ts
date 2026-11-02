@@ -163,3 +163,32 @@ describe('buildRequest: the browser lane is guarded, the server lane is not (Tas
     expect(server.request.iterations).toBeGreaterThan(WEIGHTS_BROWSER_DEFAULT_ITERATIONS);
   });
 });
+
+// Round 10 (platform audit): round 9 made the /sim page send the player's preset, which the
+// engine picks spell ranks under, but Top Gear and the weights tool built their own envelope
+// without it, so a Bare pick on /sim/tools ran on the published (raid at 60) ranks.
+describe('buildRequest: the preset the engine ranks spells under', () => {
+  const live = (preset: 'bare' | 'raid-buffed' | 'custom', rankPreset?: 'bare' | 'raid') =>
+    deps({
+      getTalentFile: () => warriorTalents,
+      getSettings: () => ({
+        ...defaultSettings('warrior-fury', 60),
+        preset,
+        ...(rankPreset ? { rankPreset } : {}),
+      }),
+    });
+
+  it('sends bare for a Bare pick and raid for Raid-buffed, on both lanes', () => {
+    for (const lane of ['browser', 'server'] as const) {
+      expect((buildRequest(live('bare'), lane) as { request: WeightsRequest }).request.preset).toBe('bare');
+      expect((buildRequest(live('raid-buffed'), lane) as { request: WeightsRequest }).request.preset).toBe(
+        'raid',
+      );
+    }
+  });
+
+  it('sends none for a hand-built Custom list, and an applied request keeps its own', () => {
+    expect('preset' in (buildRequest(live('custom')) as { request: WeightsRequest }).request).toBe(false);
+    expect((buildRequest(live('custom', 'bare')) as { request: WeightsRequest }).request.preset).toBe('bare');
+  });
+});
