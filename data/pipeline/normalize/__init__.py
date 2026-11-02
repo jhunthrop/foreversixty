@@ -156,7 +156,7 @@ def normalize_build(
     from pipeline.normalize.classicdb import merge_sets as merge_classicdb_sets
     from pipeline.normalize.dungeons import normalize_dungeons
     from pipeline.normalize.effects import EffectIndex
-    from pipeline.simdb.equip import feral_form_spells
+    from pipeline.simdb.equip import area_conditional_spells, feral_form_spells
     from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
     from pipeline.normalize.item_curves import load_item_curves
     from pipeline.normalize.itemnames import write_item_names
@@ -381,6 +381,7 @@ def normalize_build(
         spell_effect_rows,
         spell_text,
         feral_form_spells(t("SpellShapeshift")),
+        area_conditional_spells(t("Spell")),
     )
     fork_icons = load_fork_icons(engine) if engine is not None else {}
     wowhead_icons = load_wowhead_icons(build_dir)

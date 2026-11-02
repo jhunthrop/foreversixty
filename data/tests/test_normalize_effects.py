@@ -183,3 +183,25 @@ def test_a_feral_form_attack_power_spell_is_feral_attack_power_with_its_client_l
     )
     assert idx.stats(21407) == {"feral_attack_power": 140}
     assert "Cat, Bear, and Dire Bear forms only" in idx.text(21407)
+
+
+def test_an_area_conditional_rider_is_text_not_a_stat():
+    """Rune of the Guard Captain 19120: 1318000 is +14 attack power, and
+    1287704 "In a Forest or Grassland area, Attack Power increased by an
+    additional 28" is an area rider. simdb leaves the rider out
+    (`equip.area_conditional_spells`); the planner's items must too, or the
+    ranker reads 42 attack power where the sim gives 14. The rider keeps its
+    sentence as text."""
+    rider = "In a Forest or Grassland area, Attack Power increased by an additional 28."
+    idx = EffectIndex(
+        [
+            {"ParentItemID": "19120", "SpellID": "1318000", "TriggerType": str(EQUIP_TRIGGER)},
+            {"ParentItemID": "19120", "SpellID": "1287704", "TriggerType": str(EQUIP_TRIGGER)},
+        ],
+        [],
+        [effect(1318000, 99, 14), effect(1287704, 99, 28)],
+        _spell_text({1318000: "+14 Attack Power.", 1287704: rider}),
+        area_conditional={1287704},
+    )
+    assert idx.stats(19120) == {"attack_power": 14}
+    assert idx.text(19120) == rider

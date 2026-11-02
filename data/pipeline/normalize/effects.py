@@ -124,6 +124,7 @@ class EffectIndex:
         spell_effect_rows: Sequence[Mapping[str, str]],
         spell_text: SpellText,
         feral_form_only: Container[int] = frozenset(),
+        area_conditional: Container[int] = frozenset(),
     ) -> None:
         item_effect_rows = list(item_effect_rows)
         item_x_item_effect_rows = list(item_x_item_effect_rows)
@@ -138,6 +139,10 @@ class EffectIndex:
         self._spell_text = spell_text
         # `equip.feral_form_spells`: the same SpellShapeshift reading simdb uses.
         self._feral_form_only = feral_form_only
+        # `equip.area_conditional_spells`: simdb's rule for a terrain rider
+        # ("In a Forest or Grassland area, ..."), which grants no stat in a
+        # published fight and so keeps its sentence as text.
+        self._area_conditional = area_conditional
 
     def stats(self, item_id: int) -> dict[str, int]:
         """The item's on-equip spells' stats, summed and rounded to `int`.
@@ -146,11 +151,18 @@ class EffectIndex:
         `pipeline.simdb.equip` has not classified -- see the module
         docstring for why that is not silently dropped.
         """
-        equip_spell_ids = self._equip_spells_by_item.get(item_id, [])
+        equip_spell_ids = self._unconditional_equip_spells(item_id)
         if not equip_spell_ids:
             return {}
         bonus = spell_bonus(equip_spell_ids, self._effects_by_spell, self._feral_form_only)
         return {key: int(round(amount)) for key, amount in bonus.stats.items()}
+
+    def _unconditional_equip_spells(self, item_id: int) -> list[int]:
+        return [
+            spell_id
+            for spell_id in self._equip_spells_by_item.get(item_id, [])
+            if spell_id not in self._area_conditional
+        ]
 
     def text(self, item_id: int) -> str:
         """The item's spell descriptions that are not already counted as a stat.
@@ -164,7 +176,7 @@ class EffectIndex:
         at all. A use or proc spell (any other trigger type) is never
         excluded regardless.
         """
-        equip_spell_ids = self._equip_spells_by_item.get(item_id, [])
+        equip_spell_ids = self._unconditional_equip_spells(item_id)
         # Feral attack power has no planner stat line, so a spell that grants
         # only that keeps its client sentence as text.
         equip_ids_with_stats = {
