@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -100,11 +101,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:1926 off_hand:1287 | 12.9 | 3 | other:attack/2=132.1, other:attack/1=84.3, spell:1757=40.6, spell:6760/5=7.0, spell:5171/3=1.0 | {SpellID: 13750} |
 | 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:2194 off_hand:2236 | 27.5 | 3 | other:attack/2=123.3, other:attack/1=74.2, spell:1758=44.7, spell:6761/5=7.7, spell:5171/3=1.0 | {SpellID: 13750} |
-| 30 | 00000000000000000-32530300001400000-0000000000000000000 | main_hand:7687 off_hand:23168 | 46.7 | 3 | other:attack/2=132.1, other:attack/1=77.3, spell:1760=45.7, spell:6762/5=8.2, spell:5171/3=1.0 | {SpellID: 13750} |
-| 38 | 00000000000000000-32530300001515100-0000000000000000000 | main_hand:868 off_hand:6829 | 65.9 | 4 | other:attack/1=91.3, other:attack/2=87.1, spell:8621=44.2, spell:8623/5=7.8, other:attack/3=3.1 | {SpellID: 13750} |
-| 40 | 00000000000000000-32530300001515201-0000000000000000000 | main_hand:868 off_hand:2164 | 77.5 | 5 | other:attack/2=106.4, other:attack/1=91.3, spell:8621=47.3, spell:8624/5=8.4, spell:13877=2.0 | - |
-| 50 | 32500000000000000-32530300001515201-0000000000000000000 | main_hand:810 off_hand:2163 | 113.9 | 5 | other:attack/2=137.9, other:attack/1=92.1, spell:11293=47.5, spell:11299/5=8.3, spell:13877=2.0 | - |
-| 60 | 32531000000000000-32530300001515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 225.6 | 5 | other:attack/2=71.7, other:attack/1=67.9, spell:11294=46.6, spell:11300/5=9.4, other:attack/3=7.2 | - |
+| 30 | 00000000000000000-32530300001400000-0000000000000000000 | main_hand:7687 off_hand:23168 | 46.5 | 3 | other:attack/2=132.1, other:attack/1=77.3, spell:1760=45.7, spell:6762/5=8.2, spell:5171/3=1.0 | {SpellID: 13750} |
+| 38 | 00000000000000000-32530300001515100-0000000000000000000 | main_hand:868 off_hand:6829 | 65.7 | 4 | other:attack/1=91.3, other:attack/2=87.1, spell:8621=44.2, spell:8623/5=7.8, other:attack/3=3.1 | {SpellID: 13750} |
+| 40 | 00000000000000000-32530300001515201-0000000000000000000 | main_hand:868 off_hand:2164 | 77.2 | 5 | other:attack/2=106.4, other:attack/1=91.3, spell:8621=47.3, spell:8624/5=8.4, spell:13877=2.0 | - |
+| 50 | 32500000000000000-32530300001515201-0000000000000000000 | main_hand:810 off_hand:2163 | 113.4 | 5 | other:attack/2=137.9, other:attack/1=92.1, spell:11293=47.5, spell:11299/5=8.3, spell:13877=2.0 | - |
+| 60 | 32531000000000000-32530300001515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 225.1 | 5 | other:attack/2=71.7, other:attack/1=67.9, spell:11294=46.6, spell:11300/5=9.4, other:attack/3=7.2 | - |
 
 ## Learned but unused (informational)
 

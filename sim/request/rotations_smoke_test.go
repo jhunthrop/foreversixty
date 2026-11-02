@@ -202,6 +202,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 19028}":  "Soul Link is a talent (sim/warlock/talents.go's applySoulLink); this build takes none.",
 		"{SpellID: 18788}":  "Demonic Sacrifice is a talent (sim/warlock/talents.go's applyDemonicSacrifice); this build takes none.",
 		"{SpellID: 440873}": "Decimation's buff comes from its talent (sim/warlock/talents.go); this build takes none.",
+		"{SpellID: 425464}": "Demonic Pact's passive aura, which the prepull's sacrifice gate reads, exists only with its talent (sim/warlock/talents.go's applyDemonicPact); this build takes none.",
 	},
 	"warlock-destruction": {
 		"{SpellID: 1293813}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",

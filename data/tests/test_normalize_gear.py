@@ -1444,3 +1444,68 @@ def test_bonding_is_none_when_the_build_has_no_bonding_column():
     items = {i.id: i for r in build_all() for i in r.items}
     assert items[16866].bonding is None
     assert items[16866].armor_type == "plate"
+
+
+# --- reputation: the item's own reputation requirement -----------------------
+# (sim-accuracy round 9, ranker lane: Creeg Bothunk's Darkspear Islands stock
+# has no `rep` source in loot.json; the client states the standing on the
+# item, ItemSparse.MinFactionID and MinReputation, and the BiS ranker holds
+# every source of the item to it.)
+
+
+def test_reputation_for_maps_the_client_standing():
+    from pipeline.normalize.gear import reputation_for
+
+    assert reputation_for(2798, 7) == {"faction_id": 2798, "standing": "exalted"}
+    assert reputation_for(2798, 4) == {"faction_id": 2798, "standing": "friendly"}
+    assert reputation_for(0, 0) is None
+    assert reputation_for(None, None) is None
+    assert reputation_for(576, 9) is None  # not a standing the client defines
+
+
+def test_client_rows_carry_their_reputation_requirement():
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    for row in rows:
+        row["MinFactionID"] = "2798" if row["ID"] == "16866" else "0"
+        row["MinReputation"] = "7" if row["ID"] == "16866" else "0"
+    items = {i.id: i for r in build_with_sparse(rows) for i in r.items}
+    assert items[16866].reputation is not None
+    assert items[16866].reputation.model_dump() == {
+        "faction_id": 2798,
+        "standing": "exalted",
+        "faction_name": None,
+        "side": None,
+    }
+    assert items[19325].reputation is None
+
+
+def test_reputation_for_names_the_faction_and_its_side():
+    """Round 9, items lane: the client's Faction table names each reputation
+    and says which side earns it, so loot can source Theramore Expeditionary
+    Force's rewards (no vendor names them) and keep each set on its side."""
+    from pipeline.normalize.factions import FactionInfo
+    from pipeline.normalize.gear import reputation_for
+
+    factions = {2799: FactionInfo(name="Theramore Expeditionary Force", side="alliance")}
+    assert reputation_for(2799, 7, factions) == {
+        "faction_id": 2799,
+        "standing": "exalted",
+        "faction_name": "Theramore Expeditionary Force",
+        "side": "alliance",
+    }
+    assert reputation_for(2798, 5, factions) == {"faction_id": 2798, "standing": "honored"}
+
+
+# --- limit_category: the client's Unique-Equipped family ---------------------
+# (round 9, ranker lane: Rune of Perfection and Rune of Duty share
+# ItemLimitCategory 714 "Rune of Battle", Quantity 1, so the ranker never
+# pairs them.)
+
+
+def test_client_rows_carry_their_limit_category():
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    for row in rows:
+        row["LimitCategory"] = "714" if row["ID"] == "16866" else "0"
+    items = {i.id: i for r in build_with_sparse(rows) for i in r.items}
+    assert items[16866].limit_category == 714
+    assert items[19325].limit_category is None

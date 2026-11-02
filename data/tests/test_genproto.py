@@ -66,10 +66,10 @@ def test_the_engine_messages_this_lane_depends_on_exist():
 
 
 def test_the_stat_enums_are_the_size_the_stat_map_assumes():
-    # ENGINE_SHA 0900ba8b8 carries the engine's unified Hit/Crit collapse
-    # (StatHit/StatCrit replace the separate melee/spell variants), so these
-    # counts are lower than the pre-unification 44/16 the brief quotes.
-    assert len(pb.Stat.keys()) == 41
+    # ENGINE_SHA 0900ba8b8 carries the engine's unified Hit collapse
+    # (StatHit replaces the separate melee/spell variants); round 9 appends
+    # StatMeleeCrit and StatSpellCrit beside the every-table StatCrit.
+    assert len(pb.Stat.keys()) == 43
     assert len(pb.WeaponSkill.keys()) == 16
 
 

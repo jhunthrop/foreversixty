@@ -6,11 +6,13 @@ import logging
 import math
 import re
 from collections import Counter
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, NamedTuple
 
 from pipeline.icons import resolve_icon, resolve_icon_name
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
 from pipeline.normalize.classes import slugify
+from pipeline.normalize.factions import FactionInfo
 from pipeline.normalize.item_curves import ItemCurves, resolve_armor, stat_budget
 from pipeline.normalize.weapon_curves import (
     WeaponCurves,
@@ -391,6 +393,41 @@ def armor_type_for(item_class_id: int, subclass_id: int) -> str | None:
     if item_class_id != ARMOR:
         return None
     return ARMOR_TYPE_BY_SUBCLASS.get(subclass_id)
+
+
+#: ItemSparse's `MinReputation` as a standing: the client's reputation ranks
+#: 0 (Hated) to 7 (Exalted). Only the ranks a reward can need are named.
+REPUTATION_STANDINGS: dict[int, str] = {
+    3: "neutral",
+    4: "friendly",
+    5: "honored",
+    6: "revered",
+    7: "exalted",
+}
+
+
+def reputation_for(
+    faction_id: int | None,
+    standing: int | None,
+    factions: Mapping[int, FactionInfo] | None = None,
+) -> dict[str, int | str | None] | None:
+    """The row's `reputation`: ItemSparse's `MinFactionID` and `MinReputation`
+    as `{"faction_id", "standing"}`, plus the faction's `faction_name` and
+    `side` when `factions` (`pipeline.normalize.factions.load_factions`) knows
+    it. None for no requirement, no column, or a rank the table above does not
+    name. The BiS ranker holds every source of such an item to this standing
+    (sim/cmd/leveling-bis/reputation.go), and loot sources an otherwise
+    unsourced reward from it (`pipeline.loot.client_rep`)."""
+    if not faction_id or standing not in REPUTATION_STANDINGS:
+        return None
+    out: dict[str, int | str | None] = {
+        "faction_id": faction_id,
+        "standing": REPUTATION_STANDINGS[standing],
+    }
+    info = (factions or {}).get(faction_id)
+    if info is not None:
+        out |= {"faction_name": info.name, "side": info.side}
+    return out
 
 
 def bonding_for(value: int | None) -> str | None:
@@ -911,6 +948,7 @@ def build_class_items(
     fork_icons: dict[int, str] | None = None,
     wowhead_icons: dict[int, str] | None = None,
     wowhead_required_levels: dict[int, int] | None = None,
+    factions: Mapping[int, FactionInfo] | None = None,
 ) -> list[ClassItems]:
     """One equippable item list per class. Raises ItemDataError if a row is unreadable.
 
@@ -949,6 +987,10 @@ def build_class_items(
     per `resolve_required_level`. Pass None (the default, same as an empty
     dict) for a caller with no wowhead payload -- every row's `required_level`
     then falls back to the item-level proxy or 0, never wowhead's number.
+
+    `factions` (`pipeline.normalize.factions.load_factions`) names each
+    `reputation` faction and its side. Pass None (the default) and a row's
+    `reputation` carries the id and standing only.
     """
     by_id = {int_column(row, "ID"): row for row in item_rows}
     fork_icons = fork_icons or {}
@@ -1027,6 +1069,10 @@ def build_class_items(
             weapon_type=weapon_type_for(item_class_id, subclass_id, inventory_type),
             bonding=bonding_for(_optional_int(row, "Bonding")),
             armor_type=armor_type_for(item_class_id, subclass_id),
+            reputation=reputation_for(
+                _optional_int(row, "MinFactionID"), _optional_int(row, "MinReputation"), factions
+            ),
+            limit_category=_optional_int(row, "LimitCategory") or None,
         )
         candidates.append(
             (

@@ -174,7 +174,17 @@ export interface SimRequest {
    * opt-in. Omitted, not false, when off, like `target_error`.
    */
   role_metrics?: boolean;
+  /**
+   * The preset the run's rotation picks its spell ranks under (sim/api `Preset`, round 9): a
+   * mana-bound bare fight may cast a lower rank than a raid one. Omitted means the preset
+   * the character's level is published under (sim/request PublishedPreset, raid at 60).
+   * It changes no buff or consumable; those are `character.buffs` and `consumes`.
+   */
+  preset?: RequestPreset;
 }
+
+/** sim/request BarePreset and RaidPreset. */
+export type RequestPreset = 'bare' | 'raid';
 
 /** Contract 1.2. The size of one step of a target-error run. */
 export const STEP_ITERATIONS_DEFAULT = 1000;

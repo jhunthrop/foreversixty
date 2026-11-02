@@ -6,6 +6,7 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/sim/internal/statid"
 	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
 	"github.com/wowsims/classic/sim/core/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -277,8 +278,8 @@ func TestKnownStatsAreTheEnginesEnum(t *testing.T) {
 	if !slices.IsSorted(ids) {
 		t.Error("KnownStats is not sorted")
 	}
-	if len(ids) != len(proto.Stat_name) {
-		t.Errorf("KnownStats has %d entries, the enum has %d", len(ids), len(proto.Stat_name))
+	if len(ids) != len(proto.Stat_name)-len(statid.TableOnly) {
+		t.Errorf("KnownStats has %d entries, the enum has %d of which %d are table-only", len(ids), len(proto.Stat_name), len(statid.TableOnly))
 	}
 	for _, id := range ids {
 		if _, ok := ParseStat(id); !ok {

@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-10000000000000000 | main_hand:263937 ranged:286750 | 12.1 | 3 | spell:5019=83.2, spell:8092=15.2, spell:594=11.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 20 | 000000000000000000-00000000000000000-54200000000000000 | main_hand:890 ranged:5243 | 25.3 | 4 | spell:5019=87.6, spell:8102=12.9, spell:970=6.4, spell:2944=1.9 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
-| 30 | 000000000000000000-00000000000000000-54342001200000000 | main_hand:249392 ranged:5213 | 38.1 | 5 | spell:5019=81.7, spell:17311=24.1, spell:8104=2.9, spell:992=1.1, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 38 | 000000000000000000-00000000000000000-54342001201300040 | main_hand:1664 ranged:13064 | 55.0 | 6 | spell:5019=72.3, spell:17312=20.6, spell:8105=2.0, spell:2767=1.1, spell:1309595=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 40 | 000000000000000000-00000000000000000-54342001201300051 | main_hand:1664 ranged:5216 | 77.3 | 7 | spell:5019=58.4, spell:17312=28.6, spell:8106=3.5, spell:2767=2.3, spell:1309633=1.9 | {SpellID: 14751} |
-| 50 | 523000000000000000-00000000000000000-54342001201300051 | main_hand:9527 ranged:249232 | 116.5 | 7 | spell:5019=46.6, spell:17313=26.1, spell:10945=3.7, spell:10893=2.3, spell:19278=1.9 | {SpellID: 14751} |
-| 60 | 524010031130000000-00000000000000000-54342001201300051 | main_hand:22799 ranged:22821 | 270.2 | 8 | spell:5019=47.2, spell:18807=33.2, spell:10947=5.3, spell:10894=2.3, spell:1309636=2.0 | - |
+| 10 | 000000000000000000-00000000000000000-10000000000000000 | main_hand:263937 ranged:286750 | 11.9 | 3 | spell:5019=83.2, spell:8092=15.2, spell:594=11.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 20 | 000000000000000000-00000000000000000-54200000000000000 | main_hand:890 ranged:5243 | 25.1 | 4 | spell:5019=87.6, spell:8102=12.9, spell:970=6.4, spell:2944=1.9 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
+| 30 | 000000000000000000-00000000000000000-54342001200000000 | main_hand:249392 ranged:5213 | 38.3 | 5 | spell:5019=81.2, spell:17311=22.6, spell:970=4.3, spell:8104=3.0, spell:2944=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 38 | 000000000000000000-00000000000000000-54342001201300040 | main_hand:1664 ranged:13064 | 54.1 | 6 | spell:5019=73.4, spell:17312=16.1, spell:970=7.1, spell:8105=3.0, spell:1309595=1.3 | {SpellID: 14751}, {SpellID: 15473} |
+| 40 | 000000000000000000-00000000000000000-54342001201300051 | main_hand:1664 ranged:5216 | 73.3 | 7 | spell:5019=69.8, spell:8104=17.6, spell:17312=14.2, spell:2767=2.3, spell:2944=2.0 | {SpellID: 14751} |
+| 50 | 523000000000000000-00000000000000000-54342001201300051 | main_hand:9527 ranged:249232 | 102.8 | 7 | spell:5019=44.9, spell:8102=20.9, spell:17313=14.7, spell:2944=5.3, spell:1309633=3.4 | {SpellID: 14751} |
+| 60 | 524010031130000000-00000000000000000-54342001201300051 | main_hand:22799 ranged:22821 | 266.2 | 8 | spell:5019=47.2, spell:18807=33.2, spell:10947=5.3, spell:10894=2.3, spell:1309636=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -130,6 +131,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15263)
 - Holy Nova (spell 15430)
+- Shadow Word: Pain (spell 992)
 - Smite (spell 1004)
 - Starshards (spell 19299)
 
@@ -139,6 +141,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
+- Shadow Word: Pain (spell 2767)
 - Smite (spell 6060)
 - Starshards (spell 19302)
 
@@ -148,6 +151,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277326)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
+- Mind Blast (spell 8106)
 - Smite (spell 6060)
 - Starshards (spell 19302)
 
@@ -157,6 +161,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dark Sacrifice (spell 1277327)
 - Holy Fire (spell 15266)
 - Holy Nova (spell 27799)
+- Mind Blast (spell 10945)
+- Shadow Word: Death (spell 1309635)
 - Smite (spell 10933)
 - Starshards (spell 19304)
 

@@ -36,14 +36,25 @@ def test_every_planner_stat_key_has_an_engine_stat():
             assert stat_index(key) >= 0, key
 
 
-def test_hit_and_crit_resolve_through_the_alias_list():
-    """The engine lane renames MeleeHit/SpellHit to Hit and MeleeCrit/SpellCrit to
-    Crit. Both spellings resolve here, so the rename lands without a pipeline edit."""
+def test_hit_resolves_through_the_alias_list():
+    """The engine renamed MeleeHit/SpellHit to Hit. Both spellings resolve
+    here, so the rename lands without a pipeline edit."""
     known = set(pb.Stat.keys())
-    for key in ("hit", "crit", "spell_hit", "spell_crit"):
+    for key in ("hit", "spell_hit"):
         candidates = [name for name in PROTO_STAT_ALIASES[key] if name in known]
         assert candidates, key
         assert stat_index(key) == pb.Stat.Value(candidates[0])
+
+
+def test_each_crit_table_has_its_own_stat():
+    """Forever keeps the crit tables (round 9): an item's crit rating and
+    aura 290 are StatCrit, every table; aura 52 is StatMeleeCrit and aura 57
+    StatSpellCrit, one table each."""
+    assert stat_index("crit") == pb.Stat.Value("StatCrit")
+    assert stat_index("melee_crit") == pb.Stat.Value("StatMeleeCrit")
+    assert stat_index("spell_crit") == pb.Stat.Value("StatSpellCrit")
+    array = stat_array({"crit": 1, "melee_crit": 2, "spell_crit": 3})
+    assert stat_keys(array) == {"crit": 1.0, "melee_crit": 2.0, "spell_crit": 3.0}
 
 
 def test_an_unknown_key_is_an_error_not_a_guess():

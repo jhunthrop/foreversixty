@@ -39,7 +39,7 @@ func confirmedAlternative(picks map[string]slotPick, slot string, pool []scored)
 }
 
 func usableAlternative(picks map[string]slotPick, slot string, alt *scored) *scored {
-	if wouldDuplicatePairMate(picks, slot, alt.ID, alt.Name) {
+	if wouldDuplicatePairMate(picks, slot, alt.candidate) {
 		return nil
 	}
 	if slot == "off_hand" && picks["main_hand"].Item != nil && picks["main_hand"].Item.TwoHand {

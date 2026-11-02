@@ -641,12 +641,9 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	if pk.Item == nil {
 		return nil
 	}
-	var mateID int
-	var mateName string
-	if mate, ok := pairSlot[slot]; ok {
-		if mp := picks[mate].Item; mp != nil {
-			mateID, mateName = mp.ID, mp.Name
-		}
+	var mate pairMate
+	if mateSlot, ok := pairSlot[slot]; ok {
+		mate = mateOf(picks[mateSlot].Item)
 	}
 	// isPairMateItem is the mate-exclusion half of excluded (below) on
 	// its own: buildAlternatives' own force-include step for a real
@@ -655,7 +652,7 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	// that second question is true for the very row this step exists to
 	// update, which would wrongly skip it.
 	isPairMateItem := func(c scored) bool {
-		return mateID != 0 && (c.ID == mateID || (mateName != "" && c.Name == mateName))
+		return mate.excludes(c.candidate)
 	}
 	// isPickNameItem is this lane's brief, item 2 (bis-ranker-integrity-12):
 	// a slot's own pick can have several real item ids sharing one

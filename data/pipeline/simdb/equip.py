@@ -64,10 +64,19 @@ AURA_ARMOR = 674
 AURA_MOD_STAT = 29
 AURA_MOD_SKILL = 30
 AURA_SPELL_CRIT_SCHOOL = 552
+#: The three crit auras, one table each (Forever's own rows name them:
+#: "Increased Critical 1 - Melee and Ranged" 1318954 is 52, "- Spell"
+#: 1318956 is 57, "- All" 436239 is 290).
+AURA_MELEE_CRIT = 52
+AURA_SPELL_CRIT = 57
+AURA_CRIT_ALL = 290
 AURA_ATTACK_POWER = 99
 
 SCHOOL_PHYSICAL = 1
 SCHOOL_ALL_MAGIC = 126
+#: The masks an all-spells crit aura states: none (0), every magic school
+#: (126) or every school (127, Rallying Cry 355363).
+ALL_SPELL_SCHOOLS = frozenset({0, SCHOOL_ALL_MAGIC, 127})
 
 #: School mask bit -> school-specific spell power stat.
 SCHOOL_POWER: dict[int, str] = {
@@ -139,7 +148,7 @@ STAT_AURAS: dict[int, str] = {
     47: "parry",
     49: "dodge",
     51: "block",
-    52: "crit",
+    AURA_MELEE_CRIT: "melee_crit",
     54: "hit",
     55: "spell_hit",
     65: "spell_haste",
@@ -151,6 +160,8 @@ STAT_AURAS: dict[int, str] = {
     138: "melee_haste",
     274: "block_value",
     AURA_SPELL_CRIT_SCHOOL: "spell_crit",
+    AURA_SPELL_CRIT: "spell_crit",
+    AURA_CRIT_ALL: "crit",
     564: "block_value",
 }
 
@@ -212,7 +223,6 @@ IGNORED_AURAS = frozenset(
         42,
         43,
         56,
-        57,
         58,
         59,
         64,
@@ -255,7 +265,6 @@ IGNORED_AURAS = frozenset(
         262,
         272,
         275,
-        290,
         319,
         328,
         332,
@@ -360,7 +369,12 @@ def _add(target: dict[str, float], key: str, amount: float) -> None:
 #: aura 54 hit 1 and aura 55 spell hit 1) grants the unified stat once;
 #: `pipeline.simdb.statmap` folds both keys into one engine `Stat`, so summing
 #: them would double it.
-UNIFIED_SCHOOL_KEYS: dict[str, str] = {"spell_hit": "hit", "spell_crit": "crit"}
+UNIFIED_SCHOOL_KEYS: dict[str, str] = {"spell_hit": "hit"}
+
+#: The two one-table crit keys. A spell stating both (Forever's Might of the
+#: Scourge 1220743: aura 52 1 and aura 57 1) grants their shared part as
+#: every-table crit.
+CRIT_TABLE_KEYS = ("melee_crit", "spell_crit")
 
 
 #: Forever's environment riders state their condition in the client's own text:
@@ -425,7 +439,22 @@ def _unify_school_keys(spell_stats: dict[str, float]) -> dict[str, float]:
     for school_key, unified_key in UNIFIED_SCHOOL_KEYS.items():
         if school_key in out and unified_key in out:
             out[unified_key] = max(out[unified_key], out.pop(school_key))
-    return _generic_attack_power(out)
+    return _generic_attack_power(_shared_crit(out))
+
+
+def _shared_crit(spell_stats: dict[str, float]) -> dict[str, float]:
+    """One spell's melee and spell crit with their shared part as `crit`."""
+    melee_key, spell_key = CRIT_TABLE_KEYS
+    shared = min(spell_stats.get(melee_key, 0.0), spell_stats.get(spell_key, 0.0))
+    if shared <= 0:
+        return spell_stats
+    out = dict(spell_stats)
+    out["crit"] = out.get("crit", 0.0) + shared
+    for key in CRIT_TABLE_KEYS:
+        rest = out.pop(key) - shared
+        if rest:
+            out[key] = rest
+    return out
 
 
 def _generic_attack_power(spell_stats: dict[str, float]) -> dict[str, float]:
@@ -507,7 +536,10 @@ def spell_bonus(
                         f"WEAPON_SKILL_BY_SKILL_LINE in pipeline/simdb/equip.py"
                     )
             elif aura in STAT_AURAS and amount:
-                if aura == AURA_SPELL_CRIT_SCHOOL and misc != SCHOOL_ALL_MAGIC:
+                if (
+                    aura in (AURA_SPELL_CRIT_SCHOOL, AURA_SPELL_CRIT)
+                    and misc not in ALL_SPELL_SCHOOLS
+                ):
                     # Per-school spell crit has no Stat; the engine models it as
                     # an item effect.
                     continue

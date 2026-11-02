@@ -101,7 +101,7 @@
             }
           }
         },
-        "notes": "Water Shield (the Restoration talent) is kept up for its mana return on critical heals."
+        "notes": "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit."
       },
       {
         "action": {
@@ -932,7 +932,7 @@
             }
           }
         },
-        "notes": "Healing Wave is the efficient tank heal."
+        "notes": "Healing Wave is the efficient tank heal. Below 60, the rank each band casts is chosen for its mana over a fight sized for level 60, so it leans cheaper than a short fight at that level needs."
       }
     ]
   }

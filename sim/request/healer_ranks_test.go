@@ -17,10 +17,10 @@ import (
 func TestHealerListsCastTheTopTrainerRankUnlessChosen(t *testing.T) {
 	const build = "../../data/builds/1.60.1.70707/spellranks.json"
 	chosen := map[string]map[int]bool{ // spec -> spell id the rank rule picked
-		"priest-holy":        {6075: true},
-		"priest-discipline":  {6075: true, 3747: true},
-		"paladin-holy":       {19941: true, 1311606: true},
-		"druid-restoration":  {},
+		"priest-holy":        {6075: true, 9472: true},
+		"priest-discipline":  {6075: true, 3747: true, 2054: true},
+		"paladin-holy":       {19941: true, 1311606: true, 19750: true},
+		"druid-restoration":  {2090: true},
 		"shaman-restoration": {},
 	}
 	var ranks struct {
@@ -70,5 +70,55 @@ func readJSON(t *testing.T, path string, into any) {
 	}
 	if err := json.Unmarshal(raw, into); err != nil {
 		t.Fatalf("%s: %v", path, err)
+	}
+}
+
+// A healer list's note that names the rank its line pays for ("Rank 4 is
+// the rank this profile pays for") must name the rank the line casts at
+// band 60. Round 9 found Discipline's Prayer of Healing note still saying
+// rank 1 after the line moved to the trainer's rank 4 (10961) on
+// 2026-10-21.
+func TestHealerListNotesNameTheRankTheyCast(t *testing.T) {
+	var ranks struct {
+		Classes map[string]map[string][]struct {
+			ID, Level, Rank int
+		} `json:"classes"`
+	}
+	readJSON(t, "../../data/builds/1.60.1.70707/spellranks.json", &ranks)
+	named := regexp.MustCompile(`Rank (\d+) is the rank`)
+	for _, spec := range []string{"priest-holy", "priest-discipline", "paladin-holy", "druid-restoration", "shaman-restoration"} {
+		class, _, _ := strings.Cut(spec, "-")
+		var list struct {
+			Rotation struct {
+				PriorityList []struct {
+					Notes  string
+					Action map[string]json.RawMessage
+				} `json:"priorityList"`
+			}
+		}
+		readJSON(t, "../../data/curated/apl/"+spec+".json", &list)
+		for _, entry := range list.Rotation.PriorityList {
+			m := named.FindStringSubmatch(entry.Notes)
+			if m == nil {
+				continue
+			}
+			want, _ := strconv.Atoi(m[1])
+			var cast struct {
+				SpellID struct {
+					SpellID int `json:"spellId"`
+				} `json:"spellId"`
+			}
+			if raw, ok := entry.Action["castSpell"]; !ok || json.Unmarshal(raw, &cast) != nil {
+				t.Errorf("%s: a note names rank %d on a line that casts no spell", spec, want)
+				continue
+			}
+			for name, family := range ranks.Classes[class] {
+				for _, r := range family {
+					if r.ID == cast.SpellID.SpellID && r.Rank != want {
+						t.Errorf("%s: the %s line's note names rank %d but it casts rank %d (%d)", spec, name, want, r.Rank, r.ID)
+					}
+				}
+			}
+		}
 	}
 }

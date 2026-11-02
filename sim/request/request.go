@@ -219,7 +219,11 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		// field existed) does and why a caller sets it.
 		DistanceFromTarget: ch.DistanceFromTarget,
 	}
-	if err := applySpec(player, req.Spec, ch.Class, ch.Level); err != nil {
+	preset, err := rankPreset(req)
+	if err != nil {
+		return nil, err
+	}
+	if err := applySpec(player, req.Spec, ch.Class, preset, ch.Level); err != nil {
 		return nil, err
 	}
 
@@ -675,8 +679,8 @@ func restorationDruidOptions(p *proto.Player) {
 // statement of intent, and it is what the talent search mutates.
 func hunterOptions(p *proto.Player) {
 	options := &proto.Hunter_Options{
-		Ammo:           proto.Hunter_Options_ThoriumHeadedArrow,
-		QuiverBonus:    proto.Hunter_Options_Speed15,
+		Ammo:           hunterAmmoAt(p.Level),
+		QuiverBonus:    hunterQuiverAt(p.Level),
 		PetType:        proto.Hunter_Options_Cat,
 		PetAttackSpeed: proto.Hunter_Options_OneTwo,
 		PetUptime:      fullPetUptime,
@@ -686,6 +690,56 @@ func hunterOptions(p *proto.Player) {
 		options.PetUptime = 0
 	}
 	p.Spec = &proto.Player_Hunter{Hunter: &proto.Hunter{Options: options}}
+}
+
+// hunterLevelPick is the best item of a kind a hunter of at least level can
+// use.
+type hunterLevelPick[T any] struct {
+	level int32
+	pick  T
+}
+
+// hunterAmmo is the best ammo by required level (Wowhead Forever item
+// tooltips): Sharp Arrow 3.5 DPS (10), Razor Arrow 7.5 (25), Jagged Arrow 13
+// (40), Mithril Gyro-Shot 15 (44), Ice Threaded Arrow 16.5 (51), Thorium
+// Headed Arrow 17.5 (52). The engine does not match ammo to the bow or gun,
+// so the Gyro-Shot stands for a bow's Jagged Arrow from 44 to 50.
+var hunterAmmo = []hunterLevelPick[proto.Hunter_Options_Ammo]{
+	{52, proto.Hunter_Options_ThoriumHeadedArrow},
+	{51, proto.Hunter_Options_IceThreadedArrow},
+	{44, proto.Hunter_Options_MithrilGyroShot},
+	{40, proto.Hunter_Options_JaggedArrow},
+	{25, proto.Hunter_Options_RazorArrow},
+	{10, proto.Hunter_Options_SharpArrow},
+}
+
+// hunterQuiver is the best quiver by required level: Light Quiver 10% (no
+// level), Heavy Quiver 12% (30), Quickdraw Quiver 13% (40), Gnoll Skin
+// Bandolier 15% (55).
+var hunterQuiver = []hunterLevelPick[proto.Hunter_Options_QuiverBonus]{
+	{55, proto.Hunter_Options_Speed15},
+	{40, proto.Hunter_Options_Speed13},
+	{30, proto.Hunter_Options_Speed12},
+	{1, proto.Hunter_Options_Speed10},
+}
+
+// bestHunterPick is the first pick, highest level first, a hunter of level
+// can use, or fallback.
+func bestHunterPick[T any](picks []hunterLevelPick[T], level int32, fallback T) T {
+	for _, p := range picks {
+		if level >= p.level {
+			return p.pick
+		}
+	}
+	return fallback
+}
+
+func hunterAmmoAt(level int32) proto.Hunter_Options_Ammo {
+	return bestHunterPick(hunterAmmo, level, proto.Hunter_Options_AmmoNone)
+}
+
+func hunterQuiverAt(level int32) proto.Hunter_Options_QuiverBonus {
+	return bestHunterPick(hunterQuiver, level, proto.Hunter_Options_Speed10)
 }
 
 // hunterTakesLoneWolf reads the Lone Wolf point off a hunter talent string.
@@ -820,12 +874,12 @@ func tankWarriorOptions(p *proto.Player) {
 // rewritten to the character's own rank of every ranked spell it
 // casts. The engine cannot build an agent for a player carrying
 // neither.
-func applySpec(player *proto.Player, slug, class string, level int) error {
+func applySpec(player *proto.Player, slug, class, preset string, level int) error {
 	apply, ok := specOptions[slug]
 	if !ok {
 		return fmt.Errorf("%w: %q; the specs this build carries are %v", ErrUnsupportedSpec, slug, supportedSpecs())
 	}
-	rot, err := rotation(slug, class, level)
+	rot, err := rotation(slug, class, preset, level)
 	if err != nil {
 		return err
 	}
@@ -834,20 +888,21 @@ func applySpec(player *proto.Player, slug, class string, level int) error {
 	return nil
 }
 
-// rotation parses one embedded APL, rewritten to level's ranks (see
-// rewriteRotationRanks). It is parsed per build rather than cached, so
-// no two requests ever share a mutable rotation.
-func rotation(name, class string, level int) (*proto.APLRotation, error) {
+// rotation parses one embedded APL, rewritten to level's ranks under
+// preset's rank choices (see rewriteRotationRanks). It is parsed per build
+// rather than cached, so no two requests ever share a mutable rotation.
+func rotation(name, class, preset string, level int) (*proto.APLRotation, error) {
 	b, err := aplFS.ReadFile("apl/" + name + ".apl.json")
 	if err != nil {
 		return nil, fmt.Errorf("request: no embedded APL for %q: %w", name, err)
 	}
 	// At MaxLevel the rotation was authored for exactly the ranks it
-	// already carries, so skipping the rewrite is both an optimization
-	// and the guarantee that a level-MaxLevel rotation is byte-for-byte
-	// what it always was.
-	if level < api.MaxLevel {
-		b, err = rewriteRotationRanks(b, class, level)
+	// already carries: with no rank choice for the preset there, skipping
+	// the rewrite is both an optimization and the guarantee that a
+	// level-MaxLevel rotation is byte-for-byte what it always was.
+	choices := specRankChoices(name, preset)
+	if level < api.MaxLevel || len(choices) > 0 {
+		b, err = rewriteRotationRanks(b, class, level, choices)
 		if err != nil {
 			return nil, fmt.Errorf("request: rewriting %q's rotation for level %d: %w", name, level, err)
 		}

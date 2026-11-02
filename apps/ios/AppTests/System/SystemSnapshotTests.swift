@@ -33,7 +33,9 @@ struct SystemSnapshotTests {
             .preferredColorScheme(.dark)
         assertSnapshot(
             of: sized,
-            as: .image(drawHierarchyInKeyWindow: keyWindow, precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits),
+            as: keyWindow
+                ? .keyWindowImage(layout: .device(config: config), traits: traits)
+                : .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits),
             testName: name
         )
     }

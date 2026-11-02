@@ -1,9 +1,9 @@
 // web/src/lib/sim/buffs.ts
 // The panel's sections, and nothing else. The id vocabulary itself is IDS.md's, generated
 // by the engine from its own protobuf descriptors and copied into
-// src/data/generated/sim-ids.json by scripts/sync-sim-ids.mjs -- so this file never holds
-// a list of ids, only the table that says which section each engine message and each
-// `Consumes` field belongs in. A buff the engine adds appears in the panel the next time
+// src/data/generated/sim-ids.json by scripts/sync-sim-ids.mjs -- so this file holds no
+// list of ids to offer, only the table that says which section each engine message and each
+// `Consumes` field belongs in, and the few ids the engine accepts but ignores (INERT_BUFFS). A buff the engine adds appears in the panel the next time
 // the data is synced, with no diff here.
 //
 // Graded ids are contract 1.7: `<id>:improved` for every TristateEffect field. They are
@@ -146,9 +146,31 @@ const file = generated as SimIdsFile;
 // section out (isWorldBuff), so IDS.md, and this catalogue, never carry one.
 export const CATALOGUE: readonly BuffRow[] = buildCatalogue(file);
 
-/** One group's rows, alphabetical by id so the panel's order never depends on IDS.md's. */
+/**
+ * Ids the request accepts but the engine applies nothing for, so the panel does not offer
+ * them. Round 8 D3 (engine a56f0d992): Forever made Shadow Weaving, Improved Scorch's Fire
+ * Vulnerability, Improved Shadow Bolt's Shadow Vulnerability and Stormstrike the caster's own
+ * (aura 270/271, damage taken from the caster), so the raid flags give the raid nothing and
+ * each class keeps its own from its talents. Curse of Shadow (casters lane, engine 35fa13a5a,
+ * round 9): Forever deleted it from the client (no SpellName or SpellEffect row for 17862 or
+ * 17937 in 70707); Curse of the Elements covers every school. Winter's Chill (auras lane, engine d1dc542c7,
+ * round 9): 12579 is aura 271, the applying mage's own, so the raid flag applies nothing. They stay in the catalogue and the request
+ * vocabulary, so a saved sim that named one still runs.
+ */
+export const INERT_BUFFS: readonly string[] = [
+  'curse_of_shadow',
+  'improved_scorch',
+  'improved_shadow_bolt',
+  'shadow_weaving',
+  'stormstrike',
+  'winters_chill',
+];
+
+/** One group's offered rows, alphabetical by id so the panel's order never depends on IDS.md's. */
 export function rowsIn(group: BuffGroupId): BuffRow[] {
-  return CATALOGUE.filter((row) => row.group === group).sort((a, b) => a.id.localeCompare(b.id));
+  return CATALOGUE.filter((row) => row.group === group && !INERT_BUFFS.includes(row.id)).sort((a, b) =>
+    a.id.localeCompare(b.id),
+  );
 }
 
 export type BuffGrade = 'off' | 'on' | 'improved';

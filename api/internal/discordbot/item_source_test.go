@@ -11,6 +11,8 @@ const sourceLoot = `{
   {"kind": "vendor", "name": "Pix Xizzix", "items": [272408]},
   {"kind": "vendor", "name": "Captain Dirgehammer", "faction": "alliance", "items": [16466]},
   {"kind": "pvp", "name": "Rank 17 (Alliance)", "rank": 17, "faction": "alliance", "items": [16466]},
+  {"kind": "pvp", "name": "PvP reward (Horde)", "rank": null, "title_rank": 12, "faction": "horde", "items": [227198]},
+  {"kind": "vendor", "name": "Sergeant Thunderhorn", "faction": "horde", "items": [227198]},
   {"kind": "rep", "name": "Stormpike Guard", "standing": "exalted", "items": [19325]},
   {"kind": "crafted", "name": "Leatherworking", "profession": "leatherworking", "items": [252483]},
   {"kind": "dungeon", "name": "Stratholme", "bosses": [{"name": "Baron Rivendare", "items": [13340], "item_chances": {"13340": 11.5}}]},
@@ -45,6 +47,13 @@ func TestSourceLinesAreTheBisPagesOwn(t *testing.T) {
 	for _, c := range cases {
 		if got := describeSource(&loot, c.id, c.kind, "alliance"); got != c.want {
 			t.Errorf("%d %s = %q, want %q", c.id, c.kind, got, c.want)
+		}
+	}
+	// Round 8 relabelled 467 Forever PvP listings as unranked "PvP reward (<Side>)" sources;
+	// the page reads them "PvP reward · Horde" (items/source-labels.ts pvpSourceLabel).
+	for _, kind := range []string{"pvp", "vendor"} {
+		if got := describeSource(&loot, 227198, kind, "horde"); got != "PvP reward · Horde" {
+			t.Errorf("unranked pvp item as %s = %q, want %q", kind, got, "PvP reward · Horde")
 		}
 	}
 	if got := describeSource(&loot, 1, "quest", "horde"); got != "Horde quest" {

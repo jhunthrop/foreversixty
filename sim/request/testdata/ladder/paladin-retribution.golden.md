@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-00000000000000000-01000000000000000 | main_hand:263407 | 14.6 | 5 | other:attack/1=61.0, spell:25740=52.1, spell:20271=18.6, spell:20280=18.6, spell:679=18.6 | {SpellID: 1310735}, {SpellID: 20920} |
-| 20 | 00000000000000000-00000000000000000-05231000000000000 | main_hand:6953 | 33.8 | 6 | other:attack/1=57.3, spell:25739=46.7, spell:20271=20.1, spell:20281=20.1, spell:1866=17.7 | {SpellID: 1310735}, {SpellID: 20375} |
-| 30 | 00000000000000000-00000000000000000-05233301001300000 | main_hand:13045 | 51.0 | 6 | other:attack/1=63.1, spell:25738=53.9, other:mana_gain=23.1, spell:20271=23.1, spell:20282=23.1 | {SpellID: 1310735} |
-| 38 | 00000000000000000-00000000000000000-05233301001301340 | main_hand:10758 | 73.4 | 6 | other:attack/1=55.5, spell:25737=47.5, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | {SpellID: 1310735} |
-| 40 | 01000000000000000-00000000000000000-05233301001301350 | main_hand:1982 | 86.1 | 6 | other:attack/1=52.4, spell:25737=44.8, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | {SpellID: 1310735} |
-| 50 | 05024000000000000-00000000000000000-05233301001301350 | main_hand:2915 | 111.9 | 7 | other:attack/1=79.4, spell:25735=66.3, other:mana_gain=21.8, spell:20271=21.8, spell:20285=21.8 | {SpellID: 1310735} |
-| 60 | 05025000200000000-50200000000000000-05233301001301350 | main_hand:22798 | 197.7 | 7 | other:attack/1=48.3, spell:25713=41.2, other:mana_gain=22.0, spell:20271=22.0, spell:20286=22.0 | {SpellID: 1310735} |
+| 10 | 00000000000000000-00000000000000000-01000000000000000 | main_hand:263407 | 13.8 | 5 | other:attack/1=61.0, spell:25740=52.1, spell:20271=18.6, spell:20280=18.6, spell:679=18.6 | {SpellID: 1310735}, {SpellID: 20920} |
+| 20 | 00000000000000000-00000000000000000-05231000000000000 | main_hand:6953 | 32.3 | 6 | other:attack/1=57.3, spell:25739=46.7, spell:20271=20.1, spell:20281=20.1, spell:1866=17.7 | {SpellID: 1310735}, {SpellID: 20375} |
+| 30 | 00000000000000000-00000000000000000-05233301001300000 | main_hand:13045 | 48.6 | 6 | other:attack/1=63.1, spell:25738=53.8, other:mana_gain=23.1, spell:20271=23.1, spell:20282=23.1 | {SpellID: 1310735} |
+| 38 | 00000000000000000-00000000000000000-05233301001301340 | main_hand:10758 | 69.0 | 6 | other:attack/1=55.5, spell:25737=47.7, other:mana_gain=23.0, spell:20271=23.0, spell:20283=23.0 | {SpellID: 1310735} |
+| 40 | 01000000000000000-00000000000000000-05233301001301350 | main_hand:1982 | 80.8 | 6 | other:attack/1=52.4, spell:25737=44.7, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | {SpellID: 1310735} |
+| 50 | 05024000000000000-00000000000000000-05233301001301350 | main_hand:2915 | 103.4 | 7 | other:attack/1=79.4, spell:25735=64.6, other:mana_gain=20.8, spell:20271=20.8, spell:20285=20.8 | {SpellID: 1310735} |
+| 60 | 05025000200000000-50200000000000000-05233301001301350 | main_hand:22798 | 187.3 | 7 | other:attack/1=48.3, spell:25713=41.2, other:mana_gain=22.0, spell:20271=22.0, spell:20286=22.0 | {SpellID: 1310735} |
 
 ## Learned but unused (informational)
 
@@ -121,24 +122,28 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
+- Consecration (spell 20116)
 - Exorcism (spell 5614)
 - Judgement of Command (spell 20962)
 - Judgement of Fury (spell 20183)
 
 ### Level 38
 
+- Consecration (spell 20116)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20962)
 - Judgement of Fury (spell 20411)
 
 ### Level 40
 
+- Consecration (spell 20922)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20961)
 - Judgement of Fury (spell 20411)
 
 ### Level 50
 
+- Consecration (spell 20923)
 - Exorcism (spell 10312)
 - Holy Wrath (spell 2812)
 - Judgement of Command (spell 20965)

@@ -3,7 +3,7 @@ title: Restoration Druid in Forever
 classSlug: druid
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.70707:druid:night-elf:45322001/0/50530051531132:'
+build: 'FS1:1.60.1.70707:druid:night-elf:05312001/0/55530051531132:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Talents, rotation, stats, and gear for Restoration Druid in Forever, and what is confirmed versus projected from the beta.'
@@ -54,9 +54,10 @@ The build spends most of its points in Restoration and fills Balance with the pe
 - **Reflection** keeps part of your regeneration running while you cast, **Tranquil Spirit** makes Healing Touch and Tranquility cheaper, and **Living Spirit** lifts Spirit.
 - **Bloom** (1 point, new in client 1.60.1.70707) heals the target for your Spirit whenever a Rejuvenation or Regrowth runs its full duration; with heals over time doing most of the work it was the largest single gain the sim found for this build, about +10% healing over the alternatives for that point. It took the point of Gift of the Earthmother, which left the tree in the same patch.
 - **Swiftmend** (it eats the heal over time it reads) and **Nature's Swiftness** are the burst tools.
-- From Balance, **Genesis** adds 10% to every heal over time, **Nature's Majesty** adds critical chance, and **Nature's Splendor** lengthens your heal-over-time spells.
+- From Balance, **Genesis** adds 10% to every heal over time, **Nature's Majesty** adds critical chance, and **Nature's Splendor** lengthens your heal-over-time spells. Moonglow and Improved Moonfire only buy the points that open Nature's Splendor: in this client they touch damage spells alone.
+- **Heart of the Wild** (5 points, 10% more Intellect) takes the points that used to go to Improved Wrath, which only speeds up and cheapens Wrath; about +1% healing in our run.
 
-The build leaves out the capstone Wild Growth and Improved Regrowth: the sim measured both against spending those points elsewhere, and under this profile the points did better elsewhere. That is a statement about this rotation's mana pacing, not about the spells; since 1.60.1.70707 Wild Growth also has a 3 second cast. Measured again in round 6, with the raid pulses now reaching you too, the best Wild Growth line came out level with this rotation, within error, not ahead of it: Rejuvenation with Bloom heals more for its mana, and this fight runs your mana down before it runs out your time. In a fight with heavy group damage in bursts, take it. Nature's Focus stays over Heart of the Wild (10% more Intellect, now on Restoration's top row): the raid's damage reaches you while you cast, and Nature's Focus keeps Healing Touch, Regrowth and Tranquility from losing casting time to it, which measured level with the Intellect. Open the planner at [/planner?class=druid](/planner?class=druid) to adjust it.
+The build leaves out the capstone Wild Growth and Improved Regrowth: the sim measured both against spending those points elsewhere, and under this profile the points did better elsewhere. That is a statement about this rotation's mana pacing, not about the spells; since 1.60.1.70707 Wild Growth also has a 3 second cast. Measured again in round 6, with the raid pulses now reaching you too, the best Wild Growth line came out level with this rotation, within error, not ahead of it: Rejuvenation with Bloom heals more for its mana, and this fight runs your mana down before it runs out your time. In a fight with heavy group damage in bursts, take it. Nature's Focus stays as well: the raid's damage reaches you while you cast, and Nature's Focus keeps Healing Touch, Regrowth and Tranquility from losing casting time to it. Open the planner at [/planner?class=druid](/planner?class=druid) to adjust it.
 
 ## Rotation and priority
 

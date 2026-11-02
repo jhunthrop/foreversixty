@@ -273,6 +273,35 @@ def test_spell_hit_alone_stays_spell_hit():
     assert spell_bonus([900100], index_spell_effects(rows)).stats == {"spell_hit": 2.0}
 
 
+def test_the_three_crit_auras_keep_their_tables():
+    """Forever keeps the crit tables apart (round 9): aura 52 is melee and
+    ranged crit (Might of the Scourge 29482, "Critical Hit +1%" 7597), aura
+    57 spell crit (Power of the Scourge 29468, Brilliant Wizard Oil 25113)
+    and aura 290 every table ("Increased Critical 2 - All" 448324)."""
+    rows = [
+        _aura_row(29482, 0, 52, 1),
+        _aura_row(29468, 0, 57, 1),
+        _aura_row(448324, 0, 290, 2),
+    ]
+    effects = index_spell_effects(rows)
+    assert spell_bonus([29482], effects).stats == {"melee_crit": 1.0}
+    assert spell_bonus([29468], effects).stats == {"spell_crit": 1.0}
+    assert spell_bonus([448324], effects).stats == {"crit": 2.0}
+
+
+def test_melee_and_spell_crit_on_one_spell_are_every_table():
+    """Forever's own "Might of the Scourge" (1220743) states aura 52 1 and
+    aura 57 1 (school mask 126): the shared part is crit on every table."""
+    rows = [_aura_row(1220743, 0, 52, 1), _aura_row(1220743, 1, 57, 1, misc=126)]
+    assert spell_bonus([1220743], index_spell_effects(rows)).stats == {"crit": 1.0}
+
+
+def test_a_one_school_spell_crit_is_not_a_stat():
+    """Aura 57 on one school (449933 "Spell Crit", holy only) has no Stat."""
+    rows = [_aura_row(449933, 0, 57, 3, misc=2)]
+    assert spell_bonus([449933], index_spell_effects(rows)).is_empty()
+
+
 def test_the_forever_feral_combat_skill_line_is_feral_combat():
     """Spell 1320726 "Increased Feral Combat" names skill line 3014, which
     SkillLine.csv lacks; Wowhead Forever lists its item (Oilskin Leggings 9414)

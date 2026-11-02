@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -99,12 +100,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 10000000000000000-00000000000000000-0000000000000000000 | main_hand:1287 off_hand:2088 | 11.0 | 2 | other:attack/1=151.0, other:attack/2=132.2, spell:1757=42.3, spell:5171/4=8.6 | {SpellID: 1241584}, {SpellID: 14177} |
-| 20 | 32501000000000000-00000000000000000-0000000000000000000 | main_hand:2236 off_hand:1935 | 25.4 | 2 | other:attack/1=140.9, other:attack/2=111.3, spell:1758=42.5, spell:5171/4=8.5 | {SpellID: 1241584}, {SpellID: 14177} |
-| 30 | 32502110520000000-00000000000000000-0000000000000000000 | main_hand:23168 off_hand:19545 | 44.1 | 2 | other:attack/1=154.3, other:attack/2=127.1, spell:1760=46.3, spell:5171/4=9.4 | {SpellID: 1310707}, {SpellID: 14177} |
-| 38 | 32502110551400000-00000000000000000-0000000000000000000 | main_hand:6831 off_hand:19544 | 65.8 | 3 | other:attack/1=144.0, other:attack/2=127.1, spell:8621=46.5, spell:5171/4=9.4, spell:14177=1.3 | {SpellID: 1310707} |
-| 40 | 32502110551401001-00000000000000000-0000000000000000000 | main_hand:2164 off_hand:274753 | 81.1 | 4 | other:attack/1=117.1, other:attack/2=110.9, spell:399956=29.1, spell:8624/4=7.6, spell:5171/4=7.3 | - |
-| 50 | 32502110551501001-30230100000000000-0000000000000000000 | main_hand:2163 off_hand:6660 | 118.9 | 4 | other:attack/2=172.8, other:attack/1=160.6, spell:1241582=29.0, spell:11299/4=7.6, spell:6774/4=7.3 | - |
-| 60 | 32502110551501001-30230300000000000-5120000000000000000 | main_hand:22802 off_hand:21126 | 192.1 | 4 | other:attack/1=125.0, other:attack/2=125.0, spell:1241584=29.1, spell:11300/4=7.4, spell:6774/4=7.3 | - |
+| 20 | 32501000000000000-00000000000000000-0000000000000000000 | main_hand:2236 off_hand:1935 | 25.3 | 2 | other:attack/1=140.9, other:attack/2=111.3, spell:1758=42.5, spell:5171/4=8.5 | {SpellID: 1241584}, {SpellID: 14177} |
+| 30 | 32502110520000000-00000000000000000-0000000000000000000 | main_hand:23168 off_hand:19545 | 43.9 | 2 | other:attack/1=154.3, other:attack/2=127.1, spell:1760=46.3, spell:5171/4=9.4 | {SpellID: 1310707}, {SpellID: 14177} |
+| 38 | 32502110551300010-00000000000000000-0000000000000000000 | main_hand:6831 off_hand:19544 | 64.4 | 6 | other:attack/1=143.3, other:attack/2=126.5, spell:8621=46.2, spell:5171/4=9.0, spell:14177=1.3 | {SpellID: 1310707} |
+| 40 | 32502110551501000-00000000000000000-0000000000000000000 | main_hand:2164 off_hand:274753 | 81.8 | 4 | other:attack/1=117.1, other:attack/2=110.9, spell:399956=29.1, spell:8624/4=7.6, spell:5171/4=7.3 | - |
+| 50 | 32502110551501010-30230100000000000-0000000000000000000 | main_hand:2163 off_hand:6660 | 119.8 | 6 | other:attack/2=173.8, other:attack/1=161.4, spell:1241582=29.3, spell:6774/4=6.2, spell:11299/4=6.1 | - |
+| 60 | 32502110551501010-30230300000000000-5120000000000000000 | main_hand:22802 off_hand:21126 | 193.0 | 6 | other:attack/1=125.7, other:attack/2=125.6, spell:1241584=29.2, spell:6774/4=6.1, spell:11300/4=6.0 | - |
 
 ## Learned but unused (informational)
 
@@ -142,7 +143,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 8725)
 - Backstab (spell 8721)
-- Eviscerate (spell 8623)
 - Garrote (spell 8633)
 - Gouge (spell 8629)
 - Kick (spell 1767)

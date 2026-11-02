@@ -319,12 +319,12 @@ func confirmSwap(runner engineRunner, spec specInfo, req api.SimRequest, sw swap
 // this lane's brief names as a published output the owner caught by
 // eye (mage-arcane/mage-frost/priest-shadow/shaman-elemental/warlock-
 // destruction's finger or trinket pair, this run).
-func wouldDuplicatePairMate(out map[string]slotPick, slot string, itemID int, itemName string) bool {
+func wouldDuplicatePairMate(out map[string]slotPick, slot string, c candidate) bool {
 	mate, ok := pairSlot[slot]
 	if !ok || out[mate].Item == nil {
 		return false
 	}
-	return out[mate].Item.ID == itemID || out[mate].Item.Name == itemName
+	return mateOf(out[mate].Item).excludes(c)
 }
 
 // wouldBreakTwoHandInvariant is whether promoting runnerUp into
@@ -393,7 +393,7 @@ func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, leve
 		if !sw.Beat || !ok || pk.RunnerUp == nil {
 			continue
 		}
-		if wouldDuplicatePairMate(out, sw.Slot, pk.RunnerUp.ID, pk.RunnerUp.Name) || wouldBreakTwoHandInvariant(out, sw.Slot) {
+		if wouldDuplicatePairMate(out, sw.Slot, pk.RunnerUp.candidate) || wouldBreakTwoHandInvariant(out, sw.Slot) {
 			adjusted[i].Beat = false
 			continue
 		}

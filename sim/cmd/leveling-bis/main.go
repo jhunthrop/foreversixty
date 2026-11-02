@@ -365,8 +365,14 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// band's own eligible()/pick()/tournament pass runs.
 	items = markNotInSimDB(items)
 	items = withEngineWeaponDamage(items, simdb.Weapon)
-	// A tank is ranked on tank score, not damage (score_tank.go).
-	runner = roleRunner(runner, specInfo)
+	// A tank is ranked on tank score, not damage (score_tank.go). The
+	// memo (memo.go) answers every repeated sim from the first run of it.
+	memo := newMemoRunner(roleRunner(runner, specInfo))
+	runner = memo
+	defer func() {
+		hits, misses := memo.stats()
+		log.Printf("leveling-bis: %s: sim memo: %d sims run, %d answered from memory", spec, misses, hits)
+	}()
 	// itemFactionRestriction: item id -> its own client-stated
 	// faction_restriction, for correctedRepSource's general check
 	// (data.go's own doc: a mined rep source's Side is wrong for a real
@@ -387,6 +393,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// item's own required_level, which a quest or crafted reward almost
 	// always states as 0) once, before any band uses eligible().
 	items = applyEffectiveRequiredLevels(items, lootIdx, questFloors)
+	// Round 9: an item's own client reputation requirement holds every
+	// source of it to that standing and side (reputation.go).
+	lootIdx = applyItemReputations(lootIdx, items)
 
 	// This lane's brief, item 5's second half: read once per spec (the
 	// rotation does not change per band/faction) whether this spec's own
@@ -595,10 +604,12 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			}
 			rankStart := time.Now()
 			runs := make([]map[string]*factionRun, len(variants))
-			for i, v := range variants {
-				if runs[i], err = ranker.rank(v); err != nil {
-					return err
-				}
+			if err := forEach(len(variants), runsConcurrently(runner), func(i int) error {
+				var rankErr error
+				runs[i], rankErr = ranker.rank(variants[i])
+				return rankErr
+			}); err != nil {
+				return err
 			}
 			log.Printf("leveling-bis: %s band %d %s: ranked under %d weight set(s) in %.1fs", spec, band, pass.name, len(variants), time.Since(rankStart).Seconds())
 

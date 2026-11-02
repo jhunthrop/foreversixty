@@ -172,6 +172,23 @@ def test_consumables_follow_the_spec_not_the_role(tmp_path: Path) -> None:
     assert "Sharpening" in know("warrior-arms", tmp_path)
 
 
+def test_food_is_the_published_presets_food(tmp_path: Path) -> None:
+    # Round 8's raid foods (sim/request/raid-consumes.json): casters Nightfin Soup, Strength
+    # users and tanks Smoked Desert Dumplings, rogues and hunters Grilled Squid, healers Sage's Tea.
+    for slug, food in [
+        ("mage-frost", "Nightfin Soup"),
+        ("warrior-arms", "Smoked Desert Dumplings"),
+        ("paladin-protection", "Smoked Desert Dumplings"),
+        ("druid-feral-bear", "Smoked Desert Dumplings"),
+        ("rogue-combat", "Grilled Squid"),
+        ("hunter-marksmanship", "Grilled Squid"),
+        ("priest-discipline", "Sage's Tea"),
+    ]:
+        text = know(slug, tmp_path)
+        assert f"food ({food})" in text, (slug, food)
+        assert "Tender Wolf Steak" not in text, slug
+
+
 def test_resource_drill_matches_the_resource(tmp_path: Path) -> None:
     assert "cap" not in line_of(run_starter("mage-frost", tmp_path), "drill.resource")
     assert "cap" in line_of(run_starter("rogue-combat", tmp_path), "drill.resource")

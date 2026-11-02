@@ -1,0 +1,540 @@
+{
+  "notes": "Per-band rank choices (owner ruling 3, sim-accuracy round 9). Below level 60 the site rewrites a rotation's ranked spells: by default each casts the highest rank learned that is not above the rank the curated rotation names, so a deliberate lower rank there is kept. A row here overrides that for one spec's authored spell id from from_level through to_level: the rotation casts that rank instead, higher or lower. A row may name a preset (bare or raid) and then applies only to a request simmed under it; one with none applies to both. Level 60 runs the curated rotation as written, which carries the raid choice; a row at 60 names its preset. A row is adopted where the fight is mana-bound (or the line is rationed by a mana gate) and the rank raises the band's published number beyond the error at seeds 1 and 50001, 10000 iterations; a healer row never turns a fight that runs dry into one that ends with mana unspent, and every healer row is measured on the level-60 heal profile. Defensive cooldowns (Divine Protection, Divine Shield, Ice Barrier and the like) are never rank choices. The evidence is in design/reviews/2026-11-02-sim-audit-round9/ranks.md. sim/request embeds a copy (make rank-choices-sync); TestEmbeddedRankChoicesMatchCurated holds it to this file.",
+  "specs": {
+    "druid-balance": [
+      {
+        "spell": "Moonfire",
+        "authored": 9835,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 3
+          }
+        ]
+      },
+      {
+        "spell": "Wrath",
+        "authored": 9912,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 4
+          }
+        ]
+      },
+      {
+        "spell": "Insect Swarm",
+        "authored": 24977,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 1
+          }
+        ]
+      }
+    ],
+    "druid-restoration": [
+      {
+        "spell": "Rejuvenation",
+        "authored": 2090,
+        "bands": [
+          {
+            "from_level": 20,
+            "to_level": 29,
+            "rank": 1
+          },
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 2
+          },
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 7
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 8
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 10,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "hunter-beast-mastery": [
+      {
+        "spell": "Aimed Shot",
+        "authored": 20904,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 1,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "hunter-marksmanship": [
+      {
+        "spell": "Aimed Shot",
+        "authored": 20904,
+        "bands": [
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 1,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "mage-arcane": [
+      {
+        "spell": "Frostbolt",
+        "authored": 10181,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 4
+          }
+        ]
+      }
+    ],
+    "mage-fire": [
+      {
+        "spell": "Fire Blast",
+        "authored": 10199,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 4
+          }
+        ]
+      },
+      {
+        "spell": "Scorch",
+        "authored": 10207,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 1
+          },
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 1
+          }
+        ]
+      }
+    ],
+    "paladin-holy": [
+      {
+        "spell": "Holy Light",
+        "authored": 10329,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 3
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 3
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 4,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "paladin-protection": [
+      {
+        "spell": "Consecration",
+        "authored": 20924,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 1
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 1,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "paladin-retribution": [
+      {
+        "spell": "Consecration",
+        "authored": 20924,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 1
+          },
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 1
+          }
+        ]
+      }
+    ],
+    "priest-discipline": [
+      {
+        "spell": "Heal",
+        "authored": 2054,
+        "bands": [
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 4,
+            "preset": "bare"
+          }
+        ]
+      },
+      {
+        "spell": "Power Word: Shield",
+        "authored": 3747,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 5
+          },
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 2
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 8
+          }
+        ]
+      },
+      {
+        "spell": "Renew",
+        "authored": 6075,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 1
+          }
+        ]
+      },
+      {
+        "spell": "Binding Heal",
+        "authored": 1240774,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 1
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 1,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "priest-holy": [
+      {
+        "spell": "Flash Heal",
+        "authored": 9472,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 4
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 6
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 7,
+            "preset": "bare"
+          }
+        ]
+      },
+      {
+        "spell": "Prayer of Healing",
+        "authored": 10961,
+        "bands": [
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 1,
+            "preset": "bare"
+          }
+        ]
+      },
+      {
+        "spell": "Lightwell",
+        "authored": 27871,
+        "bands": [
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 1,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "priest-shadow": [
+      {
+        "spell": "Shadow Word: Pain",
+        "authored": 10894,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 3
+          }
+        ]
+      },
+      {
+        "spell": "Mind Blast",
+        "authored": 10947,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 4
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 2
+          }
+        ]
+      },
+      {
+        "spell": "Devouring Plague",
+        "authored": 19280,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 1
+          },
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 1
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 1,
+            "preset": "bare"
+          }
+        ]
+      },
+      {
+        "spell": "Shadow Word: Death",
+        "authored": 1309636,
+        "bands": [
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 2
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 2,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "shaman-elemental": [
+      {
+        "spell": "Lightning Bolt",
+        "authored": 15207,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 4
+          },
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 4
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 4
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 4,
+            "preset": "bare"
+          }
+        ]
+      },
+      {
+        "spell": "Flame Shock",
+        "authored": 29228,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 2
+          }
+        ]
+      },
+      {
+        "spell": "Lava Burst",
+        "authored": 1326047,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 1
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 2,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "shaman-restoration": [
+      {
+        "spell": "Healing Wave",
+        "authored": 10396,
+        "bands": [
+          {
+            "from_level": 20,
+            "to_level": 29,
+            "rank": 3
+          },
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 3
+          },
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 3
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 3
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 3,
+            "preset": "bare"
+          }
+        ]
+      },
+      {
+        "spell": "Riptide",
+        "authored": 1239243,
+        "bands": [
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 2,
+            "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "warlock-destruction": [
+      {
+        "spell": "Shadow Bolt",
+        "authored": 11661,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 4
+          }
+        ]
+      }
+    ]
+  }
+}

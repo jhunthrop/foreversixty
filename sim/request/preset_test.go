@@ -128,13 +128,17 @@ func TestRaidPresetConsumesFollowTheRole(t *testing.T) {
 		{"warrior-arms", []string{"mighty_rage_potion", "main_hand_imbue:elemental_sharpening_stone"}, []string{"off_hand_imbue:dense_sharpening_stone"}},
 		{"paladin-retribution", []string{"elixir_of_the_mongoose", "major_mana_potion"}, []string{"mighty_rage_potion", "conjured_demonic_rune"}},
 		{"hunter-marksmanship", []string{"elixir_of_the_mongoose", "major_mana_potion"}, []string{"off_hand_imbue:dense_sharpening_stone", "flask_of_supreme_power"}},
-		{"rogue-combat", []string{"elixir_of_the_mongoose", "food_grilled_squid"}, []string{"major_mana_potion", "mighty_rage_potion", "food_smoked_desert_dumpling"}},
-		// Forever's foods (round 8): Grilled Squid is 1% crit, Tender Wolf
-		// Steak 15 Agility and Runn Tum 15 Intellect, so the agility users
-		// eat the squid, the strength users and the tanks the dumplings.
-		{"hunter-survival", []string{"food_grilled_squid"}, []string{"food_smoked_desert_dumpling"}},
-		{"warrior-protection", []string{"food_smoked_desert_dumpling"}, []string{"food_tender_wolf_steak"}},
-		{"priest-shadow", []string{"food_nightfin_soup"}, []string{"food_runn_tum_tuber_surprise"}},
+		{"rogue-combat", []string{"elixir_of_the_mongoose", "food_poached_sunscale_salmon"}, []string{"major_mana_potion", "mighty_rage_potion", "food_smoked_desert_dumpling", "food_grilled_squid"}},
+		// Forever's foods (rounds 8 and 9): Grilled Squid is 1% crit, Tender
+		// Wolf Steak 15 Agility and Runn Tum 15 Intellect; Poached Sunscale
+		// Salmon 40 attack power and Baked Salmon 28 spell damage. The agility
+		// users eat the sunscale salmon, the strength users and the warrior and
+		// bear tanks the dumplings, the casters and the paladin tank Baked
+		// Salmon (Nightfin Soup behind it until 45).
+		{"hunter-survival", []string{"food_poached_sunscale_salmon"}, []string{"food_smoked_desert_dumpling", "food_grilled_squid"}},
+		{"warrior-protection", []string{"food_smoked_desert_dumpling"}, []string{"food_tender_wolf_steak", "food_baked_salmon"}},
+		{"paladin-protection", []string{"food_baked_salmon"}, []string{"food_smoked_desert_dumpling"}},
+		{"priest-shadow", []string{"food_baked_salmon", "food_nightfin_soup"}, []string{"food_runn_tum_tuber_surprise"}},
 	}
 	for _, c := range cases {
 		resolved, err := presets.Resolve(RaidPreset, specs.ByKey[c.spec])
@@ -314,8 +318,16 @@ func TestLayerWithNoKitIsThePresetItself(t *testing.T) {
 		t.Fatal(err)
 	}
 	buffs, consumeIDs := resolved.Layer(nil, nil)
-	if len(buffs) != len(resolved.Buffs)+len(resolved.Debuffs) || len(consumeIDs) != len(resolved.Consumes) {
-		t.Errorf("layer dropped entries: %d buffs, %d consumes", len(buffs), len(consumeIDs))
+	// One consumable a slot: Nightfin Soup stands behind Baked Salmon.
+	slots := map[string]bool{}
+	for _, entry := range resolved.Consumes {
+		slots[resolved.slots[entry.ID]] = true
+	}
+	if len(buffs) != len(resolved.Buffs)+len(resolved.Debuffs) || len(consumeIDs) != len(slots) {
+		t.Errorf("layer dropped entries: %d buffs, %d consumes for %d slots", len(buffs), len(consumeIDs), len(slots))
+	}
+	if !slices.Contains(consumeIDs, "food_baked_salmon") || slices.Contains(consumeIDs, "food_nightfin_soup") {
+		t.Errorf("a level-60 caster eats Baked Salmon, not Nightfin Soup: %v", consumeIDs)
 	}
 }
 
@@ -396,5 +408,70 @@ func TestRetributionPaladinRunsNoSanctityAura(t *testing.T) {
 	retributionPaladinOptions(&player)
 	if got := player.GetRetributionPaladin().GetOptions().GetAura(); got == proto.PaladinAura_SanctityAura {
 		t.Errorf("Retribution aura = %v, want no Sanctity Aura", got)
+	}
+}
+
+// A slot holds one consumable: where a preset lists two for one slot (a food and the lower
+// level food behind it, or a class's pick and its group's), the first the character can use
+// is the one it carries, the spec's and class's lists ahead of the group's. So a level-40
+// caster eats Nightfin Soup and a level-60 caster Baked Salmon, and a rogue takes Ground
+// Scorpok Assay where the melee group lists R.O.I.D.S. (round 9).
+func TestEachConsumableSlotCarriesTheFirstUsableEntry(t *testing.T) {
+	presets := loadRealPresets(t)
+	levels := loadRealItemLevels(t)
+	for _, spec := range specs.All {
+		resolved, err := presets.Resolve(RaidPreset, spec)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for level := 1; level <= 60; level++ {
+			_, ids := resolved.UsableAt(level, levels).Layer(leveling.KitBuffs(spec.Spec, level), leveling.KitConsumes(spec.Spec, level))
+			seen := map[string]string{}
+			for _, id := range ids {
+				slot, err := consumeSlot(id)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if prior, ok := seen[slot]; ok && prior != id {
+					t.Errorf("%s at %d carries %s and %s in one slot (%s)", spec.Spec, level, prior, id, slot)
+				}
+				seen[slot] = id
+			}
+		}
+	}
+	all, err := RaidConsumes(presets, levels)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		spec  string
+		level int
+		food  string
+	}{
+		{"mage-fire", 40, "food_nightfin_soup"},
+		{"mage-fire", 60, "food_baked_salmon"},
+		{"paladin-protection", 60, "food_baked_salmon"},
+		{"warrior-fury", 40, "food_poached_sunscale_salmon"},
+		{"warrior-fury", 60, "food_smoked_desert_dumpling"},
+		{"warrior-protection", 60, "food_smoked_desert_dumpling"},
+		{"rogue-combat", 60, "food_poached_sunscale_salmon"},
+		{"hunter-marksmanship", 60, "food_poached_sunscale_salmon"},
+		{"priest-holy", 60, "food_sages_tea"},
+		// The Blasted Lands slot: the spec's and class's lists beat the group's.
+		{"warrior-fury", 60, "r_o_i_d_s"},
+		{"rogue-combat", 60, "ground_scorpok_assay"},
+		{"druid-feral", 60, "ground_scorpok_assay"},
+		{"hunter-beast-mastery", 60, "ground_scorpok_assay"},
+		{"mage-frost", 60, "cerebral_cortex_compound"},
+		{"shaman-restoration", 60, "cerebral_cortex_compound"},
+		{"priest-discipline", 60, "gizzard_gum"},
+		{"druid-feral-bear", 60, "r_o_i_d_s"},
+		// Survival is melee in Forever and stones both hands.
+		{"hunter-survival", 60, "main_hand_imbue:elemental_sharpening_stone"},
+		{"hunter-survival", 40, "off_hand_imbue:dense_sharpening_stone"},
+	} {
+		if got := ConsumesAtLevel(all[c.spec], c.level); !slices.Contains(got, c.food) {
+			t.Errorf("%s at %d eats no %s: %v", c.spec, c.level, c.food, got)
+		}
 	}
 }

@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:286750 | 16.2 | 5 | other:mana_gain=33.7, spell:1454=33.7, spell:695=29.1, spell:172=14.4, spell:707=13.5 | {SpellID: 412758}, {SpellID: 603} |
-| 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:890 ranged:5243 | 29.6 | 6 | other:mana_gain=33.8, spell:1455=33.8, spell:1088=24.3, spell:1094=13.1, spell:6222=12.2 | {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
-| 30 | 00000000000000000-0000000000000000000-2053235100000000 | main_hand:249392 ranged:5213 | 58.6 | 7 | other:mana_gain=35.4, spell:1456=35.4, spell:1106=21.9, spell:2941=13.3, spell:6223=10.7 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 603} |
-| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:1664 ranged:13064 | 76.2 | 8 | other:mana_gain=33.6, spell:11687=33.6, spell:2941=19.4, spell:1293818=14.5, spell:7641=12.5 | {SpellID: 412758}, {SpellID: 603} |
-| 40 | 00000000000000000-0000000000000000000-2053235103101311 | main_hand:1664 ranged:5216 | 82.0 | 8 | other:mana_gain=36.9, spell:11687=36.9, spell:11665=17.7, spell:17962=14.2, spell:412758=11.4 | {SpellID: 603} |
-| 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:9527 ranged:249232 | 150.8 | 7 | other:mana_gain=33.1, spell:11688=33.1, spell:1293812=22.3, spell:18930=14.3, spell:11667=13.6 | {SpellID: 603} |
-| 60 | 25522000000000000-0000000000000000000-2053235103101351 | main_hand:22630 ranged:22821 | 312.7 | 8 | other:mana_gain=32.7, spell:11689=32.7, spell:1293813=26.5, spell:18932=14.4, spell:11668=13.7 | - |
+| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:286750 | 16.0 | 5 | other:mana_gain=33.7, spell:1454=33.7, spell:695=29.1, spell:172=14.4, spell:707=13.5 | {SpellID: 412758}, {SpellID: 603} |
+| 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:890 ranged:5243 | 29.3 | 6 | other:mana_gain=33.8, spell:1455=33.8, spell:1088=24.3, spell:1094=13.1, spell:6222=12.2 | {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
+| 30 | 00000000000000000-0000000000000000000-2053235100000000 | main_hand:249392 ranged:5213 | 57.4 | 6 | other:mana_gain=32.6, spell:1456=32.6, spell:1088=25.6, spell:2941=13.7, spell:6223=10.7 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 603} |
+| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:1664 ranged:13064 | 73.5 | 7 | other:mana_gain=31.0, spell:11687=31.0, spell:2941=19.9, spell:1088=15.1, spell:1293818=14.7 | {SpellID: 412758}, {SpellID: 603} |
+| 40 | 00000000000000000-0000000000000000000-2053235103101311 | main_hand:1664 ranged:5216 | 80.7 | 8 | other:mana_gain=36.9, spell:11687=36.9, spell:11665=17.7, spell:17962=14.2, spell:412758=11.4 | {SpellID: 603} |
+| 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:9527 ranged:249232 | 148.3 | 7 | other:mana_gain=33.1, spell:11688=33.1, spell:1293812=22.3, spell:18930=14.3, spell:11667=13.6 | {SpellID: 603} |
+| 60 | 25522000000000000-0000000000000000000-2053235103101351 | main_hand:22630 ranged:22821 | 307.4 | 8 | other:mana_gain=32.7, spell:11689=32.7, spell:1293813=26.5, spell:18932=14.4, spell:11668=13.7 | - |
 
 ## Learned but unused (informational)
 
@@ -137,6 +138,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lash of Pain (spell 7815)
 - Rain of Fire (spell 5740)
 - Searing Pain (spell 17919)
+- Shadow Bolt (spell 1106)
 - Shadow Cleave (spell 403842)
 
 ### Level 38
@@ -149,6 +151,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lash of Pain (spell 7816)
 - Rain of Fire (spell 6219)
 - Searing Pain (spell 17920)
+- Shadow Bolt (spell 7641)
 - Shadow Cleave (spell 403843)
 
 ### Level 40
@@ -205,5 +208,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ## Violations found in this run
 
 - warlock-destruction level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-destruction level=30 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-destruction level=38 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=60 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)

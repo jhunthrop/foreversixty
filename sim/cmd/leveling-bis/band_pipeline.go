@@ -63,13 +63,18 @@ func (r bandRanker) logf(format string, args ...any) {
 // reconciliation, the effect tournaments, the verify swaps, set completion
 // and the confirmed-stats check.
 func (r bandRanker) rank(w rankingWeights) (map[string]*factionRun, error) {
+	parallel := runsConcurrently(r.runner)
+	firstHalves := make([]*factionWork, len(r.factions))
+	if err := forEach(len(r.factions), parallel, func(i int) error {
+		fw, err := r.pickAndRankTrinkets(w, r.factions[i])
+		firstHalves[i] = fw
+		return err
+	}); err != nil {
+		return nil, err
+	}
 	work := make(map[string]*factionWork, len(r.factions))
-	for _, f := range r.factions {
-		fw, err := r.pickAndRankTrinkets(w, f)
-		if err != nil {
-			return nil, err
-		}
-		work[f.name] = fw
+	for i, f := range r.factions {
+		work[f.name] = firstHalves[i]
 	}
 	// Both factions' trinket tournaments are finished: reconcile them
 	// before either continues (faction_trinkets.go), so a faction-neutral
@@ -84,13 +89,17 @@ func (r bandRanker) rank(w rankingWeights) (map[string]*factionRun, error) {
 	for _, n := range notes {
 		r.logf("faction reconcile (%s weights): %s", w.label, n)
 	}
+	finished := make([]*factionRun, len(r.factions))
+	if err := forEach(len(r.factions), parallel, func(i int) error {
+		run, err := r.finish(work[r.factions[i].name])
+		finished[i] = run
+		return err
+	}); err != nil {
+		return nil, err
+	}
 	out := make(map[string]*factionRun, len(r.factions))
-	for _, f := range r.factions {
-		run, err := r.finish(work[f.name])
-		if err != nil {
-			return nil, err
-		}
-		out[f.name] = run
+	for i, f := range r.factions {
+		out[f.name] = finished[i]
 	}
 	return out, nil
 }
@@ -139,6 +148,13 @@ func (r bandRanker) finish(fw *factionWork) (*factionRun, error) {
 			r.logf("%s: %s", fw.faction, n)
 		}
 	}
+	if r.castsShoot {
+		var notes []string
+		picks, notes = rankWandSlot(r.runner, r.spec, fw.race, r.spec.ClassSlug, r.band, r.talents, picks, fw.pickBySlot)
+		for _, n := range notes {
+			r.logf("%s: %s", fw.faction, n)
+		}
+	}
 	effectSeconds := time.Since(effectStart).Seconds()
 	picks = fillEmptyOffHand(r.spec.Spec, fw.pickBySlot, enforceTwoHandOffHandInvariant(picks))
 
@@ -158,6 +174,13 @@ func (r bandRanker) finish(fw *factionWork) (*factionRun, error) {
 	}
 	for _, n := range setNotes {
 		r.logf("%s: %s", fw.faction, n)
+	}
+	if r.castsShoot {
+		var wandNotes []string
+		verified, wandNotes = finalWandCheck(r.runner, r.spec, fw.race, r.spec.ClassSlug, r.band, r.talents, verified, fw.pickBySlot)
+		for _, n := range wandNotes {
+			r.logf("%s: %s", fw.faction, n)
+		}
 	}
 	considered = append(considered, consideredSet{Label: consideredBeforeConfirmed, Picks: verified.picks})
 	verified, held, err := preferConfirmedStats(r.runner, r.spec, fw.race, r.spec.ClassSlug, r.band, r.talents, verified, fw.pickBySlot)

@@ -109,6 +109,13 @@ type classItem struct {
 	// updates one of the two rows still excludes the item, rather than
 	// only working when both happen to agree.
 	SupersededBy int `json:"superseded_by,omitempty"`
+	// Reputation is the client's reputation requirement for the item
+	// (ItemSparse.MinFactionID and MinReputation), nil for none. See
+	// applyItemReputations.
+	Reputation *itemReputation `json:"reputation,omitempty"`
+	// LimitCategory is the client's ItemSparse.LimitCategory, 0 for none:
+	// two items in one category are never a pair (pair.go).
+	LimitCategory int `json:"limit_category,omitempty"`
 }
 
 type classItemFile struct {
@@ -211,6 +218,10 @@ type candidate struct {
 	// the item's stats are 1.12's, not yet confirmed by the client.
 	// preferConfirmedStats (confirmed.go) reads it.
 	ClientUnconfirmed bool
+	// Reputation is classItem.Reputation carried through.
+	Reputation *itemReputation
+	// LimitCategory is classItem.LimitCategory carried through.
+	LimitCategory int
 }
 
 // markNotInSimDB sets NotInSimDB (above) on every item this build's
@@ -349,6 +360,8 @@ func loadClassCandidates(buildDir, classSlug string) (out []candidate, missing [
 			SetID:                  ci.SetID,
 			EffectText:             ci.EffectText,
 			ClientUnconfirmed:      ci.ClientUnconfirmed,
+			Reputation:             ci.Reputation,
+			LimitCategory:          ci.LimitCategory,
 		})
 	}
 	return out, missing, nil
@@ -830,6 +843,10 @@ var factionExclusiveDungeons = map[string]string{
 var repSide = map[int]string{
 	890: "horde", 510: "horde", 729: "horde",
 	889: "alliance", 509: "alliance", 730: "alliance",
+	// Darkspear Islands (round 9): Darkspear Raiders and Theramore
+	// Expeditionary Force, under Horde Forces 892 and Alliance Forces 891
+	// in the client's Faction table.
+	2798: "horde", 2799: "alliance",
 }
 
 // questFactionSide maps loot.json's `quests[item][].faction` ("alliance",
@@ -1051,7 +1068,58 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		}
 		questFloors[id] = leveling.LowestFloor(levels)
 	}
-	return vendorInheritsPvpRankGate(vendorInheritsRepStandingGate(idx)), questFloors, nil
+	return vendorInheritsPvpRankGate(vendorInheritsStockSide(vendorInheritsRepStandingGate(idx))), questFloors, nil
+}
+
+// vendorInheritsStockSide returns a copy of idx where a vendor with no side
+// takes the one side its rep-sourced stock names. loot.json names no
+// faction for several battleground quartermasters (Illiyana Moonblaze and
+// Samuel Hawke among them), and their stock with no rep source of its own
+// (Illiyana's level-25 Lorekeeper's Staff 212580, round 9) would otherwise
+// reach both sides. A vendor whose rep stock names both sides, or none,
+// is left alone.
+func vendorInheritsStockSide(idx lootIndex) lootIndex {
+	sides := map[int]map[string]bool{}
+	for _, srcs := range idx {
+		// An item both sides' reputations sell (the WSG bracers, under
+		// Silverwing Sentinels and Warsong Outriders alike) says nothing
+		// about which side its vendor serves.
+		itemSides := map[string]bool{}
+		for _, s := range srcs {
+			if s.Kind == "rep" && s.Side != "" {
+				itemSides[s.Side] = true
+			}
+		}
+		if len(itemSides) != 1 {
+			continue
+		}
+		var repSideOfItem string
+		for side := range itemSides {
+			repSideOfItem = side
+		}
+		for _, s := range srcs {
+			if s.Kind == "vendor" && s.NpcID != 0 {
+				if sides[s.NpcID] == nil {
+					sides[s.NpcID] = map[string]bool{}
+				}
+				sides[s.NpcID][repSideOfItem] = true
+			}
+		}
+	}
+	out := make(lootIndex, len(idx))
+	for id, srcs := range idx {
+		gated := make([]itemSource, len(srcs))
+		for i, s := range srcs {
+			if s.Kind == "vendor" && s.Side == "" && len(sides[s.NpcID]) == 1 {
+				for side := range sides[s.NpcID] {
+					s.Side = side
+				}
+			}
+			gated[i] = s
+		}
+		out[id] = gated
+	}
+	return out
 }
 
 // vendorInheritsPvpRankGate returns a copy of idx where a "vendor"

@@ -29,6 +29,17 @@ import (
 // enum the first time the pin moved.
 var spellings = map[string]string{"MP5": "mp5"}
 
+// TableOnly are the engine stats a weights request never names. Round 9's
+// crit split (engine 497deb4fc) added StatMeleeCrit and StatSpellCrit for
+// the crit that reaches one table only: a sharpening stone's melee crit,
+// a wizard oil's spell crit, Agility and Intellect. Every Forever item's
+// crit is stat 32, which reaches every table, so "crit" stays the one crit
+// id a weight, a Pawn string or a page control names (contract 10.8).
+var TableOnly = map[proto.Stat]bool{
+	proto.Stat_StatMeleeCrit: true,
+	proto.Stat_StatSpellCrit: true,
+}
+
 // statID is one enum value's id: the value name with the Stat prefix
 // stripped, in lower snake case, with the spellings above applied.
 func statID(name string) string {
@@ -46,6 +57,9 @@ func statID(name string) string {
 var byID = func() map[string]proto.Stat {
 	out := make(map[string]proto.Stat, len(proto.Stat_name))
 	for value, name := range proto.Stat_name {
+		if TableOnly[proto.Stat(value)] {
+			continue
+		}
 		out[statID(name)] = proto.Stat(value)
 	}
 	return out

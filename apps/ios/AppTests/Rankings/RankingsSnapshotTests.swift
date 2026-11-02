@@ -31,7 +31,7 @@ struct RankingsSnapshotTests {
         assertSnapshot(
             of: sized,
             as: keyWindow
-                ? .image(drawHierarchyInKeyWindow: true, precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits)
+                ? .keyWindowImage(layout: .device(config: config), traits: traits)
                 : .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits),
             testName: name
         )

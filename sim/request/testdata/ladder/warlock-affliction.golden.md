@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:263937 ranged:286750 | 16.4 | 5 | other:mana_gain=31.3, spell:1454=31.3, spell:695=30.0, spell:172=14.2, spell:707=13.4 | {SpellID: 18288} |
-| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 30.8 | 6 | other:mana_gain=26.9, spell:1455=26.9, spell:1088=22.3, spell:6222=12.6, spell:1094=12.3 | {SpellID: 18288} |
-| 30 | 25522300110000000-0000000000000000000-0000000000000000 | main_hand:249392 ranged:5213 | 57.2 | 7 | other:mana_gain=25.8, spell:1456=25.8, spell:1106=23.5, spell:5019=14.6, spell:2941=12.0 | {SpellID: 18265} |
-| 38 | 25522300130201300-0000000000000000000-0000000000000000 | main_hand:1664 ranged:13064 | 71.3 | 8 | other:mana_gain=27.0, spell:11687=27.0, spell:7641=23.7, spell:2941=12.1, spell:7648=11.0 | - |
-| 40 | 25522300130201311-0000000000000000000-0000000000000000 | main_hand:1664 ranged:5216 | 74.7 | 8 | other:mana_gain=26.8, spell:11687=26.8, spell:7641=21.4, spell:5019=12.0, spell:11665=11.0 | - |
-| 50 | 25522300130201351-2004000000000000000-0000000000000000 | main_hand:9527 ranged:249232 | 121.9 | 8 | other:mana_gain=28.1, spell:11688=28.1, spell:11659=25.8, spell:11667=11.3, spell:11671=11.0 | - |
-| 60 | 25522300130201351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 252.3 | 8 | other:mana_gain=29.6, spell:11689=29.6, spell:11661=28.0, spell:11668=12.0, spell:11672=11.2 | - |
+| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:263937 ranged:286750 | 16.2 | 5 | other:mana_gain=31.3, spell:1454=31.3, spell:695=30.0, spell:172=14.2, spell:707=13.4 | {SpellID: 18288} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:5243 | 30.4 | 6 | other:mana_gain=26.9, spell:1455=26.9, spell:1088=22.3, spell:6222=12.6, spell:1094=12.3 | {SpellID: 18288} |
+| 30 | 25522300110000000-0000000000000000000-0000000000000000 | main_hand:249392 ranged:5213 | 56.5 | 7 | other:mana_gain=25.8, spell:1456=25.8, spell:1106=23.5, spell:5019=14.6, spell:2941=12.0 | {SpellID: 18265} |
+| 38 | 25522300130201300-0000000000000000000-0000000000000000 | main_hand:1664 ranged:13064 | 70.2 | 8 | other:mana_gain=27.0, spell:11687=27.0, spell:7641=23.7, spell:2941=12.1, spell:7648=11.0 | - |
+| 40 | 25522300130201311-0000000000000000000-0000000000000000 | main_hand:1664 ranged:5216 | 73.6 | 8 | other:mana_gain=26.8, spell:11687=26.8, spell:7641=21.4, spell:5019=12.0, spell:11665=11.0 | - |
+| 50 | 25522300130201351-2004000000000000000-0000000000000000 | main_hand:9527 ranged:249232 | 120.0 | 8 | other:mana_gain=28.1, spell:11688=28.1, spell:11659=25.8, spell:11667=11.3, spell:11671=11.0 | - |
+| 60 | 25522300130201351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 248.6 | 8 | other:mana_gain=29.6, spell:11689=29.6, spell:11661=28.0, spell:11668=12.0, spell:11672=11.2 | - |
 
 ## Learned but unused (informational)
 

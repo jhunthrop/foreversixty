@@ -131,14 +131,14 @@
           }
         }
       },
-      "notes": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of."
+      "notes": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of. Below 60, the rank each band casts is chosen for its mana over a fight sized for level 60, so it leans cheaper than a short fight at that level needs."
     },
     {
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 10917,
-            "rank": 7
+            "spellId": 9472,
+            "rank": 2
           },
           "target": {
             "type": "Player",
@@ -164,7 +164,7 @@
           }
         }
       },
-      "notes": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low."
+      "notes": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low. The tank's Flash Heal is cast at rank 2 (9472): over the raid fight it returns more effective healing for far less mana."
     },
     {
       "action": {

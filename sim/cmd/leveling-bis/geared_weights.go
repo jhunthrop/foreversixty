@@ -23,6 +23,12 @@ type bandWeights struct {
 	ladder *bandWeights
 }
 
+// weightsSeed is every weights sweep's seed. The engine runs each sweep
+// point (the baseline and each stat's low and high nudge) on this one seed
+// with labelled random streams, so the stat deltas share their random
+// numbers and a sweep is reproducible to the bit (tank_sweep_test.go).
+const weightsSeed = 3
+
 // measureBandWeights sweeps ch's stat weights. A sweep whose reference stat
 // is not positive beyond its own error re-runs once at
 // weightsRetryIterationsFactor iterations (warlock-destruction band 60's
@@ -32,14 +38,14 @@ type bandWeights struct {
 // re-measures that row once (primaryStatSignificanceCheck); an untrusted
 // band publishes no anchor, so it skips that retry.
 func measureBandWeights(runner engineRunner, spec specInfo, band, iterations int, anchorStat string, ch api.CharacterSpec) (bandWeights, error) {
-	req := weightsRequest(spec, ch, iterations, 3)
+	req := weightsRequest(spec, ch, iterations, weightsSeed)
 	result, reference, err := runner.RunWeights(req)
 	if err != nil {
 		return bandWeights{}, fmt.Errorf("band %d weights run: %w", band, err)
 	}
 	reason := referenceMeasurementReason(spec.ReferenceStat, result, reference)
 	if reason != "" {
-		retryReq := weightsRequest(spec, ch, iterations*weightsRetryIterationsFactor, 3)
+		retryReq := weightsRequest(spec, ch, iterations*weightsRetryIterationsFactor, weightsSeed)
 		retryResult, retryReference, retryErr := runner.RunWeights(retryReq)
 		if retryErr != nil {
 			return bandWeights{}, fmt.Errorf("band %d weights retry run: %w", band, retryErr)
@@ -52,7 +58,7 @@ func measureBandWeights(runner engineRunner, spec specInfo, band, iterations int
 	if reason != "" || anchorStat == "" {
 		return out, nil
 	}
-	retried, lowConf, err := primaryStatSignificanceCheck(runner, spec, ch, anchorStat, iterations, 3, result)
+	retried, lowConf, err := primaryStatSignificanceCheck(runner, spec, ch, anchorStat, iterations, weightsSeed, result)
 	if err != nil {
 		return bandWeights{}, fmt.Errorf("band %d primary-stat (%s) weights retry: %w", band, anchorStat, err)
 	}

@@ -195,11 +195,6 @@ func beatsBeyondError(dps, dpsErr, baseline, baselineErr float64) bool {
 	return beatsByMargin(dps, baseline) && dps-baseline > math.Hypot(dpsErr, baselineErr)
 }
 
-// setScreenMargin is how far a screening run must beat its baseline to earn a
-// full-length confirmation: half of swapMargin, so a trial the short run
-// already finds losing or tied never costs the 300-iteration run.
-const setScreenMargin = swapMargin / 2
-
 // setReading is one sim run's mean and standard error.
 type setReading struct{ dps, stdErr float64 }
 
@@ -242,17 +237,20 @@ func (c *setCompletion) baseline(cached **setReading, iterations int) (setReadin
 	return **cached, nil
 }
 
-// screens is whether a short run of trial leaves it worth confirming.
-func (c *setCompletion) screens(trial setTrial) (bool, error) {
+// screens is a short run of trial: whether it leads the working picks at
+// all, and its mean. The 100-iteration screen is too noisy to demand a
+// margin (round 9: Fury band 30's Defias Leather four led by 0.3% there and
+// by 1.3% at 300 iterations); the confirm keeps swapMargin and the error.
+func (c *setCompletion) screens(trial setTrial) (bool, float64, error) {
 	base, err := c.baseline(&c.screenBase, trinketRankIterations)
 	if err != nil {
-		return false, err
+		return false, 0, err
 	}
 	reading, err := c.measure("set-completion-screen", trial.picks, trinketRankIterations)
 	if err != nil {
-		return false, err
+		return false, 0, err
 	}
-	return reading.dps > base.dps*(1+setScreenMargin), nil
+	return reading.dps > base.dps, reading.dps, nil
 }
 
 // confirms is whether a verification-length run of trial beats the working
@@ -279,8 +277,7 @@ func (c *setCompletion) trySet(setID int) {
 		if need <= 0 || need > len(fill) {
 			continue
 		}
-		trial := buildSetTrial(c.picks, fill, need)
-		won, reading, err := c.runTrial(trial)
+		won, trial, reading, err := c.runBestTrial(setTrialsFor(c.picks, fill, need))
 		if err != nil {
 			c.notes = append(c.notes, fmt.Sprintf("set %d (%s) %d-piece trial: verify failed: %v", setID, info.Name, threshold, err))
 			continue
@@ -292,13 +289,59 @@ func (c *setCompletion) trySet(setID int) {
 	}
 }
 
-// runTrial screens trial, then confirms it when the screen passes.
-func (c *setCompletion) runTrial(trial setTrial) (bool, setReading, error) {
-	ok, err := c.screens(trial)
-	if err != nil || !ok {
-		return false, setReading{}, err
+// setTrialAlternatives bounds the close alternatives a threshold screens
+// beside its cheapest pieces: each extra one costs a short screening run.
+const setTrialAlternatives = 4
+
+// setTrialsFor is a threshold's trials: the cheapest need pieces of fill,
+// then up to setTrialAlternatives close alternatives that trade one chosen
+// piece for one left out, the smallest added score loss first. A score that
+// misjudges one slot then no longer decides the whole set (round 9: Fury
+// band 30's Defias Leather, whose cheapest four took the chest).
+func setTrialsFor(picks map[string]slotPick, fill []setFillSlot, need int) []setTrial {
+	trials := []setTrial{buildSetTrial(picks, fill, need)}
+	type swap struct {
+		in, out int
+		cost    float64
 	}
-	return c.confirms(trial)
+	var swaps []swap
+	for i := 0; i < need; i++ {
+		for j := need; j < len(fill); j++ {
+			swaps = append(swaps, swap{in: j, out: i, cost: fill[j].loss - fill[i].loss})
+		}
+	}
+	sort.SliceStable(swaps, func(a, b int) bool { return swaps[a].cost < swaps[b].cost })
+	for _, sw := range swaps[:min(len(swaps), setTrialAlternatives)] {
+		chosen := make([]setFillSlot, 0, need)
+		for i := 0; i < need; i++ {
+			if i != sw.out {
+				chosen = append(chosen, fill[i])
+			}
+		}
+		chosen = append(chosen, fill[sw.in])
+		trials = append(trials, buildSetTrial(picks, chosen, need))
+	}
+	return trials
+}
+
+// runBestTrial screens every trial and confirms the one that screens
+// highest, when any passes the screen.
+func (c *setCompletion) runBestTrial(trials []setTrial) (bool, setTrial, setReading, error) {
+	best, bestDPS := -1, 0.0
+	for i, trial := range trials {
+		ok, dps, err := c.screens(trial)
+		if err != nil {
+			return false, setTrial{}, setReading{}, err
+		}
+		if ok && (best < 0 || dps > bestDPS) {
+			best, bestDPS = i, dps
+		}
+	}
+	if best < 0 {
+		return false, setTrial{}, setReading{}, nil
+	}
+	won, reading, err := c.confirms(trials[best])
+	return won, trials[best], reading, err
 }
 
 // adopt makes trial the working picks and tags its changed slots with the

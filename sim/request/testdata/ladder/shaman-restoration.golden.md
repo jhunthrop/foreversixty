@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-000000000000000000-1000000000000000 | main_hand:263937 | 9.8 | 2 | spell:332=35.8, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
-| 20 | 0000000000000000-000000000000000000-5510000000000000 | main_hand:890 | 28.9 | 5 | spell:5672=750.0, spell:8004=22.5, spell:913=4.7, spell:20572=3.0, spell:5394=1.7 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
-| 30 | 0000000000000000-000000000000000000-5530003311000000 | main_hand:9604 | 45.1 | 6 | spell:6371=749.9, other:mana_gain=36.5, spell:8008=27.0, spell:408510=12.8, spell:939=6.9 | {SpellID: 16188}, {SpellID: 16190} |
-| 38 | 0000000000000000-000000000000000000-5530003315400000 | main_hand:873 | 70.4 | 6 | spell:6371=749.8, other:mana_gain=37.2, spell:8010=26.0, spell:408510=13.1, spell:959=7.0 | {SpellID: 16188}, {SpellID: 17354} |
-| 40 | 0000000000000000-000000000000000000-5530003315510000 | main_hand:873 | 79.9 | 8 | spell:6372=718.4, other:mana_gain=40.8, spell:8010=29.3, spell:408510=12.9, spell:8005=4.8 | {SpellID: 16188}, {SpellID: 408521} |
-| 50 | 0000000000000000-000000000000000000-5530003315513151 | main_hand:812 | 134.5 | 10 | spell:10460=718.3, other:mana_gain=41.3, spell:10466=26.4, spell:408510=13.1, spell:10395=4.6 | - |
-| 60 | 0000000000000000-055000000000000000-5530003315513151 | main_hand:19355 | 172.7 | 10 | spell:10461=718.1, other:mana_gain=41.1, spell:10468=18.5, spell:408510=13.1, spell:10396=6.1 | - |
+| 10 | 0000000000000000-000000000000000000-1000000000000000 | main_hand:263937 | 9.7 | 2 | spell:332=35.8, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
+| 20 | 0000000000000000-000000000000000000-5510000000000000 | main_hand:890 | 30.5 | 5 | spell:5672=750.0, spell:547=37.7, spell:20572=3.0, spell:5394=1.7, spell:8004=0.3 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
+| 30 | 0000000000000000-000000000000000000-5530003311000000 | main_hand:9604 | 44.2 | 6 | spell:6371=749.7, spell:547=61.1, other:mana_gain=37.0, spell:408510=13.0, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190} |
+| 38 | 0000000000000000-000000000000000000-5530003315400000 | main_hand:873 | 70.5 | 6 | spell:6371=749.8, spell:547=75.8, other:mana_gain=38.2, spell:408510=13.4, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 17354} |
+| 40 | 0000000000000000-000000000000000000-5530003315510000 | main_hand:873 | 79.3 | 8 | spell:6372=716.5, spell:547=79.9, other:mana_gain=42.2, spell:408510=13.4, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 408521} |
+| 50 | 0000000000000000-000000000000000000-5530003315513151 | main_hand:812 | 139.1 | 10 | spell:10460=717.4, spell:547=63.4, other:mana_gain=42.0, spell:408510=13.3, spell:10466=11.6 | - |
+| 60 | 0000000000000000-055000000000000000-5530003315513151 | main_hand:19355 | 170.3 | 10 | spell:10461=718.2, other:mana_gain=40.8, spell:10468=18.5, spell:408510=12.9, spell:10396=6.0 | - |
 
 ## Learned but unused (informational)
 

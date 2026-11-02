@@ -272,7 +272,7 @@ jobs:
         # that one is cross-compiled, and Rosetta runs it anyway. The
         # Windows build has no console, so this checks that it starts
         # and exits cleanly; the version it prints goes nowhere.
-        run: ./dist/${ASSET} -version
+        run: ./dist/"${ASSET}" -version
 
       - name: Sign and notarize for macOS
         if: matrix.goos == 'darwin' && env.APPLE_SIGNING_IDENTITY != ''

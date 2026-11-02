@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -104,7 +105,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 00000000000000000-00000000000000000-250533120330001100 | main_hand:10570 | 42.3 | 7 | spell:8380=104.0, spell:11564/1=53.5, spell:11564=52.6, other:rage_gain=36.3, spell:8205=11.1 | - |
 | 40 | 00000000000000000-00000000000000000-250533120330001201 | main_hand:10570 | 46.9 | 7 | spell:8380=103.9, spell:11565/1=57.0, spell:11565=56.1, other:rage_gain=32.9, spell:8205=11.1 | - |
 | 50 | 31000000000000000-00000000000000000-250533120330001351 | main_hand:10570 | 59.0 | 7 | spell:11596=104.6, spell:11566/1=58.8, spell:11566=57.8, other:rage_gain=21.2, spell:11580=9.2 | - |
-| 60 | 35300003000000000-00000000000000000-250533120330001351 | main_hand:22736 | 127.7 | 7 | spell:11597=102.3, spell:11567/1=67.9, spell:11567=66.9, other:rage_gain=21.6, spell:11601=11.3 | - |
+| 60 | 35300003000000000-00000000000000000-250533120330001351 | main_hand:22736 | 127.5 | 7 | spell:11597=102.4, spell:11567/1=67.9, spell:11567=66.9, other:rage_gain=21.8, spell:11601=11.3 | - |
 
 ## Learned but unused (informational)
 

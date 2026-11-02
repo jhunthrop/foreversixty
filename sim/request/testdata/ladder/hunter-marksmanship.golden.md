@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 60.7 | 2 | other:shoot=83.8, spell:3044=29.8, other:move=1.0, spell:13165=1.0 | {SpellID: 2643} |
-| 20 | 0000000000000000-0051500000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 82.4 | 4 | other:shoot=77.7, spell:2643=23.8, spell:14282=6.0, other:move=1.0, spell:14318=1.0 | - |
-| 30 | 0000000000000000-0051550001400000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 99.3 | 4 | other:shoot=74.9, spell:2643=20.0, spell:14283=5.0, other:move=1.0, spell:14319=1.0 | - |
-| 38 | 0000000000000000-0051550001503040-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 120.8 | 5 | other:shoot=80.2, spell:2643=17.8, spell:14284=5.0, other:move=1.0, spell:14320=1.0 | - |
-| 40 | 1000000000000000-0051550001503050-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 128.0 | 5 | other:shoot=82.4, spell:2643=17.6, spell:14284=5.0, other:move=1.0, spell:14320=1.0 | - |
-| 50 | 5320000100000000-0051550001503050-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 153.8 | 5 | other:shoot=158.5, spell:2643=16.4, spell:14285=5.0, other:move=1.0, spell:14321=1.0 | - |
-| 60 | 5320000501000000-0051550001503050-500000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 268.6 | 5 | other:shoot=83.8, spell:2643=15.3, spell:14287=5.0, other:move=1.0, spell:14322=1.0 | - |
+| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 24.7 | 2 | other:shoot=80.2, spell:3044=30.1, other:move=1.0, spell:13165=1.0 | {SpellID: 2643} |
+| 20 | 0000000000000000-0051500000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 46.2 | 4 | other:shoot=74.3, spell:2643=23.6, spell:14282=6.0, other:move=1.0, spell:14318=1.0 | - |
+| 30 | 0000000000000000-0051550001400000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 70.9 | 5 | other:shoot=75.5, spell:2643=19.5, spell:14283=5.0, other:move=1.0, spell:14319=1.0 | - |
+| 38 | 0000000000000000-0051550001503040-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 93.0 | 5 | other:shoot=78.2, spell:2643=17.8, spell:14284=5.0, other:move=1.0, spell:14320=1.0 | - |
+| 40 | 1000000000000000-0051550001503050-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 105.1 | 5 | other:shoot=81.1, spell:2643=17.6, spell:14284=5.0, other:move=1.0, spell:14320=1.0 | - |
+| 50 | 5320000100000000-0051550001503050-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 137.2 | 5 | other:shoot=155.6, spell:2643=16.5, spell:14285=5.0, other:move=1.0, spell:14321=1.0 | - |
+| 60 | 5320000501000000-0051550001503050-500000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 253.7 | 5 | other:shoot=83.5, spell:2643=15.3, spell:14287=5.0, other:move=1.0, spell:14322=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -278,4 +279,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-marksmanship level=30 kind=zero_casts id=3045 authored=3045 (untracked ability; not in spellranks.json's rank chains)
+None.

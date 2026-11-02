@@ -14,10 +14,10 @@ endif
 XCODEBUILD = xcodebuild -project ForeverSixty.xcodeproj -scheme ForeverSixty \
 	-destination '$(SIMULATOR)' -derivedDataPath build/DerivedData
 
-# CI pins Xcode in ios.yml (XCODE_VERSION). A different local Xcode ships a different Swift
-# compiler, and concurrency checking differs between them: Swift 6.2 (Xcode 26.6) rejected a
-# closure that Swift 6.4 (Xcode 27) accepts (RootView, F15). With the pinned Xcode selected
-# (DEVELOPER_DIR or xcode-select) the local gate compiles what CI compiles; otherwise say so.
+# CI pins Xcode in ios.yml (XCODE_VERSION) and the lanes build with the same one. A different Xcode
+# ships a different Swift compiler and renderer: Swift 6.2 (Xcode 26.6) rejected a closure Swift 6.4
+# (Xcode 27.1) accepts (RootView, F15), and the two drew key-window snapshots differently. With the
+# pinned Xcode selected (DEVELOPER_DIR or xcode-select) the local gate matches CI; otherwise say so.
 CI_XCODE := $(shell sed -n "s/^ *XCODE_VERSION: *'\(.*\)'/\1/p" ../../.github/workflows/ios.yml)
 LOCAL_XCODE := $(shell xcodebuild -version 2>/dev/null | sed -n 's/^Xcode //p')
 
@@ -25,7 +25,7 @@ LOCAL_XCODE := $(shell xcodebuild -version 2>/dev/null | sed -n 's/^Xcode //p')
 
 toolchain:
 	@if [ '$(LOCAL_XCODE)' != '$(CI_XCODE)' ]; then \
-		echo "warning: local Xcode $(LOCAL_XCODE) is not CI's Xcode $(CI_XCODE) (ios.yml); CI's compiler can reject Swift concurrency code this one accepts. Select Xcode $(CI_XCODE) with DEVELOPER_DIR to compile what CI compiles." >&2; \
+		echo "warning: local Xcode $(LOCAL_XCODE) is not CI's Xcode $(CI_XCODE) (ios.yml); CI's compiler can reject code this one accepts and snapshots can render differently. Select Xcode $(CI_XCODE) with DEVELOPER_DIR to match CI." >&2; \
 	fi
 
 project: toolchain
@@ -42,7 +42,7 @@ captures: project
 	$(LOCKED) xcodebuild -project ForeverSixty.xcodeproj -scheme ForeverSixtyCaptures \
 		-destination '$(SIMULATOR)' -derivedDataPath build/DerivedData test
 
-# Snapshot goldens (AppTests/**/__Snapshots__) are rendered on CI's pinned runtime (Xcode 26.6,
+# Snapshot goldens (AppTests/**/__Snapshots__) are rendered on CI's pinned runtime (Xcode 27.1,
 # iOS 26.5; ios.yml). The shared local simulator runs iOS 26.5 too (tools/mobile-device.sh), so
 # local runs compare the same pixels; iOS 27's navigation bars and line metrics differ. To re-record,
 # push the branch, then run this: it dispatches ios.yml in record mode on BRANCH, waits, and

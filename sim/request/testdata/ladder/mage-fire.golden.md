@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -99,12 +100,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 000000000000000000-10000000000000000-000000000000000000 | main_hand:263937 ranged:286750 | 9.9 | 4 | spell:5019=63.0, spell:143=19.0, spell:2136=18.6, spell:12051=1.0 | {SpellID: 11129}, {SpellID: 12873} |
-| 20 | 000000000000000000-51500000000000000-000000000000000000 | main_hand:890 ranged:5243 | 22.4 | 4 | spell:5019=57.8, spell:2137=18.8, spell:3140=16.0, spell:12051=1.0 | {SpellID: 11129}, {SpellID: 11366}, {SpellID: 12873}, {SpellID: 400625} |
-| 30 | 000000000000000000-51521001230100000-000000000000000000 | main_hand:249392 ranged:5213 | 45.0 | 5 | spell:5019=75.0, spell:8444=38.7, spell:8412=8.4, spell:12522=3.2, item:5514=1.0 | {SpellID: 11129} |
-| 38 | 000000000000000000-51521001230133020-000000000000000000 | main_hand:1664 ranged:13064 | 64.2 | 5 | spell:5019=51.4, spell:8445=46.0, other:mana_gain=12.4, spell:8413=10.2, spell:12523=4.2 | {SpellID: 11129} |
-| 40 | 000000000000000000-51521001230133031-000000000000000000 | main_hand:1664 ranged:5216 | 66.7 | 6 | spell:5019=61.0, spell:8446=41.0, other:mana_gain=13.3, spell:8413=9.0, spell:12523=4.2 | - |
-| 50 | 252010000000000000-51521001230133031-000000000000000000 | main_hand:9527 ranged:249232 | 107.1 | 6 | spell:5019=43.3, spell:10205=42.5, other:mana_gain=14.2, spell:10197=10.2, spell:12525=4.6 | - |
-| 60 | 252015000000200000-51521001230133031-003000000000000000 | main_hand:22589 ranged:22821 | 250.6 | 6 | spell:10207=49.8, spell:5019=45.0, other:mana_gain=17.7, spell:10199=13.1, spell:18809=7.3 | - |
+| 20 | 000000000000000000-51500000000000000-000000000000000000 | main_hand:890 ranged:5243 | 22.1 | 4 | spell:5019=57.8, spell:2137=18.8, spell:3140=16.0, spell:12051=1.0 | {SpellID: 11129}, {SpellID: 11366}, {SpellID: 12873}, {SpellID: 400625} |
+| 30 | 000000000000000000-51521001230100000-000000000000000000 | main_hand:249392 ranged:5213 | 42.9 | 5 | spell:5019=67.0, spell:2948=44.5, spell:8412=9.3, spell:12522=3.4, item:5514=1.0 | {SpellID: 11129} |
+| 38 | 000000000000000000-51521001230133020-000000000000000000 | main_hand:1664 ranged:13064 | 58.9 | 5 | spell:2948=56.7, spell:5019=38.7, other:mana_gain=13.7, spell:8413=12.2, spell:12523=4.9 | {SpellID: 11129} |
+| 40 | 000000000000000000-51521001230133031-000000000000000000 | main_hand:1664 ranged:5216 | 59.0 | 6 | spell:2948=57.2, spell:5019=37.2, other:mana_gain=16.5, spell:8412=14.4, spell:12523=6.4 | - |
+| 50 | 252010000000000000-51521001230133031-000000000000000000 | main_hand:9527 ranged:249232 | 95.6 | 6 | spell:2948=62.5, spell:5019=24.8, other:mana_gain=17.3, spell:10197=13.5, spell:12525=6.0 | - |
+| 60 | 252015000000200000-51521001230133031-003000000000000000 | main_hand:22589 ranged:22821 | 241.3 | 6 | spell:10207=48.7, spell:5019=47.0, other:mana_gain=16.6, spell:10199=12.9, spell:18809=6.7 | - |
 
 ## Learned but unused (informational)
 
@@ -144,6 +145,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Nova (spell 865)
 - Frostbolt (spell 8406)
 - Ice Lance (spell 400640)
+- Scorch (spell 8444)
 
 ### Level 38
 
@@ -161,6 +163,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Nova (spell 865)
 - Frostbolt (spell 8408)
 - Ice Lance (spell 1240044)
+- Scorch (spell 8445)
 
 ### Level 40
 
@@ -172,6 +175,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Blizzard (spell 8427)
 - Chill (spell 1308651)
 - Cone of Cold (spell 8492)
+- Fire Blast (spell 8413)
 - Fireball (spell 8402)
 - Flamestrike (spell 8423)
 - Frost Blast (spell 1326054)
@@ -179,6 +183,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbolt (spell 8408)
 - Frostfire Bolt (spell 401502)
 - Ice Lance (spell 1240044)
+- Scorch (spell 8446)
 
 ### Level 50
 
@@ -197,6 +202,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbolt (spell 10180)
 - Frostfire Bolt (spell 1237312)
 - Ice Lance (spell 1240046)
+- Scorch (spell 10205)
 
 ### Level 60
 

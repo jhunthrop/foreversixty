@@ -203,11 +203,11 @@ jobs:
         # that just as happily as a correct image.
       - name: The image carries the pinned engine
         run: |
-          got=$(docker run --rm --entrypoint /engine/forever-sim $IMAGE -version)
+          got=$(docker run --rm --entrypoint /engine/forever-sim "$IMAGE" -version)
           echo "pin=$ENGINE_PIN got=$got"
           test "$got" = "$ENGINE_PIN" || {
             echo "the image's engine binary reports '$got', not the pinned '$ENGINE_PIN'"; exit 1; }
-      - run: docker push $IMAGE
+      - run: docker push "$IMAGE"
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: api

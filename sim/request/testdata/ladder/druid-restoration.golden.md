@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-00000000000000000000-1000000000000000 | main_hand:263937 | 13.3 | 3 | spell:1058=25.9, spell:5186=22.2, spell:1259799=2.0 | {SpellID: 17116}, {SpellID: 18562} |
-| 20 | 0000000000000000-00000000000000000000-5051000000000000 | main_hand:890 | 21.0 | 4 | spell:1430=24.0, spell:8938=10.7, spell:1259799=2.0, spell:5188=1.3 | {SpellID: 17116}, {SpellID: 18562} |
-| 30 | 0000000000000000-00000000000000000000-5053005110010000 | main_hand:9604 | 42.7 | 6 | spell:2091=24.0, spell:8940=4.9, spell:1259799=2.0, spell:17116=2.0, spell:5189=1.3 | {SpellID: 18562} |
-| 38 | 0000000000000000-00000000000000000000-5053005153110000 | main_hand:873 | 62.2 | 7 | spell:3627=23.9, spell:8941=4.8, spell:1259799=2.0, spell:17116=2.0, spell:8903=1.4 | - |
-| 40 | 0000000000000000-00000000000000000000-5053005153112000 | main_hand:873 | 85.6 | 8 | spell:8910=23.1, spell:8941=6.7, spell:8903=2.6, spell:1259799=2.0, spell:17116=2.0 | - |
-| 50 | 4300000000000000-00000000000000000000-5053005153113200 | main_hand:812 | 126.7 | 8 | spell:9839=23.0, spell:9856=6.2, spell:1259799=2.0, spell:17116=2.0, spell:9888=1.6 | - |
-| 60 | 4532200100000000-00000000000000000000-5053005153113200 | main_hand:19355 | 182.1 | 8 | spell:9841=18.3, spell:9858=5.2, spell:18562=2.7, spell:1259799=2.0, spell:17116=2.0 | - |
+| 10 | 0000000000000000-00000000000000000000-1000000000000000 | main_hand:263937 | 13.0 | 3 | spell:1058=25.9, spell:5186=22.2, spell:1259799=2.0 | {SpellID: 17116}, {SpellID: 18562} |
+| 20 | 0000000000000000-00000000000000000000-5510000000000000 | main_hand:890 | 20.6 | 4 | spell:774=28.0, spell:8938=11.8, spell:5188=3.8, spell:1259799=2.0 | {SpellID: 17116}, {SpellID: 18562} |
+| 30 | 0000000000000000-00000000000000000000-5553002000010000 | main_hand:9604 | 42.0 | 6 | spell:1058=29.9, spell:8940=11.4, spell:5189=2.9, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 18562} |
+| 38 | 0000000000000000-00000000000000000000-5553005140010000 | main_hand:873 | 75.6 | 6 | spell:1058=31.1, spell:8941=11.6, spell:8903=3.4, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 18562} |
+| 40 | 0000000000000000-00000000000000000000-5553005151010000 | main_hand:873 | 81.5 | 7 | spell:8910=23.0, spell:8941=7.1, spell:8903=2.8, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 18562} |
+| 50 | 0200000000000000-00000000000000000000-5553005153113200 | main_hand:812 | 125.3 | 8 | spell:9839=23.2, spell:9856=6.3, spell:1259799=2.0, spell:17116=2.0, spell:9888=1.7 | - |
+| 60 | 0531200100000000-00000000000000000000-5553005153113200 | main_hand:19355 | 186.7 | 8 | spell:2090=21.8, spell:9858=8.2, spell:18562=4.3, spell:9889=3.1, spell:1259799=2.0 | - |
 
 ## Learned but unused (informational)
 
