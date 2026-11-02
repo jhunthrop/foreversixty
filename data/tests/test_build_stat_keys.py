@@ -46,6 +46,7 @@ SITE_RENDERABLE_STAT_KEYS = frozenset(
         "healing",
         "attack_power",
         "ranged_attack_power",
+        "feral_attack_power",
         "defense",
         "dodge",
         "parry",
