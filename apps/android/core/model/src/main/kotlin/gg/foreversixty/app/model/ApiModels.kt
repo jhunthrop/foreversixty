@@ -1507,7 +1507,7 @@ data class LootQuest(
 
 @Serializable
 data class LootSource(
-    /** raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, … */
+    /** raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, pvp:title-rank-<n>:<side>, … */
     @SerialName("id") val id: String,
     @SerialName("kind") val kind: String,
     @SerialName("name") val name: String,
@@ -1527,6 +1527,8 @@ data class LootSource(
     @SerialName("faction") val faction: String? = null,
     @SerialName("faction_source") val factionSource: String? = null,
     @SerialName("title") val title: String? = null,
+    /** Era honor rank the item's title implies, on a pvp source with no rank lock (rank absent); eligibility only, not a lock. */
+    @SerialName("title_rank") val titleRank: Int? = null,
     @SerialName("level_min") val levelMin: Int? = null,
     @SerialName("level_max") val levelMax: Int? = null,
     @SerialName("rare_spawn") val rareSpawn: Boolean? = null,

@@ -78,7 +78,11 @@ from pipeline.loot.gear import (
 )
 from pipeline.loot.npc_rank import apply_npc_ranks, rare_spawn_names
 from pipeline.loot.overlay import apply_overlays, load_overlays
-from pipeline.loot.pvp_faction import PvpFactionStats, split_pvp_sources_by_faction
+from pipeline.loot.pvp_faction import (
+    PvpFactionStats,
+    split_pvp_sources_by_faction,
+    unlock_title_only_ranks,
+)
 from pipeline.loot.quest_class_gate import apply_quest_class_gate_to_class_items
 from pipeline.loot.reitemise import apply_reitemisation
 from pipeline.loot.sources import (
@@ -205,6 +209,12 @@ def _build_and_write_loot(
     document, reitemised = apply_reitemisation(document, item_rows)
     superseded = superseded_pairs(document, item_rows)
     document, superseded_removed = apply_supersession(document, superseded)
+    # After supersession, which only dedupes a legacy id inside one source:
+    # a rank only the title implies becomes an unranked PvP reward.
+    document = unlock_title_only_ranks(
+        document,
+        frozenset(_pvp_ranks_with_classic_db(build_dir, classification.pvp_ranks)),
+    )
     document = apply_overlays(document, load_overlays(overlay_dir))
     # Content phases after the overlay and before the quest turn-in gate, so
     # a quest whose turn-in item is gated is gated too.

@@ -400,3 +400,71 @@ def test_rank_title_tables_stay_in_sync_with_the_web_copy():
     silently drifting the two apart."""
     assert _read_web_title_tuple("ALLIANCE_PVP_TITLES") == ALLIANCE_TITLES
     assert _read_web_title_tuple("HORDE_PVP_TITLES") == HORDE_TITLES
+
+
+# --- Round 8, owner ruling: a rank only the title implies is no rank lock ---
+
+
+def _rank_bucket(rank: int, faction: str, items: list[int], **extra) -> LootSource:
+    return LootSource(
+        id=f"pvp:rank-{rank}:{faction}", kind="pvp", name=f"Rank {rank} ({faction.capitalize()})",
+        rank=rank, faction=faction, faction_source="title", title="Knight-Lieutenant",
+        items=items, **extra,
+    )
+
+
+def test_a_title_only_rank_reward_becomes_an_unranked_pvp_reward():
+    """Knight-Lieutenant's Dragonhide Gauntlets (227198, Forever id) is in
+    rank 11 only because of its title; Forever's server text shows
+    "Requires Level 60" and no rank. Its classic namesake 16397 keeps the
+    rank ItemSparse states. The old rank rides along as `title_rank`."""
+    from pipeline.loot.pvp_faction import unlock_title_only_ranks
+
+    document = LootFile(sources=[_rank_bucket(11, "alliance", [16397, 227198])])
+    out = unlock_title_only_ranks(document, locked=frozenset({16397}))
+    by_id = {source.id: source for source in out.sources}
+    assert by_id["pvp:rank-11:alliance"].items == [16397]
+    assert by_id["pvp:rank-11:alliance"].rank == 11
+    reward = by_id["pvp:title-rank-11:alliance"]
+    assert (reward.kind, reward.rank, reward.title_rank) == ("pvp", None, 11)
+    assert (reward.faction, reward.title) == ("alliance", None)
+    assert reward.name == "PvP reward (Alliance)"
+    assert reward.items == [227198]
+
+
+def test_a_reitemised_rank_reward_keeps_its_rank():
+    """Private's Tabard 272694 inherits 15196's rank-5 source; Forever's server
+    text says "Requires Private/Scout (Rank 1)", so the lock stays."""
+    from pipeline.loot.pvp_faction import unlock_title_only_ranks
+
+    document = LootFile(
+        sources=[_rank_bucket(5, "alliance", [272694], reitemised_from={"272694": 15196})]
+    )
+    assert unlock_title_only_ranks(document, locked=frozenset({15196})) == document
+
+
+def test_unlocking_keeps_every_listing_and_its_effective_rank():
+    """Eligibility input is unchanged: each item keeps the same number of pvp
+    listings, each with the same faction and the same rank once
+    `title_rank` is read where `rank` is empty."""
+    from pipeline.loot.pvp_faction import unlock_title_only_ranks
+
+    document = LootFile(
+        sources=[
+            _rank_bucket(11, "alliance", [16397, 227198, 227199]),
+            _rank_bucket(18, "horde", [234555]),
+            LootSource(id="vendor:12777", kind="vendor", name="Captain Dirgehammer",
+                       npc_id=12777, items=[227198]),
+        ]
+    )
+
+    def listings(doc: LootFile) -> list[tuple]:
+        return sorted(
+            (item, source.kind, source.faction, source.rank or source.title_rank)
+            for source in doc.sources
+            for item in source.items or []
+        )
+
+    out = unlock_title_only_ranks(document, locked=frozenset({16397}))
+    assert listings(out) == listings(document)
+    assert not any(s.rank and s.title_rank for s in out.sources)

@@ -341,6 +341,48 @@ def drop_non_rank_rewards(
     return out, dropped
 
 
+def unlock_title_only_ranks(document: LootFile, locked: frozenset[int]) -> LootFile:
+    """`document` with every `pvp:rank-N:<side>` item whose rank only its
+    title implies moved to `pvp:title-rank-N:<side>`: kind pvp, `rank`
+    None, `title_rank` N, named "PvP reward (<Side>)".
+
+    `locked` is every id the client's ItemSparse.RequiredPVPRank or
+    classic-db ranks; an id re-itemised from one (`reitemised_from`, the
+    Forever tabards, whose server text names a rank) is locked too. Owner
+    ruling (round 8): where the client data does not show how an item is
+    sold, it is a PvP reward with no rank lock. Forever's server text on
+    its titled PvP gear (227198, 231630, 234555 ...) shows only a level.
+    Every listing keeps its faction and, read as `rank or title_rank`, its
+    rank, so the ranker's rank cap can stay byte-identical."""
+    sources: list[LootSource] = []
+    for source in document.sources:
+        if source.kind != "pvp" or source.rank is None or source.faction is None:
+            sources.append(source)
+            continue
+        inherited = source.reitemised_from or {}
+        kept = [i for i in source.items or [] if i in locked or str(i) in inherited]
+        unlocked = [i for i in source.items or [] if i not in kept]
+        if not unlocked:
+            sources.append(source)
+            continue
+        if kept:
+            sources.append(source.model_copy(update={"items": kept}))
+        sources.append(
+            source.model_copy(
+                update={
+                    "id": f"pvp:title-rank-{source.rank}:{source.faction}",
+                    "name": f"PvP reward ({source.faction.capitalize()})",
+                    "rank": None,
+                    "title_rank": source.rank,
+                    "title": None,
+                    "items": unlocked,
+                    "reitemised_from": None,
+                }
+            )
+        )
+    return document.model_copy(update={"sources": sources})
+
+
 @dataclass(frozen=True)
 class PvpFactionStats:
     """Lane report counters for `split_pvp_sources_by_faction`: how many

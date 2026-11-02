@@ -3305,7 +3305,7 @@ components:
       type: object
       required: [id, kind, name]
       properties:
-        id: { type: string, description: "raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, …" }
+        id: { type: string, description: "raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, pvp:title-rank-<n>:<side>, …" }
         kind: { type: string, enum: [raid, dungeon, world, world_drop, zone, vendor, crafted, rep, pvp, quest] }
         name: { type: string }
         items: { type: array, items: { type: integer } }
@@ -3322,6 +3322,7 @@ components:
         faction: { type: string, enum: [alliance, horde] }
         faction_source: { type: string }
         title: { type: string }
+        title_rank: { type: integer, description: "Era honor rank the item's title implies, on a pvp source with no rank lock (rank absent); eligibility only, not a lock." }
         level_min: { type: integer }
         level_max: { type: integer }
         rare_spawn: { type: boolean }
