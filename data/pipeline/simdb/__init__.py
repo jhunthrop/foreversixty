@@ -53,6 +53,7 @@ from pipeline.simdb.enchants import build_sim_enchants
 from pipeline.simdb.equip import (
     area_conditional_spells,
     equip_bonuses,
+    feral_form_spells,
     index_spell_effects,
     item_effect_spells,
 )
@@ -238,6 +239,7 @@ def build_sim_database(
         effects_by_spell,
         kept_ids,
         area_conditional_spells(_optional(raw, "Spell")),
+        feral_form_spells(read_csv(raw / "SpellShapeshift.csv")),
     )
     rating_factors = load_rating_factors(build_dir)
     fork_columns = _fork_columns(build_dir)

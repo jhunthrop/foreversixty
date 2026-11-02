@@ -769,13 +769,37 @@ describe("the dungeon line", function()
 		mock.uninstall()
 	end)
 
+	-- The warrior's band-20 Deadmines picks, read from the shipped Data the nightly re-ranks
+	-- (the hunter's test below does the same): each pick's id, name, boss and drop chance in
+	-- the order the chip lists them, and the chip line's ", N more" tail.
+	local function warriorPicks(Data)
+		local spec = require("Follow").currentSpec(Data, "warrior", require("Talents").readRanks(Data))
+		local sources = {}
+		for _, entry in pairs(Data.bis[spec][20].alliance) do
+			local id, boss, chance = entry:match("^(%d+)|%a|The Deadmines: ([^|]+)|([^|]*)")
+			if id ~= nil then
+				sources[tonumber(id)] = { boss = boss, chance = tonumber(chance) }
+			end
+		end
+		local picks = {}
+		for _, pick in ipairs(require("Progress").picksHere(Data, spec, 20, "alliance", "The Deadmines", {})) do
+			local source = sources[pick.itemId]
+			assert.is_not_nil(source, "pick " .. pick.itemId .. " has no Deadmines source in the Data")
+			picks[#picks + 1] =
+				{ id = pick.itemId, name = Data.bisNames[pick.itemId], boss = source.boss, chance = source.chance }
+		end
+		assert(#picks > 1, "the shipped Data has fewer than two band-20 Deadmines picks for the warrior")
+		return picks, string.format(", %d more", #picks - 1)
+	end
+
 	it("names the warrior's band-20 picks in The Deadmines from the data, none cached yet", function()
 		local Data = enter("WARRIOR", "Warrior", 21, "The Deadmines", "party")
+		local picks, more = warriorPicks(Data)
 		local model = Chip.model(Chip.inputs(Data))
 		assert.are.equal("here", model.chosen.kind)
-		assert.are.equal("Here for you: Smite's Mighty Hammer (Mr. Smite), 4 more", model.chosen.text)
-		assert.is_true(Chip.isPending(7230))
-		assert.are.equal("icon-7230", model.chosen.icon)
+		assert.are.equal(string.format("Here for you: %s (%s)%s", picks[1].name, picks[1].boss, more), model.chosen.text)
+		assert.is_true(Chip.isPending(picks[1].id))
+		assert.are.equal("icon-" .. picks[1].id, model.chosen.icon)
 	end)
 
 	-- The hunter's picks are read from the shipped Data, which the nightly re-ranks, so only
@@ -802,10 +826,13 @@ describe("the dungeon line", function()
 	end)
 
 	it("takes the client's own name once it has it", function()
-		local Data = enter("WARRIOR", "Warrior", 21, "The Deadmines", "party", { [7230] = "Smite's Hammer (client)" })
+		local first, more = warriorPicks(enter("WARRIOR", "Warrior", 21, "The Deadmines", "party"))
+		first = first[1]
+		mock.uninstall()
+		local Data = enter("WARRIOR", "Warrior", 21, "The Deadmines", "party", { [first.id] = "Pick (client)" })
 		local model = Chip.model(Chip.inputs(Data))
-		assert.are.equal("Here for you: Smite's Hammer (client) (Mr. Smite), 4 more", model.chosen.text)
-		assert.is_false(Chip.isPending(7230))
+		assert.are.equal(string.format("Here for you: Pick (client) (%s)%s", first.boss, more), model.chosen.text)
+		assert.is_false(Chip.isPending(first.id))
 	end)
 
 	it("has no here state outside an instance", function()
@@ -819,17 +846,18 @@ describe("the dungeon line", function()
 
 	it("keeps the count whole when the line is ellipsised by measured width", function()
 		local Data = enter("WARRIOR", "Warrior", 21, "The Deadmines", "party")
+		local picks, more = warriorPicks(Data)
 		local chosen = Chip.model(Chip.inputs(Data)).chosen
 		local function measure(text)
 			return #text * 6
 		end
 		local fitted = Chip.fit(chosen.text, measure, 30 * 6, chosen.short, chosen.keep)
-		assert.are.equal(", 4 more", fitted:sub(-#", 4 more"))
+		assert.are.equal(more, fitted:sub(-#more))
 		assert.is_truthy(fitted:find(L.ellipsis, 1, true))
 		assert.is_true(measure(fitted) <= 30 * 6)
 		-- With room for the name but not the boss, the boss goes first.
-		assert.are.equal("Here for you: Smite's Mighty Hammer, 4 more",
-			Chip.fit(chosen.text, measure, 44 * 6, chosen.short, chosen.keep))
+		local nameOnly = string.format("Here for you: %s%s", picks[1].name, more)
+		assert.are.equal(nameOnly, Chip.fit(chosen.text, measure, (#nameOnly + 1) * 6, chosen.short, chosen.keep))
 	end)
 
 	it("prints the picks with their bosses and chances on a click", function()
@@ -838,8 +866,11 @@ describe("the dungeon line", function()
 		Chip.printHere()
 		local printed = table.concat(state.printed, "\n")
 		assert.is_truthy(printed:find(string.format(L.chipHereHeading, "The Deadmines"), 1, true))
-		assert.is_truthy(printed:find("Smite's Mighty Hammer · Mr. Smite · 20% drop", 1, true))
-		assert.is_truthy(printed:find("Blackened Defias Gloves · Defias Overseer · 3% drop", 1, true))
-		assert.are.equal(6, #state.printed)
+		local picks = warriorPicks(Data)
+		for _, pick in ipairs(picks) do
+			local line = string.format(L.tooltipSourceDrop, pick.name, pick.boss, require("ItemTooltip").percentOf(pick.chance))
+			assert.is_truthy(printed:find(line, 1, true), line)
+		end
+		assert.are.equal(1 + #picks, #state.printed)
 	end)
 end)

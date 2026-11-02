@@ -145,6 +145,7 @@ RAW_FIXTURES = (
     (SIM / "ItemEffect.csv", "ItemEffect.csv"),
     (SIM / "ItemXItemEffect.csv", "ItemXItemEffect.csv"),
     (SIM / "SpellEffect.csv", "SpellEffect.csv"),
+    (SIM / "SpellShapeshift.csv", "SpellShapeshift.csv"),
     (SIM / "SpellItemEnchantment.csv", "SpellItemEnchantment.csv"),
     (SIM / "ItemDamageOneHand.csv", "ItemDamageOneHand.csv"),
     (SIM / "ItemDamageTwoHand.csv", "ItemDamageTwoHand.csv"),

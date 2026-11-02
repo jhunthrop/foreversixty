@@ -31,6 +31,9 @@ TABLES = [
     "SpellPower",
     "SpellClassOptions",
     "SpellLevels",
+    # A spell's form gate: "Attack Power - Feral" (ShapeshiftMask 145, Cat and
+    # Bear forms) is feral attack power, not generic (pipeline/simdb/equip.py).
+    "SpellShapeshift",
     "SpellItemEnchantment",
     "ManifestInterfaceData",
     "ItemSet",

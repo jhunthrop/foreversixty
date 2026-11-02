@@ -64,6 +64,7 @@ AURA_ARMOR = 674
 AURA_MOD_STAT = 29
 AURA_MOD_SKILL = 30
 AURA_SPELL_CRIT_SCHOOL = 552
+AURA_ATTACK_POWER = 99
 
 SCHOOL_PHYSICAL = 1
 SCHOOL_ALL_MAGIC = 126
@@ -143,7 +144,7 @@ STAT_AURAS: dict[int, str] = {
     55: "spell_hit",
     65: "spell_haste",
     85: "mp5",
-    99: "attack_power",
+    AURA_ATTACK_POWER: "attack_power",
     123: "spell_penetration",
     124: "ranged_attack_power",
     135: "healing",
@@ -394,6 +395,29 @@ def area_conditional_spells(spell_rows: Iterable[dict[str, str]]) -> set[int]:
     }
 
 
+#: SpellShapeshift's form bits for Cat (form 1), Bear (5) and Dire Bear (8): a
+#: form's bit is 1 << (form - 1). "Attack Power - Feral" spells (26153 on Mace
+#: of Unending Life, 460339 on the rank-18 PvP polearms) carry ShapeshiftMask
+#: 145, "+$s1 Attack Power in Cat, Bear, and Dire Bear forms only."
+FERAL_FORM_MASK = (1 << 0) | (1 << 4) | (1 << 7)
+
+#: The key a feral-form spell's aura 99 amount is read as: the engine's
+#: FeralAttackPower, which only Cat and Bear form turn into attack power.
+FERAL_ATTACK_POWER_KEY = "feral_attack_power"
+
+
+def feral_form_spells(shapeshift_rows: Iterable[dict[str, str]]) -> set[int]:
+    """The ids of spells the client gates on the druid's feral forms alone
+    (SpellShapeshift.csv): a non-zero first mask inside FERAL_FORM_MASK and no
+    second mask."""
+    out: set[int] = set()
+    for row in shapeshift_rows:
+        mask = int(row["ShapeshiftMask_0"])
+        if mask > 0 and not mask & ~FERAL_FORM_MASK and int(row["ShapeshiftMask_1"]) == 0:
+            out.add(int(row["SpellID"]))
+    return out
+
+
 def _unify_school_keys(spell_stats: dict[str, float]) -> dict[str, float]:
     """One spell's stats with each unified pair collapsed to its larger amount,
     and its generic attack power stated once (`_generic_attack_power`)."""
@@ -427,10 +451,12 @@ def _generic_attack_power(spell_stats: dict[str, float]) -> dict[str, float]:
 def spell_bonus(
     spell_ids: Iterable[int],
     effects_by_spell: dict[int, list[dict[str, str]]],
+    feral_form_only: Container[int] = frozenset(),
 ) -> SpellBonus:
     """Everything the given spells grant, summed across spells; within one
     spell, a melee/spell pair of a unified stat counts once
-    (`UNIFIED_SCHOOL_KEYS`)."""
+    (`UNIFIED_SCHOOL_KEYS`). A spell in `feral_form_only`
+    (`feral_form_spells`) grants its attack power as feral attack power."""
     stats: dict[str, float] = {}
     skills: dict[str, float] = {}
     physical = 0.0
@@ -485,7 +511,10 @@ def spell_bonus(
                     # Per-school spell crit has no Stat; the engine models it as
                     # an item effect.
                     continue
-                _add(spell_stats, STAT_AURAS[aura], amount)
+                key = STAT_AURAS[aura]
+                if aura == AURA_ATTACK_POWER and spell_id in feral_form_only:
+                    key = FERAL_ATTACK_POWER_KEY
+                _add(spell_stats, key, amount)
         spell_stats = _unify_school_keys(spell_stats)
         for key, amount in spell_stats.items():
             _add(stats, key, amount)
@@ -502,20 +531,22 @@ def equip_bonuses(
     effects_by_spell: dict[int, list[dict[str, str]]],
     item_ids: Container[int],
     area_conditional: Container[int] = frozenset(),
+    feral_form_only: Container[int] = frozenset(),
 ) -> dict[int, SpellBonus]:
     """Item id -> what its on-equip spells grant, for the items the caller kept.
 
     `item_ids` is not an optimisation: the caller has already dropped the
     gamemaster, test and monster rows, and those carry auras nobody has
     reviewed. Checking them would fail the run over data that is never shipped.
-    A spell in `area_conditional` (`area_conditional_spells`) is left out.
+    A spell in `area_conditional` (`area_conditional_spells`) is left out; a
+    spell in `feral_form_only` (`feral_form_spells`) is feral attack power.
     """
     bonuses: dict[int, SpellBonus] = {}
     for item_id, spell_ids in item_effect_spells(
         item_effect_rows, item_x_item_effect_rows, item_ids
     ).items():
         unconditional = [spell for spell in spell_ids if spell not in area_conditional]
-        bonus = spell_bonus(unconditional, effects_by_spell)
+        bonus = spell_bonus(unconditional, effects_by_spell, feral_form_only)
         if not bonus.is_empty():
             bonuses[item_id] = bonus
     return bonuses
