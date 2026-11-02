@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/subtlety.md
   - data/curated/apl/rogue-subtlety.json
-  - data/builds/1.60.1.70630/spellconst/rogue.json
+  - data/builds/1.60.1.70707/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -20,7 +20,7 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the Rog
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Open from stealth with Stealth, Premeditation and Ambush, then play from Hemorrhage.
+- Open from stealth: Stealth, then Premeditation for two free combo points a couple of seconds before the pull, then Ambush on the pull itself. Then play from Hemorrhage.
 - Hemorrhage is the builder, hitting for one hundred forty-five percent weapon damage with a dagger and awarding a combo point, and its debuff makes the target take fifteen percent more damage from your Rupture for fifteen seconds, so keep it going.
 - Rupture at four or more combo points whenever it is not running.
 - Ghostly Strike on cooldown: cheaper than Backstab, hits for one hundred eighty percent weapon damage with a dagger, and builds a combo point.
@@ -37,7 +37,7 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the Rog
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Grilled Squid). The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Poached Sunscale Salmon). The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

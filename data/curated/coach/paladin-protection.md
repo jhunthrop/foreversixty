@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/paladin/protection.md
   - data/curated/apl/paladin-protection.json
-  - data/builds/1.60.1.70630/spellconst/paladin.json
+  - data/builds/1.60.1.70707/spellconst/paladin.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -23,7 +23,7 @@ This is the Protection Paladin as the site's guide describes it. Protection is t
 - Righteous Fury is a setting, not a button: keep it on.
 - Seal of Fury kept up.
 - Holy Shield on cooldown.
-- Hammer of the Righteous and Holy Strike on their cooldowns. Hammer of the Righteous is the largest single threat gain in this list; with Shieldsworn, Holy Strike comes back every six seconds.
+- Hammer of the Righteous and Holy Strike on their cooldowns. Hammer of the Righteous is the largest single threat gain in this list.
 - Judgement on cooldown, and Swift Judgement whenever it is ready: it is a second Judgement on its own cooldown.
 - Consecration only with spare mana, where it pays for itself in threat.
 - Templar's Bulwark, Divine Protection and Divine Shield are for a fight you are losing.
@@ -39,7 +39,7 @@ This is the Protection Paladin as the site's guide describes it. Protection is t
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Smoked Desert Dumplings); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Baked Salmon); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

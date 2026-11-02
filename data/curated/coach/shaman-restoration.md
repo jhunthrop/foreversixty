@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/shaman/restoration.md
   - data/curated/apl/shaman-restoration.json
-  - data/builds/1.60.1.70630/spellconst/shaman.json
+  - data/builds/1.60.1.70707/spellconst/shaman.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -20,13 +20,13 @@ This is the Restoration Shaman as the site's guide describes it. Restoration is 
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Water Shield is kept up for its mana return on critical heals.
+- Water Shield is kept up for its mana: a globe returns mana when you are hit and when your spells crit.
 - Healing Stream Totem.
 - Riptide on the tank first: it is the most mana-efficient heal and lifts the Chain Heal below.
 - Healing Wave is the efficient tank heal.
 - Lesser Healing Wave is the fast heal for a tank that is falling.
 - Nature's Swiftness turns the next Healing Wave into an instant heal when the tank is in danger.
-- Chain Heal off the tank jumps to the two most hurt members when the group has taken damage.
+- Chain Heal is cast on the tank, so Riptide's bonus applies, and it jumps to the most injured party members, you included.
 - Mana Tide Totem goes down when you are low.
 
 **The mistakes the coach looks for, by finding.**

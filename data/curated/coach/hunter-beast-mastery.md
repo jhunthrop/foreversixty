@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/hunter/beast-mastery.md
   - data/curated/apl/hunter-beast-mastery.json
-  - data/builds/1.60.1.70630/spellconst/hunter.json
+  - data/builds/1.60.1.70707/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,17 +14,17 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery is the pet-focused ranged Hunter spec: a strengthened pet deals a large share of the damage, and Bestial Wrath is its burst cooldown. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery is the pet-focused ranged Hunter spec: the pet, drawing its stats from the Hunter's gear, deals much of the damage, and Bestial Wrath is its burst. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Before the pull, Aspect of the Hawk goes up and the first Aimed Shot begins casting so it lands right as the fight opens.
+- Aspect of the Hawk goes up before the pull.
+- Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.
 - Bestial Wrath on cooldown: with Rapid Fire below, this is the one burst window a Classic-length fight allows.
-- Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit.
-- Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.
-- Multi-Shot as the filler between Aimed Shots.
+- Rapid Fire timed to land with an incoming auto shot just as Multi-Shot is about to come off cooldown, so both benefit.
+- Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - Serpent Sting.
 - Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, so keep a mana reserve.
 
@@ -38,7 +38,7 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Grilled Squid); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Poached Sunscale Salmon); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

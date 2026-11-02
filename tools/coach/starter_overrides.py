@@ -18,11 +18,28 @@ Entry = tuple[str, str]
 # ability -> line. A listed ability is added when the generator left it out.
 GUIDE_LINES: dict[str, dict[str, str]] = {
     "druid-feral": {
+        # feral.md: "Shred fills every other global, building combo points the rest of the time."
+        "Shred": "Shred fills every other global, building combo points.",
         # feral.md: "Press it every time it comes off cooldown, but only when your energy is 60 or lower".
         "Shifting Power": (
             "Shifting Power every time it comes off cooldown, but only at sixty energy or lower. "
             "Then the whole forty energy fits under the cap."
         ),
+    },
+    "hunter-beast-mastery": {
+        # beast-mastery.md: "Aimed Shot is only the opener: before the pull, Aspect of the Hawk goes up
+        # and the first Aimed Shot begins casting"; "Multi-Shot is then cast every time the shared
+        # cooldown comes up".
+        "Aspect of the Hawk": "Aspect of the Hawk goes up before the pull.",
+        "Aimed Shot": "Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.",
+        "Multi-Shot": "Multi-Shot every time the cooldown it shares with Aimed Shot comes up.",
+    },
+    "hunter-marksmanship": {
+        # marksmanship.md: Multi-Shot and Aimed Shot share a cooldown; "Aimed Shot is the opener only:
+        # before the pull, Aspect of the Hawk goes up and the opening Aimed Shot begins casting".
+        "Aspect of the Hawk": "Aspect of the Hawk goes up before the pull.",
+        "Aimed Shot": "Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.",
+        "Multi-Shot": "Multi-Shot every time the cooldown it shares with Aimed Shot comes up.",
     },
     "hunter-survival": {
         # survival.md: "it can only be performed after you dodge, and Expose Prey opens the same window".
@@ -30,12 +47,20 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         # dodged, or parried)"; Lacerate "is recast whenever its own bleed has fallen off" (read 5).
         "Counterattack": "Counterattack only after you parry: it is free and cannot be blocked, dodged or parried.",
         "Lacerate": "Lacerate whenever its bleed has fallen off.",
+        # survival.md: "Strider Kick comes next on its own 8-second cooldown, ahead of Immolation Trap".
+        "Strider Kick": "Strider Kick on its own short cooldown, ahead of Immolation Trap.",
         "Mongoose Bite": "Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.",
         # survival.md: "only in a raid: with a Windfury Totem in the group ... a loss without the totem".
         "Wing Clip": (
             "Wing Clip only with a Windfury Totem in the group, on a global with nothing else ready. "
             "Without the totem it loses damage."
         ),
+    },
+    "warlock-affliction": {
+        # affliction.md: "Immolate is the fifth DoT ... recasting it when under 3 seconds remain";
+        # "Life Tap keeps you casting once mana falls below about 10%".
+        "Immolate": "Immolate is the fifth DoT, recast when under three seconds remain.",
+        "Life Tap": "Life Tap keeps you casting once mana runs low.",
     },
     "warrior-arms": {
         # arms.md: "topping up Rage with Bloodrage whenever it drops below 80".
@@ -44,6 +69,14 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Hamstring": (
             "Hamstring only with a Windfury Totem in the group, on a free global for ten rage. "
             "Without the totem it loses damage."
+        ),
+    },
+    "mage-arcane": {
+        # arcane.md: "Otherwise cast Arcane Blast until its buff carries three stacks. Past three, keep
+        # blasting while your mana is ahead of the fight".
+        "Arcane Blast": (
+            "Arcane Blast until its buff carries three stacks. "
+            "Past three, keep blasting while your mana is ahead of the fight."
         ),
     },
     "mage-fire": {
@@ -124,8 +157,16 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
 
 # The guide's own order statements, which win over the order of first mention. Listed abilities lead.
 GUIDE_ORDER: dict[str, tuple[str, ...]] = {
-    # feral.md: Shifting Power "sits ahead of Tiger's Fury and every builder in the order".
-    "druid-feral": ("Shifting Power",),
+    # feral.md: Shifting Power "sits ahead of every finisher and builder in the order"; Rip at five
+    # combo points, and Shred "fills every other global".
+    "druid-feral": ("Shifting Power", "Rip", "Shred"),
+    # beast-mastery.md: the opener, then Bestial Wrath with Rapid Fire, then Multi-Shot, Serpent
+    # Sting and Arcane Shot last.
+    "hunter-beast-mastery": (
+        "Aspect of the Hawk", "Aimed Shot", "Bestial Wrath", "Rapid Fire", "Multi-Shot", "Serpent Sting",
+        "Arcane Shot",
+    ),
+    "hunter-marksmanship": ("Aspect of the Hawk", "Aimed Shot"),
     # protection.md list items 1-6.
     "paladin-protection": (
         "Righteous Fury", "Seal of Fury", "Holy Shield", "Hammer of the Righteous", "Holy Strike",

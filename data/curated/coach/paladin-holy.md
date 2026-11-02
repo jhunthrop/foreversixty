@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/paladin/holy.md
   - data/curated/apl/paladin-holy.json
-  - data/builds/1.60.1.70630/spellconst/paladin.json
+  - data/builds/1.60.1.70707/spellconst/paladin.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -20,7 +20,7 @@ This is the Holy Paladin as the site's guide describes it. Holy is the Paladin h
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- The rotation opens with Greater Blessing of Light before the pull and then leans on Flash of Light as the staple. It is the most efficient heal per mana for both the tank and the party.
+- Flash of Light.
 - Divine Favor when the tank is in danger. The Holy Light that follows crits for certain, and the heal that spends it is the one the tank needs.
 - Holy Shock only while your mana is keeping pace with the fight.
 

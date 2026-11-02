@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/warlock/affliction.md
   - data/curated/apl/warlock-affliction.json
-  - data/builds/1.60.1.70630/spellconst/warlock.json
+  - data/builds/1.60.1.70707/spellconst/warlock.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -21,12 +21,11 @@ This is the Affliction Warlock as the site's guide describes it. Affliction is W
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Corruption is the cheapest DoT per damage and goes down first, then is kept up throughout.
-- Bane of Doom is the one curse kept up. It deals its whole damage when the minute is out, so recast it the moment it fires.
-- Wrack.
-- Immolate is kept up as a fourth DoT, recast when under three seconds remain. Its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last three seconds beats waiting for it to lapse.
+- Bane of Agony goes up right behind it as your one curse.
+- Siphon Life comes next: the build takes it, and its ticks crit and heal you.
+- Immolate is the fifth DoT, recast when under three seconds remain.
 - Shadow Bolt fills every remaining global while the DoTs run their course.
-- Shoot with your wand once mana is under fifty percent. It costs nothing, so mana regenerates while it keeps damage going.
-- Life Tap to keep casting once mana runs low. Health is not a concern with three DoTs and Drain Life available.
+- Life Tap keeps you casting once mana runs low.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
@@ -38,7 +37,7 @@ This is the Affliction Warlock as the site's guide describes it. Affliction is W
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Nightfin Soup); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Baked Salmon); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

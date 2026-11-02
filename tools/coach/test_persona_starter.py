@@ -173,15 +173,16 @@ def test_consumables_follow_the_spec_not_the_role(tmp_path: Path) -> None:
 
 
 def test_food_is_the_published_presets_food(tmp_path: Path) -> None:
-    # Round 8's raid foods (sim/request/raid-consumes.json): casters Nightfin Soup, Strength
-    # users and tanks Smoked Desert Dumplings, rogues and hunters Grilled Squid, healers Sage's Tea.
+    # Round 9's raid foods (sim/request/raid-consumes.json, top band): casters and the
+    # spell-power Protection paladin Baked Salmon, Strength users and the other tanks Smoked
+    # Desert Dumplings, rogues and hunters Poached Sunscale Salmon, healers Sage's Tea.
     for slug, food in [
-        ("mage-frost", "Nightfin Soup"),
+        ("mage-frost", "Baked Salmon"),
         ("warrior-arms", "Smoked Desert Dumplings"),
-        ("paladin-protection", "Smoked Desert Dumplings"),
+        ("paladin-protection", "Baked Salmon"),
         ("druid-feral-bear", "Smoked Desert Dumplings"),
-        ("rogue-combat", "Grilled Squid"),
-        ("hunter-marksmanship", "Grilled Squid"),
+        ("rogue-combat", "Poached Sunscale Salmon"),
+        ("hunter-marksmanship", "Poached Sunscale Salmon"),
         ("priest-discipline", "Sage's Tea"),
     ]:
         text = know(slug, tmp_path)
@@ -231,20 +232,25 @@ def priority_text(slug: str) -> str:
 @pytest.mark.parametrize(
     ("slug", "ruled_out"),
     [
-        ("druid-balance", ["Moonfire"]),
-        ("druid-feral", ["Moonfire", "Wrath", "Claw", "Bear Form", "Rake"]),
+        # Balance's guide brought Moonfire back (Improved Moonfire with Nature's Splendor).
+        ("druid-feral", ["Moonfire", "Wrath", "Claw", "Bear Form", "Rake", "Tiger's Fury"]),
         ("druid-feral-bear", ["Feral Charge", "Growl", "Bash"]),
         ("mage-fire", ["Frostfire Bolt"]),
         ("mage-arcane", ["Frostfire Bolt"]),
-        ("shaman-elemental", ["Flame Shock", "Earth Shock", "Fire Nova"]),
+        # Elemental's guide keeps Flame Shock up for Lava Burst (round 8).
+        ("shaman-elemental", ["Earth Shock", "Fire Nova"]),
         ("shaman-enhancement", ["Flame Shock", "Fire Nova"]),
-        ("warrior-arms", ["Heroic Strike", "Recklessness"]),
+        # Arms's guide presses Recklessness in Berserker Stance for the execute.
+        ("warrior-arms", ["Heroic Strike"]),
         ("rogue-assassination", ["Sinister Strike", "Venom"]),
         ("paladin-retribution", ["Seal of Command"]),
         ("paladin-protection", ["Lay on Hands", "Exorcism"]),
         ("priest-discipline", ["Shadowfiend", "Dark Sacrifice"]),
         ("hunter-survival", ["Aimed Shot", "Serpent Sting"]),
         ("hunter-marksmanship", ["Serpent Sting"]),
+        # The guides rule these out: Affliction's rotation does not cast Wrack, and a melee
+        # Survival hunter has no use for Aspect of the Falcon.
+        ("warlock-affliction", ["Wrack"]),
     ],
 )
 def test_only_abilities_the_guide_names_positively(slug: str, ruled_out: list[str]) -> None:
@@ -279,10 +285,13 @@ def test_each_ability_once_and_every_line_is_about_it() -> None:
 def test_order_follows_the_guide() -> None:
     bear = priority_names("druid-feral-bear")
     assert bear.index("Primal Bite") < bear.index("Lacerate") < bear.index("Maul") < bear.index("Barkskin")
+    # Forever druids cannot learn Tiger's Fury; Rip at five combo points, Shred fills the rest.
     feral = priority_names("druid-feral")
-    assert feral.index("Tiger's Fury") < feral.index("Rip") < feral.index("Shred")
+    assert "Tiger's Fury" not in feral
+    assert feral.index("Shifting Power") < feral.index("Rip") < feral.index("Shred")
     beast = priority_names("hunter-beast-mastery")
-    assert beast.index("Bestial Wrath") < beast.index("Aimed Shot") < beast.index("Arcane Shot")
+    # Forever's Multi-Shot and Aimed Shot share a cooldown, so Aimed Shot is only the opener.
+    assert beast.index("Aimed Shot") < beast.index("Bestial Wrath") < beast.index("Multi-Shot") < beast.index("Arcane Shot")
 
 
 def test_healer_resource_drill_is_true_for_every_healer(tmp_path: Path) -> None:
@@ -290,9 +299,13 @@ def test_healer_resource_drill_is_true_for_every_healer(tmp_path: Path) -> None:
         assert "over time" not in line_of(run_starter(slug, tmp_path), "drill.resource")
 
 
+def test_survival_never_lists_the_ranged_aspect() -> None:
+    assert "Aspect of the Falcon" not in priority_names("hunter-survival")
+
+
 def test_dropped_talents_are_never_cited() -> None:
     assert "Early Demise" not in priority_text("priest-shadow")
-    assert "Moonfire" not in priority_text("druid-balance")
+    assert "Tiger's Fury" not in priority_text("druid-feral")
 
 
 def test_figures_must_be_in_the_guide() -> None:

@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/warrior/arms.md
   - data/curated/apl/warrior-arms.json
-  - data/builds/1.60.1.70630/spellconst/warrior.json
+  - data/builds/1.60.1.70707/spellconst/warrior.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -26,6 +26,8 @@ This is the Arms Warrior as the site's guide describes it. Arms is Forever's two
 - Mortal Strike is the highest damage per rage button and comes off a six second cooldown.
 - Overpower is a free follow-up whenever the target dodges you, so it's cast on sight rather than held for later.
 - Execute below twenty percent.
+- Slam.
+- Recklessness is the one burst cooldown, and it is Berserker Stance only: when the target drops below twenty percent, spend your rage, swap to Berserker Stance and press Recklessness, then Execute out the fight.
 - Hamstring only with a Windfury Totem in the group, on a free global for ten rage. Without the totem it loses damage.
 
 **The mistakes the coach looks for, by finding.**
