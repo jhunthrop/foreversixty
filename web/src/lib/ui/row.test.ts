@@ -39,9 +39,20 @@ describe('row bands (row-band sweep 2026-11-01)', () => {
     expect(ROW_BAND_MARK.split(' ')).toEqual(['row-band', 'row-band-mark']);
   });
 
-  it('global.css rounds every band and steps back the rules beside a lit one', () => {
-    expect(GLOBAL_CSS).toMatch(/\.row-band \{\s*border-radius: var\(--radius-control\);/);
+  it('global.css rounds a lit band and steps back the rules beside a lit one', () => {
+    // Rounded only while lit: an unlit row's hairline runs straight to its ends.
+    expect(GLOBAL_CSS).toMatch(/\.row-band \{\s*transition:/);
+    expect(GLOBAL_CSS).toMatch(
+      /:is\(\.row-band-own, \.row-band-mark, \.row-band-target:target, \.row-band-hover:active\) \{\s*border-radius: var\(--radius-control\);/,
+    );
     expect(GLOBAL_CSS).toMatch(/\.row-band-own \{\s*background-color: var\(--row-hover\);/);
-    expect(GLOBAL_CSS).toContain(':has(+ :is(.row-band-own, .row-band-mark, .row-band-target:target');
+    expect(GLOBAL_CSS).toContain(
+      '.row-rule:has(+ :is(.row-band-own, .row-band-mark, .row-band-target:target',
+    );
+    // A universal subject (a bare :has(), `+ *`) is matched against every element on every change,
+    // enough to move the home page after its first layout; the neighbours are keyed to .row-rule.
+    expect(GLOBAL_CSS).not.toMatch(/^\s*:has\(/m);
+    expect(GLOBAL_CSS).not.toMatch(/\+ \*/);
+    expect(GLOBAL_CSS).toContain('.row-band-hover:hover + .row-rule');
   });
 });

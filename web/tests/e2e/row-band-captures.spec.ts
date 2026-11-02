@@ -9,29 +9,13 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import {
-  GUILD_ID,
-  VIEWER_MEMBER,
-  VIEWER_OFFICER,
-  buildMockGuildPage,
-  buildMockHome,
-  buildMockLoot,
-  buildMockProgression,
-  buildMockRaids,
-  buildMockReadiness,
-} from '../../src/fixtures/guild/mock-guild';
-import {
-  CHARACTER,
-  CHARACTER_PATH,
-  CHARACTER_URL,
-  GEAR,
-  GEAR_ITEMS,
-  routeGearIcons,
-} from './support/character-fixture';
+import { VIEWER_MEMBER } from '../../src/fixtures/guild/mock-guild';
+import { CHARACTER_PATH } from './support/character-fixture';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { AFTER_END, DONE, stubGuildAttendance } from './support/guild-attendance';
 import { CHICAGO, NOW, ONYXIA_ID, raidUrl, stubGuildRaids, threePlanned } from './support/guild-raids';
 import { stubRankingsApi } from './support/rankings-fixture';
+import { envelope, guildMe, stubCharacter, stubGuild } from './support/row-band-pages';
 import { OBNOXIOUS, armoryPointer, signInWith, storePointer } from './support/selector';
 
 const OUT = process.env.ROW_CAPTURES ?? '';
@@ -41,70 +25,6 @@ const SETTLE_MS = 1200;
 
 test.skip(OUT === '', 'review captures run on request');
 test.skip(() => test.info().project.name !== 'desktop', 'one project draws every width');
-
-function envelope(data: unknown, status = 200) {
-  return {
-    status,
-    contentType: 'application/json',
-    body: JSON.stringify({ ok: status < 400, data, error: null, request_id: 'req-capture' }),
-  };
-}
-
-function guildMe(viewer: string, rank: 'leader' | 'member') {
-  return {
-    user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false, premium: false },
-    characters: [
-      {
-        key: `us/pvp/${viewer.toLowerCase()}`,
-        region: 'us',
-        ruleset: 'pvp',
-        name: viewer,
-        class: 'warrior',
-      },
-    ],
-    guilds: [
-      {
-        id: GUILD_ID,
-        region: 'us',
-        ruleset: 'pvp',
-        name: 'Olympus XXVII',
-        rank,
-        verified: true,
-        can: rank === 'leader' ? ['approve', 'remove', 'settings', 'award', 'billing', 'release'] : [],
-      },
-    ],
-  };
-}
-
-async function stubGuild(page: Page, rank: 'leader' | 'member'): Promise<void> {
-  await page.route('**/v1/guilds/us/pvp/olympus-xxvii', (route) =>
-    route.fulfill(envelope(buildMockGuildPage())),
-  );
-  const viewer = rank === 'leader' ? VIEWER_OFFICER : VIEWER_MEMBER;
-  await page.route('**/v1/me', (route) => route.fulfill(envelope(guildMe(viewer, rank))));
-  await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
-    route.fulfill(envelope(buildMockHome(viewer))),
-  );
-  await page.route(`**/v1/guilds/${GUILD_ID}/settings`, (route) => route.abort('connectionrefused'));
-  await page.route(`**/v1/guilds/${GUILD_ID}/billing`, (route) => route.abort('connectionrefused'));
-  await page.route(`**/v1/guilds/${GUILD_ID}/raids*`, (route) => route.fulfill(envelope(buildMockRaids())));
-  await page.route(`**/v1/guilds/${GUILD_ID}/progression`, (route) =>
-    route.fulfill(envelope(buildMockProgression())),
-  );
-  await page.route(`**/v1/guilds/${GUILD_ID}/readiness`, (route) =>
-    route.fulfill(envelope(buildMockReadiness())),
-  );
-  await page.route(`**/v1/guilds/${GUILD_ID}/loot*`, (route) => route.fulfill(envelope(buildMockLoot())));
-}
-
-async function stubCharacter(page: Page): Promise<void> {
-  await page.route(CHARACTER_URL, (route) => route.fulfill(envelope({ ...CHARACTER.data, ...GEAR })));
-  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(envelope(null, 404)));
-  await page.route('**/data/*/items/priest.json', (route) =>
-    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GEAR_ITEMS) }),
-  );
-  await routeGearIcons(page);
-}
 
 function reportRow(id: string, title: string, hoursAgo: number) {
   return {

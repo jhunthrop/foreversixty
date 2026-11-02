@@ -8,7 +8,7 @@
   import type { GuildRaidView } from '../../lib/guild/api';
   import { plannedRowView } from '../../lib/guild/planned-row';
   import { SEP } from '../../lib/guild/raid-copy';
-  import { ROW_BAND_HOVER } from '../../lib/ui/row';
+  import { ROW_BAND_HOVER, ROW_RULE } from '../../lib/ui/row';
   import RaidChip from './RaidChip.svelte';
 
   let {
@@ -68,7 +68,7 @@
 
 <a
   {href}
-  class="group border-line-soft focus-visible:outline-gold block border-b focus-visible:outline-2 focus-visible:-outline-offset-2 {ROW_BAND_HOVER}"
+  class="group border-line-soft focus-visible:outline-gold block border-b focus-visible:outline-2 focus-visible:-outline-offset-2 {ROW_BAND_HOVER} {ROW_RULE}"
   data-testid={testid}
 >
   <span

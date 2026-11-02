@@ -62,7 +62,7 @@
     type RosterSortKey,
   } from '../../lib/guild/roster-sort';
   import { button } from '../../lib/ui/button';
-  import { ownRowBand } from '../../lib/ui/row';
+  import { ROW_RULE, ownRowBand } from '../../lib/ui/row';
   import Card from '../ui/Card.svelte';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import FactLine from './FactLine.svelte';
@@ -262,8 +262,7 @@
   // -- this tab's rows only ever mount after the guild's async roster fetch resolves, so
   // a scoped <style> block's CSS is silently dropped from this build's SSR-critical-CSS
   // inlining pass.
-  const ROW =
-    'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-t py-2.5 lg:flex-nowrap';
+  const ROW = `guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-t py-2.5 lg:flex-nowrap ${ROW_RULE}`;
   // A name with no account row: the same shape, a different class so the account rows stay
   // the only `guild-roster-row`s.
   const ENTRY_ROW =
@@ -593,7 +592,9 @@
                 data-testid="guild-roster-actions"
               >
                 {#if row.consent !== 'roster'}
-                  <div class="basis-full pl-12 max-lg:order-3 lg:basis-auto lg:pl-0">
+                  <div
+                    class="basis-full pl-12 has-[[data-state=empty]]:hidden max-lg:order-3 lg:basis-auto lg:pl-0"
+                  >
                     <GuildRosterHandoff path={rowPath(row)} stacked />
                   </div>
                 {/if}

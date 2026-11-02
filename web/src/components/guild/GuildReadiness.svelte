@@ -37,7 +37,7 @@
     type ReadinessCellKind,
   } from '../../lib/guild/readiness-view';
   import GuildPlanGate from './GuildPlanGate.svelte';
-  import { ownRowBand } from '../../lib/ui/row';
+  import { ROW_RULE, ownRowBand } from '../../lib/ui/row';
 
   let {
     rows,
@@ -260,7 +260,7 @@
       {@const pinned = row.character_key === myCharacterKey}
       <!-- One box per raider holds the rule and the own band (lib/ui/row.ts), so the band and the
            rules beside it are the same at every width whichever layout below is shown. -->
-      <div class={`border-line-soft border-b ${ownRowBand(pinned, 1)}`}>
+      <div class={`border-line-soft border-b ${ROW_RULE} ${ownRowBand(pinned, 1)}`}>
         <!-- Desktop grid -->
         <div
           class="hidden items-center gap-2 py-2 md:grid"

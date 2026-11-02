@@ -149,7 +149,9 @@
       {/if}
     </div>
     {#if officer}
-      <div class="w-24 shrink-0">
+      <!-- The select's own floor (select.css .sel-root, 120 px): the slot is that wide, so the
+           field and its chevron stay inside the row and its band. -->
+      <div class="w-30 shrink-0">
         <Select
           id={rosterSelectId(entry.character_key)}
           size="dense"

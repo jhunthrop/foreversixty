@@ -19,7 +19,7 @@
   import { RANKING_METRICS } from '../../lib/rankings/url';
   import { formatAmount, percentileToken, rowLink } from '../../lib/report/format';
   import { executionHref, executionLabel, executionTitle } from '../../lib/sim/execution';
-  import { ROW_BAND_MARK, ROW_BAND_REACH, ROW_BAND_TARGET } from '../../lib/ui/row';
+  import { ROW_BAND_MARK, ROW_BAND_REACH, ROW_BAND_TARGET, ROW_RULE } from '../../lib/ui/row';
 
   let {
     title,
@@ -127,7 +127,7 @@
   {/if}
   <ul class="flex flex-col" data-testid={testid}>
     <li
-      class={`quiet-label border-line-soft grid min-h-9 items-end gap-3 border-b px-2 pb-2 ${GRID}`}
+      class={`quiet-label border-line-soft grid min-h-9 items-end gap-3 border-b px-2 pb-2 ${GRID} ${ROW_RULE}`}
       aria-hidden="true"
       data-testid="character-table-header"
     >
@@ -143,7 +143,7 @@
       <!-- L8.5 ruling 1: the rating card's weakest part links here (fix round 2: the target's
            gold edge and tint, 96px under the window's top). -->
       <li
-        class={`border-line-soft grid min-h-11 items-center gap-3 border-b py-2 text-[14px] ${GRID} ${rowPadding(row)}${rowId === null ? '' : TARGET}`}
+        class={`border-line-soft grid min-h-11 items-center gap-3 border-b py-2 text-[14px] ${GRID} ${ROW_RULE} ${rowPadding(row)}${rowId === null ? '' : TARGET}`}
         id={rowId === null ? undefined : rowId(row)}
         data-marked={isMarked(row) ? 'true' : undefined}
       >

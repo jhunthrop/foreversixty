@@ -24,6 +24,10 @@ export const ROW_BAND_REACH = {
   2: '-mx-1 px-3',
 } as const;
 
+/** Every row of a ruled list that holds a band: its rule steps back when the row beside it lights
+ *  (global.css keys the neighbour selectors to it, never to a universal subject). */
+export const ROW_RULE = 'row-rule';
+
 /** The viewer's own row: the gold wash on a band. */
 export const ROW_BAND_OWN = 'row-band row-band-own';
 

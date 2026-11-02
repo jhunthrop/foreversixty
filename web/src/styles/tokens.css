@@ -153,6 +153,10 @@
   --card-highlight: rgba(245, 210, 122, 0.45);
   --glow-gold: 0 0 26px rgba(229, 185, 85, 0.32);
   --row-hover: rgba(229, 185, 85, 0.06);
+  /* A link row's hover band (global.css .row-band-hover): a raised ground with a hairline ring,
+     so the rounded band reads on the dark card at every width. */
+  --row-band-hover: #1a2130;
+  --row-band-ring: inset 0 0 0 1px rgba(229, 185, 85, 0.22);
   --tile: rgba(229, 185, 85, 0.12);
   --tile-ink: #f5d27a;
   --color-line-card: rgba(229, 185, 85, 0.17);
