@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# tools/activate-build.sh <build> [--no-commit [--no-gate] | --no-publish]
+# tools/activate-build.sh <build> [--no-commit [--no-gate] | --no-publish] [--no-ranking]
 #
 # Moves the site, the addon and the guides to a client build that data.yml's fetch job
 # has already landed under data/builds/<build>/. This is the scripted form of the
@@ -37,6 +37,10 @@
 # --no-commit leaves the working tree changed and stops (inspect with git diff).
 # --no-publish commits and stops (no push, no tag, no ranking dispatch).
 # --no-gate skips step 7; only with --no-commit, for a quick local look at a move.
+# --no-ranking publishes the move but dispatches no ranking: neither bis.yml nor
+#   engine.yml (whose green pin dispatches bis.yml with force). For a refresh hold
+#   (the bis, data and engine workflows disabled while the sim audit loop runs): the
+#   carried picks stay live and the engine is followed and pinned by hand.
 #
 # On a failure the script names the step, the reason (the step's output, or the failing
 # tests) and the exact hand command that finishes or redoes the move: on stderr,
@@ -44,16 +48,18 @@
 # PRODUCT (the wago.tools key) so the hand commands name it.
 set -euo pipefail
 
-usage() { echo "usage: $0 <build> [--no-commit [--no-gate] | --no-publish]" >&2; exit 2; }
+usage() { echo "usage: $0 <build> [--no-commit [--no-gate] | --no-publish] [--no-ranking]" >&2; exit 2; }
 [ $# -ge 1 ] || usage
 NEW="$1"; shift
 MODE=publish
 GATE=on
+RANKING=on
 for arg in "$@"; do
   case "$arg" in
     --no-commit) MODE=inspect ;;
     --no-publish) MODE=commit ;;
     --no-gate) GATE=off ;;
+    --no-ranking) RANKING=off ;;
     *) usage ;;
   esac
 done
@@ -174,8 +180,14 @@ finish_move() {
     dispatch api.yml --ref main
     dispatch sim.yml --ref main
     dispatch addon-release.yml --ref "$TAG" -f dry_run=false -f publish=true
-    [ "$RANK_NOW" != true ] || dispatch bis.yml --ref main -f force=true
-    dispatch engine.yml --ref main -f force=true
+    if [ "$RANKING" = off ]; then
+      HOLD_LINE="--no-ranking: neither bis.yml nor engine.yml was dispatched; the picks and dps-per-point carried from $PREV stay live until a ranking is run by hand."
+      echo "$HOLD_LINE"
+      [ -z "${GITHUB_STEP_SUMMARY:-}" ] || printf '%s\n\n' "- $HOLD_LINE" >> "$GITHUB_STEP_SUMMARY"
+    else
+      [ "$RANK_NOW" != true ] || dispatch bis.yml --ref main -f force=true
+      dispatch engine.yml --ref main -f force=true
+    fi
     [ ${#missed[@]} -eq 0 ] || die "$(printf 'the move is on main and tagged, but these dispatches failed:\n%s' "$(printf '%s\n' "${missed[@]}")")"
   fi
 }

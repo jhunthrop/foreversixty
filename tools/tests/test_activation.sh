@@ -390,6 +390,30 @@ assert "resume: it dispatches nothing more" equal "$(wc -l <"$d/stubs/gh-calls")
 assert "resume: no new commit" equal "$(git -C "$d.git" rev-list --count main)" "$(git -C "$d" rev-list --count HEAD)"
 
 
+# --no-ranking (a refresh hold): an engine already stamped for the new build would rank at
+# once, but the move dispatches neither bis.yml nor engine.yml (whose green pin ranks);
+# the site, API, sim and addon release still go out.
+d=$SCRATCH/move-no-ranking
+make_full_move_repo "$d"
+stub_npm "$d/npm-stub" 0 "$WEB_GREEN"
+stub_go "$d/go-stub" 0 "$API_GREEN"
+stub_gh_ok "$d/stubs"
+sed -i.bak "s/\*) exit 1 ;;/\"api -H\") echo $NEW_BUILD; exit 0 ;;\n  *) exit 1 ;;/" "$d/stubs/gh" && rm -f "$d/stubs/gh.bak"
+STATUS=0
+OUT=$(cd "$d" && PATH="$d/stubs:$PATH" NPM_BIN="$d/npm-stub/npm" GO_BIN="$d/go-stub/go" \
+	GITHUB_STEP_SUMMARY="$d/summary.md" bash tools/activate-build.sh "$NEW_BUILD" --no-ranking 2>&1) || STATUS=$?
+assert "no ranking: exits 0" equal "$STATUS" 0
+assert "no ranking: the engine stamp reads as the new build" lacks "$OUT" "ranking waits for engine follow"
+assert "no ranking: pushed the move" contains "$(git -C "$d.git" log -1 --format=%s main)" "activate build $NEW_BUILD"
+assert "no ranking: tagged the addon" equal "$(git -C "$d.git" tag -l 'addon-v*')" "addon-v2.1.8"
+assert "no ranking: the addon release is dispatched" contains "$(cat "$d/stubs/gh-calls")" "workflow run addon-release.yml --ref addon-v2.1.8"
+assert "no ranking: and the site" contains "$(cat "$d/stubs/gh-calls")" "workflow run web.yml"
+assert "no ranking: no bis.yml" lacks "$(cat "$d/stubs/gh-calls")" "bis.yml"
+assert "no ranking: no engine.yml" lacks "$(cat "$d/stubs/gh-calls")" "engine.yml"
+assert "no ranking: it says so" contains "$OUT" "--no-ranking: neither bis.yml nor engine.yml was dispatched"
+assert "no ranking: in the run summary too" contains "$(cat "$d/summary.md")" "--no-ranking"
+
+
 # A step that exits 2 (argparse, a grep error) is reported like any other failure; the
 # breadcrumb names the step and then says the report was written.
 d=$SCRATCH/move-exit2
