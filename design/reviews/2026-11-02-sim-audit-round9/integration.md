@@ -31,8 +31,8 @@ The owner's round-9 rulings, the integration, the pin and the review. The lane r
 | ranks | 3 | the rewrite lifted curated downranks below 60; the addon did the same; a fork test priced Holy Light rank 8 at the book rank's 660 mana (client 580) |
 | ranker | 6 | Darkspear vendor stock with no standing or side (K8); two Unique-Equipped family items in one pair (K9); Alliance Sentinel legs on Horde rows in 21 specs (K13, two commits); the bare pass did not name its preset (K14); set completion tried only the cheapest combination (K15, Fury 30 Alliance picked 0.6% worse than origin/main); verify never measured a wand past the runner-up (K16, Shadow 40 Alliance 1.0% worse). The new client reputation sources are gated by content-phases: Powderfuse opens at launch (inferred: the Riverglades is a launch zone), The Watchers is "later", uncertain (K17) |
 | platform | 3 | the Discord bot's unranked PvP line; the coach read the 10 s eating aura, not Well Fed; the coach's old foods (plus the panel's six inert flags, P7's preset wiring and the two CI items) |
-| integrator | 3 | see below |
-| **total** | **66** | |
+| integrator | 4 | see below |
+| **total** | **67** | |
 
 ## Integrator findings
 
@@ -43,6 +43,7 @@ The owner's round-9 rulings, the integration, the pin and the review. The lane r
 | I3 | **addon-builds.json was stale** against Restoration druid's Heart of the Wild build. | TestCommittedAddonBuildsFollowTheGuides | CONFIRMED | S c89c41fa2 |
 | I4 | Frost's expected ability names lacked Evocation. | data tests/test_apl.py | test-only | S 0e2f73f8c |
 | I5 | The panel's inert list gains Winter's Chill after the auras lane's engine fix. | buffs.test.ts failed first | follow-on | S b57e15723 |
+| I7 | **The coach's food catalogue missed round 9's preset salmon foods**, and its preset test read food labels from the groups alone; logs CI failed on main after the first push. The logs module was not in the integration gates; it is now. | logs CI on 5d2b17b3d: TestCatalogue_FoodsAreThePublishedPresetsFoods | CONFIRMED | S 07cf5c454 |
 | I6 | The casters and hybrids lanes each carried the Clearcasting fix (hybrids cherry-picked ff4bae666); merged as one copy. Golden conflicts in TestP1Mage, TestFeralTank, TestProtection, TestP1DPSWarrior and TestP1TankWarrior were regenerated together; debuffs.go keeps both the Curse of Shadow and the Winter's Chill removals. | int/r9 merges | merge | E f42d92c50, 282a87fed |
 
 ## Integration
@@ -50,7 +51,7 @@ The owner's round-9 rulings, the integration, the pin and the review. The lane r
 - **Fork `int/r9`** merges lane/r9-crit, -casters, -hybrids, -healers, -items, -warlock, -auras, -physical and -ranks. The ranker and platform lanes made no engine change. The suite passes with `-tags=with_db` except `sim/web`, which also fails setup at the old pin.
 - **The pin is 4d3129cae** (fork master fast-forwarded from 40021374a). data/proto/ENGINE_SHA follows it; common.proto gains the crit stats (crit lane) and the two salmon foods. The rotation ladder goldens are regenerated at it with `make simdb`.
 - **The site** merges wt/r9-crit, -casters, -healers, -items, -warlock, -platform, -auras, -hybrids, -physical, -ranks and -ranker.
-- **Gates, all exit 0:** go vet and go test ./... in sim; api's coach and sims packages; `make apl-check` against the pin; `make styles-check`; tools' test_wasm_gzip.sh; the full data pytest; web sync, the full vitest, astro check, lint and format:check; a real-data build.
+- **Gates, all exit 0:** go vet and go test ./... in sim; go test ./... in logs (added after I7); api's coach and sims packages; `make apl-check` against the pin; `make styles-check`; tools' test_wasm_gzip.sh; the full data pytest; web sync, the full vitest, astro check, lint and format:check; a real-data build.
 - **One held-output exception in the data gate:** `test_simbuffs_names_every_id_the_engine_lets_a_request_send` is deselected. It holds data.yml's simbuffs.json to IDS.md, which now names the two salmon foods; simbuffs.json is data.yml output, held by the owner, so it is not regenerated here. Only the disabled data and engine workflows run that test. Until the refresh, /sim names the two foods with its humanised fallback.
 
 ## Before/after

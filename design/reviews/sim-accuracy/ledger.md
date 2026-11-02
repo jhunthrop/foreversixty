@@ -12,7 +12,7 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 6 | 2026-11-01 to 2026-11-02 | design/reviews/2026-11-02-sim-audit-round6/ (warlock, casters, physical, hybrids, healers, ranker, pipeline, wasm, page, integration) | 71 fixed (warlock 5, casters 11, physical 10, hybrids 17, healers 10, pipeline 5, ranker 4, wasm 3, page 5, integrator 1) | b57765fb9 | no |
 | 7 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round7/ (warlock, casters, physical, hybrids, healers, pipeline, ci, page, ranker, integration) | 55 fixed (warlock 3, casters 5, physical 8, hybrids 11, healers 16, ranker 1, pipeline 1, ci 1, page 7 with 2 from the wow-player review, integrator 2) | cd4dfdcc0 | no |
 | 8 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round8/ (warlock, casters, physical, hybrids, healers, auras, items, ranker, pipeline, page, wasm, integration) | 67 fixed (warlock 5, casters 5, physical 5, hybrids 4, healers 14, auras 11, items 13, ranker 5, pipeline 3, page 1, wasm 2, integrator 2; Innervate, shaman regen and Curse of Recklessness were each found by two lanes) | 40021374a | no |
-| 9 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round9/ (warlock, casters, physical, hybrids, healers, auras, items, crit, ranks, ranker, platform, integration) | 66 fixed (warlock 1, casters 4, physical 10, hybrids 6, healers 6, auras 11, items 5, crit 8, ranks 3, ranker 6, platform 3, integrator 3) | 4d3129cae | no |
+| 9 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round9/ (warlock, casters, physical, hybrids, healers, auras, items, crit, ranks, ranker, platform, integration) | 67 fixed (warlock 1, casters 4, physical 10, hybrids 6, healers 6, auras 11, items 5, crit 8, ranks 3, ranker 6, platform 3, integrator 4) | 4d3129cae | no |
 
 ## Round 9 at a glance
 
@@ -37,7 +37,7 @@ Confirmed and fixed, by group (rows and evidence in each report):
 - **Ranks (3).** Curated downranks lifted below 60, in the sim and the addon; a fork test's Holy Light cost.
 - **Ranker (6).** The Darkspear vendor's standing and side; Unique-Equipped pairs; Alliance legs on Horde rows; the bare pass's preset; set completion's one combination; wands past the runner-up. Powderfuse opens at launch; The Watchers is gated "later".
 - **Platform (3).** The Discord bot's PvP line; the coach's Well Fed and foods.
-- **Integrator (3).** Rotation notes that broke the web build; `melee_crit`/`spell_crit` in the weights vocabulary; a stale addon-builds.json.
+- **Integrator (4).** Rotation notes that broke the web build; `melee_crit`/`spell_crit` in the weights vocabulary; a stale addon-builds.json; the coach catalogue's missing salmon foods (logs CI).
 - Also adopted: Assassination's leveling build trades Venom for Seal Fate (+1.6% bare 60).
 
 Before and after, pin 40021374a against 4d3129cae, raid preset, band 60, 10,000 iterations, alliance / horde, seed 1 (seed 50001 within 0.2):
