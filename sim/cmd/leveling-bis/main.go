@@ -604,10 +604,12 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			}
 			rankStart := time.Now()
 			runs := make([]map[string]*factionRun, len(variants))
-			for i, v := range variants {
-				if runs[i], err = ranker.rank(v); err != nil {
-					return err
-				}
+			if err := forEach(len(variants), runsConcurrently(runner), func(i int) error {
+				var rankErr error
+				runs[i], rankErr = ranker.rank(variants[i])
+				return rankErr
+			}); err != nil {
+				return err
 			}
 			log.Printf("leveling-bis: %s band %d %s: ranked under %d weight set(s) in %.1fs", spec, band, pass.name, len(variants), time.Since(rankStart).Seconds())
 

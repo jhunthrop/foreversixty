@@ -1,7 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"sync"
+	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
@@ -74,5 +78,43 @@ func TestTheMemoKeepsTheRoleRunnerReachable(t *testing.T) {
 	}
 	if got := unwrapRunner(tank); got != tank {
 		t.Error("unwrapRunner changed a runner with no memo")
+	}
+}
+
+// slowEngine counts its plain sims and takes a moment over each, so
+// concurrent callers overlap.
+type slowEngine struct {
+	fakeEngine
+	runs atomic.Int64
+}
+
+func (s *slowEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64, error) {
+	s.runs.Add(1)
+	time.Sleep(20 * time.Millisecond)
+	return float64(req.Character.Gear[0].ItemID), 0, nil
+}
+
+// Both weight sets of a band rank at once (band_pipeline.go); a set both
+// reach at the same moment is simulated once and both get its answer.
+func TestTheMemoRunsAnInFlightRequestOnceForConcurrentCallers(t *testing.T) {
+	engine := &slowEngine{}
+	memo := newMemoRunner(engine)
+	var wg sync.WaitGroup
+	got := make([]float64, 8)
+	for i := range got {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			got[i], _ = memo.RunPlainDPS(memoTestRequest(fmt.Sprintf("caller-%d", i), 5, 7))
+		}()
+	}
+	wg.Wait()
+	if n := engine.runs.Load(); n != 1 {
+		t.Errorf("eight concurrent callers ran %d sims, want 1", n)
+	}
+	for i, v := range got {
+		if v != 5 {
+			t.Errorf("caller %d got %v, want 5", i, v)
+		}
 	}
 }

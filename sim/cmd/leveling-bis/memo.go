@@ -36,15 +36,24 @@ type memoWeights struct {
 	err       error
 }
 
-// memoRunner answers repeated plain and weights sims from memory and
-// delegates everything else to the runner it wraps.
+// memoEntry is one request's answer; ready closes once it is in, so a
+// caller asking for a sim another goroutine is already running waits for
+// that run instead of starting its own.
+type memoEntry[V any] struct {
+	ready chan struct{}
+	value V
+}
+
+// memoRunner answers repeated plain, weights and Shoot sims from memory
+// and delegates everything else to the runner it wraps. It is safe for
+// concurrent use.
 type memoRunner struct {
 	inner engineRunner
 
 	mu      sync.Mutex
-	plain   map[string]memoPlain
-	weights map[string]memoWeights
-	shoot   map[string]memoPlain
+	plain   map[string]*memoEntry[memoPlain]
+	weights map[string]*memoEntry[memoWeights]
+	shoot   map[string]*memoEntry[memoPlain]
 	hits    int
 	misses  int
 }
@@ -52,9 +61,9 @@ type memoRunner struct {
 func newMemoRunner(inner engineRunner) *memoRunner {
 	return &memoRunner{
 		inner:   inner,
-		plain:   map[string]memoPlain{},
-		weights: map[string]memoWeights{},
-		shoot:   map[string]memoPlain{},
+		plain:   map[string]*memoEntry[memoPlain]{},
+		weights: map[string]*memoEntry[memoWeights]{},
+		shoot:   map[string]*memoEntry[memoPlain]{},
 	}
 }
 
@@ -79,23 +88,22 @@ func memoKey(req api.SimRequest) (string, error) {
 	return string(b), nil
 }
 
-// lookup returns the cached value for key, counting a hit or a miss.
-func lookup[V any](m *memoRunner, cache map[string]V, key string) (V, bool) {
+// memoize returns cache's answer for key, running run once to get it.
+func memoize[V any](m *memoRunner, cache map[string]*memoEntry[V], key string, run func() V) V {
 	m.mu.Lock()
-	defer m.mu.Unlock()
-	v, ok := cache[key]
-	if ok {
+	if e, ok := cache[key]; ok {
 		m.hits++
-	} else {
-		m.misses++
+		m.mu.Unlock()
+		<-e.ready
+		return e.value
 	}
-	return v, ok
-}
-
-func store[V any](m *memoRunner, cache map[string]V, key string, v V) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	cache[key] = v
+	e := &memoEntry[V]{ready: make(chan struct{})}
+	cache[key] = e
+	m.misses++
+	m.mu.Unlock()
+	e.value = run()
+	close(e.ready)
+	return e.value
 }
 
 func (m *memoRunner) RunPlainDPS(req api.SimRequest) (float64, error) {
@@ -111,12 +119,11 @@ func (m *memoRunner) RunPlainDPSWithError(req api.SimRequest) (float64, float64,
 	if key == "" {
 		return m.inner.RunPlainDPSWithError(req)
 	}
-	if v, ok := lookup(m, m.plain, key); ok {
-		return v.mean, v.stdErr, v.err
-	}
-	mean, stdErr, err := m.inner.RunPlainDPSWithError(req)
-	store(m, m.plain, key, memoPlain{mean: mean, stdErr: stdErr, err: err})
-	return mean, stdErr, err
+	v := memoize(m, m.plain, key, func() memoPlain {
+		mean, stdErr, err := m.inner.RunPlainDPSWithError(req)
+		return memoPlain{mean: mean, stdErr: stdErr, err: err}
+	})
+	return v.mean, v.stdErr, v.err
 }
 
 func (m *memoRunner) RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
@@ -127,12 +134,11 @@ func (m *memoRunner) RunWeights(req api.SimRequest) (map[string]api.StatWeight, 
 	if key == "" {
 		return m.inner.RunWeights(req)
 	}
-	if v, ok := lookup(m, m.weights, key); ok {
-		return v.result, v.reference, v.err
-	}
-	result, reference, err := m.inner.RunWeights(req)
-	store(m, m.weights, key, memoWeights{result: result, reference: reference, err: err})
-	return result, reference, err
+	v := memoize(m, m.weights, key, func() memoWeights {
+		result, reference, err := m.inner.RunWeights(req)
+		return memoWeights{result: result, reference: reference, err: err}
+	})
+	return v.result, v.reference, v.err
 }
 
 func (m *memoRunner) RunShootDPS(req api.SimRequest) (float64, error) {
@@ -143,12 +149,11 @@ func (m *memoRunner) RunShootDPS(req api.SimRequest) (float64, error) {
 	if key == "" {
 		return m.inner.RunShootDPS(req)
 	}
-	if v, ok := lookup(m, m.shoot, key); ok {
-		return v.mean, v.err
-	}
-	dps, err := m.inner.RunShootDPS(req)
-	store(m, m.shoot, key, memoPlain{mean: dps, err: err})
-	return dps, err
+	v := memoize(m, m.shoot, key, func() memoPlain {
+		dps, err := m.inner.RunShootDPS(req)
+		return memoPlain{mean: dps, err: err}
+	})
+	return v.mean, v.err
 }
 
 func (m *memoRunner) HitProfileFor(req api.SimRequest) (core.HitProfile, error) {
