@@ -13,6 +13,39 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 7 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round7/ (warlock, casters, physical, hybrids, healers, pipeline, ci, page, ranker, integration) | 55 fixed (warlock 3, casters 5, physical 8, hybrids 11, healers 16, ranker 1, pipeline 1, ci 1, page 7 with 2 from the wow-player review, integrator 2) | cd4dfdcc0 | no |
 | 8 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round8/ (warlock, casters, physical, hybrids, healers, auras, items, ranker, pipeline, page, wasm, integration) | 67 fixed (warlock 5, casters 5, physical 5, hybrids 4, healers 14, auras 11, items 13, ranker 5, pipeline 3, page 1, wasm 2, integrator 2; Innervate, shaman regen and Curse of Recklessness were each found by two lanes) | 40021374a | no |
 | 9 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round9/ (warlock, casters, physical, hybrids, healers, auras, items, crit, ranks, ranker, platform, integration) | 67 fixed (warlock 1, casters 4, physical 10, hybrids 6, healers 6, auras 11, items 5, crit 8, ranks 3, ranker 6, platform 3, integrator 4) | 4d3129cae | no |
+| 10 | 2026-11-02 | design/reviews/2026-11-03-sim-audit-round10/ (warlock, casters, physical, hybrids, healers, healprofile, ranks, crit, auras, items, ranker, platform, integration) | 88 fixed (warlock 3, casters 5, physical 6, hybrids 5, healers 11, healprofile 3, ranks 3, crit 5, auras 3, items 30, ranker 4, platform 9, integrator 1) | cfcb76e80 | no |
+
+## Round 10 at a glance
+
+The owner's rulings this round:
+- **The heal profile scales by band.** Each band below 60 fights its own content: the open dungeons whose last boss is from the band's level to five above, their bosses' melee and spells (cmangos), the client's x1.2 dungeon modifier, and the client's expected health at the level. Every sub-60 healer rank row was re-measured on its band, and healer band builds can now take curated ranks first: Restoration druid, Discipline and Holy adopt band builds. 60 is unchanged.
+- **Retribution's Consecration gate was not needless**: it kept the paladin from running dry. The flat 65% line became a pace line, and rank 1 at 30 to 59 still wins beyond error with no gate at all, so it stays; rank 4 is new at bare 60.
+- **The Watchers stays "later"**: Blizzard's raid overview and the 70707 client tie it to the Barrow Deeps prison (raid, 9 December); nothing names a launch zone.
+- **sim.wasm goes out as brotli** to browsers that take it (about 1.2 MB less), gzip otherwise; CI budgets both.
+- **Page fixes:** the Survival line is time-proof; the coach persona test is green and in CI; "Apply to the page", Top Gear and the weights tool send the preset; the custom panel's icons and weapon rows are fixed in the pipeline (live at the refresh); Warsong Gulch's faction ids follow the client.
+
+Confirmed and fixed, by group (rows and evidence in each report):
+- **Crit sweep (owner's extra attention).** Every crit roll in every published spec traced to its client defense type. Conviction is melee and ranged crit, not Holy damage spells (138k logged Consecration ticks); Exorcism never crits (0 of 641 logged); the stone is a bonus on the owner's melee attacks, so no pet inherits it; Weaponmaster and Hack and Slash reach weapon attacks only; Gloves of Holy Might and Thornspike roll the ranged table; heals take their school's crit; Emerald Dragon Whelp; Combustion off Ignite; Inner Focus off Renew; Healing Stream crits on every-table crit only.
+- **Pets.** Demons crit 0.7% in melee (a 1,718-swing test, a Blizzard reply, the logs), Lash of Pain 6.4%, Firebolt 2.2%; hunter pets take the hunter's spell crit; Web rolls ranged.
+- **Rotations.** Retribution's twist waits for the Righteousness swing (+9.4% raid); Arcane Missiles no longer spend Fingers of Frost (+3.4%); Swiftmend keeps the HoT and is cast under 75%; the bear drinks its potion.
+- **Forever rules.** 30-second potions; druids keep potions, Thistle Tea, Windfury Totem and weapon enchants in forms; Touch of the Grave can miss; Spellstone; tanks carry a weapon imbue.
+- **Items (30).** Forever's use effects and retuned procs, Mindtap Talisman, Blazing Rapier, the WSG ids, Totem of Urgency and Libram of Infusion.
+- **Ranker (4).** Gated vendor stock, the WSG ids, the healer re-measure's iteration cap, a stale report line.
+
+Before and after, pin 4d3129cae against cfcb76e80, raid preset, band 60, 10,000 iterations, seeds 1 and 50001, both factions:
+- **Bear +18.6 to +20.4** (threat), **cat +12.9 to +13.0**: forms keep consumables and Windfury Totem; Mighty Rage and a stone on the bear.
+- **Retribution +10.4 to +10.6**, **Frost +4.9 to +5.1**, **Restoration druid +6.4 / +6.5**.
+- **Protection paladin +2.0 to +2.5**, **Protection warrior +1.5 to +1.7**, **Survival +1.4**, **rogues, Balance, Shadow, Enhancement +0.8 to +1.2** (potions, imbues).
+- **Warlocks -0.3 / -0.4**, **Restoration shaman -0.4 / -0.5**, **Fire -0.1**; every other spec within 0.1.
+
+Every item-data fix, re-rank, panel icon and the WSG ids reach published numbers only at the owner's single refresh after a zero round (simdb.bin, loot.json, simbuffs.json, Data.lua, the BiS re-rank).
+
+Open going into round 11:
+- **Owner decisions.** A pull-size or band multiplier for the sub-60 heal profile (bare coverage 72 to 98% below 60 against 29 to 40% at 60), and showing sub-60 healers as coverage; Conviction on paladin heals (5.6% of Holy paladin's number); Retribution bare 20's 0.3 to 0.5% under the pace line.
+- **Found late, unverified:** Blackhand's Breadth and Eye of the Beast crit tables; Restoration druid's band-20 Furor against 5051 on the merged ladder.
+- **Blocked on logs:** a stone on a form's swing; Holy Power; Oath of Light; Holy Shield crit; Master of Elements on Clearcasting; Lightning Overload; demons and the warlock's crit; Thornspike and poisons; normalized rage; Lacerating Strikes' refresh; one-a-minute procs; Force of Will; base-crit columns.
+- **Held under the adoption rule:** Marksmanship, Improved Bane of Agony, Destruction's Immolate, Fire's Improved Scorch, Discipline's Inspiration, Frost's search winner, Holy paladin band 20.
+- **Refresh checklist:** the data run needs `--allow-shrink` (165 ids gone from wago's export; confirm first); then simbuffs.json, loot.json's WSG ids, the re-rank (Frost, healer trinkets and relics, Undead race picks), and the brotli curl check on the first deploy.
 
 ## Round 9 at a glance
 
