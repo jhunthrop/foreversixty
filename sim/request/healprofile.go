@@ -66,7 +66,9 @@ type HealProfileSource struct {
 	Kind  string `json:"kind"`
 }
 
-// HealProfile is data/curated/heal-profile.json.
+// HealProfile is data/curated/heal-profile.json. Its top-level figures are the
+// reference band's (level 60); Band is the band ForLevel resolved it to, 0 for the
+// profile as curated, and Model scales the figures to it (healprofile_bands.go).
 type HealProfile struct {
 	ID           string              `json:"id"`
 	Label        string              `json:"label"`
@@ -78,6 +80,8 @@ type HealProfile struct {
 	Tank         HealTank            `json:"tank"`
 	Members      HealMembers         `json:"members"`
 	Pulse        HealPulse           `json:"pulse"`
+	Bands        HealBands           `json:"bands"`
+	Band         int                 `json:"band,omitempty"`
 	Sources      []HealProfileSource `json:"sources"`
 }
 
@@ -141,7 +145,10 @@ func (p HealProfile) validate() error {
 	if p.Tank.Reason == "" || p.Members.Reason == "" || p.Pulse.Reason == "" {
 		return fmt.Errorf("%w: every figure group states its reason", ErrBadHealProfile)
 	}
-	return p.Tuning.validate(p.Tank.HitDamage, p.Pulse.Damage)
+	if err := p.Tuning.validate(p.Tank.HitDamage, p.Pulse.Damage); err != nil {
+		return err
+	}
+	return p.validateBands()
 }
 
 // validate checks the bounds and that the tuned figures are the base figures times the scale.
@@ -174,16 +181,17 @@ func (p HealProfile) AtScale(scale float64) HealProfile {
 	return out
 }
 
-// Model is the engine's raid damage model for the profile.
+// Model is the engine's raid damage model for the profile at its band.
 func (p HealProfile) Model() *proto.RaidDamageModel {
+	figures := p.bandFigures()
 	return &proto.RaidDamageModel{
 		Profile:              p.ID,
-		TankHealth:           p.Tank.Health,
-		MemberHealth:         p.Members.Health,
-		TankHitDamage:        p.Tank.HitDamage,
+		TankHealth:           figures.TankHealth,
+		MemberHealth:         figures.MemberHealth,
+		TankHitDamage:        figures.TankHitDamage,
 		TankSwingSeconds:     p.Tank.SwingSeconds,
 		DamageSpread:         p.DamageSpread,
-		PulseDamage:          p.Pulse.Damage,
+		PulseDamage:          figures.PulseDamage,
 		PulseIntervalSeconds: p.Pulse.IntervalSeconds,
 		PulseMembers:         int32(p.Pulse.Members),
 		PulsesReachHealer:    p.Pulse.ReachesHealer,
@@ -195,18 +203,19 @@ func (p HealProfile) Duration() time.Duration {
 	return time.Duration(p.DurationSec) * time.Second
 }
 
-// Attach lays the profile onto a built engine request: the fake raid, the
-// damage it takes, and the fight length with no variation, so "lasts the
-// fight" means the same fight every run.
+// Attach lays the profile onto a built engine request: the fake raid at the
+// band of the healer's own level (ForLevel), the damage it takes, and the
+// fight length with no variation, so "lasts the fight" means the same fight
+// every run.
 func (p HealProfile) Attach(req *proto.RaidSimRequest) {
-	core.AddHealingFakeRaid(req.Raid, p.Model())
+	core.AddHealingFakeRaid(req.Raid, p.ForLevel(healerLevel(req.Raid)).Model())
 	req.Encounter.Duration = float64(p.DurationSec)
 	req.Encounter.DurationVariation = 0
 }
 
 // AttachWeights is Attach for a stat-weights request.
 func (p HealProfile) AttachWeights(req *proto.StatWeightsRequest) {
-	req.RaidDamageModel = p.Model()
+	req.RaidDamageModel = p.ForLevel(int(req.GetPlayer().GetLevel())).Model()
 	req.Encounter.Duration = float64(p.DurationSec)
 	req.Encounter.DurationVariation = 0
 }

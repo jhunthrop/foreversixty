@@ -3,7 +3,7 @@
 // stated incoming-damage profile, so every figure here is built together with that profile's
 // name and never on its own. Pure and node-free; all wording lives in `copy.ts`.
 import { bisCopy } from './copy';
-import type { BisBand, BisHealMetrics, BisHealProfile, RateUnit } from './types';
+import type { BisBand, BisHealBandRow, BisHealMetrics, BisHealProfile, RateUnit } from './types';
 
 /** `HPS` for a healer band, `DPS` for every other band. */
 export function rateUnitOf(band: BisBand): RateUnit {
@@ -106,31 +106,62 @@ function metricCells(metrics: BisHealMetrics | undefined, durationSec: number | 
   ];
 }
 
-function disclosureFor(profile: BisHealProfile): HealProfileDisclosure {
+/** The profile's row for a band below its reference band, or `undefined` where the
+ *  top-level figures stand (the reference band, or a file with no band table). */
+function bandRowFor(profile: BisHealProfile, level: number): BisHealBandRow | undefined {
+  const bands = profile.bands;
+  if (bands === undefined || level >= bands.reference_level) return undefined;
+  return bands.rows.find((row) => row.level === level);
+}
+
+function disclosureFor(profile: BisHealProfile, level: number): HealProfileDisclosure {
   const { tank, members, pulse } = profile;
+  const row = bandRowFor(profile, level);
+  const fight: HealProfileRow = {
+    heading: bisCopy.healerProfileFightHeading,
+    figures: bisCopy.healerProfileFightLine(clockLabel(profile.duration_sec)),
+    reason: '',
+  };
+  const content: HealProfileRow[] =
+    row === undefined
+      ? []
+      : [
+          {
+            heading: bisCopy.healerProfileContentHeading,
+            figures: bisCopy.healerProfileContentLine(row.content),
+            reason: profile.bands?.rule ?? '',
+          },
+        ];
+  // A band row's reasons are the band rule's (the Content row); the top-level reasons
+  // describe the reference band's figures and would misstate a band's.
   return {
     summary: bisCopy.healerProfileSummary,
     profileSummary: profile.summary,
     rows: [
-      {
-        heading: bisCopy.healerProfileFightHeading,
-        figures: bisCopy.healerProfileFightLine(clockLabel(profile.duration_sec)),
-        reason: '',
-      },
+      fight,
+      ...content,
       {
         heading: bisCopy.healerProfileTankHeading,
-        figures: bisCopy.healerProfileTankLine(tank.health, tank.hit_damage, tank.swing_seconds),
-        reason: tank.reason,
+        figures: bisCopy.healerProfileTankLine(
+          row?.tank_health ?? tank.health,
+          row?.tank_hit_damage ?? tank.hit_damage,
+          tank.swing_seconds,
+        ),
+        reason: row === undefined ? tank.reason : '',
       },
       {
         heading: bisCopy.healerProfileMembersHeading,
-        figures: bisCopy.healerProfileMembersLine(members.health),
-        reason: members.reason,
+        figures: bisCopy.healerProfileMembersLine(row?.member_health ?? members.health),
+        reason: row === undefined ? members.reason : '',
       },
       {
         heading: bisCopy.healerProfilePulseHeading,
-        figures: bisCopy.healerProfilePulseLine(pulse.damage, pulse.interval_seconds, pulse.members),
-        reason: pulse.reason,
+        figures: bisCopy.healerProfilePulseLine(
+          row?.pulse_damage ?? pulse.damage,
+          pulse.interval_seconds,
+          pulse.members,
+        ),
+        reason: row === undefined ? pulse.reason : '',
       },
     ],
     notes: profile.notes,
@@ -153,6 +184,6 @@ export function healerSetViewFor(
     profileLabel,
     caption: bisCopy.healerFigureCaption(profileLabel),
     metrics: metricCells(metrics, profile?.duration_sec),
-    disclosure: profile === undefined ? undefined : disclosureFor(profile),
+    disclosure: profile === undefined ? undefined : disclosureFor(profile, band.band),
   };
 }

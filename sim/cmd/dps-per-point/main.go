@@ -405,7 +405,7 @@ func raidCharacter(repoRoot, active string, spec specs.Spec) (api.CharacterSpec,
 	if err != nil {
 		return api.CharacterSpec{}, err
 	}
-	positional := leveling.LadderTalentString(trees, leveling.GuideTalentTargets(trees, digits), spec.TreeIndex, level)
+	positional := leveling.LadderTalentString(trees, leveling.GuideTalentTargets(trees, digits), spec.TreeIndex, level, leveling.ForSpec(spec.Spec))
 	engineDir, err := enginetalents.SourceDir(filepath.Join(repoRoot, "sim"))
 	if err != nil {
 		return api.CharacterSpec{}, err
@@ -461,7 +461,7 @@ func bandCharacter(repoRoot, active string, spec specs.Spec, band int) (api.Char
 		return api.CharacterSpec{}, err
 	}
 	lvl := bandLevel(band)
-	positional := leveling.LadderTalentString(trees, leveling.GuideTalentTargets(trees, digits), spec.TreeIndex, lvl)
+	positional := leveling.LadderTalentString(trees, leveling.GuideTalentTargets(trees, digits), spec.TreeIndex, lvl, leveling.ForSpec(spec.Spec))
 	engineDir, err := enginetalents.SourceDir(filepath.Join(repoRoot, "sim"))
 	if err != nil {
 		return api.CharacterSpec{}, err

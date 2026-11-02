@@ -38,7 +38,7 @@ type cell struct {
 // points; a level with no legal point, or an order that ends anywhere
 // else, is an error naming the level - a data defect, not something to
 // paper over.
-func LadderPointOrder(activeTrees []TalentTree, targets map[int]int, ownTreeIndex int) ([]Point, error) {
+func LadderPointOrder(activeTrees []TalentTree, targets map[int]int, ownTreeIndex int, opts ...LadderOption) ([]Point, error) {
 	cells := searchOrder(activeTrees, ownTreeIndex)
 	ranks := make([]map[int]int, len(activeTrees))
 	inTree := make([]int, len(activeTrees))
@@ -53,7 +53,7 @@ func LadderPointOrder(activeTrees []TalentTree, targets map[int]int, ownTreeInde
 	}
 	order := make([]Point, 0, 51)
 	for level := 10; level <= 60; level++ {
-		ladder, err := TalentRanksFromString(activeTrees, LadderTalentString(activeTrees, targets, ownTreeIndex, level))
+		ladder, err := TalentRanksFromString(activeTrees, LadderTalentString(activeTrees, targets, ownTreeIndex, level, opts...))
 		if err != nil {
 			return nil, err
 		}
@@ -72,7 +72,7 @@ func LadderPointOrder(activeTrees []TalentTree, targets map[int]int, ownTreeInde
 		inTree[pick.tree]++
 		order = append(order, Point{Tab: pick.tree + 1, Tier: pick.node.Tier + 1, Column: pick.node.Column + 1})
 	}
-	final := LadderTalentString(activeTrees, targets, ownTreeIndex, 60)
+	final := LadderTalentString(activeTrees, targets, ownTreeIndex, 60, opts...)
 	if got := rankString(activeTrees, ranks); got != final {
 		return nil, fmt.Errorf("leveling: level 60 order ends on %s, not the guide build %s", got, final)
 	}

@@ -260,7 +260,7 @@ func guideBuild(o options, spec specInfo, activeTrees []leveling.TalentTree, tre
 		return nil, "", err
 	}
 	targets := leveling.GuideTalentTargets(guideTrees, digits)
-	s := leveling.LadderTalentString(activeTrees, targets, spec.TreeIndex, o.level)
+	s := leveling.LadderTalentString(activeTrees, targets, spec.TreeIndex, o.level, leveling.ForSpec(spec.Spec))
 	b, err := trees.decodeActive(s)
 	if err != nil {
 		return nil, "", err
