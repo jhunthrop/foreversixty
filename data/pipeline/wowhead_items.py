@@ -19,6 +19,12 @@ items only it carried, and they fell back to 1.12 stats
 feed into a committed record set, ``raw/wowhead/items.json``, seeded from the build's
 own file or the previous build's, and every consumer reads that merged file
 (``raw_path``). ``carry_forward`` has the rules.
+
+The carry is automatic (owner ruling, sim-accuracy round 7): a feed listing only part of
+the seeded supplement is accepted, and the saved records carry the rest. The size floor
+is on the carried catalogue, not on the feed: ``merge_live_feed`` fails when the merge
+keeps fewer than ``MIN_CARRIED_COVERAGE`` of the seeded supplement, which only records
+that are really lost (their item gone from the client's ``Item`` table) can cause.
 """
 
 from __future__ import annotations
@@ -36,7 +42,7 @@ from pathlib import Path
 import httpx
 from pydantic import BaseModel
 
-from pipeline.build_floors import MIN_LIVE_COVERAGE, previous_build_dir
+from pipeline.build_floors import MIN_CARRIED_COVERAGE, previous_build_dir
 from pipeline.hotfix_merge import merge_hotfix_table
 from pipeline.models import GearItem, Item
 from pipeline.normalize.gear import (
@@ -195,8 +201,8 @@ class WowheadPayloadError(ValueError):
     """The payload is not the Forever item list this module expects."""
 
 
-class WowheadCoverageError(ValueError):
-    """The live feed lists too little of the seeded supplement to be trusted."""
+class WowheadCarryError(ValueError):
+    """The carried catalogue lost too much of the seeded supplement to be trusted."""
 
 
 _TRAILING_COMMA = re.compile(r",(\s*[}\]])")
@@ -292,6 +298,7 @@ def write_records(
     seeded_from: str | None,
     live: int | None = None,
     carried: Iterable[int] = (),
+    dropped: Iterable[int] = (),
 ) -> None:
     """The carry file: a small header, then one record per line, by id, so a fetch
     diffs only on the records that changed."""
@@ -300,6 +307,7 @@ def write_records(
         "seeded_from": seeded_from,
         "live": live if live is not None else len(records),
         "carried": sorted(carried),
+        "dropped": sorted(dropped),
     }
     lines = [
         f"  {json.dumps(str(item_id))}: "
@@ -468,12 +476,24 @@ class CarryResult:
     records: dict[int, dict]
     #: Seeded ids the live feed no longer lists, kept from the seed.
     carried: tuple[int, ...]
-    #: The share of the seeded supplement the live feed still lists; None when the
-    #: seed has no supplement to measure.
-    coverage: float | None
-    #: The seeded supplement's size and how much of it the live feed lists.
+    #: Seeded ids the live feed no longer lists whose item the client's ``Item``
+    #: table no longer has either: not in the game, so dropped, and counted as lost.
+    dropped: tuple[int, ...]
+    #: The seeded supplement (the planner gear the client's ``ItemSparse`` lacks),
+    #: how much of it the live feed lists, and how much of it the merge keeps.
     seeded: int
     listed: int
+    kept: int
+
+    @property
+    def coverage(self) -> float | None:
+        """The share of the seeded supplement the live feed lists (reported only)."""
+        return self.listed / self.seeded if self.seeded else None
+
+    @property
+    def kept_share(self) -> float | None:
+        """The share of the seeded supplement the carried catalogue keeps (the floor)."""
+        return self.kept / self.seeded if self.seeded else None
 
 
 def carry_forward(
@@ -486,30 +506,27 @@ def carry_forward(
     """The live feed merged over the seed.
 
     The live feed wins wherever it has the item. A seeded record the feed lacks is
-    kept, unless the client no longer has the item (no ``Item.csv`` row) or now has
-    its own ``ItemSparse`` row for it, in which case the client is the truth.
+    kept, unless the client now has its own ``ItemSparse`` row for it (the client is
+    the truth, and the item is no longer supplement) or no longer has the item at all
+    (no ``Item`` row: the record is dropped and counted as lost).
 
-    Coverage is measured on the seeded supplement, the planner gear the client still
-    lacks: those are the items whose stats depend on this feed alone."""
-    carried = tuple(
-        sorted(
-            item_id
-            for item_id in seed
-            if item_id not in live and item_id in item_ids and item_id not in sparse_ids
-        )
-    )
+    Coverage and the floor are measured on the seeded supplement, the planner gear
+    the client still lacks: those are the items whose stats depend on this feed
+    alone."""
+    missing = [i for i in seed if i not in live and i not in sparse_ids]
+    carried = tuple(sorted(i for i in missing if i in item_ids))
+    dropped = tuple(sorted(i for i in missing if i not in item_ids))
     seeded = {
-        item.id
-        for item in supplement((_item_from_record(r) for r in seed.values()), sparse_ids)
-        if item.id in item_ids
+        item.id for item in supplement((_item_from_record(r) for r in seed.values()), sparse_ids)
     }
-    listed = len(seeded & live.keys())
+    records = {**{item_id: seed[item_id] for item_id in carried}, **live}
     return CarryResult(
-        records={**{item_id: seed[item_id] for item_id in carried}, **live},
+        records=records,
         carried=carried,
-        coverage=listed / len(seeded) if seeded else None,
+        dropped=dropped,
         seeded=len(seeded),
-        listed=listed,
+        listed=len(seeded & live.keys()),
+        kept=len(seeded & records.keys()),
     )
 
 
@@ -543,29 +560,18 @@ def _client_ids(build_dir: Path) -> tuple[set[int], set[int]]:
     return item_ids, sparse_ids
 
 
-def merge_live_feed(
-    build_dir: Path, live: Mapping[int, dict], *, allow_shrink: bool = False
-) -> Path:
-    """Merge a live feed into the build's carry file and write it, refusing a feed
-    below ``MIN_LIVE_COVERAGE`` of the seeded supplement unless ``allow_shrink``.
-    Nothing is written when it refuses."""
+def merge_live_feed(build_dir: Path, live: Mapping[int, dict]) -> Path:
+    """Merge a live feed into the build's carry file and write it. The seeded records
+    the feed lacks are carried automatically; the merge is refused, and nothing is
+    written, when the carried catalogue keeps less than ``MIN_CARRIED_COVERAGE`` of
+    the seeded supplement."""
     seed, seeded_from = _seed_for(build_dir)
     if seed:
         item_ids, sparse_ids = _client_ids(build_dir)
         result = carry_forward(live, seed, item_ids=item_ids, sparse_ids=sparse_ids)
     else:
-        result = CarryResult(dict(live), (), None, 0, 0)
-    if result.coverage is not None and result.coverage < MIN_LIVE_COVERAGE:
-        message = (
-            f"wowhead's live feed lists {result.listed} of {result.seeded} seeded supplement "
-            f"items ({result.coverage:.0%}, need {MIN_LIVE_COVERAGE:.0%}) from {seeded_from}"
-        )
-        if not allow_shrink:
-            raise WowheadCoverageError(
-                f"{message}; the feed has lost items, and the seeded records would carry "
-                "them -- pass --allow-shrink to accept the feed and carry them"
-            )
-        logger.warning("%s; --allow-shrink: carrying %d records", message, len(result.carried))
+        result = CarryResult(dict(live), (), (), 0, 0, 0)
+    _check_carried_floor(result, seeded_from)
     path = raw_path(build_dir)
     write_records(
         path,
@@ -574,24 +580,52 @@ def merge_live_feed(
         seeded_from=seeded_from,
         live=len(live),
         carried=result.carried,
+        dropped=result.dropped,
     )
     logger.info(
-        "wowhead: %d live records, %d carried from %s, %d written to %s",
-        len(live),
+        "wowhead: the live feed lists %s; %d records carried from %s, %d dropped "
+        "(no Item row), %d live, %d written to %s",
+        _coverage_text(result),
         len(result.carried),
         seeded_from,
+        len(result.dropped),
+        len(live),
         len(result.records),
         path,
     )
     return path
 
 
+def _coverage_text(result: CarryResult) -> str:
+    if result.coverage is None:
+        return "no seeded supplement to measure"
+    return (
+        f"{result.listed} of {result.seeded} seeded supplement items ({result.coverage:.0%}); "
+        f"{len(result.carried)} records carried"
+    )
+
+
+def _check_carried_floor(result: CarryResult, seeded_from: str | None) -> None:
+    """Refuse a carried catalogue that really lost records: a feed missing items is
+    carried over, so only items gone from the client's ``Item`` table can trip it."""
+    share = result.kept_share
+    if share is None or share >= MIN_CARRIED_COVERAGE:
+        return
+    shown = ", ".join(str(i) for i in result.dropped[:20])
+    more = f" and {len(result.dropped) - 20} more" if len(result.dropped) > 20 else ""
+    raise WowheadCarryError(
+        f"the carried wowhead catalogue keeps {result.kept} of the {result.seeded} seeded "
+        f"supplement items from {seeded_from} ({share:.0%}, need {MIN_CARRIED_COVERAGE:.0%}): "
+        f"{len(result.dropped)} records lost because the client's Item table no longer has "
+        f"their items ({shown}{more}). A client table that lost rows is a broken fetch; "
+        "re-run `python -m pipeline fetch` for the build before fetch-wowhead"
+    )
+
+
 def fetch_wowhead(
     build: str,
     root: Path = Path("builds"),
     client: httpx.Client | None = None,
-    *,
-    allow_shrink: bool = False,
 ) -> Path:
     """Download the live payload, merge it into the build's carry file and record when
     it was taken. Returns the carry file."""
@@ -609,7 +643,7 @@ def fetch_wowhead(
                 f"wowhead served versionNum {sorted(versions)}, not Forever's {FOREVER_VERSION}"
             )
         build_dir = root / build
-        carry = merge_live_feed(build_dir, payload_records(text), allow_shrink=allow_shrink)
+        carry = merge_live_feed(build_dir, payload_records(text))
         path = payload_path(build_dir)
         path.write_text(text, encoding="utf-8")
         meta = {

@@ -201,10 +201,10 @@ jobs:
       # Wowhead's Forever gear planner carries the items Blizzard ships as hotfixes,
       # which never reach the client files wago exports (4,712 of 11,239 items on
       # 2026-09-27). fetch-wowhead merges the live feed over the seeded
-      # raw/wowhead/items.json and refuses a feed listing under 90% of the seeded
-      # supplement (allow_shrink accepts it and still carries the rest); normalize,
-      # icons and simdb read the merged file.
-      - run: uv run python -m pipeline fetch-wowhead --build "$BUILD" $SHRINK
+      # raw/wowhead/items.json, carrying the saved records of every item the feed no
+      # longer lists, and refuses only a carried catalogue under 90% of the seeded
+      # supplement (records really lost); normalize, icons and simdb read the merged file.
+      - run: uv run python -m pipeline fetch-wowhead --build "$BUILD"
       # The hotfix dump above is one old play session's DBCache, seeded forward
       # add-only, so every later push was missing (sim-accuracy round 5: Fiery
       # War Axe 2.9 s against 3.6 s, Blade of Hanna's five dropped stats, 201
