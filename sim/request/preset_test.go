@@ -117,18 +117,24 @@ func TestRaidPresetConsumesFollowTheRole(t *testing.T) {
 		want    []string
 		wantNot []string
 	}{
-		{"mage-fire", []string{"flask_of_supreme_power", "greater_arcane_elixir", "elixir_of_firepower", "food_runn_tum_tuber_surprise", "main_hand_imbue:brilliant_wizard_oil", "major_mana_potion", "conjured_demonic_rune"}, []string{"elixir_of_the_mongoose"}},
+		{"mage-fire", []string{"flask_of_supreme_power", "greater_arcane_elixir", "elixir_of_firepower", "food_nightfin_soup", "main_hand_imbue:brilliant_wizard_oil", "major_mana_potion", "conjured_demonic_rune"}, []string{"elixir_of_the_mongoose"}},
 		// Classic elixirs of different schools stack (the Battle and Guardian
 		// categories arrived in patch 2.1.0), and every warlock spec deals
 		// both Shadow and Fire damage, so each carries both school elixirs.
 		{"warlock-affliction", []string{"elixir_of_shadow_power", "elixir_of_firepower", "flask_of_supreme_power"}, nil},
 		{"warlock-demonology", []string{"elixir_of_shadow_power", "elixir_of_firepower"}, nil},
 		{"warlock-destruction", []string{"elixir_of_shadow_power", "elixir_of_firepower"}, nil},
-		{"warrior-fury", []string{"elixir_of_the_mongoose", "juju_power", "r_o_i_d_s", "food_grilled_squid", "juju_might", "mighty_rage_potion", "main_hand_imbue:elemental_sharpening_stone", "off_hand_imbue:dense_sharpening_stone"}, []string{"major_mana_potion", "flask_of_supreme_power"}},
+		{"warrior-fury", []string{"elixir_of_the_mongoose", "juju_power", "r_o_i_d_s", "food_smoked_desert_dumpling", "juju_might", "mighty_rage_potion", "main_hand_imbue:elemental_sharpening_stone", "off_hand_imbue:dense_sharpening_stone"}, []string{"major_mana_potion", "flask_of_supreme_power"}},
 		{"warrior-arms", []string{"mighty_rage_potion", "main_hand_imbue:elemental_sharpening_stone"}, []string{"off_hand_imbue:dense_sharpening_stone"}},
 		{"paladin-retribution", []string{"elixir_of_the_mongoose", "major_mana_potion"}, []string{"mighty_rage_potion", "conjured_demonic_rune"}},
 		{"hunter-marksmanship", []string{"elixir_of_the_mongoose", "major_mana_potion"}, []string{"off_hand_imbue:dense_sharpening_stone", "flask_of_supreme_power"}},
-		{"rogue-combat", []string{"elixir_of_the_mongoose"}, []string{"major_mana_potion", "mighty_rage_potion"}},
+		{"rogue-combat", []string{"elixir_of_the_mongoose", "food_grilled_squid"}, []string{"major_mana_potion", "mighty_rage_potion", "food_smoked_desert_dumpling"}},
+		// Forever's foods (round 8): Grilled Squid is 1% crit, Tender Wolf
+		// Steak 15 Agility and Runn Tum 15 Intellect, so the agility users
+		// eat the squid, the strength users and the tanks the dumplings.
+		{"hunter-survival", []string{"food_grilled_squid"}, []string{"food_smoked_desert_dumpling"}},
+		{"warrior-protection", []string{"food_smoked_desert_dumpling"}, []string{"food_tender_wolf_steak"}},
+		{"priest-shadow", []string{"food_nightfin_soup"}, []string{"food_runn_tum_tuber_surprise"}},
 	}
 	for _, c := range cases {
 		resolved, err := presets.Resolve(RaidPreset, specs.ByKey[c.spec])
