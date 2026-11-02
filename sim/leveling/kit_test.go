@@ -135,7 +135,7 @@ func TestKitBuffsDruidCarriesPlainMarkOfTheWild(t *testing.T) {
 }
 
 func TestKitBuffsPaladinCarriesBlessingOfMightFromFour(t *testing.T) {
-	for _, spec := range []string{"paladin-holy", "paladin-retribution"} {
+	for _, spec := range []string{"paladin-retribution"} {
 		if got := KitBuffs(spec, 3); got != nil {
 			t.Fatalf("%s at 3 = %v, want nothing (rank 1 is learned at 4)", spec, got)
 		}
@@ -144,6 +144,25 @@ func TestKitBuffsPaladinCarriesBlessingOfMightFromFour(t *testing.T) {
 			if len(got) != 1 || got[0] != "blessing_of_might" {
 				t.Fatalf("%s at %d = %v, want blessing_of_might", spec, level, got)
 			}
+		}
+	}
+}
+
+// A Holy paladin blesses itself with Wisdom, the mana blessing, once it
+// is learned at 14 (client spell 19742); Might is for a melee paladin and
+// one paladin's blessings on a target are one at a time, so Wisdom
+// replaces it. Before 14 Might is the only blessing it knows.
+func TestKitBuffsHolyPaladinCarriesBlessingOfWisdomFromFourteen(t *testing.T) {
+	if got := KitBuffs("paladin-holy", 3); got != nil {
+		t.Fatalf("paladin-holy at 3 = %v, want nothing", got)
+	}
+	if got := KitBuffs("paladin-holy", 13); len(got) != 1 || got[0] != "blessing_of_might" {
+		t.Fatalf("paladin-holy at 13 = %v, want blessing_of_might (Wisdom is learned at 14)", got)
+	}
+	for _, level := range []int{14, 20, 60} {
+		got := KitBuffs("paladin-holy", level)
+		if len(got) != 1 || got[0] != "blessing_of_wisdom" {
+			t.Fatalf("paladin-holy at %d = %v, want blessing_of_wisdom", level, got)
 		}
 	}
 }

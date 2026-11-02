@@ -324,6 +324,7 @@ func TestSingleTierOverridesGateTheirIDs(t *testing.T) {
 		id    int32
 		level int
 	}{
+		{"druid", 29166, 40},    // Innervate
 		{"paladin", 407632, 40}, // Hammer of the Righteous
 		{"warlock", 603, 60},    // Bane of Doom
 		{"warrior", 1680, 36},   // Whirlwind
