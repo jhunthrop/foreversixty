@@ -16,17 +16,22 @@ import (
 	"fmt"
 	"slices"
 	"sync"
+
+	"github.com/jhunthrop/foreversixty/sim/api"
 )
 
 //go:embed rank-choices.json
 var rankChoicesJSON []byte
 
 // RankChoiceRow is one band's choice: from FromLevel through ToLevel the
-// spell casts rank Rank. Outside every row the default rule stands.
+// spell casts rank Rank. Outside every row the default rule stands. A row
+// naming a Preset (BarePreset or RaidPreset) applies only to a request
+// simmed under it; one with none applies to both.
 type RankChoiceRow struct {
-	FromLevel int `json:"from_level"`
-	ToLevel   int `json:"to_level"`
-	Rank      int `json:"rank"`
+	FromLevel int    `json:"from_level"`
+	ToLevel   int    `json:"to_level"`
+	Rank      int    `json:"rank"`
+	Preset    string `json:"preset,omitempty"`
 }
 
 // rankChoiceSpell is one authored spell id's rows, as the curated file
@@ -45,6 +50,19 @@ type rankChoicesFile struct {
 // rankChoices is one spec's rows by authored id, each list ascending by
 // FromLevel.
 type rankChoices map[int32][]RankChoiceRow
+
+// forPreset is c with only the rows that apply under preset.
+func (c rankChoices) forPreset(preset string) rankChoices {
+	out := make(rankChoices, len(c))
+	for id, rows := range c {
+		for _, row := range rows {
+			if row.Preset == "" || row.Preset == preset {
+				out[id] = append(out[id], row)
+			}
+		}
+	}
+	return out
+}
 
 // rankAt is the rank the row holding level chooses for id, if any.
 func (c rankChoices) rankAt(id int32, level int) (int, bool) {
@@ -73,10 +91,13 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 			rows := slices.Clone(sp.Bands)
 			slices.SortFunc(rows, func(a, b RankChoiceRow) int { return a.FromLevel - b.FromLevel })
 			for i, row := range rows {
+				if row.Preset != "" && row.Preset != BarePreset && row.Preset != RaidPreset {
+					return nil, fmt.Errorf("%w: rank choices: %s %d names preset %q", ErrUnknownPreset, spec, sp.Authored, row.Preset)
+				}
 				if row.ToLevel < row.FromLevel {
 					return nil, fmt.Errorf("rank choices: %s %d has a row from level %d to %d", spec, sp.Authored, row.FromLevel, row.ToLevel)
 				}
-				if i > 0 && row.FromLevel <= rows[i-1].ToLevel {
+				if i > 0 && row.FromLevel <= rows[i-1].ToLevel && overlapPresets(row, rows[i-1]) {
 					return nil, fmt.Errorf("rank choices: %s %d has two rows at level %d", spec, sp.Authored, row.FromLevel)
 				}
 			}
@@ -87,17 +108,35 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 	return out, nil
 }
 
+// overlapPresets reports whether two rows can apply to the same request.
+func overlapPresets(a, b RankChoiceRow) bool {
+	return a.Preset == "" || b.Preset == "" || a.Preset == b.Preset
+}
+
 var embeddedRankChoices = sync.OnceValues(func() (map[string]rankChoices, error) {
 	return parseRankChoices(rankChoicesJSON)
 })
 
-// specRankChoices is spec's rows from the embedded table; none when the
-// spec has no row (or the embed is unreadable, which
+// specRankChoices is spec's rows under preset from the embedded table; none
+// when the spec has no row (or the embed is unreadable, which
 // TestEmbeddedRankChoicesMatchCurated fails on).
-func specRankChoices(spec string) rankChoices {
+func specRankChoices(spec, preset string) rankChoices {
 	all, err := embeddedRankChoices()
 	if err != nil {
 		return nil
 	}
-	return all[spec]
+	return all[spec].forPreset(preset)
+}
+
+// rankPreset is the preset a request's rank choices follow: the one it
+// names, else the one its level is published under (PublishedPreset), which
+// is also what the /sim page defaults to.
+func rankPreset(req api.SimRequest) (string, error) {
+	switch req.Preset {
+	case "":
+		return PublishedPreset(req.Character.Level), nil
+	case BarePreset, RaidPreset:
+		return req.Preset, nil
+	}
+	return "", fmt.Errorf("%w: %q; a request's preset is %q or %q", ErrUnknownPreset, req.Preset, BarePreset, RaidPreset)
 }

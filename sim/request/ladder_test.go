@@ -350,16 +350,12 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		// exact function sim/request's own rewriteRotationRanks calls
 		// (the spec's per-band rank choices included), not a second,
 		// approximate copy of its resolution - that never fired.
-		castAt := rankResolver(class, level, specRankChoices(spec.Spec))
+		// The ladder's request names no preset, so it follows the one its
+		// level is published under (rankPreset); at 60 an id with no row is
+		// cast as authored.
+		castAt := rankResolver(class, level, specRankChoices(spec.Spec, PublishedPreset(level)))
 		for authoredID := range authoredIDs {
 			learnedID32, learned := castAt(int32(authoredID))
-			if level >= api.MaxLevel {
-				// rotation() skips the rank rewrite at MaxLevel: the
-				// engine runs the line exactly as authored, so the id it
-				// casts is the authored one, not the rank the rewrite
-				// would pick.
-				learnedID32, learned = int32(authoredID), true
-			}
 			if !learned {
 				continue // the engine's own rewrite already dropped this line; nothing to double-report.
 			}

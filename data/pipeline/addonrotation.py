@@ -200,10 +200,18 @@ def _rank_choice_id(spellranks: dict, class_slug: str, family: str, spell_id: in
     return (same_band or ids or [None])[0]
 
 
+#: The preset a band below 60 is published under (sim/request PublishedPreset).
+BARE_PRESET = "bare"
+
+
 def _band_rank(choices: dict, spell_id: int, level: int) -> int | None:
     """The rank data/curated/rank-choices.json picks for the list's
-    `spell_id` at `level` (one spec's rows), or None outside every row."""
+    `spell_id` at `level` (one spec's rows), or None outside every row. A
+    band below 60 is the bare preset's, so a row for the raid preset only
+    never applies here."""
     for row in choices.get(spell_id, []):
+        if row.get("preset", BARE_PRESET) != BARE_PRESET:
+            continue
         if row["from_level"] <= level <= row["to_level"]:
             return row["rank"]
     return None

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/internal/spellranks"
 )
 
@@ -70,9 +71,10 @@ import (
 //
 // RewriteRotationRanks is rewriteRotationRanks for a rotation file read
 // outside the embedded APLs (spec-breakdown's -rotation), with spec's own
-// rank choices, so a copy of the published rotation casts what it does.
-func RewriteRotationRanks(raw []byte, spec, class string, level int) ([]byte, error) {
-	return rewriteRotationRanks(raw, class, level, specRankChoices(spec))
+// rank choices under preset, so a copy of the published rotation casts what
+// it does.
+func RewriteRotationRanks(raw []byte, spec, class, preset string, level int) ([]byte, error) {
+	return rewriteRotationRanks(raw, class, level, specRankChoices(spec, preset))
 }
 
 func rewriteRotationRanks(raw []byte, class string, level int, choices rankChoices) ([]byte, error) {
@@ -175,12 +177,18 @@ func rewriteRankedSpellIDs(node any, resolve func(int32) (int32, bool), drop *bo
 // learned, otherwise the highest learned rank not above the authored one.
 // The ladder harness calls the same function, so it and the rewrite never
 // disagree about what a line casts.
+//
+// At MaxLevel the rotation runs as written (it is authored there), so an id
+// with no row is returned unchanged.
 func rankResolver(class string, level int, choices rankChoices) func(int32) (int32, bool) {
 	return func(id int32) (int32, bool) {
 		if rank, ok := choices.rankAt(id, level); ok {
 			if chosen, learned := spellranks.SpellIDOfRank(class, id, rank, level); learned {
 				return chosen, true
 			}
+		}
+		if level >= api.MaxLevel {
+			return id, true
 		}
 		return spellranks.LearnedSpellID(class, id, level)
 	}

@@ -169,6 +169,13 @@ type SimRequest struct {
 	// DPS run. It is the live planner's opt-in; a damage spec, a bulk
 	// request and a weights request refuse it.
 	RoleMetrics bool `json:"role_metrics,omitempty"`
+	// Preset names the preset the request is simmed under, "bare" or
+	// "raid", for the rotation's per-band rank choices
+	// (data/curated/rank-choices.json): a mana-bound bare fight may cast a
+	// lower rank than a raid one. Empty means the preset the character's
+	// level is published under (sim/request.PublishedPreset), which is what
+	// the /sim page defaults to. It changes no buff or consumable.
+	Preset string `json:"preset,omitempty"`
 }
 
 // CharacterSpec is everything the engine needs about the player, in JSON.

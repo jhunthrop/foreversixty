@@ -116,7 +116,7 @@ func run(o options) error {
 	if err != nil {
 		return err
 	}
-	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.band)
+	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, o.band)
 	if err != nil {
 		return err
 	}
@@ -137,12 +137,12 @@ func run(o options) error {
 }
 
 // loadRotation reads the "rotation" object of a curated rotation file; an
-// empty path keeps the spec's own rotation. Below level 60 its ranks are
-// rewritten exactly as the published rotation's are: the spec's per-band
-// rank choices for the ids it names, otherwise the highest rank learned by
-// level that is not above the authored one (so a probe that names a lower
-// rank keeps it).
-func loadRotation(path, spec, class string, level int) (*proto.APLRotation, error) {
+// empty path keeps the spec's own rotation. Its ranks are rewritten
+// exactly as the published rotation's are: the spec's rank choices under
+// preset for the ids it names, otherwise (below 60) the highest rank
+// learned by level that is not above the authored one, so a probe that
+// names a lower rank keeps it. At 60 an id with no row stays as written.
+func loadRotation(path, spec, class, preset string, level int) (*proto.APLRotation, error) {
 	if path == "" {
 		return nil, nil
 	}
@@ -159,10 +159,8 @@ func loadRotation(path, spec, class string, level int) (*proto.APLRotation, erro
 	if len(file.Rotation) == 0 {
 		return nil, fmt.Errorf("%s has no \"rotation\" object", path)
 	}
-	if level < api.MaxLevel {
-		if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, spec, class, level); err != nil {
-			return nil, fmt.Errorf("rewriting %s to level %d: %w", path, level, err)
-		}
+	if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, spec, class, preset, level); err != nil {
+		return nil, fmt.Errorf("rewriting %s to level %d: %w", path, level, err)
 	}
 	rotation := &proto.APLRotation{}
 	if err := protojson.Unmarshal(file.Rotation, rotation); err != nil {
@@ -278,6 +276,7 @@ func buildRequest(o options) (api.SimRequest, error) {
 	}
 	return api.SimRequest{
 		EngineVersion: enginever.Version,
+		Preset:        o.preset,
 		Spec:          o.spec,
 		Source:        api.CharacterSource{Kind: api.SourceBuild},
 		Character:     character,

@@ -121,7 +121,7 @@ func TestRotationAtMaxLevelParsesTheEmbedDirectly(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	got, err := rotation(hunterSpecForRankTests, "hunter", api.MaxLevel)
+	got, err := rotation(hunterSpecForRankTests, "hunter", RaidPreset, api.MaxLevel)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -409,7 +409,7 @@ func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 // The curated table reaches the published rotation: Elemental's band-50 row
 // casts Lightning Bolt rank 4 (915) where the default rule casts rank 9.
 func TestThePublishedRotationTakesTheCuratedRankChoices(t *testing.T) {
-	ids := rotationIDs(t, "shaman-elemental", "shaman", 50, specRankChoices("shaman-elemental"))
+	ids := rotationIDs(t, "shaman-elemental", "shaman", 50, specRankChoices("shaman-elemental", BarePreset))
 	if !ids[915] || ids[15207] {
 		t.Errorf("Elemental at 50 should cast Lightning Bolt rank 4 (915), not rank 9 (15207)")
 	}

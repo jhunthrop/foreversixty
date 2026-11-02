@@ -484,7 +484,8 @@ def test_a_band_casts_the_rank_choice_the_curated_table_names(tmp_path):
     _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
     (tmp_path / "rank-choices.json").write_text(json.dumps({"specs": {"priest-holy": [
         {"spell": "Renew", "authored": 10929,
-         "bands": [{"from_level": 50, "to_level": 59, "rank": 3}]}]}}), encoding="utf-8")
+         "bands": [{"from_level": 40, "to_level": 49, "rank": 2, "preset": "raid"},
+                   {"from_level": 50, "to_level": 59, "rank": 3}]}]}}), encoding="utf-8")
     bands = _healer_bands("priest-holy", tmp_path)
     assert [line.spell_id for line in bands[40]] == [6075]
     assert [line.spell_id for line in bands[50]] == [6075]
