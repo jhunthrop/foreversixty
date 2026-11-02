@@ -18,6 +18,11 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 		// Since Swiftmend leaves the effect up (fork 9badd243f), Rejuvenation rank 10 (9841)
 		// loses to the rotation's own rank 4 (2090) at bare 60.
 		{"Rejuvenation at bare 60", "druid-restoration", "druid", BarePreset, 60, 2090, 9841},
+		// Once the published Undead casts Dark Sacrifice when mana is low (casters lane,
+		// db8fc067e), Devouring Plague rank 1 (2944) loses 4.4% at bare 60 to the top
+		// rank (19280); Shadow Word: Death rank 2 still wins there.
+		{"Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, 60, 19280, 2944},
+		{"Shadow Word: Death at bare 60 keeps rank 2", "priest-shadow", "priest", BarePreset, 60, 1309633, 1309636},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset))
 		if !ids[c.want] || ids[c.not] {

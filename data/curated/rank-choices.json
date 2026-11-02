@@ -354,12 +354,6 @@
             "from_level": 50,
             "to_level": 59,
             "rank": 1
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 1,
-            "preset": "bare"
           }
         ]
       },
