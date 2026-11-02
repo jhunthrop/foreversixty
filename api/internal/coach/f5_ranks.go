@@ -86,7 +86,7 @@ func lowRankUses(in Input) []*lowRankUse {
 			uses[family] = u
 		}
 		u.casts += int(row.Succeeded)
-		if cast.Rank < top.Rank && !slices.Contains(in.Tables.RankChoices[family], cast.Rank) {
+		if cast.Rank < top.Rank && !sitesOwnRank(in, family, cast) {
 			u.lowCasts += int(row.Succeeded)
 			u.byRank[cast.ID] += int(row.Succeeded)
 		}
@@ -98,6 +98,14 @@ func lowRankUses(in Input) []*lowRankUse {
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].family < out[j].family })
 	return out
+}
+
+// sitesOwnRank is whether cast is a rank the site's own rotation casts at the player's
+// level: a per-band rank choice (data/curated/rank-choices.json), or the rank the shipped
+// rotation's band line names (a rank the rotation authors below the top one, such as
+// Elemental's raid-60 Lightning Bolt rank 9). A player casting it is following the advice.
+func sitesOwnRank(in Input, family string, cast TrainableRank) bool {
+	return slices.Contains(in.Tables.RankChoices[family], cast.Rank) || in.Tables.Rotation.Names(cast.ID)
 }
 
 func downrankListed(r SpecRules, family string) bool {

@@ -114,3 +114,25 @@ func TestABuildWithNoRotationsIsLoggedOnce(t *testing.T) {
 		t.Fatalf("logged %d times, want once:\n%s", n, buf.String())
 	}
 }
+
+// Names is narrower than Lists: only the rank a band line names (the rank the site's
+// rotation casts there), so the coach can tell the site's own downrank from a lower rank.
+func TestRotationNamesOnlyTheRankItsLinesCast(t *testing.T) {
+	useRepoGearData(t)
+	at60, ok := RotationFor("", "warrior-fury", 60)
+	if !ok {
+		t.Fatal("no warrior-fury rotation in the newest build")
+	}
+	if !at60.Names(25286) || !at60.Names(20662) {
+		t.Error("band 60 does not name Heroic Strike rank 9 or Execute rank 5, its lines")
+	}
+	if at60.Names(11567) {
+		t.Error("band 60 names Heroic Strike rank 8, which no line casts")
+	}
+	if !at60.Lists(11567) {
+		t.Error("band 60 no longer lists Heroic Strike rank 8 as a rank of a listed ability")
+	}
+	if got := at60.Naming(11567); !got.Names(11567) || at60.Names(11567) {
+		t.Error("Naming must add to a copy and leave the band unchanged")
+	}
+}
