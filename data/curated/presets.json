@@ -393,6 +393,18 @@
           ]
         },
         "by_spec": {
+          "hunter-survival": [
+            {
+              "id": "main_hand_imbue:elemental_sharpening_stone",
+              "label": "Elemental Sharpening Stone",
+              "reason": "Survival fights in melee in Forever with a weapon in each hand, so it stones them as a melee dual wielder does: 2% critical strike on the main hand (item 18262, enchant 2506, aura 52); client level 50. With the Dense stone on the off hand it measured 2.4% ahead of no stones (round 9)."
+            },
+            {
+              "id": "off_hand_imbue:dense_sharpening_stone",
+              "label": "Dense Sharpening Stone",
+              "reason": "Off-hand stone for the melee Survival hunter: 8 weapon damage (item 12404); client level 35."
+            }
+          ],
           "druid-restoration": [
             {
               "id": "gizzard_gum",

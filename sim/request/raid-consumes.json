@@ -1090,6 +1090,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "off_hand_imbue:dense_sharpening_stone",
           "juju_power",
           "ground_scorpok_assay",
           "food_poached_sunscale_salmon",
@@ -1123,6 +1124,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "off_hand_imbue:dense_sharpening_stone",
           "elixir_of_the_mongoose",
           "juju_power",
           "ground_scorpok_assay",
@@ -1157,6 +1159,44 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "off_hand_imbue:dense_sharpening_stone",
+          "major_mana_potion",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "ground_scorpok_assay",
+          "food_poached_sunscale_salmon",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 50,
+        "buffs": [
+          "heart_of_the_lion",
+          "hunters_mark",
+          "arcane_brilliance",
+          "gift_of_the_wild",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "main_hand_imbue:elemental_sharpening_stone",
+          "off_hand_imbue:dense_sharpening_stone",
           "major_mana_potion",
           "elixir_of_the_mongoose",
           "juju_power",

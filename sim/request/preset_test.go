@@ -466,6 +466,9 @@ func TestEachConsumableSlotCarriesTheFirstUsableEntry(t *testing.T) {
 		{"shaman-restoration", 60, "cerebral_cortex_compound"},
 		{"priest-discipline", 60, "gizzard_gum"},
 		{"druid-feral-bear", 60, "r_o_i_d_s"},
+		// Survival is melee in Forever and stones both hands.
+		{"hunter-survival", 60, "main_hand_imbue:elemental_sharpening_stone"},
+		{"hunter-survival", 40, "off_hand_imbue:dense_sharpening_stone"},
 	} {
 		if got := ConsumesAtLevel(all[c.spec], c.level); !slices.Contains(got, c.food) {
 			t.Errorf("%s at %d eats no %s: %v", c.spec, c.level, c.food, got)
