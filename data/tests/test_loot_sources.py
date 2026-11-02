@@ -7,6 +7,7 @@ from pipeline.csvio import read_csv
 from pipeline.forkdb import ForkDatabase, load_fork_database
 from pipeline.loot.sources import (
     KIND_ORDER,
+    RepFactionSideError,
     SourceIdCollision,
     build_loot,
     instance_types,
@@ -244,66 +245,64 @@ def _wsg_fork(repFactionId: int, factionRestriction: int) -> ForkDatabase:
     )
 
 
-def test_wsg_rep_sources_are_corrected_to_match_the_items_own_faction_restriction():
-    """The fork's db.json mines every WSG rep-sourced item under the wrong
-    faction id (`_ATLASLOOT_WSG_REP_FACTION_SWAP`'s docstring has the
-    upstream defect and the evidence). An alliance_only item (restriction
-    1) mined under 890 (Warsong Outriders, Horde) is corrected to 889
-    (Silverwing Sentinels, Alliance); a horde_only item mined under 889 is
-    corrected to 890."""
-    document, _ = build_loot(
-        _wsg_fork(repFactionId=890, factionRestriction=1), {}, {}, {}, {1}, {}
-    )
+def test_wsg_rep_sources_keep_the_clients_ids_and_take_the_clients_names():
+    """Client Faction 889 is Warsong Outriders (parent 892, Horde Forces) and
+    890 is Silverwing Sentinels (parent 891, Alliance Forces). The fork's
+    db.json mines every Horde-only WSG reward under 889 and every
+    Alliance-only one under 890, which is right; only its factions table
+    names the two the other way round. So the id stays and the name is the
+    client's."""
+    document, _ = build_loot(_wsg_fork(repFactionId=889, factionRestriction=2), {}, {}, {}, {1}, {})
     rep = document.sources[0]
-    assert (rep.faction_id, rep.name) == (889, "Silverwing Sentinels")
-
-    document, _ = build_loot(
-        _wsg_fork(repFactionId=889, factionRestriction=2), {}, {}, {}, {1}, {}
+    assert (rep.id, rep.faction_id, rep.name) == (
+        "rep:warsong-outriders:honored",
+        889,
+        "Warsong Outriders",
     )
+
+    document, _ = build_loot(_wsg_fork(repFactionId=890, factionRestriction=1), {}, {}, {}, {1}, {})
     rep = document.sources[0]
-    assert (rep.faction_id, rep.name) == (890, "Warsong Outriders")
-
-
-def test_wsg_rep_source_correction_is_a_no_op_once_already_correct():
-    """Proves the fix does not blindly flip 889/890 -- an item already
-    mined under the faction id that matches its own restriction is left
-    alone, so a future upstream fix to the swap does not get re-broken by
-    this correction."""
-    document, _ = build_loot(
-        _wsg_fork(repFactionId=889, factionRestriction=1), {}, {}, {}, {1}, {}
+    assert (rep.id, rep.faction_id, rep.name) == (
+        "rep:silverwing-sentinels:honored",
+        890,
+        "Silverwing Sentinels",
     )
-    assert document.sources[0].faction_id == 889
-
-    document, _ = build_loot(
-        _wsg_fork(repFactionId=890, factionRestriction=2), {}, {}, {}, {1}, {}
-    )
-    assert document.sources[0].faction_id == 890
 
 
-def test_non_wsg_rep_sources_are_never_touched_by_the_correction():
-    """Arathi Basin/Alterac Valley ids (or anything else) are outside
-    `_ATLASLOOT_WSG_REP_FACTION_SWAP` and pass through untouched regardless
-    of factionRestriction."""
+def test_an_unrestricted_wsg_reward_is_named_by_the_clients_faction():
+    document, _ = build_loot(_wsg_fork(repFactionId=889, factionRestriction=0), {}, {}, {}, {1}, {})
+    assert (document.sources[0].faction_id, document.sources[0].name) == (889, "Warsong Outriders")
+
+
+def test_a_battleground_reward_mined_under_the_other_sides_faction_fails_loudly():
+    """An Alliance-only item under the Horde's Warsong Outriders 889 means the
+    upstream mining changed; the build stops rather than guess a side."""
+    with pytest.raises(RepFactionSideError, match="889"):
+        build_loot(_wsg_fork(repFactionId=889, factionRestriction=1), {}, {}, {}, {1}, {})
+
+
+def test_arathi_basin_rewards_keep_their_faction():
+    """The Defilers 510 is Horde; a Horde-only reward under it passes through."""
     fork = ForkDatabase(
         items=(
             {
                 "id": 1,
                 "factionRestriction": 2,
-                "sources": [{"rep": {"repFactionId": 509, "repLevel": 6}}],
+                "sources": [{"rep": {"repFactionId": 510, "repLevel": 6}}],
             },
         ),
         enchants=(),
         random_suffixes=(),
         zones={},
         npcs={},
-        factions={509: "The League of Arathor"},
+        factions={510: "The Defilers"},
         item_icons={},
         spell_icons={},
         spell_icon_rows=(),
         item_icon_rows=(),
     )
     document, _ = build_loot(fork, {}, {}, {}, {1}, {})
-    assert document.sources[0].faction_id == 509
+    assert document.sources[0].faction_id == 510
 
 
 def test_two_world_bosses_with_the_same_name_raise_instead_of_silently_colliding():
