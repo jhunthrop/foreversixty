@@ -151,6 +151,15 @@ WEAPON_DAMAGE_STAT_KEY = "bonus_physical_damage"
 #: haste into melee and spell haste; the planner has no key for either.
 EXPERTISE_STAT_KEY = "expertise"
 HASTE_STAT_KEY = "haste"
+#: A StatModifier_bonusStat id that raises a second planner stat by the same
+#: amount. 45 is ITEM_MOD_SPELL_POWER, which Forever's server applies to damage
+#: AND healing: Wowhead Forever adds it into the healing total wherever it sits
+#: beside 41 or 42 (Atiesh 22631: 45 = 120 and 41 = 180 read "healing 300,
+#: damage 120"; Earthen Silk Slippers 254013: 45 = 18 and 42 = 6 read "healing
+#: 18, damage 24"). The engine heals with the healing stat alone, so a 45 that
+#: gave spell power only gave 1,569 client rows no healing (sim audit round 8).
+MODIFIER_ALSO_GRANTS: dict[int, tuple[str, ...]] = {45: ("healing",)}
+
 PLANNER_EXCLUDED_STAT_KEYS = frozenset({WEAPON_DAMAGE_STAT_KEY, EXPERTISE_STAT_KEY, HASTE_STAT_KEY})
 
 #: StatModifier_bonusStat_<n> -> the planner's stat key, or None for a stat the
@@ -525,7 +534,8 @@ def _apply_stat(stats: dict[str, int], row: dict[str, str], index: int, amount: 
     key = STAT_BY_MODIFIER_ID[stat_id]
     if key is None or amount == 0:
         return
-    stats[key] = stats.get(key, 0) + amount
+    for granted in (key, *MODIFIER_ALSO_GRANTS.get(stat_id, ())):
+        stats[granted] = stats.get(granted, 0) + amount
 
 
 def _stats(row: dict[str, str]) -> dict[str, int]:
