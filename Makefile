@@ -268,10 +268,11 @@ artifacts: simdb
 #	The budget is ENFORCED here, not only printed: CI gated it while the
 #	Makefile reported it, so a local build could sail past the size the
 #	pipeline would refuse and nobody found out until the push.
-	@bytes=$$(gzip -9 -c $(ARTIFACT_DIR)/sim.wasm | wc -c | tr -d ' '); \
-	awk -v b="$$bytes" 'BEGIN { printf "sim.wasm gzipped: %.2f MB (budget %.2f, engine-only baseline 3.31)\n", b/1048576, $(WASM_BUDGET_MB) }'; \
-	awk -v b="$$bytes" 'BEGIN { exit (b <= $(WASM_BUDGET_MB)*1048576) ? 0 : 1 }' || { \
-	  echo "sim.wasm is over the $(WASM_BUDGET_MB) MB gzipped budget"; exit 1; }
+#	tools/wasm-gzip.sh writes the sim.wasm.gz publish-wasm deploys and gates
+#	the budget on that file, so the number is the visitor's download, not a
+#	second compression of the module. It needs pigz (on GitHub's ubuntu image;
+#	`brew install pigz` on a Mac).
+	@./tools/wasm-gzip.sh $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.wasm.gz $(WASM_BUDGET_MB)
 
 .PHONY: publish-wasm
 # publish-wasm puts the browser pair where the web loads them, under the
@@ -294,15 +295,15 @@ publish-wasm: artifacts
 #	(web/src/lib/sim/wasm-fetch.ts): the raw module read 24.7 MB on the
 #	2026-11-01 deploy, 94% of Cloudflare's 25 MiB per-file static-asset
 #	limit, and one file over it refuses the whole deploy. The gzip is the
-#	file WASM_BUDGET_MB above measures, so that budget gates the deployed
-#	bytes; -n keeps the gzip header free of a name and timestamp.
+#	file `artifacts` wrote and measured against WASM_BUDGET_MB, copied as is,
+#	so that budget gates the deployed bytes.
 	@sha=$$(./$(ARTIFACT_DIR)/forever-sim -version); \
 	test -n "$$sha" || { echo "forever-sim -version printed nothing"; exit 1; }; \
 	digest=$$( (sha256sum $(ARTIFACT_DIR)/sim.wasm 2>/dev/null || shasum -a 256 $(ARTIFACT_DIR)/sim.wasm) | cut -c1-12 ); \
 	test -n "$$digest" || { echo "could not hash $(ARTIFACT_DIR)/sim.wasm"; exit 1; }; \
 	id="$$sha-$$digest"; \
 	mkdir -p "$(WEB_SIM_DIR)/$$id"; \
-	gzip -9 -n -c $(ARTIFACT_DIR)/sim.wasm > "$(WEB_SIM_DIR)/$$id/sim.wasm.gz"; \
+	cp $(ARTIFACT_DIR)/sim.wasm.gz "$(WEB_SIM_DIR)/$$id/sim.wasm.gz"; \
 	cp $(ARTIFACT_DIR)/sim.js "$(WEB_SIM_DIR)/$$id/"; \
 	printf '%s\n' "$$id" > $(ARTIFACT_DIR)/ARTIFACT_ID; \
 	echo "published to $(WEB_SIM_DIR)/$$id"

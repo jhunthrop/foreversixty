@@ -36,6 +36,7 @@ on:
       - sim/**
       - data/builds/**
       - Makefile
+      - tools/wasm-gzip.sh
       - .github/actions/pin-engine/**
       - .github/workflows/web.yml
   pull_request:
@@ -44,6 +45,7 @@ on:
       - sim/**
       - data/builds/**
       - Makefile
+      - tools/wasm-gzip.sh
       - .github/actions/pin-engine/**
       - .github/workflows/web.yml
   workflow_dispatch:
@@ -226,7 +228,7 @@ jobs:
           if [ "$EVENT" != pull_request ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
           git fetch -q --depth=1 origin "$BASE"
           changed=$(git diff --name-only "$BASE" HEAD)
-          if printf '%s\n' "$changed" | grep -qE '^(sim/|logs/|Makefile$|data/builds/[^/]+/(simdb\.bin|enchants\.json|spellranks\.json)$|web/src/data/active-build\.json$|web/src/lib/sim/|web/tests/e2e/(sim-[a-z-]*real-engine\.spec\.ts|support/real-engine\.ts)$|web/playwright\.config\.ts$|web/package(-lock)?\.json$|\.github/actions/pin-engine/|\.github/workflows/web\.yml$)'; then
+          if printf '%s\n' "$changed" | grep -qE '^(sim/|logs/|Makefile$|tools/wasm-gzip\.sh$|data/builds/[^/]+/(simdb\.bin|enchants\.json|spellranks\.json)$|web/src/data/active-build\.json$|web/src/lib/sim/|web/tests/e2e/(sim-[a-z-]*real-engine\.spec\.ts|support/real-engine\.ts)$|web/playwright\.config\.ts$|web/package(-lock)?\.json$|\.github/actions/pin-engine/|\.github/workflows/web\.yml$)'; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
@@ -241,8 +243,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # The wasm's inputs, exactly: the engine pin, the sim/ and logs/ trees (sim/go.mod's
-      # `go` line picks the toolchain, so it is in the sim tree), the Makefile, and the
-      # active build's three embedded files. git's own tree and blob ids, so the key moves
+      # `go` line picks the toolchain, so it is in the sim tree), the Makefile and
+      # tools/wasm-gzip.sh (which writes the cached sim.wasm.gz), and the active build's
+      # three embedded files. git's own tree and blob ids, so the key moves
       # only when a byte that is compiled in does.
       - name: the wasm's cache key
         id: wasm-key
@@ -252,7 +255,7 @@ jobs:
           test -n "$pin" || { echo "sim/enginever/version.go has no Version"; exit 1; }
           build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)
           test -n "$build" || { echo "web/src/data/active-build.json has no build"; exit 1; }
-          inputs=$(git rev-parse HEAD:sim HEAD:logs HEAD:Makefile \
+          inputs=$(git rev-parse HEAD:sim HEAD:logs HEAD:Makefile HEAD:tools/wasm-gzip.sh \
             "HEAD:data/builds/$build/simdb.bin" "HEAD:data/builds/$build/enchants.json" "HEAD:data/builds/$build/spellranks.json")
           echo "key=sim-wasm-v1-$pin-$(printf '%s\n' "$inputs" | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
       - id: wasm-cache
@@ -435,10 +438,9 @@ jobs:
       - name: the active build's item database
         working-directory: .
         run: make simdb
-      - name: build sim.wasm, sim.js and forever-sim
-        working-directory: .
-        run: make artifacts
-      - name: publish the browser pair under web/public/_sim/<engine sha>-<wasm hash>/
+      # publish-wasm runs `make artifacts` itself (the build, sim.js, forever-sim and the
+      # budget-gated sim.wasm.gz), so a separate `make artifacts` step only did it twice.
+      - name: build and publish the browser pair under web/public/_sim/<engine sha>-<wasm hash>/
         working-directory: .
         run: |
           make publish-wasm
