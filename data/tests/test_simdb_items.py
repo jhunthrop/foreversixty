@@ -375,3 +375,25 @@ def test_only_a_wand_carries_a_damage_school():
     items = build_sim_items(rows, {}, {}, curves(), weapon_curves(), RATING_FACTORS, {})
     axe = next(item for item in items if item.id == 12798)
     assert axe.damage_school == pb.SpellSchool.Value("SpellSchoolPhysical")
+
+
+def test_a_held_in_off_hand_item_is_an_off_hand_not_a_main_hand():
+    """A held-in-off-hand item (Item.ClassID 4, SubclassID 0, InventoryType 23:
+    Master Dragonslayer's Orb, every tome and orb) left simdb with no weapon or
+    hand type. The engine's Equipment.EquipItem files a weapon-typed item with
+    HandTypeUnknown under the main hand, so equipping one replaced the
+    character's main-hand weapon (sim audit round 7: an Elemental shaman with
+    Hand of Edward the Odd and the Orb simmed 7% lower than with no off hand)."""
+    sparse, item = next(pair for pair in pairs() if pair[0]["ID"] == "30005")
+    held = build_sim_items(
+        [({**sparse, "InventoryType": "23"}, {**item, "ClassID": "4", "SubclassID": "0"})],
+        {},
+        {},
+        curves(),
+        weapon_curves(),
+        RATING_FACTORS,
+        {},
+    )[0]
+    assert held.type == pb.ItemType.Value("ItemTypeWeapon")
+    assert held.weapon_type == pb.WeaponType.Value("WeaponTypeOffHand")
+    assert held.hand_type == pb.HandType.Value("HandTypeOffHand")

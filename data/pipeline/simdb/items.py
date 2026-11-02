@@ -89,7 +89,11 @@ ITEM_TYPE_BY_INVENTORY_TYPE: dict[int, str] = {
     28: "ItemTypeRanged",
 }
 
-#: InventoryType -> HandType, for weapons only.
+#: InventoryType 23, "Held In Off-hand" (orbs, tomes, rods): an armour row
+#: (ClassID 4, SubclassID 0) that the engine equips as an off-hand weapon.
+INVENTORY_TYPE_HOLDABLE = 23
+
+#: InventoryType -> HandType, for weapons and held-in-off-hand items.
 HAND_TYPE_BY_INVENTORY_TYPE: dict[int, str] = {
     13: "HandTypeOneHand",
     14: "HandTypeOffHand",
@@ -237,6 +241,12 @@ def _apply_class_subclass(item: pb.SimItem, class_id: int, subclass: int, invent
             item.armor_type = pb.ArmorType.Value(ARMOR_TYPE_BY_SUBCLASS[subclass])
         elif subclass == ARMOR_SUBCLASS_SHIELD:
             item.weapon_type = pb.WeaponType.Value("WeaponTypeShield")
+        elif inventory == INVENTORY_TYPE_HOLDABLE:
+            # A held-in-off-hand item is the engine's off-hand frill: with no
+            # weapon or hand type, Equipment.EquipItem files it under the main
+            # hand and the character loses its main-hand weapon.
+            item.weapon_type = pb.WeaponType.Value("WeaponTypeOffHand")
+            item.hand_type = pb.HandType.Value(HAND_TYPE_BY_INVENTORY_TYPE[inventory])
     if class_id == ITEM_CLASS_WEAPON:
         if subclass in WEAPON_TYPE_BY_SUBCLASS:
             item.weapon_type = pb.WeaponType.Value(WEAPON_TYPE_BY_SUBCLASS[subclass])
