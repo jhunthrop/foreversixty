@@ -54,6 +54,7 @@ The short version:
 | # | finding | evidence and source | confirmed? | origin | fix sha |
 |---|---|---|---|---|---|
 | P1 | **Sub-20 coefficient (C1).** It reaches:<br>- Heal rank 1 (level 16): band 20's cast for both specs, and Discipline's authored downrank in its list, cast at raid 60 (rank-choices.json lifts it to rank 4 at bare 60).<br>- Renew ranks 1 and 2.<br>- Lesser Heal; Divine Grace's level-10 rank.<br>Discipline at raid 60 gains from it (see Before/after). Power Word: Shield never took the penalty: its absorb reads the rank's coefficient directly. | C1; conformance priest.golden.md | CONFIRMED-BUG | old | E 074edfadf |
+| P1b | **Discipline's party filler is now Lesser Heal rank 3 (2053, level 10), in place of Heal rank 1 (2054).** This follows from C1: rank 3 now keeps its whole 0.714 coefficient (0.446 before) at 75 mana, against Heal rank 1's 0.857 at 155, and the list runs dry. The ranks lane measured it on this branch and asked for it; I confirmed it. With every Heal rank 1 line swapped (10,000 iterations, seeds 1 / 50001):<br>- raid 60: alliance +1.88 / +1.84%, horde +2.06 / +2.09%<br>- bare 60: alliance +8.80 / +8.81%, horde +7.79 / +7.84%<br>- bands 20 to 50 (horde): +2.4% at 20, 0.0% at 30, 40 and 50<br>That passes the adoption rule (beyond 1% at both seeds and factions, no band loses). The bare-60 Heal rank-choice row (rank 4) names a spell the list no longer casts, so it is dropped, with the ranks lane's leave; their other rows are untouched. The list's notes and the guide line follow. | Tests first: `TestDisciplineFillsWithLesserHealRankThree` (new) and `TestHealerListsCastTheTopTrainerRankUnlessChosen` (2053 chosen in place of 2054) failed on the old list. The fork's `TestWrittenRotationsHealTheFakeRaid` now expects 2053. | CONFIRMED (rotation follows C1) | R11 healers 074edfadf | S (this commit, see the fork note), E 19f7fad6b |
 | P2 | **Penance is three pulses one second apart, the first on the cast.** The channel spells (402277, 1240732, 1240733, 1316992) last 2 s with a 1 s period and carry Attributes_5 0x200 (a tick on application). In the logs, 34 of 40 volleys from a level-30 Discipline priest (Altu, report 2747) are 3 pulses 1.0 s apart; the rest are cut short. This matches `penance.go` (an instant pulse plus 2 ticks). | SpellMisc rows; `logtools/penance.py` | Aligned (logs + client) | - | - |
 | P3 | **Renew lasts 15 s for 5 ticks** (rank 2, 23 clean applications). | `logtools/hotdur.py` | Aligned (logs) | - | - |
 | P4 | **Spirit of Redemption has no passive in Forever.** 20711 is a single dummy effect, and the server text is the death form only. The engine gives it nothing. | client row; https://nether.wowhead.com/forever/tooltip/spell/20711 (read 2026-11-02) | Aligned (FOREVER-CHANGE from Era's +5% Spirit) | - | - |
@@ -95,23 +96,24 @@ Before: `$R/sb-before` (origin/main 8f047a62f on cfcb76e80). After: lane/r11-hea
 | Holy priest | raid 60 | +0.0% | +0.0% | +0.0% | +0.0% | 693.8 → 693.8 |
 | Holy priest | bare 20 | - | - | +0.3% | +0.6% | 32.8 → 32.9 |
 | Holy priest | bare 30 / 40 / 50 / 60 | - | - | 0.0% | 0.0% | unchanged |
-| Discipline priest | raid 60 | +1.8% | +1.8% | +1.8% | +1.8% | 625.3 → 636.6 |
-| Discipline priest | bare 20 | - | - | +0.3% | +0.3% | 28.7 → 28.8 |
+| Discipline priest | raid 60 | +3.7% | +3.7% | +3.9% | +3.9% | 625.3 → 649.7 |
+| Discipline priest | bare 20 | - | - | about +2.7% | about +2.7% | 28.7 → 29.5 |
 | Discipline priest | bare 50 | - | - | +0.1% | +0.1% | 192.8 → 192.9 |
-| Discipline priest | bare 30 / 40 / 60 | - | - | 0.0% | 0.0% | unchanged |
+| Discipline priest | bare 30 / 40 | - | - | 0.0% | 0.0% | unchanged |
+| Discipline priest | bare 60 | - | - | +7.8% | +7.8% | 295.1 → 318.1 (alliance +8.8%) |
 | Holy paladin | every case | 0.0% | 0.0% | 0.0% | 0.0% | 641.4 raid, unchanged |
 
 Where it comes from: every move is C1. The Mender's potion is carried by no preset, and C3 moves no published number.
 - **Restoration shaman bare 60 +9.2%:** its curated rank choice there is Healing Wave rank 3 (547, level 12), its main heal (94 casts a fight), which kept only 0.70 of its coefficient.
-- **Discipline raid 60 +1.8%:** its list's authored Heal rank 1 (level 16).
+- **Discipline raid 60 +3.9%:** +1.8% from C1 on its authored Heal rank 1 (level 16), then about +2.1% from P1b's Lesser Heal rank 3. Its bare 60 (+7.8 to +8.8%) is P1b alone. Discipline's bare 20 and bare 60 rows were measured after P1b; the rest of the table predates it, and P1b changes no other spec.
 - **Bands 20 to 50 move little:** today's easy band fights cap the healers (the healprofile lane's multiplier changes that).
 - **Holy paladin:** casts no rank below 20.
 
-A follow-on, not adopted: with C1, Discipline's Heal rank 1 lines cast as Lesser Heal rank 3 measure +2.0% at raid 60 (horde, 3,000 iterations, 636.4 → 649.4 at seed 1, 636.9 → 650.3 at 50001). It needs the adoption rule's 10,000-iteration, both-faction check (Still open).
+
 
 ## For other lanes
 
-- **Ranks lane and healprofile lane (rank choices).** C1 makes every heal rank learned below 20 worth more per mana. Re-measure the sub-60 healer rows of rank-choices.json on the merged ladder (healprofile), and Discipline's authored Heal rank 1 at raid 60 (ranks). Lesser Heal rank 3 (level 10) gains the most: its coefficient goes from 0.446 to 0.714, so it may now beat Heal rank 1 as Discipline's mana-bound filler at 60. That is a rotation question under the adoption rule, not measured here. Round 9's downrank candidates assumed the penalty: Holy Light 639, Healing Wave 547, Heal 2054, Renew 139.
+- **Ranks lane and healprofile lane (rank choices).** C1 makes every heal rank learned below 20 worth more per mana. Re-measure the sub-60 healer rows of rank-choices.json on the merged ladder (healprofile), and Discipline's authored Heal rank 1 at raid 60 (ranks). Discipline's Heal rank 1 is now Lesser Heal rank 3 (P1b), and its bare-60 Heal row is dropped. Round 9's downrank candidates assumed the penalty: Holy Light 639, Healing Wave 547, Heal 2054, Renew 139.
 - **Casters, warlock and hybrids lanes (damage ranks).** Damage spells keep the sub-20 penalty. The only logged pair, a mage's Arcane Explosion ranks 2 and 3 (report 2706), leans the same way as the heals: M 0.96 without the penalty, 0.68 with it. A caster casting two ranks of Frostbolt, Shadow Bolt, Smite or Shadow Word: Pain across level 20 settles it (`logtools/pendmg.py` takes damage timelines).
 - **Auras lane.** C2 and C3 touch `sim/core/consumes.go` (burstPotions, makeBurstPotionMCD) and add Potions 27 and 28 in `proto/common.proto`. A potion change of yours this round will conflict there; the numbers need renumbering if you also took 27.
 - **Crit lane.** Bloom's heal (1328622) has DefenseType 0, like Lightwell Renew, and the engine lets it crit (D3).
@@ -126,7 +128,6 @@ None deselected. `go test ./request/` fails only TestRotationLadder (the integra
 
 ## Still open
 
-- Discipline's Lesser Heal rank 3 filler (+2.0% at 3,000 iterations after C1; not yet run through the adoption rule).
 
 - Damage spells' sub-20 penalty (casters lanes, above).
 - Bloom's crit (D3); Lightwell Renew's crit, Renewed Hope per pulse, Sudden Insight per target, Litany across ranks (round 10 P3 to P6).

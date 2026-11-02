@@ -18,7 +18,7 @@ func TestHealerListsCastTheTopTrainerRankUnlessChosen(t *testing.T) {
 	const build = "../../data/builds/1.60.1.70707/spellranks.json"
 	chosen := map[string]map[int]bool{ // spec -> spell id the rank rule picked
 		"priest-holy":        {6075: true, 9472: true},
-		"priest-discipline":  {6075: true, 3747: true, 2054: true},
+		"priest-discipline":  {6075: true, 3747: true, 2053: true},
 		"paladin-holy":       {19941: true, 1311606: true, 19750: true},
 		"druid-restoration":  {2090: true},
 		"shaman-restoration": {},
@@ -119,6 +119,39 @@ func TestHealerListNotesNameTheRankTheyCast(t *testing.T) {
 					}
 				}
 			}
+		}
+	}
+}
+
+// Discipline's party filler is Lesser Heal rank 3 (2053, level 10), not
+// Heal rank 1 (2054). Once heals learned below 20 kept their whole
+// coefficient (engine 074edfadf, sim-accuracy round 11), rank 3's 0.714 at
+// 75 mana out-healed Heal rank 1's 0.857 at 155 for a list that runs dry:
+// +1.8 to +2.1% at raid 60 and +7.8 to +8.8% at bare 60, both factions,
+// seeds 1 and 50001, 10,000 iterations. No list line names Heal rank 1, and
+// so no rank-choice row may either.
+func TestDisciplineFillsWithLesserHealRankThree(t *testing.T) {
+	raw, err := os.ReadFile("../../data/curated/apl/priest-discipline.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(raw), `"spellId": 2054`) {
+		t.Error("the Discipline list still casts Heal rank 1 (2054)")
+	}
+	if !strings.Contains(string(raw), `"spellId": 2053`) {
+		t.Error("the Discipline list does not cast Lesser Heal rank 3 (2053)")
+	}
+	choices, err := os.ReadFile("../../data/curated/rank-choices.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var file rankChoicesFile
+	if err := json.Unmarshal(choices, &file); err != nil {
+		t.Fatal(err)
+	}
+	for _, sp := range file.Specs["priest-discipline"] {
+		if sp.Authored == 2054 {
+			t.Error("rank-choices.json still has a Discipline row for Heal rank 1 (2054)")
 		}
 	}
 }
