@@ -58,10 +58,20 @@ func LoadItemLevelsFile(path string) (ItemLevels, error) {
 	return levels, nil
 }
 
+// consumeItemNames names the client item for an engine value whose name is not the item's:
+// the engine's Food_FoodSmokedDesertDumpling is the client's "Smoked Desert Dumplings".
+var consumeItemNames = map[string]string{
+	"food_smoked_desert_dumpling": "Smoked Desert Dumplings",
+}
+
 // RequiredLevel is the level the consumable id's item needs, and whether the id names an
 // item at all.
 func (l ItemLevels) RequiredLevel(id string) (int, bool) {
 	_, value := splitConsumeID(id)
+	if name, ok := consumeItemNames[value]; ok {
+		item, found := l[compactName(name)]
+		return item.level, found
+	}
 	tokens := strings.Split(value, "_")
 	for start := range tokens {
 		if item, ok := l[compactName(strings.Join(tokens[start:], " "))]; ok {
