@@ -128,9 +128,8 @@ export type BuffPresetId = (typeof BUFF_PRESETS)[number]['id'];
 // (data/curated/presets.json), synced into src/data/generated/raid-preset.json by
 // scripts/sync-raid-preset.mjs. The BiS ranker, the tier list and every sim tool run their
 // level-60 numbers under that same preset, so the page sims a character with the buffs and
-// debuffs the published number was simmed with. The engine applies the faction-gated ones
-// (Blessing of Might and Wisdom for the Alliance; Strength of Earth and Mana Spring Totem
-// for the Horde) to the side that can receive them, so one list serves both factions.
+// debuffs the published number was simmed with. Forever has paladins and shamans on both
+// sides, and the engine gates no blessing or totem by faction, so one list serves both.
 // Every id is checked against IDS.md (settings.test.ts), and the curated file's own loader
 // (sim/request/preset.go) refuses an id the engine cannot map.
 export const RAID_BUFFS: readonly string[] = [...raidPreset.buffs, ...raidPreset.debuffs];

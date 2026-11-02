@@ -131,7 +131,9 @@ describe('guide content structure', () => {
     const survival = specGuides.find((g) => g.id === 'hunter/survival');
     const raid = splitOverview(splitSpecSections(survival?.body ?? '').get('Overview') ?? '').raid;
     expect(raid).toContain('Strength of Earth Totem');
+    expect(raid).toContain('Curse of Recklessness');
     expect(raid).toContain('not the build');
+    expect(raid).not.toContain('Horde');
     expect(raid).not.toMatch(/\d/);
   });
 
