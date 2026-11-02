@@ -843,6 +843,10 @@ var factionExclusiveDungeons = map[string]string{
 var repSide = map[int]string{
 	890: "horde", 510: "horde", 729: "horde",
 	889: "alliance", 509: "alliance", 730: "alliance",
+	// Darkspear Islands (round 9): Darkspear Raiders and Theramore
+	// Expeditionary Force, under Horde Forces 892 and Alliance Forces 891
+	// in the client's Faction table.
+	2798: "horde", 2799: "alliance",
 }
 
 // questFactionSide maps loot.json's `quests[item][].faction` ("alliance",
@@ -1064,7 +1068,51 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		}
 		questFloors[id] = leveling.LowestFloor(levels)
 	}
-	return vendorInheritsPvpRankGate(vendorInheritsRepStandingGate(idx)), questFloors, nil
+	return vendorInheritsPvpRankGate(vendorInheritsStockSide(vendorInheritsRepStandingGate(idx))), questFloors, nil
+}
+
+// vendorInheritsStockSide returns a copy of idx where a vendor with no side
+// takes the one side its rep-sourced stock names. loot.json names no
+// faction for several battleground quartermasters (Illiyana Moonblaze and
+// Samuel Hawke among them), and their stock with no rep source of its own
+// (Illiyana's level-25 Lorekeeper's Staff 212580, round 9) would otherwise
+// reach both sides. A vendor whose rep stock names both sides, or none,
+// is left alone.
+func vendorInheritsStockSide(idx lootIndex) lootIndex {
+	sides := map[int]map[string]bool{}
+	for _, srcs := range idx {
+		repSideOfItem := ""
+		for _, s := range srcs {
+			if s.Kind == "rep" && s.Side != "" {
+				repSideOfItem = s.Side
+			}
+		}
+		if repSideOfItem == "" {
+			continue
+		}
+		for _, s := range srcs {
+			if s.Kind == "vendor" && s.NpcID != 0 {
+				if sides[s.NpcID] == nil {
+					sides[s.NpcID] = map[string]bool{}
+				}
+				sides[s.NpcID][repSideOfItem] = true
+			}
+		}
+	}
+	out := make(lootIndex, len(idx))
+	for id, srcs := range idx {
+		gated := make([]itemSource, len(srcs))
+		for i, s := range srcs {
+			if s.Kind == "vendor" && s.Side == "" && len(sides[s.NpcID]) == 1 {
+				for side := range sides[s.NpcID] {
+					s.Side = side
+				}
+			}
+			gated[i] = s
+		}
+		out[id] = gated
+	}
+	return out
 }
 
 // vendorInheritsPvpRankGate returns a copy of idx where a "vendor"

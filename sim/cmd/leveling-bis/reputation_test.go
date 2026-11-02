@@ -76,3 +76,30 @@ func TestTheClassFileCarriesTheItemsReputation(t *testing.T) {
 		t.Fatalf("candidates = %+v, want the reputation carried", got)
 	}
 }
+
+// Round 9: loot.json names no faction for Illiyana Moonblaze, the
+// Silverwing Sentinels quartermaster, and seven of her 75 items have no rep
+// source (the level-25 Season of Discovery WSG stock, Lorekeeper's Staff
+// 212580 among them). With the gate open, a Horde band-30 list offered the
+// Alliance quartermaster's staff. A vendor with no side takes the one side
+// its rep-sourced stock names.
+func TestAQuartermasterTakesTheSideOfItsRepStock(t *testing.T) {
+	idx := lootIndex{
+		19570:  {{Kind: "rep", Side: "alliance", Standing: "revered", FactionID: 889}, {Kind: "vendor", NpcID: 14753, Label: "Illiyana Moonblaze"}},
+		212580: {{Kind: "vendor", NpcID: 14753, Label: "Illiyana Moonblaze"}},
+		212584: {{Kind: "vendor", NpcID: 14754, Side: "horde", Label: "Kelm Hargunth"}},
+		5000:   {{Kind: "vendor", NpcID: 777, Label: "A neutral vendor"}},
+	}
+	got := vendorInheritsStockSide(idx)
+	for item, want := range map[int]string{212580: "alliance", 212584: "horde", 5000: ""} {
+		if side := got[item][len(got[item])-1].Side; side != want {
+			t.Errorf("item %d vendor side = %q, want %q", item, side, want)
+		}
+	}
+	if _, ok := sourceFor(212580, 30, "horde", "", got); ok {
+		t.Error("the Alliance quartermaster's staff is obtainable for the Horde")
+	}
+	if idx[212580][0].Side != "" {
+		t.Error("vendorInheritsStockSide changed the index it was given")
+	}
+}
