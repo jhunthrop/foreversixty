@@ -298,19 +298,20 @@ func restrictRangedByProficiency(list []scored, classSlug string) []scored {
 // staff, 13 fist, 15 dagger, 16 thrown, 18 crossbow, 19 wand), plus
 // Forever's own two documented deviations from it (.claude/agents/
 // wow-player.md's own facts list: "shamans train one- and two-handed
-// axes and maces, rogues train maces" - nothing else, paladin and
-// druid included, which data-followups-5's own brief independently
-// confirms is the exact regression: paladin.json/druid.json wrongly
-// carry axes/polearm today). Warrior and hunter are unchanged from
+// axes and maces, rogues train maces"). The client's class masks also
+// carry a druid polearm and a rogue axe that no Classic trainer teaches;
+// both stay out. Warrior and hunter are unchanged from
 // proficiency.py's own table (already correct there); priest/mage/
 // warlock are unchanged too.
 var classWeaponSubclasses = map[string]map[int]bool{
 	// Everything melee/ranged except wand - unchanged from proficiency.py.
 	"warrior": {0: true, 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 10: true, 13: true, 15: true, 16: true, 18: true},
-	// Classic 1.x: mace 1H/2H, polearm, sword 1H/2H - NOT axes. proficiency.py
-	// wrongly grants one-hand (0) and two-hand (1) axe; the fix is their
-	// absence here.
-	"paladin": {4: true, 5: true, 6: true, 7: true, 8: true},
+	// Classic 1.x: axe 1H/2H, mace 1H/2H, polearm, sword 1H/2H. Round 8: the
+	// axes are real - SkillLineAbility spells 196 and 197 carry the paladin
+	// bit, Ironforge's weapon master Buliwyf Stonehand teaches both to
+	// paladins, and Arcanite Reaper (a two-hand axe) heads Classic's
+	// Retribution pre-raid lists.
+	"paladin": {0: true, 1: true, 4: true, 5: true, 6: true, 7: true, 8: true},
 	// Unchanged from proficiency.py: axes, bow/gun/crossbow/thrown, sword
 	// 1H/2H, polearm, staff, fist, dagger - no maces.
 	"hunter": {0: true, 1: true, 2: true, 3: true, 6: true, 7: true, 8: true, 10: true, 13: true, 15: true, 16: true, 18: true},
@@ -386,9 +387,8 @@ func loadWeaponSubclasses(buildDir, classSlug string) (map[int]bool, string, err
 
 // restrictToProficientWeapons returns a copy of list (a bySlot pool -
 // main_hand/off_hand/ranged) with every weapon-class candidate whose
-// SubclassID is not in allowed dropped - this lane's brief, item 3: "a
-// paladin never receives an axe even if a data regression puts one in
-// paladin.json." A non-weapon candidate (a relic, or any ClassID other
+// SubclassID is not in allowed dropped: a druid never receives a polearm
+// even if a data regression puts one in druid.json. A non-weapon candidate (a relic, or any ClassID other
 // than itemClassWeapon) passes through unchanged, the same exemption
 // restrictRangedByProficiency (above) already gives one, for the same
 // reason: this gate is only about weapon legality.

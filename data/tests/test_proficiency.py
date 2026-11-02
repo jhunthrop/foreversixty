@@ -75,9 +75,11 @@ def test_non_equipment_item_classes_are_never_equippable():
 # --- Contract tests from the 2026-09-30 wow-player sweep (day3 data-followups-5) ---
 
 
-def test_paladin_has_no_axe():
-    assert not can_equip(2, WEAPON, 0)  # one-hand axe
-    assert not can_equip(2, WEAPON, 1)  # two-hand axe
+def test_paladin_has_one_and_two_hand_axes():
+    # Round 8: SkillLineAbility spells 196/197 carry the paladin bit and
+    # Classic's Ironforge weapon master teaches both axes to paladins.
+    assert can_equip(2, WEAPON, 0)  # one-hand axe
+    assert can_equip(2, WEAPON, 1)  # two-hand axe
 
 
 def test_druid_has_no_polearm():
@@ -134,8 +136,8 @@ def _minimal_client_tables(tmp_path, *, class_mask_overrides=None):
     fixture matches `WEAPON_SUBCLASSES` exactly unless a test overrides one
     skill line's mask."""
     masks = {
-        44: 1 + 4 + 8 + 64,  # Axes: warrior, hunter, rogue, shaman
-        172: 1 + 4 + 64,  # Two-Handed Axes: warrior, hunter, shaman
+        44: 1 + 2 + 4 + 8 + 64,  # Axes: warrior, paladin, hunter, rogue, shaman (70707: spell 196 mask 79)
+        172: 1 + 2 + 4 + 64,  # Two-Handed Axes: warrior, paladin, hunter, shaman (70707: spell 197 mask 71)
         45: 1 + 4 + 8,  # Bows
         46: 1 + 4 + 8,  # Guns
         54: 1 + 2 + 8 + 16 + 64 + 1024,  # Maces: + paladin, rogue, priest, shaman, druid
@@ -181,12 +183,12 @@ def test_configure_still_excludes_the_vestigial_bits_even_if_the_client_carries_
     raw = _minimal_client_tables(
         tmp_path,
         class_mask_overrides={
-            44: 1 + 2 + 4 + 8 + 64,  # Axes: client carries paladin (2) and rogue-axe again
+            44: 1 + 2 + 4 + 8 + 64,  # Axes: client carries rogue-axe (8) again
             229: 1 + 2 + 4 + 1024,  # Polearms: client carries druid (1024) again
         },
     )
     proficiency.configure(raw)
-    assert not can_equip(2, WEAPON, 0)  # paladin, one-hand axe
+    assert can_equip(2, WEAPON, 0)  # paladin, one-hand axe: real, not vestigial
     assert not can_equip(4, WEAPON, 0)  # rogue, one-hand axe
     assert not can_equip(11, WEAPON, 6)  # druid, polearm
 
@@ -196,7 +198,7 @@ def test_configure_falls_back_when_the_client_tables_are_absent(tmp_path):
     raw.mkdir()
     source = proficiency.configure(raw)
     assert source == "fallback:hardcoded WEAPON_SUBCLASSES"
-    assert not can_equip(2, WEAPON, 0)
+    assert can_equip(2, WEAPON, 0)
 
 
 def test_configure_falls_back_when_a_weapon_skill_line_is_renumbered(tmp_path):

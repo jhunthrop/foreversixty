@@ -248,6 +248,12 @@ func reconcileTrinketDirection(runner engineRunner, spec specInfo, classSlug str
 		return targetPicks
 	}
 
+	// One trinket cannot fill both slots (pick's excludePaired): an item the
+	// target already wears in the other trinket slot is never adopted here
+	// (round 8: Discipline band 60 published Ankh of Life twice).
+	if wouldDuplicatePairMate(targetPicks, slot, srcItem.ID, srcItem.Name) {
+		return targetPicks
+	}
 	targetPick := targetPicks[slot]
 	targetTrustworthy := trinketVerdictTrustworthy(targetPick.Item)
 	if targetTrustworthy && targetPick.Item.ID == srcItem.ID {

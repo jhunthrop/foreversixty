@@ -566,6 +566,11 @@ type lootSource struct {
 	FactionID  int    `json:"faction_id"`
 	Standing   string `json:"standing"`
 	Rank       int    `json:"rank"`
+	// TitleRank is the Era honor rank an unranked Forever PvP reward's
+	// title once implied (round 8: the pipeline relabels those as "PvP
+	// reward" and keeps the old rank here). The ranker's rank cap still
+	// reads it until the owner rules on Forever's PvP gear.
+	TitleRank int `json:"title_rank"`
 	// Faction is "alliance" or "horde" for a "pvp" kind source
 	// (pipeline.loot.pvp_faction's own doc, pvp-faction lane 2026-09-29:
 	// loot.json's own pvp:rank-N sources split into pvp:rank-N:alliance/
@@ -701,6 +706,9 @@ type itemSource struct {
 	// (pvp:rank-5 .. pvp:rank-18) already carry this; nothing upstream
 	// read it before this lane.
 	Rank int
+	// TitleRank is lootSource.TitleRank: the rank pvpRankExceedsCap gates
+	// an unranked pvp source on (its label still names no rank).
+	TitleRank int
 	// Title is lootSource.Title, carried through unchanged, for a Kind
 	// == "pvp" source only - fourth wow-player sweep, item 2:
 	// pvpSourceLabel (band.go) reads Rank/Title/Side together to format
@@ -947,6 +955,7 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 			}
 			if src.Kind == "pvp" {
 				is.Rank = src.Rank
+				is.TitleRank = src.TitleRank
 				is.Title = src.Title
 				// pvp-faction lane, 2026-09-29: loot.json's own
 				// pvp:rank-N:alliance/pvp:rank-N:horde sources each
@@ -1109,7 +1118,7 @@ func vendorInheritsPvpRankGate(idx lootIndex) lootIndex {
 			}
 			match, ok := pvpSourceForVendor(s, pvpSrcs)
 			if ok {
-				s.Rank, s.Side, s.Title = match.Rank, match.Side, match.Title
+				s.Rank, s.TitleRank, s.Side, s.Title = match.Rank, match.TitleRank, match.Side, match.Title
 				s.Label = pvpSourceLabel(s.Rank, s.Title, s.Side)
 			}
 			gated[i] = s

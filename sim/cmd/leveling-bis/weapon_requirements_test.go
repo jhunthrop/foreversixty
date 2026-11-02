@@ -267,31 +267,31 @@ func TestRestrictRangedByProficiencyExcludesWeaponClassForRelicOnlyClasses(t *te
 
 // TestRestrictToProficientWeaponsDropsIllegalSubclassOnly is this
 // lane's brief (bis-ranker-integrity-10), item 3's own repro: a
-// paladin's allow-list (classWeaponSubclasses["paladin"]) carries no
-// axe subclass (0 one-hand, 1 two-hand) - Nightfall 19169, the exact
-// item data-followups-5's own brief names, is a 2H axe and must be
-// dropped; a legal mace (subclass 4) and a non-weapon candidate (a
-// relic, which this gate never touches) both pass through.
+// druid's allow-list (classWeaponSubclasses["druid"]) carries no polearm
+// (subclass 6): a polearm must be dropped, while a legal mace (subclass
+// 4) and a non-weapon candidate (an idol, which this gate never touches)
+// both pass through.
 func TestRestrictToProficientWeaponsDropsIllegalSubclassOnly(t *testing.T) {
-	axe := scored{candidate: candidate{ID: 19169, Name: "Nightfall", ClassID: itemClassWeapon, SubclassID: 1}}
+	polearm := scored{candidate: candidate{ID: 15810, Name: "A Polearm", ClassID: itemClassWeapon, SubclassID: 6}}
 	mace := scored{candidate: candidate{ID: 1, Name: "A Mace", ClassID: itemClassWeapon, SubclassID: 4}}
-	relic := scored{candidate: candidate{ID: 2, Name: "A Libram", ClassID: armorClassID, SubclassID: armorSublibramID}}
-	got := restrictToProficientWeapons([]scored{axe, mace, relic}, classWeaponSubclasses["paladin"])
+	relic := scored{candidate: candidate{ID: 2, Name: "An Idol", ClassID: armorClassID, SubclassID: armorSubidolID}}
+	got := restrictToProficientWeapons([]scored{polearm, mace, relic}, classWeaponSubclasses["druid"])
 	if len(got) != 2 {
-		t.Fatalf("restrictToProficientWeapons = %+v, want 2 entries (the axe dropped)", got)
+		t.Fatalf("restrictToProficientWeapons = %+v, want 2 entries (the polearm dropped)", got)
 	}
-	if containsID(got, 19169) {
-		t.Fatalf("restrictToProficientWeapons kept the axe (id 19169): %+v", got)
+	if containsID(got, 15810) {
+		t.Fatalf("restrictToProficientWeapons kept the polearm (id 15810): %+v", got)
 	}
 	if !containsID(got, 1) || !containsID(got, 2) {
-		t.Fatalf("restrictToProficientWeapons dropped the mace or the relic: %+v", got)
+		t.Fatalf("restrictToProficientWeapons dropped the mace or the idol: %+v", got)
 	}
 }
 
 // TestClassWeaponSubclassesMatchesForeverDocumentedFacts is this
-// lane's brief, item 3: paladin has no axe, druid no polearm (both
-// Classic 1.x facts this static fallback must get right, and the
-// exact regression data-followups-5's own brief names), and shaman/
+// lane's brief, item 3: paladins train one- and two-hand axes (round 8:
+// SkillLineAbility spells 196 and 197 carry the paladin bit, and Classic's
+// Ironforge weapon master Buliwyf Stonehand teaches both to paladins), druid
+// has no polearm, rogue no axe, and shaman/
 // rogue carry Forever's two documented deviations
 // (.claude/agents/wow-player.md: "shamans train one- and two-handed
 // axes and maces, rogues train maces") on top of the Classic 1.x
@@ -304,8 +304,11 @@ func TestClassWeaponSubclassesMatchesForeverDocumentedFacts(t *testing.T) {
 		mace2H  = 5
 		polearm = 6
 	)
-	if classWeaponSubclasses["paladin"][axe1H] || classWeaponSubclasses["paladin"][axe2H] {
-		t.Error(`classWeaponSubclasses["paladin"] carries an axe subclass, want none (Classic 1.x: maces/polearm/swords only)`)
+	if !classWeaponSubclasses["paladin"][axe1H] || !classWeaponSubclasses["paladin"][axe2H] {
+		t.Error(`classWeaponSubclasses["paladin"] is missing an axe subclass, want one- and two-hand axes (SkillLineAbility 196/197)`)
+	}
+	if classWeaponSubclasses["rogue"][axe1H] {
+		t.Error(`classWeaponSubclasses["rogue"] carries one-hand axe, want none (no trainer teaches a rogue axes)`)
 	}
 	if classWeaponSubclasses["druid"][polearm] {
 		t.Error(`classWeaponSubclasses["druid"] carries polearm, want none (Classic 1.x: daggers/fist/maces/staves only)`)
@@ -331,8 +334,8 @@ func TestLoadWeaponSubclassesFallsBackToStaticTableWhenNothingPublished(t *testi
 	if err != nil {
 		t.Fatalf("loadWeaponSubclasses: %v", err)
 	}
-	if got[0] {
-		t.Error(`loadWeaponSubclasses("paladin") carries axe subclass 0, want the static fallback's own paladin table (no axes)`)
+	if !got[0] || !got[4] {
+		t.Error(`loadWeaponSubclasses("paladin") is missing one-hand axe or mace, want the static fallback's own paladin table`)
 	}
 	if !strings.Contains(source, "static fallback") {
 		t.Errorf("source = %q, want it to say this is a static fallback", source)

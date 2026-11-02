@@ -1888,7 +1888,11 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// trinket is (relics.go), so it is gated on that gain the same way:
 			// a modelled relic whose simulated gain is noise is no pick.
 			isGainRankedSlot := isTrinketSlot || isRelicCandidate(pk.Item.candidate)
-			trinketLowGain := isGainRankedSlot && !trinketEffectExempt && pk.Item.GainMeasured && !trinketGainSignificant(pk.Item.MeasuredGainDPS, pk.Item.MeasuredGainStdErr)
+			// Round 8: a pick whose stats the band's significant weights
+			// value (Score > 0) has a known positive worth, so a noisy gain
+			// never empties it (Retribution's raid band 60 Horde lost Rune of
+			// the Guard Captain's +42 attack power this way).
+			trinketLowGain := isGainRankedSlot && !trinketEffectExempt && pk.Item.Score <= 0 && pk.Item.GainMeasured && !trinketGainSignificant(pk.Item.MeasuredGainDPS, pk.Item.MeasuredGainStdErr)
 			// A relic (libram/idol/totem) whose one real selling point -
 			// its engraved effect - the engine cannot simulate at all
 			// never got a fair shot at EITHER exemption below: score()

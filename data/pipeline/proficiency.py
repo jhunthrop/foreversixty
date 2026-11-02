@@ -25,24 +25,22 @@ subclass. `configure()` derives `WEAPON_SUBCLASSES`'s runtime table from
 `raw/SkillLineAbility.csv` + `raw/SkillLine.csv` when both are present (a
 normal `fetch` for build 1.60.1.70009 downloads them) and falls back to the
 hand-written `WEAPON_SUBCLASSES` constant otherwise -- the same 1.x table
-as before, corrected (2026-09-30, day3 data-followups-5 lane) for two
-classes a wow-player sweep caught publishing items nobody can wear:
-paladins had one- and two-hand axes (they don't -- paladins train maces,
-swords and polearms) and druids had polearms (they don't -- druids train
-daggers, fist weapons, maces and staves). Forever's own two documented
+as before, corrected (2026-09-30, day3 data-followups-5 lane) for druids,
+who had polearms (they don't -- druids train daggers, fist weapons, maces and
+staves). That lane also took paladins' axes away; sim-accuracy round 8
+restored them: SkillLineAbility spells 196 and 197 carry the paladin bit,
+Ironforge's weapon master Buliwyf Stonehand teaches both axes to paladins,
+and Arcanite Reaper, a two-hand axe, heads Classic's Retribution pre-raid
+lists. Forever's own two documented
 deviations from vanilla (shamans train one- and two-hand axes and maces;
 rogues train maces; `research/01-official-facts.md`) are unaffected.
 
 Cross-checking every other weapon subclass's `ClassMask` in build
 1.60.1.70009 against that same 1.x-plus-Forever's-two-changes table found
-them an exact match, with three exceptions the client's raw `ClassMask`
-carries but that were never reachable in play: Paladin in Axes (44) and
-Two-Handed Axes (172), Druid in Polearms (229), and Rogue in Axes (44). The
-first two are exactly the bug this lane fixes; the third is not a contract
-in this lane's brief but agrees with today's already-shipped (never
-challenged) hand-written table, so it is excluded too rather than silently
-granting rogues an axe nothing asked for. `_VESTIGIAL_CLIENT_BITS` documents
-all three with this same reasoning so a future build's data can be checked
+them an exact match, with two exceptions the client's raw `ClassMask`
+carries but that were never reachable in play: Druid in Polearms (229) and
+Rogue in Axes (44). No Classic trainer teaches either. `_VESTIGIAL_CLIENT_BITS` documents
+both with this same reasoning so a future build's data can be checked
 against it rather than re-derived from scratch. `SkillRaceClassInfo` (the
 brief's other named candidate) was tried first and rejected: its
 `Availability` column does not cleanly separate real from vestigial rows
@@ -99,11 +97,11 @@ ARMOR_SUBCLASSES: dict[int, frozenset[int]] = {
     11: frozenset({_MISC, _CLOTH, _LEATHER, _IDOL}),  # druid
 }
 
-#: Fallback only -- see `configure()`. Paladin carries no axe (0, 1) and
-#: druid no polearm (6): the 2026-09-30 fix (see module docstring).
+#: Fallback only -- see `configure()`. Druid carries no polearm (6) and rogue
+#: no axe (0); paladin keeps its axes (see module docstring, round 8).
 WEAPON_SUBCLASSES: dict[int, frozenset[int]] = {
     1: frozenset({0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 13, 15, 16, 18}),  # warrior
-    2: frozenset({4, 5, 6, 7, 8}),  # paladin
+    2: frozenset({0, 1, 4, 5, 6, 7, 8}),  # paladin
     3: frozenset({0, 1, 2, 3, 6, 7, 8, 10, 13, 15, 16, 18}),  # hunter
     4: frozenset({2, 3, 4, 7, 13, 15, 16, 18}),  # rogue
     5: frozenset({4, 10, 15, 19}),  # priest
@@ -200,8 +198,6 @@ CLASS_SLUG_BY_ID: dict[int, str] = {
 #: `WEAPON_SUBCLASSES` fallback already omits them.
 _VESTIGIAL_CLIENT_BITS: frozenset[tuple[int, int]] = frozenset(
     {
-        (2, 0),  # paladin, one-hand axe
-        (2, 1),  # paladin, two-hand axe
         (11, 6),  # druid, polearm
         (4, 0),  # rogue, one-hand axe
     }

@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sort"
 )
 
 // classicranks.go is the ranker's copy of the pipeline's
@@ -68,12 +69,26 @@ func dropNonRankRewards(idx lootIndex, unranked map[int]bool) lootIndex {
 			if s.Kind == "pvp" {
 				continue
 			}
-			if s.Kind == "vendor" && s.Rank != 0 {
-				s.Rank, s.Title, s.Label = 0, "", s.SourceName
+			if s.Kind == "vendor" && (s.Rank != 0 || s.TitleRank != 0) {
+				s.Rank, s.TitleRank, s.Title, s.Label = 0, 0, "", s.SourceName
 			}
 			kept = append(kept, s)
 		}
 		out[id] = kept
 	}
+	return out
+}
+
+// droppedToNoSource is the ids that had a source in before and have none in
+// after, ascending: the items dropNonRankRewards left with nowhere to come
+// from, which loadGatedLootIndex names in a warning.
+func droppedToNoSource(before, after lootIndex) []int {
+	var out []int
+	for id, srcs := range before {
+		if len(srcs) > 0 && len(after[id]) == 0 {
+			out = append(out, id)
+		}
+	}
+	sort.Ints(out)
 	return out
 }

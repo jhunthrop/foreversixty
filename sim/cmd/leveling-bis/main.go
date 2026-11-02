@@ -413,7 +413,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// per spec, the same way requiresDagger/castsShoot are (the class's
 	// weapon proficiency does not change per band/faction) - the
 	// Go-side safety net so a data regression that puts an illegal
-	// weapon subclass in <class>.json (a paladin axe, a druid polearm)
+	// weapon subclass in <class>.json (a druid polearm, a rogue axe)
 	// never reaches a published pick, whatever score() thinks of its
 	// stats. weaponSubclassesSource is logged once so the nightly log
 	// says whether this run read a published table or fell back to
@@ -510,52 +510,26 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			ladderCh = tankLadderCharacter(specInfo, items, band, ladderCh)
 
 			weightsStart := time.Now()
-			wreq := weightsRequest(specInfo, ladderCh, weightsIterations, 3)
-			wresult, referenceDPSPerPoint, err := runner.RunWeights(wreq)
+			// Round 8: the band ranks by weights measured on a character
+			// wearing its own first-pass set, not on the bare ladder
+			// character (geared_weights.go).
+			measured, err := gearedBandWeights(runner, specInfo, band, weightsIterations, anchorStat, ladderCh,
+				func(w map[string]float64, referenceDPSPerPoint float64) []api.GearSlot {
+					wandCredit := 0.0
+					if castsShoot {
+						wandCredit = fullWandScorePerDPS(referenceDPSPerPoint)
+					}
+					first := pickBand(items, lootIdx, specInfo, band, factions[0].name, w, wandCredit, weaponSubclasses, requiresDagger)
+					return buildGear(clearTrinketPlaceholders(first.picks))
+				},
+				func(gear []api.GearSlot) (float64, float64, error) {
+					ch := bandCharacter("weights-check", factions[0].race, specInfo.ClassSlug, specInfo.Spec, band, engineTalents, gear)
+					return runner.RunPlainDPSWithError(plainRequest(specInfo, ch, guardIterations(specInfo), verifySeed))
+				})
 			if err != nil {
-				return fmt.Errorf("band %d weights run: %w", band, err)
+				return err
 			}
-			weightsReason := referenceMeasurementReason(specInfo.ReferenceStat, wresult, referenceDPSPerPoint)
-			if weightsReason != "" {
-				// This lane's brief, item 1's guard: a band whose reference
-				// stat is not positive beyond its own error re-runs the
-				// sweep ONCE at weightsRetryIterationsFactor iterations
-				// before giving up on it - warlock-destruction band 60's
-				// own repro (bis-ranker-integrity-11) found this tightens
-				// the raw standard error (±0.1332 at 100 iterations/
-				// direction to ±0.0642 at 400) but does not always flip an
-				// actually-negative measurement positive, so the fallback
-				// below still has to exist for when this retry alone is
-				// not enough.
-				retryReq := weightsRequest(specInfo, ladderCh, weightsIterations*weightsRetryIterationsFactor, 3)
-				retryResult, retryReferenceDPSPerPoint, retryErr := runner.RunWeights(retryReq)
-				if retryErr != nil {
-					return fmt.Errorf("band %d weights retry run: %w", band, retryErr)
-				}
-				retryReason := referenceMeasurementReason(specInfo.ReferenceStat, retryResult, retryReferenceDPSPerPoint)
-				log.Printf("leveling-bis: %s band %d: sweep at %d iterations/direction was not significant (%s); re-ran at %dx", spec, band, weightsIterations, weightsReason, weightsRetryIterationsFactor)
-				wresult, referenceDPSPerPoint, weightsReason = retryResult, retryReferenceDPSPerPoint, retryReason
-			}
-			// This lane's brief (ranker-weights-anchor), item 3's own
-			// guard: separate from the reference-stat retry just above,
-			// re-measure the PRIMARY-anchor row once at
-			// primaryStatRetryIterationsFactor iterations if it came back
-			// insignificant - but only on a band the reference-stat guard
-			// already trusts (weightsReason == ""); an already-untrustworthy
-			// band publishes no anchor at all regardless (normalizeScaleFactors'
-			// own doc), so spending the extra sim time here would be wasted.
-			weightsLowConfidence := false
-			if weightsReason == "" && anchorStat != "" {
-				retried, lowConf, pErr := primaryStatSignificanceCheck(runner, specInfo, ladderCh, anchorStat, weightsIterations, 3, wresult)
-				if pErr != nil {
-					return fmt.Errorf("band %d primary-stat (%s) weights retry: %w", band, anchorStat, pErr)
-				}
-				if lowConf {
-					log.Printf("leveling-bis: %s band %d: primary stat %s still not significant after a %dx retry; publishing the anchor anyway (weights_low_confidence)", spec, band, anchorStat, primaryStatRetryIterationsFactor)
-				}
-				wresult = retried
-				weightsLowConfidence = lowConf
-			}
+			wreq, wresult, referenceDPSPerPoint, weightsReason, weightsLowConfidence := measured.request, measured.result, measured.referenceDPSPerPoint, measured.reason, measured.lowConfidence
 			// weightsSeconds covers the whole band, including either
 			// retry above when one ran - a single per-band number, the
 			// same field buildReport has always taken one of.
@@ -733,6 +707,18 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				verified, heldUnconfirmed, err = preferConfirmedStats(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, pickBySlot)
 				if err != nil {
 					return fmt.Errorf("band %d %s: %w", band, f.name, err)
+				}
+				if measured.ladder != nil {
+					ladderCredit := 0.0
+					if castsShoot {
+						ladderCredit = fullWandScorePerDPS(measured.ladder.referenceDPSPerPoint)
+					}
+					ladderPass := pickBand(items, lootIdx, specInfo, band, f.name, effectiveWeights(measured.ladder.result), ladderCredit, weaponSubclasses, requiresDagger)
+					ladderSet, err := ladderWeightsSet(runner, specInfo, f.race, band, engineTalents, ladderPass, verified.picks, setCat)
+					if err != nil {
+						return fmt.Errorf("band %d %s: %w", band, f.name, err)
+					}
+					considered = append(considered, consideredSet{Label: consideredLadderWeights, Picks: ladderSet})
 				}
 				incumbentGear := incumbents[incumbentKey{Band: band, Preset: pass.name, Faction: f.name}]
 				if incumbent, ok := incumbentPicks(incumbentGear, verified.picks, pickBySlot); ok {
