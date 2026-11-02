@@ -1,13 +1,16 @@
 """What a starter says about preparation, resources and findings, per spec.
 
 Consumables come from the catalogue, filtered by the spec's own traits, never a role-wide list.
-The guides' consumables sections are empty, so the traits table is the only per-spec input.
+The guides' consumables sections are empty, so the traits table and the published raid preset's
+food (starter_food.preset_food) are the per-spec inputs.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
+
+from starter_food import preset_food
 
 ROLE_LABEL = {"dps": "damage dealer", "healer": "healer", "tank": "tank"}
 HEALER_CODES = ("core_casts", "uptime", "resource", "ranks", "preparation", "death")
@@ -170,8 +173,7 @@ def kit(slug: str, role: str, catalogue: dict[str, Any]) -> list[tuple[str, str]
     """(thing, catalogue name) for what the catalogue looks for on this spec, in pull-checklist order."""
     traits = traits_of(slug)
     found = [("a flask", checked(catalogue, "flask", FLASK_BY_STYLE[traits.style]))]
-    if traits.style != "caster":
-        found.append(("food", catalogue["roles"][role]["food"][0]["name"]))
+    found.append(("food", checked(catalogue, "food", preset_food(slug))))
     if traits.style == "caster":
         found.append(("a weapon enchant", checked(catalogue, "weapon_enchant", OIL)))
     elif traits.stone:
