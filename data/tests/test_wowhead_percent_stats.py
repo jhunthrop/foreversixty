@@ -89,3 +89,19 @@ def test_a_fractional_percent_stat_reaches_the_engine_unrounded() -> None:
     )
     assert stats[pb.Stat.Value("StatHit")] == 0.9
     assert stats[pb.Stat.Value("StatCrit")] == 0.5
+
+
+def test_spell_crit_percent_is_spell_crit_undivided() -> None:
+    """Wowhead's Forever planner states Atiesh's (22589) "+2% spell crit" as
+    `splcritstrkpct` 2, its one such item; Era's equip spell is aura 57,
+    spells only. It is a percentage like `critstrkpct`, not rating points:
+    the engine read it as 2 / 14 = 0.14% every-table crit. The planner keeps
+    its one `crit` key; the engine gets 2% spell crit."""
+    staff = _ring({"splcritstrkpct": 2.0})
+    assert wh.planner_stats(staff) == {"crit": 2}
+    assert wh.planner_percent_stats(staff) == {"crit": 2}
+    stats = list(build_wowhead_sim_items([staff], RATING_FACTORS)[0].stats)
+    stats += [0.0] * (len(pb.Stat.keys()) - len(stats))
+    assert stats[pb.Stat.Value("StatSpellCrit")] == 2.0
+    assert stats[pb.Stat.Value("StatCrit")] == 0.0
+    assert stats[pb.Stat.Value("StatMeleeCrit")] == 0.0
