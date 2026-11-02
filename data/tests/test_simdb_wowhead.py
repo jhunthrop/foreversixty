@@ -266,3 +266,52 @@ def test_simitems_json_lists_the_supplement_ids_too(tmp_path: Path):
     simitems = json.loads((build_dir / "simitems.json").read_text(encoding="utf-8"))
     assert {271218, 279865, 11726} <= set(simitems["items"])
     assert simitems["items"] == sorted(simitems["items"])
+
+
+def _wowhead_wand(item_id: int, stats: dict[str, float]) -> wh.WowheadItem:
+    """A wowhead-supplement wand as `wh._item_from_record` builds one: class 2,
+    subclass 19, InventoryType 26 (Pyric Caduceus 11748's shape)."""
+    return wh.WowheadItem(
+        id=item_id,
+        name="Pyric Caduceus",
+        quality=3,
+        item_level=53,
+        required_level=48,
+        class_id=2,
+        subclass_id=19,
+        inventory_type=26,
+        icon="x",
+        class_mask=None,
+        stats=stats,
+        set_id=None,
+        unique=False,
+        armor=0,
+        damage_min=66,
+        damage_max=123,
+        speed=1.8,
+        dps=52.5,
+    )
+
+
+@pytest.mark.parametrize(
+    ("dmgtype1", "school"),
+    [
+        (2, "SpellSchoolFire"),
+        (5, "SpellSchoolShadow"),
+        (6, "SpellSchoolArcane"),
+        (0, "SpellSchoolPhysical"),
+    ],
+)
+def test_a_wowhead_wand_carries_the_school_its_dmgtype1_states(dmgtype1, school):
+    """Sim audit round 7, casters: round 6 gave client and classic-db wands
+    their school, but a wand only in wowhead's supplement stayed Physical, so
+    armor took about 40% of each Shoot. Pyric Caduceus 11748, the band-50 wand
+    of every mage and Shadow priest set, states `dmgtype1: 2` (Fire) on
+    Wowhead Forever; 106 of the feed's wands state a magic school. wowhead's
+    `dmgtype1` is the client's DamageType enum (1 Holy ... 6 Arcane)."""
+    stats = {"dmgmin1": 66, "dmgmax1": 123, "speed": 1.8}
+    if dmgtype1:
+        stats["dmgtype1"] = dmgtype1
+    (wand,) = build_wowhead_sim_items([_wowhead_wand(11748, stats)], RATING_FACTORS)
+    assert wand.ranged_weapon_type == pb.RangedWeaponType.Value("RangedWeaponTypeWand")
+    assert wand.damage_school == pb.SpellSchool.Value(school)

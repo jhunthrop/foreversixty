@@ -402,6 +402,7 @@ def build_wowhead_sim_items(
             required_level=w.required_level,
         )
         _apply_class_subclass(item, w.class_id, w.subclass_id, w.inventory_type)
+        _apply_wand_school(item, w.class_id, w.subclass_id, int(w.stats.get("dmgtype1", 0)))
         if w.class_id == ITEM_CLASS_WEAPON and w.speed > 0:
             item.weapon_damage_min = float(w.damage_min)
             item.weapon_damage_max = float(w.damage_max)
