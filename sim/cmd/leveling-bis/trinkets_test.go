@@ -48,7 +48,7 @@ func TestTopByItemLevelOrdersHighestFirstAndBoundsToTopN(t *testing.T) {
 		trinket(5, "E", 5),
 		trinket(6, "F", 40),
 	}
-	got := topByItemLevel(list, 0, "")
+	got := topByItemLevel(list, pairMate{})
 	if len(got) != trinketTopN {
 		t.Fatalf("topByItemLevel returned %d, want trinketTopN (%d)", len(got), trinketTopN)
 	}
@@ -140,7 +140,7 @@ func TestTrinketShortlistRatingTrinketWithLowPostConversionScoreStillQualifies(t
 		// genuinely positive weighted stat.
 		trinketWithStat(249469, "Frozen Heart of the Mountain", 55, "hit", 0.9),
 	}
-	got := trinketShortlist(list, 0, "", weights)
+	got := trinketShortlist(list, pairMate{}, weights)
 	found := false
 	for _, c := range got {
 		if c.ID == 249469 {
@@ -162,7 +162,7 @@ func TestTrinketShortlistExcludesACandidateOffEveryQualifyingAxis(t *testing.T) 
 		trinketWithStat(2, "Frozen Heart of the Mountain", 55, "hit", 0.9),
 		trinketWithStat(999, "High ItemLevel, Unweighted Stats", 90, "stamina", 999),
 	}
-	got := trinketShortlist(list, 0, "", weights)
+	got := trinketShortlist(list, pairMate{}, weights)
 	for _, c := range got {
 		if c.ID == 999 {
 			t.Fatalf("trinketShortlist = %+v, want item 999 excluded: no weighted stat, no implemented effect, no Use effect", got)
@@ -180,7 +180,7 @@ func TestTrinketShortlistIncludesEveryQualifyingCandidateBelowTheBound(t *testin
 	for i := 1; i <= 10; i++ {
 		list = append(list, trinketWithStat(i, "Qualifying", 50+i, "hit", float64(i)))
 	}
-	got := trinketShortlist(list, 0, "", weights)
+	got := trinketShortlist(list, pairMate{}, weights)
 	if len(got) != 10 {
 		t.Fatalf("trinketShortlist returned %d candidates, want all 10 qualifying candidates (well under trinketShortlistBound, no cap should apply)", len(got))
 	}
@@ -205,7 +205,7 @@ func TestTrinketShortlistIncludesAnImplementedEffectTrinketOffBothAxes(t *testin
 		// no weighted stats, but its effect IS implemented.
 		trinketWithEffect(modelledEffectItemID, "Hand of Justice", 58, "1% chance on Melee hit to gain 1 extra attack."),
 	}
-	got := trinketShortlist(list, 0, "", map[string]float64{})
+	got := trinketShortlist(list, pairMate{}, map[string]float64{})
 	found := false
 	for _, c := range got {
 		if c.ID == modelledEffectItemID {
@@ -235,7 +235,7 @@ func TestTrinketShortlistDoesNotForceIncludeAnUnimplementedEffectTrinket(t *test
 		// not a real effectids_generated.go id).
 		trinketWithEffect(999999, "Blackhand's Breadth", 63, "Improves your chance to get a critical strike with melee attacks by 2%."),
 	}
-	got := trinketShortlist(list, 0, "", map[string]float64{})
+	got := trinketShortlist(list, pairMate{}, map[string]float64{})
 	for _, c := range got {
 		if c.ID == 999999 {
 			t.Fatalf("trinketShortlist = %+v, want the unimplemented-effect trinket excluded (off every qualifying axis)", got)
@@ -257,7 +257,7 @@ func TestTrinketShortlistIncludesAnUnimplementedUseEffectTrinket(t *testing.T) {
 		// effectids_generated.go id) - still a click a player can make.
 		trinketWithEffect(999999, "Some On-Use Trinket", 58, "Use: +150 Attack Power for 15 sec."),
 	}
-	got := trinketShortlist(list, 0, "", map[string]float64{})
+	got := trinketShortlist(list, pairMate{}, map[string]float64{})
 	found := false
 	for _, c := range got {
 		if c.ID == 999999 {
@@ -299,7 +299,7 @@ func TestTrinketShortlistTrimsToTheBoundByScoreButKeepsTopItemLevel(t *testing.T
 	// trim via topByItemLevel.
 	list = append(list, trinketQualifyingScored(999, "Low Score, Highest ItemLevel", 500, -1))
 
-	got := trinketShortlist(list, 0, "", weights)
+	got := trinketShortlist(list, pairMate{}, weights)
 	foundHighItemLevel := false
 	for _, c := range got {
 		if c.ID == 999 {
@@ -321,13 +321,13 @@ func TestTrinketShortlistTrimsToTheBoundByScoreButKeepsTopItemLevel(t *testing.T
 
 func TestTrinketShortlistExcludesPairMateByIDAndName(t *testing.T) {
 	list := []scored{trinket(1, "Same Name", 10), trinket(2, "Same Name", 20), trinket(3, "Other", 5)}
-	got := trinketShortlist(list, 1, "", trinketTestWeights)
+	got := trinketShortlist(list, pairMate{ID: 1}, trinketTestWeights)
 	for _, c := range got {
 		if c.ID == 1 {
 			t.Fatalf("trinketShortlist still carries excluded id 1: %+v", got)
 		}
 	}
-	got2 := trinketShortlist(list, 0, "Same Name", trinketTestWeights)
+	got2 := trinketShortlist(list, pairMate{Name: "Same Name"}, trinketTestWeights)
 	for _, c := range got2 {
 		if c.Name == "Same Name" {
 			t.Fatalf("trinketShortlist still carries an item sharing the excluded name: %+v", got2)
@@ -337,13 +337,13 @@ func TestTrinketShortlistExcludesPairMateByIDAndName(t *testing.T) {
 
 func TestTopByItemLevelExcludesPairMateByIDAndName(t *testing.T) {
 	list := []scored{trinket(1, "Same Name", 10), trinket(2, "Same Name", 20), trinket(3, "Other", 5)}
-	got := topByItemLevel(list, 1, "")
+	got := topByItemLevel(list, pairMate{ID: 1})
 	for _, c := range got {
 		if c.ID == 1 {
 			t.Fatalf("topByItemLevel still carries excluded id 1: %+v", got)
 		}
 	}
-	got2 := topByItemLevel(list, 0, "Same Name")
+	got2 := topByItemLevel(list, pairMate{Name: "Same Name"})
 	for _, c := range got2 {
 		if c.Name == "Same Name" {
 			t.Fatalf("topByItemLevel still carries an item sharing the excluded name: %+v", got2)

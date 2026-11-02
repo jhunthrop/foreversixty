@@ -113,6 +113,9 @@ type classItem struct {
 	// (ItemSparse.MinFactionID and MinReputation), nil for none. See
 	// applyItemReputations.
 	Reputation *itemReputation `json:"reputation,omitempty"`
+	// LimitCategory is the client's ItemSparse.LimitCategory, 0 for none:
+	// two items in one category are never a pair (pair.go).
+	LimitCategory int `json:"limit_category,omitempty"`
 }
 
 type classItemFile struct {
@@ -217,6 +220,8 @@ type candidate struct {
 	ClientUnconfirmed bool
 	// Reputation is classItem.Reputation carried through.
 	Reputation *itemReputation
+	// LimitCategory is classItem.LimitCategory carried through.
+	LimitCategory int
 }
 
 // markNotInSimDB sets NotInSimDB (above) on every item this build's
@@ -356,6 +361,7 @@ func loadClassCandidates(buildDir, classSlug string) (out []candidate, missing [
 			EffectText:             ci.EffectText,
 			ClientUnconfirmed:      ci.ClientUnconfirmed,
 			Reputation:             ci.Reputation,
+			LimitCategory:          ci.LimitCategory,
 		})
 	}
 	return out, missing, nil

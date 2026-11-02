@@ -327,6 +327,10 @@ class GearItem(BaseModel):
     #: classic-db or wowhead row. The BiS ranker gates every source of the item
     #: on it (sim/cmd/leveling-bis/reputation.go).
     reputation: ItemReputation | None = None
+    #: Round 9 (ranker lane): the client's ItemSparse.LimitCategory, the
+    #: "Unique-Equipped: <family> (1)" line. `None` for none. The BiS ranker never
+    #: pairs two items of one category (sim/cmd/leveling-bis/pair.go).
+    limit_category: int | None = None
 
 
 class ClassItems(BaseModel):

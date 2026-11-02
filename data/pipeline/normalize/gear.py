@@ -1051,6 +1051,7 @@ def build_class_items(
             reputation=reputation_for(
                 _optional_int(row, "MinFactionID"), _optional_int(row, "MinReputation")
             ),
+            limit_category=_optional_int(row, "LimitCategory") or None,
         )
         candidates.append(
             (

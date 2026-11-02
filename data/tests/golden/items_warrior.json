@@ -29,7 +29,8 @@
       "superseded_by": null,
       "bonding": null,
       "armor_type": null,
-      "reputation": null
+      "reputation": null,
+      "limit_category": null
     },
     {
       "id": 13315,
@@ -60,7 +61,8 @@
       "superseded_by": null,
       "bonding": null,
       "armor_type": null,
-      "reputation": null
+      "reputation": null,
+      "limit_category": null
     },
     {
       "id": 12798,
@@ -89,7 +91,8 @@
       "superseded_by": null,
       "bonding": null,
       "armor_type": null,
-      "reputation": null
+      "reputation": null,
+      "limit_category": null
     },
     {
       "id": 19325,
@@ -120,7 +123,8 @@
       "superseded_by": null,
       "bonding": null,
       "armor_type": null,
-      "reputation": null
+      "reputation": null,
+      "limit_category": null
     },
     {
       "id": 17066,
@@ -151,7 +155,8 @@
       "superseded_by": null,
       "bonding": null,
       "armor_type": "shield",
-      "reputation": null
+      "reputation": null,
+      "limit_category": null
     },
     {
       "id": 16866,
@@ -184,7 +189,8 @@
       "superseded_by": null,
       "bonding": null,
       "armor_type": "plate",
-      "reputation": null
+      "reputation": null,
+      "limit_category": null
     },
     {
       "id": 19019,
@@ -215,7 +221,8 @@
       "superseded_by": null,
       "bonding": null,
       "armor_type": null,
-      "reputation": null
+      "reputation": null,
+      "limit_category": null
     }
   ]
 }

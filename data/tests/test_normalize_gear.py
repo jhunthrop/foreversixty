@@ -1472,3 +1472,18 @@ def test_client_rows_carry_their_reputation_requirement():
     assert items[16866].reputation is not None
     assert items[16866].reputation.model_dump() == {"faction_id": 2798, "standing": "exalted"}
     assert items[19325].reputation is None
+
+
+# --- limit_category: the client's Unique-Equipped family ---------------------
+# (round 9, ranker lane: Rune of Perfection and Rune of Duty share
+# ItemLimitCategory 714 "Rune of Battle", Quantity 1, so the ranker never
+# pairs them.)
+
+
+def test_client_rows_carry_their_limit_category():
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    for row in rows:
+        row["LimitCategory"] = "714" if row["ID"] == "16866" else "0"
+    items = {i.id: i for r in build_with_sparse(rows) for i in r.items}
+    assert items[16866].limit_category == 714
+    assert items[19325].limit_category is None
