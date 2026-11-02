@@ -8,6 +8,8 @@
 // (contract 10.4), owned by the data lane; until a build publishes one, every row falls
 // back.
 import { dataUrl, fetchJson } from '../planner/load';
+import { IMPROVED_SUFFIX } from './buffs';
+import { simCopy } from './copy';
 import { humanise } from './humanise';
 
 export interface BuffNames {
@@ -28,6 +30,10 @@ export function loadBuffNames(build: string): Promise<BuffNames> {
  * inventing "Item: 13452" would read as a name rather than as the raw id it is.
  */
 export function buffLabel(id: string, names: BuffNames | null): string {
+  // A graded buff's improved form is the same buff, by its own name, and the grade.
+  if (id.endsWith(IMPROVED_SUFFIX)) {
+    return `${buffLabel(id.slice(0, -IMPROVED_SUFFIX.length), names)} (${simCopy.gradeLabel.improved})`;
+  }
   const known = names?.entries[id]?.name;
   const named = known !== undefined && known !== '' ? known : null;
   const colon = id.indexOf(':');
@@ -41,7 +47,8 @@ export function buffLabel(id: string, names: BuffNames | null): string {
 
 /** The build's icon for an id, or null when there is none to draw. */
 export function buffIcon(build: string, id: string, names: BuffNames | null): string | null {
-  const icon = names?.entries[id]?.icon;
+  const plain = id.endsWith(IMPROVED_SUFFIX) ? id.slice(0, -IMPROVED_SUFFIX.length) : id;
+  const icon = names?.entries[plain]?.icon;
   return icon === undefined || icon === '' ? null : dataUrl(build, `icons/${icon}.webp`);
 }
 

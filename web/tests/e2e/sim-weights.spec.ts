@@ -208,8 +208,9 @@ test('the picker falls back to the spec’s own curated weight_stats (specs.ts) 
 // spec string fails to parse into a character at all), so it is not re-proven at the e2e
 // layer.
 
-test('a run renders a weight per stat with an error bar and a Pawn string', async ({ page, context }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+test('a run renders the published scale-factor table: top stat 1.00, haste in the caption, no Pawn string', async ({
+  page,
+}) => {
   await loadWeights(page);
   // Deselecting an optional stat drops it from the run; the reference stat cannot be
   // deselected at all -- its checkbox is disabled, so WeightsSpec.Reference (required)
@@ -230,17 +231,19 @@ test('a run renders a weight per stat with an error bar and a Pawn string', asyn
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-weights')).toBeVisible({ timeout: 25_000 });
   await expect(page.getByTestId('sim-weight-strength')).toHaveCount(0);
-  await expect(page.getByTestId('sim-weight-attack_power')).toContainText('1.00');
-  // Contract 10.8: haste is split, hit and crit are not.
-  await expect(page.getByTestId('sim-weight-melee_haste')).toBeVisible();
+  // Round 11 (owner, 2026-09-30): the top per-point stat reads 1.00 and names the table;
+  // haste is per 1%, in the caption, never a row. Contract 10.8: haste is split, hit and
+  // crit are not.
+  await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('= 1.00');
+  await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('Haste:');
+  await expect(page.getByTestId('sim-weight-melee_haste')).toHaveCount(0);
+  await expect(page.getByTestId('sim-weight-attack_power')).toBeVisible();
   await expect(page.getByTestId('sim-weight-crit')).toBeVisible();
   await expect(page.getByTestId('sim-weight-hit')).toBeVisible();
   for (const wrong of ['haste', 'melee_crit', 'melee_hit']) {
     await expect(page.getByTestId(`sim-weight-${wrong}`)).toHaveCount(0);
   }
-  await expect(page.getByTestId('sim-pawn')).toContainText('( Pawn: v1:');
-  await page.getByTestId('sim-pawn-copy').click();
-  await expect(page.getByTestId('sim-pawn-copy')).toHaveText(bulkCopy.weightsCopied);
+  await expect(page.getByText(/Pawn/)).toHaveCount(0);
 });
 
 test('a weights run never shows a DPS figure on the progress line', async ({ page }) => {
@@ -328,5 +331,5 @@ test('a finished run can be saved, and the saved page renders its table', async 
   await page.goto(`/sim/${id}`);
 
   await expect(page.getByTestId('sim-weights')).toBeVisible();
-  await expect(page.getByTestId('sim-pawn')).toContainText('( Pawn: v1:');
+  await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('= 1.00');
 });

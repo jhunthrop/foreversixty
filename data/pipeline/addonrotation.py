@@ -31,8 +31,9 @@ from __future__ import annotations
 
 import json
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from pathlib import Path
+from types import MappingProxyType
 
 from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
@@ -111,7 +112,10 @@ def _class_slug(spec: str) -> str:
 
 
 def _family_ranks(
-    spellranks: dict, class_slug: str, trainable_ids: frozenset[int] = frozenset()
+    spellranks: dict,
+    class_slug: str,
+    trainable_ids: frozenset[int] = frozenset(),
+    talent_spells: Mapping[str, list[tuple[int, int]]] = MappingProxyType({}),
 ) -> dict[str, list[tuple[int, int]]]:
     """Spell family name -> every (level, id) pair it ranks up through,
     sorted ascending by level. Two ranks may share a level (spellranks.json
@@ -134,7 +138,9 @@ def _family_ranks(
         # An Ahn'Qiraj book rank is not a trainer's: the sim's rank rewrite
         # never casts one, so neither does the addon.
         ranks = [rank for rank in ranks if not rank.get("book")]
-        pairs = sorted((rank["level"], rank["id"]) for rank in ranks)
+        # By level only: two ids of one tier keep spellranks.json's own
+        # order, which is the order the sim's tier lists them in.
+        pairs = sorted(((rank["level"], rank["id"]) for rank in ranks), key=lambda pair: pair[0])
         # A level-0 row is an alternate id the client carries with no learn
         # level of its own (Rapid Fire's 28755 beside the real 3045 at 26,
         # Aimed Shot's 1236188 beside rank 6 at 60). Left in, it made the
@@ -143,6 +149,14 @@ def _family_ranks(
         # Keep them only when the family states no level at all.
         levelled = [pair for pair in pairs if pair[0] > 0]
         families[name] = levelled or pairs
+    # A talent's own spell (Stormstrike, Adrenaline Rush, Cold Blood) is in no
+    # trainer's table, so spellranks.json does not track it; the sim casts it
+    # once the build takes the talent, so the rotation names it from the
+    # first level its tier opens (load_talent_spells).
+    tracked = {spell_id for pairs in families.values() for _, spell_id in pairs}
+    for name, pairs in talent_spells.items():
+        if name not in families and not any(spell_id in tracked for _, spell_id in pairs):
+            families[name] = list(pairs)
     return families
 
 
@@ -227,8 +241,15 @@ def load_rank_choices(curated_dir: Path, spec: str) -> dict[int, list[dict]]:
     return {spell["authored"]: spell["bands"] for spell in spells}
 
 
+def _rank_of(spellranks: dict, class_slug: str) -> dict[int, int]:
+    """spell id -> its rank number (0 for an unranked spell), for one class."""
+    return {rank["id"]: rank.get("rank", 0)
+            for ranks in spellranks.get("classes", {}).get(class_slug, {}).values()
+            for rank in ranks}
+
+
 def _resolve(families: dict[str, list[tuple[int, int]]], id_to_family: dict[int, str],
-             spell_id: int, level: int) -> tuple[str, int] | None:
+             rank_of: dict[int, int], spell_id: int, level: int) -> tuple[str, int] | None:
     """The (family name, id) this ability casts at `level`, or None when
     the curated id is not one spellranks.json tracks for this class (an
     engine-internal or item-proc id the ladder itself would call
@@ -250,10 +271,19 @@ def _resolve(families: dict[str, list[tuple[int, int]]], id_to_family: dict[int,
     if level >= MAX_LEVEL and any(rank[1] == spell_id for rank in learned):
         return family, spell_id
     # Two ids can share the top learned level (Water Shield's buff and its
-    # proc; a Burning Crusade copy of Lesser Healing Wave's rank 6): keep
-    # the one the list names, as the sim's rewrite does.
-    top = [rank[1] for rank in learned if rank[0] == learned[-1][0]]
-    return family, spell_id if spell_id in top else top[-1]
+    # proc; a Burning Crusade copy of Lesser Healing Wave's rank 6; a
+    # Forever copy of Exorcism rank 1): keep the one the list names, else
+    # the first in the list's own id band, as the sim's rewrite does
+    # (sim/internal/spellranks sameBandOrFirst).
+    # Two ranks can share a level too (Counterattack ranks 1 and 2 at 30):
+    # the tier is the highest rank learned there.
+    top_level = [rank[1] for rank in learned if rank[0] == learned[-1][0]]
+    top_rank = max(rank_of.get(i, 0) for i in top_level)
+    top = [i for i in top_level if rank_of.get(i, 0) == top_rank]
+    if spell_id in top:
+        return family, spell_id
+    same_band = [i for i in top if (i >= FOREVER_ID_FLOOR) == (spell_id >= FOREVER_ID_FLOOR)]
+    return family, (same_band or top)[0]
 
 
 def _resolve_icon(spell_id: int, icon_of: Callable[[int], str] | None) -> str:
@@ -281,24 +311,27 @@ def build_rotation(
     spellranks: dict,
     icon_of: Callable[[int], str] | None = None,
     trainable_ids: frozenset[int] = frozenset(),
+    talent_spells: Mapping[str, list[tuple[int, int]]] = MappingProxyType({}),
 ) -> list[AddonRotationBand]:
     """One spec's rotation table, one band per LEVEL_BANDS entry.
-    `trainable_ids` is the class's trainer-learned ids (`load_trainable_ids`)."""
+    `trainable_ids` is the class's trainer-learned ids (`load_trainable_ids`),
+    `talent_spells` its talents' own spells (`load_talent_spells`)."""
     apl_path = curated_dir / "apl" / f"{spec}.json"
     if not apl_path.exists():
         raise AddonRotationError(f"missing {apl_path}")
     curated = json.loads(apl_path.read_text(encoding="utf-8"))
     casts = _cast_lines(curated.get("rotation", {}))
 
-    families = _family_ranks(spellranks, _class_slug(spec), trainable_ids)
+    families = _family_ranks(spellranks, _class_slug(spec), trainable_ids, talent_spells)
     id_to_family = _id_to_family(families)
+    rank_of = _rank_of(spellranks, _class_slug(spec))
     choices = load_rank_choices(curated_dir, spec)
 
     bands = []
     for level in LEVEL_BANDS:
         lines = []
         for cast in casts:
-            resolved = _resolve(families, id_to_family, cast["spell_id"], level)
+            resolved = _resolve(families, id_to_family, rank_of, cast["spell_id"], level)
             if resolved is None:
                 continue
             name, resolved_id = resolved
@@ -413,8 +446,15 @@ def compute_spell_icons(
     specs = sorted(path.stem for path in apl_dir.glob("*.json")) if apl_dir.exists() else []
     icons: dict[int, str] = {}
     for spec in specs:
-        trainable_ids = load_trainable_ids(root / build, _class_slug(spec))
-        for band in build_rotation(spec, curated_dir, spellranks, icon_of, trainable_ids):
+        class_slug = _class_slug(spec)
+        for band in build_rotation(
+            spec,
+            curated_dir,
+            spellranks,
+            icon_of,
+            load_trainable_ids(root / build, class_slug),
+            load_talent_spells(root / build, class_slug),
+        ):
             for line in band.lines:
                 icons.setdefault(line.spell_id, line.icon)
     # Spells a guide names that no rotation line does (the cooldown list: a trainer spell such as
@@ -488,6 +528,31 @@ def write_spell_icons(
     return path
 
 
+#: A talent tier opens five points after the one above it, and the first
+#: point is spent at level 10 (tier 0, zero-based as talents/<class>.json
+#: numbers them).
+FIRST_TALENT_LEVEL = 10
+POINTS_PER_TIER = 5
+
+
+def load_talent_spells(build_dir: Path, class_slug: str) -> dict[str, list[tuple[int, int]]]:
+    """Talent name -> [(the level its tier opens, its spell id)] for every
+    talent of `class_slug` on this build (`builds/<build>/talents/<class>.json`),
+    or none when the build has no talents file for the class."""
+    path = build_dir / "talents" / f"{class_slug}.json"
+    if not path.exists():
+        return {}
+    trees = json.loads(path.read_text(encoding="utf-8"))["trees"]
+    return {
+        talent["name"]: [
+            (FIRST_TALENT_LEVEL + POINTS_PER_TIER * talent["tier"], talent["spell_id"])
+        ]
+        for tree in trees
+        for talent in tree["talents"]
+        if isinstance(talent.get("spell_id"), int)
+    }
+
+
 def load_trainable_ids(build_dir: Path, class_slug: str) -> frozenset[int]:
     """Every spell id `class_slug` learns from a trainer on this build
     (`builds/<build>/trainables/<class>.json`, pipeline.trainables), or none
@@ -534,6 +599,7 @@ def build_rotations(
             spellranks,
             icon_of,
             load_trainable_ids(root / build, _class_slug(spec)),
+            load_talent_spells(root / build, _class_slug(spec)),
         )
         for spec in specs
     }
@@ -559,9 +625,12 @@ def build_ability_levels(
     levels: dict[int, int] = {}
     for spec in specs:
         trainable_ids = load_trainable_ids(root / build, _class_slug(spec))
-        families = _family_ranks(spellranks, _class_slug(spec), trainable_ids)
+        talent_spells = load_talent_spells(root / build, _class_slug(spec))
+        families = _family_ranks(spellranks, _class_slug(spec), trainable_ids, talent_spells)
         id_to_family = _id_to_family(families)
-        for band in build_rotation(spec, curated_dir, spellranks, trainable_ids=trainable_ids):
+        for band in build_rotation(
+            spec, curated_dir, spellranks, trainable_ids=trainable_ids, talent_spells=talent_spells
+        ):
             for line in band.lines:
                 level = families[id_to_family[line.spell_id]][0][0]
                 if levels.setdefault(line.spell_id, level) != level:

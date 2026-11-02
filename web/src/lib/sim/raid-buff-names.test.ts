@@ -52,7 +52,7 @@ const RAID_BUFF_AURA_SPELLS: Readonly<Record<string, number>> = {
   heart_of_the_lion: 409583,
   strength_of_earth_totem: 25361,
   windfury_totem: 10610,
-  mana_spring_totem: 10497,
+  'mana_spring_totem:improved': 10497,
 };
 
 describe('RAID_BUFF_AURA_SPELLS', () => {

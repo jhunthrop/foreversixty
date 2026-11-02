@@ -22,7 +22,7 @@ This is the Restoration Druid as the site's guide describes it. Restoration is t
 
 - The tank keeps Regrowth and Rejuvenation up for the whole fight, and the heals over time carry most of the work.
 - A hurt party member gets Rejuvenation, you included, and Tranquility goes out when two of the five are well down.
-- Swiftmend.
+- Swiftmend on the tank whenever he is under three quarters health and your mana is keeping pace.
 - Nature's Swiftness into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and Innervate goes on you when you are low.
 
 **The mistakes the coach looks for, by finding.**

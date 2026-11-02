@@ -35,6 +35,23 @@ jobs:
       # The workspace lists ./sim, whose development replace points at a
       # laptop path; pin it to the fork at the recorded sha as sim.yml does,
       # or go vet/test cannot resolve the module graph at all.
+      # Round 10 broke the api by importing sim/request from the coach: it
+      # embeds the active build's simdb copy and imports the engine. The
+      # api image builds with GOWORK=off from api/go.mod and no engine, so
+      # check exactly that, before `make simdb` puts any copy in place:
+      # the module vets and builds, and its dependency graph never reaches
+      # the engine (github.com/wowsims/classic).
+      - name: The api builds with no simdb copy and never links the engine
+        env: { GOWORK: 'off' }
+        run: |
+          go vet ./...
+          go build ./...
+          engine=$(go list -deps ./... | grep '^github.com/wowsims/classic' || true)
+          if [ -n "$engine" ]; then
+            echo "the api module links the engine; move the shared code into an engine-free sim package:"
+            echo "$engine" | head -20
+            exit 1
+          fi
       - uses: ./.github/actions/pin-engine
       - run: go vet ./...
         # -p 1: the database-backed packages share one Postgres and each

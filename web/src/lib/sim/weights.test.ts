@@ -12,11 +12,10 @@ import {
   hasWeightStats,
   isDpsSpec,
   isSignificant,
-  pawnString,
   pickableStatsFor,
+  toolScaleView,
   referenceFor,
   statLabel,
-  weightScale,
   weightStatsFor,
   weightsEngineIterations,
   weightsIterationsFor,
@@ -80,62 +79,50 @@ describe('statLabel', () => {
   });
 });
 
-describe('weightScale', () => {
-  it('is the largest weight plus its error, so no bar overflows its track', () => {
-    // The widest row computed from the fixture itself, not a copied literal: a regenerated
-    // fixture's own numbers change every time the engine reruns it, and a hand-copied
-    // number here would silently drift from what the fixture actually carries.
-    const widest = Math.max(...result.weights.map((row) => row.weight + row.error));
-    expect(weightScale(result.weights)).toBeCloseTo(widest, 6);
-    expect(weightScale([])).toBe(1);
-  });
-});
+// Round 11 (owner ruling 2026-09-30, memory feedback-stat-weights-simc): the tool shows weights
+// the way the published ones are -- SimulationCraft scale factors, the top significant
+// per-point stat = 1.00, sorted, with DPS per point and the error; haste per 1% in a caption,
+// never a row; no Pawn string. It used to show reference = 1.00 with a Pawn export.
+describe('toolScaleView', () => {
+  const weights: StatWeight[] = [
+    { stat: 'attack_power', weight: 1, error: 0.01, dps_per_point: 0.06 },
+    { stat: 'strength', weight: 2, error: 0.04, dps_per_point: 0.12 },
+    { stat: 'crit', weight: 0.5, error: 0.02, dps_per_point: 0.03 },
+    { stat: 'agility', weight: 1.5, error: 3, insignificant: true, dps_per_point: 0.09 },
+    { stat: 'melee_haste', weight: 6, error: 0.3, dps_per_point: 0.36 },
+  ];
+  const view = toolScaleView(weights, 'warrior-fury', 'attack_power');
 
-describe('pawnString', () => {
-  it('is a Pawn v1 line with the class, the spec and two decimals a piece', () => {
-    // The fixture's own "agility" row is insignificant -- left out here the same way a
-    // stat Pawn has no key for is, below.
-    expect(pawnString('warrior-fury', result.weights)).toBe(
-      '( Pawn: v1: "Fury Warrior": Class=Warrior, Spec=Fury, Strength=1.50, AttackPower=1.00, ' +
-        'CritRating=7.03, HitRating=6.87, HasteRating=5.85 )',
+  it('normalizes to the top significant per-point stat and sorts descending', () => {
+    expect(view.rows.map((row) => row.stat)).toEqual(['strength', 'agility', 'attack_power', 'crit']);
+    expect(view.rows[0].scaleFactor).toBe(1);
+    expect(view.rows.find((row) => row.stat === 'attack_power')?.scaleFactor).toBeCloseTo(0.5, 6);
+    expect(view.rows.find((row) => row.stat === 'crit')?.scaleError).toBeCloseTo(0.01, 6);
+    expect(view.noteLine).toContain('normalized to Strength = 1.00');
+  });
+
+  it("carries each stat's DPS per point and greys an insignificant row", () => {
+    expect(view.rows.find((row) => row.stat === 'strength')?.dpsPerPoint).toBeCloseTo(0.12, 6);
+    expect(view.rows.find((row) => row.stat === 'agility')?.significant).toBe(false);
+  });
+
+  it('puts haste per 1% in the caption, never in the table', () => {
+    expect(view.rows.some((row) => row.stat === 'melee_haste')).toBe(false);
+    expect(view.hasteCaption).toBe('Haste: 3.00 per 1%');
+  });
+
+  it('shows no DPS per point from an engine that sent none, never a made-up one', () => {
+    const old = toolScaleView(
+      [{ stat: 'attack_power', weight: 1, error: 0 }],
+      'warrior-fury',
+      'attack_power',
     );
+    expect(old.rows[0].dpsPerPoint).toBeUndefined();
   });
 
-  it('leaves out a stat Pawn has no key for rather than inventing one', () => {
-    expect(pawnString('warrior-fury', [{ stat: 'nonesuch', weight: 3, error: 0 }])).toBe(
-      '( Pawn: v1: "Fury Warrior": Class=Warrior, Spec=Fury )',
-    );
-  });
-
-  it('D45: leaves out a weight the engine flagged insignificant', () => {
-    const weights: StatWeight[] = [
-      { stat: 'attack_power', weight: 1, error: 0 },
-      { stat: 'crit', weight: 14.37, error: 22.55, insignificant: true },
-    ];
-    expect(pawnString('warrior-fury', weights)).toBe(
-      '( Pawn: v1: "Fury Warrior": Class=Warrior, Spec=Fury, AttackPower=1.00 )',
-    );
-  });
-
-  it('D46: never disagrees with isSignificant about which rows are included -- the regression guard', () => {
-    // The table greys a row exactly when `isSignificant` is false (StatWeights.svelte,
-    // SavedWeights.svelte); pawnString must include exactly the rows that predicate calls
-    // significant, and no others, for every row that has a Pawn key at all. Asserted
-    // generically -- over the whole pinned vocabulary, not one hand-picked stat -- so this
-    // guard cannot be satisfied by coincidence the way a single fixed-string test could be.
-    const weights: StatWeight[] = WEIGHT_STATS.map((stat, index) => ({
-      stat: stat.id,
-      weight: index + 1,
-      error: 0.1,
-      insignificant: index % 2 === 0,
-    }));
-    const pawn = pawnString('warrior-fury', weights);
-    for (const row of weights) {
-      const key = WEIGHT_STATS.find((stat) => stat.id === row.stat)?.pawn ?? '';
-      if (key === '') continue; // Pawn has no key for this stat regardless of significance.
-      const included = pawn.includes(`${key}=`);
-      expect(included, `${row.stat} (insignificant: ${row.insignificant})`).toBe(isSignificant(row));
-    }
+  it('the fixture run reads the same way', () => {
+    const fixture = toolScaleView(result.weights, 'warrior-fury', result.request.weights.reference);
+    expect(Math.max(...fixture.rows.map((row) => row.scaleFactor))).toBe(1);
   });
 });
 

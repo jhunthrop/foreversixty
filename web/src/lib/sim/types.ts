@@ -311,6 +311,9 @@ export interface StatWeight {
    * driven here from the fake engine and the fixtures until it lands for real.
    */
   insignificant?: boolean;
+  /** The engine's own un-normalised DPS per point of the stat (sim/api StatWeight
+   *  DPSPerPoint); absent from an older engine. */
+  dps_per_point?: number;
 }
 
 /**

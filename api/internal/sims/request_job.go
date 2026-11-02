@@ -137,7 +137,7 @@ func (s *Service) RequestFromAddon(ctx context.Context, userID int64, characterK
 			Kind: simapi.SourceAddon, Ref: characterKey, CapturedAt: in.RequestedAt,
 		},
 		Character: char,
-		Encounter: withEncounterDefaults(simapi.EncounterSpec{}),
+		Encounter: defaultEncounterOf(0),
 		// One run answers with DPS and stat weights (spec §5.2: "Sim me" brings back DPS,
 		// weights in DPS per point and per-slot deltas): the spec's own weight stats against
 		// its reference stat, the set the website's weights page starts from. The sweep runs a

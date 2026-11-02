@@ -58,3 +58,42 @@ def test_no_downrank_is_judged_against_an_ahnqiraj_book_rank():
             for entry in doc.get(key) or []:
                 top = int(entry["verified"].rsplit("#", 1)[1])
                 assert top not in books, (spec, key, entry.get("family") or entry.get("name"), top)
+
+
+def _apl_cast_ids(spec: str) -> set[int]:
+    ids: set[int] = set()
+
+    def walk(value: object) -> None:
+        if isinstance(value, dict):
+            cast = value.get("castSpell")
+            if isinstance(cast, dict) and isinstance(cast.get("spellId"), dict):
+                ids.add(cast["spellId"]["spellId"])
+            for inner in value.values():
+                walk(inner)
+        elif isinstance(value, list):
+            for inner in value:
+                walk(inner)
+
+    walk(json.loads((DATA / "curated" / "apl" / f"{spec}.json").read_text()))
+    return ids
+
+
+#: Core cooldowns the rotation fires through autocastOtherCooldowns, never a castSpell line.
+AUTOCAST_CORE = {"Blade Flurry"}
+
+
+def test_every_judged_cooldown_and_dot_is_one_the_rotation_casts():
+    """Round 11: Affliction's rules still judged Bane of Doom's cooldown and uptime and
+    Wrack's uptime after the rotation moved to Bane of Agony and dropped Wrack, so a player
+    following the site lost points for it. A core cooldown or a DoT the coach judges must be
+    cast by the spec's own APL, at some rank."""
+    for spec in SPECS:
+        doc = json.loads(render_spec(spec, ACTIVE, DATA))
+        cast = _apl_cast_ids(spec)
+        for entry in doc.get("core") or []:
+            if entry["family"] in AUTOCAST_CORE:
+                continue
+            assert set(entry["spell_ids"]) & cast, (spec, "core", entry["family"])
+        for aura in doc.get("auras") or []:
+            if aura["kind"] == "dot":
+                assert set(aura["spell_ids"]) & cast, (spec, "dot", aura["name"])

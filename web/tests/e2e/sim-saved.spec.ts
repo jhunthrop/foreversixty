@@ -338,7 +338,7 @@ test.describe('a saved sim renders the results view its own kind calls for', () 
     await expect(page.getByTestId('sim-results')).toHaveCount(0);
   });
 
-  test('a saved weights result renders its table and its Pawn string', async ({ page }) => {
+  test('a saved weights result renders its scale-factor table', async ({ page }) => {
     // The brief's own draft id ("simweight3456") is 13 characters -- one over
     // `SIM_ID_PATTERN`'s `[a-z2-7]{12}` (contract: a sim_id is always exactly 12) -- and
     // silently fails to match, which routes the page to the plain, no-character /sim
@@ -355,7 +355,7 @@ test.describe('a saved sim renders the results view its own kind calls for', () 
     await page.goto(`/sim/${id}`);
 
     await expect(page.getByTestId('sim-weights')).toBeVisible();
-    await expect(page.getByTestId('sim-pawn')).toContainText('( Pawn: v1:');
+    await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('= 1.00');
     // A weights result has no gear story (design 7): the strip's grid does not claim one.
     await expect(page.getByTestId('paperdoll-slot-head')).toHaveCount(0);
   });

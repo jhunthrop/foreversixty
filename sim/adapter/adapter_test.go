@@ -867,9 +867,9 @@ func TestWeightsMapping(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := []api.StatWeight{
-		{Stat: "agility", Weight: 1.1, Error: 0.02, Insignificant: false},
-		{Stat: "attack_power", Weight: 1.0, Error: 0.01, Insignificant: false},
-		{Stat: "crit", Weight: 12.0, Error: 0.30, Insignificant: false},
+		{Stat: "agility", Weight: 1.1, Error: 0.02, Insignificant: false, DPSPerPoint: 1.1},
+		{Stat: "attack_power", Weight: 1.0, Error: 0.01, Insignificant: false, DPSPerPoint: 1.0},
+		{Stat: "crit", Weight: 12.0, Error: 0.30, Insignificant: false, DPSPerPoint: 12.0},
 	}
 	if len(got) != len(want) {
 		t.Fatalf("got %d weights, want %d: %+v", len(got), len(want), got)
@@ -1320,5 +1320,26 @@ func TestSummarizeTranslatesAbilitySchool(t *testing.T) {
 				t.Errorf("School = %d, want %d", ab.School, tc.wantSchool)
 			}
 		})
+	}
+}
+
+// Round 11: the stat weights tool shows weights the way the published ones are (owner,
+// 2026-09-30: SimulationCraft scale factors, top stat = 1.00, with DPS per point), so each
+// weight carries the engine's own un-normalised DPS per point of its stat.
+func TestWeightsCarryTheirDPSPerPoint(t *testing.T) {
+	req := api.SimRequest{Weights: &api.WeightsSpec{Stats: []string{"strength", "attack_power"}, Reference: "attack_power"}}
+	stats := make([]float64, len(proto.Stat_name))
+	stats[proto.Stat_StatStrength] = 0.12
+	stats[proto.Stat_StatAttackPower] = 0.06
+	res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+		Weights:      &proto.UnitStats{Stats: stats},
+		WeightsStdev: &proto.UnitStats{Stats: make([]float64, len(proto.Stat_name))},
+	}}
+	got, err := Weights(res, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got[0].DPSPerPoint != 0.12 || got[1].DPSPerPoint != 0.06 {
+		t.Fatalf("dps per point: %+v", got)
 	}
 }

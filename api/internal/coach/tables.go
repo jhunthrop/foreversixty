@@ -227,12 +227,35 @@ func (f *FileTables) classFor(build, class string) (classData, error) {
 	if err != nil {
 		return classData{}, err
 	}
+	books, err := readBookRanks(f.BuildsDir, build, class)
+	if err != nil {
+		return classData{}, err
+	}
+	trainable = withoutBookRanks(trainable, books)
 	if f.classes == nil {
 		f.classes = map[classKey]classData{}
 	}
 	c := classData{spells: spells, trainable: trainable}
 	f.classes[key] = c
 	return c, nil
+}
+
+// readBookRanks is class's book rank ids from <builds>/<build>/spellranks.json; a missing
+// file is ErrNoTables, as for the class files.
+func readBookRanks(buildsDir, build, class string) (map[int64]bool, error) {
+	path := filepath.Join(buildsDir, build, "spellranks.json")
+	data, err := os.ReadFile(path)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, fmt.Errorf("%w: %s is absent", ErrNoTables, path)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("coach tables: %s: %w", path, err)
+	}
+	books, err := ParseBookRanks(data, class)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
+	}
+	return books, nil
 }
 
 // readBuildFile parses <builds>/<build>/<dir>/<class>.json; a missing file is ErrNoTables.

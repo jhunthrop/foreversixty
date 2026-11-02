@@ -3,12 +3,15 @@ package coach
 // Task 29b's file tables load Tables.Spells and Tables.Trainable through ParseSpellConst
 // (data/builds/<build>/spellconst/<class>.json) and ParseTrainables
 // (data/builds/<build>/trainables/<class>.json, the SkillLineAbility "what a Forever player
-// learns" source), never spellranks.json, so production reads the files the fixtures are
-// proved against (TestFixtureSpellConstMatchesData, TestFixtureTrainablesMatchData).
+// learns" source), so production reads the files the fixtures are proved against
+// (TestFixtureSpellConstMatchesData, TestFixtureTrainablesMatchData). spellranks.json is
+// read for one fact the trainables file lacks: which ranks are Ahn'Qiraj books
+// (ParseBookRanks), which no site rotation casts.
 
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 	"strconv"
 )
 
@@ -76,4 +79,40 @@ func ParseTrainables(data []byte) (map[string][]TrainableRank, error) {
 		}
 	}
 	return out, nil
+}
+
+// spellRanksFile is the shape of data/builds/<build>/spellranks.json, the fields the coach
+// reads: each rank's id and its book flag.
+type spellRanksFile struct {
+	Classes map[string]map[string][]struct {
+		ID   int64 `json:"id"`
+		Book bool  `json:"book"`
+	} `json:"classes"`
+}
+
+// ParseBookRanks is the ids of class's Ahn'Qiraj book ranks in a spellranks.json file.
+func ParseBookRanks(data []byte, class string) (map[int64]bool, error) {
+	var f spellRanksFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return nil, fmt.Errorf("coach spellranks: %w", err)
+	}
+	books := map[int64]bool{}
+	for _, ranks := range f.Classes[class] {
+		for _, r := range ranks {
+			if r.Book {
+				books[r.ID] = true
+			}
+		}
+	}
+	return books, nil
+}
+
+// withoutBookRanks is trainable with every book rank left out: the trainer's top rank is
+// the one the site's rotations cast (sim/internal/spellranks never casts a book rank).
+func withoutBookRanks(trainable map[string][]TrainableRank, books map[int64]bool) map[string][]TrainableRank {
+	out := make(map[string][]TrainableRank, len(trainable))
+	for family, ranks := range trainable {
+		out[family] = slices.DeleteFunc(slices.Clone(ranks), func(r TrainableRank) bool { return books[r.ID] })
+	}
+	return out
 }

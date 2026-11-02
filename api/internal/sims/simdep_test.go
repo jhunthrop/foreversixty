@@ -12,7 +12,7 @@ import (
 )
 
 func TestTheEncounterDefaultsAreTheDesignsSettingsBar(t *testing.T) {
-	got := withEncounterDefaults(simapi.EncounterSpec{})
+	got := defaultEncounterOf(0)
 	want := simapi.DefaultEncounter()
 	// EncounterSpec now carries TargetsOverTime ([]TargetCount), so it is
 	// no longer comparable with ==; DeepEqual is the correct successor.
@@ -22,9 +22,10 @@ func TestTheEncounterDefaultsAreTheDesignsSettingsBar(t *testing.T) {
 	if want.DurationSec != 180 || want.Targets != 1 {
 		t.Fatalf("the envelope's defaults moved: %+v", want)
 	}
-	// A value the caller did set survives.
+	// A value the caller did set survives, and a client's encounter gains only the
+	// fields with no legal zero.
 	set := withEncounterDefaults(simapi.EncounterSpec{DurationSec: 300, Targets: 4})
-	if set.DurationSec != 300 || set.Targets != 4 || set.Variation != want.Variation {
+	if set.DurationSec != 300 || set.Targets != 4 || set.Variation != 0 {
 		t.Fatalf("explicit values overwritten: %+v", set)
 	}
 }
@@ -34,7 +35,7 @@ func TestADefaultedRequestPassesTheEnvelopesOwnValidation(t *testing.T) {
 		EngineVersion: enginever.Version, Spec: "warrior-fury",
 		Source:     simapi.CharacterSource{Kind: simapi.SourceAddon, Ref: "us/normal/baelgrim"},
 		Character:  simapi.CharacterSpec{Name: "Baelgrim", Race: "orc", Class: "warrior", Level: 60},
-		Encounter:  withEncounterDefaults(simapi.EncounterSpec{}),
+		Encounter:  defaultEncounterOf(0),
 		Iterations: defaultIterations,
 	}
 	if err := req.Validate(); err != nil {
@@ -182,5 +183,28 @@ func TestTheMaxWeightsRequestFitsTheBudget(t *testing.T) {
 		t.Fatalf("the largest legal weights request estimates %ds against a %ds budget: "+
 			"the vocabulary or MaxIterations grew enough that checkWeightsSize can now fire "+
 			"for a real request - update the too_large test to match", est, budget)
+	}
+}
+
+// Round 11: the settings bar offers no variation (0) and execute phase off (0), and the
+// engine runs both as asked (sim/request executeProportions(0) has no execute window). The
+// server lane and the browser-result save used to fill a zero with the default, so a server
+// run of "execute phase off" fought a 25% execute window, and a saved browser result's
+// request said 0.25 for a run simmed at 0.
+func TestAClientsZeroVariationAndExecuteSurviveTheServer(t *testing.T) {
+	got := withEncounterDefaults(simapi.EncounterSpec{DurationSec: 120, Targets: 1, Variation: 0, ExecuteRatio: 0})
+	if got.Variation != 0 || got.ExecuteRatio != 0 {
+		t.Fatalf("a chosen zero was overwritten: %+v", got)
+	}
+	if got.DurationSec != 120 || got.Targets != 1 {
+		t.Fatalf("explicit values overwritten: %+v", got)
+	}
+	// A server-built request still fights the settings bar's default encounter.
+	built := defaultEncounterOf(0)
+	if !reflect.DeepEqual(built, simapi.DefaultEncounter()) {
+		t.Fatalf("server default: got %+v want %+v", built, simapi.DefaultEncounter())
+	}
+	if d := defaultEncounterOf(95); d.DurationSec != 95 || d.ExecuteRatio != simapi.DefaultEncounter().ExecuteRatio {
+		t.Fatalf("a fight-length default: %+v", d)
 	}
 }

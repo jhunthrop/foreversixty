@@ -100,16 +100,6 @@ export const AURA_EMPTY_MESSAGE: Record<'BUFF' | 'DEBUFF', string> = {
     "The simulator doesn't report debuff uptime yet; see Casts for how many times each one was applied.",
 };
 /**
- * The weights table's greyed row, for a weight the engine flagged `insignificant` (D45: the
- * dps-minmaxer defect -- every error bar bigger than its own weight, printed to two
- * decimals with a Pawn export beneath it). A plain module-level constant, not a `bulkCopy`
- * property, for the same reason as `AURA_EMPTY_MESSAGE` above: `weights.ts` does not read
- * copy, and both `StatWeights.svelte` and `SavedWeights.svelte` need the identical sentence
- * rather than each carrying their own -- one row-label string, read by name from the one
- * place every string on this lane lives.
- */
-export const WEIGHT_INSIGNIFICANT_LABEL = 'not distinguishable from zero';
-/**
  * Sub-item 4's "and says so": shown under the weights picker only when the spec's own
  * `weight_stats` came back non-empty, since that is the only time the claim is true. An
  * absent list falls back to the full pinned vocabulary (`weights.ts`'s `WEIGHT_STATS`) with
@@ -1089,8 +1079,6 @@ export const bulkCopy = {
   weightsStat: 'Stat',
   weightsWeight: 'Weight',
   weightsReference: 'Reference',
-  weightsCopyPawn: 'Copy for Pawn',
-  weightsCopied: 'Copied',
   weightsPick: 'Stats to weigh',
   /**
    * Task 8, sub-item 1: contract 10.9 documents `StatWeight.Error` as a standard error that

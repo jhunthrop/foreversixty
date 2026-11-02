@@ -123,16 +123,18 @@ func TestRotationNamesOnlyTheRankItsLinesCast(t *testing.T) {
 	if !ok {
 		t.Fatal("no warrior-fury rotation in the newest build")
 	}
-	if !at60.Names(25286) || !at60.Names(20662) {
-		t.Error("band 60 does not name Heroic Strike rank 9 or Execute rank 5, its lines")
+	// Heroic Strike rank 9 (25286) is an Ahn'Qiraj book rank no rotation casts; the
+	// band's lines name rank 8 (11567) and Execute rank 5 (20662).
+	if !at60.Names(11567) || !at60.Names(20662) {
+		t.Error("band 60 does not name Heroic Strike rank 8 or Execute rank 5, its lines")
 	}
-	if at60.Names(11567) {
-		t.Error("band 60 names Heroic Strike rank 8, which no line casts")
+	if at60.Names(11566) {
+		t.Error("band 60 names Heroic Strike rank 7, which no line casts")
 	}
-	if !at60.Lists(11567) {
-		t.Error("band 60 no longer lists Heroic Strike rank 8 as a rank of a listed ability")
+	if !at60.Lists(11566) {
+		t.Error("band 60 no longer lists Heroic Strike rank 7 as a rank of a listed ability")
 	}
-	if got := at60.Naming(11567); !got.Names(11567) || at60.Names(11567) {
+	if got := at60.Naming(11566); !got.Names(11566) || at60.Names(11566) {
 		t.Error("Naming must add to a copy and leave the band unchanged")
 	}
 }

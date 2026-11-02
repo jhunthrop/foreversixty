@@ -17,6 +17,11 @@ Entry = tuple[str, str]
 
 # ability -> line. A listed ability is added when the generator left it out.
 GUIDE_LINES: dict[str, dict[str, str]] = {
+    "druid-restoration": {
+        # restoration.md: "Swiftmend goes on the tank whenever he is under three quarters health
+        # and your mana is keeping pace" (the rotation's own gate is under 75%).
+        "Swiftmend": "Swiftmend on the tank whenever he is under three quarters health and your mana is keeping pace.",
+    },
     "druid-feral": {
         # feral.md: "Shred fills every other global, building combo points the rest of the time."
         "Shred": "Shred fills every other global, building combo points.",
@@ -178,6 +183,8 @@ GUIDE_ORDER: dict[str, tuple[str, ...]] = {
     "priest-shadow": (
         "Shadow Word: Pain", "Inner Focus", "Mind Flay", "Mind Blast", "Shadow Word: Death", "Shoot",
     ),
+    # enhancement.md: the imbue is "applied before the pull", ahead of every rotation line.
+    "shaman-enhancement": ("Windfury Weapon",),
     # elemental.md: Mana Spring Totem first, Lava Burst ahead of the totems, Lightning Bolt the rest.
     "shaman-elemental": (
         "Mana Spring Totem", "Lava Burst", "Searing Totem", "Lightning Bolt", "Chain Lightning",

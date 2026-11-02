@@ -279,7 +279,7 @@ func Score(ctx context.Context, d ScoreDeps, t ScoreTask) error {
 			Ref:  fmt.Sprintf("%s:%d", t.ReportID, t.FightIndex),
 		},
 		Character: character,
-		Encounter: withEncounterDefaults(simapi.EncounterSpec{DurationSec: int(sum.DurationMS / 1000)}),
+		Encounter: defaultEncounterOf(int(sum.DurationMS / 1000)),
 	}
 	runCtx, cancel := context.WithTimeout(ctx, ScoreTimeout)
 	defer cancel()

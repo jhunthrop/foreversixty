@@ -990,6 +990,7 @@ func weightsOf(res *proto.StatWeightsResult, req api.SimRequest, table func(*pro
 			// as 0 weight and 0 error, which must also flag (0 >= 0)
 			// rather than publish a confident-looking zero.
 			Insignificant: errAmt >= math.Abs(weight),
+			DPSPerPoint:   at(s, raw),
 		})
 	}
 	return out, nil

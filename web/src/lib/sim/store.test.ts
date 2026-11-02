@@ -341,6 +341,20 @@ describe('createSimStore', () => {
       expect(sim.buildRequest() !== null && 'preset' in sim.buildRequest()!).toBe(false);
     });
 
+    it("the drawer's Run sends the edited request's own preset, as written", async () => {
+      const sent: string[] = [];
+      const sim = recordingStore(sent);
+      await sim.loadAddon(FURY);
+      pick(sim, 'raid-buffed');
+      const request = sim.buildRequest();
+      if (request === null) throw new Error('no request');
+      await sim.runRequest({ ...request, preset: 'bare' });
+      expect(sent.map(presetOf).at(-1)).toBe('bare');
+      const { preset: _preset, ...withoutPreset } = request;
+      await sim.runRequest(withoutPreset);
+      expect(sent.map(presetOf).at(-1)).toBeUndefined();
+    });
+
     it('Apply to the page of a request with no preset sends none', async () => {
       const sim = recordingStore([]);
       await sim.loadAddon(FURY);

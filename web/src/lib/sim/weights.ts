@@ -1,5 +1,5 @@
 // web/src/lib/sim/weights.ts
-// /sim/weights: which stats to weigh, which one is the reference, and the Pawn line.
+// /sim/weights: which stats to weigh, which one is the reference, and the table they read as.
 //
 // The ids are the fork's `proto.Stat` enum names in snake case, pinned by contract 10.8.
 // Two spellings matter and are easy to get wrong:
@@ -19,14 +19,14 @@
 // comes from the spec list, never from a table here -- data/curated/specs.json is
 // canonical and GET /v1/specs carries it as `reference_stat`.
 //
-// The `pawn` column is Pawn's own vocabulary and is not a transformation of the id, which
-// is why it is a column. An empty `pawn` is a stat Pawn has no key for; it is left out of
-// the string rather than guessed at.
-import { classRows } from '../planner/reference';
+// The results read as the published weights do (owner, 2026-09-30): SimulationCraft scale
+// factors through lib/bis/scale-view.ts, with no Pawn string -- the weights go into the
+// Forever Sixty addon.
+import { scaleViewFor, type ScaleView } from '../bis/scale-view';
 import { simCopy, WEIGHT_ERROR_BELOW_THRESHOLD } from './copy';
 import { humanise } from './humanise';
 import { PRECISION_ITERATIONS, type Lane } from './precision';
-import { specLabel, specRow } from './spec-label';
+import { specRow } from './spec-label';
 import type { Precision, StatWeight } from './bulk-types';
 import type { SpecFidelity } from './types';
 
@@ -34,51 +34,41 @@ export interface WeightStat {
   /** The engine's id. */
   id: string;
   label: string;
-  /** Pawn's own key, or "" for a stat Pawn has no key for. */
-  pawn: string;
 }
 
-const PAWN_KEYS: Readonly<Record<string, string>> = {
-  strength: 'Strength',
-  agility: 'Agility',
-  stamina: 'Stamina',
-  intellect: 'Intellect',
-  spirit: 'Spirit',
-  attack_power: 'AttackPower',
-  ranged_attack_power: 'RangedAttackPower',
-  feral_attack_power: '',
-  spell_power: 'SpellDamage',
-  hit: 'HitRating',
-  crit: 'CritRating',
-  melee_haste: 'HasteRating',
-  spell_haste: 'SpellHasteRating',
-  spell_penetration: 'SpellPenetration',
-  armor_penetration: 'ArmorPenetration',
-  expertise: '',
-  mp5: 'Mp5',
-  // School-specific spell power (2026-09-21 result-page review round 3, newcomer's own
-  // finding): specs.go's own per-spec WeightStats names one of these for every caster spec
-  // that deals a single school of damage (mage-frost's own row: "frost_power" beside
-  // "spell_power") -- PAWN_KEYS not carrying them at all was why the checklist and the
-  // results table showed the raw engine key verbatim instead of a real label. Pawn has no
-  // separate school-power key of its own (a Frost Mage's "SpellDamage" already covers it),
-  // so these map to '' the same way feral_attack_power and expertise do above.
-  arcane_power: '',
-  fire_power: '',
-  frost_power: '',
-  holy_power: '',
-  nature_power: '',
-  shadow_power: '',
-};
+/** The stats a vanilla-era damage spec is ever weighed on, in picker order. */
+const WEIGHT_STAT_IDS: readonly string[] = [
+  'strength',
+  'agility',
+  'stamina',
+  'intellect',
+  'spirit',
+  'attack_power',
+  'ranged_attack_power',
+  'feral_attack_power',
+  'spell_power',
+  'hit',
+  'crit',
+  'melee_haste',
+  'spell_haste',
+  'spell_penetration',
+  'armor_penetration',
+  'expertise',
+  'mp5',
+  // School-specific spell power (2026-09-21 result-page review round 3): specs.go's own
+  // per-spec WeightStats names one of these for every caster spec that deals a single school.
+  'arcane_power',
+  'fire_power',
+  'frost_power',
+  'holy_power',
+  'nature_power',
+  'shadow_power',
+];
 
-/**
- * The stats a vanilla-era damage spec is ever weighed on, in picker order. Every id here
- * must exist in `simCopy.statLabel` (the pinned vocabulary) and in `PAWN_KEYS`.
- */
-export const WEIGHT_STATS: readonly WeightStat[] = Object.keys(PAWN_KEYS).map((id) => ({
+/** Every id here must exist in `simCopy.statLabel` (the pinned vocabulary). */
+export const WEIGHT_STATS: readonly WeightStat[] = WEIGHT_STAT_IDS.map((id) => ({
   id,
   label: simCopy.statLabel[id] ?? id,
-  pawn: PAWN_KEYS[id],
 }));
 
 const BY_ID = new Map(WEIGHT_STATS.map((stat) => [stat.id, stat]));
@@ -177,7 +167,7 @@ export function hasWeightStats(weightStats: readonly string[] | undefined): weig
  */
 export function pickableStatsFor(weightStats: readonly string[] | undefined): readonly WeightStat[] {
   if (!hasWeightStats(weightStats)) return WEIGHT_STATS;
-  return weightStats.map((id) => BY_ID.get(id) ?? { id, label: statLabel(id), pawn: '' });
+  return weightStats.map((id) => BY_ID.get(id) ?? { id, label: statLabel(id) });
 }
 
 /**
@@ -196,19 +186,10 @@ export function defaultStatsFor(
   return [referenceStat, ...rest];
 }
 
-/** The widest bar the table draws: the biggest weight plus its own error. */
-export function weightScale(weights: readonly StatWeight[]): number {
-  const widest = weights.reduce((max, row) => Math.max(max, row.weight + row.error), 0);
-  return widest > 0 ? widest : 1;
-}
-
 /**
- * Whether a weight belongs in the Pawn string and reads as a real number rather than as
- * noise -- `false` when the engine flagged `insignificant` (D45: a weight the error bar
- * swallows still printed to two decimals with a Pawn export beneath it). The one predicate
- * `pawnString` and every "is this row greyed" check in the table components share, so
- * neither can drift from the other (D46: the Pawn string used to disagree with which rows
- * the table showed as meaningful -- see weights.test.ts's own regression guard).
+ * Whether a weight reads as a real number rather than as noise -- `false` when the engine
+ * flagged `insignificant` (D45: a weight the error bar swallows still printed to two
+ * decimals). The one predicate every "is this row greyed" check shares.
  */
 export function isSignificant(weight: Pick<StatWeight, 'insignificant'>): boolean {
   return weight.insignificant !== true;
@@ -228,28 +209,6 @@ export function isSignificant(weight: Pick<StatWeight, 'insignificant'>): boolea
 export function formatWeightError(error: number): string {
   const twoDecimals = error.toFixed(2);
   return error !== 0 && twoDecimals === '0.00' ? WEIGHT_ERROR_BELOW_THRESHOLD : twoDecimals;
-}
-
-/**
- * Pawn's v1 line, which is what the addon pastes. A stat Pawn has no key for is left out
- * rather than guessed at: Pawn ignores a key it does not know, but it warns about it, and a
- * warning nobody can act on is worse than an absent stat. A weight the engine flagged
- * `insignificant` is left out too, for the same reason as an unknown Pawn key: a number that
- * cannot be told apart from zero is not something Pawn's own weighted sum should treat as
- * real (D45/D46).
- */
-export function pawnString(spec: string, weights: readonly StatWeight[]): string {
-  const row = specRow(spec);
-  const className = classRows.find((entry) => entry.slug === row?.class_slug)?.name ?? '';
-  const name = row === null ? spec : specLabel(spec);
-  const parts = [`Class=${className}`, `Spec=${row?.name ?? spec}`];
-  for (const weight of weights) {
-    if (!isSignificant(weight)) continue;
-    const key = BY_ID.get(weight.stat)?.pawn ?? '';
-    if (key === '') continue;
-    parts.push(`${key}=${weight.weight.toFixed(2)}`);
-  }
-  return `( Pawn: v1: "${name}": ${parts.join(', ')} )`;
 }
 
 /**
@@ -309,4 +268,28 @@ export const WEIGHTS_BROWSER_DEFAULT_ITERATIONS = 60;
 export function weightsIterationsFor(precision: Precision, lane: Lane): number {
   if (lane === 'browser' && precision === 'fast') return WEIGHTS_BROWSER_DEFAULT_ITERATIONS;
   return PRECISION_ITERATIONS[precision];
+}
+
+/**
+ * A weights run as the published weights read (owner, 2026-09-30; lib/bis/scale-view.ts):
+ * scale factors normalized to the top significant per-point stat, sorted, with DPS per point
+ * and the error, haste per 1% in the caption. The engine normalizes to `referenceStat` (its
+ * weight is 1), so that row's own `dps_per_point` is the figure every other weight scales
+ * from; an engine that sent none shows no DPS per point rather than a made-up one.
+ */
+export function toolScaleView(
+  weights: readonly StatWeight[],
+  spec: string,
+  referenceStat: string,
+): ScaleView {
+  const reference = weights.find((row) => row.stat === referenceStat);
+  return scaleViewFor({
+    weights,
+    spec,
+    unit: 'dps',
+    referenceDpsPerPoint: reference?.dps_per_point ?? null,
+    publishedAnchorStat: null,
+    publishedHasteScaleFactor: null,
+    hasteOnItems: true,
+  });
 }

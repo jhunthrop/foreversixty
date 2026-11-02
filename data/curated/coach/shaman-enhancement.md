@@ -22,12 +22,10 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 
 - Windfury Weapon on your one weapon before the pull, and again whenever it falls off. Before level thirty, Rockbiter Weapon goes on it instead.
 - Strength of Earth Totem.
-- Keep Windfury Totem down as well, since it is the melee group's largest damage totem and occupies the same Air-totem slot Grace of Air would otherwise use.
+- Keep Grace of Air Totem down for its Agility.
 - Stormstrike on cooldown: it is the highest damage per global Enhancement has, on an eight second cooldown.
-- Lightning Bolt at five Maelstrom Weapon stacks, right after Stormstrike so its +twenty percent on the next Lightning Bolt is up: each stack takes four percent a talent rank off the bolt's cast time and mana, so five/five makes it instant and free.
-- Chain Lightning.
+- At five Maelstrom Weapon stacks, cast Lightning Bolt right after Stormstrike, so Stormstrike's twenty percent on your next Lightning Bolt, Chain Lightning or Earth Shock goes to the bolt.
 - Keep Searing Totem down for the extra fire damage, but not with less than twenty seconds left. No point paying for a totem that will barely tick.
-- Mana Spring Totem is dropped before the pull and kept up.
 - Earth Shock last, and only while mana is above half.
 
 **The mistakes the coach looks for, by finding.**
