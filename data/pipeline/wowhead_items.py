@@ -98,7 +98,6 @@ STAT_KEYS: dict[str, str | None] = {
     "manargn": "mp5",
     "healthrgn": None,
     "critstrkrtng": "crit",
-    "splcritstrkpct": "crit",
     "hitrtng": "hit",
     "hastertng": None,
     "exprtng": None,
@@ -368,6 +367,7 @@ def class_allowed(item: WowheadItem, class_id: int) -> bool:
 #: Gloves (7348) is wowhead critstrkpct 1 against the client's 14 crit rating.
 PERCENT_STAT_KEYS: dict[str, str] = {
     "critstrkpct": "crit",
+    "splcritstrkpct": "crit",
     "hitpct": "hit",
     "dodgepct": "dodge",
     "parrypct": "parry",
@@ -375,13 +375,19 @@ PERCENT_STAT_KEYS: dict[str, str] = {
 }
 
 
+#: A percent key whose engine stat is narrower than its planner key: spell
+#: crit (Atiesh 22589, Era's aura 57) is the engine's spell table only, while
+#: the planner shows every crit as one `crit`.
+SIM_PERCENT_STAT_KEYS: dict[str, str] = {**PERCENT_STAT_KEYS, "splcritstrkpct": "spell_crit"}
+
+
 def sim_percent_stats(item: WowheadItem) -> dict[str, float]:
-    """The item's flat-percentage rating-family stats (``PERCENT_STAT_KEYS``),
+    """The item's flat-percentage rating-family stats (``SIM_PERCENT_STAT_KEYS``),
     as stated: Blackcrow 12651 is 0.9% hit, which the engine reads as 0.9."""
     out: dict[str, float] = {}
-    for key, planner_key in PERCENT_STAT_KEYS.items():
+    for key, sim_key in SIM_PERCENT_STAT_KEYS.items():
         if key in item.stats:
-            out[planner_key] = out.get(planner_key, 0.0) + float(item.stats[key])
+            out[sim_key] = out.get(sim_key, 0.0) + float(item.stats[key])
     return {key: amount for key, amount in out.items() if amount}
 
 
