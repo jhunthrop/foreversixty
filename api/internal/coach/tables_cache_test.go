@@ -37,6 +37,9 @@ func writeClassBuild(t *testing.T, root, build, fetched string, cooldownMS int) 
 			t.Fatal(err)
 		}
 	}
+	if err := os.WriteFile(filepath.Join(root, build, "spellranks.json"), []byte(`{"classes":{}}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestTablesFor_NoIOAfterWarmUp(t *testing.T) {

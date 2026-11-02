@@ -86,7 +86,8 @@ func lowRankUses(in Input) []*lowRankUse {
 			uses[family] = u
 		}
 		u.casts += int(row.Succeeded)
-		if cast.Rank < top.Rank && !slices.Contains(in.Tables.RankChoices[family], cast.Rank) {
+		if cast.Rank < top.Rank && !slices.Contains(in.Tables.RankChoices[family], cast.Rank) &&
+			!in.Tables.BandRanks[cast.ID] {
 			u.lowCasts += int(row.Succeeded)
 			u.byRank[cast.ID] += int(row.Succeeded)
 		}

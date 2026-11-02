@@ -181,6 +181,7 @@ func (f *FileTables) TablesFor(ctx context.Context, row summary.RosterRow, encou
 	}
 	t := Tables{Rules: rules, Spells: class.spells, Trainable: class.trainable, RankChoices: choices, WorstActions: worst}
 	t.Rotation, t.RotationOK = sims.RotationFor(build, slug, int(row.Level))
+	t.BandRanks = t.Rotation.Named()
 	cat := consumables.Load()
 	t.Consumables, _ = cat.For(row.Role)
 	t.RaidBuffs = cat.RaidBuffs
@@ -227,12 +228,35 @@ func (f *FileTables) classFor(build, class string) (classData, error) {
 	if err != nil {
 		return classData{}, err
 	}
+	books, err := readBookRanks(f.BuildsDir, build, class)
+	if err != nil {
+		return classData{}, err
+	}
+	trainable = withoutBookRanks(trainable, books)
 	if f.classes == nil {
 		f.classes = map[classKey]classData{}
 	}
 	c := classData{spells: spells, trainable: trainable}
 	f.classes[key] = c
 	return c, nil
+}
+
+// readBookRanks is class's book rank ids from <builds>/<build>/spellranks.json; a missing
+// file is ErrNoTables, as for the class files.
+func readBookRanks(buildsDir, build, class string) (map[int64]bool, error) {
+	path := filepath.Join(buildsDir, build, "spellranks.json")
+	data, err := os.ReadFile(path)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, fmt.Errorf("%w: %s is absent", ErrNoTables, path)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("coach tables: %s: %w", path, err)
+	}
+	books, err := ParseBookRanks(data, class)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
+	}
+	return books, nil
 }
 
 // readBuildFile parses <builds>/<build>/<dir>/<class>.json; a missing file is ErrNoTables.

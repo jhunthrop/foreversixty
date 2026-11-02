@@ -28,6 +28,10 @@ type Tables struct {
 	// rotation cast at the player's level (a mana-bound band's downrank); F5 never calls
 	// those low. Nil where no row holds the level.
 	RankChoices map[string][]int
+	// BandRanks is the exact spell ids the spec's shipped rotation names at the player's
+	// band (sims.Rotation.Named): the rank the site casts there, a raid-60 downrank
+	// included. F5 never calls one low.
+	BandRanks   map[int64]bool
 	Rotation    sims.Rotation
 	RotationOK  bool
 	Consumables consumables.RoleCatalogue
