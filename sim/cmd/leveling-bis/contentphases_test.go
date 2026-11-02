@@ -88,7 +88,7 @@ func TestTheBattlegroundGatesOpenAtLaunch(t *testing.T) {
 	}
 	loot := `{"sources": [
 		{"id": "vendor:263570", "kind": "vendor", "name": "Creeg Bothunk", "npc_id": 263570, "items": [272060]},
-		{"id": "rep:warsong-outriders:honored", "kind": "rep", "name": "Warsong Outriders", "faction_id": 890, "standing": "honored", "items": [19109]}
+		{"id": "rep:warsong-outriders:honored", "kind": "rep", "name": "Warsong Outriders", "faction_id": 889, "standing": "honored", "items": [19109]}
 	], "quests": {}}`
 	dir := t.TempDir()
 	if err := writeFile(t, filepath.Join(dir, "loot.json"), loot); err != nil {
@@ -108,7 +108,8 @@ func TestTheBattlegroundGatesOpenAtLaunch(t *testing.T) {
 
 // Round 9: the client's reputation sources (items lane F3) reach The
 // Watchers and Powderfuse. Powderfuse opens with the Riverglades at launch;
-// The Watchers has no launch zone on record and stays gated.
+// The Watchers stays gated: round 10 (owner ruling 3) found it tied to the
+// Barrow Deeps, a raid that opens after launch, and no launch way to earn it.
 func TestTheForeverZoneReputationsFollowTheLaunchEvidence(t *testing.T) {
 	g, err := loadContentGates(publishedRepoRoot)
 	if err != nil {
@@ -150,7 +151,7 @@ func TestContentGatesCloseEveryKeyType(t *testing.T) {
 			]},
 			{"id": "dungeon:dire-maul", "kind": "dungeon", "name": "Dire Maul", "zone_id": 2557, "bosses": [{"name": "Immol'thar", "npc_id": 11496, "items": [6]}]},
 			{"id": "pvp:rank-12:horde", "kind": "pvp", "name": "Rank 12", "rank": 12, "faction": "horde", "items": [7]},
-			{"id": "rep:silverwing-sentinels:exalted", "kind": "rep", "name": "Silverwing Sentinels", "faction_id": 889, "standing": "exalted", "items": [8]},
+			{"id": "rep:silverwing-sentinels:exalted", "kind": "rep", "name": "Silverwing Sentinels", "faction_id": 890, "standing": "exalted", "items": [8]},
 			{"id": "rep:timbermaw-hold:honored", "kind": "rep", "name": "Timbermaw Hold", "faction_id": 576, "standing": "honored", "items": [9]},
 			{"id": "crafted:leatherworking", "kind": "crafted", "name": "Leatherworking", "items": [10, 11]}
 		],
@@ -166,7 +167,7 @@ func TestContentGatesCloseEveryKeyType(t *testing.T) {
 		]},
 		{"key": "zone", "phase": "later", "zones": [{"id": 2557, "name": "Dire Maul"}]},
 		{"key": "honor", "phase": "later", "kinds": ["pvp"]},
-		{"key": "rep", "phase": "later", "factions": [{"id": 889, "name": "Silverwing Sentinels"}, {"id": 270, "name": "Zandalar Tribe"}]},
+		{"key": "rep", "phase": "later", "factions": [{"id": 890, "name": "Silverwing Sentinels"}, {"id": 270, "name": "Zandalar Tribe"}]},
 		{"key": "quest", "phase": "later", "quests": [{"id": 9222, "name": "Epic Armaments"}]},
 		{"key": "item", "phase": "later", "items": [{"id": 10, "name": "Stormshroud Gloves"}]}
 	]`

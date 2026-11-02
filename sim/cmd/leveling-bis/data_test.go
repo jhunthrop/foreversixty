@@ -1224,19 +1224,37 @@ func TestLoadGuideRacesRejectsAllianceRaceInHordeSlot(t *testing.T) {
 	}
 }
 
-// The battleground reputations' sides, keyed by the faction ids this
-// build's loot.json carries (Silverwing Sentinels is 889, Warsong
-// Outriders 890 -- easy to swap, and swapping them hands every Horde
-// bow to Alliance lists). Read off the real build when it is checked
-// out beside the module; skipped otherwise.
+// The battleground reputations' sides, keyed by the client's faction ids
+// (round 10, items lane S 34e994332): Faction 1.60.1.70707 889 is Warsong
+// Outriders under Horde Forces 892, 890 Silverwing Sentinels under Alliance
+// Forces 891. The fork's own factions table names the two the other way
+// round; loot.json used to follow it and now keeps the client's ids.
+func TestRepSideFollowsTheClientFactionIDs(t *testing.T) {
+	want := map[int]string{889: "horde", 890: "alliance", 510: "horde", 509: "alliance", 729: "horde", 730: "alliance", 2798: "horde", 2799: "alliance"}
+	for id, side := range want {
+		if got := repSide[id]; got != side {
+			t.Errorf("repSide[%d] = %q, want %q", id, got, side)
+		}
+	}
+}
+
+// The same sides read off the active build's loot.json. The committed
+// loot.json predates the items lane's fix (the data run is held), so until
+// that run lands it still carries Warsong Outriders under 890 and the check
+// waits for it rather than pinning held output.
 func TestRepSideMatchesTheBuildsFactionIDs(t *testing.T) {
-	b, err := os.ReadFile(filepath.Join("..", "..", "..", "data", "builds", "1.60.1.70009", "loot.json"))
+	b, err := os.ReadFile(filepath.Join(activeBuildDir(t), "loot.json"))
 	if err != nil {
 		t.Skip("no real build beside the module: " + err.Error())
 	}
 	var f lootFile
 	if err := json.Unmarshal(b, &f); err != nil {
 		t.Fatal(err)
+	}
+	for _, src := range f.Sources {
+		if src.Kind == "rep" && src.Name == "Warsong Outriders" && src.FactionID == 890 {
+			t.Skip("awaiting the next data run: the committed loot.json still carries Warsong Outriders under 890")
+		}
 	}
 	want := map[string]string{"Warsong Outriders": "horde", "The Defilers": "horde", "Frostwolf Clan": "horde", "Silverwing Sentinels": "alliance", "The League of Arathor": "alliance", "Stormpike Guard": "alliance"}
 	checked := 0
@@ -1256,29 +1274,25 @@ func TestRepSideMatchesTheBuildsFactionIDs(t *testing.T) {
 }
 
 func TestCorrectedRepSourceSwapsWheneverTheItemsOwnRestrictionDisagreesWithTheMinedSide(t *testing.T) {
-	names := map[int]string{889: "Silverwing Sentinels", 890: "Warsong Outriders"}
-	// Scout's Medallion (20442, horde_only) mined under Silverwing
-	// Sentinels/889 (alliance): corrected to Warsong Outriders/890.
-	if id, label, swapped := correctedRepSource("horde", 889, names); !swapped || id != 890 || label != "Warsong Outriders" {
-		t.Errorf("correctedRepSource(horde, 889) = %d, %q, %v, want 890, Warsong Outriders, true", id, label, swapped)
+	names := map[int]string{889: "Warsong Outriders", 890: "Silverwing Sentinels"}
+	// A horde_only reward (Scout's Medallion 20442) mined under Silverwing
+	// Sentinels/890 (alliance): corrected to Warsong Outriders/889.
+	if id, label, swapped := correctedRepSource("horde", 890, names); !swapped || id != 889 || label != "Warsong Outriders" {
+		t.Errorf("correctedRepSource(horde, 890) = %d, %q, %v, want 889, Warsong Outriders, true", id, label, swapped)
 	}
-	// Sentinel's Medallion (20444 AND, separately, 19541 - two
-	// different items, same name and restriction) mined under Warsong
-	// Outriders/890 (horde): corrected to Silverwing Sentinels/889. The
-	// rule is driven by the item's own restriction, not its id, so it
-	// catches every item this shape without needing to enumerate them.
-	if id, label, swapped := correctedRepSource("alliance", 890, names); !swapped || id != 889 || label != "Silverwing Sentinels" {
-		t.Errorf("correctedRepSource(alliance, 890) = %d, %q, %v, want 889, Silverwing Sentinels, true", id, label, swapped)
+	// An alliance_only reward (Sentinel's Medallion 20444, 19541) mined
+	// under Warsong Outriders/889 (horde): corrected to Silverwing
+	// Sentinels/890. The rule is driven by the item's own restriction.
+	if id, label, swapped := correctedRepSource("alliance", 889, names); !swapped || id != 890 || label != "Silverwing Sentinels" {
+		t.Errorf("correctedRepSource(alliance, 889) = %d, %q, %v, want 890, Silverwing Sentinels, true", id, label, swapped)
 	}
-	// An unrestricted item (most items, e.g. Rune of Perfection) is left
-	// alone: there is no restriction to disagree with the mined Side.
+	// An unrestricted item is left alone.
 	if id, _, swapped := correctedRepSource("", 889, names); swapped || id != 889 {
 		t.Errorf("correctedRepSource(\"\", 889) swapped an unrestricted item: id=%d swapped=%v", id, swapped)
 	}
-	// A restriction that already agrees with the mined Side is left
-	// alone (nothing to correct).
-	if id, _, swapped := correctedRepSource("alliance", 889, names); swapped || id != 889 {
-		t.Errorf("correctedRepSource(alliance, 889) swapped an already-consistent item: id=%d swapped=%v", id, swapped)
+	// A restriction that already agrees with the mined side is left alone.
+	if id, _, swapped := correctedRepSource("horde", 889, names); swapped || id != 889 {
+		t.Errorf("correctedRepSource(horde, 889) swapped an already-consistent item: id=%d swapped=%v", id, swapped)
 	}
 }
 

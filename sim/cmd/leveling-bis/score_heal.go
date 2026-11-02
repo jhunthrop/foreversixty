@@ -174,9 +174,11 @@ func (h healEngine) RunPlainDPS(req api.SimRequest) (float64, error) {
 
 // RunPlainDPSWithError is RunPlainDPS with the score's standard error. A
 // healer's ranking runs use healIterationScale times the iterations the
-// caller asked for.
+// caller asked for, up to the most the request layer accepts
+// (api.MaxIterations): the trinket and relic ceiling re-measure would
+// otherwise ask for more and fail.
 func (h healEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64, error) {
-	req.Iterations *= healIterationScale
+	req.Iterations = min(req.Iterations*healIterationScale, api.MaxIterations)
 	result, err := h.measure(req)
 	if err != nil {
 		return 0, 0, err

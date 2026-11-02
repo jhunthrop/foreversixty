@@ -288,3 +288,19 @@ func TestAttachHealerFieldsMeasuresTheSetAtBothTuningBounds(t *testing.T) {
 		t.Error("measuring at the bounds changed the engine's profile")
 	}
 }
+
+// Round 10: a healer's ceiling re-measure (trinketGainAdaptiveIterationCeiling,
+// 2000) scaled by healIterationScale asked for 14000 iterations, which the
+// request layer refuses (api.MaxIterations). Every healer trinket and relic
+// whose quick gain was not yet significant then published empty: Holy
+// paladin's Libram of Infusion at 60. The scaled count stops at the cap.
+func TestHealEngineNeverAsksForMoreThanTheRequestLayerAllows(t *testing.T) {
+	backend := &fakeHealing{result: healingResult(500, 600, 150)}
+	engine := healEngine{backend: backend, profile: testHealProfile(t)}
+	if _, _, err := engine.RunPlainDPSWithError(api.SimRequest{Iterations: trinketGainAdaptiveIterationCeiling}); err != nil {
+		t.Fatal(err)
+	}
+	if got := backend.requests[0].Iterations; got != api.MaxIterations {
+		t.Errorf("ran %d iterations, want the cap %d", got, api.MaxIterations)
+	}
+}

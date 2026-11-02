@@ -2817,3 +2817,27 @@ func TestBuildReportKeepsAStatTrinketTheWeightsValueWhenItsGainIsNoisy(t *testin
 		}
 	}
 }
+
+// Round 9's crit split (engine 497deb4fc): an item's crit rating still
+// reaches every table, but Agility feeds melee and ranged crit only and
+// Intellect spell crit only, so the report must not call crit one stat.
+func TestWriteMarkdownStatesTheCritSplit(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "mage-fire.md")
+	spec := specInfo{Spec: "mage-fire", Name: "Fire", ReferenceStat: "spell_power"}
+	if err := writeMarkdown(path, spec, nil); err != nil {
+		t.Fatalf("writeMarkdown: %v", err)
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	md := string(b)
+	if strings.Contains(md, "likewise crit") {
+		t.Errorf("report still calls crit one unified stat:\n%s", md)
+	}
+	for _, want := range []string{"crit rating reaches every table", "Agility raises melee", "Intellect"} {
+		if !strings.Contains(md, want) {
+			t.Errorf("report lacks %q:\n%s", want, md)
+		}
+	}
+}

@@ -11,8 +11,10 @@ on its own side.
 """
 
 import json
+from pathlib import Path
 
 from pipeline.loot.client_rep import apply_client_reputations, load_item_reputations
+from pipeline.loot.content_phases import apply_content_phases, load_content_phases
 from pipeline.models import ItemReputation, LootFile, LootSource
 
 THERAMORE = ItemReputation(
@@ -49,11 +51,43 @@ def test_an_unsourced_reputation_reward_gets_its_rep_source_and_side():
     assert added == 1
 
 
-def test_a_vendor_item_gets_the_rep_source_beside_its_vendor_and_its_side():
-    out, _ = apply_client_reputations(document(CREEG), {272096: DARKSPEAR}, {272096})
-    ids = {s.id for s in out.sources}
-    assert {"vendor:263570", "rep:darkspear-raiders:exalted"} <= ids
+def test_a_vendor_item_keeps_its_vendor_as_its_way_in_and_gets_its_side():
+    """Round 10: a rep source beside the vendor that sells the item is a
+    second way in that no gate on the vendor closes. The vendor is where the
+    item comes from; the ranker holds it to the client standing
+    (sim/cmd/leveling-bis reputation.go), so only the side is added."""
+    out, added = apply_client_reputations(document(CREEG), {272096: DARKSPEAR}, {272096})
+    assert [s.id for s in out.sources] == ["vendor:263570"]
     assert out.factions["272096"] == "horde"
+    assert added == 0
+
+
+SEA_GIANTS_TOE_RING = 274746
+BOOTY_BAY = ItemReputation(faction_id=21, standing="friendly", faction_name="Booty Bay")
+GEZZY = LootSource(
+    id="vendor:265575",
+    kind="vendor",
+    name="Gezzy Gunkgear",
+    npc_id=265575,
+    items=[SEA_GIANTS_TOE_RING],
+)
+
+
+def test_a_gated_vendors_reputation_stock_stays_gated():
+    """Round 10: Gezzy Gunkgear (forever-new-vendors, gated 'later') sells
+    Sea Giant's Toe Ring at Booty Bay Friendly (ItemSparse 70707
+    MinFactionID 21, MinReputation 4). The client reputation source must not
+    open what the vendor's gate closes."""
+    out, _ = apply_client_reputations(
+        document(GEZZY), {SEA_GIANTS_TOE_RING: BOOTY_BAY}, {SEA_GIANTS_TOE_RING}
+    )
+    gated, _ = apply_content_phases(out, load_content_phases(Path("curated")))
+    open_ways = [
+        source.id
+        for source in gated.sources
+        if SEA_GIANTS_TOE_RING in (source.items or []) and not source.opens
+    ]
+    assert open_ways == []
 
 
 def test_an_item_a_rep_source_already_names_is_left_alone():

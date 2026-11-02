@@ -8,12 +8,20 @@ is the case at launch. Creeg Bothunk sells the Darkspear Raiders set, and
 Wowhead names him. Nothing named a seller of the Theramore Expeditionary Force
 set, so the Alliance half had no source at all.
 
-`apply_client_reputations` gives every such item that no `rep` source names a
+`apply_client_reputations` gives every such item that no source names a
 `rep:<faction>:<standing>` source, the same shape `pipeline.loot.sources`
 builds from the fork. It also records the faction's side in the document's
 `factions`, so each set stays on its own side in loot and in the ranker. An
 item a fork `rep` source already names keeps that source. Neutral gates
 nothing, so a neutral requirement adds no source.
+
+An item another source or a quest already names (a vendor's stock, Creeg
+Bothunk's Darkspear Raiders set) gets its side and no rep source (round 10).
+That source is where the item comes from, and the ranker holds every source
+to the item's own client standing (`sim/cmd/leveling-bis` reputation.go). A
+rep source beside it was a second way in that no gate on the vendor closes:
+the gated Undermine traders' Booty Bay, Ratchet, Gadgetzan and Everlook
+stock opened through it.
 """
 
 from __future__ import annotations
@@ -45,6 +53,20 @@ def _rep_source_id(reputation: ItemReputation) -> str:
     return f"{REP_KIND}:{slugify(reputation.faction_name or '')}:{reputation.standing}"
 
 
+def _named_by_another_way(document: LootFile) -> set[int]:
+    """Every item a non-rep source (items, trash or a boss) or a quest names."""
+    named: set[int] = set()
+    for source in document.sources:
+        if source.kind == REP_KIND:
+            continue
+        named.update(source.items or [])
+        named.update(source.trash or [])
+        for boss in source.bosses or []:
+            named.update(boss.items)
+    named.update(int(item_id) for item_id in document.quests)
+    return named
+
+
 def apply_client_reputations(
     document: LootFile,
     reputations: Mapping[int, ItemReputation],
@@ -58,6 +80,7 @@ def apply_client_reputations(
         if source.kind == REP_KIND
         for item_id in source.items or []
     }
+    sourced_elsewhere = _named_by_another_way(document)
     added: dict[str, set[int]] = defaultdict(set)
     by_source: dict[str, ItemReputation] = {}
     factions = dict(document.factions)
@@ -69,11 +92,13 @@ def apply_client_reputations(
             or reputation.standing == UNGATED_STANDING
         ):
             continue
+        if reputation.side is not None:
+            factions.setdefault(str(item_id), reputation.side)
+        if item_id in sourced_elsewhere:
+            continue
         source_id = _rep_source_id(reputation)
         added[source_id].add(item_id)
         by_source[source_id] = reputation
-        if reputation.side is not None:
-            factions.setdefault(str(item_id), reputation.side)
     sourced = sum(len(items) for items in added.values())
     sources = []
     for source in document.sources:
