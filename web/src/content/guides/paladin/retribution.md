@@ -48,7 +48,7 @@ Retribution is the Paladin melee damage tree: keep a Seal up, Judge on cooldown,
 ### Weaknesses
 
 - Exorcism works only against Undead and Demons
-- Consecration costs too much mana on a single target without raid mana support
+- Consecration is the most expensive button, and on a single target it pays only when paced against your mana
 - Every Seal recast costs a global and over 200 mana, so swapping Seals only pays with Unsealed Wrath and raid mana
 
 ### In a raid
@@ -70,7 +70,7 @@ Apply Seal of Righteousness about a second and a half before the pull so it is a
 
 Without Unsealed Wrath this rotation does not seal-twist. Older community guides for 1.12 Retribution describe alternating Seal of Righteousness and Seal of Command swing-by-swing for a DPS gain. In Forever that twist loses damage on its own: casting a new Seal fully replaces the one that was up, so no swing benefits from both, and each recast costs a full global and over 200 mana at level 60. In our simulator, dropping the swing-by-swing twist and spending those globals on Holy Strike instead was worth about +23%. Keep Seal of Righteousness up and spend every other global on Judgement, Exorcism, Hammer of Wrath and Holy Strike in that priority order. With Unsealed Wrath, the swap described under Talents sits just ahead of the Seal refresh, and it waits whenever you are below 30% mana.
 
-Consecration, part of Forever's baseline kit, is absent from the leveling and bare rotation above and joins it last in the raid-ready one: against a single target it is a loss on a bare character, where its mana cost (scaling steeply with rank) crowds out Judgement, Exorcism and Holy Strike, but with the raid's mana support the rotation search measured it as a clear gain, about +9% in the raid-ready run, and it holds the bare character level when it is only cast while mana is above 65%. While leveling, or fighting several enemies at once, it is still worth reaching for (see Leveling, below).
+Consecration, part of Forever's baseline kit, comes last, as the filler between the rest. It is the most expensive button you have, so pace it: cast it only while the mana left after it still pays for your Seal, Judgement and Holy Strike, and while your mana is no more than about a fifth behind the share of the fight still to go. Cast freely, it drains your mana and your Seal lapses; held back too far, you end the fight with mana unspent. Below level 60, and at 60 without raid buffs, a lower rank of Consecration does more over the fight than the top rank because each cast costs far less: the rotation casts rank 1 from level 30 to 59 and rank 4 at 60 without raid buffs. While leveling, or fighting several enemies at once, it is worth more still (see Leveling, below).
 
 ## Stat priority
 
@@ -88,4 +88,4 @@ Blacksmithing suits Retribution well since it can add sockets to weapons and arm
 
 Retribution is the strong leveling choice for Paladin — it kills things fastest solo of the three specs, which is why it is worth considering even for a character planning to heal or tank later.
 
-Consecration (baseline from level 20, no talent needed) is worth reaching for while leveling even though this page's single-target rotation leaves it out: questing and farming routinely put two or three mobs on you at once, and Consecration's ground effect hits all of them for the one cast and mana cost, which is a better trade than it is against a single raid target.
+Consecration (baseline from level 20, no talent needed) is worth even more while leveling than in this page's single-target rotation: questing and farming routinely put two or three mobs on you at once, and Consecration's ground effect hits all of them for the one cast and mana cost, which is a better trade than it is against a single raid target.
