@@ -49,7 +49,11 @@ from pipeline.models import ConsumableRecord
 from pipeline.normalize import write_json
 from pipeline.normalize.gear import MAX_PLAYER_LEVEL, column_value, int_column, is_junk_name
 from pipeline.normalize.item_curves import load_item_curves
-from pipeline.simdb.enchants import build_sim_enchants, ranged_weapon_only_spells
+from pipeline.simdb.enchants import (
+    build_sim_enchants,
+    melee_weapon_only_spells,
+    ranged_weapon_only_spells,
+)
 from pipeline.simdb.equip import (
     area_conditional_spells,
     equip_bonuses,
@@ -330,13 +334,15 @@ def build_sim_database(
         block_values.update(shield_block_values(wh.load_items(wowhead_path)))
     items = with_shield_block(items, block_values)
 
+    equipped_items = _optional(raw, "SpellEquippedItems")
     database = pb.SimDatabase(
         items=items,
         enchants=build_sim_enchants(
             read_csv(raw / "SpellItemEnchantment.csv"),
             effects_by_spell,
             rating_factors,
-            ranged_weapon_only_spells(_optional(raw, "SpellEquippedItems")),
+            ranged_weapon_only_spells(equipped_items),
+            melee_weapon_only_spells(equipped_items),
         ),
     )
     consumables = build_consumables(sparse_rows, item_rows, item_effect_rows, link_rows)

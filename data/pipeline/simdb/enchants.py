@@ -79,6 +79,29 @@ def ranged_weapon_only_spells(equipped_item_rows: Iterable[dict[str, str]]) -> s
     return out
 
 
+#: SpellEquippedItems' EquippedItemSubclass bits of every weapon but the
+#: ranged ones and the fishing pole (20).
+MELEE_WEAPON_SUBCLASS_MASK = ((1 << 21) - 1) & ~RANGED_WEAPON_SUBCLASS_MASK & ~(1 << 20)
+#: What a melee-weapon-only equip spell leaves to the engine: its hit. A
+#: stone's aura 54 is melee and ranged hit, and simdb's one hit stat reaches
+#: spells; its crit (aura 52) has a melee-and-ranged stat of its own.
+MELEE_WEAPON_BOUND_KEYS = frozenset({"hit", "spell_hit"})
+
+
+def melee_weapon_only_spells(equipped_item_rows: Iterable[dict[str, str]]) -> set[int]:
+    """The spells SpellEquippedItems restricts to melee weapons alone."""
+    out: set[int] = set()
+    for row in equipped_item_rows:
+        mask = int(row["EquippedItemSubclass"])
+        if (
+            row["EquippedItemClass"] == ITEM_CLASS_WEAPON
+            and mask
+            and not mask & ~MELEE_WEAPON_SUBCLASS_MASK
+        ):
+            out.add(int(row["SpellID"]))
+    return out
+
+
 class EnchantDataError(ValueError):
     """An enchant row states something this module will not guess at."""
 
@@ -109,6 +132,7 @@ def build_sim_enchants(
     effects_by_spell: dict[int, list[dict[str, str]]],
     rating_factors: dict[str, float],
     ranged_weapon_spells: Container[int] = frozenset(),
+    melee_weapon_spells: Container[int] = frozenset(),
 ) -> list[pb.SimEnchant]:
     """`rating_factors` is `ratings.load_rating_factors`'s output. A direct
     `EFFECT_STAT` slot states a combat-rating amount for hit, crit, dodge,
@@ -122,6 +146,10 @@ def build_sim_enchants(
     every table, or every melee and ranged attack), so the engine applies it
     to ranged attacks (sim/common/enchant_effects.go) and the row carries none
     of it.
+
+    `melee_weapon_spells` (`melee_weapon_only_spells`) are equip spells the
+    client restricts to melee weapons: a sharpening stone. Their hit is left
+    to the engine (Blackfathom Sharpening Stone 7098), their other stats stay.
     """
     enchants: list[pb.SimEnchant] = []
     for row in sorted(enchant_rows, key=lambda r: int(r["ID"])):
@@ -148,14 +176,23 @@ def build_sim_enchants(
                     pairs.append((key, amount))
         if equip_spell_ids:
             bonus = spell_bonus(equip_spell_ids, effects_by_spell)
-            free = [spell for spell in equip_spell_ids if spell not in ranged_weapon_spells]
-            bound = [spell for spell in equip_spell_ids if spell in ranged_weapon_spells]
-            pairs.extend(spell_bonus(free, effects_by_spell).stats.items())
-            pairs.extend(
-                (key, amount)
-                for key, amount in spell_bonus(bound, effects_by_spell).stats.items()
-                if key not in WEAPON_BOUND_KEYS
-            )
+            for spells, bound_keys in (
+                ([s for s in equip_spell_ids if s in ranged_weapon_spells], WEAPON_BOUND_KEYS),
+                ([s for s in equip_spell_ids if s in melee_weapon_spells], MELEE_WEAPON_BOUND_KEYS),
+                (
+                    [
+                        s
+                        for s in equip_spell_ids
+                        if s not in ranged_weapon_spells and s not in melee_weapon_spells
+                    ],
+                    frozenset(),
+                ),
+            ):
+                pairs.extend(
+                    (key, amount)
+                    for key, amount in spell_bonus(spells, effects_by_spell).stats.items()
+                    if key not in bound_keys
+                )
             _warn_unrepresentable(row["ID"], bonus)
         enchants.append(pb.SimEnchant(effect_id=int(row["ID"]), stats=stat_array(pairs)))
     return enchants
