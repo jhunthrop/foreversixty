@@ -299,20 +299,21 @@ func TestABookRankIDResolvesToTheHighestTrainerRankLearned(t *testing.T) {
 	}
 }
 
-// Shred rank 1 is learned at 22 by the pinned engine, 20 by the client row.
+// Primal Bite rank 2 (1238069) is learned at 50 by the pinned engine; the
+// table's row says 36.
 func TestRankLevelOverrideGatesARankAtTheEnginesLevel(t *testing.T) {
-	const excerpt = `{"build":"x","classes":{"druid":{"Shred":[
-	  {"id":5221,"rank":1,"level":20},
-	  {"id":6800,"rank":2,"level":30}]}}}`
+	const excerpt = `{"build":"x","classes":{"druid":{"Primal Bite":[
+	  {"id":407995,"rank":1,"level":25},
+	  {"id":1238069,"rank":2,"level":36}]}}}`
 	table, err := parseSpellRanks([]byte(excerpt))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, ok := highestLearnedIn(table["druid"], 6800, 20); ok {
-		t.Error("Shred is learned at level 22 by the engine, not at 20")
+	if got, ok := highestLearnedIn(table["druid"], 1238069, 49); !ok || got != 407995 {
+		t.Errorf("Primal Bite at level 49: got (%d, %v), want rank 1 (407995, true)", got, ok)
 	}
-	if got, ok := highestLearnedIn(table["druid"], 6800, 22); !ok || got != 5221 {
-		t.Errorf("Shred at level 22: got (%d, %v), want (5221, true)", got, ok)
+	if got, ok := highestLearnedIn(table["druid"], 1238069, 50); !ok || got != 1238069 {
+		t.Errorf("Primal Bite at level 50: got (%d, %v), want (1238069, true)", got, ok)
 	}
 }
 
@@ -379,5 +380,17 @@ func TestMutilateRankOneIsLearnedAtThirty(t *testing.T) {
 	}
 	if got, _ := HighestLearnedSpellID("rogue", 1241584, 40); got != 399956 {
 		t.Errorf("Mutilate at 40: got %d, want 399956", got)
+	}
+}
+
+// Shred rank 1 (5221) is learned at 20: the client row, Wowhead Forever's
+// "Requires level 20" and Blizzard's 15 October beta notes agree, and the
+// engine registers it there since lane/r8-hybrids.
+func TestShredRankOneIsLearnedAtTwenty(t *testing.T) {
+	if got, ok := HighestLearnedSpellID("druid", 9830, 20); !ok || got != 5221 {
+		t.Errorf("Shred at level 20: got (%d, %v), want (5221, true)", got, ok)
+	}
+	if _, ok := HighestLearnedSpellID("druid", 9830, 19); ok {
+		t.Error("Shred is learned at level 19")
 	}
 }
