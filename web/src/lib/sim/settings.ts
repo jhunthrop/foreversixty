@@ -6,7 +6,13 @@ import { durationLabel, encounterLabel } from './encounter';
 import { applyFightStyle, DEFAULT_STYLE_ID, type FightStyleId } from './styles';
 import raidPreset from '../../data/generated/raid-preset.json';
 import { bareSetAt, raidSetAt } from './preset-sets';
-import { DEFAULT_ENCOUNTER, TARGET_TYPE_IDS, type CooldownSpec, type EncounterSpec } from './types';
+import {
+  DEFAULT_ENCOUNTER,
+  TARGET_TYPE_IDS,
+  type CooldownSpec,
+  type EncounterSpec,
+  type RequestPreset,
+} from './types';
 
 export { durationLabel, encounterLabel };
 
@@ -137,7 +143,17 @@ export const RAID_BUFFS: readonly string[] = [...raidPreset.buffs, ...raidPreset
 type StaticPresetId = Exclude<BuffPresetId, 'custom'>;
 
 /** The ranker's preset names (sim/request RaidPreset and BarePreset) to the page's ids. */
-const PAGE_PRESET: Readonly<Record<string, StaticPresetId>> = { raid: 'raid-buffed', bare: 'bare' };
+const PAGE_PRESET: Readonly<Record<RequestPreset, StaticPresetId>> = { raid: 'raid-buffed', bare: 'bare' };
+
+/**
+ * The request's `preset` for the page's pick, the one the engine picks spell ranks under
+ * (round 9). Custom names none: a hand-built buff list is nobody's preset, so the engine
+ * follows the preset the character's level is published under.
+ */
+export function requestPresetOf(preset: BuffPresetId): RequestPreset | undefined {
+  if (preset === 'custom') return undefined;
+  return (Object.keys(PAGE_PRESET) as RequestPreset[]).find((name) => PAGE_PRESET[name] === preset);
+}
 
 /**
  * The preset the published number at `level` is simmed under (owner ruling, round 6): the
@@ -147,7 +163,7 @@ const PAGE_PRESET: Readonly<Record<string, StaticPresetId>> = { raid: 'raid-buff
  */
 export function publishedPresetAt(level: number): StaticPresetId {
   const row = raidPreset.published.filter((entry) => entry.from_level <= level).at(-1);
-  const preset = row === undefined ? undefined : PAGE_PRESET[row.preset];
+  const preset = row === undefined ? undefined : PAGE_PRESET[row.preset as RequestPreset];
   if (preset === undefined) throw new Error(`no published preset for level ${level}`);
   return preset;
 }

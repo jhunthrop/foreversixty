@@ -21,7 +21,7 @@ import { EMPTY_ESTIMATE } from './estimate';
 import { precisionOf, precisionPlan, STEP_ITERATIONS, type PrecisionId } from './precision';
 import { settingsFromRequest } from './request-json';
 import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunInput, type RunUpdate } from './run';
-import { encounterFor, type SimSettings } from './settings';
+import { encounterFor, requestPresetOf, type SimSettings } from './settings';
 import type { SourceResult } from './sources';
 import type { SimPhase } from './store.svelte';
 import type { SimRequest, SimResult } from './types';
@@ -179,6 +179,7 @@ export function createRequestMethods(deps: StoreRequestDeps): RequestMethods {
         iterations: plan.iterations,
         targetError: plan.targetError,
         stepIterations: plan.step,
+        preset: requestPresetOf(settings.preset),
       });
     },
 

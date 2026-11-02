@@ -12,7 +12,15 @@
 import { simCopy } from './copy';
 import { combineEstimate, EMPTY_ESTIMATE, type ShardProgress } from './estimate';
 import { relativeError } from './precision';
-import type { CharacterSource, CharacterSpec, EncounterSpec, Estimate, SimRequest, SimResult } from './types';
+import type {
+  CharacterSource,
+  CharacterSpec,
+  EncounterSpec,
+  Estimate,
+  RequestPreset,
+  SimRequest,
+  SimResult,
+} from './types';
 import { STEP_ITERATIONS_DEFAULT } from './types';
 import { ENGINE_VERSION } from './version';
 import type { SimPool } from './worker';
@@ -60,6 +68,8 @@ export interface RunInput {
   stepIterations?: number;
   /** Asks a healer or tank for its role's figure (`SimRequest.role_metrics`). */
   roleMetrics?: boolean;
+  /** The preset the rotation picks its ranks under (`SimRequest.preset`); omitted when unset. */
+  preset?: RequestPreset;
 }
 
 export interface RunUpdate {
@@ -91,7 +101,8 @@ export function buildSimRequest(input: RunInput): SimRequest {
   // request that carries the key with a zero in it reads, in the drawer and in a share
   // URL, as a deliberate choice rather than as today's fixed-count run.
   const withTarget = (input.targetError ?? 0) > 0 ? { ...request, target_error: input.targetError } : request;
-  return input.roleMetrics === true ? { ...withTarget, role_metrics: true } : withTarget;
+  const withMetrics = input.roleMetrics === true ? { ...withTarget, role_metrics: true } : withTarget;
+  return input.preset === undefined ? withMetrics : { ...withMetrics, preset: input.preset };
 }
 
 let runCounter = 0;

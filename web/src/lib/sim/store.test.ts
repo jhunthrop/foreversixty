@@ -6,10 +6,11 @@ import {
   NEW_SIM_ID,
   createSimApi,
   envelope,
+  failure,
   fixtureResult,
 } from '../../test-support/sim-api';
 import { simCopy } from './copy';
-import { withTargets } from './settings';
+import { withPreset, withTargets, type BuffPresetId } from './settings';
 import { createSimStore } from './store.svelte';
 import { createFakeWorker } from '../../test-support/fake-worker';
 import type { SimRequest } from './types';
@@ -248,6 +249,72 @@ describe('createSimStore', () => {
     const messageBefore = sim.message;
     expect(await sim.save('My title')).toBeNull();
     expect(sim.message).toBe(messageBefore);
+  });
+
+  // Round 9 (ranks lane): the engine picks spell ranks per preset, and a request with no
+  // preset gets the published one (raid at 60). Every page path sends the player's pick.
+  describe('the rank preset', () => {
+    function recordingStore(sent: string[]) {
+      return createSimStore({
+        treeVersion: '1.15.9.69722',
+        apiBase: 'https://api.test',
+        serverPollMs: 1,
+        pool: createPool({
+          hardwareConcurrency: 1,
+          spawn: () => {
+            const worker = fakeWorker();
+            return {
+              ...worker,
+              postMessage: (message) => {
+                if (message.kind === 'split') sent.push(message.request);
+                worker.postMessage(message);
+              },
+            };
+          },
+        }),
+      });
+    }
+
+    function pick(sim: ReturnType<typeof createSimStore>, preset: BuffPresetId): void {
+      const character = sim.character;
+      if (character === null) throw new Error('no character loaded');
+      sim.setSettings(withPreset(sim.settings, preset, character.spec, character.level));
+    }
+
+    function presetOf(json: string): unknown {
+      return (JSON.parse(json) as SimRequest).preset;
+    }
+
+    it('a bare pick runs bare in the browser, the drawer and on the server', async () => {
+      const sent: string[] = [];
+      const sim = recordingStore(sent);
+      await sim.loadAddon(FURY);
+      pick(sim, 'bare');
+      expect(sim.buildRequest()?.preset).toBe('bare');
+      await sim.run();
+      expect(sent.map(presetOf)).toContain('bare');
+
+      let serverBody: unknown = null;
+      api.route({
+        method: 'POST',
+        pattern: /\/v1\/sims\/run$/,
+        respond: async (_match, request) => {
+          serverBody = await request.json();
+          return failure('premium required', 402);
+        },
+      });
+      await sim.runOnServer();
+      expect((serverBody as SimRequest | null)?.preset).toBe('bare');
+    });
+
+    it('Raid-buffed sends raid, and Custom sends none', async () => {
+      const sim = recordingStore([]);
+      await sim.loadAddon(FURY);
+      pick(sim, 'raid-buffed');
+      expect(sim.buildRequest()?.preset).toBe('raid');
+      pick(sim, 'custom');
+      expect(sim.buildRequest() !== null && 'preset' in sim.buildRequest()!).toBe(false);
+    });
   });
 
   describe('runOnServer', () => {
