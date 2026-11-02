@@ -28,9 +28,10 @@ STAT_BY_MODIFIER_ID id raises rather than vanishes.
 from __future__ import annotations
 
 import logging
+from collections.abc import Container, Iterable
 
 from pipeline.normalize.gear import RESISTANCE_KEYS, STAT_BY_MODIFIER_ID
-from pipeline.simdb.equip import SpellBonus, spell_bonus
+from pipeline.simdb.equip import CRIT_KEYS, SpellBonus, spell_bonus
 from pipeline.simdb.ratings import convert_rating_stats
 from pipeline.simdb.statmap import stat_array
 from pipeline.simproto import pb
@@ -52,6 +53,30 @@ ENCHANT_RESISTANCE_BY_INDEX: dict[int, str] = {
     ARMOR_RESISTANCE_INDEX: "armor",
     **RESISTANCE_KEYS,
 }
+
+
+#: The stats a ranged-weapon-only equip spell gives that weapon's attacks
+#: alone (`build_sim_enchants`).
+WEAPON_BOUND_KEYS = frozenset({"hit", "spell_hit", *CRIT_KEYS})
+
+#: SpellEquippedItems' EquippedItemSubclass bits of the ranged weapons:
+#: bow 2, gun 3, thrown 16, crossbow 18, wand 19.
+RANGED_WEAPON_SUBCLASS_MASK = (1 << 2) | (1 << 3) | (1 << 16) | (1 << 18) | (1 << 19)
+ITEM_CLASS_WEAPON = "2"
+
+
+def ranged_weapon_only_spells(equipped_item_rows: Iterable[dict[str, str]]) -> set[int]:
+    """The spells SpellEquippedItems restricts to ranged weapons alone."""
+    out: set[int] = set()
+    for row in equipped_item_rows:
+        mask = int(row["EquippedItemSubclass"])
+        if (
+            row["EquippedItemClass"] == ITEM_CLASS_WEAPON
+            and mask
+            and not mask & ~RANGED_WEAPON_SUBCLASS_MASK
+        ):
+            out.add(int(row["SpellID"]))
+    return out
 
 
 class EnchantDataError(ValueError):
@@ -83,12 +108,20 @@ def build_sim_enchants(
     enchant_rows: list[dict[str, str]],
     effects_by_spell: dict[int, list[dict[str, str]]],
     rating_factors: dict[str, float],
+    ranged_weapon_spells: Container[int] = frozenset(),
 ) -> list[pb.SimEnchant]:
     """`rating_factors` is `ratings.load_rating_factors`'s output. A direct
     `EFFECT_STAT` slot states a combat-rating amount for hit, crit, dodge,
     parry, block and defense (see `pipeline/simdb/ratings.py`); an equip
     spell's aura (`spell_bonus`, below) already states a flat percentage and
     is never converted.
+
+    `ranged_weapon_spells` (`ranged_weapon_only_spells`) are equip spells the
+    client restricts to ranged weapons: a scope's hit or crit reaches the
+    scoped weapon's attacks only, which no SimEnchant stat can say (they are
+    every table, or every melee and ranged attack), so the engine applies it
+    to ranged attacks (sim/common/enchant_effects.go) and the row carries none
+    of it.
     """
     enchants: list[pb.SimEnchant] = []
     for row in sorted(enchant_rows, key=lambda r: int(r["ID"])):
@@ -115,7 +148,14 @@ def build_sim_enchants(
                     pairs.append((key, amount))
         if equip_spell_ids:
             bonus = spell_bonus(equip_spell_ids, effects_by_spell)
-            pairs.extend(bonus.stats.items())
+            free = [spell for spell in equip_spell_ids if spell not in ranged_weapon_spells]
+            bound = [spell for spell in equip_spell_ids if spell in ranged_weapon_spells]
+            pairs.extend(spell_bonus(free, effects_by_spell).stats.items())
+            pairs.extend(
+                (key, amount)
+                for key, amount in spell_bonus(bound, effects_by_spell).stats.items()
+                if key not in WEAPON_BOUND_KEYS
+            )
             _warn_unrepresentable(row["ID"], bonus)
         enchants.append(pb.SimEnchant(effect_id=int(row["ID"]), stats=stat_array(pairs)))
     return enchants

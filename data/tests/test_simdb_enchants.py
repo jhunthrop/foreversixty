@@ -162,3 +162,45 @@ def test_the_1_60_1_70291_school_enchants_read_as_fire_power_and_spell_penetrati
     assert built[8700].stats[pb.Stat.Value("StatFirePower")] == 4.0
     assert built[8706].stats[pb.Stat.Value("StatSpellPenetration")] == 2.0
     assert built[8714].stats[pb.Stat.Value("StatSpellPenetration")] == 3.0
+
+
+def _scope_row(enchant_id: int, spell_id: int) -> dict[str, str]:
+    row = {f"Effect_{slot}": "0" for slot in range(3)}
+    row |= {f"EffectPointsMin_{slot}": "0" for slot in range(3)}
+    row |= {f"EffectArg_{slot}": "0" for slot in range(3)}
+    return row | {"ID": str(enchant_id), "Effect_0": "3", "EffectArg_0": str(spell_id)}
+
+
+def _aura(spell_id: int, aura: int, amount: int) -> dict[str, str]:
+    return {
+        "SpellID": str(spell_id),
+        "Effect": "6",
+        "EffectAura": str(aura),
+        "EffectBasePointsF": str(amount),
+        "EffectMiscValue_0": "0",
+        "DifficultyID": "0",
+    }
+
+
+def test_a_ranged_weapon_enchants_hit_and_crit_are_left_to_the_engine():
+    """1.60.1.70707's scopes state their bonus as an equip spell restricted
+    to ranged weapons (SpellEquippedItems: class 2, subclass mask 262156,
+    bow, gun and crossbow): SAF-T Ultra Precision Scope's 8720 "+2% Crit" is
+    1310308 "Ranged Crit Bonus +02" (aura 290, 2); Biznicks 247x128
+    Accurascope's 2523 and Poultry Precision Scope's 8057 are 22780 "Ranged
+    Hit Bonus +3" (aura 54, 3, the same restriction). That
+    bonus reaches the scoped weapon's attacks only, and SimEnchant's stats
+    are every table (or every melee and ranged attack), so the engine applies
+    it to ranged attacks (sim/common/enchant_effects.go) and simdb carries
+    none of it; 2523 was counted twice, as 3% hit on every table and 3% on
+    ranged attacks."""
+    rows = [_scope_row(8720, 1310308), _scope_row(2523, 22780), _scope_row(8057, 22780)]
+    effects = index_spell_effects([_aura(1310308, 290, 2), _aura(22780, 54, 3)])
+    built = {
+        row.effect_id: row
+        for row in build_sim_enchants(
+            rows, effects, RATING_FACTORS, ranged_weapon_spells={1310308, 22780}
+        )
+    }
+    for enchant_id in (8720, 2523, 8057):
+        assert not any(built[enchant_id].stats), enchant_id
