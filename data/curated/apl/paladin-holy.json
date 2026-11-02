@@ -1,7 +1,7 @@
 {
   "spec": "paladin-holy",
   "state": "written",
-  "notes": "Written for the fork's healing sim (sim/healsim: the healer is raid player 0, players 1-4 its party, player 5 the tank). Flash of Light is the staple, Holy Light covers a tank below 40 percent behind Divine Favor, and the instant Holy Shock and a second Holy Light line spend mana only while it is no further behind the fight clock than five points (currentManaPercent against remainingTimePercent). The paced lines open when the mana bar is no further behind the fight clock than five points: a healer with spare mana reaches them often, and a healer short of mana only now and then (Holy Shock at a fixed threshold, with no pacing, healed less than the paced line). Light's Vigil (a party heal through the next Holy Shock on its target, 1340 mana at level 60) is in the engine but left out of this rotation: it lowered effective HPS by 2 to 9 percent in every variant tried, because the profile's raid pulses (300 damage on three members) are too small for a five-target heal that costs as much mana as almost ten Flash of Lights. Ranks follow one rule, stated in design/reviews/2026-10-08-healer-mana-audit.md: starting from the top ranks, a lower rank (never one learned below level 20) is taken for a spell when it raises the ranker's guarded score by more than two percent, the biggest gain first, the tank's casts and the party members' casts counted apart, and compared on the raid gear the ranker published for the list being tried. The engine states the client's own numbers for every rank with no downrank penalty, so a lower rank is a statement about this profile, not a measurement of the game. The site runs this list as written at band 60 and lifts every ranked spell to the highest rank learned below it. Here that is Holy Shock at rank 1 and Flash of Light at rank 4 on the four party members; every other spell keeps its top rank. The comparison is repeated on the gear each new list makes the ranker choose until no spell moves. No Blessing of Light before the pull: Forever removed Blessing of Light and Greater Blessing of Light (round 6 pipeline P5, the 70707 hotfix push). Spirit regeneration, mp5 and the five second rule are the engine's own formulas (the client publishes no spirit regeneration table). Every healer number comes from the engine's fake raid, not from a boss fight. Round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md): the heal profile's raid-wide pulses now land on the healer as well, three of the five members of the group a pulse. You are healed like the other four party members.",
+  "notes": "Written for the fork's healing sim (sim/healsim: the healer is raid player 0, players 1-4 its party, player 5 the tank). Flash of Light is the staple, Holy Light covers a tank below 40 percent behind Divine Favor, and the instant Holy Shock and a second Holy Light line spend mana only while it is no further behind the fight clock than five points (currentManaPercent against remainingTimePercent). The paced lines open when the mana bar is no further behind the fight clock than five points: a healer with spare mana reaches them often, and a healer short of mana only now and then (Holy Shock at a fixed threshold, with no pacing, healed less than the paced line). Light's Vigil (a party heal through the next Holy Shock on its target, 1340 mana at level 60) is in the engine but left out of this rotation: it lowered effective HPS by 2 to 9 percent in every variant tried, because the profile's raid pulses (300 damage on three members) are too small for a five-target heal that costs as much mana as almost ten Flash of Lights. Ranks follow one rule, stated in design/reviews/2026-10-08-healer-mana-audit.md: starting from the top ranks, a lower rank (never one learned below level 20) is taken for a spell when it raises the ranker's guarded score by more than two percent, the biggest gain first, the tank's casts and the party members' casts counted apart, and compared on the raid gear the ranker published for the list being tried. The engine states the client's own numbers for every rank with no downrank penalty, so a lower rank is a statement about this profile, not a measurement of the game. The site runs this list as written at band 60 and lifts every ranked spell to the highest rank learned below it. Here that is Holy Shock at rank 1 and Flash of Light at rank 4 on the four party members; every other spell keeps its top rank. The comparison is repeated on the gear each new list makes the ranker choose until no spell moves. No Blessing of Light before the pull: Forever removed Blessing of Light and Greater Blessing of Light (round 6 pipeline P5, the 70707 hotfix push). Oath of Light, the Holy talent that took its place, is sworn on the tank before the pull instead (round 7, design/reviews/2026-11-02-sim-audit-round7/healers.md); Holy Shock on the sworn tank gives up Boundless Light's crit, which the extra healing outweighs. Spirit regeneration, mp5 and the five second rule are the engine's own formulas (the client publishes no spirit regeneration table). Every healer number comes from the engine's fake raid, not from a boss fight. Round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md): the heal profile's raid-wide pulses now land on the healer as well, three of the five members of the group a pulse. You are healed like the other four party members.",
   "expected_idle": [
     {
       "id": 1311606,
@@ -28,6 +28,50 @@
           "autocastOtherCooldowns": {}
         },
         "notes": "Mana potions, runes and other consumables the preset brings: the Major Mana Potion and the Demonic Rune, each used whenever it is ready and the bar has room for it. Divine Favor is left to this rotation, not to the autocast, because it is only worth spending on the heal that must not fail."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1328548
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "auraIsActive": {
+                        "auraId": {
+                          "spellId": 1328548
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "remainingTime": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "10s"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Oath of Light stays sworn on the tank: it adds to every Holy Light, Flash of Light and Holy Shock the tank receives, which is most of this list's healing. It is sworn before the pull and lasts five minutes, so it is renewed only in a longer fight."
       },
       {
         "action": {
@@ -697,6 +741,26 @@
               "type": "Player",
               "index": 4
             }
+          }
+        }
+      }
+    ],
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1328548
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-1.5s"
           }
         }
       }

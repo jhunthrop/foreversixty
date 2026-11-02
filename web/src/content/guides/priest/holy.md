@@ -3,7 +3,7 @@ title: Holy Priest in Forever
 classSlug: priest
 spec: holy
 role: healer
-build: 'FS1:1.60.1.70707:priest:gnome:02500303133/03505003030121431/0:'
+build: 'FS1:1.60.1.70707:priest:gnome:00500503103/33505003030121431/0:'
 recommendedRaces: [gnome, troll]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Holy Priest overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -52,10 +52,11 @@ The build spends its deep points in Holy and fills Discipline with the mana and 
 
 - **Holy Specialization, Divine Fury and Improved Renew** open the tree: more critical heals, Heal and Greater Heal cast faster, and a stronger Renew.
 - **Improved Healing** makes the direct heals cheaper, and **Litany of Light** pays mana back when you switch heals instead of repeating one.
-- **Holy Binding** takes the slot of Binding Heal, which the client removed: your Flash Heals on others heal you for half as much. The simulator does not model it (the fight never damages the healer), and nothing else in the rows above Litany of Light measured more healing, so it is the point that keeps you alive.
+- **Twilight Focus** takes all three ranks. Raid-wide damage reaches you while you cast, and every hit costs a Heal or Prayer of Healing part of its casting time; Twilight Focus keeps it 70% of the time (about +2.5% healing in our run, with the points taken from Wand Specialization and Improved Power Word: Shield, which a Holy priest does not cast).
+- **Holy Binding** heals you for half of every Flash Heal you cast on someone else. Raid-wide damage reaches you too, so that healing counts, and nothing else in the rows above Litany of Light measured more.
 - **Spiritual Guidance** turns Spirit into bonus healing, which is why Spirit outranks its raw look on the stat list below.
 - **Spiritual Healing** is a flat multiplier on every heal, and **Prayer of Mending** (with Spirit of Redemption as its prerequisite) is the capstone.
-- In Discipline, **Meditation** keeps part of your regeneration running while you cast and **Mental Strength** lifts Intellect; **Twin Disciplines** and **Improved Power Word: Shield** are the points that open the rows beneath them.
+- In Discipline, **Meditation** keeps part of your regeneration running while you cast and **Mental Strength** takes all five ranks for Intellect; **Twin Disciplines** and Mental Strength are the points that open the rows beneath them.
 
 On the same gear the build with Holy deepest scored ahead of the one with Discipline deepest. Open the planner at [/planner?class=priest](/planner?class=priest) to adjust it.
 
