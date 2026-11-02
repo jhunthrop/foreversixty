@@ -197,3 +197,23 @@ def test_the_merge_night_names_a_new_weapon_imbue_from_the_item_too():
         ["main_hand_imbue:wizard_oil"], [SPELLS, ITEMS], {}, {}, item_tables=[ITEMS]
     )
     assert out.entries["main_hand_imbue:wizard_oil"].icon == "inv_potion_104"
+
+
+# The same audit: 26 committed entries carried a placeholder from a fork spell row, a food's
+# recipe spell (Seal of Kings art on Tender Wolf Steak) or the client's 'temp' (every
+# protection potion), where the item itself has real art.
+def test_a_food_takes_its_items_icon_before_its_recipe_spells():
+    spells = {"tender_wolf_steak": ("Tender Wolf Steak", "spell_shadow_sealofkings")}
+    items = {"tender_wolf_steak": ("Tender Wolf Steak", "inv_misc_food_47")}
+    entries = build_simbuffs(
+        ["food_tender_wolf_steak"], [spells, items], {}, lambda *_: "", item_tables=[items]
+    ).entries
+    assert entries["food_tender_wolf_steak"].icon == "inv_misc_food_47"
+
+
+def test_a_temp_placeholder_loses_to_real_art_and_stands_only_alone():
+    spells = {"mana_potion": ("Mana Potion", "temp"), "lonely": ("Lonely", "temp")}
+    items = {"mana_potion": ("Mana Potion", "inv_potion_76")}
+    entries = build_simbuffs(["lonely", "mana_potion"], [spells, items], {}, lambda *_: "").entries
+    assert entries["mana_potion"].icon == "inv_potion_76"
+    assert entries["lonely"].icon == "temp"

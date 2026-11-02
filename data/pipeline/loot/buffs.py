@@ -45,6 +45,10 @@ _ROW = re.compile(r"^\| `([a-z0-9_]+(?::[a-z0-9_]+)?)` \|", re.M)
 #: A graded buff's stronger grade ("blessing_of_might:improved"): the panel
 #: draws it as its base id's row, so it needs no entry of its own.
 IMPROVED = ":improved"
+#: The enum prefix of every food id; a food takes its item's icon.
+FOOD_PREFIX = "food_"
+#: The client's placeholder icon file, which several fork spell rows carry.
+TEMP_ICON = "temp"
 #: The IDS.md sections whose ids this file covers. "Professions" is
 #: deliberately absent: those are character slugs, not buffs.
 _SECTIONS = ("## Buffs", "## Consumables")
@@ -205,11 +209,16 @@ def joined_name(
     tables: list[NameTable],
     item_tables: list[NameTable],
 ) -> tuple[str, str] | None:
-    """The first table row a spelling of `names` reaches, item tables first
-    for a weapon imbue."""
+    """The first table row a spelling of `names` reaches. A weapon imbue or
+    a food is an item in the player's bag, so the item tables go first for
+    it (a food's same-named recipe spell carries the Seal of Kings icon). A
+    row whose icon is the client's 'temp' placeholder loses to any later
+    row with real art, and is kept only when nothing else names the id."""
     qualified, _ = named_part(buff_id)
-    order = [*item_tables, *tables] if qualified else tables
-    return next((table[n] for n in names for table in order if n in table), None)
+    item_first = qualified or buff_id.startswith(FOOD_PREFIX)
+    order = [*item_tables, *tables] if item_first else tables
+    hits = [table[n] for n in names for table in order if n in table]
+    return next((hit for hit in hits if hit[1] != TEMP_ICON), hits[0] if hits else None)
 
 
 def build_simbuffs(
