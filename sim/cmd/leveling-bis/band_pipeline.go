@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"math"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -174,8 +173,10 @@ func (r bandRanker) finish(fw *factionWork) (*factionRun, error) {
 }
 
 // chooseRun is the index of the run whose final set a faction publishes:
-// runs[0] (the band's preferred weights) unless another run's set measures
-// better than it beyond the combined error at the guard harness.
+// the one that measures highest at the guard harness, runs[0] (the band's
+// preferred weights) on a tie. Every set is simmed at the same seed and
+// iteration count, so the difference between two sets carries far less
+// noise than either set's own error.
 //
 // Round 8: ranking by a geared sweep alone left band rows below the ladder
 // sweep's own ranking (Shadow band 60, Arms raid band 60, the tanks), because
@@ -184,17 +185,14 @@ func (r bandRanker) finish(fw *factionWork) (*factionRun, error) {
 // too, and the better verified set is published.
 func chooseRun(runner engineRunner, spec specInfo, race string, level int, talents string, finals []map[string]slotPick) (int, []float64, error) {
 	scores := make([]float64, len(finals))
-	errs := make([]float64, len(finals))
+	best := 0
 	for i, picks := range finals {
-		score, stdErr, err := measureSet(runner, spec, race, spec.ClassSlug, level, talents, picks)
+		score, _, err := measureSet(runner, spec, race, spec.ClassSlug, level, talents, picks)
 		if err != nil {
 			return 0, nil, fmt.Errorf("measuring run %d's final set: %w", i, err)
 		}
-		scores[i], errs[i] = score, stdErr
-	}
-	best := 0
-	for i := 1; i < len(finals); i++ {
-		if scores[i]-scores[0] > math.Hypot(errs[i], errs[0]) && scores[i] > scores[best] {
+		scores[i] = score
+		if score > scores[best] {
 			best = i
 		}
 	}

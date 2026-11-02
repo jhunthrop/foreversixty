@@ -133,8 +133,10 @@ func TestGearedBandWeightsHandsBackTheLadderSweepItReplaced(t *testing.T) {
 	}
 }
 
-// chooseRun: a faction publishes the first run's set (the geared sweep's)
-// unless another run's set measures better beyond the combined error.
+// chooseRun: a faction publishes the run whose set measures higher. Both
+// sets are simmed at the same seed and iteration count, so their
+// difference carries far less noise than either error alone; a tie keeps the
+// first run (the geared sweep's).
 func TestChooseRunPublishesTheLadderSetWhenItMeasuresBetter(t *testing.T) {
 	head := func(id int) map[string]slotPick {
 		return map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: id}}}}
@@ -145,7 +147,8 @@ func TestChooseRunPublishesTheLadderSetWhenItMeasuresBetter(t *testing.T) {
 		want   int
 	}{
 		{"the ladder set is better beyond error", 110, 1},
-		{"the ladder set is ahead within error", 100.3, 0},
+		{"the ladder set is ahead within either error", 100.3, 1},
+		{"a tie keeps the geared set", 100, 0},
 		{"the ladder set is worse", 90, 0},
 	}
 	for _, tc := range cases {
