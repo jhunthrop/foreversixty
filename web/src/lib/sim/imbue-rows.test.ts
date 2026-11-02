@@ -78,3 +78,30 @@ describe('withImbue', () => {
     expect(start.consumables).toHaveLength(3);
   });
 });
+
+// Round 11: a published preset's weapon enchant the Custom panel cannot show would vanish from
+// view the moment a player switches to Custom, and could not be ticked back.
+describe('every published preset weapon enchant is a row the class sees', () => {
+  it('raid and bare sets, every spec and level row', async () => {
+    const raid = (await import('../../data/generated/raid-consumes.json')).default as Record<
+      string,
+      { consumes: string[] }[]
+    >;
+    const bare = (await import('../../data/generated/bare-preset.json')).default as Record<
+      string,
+      { consumes: string[] }[]
+    >;
+    const missing: string[] = [];
+    for (const table of [raid, bare]) {
+      for (const [spec, rows] of Object.entries(table)) {
+        const offered = new Set(ids(imbueSections(spec.split('-')[0])));
+        for (const row of rows) {
+          for (const id of row.consumes) {
+            if (/^(main|off)_hand_(imbue|stone):/.test(id) && !offered.has(id)) missing.push(`${spec} ${id}`);
+          }
+        }
+      }
+    }
+    expect([...new Set(missing)]).toEqual([]);
+  });
+});
