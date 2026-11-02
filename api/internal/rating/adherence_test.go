@@ -350,15 +350,15 @@ func TestOffRotationTopThree(t *testing.T) {
 		t.Fatal("no fury rotation in the newest data build")
 	}
 	const guid = "Player-Off"
-	const spellRend7, spellOverpower4 = 11574, 11585
+	const spellRend7, spellCleave5 = 11574, 20569 // Fury lists neither (it does list Overpower)
 	casts := castRows(guid,
 		[2]int64{spellBloodthirst4, 20}, [2]int64{spellMightyRagePot, 9},
-		[2]int64{spellHamstring3, 5}, [2]int64{spellOverpower4, 4}, [2]int64{spellRend7, 4},
+		[2]int64{spellHamstring3, 5}, [2]int64{spellCleave5, 4}, [2]int64{spellRend7, 4},
 		[2]int64{spellSunderArmor5, 2})
 	casts = append(casts, castRows("Player-Else", [2]int64{spellSunderArmor5, 30})...)
 	fight := summary.Summary{Casts: casts}
 	got := OffRotation(fight, summary.RosterRow{GUID: guid}, rot, 3)
-	want := []int64{spellHamstring3, spellRend7, spellOverpower4}
+	want := []int64{spellHamstring3, spellRend7, spellCleave5}
 	if len(got) != len(want) {
 		t.Fatalf("OffRotation = %+v, want spells %v", got, want)
 	}
