@@ -106,3 +106,75 @@ def test_load_item_reputations_reads_every_class_file(tmp_path):
     (items / "warrior.json").write_text(json.dumps({"items": [row, {"id": 7, "reputation": None}]}))
     (items / "paladin.json").write_text(json.dumps({"items": [row]}))
     assert load_item_reputations(tmp_path) == {271941: THERAMORE}
+
+
+def test_a_client_warsong_gulch_reward_joins_the_forks_source_on_its_own_side():
+    """Client Faction 889 is Warsong Outriders, earned by the Horde races (its
+    first race mask) and Hated for the Alliance; 890 is Silverwing Sentinels,
+    the reverse. A client reputation reward naming 889 lands in the same
+    `rep:warsong-outriders:<standing>` source the fork's Horde rewards build,
+    under the same id 889, and is sided Horde."""
+    from pipeline.forkdb import ForkDatabase
+    from pipeline.loot.sources import build_loot
+    from pipeline.normalize.factions import load_factions
+    from tests.test_normalize_factions import (
+        ALLIANCE_HIGH,
+        ALLIANCE_LOW,
+        HORDE_HIGH,
+        HORDE_LOW,
+        RACES,
+        faction,
+    )
+
+    client = load_factions(
+        [
+            faction(
+                889, "Warsong Outriders", (HORDE_LOW, HORDE_HIGH), (ALLIANCE_LOW, ALLIANCE_HIGH)
+            ),
+            faction(
+                890, "Silverwing Sentinels", (ALLIANCE_LOW, ALLIANCE_HIGH), (HORDE_LOW, HORDE_HIGH)
+            ),
+        ],
+        RACES,
+    )
+    fork = ForkDatabase(
+        items=(
+            {
+                "id": 19510,
+                "factionRestriction": 2,
+                "sources": [{"rep": {"repFactionId": 889, "repLevel": 6}}],
+            },
+            {
+                "id": 19514,
+                "factionRestriction": 1,
+                "sources": [{"rep": {"repFactionId": 890, "repLevel": 6}}],
+            },
+        ),
+        enchants=(),
+        random_suffixes=(),
+        zones={},
+        npcs={},
+        factions={889: "Silverwing Sentinels", 890: "Warsong Outriders"},
+        item_icons={},
+        spell_icons={},
+        spell_icon_rows=(),
+        item_icon_rows=(),
+    )
+    built, _ = build_loot(fork, {}, {}, {}, {19510, 19514, 1}, {})
+    horde = ItemReputation(
+        faction_id=889,
+        standing="honored",
+        faction_name=client[889].name,
+        side=client[889].side,
+    )
+    out, _ = apply_client_reputations(built, {1: horde}, {19510, 19514, 1})
+    by_id = {s.id: s for s in out.sources}
+    outriders = by_id["rep:warsong-outriders:honored"]
+    sentinels = by_id["rep:silverwing-sentinels:honored"]
+    assert (outriders.faction_id, outriders.items) == (889, [1, 19510])
+    assert (sentinels.faction_id, sentinels.items) == (890, [19514])
+    assert (out.factions["1"], out.factions["19510"], out.factions["19514"]) == (
+        "horde",
+        "horde",
+        "alliance",
+    )

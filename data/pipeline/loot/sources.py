@@ -165,60 +165,45 @@ def resolve_quest_faction(
 #: against the side a rep faction id belongs to.
 _RESTRICTION_SIDE = {1: "alliance", 2: "horde"}
 
-#: Which side a battleground reputation faction id is on. Sourced from the
-#: fork's own `factions` table names, not invented: Silverwing Sentinels
-#: and Stormpike Guard are Alliance-run; Warsong Outriders and Frostwolf
-#: Clan are Horde-run. Used only to detect and correct
-#: `_ATLASLOOT_WSG_REP_FACTION_SWAP` below, never to reject an id outright.
-_BG_REP_FACTION_SIDE = {889: "alliance", 890: "horde", 729: "horde", 730: "alliance"}
+#: The side that earns each battleground reputation, by the client's
+#: Faction id: the parent is Horde Forces 892 or Alliance Forces 891 in
+#: Faction 1.60.1.70707 (Warsong Outriders 889 and Silverwing Sentinels 890
+#: in Warsong Gulch, The Defilers 510 and The League of Arathor 509 in
+#: Arathi Basin, Frostwolf Clan 729 and Stormpike Guard 730 in Alterac
+#: Valley).
+_BG_REP_FACTION_SIDE = {
+    889: "horde", 510: "horde", 729: "horde",
+    890: "alliance", 509: "alliance", 730: "alliance",
+}  # fmt: skip
 
-#: Warsong Gulch's two reputation factions come out of the fork's
-#: `assets/database/db.json` swapped: every item mined under 889
-#: (Silverwing Sentinels, Alliance) actually carries `factionRestriction:
-#: 2` (horde_only), and every item under 890 (Warsong Outriders, Horde)
-#: carries `factionRestriction: 1` (alliance_only) -- confirmed on the
-#: 2026-09-28 hunter/paladin audits for Scout's/Sentinel's Medallion
-#: (20442/20444/19541) and Lorekeeper's Staff (19573), and for all 124 WSG
-#: rep-sourced items on this build by cross-checking both the item's own
-#: `factionRestriction` and the same source's `playerFaction` field, which
-#: agree with each other and disagree with `repFactionId` every time.
-#: Arathi Basin (509/510) and Alterac Valley (729/730) are not affected --
-#: only WSG's ids are reversed.
-#:
-#: The defect is upstream of this pipeline, in the wowsims-forever engine
-#: fork's `tools/database/atlasloot.go` (~line 406), whose hardcoded
-#: `RepFactionId` map has the ALLIANCE and HORDE keys pointing at each
-#: other's WSG faction id (its own comments name the right faction for the
-#: wrong key). That needs a one-line swap and a re-pin on the engine side;
-#: this pipeline cannot regenerate `db.json` and so corrects the id here
-#: instead, so `loot.json` itself -- not just its Go consumer's separate
-#: safety net -- is right.
-#:
-#: `_corrected_rep_faction_id` only ever applies this when doing so turns a
-#: mismatch with the item's own `factionRestriction` into a match, so once
-#: the engine fix lands and `db.json` stops swapping the ids, this becomes
-#: a no-op rather than re-breaking correct data.
-_ATLASLOOT_WSG_REP_FACTION_SWAP = {889: 890, 890: 889}
+#: The client's Faction name where the fork's `factions` table differs. The
+#: fork names 889 "Silverwing Sentinels" and 890 "Warsong Outriders"; the
+#: client's rows are 889 Warsong Outriders and 890 Silverwing Sentinels. The
+#: fork's rep sources already use the client's ids (every Horde-only Warsong
+#: Gulch reward is mined under 889, every Alliance-only one under 890), so
+#: only the name is corrected.
+_CLIENT_FACTION_NAMES = {889: "Warsong Outriders", 890: "Silverwing Sentinels"}
 
 
-def _corrected_rep_faction_id(faction_id: int, faction_restriction: int) -> int:
-    """`faction_id`, or its swap partner when the swap partner is the one
-    that actually matches the item's own `factionRestriction`.
+class RepFactionSideError(ValueError):
+    """A faction-restricted item is mined under the other side's battleground
+    reputation."""
 
-    See `_ATLASLOOT_WSG_REP_FACTION_SWAP`'s docstring for the defect this
-    corrects and why it self-disables once the upstream data is fixed.
-    """
-    swapped = _ATLASLOOT_WSG_REP_FACTION_SWAP.get(faction_id)
-    if swapped is None or not faction_restriction:
-        return faction_id
-    expected = _RESTRICTION_SIDE.get(faction_restriction)
-    if expected is None:
-        return faction_id
-    if _BG_REP_FACTION_SIDE.get(faction_id) != expected and (
-        _BG_REP_FACTION_SIDE.get(swapped) == expected
-    ):
-        return swapped
-    return faction_id
+
+def _rep_faction_name(fork: ForkDatabase, faction_id: int) -> str:
+    return _CLIENT_FACTION_NAMES.get(faction_id) or fork.factions[faction_id]
+
+
+def _check_rep_faction_side(item_id: int, faction_id: int, faction_restriction: int) -> None:
+    """Fails when an item only one side can equip is a reward of the other
+    side's battleground reputation: the mined source would then be wrong."""
+    restricted_to = _RESTRICTION_SIDE.get(faction_restriction)
+    earned_by = _BG_REP_FACTION_SIDE.get(faction_id)
+    if restricted_to and earned_by and restricted_to != earned_by:
+        raise RepFactionSideError(
+            f"item {item_id} is {restricted_to}-only but mined as a reward of "
+            f"faction {faction_id}, which the {earned_by} earns"
+        )
 
 
 @dataclass(frozen=True)
@@ -480,8 +465,9 @@ def _keyed_sources(
                 crafted[profession].add(item_id)
             elif "rep" in source:
                 standing = decode(REP_LEVELS, int(source["rep"]["repLevel"]), "rep level")
-                faction_id = _corrected_rep_faction_id(
-                    int(source["rep"]["repFactionId"]), int(item.get("factionRestriction") or 0)
+                faction_id = int(source["rep"]["repFactionId"])
+                _check_rep_faction_side(
+                    item_id, faction_id, int(item.get("factionRestriction") or 0)
                 )
                 if faction_id not in fork.factions:
                     # A faction the fork's own table does not name: there is
@@ -541,15 +527,16 @@ def _keyed_sources(
     ]
     out += [
         LootSource(
-            id=f"rep:{slugify(fork.factions[faction_id])}:{standing}",
+            id=f"rep:{slugify(_rep_faction_name(fork, faction_id))}:{standing}",
             kind="rep",
-            name=fork.factions[faction_id],
+            name=_rep_faction_name(fork, faction_id),
             faction_id=faction_id,
             standing=standing,
             items=sorted(items),
         )
         for (faction_id, standing), items in sorted(
-            rep.items(), key=lambda pair: (slugify(fork.factions[pair[0][0]]), pair[0][1])
+            rep.items(),
+            key=lambda pair: (slugify(_rep_faction_name(fork, pair[0][0])), pair[0][1]),
         )
     ]
     out += [
