@@ -302,14 +302,14 @@ func TestFilterRankedActionsDropsWholeTopLevelEntries(t *testing.T) {
 	}
 }
 
-// rotationIDs is every spellId number in a rewritten rotation.
-func rotationIDs(t *testing.T, spec, class string, level int) map[int32]bool {
+// rotationIDs is every spellId number in a rotation rewritten with choices.
+func rotationIDs(t *testing.T, spec, class string, level int, choices rankChoices) map[int32]bool {
 	t.Helper()
 	raw, err := aplFS.ReadFile("apl/" + spec + ".apl.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	got, err := rewriteRotationRanks(raw, class, level, specRankChoices(spec))
+	got, err := rewriteRotationRanks(raw, class, level, choices)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -358,7 +358,7 @@ func TestRewriteKeepsTheAuthoredDownranksBelowSixty(t *testing.T) {
 		{"paladin-holy", "paladin", 50, []int32{19941, 19942}, nil},
 	}
 	for _, c := range cases {
-		ids := rotationIDs(t, c.spec, c.class, c.level)
+		ids := rotationIDs(t, c.spec, c.class, c.level, nil)
 		for _, id := range c.want {
 			if !ids[id] {
 				t.Errorf("%s at %d: the authored downrank should cast %d", c.spec, c.level, id)
@@ -372,15 +372,15 @@ func TestRewriteKeepsTheAuthoredDownranksBelowSixty(t *testing.T) {
 	}
 }
 
-// A per-band rank choice is honoured from its level until the next row, and
-// only there: below the first row the authored rank's rule stands.
+// A per-band rank choice is honoured over its levels, and only there:
+// outside every row the authored rank's rule stands.
 func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 	raw, err := aplFS.ReadFile("apl/shaman-elemental.apl.json")
 	if err != nil {
 		t.Fatal(err)
 	}
 	const topBolt = 15208 // Lightning Bolt rank 10, as the rotation is authored
-	choices := rankChoices{topBolt: {{FromLevel: 40, Rank: 6}, {FromLevel: 50, Rank: 7}}}
+	choices := rankChoices{topBolt: {{FromLevel: 40, ToLevel: 49, Rank: 6}, {FromLevel: 50, ToLevel: 55, Rank: 7}}}
 	for _, c := range []struct {
 		level      int
 		want, lost int32
@@ -389,7 +389,8 @@ func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 		{40, 6041, 10391},  // rank 6 from 40
 		{49, 6041, 10392},  // still rank 6 at 49
 		{50, 10391, 15207}, // rank 7 from 50
-		{59, 10391, 15208}, // and up to 59
+		{55, 10391, 10392}, // through 55
+		{56, 15208, 10391}, // past the row: the top learned rank again
 	} {
 		got, err := rewriteRotationRanks(raw, "shaman", c.level, choices)
 		if err != nil {
@@ -402,5 +403,14 @@ func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 		if c.lost != 0 && strings.Contains(s, `"spellId":`+strconv.Itoa(int(c.lost))) {
 			t.Errorf("level %d: %d should have been replaced by the band's choice", c.level, c.lost)
 		}
+	}
+}
+
+// The curated table reaches the published rotation: Elemental's band-50 row
+// casts Lightning Bolt rank 4 (915) where the default rule casts rank 9.
+func TestThePublishedRotationTakesTheCuratedRankChoices(t *testing.T) {
+	ids := rotationIDs(t, "shaman-elemental", "shaman", 50, specRankChoices("shaman-elemental"))
+	if !ids[915] || ids[15207] {
+		t.Errorf("Elemental at 50 should cast Lightning Bolt rank 4 (915), not rank 9 (15207)")
 	}
 }

@@ -64,8 +64,8 @@ func TestCuratedRankChoicesAreCastableDownranks(t *testing.T) {
 				t.Errorf("%s: %d is not a rank of %q", spec, sp.Authored, sp.Spell)
 			}
 			for _, row := range sp.Bands {
-				if row.FromLevel < 1 || row.FromLevel >= api.MaxLevel {
-					t.Errorf("%s %s: a row from level %d; level 60 runs the rotation as written", spec, sp.Spell, row.FromLevel)
+				if row.FromLevel < 1 || row.ToLevel >= api.MaxLevel {
+					t.Errorf("%s %s: a row over levels %d to %d; level 60 runs the rotation as written", spec, sp.Spell, row.FromLevel, row.ToLevel)
 					continue
 				}
 				chosen, learned := spellranks.SpellIDOfRank(s.ClassSlug, sp.Authored, row.Rank, row.FromLevel)
@@ -84,18 +84,19 @@ func TestCuratedRankChoicesAreCastableDownranks(t *testing.T) {
 func TestParseRankChoicesRefusesDuplicates(t *testing.T) {
 	for _, raw := range []string{
 		`{"specs":{"x":[{"authored":1,"bands":[]},{"authored":1,"bands":[]}]}}`,
-		`{"specs":{"x":[{"authored":1,"bands":[{"from_level":40,"rank":2},{"from_level":40,"rank":3}]}]}}`,
+		`{"specs":{"x":[{"authored":1,"bands":[{"from_level":40,"to_level":49,"rank":2},{"from_level":45,"to_level":49,"rank":3}]}]}}`,
+		`{"specs":{"x":[{"authored":1,"bands":[{"from_level":40,"to_level":39,"rank":2}]}]}}`,
 		`not json`,
 	} {
 		if _, err := parseRankChoices([]byte(raw)); err == nil {
 			t.Errorf("accepted %s", raw)
 		}
 	}
-	got, err := parseRankChoices([]byte(`{"specs":{"x":[{"authored":7,"bands":[{"from_level":50,"rank":3},{"from_level":40,"rank":2}]}]}}`))
+	got, err := parseRankChoices([]byte(`{"specs":{"x":[{"authored":7,"bands":[{"from_level":50,"to_level":59,"rank":3},{"from_level":30,"to_level":39,"rank":2}]}]}}`))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, c := range []struct{ level, rank int }{{39, 0}, {40, 2}, {49, 2}, {50, 3}} {
+	for _, c := range []struct{ level, rank int }{{29, 0}, {30, 2}, {39, 2}, {40, 0}, {50, 3}, {59, 3}, {60, 0}} {
 		rank, ok := got["x"].rankAt(7, c.level)
 		if ok != (c.rank != 0) || rank != c.rank {
 			t.Errorf("rankAt(7, %d) = (%d, %v), want %d", c.level, rank, ok, c.rank)
