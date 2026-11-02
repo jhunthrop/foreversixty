@@ -129,6 +129,26 @@ func gearedBandWeights(runner engineRunner, spec specInfo, band, iterations int,
 	return worn, nil
 }
 
+// ladderWeightsSet is the guard's contender for a band ranked by a geared
+// sweep: the set the ladder sweep's weights pick (ladderPass), wearing the
+// final set's trinkets, through the same verify swaps and set completion the
+// band's own set went through. Round 8: without those passes the contender
+// lost to sets the ladder-weighted pipeline would have published (Arms raid
+// band 60 by 1.9%).
+func ladderWeightsSet(runner engineRunner, spec specInfo, race string, band int, talents string, ladderPass bandPicks, final map[string]slotPick, catalog setCatalog) (map[string]slotPick, error) {
+	bySlot := ladderPass.pickBySlot
+	picks := fillEmptyOffHand(spec.Spec, bySlot, enforceTwoHandOffHandInvariant(ladderWeightsContender(ladderPass.picks, final)))
+	verified, err := verifyAndSwap(runner, spec, race, spec.ClassSlug, band, talents, picks, bySlot)
+	if err != nil {
+		return nil, fmt.Errorf("verifying the ladder weights' set: %w", err)
+	}
+	verified, _, err = completeSets(runner, spec, race, spec.ClassSlug, band, talents, verified, bySlot, catalog)
+	if err != nil {
+		return nil, fmt.Errorf("completing sets on the ladder weights' set: %w", err)
+	}
+	return verified.picks, nil
+}
+
 // ladderWeightsContender is the set the ladder sweep's weights pick for a
 // faction, wearing the trinkets the band's final set earned (pick() places
 // trinkets by score only; the trinket tournament decides them): the guard

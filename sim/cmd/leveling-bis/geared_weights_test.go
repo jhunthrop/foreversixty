@@ -180,3 +180,22 @@ func TestLadderWeightsContenderWearsTheFinalSetsTrinkets(t *testing.T) {
 		t.Error("ladderWeightsContender changed its input")
 	}
 }
+
+// The guard's ladder-weights contender goes through the verify swaps the
+// band's own set does: a runner-up that measures better is promoted.
+func TestLadderWeightsSetRunsTheVerifySwaps(t *testing.T) {
+	one := scored{candidate: candidate{ID: 1, Name: "One", Slots: []string{"head"}}, Score: 2}
+	two := scored{candidate: candidate{ID: 2, Name: "Two", Slots: []string{"head"}}, Score: 1}
+	pass := bandPicks{
+		picks:      map[string]slotPick{"head": {Item: &one, RunnerUp: &two}},
+		pickBySlot: map[string][]scored{"head": {one, two}},
+	}
+	fake := &fakeEngine{DefaultDPS: 500, DPSByGear: map[string]float64{"head=2;": 600}, DefaultStdErr: 0.1}
+	got, err := ladderWeightsSet(fake, specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}, "dwarf", 30, "", pass, map[string]slotPick{}, setCatalog{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got["head"].Item == nil || got["head"].Item.ID != 2 {
+		t.Fatalf("head = %+v, want the runner-up (id 2) the verify swap promotes", got["head"].Item)
+	}
+}

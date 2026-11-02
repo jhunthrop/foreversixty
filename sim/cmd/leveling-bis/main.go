@@ -714,7 +714,11 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 						ladderCredit = fullWandScorePerDPS(measured.ladder.referenceDPSPerPoint)
 					}
 					ladderPass := pickBand(items, lootIdx, specInfo, band, f.name, effectiveWeights(measured.ladder.result), ladderCredit, weaponSubclasses, requiresDagger)
-					considered = append(considered, consideredSet{Label: consideredLadderWeights, Picks: ladderWeightsContender(ladderPass.picks, verified.picks)})
+					ladderSet, err := ladderWeightsSet(runner, specInfo, f.race, band, engineTalents, ladderPass, verified.picks, setCat)
+					if err != nil {
+						return fmt.Errorf("band %d %s: %w", band, f.name, err)
+					}
+					considered = append(considered, consideredSet{Label: consideredLadderWeights, Picks: ladderSet})
 				}
 				incumbentGear := incumbents[incumbentKey{Band: band, Preset: pass.name, Faction: f.name}]
 				if incumbent, ok := incumbentPicks(incumbentGear, verified.picks, pickBySlot); ok {
