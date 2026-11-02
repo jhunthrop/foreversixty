@@ -327,6 +327,7 @@ EXPECTED_ABILITY_NAMES = {
         12579: "Winter's Chill",
         10212: "Arcane Missiles",
         400589: "Missile Barrage",
+        12051: "Evocation",
     },
 }
 
