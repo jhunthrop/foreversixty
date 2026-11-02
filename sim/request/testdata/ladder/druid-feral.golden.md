@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:4570 | 7.3 | 4 | spell:5177=44.1, other:attack/1=17.5, spell:8924=5.5, spell:1259799=1.5, spell:29166=1.0 | {SpellID: 1322605}, {SpellID: 9850} |
-| 20 | 0000000000000000-50212010000000000000-0000000000000000 | bare | 54.0 | 4 | other:attack/1=182.1, spell:1082=49.9, spell:1079=9.5, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
-| 30 | 0000000000000000-50212032123000000000-0000000000000000 | bare | 76.0 | 4 | other:attack/1=182.1, spell:6800=47.9, spell:9492=9.0, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605} |
-| 38 | 0000000000000000-50212032123012122000-0000000000000000 | bare | 89.6 | 5 | other:attack/1=182.1, spell:8992=45.8, spell:9493=9.8, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605} |
-| 40 | 0000000000000000-50212032123012123001-0000000000000000 | bare | 100.0 | 6 | other:attack/1=182.1, spell:8992=53.3, spell:9493=11.4, spell:1322605=8.2, spell:1259799=1.5 | - |
-| 50 | 0000000000000000-50212032123012123001-5500000000000000 | bare | 120.5 | 6 | other:attack/1=182.1, spell:9829=53.1, spell:9752=11.3, spell:1322605=8.1, spell:1259799=1.5 | - |
-| 60 | 0000000000000000-50212032123012123001-5550230000000000 | bare | 173.2 | 6 | other:attack/1=182.1, spell:9830=54.6, spell:9896=11.8, spell:1322605=9.9, spell:1259799=1.5 | - |
+| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:4570 | 6.1 | 3 | spell:5177=32.1, other:attack/1=22.4, spell:8924=2.4, spell:1259799=1.5 | {SpellID: 1322605}, {SpellID: 9850} |
+| 20 | 0000000000000000-50212010000000000000-0000000000000000 | bare | 56.1 | 5 | other:attack/1=182.1, spell:1082=49.3, spell:1079=9.4, spell:770/1=5.8, spell:1259799=1.5 | {SpellID: 1322605}, {SpellID: 22829} |
+| 30 | 0000000000000000-50212032123000000000-0000000000000000 | bare | 79.5 | 5 | other:attack/1=182.1, spell:6800=47.6, spell:9492=8.9, spell:778/1=5.9, spell:1259799=1.5 | {SpellID: 1322605} |
+| 38 | 0000000000000000-50212032123012122000-0000000000000000 | bare | 93.4 | 6 | other:attack/1=182.1, spell:8992=45.9, spell:9493=9.8, spell:778/1=5.8, spell:1259799=1.5 | {SpellID: 1322605} |
+| 40 | 0000000000000000-50212032123012123001-0000000000000000 | bare | 103.1 | 7 | other:attack/1=182.1, spell:8992=52.7, spell:9493=11.5, spell:1322605=8.1, spell:778/1=5.7 | - |
+| 50 | 0000000000000000-50212032123012123001-5500000000000000 | bare | 125.1 | 7 | other:attack/1=182.1, spell:9829=52.6, spell:9752=11.5, spell:1322605=8.0, spell:9749/1=5.8 | - |
+| 60 | 0000000000000000-50212032123012123001-5550230000000000 | bare | 178.7 | 7 | other:attack/1=182.1, spell:9830=54.2, spell:9896=11.8, spell:1322605=9.8, spell:9907/1=5.8 | - |
 
 ## Learned but unused (informational)
 
@@ -120,6 +120,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Insect Swarm (spell 5570)
 - Maul (spell 6808)
 - Moonfire (spell 8925)
+- Shred (spell 5221)
 - Starfire (spell 2912)
 - Swipe (spell 779)
 - Wrath (spell 5178)
@@ -203,4 +204,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- druid-feral level=20 kind=zero_casts spell="Shred" id=5221 authored=9830
