@@ -49,7 +49,7 @@ Demonology is Warlock's pet spec: its talents empower a summoned demon, and Demo
 ### In a raid
 
 - **Role:** Ranged shadow damage with a demon
-- **Brings:** A curse on the target (Bane of Doom in its rotation), plus Healthstones and a Soulstone
+- **Brings:** Curse of the Elements and a bane on the target (Bane of Doom in its rotation), plus Healthstones and a Soulstone
 
 ## Talents and builds
 
@@ -66,7 +66,7 @@ In Forever your demon scales from your own stats and no longer takes the raid's 
 
 ## Rotation and priority
 
-Before the pull, summon your Imp, cast Demonic Sacrifice on it, summon your Succubus, and cast Soul Link with the Succubus out; the sequence takes about a minute out of combat, so start it early. Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Keep Bane of Doom and Corruption running throughout: Doom deals its whole damage when its minute is up, so recast it the moment it fires; in the last minute of the fight a new Doom would not fire before the end, so cast Bane of Agony instead, and Corruption is cheap, sustained damage that doesn't compete with your Shadow Bolt casts for a global. Recast Immolate when under 3 seconds remain, since a running Immolate out-damages the globals it displaces. Cast Soul Fire only while Decimation's buff is up: below 35% health a Shadow Bolt gives you 10 seconds of Soul Fires that cast in 2.4 seconds and cost no Soul Shard, and those beat the Shadow Bolts they displace. Above 35% Soul Fire is a 4 second cast that costs a shard and deals less per second than Shadow Bolt. Shadow Bolt fills every other global: with two Shadow bonuses running it beats Searing Pain. Life Tap keeps you casting once mana falls below about 10%. Wand only when you are out of mana: a wand shot cannot start during the global cooldown, so it never fits between spells.
+Before the pull, summon your Imp, cast Demonic Sacrifice on it, summon your Succubus, and cast Soul Link with the Succubus out; the sequence takes about a minute out of combat, so start it early. Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Keep Bane of Doom and Corruption running throughout: Doom deals its whole damage when its minute is up, so recast it the moment it fires; in the last minute of the fight a new Doom would not fire before the end, so cast Bane of Agony instead, and Corruption is cheap, sustained damage that doesn't compete with your Shadow Bolt casts for a global. Put Curse of the Elements up once as well: in Forever banes and curses hold separate slots, so it sits beside your bane for five minutes and raises the magic damage the target takes from you and your Succubus. Skip it when another warlock's Curse of the Elements is already on the target; the two do not stack. Recast Immolate when under 3 seconds remain, since a running Immolate out-damages the globals it displaces. Cast Soul Fire only while Decimation's buff is up: below 35% health a Shadow Bolt gives you 10 seconds of Soul Fires that cast in 2.4 seconds and cost no Soul Shard, and those beat the Shadow Bolts they displace. Above 35% Soul Fire is a 4 second cast that costs a shard and deals less per second than Shadow Bolt. Shadow Bolt fills every other global: with two Shadow bonuses running it beats Searing Pain. Life Tap keeps you casting once mana falls below about 10%. Wand only when you are out of mana: a wand shot cannot start during the global cooldown, so it never fits between spells.
 
 ## Stat priority
 

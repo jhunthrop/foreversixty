@@ -48,7 +48,7 @@ Affliction is Warlock's damage-over-time spec: it stacks several DoTs on a targe
 ### In a raid
 
 - **Role:** Ranged shadow damage over time
-- **Brings:** A curse on the target (Bane of Agony in its rotation), plus Healthstones and a Soulstone
+- **Brings:** Curse of the Elements and a bane on the target (Bane of Agony in its rotation), plus Healthstones and a Soulstone
 
 ## Talents and builds
 
@@ -63,7 +63,7 @@ Affliction is Warlock's damage-over-time spec: it stacks several DoTs on a targe
 
 ## Rotation and priority
 
-Pop a mana potion or gem at the start of the fight if your mana is already below its usual threshold, or save it for a closing burn if the fight is nearly over. From there, put Corruption up first and keep it up throughout the fight — it's the cheapest DoT per point of damage, so upkeep on it should never lapse. Bane of Agony goes up right behind it as your one curse. In Forever your damage over time can crit, so the ticking curse beats Bane of Doom's single hit. Siphon Life comes next: the build takes it, and its ticks crit and heal you. Wrack is a 6 second channel, and channelling it costs more damage than its ticks and its 10% on Corruption and Agony return, so the rotation does not cast it. Immolate is the fifth DoT: a running Immolate out-damages the Shadow Bolt global it costs, and recasting it when under 3 seconds remain measured a little better than waiting for it to lapse. Once every DoT is running, spend each remaining global on Shadow Bolt. Life Tap keeps you casting once mana falls below about 10%. Wand only when you are out of mana: a wand shot cannot start during the global cooldown, so it never fits between spells. Keeping Siphon Life up and switching to Agony were worth about +4% in our audit run.
+Pop a mana potion or gem at the start of the fight if your mana is already below its usual threshold, or save it for a closing burn if the fight is nearly over. From there, put Corruption up first and keep it up throughout the fight — it's the cheapest DoT per point of damage, so upkeep on it should never lapse. Bane of Agony goes up right behind it as your bane. In Forever your damage over time can crit, so the ticking bane beats Bane of Doom's single hit. Put Curse of the Elements up once as well: in Forever banes and curses hold separate slots, so it sits beside your bane for five minutes and raises the magic damage the target takes from you and your Succubus. Skip it when another warlock's Curse of the Elements is already on the target; the two do not stack. Siphon Life comes next: the build takes it, and its ticks crit and heal you. Wrack is a 6 second channel, and channelling it costs more damage than its ticks and its 10% on Corruption and Agony return, so the rotation does not cast it. Immolate is the fifth DoT: a running Immolate out-damages the Shadow Bolt global it costs, and recasting it when under 3 seconds remain measured a little better than waiting for it to lapse. Once every DoT is running, spend each remaining global on Shadow Bolt. Life Tap keeps you casting once mana falls below about 10%. Wand only when you are out of mana: a wand shot cannot start during the global cooldown, so it never fits between spells. Keeping Siphon Life up and switching to Agony were worth about +4% in our audit run.
 
 ## Stat priority
 
