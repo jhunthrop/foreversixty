@@ -521,6 +521,10 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 					}
 					first := pickBand(items, lootIdx, specInfo, band, factions[0].name, w, wandCredit, weaponSubclasses, requiresDagger)
 					return buildGear(clearTrinketPlaceholders(first.picks))
+				},
+				func(gear []api.GearSlot) (float64, float64, error) {
+					ch := bandCharacter("weights-check", factions[0].race, specInfo.ClassSlug, specInfo.Spec, band, engineTalents, gear)
+					return runner.RunPlainDPSWithError(plainRequest(specInfo, ch, guardIterations(specInfo), verifySeed))
 				})
 			if err != nil {
 				return err

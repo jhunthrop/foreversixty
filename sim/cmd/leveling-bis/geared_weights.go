@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
@@ -60,15 +61,23 @@ func measureBandWeights(runner engineRunner, spec specInfo, band, iterations int
 	return out, nil
 }
 
-// firstPassGear is the set a band's ladder weights pick, as the gear a
-// geared weights sweep wears.
+// firstPassGear is the set a band's weights pick, as the gear a geared
+// weights sweep wears.
 type firstPassGear func(weights map[string]float64, referenceDPSPerPoint float64) []api.GearSlot
+
+// setMeasure sims one gear set: its score (DPS, healing or tank score, as
+// the band's runner reads it) and standard error.
+type setMeasure func(gear []api.GearSlot) (score, stdErr float64, err error)
 
 // gearedBandWeights is the weights a band ranks by: a sweep of the ladder
 // character (the bare, armed character ladderCharacter builds), then, when
 // that sweep is trusted, a second sweep of the same character wearing the
 // set those ladder weights pick (firstPass). The geared sweep replaces the
-// ladder one when it is itself trusted.
+// ladder one when it is itself trusted, unless the set the geared weights
+// pick measures worse beyond error than the ladder weights' set (measure):
+// a geared sweep reads one set's margins, and a pick that moves far from
+// that set (a caster that sheds the Intellect the sweep wore) can land
+// where those margins no longer hold.
 //
 // Round 8 found the bare character misprices every stat a geared one
 // carries: its small mana pool overvalues Intellect for every mana-using
@@ -77,23 +86,39 @@ type firstPassGear func(weights map[string]float64, referenceDPSPerPoint float64
 // hit, crit and attack power it overvalues those too (Fury band 60's hit:
 // 38 against 22). The ranker's own picks then lost to the previous published
 // sets by 2 to 8% (the incumbent guard kept them).
-func gearedBandWeights(runner engineRunner, spec specInfo, band, iterations int, anchorStat string, ladder api.CharacterSpec, firstPass firstPassGear) (bandWeights, error) {
+func gearedBandWeights(runner engineRunner, spec specInfo, band, iterations int, anchorStat string, ladder api.CharacterSpec, firstPass firstPassGear, measure setMeasure) (bandWeights, error) {
 	bare, err := measureBandWeights(runner, spec, band, iterations, anchorStat, ladder)
 	if err != nil || bare.reason != "" {
 		return bare, err
 	}
-	gear := wearOver(ladder.Gear, firstPass(effectiveWeights(bare.result), bare.referenceDPSPerPoint))
-	if gearKeyOf(gear) == gearKeyOf(ladder.Gear) {
+	bareSet := wearOver(ladder.Gear, firstPass(effectiveWeights(bare.result), bare.referenceDPSPerPoint))
+	if gearKeyOf(bareSet) == gearKeyOf(ladder.Gear) {
 		return bare, nil
 	}
 	geared := ladder
-	geared.Gear = gear
+	geared.Gear = bareSet
 	worn, err := measureBandWeights(runner, spec, band, iterations, anchorStat, geared)
 	if err != nil {
 		return bandWeights{}, err
 	}
 	if worn.reason != "" {
 		log.Printf("leveling-bis: %s band %d: the geared weights sweep was not significant (%s); ranking by the ladder sweep", spec.Spec, band, worn.reason)
+		return bare, nil
+	}
+	wornSet := wearOver(ladder.Gear, firstPass(effectiveWeights(worn.result), worn.referenceDPSPerPoint))
+	if gearKeyOf(wornSet) == gearKeyOf(bareSet) {
+		return worn, nil
+	}
+	bareScore, bareErr, err := measure(bareSet)
+	if err != nil {
+		return bandWeights{}, fmt.Errorf("band %d measuring the ladder weights' set: %w", band, err)
+	}
+	wornScore, wornErr, err := measure(wornSet)
+	if err != nil {
+		return bandWeights{}, fmt.Errorf("band %d measuring the geared weights' set: %w", band, err)
+	}
+	if bareScore-wornScore > math.Hypot(bareErr, wornErr) {
+		log.Printf("leveling-bis: %s band %d: the geared weights' set measures %.1f +/- %.1f against the ladder weights' %.1f +/- %.1f; ranking by the ladder sweep", spec.Spec, band, wornScore, wornErr, bareScore, bareErr)
 		return bare, nil
 	}
 	return worn, nil

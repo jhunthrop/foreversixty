@@ -95,3 +95,63 @@ func TestRunSpecKeepsTheLadderWeightsWhenTheGearedSweepIsUntrustworthy(t *testin
 		}
 	}
 }
+
+// gearedWeightsFixture is a fake engine whose ladder sweep reads agility at
+// 1.8 and whose geared sweep reads it at 0.9, and a first pass that picks a
+// different set for each.
+func gearedWeightsFixture() (*fakeEngine, firstPassGear) {
+	fake := &fakeEngine{
+		WeightsFunc: func(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
+			agility := 1.8
+			if wearsArmor(req.Character.Gear) {
+				agility = 0.9
+			}
+			return map[string]api.StatWeight{
+				"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0, Error: 0.01},
+				"agility":             {Stat: "agility", Weight: agility, Error: 0.01},
+			}, 1.0, nil
+		},
+	}
+	firstPass := func(w map[string]float64, _ float64) []api.GearSlot {
+		if w["agility"] > 1 {
+			return []api.GearSlot{{Slot: "head", ItemID: 1}}
+		}
+		return []api.GearSlot{{Slot: "head", ItemID: 2}}
+	}
+	return fake, firstPass
+}
+
+func scoreByHead(scores map[int]float64) setMeasure {
+	return func(gear []api.GearSlot) (float64, float64, error) {
+		for _, g := range gear {
+			if g.Slot == "head" {
+				return scores[g.ItemID], 0.5, nil
+			}
+		}
+		return 0, 0.5, nil
+	}
+}
+
+func TestGearedBandWeightsKeepsTheLadderSweepWhenItsSetMeasuresBetter(t *testing.T) {
+	fake, firstPass := gearedWeightsFixture()
+	ladder := api.CharacterSpec{Level: 30, Gear: []api.GearSlot{{Slot: "ranged", ItemID: 9}}}
+	got, err := gearedBandWeights(fake, specInfo{Spec: "hunter-marksmanship", ReferenceStat: "ranged_attack_power"}, 30, 5, "", ladder, firstPass, scoreByHead(map[int]float64{1: 110, 2: 100}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if w := got.result["agility"].Weight; w != 1.8 {
+		t.Errorf("agility = %v, want the ladder sweep's 1.8 (its set measures 110 against 100)", w)
+	}
+}
+
+func TestGearedBandWeightsTakesTheGearedSweepWhenItsSetIsNoWorse(t *testing.T) {
+	fake, firstPass := gearedWeightsFixture()
+	ladder := api.CharacterSpec{Level: 30, Gear: []api.GearSlot{{Slot: "ranged", ItemID: 9}}}
+	got, err := gearedBandWeights(fake, specInfo{Spec: "hunter-marksmanship", ReferenceStat: "ranged_attack_power"}, 30, 5, "", ladder, firstPass, scoreByHead(map[int]float64{1: 100.2, 2: 100}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if w := got.result["agility"].Weight; w != 0.9 {
+		t.Errorf("agility = %v, want the geared sweep's 0.9 (the ladder set is ahead by less than its error)", w)
+	}
+}
