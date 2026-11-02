@@ -329,6 +329,14 @@ tank-encounter-sync:
 heal-profile-sync:
 	cp data/curated/heal-profile.json sim/request/heal-profile.json
 
+.PHONY: rank-choices-sync
+# rank-choices-sync copies the curated per-band rank choices (which rank of a
+# ranked spell a rotation casts at a band below 60) to the file sim/request
+# embeds. data/curated/rank-choices.json is the single source;
+# sim/request's TestEmbeddedRankChoicesMatchCurated fails when the copy is stale.
+rank-choices-sync:
+	cp data/curated/rank-choices.json sim/request/rank-choices.json
+
 .PHONY: apl-sync
 # apl-sync copies every WRITTEN curated rotation into the two places that
 # run one. data/curated/apl/<spec>.json's `rotation` block is the single

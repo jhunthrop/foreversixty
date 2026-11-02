@@ -924,7 +924,7 @@ func buildClassAbilities(all spellRanksFile, class string) classAbilities {
 // already sorted by rank, which in this table is also ascending by
 // level in every case checked, so walking forward and keeping the last
 // tier at or under level picks the same tier
-// sim/internal/spellranks.highestLearnedIn would, walking from the top
+// sim/internal/spellranks.learnedIn would, walking from the top
 // down).
 func learnedTierAtLevel(tiers []rankTier, level int) (rankTier, bool) {
 	best := -1
@@ -941,7 +941,7 @@ func learnedTierAtLevel(tiers []rankTier, level int) (rankTier, bool) {
 
 // abilityNameByID is every tracked id's ability name, for labeling a
 // zero_casts violation (rule 1 resolves the id sim/internal/spellranks'
-// own HighestLearnedSpellID would cast, which carries no name). An id
+// own LearnedSpellID would cast, which carries no name). An id
 // this table does not track - an unranked ability like Bloodrage, or
 // one spellranks.json's generator dropped entirely - has no entry, and
 // callers fall back to the bare id.
@@ -1328,14 +1328,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -1421,7 +1422,7 @@ func renderLadderGolden(spec string, rows []ladderRow, unused []unusedEntry, vio
 // a talent-granted spell and the ladder's own truncated build has zero
 // points in that talent at this level, or (b) it is a spellranks.json
 // rank learned above this level's band (the rank-rewrite
-// - sim/internal/spellranks.HighestLearnedSpellID, the very function
+// - sim/internal/spellranks.LearnedSpellID, the very function
 // rewriteRotationRanks calls before a request ever reaches the engine -
 // already drops a CAST of such an id; this id reaching the engine as an
 // unresolved reference at all means it arrived some other way, a
@@ -1556,7 +1557,7 @@ func idLearnLevel(ranks spellRanksFile, class string) map[int]int {
 			// signal buildClassAbilities filters on (Bloodrage,
 			// Judgement - a single always-known ability, not a chain
 			// with a learn level): sim/internal/spellranks' own
-			// HighestLearnedSpellID treats such an id as untracked and
+			// LearnedSpellID treats such an id as untracked and
 			// always learned, so keeping it here would disagree with
 			// that package about an id that was never a real
 			// above-band rank at all - EXCEPT for the small,

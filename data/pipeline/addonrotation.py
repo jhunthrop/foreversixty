@@ -42,6 +42,9 @@ from pipeline.spelltext import SpellText, load_spell_text
 #: sim/request/ladder.go's own `ladderLevels`. See the module docstring.
 LEVEL_BANDS = [10, 20, 30, 38, 40, 50, 60]
 
+#: The level at which the site runs a curated list exactly as written.
+MAX_LEVEL = 60
+
 
 class AddonRotationError(SystemExit):
     """A curated APL or spellranks file says something the generator will not publish."""
@@ -128,6 +131,9 @@ def _family_ranks(
         if all(rank.get("rank", 0) == 0 for rank in ranks):
             trained = [rank for rank in ranks if rank["id"] in trainable_ids]
             ranks = trained or ranks
+        # An Ahn'Qiraj book rank is not a trainer's: the sim's rank rewrite
+        # never casts one, so neither does the addon.
+        ranks = [rank for rank in ranks if not rank.get("book")]
         pairs = sorted((rank["level"], rank["id"]) for rank in ranks)
         # A level-0 row is an alternate id the client carries with no learn
         # level of its own (Rapid Fire's 28755 beside the real 3045 at 26,
@@ -177,19 +183,77 @@ def _cast_lines(rotation: dict) -> list[dict]:
     return lines
 
 
+#: Forever's own spell ids start here; a rank with a classic id and a
+#: Forever copy resolves within the band the list names
+#: (sim/internal/spellranks foreverIDFloor).
+FOREVER_ID_FLOOR = 100000
+
+
+def _rank_choice_id(spellranks: dict, class_slug: str, family: str, spell_id: int,
+                    rank: int, level: int) -> int | None:
+    """The id of `rank` of `family` learned by `level`, in the list's id band
+    (sim/internal/spellranks SpellIDOfRank), or None."""
+    ids = [row["id"] for row in spellranks.get("classes", {}).get(class_slug, {}).get(family, [])
+           if row.get("rank") == rank and not row.get("book") and not row.get("inferior")
+           and 0 < row["level"] <= level]
+    same_band = [i for i in ids if (i >= FOREVER_ID_FLOOR) == (spell_id >= FOREVER_ID_FLOOR)]
+    return (same_band or ids or [None])[0]
+
+
+#: The preset a band below 60 is published under (sim/request PublishedPreset).
+BARE_PRESET = "bare"
+
+
+def _band_rank(choices: dict, spell_id: int, level: int) -> int | None:
+    """The rank data/curated/rank-choices.json picks for the list's
+    `spell_id` at `level` (one spec's rows), or None outside every row. A
+    band below 60 is the bare preset's, so a row for the raid preset only
+    never applies here."""
+    for row in choices.get(spell_id, []):
+        if row.get("preset", BARE_PRESET) != BARE_PRESET:
+            continue
+        if row["from_level"] <= level <= row["to_level"]:
+            return row["rank"]
+    return None
+
+
+def load_rank_choices(curated_dir: Path, spec: str) -> dict[int, list[dict]]:
+    """One spec's per-band rank choices, by the list's authored id. The file
+    is optional here (a test's curated dir may have none)."""
+    path = curated_dir / "rank-choices.json"
+    if not path.exists():
+        return {}
+    spells = json.loads(path.read_text(encoding="utf-8")).get("specs", {}).get(spec, [])
+    return {spell["authored"]: spell["bands"] for spell in spells}
+
+
 def _resolve(families: dict[str, list[tuple[int, int]]], id_to_family: dict[int, str],
              spell_id: int, level: int) -> tuple[str, int] | None:
     """The (family name, id) this ability casts at `level`, or None when
     the curated id is not one spellranks.json tracks for this class (an
     engine-internal or item-proc id the ladder itself would call
-    unresolved) or the family's first rank is not learned yet at `level`."""
+    unresolved) or the family's first rank is not learned yet at `level`.
+
+    Below 60 this is the sim's default rule (sim/internal/spellranks
+    LearnedSpellID): the highest rank learned that is not above the list's
+    own, so a deliberate lower rank is never lifted (owner ruling 3)."""
     family = id_to_family.get(spell_id)
     if family is None:
         return None
-    learned = [rank for rank in families[family] if rank[0] <= level]
+    named = [rank[0] for rank in families[family] if rank[1] == spell_id]
+    cap = min(level, named[0]) if named else level
+    learned = [rank for rank in families[family] if rank[0] <= cap]
     if not learned:
         return None
-    return family, learned[-1][1]
+    # The site runs a band-60 list as written, deliberate lower ranks and
+    # all (sim/request's rank rewrite applies below 60 only).
+    if level >= MAX_LEVEL and any(rank[1] == spell_id for rank in learned):
+        return family, spell_id
+    # Two ids can share the top learned level (Water Shield's buff and its
+    # proc; a Burning Crusade copy of Lesser Healing Wave's rank 6): keep
+    # the one the list names, as the sim's rewrite does.
+    top = [rank[1] for rank in learned if rank[0] == learned[-1][0]]
+    return family, spell_id if spell_id in top else top[-1]
 
 
 def _resolve_icon(spell_id: int, icon_of: Callable[[int], str] | None) -> str:
@@ -228,6 +292,7 @@ def build_rotation(
 
     families = _family_ranks(spellranks, _class_slug(spec), trainable_ids)
     id_to_family = _id_to_family(families)
+    choices = load_rank_choices(curated_dir, spec)
 
     bands = []
     for level in LEVEL_BANDS:
@@ -237,6 +302,13 @@ def build_rotation(
             if resolved is None:
                 continue
             name, resolved_id = resolved
+            # A per-band rank choice (sim/request rankResolver) wins below 60.
+            rank = _band_rank(choices, cast["spell_id"], level) if level < MAX_LEVEL else None
+            if rank is not None:
+                chosen = _rank_choice_id(
+                    spellranks, _class_slug(spec), name, cast["spell_id"], rank, level
+                )
+                resolved_id = chosen if chosen is not None else resolved_id
             condition = _one_line(cast["notes"])
             icon = _resolve_icon(resolved_id, icon_of)
             lines.append(

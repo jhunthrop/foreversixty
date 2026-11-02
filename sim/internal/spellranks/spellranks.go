@@ -32,7 +32,7 @@
 // (per the generator's own "more than one id or a learn level" filter,
 // a single always-known ability has nothing to rewrite), so an id that
 // never appears in this table is, by construction, not a ranked spell
-// this package tracks - HighestLearnedSpellID returns it unchanged.
+// this package tracks - LearnedSpellID returns it unchanged.
 package spellranks
 
 import (
@@ -81,6 +81,8 @@ type spellRanksFile struct {
 // rankTier is every id that shares one rank number of one spell, and
 // the level that rank is learned at.
 type rankTier struct {
+	// rank is the rank number every id of the tier shares.
+	rank  int
 	level int
 	// ids is every id of the rank, so a lookup by any of them finds the chain.
 	ids []int32
@@ -190,7 +192,7 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 				level = override
 			}
 		}
-		tiers[i] = rankTier{level: level, ids: idsByRank[r], castable: castableByRank[r]}
+		tiers[i] = rankTier{rank: r, level: level, ids: idsByRank[r], castable: castableByRank[r]}
 	}
 	return &rankChain{tiers: tiers, aliases: aliases}
 }
@@ -209,7 +211,7 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 // directly). Rotation-accuracy program (2026-09-28): found via the
 // site's ladder harness reporting a false unresolved_id for these three
 // ids below their real gate, where the disagreement this package's own
-// HighestLearnedSpellID assertion is built to catch (ladder_test.go)
+// LearnedSpellID assertion is built to catch (ladder_test.go)
 // would otherwise have masked it as "untracked, always learned".
 var singleTierLevelOverrides = map[string]map[int32]int{
 	"druid": {
@@ -241,7 +243,7 @@ var singleTierLevelOverrides = map[string]map[int32]int{
 // already established a name carries no real rank>=1 progression: most
 // such names stay untracked (nil, unchanged), but a handful of ids in
 // singleTierLevelOverrides get a synthetic one-tier chain instead, so
-// HighestLearnedSpellID treats them as "not learned" below their real
+// LearnedSpellID treats them as "not learned" below their real
 // engine gate the same way a genuine ranked spell's lowest tier already
 // does. Only the override id itself joins the tier - a companion row at
 // level 0 in the same name (Multi-Shot's 28751, Rapid Fire's 28755, both
@@ -254,7 +256,7 @@ func singleTierOverrideChain(class string, rows []spellRankRow) *rankChain {
 	}
 	for _, row := range rows {
 		if level, ok := overrides[row.ID]; ok {
-			return &rankChain{tiers: []rankTier{{level: level, ids: []int32{row.ID}, castable: []int32{row.ID}}}}
+			return &rankChain{tiers: []rankTier{{rank: 1, level: level, ids: []int32{row.ID}, castable: []int32{row.ID}}}}
 		}
 	}
 	return nil
@@ -264,12 +266,17 @@ var spellRankTable = sync.OnceValues(func() (map[string]map[int32]*rankChain, er
 	return parseSpellRanks(rawSpellRanks)
 })
 
-// HighestLearnedSpellID resolves id to the id of the highest rank of
-// its spell that a character of class has learned by level.
+// LearnedSpellID resolves id to the rank of its spell a rotation casts at
+// level: the highest rank a character of class has learned by level that
+// is not above id's own rank. A rotation authored at the top rank gets the
+// highest learned rank; one authored at a lower rank (a deliberate
+// downrank, such as Holy priest's Renew rank 3) keeps that rank once it is
+// learned and is never lifted above it. An id that names an Ahn'Qiraj book
+// rank while the book is out caps at the top trainer rank.
 //
 // ok is false when id belongs to a KNOWN ranked spell of class but no
-// rank of it is learned yet at level - the caller (sim/request's
-// rotation rank rewrite) drops whatever cast or condition named it.
+// rank of it at or below id's own is learned yet at level - the caller
+// (sim/request's rotation rank rewrite) drops whatever cast named it.
 // ok is true and newID equals id unchanged when id is not part of any
 // ranked spell this table tracks for class (an unranked ability, or
 // one the embed's class has no entry for at all): the rotation leaves
@@ -281,36 +288,52 @@ var spellRankTable = sync.OnceValues(func() (map[string]map[int32]*rankChain, er
 //
 // A tier below the character's level whose ids do not include the
 // original id (the character out-ranks the tier the rotation was
-// written against) resolves to that tier's first id; ranks that share
-// a tier - e.g. a talent-glyph variant sharing a level and rank number
-// with the plain cast - are otherwise indistinguishable from this
-// table alone, and picking the first is deterministic rather than
-// arbitrary per call.
-func HighestLearnedSpellID(class string, id int32, level int) (newID int32, ok bool) {
-	table, err := spellRankTable()
-	if err != nil {
-		// A build problem (the embed failed to parse), not a per-request
-		// one. Leaving every id untouched is the same failure mode as
-		// never having this table at all, which is safer than treating
-		// every ranked action in every rotation as unlearned.
+// written against) resolves to that tier's first id in the rotation's
+// id band (sameBandOrFirst); ranks that share a tier are otherwise
+// indistinguishable from this table alone, and picking the first is
+// deterministic rather than arbitrary per call.
+func LearnedSpellID(class string, id int32, level int) (newID int32, ok bool) {
+	byID, tracked := classTable(class)
+	if !tracked {
 		return id, true
 	}
-	byID, ok := table[class]
-	if !ok {
-		return id, true
-	}
-	return highestLearnedIn(byID, id, level)
+	return learnedIn(byID, id, level)
 }
 
-// highestLearnedIn is HighestLearnedSpellID's resolution over one
+// SpellIDOfRank resolves a per-band rank choice: the id of rank rank of
+// id's spell, if a character of class has learned it by level. ok is false
+// for an id this table does not track, a rank the spell does not have, a
+// rank learned above level, and a rank that is wholly inferior.
+func SpellIDOfRank(class string, id int32, rank, level int) (newID int32, ok bool) {
+	byID, tracked := classTable(class)
+	if !tracked {
+		return 0, false
+	}
+	return rankOfIn(byID, id, rank, level)
+}
+
+// classTable is class's parsed table. tracked is false on a build problem
+// (the embed failed to parse) or a class the embed has no entry for: every
+// id is then left untouched, which is safer than treating every ranked
+// action in every rotation as unlearned.
+func classTable(class string) (map[int32]*rankChain, bool) {
+	table, err := spellRankTable()
+	if err != nil {
+		return nil, false
+	}
+	byID, ok := table[class]
+	return byID, ok
+}
+
+// learnedIn is LearnedSpellID's resolution over one
 // class's already-parsed table, factored out so a test can exercise it
 // against parseSpellRanks(excerpt) without going through the embed.
-func highestLearnedIn(byID map[int32]*rankChain, id int32, level int) (newID int32, ok bool) {
+func learnedIn(byID map[int32]*rankChain, id int32, level int) (newID int32, ok bool) {
 	chain, ok := byID[id]
 	if !ok {
 		return id, true
 	}
-	for i := len(chain.tiers) - 1; i >= 0; i-- {
+	for i := chain.authoredTier(id); i >= 0; i-- {
 		tier := chain.tiers[i]
 		if tier.level > level || len(tier.castable) == 0 {
 			continue
@@ -321,6 +344,36 @@ func highestLearnedIn(byID map[int32]*rankChain, id int32, level int) (newID int
 		return sameBandOrFirst(tier.castable, id), true
 	}
 	return 0, false
+}
+
+// rankOfIn is SpellIDOfRank's resolution over one class's parsed table.
+func rankOfIn(byID map[int32]*rankChain, id int32, rank, level int) (newID int32, ok bool) {
+	chain, ok := byID[id]
+	if !ok {
+		return 0, false
+	}
+	for _, tier := range chain.tiers {
+		if tier.rank != rank {
+			continue
+		}
+		if tier.level > level || len(tier.castable) == 0 {
+			return 0, false
+		}
+		return sameBandOrFirst(tier.castable, id), true
+	}
+	return 0, false
+}
+
+// authoredTier is the index of the tier id belongs to, the highest rank a
+// rotation naming id may cast. A book-rank alias (no tier of its own while
+// the book is out) caps at the top tier.
+func (c *rankChain) authoredTier(id int32) int {
+	for i, tier := range c.tiers {
+		if slices.Contains(tier.ids, id) {
+			return i
+		}
+	}
+	return len(c.tiers) - 1
 }
 
 // foreverIDFloor separates the classic client's spell ids (all below it)
