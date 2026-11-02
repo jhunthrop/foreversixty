@@ -275,8 +275,10 @@ lets the two share a weapon, and the engine refuses anything else there.
 | `major_frenzy_potion` | Consumes.default_potion |
 | `major_healing_potion` | Consumes.default_potion |
 | `major_mana_potion` | Consumes.default_potion |
+| `major_menders_potion` | Consumes.default_potion |
 | `major_spellblasting_potion` | Consumes.default_potion |
 | `mana_potion` | Consumes.default_potion |
+| `menders_potion` | Consumes.default_potion |
 | `mighty_rage_potion` | Consumes.default_potion |
 | `off_hand_imbue:blessed_wizard_oil` | Consumes.off_hand_imbue |
 | `off_hand_imbue:brilliant_mana_oil` | Consumes.off_hand_imbue |
