@@ -220,3 +220,37 @@ describe('createLiveDps', () => {
     dps.dispose();
   });
 });
+
+describe('the live run fights the target the character levels against', () => {
+  function recordingLive(sent: string[]) {
+    return createLiveDps({
+      pool: createPool({
+        hardwareConcurrency: 1,
+        spawn: () => {
+          const worker = fakeWorker();
+          return {
+            ...worker,
+            postMessage: (message) => {
+              if (message.kind === 'split') sent.push(message.request);
+              worker.postMessage(message);
+            },
+          };
+        },
+      }),
+    });
+  }
+
+  it('a level-30 build fights a level-33 target, as /sim does, not the cap boss', async () => {
+    const index = await warriorIndex();
+    vi.useFakeTimers();
+    const sent: string[] = [];
+    const dps = recordingLive(sent);
+    dps.request({ ...character, level: 30, talent_level: 30 }, index);
+    await vi.runAllTimersAsync();
+    const levels = sent.map(
+      (json) => (JSON.parse(json) as { encounter: { target_level: number } }).encounter.target_level,
+    );
+    expect(levels.at(-1)).toBe(33);
+    dps.dispose();
+  });
+});

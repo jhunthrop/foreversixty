@@ -15,7 +15,7 @@ import type { TalentIndex } from './rules';
 import { EMPTY_ESTIMATE } from '../sim/estimate';
 import { runSim, SimRunError, type RunHandle } from '../sim/run';
 import { loadPresetSets } from '../sim/preset-sets';
-import { defaultSettings } from '../sim/settings';
+import { defaultSettings, encounterFor } from '../sim/settings';
 import { toCharacterSpec, type SimCharacter } from '../sim/character';
 import { ITERATIONS, type Estimate } from '../sim/types';
 import { createPool, type SimPool } from '../sim/worker';
@@ -66,7 +66,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
         spec: character.spec,
         source: character.source,
         character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
-        encounter: settings.encounter,
+        encounter: encounterFor(settings.encounter, character.level),
         iterations: ITERATIONS.live,
         roleMetrics: needsRoleMetrics(unit),
       },
