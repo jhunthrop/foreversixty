@@ -50,7 +50,7 @@ Restoration is the Druid healer tree: Rejuvenation and Regrowth on many targets,
 
 The build spends most of its points in Restoration and fills Balance with the periodic-healing and critical-chance talents. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-- **Naturalist** shortens Healing Touch, **Gift of Nature** strengthens every heal, and **Improved Rejuvenation** strengthens Rejuvenation.
+- **Naturalist** shortens Healing Touch, **Gift of Nature** strengthens every heal but Tranquility (in Forever it reaches heals over time only through its periodic half, which names Rejuvenation, Regrowth and Wild Growth), and **Improved Rejuvenation** strengthens Rejuvenation.
 - **Reflection** keeps part of your regeneration running while you cast, **Tranquil Spirit** makes Healing Touch and Tranquility cheaper, and **Living Spirit** lifts Spirit.
 - **Bloom** (1 point, new in client 1.60.1.70707) heals the target for your Spirit whenever a Rejuvenation or Regrowth runs its full duration; with heals over time doing most of the work it was the largest single gain the sim found for this build, about +10% healing over the alternatives for that point. It took the point of Gift of the Earthmother, which left the tree in the same patch.
 - **Swiftmend** and **Nature's Swiftness** are the burst tools. In Forever, Swiftmend does not use up the heal over time it reads (it prefers a Regrowth), so it is worth casting on cooldown whenever the tank is hurt, not only in an emergency.
