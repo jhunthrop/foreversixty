@@ -142,7 +142,7 @@ jobs:
           # the active build's simdb.bin instead (make simdb, above).
           GOOS=linux  GOARCH=amd64 go build -ldflags="-s -w" -o ../artifacts/forever-sim-linux-amd64  ./cmd/forever-sim
           GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o ../artifacts/forever-sim-darwin-arm64 ./cmd/forever-sim
-          cd ../artifacts && sha256sum * > SHA256SUMS && cat SHA256SUMS
+          cd ../artifacts && sha256sum -- * > SHA256SUMS && cat SHA256SUMS
       # The design budgets the browser download at 4 MB gzipped. The
       # engine alone measured 3.31 MB; this build adds request, adapter,
       # combine and the logs summary. The gate is the budget, not the

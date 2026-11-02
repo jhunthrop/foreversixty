@@ -3,11 +3,17 @@
 # Job graph (see the ci-web-fast lane's change, 2026-09-30):
 #
 #   build --+--> build-real (real-data build + its postbuild checks, off the critical path)
-#           +--> real-engine (the real sim.wasm + the four real-engine specs; gated by
-#           |    real-engine-scope on pull requests, off the deploy path)
-#           +--> e2e (matrix: shard 1-4/4)     ----+
-#           +--> lhci (matrix: shard 1-3/3, 2-3 of the 7 budgeted URLs each) --+--> deploy
+#           +--> e2e (matrix: shard 1-4/4)
+#           +--> lhci (matrix: shard 1-3/3, 2-3 of the 7 budgeted URLs each) --> lhci-alert
+#           +--> real-engine (the real sim.wasm + the four real-engine specs) --+
+#           |      ^-- real-engine-scope (on a pull request: can the change     |
+#           |          reach the wasm? push and dispatch always run it)          |
+#           +-------------------------------------------------------------------+--> deploy
 #                                                                    (main push/dispatch only)
+#
+# deploy needs build and real-engine: a failed real-engine blocks it, and so does a
+# real-engine skipped for any reason but real-engine-scope's run=false. build-real, e2e and
+# lhci do not gate it (BUILD MODE, below).
 #
 # `build` runs once (install, check, lint, format, unit tests, the FOREVER_DATA=fixture
 # build) and uploads web/dist so `e2e` and `lhci` each start from the same bytes instead of
@@ -105,16 +111,18 @@ jobs:
           path: web/dist
           retention-days: 1
   # BUILD MODE (owner, 2026-10-04): until the page pass is done, a push to main deploys on the
-  # `build` job alone (check, lint, format, unit tests, fixture build). build-real still runs
-  # on schedule / workflow_dispatch only, and none of build-real, e2e or lhci gate deploy. lhci
+  # `build` job (check, lint, format, unit tests, fixture build) and, since round 9
+  # (2026-11-02), `real-engine`. build-real still runs on schedule / workflow_dispatch only,
+  # and none of build-real, e2e or lhci gate deploy. lhci
   # runs on every push as well (2026-11-02): skipped on push, /planner sat under its 0.90
   # budget for weeks and lhci-nightly was red every night from 10-18 to 11-01 unseen;
   # `lhci-alert` below now keeps one open issue while either is red. e2e runs
   # on every push as well (2026-10-31): skipped on push it sat red on dispatch and schedule from
   # 10-29 to 10-31 while every push read green. Four shards of ~12 min of tests (~17 min a
   # shard with setup, in parallel beside deploy) on a public repository's free runners, so a
-  # push's commit status is red the moment the suite is. To re-enable gating: restore
-  # `needs: [build, build-real, e2e, lhci]` on deploy and drop build-real's `if:`.
+  # push's commit status is red the moment the suite is. To re-enable gating: add build-real,
+  # e2e and lhci to deploy's `needs:` with a `needs.<job>.result == 'success'` clause each,
+  # and drop build-real's `if:`.
   build-real:
     needs: build
     if: github.event_name != 'push'
@@ -214,6 +222,7 @@ jobs:
   # unseen (round 6, design/reviews/2026-11-02-sim-audit-round6/page.md P3). Here a missing
   # wasm, or any skipped spec, FAILS the job. `real-engine-scope` limits a pull request to
   # changes that can move the wasm, its loader or these specs; push, dispatch always run.
+  # real-engine gates `deploy` (see deploy's `if:`).
   real-engine-scope:
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
@@ -446,9 +455,17 @@ jobs:
           elif [ -n "$open" ]; then
             gh issue close "$open" --comment "Green again on $SHA ($EVENT): $RUN_URL"
           fi
+  # always() lets a skipped real-engine through; the clauses after it put every other gate
+  # back: build green, real-engine green or skipped because real-engine-scope found nothing
+  # that reaches the wasm (a failed scope also skips it, and that blocks), main only.
+  # web/src/ci-deploy-gate.test.ts evaluates this over every result the jobs can report.
   deploy:
-    needs: [build]
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: [build, real-engine-scope, real-engine]
+    if: >-
+      always() && !cancelled() && needs.build.result == 'success' &&
+      (needs.real-engine.result == 'success' ||
+        (needs.real-engine.result == 'skipped' && needs.real-engine-scope.outputs.run == 'false')) &&
+      github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     defaults: { run: { working-directory: web } }

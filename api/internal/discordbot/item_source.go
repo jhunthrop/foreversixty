@@ -199,10 +199,10 @@ func resolvedSource(loot *lootFile, itemID int, kind, faction string) (string, b
 		return src.Name, ok
 	case "pvp":
 		src, ok := findLoot(loot.Sources, "pvp", itemID)
-		if !ok || src.Rank == nil || !realFaction(src.Faction) {
+		if !ok || !realFaction(src.Faction) {
 			return "", false
 		}
-		return pvpLine(*src.Rank, src.Faction), true
+		return pvpLine(src.Rank, src.Faction), true
 	case "world_drop":
 		src, ok := findLoot(loot.Sources, "world_drop", itemID)
 		return worldDropLine(src), ok
@@ -270,17 +270,18 @@ func craftedLine(src lootSource) string {
 	return fill(sourceCopy.CraftedNamed, "{Profession}", classLabel(src.Profession), "{name}", src.Name)
 }
 
-// vendorLine: a vendor that sells a PvP rank's rewards reads as that rank, as the page does.
+// vendorLine: a vendor that sells a PvP source's rewards reads as that source (its rank, or
+// "PvP reward" when it has none), as the page does.
 func vendorLine(sources []lootSource, itemID int) (string, bool) {
-	if pvp, ok := findLoot(sources, "pvp", itemID); ok && pvp.Rank != nil && realFaction(pvp.Faction) {
-		return pvpLine(*pvp.Rank, pvp.Faction), true
+	if pvp, ok := findLoot(sources, "pvp", itemID); ok && realFaction(pvp.Faction) {
+		return pvpLine(pvp.Rank, pvp.Faction), true
 	}
 	src, ok := findLoot(sources, "vendor", itemID)
 	if !ok {
 		return "", false
 	}
 	if src.Rank != nil && realFaction(src.Faction) {
-		return pvpLine(*src.Rank, src.Faction), true
+		return pvpLine(src.Rank, src.Faction), true
 	}
 	return fill(sourceCopy.Vendor, "{npc}", src.Name), true
 }
@@ -293,14 +294,18 @@ func repLine(src lootSource) string {
 }
 
 // pvpLine is "PvP rank 11 · Knight-Lieutenant · Alliance"; loot.json's rank is the client's
-// RequiredPVPRank, the ladder's rank plus 4.
-func pvpLine(rank int, faction string) string {
-	titles := pvpTitles[faction]
+// RequiredPVPRank, the ladder's rank plus 4. A source with no rank (Forever's PvP rewards need
+// none, owner ruling 2026-11-01) reads "PvP reward · Alliance", never "PvP rank 0".
+func pvpLine(rank *int, faction string) string {
 	side := classLabel(faction)
-	if i := rank - pvpRankOffset; i >= 0 && i < len(titles) {
-		return fill(sourceCopy.PvP, "{rank}", strconv.Itoa(rank), "{title}", titles[i], "{Faction}", side)
+	if rank == nil || *rank < 1 {
+		return fill(sourceCopy.PvPReward, "{Faction}", side)
 	}
-	return fill(sourceCopy.PvPUntitled, "{rank}", strconv.Itoa(rank), "{Faction}", side)
+	titles := pvpTitles[faction]
+	if i := *rank - pvpRankOffset; i >= 0 && i < len(titles) {
+		return fill(sourceCopy.PvP, "{rank}", strconv.Itoa(*rank), "{title}", titles[i], "{Faction}", side)
+	}
+	return fill(sourceCopy.PvPUntitled, "{rank}", strconv.Itoa(*rank), "{Faction}", side)
 }
 
 func worldDropLine(src lootSource) string {

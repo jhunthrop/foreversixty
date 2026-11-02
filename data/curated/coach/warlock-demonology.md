@@ -34,11 +34,11 @@ This is the Demonology Warlock as the site's guide describes it. Demonology is W
 - Dead time: time with no button pressed while the boss was alive and in reach.
 - Resource waste: the main resource bar left to cap or to run dry.
 - Ranks: a spell left at an old rank because the trainer visit was skipped.
-- Pull preparation: a missing flask, weapon enchant and combat potion.
+- Pull preparation: a missing flask, food, weapon enchant and combat potion.
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Nightfin Soup); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 
@@ -47,7 +47,7 @@ This is the Demonology Warlock as the site's guide describes it. Demonology is W
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
 - drill.ranks: Visit your trainer every time you level and read your spellbook after: every button on the priority list should show its top rank.
-- drill.preparation: Before every boss, check a flask, a weapon enchant and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check a flask, food, a weapon enchant and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On a dummy, play only the buttons on the priority list for 3 minutes. Anything else on your bars waits.
 

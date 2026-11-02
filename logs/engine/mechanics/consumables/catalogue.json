@@ -24,7 +24,12 @@
         { "spell_id": 1293743, "name": "Flask of Natural Swiftness", "verified": "1.60.1.70630/simconsumes.json#274276" }
       ],
       "food": [
-        { "spell_id": 1249522, "name": "Grilled Squid", "verified": "1.60.1.69893/spells.json#1249522" }
+        { "spell_id": 1249522, "name": "Grilled Squid", "verified": "1.60.1.70707/simconsumes.json#13928" },
+        { "spell_id": 1249523, "name": "Grilled Squid", "verified": "1.60.1.70707/spells.json#1249523" },
+        { "spell_id": 1248401, "name": "Smoked Desert Dumplings", "verified": "1.60.1.70707/simconsumes.json#20452" },
+        { "spell_id": 1248422, "name": "Smoked Desert Dumplings", "verified": "1.60.1.70707/spells.json#1248422" },
+        { "spell_id": 1249513, "name": "Nightfin Soup", "verified": "1.60.1.70707/simconsumes.json#13931" },
+        { "spell_id": 1249520, "name": "Nightfin Soup", "verified": "1.60.1.70707/spells.json#1249520" }
       ],
       "weapon_enchant": [
         { "spell_id": 22756, "name": "Elemental Sharpening Stone", "verified": "1.60.1.69893/spells.json#22756" },
@@ -67,7 +72,10 @@
         { "spell_id": 1293743, "name": "Flask of Natural Swiftness", "verified": "1.60.1.70630/simconsumes.json#274276" }
       ],
       "food": [
-        { "spell_id": 1249513, "name": "Nightfin Soup", "verified": "1.60.1.69893/spells.json#1249513" }
+        { "spell_id": 1249925, "name": "Sage's Tea", "verified": "1.60.1.70707/simconsumes.json#249870" },
+        { "spell_id": 1249927, "name": "Sage's Tea", "verified": "1.60.1.70707/spells.json#1249927" },
+        { "spell_id": 1249513, "name": "Nightfin Soup", "verified": "1.60.1.70707/simconsumes.json#13931" },
+        { "spell_id": 1249520, "name": "Nightfin Soup", "verified": "1.60.1.70707/spells.json#1249520" }
       ],
       "weapon_enchant": [],
       "world_buffs": [
@@ -107,7 +115,8 @@
         { "spell_id": 1293743, "name": "Flask of Natural Swiftness", "verified": "1.60.1.70630/simconsumes.json#274276" }
       ],
       "food": [
-        { "spell_id": 1248395, "name": "Tender Wolf Steak", "verified": "1.60.1.69893/spells.json#1248395" }
+        { "spell_id": 1248401, "name": "Smoked Desert Dumplings", "verified": "1.60.1.70707/simconsumes.json#20452" },
+        { "spell_id": 1248422, "name": "Smoked Desert Dumplings", "verified": "1.60.1.70707/spells.json#1248422" }
       ],
       "weapon_enchant": [
         { "spell_id": 22756, "name": "Elemental Sharpening Stone", "verified": "1.60.1.69893/spells.json#22756" }

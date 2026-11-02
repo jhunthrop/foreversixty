@@ -37,7 +37,7 @@ This is the Restoration Shaman as the site's guide describes it. Restoration is 
 - Pull preparation: a missing flask, food and combat potion.
 - Death review: dying, because a dead healer heals nothing for the rest of the pull.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Distilled Wisdom); food (Nightfin Soup); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Distilled Wisdom); food (Sage's Tea); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 
