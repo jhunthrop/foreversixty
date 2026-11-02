@@ -14,9 +14,21 @@ endif
 XCODEBUILD = xcodebuild -project ForeverSixty.xcodeproj -scheme ForeverSixty \
 	-destination '$(SIMULATOR)' -derivedDataPath build/DerivedData
 
-.PHONY: project build test clean device captures snapshots
+# CI pins Xcode in ios.yml (XCODE_VERSION). A different local Xcode ships a different Swift
+# compiler, and concurrency checking differs between them: Swift 6.2 (Xcode 26.6) rejected a
+# closure that Swift 6.4 (Xcode 27) accepts (RootView, F15). With the pinned Xcode selected
+# (DEVELOPER_DIR or xcode-select) the local gate compiles what CI compiles; otherwise say so.
+CI_XCODE := $(shell sed -n "s/^ *XCODE_VERSION: *'\(.*\)'/\1/p" ../../.github/workflows/ios.yml)
+LOCAL_XCODE := $(shell xcodebuild -version 2>/dev/null | sed -n 's/^Xcode //p')
 
-project:
+.PHONY: project build test clean device captures snapshots toolchain
+
+toolchain:
+	@if [ '$(LOCAL_XCODE)' != '$(CI_XCODE)' ]; then \
+		echo "warning: local Xcode $(LOCAL_XCODE) is not CI's Xcode $(CI_XCODE) (ios.yml); CI's compiler can reject Swift concurrency code this one accepts. Select Xcode $(CI_XCODE) with DEVELOPER_DIR to compile what CI compiles." >&2; \
+	fi
+
+project: toolchain
 	xcodegen generate
 
 build: project

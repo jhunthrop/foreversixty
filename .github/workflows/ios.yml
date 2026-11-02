@@ -57,6 +57,8 @@ jobs:
         continue-on-error: ${{ inputs.record == true }}
         env:
           TEST_RUNNER_SNAPSHOT_TESTING_RECORD: ${{ inputs.record == true && 'failed' || 'missing' }}
+          # The runner is ~3x slower than a local Mac; SearchLogicTests' keystroke budget scales by it.
+          TEST_RUNNER_SEARCH_BUDGET_SCALE: '3'
         run: |
           set -o pipefail
           xcodebuild test \

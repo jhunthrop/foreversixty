@@ -85,7 +85,9 @@ enum SystemStory {
         let me = try RaidFixture.load(Me.self, "me")
         var json = try JSONSerialization.jsonObject(with: WireFormat.encoder().encode(try #require(me.characters.first))) as? [String: Any] ?? [:]
         var build = json["build"] as? [String: Any] ?? [:]
-        build["talents"] = ["trees": ranks.map { $0.map(String.init).joined() }, "points": ranks.map { $0.reduce(0, +) }]
+        let trees: [String] = ranks.map { tree in tree.map(String.init).joined() }
+        let points: [Int] = ranks.map { tree in tree.reduce(0, +) }
+        build["talents"] = ["trees": trees, "points": points]
         json["build"] = build
         json["key"] = key
         json["name"] = "Lightningbolltz"

@@ -201,7 +201,7 @@ struct RootView: View {
                 liveSurfaces: environment.isAvailable(.widgets),
                 onLiveSettingsChange: { Task { await environment.liveActivities.syncRaid(WidgetSnapshotStore.shared().load()) } },
                 calendar: guildExtras.map { ($0, calendarSync) },
-                offlineData: environment.isAvailable(.system) ? { OfflineDataModel.live(environment) } : nil
+                offlineData: offlineData
             )
         case .you: PlaceholderScreen(title: tab.title)
         }
@@ -212,6 +212,15 @@ extension RootView {
     /// Lane F16: the guild extras' dependencies, nil while `guild_extras` is off.
     private var guildExtras: GuildExtrasDependencies? {
         environment.isAvailable(.guildExtras) ? .live(environment) : nil
+    }
+
+    /// Lane F15: the Offline data screen's model factory, nil while `system` is off. The closure is
+    /// main-actor isolated by name: Swift 6.2 (CI's Xcode 26.6) does not carry the parameter's
+    /// `@MainActor` type into a closure literal inside a ternary and rejects it as non-Sendable.
+    private var offlineData: (@MainActor () -> OfflineDataModel)? {
+        guard environment.isAvailable(.system) else { return nil }
+        let environment = environment
+        return { @MainActor in OfflineDataModel.live(environment) }
     }
 
     /// A link selects its tab: sim, report, rankings and player links Home (lanes F5, F10, F11),
