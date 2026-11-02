@@ -122,6 +122,14 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Do not let your mana fall far behind the fight."
         ),
     },
+    "priest-discipline": {
+        # discipline.md: "Binding Heal takes its place while you are hurt yourself, since it heals
+        # you as much as the target for the same mana".
+        "Binding Heal": "Binding Heal in Flash Heal's place while you are hurt yourself. It heals you as much as the target for the same mana.",
+        # discipline.md: "Lesser Heal at rank 3 the mana filler on everyone else, never your main
+        # heal: a rank learned at level 10 keeps its whole spell power in Forever, and it costs half a Heal."
+        "Lesser Heal": "Lesser Heal is the mana filler on everyone else, never your main heal. Its low rank keeps its whole spell power and costs half a Heal.",
+    },
     "priest-shadow": {
         "Shadow Word: Pain": "Shadow Word: Pain kept up, unless the fight is close to ending.",
         "Inner Focus": (

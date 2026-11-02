@@ -21,7 +21,8 @@ This is the Affliction Warlock as the site's guide describes it. Affliction is W
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Corruption is the cheapest DoT per damage and goes down first, then is kept up throughout.
-- Bane of Agony goes up right behind it as your one curse.
+- Bane of Agony goes up right behind it as your bane.
+- Curse of the Elements goes up once, before the bane: in Forever a curse and a bane hold separate slots, so it sits beside Bane of Agony or Bane of Doom and lasts five minutes.
 - Siphon Life comes next: the build takes it, and its ticks crit and heal you.
 - Immolate is the fifth DoT, recast when under three seconds remain.
 - Shadow Bolt fills every remaining global while the DoTs run their course.

@@ -23,6 +23,7 @@ This is the Demonology Warlock as the site's guide describes it. Demonology is W
 - Bane of Doom is the one curse kept up. It deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains.
 - Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.
 - Bane of Agony in the last minute, when a Doom would not fire before the fight ends.
+- Curse of the Elements goes up once, before the bane: in Forever a curse and a bane hold separate slots, so it sits beside Bane of Agony or Bane of Doom and lasts five minutes.
 - Immolate follows Corruption and Bane of Doom and is recast when under three seconds remain. Its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.
 - Soul Fire only while Decimation's buff is up.
 - Shadow Bolt is the filler between DoT refreshes: with the Imp's sacrifice and the Succubus' Master Demonologist both raising Shadow damage, it beats Searing Pain.

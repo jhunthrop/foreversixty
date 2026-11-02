@@ -23,6 +23,7 @@ This is the Destruction Warlock as the site's guide describes it. Destruction is
 - Corruption goes down first and is kept up throughout. It is cheap sustained damage that does not compete with your casts.
 - Bane of Doom is the one curse kept up. It deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains.
 - Bane of Agony in the last minute, when a Doom would not fire before the fight ends.
+- Curse of the Elements goes up once, before the bane: in Forever a curse and a bane hold separate slots, so it sits beside Bane of Agony or Bane of Doom and lasts five minutes.
 - Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is recast when under three seconds remain.
 - Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up.
 - Shadowburn is cast on cooldown whenever its reagent cost is acceptable, with no execute-phase gate. It is strong burst at any target health.

@@ -21,10 +21,12 @@ This is the Discipline Priest as the site's guide describes it. Discipline is th
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - The rotation leads with Penance whenever it is ready, and keeps Power Word: Shield on a tank who is taking damage and is not under Weakened Soul.
+- Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.
 - Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.
-- Binding Heal.
+- Binding Heal in Flash Heal's place while you are hurt yourself. It heals you as much as the target for the same mana.
 - Prayer of Healing answers several party members being hurt together.
 - Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.
+- Lesser Heal is the mana filler on everyone else, never your main heal. Its low rank keeps its whole spell power and costs half a Heal.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

@@ -121,7 +121,9 @@ describe('toolScaleView', () => {
   });
 
   it('the fixture run reads the same way', () => {
-    const fixture = toolScaleView(result.weights, 'warrior-fury', result.request.weights.reference);
+    const reference = result.request.weights?.reference;
+    expect(reference).toBeDefined();
+    const fixture = toolScaleView(result.weights, 'warrior-fury', reference ?? '');
     expect(Math.max(...fixture.rows.map((row) => row.scaleFactor))).toBe(1);
   });
 });

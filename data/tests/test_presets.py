@@ -95,8 +95,9 @@ def test_the_raid_preset_has_a_label_and_notes(raid):
 
 
 def test_the_raid_preset_names_every_buff_and_debuff_the_owner_asked_for(raid):
-    assert REQUIRED_BUFFS <= {e["id"] for e in raid["buffs"]}
-    assert REQUIRED_DEBUFFS <= {e["id"] for e in raid["debuffs"]}
+    # A graded id ("mana_spring_totem:improved", round 11) is still the buff the owner asked for.
+    assert REQUIRED_BUFFS <= {e["id"].split(":", 1)[0] for e in raid["buffs"]}
+    assert REQUIRED_DEBUFFS <= {e["id"].split(":", 1)[0] for e in raid["debuffs"]}
 
 
 def test_the_raid_preset_carries_nothing_forbidden(raid):

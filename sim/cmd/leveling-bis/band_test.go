@@ -593,8 +593,9 @@ func TestPvpRankExceedsCap(t *testing.T) {
 		src  itemSource
 		want bool
 	}{
-		{"client rank 14 (in-game rank 10, the cap itself) does not exceed it", itemSource{Kind: "pvp", Rank: 14}, false},
-		{"client rank 15 (in-game rank 11) exceeds it", itemSource{Kind: "pvp", Rank: 15}, true},
+		{"client rank 10 (in-game rank 6, the cap itself) does not exceed it", itemSource{Kind: "pvp", Rank: 10}, false},
+		{"client rank 11 (in-game rank 7) exceeds it", itemSource{Kind: "pvp", Rank: 11}, true},
+		{"client rank 14 (in-game rank 10) exceeds it", itemSource{Kind: "pvp", Rank: 14}, true},
 		{"pvp rank 18 exceeds it", itemSource{Kind: "pvp", Rank: 18}, true},
 		{"a non-pvp source with no inherited rank is never capped", itemSource{Kind: "quest", Rank: 0}, false},
 		{"a vendor row that inherited a pvp rank IS capped, same as the pvp source itself", itemSource{Kind: "vendor", Rank: 18}, true},

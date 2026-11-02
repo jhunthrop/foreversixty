@@ -9,14 +9,14 @@ import (
 
 // The search sims each candidate the way the published number is simmed: under
 // the bare preset at 60 the rotation casts the bare-60 rank choices
-// (data/curated/rank-choices.json: Shadow's Devouring Plague rank 1), and the
+// (data/curated/rank-choices.json: Shadow's Shadow Word: Death rank 2), and the
 // request names the preset. The candidate itself keeps its authored ids, so the
 // pasteable rotation in the report is never rewritten.
 func TestCandidatesCastThePresetsRankChoices(t *testing.T) {
-	const authored, spec = int32(19280), "priest-shadow"
-	rank1, ok := spellranks.SpellIDOfRank("priest", authored, 1, 60)
-	if !ok || rank1 == authored {
-		t.Fatalf("Devouring Plague rank 1 at 60 = %d, %v", rank1, ok)
+	const authored, spec = int32(1309636), "priest-shadow"
+	rank2, ok := spellranks.SpellIDOfRank("priest", authored, 2, 60)
+	if !ok || rank2 == authored {
+		t.Fatalf("Shadow Word: Death rank 2 at 60 = %d, %v", rank2, ok)
 	}
 	r := rotation{Type: "TypeAPL", PriorityList: []entry{{Action: action{"castSpell": map[string]any{"spellId": map[string]any{"spellId": float64(authored)}}}}}}
 	bare := simSetup{spec: specInfo{Spec: spec, ClassSlug: "priest"}, level: 60, seed: 1}
@@ -25,8 +25,8 @@ func TestCandidatesCastThePresetsRankChoices(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got := apl.GetPriorityList()[0].GetAction().GetCastSpell().GetSpellId().GetSpellId(); got != rank1 {
-		t.Errorf("bare-60 candidate casts %d, want rank 1 (%d)", got, rank1)
+	if got := apl.GetPriorityList()[0].GetAction().GetCastSpell().GetSpellId().GetSpellId(); got != rank2 {
+		t.Errorf("bare-60 candidate casts %d, want rank 2 (%d)", got, rank2)
 	}
 	if got := bare.request(10).Preset; got != request.BarePreset {
 		t.Errorf("bare request preset = %q, want %q", got, request.BarePreset)

@@ -15,8 +15,9 @@ func TestThePvpRankCapReadsTheInGameRank(t *testing.T) {
 		field int
 		want  bool
 	}{
-		{"field 11, Knight-Lieutenant / Blood Guard (rank 7)", 11, false},
-		{"field 14, Lieutenant Commander / Champion (rank 10, the cap)", 14, false},
+		{"field 10, Knight / Stone Guard (rank 6, the cap)", 10, false},
+		{"field 11, Knight-Lieutenant / Blood Guard (rank 7)", 11, true},
+		{"field 14, Lieutenant Commander / Champion (rank 10)", 14, true},
 		{"field 15, Commander / Lieutenant General (rank 11)", 15, true},
 		{"field 18, Grand Marshal / High Warlord (rank 14)", 18, true},
 	}

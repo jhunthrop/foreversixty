@@ -33,8 +33,6 @@ const ALLOWED = new Map<string, number>([
   ['components/sim/DetailsCard.svelte', 1], // the engine build string
   ['components/sim/RunControl.svelte', 1], // the engine's own error sentence
   ['components/sim/tools/BulkRunBar.svelte', 1], // the engine's own error sentence
-  ['components/sim/SavedWeights.svelte', 1], // the weights export string
-  ['components/sim/tools/StatWeights.svelte', 1], // the weights export string
   ['components/sim/RequestDrawer.svelte', 3], // the request JSON, a field id, the buff ids
   ['components/guild/RaidReport.svelte', 1], // the copy fallback box
   ['components/guild/RaidOfficerRow.svelte', 1], // the copy fallback box

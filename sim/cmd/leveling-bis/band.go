@@ -306,27 +306,23 @@ func legendaryGatedLater(c candidate) bool {
 	return c.Quality == legendaryQuality
 }
 
-// pvpRankCap is the highest PvP rank reward this lane's own ruling
-// (owner, 2026-09-29) treats as something "a fresh level 60 can
-// realistically get": rank 10 is a few weeks of casual battlegrounds,
-// rank 11+ needs sustained top-bracket play with rank decay, which a
-// leveling list - "what a launch-day character can get", band.go's
-// own sourceFor doc - should not default to any more than it defaults
-// to a raid drop. Unlike a raid/legendary gate (sourceObtainable's
-// Opens check, legendaryGatedLater above), a rank-11+ reward is NOT
-// removed from the candidate pool: it is still a real, obtainable
-// (just unlikely) item, so it stays sourced and scored, able to
-// appear as a labelled alternative ("Rank 18") - only pick()'s own
-// picking pool (main.go's runSpec, pickBySlot) excludes it from being
-// the DEFAULT pick. See pick.go's excludeAbovePvpRankCap for exactly
-// where that line is drawn.
+// pvpRankCap is the highest in-game PvP rank (1 to 14) whose reward can be a
+// DEFAULT pick: what "a fresh level 60 can realistically get" (owner,
+// 2026-09-29) means in practice. Owner ruling, round 11 (2026-11-02): the cap is
+// in-game rank 6, Knight / Stone Guard, the client field's 10, which is the
+// line the published picks have always drawn; Knight-Lieutenant / Blood Guard
+// (rank 7) and every rank above stay labelled alternatives, never defaults, at
+// every band. A reward above the cap is NOT removed from the candidate pool:
+// it stays sourced and scored, able to appear as a labelled alternative
+// ("PvP rank 10 · Lieutenant Commander"); only pick()'s own picking pool
+// (main.go's runSpec, pickBySlot) excludes it from being the default. See
+// pick.go's excludeAbovePvpRankCap for exactly where that line is drawn.
 //
-// The cap is an in-game rank (1 to 14). Round 11: loot.json's `rank` and
-// `title_rank` are the client's RequiredPVPRank, which is the in-game
-// rank plus clientPvpRankOffset, so they go through inGamePvpRank before
-// the comparison and the label. Read raw, the cap sat at Knight / Stone
-// Guard (rank 6) and the labels said "PvP rank 18 · Grand Marshal".
-const pvpRankCap = 10
+// loot.json's `rank` and `title_rank` are the client's RequiredPVPRank, the
+// in-game rank plus clientPvpRankOffset (the 70753 client's CharTitles names 14
+// honor titles a side), so they go through inGamePvpRank before the comparison
+// and the label.
+const pvpRankCap = 6
 
 // clientPvpRankOffset is RequiredPVPRank minus the in-game rank: the
 // client's field runs 5 (Private / Scout, rank 1) to 18 (Grand Marshal /

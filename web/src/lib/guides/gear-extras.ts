@@ -209,6 +209,8 @@ export const CONSUMABLE_GIVES: Readonly<Record<string, string>> = {
   'main_hand_imbue:brilliant_mana_oil': 'Mana per 5 sec and healing power, on the main hand',
   'main_hand_imbue:brilliant_wizard_oil': 'Spell power, on the main hand',
   'main_hand_imbue:elemental_sharpening_stone': 'Critical strike, on the main hand',
+  'main_hand_imbue:dense_sharpening_stone':
+    'Weapon damage, on the main hand, until the Elemental stone at 50',
   major_frenzy_potion: 'Attack power for 30 sec, on the potion cooldown',
   major_mana_potion: 'Mana, used on cooldown',
   major_spellblasting_potion: 'Spell damage for 30 sec, on the potion cooldown',
