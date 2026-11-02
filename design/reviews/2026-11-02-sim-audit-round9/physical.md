@@ -62,8 +62,8 @@ This lane covers Arms, Fury, Protection, Assassination, Combat, Subtlety, Beast 
 | H3 | **Every hunter below 60 carried level-52 arrows and a level-55 quiver.** The site gave every band Thorium Headed Arrows (17.5 DPS, Requires Level 52) and a 15% quiver (Gnoll Skin Bandolier, level 55).<br>A hunter now carries the best its level can use:<br>- Ammo: Sharp Arrow 3.5 DPS from 10, Razor Arrow 7.5 from 25, Jagged Arrow 13 from 40, Mithril Gyro-Shot 15 from 44, Ice Threaded Arrow 16.5 at 51, Thorium from 52.<br>- Quiver: Light Quiver 10%, Heavy Quiver 12% from 30, Quickdraw Quiver 13% from 40, the Bandolier from 55.<br>The engine's ammo list had nothing below Razor Arrow, so it gains SharpArrow and HeavyShot (a proto enum change). The engine does not match ammo to bow or gun, so from 44 to 50 the Gyro-Shot stands in for a bow's Jagged Arrow. The published band-50 sets wear guns. Band 60 does not move. | Wowhead Forever items 2515, 3030, 11285, 10513, 18042, 2101, 7371, 8217, 19320; tests `TestAmmoDamagePerSecondIsTheClients` (fork) and `TestAHuntersAmmoAndQuiverFollowItsLevel` (site) failed first | CONFIRMED-BUG | E 2a8b74fff; S 9c7de3c53 |
 | H4 | **Beast Mastery's Serpent Sting clipped a tick on most casts.** The rotation refreshed the sting with under 5 s left, but a refresh drops the remaining ticks. So 16 casts gave 55 ticks in a 180 s fight.<br>Refreshing under 1.5 s left keeps every tick but at most the last. Measured: +0.2 to +0.3% raid (both factions, both seeds) and +0.1 to +1.0% bare. The fork's copy is synced. | `bm-ss15.json` measurements; test `TestBeastMasteryRefreshesSerpentStingWithoutClippingATick` failed first | CONFIRMED-BUG (rotation) | S e164c7c0a, d77242465; E 629e104be |
 | H5 | **Mortal Shots' crit damage skipped Serpent Sting.** Mortal Shots (19485, aura 108 misc 15: crit damage bonus) has mask 0 = 424449, which includes bit 16384, Serpent Sting's own class mask. Forever's DoTs crit (owner ruling), so the sting's tick crits take the bonus, as Arcane Shot's do. The effect is small. | SpellEffect 19485, SpellClassOptions 13555; test `TestMortalShotsReachesSerpentSting` failed first | CONFIRMED-BUG | E 44d0f1707 |
-| H6 | **A pet's base stats and weapon damage are level-60 values at every band** (`pet.go:65-75`: Str 136, Agi 100, 18.17 to 27.66 a second of swing). The pet is about 30% of Beast Mastery's damage at bare bands 20 to 40. Beast Mastery bare 20 sims at about 105 DPS (an Assassination rogue there: 38). The direction is certain; the amounts are not. Forever's pet stats by level are server-side, and the only per-level source is an Era server core (cmangos `pet_levelstats`, weapon damage level ± level/4). | `sim/hunter/pet.go`; `core/pet.go:68` | OPEN, high priority (needs a Forever pet-by-level source, or a beta log of a pet's hits at a known level) | - |
-| H7 | Lacerating Strikes: a new Mongoose Bite replaces the bleed with no rollover. It delivers about 18 DPS where a full 40% would give about 34. The client row is a server dummy (1310533 aura 4 at 40), and no beta log reaches the 31-point talent. | `lacerating_strikes.go:75` | OPEN | - |
+| H6 | **A pet's base stats and weapon damage were its level-60 values at every band** (Str 136, Agi 100, 18.17 to 27.66 a second of swing). A hunter's pet is the hunter's level, so a band-20 cat hit like a level-60 one. The pet is about 30% of Beast Mastery's damage at the low bands.<br>**Source.** The 70707 client has no pet stat table: raw/ carries no CreatureFamily stats, and Hunter Pet Scaling 415429's channels are server-computed (bp 0). Forever is taken to keep Era's pet system. Era's per-level sheet is pet_levelstats entry 1, identical row for row in mangoszero's and tortoise-wow's world databases (level 30: Str 61, Agi 52, Sta 115, Int 32, Spi 44; level 60: 136, 100, 256, 50, 80, which is the engine's level-60 sheet except Stamina 274). The two share a lineage, so treat them as one Era source. Era's server code is the second source for damage: vmangos' Pet::InitStatsForLevel makes it proportional to the pet's level (petlevel × 1.2075 to 1.5225 a 2 s swing, "from vanilla pet tab screenshots"), and cmangos' is linear in petlevel.<br>**Fix.** The pet takes the table's stats at its level; Stamina keeps the engine's 274 at 60 and follows the table's curve below. Weapon damage scales by level / 60. Level 60 does not move. TrinityCore has no 1.x database to check. | mangoszero `World/Setup/FullDB/pet_levelstats.sql`; tortoise-wow `sql/base/tw_world_pet_levelstats.sql`; vmangos `src/game/Objects/Pet.cpp:1411-1414`; cmangos `src/game/Entities/Pet.cpp` (all read 2026-11-02); test `TestAHunterPetsStatsAndDamageFollowItsLevel` failed first | CONFIRMED-BUG (Era source; no Forever table) | E ac0ae9ae6 |
+| H6b | **Warlock demons do not have the level-60 problem.** Each demon carries sheets at 25, 40, 50 and 60, interpolated between them, and extrapolated below 25 (`sim/warlock/pet.go:287-320`). Their values differ from Era's pet_levelstats (entries 416, 1860, 1863, 417) by up to about 30% on some stats. Imp at 60: Str 122 and Int 264 match, but Agi 35 against 27 and Spi 260 against 197. Era's table is itself uneven: the Imp's Intellect falls from 98 at 25 to 63 at 30. So the sheets stay as they are. | mangoszero pet_levelstats; `sim/warlock/imp.go`, `succubus.go` | aligned (scales by level); values OPEN against Era's table | - || H7 | Lacerating Strikes: a new Mongoose Bite replaces the bleed with no rollover. It delivers about 18 DPS where a full 40% would give about 34. The client row is a server dummy (1310533 aura 4 at 40), and no beta log reaches the 31-point talent. | `lacerating_strikes.go:75` | OPEN | - |
 | H8 | Checked against client rows and tooltips, all aligned:<br>- **Shots:** Multi-Shot 2643 (normalized, no flat amount), Aimed Shot 20904 (+166, 2 s, 310 mana), Arcane Shot 14287 (217 Arcane, 190 mana, 6 s minus 0.3 s a point), Serpent Sting 13555 (83 a tick, 15 s).<br>- **Cooldowns and aspects:** Rapid Fire 3045 (40%, 15 s, 5 min), Aspect of the Hawk 14322 (55 RAP; Quick Shots 30%, 12 s), Bestial Wrath 19574 (+50%, 18 s, 2 min).<br>- **Survival melee:** Raptor Strike 14266 (+70, ranks 3, 4, 6, 7, 8 by band), Mongoose Bite, Counterattack 20910 (50% weapon + 110), Lacerate (17, 28, 40, 58 a tick), Strider Kick 1317257 (100% normalized, 8 s), Wing Clip 14268 (50), Aspect of the Beast 1299447 (110 AP; Quick Strikes 30%), Immolation Trap by band.<br>- **Talents (trait curves):** Lethal Attacks, Mortal Shots, Barrage, Efficiency, Careful Aim, Improved Stings, Focused Fire, Ferocity, Unleashed Fury, Frenzy, Predator's Edge, Resourcefulness, Expose Prey, Survivalist, Lightning Reflexes, Ranged Weapon Specialization, Surefooted, Rapid Killing.<br>- **Pets:** Claw ranks by band, Happiness ×1.25, the cat's ×1.10 damage.<br>- **Racials:** Troll Berserking and Dwarf Artisan's Precision. | hunter fork of this lane; `hunter-audit/rows1.txt`, `tooltips.txt` | aligned | - |
 | H9 | Cosmetic: troll Berserking's engine `Note` still says "for 10 s". The aura is 15 s (27 October notes). | `sim/core/racials.go:486` | note only | - |
 | H10 | Carried: pets inherit 10% of attack power (guides only), Aspect of the Hawk's proc mask, and the spell power coefficients of Serpent Sting and Arcane Shot. | | OPEN (carried) | - |
@@ -123,6 +123,30 @@ The hunters' bare bands 20 to 50 fall because they no longer carry level-52 arro
 
 Assassination's new leveling build (A2) moves the published numbers only at the owner's refresh, because the bands read their talents from the nightly BiS data. Measured with `-talents` on the bare character: band 60 +1.6%, band 50 +1.1 to +1.3%, band 40 +0.5%.
 
+
+Hunter pets by level (H6), measured on top of the lane's other fixes (E 44d0f1707 → ac0ae9ae6). Relative change at seed 1 / seed 50001, then the absolute values at seed 1:
+
+| Spec, band | alliance % | horde % | seed 1 alliance / horde |
+|---|---|---|---|
+| Beast Mastery bare 20 | -23.40 / -23.29 | -22.92 / -23.01 | 87.6 → 67.1 / 89.0 → 68.6 |
+| Beast Mastery bare 30 | -16.31 / -16.25 | -15.91 / -15.91 | 123.2 → 103.1 / 125.1 → 105.2 |
+| Beast Mastery bare 40 | -10.99 / -11.03 | -10.98 / -10.93 | 186.6 → 166.1 / 185.8 → 165.4 |
+| Beast Mastery bare 50 | -4.29 / -4.29 | -4.30 / -4.26 | 237.8 → 227.6 / 239.6 → 229.3 |
+| Beast Mastery bare 60 | +0.00 / +0.00 | +0.00 / +0.00 | 314.1 → 314.1 / 314.4 → 314.4 |
+| Beast Mastery raid 60 | +0.00 / +0.00 | +0.00 / +0.00 | 664.0 → 664.0 / 668.0 → 668.0 |
+| Marksmanship bare 20 | -24.54 / -24.42 | -24.24 / -24.15 | 86.8 → 65.5 / 88.3 → 66.9 |
+| Marksmanship bare 30 | -13.27 / -13.19 | -13.03 / -13.02 | 124.3 → 107.8 / 125.9 → 109.5 |
+| Marksmanship bare 40 | -6.71 / -6.71 | -6.70 / -6.70 | 178.9 → 166.9 / 177.6 → 165.7 |
+| Marksmanship bare 50 | -2.45 / -2.45 | -2.40 / -2.40 | 236.5 → 230.7 / 237.6 → 231.9 |
+| Marksmanship bare 60 | +0.00 / +0.00 | +0.00 / +0.00 | 304.4 → 304.4 / 306.6 → 306.6 |
+| Marksmanship raid 60 | +0.00 / +0.00 | +0.00 / +0.00 | 651.3 → 651.3 / 655.7 → 655.7 |
+| Survival bare 20 | -28.24 / -28.24 | -27.98 / -28.02 | 69.4 → 49.8 / 70.4 → 50.7 |
+| Survival bare 30 | -15.27 / -15.26 | -15.01 / -15.00 | 104.1 → 88.2 / 104.6 → 88.9 |
+| Survival bare 40 | -6.45 / -6.50 | -6.45 / -6.40 | 176.8 → 165.4 / 175.2 → 163.9 |
+| Survival bare 50 | -2.24 / -2.25 | -2.40 / -2.40 | 236.3 → 231.0 / 224.9 → 219.5 |
+| Survival bare 60 | +0.00 / +0.00 | +0.00 / +0.00 | 323.1 → 323.1 / 319.2 → 319.2 |
+| Survival raid 60 | +0.00 / +0.00 | +0.00 / +0.00 | 760.9 → 760.9 / 764.1 → 764.1 |
+
 ## For other lanes
 
 - **Crit lane:** `scratchpad/r9/physical/crit-notes.md` (A7) has the source-by-source table. The physical specs care most about three things:
@@ -140,16 +164,16 @@ Assassination's new leveling build (A2) moves the published numbers only at the 
 - **Integrator:**
   - E 2a8b74fff changes `proto/hunter.proto`: Hunter_Options.Ammo gains SharpArrow = 13 and HeavyShot = 14. data/proto needs `simproto` at the pin. Only hunters use the new values (S 9c7de3c53).
   - TestRotationLadder rows move for these specs. They were not regenerated here.
-    - hunter-beast-mastery, hunter-marksmanship and hunter-survival: E 63686fa7e, 2cd085dce, 629e104be, 44d0f1707; S 9c7de3c53, e164c7c0a.
+    - hunter-beast-mastery, hunter-marksmanship and hunter-survival: E 63686fa7e, 2cd085dce, 629e104be, 44d0f1707, ac0ae9ae6; S 9c7de3c53, e164c7c0a.
     - rogue-assassination: S 39bcdf481, the build.
     - warrior-fury: E 21dca29f9.
     - rogue-subtlety: S 431c6006e, if its ladder rows read the rotation.
-  - Fork golden TestP1DPSWarrior is regenerated in E 21dca29f9. No other golden moved: the full fork suite (`-tags=with_db ./sim/...`) passes at 44d0f1707, except `sim/web`, which fails setup as it does at the pin.
+  - Fork golden TestP1DPSWarrior is regenerated in E 21dca29f9. No other golden moved: the full fork suite (`-tags=with_db ./sim/...`) passes at ac0ae9ae6, except `sim/web`, which fails setup as it does at the pin.
   - No fork commit here moves a spec outside this group, apart from the item-proc rows in X1 for wearers of those weapons.
 
 ## Still open
 
-- Pet base stats by level (H6), the largest open item in this group.
+- Warlock demon sheets against Era's pet_levelstats (H6b).
 - Armor-debuff stacking under aura 674 (A6).
 - Normalized rage's off-hand factor and crit multiplier (W5). Unbridled Wrath on Heroic Strike (W4).
 - Lacerating Strikes' rollover (H7).
