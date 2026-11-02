@@ -183,6 +183,12 @@ class ClassTalents(BaseModel):
 class ItemReputation(BaseModel):
     faction_id: int
     standing: Literal["neutral", "friendly", "honored", "revered", "exalted"]
+    #: The client's Faction name and the side that earns it
+    #: (`pipeline.normalize.factions`); None without a Faction row, and side
+    #: None for a reputation both sides earn. loot sources an otherwise
+    #: unsourced reward from these (`pipeline.loot.client_rep`).
+    faction_name: str | None = None
+    side: Literal["alliance", "horde"] | None = None
 
 
 class GearItem(BaseModel):

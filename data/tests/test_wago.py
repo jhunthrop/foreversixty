@@ -124,6 +124,7 @@ def test_tables_cover_every_pipeline_input():
         "ItemSetSpell",
         "ChrClasses",
         "ChrRaces",
+        "Faction",
         "Talent",
         "TalentTab",
         "SkillLineAbility",

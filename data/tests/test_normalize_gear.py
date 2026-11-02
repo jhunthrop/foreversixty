@@ -1470,8 +1470,30 @@ def test_client_rows_carry_their_reputation_requirement():
         row["MinReputation"] = "7" if row["ID"] == "16866" else "0"
     items = {i.id: i for r in build_with_sparse(rows) for i in r.items}
     assert items[16866].reputation is not None
-    assert items[16866].reputation.model_dump() == {"faction_id": 2798, "standing": "exalted"}
+    assert items[16866].reputation.model_dump() == {
+        "faction_id": 2798,
+        "standing": "exalted",
+        "faction_name": None,
+        "side": None,
+    }
     assert items[19325].reputation is None
+
+
+def test_reputation_for_names_the_faction_and_its_side():
+    """Round 9, items lane: the client's Faction table names each reputation
+    and says which side earns it, so loot can source Theramore Expeditionary
+    Force's rewards (no vendor names them) and keep each set on its side."""
+    from pipeline.normalize.factions import FactionInfo
+    from pipeline.normalize.gear import reputation_for
+
+    factions = {2799: FactionInfo(name="Theramore Expeditionary Force", side="alliance")}
+    assert reputation_for(2799, 7, factions) == {
+        "faction_id": 2799,
+        "standing": "exalted",
+        "faction_name": "Theramore Expeditionary Force",
+        "side": "alliance",
+    }
+    assert reputation_for(2798, 5, factions) == {"faction_id": 2798, "standing": "honored"}
 
 
 # --- limit_category: the client's Unique-Equipped family ---------------------

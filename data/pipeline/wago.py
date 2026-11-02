@@ -40,6 +40,9 @@ TABLES = [
     "ItemSetSpell",
     "ChrClasses",
     "ChrRaces",
+    # Reputation names and sides (pipeline.normalize.factions): an item's
+    # ItemSparse.MinFactionID names its faction by id only.
+    "Faction",
     "Talent",
     "TalentTab",
     # Weapon proficiency (pipeline.proficiency.configure): SkillLine's

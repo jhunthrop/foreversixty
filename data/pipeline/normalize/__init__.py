@@ -156,6 +156,7 @@ def normalize_build(
     from pipeline.normalize.classicdb import merge_sets as merge_classicdb_sets
     from pipeline.normalize.dungeons import normalize_dungeons
     from pipeline.normalize.effects import EffectIndex
+    from pipeline.normalize.factions import load_factions
     from pipeline.simdb.equip import area_conditional_spells, feral_form_spells
     from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
     from pipeline.normalize.item_curves import load_item_curves
@@ -411,6 +412,7 @@ def normalize_build(
             fork_icons=fork_icons,
             wowhead_icons=wowhead_icons,
             wowhead_required_levels=wowhead_required_levels,
+            factions=load_factions(optional("Faction") or None, t("ChrRaces")),
         )
     except ItemDataError as error:
         logger.warning("items not emitted for build %s: %s", build, error)
