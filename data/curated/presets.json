@@ -15,7 +15,7 @@
   "presets": {
     "raid": {
       "label": "Raid-ready, Phase 1",
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. Paladins and shamans are on both factions in Forever, so the blessings and the totems reach either faction's raid entry. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free. Forever's foods give the stat of the Well Fed their aura 227 effect triggers, not Era's: Baked Salmon (28 spell damage) is the caster's and a paladin tank's food, Smoked Desert Dumplings (20 Strength) a strength user's and a warrior or bear tank's, and Poached Sunscale Salmon (40 attack power and ranged attack power) an agility user's (rounds 8 and 9, design/reviews/2026-11-02-sim-audit-round8/auras.md and design/reviews/2026-11-02-sim-audit-round9/auras.md). Where a slot lists two consumables the first one the character's level can use is carried, the spec's list before the class's before the group's, so a lower-level food follows the item it stands in for. The Blasted Lands buffs share one hour-long category (103), so each spec carries one: R.O.I.D.S. for strength users and tanks, Ground Scorpok Assay for rogues, hunters and Feral, Cerebral Cortex Compound for the damage casters and the Holy paladin and Restoration shaman, Gizzard Gum for the druid and priest healers (round 9).",
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. Paladins and shamans are on both factions in Forever, so the blessings and the totems reach either faction's raid entry. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). Each tank also carries the main-hand imbue that measured best for its threat: an Elemental Sharpening Stone for the warrior and the bear, Brilliant Wizard Oil for the paladin (round 10). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free. Forever's foods give the stat of the Well Fed their aura 227 effect triggers, not Era's: Baked Salmon (28 spell damage) is the caster's and a paladin tank's food, Smoked Desert Dumplings (20 Strength) a strength user's and a warrior or bear tank's, and Poached Sunscale Salmon (40 attack power and ranged attack power) an agility user's (rounds 8 and 9, design/reviews/2026-11-02-sim-audit-round8/auras.md and design/reviews/2026-11-02-sim-audit-round9/auras.md). Where a slot lists two consumables the first one the character's level can use is carried, the spec's list before the class's before the group's, so a lower-level food follows the item it stands in for. Forever's 30-second potions share the two-minute potion category (4) with the mana and rage potions, so each spec carries the potion that measured best: Major Frenzy Potion for the rogues, the Survival hunter and Enhancement, Major Spellblasting Potion for Balance, Frost, Shadow and the paladin tank, the mana or rage potion for the rest (round 10). Their recipes are sold by the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens. Forever lets a druid drink any potion and Thistle Tea in a form without leaving it, and weapon enchantments and Windfury Totem work in a form (the druid deep dive, news.blizzard.com article 24301515), so the cat carries the melee group's stone, Major Frenzy Potion and Thistle Tea, and Windfury Totem reaches the cat and the bear. The Blasted Lands buffs share one hour-long category (103), so each spec carries one: R.O.I.D.S. for strength users and tanks, Ground Scorpok Assay for rogues, hunters and Feral, Cerebral Cortex Compound for the damage casters and the Holy paladin and Restoration shaman, Gizzard Gum for the druid and priest healers (round 9).",
       "buffs": [
         {
           "id": "arcane_brilliance",
@@ -244,7 +244,7 @@
               {
                 "id": "juju_power",
                 "label": "Juju Power",
-                "reason": "Strength. The engine's other strength elixir, Elixir of Giants, is not in the 1.60 client's item table, so Juju Power is the one a raid can have."
+                "reason": "Strength: 30 (spell 16323). Elixir of Giants is item 9206 in the Forever client, renamed Elixir of Greater Strength, at 25 Strength (spell 11405), so Juju Power is the stronger of the engine's two strength elixirs (round 10)."
               },
               {
                 "id": "r_o_i_d_s",
@@ -259,7 +259,7 @@
               {
                 "id": "main_hand_imbue:elemental_sharpening_stone",
                 "label": "Elemental Sharpening Stone",
-                "reason": "Main-hand stone for every melee weapon user, now that Windfury Totem is a raid buff and no longer holds the main-hand imbue slot. An enhancement shaman's Windfury Weapon still wins the slot. A rogue keeps the stone beside its poison: Forever lets a stone and a poison share a weapon (the rogue and warlock Deep Dive, 2026-10-07), and the sim carries it in the hand's stone field. Elemental (crit) on the main hand because the engine adds its 2% crit to the whole character, so a second one would count twice."
+                "reason": "Main-hand stone for every melee weapon user, now that Windfury Totem is a raid buff and no longer holds the main-hand imbue slot. An enhancement shaman's Windfury Weapon still wins the slot. A feral druid carries it too: Forever's weapon enchantments work in a form (the druid deep dive), and it measured about 1.8% more damage for the cat (round 10). A rogue keeps the stone beside its poison: Forever lets a stone and a poison share a weapon (the rogue and warlock Deep Dive, 2026-10-07), and the sim carries it in the hand's stone field. Elemental (crit) on the main hand because the engine adds its 2% crit to the whole character, so a second one would count twice."
               }
             ],
             "dual_wield_ids": [
@@ -283,7 +283,7 @@
               {
                 "id": "juju_power",
                 "label": "Juju Power",
-                "reason": "Strength. The engine's other strength elixir, Elixir of Giants, is not in the 1.60 client's item table, so Juju Power is the one a raid can have."
+                "reason": "Strength: 30 (spell 16323). Elixir of Giants is item 9206 in the Forever client, renamed Elixir of Greater Strength, at 25 Strength (spell 11405), so Juju Power is the stronger of the engine's two strength elixirs (round 10)."
               },
               {
                 "id": "ground_scorpok_assay",
@@ -389,11 +389,26 @@
               "id": "food_poached_sunscale_salmon",
               "label": "Poached Sunscale Salmon",
               "reason": "Agility user's food: 40 attack power and 40 ranged attack power while well fed (item 13932, Well Fed 1249519; Mightfish Steak 13934 is the same at 45); client level 35. It measured 0.2 to 0.8% ahead of Grilled Squid (1% critical strike in Forever) for the rogue and hunter specs (round 9)."
+            },
+            {
+              "id": "major_frenzy_potion",
+              "label": "Major Frenzy Potion",
+              "reason": "80 attack power and 80 ranged attack power for 30 seconds (item 250943, spell 1251940), in the potion category, so it shares the two-minute timer with a mana or rage potion; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). A rogue drinks no other potion, so it is a free gain: it measured 1.0 to 1.2% more damage for the three rogue specs (round 10)."
+            },
+            {
+              "id": "frenzy_potion",
+              "label": "Frenzy Potion",
+              "reason": "The rogue's potion from level 25 until Major Frenzy Potion at 55: 28 attack power for 30 seconds (item 250940, spell 1251936); its recipe needs no reputation."
             }
           ]
         },
         "by_spec": {
           "hunter-survival": [
+            {
+              "id": "major_frenzy_potion",
+              "label": "Major Frenzy Potion",
+              "reason": "80 attack power and 80 ranged attack power for 30 seconds (item 250943, spell 1251940), in the potion category, so it shares the two-minute timer with a mana or rage potion; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). It measured about 0.9% ahead of Major Mana Potion for the melee Survival hunter (round 10); Beast Mastery and Marksmanship keep the mana potion, which measured 0.1 to 0.2% ahead for them."
+            },
             {
               "id": "main_hand_imbue:elemental_sharpening_stone",
               "label": "Elemental Sharpening Stone",
@@ -434,6 +449,11 @@
             }
           ],
           "mage-frost": [
+            {
+              "id": "major_spellblasting_potion",
+              "label": "Major Spellblasting Potion",
+              "reason": "47 spell damage for 30 seconds (item 250937, spell 1251932), in the potion category, so it shares the two-minute timer with a mana potion; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). It measured about 1.5% ahead of Major Mana Potion for Frost (round 10); Arcane and Fire keep the mana potion, which measured 0.2 to 0.7% ahead for them."
+            },
             {
               "id": "elixir_of_frost_power",
               "label": "Elixir of Frost Power",
@@ -478,6 +498,11 @@
           ],
           "priest-shadow": [
             {
+              "id": "major_spellblasting_potion",
+              "label": "Major Spellblasting Potion",
+              "reason": "47 spell damage for 30 seconds (item 250937, spell 1251932), in the potion category, so it shares the two-minute timer with a mana potion; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). It measured about 0.9% ahead of Major Mana Potion for Shadow (round 10); below level 55 the mana potion holds the slot."
+            },
+            {
               "id": "elixir_of_shadow_power",
               "label": "Elixir of Shadow Power",
               "reason": "School power elixir."
@@ -493,9 +518,19 @@
               "id": "food_poached_sunscale_salmon",
               "label": "Poached Sunscale Salmon",
               "reason": "The tank food from level 35 until the dumplings at 45: 40 attack power while well fed (item 13932, Well Fed 1249519)."
+            },
+            {
+              "id": "main_hand_imbue:elemental_sharpening_stone",
+              "label": "Elemental Sharpening Stone",
+              "reason": "The warrior tank's main-hand stone: 2% critical strike on its own melee attacks (item 18262, enchant 2506, aura 52); client level 50. It measured 1.5 to 1.7% more threat than no stone and about 1% more than a Dense Weightstone for the published mace (round 10)."
             }
           ],
           "paladin-protection": [
+            {
+              "id": "major_spellblasting_potion",
+              "label": "Major Spellblasting Potion",
+              "reason": "47 spell damage for 30 seconds (item 250937, spell 1251932), in the potion category, so it shares the two-minute timer with a mana potion; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). A paladin tank's threat is Holy spell damage: it measured about 0.9% more threat than Major Mana Potion (round 10); below level 55 the mana potion holds the slot."
+            },
             {
               "id": "food_baked_salmon",
               "label": "Baked Salmon",
@@ -505,6 +540,11 @@
               "id": "food_nightfin_soup",
               "label": "Nightfin Soup",
               "reason": "The paladin tank's food from level 35 until Baked Salmon at 45: 22 spell damage while well fed (item 13931, Well Fed 1249520)."
+            },
+            {
+              "id": "main_hand_imbue:brilliant_wizard_oil",
+              "label": "Brilliant Wizard Oil",
+              "reason": "A paladin tank's threat is mostly Holy spell damage: 36 spell damage and healing and 1% spell crit on the main hand (item 20749, enchant 2628); client level 45. It measured 2.3 to 2.4% more threat than no imbue, ahead of the Elemental Sharpening Stone (1.3%) and a Dense Weightstone (1.0%) (round 10)."
             }
           ],
           "druid-feral-bear": [
@@ -562,6 +602,11 @@
           ],
           "shaman-enhancement": [
             {
+              "id": "major_frenzy_potion",
+              "label": "Major Frenzy Potion",
+              "reason": "80 attack power and 80 ranged attack power for 30 seconds (item 250943, spell 1251940), in the potion category, so it shares the two-minute timer with a mana or rage potion; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). It measured about 0.9% ahead of Major Mana Potion for Enhancement (round 10); below level 55 the mana potion holds the slot."
+            },
+            {
               "id": "food_smoked_desert_dumpling",
               "label": "Smoked Desert Dumplings",
               "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever) and about 0.1% ahead of Poached Sunscale Salmon's 40 attack power (round 9)."
@@ -587,6 +632,28 @@
               "id": "food_poached_sunscale_salmon",
               "label": "Poached Sunscale Salmon",
               "reason": "The strength user's food from level 35 until the dumplings at 45 (the first food a character can eat holds the slot): 40 attack power while well fed (item 13932, Well Fed 1249519)."
+            },
+            {
+              "id": "major_frenzy_potion",
+              "label": "Major Frenzy Potion",
+              "reason": "80 attack power and 80 ranged attack power for 30 seconds (item 250943, spell 1251940), on the two-minute potion timer; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). Forever lets a druid drink any potion in Cat Form without leaving it (the druid deep dive, news.blizzard.com article 24301515), and a cat drinks no other potion: it measured about 0.8% more damage (round 10)."
+            },
+            {
+              "id": "frenzy_potion",
+              "label": "Frenzy Potion",
+              "reason": "The cat's potion from level 25 until Major Frenzy Potion at 55: 28 attack power for 30 seconds (item 250940, spell 1251936); its recipe needs no reputation."
+            },
+            {
+              "id": "conjured_rogue_thistle_tea",
+              "label": "Thistle Tea",
+              "reason": "100 Energy (item 7676, five-minute cooldown). Forever: \"Rage potions and Thistletea are also now usable by Druids\" (the druid deep dive). It measured about 1.5% more damage for the cat (round 10)."
+            }
+          ],
+          "druid-balance": [
+            {
+              "id": "major_spellblasting_potion",
+              "label": "Major Spellblasting Potion",
+              "reason": "47 spell damage for 30 seconds (item 250937, spell 1251932), in the potion category, so it shares the two-minute timer with a mana potion; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). It measured about 1.2% ahead of Major Mana Potion for Balance (round 10); below level 55 the mana potion holds the slot."
             }
           ]
         }

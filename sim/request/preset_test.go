@@ -361,18 +361,21 @@ func TestResolveFromFileUnknownPresetFails(t *testing.T) {
 	}
 }
 
-func TestRaidPresetGivesAShapeshifterNoImbue(t *testing.T) {
+// Forever: "Weapon enchantments and procs now all work while shapeshifted,
+// including effects like weightstones, Crusader enchant, and Windfury
+// Totem", and "Rage potions and Thistletea are also now usable by Druids"
+// (the druid deep dive, news.blizzard.com article 24301515). A cat carries
+// the melee group's main-hand stone, a potion and Thistle Tea.
+func TestRaidPresetGivesACatItsWeaponStoneAndThistleTea(t *testing.T) {
 	resolved, err := loadRealPresets(t).Resolve(RaidPreset, specs.ByKey["druid-feral"])
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, id := range entryIDs(resolved.Consumes) {
-		if strings.Contains(id, "_imbue:") {
-			t.Errorf("druid-feral carries %q; a cat's claws take no stone", id)
+	ids := entryIDs(resolved.Consumes)
+	for _, id := range []string{"main_hand_imbue:elemental_sharpening_stone", "major_frenzy_potion", "conjured_rogue_thistle_tea", "elixir_of_the_mongoose"} {
+		if !slices.Contains(ids, id) {
+			t.Errorf("druid-feral carries no %s: %v", id, ids)
 		}
-	}
-	if !slices.Contains(entryIDs(resolved.Consumes), "elixir_of_the_mongoose") {
-		t.Error("druid-feral lost its elixirs with the imbues")
 	}
 }
 
@@ -469,6 +472,21 @@ func TestEachConsumableSlotCarriesTheFirstUsableEntry(t *testing.T) {
 		// Survival is melee in Forever and stones both hands.
 		{"hunter-survival", 60, "main_hand_imbue:elemental_sharpening_stone"},
 		{"hunter-survival", 40, "off_hand_imbue:dense_sharpening_stone"},
+		// Forever's 30-second potions share the potion timer (round 10).
+		{"rogue-combat", 60, "major_frenzy_potion"},
+		{"rogue-subtlety", 40, "frenzy_potion"},
+		{"hunter-survival", 60, "major_frenzy_potion"},
+		{"hunter-survival", 50, "major_mana_potion"},
+		{"hunter-beast-mastery", 60, "major_mana_potion"},
+		{"shaman-enhancement", 60, "major_frenzy_potion"},
+		{"mage-frost", 60, "major_spellblasting_potion"},
+		{"mage-fire", 60, "major_mana_potion"},
+		{"druid-balance", 60, "major_spellblasting_potion"},
+		{"priest-shadow", 60, "major_spellblasting_potion"},
+		{"paladin-protection", 60, "major_spellblasting_potion"},
+		// The tanks' main-hand imbue (round 10).
+		{"warrior-protection", 60, "main_hand_imbue:elemental_sharpening_stone"},
+		{"paladin-protection", 60, "main_hand_imbue:brilliant_wizard_oil"},
 	} {
 		if got := ConsumesAtLevel(all[c.spec], c.level); !slices.Contains(got, c.food) {
 			t.Errorf("%s at %d eats no %s: %v", c.spec, c.level, c.food, got)
