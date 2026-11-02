@@ -7,6 +7,7 @@ from pipeline.simdb.equip import (
     EquipEffectError,
     area_conditional_spells,
     equip_bonuses,
+    feral_form_spells,
     index_spell_effects,
     item_effect_spells,
     spell_bonus,
@@ -38,7 +39,8 @@ def bonuses(item_ids=KEPT_ITEMS):
 
 def test_a_flat_stat_aura_is_read_as_the_client_states_it():
     """Mace of Unending Life (21407) grants +140 attack power through spell
-    26153, which exists in no ItemSparse column."""
+    26153, which exists in no ItemSparse column. (Read here without the
+    client's form gate; with it the amount is feral attack power, below.)"""
     assert bonuses()[21407].stats == {"attack_power": 140.0}
 
 
@@ -353,3 +355,53 @@ def test_area_conditional_equip_spells_are_named_by_their_client_text():
         },
     ]
     assert area_conditional_spells(spells) == {1287704, 1308764, 1318003}
+
+
+def _shapeshift(spell_id: int, mask: int, mask_1: int = 0) -> dict[str, str]:
+    return {
+        "ID": str(spell_id + 1),
+        "SpellID": str(spell_id),
+        "StanceBarOrder": "-1",
+        "ShapeshiftExclude_0": "0",
+        "ShapeshiftExclude_1": "0",
+        "ShapeshiftMask_0": str(mask),
+        "ShapeshiftMask_1": str(mask_1),
+    }
+
+
+def test_feral_form_spells_are_named_by_the_client_shapeshift_mask():
+    """SpellShapeshift 1.60.1.70707 gives "Attack Power - Feral" 26153 (Mace of
+    Unending Life) and 460339 (High Warlord's Pig Sticker) ShapeshiftMask 145:
+    Cat (form 1), Bear (5) and Dire Bear (8). A spell with no mask, or one
+    gated on another form (Greathelm of the Colossus 458752, swimming -9), is
+    not a feral-form spell."""
+    rows = [
+        _shapeshift(26153, 145),
+        _shapeshift(460339, 145),
+        _shapeshift(598, 0),
+        _shapeshift(1, 458752),
+        _shapeshift(2, -9),
+        _shapeshift(3, 145, 1),
+    ]
+    assert feral_form_spells(rows) == {26153, 460339}
+
+
+def test_a_feral_form_attack_power_spell_is_feral_attack_power():
+    """"+140 Attack Power in Cat, Bear, and Dire Bear forms only." (Mace of
+    Unending Life; Wowhead Forever 21407 and 234547 read 2026-11-01) is aura 99
+    alone, so it was generic attack power, mirrored into ranged attack power,
+    for every class: a warrior or hunter wielding High Warlord's Pig Sticker
+    simmed +358 attack power. It is the engine's FeralAttackPower, which only
+    Cat and Bear form turn into attack power."""
+    gated = equip_bonuses(
+        read_csv(FIXTURES / "ItemEffect.csv"),
+        read_csv(FIXTURES / "ItemXItemEffect.csv"),
+        effects(),
+        {21407},
+        feral_form_only={26153},
+    )
+    assert gated[21407].stats == {"feral_attack_power": 140.0}
+    array = stat_array(gated[21407].stats)
+    assert array[pb.Stat.Value("StatFeralAttackPower")] == 140.0
+    assert array[pb.Stat.Value("StatRangedAttackPower")] == 0.0
+    assert array[pb.Stat.Value("StatAttackPower")] == 0.0

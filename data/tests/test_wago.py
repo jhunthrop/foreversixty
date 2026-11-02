@@ -117,6 +117,7 @@ def test_tables_cover_every_pipeline_input():
         "SpellPower",
         "SpellClassOptions",
         "SpellLevels",
+        "SpellShapeshift",
         "SpellItemEnchantment",
         "ManifestInterfaceData",
         "ItemSet",
