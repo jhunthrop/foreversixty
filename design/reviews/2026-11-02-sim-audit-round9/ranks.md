@@ -229,6 +229,25 @@ Columns: published metric at seed 1, the change at seed 1 / 50001, and mana seco
 | warlock-destruction | bare 60 | 351.9 to 351.9 | +0.00% / +0.00% | 4.5 to 4.5 |
 | warlock-destruction | raid 60 | 638.9 to 638.9 | +0.00% / +0.00% | 0.4 to 0.4 |
 
+## Per-rank verification on int/r9 09d7ffddb (each adopted rank does its own amount and costs its own mana)
+
+Asked after the hybrids lane found lower Strength of Earth and Grace of Air ranks giving the top rank's amount (E 09d7ffddb). For every rank in rank-choices.json and the five raid-60 ranks, I checked two things.
+
+1. **Engine source.** The rank has its own registration and its own aura, labelled "(Rank N)", never one aura shared by every rank. Its mana cost and base amount match the client row in spellconst/<class>.json:
+   - Moonfire, Insect Swarm, Wrath.
+   - Rejuvenation, which goes through `registerHealingRanks`.
+   - Aimed Shot, Frostbolt, Scorch, Fire Blast.
+   - Holy Light, Flash of Light, Consecration (an aura per rank).
+   - Heal, Flash Heal, Renew, Power Word: Shield, Prayer of Healing and Binding Heal (`registerHealRanks`).
+   - Lightwell: the renew is per rank, and its ticks are 160/233/320 every 2 s, matching SpellEffect 7001/27873/27874.
+   - Shadow Word: Pain, Devouring Plague, Mind Blast, Shadow Word: Death.
+   - Lightning Bolt, Flame Shock, Lava Burst, Healing Wave, Riptide, Shadow Bolt.
+2. **Simulation.** A character with no gear (only a hunter's ranged weapon) ran single-spell probes, chosen rank against reference rank. Per-cast mana matches the client ratio exactly; for example, Flame Shock rank 1 against rank 4 is 0.220 against 0.220. Per-cast amount follows the client ratio within per-level growth.
+
+In the full-rotation probes, a few mana ratios looked off: Frostbolt, Flame Shock and Lava Burst for Elemental, and Power Word: Shield. The cause is the rotations: Clearcasting-gated lines make some casts free more often. Single-spell probes match the client.
+
+Result: every rank is ok, with no engine fix. Tools are in `scratchpad r9/ranks/verify/`.
+
 ## For other lanes
 
 - **Integrator:**
