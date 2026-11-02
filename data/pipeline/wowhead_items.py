@@ -375,8 +375,18 @@ PERCENT_STAT_KEYS: dict[str, str] = {
 }
 
 
+def sim_percent_stats(item: WowheadItem) -> dict[str, float]:
+    """The item's flat-percentage rating-family stats (``PERCENT_STAT_KEYS``),
+    as stated: Blackcrow 12651 is 0.9% hit, which the engine reads as 0.9."""
+    out: dict[str, float] = {}
+    for key, planner_key in PERCENT_STAT_KEYS.items():
+        if key in item.stats:
+            out[planner_key] = out.get(planner_key, 0.0) + float(item.stats[key])
+    return {key: amount for key, amount in out.items() if amount}
+
+
 def planner_percent_stats(item: WowheadItem) -> dict[str, int]:
-    """The item's flat-percentage rating-family stats (``PERCENT_STAT_KEYS``)."""
+    """`sim_percent_stats` rounded to the planner's integer contract."""
     out: dict[str, int] = {}
     for key, planner_key in PERCENT_STAT_KEYS.items():
         if key in item.stats:

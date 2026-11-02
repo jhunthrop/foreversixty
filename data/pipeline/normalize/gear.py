@@ -151,6 +151,10 @@ WEAPON_DAMAGE_STAT_KEY = "bonus_physical_damage"
 #: haste into melee and spell haste; the planner has no key for either.
 EXPERTISE_STAT_KEY = "expertise"
 HASTE_STAT_KEY = "haste"
+#: ITEM_MOD_EXTRA_ARMOR (stat 50): armour on top of the curve's, which the
+#: engine reads as StatBonusArmor. The planner states an item's armour once,
+#: from the curve, so this key is the simulator's alone (sim audit round 8).
+BONUS_ARMOR_STAT_KEY = "bonus_armor"
 #: A StatModifier_bonusStat id that raises a second planner stat by the same
 #: amount. 45 is ITEM_MOD_SPELL_POWER, which Forever's server applies to damage
 #: AND healing: Wowhead Forever adds it into the healing total wherever it sits
@@ -160,7 +164,9 @@ HASTE_STAT_KEY = "haste"
 #: gave spell power only gave 1,569 client rows no healing (sim audit round 8).
 MODIFIER_ALSO_GRANTS: dict[int, tuple[str, ...]] = {45: ("healing",)}
 
-PLANNER_EXCLUDED_STAT_KEYS = frozenset({WEAPON_DAMAGE_STAT_KEY, EXPERTISE_STAT_KEY, HASTE_STAT_KEY})
+PLANNER_EXCLUDED_STAT_KEYS = frozenset(
+    {WEAPON_DAMAGE_STAT_KEY, EXPERTISE_STAT_KEY, HASTE_STAT_KEY, BONUS_ARMOR_STAT_KEY}
+)
 
 #: StatModifier_bonusStat_<n> -> the planner's stat key, or None for a stat the
 #: planner does not track. An id that is not a key here raises ItemDataError
@@ -208,7 +214,9 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     44: None,  # armor penetration rating
     46: None,  # health regen
     47: "spell_penetration",  # Doomcaller's Robes, the PvP silk spaulders (build 1.60.1.70707)
-    50: None,  # mastery rating
+    # ITEM_MOD_EXTRA_ARMOR, not mastery (49): Tree Bark Jacket 1486 "+60
+    # Armor", Sergeant's Cloak 18427 "+40 Armor" on Wowhead Forever.
+    50: BONUS_ARMOR_STAT_KEY,
     # "+N Weapon Damage" (Molten Heart of the Mountain, Might of Cenarius):
     # the engine's flat bonus physical damage, so simdb only; the planner's
     # stat vocabulary has no key for it (`PLANNER_EXCLUDED_STAT_KEYS`).

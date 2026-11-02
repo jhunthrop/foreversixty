@@ -397,3 +397,15 @@ def test_a_held_in_off_hand_item_is_an_off_hand_not_a_main_hand():
     assert held.type == pb.ItemType.Value("ItemTypeWeapon")
     assert held.weapon_type == pb.WeaponType.Value("WeaponTypeOffHand")
     assert held.hand_type == pb.HandType.Value("HandTypeOffHand")
+
+
+def test_item_stat_50_is_bonus_armor_for_the_engine_only():
+    """ItemSparse stat 50 is ITEM_MOD_EXTRA_ARMOR: Wowhead Forever shows Tree
+    Bark Jacket 1486's as "+60 Armor" beside its 44 curve armour, and
+    Sergeant's Cloak 18427's as "+40 Armor". It was mapped to None (as
+    mastery) and dropped (sim audit round 8, items lane)."""
+    bonus = _with_first_stat(12798, "50", "5000")
+    agility = _with_first_stat(12798, "3", "5000")
+    expected = agility.stats[pb.Stat.Value("StatAgility")]
+    assert expected > 0
+    assert bonus.stats[pb.Stat.Value("StatBonusArmor")] == expected
