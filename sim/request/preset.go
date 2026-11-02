@@ -214,13 +214,17 @@ func (p Presets) Resolve(name string, spec specs.Spec) (ResolvedPreset, error) {
 	if err != nil {
 		return ResolvedPreset{}, fmt.Errorf("preset %q: %w", name, err)
 	}
+	// Most specific first: Layer carries the first entry a slot gets, so a
+	// spec's or class's pick beats its group's (a rogue's Ground Scorpok
+	// Assay over the melee group's R.O.I.D.S.), and within one list a
+	// lower-level stand-in follows the item it stands in for.
 	var entries []presetEntry
-	entries = append(entries, group.IDs...)
+	entries = append(entries, def.Consumes.BySpec[spec.Spec]...)
+	entries = append(entries, def.Consumes.ByClass[spec.ClassSlug]...)
 	if leveling.DualWieldSpecs[spec.Spec] {
 		entries = append(entries, group.DualWieldIDs...)
 	}
-	entries = append(entries, def.Consumes.ByClass[spec.ClassSlug]...)
-	entries = append(entries, def.Consumes.BySpec[spec.Spec]...)
+	entries = append(entries, group.IDs...)
 
 	resolved := ResolvedPreset{
 		Label:    def.Label,
@@ -299,7 +303,11 @@ func (r ResolvedPreset) UsableAt(level int, levels ItemLevels) ResolvedPreset {
 // preset consumable whose slot the kit already fills is dropped, so a
 // rogue's poison or an enhancement shaman's Windfury Weapon is never
 // displaced by the preset's weapon imbue; a stone the preset puts on a
-// hand that holds a poison moves to that hand's stone field instead.
+// hand that holds a poison moves to that hand's stone field instead. Of
+// two preset consumables for one slot the first is carried: Resolve lists
+// the spec's, then the class's, then the group's, and a list puts a
+// lower-level stand-in after the item (UsableAt drops the item below its
+// level and the stand-in takes the slot).
 func (r ResolvedPreset) Layer(kitBuffs, kitConsumes []string) (buffs, consumeIDs []string) {
 	buffs = slices.Clone(kitBuffs)
 	kitBases := make(map[string]bool, len(kitBuffs))
@@ -327,7 +335,11 @@ func (r ResolvedPreset) Layer(kitBuffs, kitConsumes []string) (buffs, consumeIDs
 		kitValue, filled := kitSlots[slot]
 		switch {
 		case !filled:
+			// The first entry a slot gets is the one carried: a preset lists a
+			// lower-level stand-in after the item it stands in for.
 			consumeIDs = append(consumeIDs, entry.ID)
+			_, value := splitConsumeID(entry.ID)
+			kitSlots[slot] = value
 		case roguePoisons[kitValue]:
 			if stoneSlot, ok := stoneSlotBesidePoison[slot]; ok {
 				_, value := splitConsumeID(entry.ID)

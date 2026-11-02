@@ -40,6 +40,8 @@ func TestItemLevelsReadTheClientsRequiredLevel(t *testing.T) {
 		{"conjured_rogue_thistle_tea", 5, true},
 		{"elixir_of_firepower", 18, true},
 		{"juju_power", 0, true},
+		// The engine's enum is singular, the client's item plural.
+		{"food_smoked_desert_dumpling", 45, true},
 		// A class's own weapon spell is no item: nothing to gate.
 		{"main_hand_imbue:windfury_weapon", 0, false},
 	}
@@ -79,5 +81,32 @@ func TestRaidConsumesCarryOnlyUsableItems(t *testing.T) {
 	combat40 := ConsumesAtLevel(all["rogue-combat"], 40)
 	if !slices.ContainsFunc(combat40, func(id string) bool { return strings.HasSuffix(id, "deadly_poison") }) {
 		t.Errorf("rogue-combat at 40 lost its poison: %v", combat40)
+	}
+}
+
+// classWeaponSpells are the preset ids that name a class's own weapon spell, not an item:
+// the class kit gates them by the spell's level, so ItemLevels has nothing to say.
+var classWeaponSpells = map[string]bool{
+	"main_hand_imbue:rockbiter_weapon": true,
+	"main_hand_imbue:windfury_weapon":  true,
+}
+
+// Every consumable a preset or class kit carries names a client item, or the gate above
+// waves it through at level 1: Smoked Desert Dumplings (level 45) rode every Raid-buffed
+// row from level 1 because its id is singular and the item plural (round 9).
+func TestEveryCarriedConsumableNamesAClientItem(t *testing.T) {
+	levels := loadRealItemLevels(t)
+	all, err := RaidConsumes(loadRealPresets(t), levels)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for spec, rows := range all {
+		for _, row := range rows {
+			for _, id := range row.Consumes {
+				if _, ok := levels.RequiredLevel(id); !ok && !classWeaponSpells[id] {
+					t.Errorf("%s carries %s, which names no client item, so no level gates it", spec, id)
+				}
+			}
+		}
 	}
 }

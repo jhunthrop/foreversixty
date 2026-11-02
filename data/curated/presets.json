@@ -15,7 +15,7 @@
   "presets": {
     "raid": {
       "label": "Raid-ready, Phase 1",
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. Paladins and shamans are on both factions in Forever, so the blessings and the totems reach either faction's raid entry. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free. Forever's foods give the stat of the Well Fed their aura 227 effect triggers, not Era's: of the foods the engine models, Nightfin Soup (22 spell damage) is the caster's, Smoked Desert Dumplings (20 Strength) a strength user's and a tank's, and Grilled Squid (1% critical strike) an agility user's (round 8, design/reviews/2026-11-02-sim-audit-round8/auras.md).",
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. Paladins and shamans are on both factions in Forever, so the blessings and the totems reach either faction's raid entry. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free. Forever's foods give the stat of the Well Fed their aura 227 effect triggers, not Era's: Baked Salmon (28 spell damage) is the caster's and a paladin tank's food, Smoked Desert Dumplings (20 Strength) a strength user's and a warrior or bear tank's, and Poached Sunscale Salmon (40 attack power and ranged attack power) an agility user's (rounds 8 and 9, design/reviews/2026-11-02-sim-audit-round8/auras.md and design/reviews/2026-11-02-sim-audit-round9/auras.md). Where a slot lists two consumables the first one the character's level can use is carried, the spec's list before the class's before the group's, so a lower-level food follows the item it stands in for. The Blasted Lands buffs share one hour-long category (103), so each spec carries one: R.O.I.D.S. for strength users and tanks, Ground Scorpok Assay for rogues, hunters and Feral, Cerebral Cortex Compound for the damage casters and the Holy paladin and Restoration shaman, Gizzard Gum for the druid and priest healers (round 9).",
       "buffs": [
         {
           "id": "arcane_brilliance",
@@ -148,9 +148,19 @@
                 "reason": "Spell power, the engine's spell-power elixir slot; client level 47."
               },
               {
+                "id": "cerebral_cortex_compound",
+                "label": "Cerebral Cortex Compound",
+                "reason": "Intellect from the Blasted Lands (item 8423, spell 10692, 25 Intellect, an hour), in the one-hour category R.O.I.D.S. uses (103). It measured 0.4 to 1.2% ahead of no Blasted Lands buff for the damage casters, and ahead of Gizzard Gum's Spirit (round 9)."
+              },
+              {
+                "id": "food_baked_salmon",
+                "label": "Baked Salmon",
+                "reason": "Caster food: 28 spell damage while well fed (item 13935, Well Fed 1249520; Lobster Stew 13933 is the same); client level 45. It measured 0.5 to 0.6% ahead of Nightfin Soup for Fire and Elemental (round 9)."
+              },
+              {
                 "id": "food_nightfin_soup",
                 "label": "Nightfin Soup",
-                "reason": "Caster food: 22 spell damage while well fed (item 13931, spell 1249513, Well Fed 1249520); client level 35. Runn Tum Tuber Surprise is 15 Intellect in Forever and measured 1 to 2% behind for every damage caster."
+                "reason": "The caster food from level 35 until Baked Salmon at 45 (the first food a character can eat holds the slot): 22 spell damage while well fed (item 13931, spell 1249513, Well Fed 1249520). Runn Tum Tuber Surprise is 15 Intellect in Forever and measured 1 to 2% behind for every damage caster."
               },
               {
                 "id": "main_hand_imbue:brilliant_wizard_oil",
@@ -193,6 +203,11 @@
                 "id": "elixir_of_sages",
                 "label": "Elixir of Sages",
                 "reason": "Spirit and spell critical strike for half an hour; client level 55 (item 250338, spell 1250941). Spirit is the healer's regeneration stat."
+              },
+              {
+                "id": "cerebral_cortex_compound",
+                "label": "Cerebral Cortex Compound",
+                "reason": "Intellect from the Blasted Lands (item 8423, 25 Intellect, an hour, category 103): it measured 1.5% more healing for Holy paladins and 2.7% for Restoration shamans (round 9). The druid and priest healers take Gizzard Gum instead (their spec lists)."
               },
               {
                 "id": "food_sages_tea",
@@ -271,14 +286,14 @@
                 "reason": "Strength. The engine's other strength elixir, Elixir of Giants, is not in the 1.60 client's item table, so Juju Power is the one a raid can have."
               },
               {
-                "id": "r_o_i_d_s",
-                "label": "R.O.I.D.S.",
-                "reason": "Strength."
+                "id": "ground_scorpok_assay",
+                "label": "Ground Scorpok Assay",
+                "reason": "Agility from the Blasted Lands (item 8412, spell 10669, 25 Agility, an hour). It shares R.O.I.D.S.'s one-hour category (103), so an agility user takes it in R.O.I.D.S.'s place: it measured about 2% ahead for Beast Mastery and Marksmanship and 0.7% for Survival (round 9)."
               },
               {
-                "id": "food_grilled_squid",
-                "label": "Grilled Squid",
-                "reason": "Agility user's food: 1% critical strike while well fed in Forever (item 13928, Well Fed 1249523, aura 290; Era's was 10 Agility); client level 35. Smoked Desert Dumplings' Strength gives a hunter no ranged attack power and measured about 1% behind for Beast Mastery and Marksmanship and 0.2% behind for Survival."
+                "id": "food_poached_sunscale_salmon",
+                "label": "Poached Sunscale Salmon",
+                "reason": "Agility user's food: 40 attack power and 40 ranged attack power while well fed (item 13932, Well Fed 1249519; Mightfish Steak 13934 is the same at 45); client level 35. It measured 0.2 to 0.8% ahead of Grilled Squid (1% critical strike in Forever) for the rogue and hunter specs (round 9)."
               },
               {
                 "id": "juju_might",
@@ -308,11 +323,6 @@
                 "reason": "Health, the engine's health elixir slot."
               },
               {
-                "id": "food_smoked_desert_dumpling",
-                "label": "Smoked Desert Dumplings",
-                "reason": "Tank food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. Forever's Tender Wolf Steak is 15 Agility, not stamina and spirit, and the engine models no stamina food a Phase 1 tank can cook (Dirge's Chops is the Ahn'Qiraj scepter chain's); the dumplings measured 0.5 to 0.8% more threat than the steak for all three tanks."
-              },
-              {
                 "id": "alcohol_rumsey_rum_black_label",
                 "label": "Rumsey Rum Black Label",
                 "reason": "Stamina, the engine's alcohol slot."
@@ -321,6 +331,11 @@
                 "id": "juju_power",
                 "label": "Juju Power",
                 "reason": "Strength: attack power and, for the classes with block value from strength, block."
+              },
+              {
+                "id": "r_o_i_d_s",
+                "label": "R.O.I.D.S.",
+                "reason": "Strength from the Blasted Lands (item 8410, 25 Strength, an hour): 1.2 to 1.8% more threat for all three tanks, ahead of Ground Scorpok Assay and Lung Juice Cocktail (round 9)."
               },
               {
                 "id": "juju_might",
@@ -361,18 +376,56 @@
           ],
           "rogue": [
             {
+              "id": "ground_scorpok_assay",
+              "label": "Ground Scorpok Assay",
+              "reason": "Agility from the Blasted Lands (item 8412, spell 10669, 25 Agility, an hour). It shares R.O.I.D.S.'s one-hour category (103), so an agility user takes it in R.O.I.D.S.'s place: it measured 0.8 to 0.9% ahead for the three rogue specs (round 9)."
+            },
+            {
               "id": "conjured_rogue_thistle_tea",
               "label": "Thistle Tea",
               "reason": "Rogue energy consumable (item 7676, +100 Energy, 5 minute cooldown), the rogue's counterpart of the warrior's rage potion; cooked from a vendor recipe."
             },
             {
-              "id": "food_grilled_squid",
-              "label": "Grilled Squid",
-              "reason": "Agility user's food: 1% critical strike while well fed in Forever (item 13928, Well Fed 1249523; Era's was 10 Agility); client level 35. Smoked Desert Dumplings measured 0.05 to 0.2% behind for the three rogue specs."
+              "id": "food_poached_sunscale_salmon",
+              "label": "Poached Sunscale Salmon",
+              "reason": "Agility user's food: 40 attack power and 40 ranged attack power while well fed (item 13932, Well Fed 1249519; Mightfish Steak 13934 is the same at 45); client level 35. It measured 0.2 to 0.8% ahead of Grilled Squid (1% critical strike in Forever) for the rogue and hunter specs (round 9)."
             }
           ]
         },
         "by_spec": {
+          "hunter-survival": [
+            {
+              "id": "main_hand_imbue:elemental_sharpening_stone",
+              "label": "Elemental Sharpening Stone",
+              "reason": "Survival fights in melee in Forever with a weapon in each hand, so it stones them as a melee dual wielder does: 2% critical strike on the main hand (item 18262, enchant 2506, aura 52); client level 50. With the Dense stone on the off hand it measured 2.4% ahead of no stones (round 9)."
+            },
+            {
+              "id": "off_hand_imbue:dense_sharpening_stone",
+              "label": "Dense Sharpening Stone",
+              "reason": "Off-hand stone for the melee Survival hunter: 8 weapon damage (item 12404); client level 35."
+            }
+          ],
+          "druid-restoration": [
+            {
+              "id": "gizzard_gum",
+              "label": "Gizzard Gum",
+              "reason": "Spirit from the Blasted Lands (item 8424, spell 10693, 25 Spirit, an hour, category 103): Spirit is the druid's regeneration, and it measured 1.2% more healing than Cerebral Cortex Compound (round 9)."
+            }
+          ],
+          "priest-holy": [
+            {
+              "id": "gizzard_gum",
+              "label": "Gizzard Gum",
+              "reason": "Spirit from the Blasted Lands (item 8424, spell 10693, 25 Spirit, an hour, category 103): it measured 0.1% more healing than Cerebral Cortex Compound and 1.4% more than none (round 9)."
+            }
+          ],
+          "priest-discipline": [
+            {
+              "id": "gizzard_gum",
+              "label": "Gizzard Gum",
+              "reason": "Spirit from the Blasted Lands (item 8424, spell 10693, 25 Spirit, an hour, category 103): it measured 0.1 to 0.2% more healing than Cerebral Cortex Compound and 1.4% more than none (round 9)."
+            }
+          ],
           "mage-fire": [
             {
               "id": "elixir_of_firepower",
@@ -430,46 +483,110 @@
               "reason": "School power elixir."
             }
           ],
+          "warrior-protection": [
+            {
+              "id": "food_smoked_desert_dumpling",
+              "label": "Smoked Desert Dumplings",
+              "reason": "Tank food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. The engine models no stamina food a Phase 1 tank can cook (Dirge's Chops is the Ahn'Qiraj scepter chain's); the dumplings measured 0.1% more threat than Poached Sunscale Salmon and 0.4 to 0.5% more than Grilled Squid (round 9)."
+            },
+            {
+              "id": "food_poached_sunscale_salmon",
+              "label": "Poached Sunscale Salmon",
+              "reason": "The tank food from level 35 until the dumplings at 45: 40 attack power while well fed (item 13932, Well Fed 1249519)."
+            }
+          ],
+          "paladin-protection": [
+            {
+              "id": "food_baked_salmon",
+              "label": "Baked Salmon",
+              "reason": "A paladin tank's threat is Holy spell damage: 28 spell damage while well fed (item 13935, Well Fed 1249520); client level 45. It measured 0.7% more threat than Smoked Desert Dumplings and 0.4% more than Nightfin Soup (round 9)."
+            },
+            {
+              "id": "food_nightfin_soup",
+              "label": "Nightfin Soup",
+              "reason": "The paladin tank's food from level 35 until Baked Salmon at 45: 22 spell damage while well fed (item 13931, Well Fed 1249520)."
+            }
+          ],
           "druid-feral-bear": [
             {
               "id": "greater_stoneshield_potion",
               "label": "Greater Stoneshield Potion",
               "reason": "Armor for two minutes, the bear's potion: a druid has no rage potion in the preset and no mana to spend."
+            },
+            {
+              "id": "food_smoked_desert_dumpling",
+              "label": "Smoked Desert Dumplings",
+              "reason": "Tank food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.1% more threat than Poached Sunscale Salmon and 0.4 to 0.5% more than Grilled Squid (round 9)."
+            },
+            {
+              "id": "food_poached_sunscale_salmon",
+              "label": "Poached Sunscale Salmon",
+              "reason": "The bear's food from level 35 until the dumplings at 45: 40 attack power while well fed (item 13932, Well Fed 1249519)."
             }
           ],
           "warrior-arms": [
             {
               "id": "food_smoked_desert_dumpling",
               "label": "Smoked Desert Dumplings",
-              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever) and about 0.1% ahead of Poached Sunscale Salmon's 40 attack power (round 9)."
+            },
+            {
+              "id": "food_poached_sunscale_salmon",
+              "label": "Poached Sunscale Salmon",
+              "reason": "The strength user's food from level 35 until the dumplings at 45 (the first food a character can eat holds the slot): 40 attack power while well fed (item 13932, Well Fed 1249519)."
             }
           ],
           "warrior-fury": [
             {
               "id": "food_smoked_desert_dumpling",
               "label": "Smoked Desert Dumplings",
-              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever) and about 0.1% ahead of Poached Sunscale Salmon's 40 attack power (round 9)."
+            },
+            {
+              "id": "food_poached_sunscale_salmon",
+              "label": "Poached Sunscale Salmon",
+              "reason": "The strength user's food from level 35 until the dumplings at 45 (the first food a character can eat holds the slot): 40 attack power while well fed (item 13932, Well Fed 1249519)."
             }
           ],
           "paladin-retribution": [
             {
               "id": "food_smoked_desert_dumpling",
               "label": "Smoked Desert Dumplings",
-              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever) and about 0.1% ahead of Poached Sunscale Salmon's 40 attack power (round 9)."
+            },
+            {
+              "id": "food_poached_sunscale_salmon",
+              "label": "Poached Sunscale Salmon",
+              "reason": "The strength user's food from level 35 until the dumplings at 45 (the first food a character can eat holds the slot): 40 attack power while well fed (item 13932, Well Fed 1249519)."
             }
           ],
           "shaman-enhancement": [
             {
               "id": "food_smoked_desert_dumpling",
               "label": "Smoked Desert Dumplings",
-              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever) and about 0.1% ahead of Poached Sunscale Salmon's 40 attack power (round 9)."
+            },
+            {
+              "id": "food_poached_sunscale_salmon",
+              "label": "Poached Sunscale Salmon",
+              "reason": "The strength user's food from level 35 until the dumplings at 45 (the first food a character can eat holds the slot): 40 attack power while well fed (item 13932, Well Fed 1249519)."
             }
           ],
           "druid-feral": [
             {
+              "id": "ground_scorpok_assay",
+              "label": "Ground Scorpok Assay",
+              "reason": "Agility from the Blasted Lands (item 8412, spell 10669, 25 Agility, an hour). It shares R.O.I.D.S.'s one-hour category (103), so an agility user takes it in R.O.I.D.S.'s place: a cat's attack power comes from Agility as well as Strength, and the assay measured 0.5% ahead of R.O.I.D.S. (round 9)."
+            },
+            {
               "id": "food_smoked_desert_dumpling",
               "label": "Smoked Desert Dumplings",
-              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever) and about 0.1% ahead of Poached Sunscale Salmon's 40 attack power (round 9)."
+            },
+            {
+              "id": "food_poached_sunscale_salmon",
+              "label": "Poached Sunscale Salmon",
+              "reason": "The strength user's food from level 35 until the dumplings at 45 (the first food a character can eat holds the slot): 40 attack power while well fed (item 13932, Well Fed 1249519)."
             }
           ]
         }
