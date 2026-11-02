@@ -108,7 +108,8 @@ func TestTheBattlegroundGatesOpenAtLaunch(t *testing.T) {
 
 // Round 9: the client's reputation sources (items lane F3) reach The
 // Watchers and Powderfuse. Powderfuse opens with the Riverglades at launch;
-// The Watchers has no launch zone on record and stays gated.
+// The Watchers stays gated: round 10 (owner ruling 3) found it tied to the
+// Barrow Deeps, a raid that opens after launch, and no launch way to earn it.
 func TestTheForeverZoneReputationsFollowTheLaunchEvidence(t *testing.T) {
 	g, err := loadContentGates(publishedRepoRoot)
 	if err != nil {

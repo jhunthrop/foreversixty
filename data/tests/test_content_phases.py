@@ -105,13 +105,26 @@ def test_the_forever_zone_reputations_follow_the_launch_evidence():
     """Round 9: the items lane's client reputation sources give The Watchers
     (2819, level-60 signets) and Powderfuse (2827, level-40 rewards) a
     source. Powderfuse Port is the Riverglades' goblin port, and Blizzard
-    lists the Riverglades as a launch destination, so it opens; nothing
-    places The Watchers in a launch zone, so it stays gated, uncertain."""
+    lists the Riverglades as a launch destination, so it opens.
+
+    Round 10 (owner ruling 3): The Watchers are not launch content on the
+    evidence. Blizzard's raid overview makes the Barrow Deeps the wardens'
+    prison, a raid that opens on 9 December; the 70707 client's Brooch of the
+    Wardens grants access to a prison within the Barrow Deeps; no Blizzard
+    post and no client row gives the faction a launch zone or a way to earn
+    it. So the gate stays 'later', now inferred, with that evidence."""
     index = load_content_phases(CURATED).index()
     assert index.factions[2819].opens == "later"
     assert 2827 not in index.factions
     gates = {gate.key: gate for gate in load_content_phases(CURATED).gates}
-    assert gates["the-watchers"].confidence == "uncertain"
+    watchers = gates["the-watchers"]
+    assert (watchers.phase, watchers.date, watchers.confidence) == (
+        "later",
+        "unannounced",
+        "inferred",
+    )
+    for evidence in ("Barrow Deeps", "24303009", "277136", "9 December"):
+        assert evidence in watchers.why, evidence
     assert (gates["powderfuse"].phase, gates["powderfuse"].date) == ("launch", "2026-11-04")
 
 
@@ -483,8 +496,9 @@ def _banned_while_closed(phases) -> dict[int, str]:
 
 #: Gate ids whose source only the next data run writes: round 9's client
 #: reputation sources (the items lane's client_rep) are what give The Watchers
-#: a rep source, and the committed loot.json predates them. Empty this once
-#: that run lands.
+#: a rep source, and the committed loot.json predates them. Round 10 keeps
+#: The Watchers gated (ruling 3), so this pass stays until the held data run
+#: lands; empty it then.
 AWAITING_THE_NEXT_DATA_RUN = frozenset({"the-watchers: faction 2819 The Watchers"})
 
 
