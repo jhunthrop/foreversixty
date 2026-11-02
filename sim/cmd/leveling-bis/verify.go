@@ -191,6 +191,18 @@ func swapSlot(picks map[string]slotPick, slot string, itemID int, itemIsTwoHand 
 	return out
 }
 
+// trialGear is the gear list for trying item in slot: swapSlot's, except
+// that a one-handed main-hand candidate beside an empty off hand (the pick
+// is a two-hander) is tried with the off hand it would get
+// (withMainHand), so it is measured as the set a player would wear rather
+// than one hand short.
+func trialGear(spec string, bySlot map[string][]scored, picks map[string]slotPick, slot string, item scored) []api.GearSlot {
+	if slot == "main_hand" && !item.TwoHand && picks["off_hand"].Item == nil {
+		return buildGear(withMainHand(spec, bySlot, picks, slotPick{Item: &item}))
+	}
+	return swapSlot(picks, slot, item.ID, item.TwoHand)
+}
+
 // verifyBand runs the baseline set once, then every slot with a
 // runner-up once more (with just that slot swapped), and reports
 // which runner-ups beat the pick.
@@ -210,7 +222,7 @@ func swapSlot(picks map[string]slotPick, slot string, itemID int, itemIsTwoHand 
 // bad candidate. A baseline failure is different: with no baseline
 // DPS there is nothing to compare a swap against, so that error
 // still propagates and the caller reports the band as unverified.
-func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick) (baselineDPS float64, swaps []swapResult, verifyErrors []string, err error) {
+func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, bySlot map[string][]scored) (baselineDPS float64, swaps []swapResult, verifyErrors []string, err error) {
 	baseline := plainRequest(spec, bandCharacter("verify", race, classSlug, spec.Spec, level, talents, buildGear(picks)), verifyIterations, verifySeed)
 	var baselineStdErr float64
 	// guardBaseline is the baseline at the guard harness, measured the
@@ -231,7 +243,7 @@ func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, leve
 
 	for _, slot := range slots {
 		runnerUp := picks[slot].RunnerUp
-		gear := swapSlot(picks, slot, runnerUp.ID, runnerUp.TwoHand)
+		gear := trialGear(spec.Spec, bySlot, picks, slot, *runnerUp)
 		req := plainRequest(spec, bandCharacter("verify", race, classSlug, spec.Spec, level, talents, gear), verifyIterations, verifySeed)
 		dps, stdErr, runErr := runner.RunPlainDPSWithError(req)
 		if runErr != nil {
@@ -368,7 +380,7 @@ func beatsByMargin(dps, baseline float64) bool {
 // happen -- see that function's own doc for why silently declining a
 // duplicate here but leaving the original swaps slice unchanged would
 // print a swap_note for an item the row no longer shows.
-func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, swaps []swapResult, setDPS float64) (map[string]slotPick, float64, []swapResult, error) {
+func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, bySlot map[string][]scored, swaps []swapResult, setDPS float64) (map[string]slotPick, float64, []swapResult, error) {
 	promoted := false
 	out := make(map[string]slotPick, len(picks))
 	for slot, pk := range picks {
@@ -405,6 +417,11 @@ func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, leve
 			// lane's brief (defect 3) asks for in place of
 			// wouldBreakTwoHandInvariant's old outright refusal.
 			out["off_hand"] = slotPick{}
+		} else if sw.Slot == "main_hand" {
+			// A one-hander replacing a two-hander gets the off hand the
+			// two-hander had emptied - the one its swap trial already wore
+			// (trialGear) - so the final re-measure below includes it.
+			out = fillEmptyOffHand(spec.Spec, bySlot, out)
 		}
 	}
 	if !promoted {

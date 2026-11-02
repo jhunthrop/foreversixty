@@ -241,9 +241,7 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 	var trinketUsedName string
 	var trinketHasPick bool
 	var mainHandTwoHand bool
-	var mainHandID int
-	var mainHandName string
-	var mainHandHasPick bool
+	var mainHand *scored
 
 	for _, slot := range slotOrder {
 		list := bySlot[slot]
@@ -312,71 +310,9 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 				out[slot] = slotPick{}
 				continue
 			}
-			// A dual-wielder's off hand is a weapon (DualWieldSpecs'
-			// own doc), but a one-hander's raw item row carries only
-			// "main_hand" as its .Slot - data.go's plannerSlots fans
-			// finger/trinket into their numbered pair, never a
-			// one-hander into its second equippable hand - so
-			// bySlot["off_hand"] never held a weapon at all; every
-			// dual-wield spec's off hand came back unpicked at every
-			// band (audit-rogue, 2026-09-28: assassination, combat and
-			// subtlety all showed an empty off_hand at 20, 30 and 40).
-			// Fixed here, not in plannerSlots, because only a
-			// DualWieldSpecs member ever wants a weapon in both hands
-			// and plannerSlots has no spec to check against.
-			// shaman-enhancement is not a member (owner rule: shamans
-			// cannot dual wield in Forever), so it never reaches this
-			// merge - its off_hand list is left as bySlot["off_hand"]
-			// gave it, the same shield/held-item pool shaman-elemental
-			// already draws from.
-			if leveling.DualWieldSpecs[spec] {
-				list = mergeByScore(list, offHandWeapons(bySlot["main_hand"]))
-			}
-			// A one-hander already worn in the main hand is not
-			// offered again for the off hand: this lane's prototype
-			// assumes the character owns one copy of any BiS
-			// recommendation, the same reasoning bulk/expand.go's
-			// sameWeaponTwice comment gives for refusing one physical
-			// one-hander in both hands within a single combination.
-			// If it is genuinely the only one-hander eligible, that
-			// exclusion empties the list and off_hand is correctly
-			// left unpicked rather than silently dual-wielding a
-			// second copy nobody said the character has.
-			if mainHandHasPick {
-				list = excludePaired(list, mainHandID, mainHandName)
-			}
-			if leveling.DualWieldSpecs[spec] {
-				list = weaponsOnly(list)
-			} else {
-				// Everyone else holds a shield or a held item there: an
-				// off-hand-only weapon (INVTYPE_WEAPONOFFHAND, filed under
-				// "off_hand") is not theirs to wield (task L1.6 found a
-				// druid-feral-bear band-60 off-hand fist weapon once its
-				// two-hander was no longer a candidate).
-				list = withoutWeapons(list)
-			}
+			list = offHandCandidates(spec, bySlot, mainHand)
 		}
-		var sp slotPick
-		if len(list) > 0 {
-			item := list[0]
-			sp.Item = &item
-		}
-		if len(list) > 1 {
-			runnerUp := list[1]
-			sp.RunnerUp = &runnerUp
-		}
-		if sp.Item != nil {
-			// list is best-score-first (candidatesBySlot's own
-			// contract), so every tie with the winner is contiguous
-			// starting right after index 0 - stop at the first lower
-			// score.
-			for i := 1; i < len(list); i++ {
-				if list[i].Score != sp.Item.Score {
-					break
-				}
-				sp.Ties = append(sp.Ties, list[i])
-			}
-		}
+		sp := slotPickFrom(list)
 		out[slot] = sp
 
 		switch slot {
@@ -391,11 +327,108 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 		case "main_hand":
 			if sp.Item != nil {
 				mainHandTwoHand = sp.Item.TwoHand
-				mainHandID, mainHandName, mainHandHasPick = sp.Item.ID, sp.Item.Name, true
+				mainHand = sp.Item
 			}
 		}
 	}
 	return out
+}
+
+// slotPickFrom is a best-score-first list's pick: its first entry, the
+// second as runner-up, and every entry tied with the first.
+func slotPickFrom(list []scored) slotPick {
+	var sp slotPick
+	if len(list) > 0 {
+		item := list[0]
+		sp.Item = &item
+	}
+	if len(list) > 1 {
+		runnerUp := list[1]
+		sp.RunnerUp = &runnerUp
+	}
+	if sp.Item != nil {
+		// list is best-score-first (candidatesBySlot's own contract), so
+		// every tie with the winner is contiguous starting right after
+		// index 0 - stop at the first lower score.
+		for i := 1; i < len(list); i++ {
+			if list[i].Score != sp.Item.Score {
+				break
+			}
+			sp.Ties = append(sp.Ties, list[i])
+		}
+	}
+	return sp
+}
+
+// offHandCandidates is the off-hand list beside a one-handed main hand,
+// best score first: pick()'s off_hand pool, and the one every later pass
+// that puts a one-hander in the main hand fills the off hand from
+// (fillEmptyOffHand).
+//
+// A dual-wielder's off hand is a weapon (DualWieldSpecs' own doc), but a
+// one-hander's raw item row carries only "main_hand" as its .Slot -
+// data.go's plannerSlots never fans a one-hander into its second hand - so
+// main_hand's off-hand-capable one-handers are merged in here (audit-rogue,
+// 2026-09-28: every rogue spec's off hand came back unpicked before this).
+// Shamans are not DualWieldSpecs members (owner rule: shamans never dual
+// wield in Forever), so they draw only the shield/held-item pool.
+//
+// The main hand's own item is never offered again (one copy of any
+// recommendation, bulk/expand.go's sameWeaponTwice); if it was the only
+// eligible one-hander, the list is empty and the off hand stays empty
+// rather than wearing a second copy nobody said the character has. A
+// non-dual-wielder holds only a shield or a held item: an off-hand-only
+// weapon is not theirs to wield (task L1.6, a druid-feral-bear off-hand
+// fist weapon).
+func offHandCandidates(spec string, bySlot map[string][]scored, main *scored) []scored {
+	list := bySlot["off_hand"]
+	dualWield := leveling.DualWieldSpecs[spec]
+	if dualWield {
+		list = mergeByScore(list, offHandWeapons(bySlot["main_hand"]))
+	}
+	if main != nil {
+		list = excludePaired(list, main.ID, main.Name)
+	}
+	if dualWield {
+		return weaponsOnly(list)
+	}
+	return withoutWeapons(list)
+}
+
+// fillEmptyOffHand returns picks unchanged, or a copy with off_hand set to
+// the best offHandCandidates entry, when the main hand is a one-hander and
+// the off hand is empty - the mirror of enforceTwoHandOffHandInvariant. A
+// pass that replaces a two-handed main hand with a one-hander (the
+// effect-ranking tournament, a verify swap, set completion) leaves the off
+// hand the two-hander emptied; round 7 found Balance druid, Elemental shaman
+// and Shadow priest publishing band 60 with Hand of Edward the Odd and no
+// orb or tome beside it.
+func fillEmptyOffHand(spec string, bySlot map[string][]scored, picks map[string]slotPick) map[string]slotPick {
+	mh := picks["main_hand"].Item
+	if mh == nil || mh.TwoHand || picks["off_hand"].Item != nil {
+		return picks
+	}
+	sp := slotPickFrom(offHandCandidates(spec, bySlot, mh))
+	if sp.Item == nil {
+		return picks
+	}
+	out := clonePicksMap(picks)
+	out["off_hand"] = sp
+	return out
+}
+
+// withMainHand is picks with item worn in the main hand: a two-hander
+// empties the off hand, a one-hander beside an empty off hand gets one
+// (fillEmptyOffHand), so a trial of a main-hand candidate measures the set
+// a player would actually wear with it.
+func withMainHand(spec string, bySlot map[string][]scored, picks map[string]slotPick, mainHand slotPick) map[string]slotPick {
+	out := clonePicksMap(picks)
+	out["main_hand"] = mainHand
+	if mainHand.Item != nil && mainHand.Item.TwoHand {
+		out["off_hand"] = slotPick{}
+		return out
+	}
+	return fillEmptyOffHand(spec, bySlot, out)
 }
 
 // excludePaired drops an id or a name already used by this slot's
