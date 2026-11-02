@@ -118,7 +118,12 @@ func TestRaidPresetConsumesFollowTheRole(t *testing.T) {
 		wantNot []string
 	}{
 		{"mage-fire", []string{"flask_of_supreme_power", "greater_arcane_elixir", "elixir_of_firepower", "food_runn_tum_tuber_surprise", "main_hand_imbue:brilliant_wizard_oil", "major_mana_potion", "conjured_demonic_rune"}, []string{"elixir_of_the_mongoose"}},
-		{"warlock-affliction", []string{"elixir_of_shadow_power", "flask_of_supreme_power"}, []string{"elixir_of_firepower"}},
+		// Classic elixirs of different schools stack (the Battle and Guardian
+		// categories arrived in patch 2.1.0), and every warlock spec deals
+		// both Shadow and Fire damage, so each carries both school elixirs.
+		{"warlock-affliction", []string{"elixir_of_shadow_power", "elixir_of_firepower", "flask_of_supreme_power"}, nil},
+		{"warlock-demonology", []string{"elixir_of_shadow_power", "elixir_of_firepower"}, nil},
+		{"warlock-destruction", []string{"elixir_of_shadow_power", "elixir_of_firepower"}, nil},
 		{"warrior-fury", []string{"elixir_of_the_mongoose", "juju_power", "r_o_i_d_s", "food_grilled_squid", "juju_might", "mighty_rage_potion", "main_hand_imbue:elemental_sharpening_stone", "off_hand_imbue:dense_sharpening_stone"}, []string{"major_mana_potion", "flask_of_supreme_power"}},
 		{"warrior-arms", []string{"mighty_rage_potion", "main_hand_imbue:elemental_sharpening_stone"}, []string{"off_hand_imbue:dense_sharpening_stone"}},
 		{"paladin-retribution", []string{"elixir_of_the_mongoose", "major_mana_potion"}, []string{"mighty_rage_potion", "conjured_demonic_rune"}},
