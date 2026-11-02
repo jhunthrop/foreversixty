@@ -312,10 +312,20 @@ export interface BisHealBands {
 export interface BisHealBandRow {
   level: number;
   content: { name: string; last_boss: string; boss_level: number }[];
+  /** The band's hard trash pull (sim-accuracy round 11). Absent on the raid band and on a
+   *  file published before 2026-11-04. */
+  pulls?: BisHealBandPulls;
+  /** The pull's damage over the median last boss's, never below 1. */
+  pull_multiplier?: number;
   tank_health: number;
   member_health: number;
   tank_hit_damage: number;
   pulse_damage: number;
+}
+
+export interface BisHealBandPulls {
+  pull_size: number;
+  pull: { dungeon: string; mobs: { name: string; count: number }[] };
 }
 
 export interface BisBand {

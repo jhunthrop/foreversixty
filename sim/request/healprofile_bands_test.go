@@ -102,13 +102,13 @@ func TestHealProfileScalesEachBandByItsContent(t *testing.T) {
 		level                                int
 		tankHealth, memberHealth, hit, pulse float64
 	}{
-		{20, 1836, 966, 89, 23},
-		{29, 1836, 966, 89, 23},
-		{30, 3204, 1687, 128, 33},
-		{40, 4938, 2599, 154, 40},
-		{50, 7036, 3703, 547, 143},
-		{59, 7036, 3703, 547, 143},
-		{10, 1836, 966, 89, 23},
+		{20, 1836, 966, 143, 37},
+		{29, 1836, 966, 143, 37},
+		{30, 3204, 1687, 263, 69},
+		{40, 4938, 2599, 470, 123},
+		{50, 7036, 3703, 1010, 263},
+		{59, 7036, 3703, 1010, 263},
+		{10, 1836, 966, 143, 37},
 	}
 	for _, c := range cases {
 		m := profile.ForLevel(c.level).Model()
@@ -126,11 +126,11 @@ func TestHealProfileScalesEachBandByItsContent(t *testing.T) {
 func TestHealProfileAtScaleKeepsTheBand(t *testing.T) {
 	profile := mustCuratedHealProfile(t)
 	low := profile.AtScale(1.65)
-	if m := low.ForLevel(50).Model(); m.TankHitDamage != 487 || m.PulseDamage != 127 {
-		t.Errorf("band 50 at 1.65: hit %v pulse %v, want 487 / 127", m.TankHitDamage, m.PulseDamage)
+	if m := low.ForLevel(50).Model(); m.TankHitDamage != 900 || m.PulseDamage != 235 {
+		t.Errorf("band 50 at 1.65: hit %v pulse %v, want 900 / 235", m.TankHitDamage, m.PulseDamage)
 	}
-	if m := profile.ForLevel(50).AtScale(1.65).Model(); m.TankHitDamage != 487 || m.PulseDamage != 127 {
-		t.Errorf("band 50 then 1.65: hit %v pulse %v, want 487 / 127", m.TankHitDamage, m.PulseDamage)
+	if m := profile.ForLevel(50).AtScale(1.65).Model(); m.TankHitDamage != 900 || m.PulseDamage != 235 {
+		t.Errorf("band 50 then 1.65: hit %v pulse %v, want 900 / 235", m.TankHitDamage, m.PulseDamage)
 	}
 	if m := low.Model(); m.TankHitDamage != 1898 || m.PulseDamage != 495 {
 		t.Errorf("reference at 1.65: hit %v pulse %v, want 1898 / 495", m.TankHitDamage, m.PulseDamage)
@@ -157,13 +157,13 @@ func TestHealProfileAttachUsesTheHealersBand(t *testing.T) {
 		Encounter: &proto.Encounter{Duration: 180},
 	}
 	profile.Attach(req)
-	if m := req.Raid.RaidDamageModel; m.TankHitDamage != 154 || m.TankHealth != 4938 {
-		t.Errorf("a level-40 healer's raid: hit %v on %v health, want 154 on 4938", m.TankHitDamage, m.TankHealth)
+	if m := req.Raid.RaidDamageModel; m.TankHitDamage != 470 || m.TankHealth != 4938 {
+		t.Errorf("a level-40 healer's raid: hit %v on %v health, want 470 on 4938", m.TankHitDamage, m.TankHealth)
 	}
 	weights := &proto.StatWeightsRequest{Player: &proto.Player{Level: 20}, Encounter: &proto.Encounter{Duration: 180}}
 	profile.AttachWeights(weights)
-	if m := weights.RaidDamageModel; m.TankHitDamage != 89 || m.PulseDamage != 23 {
-		t.Errorf("a level-20 weights request: hit %v pulse %v, want 89 / 23", m.TankHitDamage, m.PulseDamage)
+	if m := weights.RaidDamageModel; m.TankHitDamage != 143 || m.PulseDamage != 37 {
+		t.Errorf("a level-20 weights request: hit %v pulse %v, want 143 / 37", m.TankHitDamage, m.PulseDamage)
 	}
 }
 
@@ -174,12 +174,95 @@ func TestHealProfileRefusesABandFigureThatIsNotTheRules(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	field := regexp.MustCompile(`"tank_hit_damage": 154`)
+	field := regexp.MustCompile(`"tank_hit_damage": 470`)
 	if !field.Match(raw) {
-		t.Fatal("the curated band 40 no longer states tank_hit_damage 154; update this test")
+		t.Fatal("the curated band 40 no longer states tank_hit_damage 470; update this test")
 	}
-	if _, err := parseHealProfile(field.ReplaceAll(raw, []byte(`"tank_hit_damage": 155`)), "broken"); !errors.Is(err, ErrBadHealProfile) {
+	if _, err := parseHealProfile(field.ReplaceAll(raw, []byte(`"tank_hit_damage": 471`)), "broken"); !errors.Is(err, ErrBadHealProfile) {
 		t.Errorf("err = %v, want ErrBadHealProfile", err)
+	}
+}
+
+// Owner ruling 1, sim-accuracy round 11: a band fights the harder of its last boss and its
+// typical hard trash pull. The pull multiplier is the pull's damage a second over the
+// median last boss's, never below 1, so a band never fights lighter than its bosses.
+func TestHealBandPullMultiplier(t *testing.T) {
+	boss := []HealBandContent{{MinMeleeDmg: 20, MaxMeleeDmg: 20, DamageMultiplier: 1, AttackTimeMS: 1000}}
+	heavy := HealBand{ContentDamageMod: 1.2, Content: boss, Pulls: &HealBandPulls{PullDamagePerSecond: 50}}
+	if got := heavy.pullMultiplier(); math.Abs(got-2.5) > 1e-9 {
+		t.Errorf("a 50 a second pull over a 20 a second boss: multiplier %v, want 2.5", got)
+	}
+	if got := heavy.damage(); math.Abs(got-60) > 1e-9 {
+		t.Errorf("band damage = %v, want the pull's 50 times 1.2", got)
+	}
+	light := HealBand{ContentDamageMod: 1.2, Content: boss, Pulls: &HealBandPulls{PullDamagePerSecond: 10}}
+	if got := light.pullMultiplier(); got != 1 {
+		t.Errorf("a pull lighter than the boss: multiplier %v, want 1", got)
+	}
+	none := HealBand{ContentDamageMod: 1, Content: boss}
+	if got := none.pullMultiplier(); got != 1 {
+		t.Errorf("a band with no pulls (the raid): multiplier %v, want 1", got)
+	}
+}
+
+// A pull's damage a second is the sum of its mobs': each mob's tank and group damage a
+// second, times how many of it the pull holds.
+func TestHealBandPullDamageIsItsMobs(t *testing.T) {
+	pull := HealPull{Mobs: []HealPullMob{
+		{Count: 2, TankDamagePerSecond: 28.5},
+		{Count: 1, TankDamagePerSecond: 20, GroupDamagePerSecond: 5},
+	}}
+	if got := pull.damagePerSecond(); math.Abs(got-82) > 1e-9 {
+		t.Errorf("pull damage = %v, want 2 x 28.5 + 25", got)
+	}
+}
+
+// Every band below the reference states its pulls under the one pull rule (the stated
+// assistance radius and percentile), a pull whose mobs sum to its stated damage, and the
+// multiplier the rule derives; the reference band (a raid) states none.
+func TestCuratedHealBandsStateTheirPulls(t *testing.T) {
+	profile := mustCuratedHealProfile(t)
+	if profile.Bands.PullRule.AssistRadiusYards <= 0 || profile.Bands.PullRule.Percentile <= 0 || profile.Bands.PullRule.Percentile >= 1 {
+		t.Fatalf("the pull rule states radius %v and percentile %v", profile.Bands.PullRule.AssistRadiusYards, profile.Bands.PullRule.Percentile)
+	}
+	want := map[int]float64{20: 1.61, 30: 2.06, 40: 3.05, 50: 1.85, 60: 1}
+	for _, row := range profile.Bands.Rows {
+		if row.Level == profile.Bands.ReferenceLevel {
+			if row.Pulls != nil {
+				t.Errorf("the reference band states pulls")
+			}
+			continue
+		}
+		if row.Pulls == nil {
+			t.Fatalf("band %d states no pulls", row.Level)
+		}
+		if got := math.Round(row.pullMultiplier()*100) / 100; got != want[row.Level] {
+			t.Errorf("band %d pull multiplier = %v, want %v", row.Level, got, want[row.Level])
+		}
+		if len(row.Pulls.Pull.CreatureGUIDs) != row.Pulls.PullSize {
+			t.Errorf("band %d: the stated pull names %d spawns, its size is %d", row.Level, len(row.Pulls.Pull.CreatureGUIDs), row.Pulls.PullSize)
+		}
+	}
+}
+
+// Loading refuses a band whose stated pull damage is not its mobs' sum, or whose stated
+// multiplier is not the rule's.
+func TestHealProfileRefusesAPullThatIsNotItsMobs(t *testing.T) {
+	raw, err := os.ReadFile(curatedHealProfile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct{ from, to string }{
+		{`"pull_damage_per_second": 270.1`, `"pull_damage_per_second": 280.1`},
+		{`"pull_multiplier": 3.05`, `"pull_multiplier": 3.1`},
+	} {
+		field := regexp.MustCompile(regexp.QuoteMeta(c.from))
+		if !field.Match(raw) {
+			t.Fatalf("the curated band 40 no longer states %s; update this test", c.from)
+		}
+		if _, err := parseHealProfile(field.ReplaceAll(raw, []byte(c.to)), "broken"); !errors.Is(err, ErrBadHealProfile) {
+			t.Errorf("%s: err = %v, want ErrBadHealProfile", c.to, err)
+		}
 	}
 }
 

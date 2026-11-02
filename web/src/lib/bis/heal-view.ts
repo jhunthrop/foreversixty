@@ -114,6 +114,24 @@ function bandRowFor(profile: BisHealProfile, level: number): BisHealBandRow | un
   return bands.rows.find((row) => row.level === level);
 }
 
+/** The band's hard trash pull, when its row states one (files from 2026-11-04 on). */
+function pullRows(row: BisHealBandRow): HealProfileRow[] {
+  const { pulls, pull_multiplier: multiplier } = row;
+  if (pulls === undefined || multiplier === undefined) return [];
+  return [
+    {
+      heading: bisCopy.healerProfilePullHeading,
+      figures: bisCopy.healerProfilePullLine(
+        pulls.pull_size,
+        pulls.pull.dungeon,
+        pulls.pull.mobs,
+        multiplier,
+      ),
+      reason: '',
+    },
+  ];
+}
+
 function disclosureFor(profile: BisHealProfile, level: number): HealProfileDisclosure {
   const { tank, members, pulse } = profile;
   const row = bandRowFor(profile, level);
@@ -131,6 +149,7 @@ function disclosureFor(profile: BisHealProfile, level: number): HealProfileDiscl
             figures: bisCopy.healerProfileContentLine(row.content),
             reason: profile.bands?.rule ?? '',
           },
+          ...pullRows(row),
         ];
   // A band row's reasons are the band rule's (the Content row); the top-level reasons
   // describe the reference band's figures and would misstate a band's.

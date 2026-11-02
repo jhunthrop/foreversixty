@@ -184,6 +184,62 @@ describe('healerSetViewFor', () => {
     expect(top.rows.find((r) => r.heading === 'Tank')!.reason).toBe('Tank reason.');
   });
 
+  it('names the hard trash pull a sub-60 band fights, and the multiplier it puts on the boss', () => {
+    const banded: BisHealProfile = {
+      ...PROFILE,
+      bands: {
+        rule: 'Band rule.',
+        reference_level: 60,
+        rows: [
+          {
+            level: 20,
+            content: [{ name: 'Wailing Caverns', last_boss: 'Mutanus the Devourer', boss_level: 22 }],
+            pulls: {
+              pull_size: 3,
+              pull: {
+                dungeon: 'Wailing Caverns',
+                mobs: [
+                  { name: 'Deviate Lasher', count: 2 },
+                  { name: 'Druid of the Fang', count: 1 },
+                ],
+              },
+            },
+            pull_multiplier: 1.61,
+            tank_health: 1836,
+            member_health: 966,
+            tank_hit_damage: 143,
+            pulse_damage: 37,
+          },
+          {
+            level: 30,
+            content: [{ name: 'Gnomeregan', last_boss: 'Mekgineer Thermaplugg', boss_level: 34 }],
+            tank_health: 3204,
+            member_health: 1687,
+            tank_hit_damage: 128,
+            pulse_damage: 33,
+          },
+        ],
+      },
+    };
+    const low = healerSetViewFor(healerBand({ band: 20 }), banded)!.disclosure!;
+    expect(low.rows.map((r) => r.heading)).toEqual([
+      'Fight',
+      'Content',
+      'Hard pull',
+      'Tank',
+      'Raid members',
+      'Raid pulses',
+    ]);
+    expect(low.rows.find((r) => r.heading === 'Hard pull')).toEqual({
+      heading: 'Hard pull',
+      figures: '3 mobs in Wailing Caverns (2 Deviate Lasher, 1 Druid of the Fang), 1.61 times the last boss',
+      reason: '',
+    });
+    // A file published before pulls has no pull row.
+    const older = healerSetViewFor(healerBand({ band: 30 }), banded)!.disclosure!;
+    expect(older.rows.map((r) => r.heading)).not.toContain('Hard pull');
+  });
+
   it('falls back to set_dps and no metric cells when the band publishes no metrics', () => {
     const view = healerSetViewFor(healerBand({ metrics: undefined, set_dps: 250.04 }), PROFILE)!;
     expect(view.figure).toBe('250.0');
