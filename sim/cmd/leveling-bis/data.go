@@ -109,6 +109,10 @@ type classItem struct {
 	// updates one of the two rows still excludes the item, rather than
 	// only working when both happen to agree.
 	SupersededBy int `json:"superseded_by,omitempty"`
+	// Reputation is the client's reputation requirement for the item
+	// (ItemSparse.MinFactionID and MinReputation), nil for none. See
+	// applyItemReputations.
+	Reputation *itemReputation `json:"reputation,omitempty"`
 }
 
 type classItemFile struct {
@@ -211,6 +215,8 @@ type candidate struct {
 	// the item's stats are 1.12's, not yet confirmed by the client.
 	// preferConfirmedStats (confirmed.go) reads it.
 	ClientUnconfirmed bool
+	// Reputation is classItem.Reputation carried through.
+	Reputation *itemReputation
 }
 
 // markNotInSimDB sets NotInSimDB (above) on every item this build's
@@ -349,6 +355,7 @@ func loadClassCandidates(buildDir, classSlug string) (out []candidate, missing [
 			SetID:                  ci.SetID,
 			EffectText:             ci.EffectText,
 			ClientUnconfirmed:      ci.ClientUnconfirmed,
+			Reputation:             ci.Reputation,
 		})
 	}
 	return out, missing, nil

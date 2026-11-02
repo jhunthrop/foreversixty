@@ -28,7 +28,8 @@
       "weapon_type": "bow",
       "superseded_by": null,
       "bonding": null,
-      "armor_type": null
+      "armor_type": null,
+      "reputation": null
     },
     {
       "id": 13315,
@@ -58,7 +59,8 @@
       "weapon_type": null,
       "superseded_by": null,
       "bonding": null,
-      "armor_type": null
+      "armor_type": null,
+      "reputation": null
     },
     {
       "id": 12798,
@@ -86,7 +88,8 @@
       "weapon_type": "axe",
       "superseded_by": null,
       "bonding": null,
-      "armor_type": null
+      "armor_type": null,
+      "reputation": null
     },
     {
       "id": 19325,
@@ -116,7 +119,8 @@
       "weapon_type": null,
       "superseded_by": null,
       "bonding": null,
-      "armor_type": null
+      "armor_type": null,
+      "reputation": null
     },
     {
       "id": 17066,
@@ -146,7 +150,8 @@
       "weapon_type": null,
       "superseded_by": null,
       "bonding": null,
-      "armor_type": "shield"
+      "armor_type": "shield",
+      "reputation": null
     },
     {
       "id": 16866,
@@ -178,7 +183,8 @@
       "weapon_type": null,
       "superseded_by": null,
       "bonding": null,
-      "armor_type": "plate"
+      "armor_type": "plate",
+      "reputation": null
     },
     {
       "id": 19019,
@@ -208,7 +214,8 @@
       "weapon_type": "sword",
       "superseded_by": null,
       "bonding": null,
-      "armor_type": null
+      "armor_type": null,
+      "reputation": null
     }
   ]
 }

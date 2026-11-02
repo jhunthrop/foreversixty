@@ -393,6 +393,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// item's own required_level, which a quest or crafted reward almost
 	// always states as 0) once, before any band uses eligible().
 	items = applyEffectiveRequiredLevels(items, lootIdx, questFloors)
+	// Round 9: an item's own client reputation requirement holds every
+	// source of it to that standing and side (reputation.go).
+	lootIdx = applyItemReputations(lootIdx, items)
 
 	// This lane's brief, item 5's second half: read once per spec (the
 	// rotation does not change per band/faction) whether this spec's own
