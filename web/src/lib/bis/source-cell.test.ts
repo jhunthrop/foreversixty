@@ -98,6 +98,8 @@ const LOOT: LootFile & LootQuestsFile = {
       items: [100],
     },
     { id: 'pvp:rank-9', kind: 'pvp', name: 'Rank 9', items: [101] },
+    // Round 8: Forever's PvP rewards need no rank; the source carries a faction only.
+    { id: 'pvp:reward:horde', kind: 'pvp', name: 'PvP reward (Horde)', faction: 'horde', items: [103] },
     // A rank-16-18 set sold by a real, single-faction capital-city NPC that loot.json still
     // classifies as plain `vendor` (fourth wow-player sweep, day 3, top finding) -- carries
     // `rank`/`faction` the way a `pvp`-kind source does, which is the one signal that tells
@@ -264,7 +266,13 @@ describe('resolveSourceCell', () => {
     expect(cell).toEqual({ kind: 'pvp', rank: 11, faction: 'alliance' });
   });
 
-  it('falls back for a pvp source missing rank or faction (should not happen on real data)', () => {
+  it('resolves an unranked pvp reward to a faction-only cell that reads "PvP reward"', () => {
+    const cell = resolveSourceCell(slot({ item_id: 103, source_kind: 'pvp' }), 'horde', LOOT, 'fallback');
+    expect(cell).toEqual({ kind: 'pvp', rank: undefined, faction: 'horde' });
+    expect(describeSourceCell(cell)).toBe('PvP reward · Horde');
+  });
+
+  it('falls back for a pvp source missing its faction (should not happen on real data)', () => {
     const cell = resolveSourceCell(slot({ item_id: 101, source_kind: 'pvp' }), 'alliance', LOOT, 'fallback');
     expect(cell).toEqual({ kind: 'unknown', label: 'fallback' });
   });

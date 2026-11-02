@@ -76,8 +76,9 @@ export interface ZoneSourceCell {
 
 export interface PvpSourceCell {
   kind: 'pvp';
-  /** loot.json's own `LootSource.rank` (Blizzard's client RequiredPVPRank, 5-18). */
-  rank: number;
+  /** loot.json's own `LootSource.rank` (Blizzard's client RequiredPVPRank, 5-18); absent on
+   *  a Forever PvP reward that needs no rank (round 8), which reads "PvP reward". */
+  rank: number | undefined;
   faction: 'alliance' | 'horde';
 }
 
@@ -225,11 +226,7 @@ export function resolveSourceCell(
     // rank 18 · Grand Marshal · Alliance") is what a player expects, never
     // the bare quartermaster name a plain vendor lookup would show instead.
     const pvpSource = findSource(loot.sources, 'pvp', itemId);
-    if (
-      pvpSource !== undefined &&
-      pvpSource.rank !== undefined &&
-      (pvpSource.faction === 'alliance' || pvpSource.faction === 'horde')
-    ) {
+    if (pvpSource !== undefined && (pvpSource.faction === 'alliance' || pvpSource.faction === 'horde')) {
       return { kind: 'pvp', rank: pvpSource.rank, faction: pvpSource.faction };
     }
     const source = findSource(loot.sources, 'vendor', itemId);
@@ -262,12 +259,10 @@ export function resolveSourceCell(
 
   if (slot.source_kind === 'pvp') {
     const source = findSource(loot.sources, 'pvp', itemId);
-    // A source missing rank or a recognised faction (should not happen on real data --
-    // pipeline.loot.pvp_faction sets both on every split source it emits) falls back
-    // rather than showing a half-built pvp cell.
-    return source === undefined ||
-      source.rank === undefined ||
-      (source.faction !== 'alliance' && source.faction !== 'horde')
+    // A source with no recognised faction (should not happen on real data --
+    // pipeline.loot.pvp_faction sets one on every split source it emits) falls back rather
+    // than showing a half-built pvp cell. No rank is a Forever PvP reward (round 8).
+    return source === undefined || (source.faction !== 'alliance' && source.faction !== 'horde')
       ? fallback
       : { kind: 'pvp', rank: source.rank, faction: source.faction };
   }

@@ -84,9 +84,12 @@ export function pvpRankTitle(faction: 'alliance' | 'horde', rank: number): strin
  *  faction, not a pipeline id. Falls back to naming just the rank and faction when the rank
  *  falls outside the known ladder (`pvpRankTitle` returning `undefined` -- should not happen
  *  on real data, but never worse than an incomplete-but-true line). */
-export function pvpSourceLabel(rank: number, faction: 'alliance' | 'horde'): string {
-  const title = pvpRankTitle(faction, rank);
+export function pvpSourceLabel(rank: number | undefined, faction: 'alliance' | 'horde'): string {
   const factionLabel = faction === 'alliance' ? 'Alliance' : 'Horde';
+  // Forever's PvP rewards need no rank (owner ruling 2026-11-01): a source with none reads
+  // "PvP reward · Horde", the ranker's own words, never "PvP rank 0".
+  if (rank === undefined || rank < 1) return `PvP reward · ${factionLabel}`;
+  const title = pvpRankTitle(faction, rank);
   return title === undefined
     ? `PvP rank ${rank} · ${factionLabel}`
     : `PvP rank ${rank} · ${title} · ${factionLabel}`;

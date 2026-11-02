@@ -19,6 +19,18 @@ describe('itemSourceRows', () => {
     expect(rows).toEqual([{ kind: 'vendor', title: 'Meilosh', primary: false, text: 'Meilosh' }]);
   });
 
+  it('names an unranked PvP reward by the ranker’s words and its faction (round 8)', () => {
+    const rows = itemSourceRows(
+      ID,
+      loot({
+        sources: [
+          { id: 'pvp:reward:horde', kind: 'pvp', name: 'PvP reward (Horde)', faction: 'horde', items: [ID] },
+        ] as LootFile['sources'],
+      }),
+    );
+    expect(rows.map((row) => row.title)).toEqual(['PvP reward · Horde']);
+  });
+
   it('gives a quest its side and minimum level, ahead of a vendor', () => {
     const rows = itemSourceRows(
       ID,
