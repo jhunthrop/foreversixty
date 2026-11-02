@@ -285,7 +285,12 @@ describe('writeSimNames', () => {
       }),
     );
 
-    expect(await writeSimNames(build, out)).toEqual(['simnames/warrior.json', 'simnames/_shared.json']);
+    expect(await writeSimNames(build, out)).toEqual([
+      'simnames/warrior.json',
+      'simnames/_shared.json',
+      'simnames/spell/',
+      'simnames/item/',
+    ]);
 
     const table = JSON.parse(readFileSync(path.join(out, 'simnames', 'warrior.json'), 'utf8'));
     expect(table.spell['25286']).toBe('Heroic Strike');
@@ -334,7 +339,7 @@ describe('writeSimNames', () => {
     expect(shared.spell['133']).toBe('Fireball');
     expect(shared.spell['20217']).toBe('Blessing of Kings');
     // Thorns: no player class's spellbook is in this fixture at all, so only the
-    // classless table (CLASSLESS_BUFF_SPELLS' Darkmoon Faire buff, the one entry small
+    // classless table (engine-spell-names.json's Darkmoon Faire buff, the one entry small
     // enough to hand-check here) proves the union ran rather than one class's own file
     // being copied verbatim.
     expect(shared.spell['23735']).toBe("Sayge's Dark Fortune of Strength");
@@ -406,11 +411,50 @@ describe('writeSimNames', () => {
     await writeSimNames(build, out);
     const shared = JSON.parse(readFileSync(path.join(out, 'simnames', '_shared.json'), 'utf8'));
     expect(shared.spell['12319']).toBe('Flurry');
-    expect(shared.spell['20572']).toBe('Blood Fury'); // RACIAL_SPELLS
+    expect(shared.spell['20572']).toBe('Blood Fury'); // data/curated/engine-spell-names.json
     expect(shared.item['13442']).toBe('Mighty Rage Potion');
     expect(shared.item['5514']).toBe('Mana Agate'); // ITEM_NAME_OVERRIDES
     expect(shared.item['12345']).toBeUndefined();
     expect(shared.item['20560']).toBeUndefined();
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  // Round 7 (owner ruling 2): /sim showed 36 rows as "An unnamed spell": item procs and generic
+  // actions the class tables prune away (Thrash, Chthonic Power, the wand's Shoot), and engine
+  // ids the client does not carry at all (Ignite 12654). The client's whole spell and item
+  // tables are published in shards the page fetches for an id the class tables lack, and the
+  // engine's own ids are named from data/curated/engine-spell-names.json.
+  it('publishes every client spell and item name in shards, and the engine’s own spell names', async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'simnames-shards-'));
+    const build = path.join(dir, 'build');
+    const out = path.join(dir, 'out');
+    mkdirSync(path.join(build, 'spellconst'), { recursive: true });
+    mkdirSync(out, { recursive: true });
+    const spells = [
+      { id: 21919, name: 'Thrash' },
+      { id: 1249110, name: 'Chthonic Power' },
+      { id: 5019, name: 'Shoot' },
+    ];
+    const items = [
+      { id: 13442, name: 'Mighty Rage Potion', class_id: 0 },
+      { id: 19019, name: 'Thunderfury, Blessed Blade of the Windseeker', class_id: 2 },
+    ];
+    writeFileSync(path.join(build, 'spells.json'), JSON.stringify(spells));
+    writeFileSync(path.join(build, 'items.json'), JSON.stringify(items));
+    writeFileSync(
+      path.join(build, 'spellconst', 'mage.json'),
+      JSON.stringify({ build: '1.60.1.70707', class_slug: 'mage', family: 3, spells: {} }),
+    );
+
+    await writeSimNames(build, out);
+    const shared = JSON.parse(readFileSync(path.join(out, 'simnames', '_shared.json'), 'utf8'));
+    expect(shared.shards).toBeGreaterThan(1);
+    expect(shared.spell['12654']).toBe('Ignite');
+    expect(shared.spell['8514']).toBe('Windfury Totem');
+    const shard = (kind: string, id: number) =>
+      JSON.parse(readFileSync(path.join(out, 'simnames', kind, `${id % shared.shards}.json`), 'utf8'));
+    for (const row of spells) expect(shard('spell', row.id)[String(row.id)]).toBe(row.name);
+    for (const row of items) expect(shard('item', row.id)[String(row.id)]).toBe(row.name);
     rmSync(dir, { recursive: true, force: true });
   });
 

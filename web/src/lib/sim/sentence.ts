@@ -79,6 +79,15 @@ export function namedSummary(summary: Summary, names: ActionNames | null): Summa
   };
 }
 
+/** Every action key namedSummary resolves: the damage rows, auras and casts. */
+export function summaryActionKeys(summary: Summary): string[] {
+  return [
+    ...summary.damage_done.flatMap((actor) => actor.abilities.map((ability) => ability.name)),
+    ...summary.auras.map((track) => track.name),
+    ...summary.casts.map((row) => row.spell_name),
+  ];
+}
+
 /**
  * Clamped to 100 as a last line of defence (2026-09-21 result-page review round 3, E8: a
  * combined sim result's aura rows read up to 101% here, sim/combine's own bug, now fixed

@@ -1,0 +1,229 @@
+{
+  "notes": "Names for spell ids the sim engine (the wowsims-forever fork) reports that no class's spellconst or talents name: world buffs and racials no class spellbook owns, and the ids the Forever client's SpellName table does not carry at all (mostly the Era ids of talent ranks and procs that Forever renumbered). web/scripts/sync-data.mjs publishes them in simnames/_shared.json; every other spell a result carries is named from the client's spells.json, published in shards beside it. sim/cmd/spec-breakdown's TestEveryPublishedResultActionHasAName sims every published entry and fails on an id that neither the client nor this file names. Each entry names the engine file that uses the id. Delete an entry the day the engine moves to a client id.",
+  "spells": {
+    "8514": {
+      "name": "Windfury Totem",
+      "engine": "sim/shaman/air_totems.go WindfuryBuffAuraId: the buff each Windfury Totem rank puts on the party"
+    },
+    "10607": {
+      "name": "Windfury Totem",
+      "engine": "sim/shaman/air_totems.go WindfuryBuffAuraId: the buff each Windfury Totem rank puts on the party"
+    },
+    "10611": {
+      "name": "Windfury Totem",
+      "engine": "sim/shaman/air_totems.go WindfuryBuffAuraId: the buff each Windfury Totem rank puts on the party"
+    },
+    "12577": {
+      "name": "Clearcasting",
+      "engine": "sim/mage/talents.go: the Arcane Concentration proc"
+    },
+    "12654": {
+      "name": "Ignite",
+      "engine": "sim/mage/ignite.go: the Ignite burn (the client lists the talent as 412545)"
+    },
+    "12849": {
+      "name": "Deep Wounds",
+      "engine": "sim/warrior/talents.go deepWoundsSpellIDs: ranks 2 and 3 of the bleed"
+    },
+    "12867": {
+      "name": "Deep Wounds",
+      "engine": "sim/warrior/talents.go deepWoundsSpellIDs: ranks 2 and 3 of the bleed"
+    },
+    "15331": {
+      "name": "Shadow Weaving",
+      "engine": "sim/core/debuffs.go ShadowWeavingSpellIDs: ranks 2 to 5 of the debuff"
+    },
+    "15332": {
+      "name": "Shadow Weaving",
+      "engine": "sim/core/debuffs.go ShadowWeavingSpellIDs: ranks 2 to 5 of the debuff"
+    },
+    "15333": {
+      "name": "Shadow Weaving",
+      "engine": "sim/core/debuffs.go ShadowWeavingSpellIDs: ranks 2 to 5 of the debuff"
+    },
+    "15334": {
+      "name": "Shadow Weaving",
+      "engine": "sim/core/debuffs.go ShadowWeavingSpellIDs: ranks 2 to 5 of the debuff"
+    },
+    "15335": {
+      "name": "Spirit Tap",
+      "engine": "sim/priest/talents.go: ranks 2 to 5 of the proc"
+    },
+    "15336": {
+      "name": "Spirit Tap",
+      "engine": "sim/priest/talents.go: ranks 2 to 5 of the proc"
+    },
+    "15337": {
+      "name": "Spirit Tap",
+      "engine": "sim/priest/talents.go: ranks 2 to 5 of the proc"
+    },
+    "15338": {
+      "name": "Spirit Tap",
+      "engine": "sim/priest/talents.go: ranks 2 to 5 of the proc"
+    },
+    "15366": {
+      "name": "Songflower Serenade",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "16277": {
+      "name": "Flurry",
+      "engine": "sim/shaman/talents.go: ranks 2 to 5 of the shaman proc"
+    },
+    "16278": {
+      "name": "Flurry",
+      "engine": "sim/shaman/talents.go: ranks 2 to 5 of the shaman proc"
+    },
+    "16279": {
+      "name": "Flurry",
+      "engine": "sim/shaman/talents.go: ranks 2 to 5 of the shaman proc"
+    },
+    "16280": {
+      "name": "Flurry",
+      "engine": "sim/shaman/talents.go: ranks 2 to 5 of the shaman proc"
+    },
+    "16609": {
+      "name": "Warchief's Blessing",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "17058": {
+      "name": "Furor",
+      "engine": "sim/druid/talents.go: ranks 2 to 5 of the proc"
+    },
+    "17059": {
+      "name": "Furor",
+      "engine": "sim/druid/talents.go: ranks 2 to 5 of the proc"
+    },
+    "17060": {
+      "name": "Furor",
+      "engine": "sim/druid/talents.go: ranks 2 to 5 of the proc"
+    },
+    "17061": {
+      "name": "Furor",
+      "engine": "sim/druid/talents.go: ranks 2 to 5 of the proc"
+    },
+    "20059": {
+      "name": "Vengeance",
+      "engine": "sim/paladin/talents.go: the Vengeance proc aura"
+    },
+    "20134": {
+      "name": "Redoubt",
+      "engine": "sim/paladin/tank_talents.go redoubtActionID: the Redoubt proc"
+    },
+    "20572": {
+      "name": "Blood Fury",
+      "engine": "sim/core/racials.go: a racial no class spellbook owns"
+    },
+    "20594": {
+      "name": "Stoneform",
+      "engine": "sim/core/racials.go: a racial no class spellbook owns"
+    },
+    "20944": {
+      "name": "Seal of Command",
+      "engine": "sim/paladin/soc.go: the proc of Seal of Command ranks 2 to 5"
+    },
+    "20945": {
+      "name": "Seal of Command",
+      "engine": "sim/paladin/soc.go: the proc of Seal of Command ranks 2 to 5"
+    },
+    "20946": {
+      "name": "Seal of Command",
+      "engine": "sim/paladin/soc.go: the proc of Seal of Command ranks 2 to 5"
+    },
+    "20947": {
+      "name": "Seal of Command",
+      "engine": "sim/paladin/soc.go: the proc of Seal of Command ranks 2 to 5"
+    },
+    "20955": {
+      "name": "Holy Shield",
+      "engine": "sim/paladin/holy_shield.go procID: the damage of Holy Shield ranks 1 to 3"
+    },
+    "20956": {
+      "name": "Holy Shield",
+      "engine": "sim/paladin/holy_shield.go procID: the damage of Holy Shield ranks 1 to 3"
+    },
+    "20957": {
+      "name": "Holy Shield",
+      "engine": "sim/paladin/holy_shield.go procID: the damage of Holy Shield ranks 1 to 3"
+    },
+    "22817": {
+      "name": "Fengus' Ferocity",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "22818": {
+      "name": "Mol'dar's Moxie",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "22820": {
+      "name": "Slip'kik's Savvy",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "22888": {
+      "name": "Rallying Cry of the Dragonslayer",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "23735": {
+      "name": "Sayge's Dark Fortune of Strength",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "23736": {
+      "name": "Sayge's Dark Fortune of Agility",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "23737": {
+      "name": "Sayge's Dark Fortune of Stamina",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "23738": {
+      "name": "Sayge's Dark Fortune of Spirit",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "23766": {
+      "name": "Sayge's Dark Fortune of Intelligence",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "23767": {
+      "name": "Sayge's Dark Fortune of Armor",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "23768": {
+      "name": "Sayge's Dark Fortune of Damage",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "23769": {
+      "name": "Sayge's Dark Fortune of Resistance",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "23825": {
+      "name": "Master Demonologist",
+      "engine": "sim/warlock/talents.go: the aura each demon gives"
+    },
+    "24425": {
+      "name": "Spirit of Zandalar",
+      "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
+    },
+    "26297": {
+      "name": "Berserking",
+      "engine": "sim/core/racials.go: a racial no class spellbook owns"
+    },
+    "29177": {
+      "name": "Elemental Devastation",
+      "engine": "sim/shaman/talents.go: ranks 2 and 3 of the proc"
+    },
+    "29178": {
+      "name": "Elemental Devastation",
+      "engine": "sim/shaman/talents.go: ranks 2 and 3 of the proc"
+    },
+    "58984": {
+      "name": "Elune's Light",
+      "engine": "sim/core/racials.go: a racial no class spellbook owns"
+    },
+    "1000101": {
+      "name": "Eureka!",
+      "engine": "sim/core/racials.go: a racial no class spellbook owns"
+    },
+    "1311648": {
+      "name": "Seal of Fury",
+      "engine": "sim/paladin/seal_of_fury.go sealOfFuryShieldID: the shield Seal of Fury gives (the client carries no spell of its own for it)"
+    }
+  }
+}

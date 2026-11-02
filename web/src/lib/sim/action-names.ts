@@ -58,6 +58,14 @@ export interface ActionNames {
    * `ActionNames` built by hand (a test, a fixture) already means.
    */
   ownSpell?: ReadonlySet<string>;
+  /** Where the build's whole client spell and item tables live, split by id
+   *  (simnames/<kind>/<id % count>.json); absent for a build that publishes none. */
+  shards?: NameShards;
+}
+
+export interface NameShards {
+  build: string;
+  count: number;
 }
 
 export interface ActionKey {
@@ -153,10 +161,18 @@ export function resolveActionName(key: string, names: ActionNames | null): strin
   return name + simCopy.actionVariant(parsed.tag, parsed.rank);
 }
 
+/** `simnames/_shared.json`: the cross-class tables and the shard count. */
+interface SharedNames {
+  spell: Record<string, string>;
+  item: Record<string, string>;
+  /** How many files each client table is split into; absent in a build before round 7. */
+  shards?: number;
+}
+
 /** `simnames/_shared.json`'s empty shape: an older build that scripts/sync-data.mjs has
  *  not regenerated ships none of it, and a missing cross-class table must read as "no
  *  extra names available", never as a load failure the page has to report. */
-const EMPTY_SHARED_NAMES: ActionNames = { spell: {}, item: {} };
+const EMPTY_SHARED_NAMES: SharedNames = { spell: {}, item: {} };
 
 /**
  * `simnames/_shared.json`: every class's own spell table unioned into one, plus the
@@ -165,8 +181,8 @@ const EMPTY_SHARED_NAMES: ActionNames = { spell: {}, item: {} };
  * broken, so it falls back to empty via loadOptional the same way loadSets and loadWeights
  * already treat their own optional build files.
  */
-function loadSharedActionNames(build: string): Promise<ActionNames> {
-  return loadOptional<ActionNames>(dataUrl(build, 'simnames/_shared.json'), EMPTY_SHARED_NAMES);
+function loadSharedActionNames(build: string): Promise<SharedNames> {
+  return loadOptional<SharedNames>(dataUrl(build, 'simnames/_shared.json'), EMPTY_SHARED_NAMES);
 }
 
 /**
@@ -188,5 +204,61 @@ export async function loadActionNames(build: string, classSlug: string): Promise
     spell: { ...shared.spell, ...own.spell },
     item: { ...shared.item, ...own.item },
     ownSpell: new Set(Object.keys(own.spell)),
+    ...(shared.shards === undefined ? {} : { shards: { build, count: shared.shards } }),
   };
+}
+
+type ShardKind = 'spell' | 'item';
+
+/** The ids among `keys` of one kind that `names` cannot name. */
+function unnamedIds(names: ActionNames, keys: Iterable<string>, kind: ShardKind): number[] {
+  const ids = new Set<number>();
+  for (const key of keys) {
+    const parsed = parseActionKey(key);
+    if (parsed?.kind === kind && names[kind][parsed.label] === undefined) ids.add(parsed.id);
+  }
+  return [...ids];
+}
+
+/** The names of `ids` from the shards they live in, one fetch per shard. */
+async function shardNames(
+  shards: NameShards,
+  kind: ShardKind,
+  ids: number[],
+): Promise<Record<string, string>> {
+  const indexes = [...new Set(ids.map((id) => id % shards.count))];
+  const tables = await Promise.all(
+    indexes.map((index) =>
+      fetchJson<Record<string, string>>(dataUrl(shards.build, `simnames/${kind}/${index}.json`)),
+    ),
+  );
+  const found: Record<string, string> = {};
+  for (const table of tables) {
+    for (const id of ids) {
+      const name = table[String(id)];
+      if (name !== undefined) found[String(id)] = name;
+    }
+  }
+  return found;
+}
+
+/**
+ * `names` with every spell and item among `keys` it could not name read from the build's
+ * sharded client tables (round 7, owner ruling 2: an item proc, the wand's Shoot or a set
+ * bonus no class table carries read "An unnamed spell"). Returns `names` itself, with no
+ * fetch, when every key already has a name or the build publishes no shards; the tables'
+ * own names win, and `ownSpell` is unchanged.
+ */
+export async function withShardNames(names: ActionNames, keys: Iterable<string>): Promise<ActionNames> {
+  const { shards } = names;
+  if (shards === undefined) return names;
+  const keyList = [...keys];
+  const spellIds = unnamedIds(names, keyList, 'spell');
+  const itemIds = unnamedIds(names, keyList, 'item');
+  if (spellIds.length === 0 && itemIds.length === 0) return names;
+  const [spell, item] = await Promise.all([
+    shardNames(shards, 'spell', spellIds),
+    shardNames(shards, 'item', itemIds),
+  ]);
+  return { ...names, spell: { ...spell, ...names.spell }, item: { ...item, ...names.item } };
 }

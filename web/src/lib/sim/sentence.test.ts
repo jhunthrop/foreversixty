@@ -3,7 +3,7 @@ import type { ActionNames } from './action-names';
 import type { Summary } from '../report/types';
 import { fixtureResult } from '../../test-support/sim-api';
 import { simCopy } from './copy';
-import { namedSummary, playerActor, summarySentence } from './sentence';
+import { namedSummary, playerActor, summaryActionKeys, summarySentence } from './sentence';
 import { NAMELESS_REQUEST_NAME } from './character';
 
 const summary = fixtureResult.summary;
@@ -420,5 +420,15 @@ describe('playerActor', () => {
 
   it('is null for an empty table', () => {
     expect(playerActor({ ...summary, damage_done: [] })).toBeNull();
+  });
+});
+
+describe('summaryActionKeys', () => {
+  it('lists every key namedSummary resolves, so the page can name the ones its tables lack', () => {
+    const keys = summaryActionKeys(summary);
+    for (const ability of summary.damage_done.flatMap((actor) => actor.abilities))
+      expect(keys).toContain(ability.name);
+    for (const track of summary.auras) expect(keys).toContain(track.name);
+    for (const row of summary.casts) expect(keys).toContain(row.spell_name);
   });
 });

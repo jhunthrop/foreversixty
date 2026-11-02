@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fixtureResult } from '../../test-support/sim-api';
-import { parseActionKey, resolveActionName, type ActionNames } from './action-names';
+import { parseActionKey, resolveActionName, withShardNames, type ActionNames } from './action-names';
 
 const names: ActionNames = {
   spell: { '25286': 'Heroic Strike', '20662': 'Execute' },
@@ -140,5 +140,63 @@ describe('resolveActionName', () => {
   it('passes a real display name straight through, so a logged fight renders unchanged', () => {
     // compare.ts puts a sim row beside a fight row, and the fight's rows carry real names.
     expect(resolveActionName('Bloodthirst', names)).toBe('Bloodthirst');
+  });
+});
+
+// Round 7 (owner ruling 2): an id the class and shared tables do not carry -- an item proc,
+// the wand's Shoot -- is read from the build's sharded client tables, never left unnamed.
+describe('withShardNames', () => {
+  const build = 'shard-test-build';
+  const shards: Record<string, Record<string, string>> = {
+    [`/data/${build}/simnames/spell/31.json`]: { '21919': 'Thrash' },
+    [`/data/${build}/simnames/spell/22.json`]: { '1249110': 'Chthonic Power' },
+    [`/data/${build}/simnames/item/2.json`]: { '13442': 'Mighty Rage Potion' },
+  };
+
+  function stubShards(): string[] {
+    const requested: string[] = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        requested.push(url);
+        const body = shards[url];
+        return body === undefined
+          ? new Response('not found', { status: 404 })
+          : new Response(JSON.stringify(body), { headers: { 'content-type': 'application/json' } });
+      }),
+    );
+    return requested;
+  }
+
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('names the spells and items the tables lack from their shards, and fetches only those shards', async () => {
+    const requested = stubShards();
+    const loaded: ActionNames = { ...names, shards: { build, count: 64 } };
+    const completed = await withShardNames(loaded, [
+      'spell:25286',
+      'spell:21919',
+      'spell:1249110/2',
+      'item:13442',
+      'other:attack/1',
+    ]);
+    expect(resolveActionName('spell:21919', completed)).toBe('Thrash');
+    expect(resolveActionName('spell:1249110', completed)).toBe('Chthonic Power');
+    expect(resolveActionName('item:13442', completed)).toBe('Mighty Rage Potion');
+    expect(resolveActionName('spell:25286', completed)).toBe('Heroic Strike');
+    expect(requested.sort()).toEqual(Object.keys(shards).sort());
+  });
+
+  it('returns the same tables, with no fetch, when every key already has a name', async () => {
+    const requested = stubShards();
+    const loaded: ActionNames = { ...names, shards: { build, count: 64 } };
+    expect(await withShardNames(loaded, ['spell:25286', 'item:14554'])).toBe(loaded);
+    expect(requested).toEqual([]);
+  });
+
+  it('leaves a build with no shards as it is', async () => {
+    const requested = stubShards();
+    expect(await withShardNames(names, ['spell:21919'])).toBe(names);
+    expect(requested).toEqual([]);
   });
 });
