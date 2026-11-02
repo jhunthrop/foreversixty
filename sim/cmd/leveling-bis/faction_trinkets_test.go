@@ -329,3 +329,33 @@ func TestIsFactionNeutralCandidate(t *testing.T) {
 		}
 	}
 }
+
+// Round 8: Discipline band 60 (Alliance) published Ankh of Life in both
+// trinket slots. Horde's trinket1 pick was Ankh of Life, Alliance already
+// wore it in trinket2, and the reconciliation adopted it into Alliance's
+// trinket1 without looking at the pair mate. One trinket cannot fill both
+// slots; the target keeps its own verdict.
+func TestReconcileFactionTrinketsNeverAdoptsTheTargetsOtherTrinket(t *testing.T) {
+	idx := mergeLootIndex(neutralSource(201, "World drop A"), neutralSource(202, "World drop B"))
+	ankh := measuredTrinket(201, "Ankh of Life", 5.0, 0.5, 150.0)
+	shard := measuredTrinket(202, "Shard of the Splithooves", 1.0, 0.2, 130.0)
+	ankhAgain := measuredTrinket(201, "Ankh of Life", 5.0, 0.5, 150.0)
+	hordePicks := map[string]slotPick{"trinket1": {Item: &ankh}}
+	alliancePicks := map[string]slotPick{"trinket1": {Item: &shard}, "trinket2": {Item: &ankhAgain}}
+	engine := &fakeEngine{
+		DPSFunc: func(req api.SimRequest) (float64, error) {
+			if gearHasItem(req, "trinket1", 201) {
+				return 145.0, nil
+			}
+			return 135.0, nil
+		},
+	}
+	alliance := factionTrinketInputs{Faction: "alliance", Race: "human"}
+	horde := factionTrinketInputs{Faction: "horde", Race: "orc"}
+
+	newAlliance, _, _ := reconcileFactionTrinkets(engine, specInfo{ClassSlug: "priest"}, "priest", 60, "", idx, alliance, alliancePicks, horde, hordePicks)
+
+	if a, b := newAlliance["trinket1"].Item, newAlliance["trinket2"].Item; a != nil && b != nil && a.ID == b.ID {
+		t.Fatalf("Alliance wears %s (id %d) in both trinket slots", a.Name, a.ID)
+	}
+}
