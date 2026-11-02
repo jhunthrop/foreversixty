@@ -165,3 +165,33 @@ func conditionPacesMana(v *proto.APLValue) bool {
 	}
 	return false
 }
+
+// Round 11 (design/reviews/2026-11-03-sim-audit-round11/casters.md S1): the
+// published horde Shadow priest is Undead, whose Dark Sacrifice (ranks
+// 1277324-1277328, 20 to 60, SkillLineAbility race mask 16) trades health
+// for mana. The bare bands run dry, so the rotation casts it when mana is
+// low and behind the fight's pace, above the damage lines.
+func TestShadowCastsDarkSacrificeWhenManaIsBehind(t *testing.T) {
+	const (
+		darkSacrifice = 1277328
+		mindBlast     = 10947
+	)
+	ids := castOrder(t, "priest-shadow")
+	requireBefore(t, "priest-shadow", ids, darkSacrifice, mindBlast)
+	curated, err := loadLadderCurated(repoRoot, "priest-shadow")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range rot.PriorityList {
+		if item.GetAction().GetCastSpell().GetSpellId().GetSpellId() != darkSacrifice {
+			continue
+		}
+		if !conditionPacesMana(item.GetAction().GetCondition()) {
+			t.Error("Dark Sacrifice does not compare mana against the fight's remaining time")
+		}
+	}
+}
