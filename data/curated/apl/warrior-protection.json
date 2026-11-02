@@ -1,7 +1,7 @@
 {
   "spec": "warrior-protection",
   "state": "written",
-  "notes": "Protection warrior at 60 in Defensive Stance with a shield: Shield Slam and Revenge on cooldown, Shield Block whenever its buff is down, Thunder Clap held on the boss, Sunder Armor as the global-cooldown filler and Heroic Strike with spare rage. Every priority was measured on the engine's tank harness (a level 63 boss, one 2 second melee swing, steady healing; sim/warrior/tank_warrior's TestRotationVariations records the figures): Shield Block cuts damage taken by about 18 percent, a Thunder Clap upkeep by another 16 percent for 6 percent of threat, Sunder Armor as the filler adds about 24 percent threat, and the Heroic Strike threshold moves nothing because a Forever tank is cooldown-limited, not rage-limited, at this gear. Last Stand and Shield Wall are gated on health: they never fire on a fight the healers hold and cut the chance of death on one they do not. Demoralizing Shout is not in the rotation: it takes attack power off the boss, and the curated tank boss has none to take. Every rank named here is checked against the spellconst of the newest client build.",
+  "notes": "Protection warrior at 60 in Defensive Stance with a shield: Shield Slam and Revenge on cooldown, Shield Block whenever its buff is down, Battle Shout kept up, Thunder Clap held on the boss, Sunder Armor as the global-cooldown filler and Heroic Strike with spare rage. Every priority was measured on the engine's tank harness (a level 63 boss, one 2 second melee swing, steady healing; sim/warrior/tank_warrior's TestRotationVariations records the figures): Shield Block cuts damage taken by about 18 percent, a Thunder Clap upkeep by another 16 percent for 6 percent of threat, Sunder Armor as the filler adds about 24 percent threat, and the Heroic Strike threshold moves nothing because a Forever tank is cooldown-limited, not rage-limited, at this gear. Last Stand and Shield Wall are gated on health: they never fire on a fight the healers hold and cut the chance of death on one they do not. Demoralizing Shout is not in the rotation: it takes attack power off the boss, and the curated tank boss has none to take. Every rank named here is checked against the spellconst of the newest client build.",
   "expected_idle": [
     {
       "id": 2565,
@@ -39,7 +39,23 @@
   ],
   "rotation": {
     "type": "TypeAPL",
-    "prepullActions": [],
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 11551,
+              "rank": 6
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-1s"
+          }
+        }
+      }
+    ],
     "priorityList": [
       {
         "action": {
@@ -227,6 +243,29 @@
           "castSpell": {
             "spellId": {
               "spellId": 11581,
+              "rank": 6
+            }
+          }
+        }
+      },
+      {
+        "notes": "Keep Battle Shout up: attack power for the tank's white swings and weapon strikes. Below 60 no raid warrior shouts for it; at 60 the raid's shout is the same aura, so this line idles.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 11551,
+                    "rank": 6
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 11551,
               "rank": 6
             }
           }
