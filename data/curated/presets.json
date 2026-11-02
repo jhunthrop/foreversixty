@@ -539,9 +539,19 @@
           ],
           "druid-feral-bear": [
             {
+              "id": "mighty_rage_potion",
+              "label": "Mighty Rage Potion",
+              "reason": "The bear's potion, as the warrior tank's: Forever lets a druid drink it in Bear Form (\"Rage potions and Thistletea are also now usable by Druids\", the druid deep dive, news.blizzard.com article 24301515); client level 46. It measured 5.7% more threat than Greater Stoneshield Potion, the potion it shares the two-minute timer with (round 10)."
+            },
+            {
               "id": "greater_stoneshield_potion",
               "label": "Greater Stoneshield Potion",
-              "reason": "Armor for two minutes, the bear's potion: a druid has no rage potion in the preset and no mana to spend."
+              "reason": "Armor for two minutes, the bear's potion below level 46, before Mighty Rage Potion."
+            },
+            {
+              "id": "main_hand_imbue:elemental_sharpening_stone",
+              "label": "Elemental Sharpening Stone",
+              "reason": "The melee group's stone, on the bear too: Forever's weapon enchantments work in a form (the druid deep dive), and its 2% critical strike measured 2.2% more threat, ahead of a Dense Weightstone's 1.0% (round 10); client level 50."
             },
             {
               "id": "food_smoked_desert_dumpling",
