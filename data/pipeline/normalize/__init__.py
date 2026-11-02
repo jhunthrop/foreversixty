@@ -168,6 +168,8 @@ def normalize_build(
     from pipeline.normalize.traits import TraitDataError, TraitRows, has_trait_trees
     from pipeline.normalize.weapon_curves import load_weapon_curves
     from pipeline.normalize.wowhead import (
+        fill_client_equip_stats,
+        load_payload_items,
         load_required_levels,
         load_supplement,
         merge_class_items,
@@ -412,6 +414,7 @@ def normalize_build(
         skipped.append(f"items/: {error}")
         shutil.rmtree(build_dir / "items", ignore_errors=True)
     else:
+        class_items = fill_client_equip_stats(class_items, load_payload_items(build_dir))
         if wowhead_supplement is not None:
             class_items = merge_class_items(class_items, wowhead_supplement, class_rows)
         if classicdb_supplement is not None:
