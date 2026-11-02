@@ -274,6 +274,73 @@
         ]
       },
       {
+        "from_level": 5,
+        "buffs": [
+          "gift_of_the_wild",
+          "arcane_brilliance",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "ground_scorpok_assay",
+          "conjured_rogue_thistle_tea",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
+        "from_level": 25,
+        "buffs": [
+          "gift_of_the_wild",
+          "arcane_brilliance",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "ground_scorpok_assay",
+          "frenzy_potion",
+          "conjured_rogue_thistle_tea",
+          "juju_power",
+          "juju_might"
+        ]
+      },
+      {
         "from_level": 35,
         "buffs": [
           "gift_of_the_wild",
@@ -302,6 +369,8 @@
         "consumes": [
           "ground_scorpok_assay",
           "food_poached_sunscale_salmon",
+          "frenzy_potion",
+          "conjured_rogue_thistle_tea",
           "juju_power",
           "juju_might"
         ]
@@ -335,6 +404,8 @@
         "consumes": [
           "ground_scorpok_assay",
           "food_smoked_desert_dumpling",
+          "frenzy_potion",
+          "conjured_rogue_thistle_tea",
           "juju_power",
           "juju_might"
         ]
@@ -368,9 +439,85 @@
         "consumes": [
           "ground_scorpok_assay",
           "food_smoked_desert_dumpling",
+          "frenzy_potion",
+          "conjured_rogue_thistle_tea",
           "elixir_of_the_mongoose",
           "juju_power",
           "juju_might"
+        ]
+      },
+      {
+        "from_level": 50,
+        "buffs": [
+          "gift_of_the_wild",
+          "arcane_brilliance",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "ground_scorpok_assay",
+          "food_smoked_desert_dumpling",
+          "frenzy_potion",
+          "conjured_rogue_thistle_tea",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "juju_might",
+          "main_hand_imbue:elemental_sharpening_stone"
+        ]
+      },
+      {
+        "from_level": 55,
+        "buffs": [
+          "gift_of_the_wild",
+          "arcane_brilliance",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "ground_scorpok_assay",
+          "food_smoked_desert_dumpling",
+          "major_frenzy_potion",
+          "conjured_rogue_thistle_tea",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "juju_might",
+          "main_hand_imbue:elemental_sharpening_stone"
         ]
       }
     ],

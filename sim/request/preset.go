@@ -240,9 +240,6 @@ func (p Presets) Resolve(name string, spec specs.Spec) (ResolvedPreset, error) {
 		if err != nil {
 			return ResolvedPreset{}, err
 		}
-		if leveling.NoWeaponImbueSpecs[spec.Spec] && strings.HasSuffix(slot, "_imbue") {
-			continue
-		}
 		resolved.slots[entry.ID] = slot
 		kept = append(kept, entry)
 	}
