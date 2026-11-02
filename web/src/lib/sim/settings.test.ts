@@ -6,6 +6,7 @@ import generated from '../../data/generated/sim-ids.json';
 import { selectedIn } from './buffs';
 import { simCopy } from './copy';
 import {
+  requestPresetFor,
   requestPresetOf,
   BUFF_PRESETS,
   DEFAULT_TARGET_LEVEL,
@@ -635,5 +636,15 @@ describe('requestPresetOf', () => {
     expect(requestPresetOf('bare')).toBe('bare');
     expect(requestPresetOf('raid-buffed')).toBe('raid');
     expect(requestPresetOf('custom')).toBeUndefined();
+  });
+});
+
+describe('requestPresetFor', () => {
+  it("sends Custom's applied preset, and a picked preset clears it", () => {
+    const applied = { ...defaultSettings(), preset: 'custom' as const, rankPreset: 'bare' as const };
+    expect(requestPresetFor(applied)).toBe('bare');
+    expect(requestPresetFor({ ...applied, preset: 'raid-buffed' })).toBe('raid');
+    expect(requestPresetFor(withPreset(applied, 'custom', 'warrior-fury', 60))).toBeUndefined();
+    expect(withPreset(applied, 'bare', 'warrior-fury', 60).rankPreset).toBeUndefined();
   });
 });

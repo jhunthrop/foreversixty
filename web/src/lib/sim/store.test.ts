@@ -307,6 +307,50 @@ describe('createSimStore', () => {
       expect((serverBody as SimRequest | null)?.preset).toBe('bare');
     });
 
+    // Round 10 (owner ruling 6): "Apply to the page" rebuilt the lists as Custom and dropped
+    // the request's preset, so a Bare request applied and run again ranked spells as Raid.
+    it('Apply to the page keeps the request preset, in the browser, the drawer and on the server', async () => {
+      const sent: string[] = [];
+      const sim = recordingStore(sent);
+      await sim.loadAddon(FURY);
+      pick(sim, 'bare');
+      const request = sim.buildRequest();
+      if (request === null) throw new Error('no request');
+      await sim.applyRequest({ ...request, preset: 'bare' });
+      expect(sim.settings.preset).toBe('custom');
+      expect(sim.buildRequest()?.preset).toBe('bare');
+      await sim.run();
+      expect(sent.map(presetOf).at(-1)).toBe('bare');
+
+      let serverBody: unknown = null;
+      api.route({
+        method: 'POST',
+        pattern: /\/v1\/sims\/run$/,
+        respond: async (_match, body) => {
+          serverBody = await body.json();
+          return failure('premium required', 402);
+        },
+      });
+      await sim.runOnServer();
+      expect((serverBody as SimRequest | null)?.preset).toBe('bare');
+
+      await sim.applyRequest({ ...request, preset: 'raid' });
+      expect(sim.buildRequest()?.preset).toBe('raid');
+      // A preset the player picks afterwards is theirs again.
+      pick(sim, 'custom');
+      expect(sim.buildRequest() !== null && 'preset' in sim.buildRequest()!).toBe(false);
+    });
+
+    it('Apply to the page of a request with no preset sends none', async () => {
+      const sim = recordingStore([]);
+      await sim.loadAddon(FURY);
+      const request = sim.buildRequest();
+      if (request === null) throw new Error('no request');
+      const { preset: _preset, ...withoutPreset } = request;
+      await sim.applyRequest(withoutPreset);
+      expect(sim.buildRequest() !== null && 'preset' in sim.buildRequest()!).toBe(false);
+    });
+
     it('Raid-buffed sends raid, and Custom sends none', async () => {
       const sim = recordingStore([]);
       await sim.loadAddon(FURY);
