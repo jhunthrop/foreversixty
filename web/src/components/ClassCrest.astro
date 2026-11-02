@@ -49,7 +49,15 @@ interface Props {
    *  connection, since "high" ranks above the browser's normal image priority and can
    *  beat render-blocking resources for bandwidth. `eager` alone (skip the lazy
    *  intersection-observer deferral) is the whole fix; never re-add `fetchpriority="high"`
-   *  here without re-measuring this exact budget. */
+   *  here without re-measuring this exact budget.
+   *
+   *  The lazy path also says `fetchpriority="low"` (2026-11-02): Chrome raises a lazy image
+   *  it finds in the viewport to High once layout runs, and only on SOME loads did that land
+   *  before the BiS page's h1 painted. Lighthouse's simulated LCP counts every non-Low image
+   *  that finished before the paint, each a round trip behind layout, so those loads read
+   *  2,253 ms against the 2,200 ms budget and the rest 1,955-2,105 ms. Low keeps a decorative
+   *  crest out of the text's critical path on every load (FactionMark, HeaderPanel and
+   *  ClassHeader's spec icons do the same). */
   priority?: boolean;
 }
 
@@ -64,6 +72,7 @@ const name = classes.find((c) => c.slug === slug)?.name ?? slug;
   width={size}
   height={size}
   loading={priority ? 'eager' : 'lazy'}
+  fetchpriority={priority ? undefined : 'low'}
   decoding="async"
   class={`crest rounded-full ${cls}`}
   style={`--c: ${color}; width: ${size}px; height: ${size}px;`}

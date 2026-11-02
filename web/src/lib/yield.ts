@@ -1,5 +1,5 @@
-// web/src/lib/planner/yield.ts
-// A break in a long run of main-thread work. The planner's boot (the data landing in the store,
+// web/src/lib/yield.ts
+// A break in a long run of main-thread work (the planner's boot, the saved sim's mount). The planner's boot (the data landing in the store,
 // the three talent trees drawing) is several milliseconds of script each; under Lighthouse's 4x
 // CPU throttling their sum is one task past 100 ms, and the page's total blocking time counts
 // every millisecond of a task beyond 50. Awaiting this between the pieces ends the task, so the

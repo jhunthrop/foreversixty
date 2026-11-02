@@ -44,7 +44,7 @@
   import { DATA_LOAD_FAILED, DataLoadError, loadReference, loadTalents } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
-  import { yieldToMain } from '../../lib/planner/yield';
+  import { yieldToMain } from '../../lib/yield';
   import { SECONDARY_BUTTON_FIXED, treeRowColumnsClass } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
   import { plannerSearchFor } from '../../lib/planner/url';
@@ -666,7 +666,7 @@
       const reference = await loadReference(store.treeVersion);
       if (stale()) return;
       store.setReference(reference);
-      // Each step of the boot below ends the task it ran in (lib/planner/yield.ts): the reference
+      // Each step of the boot below ends the task it ran in (lib/yield.ts): the reference
       // landing, the trees landing and the page rendering them are each their own task, so none
       // of them blocks the main thread past the page's blocking-time budget under throttling.
       await yieldToMain();

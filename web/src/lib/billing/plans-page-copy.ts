@@ -31,7 +31,12 @@ export interface FaqEntry {
   answer: string;
 }
 
-const count = (n: number): string => n.toLocaleString('en-US');
+/** A whole count with en-US thousands commas (`5,000`). Not `toLocaleString`: this module is in
+ *  the account chunk every island page evaluates, and the copy below calls this at import, so
+ *  the page's first Intl number format was built inside the hydration task, ~5 ms of real CPU
+ *  (2026-11-02 profile of /planner and /sim). The counts here are whole numbers; the test
+ *  checks them against `toLocaleString('en-US')`. */
+const count = (n: number): string => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 const INTERVAL_WORD: Record<Interval, string> = { yearly: 'a year', monthly: 'a month' };
 
