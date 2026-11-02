@@ -44,7 +44,7 @@ This lane owns `sim/cmd/leveling-bis` and the BiS pipeline code. It read the ran
 | # | finding | evidence and source | confirmed? | fix sha |
 |---|---|---|---|---|
 | K1 | **Paladins could not wear axes.** In 2026-09-30, the ranker's static weapon table and the pipeline's proficiency table both took paladins' one- and two-hand axes away. The reason given was a persona claim that "paladins train maces, swords and polearms". Classic paladins do train both axes. | - Client 1.60.1.70707 `SkillLineAbility`: spell 196 (One-Handed Axes) has ClassMask 79 and spell 197 (Two-Handed Axes) has 71. Both include paladin (2). `SkillRaceClassInfo` rows 335 (mask 66) and 122 (mask 6) agree.<br>- Wowhead Classic trainer data for Buliwyf Stonehand (Ironforge, npc 11865, fetched 2026-11-01) teaches both to reqclass 71: warrior, paladin, hunter, shaman. The same data gives druids no polearm in practice and rogues no axe, so those two exclusions stay.<br>- Icy Veins' Classic Retribution pre-raid list and Wowhead's Classic Retribution guide put Arcanite Reaper, a two-hand axe, in the weapon slot.<br>- Tests first: `weapon_requirements_test.go` (paladin has axes; a druid polearm is still dropped) and `test_proficiency.py` (paladin can equip 0 and 1; rogue axe and druid polearm stay vestigial). Both failed, then passed. | CONFIRMED-BUG (three sources) | S 188718042 |
-| K2 | **Every band ranked by weights measured on a naked character.** The weights sweep wore only a weapon. A bare character's small mana pool overvalues Intellect for every mana-using melee and hunter spec, and with no gear, hit and crit are priced off an empty stat sheet. So Survival band 40 picked Thinking Cap, Archmagister's Faceted Pendant and Windchaser Amice: cloth caster pieces on a melee hunter. The ranker's own final set then lost to the previously published set beyond error in many bands. The guard kept the old set each time; Survival band 40 was 170.9 ± 0.1 against 166.8 ± 0.1. | Swept on the published band sets at 400 iterations a direction (`zz_probe_test.go`, scratch only). Figures are attack power per point, bare then geared:<br>- Retribution 60: Intellect 6.71 → 3.36, hit 38.9 → 34.7<br>- Retribution 40: agility 1.69 → 1.37<br>- Survival 40: Intellect 3.30 → 1.37<br>- Enhancement 60: Intellect 4.83 → 2.29, hit 35.2 → not significant<br>- Fury 60: hit 38.2 → 21.5, crit 34.7 → 25.2, agility 1.73 → 1.26<br>- Arcane 60: haste not significant → 3.05<br>Fix: sweep the ladder character, pick a first-pass set with those weights, sweep again wearing it (`gearedBandWeights`), and rank and publish the geared weights. Two guards keep it honest:<br>- When the geared weights' first pass measures worse beyond error than the ladder's, the band keeps the ladder sweep (S e73208467). 24 band passes took this branch, among them Fire 30/50/60, Balance 60, Arcane 60, Beast Mastery 20/50, Fury 60, the healers' 50/60 and Destruction 30/60.<br>- The ladder weights' set, wearing the final trinkets, goes through the same verify swaps and set completion as the band's own set, and the guard measures it alongside (S c4c68b405, S 7a6027c84). It won 20 band rows, for example Arms band 60 Horde (250.0 against 246.2) and Demonology band 60.<br>Tests first in `geared_weights_test.go`: the band publishes the geared sweep, an untrusted geared sweep is ignored, a ladder set that measures better wins, and the contender wears the final trinkets. Each failed, then passed. | CONFIRMED-BUG | S 249b83fed, S e73208467, S c4c68b405, S 7a6027c84 |
+| K2 | **Every band ranked by weights measured on a naked character.** The weights sweep wore only a weapon. A bare character's small mana pool overvalues Intellect for every mana-using melee and hunter spec, and with no gear, hit and crit are priced off an empty stat sheet. So Survival band 40 picked Thinking Cap, Archmagister's Faceted Pendant and Windchaser Amice: cloth caster pieces on a melee hunter. The ranker's own final set then lost to the previously published set beyond error in many bands. The guard kept the old set each time; Survival band 40 was 170.9 ± 0.1 against 166.8 ± 0.1. | Swept on the published band sets at 400 iterations a direction (`zz_probe_test.go`, scratch only). Figures are attack power per point, bare then geared:<br>- Retribution 60: Intellect 6.71 → 3.36, hit 38.9 → 34.7<br>- Retribution 40: agility 1.69 → 1.37<br>- Survival 40: Intellect 3.30 → 1.37<br>- Enhancement 60: Intellect 4.83 → 2.29, hit 35.2 → not significant<br>- Fury 60: hit 38.2 → 21.5, crit 34.7 → 25.2, agility 1.73 → 1.26<br>- Arcane 60: haste not significant → 3.05<br>Fix: sweep the ladder character, pick a first-pass set with those weights, then sweep again wearing it (`gearedBandWeights`). A geared sweep reads the margins of one set, and the picks can move away from it. So every band whose geared sweep replaced the ladder one is ranked under both, start to finish (`band_pipeline.go` `bandRanker.rank`): picks, wand credit, trinket tournaments and their faction reconciliation, effect tournaments, verify swaps, set completion and the confirmed-stats check.<br>Each faction publishes the run whose final set measures higher at the guard harness (`chooseRun`; same seed and iterations for both, a tie keeps the geared run), along with that run's weights and pools. The incumbent guard then runs as before.<br>In the full re-rank, 240 faction rows published the geared run and 96 the ladder run.<br>Two interim guards (S e73208467, c4c68b405, 7a6027c84: a first-pass check, then a ladder-weights contender) left rows below origin/main and were replaced by this (S a08601096, f3697b72f).<br>Tests first in `geared_weights_test.go`: the band publishes the geared sweep; an untrusted geared sweep is ignored; the replaced ladder sweep is handed back; `chooseRun` picks the higher set and keeps the geared one on a tie. Each failed, then passed. | CONFIRMED-BUG | S 249b83fed, S a08601096, S f3697b72f (interim e73208467, c4c68b405, 7a6027c84) |
 | K3 | **A stat trinket was published as an empty slot.** Retribution raid band 60 (Horde) published trinket1 empty with `no_dps_value`. Its pick was Rune of the Guard Captain (+42 attack power, +7 hit, no effect), and it measured 4.6 DPS above Frozen Heart of the Mountain in the same set. The raid preset's noise (a gain of a few DPS against an error near 6) kept the gain under `trinketGainSignificant`, so the report gate emptied the slot. The gate is meant for a trinket worth nothing to the spec, such as Rune of Perfection on an Arms warrior. | `before/paladin-retribution.json` band 60 raid horde. The alternatives list shows Frozen Heart −4.62 and Uther's Strength −11.44 against the emptied pick. Fix: a pick whose score is above zero, so the band's significant weights value its stats, is never emptied for a noisy gain. Test first: `TestBuildReportKeepsAStatTrinketTheWeightsValueWhenItsGainIsNoisy` failed, then passed. Rune of Perfection's test still empties. | CONFIRMED-BUG | S 69a6adf3e |
 | K7 | **The faction reconciliation put one trinket in both slots.** In this lane's re-rank, Discipline band 60 (Alliance) published Ankh of Life as trinket1 and trinket2. Horde's trinket1 pick was Ankh of Life, and Alliance already wore it in trinket2. `reconcileTrinketDirection` measured it as the better trinket1 and adopted it without looking at the pair mate. The rule (pick's excludePaired) forbids one item in both slots. | `after/priest-discipline.log`: "trinket1: alliance adopted Ankh of Life (id 1713) from horde". The existing bug was exposed by K2's different picks; no published file has it today. Fix: never adopt an item the target already wears in the other trinket slot (`wouldDuplicatePairMate`). Test first: `TestReconcileFactionTrinketsNeverAdoptsTheTargetsOtherTrinket` failed, then passed. The band-60 re-run is clean: Shard of the Splithooves and Uther's Strength, 282.4 HPS, as on origin/main. | CONFIRMED-BUG | S 39296e4e3 |
 | K4 | **"PvP rank 0".** A pvp source with no rank was labelled "PvP rank 0 · Horde", and one with no faction got a dangling " · ". The owner's ruling makes Forever's PvP rewards rank-free, so the pipeline's relabelled rows would show this. | `band.go` pvpSourceLabel. Now "PvP reward · Horde", and empty parts are left out. Tests first in `band_test.go`. Eligibility is unchanged. | CONFIRMED-BUG (latent: no current row has rank 0) | S 9947f008d |
@@ -103,44 +103,64 @@ Results:
 
 ## Before/after
 
-These are the ranker's published set scores, `beforeheld` against `after`: same held simdb, same incumbents, all 28 specs, every band. Set DPS is at the verify harness (300 iterations, seed 7); a kept set is at the guard harness. Healers are HPS and tanks are the tank score. Each row is the mean over the spec's 12 band rows, with the largest single moves.
+`beforeheld` is origin/main; `after` is this branch at f3697b72f. Both use the same held simdb and the same incumbents, and cover all 28 specs, every band and both factions: 336 band rows. Set DPS is at the verify harness (300 iterations, seed 7); healers are HPS. Each row is the spec's mean over its band rows, with the largest single moves.
+
+Tanks rank on the tank score, while their `set_dps` is damage, so the tank rows are re-measured on the tank score below.
 
 | spec | mean | largest gain | largest loss |
 |---|---|---|---|
-| druid-balance | -0.09% | +1.25% (40 A, 130.8 → 132.4) | -1.92% (50 H, 157.2 → 154.2) |
-| druid-feral | +0.00% | +0.03% (20 H) | - |
-| druid-feral-bear (tank score) | +4.39% | +23.73% (30 H, 26.2 → 32.5) | -2.59% (60 A, 152.7 → 148.8) |
-| druid-restoration (HPS) | +0.03% | +0.38% (30 A) | -0.32% (40 H) |
-| hunter-beast-mastery | +0.01% | +0.34% (60 raid H, 688.2 → 690.5) | -0.18% (60 raid A) |
-| hunter-marksmanship | -0.03% | +0.16% (20 H) | -0.28% (50 H, 243.4 → 242.8) |
-| hunter-survival | +0.52% | +1.51% (50 H, 254.3 → 258.2) | -0.02% |
-| mage-arcane | +0.22% | +1.51% (60 raid A, 600.7 → 609.7) | -0.98% (30 A, 77.5 → 76.8) |
-| mage-fire | +0.03% | +0.84% (60 raid A, 664.7 → 670.3) | -1.13% (40 A, 150.8 → 149.1) |
-| mage-frost | +0.60% | +2.99% (50 H, 194.1 → 199.9) | -0.63% (60 H, 299.5 → 297.6) |
-| paladin-holy (HPS) | +0.46% | +1.46% (60 A, 229.6 → 233.0) | - |
-| paladin-protection (tank score) | -0.53% | +4.02% (60 raid H, 425.9 → 443.0) | -6.08% (60 A, 168.3 → 158.0) |
-| paladin-retribution | +0.09% | +0.61% (60 H, 261.9 → 263.5) | -0.34% (40 H) |
-| priest-discipline (HPS; band 60 re-run after S 39296e4e3) | +0.00% | - | - |
-| priest-holy (HPS) | +0.03% | +0.31% (40 A) | - |
-| priest-shadow | +1.42% | +11.76% (40 A, 133.7 → 149.5) | -2.86% (60 H, 363.6 → 353.2) |
-| rogue-assassination | +0.04% | +0.31% (60 raid H) | - |
-| rogue-combat | +0.02% | +0.84% (60 H, 214.4 → 216.2) | -0.37% (60 A) |
-| rogue-subtlety | +0.04% | +0.48% (60 H) | -0.07% |
-| shaman-elemental | +0.92% | +8.10% (20 A, 22.7 → 24.6) | -1.35% (60 A, 152.0 → 149.9) |
-| shaman-enhancement | +0.91% | +2.88% (60 H, 219.3 → 225.6) | -0.06% |
-| shaman-restoration (HPS) | +0.06% | +0.37% (40 A) | - |
-| warlock-affliction | -0.07% | +0.46% (30 H) | -1.15% (20 H, 57.1 → 56.5) |
-| warlock-demonology | +0.20% | +1.78% (20 H, 51.3 → 52.2) | -0.22% (20 A) |
-| warlock-destruction | +0.39% | +2.02% (40 H, 141.9 → 144.8) | - |
-| warrior-arms | -0.30% | +0.03% | -1.89% (60 raid A, 740.0 → 726.0) |
-| warrior-fury | +0.21% | +0.86% (20 A) | - |
-| warrior-protection (tank score) | -0.71% | +1.01% (60 raid A, 375.0 → 378.8) | -3.23% (60 H, 187.6 → 181.5) |
+| druid-balance | +0.12% | +1.25% (40 A, 130.8 → 132.4) | - |
+| druid-feral | +0.00% | +0.03% (20 H, 46.0 → 46.0) | - |
+| druid-restoration | +0.09% | +0.43% (20 A, 55.5 → 55.8) | - |
+| hunter-beast-mastery | +0.01% | +0.34% (60 raid H, 688.2 → 690.5) | -0.18% (60 raid A, 686.2 → 685.0) |
+| hunter-marksmanship | +0.00% | +0.06% (60 raid H, 669.7 → 670.2) | -0.05% (60 A, 302.9 → 302.8) |
+| hunter-survival | +0.49% | +1.51% (50 H, 254.3 → 258.2) | -0.02% (60 raid A, 841.1 → 840.9) |
+| mage-arcane | +0.16% | +1.51% (60 raid A, 600.7 → 609.7) | -0.98% (30 A, 77.5 → 76.8) |
+| mage-fire | -0.00% | +0.84% (60 raid A, 664.7 → 670.3) | -1.13% (40 A, 150.8 → 149.1) |
+| mage-frost | +0.64% | +2.99% (50 H, 194.1 → 199.9) | - |
+| paladin-holy | +0.46% | +1.46% (60 A, 229.6 → 233.0) | - |
+| paladin-retribution | +0.14% | +0.61% (60 H, 261.9 → 263.5) | -0.03% (60 A, 257.5 → 257.4) |
+| priest-discipline | +0.08% | +1.25% (20 H, 32.8 → 33.2) | -0.24% (50 A, 207.0 → 206.5) |
+| priest-holy | +0.03% | +0.31% (40 A, 116.6 → 117.0) | - |
+| priest-shadow | +1.83% | +11.76% (40 A, 133.7 → 149.5) | -0.42% (30 A, 56.2 → 55.9) |
+| rogue-assassination | +0.04% | +0.31% (60 raid H, 621.1 → 623.0) | - |
+| rogue-combat | +0.00% | - | - |
+| rogue-subtlety | +0.05% | +0.48% (60 H, 215.7 → 216.8) | - |
+| shaman-elemental | +1.12% | +8.10% (20 A, 22.7 → 24.6) | -0.10% (60 raid A, 483.8 → 483.3) |
+| shaman-enhancement | +0.86% | +2.88% (60 H, 219.3 → 225.6) | -0.06% (60 raid H, 615.6 → 615.3) |
+| shaman-restoration | +0.08% | +0.37% (40 A, 146.9 → 147.5) | - |
+| warlock-affliction | +0.04% | +0.46% (30 H, 90.4 → 90.8) | -0.27% (60 raid A, 588.9 → 587.3) |
+| warlock-demonology | +0.21% | +1.78% (20 H, 51.3 → 52.2) | - |
+| warlock-destruction | +0.48% | +2.02% (40 H, 141.9 → 144.8) | - |
+| warrior-arms | -0.04% | - | -0.48% (60 A, 248.6 → 247.4) |
+| warrior-fury | +0.31% | +1.72% (60 raid A, 768.3 → 781.6) | - |
 
-Totals:
-- Across the 300 DPS and healer band rows, 39 rose more than 0.5% and 13 fell more than 0.5%.
-- The guard kept the previously published set in 56 band rows on origin/main and 45 with this branch.
-- The largest gains come from K2: Shadow band 40 +11.8%, Elemental band 20 +8.1% and band 30 +4.1%, Frost band 50 +3.0%, Survival bands 30 and 50 +1.4 to +1.5%, Enhancement band 60 +2.9%.
-- The losses are not removed. See Still open.
+**Totals:**
+- Of 300 DPS and healer rows, 38 rose more than 0.5% and 3 fell more than 0.5% at the verify harness.
+- The guard kept the previously published set in 41 rows, against 56 on origin/main.
+- The gains are kept: Shadow band 40 +11.8%, Elemental band 20 +8.1% and band 30 Horde +4.1%, Frost band 50 +3.0%, Enhancement band 60 +2.9%, Destruction band 40 +2.0%, Fury raid band 60 +1.7%, Survival bands 30 to 50 +1.4 to +1.5%.
+
+**Proof that no row sits below origin/main beyond error.** Every row more than 0.3% under origin/main at the verify harness was re-simmed: both sets at 3000 iterations and two seeds (7, 50007), in `zz_probe5_test.go`, scratch only. So was every tank row whose picks changed. Results, as after minus before:
+
+| row | seed 7 | seed 50007 | verdict |
+|---|---|---|---|
+| Arcane 20 Horde | −0.14 ± 0.10 | −0.03 ± 0.10 | within over two seeds (−1.2σ) |
+| Arcane 30 Alliance | −0.26 ± 0.20 | −0.12 ± 0.20 | within over two seeds (−1.35σ) |
+| Fire 40 Alliance | +0.38 ± 0.42 | +0.29 ± 0.42 | level (−1.1% at 300 iterations was noise) |
+| Shadow 30 Alliance | −0.06 ± 0.08 | −0.01 ± 0.08 | level |
+| Arms 60 Alliance | +0.29 ± 0.33 | −0.54 ± 0.33 | level |
+| Protection paladin 40 Horde (tank score) | −7.6 ± 18.0 | −20.4 ± 17.7 | level |
+| Protection paladin 60 Alliance / Horde (tank score) | +238.7 / +93.3 | +166.6 / +65.8 | better (+1.0 to +1.5% / +0.4 to +0.6%) |
+| Protection paladin 60 raid Alliance / Horde (tank score) | +375.6 / +724.0 | +284.7 / +694.2 | better (+0.7 to +1.9%) |
+| Protection warrior 30 Alliance / Horde | +4.1 / +12.0 | +9.6 / +25.2 | level / better |
+| Protection warrior 40 Alliance, 50 Horde | +14.1 / −7.2 | +1.0 / +60.6 | level |
+| Protection warrior 60 Alliance / Horde | +190.6 / +430.3 | +278.1 / +546.5 | better (+0.8 to +2.3%) |
+| Protection warrior 60 raid Alliance / Horde | +429.7 / +441.9 | +405.7 / +657.5 | better (+0.9 to +1.4%) |
+| Bear 30 / 50 / 60 (tank score, both factions) | +1.2 to +108.0 | +5.0 to +60.5 | level or better (+0.4 to +1.2%) |
+
+The −6.1% and −3.2% tank "losses" in the first write-up were damage, not the tank score these specs rank on. On the tank score, both tank specs are at or above origin/main.
+
+**Run time** (28 specs, P=4, on the same machine one after the other): origin/main 1021 s, this branch 2008 s, so ×1.97. The slowest spec, Discipline, took 584 s, under the 30-minute ceiling (`specTimeout`). Two origin/main runs gave identical output, so the comparison is deterministic.
 
 K1 (paladin axes) needs `items/paladin.json` to carry the axes, which only the next data run writes. I measured it on a scratch copy of paladin.json with the 257 warrior-and-shaman axes added. That run used no incumbent guard and this branch at 69a6adf3e:
 - **Retribution:** band 60 bare +3.10% (Alliance), +2.41% (Horde), Forest Defender's Axe; band 20 Horde +1.54%, Forsaken Greataxe; every other band unchanged.
@@ -151,20 +171,23 @@ K1 (paladin axes) needs `items/paladin.json` to carry the axes, which only the n
 - **Pipeline / data:** `data/pipeline/proficiency.py` now gives paladins both axes (S 188718042, with its test). `items/paladin.json` gains about 257 axes at the next data run; that output is nightly-owned, so it is not regenerated here.
 - **Pipeline:** keep `kind` on the relabelled PvP rows to `pvp`, `rep` or `vendor`. The ranker ignores any other kind. Field name `title_rank` is what S 19f27af30 reads.
 - **Page (web/src/lib/items/source-labels.ts):** its `pvpSourceLabel(rank, faction)` will also print "PvP rank 0" for an unranked reward.
-- **Integrator:** every ranker commit here moves BiS picks and published stat weights for specs across every group, once the owner's refresh runs. The weights rail shows the geared sweep. No sim DPS moves: these are ranker-only changes.
+- **Integrator:** every ranker commit here moves BiS picks and published stat weights for specs across every group, once the owner's refresh runs. The weights rail shows the sweep of whichever run each band published. A full `-all` run takes about twice as long (1021 s → 2008 s at P=4 locally). No sim DPS moves: these are ranker-only changes.
 
 ## Still open
 
-- **Tank weights churn between runs.** Protection paladin band 50 measured parry significant in one run and not in the next, at 100 iterations a direction, and the armor picks followed. A higher iteration count for tank sweeps would settle it. It costs run time, so I have not changed it.
+- **Tank weight sweeps stay noisy at any affordable iteration count, so I left the count as is.** Probe: two weight seeds (3, 50003) on the tank ladder character at 100, 400 and 1000 iterations a direction, counting the first-pass armor slots that differ.
+  - Protection paladin band 40: 13, 3 and 5 slots.
+  - Protection warrior band 50: 8, 15 and 15.
+  - Bear band 50: 8, 13 and 13.
+  - Several sweeps at bands 20, 30 and 60 fail outright: the stamina reference "weighs nothing".
+
+  So more iterations do not make two runs agree. Many tank items sit within error of each other on the tank score. The dual ranking and the verify keep the published tank sets at or above origin/main's on tank score (table above).
 - **The dagger rule is broader than it needs to be.** Combat's APL casts Backstab with a Sinister Strike fallback, so the ranker forces daggers on Combat. Daggers win today by 4%; an APL value for "main hand is a dagger" (rogue curation note) would let the sim decide.
 - **Non-unique items twice.** The ranker never recommends two copies of the same ring or weapon. That is a design choice; the owner can rule on it.
 - **The committed simdb** still types held items as main hands. The next data run fixes it, and every caster and Feral bear re-rank depends on it.
-- **K2 leaves some band rows lower than origin/main's re-rank would.** These are path effects that the two guards above do not catch:
-  - Shadow band 60: −1.5% Alliance, −2.9% Horde.
-  - Arms raid band 60: −1.9% Alliance, −1.1% Horde.
-  - Balance band 50 Horde: −1.9%.
-  - Elemental band 60: −1.1 to −1.4%.
-  - The tank scores: Protection paladin band 60 Alliance −6.1%, Protection warrior band 60 −2.2 to −3.2%.
+- **Two Arcane rows sit just under origin/main at one seed of two:**
+  - band 20 Horde: −0.14 ± 0.10 at seed 7, −0.03 ± 0.10 at seed 50007;
+  - band 30 Alliance: −0.26 ± 0.20 at seed 7, −0.12 ± 0.20 at seed 50007.
 
-  None of these can publish below the current published set, because the incumbent guard still applies. A fuller fix is to run the whole per-faction pipeline under both sweeps and let the guard pick. That doubles the ranker's run time, so I left it for the integrator to weigh. Tanks were already swept on baseline armor (`tankLadderCharacter`); excluding them from the geared sweep is an option.
+  Both are within error over the two seeds and under 0.4%.
 - **The off-hand weapon-DPS term** counts full DPS where the game deals half. It did not change Fury's pick at 60; other dual-wield bands were not checked one by one.
