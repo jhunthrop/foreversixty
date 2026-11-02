@@ -176,16 +176,7 @@ func loadClientNames(t *testing.T) clientNames {
 	for id := range spells {
 		names.spell[strconv.Itoa(int(id))] = true
 	}
-	var curated struct {
-		Spells map[string]struct {
-			Name string `json:"name"`
-		} `json:"spells"`
-	}
-	readJSON(t, filepath.Join(realRoot, "data", "curated", "engine-spell-names.json"), &curated)
-	for id, row := range curated.Spells {
-		if row.Name == "" {
-			t.Errorf("engine-spell-names.json: %s has no name", id)
-		}
+	for id := range curatedSpellNames(t) {
 		names.spell[id] = true
 	}
 	dir, err := buildDirectory(realRoot)
@@ -198,6 +189,25 @@ func loadClientNames(t *testing.T) clientNames {
 	readJSON(t, filepath.Join(dir, "items.json"), &items)
 	for _, row := range items {
 		names.item[strconv.Itoa(row.ID)] = true
+	}
+	return names
+}
+
+// curatedSpellNames is data/curated/engine-spell-names.json, id to name.
+func curatedSpellNames(t *testing.T) map[string]string {
+	t.Helper()
+	var curated struct {
+		Spells map[string]struct {
+			Name string `json:"name"`
+		} `json:"spells"`
+	}
+	readJSON(t, filepath.Join(realRoot, "data", "curated", "engine-spell-names.json"), &curated)
+	names := make(map[string]string, len(curated.Spells))
+	for id, row := range curated.Spells {
+		if row.Name == "" {
+			t.Errorf("engine-spell-names.json: %s has no name", id)
+		}
+		names[id] = row.Name
 	}
 	return names
 }
@@ -241,6 +251,42 @@ func TestEveryPublishedResultActionHasAName(t *testing.T) {
 	sort.Strings(keys)
 	for _, key := range keys {
 		t.Errorf("%s has no name (first in %s, %d runs); name it in data/curated/engine-spell-names.json", key, unnamed[key][0], len(unnamed[key]))
+	}
+}
+
+// internalName matches the client's internal spell names, which no player sees in game:
+// "S03 - Mana Proc on Cast - Vestments of the Devout" and the like.
+var internalName = regexp.MustCompile(`^S\d\d - |^zz|\[DNT\]|\(DND\)|^QA |^TEST|^DEPRECATED`)
+
+// Round 7 (wow-player): once every action had a name, two set-bonus procs showed the
+// client's internal name. The page reads the curated name first (simnames/_shared.json wins
+// over the client shards), so every published action resolves to a name a player knows.
+func TestNoPublishedResultActionShowsAnInternalName(t *testing.T) {
+	runs := runPublishedEntries(t)
+	spells, err := loadSpellNames(realRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	curated := curatedSpellNames(t)
+	bad := map[string]string{}
+	for _, run := range runs {
+		for _, key := range resultKeys(run.summary) {
+			m := actionKey.FindStringSubmatch(key)
+			if m == nil || m[1] != "spell" {
+				continue
+			}
+			name, ok := curated[m[2]]
+			if !ok {
+				id, _ := strconv.Atoi(m[2])
+				name = spells[int32(id)]
+			}
+			if internalName.MatchString(name) {
+				bad[m[2]] = fmt.Sprintf("%q (first in %s)", name, run.label)
+			}
+		}
+	}
+	for id, why := range bad {
+		t.Errorf("spell %s reads %s; give it its player-facing name in data/curated/engine-spell-names.json", id, why)
 	}
 }
 
