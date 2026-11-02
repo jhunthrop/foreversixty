@@ -5,10 +5,10 @@ package discordbot
 // reads the same in Discord as on the page. A quest names the level a player must be to take
 // it ("requires level 58", spec 2026-10-29 §A.3).
 var sourceCopy = struct {
-	Quest, QuestLevel, Vendor, Rep, Crafted, CraftedNamed string
-	Chance, UnderOne, Trash, Unnamed                      string
-	PvP, PvPUntitled, WorldDrop, WorldDropLevels          string
-	AllianceQuest, HordeQuest                             string
+	Quest, QuestLevel, Vendor, Rep, Crafted, CraftedNamed   string
+	Chance, UnderOne, Trash, Unnamed                        string
+	PvP, PvPUntitled, PvPReward, WorldDrop, WorldDropLevels string
+	AllianceQuest, HordeQuest                               string
 }{
 	Quest:           "Quest: {name}",
 	QuestLevel:      "requires level {min_level}",
@@ -22,6 +22,7 @@ var sourceCopy = struct {
 	Unnamed:         "Unnamed source in {zone}",
 	PvP:             "PvP rank {rank} · {title} · {Faction}",
 	PvPUntitled:     "PvP rank {rank} · {Faction}",
+	PvPReward:       "PvP reward · {Faction}",
 	WorldDrop:       "World drop (BoE)",
 	WorldDropLevels: " · levels {min}-{max}",
 	AllianceQuest:   "Alliance quest",
