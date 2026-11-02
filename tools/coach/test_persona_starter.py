@@ -318,6 +318,13 @@ def test_pyroblast_carries_the_guides_condition() -> None:
     assert any(line.startswith("Pyroblast only") for line in ps.priority_lines(ps.spec_row("mage-fire")))
 
 
+def test_swiftmend_carries_the_guides_gate() -> None:
+    """Round 11: the starter said only "Swiftmend." where the guide and the rotation gate it
+    on the tank under three quarters health with the mana keeping pace."""
+    line = next(line for n, line in ps.priority_entries_of(ps.spec_row("druid-restoration")) if n == "Swiftmend")
+    assert "under three quarters health" in line, line
+
+
 # Round 5 (wow-player read 4 rulings).
 
 def test_totem_conditional_abilities_carry_their_condition() -> None:
