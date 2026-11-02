@@ -14,7 +14,7 @@ This report covers Retribution, Protection paladin (threat), Enhancement, Feral 
 
 Fix-sha column: "E" is a fork commit on `lane/r10-hybrids`, "S" a site commit on `wt/r10-hybrids`.
 
-**In short: 3 CONFIRMED-BUGs, all fixed.** One moves a published number: Retribution's raid rotation, +9.3 to +9.4%. Exorcism's crit (P4, an integrator follow-up) moves only Undead and Demon targets. The third is a display id.
+**In short: 5 CONFIRMED-BUGs, all fixed** (P4, G3 and G4 are integrator follow-ups, on top of the auras lane's in-form consumables). One moves a published number: Retribution's raid rotation, +9.3 to +9.4%. Exorcism's crit (P4, an integrator follow-up) moves only Undead and Demon targets. The third is a display id.
 
 ## Assigned items: crit-split side effects
 
@@ -66,6 +66,8 @@ Fix-sha column: "E" is a fork commit on `lane/r10-hybrids`, "S" a site commit on
 |---|---|---|---|---|
 | G1 | **Primal Bite 1238073** ("rank 4" in spellranks.json and in the rotation) has no SkillLineAbility row. The learnable top rank is 1238070, which supersedes 1238069. The two rows are identical (100% weapon + 77, 6 s, 20 Rage), so damage and threat do not move. Display only: the breakdown names a spell no druid trains. | SkillLineAbility 53141, 53142, 53146; SpellEffect | Note (cosmetic; the spellranks pipeline is the ranker's) | - |
 | G2 | Checked fresh:<br>- Blood Frenzy 2/2 gives a bear 5 Rage on any melee crit, 21 procs a fight.<br>- Natural Reaction.<br>- Lacerate ticks crit on the melee table.<br>- Maul, Swipe and Lacerate rows.<br>- Threat items carried (round 9 A2, A3). | client rows; breakdowns | Aligned | - |
+| G3 | **The bear never drank its potion.**<br>- What was wrong: the raid preset carries Greater Stoneshield Potion, and Forever lets a druid drink in a form (the auras lane's d5c560d31). But the bear's rotation had no autocastOtherCooldowns line, which every other tank's list opens with, so the potion, trinkets and racials never fired.<br>- What changed: the list opens with that line.<br>- What the preset carries: Forever lets druids use rage potions ("Rage potions and Thistletea are also now usable by Druids", the druid deep dive, news.blizzard.com article 24301515). So the bear now carries Mighty Rage Potion, as the warrior tank does, with Greater Stoneshield behind it below level 46.<br>- Threat a second at raid 60, horde, seed 1: Stoneshield drunk 918.9 (−1.5% against never drinking, less damage taken means less rage); Mighty Rage 971.1 (+5.7% over Stoneshield). | Test first: `TestTheBearDrinksItsStoneshieldPotion` (sim/cmd/spec-breakdown) failed at 0 potions and passes now. | CONFIRMED-BUG (rotation) | S fd109430b, E 6f3cb68fa (fork copy) |
+| G4 | **Flat stones and weightstones skipped a feral druid.**<br>- Blizzard's druid deep dive: "Weapon enchantments and procs now all work while shapeshifted, including effects like weightstones". A form's auto attack "is now the same as the DPS of the Druid's equipped weapon".<br>- What was wrong: the auras lane let the Elemental stone and the oils through but left Solid and Dense sharpening stones and weightstones off a feral druid.<br>- What changed: their damage counts as the weapon's own per swing at the weapon's speed (8 on a 3.2 s staff is +2.5 damage a second), which the paw is built from.<br>- OPEN: whether the server instead adds the 8 to every 1.0 s or 2.5 s paw swing. A cat or bear log with a stone and without one would settle it.<br>- Published sets: the cat keeps the Elemental Sharpening Stone (670.0 against 663.3 with a Dense Weightstone or Dense Sharpening Stone, seed 1, +1.0%). The bear now carries it too: +2.2% threat (939.5 against 918.9), ahead of a Dense Weightstone's +1.0%. | Test first: `TestAFeralDruidsWeightstoneReachesItsWeapon` (sim/core) failed at 0 and passes now. | CONFIRMED-BUG (Blizzard text; magnitude model OPEN) | E 193ecffc2, S fd109430b (preset) |
 
 ## Cross-cutting
 
@@ -90,6 +92,17 @@ Retribution bare 50 and 60 (3,000 iterations, seed 1) are unchanged (165.9 and 2
 
 Exorcism (P4) alone, from engine 32ccbcc64 to f1c7fa888, horde, 10,000 iterations: the published unknown-target numbers do not move (Retribution raid 679.6, Protection raid 432.4, both bare 60). Against Undead, seed 1 / 50001: Retribution raid 60 -1.0 / -1.0%, Protection raid 60 -0.8 / -0.6%, Retribution bare 40 -1.0 / -1.1%, Protection bare 40 0.0 / -0.1%.
 
+Bear (G3, G4) on top of the auras lane's merge (engine 105059b9a, site 4aee53130), raid 60, threat a second, 10,000 iterations:
+
+| | before | after | % |
+|---|---|---|---|
+| horde s1 | 932.9 | 992.4 | +6.4 |
+| horde s50001 | 932.4 | 991.6 | +6.3 |
+| alliance s1 | 928.0 | 1001.0 | +7.9 |
+| alliance s50001 | 929.1 | 1001.0 | +7.7 |
+
+Damage taken a second rises 0.1 to 0.4%. Rage potions don't add armor, but Stoneshield never fired before, so damage taken barely moves. The cat's published number does not move.
+
 ## For other lanes
 
 - **Crit lane:**
@@ -98,6 +111,8 @@ Exorcism (P4) alone, from engine 32ccbcc64 to f1c7fa888, horde, 10,000 iteration
 - **Ranks lane:** P3. Retribution's top-level note still says Consecration is left out and Unsealed Wrath is not taken; rewrite it with the Consecration gate change. My commit only touches line 6 (the way back to Seal of Command) and its note.
 - **Ranker / spellranks:** G1. Primal Bite 1238073 is not learnable (no SkillLineAbility row); the bear rotation and spellranks.json name it as rank 4. No number moves.
 - **Integrator:**
+  - The tank group carries no stone for the warrior or paladin tank. With weapon enchants allowed, the bear's +2.2% suggests the warrior and paladin tanks should be measured with the Elemental stone too (their lanes).
+  - `TestRotationLadder` fails with 54 violations on my branch after the auras merge; per the brief I did not regenerate it.
   - Retribution raid 60 moves +9.4%, so the tier list, BiS picks and weights move for that row at the refresh.
   - `TestRotationLadder` goldens were not regenerated.
   - Nothing outside my group moves.
