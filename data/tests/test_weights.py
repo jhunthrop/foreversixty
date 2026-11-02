@@ -35,14 +35,14 @@ def test_a_weight_key_outside_the_contract_vocabulary_is_refused(tmp_path):
             [
                 {
                     "spec": "warrior-fury",
-                    "weights": {"attack_power": 1.0, "melee_crit": 2.0},
+                    "weights": {"attack_power": 1.0, "melee_hit": 2.0},
                     "sources": [{"label": "x", "url": "https://x", "kind": "community"}],
                 }
             ]
         ),
         encoding="utf-8",
     )
-    with pytest.raises(WeightsError, match="melee_crit"):
+    with pytest.raises(WeightsError, match="melee_hit"):
         load_weights(tmp_path)
 
 

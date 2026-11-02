@@ -40,7 +40,8 @@ var tankStatNames = []struct {
 	{stats.Block, "block %"},
 	{stats.BlockValue, "block value (items)"},
 	{stats.Hit, "hit"},
-	{stats.Crit, "crit"},
+	{stats.Crit, "crit (every table)"},
+	{stats.MeleeCrit, "melee crit (melee table only)"},
 	{stats.AttackPower, "attack power"},
 	{stats.Mana, "mana"},
 }

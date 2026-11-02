@@ -1,7 +1,7 @@
 """Stat keys to engine `Stat` indexes, resolved by name rather than by number.
 
 The engine's `Stat` enum is renumbering: the interface contract has the engine
-lane collapsing MeleeHit+SpellHit into Hit and MeleeCrit+SpellCrit into Crit,
+lane collapsing MeleeHit+SpellHit into Hit (crit keeps a stat per table),
 keeping `sim/core/stats` and `proto/common.proto` in sync. A table of integers
 here would silently mis-map the day that lands, so every key carries the enum
 names it may resolve to, most specific first, and the first one the generated
@@ -64,11 +64,15 @@ PROTO_STAT_ALIASES: dict[str, tuple[str, ...]] = {
     "holy_power": ("StatHolyPower",),
     "nature_power": ("StatNaturePower",),
     "shadow_power": ("StatShadowPower",),
-    # Forever unifies hit and crit; the vanilla-lineage names are the fallback.
+    # Forever unifies hit; the vanilla-lineage names are the fallback.
     "hit": ("StatHit", "StatMeleeHit"),
-    "crit": ("StatCrit", "StatMeleeCrit"),
     "spell_hit": ("StatHit", "StatSpellHit"),
-    "spell_crit": ("StatCrit", "StatSpellCrit"),
+    # Forever unifies item crit, not the crit tables: an item's crit rating
+    # and aura 290 are crit on every table, aura 52 melee and ranged only,
+    # aura 57 spells only.
+    "crit": ("StatCrit",),
+    "melee_crit": ("StatMeleeCrit",),
+    "spell_crit": ("StatSpellCrit",),
     "melee_haste": ("StatMeleeHaste",),
     "spell_haste": ("StatSpellHaste",),
     "spell_penetration": ("StatSpellPenetration",),
@@ -184,7 +188,7 @@ def _key_by_index() -> dict[int, str]:
     """Engine stat index -> the planner key it is read back as.
 
     Not a bijection: Forever merges spell and melee hit into one `Stat`, so
-    `hit` and `spell_hit` resolve to the same index (likewise crit). The
+    `hit` and `spell_hit` resolve to the same index. The
     first key `PROTO_STAT_ALIASES` declares for an index wins, which is why
     the merged names are declared before the vanilla-lineage ones.
     """

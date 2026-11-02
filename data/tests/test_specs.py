@@ -239,7 +239,9 @@ def test_the_stat_vocabulary_is_the_proto_enum_in_snake_case():
     assert "spell_haste" in STAT_IDS and "melee_haste" in STAT_IDS
     assert "haste" not in STAT_IDS
     assert "mp5" in STAT_IDS
-    assert len(STAT_IDS) == 41
+    # Round 9: crit on every table plus one stat per table.
+    assert {"crit", "melee_crit", "spell_crit"} <= STAT_IDS
+    assert len(STAT_IDS) == 43
     assert all(name == name.lower() for name in STAT_IDS)
 
 

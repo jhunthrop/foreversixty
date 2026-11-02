@@ -41,7 +41,8 @@ var healStatNames = []struct {
 	{stats.MP5, "mp5"},
 	{stats.HealingPower, "healing power"},
 	{stats.SpellPower, "spell power"},
-	{stats.Crit, "crit"},
+	{stats.Crit, "crit (every table)"},
+	{stats.SpellCrit, "spell crit (spell table only)"},
 }
 
 // manaRow is one mana flow: a source that paid in or a spell that paid out.
