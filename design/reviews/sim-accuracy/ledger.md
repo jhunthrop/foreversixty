@@ -12,6 +12,54 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 6 | 2026-11-01 to 2026-11-02 | design/reviews/2026-11-02-sim-audit-round6/ (warlock, casters, physical, hybrids, healers, ranker, pipeline, wasm, page, integration) | 71 fixed (warlock 5, casters 11, physical 10, hybrids 17, healers 10, pipeline 5, ranker 4, wasm 3, page 5, integrator 1) | b57765fb9 | no |
 | 7 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round7/ (warlock, casters, physical, hybrids, healers, pipeline, ci, page, ranker, integration) | 55 fixed (warlock 3, casters 5, physical 8, hybrids 11, healers 16, ranker 1, pipeline 1, ci 1, page 7 with 2 from the wow-player review, integrator 2) | cd4dfdcc0 | no |
 | 8 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round8/ (warlock, casters, physical, hybrids, healers, auras, items, ranker, pipeline, page, wasm, integration) | 67 fixed (warlock 5, casters 5, physical 5, hybrids 4, healers 14, auras 11, items 13, ranker 5, pipeline 3, page 1, wasm 2, integrator 2; Innervate, shaman regen and Curse of Recklessness were each found by two lanes) | 40021374a | no |
+| 9 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round9/ (warlock, casters, physical, hybrids, healers, auras, items, crit, ranks, ranker, platform, integration) | 66 fixed (warlock 1, casters 4, physical 10, hybrids 6, healers 6, auras 11, items 5, crit 8, ranks 3, ranker 6, platform 3, integrator 3) | 4d3129cae | no |
+
+## Round 9 at a glance
+
+The owner's rulings this round:
+- **Battlegrounds and Darkspear Islands open at launch.** Both content-phases gates are "launch"; the held refresh gives 347 equippable items an open source.
+- **The rank-10 PvP cap stays on `title_rank`**, a realism rule; the code records that it should move to honor cost once the client links honor costs to items.
+- **Rotations may downrank when mana-bound.** Below 60 a spell casts the highest learned rank not above the authored one, so curated downranks hold; 43 per-band and per-preset choices sit in data/curated/rank-choices.json, and five raid-60 rotations change rank. Every adopted rank deals its own client amount and costs its own mana.
+- **Demonology's sacrifice then summon was a rotation bug**: the Imp is sacrificed only under Demonic Pact. Builds keep their talents.
+- **CI:** actionlint accepts `xcode-27`; `real-engine` gates deploy.
+- **Melee and spell crit are separate.** Agility gives melee and ranged crit, Intellect spell crit; stones melee, wizard oil spell; item crit and aura-290 buffs every table. Forever beta logs support two pools.
+- **Tank weight sweeps were already deterministic**: round 8's failures came from a probe that swept tanks with the damage sweep. **The ranker runs 36% faster** with identical picks.
+
+Confirmed and fixed, by group (rows and evidence in each report):
+- **Warlock (1).** Demonology's prepull.
+- **Casters (4).** Evocation for Arcane and Frost; Clearcasting spent at the proc's moment; Curse of Shadow gone; base mana from BaseMP.
+- **Physical (10).** Hunter pets at their level; ammo by level; the cat's Bite; Savage Strikes; Mortal Shots on Serpent Sting; Serpent Sting's clip; Fury's stance to 36; Ghostly Strike pooling; the execute weapons; Expose Armor 450.
+- **Hybrids (6).** Omen and Maelstrom at the proc's moment; imbue attack power by level; Enhancement's Windfury Totem; totem ranks' own amounts; display ids.
+- **Healers (6).** Twin Disciplines on Prayer of Mending; racial heal masks; Nature's Swiftness off Wild Growth; the addon's rank table; two notes. Plus Restoration druid's Heart of the Wild build (+1.4%, adopted).
+- **Auras (11).** Winter's Chill; Thorns, Retribution Aura, Stoneskin and Mana Tide by rank; Dumplings' level; two salmon foods; Blasted Lands per spec; Survival's second stone; Orc Command.
+- **Items (5).** Aegis' cooldown; Dormant Heart; the stale engine-effects list; terrain-only bonuses counted in the item files; the Theramore rewards' missing source (client reputation sources by side).
+- **Crit (8).** The split, stones, oil, Cruelty, spell-only bonuses, simdb's crit enchants.
+- **Ranks (3).** Curated downranks lifted below 60, in the sim and the addon; a fork test's Holy Light cost.
+- **Ranker (6).** The Darkspear vendor's standing and side; Unique-Equipped pairs; Alliance legs on Horde rows; the bare pass's preset; set completion's one combination; wands past the runner-up. Powderfuse opens at launch; The Watchers is gated "later".
+- **Platform (3).** The Discord bot's PvP line; the coach's Well Fed and foods.
+- **Integrator (3).** Rotation notes that broke the web build; `melee_crit`/`spell_crit` in the weights vocabulary; a stale addon-builds.json.
+- Also adopted: Assassination's leveling build trades Venom for Seal Fate (+1.6% bare 60).
+
+Before and after, pin 40021374a against 4d3129cae, raid preset, band 60, 10,000 iterations, alliance / horde, seed 1 (seed 50001 within 0.2):
+- **Retribution** -5.7 / -5.7, **hunters** -3.2 to -4.7, **Enhancement** -3.2 / -3.1: the crit split, part won back by the hunter fixes and the Windfury Totem fix.
+- **Balance, cat, bear, Protection paladin** -2.3 to -2.9; **warlocks** -1.6 to -2.1; **Shadow, Elemental, Fire, Frost, Holy paladin** -1.0 to -2.1; **Arcane** -0.2 to -0.6.
+- **Holy priest** +2.7 / +2.9 (tank Flash Heal rank 2, Twin Disciplines); **Protection warrior** +1.3 / +1.4; **rogues** +0.7 to +1.1 (Blasted Lands buffs); **Discipline** +0.5 / +0.8.
+- **Arms, Fury, Restoration druid and shaman** within 0.3.
+
+The bare bands move far more: Holy paladin +20 to +58% and Elemental +10 to +46% from the rank choices, Frost and Arcane up to +28% from Evocation, hunters -2 to -28% from pets and ammo by level. integration.md has them.
+
+Every item-data fix and re-rank reaches published numbers only at the owner's single refresh after a zero round. The refresh must rebuild simdb.bin first (held off-hand typing; round 8's item fixes; round 9's crit enchants), then re-rank; simbuffs.json then names the two salmon foods.
+
+Open going into round 10:
+- **Owner decisions.**
+  - Should the heal profile scale below 60? Every sub-60 healer rank choice is measured on the level-60 fight, and the notes say so.
+  - Consecration rank 1 for Retribution at 30 and 40, adopted behind a mana line though Retribution never runs dry.
+  - Brotli or no-inlining for sim.wasm; the time-bound Survival line after launch.
+- **After the owner's refresh, check:** the round 8 list, plus Glimmering Staff's spell power, the open battleground sources, the bare-60 rank choices in the published bare sets, and the simbuffs foods.
+- **Blocked on level-60 logs:** Holy Shield crit; Faerie Fire's form threat; armor-debuff stacking; the one-a-minute proc rate; Holy Power, Swiftmend, Oath of Light; Era's base-crit columns; the Succubus's crit after the split.
+- **Single source or open:** warlock demon sheets against Era's table; aura-52 enchant hands; Concentration Aura; forever-bugs #419; Forever's new elixirs and potions; Lacerating Strikes, normalized-rage off hand, Unbridled Wrath; Toughness on bonus armor; Mindtap Talisman, Force of Will.
+- **Held under the adoption rule:** Marksmanship +0.9%, Affliction +0.7%, Destruction, Fire's Improved Scorch line, Discipline's Inspiration.
+- **Page and pipeline:** simbuffs.json's two foods (held output; the data gate deselects that one test); The Watchers' launch status and the banned test's AWAITING pass for it; loot's swapped Warsong Gulch faction ids (label only today); the coach persona test's 7 standing failures; "Apply to the page" drops the preset; custom panel icons; `allow_shrink`.
 
 ## Round 8 at a glance
 
