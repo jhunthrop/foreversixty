@@ -109,3 +109,25 @@ func containsKey(node any, key string) bool {
 	}
 	return false
 }
+
+// Re-measured on the paced line (round 10): rank 1 still wins from 30 to 59,
+// with the gate taken away as well, where Retribution then runs dry; at 60
+// the bare fight runs dry and casts rank 4, the raid fight keeps rank 5.
+func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
+	for _, c := range []struct {
+		preset string
+		level  int
+		want   int32
+	}{
+		{BarePreset, 30, 26573},
+		{BarePreset, 45, 26573},
+		{BarePreset, 59, 26573},
+		{BarePreset, 60, 20923},
+		{RaidPreset, 60, retributionConsecrationID},
+	} {
+		ids := rotationIDs(t, "paladin-retribution", "paladin", c.level, specRankChoices("paladin-retribution", c.preset))
+		if !ids[c.want] {
+			t.Errorf("%s %d: Consecration does not cast %d", c.preset, c.level, c.want)
+		}
+	}
+}
