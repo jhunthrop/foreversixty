@@ -15,12 +15,12 @@
   import TimelinesView from '../report/TimelinesView.svelte';
   import { rowLink } from '../../lib/report/format';
   import { fullWindow } from '../../lib/report/window';
-  import type { ActionNames } from '../../lib/sim/action-names';
+  import { withShardNames, type ActionNames } from '../../lib/sim/action-names';
   import { afterSimCopy, afterSimSentence } from '../../lib/sim/after-sim-copy';
   import { AURA_EMPTY_MESSAGE, simCopy } from '../../lib/sim/copy';
   import type { LastUpgrade } from '../../lib/sim/last-upgrade';
   import { withoutAbsentPets } from '../../lib/sim/pet-rows';
-  import { namedSummary, summarySentence } from '../../lib/sim/sentence';
+  import { namedSummary, summaryActionKeys, summarySentence } from '../../lib/sim/sentence';
   import type { Estimate, SampleCast } from '../../lib/sim/types';
   import type { Summary } from '../../lib/report/types';
   import DpsDistribution from './DpsDistribution.svelte';
@@ -69,8 +69,29 @@
   // A warlock's demons are all registered pets; the ones never out in the fight
   // (pet-rows.ts) leave every tab here, before anything reads the rows.
   const present = $derived(withoutAbsentPets(summary));
-  const named = $derived(namedSummary(present, actionNames));
-  const sentence = $derived(summarySentence(present, actionNames));
+  // An item proc, the wand's Shoot or an engine id no class table carries is read from the
+  // build's sharded client tables once the result is here (action-names.ts withShardNames);
+  // until then those rows read as unnamed, never as raw ids.
+  let shardNamed = $state<ActionNames | null>(null);
+  $effect(() => {
+    const loaded = actionNames;
+    const keys = summaryActionKeys(present);
+    shardNamed = null;
+    if (loaded === null) return;
+    let current = true;
+    withShardNames(loaded, keys).then(
+      (completed) => {
+        if (current) shardNamed = completed;
+      },
+      (error: unknown) => console.error('sim: the spell and item name shards did not load', error),
+    );
+    return () => {
+      current = false;
+    };
+  });
+  const names = $derived(shardNamed ?? actionNames);
+  const named = $derived(namedSummary(present, names));
+  const sentence = $derived(summarySentence(present, names));
   const nextActionSentence = $derived(afterSimSentence(topUpgrade));
   const buffs = $derived(named.auras.filter((track) => track.type === 'BUFF'));
   const debuffs = $derived(named.auras.filter((track) => track.type === 'DEBUFF'));
@@ -162,7 +183,7 @@
            sample cast log, so the lane view means the same thing here as on a logged fight. -->
       <TimelinesView summary={named} window={fullWindow(named.duration_ms)} classOf={emptyClassMap} />
     {:else if tab === 'sample'}
-      <SampleLog {sample} {actionNames} />
+      <SampleLog {sample} actionNames={names} />
     {:else}
       <DpsDistribution {estimate} {iterationsRun} />
     {/if}

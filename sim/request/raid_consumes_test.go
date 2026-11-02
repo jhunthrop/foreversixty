@@ -69,6 +69,34 @@ func TestRaidConsumesAreThePublishedSetAtEveryLevel(t *testing.T) {
 	}
 }
 
+// The rows carry the buff half the published numbers send too: the raid preset's buffs and
+// debuffs with the class kit's buffs layered first, so a Protection paladin's Raid-buffed run
+// keeps its Devotion Aura as the ranker's does (ledger, round 6: the page sent the raid list
+// alone).
+func TestRaidSetsCarryThePublishedBuffsAtEveryLevel(t *testing.T) {
+	presets := loadRealPresets(t)
+	levels := loadRealItemLevels(t)
+	got, err := RaidConsumes(presets, levels)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, spec := range specs.All {
+		resolved, err := presets.Resolve(RaidPreset, spec)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for level := 1; level <= api.MaxLevel; level++ {
+			want, _ := resolved.UsableAt(level, levels).Layer(leveling.KitBuffs(spec.Spec, level), leveling.KitConsumes(spec.Spec, level))
+			if have := BuffsAtLevel(got[spec.Spec], level); !slices.Equal(have, want) {
+				t.Errorf("%s level %d: buffs %v, want %v", spec.Spec, level, have, want)
+			}
+		}
+	}
+	if at := BuffsAtLevel(got["paladin-protection"], api.MaxLevel); !slices.Contains(at, "devotion_aura") {
+		t.Errorf("paladin-protection at 60: %v has no Devotion Aura", at)
+	}
+}
+
 // The kit's level gates reach the rows: a rogue's Instant Poisons from 20, Deadly in the
 // main hand from 30; an Enhancement shaman's Rockbiter Weapon until 30, then Windfury.
 func TestRaidConsumesFollowTheKitsLevelGates(t *testing.T) {

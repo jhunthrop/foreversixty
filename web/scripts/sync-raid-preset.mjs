@@ -61,15 +61,22 @@ if (preset === undefined) {
   throw new Error(`sync-raid-preset: ${source} has no "${PRESET}" preset`);
 }
 
-/** One spec's rows: each starts at a level (the first at 1) and names a non-empty id list. */
+/** One spec's rows: each starts at a level (the first at 1) and names non-empty buff and
+ *  consumable id lists. */
 function validRows(spec, rows) {
-  if (!isLevelRows(rows, (row) => isIdList(row.consumes) && row.consumes.length > 0)) {
+  if (
+    !isLevelRows(
+      rows,
+      (row) =>
+        isIdList(row.buffs) && row.buffs.length > 0 && isIdList(row.consumes) && row.consumes.length > 0,
+    )
+  ) {
     throw new Error(`sync-raid-preset: ${consumesSource} spec "${spec}" has no valid level rows`);
   }
   return rows;
 }
 
-/** Per spec, the raid set's consumable ids by level (the class kit's level gates). */
+/** Per spec, the raid set's buff and consumable ids by level (the class kit's level gates). */
 async function consumesBySpec() {
   let generated;
   try {

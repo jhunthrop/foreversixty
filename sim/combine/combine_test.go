@@ -760,3 +760,45 @@ func TestResultsKeepsPartZerosSample(t *testing.T) {
 		t.Errorf("combined sample = %+v, want part zero's %+v", out.Sample, sample)
 	}
 }
+
+// Round 7 (page lane): /sim splits a run across workers, and each part's row
+// counts were weighed and rounded before they were added. Eight parts that
+// each saw 3 Ignite crits a fight rounded 3/8 to 0 apiece and showed a 0.0%
+// crit rate; Scorch's 12 crits of 46 hits became 16 of 48 (33.3% for 26%).
+// The weighed values are summed first and rounded once.
+func TestResultsRoundsEachRowOnceNotOncePerPart(t *testing.T) {
+	part := func() api.SimResult {
+		return api.SimResult{
+			IterationsRun: 375,
+			DPS:           api.Estimate{Mean: 140},
+			Summary: summary.Summary{DamageDone: []summary.Actor{{
+				GUID: "sim-player", Total: 13272, Effective: 13272,
+				Abilities: []summary.Ability{
+					{SpellID: 8446, Total: 10636, Effective: 10636, Hits: 46, Crits: 12, Misses: map[string]int64{"MISS": 8}},
+					{SpellID: 12654, Total: 2636, Effective: 2636, Crits: 3, Ticks: 25},
+				},
+			}}},
+		}
+	}
+	parts := make([]api.SimResult, 8)
+	for i := range parts {
+		parts[i] = part()
+	}
+	got, err := Results(parts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[int64]summary.Ability{
+		8446:  {Total: 10636, Hits: 46, Crits: 12},
+		12654: {Total: 2636, Crits: 3, Ticks: 25},
+	}
+	for _, ab := range got.Summary.DamageDone[0].Abilities {
+		w := want[ab.SpellID]
+		if ab.Total != w.Total || ab.Hits != w.Hits || ab.Crits != w.Crits || ab.Ticks != w.Ticks {
+			t.Errorf("spell %d: total %d hits %d crits %d ticks %d, want %d %d %d %d", ab.SpellID, ab.Total, ab.Hits, ab.Crits, ab.Ticks, w.Total, w.Hits, w.Crits, w.Ticks)
+		}
+		if ab.SpellID == 8446 && ab.Misses["MISS"] != 8 {
+			t.Errorf("Scorch misses %v, want MISS 8", ab.Misses)
+		}
+	}
+}

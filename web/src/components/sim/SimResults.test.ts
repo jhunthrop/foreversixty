@@ -48,3 +48,54 @@ describe('SimResults', () => {
     expect(body).toContain('Upgrade: Bracers of X from Blackfathom Deeps, +14 DPS.');
   });
 });
+
+// Round 7 (page lane): a Fire mage's Damage tab read "Fire 100% Physical 0%". The engine
+// reports a cooldown, a potion or a mana gain as a row with no damage and no school, and the
+// school split counted it as a Physical share of nothing.
+describe('the school split', () => {
+  it('leaves out rows that dealt no damage', () => {
+    const fixture = summaryFixture.summary as unknown as Summary;
+    const [player] = fixture.damage_done;
+    const caster: Summary = {
+      ...fixture,
+      damage_done: [
+        {
+          ...player!,
+          total: 300,
+          effective: 300,
+          abilities: [
+            {
+              ...player!.abilities[1]!,
+              name: 'spell:10207',
+              spell_id: 10207,
+              school: 4,
+              total: 200,
+              effective: 200,
+            },
+            {
+              ...player!.abilities[1]!,
+              name: 'spell:10181',
+              spell_id: 10181,
+              school: 16,
+              total: 100,
+              effective: 100,
+            },
+            {
+              ...player!.abilities[4]!,
+              name: 'item:13444',
+              spell_id: 12013444,
+              school: 0,
+              total: 0,
+              effective: 0,
+            },
+          ],
+        },
+      ],
+    };
+    const { body } = render(SimResults, { props: { ...BASE_PROPS, summary: caster, topUpgrade: null } });
+    const split = /data-testid="school-split"[^]*?<\/p>/.exec(body)?.[0] ?? '';
+    expect(split).toContain('Fire');
+    expect(split).toContain('Frost');
+    expect(split).not.toContain('Physical');
+  });
+});

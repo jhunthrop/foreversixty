@@ -21,7 +21,7 @@
   import { simCopy } from '../../lib/sim/copy';
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
   import { specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
-  import { rotationNotesFor } from '../../lib/sim/rotations';
+  import { loadRotationNotes, rotationNotesFor, type RotationNotes } from '../../lib/sim/rotations';
   import type { SpecFidelity } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
   import Disclosure from './Disclosure.svelte';
@@ -57,7 +57,13 @@
       .filter((part) => part !== '')
       .join(' · '),
   );
-  const rotationSteps = $derived(rotationNotesFor(row.spec));
+  // The notes chunk (rotations.ts) is shared by every card; the disclosure appears once it lands.
+  let notes = $state<RotationNotes>({});
+  loadRotationNotes().then(
+    (loaded) => (notes = loaded),
+    (error: unknown) => console.error('sim: the rotation notes did not load', error),
+  );
+  const rotationSteps = $derived(rotationNotesFor(row.spec, notes));
 </script>
 
 <article

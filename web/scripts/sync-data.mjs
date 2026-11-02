@@ -212,68 +212,49 @@ async function resolveSourceDir({ repoRoot, webRoot, build, source, allowFixture
 }
 
 /**
- * Spell ids for a raid buff no PLAYER CLASS's own spellbook owns: a Zul'Gurub or Darkmoon
- * Faire world buff, or Rallying Cry of the Dragonslayer from Onyxia's head. Every other
- * raid buff in RAID_BUFFS (web/src/lib/sim/settings.ts) -- a paladin's Blessing of Kings, a
- * mage's Arcane Brilliance, a shaman's totems, Thorns -- is a real class spell already
- * present in that class's own spellconst/<class>.json (verified against build
- * 1.60.1.69893: Thorns is spell 9910 in druid.json, Blessing of Kings is 20217 in
- * paladin.json, and so on for every class-owned entry in RAID_BUFFS), so `writeSimNames`
- * below unions every class's own table into simnames/_shared.json and that alone resolves
- * them, at whatever rank the engine happens to cast (Battle Shout and Strength of Earth
- * Totem, for two, pick their rank by the encounter's own AQ setting, and every rank is a
- * real warrior/shaman spell either way).
- *
- * This table is the id no class's own spellbook could ever supply. Every id is the
- * engine's own ActionID{SpellID: ...} for that aura, read from
- * wowsims-forever's sim/core/buffs.go (RallyingCryOfTheDragonslayerAura,
- * SpiritOfZandalarAura, SongflowerSerenadeAura, WarchiefsBlessingAura, FengusFerocityAura,
- * MoldarsMoxieAura, SlipkiksSavvyAura, and the Darkmoon Faire's SaygesFortuneAura) -- the
- * same ids sim/adapter's ActionName then keys the resulting aura/cast row by, so a mismatch
- * here is a wrong name, not a missing one, and would be far worse than the raw id this
- * table exists to replace. Delete an entry the day a class actually learns that spell.
+ * Names for the spell ids the sim engine reports that no class's spellconst or talents name:
+ * world buffs and racials no class spellbook owns, and the engine ids the client's SpellName
+ * table lacks (Ignite 12654, the Era ranks of talent procs). Curated beside the engine files
+ * that use them, and read by sim/cmd/spec-breakdown's TestEveryPublishedResultActionHasAName
+ * too, so one file says which ids the engine needs named.
  */
-const CLASSLESS_BUFF_SPELLS = {
-  // Sayge's Dark Fortune rolls one of eight stats at random (contract: the Darkmoon Faire
-  // buff), and the engine reports whichever ACTUAL variant it rolled, not one fixed id --
-  // production round 2 saw 23768 (Damage), not 23735 (Strength), the only variant the
-  // first pass here named. All eight, by their own real spells.json names, so every roll
-  // resolves specifically rather than through one borrowed generic label.
-  23735: "Sayge's Dark Fortune of Strength",
-  23736: "Sayge's Dark Fortune of Agility",
-  23737: "Sayge's Dark Fortune of Stamina",
-  23738: "Sayge's Dark Fortune of Spirit",
-  23766: "Sayge's Dark Fortune of Intelligence",
-  23767: "Sayge's Dark Fortune of Armor",
-  23768: "Sayge's Dark Fortune of Damage",
-  23769: "Sayge's Dark Fortune of Resistance",
-  22888: 'Rallying Cry of the Dragonslayer',
-  24425: 'Spirit of Zandalar',
-  15366: 'Songflower Serenade',
-  16609: "Warchief's Blessing",
-  22817: "Fengus' Ferocity",
-  22818: "Mol'dar's Moxie",
-  22820: "Slip'kik's Savvy",
-};
+const ENGINE_SPELL_NAMES = fileURLToPath(
+  new URL('../../data/curated/engine-spell-names.json', import.meta.url),
+);
 
 /**
- * Racial spells: RAID_BUFFS never carries these (no request buff turns a racial on or
- * off -- the character's own race does), but a racial is exactly as classless as a world
- * buff from this table's point of view -- no class's spellconst owns it, races.json
- * carries no spell ids at all (it is prose, not data) -- so the engine's own
- * ActionID{SpellID: ...} still needs a home somewhere on the web side. Read from
- * wowsims-forever's sim/core/racials.go 2026-09-21, the five racials that file registers
- * as a real Aura or Spell (most of the ~40 racials there are flavour with no combat effect
- * -- `Apply: func(*Character) {}` -- and so can never produce an action/aura row at all).
- * Extend this table the day another racial's Apply grows a real ActionID.
+ * How many files the client's whole spell and item name tables are split into
+ * (simnames/spell/<id % n>.json, simnames/item/<id % n>.json). The page fetches the one shard
+ * an id it cannot name lives in; 64 keeps each spell shard near 4 KB gzipped. Written into
+ * simnames/_shared.json as `shards`, so the page never restates it.
  */
-const RACIAL_SPELLS = {
-  20572: 'Blood Fury',
-  20594: 'Stoneform',
-  58984: "Elune's Light",
-  26297: 'Berserking',
-  1000101: 'Eureka!',
-};
+const NAME_SHARDS = 64;
+
+/** The curated engine spell names, id to name. A missing or malformed file is fatal: the
+ *  page would read "An unnamed spell" for every id it carries. */
+async function engineSpellNames(file) {
+  const curated = JSON.parse(await readFile(file, 'utf8'));
+  const names = {};
+  for (const [id, row] of Object.entries(curated?.spells ?? {})) {
+    if (typeof row?.name !== 'string' || row.name === '') throw new Error(`${file}: spell ${id} has no name`);
+    names[id] = row.name;
+  }
+  if (Object.keys(names).length === 0) throw new Error(`${file} names no spell`);
+  return names;
+}
+
+/**
+ * Writes `rows` (`{ id, name }`) as NAME_SHARDS files under `dir`, each the id-to-name table of
+ * the ids that land in it.
+ */
+async function writeNameShards(dir, rows) {
+  const shards = Array.from({ length: NAME_SHARDS }, () => ({}));
+  for (const row of rows) shards[row.id % NAME_SHARDS][String(row.id)] = row.name;
+  await mkdir(dir, { recursive: true });
+  await Promise.all(
+    shards.map((table, index) => writeFile(path.join(dir, `${index}.json`), JSON.stringify(table))),
+  );
+}
 
 /**
  * WoW's own item-class ids (items.json's `class_id`): Consumable and Reagent, the two
@@ -311,13 +292,13 @@ const ITEM_NAME_OVERRIDES = {
  * is the effect's prose ("Chance on hit: ..."), not the id of the spell behind it -- so a
  * trinket's triggered spell still cannot be resolved into an `item:<id>`-adjacent `spell`
  * row from here; if that spell is not itself one of the class's own spellconst entries,
- * resolveActionName falls back to the raw key for it, which is legible. A build without
- * spellconst (an older one, or one the data lane has not regenerated) publishes nothing,
- * and resolveActionName falls back to the key for everything.
+ * the page reads it from the shards below. A build without spellconst (an older one, or one
+ * the data lane has not regenerated) publishes nothing, and resolveActionName falls back to
+ * its unnamed prose for everything.
  *
  * Also writes public/data/<build>/simnames/_shared.json: every class's own `spell` table
  * unioned into one (2026-09-21 result-page review, Defect 2), plus every class's own
- * TALENT spells (round 2 below), CLASSLESS_BUFF_SPELLS and RACIAL_SPELLS above, and a
+ * TALENT spells (round 2 below), ENGINE_SPELL_NAMES above, `shards` (NAME_SHARDS), and a
  * `item` table of the build's consumables and reagents (round 2 below too). The
  * raid-buffed preset (RAID_BUFFS, web/src/lib/sim/settings.ts) can put an aura on the
  * player from ANY of the nine classes -- a mage running it gets a paladin's Blessing of
@@ -335,20 +316,29 @@ const ITEM_NAME_OVERRIDES = {
  *     talents/<class>.json (already shipped for the planner) names each talent's spell id
  *     per rank, and unioning that in closes exactly this gap;
  *   - a racial (Blood Fury): no class owns it and races.json carries no spell ids at all
- *     (RACIAL_SPELLS above, sourced from the engine directly);
- *   - a Darkmoon Faire world buff variant this file had not named yet (CLASSLESS_BUFF_SPELLS
- *     above, now all eight of Sayge's Dark Fortune rather than one);
+ *     (ENGINE_SPELL_NAMES above, sourced from the engine directly);
+ *   - a Darkmoon Faire world buff variant this file had not named yet (ENGINE_SPELL_NAMES
+ *     above, all eight of Sayge's Dark Fortune);
  *   - and an ITEM action (a potion, a mana gem) -- items/<class>.json is gear only, so a
  *     consumable was never in any class's own item table at all. `item` below is
  *     items.json (the client's full table, same reason spells.json is excluded whole)
  *     filtered to Consumable and Reagent, plus ITEM_NAME_OVERRIDES for the rare item this
  *     build misclassifies outside both.
+ *
+ * Round 7 (2026-11-02, owner ruling 2): /sim still showed 36 rows as "An unnamed spell" --
+ * item procs and generic actions no class table carries (Thrash, Chthonic Power, the wand's
+ * Shoot, a set bonus's proc) and engine ids the client lacks (Ignite 12654). The client's
+ * whole spell and item tables are now published as simnames/spell/<n>.json and
+ * simnames/item/<n>.json (NAME_SHARDS files each, keyed by id modulo the count), which the
+ * page fetches only for an id the class and shared tables cannot name; the engine's own ids
+ * come from ENGINE_SPELL_NAMES.
  * @param {string} buildDir source data/builds/<build>
  * @param {string} outDir   public/data/<build>
- * @returns {Promise<string[]>} the simnames/<class>.json (and simnames/_shared.json) paths
- *   written, relative to outDir
+ * @param {string} [engineNamesFile] the curated engine spell names (ENGINE_SPELL_NAMES)
+ * @returns {Promise<string[]>} the simnames/<class>.json, simnames/_shared.json and shard
+ *   directory paths written, relative to outDir
  */
-export async function writeSimNames(buildDir, outDir) {
+export async function writeSimNames(buildDir, outDir, engineNamesFile = ENGINE_SPELL_NAMES) {
   let spells;
   try {
     spells = JSON.parse(await readFile(path.join(buildDir, 'spells.json'), 'utf8'));
@@ -384,19 +374,21 @@ export async function writeSimNames(buildDir, outDir) {
     return spell;
   }
 
+  /** The build's items.json rows; none when the build has no file. */
+  async function clientItems() {
+    try {
+      return JSON.parse(await readFile(path.join(buildDir, 'items.json'), 'utf8'));
+    } catch {
+      return [];
+    }
+  }
+
   /**
    * The build's consumable and reagent item names, keyed by id, for every class at once --
    * a potion is nobody's gear, so no class's own items/<class>.json (equipment only) ever
-   * carries one. Missing items.json publishes nothing extra, the same shape as every other
-   * optional source here.
+   * carries one.
    */
-  async function sharedItemNames() {
-    let items;
-    try {
-      items = JSON.parse(await readFile(path.join(buildDir, 'items.json'), 'utf8'));
-    } catch {
-      return {};
-    }
+  function sharedItemNames(items) {
     const item = { ...ITEM_NAME_OVERRIDES };
     for (const row of items) {
       if (row.class_id === ITEM_CLASS_CONSUMABLE || row.class_id === ITEM_CLASS_REAGENT) {
@@ -414,7 +406,7 @@ export async function writeSimNames(buildDir, outDir) {
   }
 
   const written = [];
-  const sharedSpell = { ...CLASSLESS_BUFF_SPELLS, ...RACIAL_SPELLS };
+  const sharedSpell = await engineSpellNames(engineNamesFile);
   let buildVersion;
   await mkdir(path.join(outDir, 'simnames'), { recursive: true });
   for (const file of classFiles.filter((name) => name.endsWith('.json'))) {
@@ -444,12 +436,20 @@ export async function writeSimNames(buildDir, outDir) {
   }
   if (written.length > 0) {
     const sharedTarget = path.join(outDir, 'simnames', '_shared.json');
-    const sharedItem = await sharedItemNames();
+    const items = await clientItems();
     await writeFile(
       sharedTarget,
-      JSON.stringify({ build: buildVersion, spell: sharedSpell, item: sharedItem }),
+      JSON.stringify({
+        build: buildVersion,
+        shards: NAME_SHARDS,
+        spell: sharedSpell,
+        item: sharedItemNames(items),
+      }),
     );
     written.push('simnames/_shared.json');
+    await writeNameShards(path.join(outDir, 'simnames', 'spell'), spells);
+    await writeNameShards(path.join(outDir, 'simnames', 'item'), items);
+    written.push('simnames/spell/', 'simnames/item/');
   }
   return written;
 }
