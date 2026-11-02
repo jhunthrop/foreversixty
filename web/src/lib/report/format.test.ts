@@ -18,6 +18,8 @@ import {
   schoolName,
   schoolToken,
   formatAmountLike,
+  formatLanded,
+  formatShare,
 } from './format';
 
 describe('report formatting', () => {
@@ -146,5 +148,21 @@ describe('the trash parse', () => {
     expect(TRASH_PARSE).toBe('—');
     expect(parseTitle(TRASH_PARSE)).toBe('No parse for trash; parses are made for boss fights.');
     expect(parseTitle(TRASH_PARSE)).not.toMatch(/could not be reached/);
+  });
+});
+
+// Round 7 (wow-player): a sim row is a per-fight average, so a wand a Fire mage fires once
+// in a hundred fights read "3 damage, 0 hits, 0.0%" and looked broken.
+describe('per-fight averages under one', () => {
+  it('reads a row that landed damage on fewer than one hit a fight as "<1"', () => {
+    expect(formatLanded(0, 3)).toBe('<1');
+    expect(formatLanded(0, 0)).toBe('0');
+    expect(formatLanded(29, 2048)).toBe('29');
+  });
+
+  it('reads a share above zero that rounds to 0.0% as "<0.1%"', () => {
+    expect(formatShare(0.0025)).toBe('<0.1%');
+    expect(formatShare(0)).toBe('0.0%');
+    expect(formatShare(7.8)).toBe('7.8%');
   });
 });

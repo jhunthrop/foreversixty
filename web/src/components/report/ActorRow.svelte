@@ -27,7 +27,9 @@
     classColorVar,
     formatAmount,
     formatDuration,
+    formatLanded,
     formatPercent,
+    formatShare,
     formatPerSecond,
     parseTitle,
     percentileToken,
@@ -610,7 +612,7 @@
                   {detailMark}{formatAmount(ability.effective)}
                 </td>
                 <td class="text-muted numeric py-1.5 pr-3 text-right whitespace-nowrap"
-                  >{detailTotal === 0 ? '' : formatPercent((ability.effective / detailTotal) * 100)}</td
+                  >{detailTotal === 0 ? '' : formatShare((ability.effective / detailTotal) * 100)}</td
                 >
                 <td class="py-1.5 pr-3">
                   {#if detailTotal > 0 && ability.effective > 0}
@@ -622,7 +624,8 @@
                     >
                   {/if}
                 </td>
-                <td class="text-muted numeric py-1.5 pr-3 text-right whitespace-nowrap">{detailMark}{hits}</td
+                <td class="text-muted numeric py-1.5 pr-3 text-right whitespace-nowrap"
+                  >{detailMark}{formatLanded(hits, ability.effective)}</td
                 >
                 <td class="text-muted numeric py-1.5 pr-3 text-right whitespace-nowrap"
                   >{#if hits > 0}{formatPercent((ability.crits / hits) * 100)}{/if}</td
