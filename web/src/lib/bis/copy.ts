@@ -465,6 +465,15 @@ export const bisCopy = {
   healerProfileContentLine: (
     content: readonly { name: string; last_boss: string; boss_level: number }[],
   ): string => content.map((c) => `${c.name} (${c.last_boss}, level ${c.boss_level})`).join(', '),
+  healerProfilePullHeading: 'Hard pull',
+  healerProfilePullLine: (
+    size: number,
+    dungeon: string,
+    mobs: readonly { name: string; count: number }[],
+    multiplier: number,
+  ): string =>
+    `${size} mobs in ${dungeon} (${mobs.map((m) => `${m.count} ${m.name}`).join(', ')}), ` +
+    `${multiplier.toFixed(2)} times the last boss`,
   healerProfileFightHeading: 'Fight',
   healerProfileFightLine: (duration: string): string => `${duration} long`,
 } as const;
