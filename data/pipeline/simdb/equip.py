@@ -557,6 +557,40 @@ def spell_bonus(
     )
 
 
+#: Every crit stat key an on-equip spell can state.
+CRIT_KEYS = frozenset({"crit", *CRIT_TABLE_KEYS})
+#: The crit auras, each to the table it reads.
+CRIT_AURAS = (AURA_MELEE_CRIT, AURA_SPELL_CRIT, AURA_CRIT_ALL, AURA_SPELL_CRIT_SCHOOL)
+
+
+def item_crit_bonuses(
+    item_effect_rows: list[dict[str, str]],
+    item_x_item_effect_rows: list[dict[str, str]],
+    effects_by_spell: dict[int, list[dict[str, str]]],
+    item_ids: Container[int],
+) -> dict[int, dict[str, float]]:
+    """Item id -> the crit its on-equip spells state, per table, for the items
+    whose client links state any. Only the crit auras are read, so an item no
+    other path keeps (classic-db's supplement) needs none of its other auras
+    classified."""
+    out: dict[int, dict[str, float]] = {}
+    for item_id, spell_ids in item_effect_spells(
+        item_effect_rows, item_x_item_effect_rows, item_ids
+    ).items():
+        crit_rows = {
+            spell: [
+                row
+                for row in effects_by_spell.get(spell, [])
+                if row["Effect"] == APPLY_AURA and int(row["EffectAura"]) in CRIT_AURAS
+            ]
+            for spell in spell_ids
+        }
+        stats = spell_bonus(spell_ids, crit_rows).stats
+        if stats:
+            out[item_id] = stats
+    return out
+
+
 def equip_bonuses(
     item_effect_rows: list[dict[str, str]],
     item_x_item_effect_rows: list[dict[str, str]],

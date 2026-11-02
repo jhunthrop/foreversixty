@@ -251,3 +251,61 @@ def test_an_extract_written_before_dmg_type1_was_read_is_physical():
     extract older than the column loads as school 0, which the engine
     treats as physical, as before."""
     assert _trinket().damage_type == 0
+
+
+def _crit_trinket(item_id: int, era_spell: int, aura: int, misc: int) -> tuple:
+    """A classic-db trinket whose one on-equip spell states Era's 2% crit."""
+    from pipeline.classicdb_items import ClassicDbSpell, ClassicDbSpellEffect, ItemSpellSlot
+
+    trinket = _trinket(
+        id=item_id,
+        spells=[
+            ItemSpellSlot(spell_id=era_spell, trigger=1, classic_db_name="Increased Critical 2")
+        ],
+    )
+    effect = ClassicDbSpellEffect(
+        effect=6, aura=aura, base_points=1, die_sides=1, misc_value=misc, trigger_spell=0
+    )
+    return trinket, {era_spell: ClassicDbSpell(id=era_spell, proc_chance=101, effects=[effect])}
+
+
+def test_the_clients_own_crit_link_replaces_classic_dbs_crit():
+    """Blackhand's Breadth (13965) and Eye of the Beast (13968) have no
+    ItemSparse row, so classic-db's 1.12 row supplies them: Era's 2% crit
+    (spell 7598, aura 52; spell 18382, aura 71 all schools), which the
+    supplement reads as every-table crit. The 1.60.1.70707 client links both
+    items to Forever's own rows (ItemXItemEffect 163702 -> ItemEffect 237976
+    -> 1318954 "Increased Critical 1 - Melee and Ranged", aura 52, 1; and
+    163703 -> 237965 -> 1318956 "Increased Critical 1 - Spell", aura 57, 1).
+    The client's crit wins: 1% on its own table."""
+    breadth, breadth_spells = _crit_trinket(13965, 7598, 52, 0)
+    eye, eye_spells = _crit_trinket(13968, 18382, 71, 126)
+    client_crit = {13965: {"melee_crit": 1.0}, 13968: {"spell_crit": 1.0}}
+    built = {
+        item.id: item
+        for item in build_classicdb_sim_items(
+            [breadth, eye],
+            {**breadth_spells, **eye_spells},
+            RATING_FACTORS,
+            client_crit=client_crit,
+        )
+    }
+    tables = ("StatCrit", "StatMeleeCrit", "StatSpellCrit")
+
+    def crit(item_id: int) -> tuple[float, ...]:
+        stats = built[item_id].stats
+        indexes = (pb.Stat.Value(name) for name in tables)
+        return tuple(stats[index] if index < len(stats) else 0.0 for index in indexes)
+
+    assert crit(13965) == pytest.approx((0.0, 1.0, 0.0))
+    assert crit(13968) == pytest.approx((0.0, 0.0, 1.0))
+
+
+def test_classic_dbs_crit_stands_where_the_client_links_none():
+    """With no client crit link, classic-db's Era crit stays every-table crit,
+    as Forever re-itemised Era's percent crit: of the items both Wowhead's
+    Forever planner and the 70707 client carry, 222 Era aura-52 and 104 Era
+    aura-71 items are crit rating (ItemSparse stat 32, every table)."""
+    breadth, spells = _crit_trinket(13965, 7598, 52, 0)
+    built = build_classicdb_sim_items([breadth], spells, RATING_FACTORS, client_crit={})
+    assert built[0].stats[pb.Stat.Value("StatCrit")] == pytest.approx(2.0)
