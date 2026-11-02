@@ -62,7 +62,18 @@ func (s simSetup) request(talents string, iterations int) api.SimRequest {
 		Encounter:     leveling.RankerEncounter(),
 		Iterations:    iterations,
 		RandomSeed:    s.seed,
+		Preset:        s.presetName(),
 	}
+}
+
+// presetName is the preset this search layers, named on its requests so the
+// rotation casts that preset's rank choices (data/curated/rank-choices.json),
+// as the ranker's own passes do.
+func (s simSetup) presetName() string {
+	if s.preset != nil {
+		return request.RaidPreset
+	}
+	return request.BarePreset
 }
 
 func engineRun(s simSetup) dpsFunc {

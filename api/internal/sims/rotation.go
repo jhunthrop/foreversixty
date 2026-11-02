@@ -34,12 +34,32 @@ type Rotation struct {
 	Band int
 	// listed is every spell id, at every rank, of every ability the band lists.
 	listed map[int64]bool
+	// named is the spell ids the band's lines name: the rank the site's rotation casts.
+	named map[int64]bool
 	// family is the class's spellranks.json family name of each of its spell ids.
 	family map[int64]string
 }
 
 // Lists reports whether spellID is a rank of an ability the band lists.
 func (r Rotation) Lists(spellID int64) bool { return r.listed[spellID] }
+
+// Names reports whether one of the band's lines names spellID itself: the rank the site's
+// rotation casts at the band (a per-band rank choice, or a rank the rotation authors below
+// the top one, such as Elemental's raid-60 Lightning Bolt rank 9).
+func (r Rotation) Names(spellID int64) bool { return r.named[spellID] }
+
+// Naming is r with ids added to the ranks its lines name; r is not changed.
+func (r Rotation) Naming(ids ...int64) Rotation {
+	named := make(map[int64]bool, len(r.named)+len(ids))
+	for id := range r.named {
+		named[id] = true
+	}
+	for _, id := range ids {
+		named[id] = true
+	}
+	r.named = named
+	return r
+}
 
 // Family is the spellranks.json family name (the data's own ability name, whatever the log
 // calls it) of spellID among the spec's class spells; ok is false for a spell that is no rank
@@ -53,6 +73,7 @@ func (r Rotation) Family(spellID int64) (name string, ok bool) {
 type rotationBand struct {
 	level  int
 	listed map[int64]bool
+	named  map[int64]bool
 }
 
 // buildRotations is one build's shipped rotations: spec -> its bands, lowest level first,
@@ -110,7 +131,7 @@ func RotationFor(build, spec string, level int) (Rotation, bool) {
 			chosen = b
 		}
 	}
-	return Rotation{Band: chosen.level, listed: chosen.listed, family: rots.familyOf[spec]}, true
+	return Rotation{Band: chosen.level, listed: chosen.listed, named: chosen.named, family: rots.familyOf[spec]}, true
 }
 
 // loadRotations reads <dir>/<build>/addon-data.json's rotations and spellranks.json's
@@ -167,14 +188,15 @@ func loadRotations(dir, build string) (*buildRotations, error) {
 		}
 		out.familyOf[spec] = byClass[class]
 		for _, b := range bands {
-			listed := map[int64]bool{}
+			listed, named := map[int64]bool{}, map[int64]bool{}
 			for _, line := range b.Lines {
 				listed[line.SpellID] = true
+				named[line.SpellID] = true
 				for _, rank := range families[line.Name] {
 					listed[rank.ID] = true
 				}
 			}
-			out.bands[spec] = append(out.bands[spec], rotationBand{level: b.Level, listed: listed})
+			out.bands[spec] = append(out.bands[spec], rotationBand{level: b.Level, listed: listed, named: named})
 		}
 		sort.SliceStable(out.bands[spec], func(i, j int) bool { return out.bands[spec][i].level < out.bands[spec][j].level })
 	}

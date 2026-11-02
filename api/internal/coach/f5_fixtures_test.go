@@ -49,6 +49,13 @@ func withRankChoice(in Input, family string, rank int) Input {
 	return in
 }
 
+// withRotationNaming is in with the shipped rotation's band naming ids exactly, the ranks
+// the site's rotation casts there.
+func withRotationNaming(in Input, ids ...int64) Input {
+	in.Tables.Rotation = in.Tables.Rotation.Naming(ids...)
+	return in
+}
+
 // holyOverheal is the Holy priest casting casts of spellID, which overhealed overhealPct
 // percent of healTotalFixture, with refs as the comparison.
 func holyOverheal(t *testing.T, spellID int64, casts int, overhealPct int64, refs Refs) Input {
