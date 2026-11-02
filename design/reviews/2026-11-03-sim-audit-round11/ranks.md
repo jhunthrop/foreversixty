@@ -104,14 +104,27 @@ For every mana-bound spec and band (out of mana for more than a few seconds of t
 | X4 | **The coach (F5)** counted Ahn'Qiraj book ranks as "the highest trainable rank" (the trainables files list them at 60). At 60 it called the site's own rank low on 28 rotation lines across 16 specs: every warlock's Shadow Bolt, Corruption and Immolate; the mages' Frostbolt, Fireball and Arcane Missiles; the rogues' Eviscerate; Heroic Strike, Revenge and Battle Shout; Starfire; Serpent Sting; and more. Again the platform lane landed the fix first (it also covers Elemental's raid Lightning Bolt rank 9), and I dropped my duplicate. After removing book ranks, the only lines F5 would still flag: Elemental's raid Lightning Bolt (platform's fix covers it), Survival's Counterattack at 30 to 40 (resolved once X3 lands), and Protection's Divine Protection at 10 (a defensive). The coach and the sim read the same rank-choice bytes (`sim/rankchoices`). | `coachcheck.py` | CONFIRMED-BUG | old (84d4522ab, 2026-10-27) | platform S 49c70a7ef |
 | X5 | The addon's Water Shield line at 10 names 409941 (a level-1 copy). The sim leaves 408510 as written, because Water Shield has no ranked chain. This is not a rank choice and predates this round; it goes to the platform lane. | `addoncheck2.py` | OPEN (other lane) | old | - |
 
+## Shadow's rows after the casters lane's Dark Sacrifice (round-11 interaction, counted separately)
+
+Measured on this branch merged with site wt/r11-casters 90d81da8b and fork lane/r11-casters c9073bba1, both factions, seeds 1 / 50001, 10,000 iterations (`out/shadow-horde.jsonl`, `out/shadow-alliance.jsonl`). The published Undead now casts Dark Sacrifice when mana is low, so bare Shadow runs dry far less (bare 60: 9.7 s instead of about 21 s out of mana).
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| S1 | **Devouring Plague rank 1 at bare 60 now loses.** Horde: -4.39% / -4.40% against the top rank (19280), error about 0.1%; rank 2 also loses (-3.2%), and ranks 3 and 5 sit below the top rank. A priest with mana to spare casts the top rank. Alliance has no Dark Sacrifice, and the row would still gain 2.2% there, but rows carry no faction and Horde is the published faction, so the row is dropped. Test: `TestReMeasuredRankChoicesCastTheWinningRank` (failed first). | `sweep.py` with FACTION/SITE/SB on the merged tree | CONFIRMED-BUG (interaction) | R11 casters db8fc067e | S 5766c8ce7 |
+| S2 | Shadow Word: Death rank 2 at bare 60 looked like a loss (-1.0% Horde) only while the Devouring Plague row stood. With that row gone it wins again: +1.08% / +1.06% Horde, +0.78% / +0.84% Alliance. Kept. | same | Aligned | - | - |
+| S3 | Every sub-60 Shadow row still wins beyond error for both factions: Shadow Word: Pain 3 at 30 (+1.9% Horde, +3.6% Alliance), Mind Blast 4 at 40 (+1.0 / +0.6), Mind Blast 2 at 50 (+2.9 / +3.9), Devouring Plague 1 at 30, 40 and 50 (+0.5 / +1.2, +3.1 / +2.9, +4.9 / +4.4), Shadow Word: Death 2 at 50 (+1.2 / +1.2). No neighbouring rank beats any of them. | same | Aligned | - | - |
+
+On this branch alone, without the casters change, S1's row still wins (+2.5%). The two must land together.
+
 ## Before/after
 
 | spec, band | metric | before, seed 1 | after, seed 1 | change seed 1 / 50001 |
 |---|---|---|---|---|
 | shaman-elemental, bare 50 | DPS | 151.8 | 153.2 | +0.92% / +1.00% |
 | druid-restoration, bare 60 | effective HPS | 412.5 | 416.9 | +1.07% / +0.97% (mana lasts 224 s to 238 s of 300) |
+| priest-shadow, bare 60, Horde, with the casters branch | DPS | 365.1 | 381.8 | +4.59% / +4.60% (row dropped; Alliance 355.1 to 347.4, -2.1%) |
 
-"Before" is `$R/sb-before` from `$R/site-before/sim`, and "after" is this branch on the pin. No other spec or band moves: the two commits change only those two rows.
+"Before" is `$R/sb-before` from `$R/site-before/sim`, and "after" is this branch on the pin. The Shadow row is measured with and without the row on the merged casters tree. No other spec or band moves.
 
 ## For other lanes
 
@@ -124,4 +137,5 @@ For every mana-bound spec and band (out of mana for more than a few seconds of t
 ## Still open
 
 - **Which bar do rank rows need?** The owner's round-9 law says a row needs "a gain beyond error at seeds 1 and 50001". The round brief says the adoption rule (beyond error and at least 1%) applies to rank choices too. Six kept rows clear error but not 1%: Aimed Shot rank 1 (BM 40, BM bare 60, MM bare 60; +0.25 to +0.39%), Fire Blast rank 4 at 40 (+0.72 / +0.79%), Shadow Bolt rank 4 at 30 (+0.55 to +0.60%), Prayer of Healing rank 1 at bare 60 (+0.29%). I kept them, as my brief says to drop only rows that no longer win beyond error and the integrator agreed (the round-9 law is the specific rule for rank rows), and did not adopt new sub-1% candidates (M1, M2). One owner line settles both.
+- Rows have no faction. Shadow's bare-60 Devouring Plague rank 1 would still gain 2.2% for Alliance, which has no Dark Sacrifice. A faction key on rows would recover that, but it is a mechanism change the owner should decide on.
 - Lava Burst rank 2 over rank 1 at 50 is +0.92% at seed 1, a hair under 1%. I adopted it because it corrects an existing row's rank, and the row itself gains +3.6% over the default. If the owner reads the 1% bar as applying to a change of rank too, revert ba2b209e9.
