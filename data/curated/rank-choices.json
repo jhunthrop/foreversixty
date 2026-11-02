@@ -42,9 +42,9 @@
         "authored": 2090,
         "bands": [
           {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 7
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 8
           },
           {
             "from_level": 60,
@@ -141,11 +141,6 @@
         "authored": 10329,
         "bands": [
           {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 3
-          },
-          {
             "from_level": 60,
             "to_level": 60,
             "rank": 4,
@@ -207,11 +202,6 @@
         "authored": 2054,
         "bands": [
           {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 4
-          },
-          {
             "from_level": 60,
             "to_level": 60,
             "rank": 4,
@@ -223,16 +213,6 @@
         "spell": "Power Word: Shield",
         "authored": 3747,
         "bands": [
-          {
-            "from_level": 30,
-            "to_level": 39,
-            "rank": 5
-          },
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 1
-          },
           {
             "from_level": 50,
             "to_level": 59,
@@ -262,24 +242,8 @@
         "authored": 10961,
         "bands": [
           {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 1
-          },
-          {
             "from_level": 50,
             "to_level": 59,
-            "rank": 1
-          }
-        ]
-      },
-      {
-        "spell": "Penance",
-        "authored": 1316995,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 49,
             "rank": 1
           }
         ]
@@ -308,11 +272,6 @@
         "authored": 10961,
         "bands": [
           {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 1
-          },
-          {
             "from_level": 50,
             "to_level": 59,
             "rank": 1
@@ -330,15 +289,21 @@
         "authored": 27871,
         "bands": [
           {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 1
-          },
-          {
             "from_level": 60,
             "to_level": 60,
             "rank": 1,
             "preset": "bare"
+          }
+        ]
+      },
+      {
+        "spell": "Renew",
+        "authored": 6075,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 5
           }
         ]
       }
@@ -505,17 +470,6 @@
             "to_level": 60,
             "rank": 2,
             "preset": "bare"
-          }
-        ]
-      },
-      {
-        "spell": "Chain Heal",
-        "authored": 10623,
-        "bands": [
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 1
           }
         ]
       }
