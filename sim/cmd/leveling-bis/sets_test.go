@@ -332,3 +332,70 @@ func TestSetFillSlotsSortOnTheRoundedLoss(t *testing.T) {
 		t.Fatalf("losses %v and %v differ: both should round to 0.2", got[0].loss, got[1].loss)
 	}
 }
+
+// Round 9: a threshold with more fill slots than it needs tried only the
+// cheapest pieces by score. With the gates open, Fury band 30 Alliance's
+// cheapest four Defias Leather pieces swapped in the chest and measured
+// +0.7%, under the 1% confirm margin. The four without the chest measure
+// +1.45%, so the set was lost and the band fell 0.5% below origin/main's set.
+// The close alternatives (one piece traded for the next cheapest) are
+// screened too, and the best one is confirmed.
+func TestTrySetCompletionTriesTheCloseAlternativesToTheCheapestPieces(t *testing.T) {
+	picks := map[string]slotPick{
+		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Loose Head"}, Score: 9}},
+		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Loose Chest"}, Score: 9}},
+		"legs":  {Item: &scored{candidate: candidate{ID: 30, Name: "Loose Legs"}, Score: 9}},
+	}
+	bySlot := map[string][]scored{
+		"head":  {withScore(setItem(11, "Set Head", testSetID, "head"), 8)},
+		"chest": {withScore(setItem(21, "Set Chest", testSetID, "chest"), 8)},
+		"legs":  {withScore(setItem(31, "Set Legs", testSetID, "legs"), 6)},
+	}
+	twoPiece := setCatalog{testSetID: {Name: "Test Regalia", Bonuses: []setBonusTier{{Pieces: 2, Description: "two piece"}}}}
+	fake := &fakeEngine{DPSByGear: map[string]float64{
+		gear(10, 20, 30): 100,
+		gear(11, 21, 30): 100.5, // the cheapest pair: under the confirm margin
+		gear(11, 20, 31): 108,   // the pair without the chest piece wins
+		gear(10, 21, 31): 104,
+	}}
+	out, _ := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, twoPiece)
+	if out["head"].Item.ID != 11 || out["legs"].Item.ID != 31 || out["chest"].Item.ID != 20 {
+		t.Fatalf("picks = head %d chest %d legs %d, want the set head and legs with the loose chest kept",
+			out["head"].Item.ID, out["chest"].Item.ID, out["legs"].Item.ID)
+	}
+	if out["legs"].Item.MeasuredDPS != 108 {
+		t.Errorf("legs MeasuredDPS = %v, want the winning trial's 108", out["legs"].Item.MeasuredDPS)
+	}
+}
+
+// Round 9: the 100-iteration screen is too noisy for a rage-driven Fury
+// warrior to demand a 0.5% lead. Fury band 30 Alliance's best Defias Leather
+// four screened 61.9 against 61.7 (+0.3%) and was never confirmed, though
+// the 300-iteration confirm measures 62.4 against 61.6 (+1.3%, beyond
+// error). The best-screening trial is confirmed whenever it screens ahead
+// of the baseline at all; the confirm keeps the margin and the error bar.
+func TestTrySetCompletionConfirmsTheBestScreenThatLeadsAtAll(t *testing.T) {
+	picks := map[string]slotPick{
+		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Loose Head"}, Score: 9}},
+		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Loose Chest"}, Score: 9}},
+	}
+	bySlot := map[string][]scored{
+		"head":  {setItem(11, "Set Head", testSetID, "head")},
+		"chest": {setItem(21, "Set Chest", testSetID, "chest")},
+	}
+	screenOrConfirm := func(req api.SimRequest) (float64, error) {
+		trial := gearKey(req.Character.Gear) == gear(11, 21)
+		switch {
+		case req.Iterations == trinketRankIterations && trial:
+			return 100.3, nil // +0.3% on the noisy screen
+		case trial:
+			return 102, nil // +2% on the confirm
+		}
+		return 100, nil
+	}
+	fake := &fakeEngine{DPSFunc: screenOrConfirm}
+	out, _ := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, testCatalog())
+	if out["head"].Item.ID != 11 || out["chest"].Item.ID != 21 {
+		t.Fatalf("head %d chest %d, want the set pair confirmed and adopted", out["head"].Item.ID, out["chest"].Item.ID)
+	}
+}

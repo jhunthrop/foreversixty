@@ -114,3 +114,73 @@ func TestMeasureWandCreditIsZeroWithoutAWandAndRunsNothing(t *testing.T) {
 		t.Errorf("shoot runs = %v, want none", fake.ShootCalls)
 	}
 }
+
+// Round 9: a wand's score rests on the measured wand credit, and the verify
+// swap only measures the runner-up. Shadow band 40 Alliance (gates open, the
+// ranks lane's rank choices) scored Jaina's Firestarter first and Goblin
+// Igniter second; verify swapped in the Igniter, and Twisted Nether Wand,
+// third on score, was never measured. At 10,000 iterations on two seeds it
+// is 3.6 DPS better in that set. The wand slot now measures its top
+// wandTournamentSize wands by score in the full set and keeps the best.
+func TestTheWandSlotKeepsTheBestMeasuredOfItsTopWands(t *testing.T) {
+	wand := func(id int, name string, score float64) scored {
+		return scored{candidate: candidate{ID: id, Name: name, ClassID: itemClassWeapon, SubclassID: wandSubclassID, DPS: 30, Slots: []string{"ranged"}}, Score: score, HasSource: true}
+	}
+	pool := []scored{wand(13064, "Jaina's Firestarter", 40), wand(5253, "Goblin Igniter", 39), wand(249144, "Twisted Nether Wand", 38), wand(1, "Fourth", 37)}
+	picks := map[string]slotPick{"ranged": slotPickFrom(pool)}
+	fake := &fakeEngine{DPSByGear: map[string]float64{
+		"ranged=13064;":  144,
+		"ranged=5253;":   148,
+		"ranged=249144;": 151,
+		"ranged=1;":      160, // outside the top three by score: never measured
+	}}
+	out, _ := rankWandSlot(fake, specInfo{}, "human", "priest", 40, "", picks, map[string][]scored{"ranged": pool})
+	if got := out["ranged"].Item.ID; got != 249144 {
+		t.Fatalf("ranged = %d, want Twisted Nether Wand (249144), the best measured of the top three", got)
+	}
+	if ru := out["ranged"].RunnerUp; ru == nil || ru.ID != 5253 {
+		t.Errorf("runner-up = %+v, want the second best measured (Goblin Igniter)", ru)
+	}
+	if len(fake.Calls) != 3 {
+		t.Errorf("sims = %d, want 3", len(fake.Calls))
+	}
+	if out["ranged"].Item.MeasuredDPS != 151 {
+		t.Errorf("MeasuredDPS = %v, want 151", out["ranged"].Item.MeasuredDPS)
+	}
+}
+
+// The wand's worth moves with the rest of the set (a mana-bound Shadow
+// priest wands more with less Intellect), so verify's swaps and set
+// completion can leave a wand that is no longer the best. On the rerun of
+// Shadow band 40 Alliance the tournament before verify kept Goblin Igniter
+// (148.7 in the final set), and in that final set Jaina's Firestarter
+// measures 151.2. The final check re-measures the top wands in the final
+// set and adopts one ahead by swapMargin.
+func TestTheFinalWandCheckReplacesAWandTheFinalSetOutgrew(t *testing.T) {
+	wand := func(id int, name string, score float64) scored {
+		return scored{candidate: candidate{ID: id, Name: name, ClassID: itemClassWeapon, SubclassID: wandSubclassID, DPS: 30, Slots: []string{"ranged"}}, Score: score, HasSource: true}
+	}
+	pool := []scored{wand(13064, "Jaina's Firestarter", 40), wand(5253, "Goblin Igniter", 39), wand(249144, "Twisted Nether Wand", 38)}
+	goblin := pool[1]
+	vb := verifiedBand{
+		picks:  map[string]slotPick{"ranged": {Item: &goblin}},
+		setDPS: 148.7,
+		swaps:  []swapResult{{Slot: "ranged", Beat: true}, {Slot: "head"}},
+	}
+	fake := &fakeEngine{DPSByGear: map[string]float64{"ranged=13064;": 151.2, "ranged=5253;": 148.7, "ranged=249144;": 150.1}}
+	out, _ := finalWandCheck(fake, specInfo{}, "human", "priest", 40, "", vb, map[string][]scored{"ranged": pool})
+	if got := out.picks["ranged"].Item.ID; got != 13064 {
+		t.Fatalf("ranged = %d, want Jaina's Firestarter (13064)", got)
+	}
+	if out.setDPS != 151.2 {
+		t.Errorf("setDPS = %v, want the winning measurement 151.2", out.setDPS)
+	}
+	if len(out.swaps) != 1 || out.swaps[0].Slot != "head" {
+		t.Errorf("swaps = %+v, want the stale ranged swap dropped and the head swap kept", out.swaps)
+	}
+	// Ahead by less than swapMargin: the wand stays.
+	fake = &fakeEngine{DPSByGear: map[string]float64{"ranged=13064;": 149.0, "ranged=5253;": 148.7, "ranged=249144;": 148.0}}
+	if out, _ := finalWandCheck(fake, specInfo{}, "human", "priest", 40, "", vb, map[string][]scored{"ranged": pool}); out.picks["ranged"].Item.ID != 5253 {
+		t.Errorf("a 0.2%% lead replaced the wand; want it kept under swapMargin")
+	}
+}

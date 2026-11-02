@@ -419,6 +419,30 @@
       ]
     },
     {
+      "key": "powderfuse",
+      "label": "Powderfuse reputation rewards",
+      "original_patch": "Forever",
+      "phase": "launch",
+      "date": "2026-11-04",
+      "confidence": "inferred",
+      "why": "Round 9: the client's reputation sources (the items lane's client_rep) give Powderfuse's level-40 rewards a source. Powderfuse (Faction 2827, under the Steamwheedle Cartel) is the goblin port on the Riverglades' east coast (warcraft.wiki.gg, Powderfuse Port, patch 1.60.1), and Blizzard's 'Forever goes live globally 4 November' names the Riverglades among the launch destinations. Inferred: no Blizzard post names the faction.",
+      "factions": [
+        {"id": 2827, "name": "Powderfuse"}
+      ]
+    },
+    {
+      "key": "the-watchers",
+      "label": "The Watchers reputation rewards",
+      "original_patch": "Forever",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "Round 9: the client's reputation sources give The Watchers' sixteen level-60 signets (Friendly to Exalted, 275968 to 275984) a source. Faction 2819 is 'an order of powerful jailers and marshals of night elf society'; no Blizzard post, client source or Wowhead Forever page places it in a launch zone or names how it is earned, so it is gated under the house rule until one does.",
+      "factions": [
+        {"id": 2819, "name": "The Watchers"}
+      ]
+    },
+    {
       "key": "darkmoon-faire",
       "label": "Darkmoon Faire decks, ticket prizes and vendor",
       "original_patch": "1.6",
