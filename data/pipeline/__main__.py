@@ -12,7 +12,8 @@ def build_parser() -> argparse.ArgumentParser:
     f = sub.add_parser(
         "fetch",
         help="download DB2 CSV exports for a build, then layer the server's hotfix push "
-        "into them (pipeline.hotfix_push)",
+        "into them (pipeline.hotfix_push) and fetch the item pair's pushes into "
+        "raw/wago-hotfixes/ (pipeline.wago_hotfixes)",
     )
     f.add_argument("--product", required=True, help="wago.tools product key, e.g. wow_classic_era")
     f.add_argument("--build", help="build string like 1.15.7.61582; default: latest for product")
@@ -401,11 +402,16 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     args = build_parser().parse_args(argv)
     if args.command == "fetch":
-        from pipeline import hotfix_push, wago
+        from pipeline import hotfix_push, wago, wago_hotfixes
 
         build_dir = wago.fetch_build(args.product, args.build)
         build = build_dir.name if build_dir is not None else args.build
         _log_layer(hotfix_push.layer_hotfix_push(build))
+        # The item pair's pushes too (sim-accuracy round 11): without them a
+        # local fetch + normalize drops 165 hotfix-only items and puts 404 on
+        # wowhead or classic-db stats.
+        for table, count in wago_hotfixes.fetch_wago_hotfixes(build, args.product).items():
+            print(f"fetch-wago-hotfixes {table}: {count} rows")
     elif args.command == "push-check":
         import os
 

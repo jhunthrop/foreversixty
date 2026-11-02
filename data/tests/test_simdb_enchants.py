@@ -6,7 +6,12 @@ import pytest
 
 from pipeline.csvio import read_csv
 from pipeline.manifest import newest_build
-from pipeline.simdb.enchants import EnchantDataError, build_sim_enchants
+from pipeline.simdb.enchants import (
+    EnchantDataError,
+    build_sim_enchants,
+    melee_weapon_only_spells,
+    ranged_weapon_only_spells,
+)
 from pipeline.simdb.equip import index_spell_effects
 from pipeline.simproto import pb
 
@@ -204,3 +209,32 @@ def test_a_ranged_weapon_enchants_hit_and_crit_are_left_to_the_engine():
     }
     for enchant_id in (8720, 2523, 8057):
         assert not any(built[enchant_id].stats), enchant_id
+
+
+def test_a_melee_weapon_stones_hit_is_left_to_the_engine_and_its_crit_stays():
+    """Blackfathom Sharpening Stone's 7098 "Hit +2%" is 430391 "Hit Weapon +2"
+    (aura 54, 2) and Elemental Sharpening Stone's 2506 "Critical +2%" is 22755
+    (aura 52, 2), both restricted to melee weapons (SpellEquippedItems class 2,
+    subclass mask 42483). Aura 54 is melee and ranged hit, and simdb's one hit
+    stat reaches spells too, so the engine applies the stone's hit to weapon
+    attacks (sim/common/enchant_effects.go) and the row carries none. Aura 52
+    already has a stat of its own (melee crit, melee and ranged tables), so
+    the stone's crit stays in the row (round 9: stones are melee)."""
+    rows = [_scope_row(7098, 430391), _scope_row(2506, 22755)]
+    effects = index_spell_effects([_aura(430391, 54, 2), _aura(22755, 52, 2)])
+    equipped = [
+        {"SpellID": "430391", "EquippedItemClass": "2", "EquippedItemSubclass": "42483"},
+        {"SpellID": "22755", "EquippedItemClass": "2", "EquippedItemSubclass": "42483"},
+    ]
+    built = {
+        row.effect_id: row
+        for row in build_sim_enchants(
+            rows,
+            effects,
+            RATING_FACTORS,
+            ranged_weapon_spells=ranged_weapon_only_spells(equipped),
+            melee_weapon_spells=melee_weapon_only_spells(equipped),
+        )
+    }
+    assert not any(built[7098].stats)
+    assert built[2506].stats[pb.Stat.StatMeleeCrit] == 2
