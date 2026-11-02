@@ -237,7 +237,9 @@ describe('the consumable lines against the published presets', () => {
       ...Object.values(consumes.by_class).flat(),
       ...Object.values(consumes.by_spec).flat(),
     ];
-    const missing = new Set(entries.map((entry) => entry.id).filter((id) => CONSUMABLE_GIVES[id] === undefined));
+    const missing = new Set(
+      entries.map((entry) => entry.id).filter((id) => CONSUMABLE_GIVES[id] === undefined),
+    );
     expect([...missing]).toEqual([]);
   });
 });
