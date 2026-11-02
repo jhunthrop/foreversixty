@@ -2550,6 +2550,7 @@
         ],
         "consumes": [
           "food_baked_salmon",
+          "main_hand_imbue:brilliant_wizard_oil",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
           "alcohol_rumsey_rum_black_label",
@@ -2587,6 +2588,7 @@
         ],
         "consumes": [
           "food_baked_salmon",
+          "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
@@ -2625,6 +2627,7 @@
         ],
         "consumes": [
           "food_baked_salmon",
+          "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "flask_of_the_titans",
           "elixir_of_greater_defense",
@@ -2665,6 +2668,7 @@
         "consumes": [
           "major_spellblasting_potion",
           "food_baked_salmon",
+          "main_hand_imbue:brilliant_wizard_oil",
           "flask_of_the_titans",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
@@ -6531,6 +6535,7 @@
         ],
         "consumes": [
           "food_smoked_desert_dumpling",
+          "main_hand_imbue:elemental_sharpening_stone",
           "mighty_rage_potion",
           "flask_of_the_titans",
           "elixir_of_greater_defense",

@@ -484,6 +484,9 @@ func TestEachConsumableSlotCarriesTheFirstUsableEntry(t *testing.T) {
 		{"druid-balance", 60, "major_spellblasting_potion"},
 		{"priest-shadow", 60, "major_spellblasting_potion"},
 		{"paladin-protection", 60, "major_spellblasting_potion"},
+		// The tanks' main-hand imbue (round 10).
+		{"warrior-protection", 60, "main_hand_imbue:elemental_sharpening_stone"},
+		{"paladin-protection", 60, "main_hand_imbue:brilliant_wizard_oil"},
 	} {
 		if got := ConsumesAtLevel(all[c.spec], c.level); !slices.Contains(got, c.food) {
 			t.Errorf("%s at %d eats no %s: %v", c.spec, c.level, c.food, got)

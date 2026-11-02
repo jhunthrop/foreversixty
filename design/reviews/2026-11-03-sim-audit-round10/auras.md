@@ -130,3 +130,22 @@ What moved:
 4. A1: Concentration Aura in the Holy paladin's kit (owner).
 5. A2: forever-bugs #419.
 6. D3: the 50% Judgement of Wisdom and Light chance is server-side and single-source.
+
+## Follow-up: the tanks' weapon imbue (integrator request)
+
+The hybrids lane found the bear best with Mighty Rage Potion and an Elemental Sharpening Stone. Neither the warrior tank nor the paladin tank carried any main-hand imbue. Measurement setup:
+- Fork: hybrids 6f3cb68fa merged with the crit lane's E 56a5e5134, which makes the stone a per-spell bonus on the owner's own melee attacks. The conflict was resolved locally for measurement only, without the feral gate, as F1 requires.
+- Site: hybrids f3728d435.
+- Band 60 raid, threat per second, 10,000 iterations, both factions, seeds 1 and 50001.
+- The published main hand for both tanks is Greenhammer 279261, a mace (Item SubclassID 4), so the dense stone is a weightstone.
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| T1 | **The warrior and paladin tanks carried no weapon imbue.** Threat with each imbue against none:<br>- Protection warrior: Elemental Sharpening Stone +1.48 to +1.67%, Dense Weightstone +0.47%. It now carries the Elemental stone.<br>- Protection paladin: Brilliant Wizard Oil +2.32 to +2.40%, Elemental stone +1.29 to +1.34%, Dense Weightstone +0.97 to +0.99%. Its threat is mostly Holy spell damage, so it now carries the oil.<br>- Bear, checked with the crit lane's stone: Elemental +2.05 to +2.19%, either dense stone +0.98 to +0.99%. That confirms the hybrids lane's pick. | `imbue.py` runs above; enchant 2506 (aura 52), enchant 2628 (aura 13 and 135 at 36, aura 57 at 1); Item 279261 | CONFIRMED-BUG (preset) | S e20d068dd |
+
+Absolute values, horde seed 1, none to the adopted imbue: warrior 1051.4 -> 1067.5, paladin 994.6 -> 1017.8, bear 971.1 -> 992.4 (with the hybrids lane's bear changes).
+
+For the integrator:
+- E 56a5e5134 conflicts with E d5c560d31 in `core/consumes.go`. Keep the crit lane's `addMeleeWeaponCrit` for the Elemental stone and drop its `FeralCombatEnabled` gate, which F1 removed. Keep both new functions, `makeThistleTeaMCD` and `addMeleeWeaponCrit`.
+- `TestProtection.results` conflicts too and needs regenerating at the pin.
+- `sim/request/raid-consumes.json` will conflict with the hybrids lane's copy; regenerate it after merging.
