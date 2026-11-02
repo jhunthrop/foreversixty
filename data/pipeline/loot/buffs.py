@@ -45,8 +45,6 @@ _ROW = re.compile(r"^\| `([a-z0-9_]+(?::[a-z0-9_]+)?)` \|", re.M)
 #: A graded buff's stronger grade ("blessing_of_might:improved"): the panel
 #: draws it as its base id's row, so it needs no entry of its own.
 IMPROVED = ":improved"
-#: The enum prefix of every food id; a food takes its item's icon.
-FOOD_PREFIX = "food_"
 #: The client's placeholder icon file, which several fork spell rows carry.
 TEMP_ICON = "temp"
 #: The IDS.md sections whose ids this file covers. "Professions" is
@@ -79,6 +77,16 @@ def ids_md_ids(text: str) -> list[str]:
         section = text.split(marker, 1)[1].split("\n## ", 1)[0]
         found |= {buff_id for buff_id in _ROW.findall(section) if not buff_id.endswith(IMPROVED)}
     return sorted(found)
+
+
+def consumable_ids(text: str) -> frozenset[str]:
+    """The ids IDS.md's Consumables section lists: things in the player's
+    bag (a flask, a potion, a food, an oil), so their names join the item
+    tables first."""
+    if _SECTIONS[1] not in text:
+        raise BuffError(f"{_SECTIONS[1]!r} is not in IDS.md; its shape changed")
+    section = text.split(_SECTIONS[1], 1)[1].split("\n## ", 1)[0]
+    return frozenset(_ROW.findall(section))
 
 
 def named_part(buff_id: str) -> tuple[bool, str]:
@@ -208,15 +216,15 @@ def joined_name(
     names: list[str],
     tables: list[NameTable],
     item_tables: list[NameTable],
+    consumables: frozenset[str],
 ) -> tuple[str, str] | None:
-    """The first table row a spelling of `names` reaches. A weapon imbue or
-    a food is an item in the player's bag, so the item tables go first for
-    it (a food's same-named recipe spell carries the Seal of Kings icon). A
+    """The first table row a spelling of `names` reaches. A consumable is an
+    item in the player's bag, so the item tables go first for it: a food's
+    same-named recipe spell carries the Seal of Kings icon, a healing
+    potion's use spell a nature icon, Wizard Oil's enchant spell 'temp'. A
     row whose icon is the client's 'temp' placeholder loses to any later
     row with real art, and is kept only when nothing else names the id."""
-    qualified, _ = named_part(buff_id)
-    item_first = qualified or buff_id.startswith(FOOD_PREFIX)
-    order = [*item_tables, *tables] if item_first else tables
+    order = [*item_tables, *tables] if buff_id in consumables else tables
     hits = [table[n] for n in names for table in order if n in table]
     return next((hit for hit in hits if hit[1] != TEMP_ICON), hits[0] if hits else None)
 
@@ -227,6 +235,7 @@ def build_simbuffs(
     overrides: dict[str, BuffOverride],
     icon_for: IconFor,
     item_tables: list[NameTable] | None = None,
+    consumables: frozenset[str] = frozenset(),
 ) -> SimBuffsFile:
     entries: dict[str, SimBuffEntry] = {}
     unresolved: list[str] = []
@@ -238,7 +247,9 @@ def build_simbuffs(
                 icon=icon_for(override.item_id, override.spell_id),
             )
             continue
-        found = joined_name(buff_id, _candidates(named_part(buff_id)[1]), tables, item_tables or [])
+        found = joined_name(
+            buff_id, _candidates(named_part(buff_id)[1]), tables, item_tables or [], consumables
+        )
         if found is None:
             unresolved.append(buff_id)
             continue
@@ -258,6 +269,7 @@ def merge_simbuffs(
     existing: dict[str, SimBuffEntry],
     overrides: dict[str, BuffOverride],
     item_tables: list[NameTable] | None = None,
+    consumables: frozenset[str] = frozenset(),
 ) -> SimBuffsFile:
     """The merge-only night's `simbuffs.json`: every id IDS.md lists, kept
     as the committed file names it, with a new id (an engine buff the
@@ -278,7 +290,7 @@ def merge_simbuffs(
         override = override_for(buff_id, overrides)
         names = [normalise(override.name)] if override is not None else []
         names += _candidates(named_part(buff_id)[1])
-        found = joined_name(buff_id, names, tables, item_tables or [])
+        found = joined_name(buff_id, names, tables, item_tables or [], consumables)
         if found is None:
             unresolved.append(buff_id)
             continue

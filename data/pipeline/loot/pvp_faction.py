@@ -224,9 +224,7 @@ def _item_vendor_npcs(
 
 
 def _carries_rank_title(name: str | None) -> bool:
-    return bool(name) and (
-        title_faction(name) is not None or honor_rank_for_name(name) is not None
-    )
+    return bool(name) and (title_faction(name) is not None or honor_rank_for_name(name) is not None)
 
 
 def _backfill_vendor_items_into_pvp_buckets(
@@ -484,9 +482,7 @@ def split_pvp_sources_by_faction(
             len(unresolved),
             sorted(set(unresolved)),
         )
-    sources, backfilled = _backfill_vendor_items_into_pvp_buckets(
-        sources, npc_factions, item_names
-    )
+    sources, backfilled = _backfill_vendor_items_into_pvp_buckets(sources, npc_factions, item_names)
     sources, dropped = drop_non_rank_rewards(sources, not_rank_rewards)
     if dropped:
         logger.info(

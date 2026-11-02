@@ -9,6 +9,7 @@ from pipeline.loot.buffs import (
     BuffError,
     build_simbuffs,
     client_tables,
+    consumable_ids,
     fork_tables,
     ids_md_ids,
     load_overrides,
@@ -179,6 +180,7 @@ def test_a_weapon_imbue_takes_its_items_name_and_icon_before_the_enchant_spells(
         {"windfury": windfury},
         lambda item_id, spell_id: f"icon-{item_id}-{spell_id}",
         item_tables=[ITEMS],
+        consumables=consumable_ids(IMBUE_IDS_MD),
     ).entries
     assert entries["main_hand_imbue:wizard_oil"] == SimBuffEntry(
         name="Wizard Oil", icon="inv_potion_104"
@@ -194,7 +196,12 @@ def test_a_weapon_imbue_takes_its_items_name_and_icon_before_the_enchant_spells(
 
 def test_the_merge_night_names_a_new_weapon_imbue_from_the_item_too():
     out = merge_simbuffs(
-        ["main_hand_imbue:wizard_oil"], [SPELLS, ITEMS], {}, {}, item_tables=[ITEMS]
+        ["main_hand_imbue:wizard_oil"],
+        [SPELLS, ITEMS],
+        {},
+        {},
+        item_tables=[ITEMS],
+        consumables=frozenset({"main_hand_imbue:wizard_oil"}),
     )
     assert out.entries["main_hand_imbue:wizard_oil"].icon == "inv_potion_104"
 
@@ -202,11 +209,25 @@ def test_the_merge_night_names_a_new_weapon_imbue_from_the_item_too():
 # The same audit: 26 committed entries carried a placeholder from a fork spell row, a food's
 # recipe spell (Seal of Kings art on Tender Wolf Steak) or the client's 'temp' (every
 # protection potion), where the item itself has real art.
+def test_consumable_ids_are_the_consumables_section_only():
+    assert consumable_ids(IMBUE_IDS_MD) == {
+        "main_hand_imbue:windfury",
+        "main_hand_imbue:windfury_weapon",
+        "main_hand_imbue:wizard_oil",
+        "off_hand_stone:wizard_oil",
+    }
+
+
 def test_a_food_takes_its_items_icon_before_its_recipe_spells():
     spells = {"tender_wolf_steak": ("Tender Wolf Steak", "spell_shadow_sealofkings")}
     items = {"tender_wolf_steak": ("Tender Wolf Steak", "inv_misc_food_47")}
     entries = build_simbuffs(
-        ["food_tender_wolf_steak"], [spells, items], {}, lambda *_: "", item_tables=[items]
+        ["food_tender_wolf_steak"],
+        [spells, items],
+        {},
+        lambda *_: "",
+        item_tables=[items],
+        consumables=frozenset({"food_tender_wolf_steak"}),
     ).entries
     assert entries["food_tender_wolf_steak"].icon == "inv_misc_food_47"
 

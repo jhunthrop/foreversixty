@@ -31,6 +31,7 @@ from pipeline.models import LootFile, LootOverlay
 #: The phase an undated raid source is gated to: no raid is open at launch.
 RAID_DEFAULT_OPENS = "later"
 
+
 class OverlayError(SystemExit):
     """A curated loot overlay names something the generated file does not."""
 
@@ -53,9 +54,7 @@ def load_overlays(overlay_dir: Path) -> list[tuple[Path, LootOverlay]]:
     return loaded
 
 
-def apply_overlays(
-    document: LootFile, overlays: list[tuple[Path, LootOverlay]]
-) -> LootFile:
+def apply_overlays(document: LootFile, overlays: list[tuple[Path, LootOverlay]]) -> LootFile:
     by_id = {source.id: source for source in document.sources}
     for path, overlay in overlays:
         for source in overlay.add:
@@ -87,14 +86,10 @@ def apply_overlays(
             # instances belong. Merging through `model_validate` instead
             # re-parses the whole source, so a patched `bosses` list comes
             # back out as real `LootBoss` instances, not raw dicts.
-            by_id[patch.id] = type(existing).model_validate(
-                {**existing.model_dump(), **changes}
-            )
+            by_id[patch.id] = type(existing).model_validate({**existing.model_dump(), **changes})
         for source_id in overlay.remove:
             if source_id not in by_id:
-                raise OverlayError(
-                    f"{path} removes source {source_id!r}, which is not there"
-                )
+                raise OverlayError(f"{path} removes source {source_id!r}, which is not there")
             del by_id[source_id]
     # Nothing raids at launch (curated/loot/forever-raid-phases.json's own notes):
     # a raid the generator emits that no overlay dates -- Forever's own Scarlet

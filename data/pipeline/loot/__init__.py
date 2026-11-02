@@ -55,6 +55,7 @@ from pipeline.loot.buffs import (
     SIMBUFFS,
     build_simbuffs,
     client_tables,
+    consumable_ids,
     fork_item_table,
     fork_tables,
     ids_md_ids,
@@ -333,13 +334,15 @@ def write_loot_files(
     enchants = build_enchants(fork)
     suffixes = build_suffixes(fork)
     client, icon_for = client_tables(build_dir, raw)
+    ids_text = ids_md.read_text(encoding="utf-8")
     simbuffs = build_simbuffs(
-        ids_md_ids(ids_md.read_text(encoding="utf-8")),
+        ids_md_ids(ids_text),
         fork_tables(fork) + client,
         load_overrides(curated_dir),
         icon_for,
-        # client_tables returns [spells, items]: an oil's icon is its item's.
+        # client_tables returns [spells, items]: a consumable's icon is its item's.
         item_tables=[fork_item_table(fork), client[1]],
+        consumables=consumable_ids(ids_text),
     )
     write_records(enchants, build_dir / ENCHANTS)
     write_records(suffixes, build_dir / SUFFIXES)
@@ -407,12 +410,14 @@ def merge_loot_files(
             client = client_tables(build_dir, build_dir / "raw")[0]
             name_tables += client
             item_tables.append(client[1])
+        ids_text = IDS_MD.read_text(encoding="utf-8")
         simbuffs = merge_simbuffs(
-            ids_md_ids(IDS_MD.read_text(encoding="utf-8")),
+            ids_md_ids(ids_text),
             name_tables,
             committed_simbuffs,
             load_overrides(curated_dir),
             item_tables=item_tables,
+            consumables=consumable_ids(ids_text),
         )
         write_document(simbuffs, build_dir / SIMBUFFS)
     _log_loot_run("loot-merge", run)
