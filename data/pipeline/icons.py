@@ -401,6 +401,12 @@ def simbuff_icon_names(build_dir: Path) -> set[str]:
     return {entry["icon"] for entry in entries.values() if entry.get("icon")}
 
 
+def not_in_client(names: set[str], by_name: dict[str, int]) -> set[str]:
+    """The names the client's ManifestInterfaceData has no file for, which
+    only wowhead's hosted copy can supply."""
+    return {name for name in names if name not in by_name}
+
+
 def wanted_icons(
     build_dir: Path, names: dict[int, str], extra: frozenset[str] = frozenset()
 ) -> dict[int, str]:
@@ -480,7 +486,9 @@ def icons_for_build(
         **wanted,
         **{by_name[name]: name for name in supplement_names if name in by_name},
     }
-    zamimg_names = {name for name in supplement_names if name not in by_name}
+    # A buff panel icon the client's manifest does not list (Forever's own
+    # classic_ability_druid_demoralizingroar) falls back to wowhead's copy too.
+    zamimg_names = not_in_client(supplement_names | simbuff_icon_names(build_dir), by_name)
 
     written = download_icons(wanted, build_dir / "icons", cache_dir, client, version=build)
     written += download_zamimg_icons(zamimg_names, build_dir / "icons", cache_dir, client)

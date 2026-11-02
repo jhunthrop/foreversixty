@@ -13,6 +13,7 @@ from pipeline.icons import (
     download_icons,
     icon_names,
     icons_for_build,
+    not_in_client,
     raid_buff_icon_names,
     resolve_icon_name,
     rotation_icon_names,
@@ -490,6 +491,12 @@ def test_simbuff_icon_names_reads_every_buff_panel_icon(tmp_path: Path):
         encoding="utf-8",
     )
     assert simbuff_icon_names(tmp_path) == {"inv_misc_fish_13", "inv_potion_104"}
+
+
+def test_a_buff_icon_the_client_lacks_falls_back_to_wowheads_copy():
+    by_name = {"inv_misc_fish_13": 133901}
+    names = {"inv_misc_fish_13", "classic_ability_druid_demoralizingroar"}
+    assert not_in_client(names, by_name) == {"classic_ability_druid_demoralizingroar"}
 
 
 def test_simbuff_icon_names_is_empty_before_the_first_loot_build(tmp_path: Path):
