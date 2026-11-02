@@ -338,9 +338,13 @@ func (r ResolvedPreset) Layer(kitBuffs, kitConsumes []string) (buffs, consumeIDs
 			_, value := splitConsumeID(entry.ID)
 			kitSlots[slot] = value
 		case roguePoisons[kitValue]:
-			if stoneSlot, ok := stoneSlotBesidePoison[slot]; ok {
+			// The stone beside a poison follows the same first-entry rule: the
+			// Elemental stone at 50 keeps the field its Dense stand-in would take.
+			stoneSlot, ok := stoneSlotBesidePoison[slot]
+			if _, stoned := kitSlots[stoneSlot]; ok && !stoned {
 				_, value := splitConsumeID(entry.ID)
 				consumeIDs = append(consumeIDs, stoneSlot+":"+value)
+				kitSlots[stoneSlot] = value
 			}
 		}
 	}

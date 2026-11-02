@@ -372,7 +372,8 @@
           "frenzy_potion",
           "conjured_rogue_thistle_tea",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -407,7 +408,8 @@
           "frenzy_potion",
           "conjured_rogue_thistle_tea",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -443,7 +445,8 @@
           "conjured_rogue_thistle_tea",
           "elixir_of_the_mongoose",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -582,6 +585,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "main_hand_imbue:dense_sharpening_stone",
           "food_poached_sunscale_salmon",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
@@ -616,6 +620,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "main_hand_imbue:dense_sharpening_stone",
           "food_poached_sunscale_salmon",
           "elixir_of_greater_defense",
           "alcohol_rumsey_rum_black_label",
@@ -651,6 +656,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "main_hand_imbue:dense_sharpening_stone",
           "food_smoked_desert_dumpling",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
@@ -688,6 +694,7 @@
         ],
         "consumes": [
           "mighty_rage_potion",
+          "main_hand_imbue:dense_sharpening_stone",
           "food_smoked_desert_dumpling",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
@@ -1274,6 +1281,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "main_hand_imbue:dense_sharpening_stone",
           "off_hand_imbue:dense_sharpening_stone",
           "juju_power",
           "ground_scorpok_assay",
@@ -1308,6 +1316,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "main_hand_imbue:dense_sharpening_stone",
           "off_hand_imbue:dense_sharpening_stone",
           "elixir_of_the_mongoose",
           "juju_power",
@@ -1343,6 +1352,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "main_hand_imbue:dense_sharpening_stone",
           "off_hand_imbue:dense_sharpening_stone",
           "major_mana_potion",
           "elixir_of_the_mongoose",
@@ -2775,7 +2785,8 @@
           "food_poached_sunscale_salmon",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -2808,7 +2819,8 @@
           "food_smoked_desert_dumpling",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -2842,7 +2854,8 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -2877,7 +2890,8 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -3748,7 +3762,8 @@
           "frenzy_potion",
           "off_hand_stone:dense_sharpening_stone",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "main_hand_stone:dense_sharpening_stone"
         ]
       },
       {
@@ -3787,7 +3802,8 @@
           "off_hand_stone:dense_sharpening_stone",
           "elixir_of_the_mongoose",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "main_hand_stone:dense_sharpening_stone"
         ]
       },
       {
@@ -4079,7 +4095,8 @@
           "frenzy_potion",
           "off_hand_stone:dense_sharpening_stone",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "main_hand_stone:dense_sharpening_stone"
         ]
       },
       {
@@ -4118,7 +4135,8 @@
           "off_hand_stone:dense_sharpening_stone",
           "elixir_of_the_mongoose",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "main_hand_stone:dense_sharpening_stone"
         ]
       },
       {
@@ -4410,7 +4428,8 @@
           "frenzy_potion",
           "off_hand_stone:dense_sharpening_stone",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "main_hand_stone:dense_sharpening_stone"
         ]
       },
       {
@@ -4449,7 +4468,8 @@
           "off_hand_stone:dense_sharpening_stone",
           "elixir_of_the_mongoose",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "main_hand_stone:dense_sharpening_stone"
         ]
       },
       {
@@ -6049,7 +6069,8 @@
           "food_poached_sunscale_salmon",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -6082,7 +6103,8 @@
           "food_smoked_desert_dumpling",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -6117,7 +6139,8 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -6221,7 +6244,8 @@
           "off_hand_imbue:dense_sharpening_stone",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -6255,7 +6279,8 @@
           "off_hand_imbue:dense_sharpening_stone",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -6291,7 +6316,8 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "juju_might"
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
         ]
       },
       {
@@ -6394,6 +6420,7 @@
         ],
         "consumes": [
           "food_poached_sunscale_salmon",
+          "main_hand_imbue:dense_sharpening_stone",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
           "r_o_i_d_s",
@@ -6428,6 +6455,7 @@
         ],
         "consumes": [
           "food_poached_sunscale_salmon",
+          "main_hand_imbue:dense_sharpening_stone",
           "elixir_of_greater_defense",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
@@ -6463,6 +6491,7 @@
         ],
         "consumes": [
           "food_smoked_desert_dumpling",
+          "main_hand_imbue:dense_sharpening_stone",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
           "alcohol_rumsey_rum_black_label",
@@ -6499,6 +6528,7 @@
         ],
         "consumes": [
           "food_smoked_desert_dumpling",
+          "main_hand_imbue:dense_sharpening_stone",
           "mighty_rage_potion",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",

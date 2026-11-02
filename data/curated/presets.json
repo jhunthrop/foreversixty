@@ -260,6 +260,11 @@
                 "id": "main_hand_imbue:elemental_sharpening_stone",
                 "label": "Elemental Sharpening Stone",
                 "reason": "Main-hand stone for every melee weapon user, now that Windfury Totem is a raid buff and no longer holds the main-hand imbue slot. An enhancement shaman's Windfury Weapon still wins the slot. A feral druid carries it too: Forever's weapon enchantments work in a form (the druid deep dive), and it measured about 1.8% more damage for the cat (round 10). A rogue keeps the stone beside its poison: Forever lets a stone and a poison share a weapon (the rogue and warlock Deep Dive, 2026-10-07), and the sim carries it in the hand's stone field. Elemental (crit) on the main hand because the engine adds its 2% crit to the whole character, so a second one would count twice."
+              },
+              {
+                "id": "main_hand_imbue:dense_sharpening_stone",
+                "label": "Dense Sharpening Stone",
+                "reason": "The main hand's stone from level 35 until the Elemental Sharpening Stone at 50: 8 weapon damage (item 12404, or Dense Weightstone 12643 on a blunt weapon, the same 8; client level 35). The off hand already carries it from 35 (round 11)."
               }
             ],
             "dual_wield_ids": [
@@ -415,6 +420,11 @@
               "reason": "Survival fights in melee in Forever with a weapon in each hand, so it stones them as a melee dual wielder does: 2% critical strike on the main hand (item 18262, enchant 2506, aura 52); client level 50. With the Dense stone on the off hand it measured 2.4% ahead of no stones (round 9)."
             },
             {
+              "id": "main_hand_imbue:dense_sharpening_stone",
+              "label": "Dense Sharpening Stone",
+              "reason": "The main hand's stone from level 35 until the Elemental Sharpening Stone at 50: 8 weapon damage (item 12404, or Dense Weightstone 12643 on a blunt weapon, the same 8; client level 35). The off hand already carries it from 35 (round 11)."
+            },
+            {
               "id": "off_hand_imbue:dense_sharpening_stone",
               "label": "Dense Sharpening Stone",
               "reason": "Off-hand stone for the melee Survival hunter: 8 weapon damage (item 12404); client level 35."
@@ -523,6 +533,11 @@
               "id": "main_hand_imbue:elemental_sharpening_stone",
               "label": "Elemental Sharpening Stone",
               "reason": "The warrior tank's main-hand stone: 2% critical strike on its own melee attacks (item 18262, enchant 2506, aura 52); client level 50. It measured 1.5 to 1.7% more threat than no stone and about 1% more than a Dense Weightstone for the published mace (round 10)."
+            },
+            {
+              "id": "main_hand_imbue:dense_sharpening_stone",
+              "label": "Dense Sharpening Stone",
+              "reason": "The main hand's stone from level 35 until the Elemental Sharpening Stone at 50: 8 weapon damage (item 12404, or Dense Weightstone 12643 on a blunt weapon, the same 8; client level 35). The off hand already carries it from 35 (round 11)."
             }
           ],
           "paladin-protection": [
@@ -562,6 +577,11 @@
               "id": "main_hand_imbue:elemental_sharpening_stone",
               "label": "Elemental Sharpening Stone",
               "reason": "The melee group's stone, on the bear too: Forever's weapon enchantments work in a form (the druid deep dive), and its 2% critical strike measured 2.2% more threat, ahead of a Dense Weightstone's 1.0% (round 10); client level 50."
+            },
+            {
+              "id": "main_hand_imbue:dense_sharpening_stone",
+              "label": "Dense Sharpening Stone",
+              "reason": "The main hand's stone from level 35 until the Elemental Sharpening Stone at 50: 8 weapon damage (item 12404, or Dense Weightstone 12643 on a blunt weapon, the same 8; client level 35). The off hand already carries it from 35 (round 11)."
             },
             {
               "id": "food_smoked_desert_dumpling",
