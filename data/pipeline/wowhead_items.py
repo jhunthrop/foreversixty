@@ -126,6 +126,15 @@ STAT_KEYS: dict[str, str | None] = {
     "holres": None,
 }
 
+#: Wowhead's name for the client's stat 45, spell power, and for the healing
+#: bonus. A record with `splpwr` and no `splheal` is a "damage and healing"
+#: item (Spritecaster Cape 11623, Gnoll Casting Gloves 892), so the amount
+#: heals too (`gear.MODIFIER_ALSO_GRANTS`). Beside a `splheal`, `splheal` is
+#: the whole healing bonus already (Gemburst Circlet 10751: 9 and 4 read
+#: "healing 9 and damage 4"; Holy Shroud 2721: 22 and 11, the client's 41/42).
+SPELL_POWER_KEY = "splpwr"
+HEALING_KEY = "splheal"
+
 #: Wowhead files rings, necks, trinkets, held items, cloaks, tabards and shirts under
 #: its own negative armour subclasses; the client files cloaks as cloth (1) and the rest
 #: as Miscellaneous (0), which is what ``proficiency.can_equip`` expects.
@@ -366,8 +375,18 @@ PERCENT_STAT_KEYS: dict[str, str] = {
 }
 
 
+def sim_percent_stats(item: WowheadItem) -> dict[str, float]:
+    """The item's flat-percentage rating-family stats (``PERCENT_STAT_KEYS``),
+    as stated: Blackcrow 12651 is 0.9% hit, which the engine reads as 0.9."""
+    out: dict[str, float] = {}
+    for key, planner_key in PERCENT_STAT_KEYS.items():
+        if key in item.stats:
+            out[planner_key] = out.get(planner_key, 0.0) + float(item.stats[key])
+    return {key: amount for key, amount in out.items() if amount}
+
+
 def planner_percent_stats(item: WowheadItem) -> dict[str, int]:
-    """The item's flat-percentage rating-family stats (``PERCENT_STAT_KEYS``)."""
+    """`sim_percent_stats` rounded to the planner's integer contract."""
     out: dict[str, int] = {}
     for key, planner_key in PERCENT_STAT_KEYS.items():
         if key in item.stats:
@@ -388,6 +407,8 @@ def planner_stats(item: WowheadItem, untracked: Counter[str] | None = None) -> d
                 untracked[key] += 1
             continue
         out[planner_key] = out.get(planner_key, 0) + int(round(value))
+    if SPELL_POWER_KEY in item.stats and HEALING_KEY not in item.stats:
+        out["healing"] = out.get("healing", 0) + int(round(item.stats[SPELL_POWER_KEY]))
     for key, amount in planner_percent_stats(item).items():
         out[key] = out.get(key, 0) + amount
     return out

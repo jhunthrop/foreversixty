@@ -390,9 +390,12 @@ def build_wowhead_sim_items(
     for w in items:
         # A percent stat (`wh.PERCENT_STAT_KEYS`) is already a percentage:
         # only the rating part of each entry is divided down.
-        percent = wh.planner_percent_stats(w)
+        # The planner rounds a percentage to its integer contract; the engine
+        # reads the stated float (Blackcrow's 0.9% hit, Might of Hakkar's 0.5%).
+        rounded = wh.planner_percent_stats(w)
+        percent = wh.sim_percent_stats(w)
         ratings = {
-            key: amount - percent.get(key, 0)
+            key: amount - rounded.get(key, 0)
             for key, amount in wh.planner_stats(w, untracked).items()
         }
         stat_pairs: list[tuple[str, float]] = list(

@@ -54,6 +54,7 @@ from pipeline.models import GearItem, Item
 from pipeline.normalize.effects import equip_stat_folds_out_text
 from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
+    MODIFIER_ALSO_GRANTS,
     PLANNER_QUALITIES,
     SLOT_BY_INVENTORY_TYPE,
     STAT_BY_MODIFIER_ID,
@@ -708,7 +709,8 @@ def planner_stats(item: ClassicDbItem) -> dict[str, int]:
         key = STAT_BY_MODIFIER_ID[stat_id]
         if key is None:
             continue
-        stats[key] = stats.get(key, 0) + amount
+        for granted in (key, *MODIFIER_ALSO_GRANTS.get(stat_id, ())):
+            stats[granted] = stats.get(granted, 0) + amount
     return stats
 
 
@@ -990,9 +992,7 @@ def effect_text(
     for slot in item.spells:
         spell = spells.get(slot.spell_id)
         rendered = (
-            _render_spell_text(spell, slot.trigger, item.id, item.name, spells)
-            if spell
-            else None
+            _render_spell_text(spell, slot.trigger, item.id, item.name, spells) if spell else None
         )
         if rendered is None:
             client_name = client_spell_names.get(slot.spell_id)
@@ -1060,9 +1060,7 @@ def to_gear_item(
         if is_weapon and speed > 0
         else 0.0
     )
-    base_icon = _classicdb_client_icon(
-        item.id, client_icon_file_ids or {}, icon_names or {}
-    )
+    base_icon = _classicdb_client_icon(item.id, client_icon_file_ids or {}, icon_names or {})
     icon, icon_source = resolve_icon_name(base_icon, item.id, fork_icons, wowhead_icons)
     stats = planner_stats(item)
     equipped = equip_stats(item, spells)
