@@ -341,10 +341,6 @@ func sameBandOrFirst(ids []int32, original int32) int32 {
 // the id unresolved at the lowest rung that straddles the two levels.
 var rankLevelOverrides = map[string]map[int32]int{
 	"druid": {
-		// Shred rank 1: spellranks.json carries the client's level-20 row;
-		// sim/druid/shred.go's shredLearnLevels starts at 22 (its comment: "the
-		// level-20 rank-0 id is an internal copy, not a player rank").
-		5221: 22,
 		// Primal Bite: client 1.60.1.70707's hotfix made it the Feral
 		// capstone (learned at 40) and moved its ranks; spellranks.json still
 		// carries the pre-hotfix 25/36/48/60, and sim/druid/primal_bite.go's

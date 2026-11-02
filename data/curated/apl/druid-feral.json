@@ -16,7 +16,7 @@
     },
     {
       "id": 9850,
-      "reason": "Claw is the fallback builder for level 20-21, before Shred is learned. Superseding this entry's earlier text (which believed sim/druid/claw.go had no per-rank registration and so this line was permanently inert below level 58): that has since been fixed upstream (registerClawSpell now uses the same per-rank clawSpellID[core.HighestRankAtLevel(...)] lookup Shred and Rake use), and fixing it exposed a real defect the earlier notes did not anticipate -- with no gate, Claw kept firing at every level Shred is also known, since Claw's 45-energy cost (spellconst) undercuts Shred's 60 and won the energy race almost every time (26.5 casts/iteration to Shred's 1.4 at level 60, pre-fix). The line is now gated `not spellIsKnown(Shred)` (see the priority list's own note on this action), so from level 22 on -- every level this rule's zero_casts check flags -- Claw correctly goes idle and Shred, the strictly stronger filler (2.25x multiplier vs Claw's 1x), claims the slot instead. The fallback yielding as designed below level 22, not a defect."
+      "reason": "Claw builds combo points below level 24, before Ferocious Bite (rank 1 Shred does less there); the ladder rungs at 30 and above Shred instead."
     },
     {
       "id": 9835,
@@ -71,6 +71,33 @@
             "spellId": {
               "spellId": 9867,
               "rank": 4
+            }
+          }
+        }
+      },
+      {
+        "notes": "Faerie Fire in Cat Form whenever the target lacks it: Forever's Cat Form (Passive) makes it free with a 6 second cooldown and a 1 second global cooldown, so a cat keeps its own armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsActive": {
+                  "sourceUnit": {
+                    "type": "CurrentTarget"
+                  },
+                  "auraId": {
+                    "spellId": 9907,
+                    "rank": 4
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9907,
+              "rank": 4,
+              "tag": 1
             }
           }
         }
@@ -259,8 +286,16 @@
         }
       },
       {
-        "notes": "Shred builds combo points the rest of the time.",
+        "notes": "Shred builds combo points the rest of the time, from level 24 (Ferocious Bite's first rank is the level marker). Below that, rank 1 Shred (155% weapon damage plus 22 for 60 energy) does less than rank 1 Claw on a level-20 weapon: Claw first measured about 4.6% ahead at band 20, Shred about 5% ahead at band 30.",
         "action": {
+          "condition": {
+            "spellIsKnown": {
+              "spellId": {
+                "spellId": 22829,
+                "rank": 5
+              }
+            }
+          },
           "castSpell": {
             "spellId": {
               "spellId": 9830,
@@ -270,14 +305,14 @@
         }
       },
       {
-        "notes": "Claw is the fallback builder below level 22, before Shred is learned.",
+        "notes": "Claw builds combo points below level 24, before Ferocious Bite: rank 1 Shred, learned at 20 since client 1.60.1.70707, does less there (see the Shred line).",
         "action": {
           "condition": {
             "not": {
               "val": {
                 "spellIsKnown": {
                   "spellId": {
-                    "spellId": 9830,
+                    "spellId": 22829,
                     "rank": 5
                   }
                 }
