@@ -127,14 +127,17 @@ describe('guide content structure', () => {
 
   // Owner ruling, sim-accuracy round 8: Survival's raid card says why its number fell, in
   // words only (prose never quotes a nightly figure).
-  it('tells a Survival raider its number fell with the Forever Strength of Earth value, not the build', () => {
+  // A stable why, not news: the line once said the raid number "fell", which reads wrong as
+  // soon as the refreshed number has been live a while (round 8 integration, owner ruling 5).
+  it("tells a Survival raider why Forever's raid buffs add less than Era's, in words that do not go stale", () => {
     const survival = specGuides.find((g) => g.id === 'hunter/survival');
     const raid = splitOverview(splitSpecSections(survival?.body ?? '').get('Overview') ?? '').raid;
     expect(raid).toContain('Strength of Earth Totem');
     expect(raid).toContain('Curse of Recklessness');
-    expect(raid).toContain('not the build');
+    expect(raid).toContain('Era');
     expect(raid).not.toContain('Horde');
     expect(raid).not.toMatch(/\d/);
+    expect(raid).not.toMatch(/\b(fell|fallen|dropped|lowered|now|today|after the refresh|recently)\b/i);
   });
 
   it('gives every spec guide a Best in slot section in place of Gear', () => {
