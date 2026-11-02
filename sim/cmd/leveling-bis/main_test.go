@@ -324,7 +324,9 @@ func TestRunSpecRetriesWeightsSweepAndUsesTheResolvedResult(t *testing.T) {
 	// Band 20 (significant first try) issues exactly one RunWeights
 	// call; band 30 (insignificant first try) issues two, the second
 	// at weightsRetryIterationsFactor times the ordinary count.
-	want := []int{weightsIterations, weightsIterations, weightsIterations * weightsRetryIterationsFactor}
+	// Band 30 then sweeps its geared character (geared_weights.go), which
+	// the same fake reads noisy then clean again.
+	want := []int{weightsIterations, weightsIterations, weightsIterations * weightsRetryIterationsFactor, weightsIterations, weightsIterations * weightsRetryIterationsFactor}
 	if len(fake.WeightsIterationsSeen) != len(want) {
 		t.Fatalf("WeightsIterationsSeen = %v, want %v", fake.WeightsIterationsSeen, want)
 	}
