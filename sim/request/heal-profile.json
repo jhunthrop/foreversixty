@@ -2,7 +2,7 @@
   "id": "phase1-scaled",
   "label": "Phase 1 tank hits and raid pulses, scaled so gear separates",
   "summary": "One healer's share of a Phase 1 raid fight, scaled up until the strongest raid-ready healer covers about 80 percent of what comes in and the weakest about 60: a tank taking big melee hits, raid-wide damage in regular pulses, and four more raid members to look after, with the healer taking its share of the raid-wide damage.",
-  "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption, and this profile is a stand-in for Phase 1 that is NOT a named boss. It was first sized to an Onyxia-class boss, but at that size the raid-ready healers covered 80 to 97 percent of what came in, healing met the damage, and more healing power changed nothing, so gear tied. The retune rule (design/reviews/2026-10-08-heal-profile-retune.md) is: scale the tank hit size and the raid-wide pulse damage together, keeping their ratio and cadence, by the smallest multiplier at which the strongest raid-ready healer covers about 80 percent of the incoming damage, the weakest about 60, every bare set (no raid consumables) covers less than half, and mana is a live constraint (a bare set's mana runs out before the fight ends for every healer, and a raid set's for at least one). The multiplier chosen was 1.5 on 2026-10-08 and is 1.65 since 2026-11-01: client 1.60.1.70707 gave the Restoration druid Bloom and let heals over time crit (the client flags every trained heal over time PERIODIC_CAN_CRIT, and Blizzard's beta notes of 24 September say so for Rejuvenation), which took the druid to 91 percent at 1.5, and 1.65 is the smallest multiplier that brings every raid set back between about 60 and 85 percent (design/reviews/2026-11-01-sim-audit-round4/hybrids.md). It is 1.85 since 2026-11-02: round 7's engine fixes (Mana Spring stacking with Blessing of Wisdom, Healing Stream counted in the shaman's healing, Oath of Light, Water Shield on raid damage, casts pushed back by the pulses) took the Restoration shaman to 97 percent at 1.65, and 1.85 is the smallest multiplier that brings every raid set back between about 60 and 85 percent on the published gear (design/reviews/2026-11-02-sim-audit-round7/healers.md). The next retune (Phase 2 gear) follows the same rule. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights.",
+  "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption, and this profile is a stand-in for Phase 1 that is NOT a named boss. It was first sized to an Onyxia-class boss, but at that size the raid-ready healers covered 80 to 97 percent of what came in, healing met the damage, and more healing power changed nothing, so gear tied. The retune rule (design/reviews/2026-10-08-heal-profile-retune.md) is: scale the tank hit size and the raid-wide pulse damage together, keeping their ratio and cadence, by the smallest multiplier at which the strongest raid-ready healer covers about 80 percent of the incoming damage, the weakest about 60, every bare set (no raid consumables) covers less than half, and mana is a live constraint (a bare set's mana runs out before the fight ends for every healer, and a raid set's for at least one). The multiplier chosen was 1.5 on 2026-10-08 and is 1.65 since 2026-11-01: client 1.60.1.70707 gave the Restoration druid Bloom and let heals over time crit (the client flags every trained heal over time PERIODIC_CAN_CRIT, and Blizzard's beta notes of 24 September say so for Rejuvenation), which took the druid to 91 percent at 1.5, and 1.65 is the smallest multiplier that brings every raid set back between about 60 and 85 percent (design/reviews/2026-11-01-sim-audit-round4/hybrids.md). It is 1.85 since 2026-11-02: round 7's engine fixes (Mana Spring stacking with Blessing of Wisdom, Healing Stream counted in the shaman's healing, Oath of Light, Water Shield on raid damage, casts pushed back by the pulses) took the Restoration shaman to 97 percent at 1.65, and 1.85 is the smallest multiplier that brings every raid set back between about 60 and 85 percent on the published gear (design/reviews/2026-11-02-sim-audit-round7/healers.md). The next retune (Phase 2 gear) follows the same rule. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights. Every figure above is the level-60 band's. Below 60 each leveling band fights the same fight at its own level, with the damage its own content deals (bands, below): until 2026-11-03 every band fought the level-60 figures, so a level-20 healer covered a few percent of a raid fight and every rank choice below 60 was a healing-per-mana figure.",
   "duration_sec": 300,
   "damage_spread": 0.25,
   "tuning": {
@@ -31,6 +31,222 @@
     "members": 3,
     "reaches_healer": true,
     "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every five seconds three of the five members of the healer's group, the healer among them, take 555, about 333 damage a second spread over the group the healer stands in. The healer is one of the five because raid-wide damage does not skip the player casting the heals; until round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md) it landed only on the four others, so every group heal put a fifth of its healing on a healer who was never hurt. The total is unchanged: three members a pulse, now chosen from five. Scaled by the same 1.85 as the tank hit, so the tank-to-raid ratio and the cadence are what they were."
+  },
+  "bands": {
+    "rule": "Below 60 each band fights the same fight at its own level (owner ruling, sim-accuracy round 10): the same length, cadence, spread and members, with the damage its own content deals and the health a character of the band has. A band's content is the open dungeons whose last boss stands from the band's level to five levels above it, the dungeons a group of that level goes to; at 60 it is the open raid, because the level-60 profile is a raid fight. A last boss's melee damage a second is its creature_template hit, melee attack power over 14 plus the mean of its minimum and maximum melee damage times its damage multiplier, over its attack time (cmangos Creature::UpdateDamagePhysical). A band's damage is the median of its last bosses' melee damage a second times the content's client damage modifier, and the tank hit and the raid pulse both scale by that against the reference band's, so the tank-to-raid ratio stays what it is at 60. The tank's and the members' health scale by the client's expected player health at the band's level against level 60's. The tuning scale multiplies every band alike, so a band keeps its place inside the tuning bounds. A level between two bands fights the band at or below it, the way rank choices run from one band to the next, and a level below 20 fights band 20. Each row states its derived figures, and loading refuses a row whose figures are not the rule's.",
+    "window_levels": 5,
+    "reference_level": 60,
+    "notes": "Client 1.60.1.70707 holds no creature's damage: CreatureDifficulty lists 184 creatures and none of these bosses, and ExpectedStat's creature columns are one generic curve with no line between a dungeon boss and a raid boss (scaling the level-60 raid fight down that curve left a level-20 healer covering about a tenth of the fight and dry inside 30 seconds, the very fault the ruling names). So the bosses' damage is creature_template's (cmangos classic-db, the commit data/pipeline/classic_quest_levels.py pins), their levels are creature_template's and Wowhead's Forever tooltips agree on every one, and the client supplies the rest: ExpectedStat (the Classic set, ExpansionID -2, row id = level) gives PlayerHealth; ContentTuningXExpected rows 3400 to 3428 give every Classic dungeon's content tuning (5237 to 5256, which LFGDungeons names) ExpectedStatMod 489, creature melee and spell damage times 1.2, while the raids' tuning (4509) has none, so the dungeon bands carry 1.2 and the raid 1.0. That modifier is one client table with no Blizzard post behind it. Shadowfang Keep (Archmage Arugal, 26), Blackfathom Deeps (Aku'mai, 28), the Stockade (Bazil Thredd, 29), Scarlet Monastery's Library (Arcanist Doan, 37), Uldaman (Archaedas, 47) and Zul'Farrak (Chief Ukorz Sandscalp, 48) fall between bands under the five-level window; Forever's new dungeons state no boss in either source and are left out. The last bosses of the band-30 dungeons are casters with light melee, so band 30's damage is band 20's while its health is higher: the content says so, and the rule does not smooth it.",
+    "rows": [
+      {
+        "level": 20,
+        "content": [
+          {
+            "name": "The Deadmines",
+            "last_boss": "Edwin VanCleef",
+            "npc_id": 639,
+            "boss_level": 21,
+            "min_melee_dmg": 23.0,
+            "max_melee_dmg": 30.0,
+            "damage_multiplier": 2.45,
+            "melee_attack_power": 74,
+            "melee_base_attack_time_ms": 1500
+          },
+          {
+            "name": "Wailing Caverns",
+            "last_boss": "Mutanus the Devourer",
+            "npc_id": 3654,
+            "boss_level": 22,
+            "min_melee_dmg": 32.0,
+            "max_melee_dmg": 42.0,
+            "damage_multiplier": 2.4,
+            "melee_attack_power": 78,
+            "melee_base_attack_time_ms": 2000
+          }
+        ],
+        "content_damage_mod": 1.2,
+        "player_health": 503,
+        "tank_health": 1836,
+        "member_health": 966,
+        "tank_hit_damage": 124,
+        "pulse_damage": 32
+      },
+      {
+        "level": 30,
+        "content": [
+          {
+            "name": "Razorfen Kraul",
+            "last_boss": "Charlga Razorflank",
+            "npc_id": 4421,
+            "boss_level": 33,
+            "min_melee_dmg": 43.0,
+            "max_melee_dmg": 57.0,
+            "damage_multiplier": 1.7,
+            "melee_attack_power": 104,
+            "melee_base_attack_time_ms": 2000
+          },
+          {
+            "name": "Gnomeregan",
+            "last_boss": "Mekgineer Thermaplugg",
+            "npc_id": 7800,
+            "boss_level": 34,
+            "min_melee_dmg": 47.3,
+            "max_melee_dmg": 62.8,
+            "damage_multiplier": 2.4,
+            "melee_attack_power": 114,
+            "melee_base_attack_time_ms": 2000
+          },
+          {
+            "name": "Scarlet Monastery Graveyard",
+            "last_boss": "Bloodmage Thalnos",
+            "npc_id": 4543,
+            "boss_level": 34,
+            "min_melee_dmg": 44.0,
+            "max_melee_dmg": 58.0,
+            "damage_multiplier": 1.7,
+            "melee_attack_power": 106,
+            "melee_base_attack_time_ms": 2000
+          }
+        ],
+        "content_damage_mod": 1.2,
+        "player_health": 878,
+        "tank_health": 3204,
+        "member_health": 1687,
+        "tank_hit_damage": 124,
+        "pulse_damage": 32
+      },
+      {
+        "level": 40,
+        "content": [
+          {
+            "name": "Scarlet Monastery Armory",
+            "last_boss": "Herod",
+            "npc_id": 3975,
+            "boss_level": 40,
+            "min_melee_dmg": 70.0,
+            "max_melee_dmg": 93.0,
+            "damage_multiplier": 3.3,
+            "melee_attack_power": 136,
+            "melee_base_attack_time_ms": 2500
+          },
+          {
+            "name": "Razorfen Downs",
+            "last_boss": "Amnennar the Coldbringer",
+            "npc_id": 7358,
+            "boss_level": 41,
+            "min_melee_dmg": 55.0,
+            "max_melee_dmg": 72.0,
+            "damage_multiplier": 4.0,
+            "melee_attack_power": 132,
+            "melee_base_attack_time_ms": 2000
+          },
+          {
+            "name": "Scarlet Monastery Cathedral",
+            "last_boss": "High Inquisitor Whitemane",
+            "npc_id": 3977,
+            "boss_level": 42,
+            "min_melee_dmg": 58.0,
+            "max_melee_dmg": 77.0,
+            "damage_multiplier": 2.0,
+            "melee_attack_power": 142,
+            "melee_base_attack_time_ms": 2000
+          }
+        ],
+        "content_damage_mod": 1.2,
+        "player_health": 1353,
+        "tank_health": 4938,
+        "member_health": 2599,
+        "tank_hit_damage": 294,
+        "pulse_damage": 77
+      },
+      {
+        "level": 50,
+        "content": [
+          {
+            "name": "Maraudon",
+            "last_boss": "Princess Theradras",
+            "npc_id": 12201,
+            "boss_level": 51,
+            "min_melee_dmg": 344.0,
+            "max_melee_dmg": 444.0,
+            "damage_multiplier": 1.0,
+            "melee_attack_power": 182,
+            "melee_base_attack_time_ms": 2000
+          },
+          {
+            "name": "Sunken Temple",
+            "last_boss": "Shade of Eranikus",
+            "npc_id": 5709,
+            "boss_level": 55,
+            "min_melee_dmg": 316.0,
+            "max_melee_dmg": 408.0,
+            "damage_multiplier": 1.0,
+            "melee_attack_power": 167,
+            "melee_base_attack_time_ms": 1208
+          }
+        ],
+        "content_damage_mod": 1.2,
+        "player_health": 1928,
+        "tank_health": 7036,
+        "member_health": 3703,
+        "tank_hit_damage": 677,
+        "pulse_damage": 177
+      },
+      {
+        "level": 60,
+        "content": [
+          {
+            "name": "Onyxia's Lair",
+            "last_boss": "Onyxia",
+            "npc_id": 10184,
+            "boss_level": 63,
+            "min_melee_dmg": 109.8,
+            "max_melee_dmg": 145.6,
+            "damage_multiplier": 15.0,
+            "melee_attack_power": 268,
+            "melee_base_attack_time_ms": 2000
+          }
+        ],
+        "content_damage_mod": 1.0,
+        "player_health": 2603,
+        "tank_health": 9500,
+        "member_health": 5000,
+        "tank_hit_damage": 2128,
+        "pulse_damage": 555
+      }
+    ],
+    "sources": [
+      {
+        "label": "cmangos classic-db creature_template (commit ec4f596146be6467ea93c57397858e329e2db852): the last bosses' levels and melee damage",
+        "url": "https://github.com/cmangos/classic-db/blob/ec4f596146be6467ea93c57397858e329e2db852/Full_DB/ClassicDB_1_12_1_z2815.sql.gz",
+        "kind": "site"
+      },
+      {
+        "label": "cmangos mangos-classic, Creature::UpdateDamagePhysical: a creature's hit from its template",
+        "url": "https://github.com/cmangos/mangos-classic/blob/master/src/game/Entities/StatSystem.cpp",
+        "kind": "site"
+      },
+      {
+        "label": "Wowhead Forever NPC tooltips (checked 2026-11-02): every last boss's level agrees with creature_template; Onyxia is a skull (63)",
+        "url": "https://nether.wowhead.com/forever/tooltip/npc/639",
+        "kind": "site"
+      },
+      {
+        "label": "wago.tools, ExpectedStat, client 1.60.1.70707 (PlayerHealth)",
+        "url": "https://wago.tools/db2/ExpectedStat/csv?build=1.60.1.70707",
+        "kind": "site"
+      },
+      {
+        "label": "wago.tools, ContentTuningXExpected and ExpectedStatMod row 489, client 1.60.1.70707",
+        "url": "https://wago.tools/db2/ContentTuningXExpected/csv?build=1.60.1.70707",
+        "kind": "site"
+      },
+      {
+        "label": "wago.tools, LFGDungeons, client 1.60.1.70707 (each dungeon's content tuning)",
+        "url": "https://wago.tools/db2/LFGDungeons/csv?build=1.60.1.70707",
+        "kind": "site"
+      }
+    ]
   },
   "sources": [
     {
