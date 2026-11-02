@@ -101,6 +101,7 @@ The largest shares:
 
 ## Still open
 
+- **The sub-20 level penalty (X2) is server-core evidence only.** Its formula comes from cmangos and vmangos; the Forever client carries no coefficient penalty field, and no Forever log below level 20 has been fitted. Treat the -2 to -4% at band 20 as unverified until a level-15-to-19 log settles it (wow-player review, integration).
 - **Swiftmend's amount.** The engine heals the consumed effect's snapshot with its periodic modifiers and skips Swiftmend's own. The client names Swiftmend in Gift of Nature's direct effect and in a second Genesis effect (1223081 eff1, mask Swiftmend only). vmangos multiplies the consumed tick (modifiers included) by Swiftmend's own modifiers. Either model is within about ±1%. One logged Swiftmend beside the consumed Rejuvenation's tick settles it.
 - **The rank rewrite below 60 lifts the deliberate band-60 downranks.** Renew rank 3 and Power Word: Shield rank 4 become the top learned rank at bands 30 to 50. The downrank rule was only ever measured at 60, so this is a rotation policy question for the owner, not a client mismatch.
 - **Improved Power Word: Shield scope** (base only, or base plus healing power), **Holy Binding and Divine Aegis on overheal**, and **Inner Focus's crit on Penance's first pulse.** Each needs an in-game log.
