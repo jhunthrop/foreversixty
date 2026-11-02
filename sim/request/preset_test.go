@@ -469,6 +469,18 @@ func TestEachConsumableSlotCarriesTheFirstUsableEntry(t *testing.T) {
 		// Survival is melee in Forever and stones both hands.
 		{"hunter-survival", 60, "main_hand_imbue:elemental_sharpening_stone"},
 		{"hunter-survival", 40, "off_hand_imbue:dense_sharpening_stone"},
+		// Forever's 30-second potions share the potion timer (round 10).
+		{"rogue-combat", 60, "major_frenzy_potion"},
+		{"rogue-subtlety", 40, "frenzy_potion"},
+		{"hunter-survival", 60, "major_frenzy_potion"},
+		{"hunter-survival", 50, "major_mana_potion"},
+		{"hunter-beast-mastery", 60, "major_mana_potion"},
+		{"shaman-enhancement", 60, "major_frenzy_potion"},
+		{"mage-frost", 60, "major_spellblasting_potion"},
+		{"mage-fire", 60, "major_mana_potion"},
+		{"druid-balance", 60, "major_spellblasting_potion"},
+		{"priest-shadow", 60, "major_spellblasting_potion"},
+		{"paladin-protection", 60, "major_spellblasting_potion"},
 	} {
 		if got := ConsumesAtLevel(all[c.spec], c.level); !slices.Contains(got, c.food) {
 			t.Errorf("%s at %d eats no %s: %v", c.spec, c.level, c.food, got)

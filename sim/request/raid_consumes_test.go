@@ -140,7 +140,7 @@ func TestRaidConsumesGiveRoguesTheirPoisons(t *testing.T) {
 		}
 	}
 	survival := got["hunter-survival"]
-	for _, id := range []string{"major_mana_potion", "juju_might"} {
+	for _, id := range []string{"major_frenzy_potion", "juju_might"} {
 		if !slices.Contains(survival, id) {
 			t.Errorf("hunter-survival: %v has no %s", survival, id)
 		}

@@ -198,6 +198,7 @@ lets the two share a weapon, and the engine refuses anything else there.
 | `food_smoked_desert_dumpling` | Consumes.food |
 | `food_smoked_sagefish` | Consumes.food |
 | `food_tender_wolf_steak` | Consumes.food |
+| `frenzy_potion` | Consumes.default_potion |
 | `gizzard_gum` | Consumes.zanza_buff |
 | `great_rage_potion` | Consumes.default_potion |
 | `greater_arcane_elixir` | Consumes.spell_power_buff |
@@ -271,8 +272,10 @@ lets the two share a weapon, and the engine refuses anything else there.
 | `main_hand_stone:windfury_weapon` | Consumes.main_hand_stone |
 | `main_hand_stone:wizard_oil` | Consumes.main_hand_stone |
 | `main_hand_stone:wound_poison` | Consumes.main_hand_stone |
+| `major_frenzy_potion` | Consumes.default_potion |
 | `major_healing_potion` | Consumes.default_potion |
 | `major_mana_potion` | Consumes.default_potion |
+| `major_spellblasting_potion` | Consumes.default_potion |
 | `mana_potion` | Consumes.default_potion |
 | `mighty_rage_potion` | Consumes.default_potion |
 | `off_hand_imbue:blessed_wizard_oil` | Consumes.off_hand_imbue |
@@ -330,6 +333,7 @@ lets the two share a weapon, and the engine refuses anything else there.
 | `scroll_of_protection` | Consumes.armor_elixir |
 | `scroll_of_strength` | Consumes.strength_buff |
 | `sheen_of_zanza` | Consumes.zanza_buff |
+| `spellblasting_potion` | Consumes.default_potion |
 | `spirit_of_zanza` | Consumes.zanza_buff |
 | `superior_healing_potion` | Consumes.default_potion |
 | `superior_mana_potion` | Consumes.default_potion |

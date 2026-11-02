@@ -218,6 +218,28 @@ describe('the consumable lines against the published presets', () => {
     }
     expect([...missing]).toEqual([]);
   });
+
+  it('has a line for every consumable the curated raid preset names, before a refresh publishes it', () => {
+    const curated = JSON.parse(readFileSync(path.join(REPO, 'data/curated/presets.json'), 'utf8')) as {
+      presets: {
+        raid: {
+          consumes: {
+            groups: Record<string, { ids: { id: string }[]; dual_wield_ids?: { id: string }[] }>;
+            by_class: Record<string, { id: string }[]>;
+            by_spec: Record<string, { id: string }[]>;
+          };
+        };
+      };
+    };
+    const consumes = curated.presets.raid.consumes;
+    const entries = [
+      ...Object.values(consumes.groups).flatMap((group) => [...group.ids, ...(group.dual_wield_ids ?? [])]),
+      ...Object.values(consumes.by_class).flat(),
+      ...Object.values(consumes.by_spec).flat(),
+    ];
+    const missing = new Set(entries.map((entry) => entry.id).filter((id) => CONSUMABLE_GIVES[id] === undefined));
+    expect([...missing]).toEqual([]);
+  });
 });
 
 describe('loadGearExtras for Frost Mage, from the real data', () => {
