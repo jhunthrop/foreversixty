@@ -58,6 +58,12 @@ import (
 // OTHER value context (Cmp, Math, Min/Max, a bare condition) tolerates
 // a nilled-out operand the same way AND/OR does - dropping the action
 // is safe wherever a spellId can appear, not just inside AND/OR.
+// RewriteRotationRanks is rewriteRotationRanks for a rotation file read
+// outside the embedded APLs (spec-breakdown's -rotation).
+func RewriteRotationRanks(raw []byte, class string, level int) ([]byte, error) {
+	return rewriteRotationRanks(raw, class, level)
+}
+
 func rewriteRotationRanks(raw []byte, class string, level int) ([]byte, error) {
 	var root map[string]any
 	if err := json.Unmarshal(raw, &root); err != nil {
