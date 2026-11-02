@@ -12,7 +12,9 @@ from pipeline.loot.buffs import (
     fork_tables,
     ids_md_ids,
     load_overrides,
+    merge_simbuffs,
 )
+from pipeline.models import BuffOverride, SimBuffEntry
 
 HERE = Path(__file__).parent
 ENGINE = HERE / "fixtures/loot"
@@ -89,9 +91,7 @@ def test_an_override_naming_both_or_neither_id_is_refused(tmp_path):
         (tmp_path / "simbuffs.json").write_text(
             json.dumps(
                 {
-                    "sources": [
-                        {"label": "l", "url": "https://x.invalid", "kind": "site"}
-                    ],
+                    "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
                     "notes": "x",
                     "entries": {"curse_of_elements": entry},
                 }
@@ -127,5 +127,73 @@ def test_the_real_override_file_is_sourced_and_covers_only_real_ids():
     document = json.loads((CURATED / "simbuffs.json").read_text(encoding="utf-8"))
     assert document["sources"] and document["notes"].strip()
     real = set(ids_md_ids(Path("../sim/request/IDS.md").read_text(encoding="utf-8")))
+    # A weapon imbue's override is keyed by its second half ("windfury"), which
+    # covers the main and off hand, imbue and stone ids together.
+    real |= {buff_id.split(":", 1)[1] for buff_id in real if ":" in buff_id}
     assert set(document["entries"]) <= real
     assert len(document["entries"]) >= 13
+
+
+# Round 10 (platform): IDS.md's weapon imbues are qualified ids, and the row
+# pattern stopped at the colon, so not one of the 96 had a name or an icon and
+# the /sim panel's weapon section drew humanised ids with no art.
+IMBUE_IDS_MD = """## Buffs
+
+| id | lands in |
+| --- | --- |
+| `blessing_of_might` | IndividualBuffs |
+| `blessing_of_might:improved` | IndividualBuffs |
+
+## Consumables
+
+| id | sets |
+| --- | --- |
+| `main_hand_imbue:wizard_oil` | Consumes.main_hand_imbue |
+| `off_hand_stone:wizard_oil` | Consumes.off_hand_stone |
+| `main_hand_imbue:windfury_weapon` | Consumes.main_hand_imbue |
+| `main_hand_imbue:windfury` | Consumes.main_hand_imbue |
+"""
+SPELLS = {
+    "wizard_oil": ("Wizard Oil", "temp"),
+    "windfury_weapon": ("Windfury Weapon", "spell_nature_cyclone"),
+    "blessing_of_might": ("Blessing of Might", "spell_holy_fistofjustice"),
+}
+ITEMS = {"wizard_oil": ("Wizard Oil", "inv_potion_104")}
+
+
+def test_ids_md_yields_weapon_imbue_ids_but_not_improved_grades():
+    assert ids_md_ids(IMBUE_IDS_MD) == [
+        "blessing_of_might",
+        "main_hand_imbue:windfury",
+        "main_hand_imbue:windfury_weapon",
+        "main_hand_imbue:wizard_oil",
+        "off_hand_stone:wizard_oil",
+    ]
+
+
+def test_a_weapon_imbue_takes_its_items_name_and_icon_before_the_enchant_spells():
+    windfury = BuffOverride(name="Windfury Totem", spell_id=8512)
+    entries = build_simbuffs(
+        ids_md_ids(IMBUE_IDS_MD),
+        [SPELLS, ITEMS],
+        {"windfury": windfury},
+        lambda item_id, spell_id: f"icon-{item_id}-{spell_id}",
+        item_tables=[ITEMS],
+    ).entries
+    assert entries["main_hand_imbue:wizard_oil"] == SimBuffEntry(
+        name="Wizard Oil", icon="inv_potion_104"
+    )
+    assert entries["off_hand_stone:wizard_oil"] == entries["main_hand_imbue:wizard_oil"]
+    assert entries["main_hand_imbue:windfury_weapon"].icon == "spell_nature_cyclone"
+    assert entries["main_hand_imbue:windfury"] == SimBuffEntry(
+        name="Windfury Totem", icon="icon-0-8512"
+    )
+    # An unqualified id still joins spells first, as before.
+    assert entries["blessing_of_might"].icon == "spell_holy_fistofjustice"
+
+
+def test_the_merge_night_names_a_new_weapon_imbue_from_the_item_too():
+    out = merge_simbuffs(
+        ["main_hand_imbue:wizard_oil"], [SPELLS, ITEMS], {}, {}, item_tables=[ITEMS]
+    )
+    assert out.entries["main_hand_imbue:wizard_oil"].icon == "inv_potion_104"

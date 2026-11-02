@@ -11,7 +11,7 @@ const names = {
 describe('buffLabel', () => {
   it('is the build’s own name when it has one', () => {
     expect(buffLabel('battle_shout', names)).toBe('Battle Shout');
-    expect(buffLabel('main_hand_imbue:shadow_oil', names)).toBe('Shadow Oil');
+    expect(buffLabel('main_hand_imbue:shadow_oil', names)).toBe('Main hand imbue: Shadow Oil');
   });
 
   it('humanises the id when the build has no table, rather than showing “Unknown”', () => {
@@ -21,6 +21,15 @@ describe('buffLabel', () => {
 
   it('humanises a qualified id by its own half, keeping the qualifier', () => {
     expect(buffLabel('off_hand_imbue:frost_oil', EMPTY_BUFF_NAMES)).toBe('Off hand imbue: Frost oil');
+  });
+
+  // Round 10: simbuffs.json now names each weapon imbue by its oil or stone, the same
+  // name for both hands, so the row says which hand and field it fills.
+  it("names a weapon imbue by the build's oil and keeps which hand it is", () => {
+    const names = {
+      entries: { 'off_hand_stone:wizard_oil': { name: 'Wizard Oil', icon: 'inv_potion_104' } },
+    };
+    expect(buffLabel('off_hand_stone:wizard_oil', names)).toBe('Off hand stone: Wizard Oil');
   });
 
   it('leaves a client item id alone: there is nothing to humanise', () => {

@@ -29,13 +29,14 @@ export function loadBuffNames(build: string): Promise<BuffNames> {
  */
 export function buffLabel(id: string, names: BuffNames | null): string {
   const known = names?.entries[id]?.name;
-  if (known !== undefined && known !== '') return known;
+  const named = known !== undefined && known !== '' ? known : null;
   const colon = id.indexOf(':');
-  if (colon === -1) return humanise(id);
+  if (colon === -1) return named ?? humanise(id);
   const qualifier = id.slice(0, colon);
   const rest = id.slice(colon + 1);
-  if (qualifier === 'item') return id;
-  return `${humanise(qualifier)}: ${humanise(rest)}`;
+  if (qualifier === 'item') return named ?? id;
+  // The build names a weapon imbue by its oil or stone, the same for either hand.
+  return `${humanise(qualifier)}: ${named ?? humanise(rest)}`;
 }
 
 /** The build's icon for an id, or null when there is none to draw. */

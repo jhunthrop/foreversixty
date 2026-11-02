@@ -387,6 +387,20 @@ def raid_buff_icon_names(curated_dir: Path = Path("curated")) -> set[str]:
     return {entry["icon"] for entry in json.loads(path.read_text(encoding="utf-8"))["buffs"]}
 
 
+def simbuff_icon_names(build_dir: Path) -> set[str]:
+    """Every icon `simbuffs.json` names: the /sim page's buff panel draws
+    one beside each buff, debuff, elixir, food, potion and weapon imbue.
+    No talent, item, rotation or raid-buff list names most of them (an
+    elixir, a food, an oil), so without this their art 404s. `icons` runs
+    before `loot` on a full night, so a new id's icon follows a night later.
+    Empty before the build's first loot run."""
+    path = build_dir / "simbuffs.json"
+    if not path.exists():
+        return set()
+    entries = json.loads(path.read_text(encoding="utf-8"))["entries"]
+    return {entry["icon"] for entry in entries.values() if entry.get("icon")}
+
+
 def wanted_icons(
     build_dir: Path, names: dict[int, str], extra: frozenset[str] = frozenset()
 ) -> dict[int, str]:
@@ -449,6 +463,7 @@ def icons_for_build(
         rotation_icon_names(build_dir, curated_dir)
         | spec_icon_names(curated_dir)
         | raid_buff_icon_names(curated_dir)
+        | simbuff_icon_names(build_dir)
     )
     wanted = wanted_icons(build_dir, names, frozenset(extra))
 

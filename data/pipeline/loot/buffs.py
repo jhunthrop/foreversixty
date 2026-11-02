@@ -41,7 +41,10 @@ IDS_MD = Path("../sim/request/IDS.md")
 #: Normalised name -> (display name, icon).
 type NameTable = dict[str, tuple[str, str]]
 
-_ROW = re.compile(r"^\| `([a-z0-9_]+)` \|", re.M)
+_ROW = re.compile(r"^\| `([a-z0-9_]+(?::[a-z0-9_]+)?)` \|", re.M)
+#: A graded buff's stronger grade ("blessing_of_might:improved"): the panel
+#: draws it as its base id's row, so it needs no entry of its own.
+IMPROVED = ":improved"
 #: The IDS.md sections whose ids this file covers. "Professions" is
 #: deliberately absent: those are character slugs, not buffs.
 _SECTIONS = ("## Buffs", "## Consumables")
@@ -70,8 +73,16 @@ def ids_md_ids(text: str) -> list[str]:
         if marker not in text:
             raise BuffError(f"{marker!r} is not in IDS.md; its shape changed")
         section = text.split(marker, 1)[1].split("\n## ", 1)[0]
-        found |= set(_ROW.findall(section))
+        found |= {buff_id for buff_id in _ROW.findall(section) if not buff_id.endswith(IMPROVED)}
     return sorted(found)
+
+
+def named_part(buff_id: str) -> tuple[bool, str]:
+    """(qualified, the part a name joins on). A weapon imbue's id names its
+    hand and field first ("main_hand_imbue:brilliant_wizard_oil"); its name
+    and icon are the oil's, and the page says which hand."""
+    qualifier, _, rest = buff_id.partition(":")
+    return (True, rest) if rest else (False, qualifier)
 
 
 def _candidates(buff_id: str) -> list[str]:
@@ -90,6 +101,13 @@ def fork_tables(fork: ForkDatabase) -> list[NameTable]:
     """The fork's own icon tables: name and icon in one row, so no client
     lookup is needed for the 97 ids they cover."""
     return [_table_from(fork.spell_icon_rows), _table_from(fork.item_icon_rows)]
+
+
+def fork_item_table(fork: ForkDatabase) -> NameTable:
+    """The fork's item icon rows alone: a weapon imbue that is an item (an
+    oil, a stone, a poison) takes the item's icon, the one in the player's
+    bag, before a same-named enchant spell's (Wizard Oil's spell is 'temp')."""
+    return _table_from(fork.item_icon_rows)
 
 
 def _table_from(rows: tuple[dict, ...]) -> NameTable:
@@ -175,30 +193,43 @@ def load_overrides(
     return overrides
 
 
+def override_for(buff_id: str, overrides: dict[str, BuffOverride]) -> BuffOverride | None:
+    """The id's own override, else (for a weapon imbue) its oil's or totem's."""
+    qualified, part = named_part(buff_id)
+    return overrides.get(buff_id) or (overrides.get(part) if qualified else None)
+
+
+def joined_name(
+    buff_id: str,
+    names: list[str],
+    tables: list[NameTable],
+    item_tables: list[NameTable],
+) -> tuple[str, str] | None:
+    """The first table row a spelling of `names` reaches, item tables first
+    for a weapon imbue."""
+    qualified, _ = named_part(buff_id)
+    order = [*item_tables, *tables] if qualified else tables
+    return next((table[n] for n in names for table in order if n in table), None)
+
+
 def build_simbuffs(
     ids: list[str],
     tables: list[NameTable],
     overrides: dict[str, BuffOverride],
     icon_for: IconFor,
+    item_tables: list[NameTable] | None = None,
 ) -> SimBuffsFile:
     entries: dict[str, SimBuffEntry] = {}
     unresolved: list[str] = []
     for buff_id in ids:
-        override = overrides.get(buff_id)
+        override = override_for(buff_id, overrides)
         if override is not None:
             entries[buff_id] = SimBuffEntry(
                 name=override.name,
                 icon=icon_for(override.item_id, override.spell_id),
             )
             continue
-        found = None
-        for candidate in _candidates(buff_id):
-            for table in tables:
-                if candidate in table:
-                    found = table[candidate]
-                    break
-            if found is not None:
-                break
+        found = joined_name(buff_id, _candidates(named_part(buff_id)[1]), tables, item_tables or [])
         if found is None:
             unresolved.append(buff_id)
             continue
@@ -217,6 +248,7 @@ def merge_simbuffs(
     tables: list[NameTable],
     existing: dict[str, SimBuffEntry],
     overrides: dict[str, BuffOverride],
+    item_tables: list[NameTable] | None = None,
 ) -> SimBuffsFile:
     """The merge-only night's `simbuffs.json`: every id IDS.md lists, kept
     as the committed file names it, with a new id (an engine buff the
@@ -234,17 +266,10 @@ def merge_simbuffs(
         if kept is not None:
             entries[buff_id] = kept
             continue
-        names = [overrides[buff_id].name] if buff_id in overrides else []
-        names += _candidates(buff_id)
-        found = next(
-            (
-                table[normalise(name)]
-                for name in names
-                for table in tables
-                if normalise(name) in table
-            ),
-            None,
-        )
+        override = override_for(buff_id, overrides)
+        names = [normalise(override.name)] if override is not None else []
+        names += _candidates(named_part(buff_id)[1])
+        found = joined_name(buff_id, names, tables, item_tables or [])
         if found is None:
             unresolved.append(buff_id)
             continue

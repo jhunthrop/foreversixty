@@ -11,7 +11,7 @@
       "kind": "site"
     }
   ],
-  "notes": "The thirteen sim request ids the engine spells differently from the client, so no name join reaches them. Each names the client row it means; the icon is that row's, read off the build. Four Atiesh ids share one item (22589) and differ only in which class's proc they name, which is why their display names are written out. `curse_of_elements` is the client's 'Curse of the Elements'; `elixir_of_firepower` is 'Elixir of Fire Power' (6373) and `elixir_of_ogres_strength` is 'Elixir of Ogre Strength' (3391), both without the engine's spelling; Delete an entry the day the join reaches it. The five Forever healer consumables (Greater Mageblood Elixir, Cleric's and Greater Cleric's Elixir, Elixir of Sages, Sage's Tea) are named here because the fork carries them with a placeholder icon; each points at its client item row so the icon is the client's.",
+  "notes": "The thirteen sim request ids the engine spells differently from the client, so no name join reaches them. Each names the client row it means; the icon is that row's, read off the build. Four Atiesh ids share one item (22589) and differ only in which class's proc they name, which is why their display names are written out. `curse_of_elements` is the client's 'Curse of the Elements'; `elixir_of_firepower` is 'Elixir of Fire Power' (6373) and `elixir_of_ogres_strength` is 'Elixir of Ogre Strength' (3391), both without the engine's spelling; Delete an entry the day the join reaches it. The five Forever healer consumables (Greater Mageblood Elixir, Cleric's and Greater Cleric's Elixir, Elixir of Sages, Sage's Tea) are named here because the fork carries them with a placeholder icon; each points at its client item row so the icon is the client's. Baked Salmon (13935) and Poached Sunscale Salmon (13932), round 9's raid foods, are named here because the fork's same-named spell rows carry the Seal of Kings placeholder; each points at its client item row. `windfury` is the second half of the four weapon-imbue ids `main_hand_imbue:windfury` and its kin: the engine's WeaponImbue Windfury, the Windfury Totem's own weapon effect, which no client row spells 'Windfury'; it takes Windfury Totem rank 1 (spell 8512). Every other weapon imbue joins on its oil, stone, poison or shaman weapon name.",
   "entries": {
     "atiesh_druid": {
       "item_id": 22589,
@@ -57,6 +57,10 @@
       "item_id": 250338,
       "name": "Elixir of Sages"
     },
+    "food_baked_salmon": {
+      "item_id": 13935,
+      "name": "Baked Salmon"
+    },
     "food_bless_sunfruit": {
       "item_id": 13810,
       "name": "Blessed Sunfruit"
@@ -64,6 +68,10 @@
     "food_dirges_kick_chimaerok_chops": {
       "item_id": 21023,
       "name": "Dirge's Kickin' Chimaerok Chops"
+    },
+    "food_poached_sunscale_salmon": {
+      "item_id": 13932,
+      "name": "Poached Sunscale Salmon"
     },
     "food_sages_tea": {
       "item_id": 249870,
@@ -84,6 +92,10 @@
     "sapper_goblin_sapper": {
       "item_id": 10646,
       "name": "Goblin Sapper Charge"
+    },
+    "windfury": {
+      "spell_id": 8512,
+      "name": "Windfury Totem"
     }
   }
 }

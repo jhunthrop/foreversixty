@@ -55,6 +55,7 @@ from pipeline.loot.buffs import (
     SIMBUFFS,
     build_simbuffs,
     client_tables,
+    fork_item_table,
     fork_tables,
     ids_md_ids,
     load_overrides,
@@ -337,6 +338,8 @@ def write_loot_files(
         fork_tables(fork) + client,
         load_overrides(curated_dir),
         icon_for,
+        # client_tables returns [spells, items]: an oil's icon is its item's.
+        item_tables=[fork_item_table(fork), client[1]],
     )
     write_records(enchants, build_dir / ENCHANTS)
     write_records(suffixes, build_dir / SUFFIXES)
@@ -399,13 +402,17 @@ def merge_loot_files(
     committed_simbuffs = load_simbuffs(build_dir)
     if committed_simbuffs:
         name_tables = fork_tables(fork)
+        item_tables = [fork_item_table(fork)]
         if all((build_dir / "raw" / name).exists() for name in CLIENT_NAME_TABLES):
-            name_tables += client_tables(build_dir, build_dir / "raw")[0]
+            client = client_tables(build_dir, build_dir / "raw")[0]
+            name_tables += client
+            item_tables.append(client[1])
         simbuffs = merge_simbuffs(
             ids_md_ids(IDS_MD.read_text(encoding="utf-8")),
             name_tables,
             committed_simbuffs,
             load_overrides(curated_dir),
+            item_tables=item_tables,
         )
         write_document(simbuffs, build_dir / SIMBUFFS)
     _log_loot_run("loot-merge", run)

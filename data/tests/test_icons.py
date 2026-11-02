@@ -16,6 +16,7 @@ from pipeline.icons import (
     raid_buff_icon_names,
     resolve_icon_name,
     rotation_icon_names,
+    simbuff_icon_names,
     spec_icon_names,
     wanted_icons,
 )
@@ -471,6 +472,28 @@ def test_raid_buff_icon_names_is_empty_without_the_curated_file(tmp_path: Path):
 def test_the_real_raid_buff_list_names_the_two_icons_the_export_lacked():
     names = raid_buff_icon_names(Path(__file__).resolve().parents[1] / "curated")
     assert {"spell_nature_regeneration", "spell_holy_fistofjustice"} <= names
+
+
+# Round 10 (platform): the /sim buff panel draws simbuffs.json's icons, and no
+# talent, item, rotation or raid-buff list names an elixir, a food or an oil, so
+# their art was never downloaded and the panel's rows were 404s in production.
+def test_simbuff_icon_names_reads_every_buff_panel_icon(tmp_path: Path):
+    (tmp_path / "simbuffs.json").write_text(
+        json.dumps(
+            {
+                "entries": {
+                    "food_grilled_squid": {"name": "Grilled Squid", "icon": "inv_misc_fish_13"},
+                    "main_hand_imbue:wizard_oil": {"name": "Wizard Oil", "icon": "inv_potion_104"},
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert simbuff_icon_names(tmp_path) == {"inv_misc_fish_13", "inv_potion_104"}
+
+
+def test_simbuff_icon_names_is_empty_before_the_first_loot_build(tmp_path: Path):
+    assert simbuff_icon_names(tmp_path) == set()
 
 
 def test_spec_icon_names_is_empty_without_a_curated_specs_file(tmp_path: Path):
