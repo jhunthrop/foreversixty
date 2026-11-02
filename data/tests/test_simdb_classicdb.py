@@ -280,14 +280,19 @@ def test_the_clients_own_crit_link_replaces_classic_dbs_crit():
     The client's crit wins: 1% on its own table."""
     breadth, breadth_spells = _crit_trinket(13965, 7598, 52, 0)
     eye, eye_spells = _crit_trinket(13968, 18382, 71, 126)
-    client_crit = {13965: {"melee_crit": 1.0}, 13968: {"spell_crit": 1.0}}
+    from pipeline.simdb.equip import ClientEquipStats
+
+    client_crit = {
+        13965: ClientEquipStats(stats={"melee_crit": 1.0}, stated=frozenset({"melee_crit"})),
+        13968: ClientEquipStats(stats={"spell_crit": 1.0}, stated=frozenset({"spell_crit"})),
+    }
     built = {
         item.id: item
         for item in build_classicdb_sim_items(
             [breadth, eye],
             {**breadth_spells, **eye_spells},
             RATING_FACTORS,
-            client_crit=client_crit,
+            client_stats=client_crit,
         )
     }
     tables = ("StatCrit", "StatMeleeCrit", "StatSpellCrit")
@@ -307,5 +312,104 @@ def test_classic_dbs_crit_stands_where_the_client_links_none():
     Forever planner and the 70707 client carry, 222 Era aura-52 and 104 Era
     aura-71 items are crit rating (ItemSparse stat 32, every table)."""
     breadth, spells = _crit_trinket(13965, 7598, 52, 0)
-    built = build_classicdb_sim_items([breadth], spells, RATING_FACTORS, client_crit={})
+    built = build_classicdb_sim_items([breadth], spells, RATING_FACTORS, client_stats={})
     assert built[0].stats[pb.Stat.Value("StatCrit")] == pytest.approx(2.0)
+
+
+def _client_link_rows(links: dict[int, int]) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+    """ItemEffect and ItemXItemEffect rows linking each item to one on-equip spell."""
+    effects = [
+        {"ID": str(n), "TriggerType": "1", "SpellID": str(spell)}
+        for n, spell in enumerate(links.values(), start=1)
+    ]
+    link_rows = [
+        {"ID": str(n), "ItemEffectID": str(n), "ItemID": str(item)}
+        for n, item in enumerate(links, start=1)
+    ]
+    return effects, link_rows
+
+
+def _effect(spell: int, aura: int, points: float, misc: int = 0, index: int = 0) -> dict[str, str]:
+    return {
+        "SpellID": str(spell),
+        "EffectIndex": str(index),
+        "Effect": "6",
+        "EffectAura": str(aura),
+        "EffectBasePointsF": str(points),
+        "EffectMiscValue_0": str(misc),
+        "EffectMiscValue_1": "0",
+        "DifficultyID": "0",
+    }
+
+
+def test_the_clients_own_stat_links_replace_classic_dbs_era_stats():
+    """Classic-db items with no ItemSparse row whose 1.60.1.70707 client links
+    state Forever's own amounts (sim audit round 11, items lane):
+    Royal Seal of Eldre'Thalas 18467 is 1318479, 18 spell damage and healing
+    (Era 23); Counterattack Lodestone 18537 is 1318938, 30 attack power (Era
+    22; Era's 1% parry, which the client does not restate, stays). Trueaim
+    Gauntlets 13255 is 1301127 "Increased Hit Chance - Ranged - 03" (aura 54,
+    3), restricted to ranged weapons, so the engine applies it to ranged
+    attacks and Era's every-table 1% hit goes. Auras the sim does not read
+    (102, attack power against creature types) are skipped, not classified."""
+    from pipeline.simdb.equip import index_spell_effects, item_client_stats
+
+    effects, links = _client_link_rows({18467: 1318479, 18537: 1318938, 13255: 1301127})
+    by_spell = index_spell_effects(
+        [
+            _effect(1318479, 13, 18, misc=126),
+            _effect(1318479, 135, 18, misc=126, index=1),
+            _effect(1318938, 99, 30),
+            _effect(1318938, 124, 30, index=1),
+            _effect(1318938, 102, 30, misc=256, index=2),
+            _effect(1301127, 54, 3),
+        ]
+    )
+    client = item_client_stats(effects, links, by_spell, {18467, 18537, 13255}, {1301127})
+    assert client[18467].stats == {"spell_power": 18.0, "healing": 18.0}
+    assert client[18537].stats == {"attack_power": 30.0}
+    assert client[13255].stats == {}
+    assert "hit" in client[13255].stated
+
+    def era_item(item_id: int, era_spell: int, auras: list[tuple[int, int, int]]) -> tuple:
+        from pipeline.classicdb_items import ClassicDbSpell, ClassicDbSpellEffect, ItemSpellSlot
+
+        item = _trinket(
+            id=item_id,
+            spells=[ItemSpellSlot(spell_id=era_spell, trigger=1, classic_db_name="Era")],
+        )
+        spell = ClassicDbSpell(
+            id=era_spell,
+            proc_chance=101,
+            effects=[
+                ClassicDbSpellEffect(
+                    effect=6, aura=a, base_points=p - 1, die_sides=1, misc_value=m, trigger_spell=0
+                )
+                for a, p, m in auras
+            ],
+        )
+        return item, {era_spell: spell}
+
+    seal, seal_spells = era_item(18467, 900001, [(13, 23, 126), (135, 23, 0)])
+    lodestone, lodestone_spells = era_item(18537, 900002, [(47, 1, 0), (99, 22, 0)])
+    trueaim, trueaim_spells = era_item(13255, 900003, [(54, 1, 0)])
+    built = {
+        item.id: item.stats
+        for item in build_classicdb_sim_items(
+            [seal, lodestone, trueaim],
+            {**seal_spells, **lodestone_spells, **trueaim_spells},
+            RATING_FACTORS,
+            client_stats=client,
+        )
+    }
+
+    def stat(item_id: int, name: str) -> float:
+        stats = built[item_id]
+        index = pb.Stat.Value(name)
+        return stats[index] if index < len(stats) else 0.0
+
+    assert stat(18467, "StatSpellPower") == pytest.approx(18.0)
+    assert stat(18467, "StatHealingPower") == pytest.approx(18.0)
+    assert stat(18537, "StatAttackPower") == pytest.approx(30.0)
+    assert stat(18537, "StatParry") == pytest.approx(1.0)
+    assert stat(13255, "StatHit") == 0.0

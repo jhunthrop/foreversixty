@@ -563,31 +563,64 @@ CRIT_KEYS = frozenset({"crit", *CRIT_TABLE_KEYS})
 CRIT_AURAS = (AURA_MELEE_CRIT, AURA_SPELL_CRIT, AURA_CRIT_ALL, AURA_SPELL_CRIT_SCHOOL)
 
 
-def item_crit_bonuses(
+#: The auras `item_client_stats` reads: the flat stats, the crit tables, and
+#: the four that read EffectMiscValue_0. Any other aura on a classic-db item's
+#: link (a proc, a creature-type bonus) is skipped, never classified.
+CLIENT_LINK_AURAS = frozenset(
+    {*STAT_AURAS, *CRIT_AURAS, AURA_DAMAGE_DONE, AURA_RESISTANCE, AURA_MOD_STAT, AURA_MOD_SKILL}
+)
+#: Stat keys that replace each other as one: a client that states any crit
+#: (or any hit) replaces every crit (or hit) key Era's row states.
+LINKED_KEY_GROUPS: tuple[frozenset[str], ...] = (CRIT_KEYS, frozenset({"hit", "spell_hit"}))
+#: What a ranged-weapon-only spell leaves to the engine (its scoped attacks).
+RANGED_BOUND_KEYS = frozenset({"hit", "spell_hit", *CRIT_KEYS})
+
+
+@dataclass(frozen=True)
+class ClientEquipStats:
+    """What an item's client links state: `stats` to add, and `stated`, every
+    key they speak to, including the ranged-weapon-only hit and crit the
+    engine applies and `stats` therefore leaves out."""
+
+    stats: dict[str, float]
+    stated: frozenset[str]
+
+    def replaced(self, key: str) -> bool:
+        """Whether the client's links replace Era's `key`."""
+        group = next((g for g in LINKED_KEY_GROUPS if key in g), frozenset({key}))
+        return bool(group & self.stated)
+
+
+def item_client_stats(
     item_effect_rows: list[dict[str, str]],
     item_x_item_effect_rows: list[dict[str, str]],
     effects_by_spell: dict[int, list[dict[str, str]]],
     item_ids: Container[int],
-) -> dict[int, dict[str, float]]:
-    """Item id -> the crit its on-equip spells state, per table, for the items
-    whose client links state any. Only the crit auras are read, so an item no
-    other path keeps (classic-db's supplement) needs none of its other auras
-    classified."""
-    out: dict[int, dict[str, float]] = {}
+    ranged_weapon_spells: Container[int] = frozenset(),
+) -> dict[int, ClientEquipStats]:
+    """Item id -> what its on-equip client links state, for the items whose
+    links state any stat (`CLIENT_LINK_AURAS`). A spell the client restricts
+    to ranged weapons (`ranged_weapon_spells`) states its hit and crit for
+    the engine to apply to ranged attacks, so they are stated but not
+    added."""
+    out: dict[int, ClientEquipStats] = {}
     for item_id, spell_ids in item_effect_spells(
         item_effect_rows, item_x_item_effect_rows, item_ids
     ).items():
-        crit_rows = {
+        rows = {
             spell: [
                 row
                 for row in effects_by_spell.get(spell, [])
-                if row["Effect"] == APPLY_AURA and int(row["EffectAura"]) in CRIT_AURAS
+                if row["Effect"] == APPLY_AURA and int(row["EffectAura"]) in CLIENT_LINK_AURAS
             ]
             for spell in spell_ids
         }
-        stats = spell_bonus(spell_ids, crit_rows).stats
-        if stats:
-            out[item_id] = stats
+        free = spell_bonus([s for s in spell_ids if s not in ranged_weapon_spells], rows).stats
+        bound = spell_bonus([s for s in spell_ids if s in ranged_weapon_spells], rows).stats
+        stats = {**free, **{k: v for k, v in bound.items() if k not in RANGED_BOUND_KEYS}}
+        stated = frozenset(free) | frozenset(bound)
+        if stated:
+            out[item_id] = ClientEquipStats(stats=stats, stated=stated)
     return out
 
 

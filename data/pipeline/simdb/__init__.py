@@ -59,7 +59,7 @@ from pipeline.simdb.equip import (
     equip_bonuses,
     feral_form_spells,
     index_spell_effects,
-    item_crit_bonuses,
+    item_client_stats,
     item_effect_spells,
 )
 from pipeline.simdb.equip_fill import with_wowhead_equip_stats
@@ -297,6 +297,7 @@ def build_sim_database(
     # wowhead already covered. A build with no committed extract
     # (`fetch-classic-sources` never ran for it) is unchanged, the same
     # optional-source contract the wowhead branch above already has.
+    equipped_items = _optional(raw, "SpellEquippedItems")
     classicdb_extract = cdb.load_extract(build_dir)
     if classicdb_extract is not None:
         classicdb_records, classicdb_spells = classicdb_extract
@@ -310,11 +311,12 @@ def build_sim_database(
             set_names,
             fork_columns,
             classicdb_untracked,
-            client_crit=item_crit_bonuses(
+            client_stats=item_client_stats(
                 item_effect_rows,
                 link_rows,
                 effects_by_spell,
                 {row.id for row in classicdb_supplement},
+                ranged_weapon_only_spells(equipped_items),
             ),
         )
         sources.update({item.id: "classic-db" for item in classicdb_sim_items})
@@ -334,7 +336,6 @@ def build_sim_database(
         block_values.update(shield_block_values(wh.load_items(wowhead_path)))
     items = with_shield_block(items, block_values)
 
-    equipped_items = _optional(raw, "SpellEquippedItems")
     database = pb.SimDatabase(
         items=items,
         enchants=build_sim_enchants(

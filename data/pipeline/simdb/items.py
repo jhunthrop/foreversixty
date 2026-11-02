@@ -34,7 +34,7 @@ from pipeline.normalize.gear import (
     resolve_item_values,
 )
 from pipeline.normalize.item_curves import ItemCurves
-from pipeline.simdb.equip import CRIT_KEYS, SpellBonus
+from pipeline.simdb.equip import ClientEquipStats, SpellBonus
 from pipeline.simdb.ratings import convert_rating_stats
 from pipeline.simdb.statmap import stat_array, weapon_skill_array
 from pipeline.simdb.weapons import WeaponCurves, weapon_damage
@@ -447,20 +447,20 @@ def _classicdb_class_allowlist(item: cdb.ClassicDbItem) -> list[int]:
     )
 
 
-def _equip_stats_with_client_crit(
+def _equip_stats_with_client_links(
     row: cdb.ClassicDbItem,
     spells: Mapping[int, cdb.ClassicDbSpell],
-    client_crit: Mapping[int, Mapping[str, float]],
+    client_stats: Mapping[int, ClientEquipStats],
 ) -> dict[str, float]:
-    """classic-db's on-equip stats, with the client's crit in place of Era's
-    where the client links any (`build_classicdb_sim_items`)."""
+    """classic-db's on-equip stats, with the client's own amount in place of
+    Era's for every key its links state (`build_classicdb_sim_items`)."""
     stats: dict[str, float] = dict(cdb.equip_stats(row, dict(spells)))
-    crit = client_crit.get(row.id)
-    if not crit:
+    client = client_stats.get(row.id)
+    if client is None:
         return stats
     return {
-        **{key: amount for key, amount in stats.items() if key not in CRIT_KEYS},
-        **crit,
+        **{key: amount for key, amount in stats.items() if not client.replaced(key)},
+        **client.stats,
     }
 
 
@@ -471,7 +471,7 @@ def build_classicdb_sim_items(
     set_names: Mapping[int, str] | None = None,
     fork_columns: Mapping[int, tuple[list[int], str]] | None = None,
     untracked: Counter[str] | None = None,
-    client_crit: Mapping[int, Mapping[str, float]] | None = None,
+    client_stats: Mapping[int, ClientEquipStats] | None = None,
 ) -> list[pb.SimItem]:
     """`SimItem` rows for classic-db's supplement -- the ids neither the
     client's own `ItemSparse` nor wowhead's Forever gear-planner scrape carry
@@ -502,13 +502,16 @@ def build_classicdb_sim_items(
     unsuffixed, the state a caller with no fork columns at all (no engine
     checkout) leaves every OTHER item in too.
 
-    `client_crit` (`equip.item_crit_bonuses`) is the crit the 1.60 client's
-    own item links state for an id it has no ItemSparse row for. Where it
-    states any, it replaces classic-db's Era crit: Blackhand's Breadth is
-    Era's 2% crit (7598) but the client's 1% melee and ranged (1318954), and
-    Eye of the Beast Era's 2% spell crit (18382) but the client's 1% spell
-    crit (1318956). Elsewhere classic-db's crit stands as every-table crit,
-    as Forever re-itemised Era's percent crit into crit rating.
+    `client_stats` (`equip.item_client_stats`) is what the 1.60 client's own
+    item links state for an id it has no ItemSparse row for. For every key
+    they state, the client's amount replaces classic-db's Era one; crit and
+    hit each replace as a group. Blackhand's Breadth is Era's 2% crit (7598)
+    but the client's 1% melee and ranged (1318954); Royal Seal of
+    Eldre'Thalas 18467 is Era's 23 spell damage and healing but the client's
+    18 (1318479); Trueaim Gauntlets' hit is the client's ranged-only 3%, which
+    the engine applies, not Era's every-table 1%. Elsewhere classic-db's
+    stats stand, its crit as every-table crit, as Forever re-itemised Era's
+    percent crit into crit rating.
 
     An item whose `InventoryType` this module does not equip at all
     (`ITEM_TYPE_BY_INVENTORY_TYPE` -- relics, InventoryType 28, are the one
@@ -517,7 +520,7 @@ def build_classicdb_sim_items(
     """
     set_names = set_names or {}
     fork_columns = fork_columns or {}
-    client_crit = client_crit or {}
+    client_stats = client_stats or {}
     out: list[pb.SimItem] = []
     for row in items:
         inventory = row.inventory_type
@@ -531,7 +534,7 @@ def build_classicdb_sim_items(
         )
         if row.armor and row.class_id == ITEM_CLASS_ARMOR:
             stat_pairs.append(("armor", float(row.armor)))
-        stat_pairs.extend(_equip_stats_with_client_crit(row, spells, client_crit).items())
+        stat_pairs.extend(_equip_stats_with_client_links(row, spells, client_stats).items())
 
         item = pb.SimItem(
             id=row.id,
