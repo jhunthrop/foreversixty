@@ -338,6 +338,13 @@ const pvpRankCap = 10
 //
 // An unranked source carrying a TitleRank (round 8) is gated on that rank,
 // so relabelling a source does not move default eligibility.
+//
+// Owner ruling, round 9 (2026-11-02): the cap keeps reading TitleRank for
+// now, as a realism rule, since high-rank PvP gear takes weeks to earn.
+// It should switch to the item's honor cost once the client links honor
+// costs to items. Today it does not: ItemExtendedCost (1.60.1.70707) names
+// a cost's money, items and currencies but not the item it prices, and the
+// vendor-to-cost link is server-side.
 func pvpRankExceedsCap(s itemSource) bool {
 	return max(s.Rank, s.TitleRank) > pvpRankCap
 }
