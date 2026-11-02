@@ -337,6 +337,14 @@ heal-profile-sync:
 rank-choices-sync:
 	cp data/curated/rank-choices.json sim/request/rank-choices.json
 
+.PHONY: ladder-first-sync
+# ladder-first-sync copies the curated per-spec leveling reservations (talent
+# ranks a spec's band builds take before the top-row-down walk) to the file
+# sim/leveling embeds. data/curated/ladder-first.json is the single source;
+# sim/leveling's TestEmbeddedLadderFirstMatchesCurated fails when the copy is stale.
+ladder-first-sync:
+	cp data/curated/ladder-first.json sim/leveling/ladder-first.json
+
 .PHONY: apl-sync
 # apl-sync copies every WRITTEN curated rotation into the two places that
 # run one. data/curated/apl/<spec>.json's `rotation` block is the single

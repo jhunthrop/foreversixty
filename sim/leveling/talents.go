@@ -203,7 +203,15 @@ const pointsPerTier = 5
 // reaches its defining ability only at the last few points. The reserved
 // ranks are paid for by the rows the walk would have filled last, and
 // never by dropping a talent the plain walk gave a rank (spendOwnTree).
-func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIndex, level int) string {
+//
+// ForSpec replaces the spine with the spec's curated reservation where it has one
+// (ladder_first.go): those ranks of its own tree are taken first, each once the build can
+// legally hold it.
+func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIndex, level int, opts ...LadderOption) string {
+	var cfg ladderConfig
+	for _, opt := range opts {
+		opt(&cfg)
+	}
 	remaining := max(level-9, 0)
 	digits := make([][]int, len(activeTrees))
 	for i, tree := range activeTrees {
@@ -220,9 +228,13 @@ func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIn
 		if ti < 0 || ti >= len(activeTrees) {
 			continue
 		}
-		if ti == ownTreeIndex {
+		switch {
+		case ti == ownTreeIndex && len(cfg.first) > 0:
+			steps := reservedRanks(activeTrees[ti], targets, cfg.first)
+			remaining = spendReserved(digits[ti], activeTrees[ti], targets, steps, remaining)
+		case ti == ownTreeIndex:
 			remaining = spendOwnTree(digits[ti], activeTrees[ti], targets, remaining)
-		} else {
+		default:
 			remaining = spendTree(digits[ti], activeTrees[ti], targets, nil, remaining)
 		}
 	}

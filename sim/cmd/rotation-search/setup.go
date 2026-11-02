@@ -118,7 +118,7 @@ func guideEngineTalents(o options, spec specInfo, clientBuild string) (string, e
 		return "", err
 	}
 	targets := leveling.GuideTalentTargets(guideTrees, digits)
-	talents := leveling.LadderTalentString(activeTrees, targets, spec.TreeIndex, o.level)
+	talents := leveling.LadderTalentString(activeTrees, targets, spec.TreeIndex, o.level, leveling.ForSpec(spec.Spec))
 
 	engineDir := o.engineSrc
 	if engineDir == "" {
