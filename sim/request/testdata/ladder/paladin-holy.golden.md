@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-00000000000000000-00000000000000000 | main_hand:277247 | 10.0 | 1 | spell:639=32.2 | {SpellID: 1328548}, {SpellID: 20216} |
-| 20 | 50320100000000000-00000000000000000-00000000000000000 | main_hand:286977 | 13.3 | 2 | spell:19750=53.5, spell:647=5.8 | {SpellID: 1328548}, {SpellID: 20216} |
-| 30 | 50320215012000000-00000000000000000-00000000000000000 | main_hand:9604 | 26.9 | 3 | spell:19939=67.0, other:mana_gain=9.4, spell:1042=4.1, spell:20216=3.0 | {SpellID: 1311606}, {SpellID: 1328548} |
-| 38 | 50320215012101240-00000000000000000-00000000000000000 | main_hand:9604 | 45.9 | 6 | spell:19940=58.9, other:mana_gain=8.7, spell:3472=3.2, spell:20216=3.0, spell:1328548=1.0 | - |
-| 40 | 50320215012101251-00000000000000000-00000000000000000 | main_hand:7723 | 48.9 | 6 | spell:19940=58.5, other:mana_gain=8.7, spell:3472=3.8, spell:20216=3.0, spell:1328548=1.0 | - |
-| 50 | 50320215012101251-50320000000000000-00000000000000000 | main_hand:7723 | 68.5 | 6 | spell:19942=47.7, other:mana_gain=7.5, spell:20216=3.0, spell:10328=3.0, spell:1328548=1.0 | - |
-| 60 | 50320215012101251-50322000000000000-05030000000000000 | main_hand:23455 | 82.5 | 5 | spell:19941=57.1, spell:19943=15.9, other:mana_gain=14.3, spell:20216=3.0, spell:10329=2.5 | - |
+| 10 | 10000000000000000-00000000000000000-00000000000000000 | main_hand:277247 | 9.8 | 1 | spell:639=32.2 | {SpellID: 1328548}, {SpellID: 20216} |
+| 20 | 50320100000000000-00000000000000000-00000000000000000 | main_hand:286977 | 13.1 | 2 | spell:19750=53.5, spell:647=5.8 | {SpellID: 1328548}, {SpellID: 20216} |
+| 30 | 50320215012000000-00000000000000000-00000000000000000 | main_hand:9604 | 25.1 | 4 | spell:19750=85.6, other:mana_gain=8.2, spell:1042=4.2, spell:20216=3.0, spell:19939=0.3 | {SpellID: 1311606}, {SpellID: 1328548} |
+| 38 | 50320215012101240-00000000000000000-00000000000000000 | main_hand:9604 | 47.1 | 7 | spell:19750=98.4, other:mana_gain=9.0, spell:3472=4.0, spell:20216=3.0, spell:1328548=1.0 | - |
+| 40 | 50320215012101251-00000000000000000-00000000000000000 | main_hand:7723 | 54.6 | 7 | spell:19750=82.3, spell:647=18.9, other:mana_gain=8.9, spell:20216=2.8, spell:1328548=1.0 | - |
+| 50 | 50320215012101251-50320000000000000-00000000000000000 | main_hand:7723 | 76.1 | 7 | spell:19750=88.7, spell:647=27.0, other:mana_gain=9.9, spell:20216=3.0, spell:1328548=1.0 | - |
+| 60 | 50320215012101251-50322000000000000-05030000000000000 | main_hand:23455 | 105.5 | 7 | spell:19750=167.2, other:mana_gain=23.6, spell:10329=5.2, spell:20216=3.0, spell:1328548=1.0 | - |
 
 ## Learned but unused (informational)
 

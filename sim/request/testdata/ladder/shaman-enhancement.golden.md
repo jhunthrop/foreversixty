@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 15.7 | 5 | other:attack/1=70.3, spell:3606=69.9, spell:8044=20.0, spell:3599=5.9, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
-| 20 | 0000000000000000-254000000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 25.6 | 5 | other:attack/1=121.6, spell:6350=69.8, spell:8045=17.0, spell:6363=5.1, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
-| 30 | 0000000000000000-255130030002000000-0000000000000000 | main_hand:7687 off_hand:4066 | 42.2 | 5 | other:attack/1=77.8, spell:6351=70.5, spell:8046=13.5, spell:6364=4.5, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
-| 38 | 0000000000000000-255130030005102020-0000000000000000 | main_hand:868 off_hand:4652 | 58.5 | 8 | other:attack/1=88.0, spell:6351=34.2, spell:17364=21.2, spell:10391=4.0, spell:6364=2.1 | - |
-| 40 | 0000000000000000-255130030005102031-0000000000000000 | main_hand:2164 off_hand:4652 | 64.5 | 9 | other:attack/1=102.7, spell:6352=35.9, spell:17364=16.1, spell:10391=10.6, spell:20572=2.0 | - |
-| 50 | 3200300000000000-255130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 94.8 | 9 | other:attack/1=94.7, spell:10435=54.8, spell:17364=21.1, spell:15207=12.1, spell:10437=2.8 | - |
-| 60 | 3200330000000000-255130030005102051-0520000000000000 | main_hand:22802 off_hand:22819 | 151.8 | 9 | other:attack/1=112.0, spell:10436=69.7, spell:17364=22.9, spell:15208=14.9, spell:10438=3.4 | - |
+| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 14.8 | 5 | other:attack/1=70.3, spell:3606=69.9, spell:8044=20.0, spell:3599=5.9, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
+| 20 | 0000000000000000-254000000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 24.6 | 5 | other:attack/1=121.6, spell:6350=69.8, spell:8045=17.0, spell:6363=5.1, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
+| 30 | 0000000000000000-255130030002000000-0000000000000000 | main_hand:7687 off_hand:4066 | 39.9 | 5 | other:attack/1=77.3, spell:6351=70.3, spell:8046=13.2, spell:6364=4.5, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
+| 38 | 0000000000000000-255130030005102020-0000000000000000 | main_hand:868 off_hand:4652 | 56.6 | 7 | other:attack/1=86.0, spell:6351=34.8, spell:17364=21.3, spell:10391=4.4, spell:6364=2.2 | - |
+| 40 | 0000000000000000-255130030005102031-0000000000000000 | main_hand:2164 off_hand:4652 | 62.6 | 8 | other:attack/1=100.8, spell:6352=36.1, spell:17364=16.8, spell:10391=10.7, spell:6365=2.0 | - |
+| 50 | 3200300000000000-255130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 95.5 | 9 | other:attack/1=95.2, spell:10435=54.8, spell:17364=21.3, spell:15207=12.2, spell:10437=2.7 | - |
+| 60 | 3200330000000000-255130030005102051-0520000000000000 | main_hand:22802 off_hand:22819 | 154.4 | 9 | other:attack/1=113.1, spell:10436=69.5, spell:17364=22.9, spell:15208=15.2, spell:10438=3.4 | - |
 
 ## Learned but unused (informational)
 

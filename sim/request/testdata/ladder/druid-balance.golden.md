@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-00000000000000000000-0000000000000000 | main_hand:263937 | 7.5 | 3 | other:attack/1=56.7, spell:5177=35.2, spell:8924=3.9, spell:1259799=1.5 | {SpellID: 29166}, {SpellID: 408248}, {SpellID: 9876} |
-| 20 | 5231000000000000-00000000000000000000-0000000000000000 | main_hand:890 | 16.9 | 4 | spell:5178=74.7, other:attack/1=11.5, spell:8925=10.5, spell:1259799=1.5, spell:2912=0.1 | {SpellID: 29166}, {SpellID: 408248}, {SpellID: 5570} |
-| 30 | 5232221112000000-00000000000000000000-0000000000000000 | main_hand:9604 | 27.5 | 5 | spell:5180=56.8, other:attack/1=24.8, spell:8927=7.5, spell:24974=5.4, spell:1259799=1.5 | {SpellID: 29166}, {SpellID: 408248} |
-| 38 | 5232221115100130-00000000000000000000-0000000000000000 | main_hand:1664 | 40.4 | 5 | spell:6780=54.8, other:attack/1=22.7, spell:8928=7.4, spell:24974=5.3, spell:1259799=1.5 | {SpellID: 29166} |
-| 40 | 5232221115100141-00000000000000000000-0000000000000000 | main_hand:1664 | 57.2 | 6 | spell:6780=50.4, other:attack/1=17.0, spell:8929=9.7, spell:24975=8.3, spell:8950=7.8 | - |
-| 50 | 5232221115100151-00000000000000000000-5400000000000000 | main_hand:9527 | 88.5 | 6 | spell:8905=52.6, other:attack/1=22.4, spell:9833=10.1, spell:24976=8.9, spell:9875=7.1 | - |
-| 60 | 5232221115100151-00000000000000000000-5533030000000000 | main_hand:22799 | 163.2 | 6 | spell:9912=63.8, spell:9835=10.5, spell:24977=9.8, spell:9876=9.3, other:attack/1=2.2 | - |
+| 10 | 1000000000000000-00000000000000000000-0000000000000000 | main_hand:263937 | 7.2 | 3 | other:attack/1=56.7, spell:5177=35.2, spell:8924=3.9, spell:1259799=1.5 | {SpellID: 29166}, {SpellID: 408248}, {SpellID: 9876} |
+| 20 | 5231000000000000-00000000000000000000-0000000000000000 | main_hand:890 | 16.5 | 4 | spell:5178=74.7, other:attack/1=11.5, spell:8925=10.5, spell:1259799=1.5, spell:2912=0.1 | {SpellID: 29166}, {SpellID: 408248}, {SpellID: 5570} |
+| 30 | 5232221112000000-00000000000000000000-0000000000000000 | main_hand:9604 | 25.6 | 5 | spell:5179=70.0, other:attack/1=19.7, spell:5570=11.9, spell:8925=10.3, spell:1259799=1.5 | {SpellID: 29166}, {SpellID: 408248} |
+| 38 | 5232221115100130-00000000000000000000-0000000000000000 | main_hand:1664 | 35.5 | 5 | spell:5179=74.0, spell:5570=12.7, other:attack/1=12.1, spell:8925=11.1, spell:1259799=1.5 | {SpellID: 29166} |
+| 40 | 5232221115100141-00000000000000000000-0000000000000000 | main_hand:1664 | 55.2 | 6 | spell:6780=50.4, other:attack/1=17.1, spell:8929=9.7, spell:24975=8.3, spell:8950=7.7 | - |
+| 50 | 5232221115100151-00000000000000000000-5400000000000000 | main_hand:9527 | 85.3 | 6 | spell:8905=52.8, other:attack/1=22.5, spell:9833=10.1, spell:24976=8.9, spell:9875=7.0 | - |
+| 60 | 5232221115100151-00000000000000000000-5533030000000000 | main_hand:22799 | 157.1 | 6 | spell:9912=63.8, spell:9835=10.5, spell:24977=9.7, spell:9876=9.3, other:attack/1=2.1 | - |
 
 ## Learned but unused (informational)
 
@@ -129,25 +130,31 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 3029)
 - Entangling Roots (spell 5195)
 - Ferocious Bite (spell 1328618)
+- Insect Swarm (spell 24974)
 - Lacerate (spell 1328617)
 - Maul (spell 6809)
+- Moonfire (spell 8927)
 - Rake (spell 1822)
 - Rip (spell 9492)
 - Shred (spell 6800)
 - Swipe (spell 780)
+- Wrath (spell 5180)
 
 ### Level 38
 
 - Claw (spell 5201)
 - Entangling Roots (spell 5196)
 - Ferocious Bite (spell 22568)
+- Insect Swarm (spell 24974)
 - Lacerate (spell 1328616)
 - Maul (spell 8972)
+- Moonfire (spell 8928)
 - Rake (spell 1823)
 - Ravage (spell 6785)
 - Rip (spell 9493)
 - Shred (spell 8992)
 - Swipe (spell 769)
+- Wrath (spell 6780)
 
 ### Level 40
 

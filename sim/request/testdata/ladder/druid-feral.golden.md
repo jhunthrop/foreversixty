@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:4570 | 6.1 | 3 | spell:5177=32.1, other:attack/1=22.4, spell:8924=2.4, spell:1259799=1.5 | {SpellID: 1322605}, {SpellID: 9850} |
-| 20 | 0000000000000000-50212010000000000000-0000000000000000 | bare | 56.1 | 5 | other:attack/1=182.1, spell:1082=49.3, spell:1079=9.4, spell:770/1=5.8, spell:1259799=1.5 | {SpellID: 1322605}, {SpellID: 22829} |
-| 30 | 0000000000000000-50212032123000000000-0000000000000000 | bare | 79.5 | 5 | other:attack/1=182.1, spell:6800=47.6, spell:9492=8.9, spell:778/1=5.9, spell:1259799=1.5 | {SpellID: 1322605} |
-| 38 | 0000000000000000-50212032123012122000-0000000000000000 | bare | 93.4 | 6 | other:attack/1=182.1, spell:8992=45.9, spell:9493=9.8, spell:778/1=5.8, spell:1259799=1.5 | {SpellID: 1322605} |
-| 40 | 0000000000000000-50212032123012123001-0000000000000000 | bare | 103.1 | 7 | other:attack/1=182.1, spell:8992=52.7, spell:9493=11.5, spell:1322605=8.1, spell:778/1=5.7 | - |
-| 50 | 0000000000000000-50212032123012123001-5500000000000000 | bare | 125.1 | 7 | other:attack/1=182.1, spell:9829=52.6, spell:9752=11.5, spell:1322605=8.0, spell:9749/1=5.8 | - |
-| 60 | 0000000000000000-50212032123012123001-5550230000000000 | bare | 178.7 | 7 | other:attack/1=182.1, spell:9830=54.2, spell:9896=11.8, spell:1322605=9.8, spell:9907/1=5.8 | - |
+| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:4570 | 5.9 | 3 | spell:5177=32.1, other:attack/1=22.4, spell:8924=2.4, spell:1259799=1.5 | {SpellID: 1322605}, {SpellID: 9850} |
+| 20 | 0000000000000000-50212010000000000000-0000000000000000 | bare | 54.0 | 5 | other:attack/1=182.1, spell:1082=49.3, spell:1079=9.4, spell:770/1=5.8, spell:1259799=1.5 | {SpellID: 1322605}, {SpellID: 22829} |
+| 30 | 0000000000000000-50212032123000000000-0000000000000000 | bare | 76.9 | 5 | other:attack/1=182.1, spell:6800=47.6, spell:9492=8.9, spell:778/1=5.9, spell:1259799=1.5 | {SpellID: 1322605} |
+| 38 | 0000000000000000-50212032123012122000-0000000000000000 | bare | 90.1 | 6 | other:attack/1=182.1, spell:8992=46.1, spell:9493=9.6, spell:778/1=5.8, spell:1259799=1.5 | {SpellID: 1322605} |
+| 40 | 0000000000000000-50212032123012123001-0000000000000000 | bare | 99.8 | 7 | other:attack/1=182.1, spell:8992=53.1, spell:9493=11.2, spell:1322605=8.1, spell:778/1=5.7 | - |
+| 50 | 0000000000000000-50212032123012123001-5500000000000000 | bare | 120.8 | 7 | other:attack/1=182.1, spell:9829=53.0, spell:9752=11.2, spell:1322605=8.0, spell:9749/1=5.8 | - |
+| 60 | 0000000000000000-50212032123012123001-5550230000000000 | bare | 171.1 | 7 | other:attack/1=182.1, spell:9830=54.4, spell:9896=11.5, spell:1322605=9.8, spell:9907/1=5.8 | - |
 
 ## Learned but unused (informational)
 

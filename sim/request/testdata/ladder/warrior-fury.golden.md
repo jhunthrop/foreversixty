@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -100,10 +101,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-01000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 11.2 | 4 | other:attack/2=107.1, other:rage_gain=38.1, spell:284/1=36.9, spell:284=36.4, other:attack/1=33.7 | {SpellID: 12328} |
 | 20 | 00000000000000000-05150000000000000-000000000000000000 | main_hand:2236 off_hand:2194 | 23.9 | 5 | other:rage_gain=121.7, other:attack/1=75.8, other:attack/2=73.0, spell:285/1=46.0, spell:285=45.7 | {SpellID: 12328} |
-| 30 | 00000000000000000-05153105010000000-000000000000000000 | main_hand:7687 off_hand:6692 | 46.7 | 5 | other:rage_gain=108.1, other:attack/2=76.0, spell:1608/1=38.9, spell:1608=38.3, other:attack/1=37.7 | {SpellID: 12328} |
+| 30 | 00000000000000000-05153105010000000-000000000000000000 | main_hand:7687 off_hand:6692 | 47.3 | 6 | other:rage_gain=107.4, other:attack/2=76.0, other:attack/1=40.1, spell:1608/1=36.4, spell:1608=35.9 | {SpellID: 12328} |
 | 38 | 00000000000000000-05153105022011300-000000000000000000 | main_hand:868 off_hand:6829 | 73.8 | 7 | other:rage_gain=117.0, other:attack/2=86.7, other:attack/1=66.2, spell:11564/1=24.8, spell:11564=24.6 | {SpellID: 23894} |
 | 40 | 00000000000000000-05153105022011401-000000000000000000 | main_hand:2164 off_hand:9359 | 89.4 | 8 | other:rage_gain=119.7, other:attack/1=102.4, other:attack/2=84.4, spell:20660=20.7, spell:23881=19.4 | - |
-| 50 | 34200000000000000-05153105022011501-000000000000000000 | main_hand:810 off_hand:2163 | 137.6 | 9 | other:attack/2=141.4, other:rage_gain=140.6, other:attack/1=87.7, spell:20661=21.9, spell:23892=19.4 | - |
+| 50 | 34200000000000000-05153105022011501-000000000000000000 | main_hand:810 off_hand:2163 | 137.4 | 9 | other:attack/2=141.4, other:rage_gain=140.6, other:attack/1=87.7, spell:20661=21.9, spell:23892=19.4 | - |
 | 60 | 34320003002000000-05153105022011501-200000000000000000 | main_hand:22736 off_hand:23054 | 257.9 | 9 | other:rage_gain=101.8, other:attack/2=73.6, other:attack/1=64.1, spell:23894=19.3, spell:20662=19.2 | - |
 
 ## Learned but unused (informational)
@@ -128,7 +129,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Hamstring (spell 1715)
 - Mocking Blow (spell 7400)
-- Overpower (spell 7887)
 - Rend (spell 6548)
 - Revenge (spell 6574)
 - Shield Bash (spell 72)
@@ -191,7 +191,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warrior-fury level=30 kind=zero_casts spell="Overpower" id=7887 authored=11585
 - warrior-fury level=38 kind=zero_casts spell="Overpower" id=7887 authored=11585
 - warrior-fury level=40 kind=zero_casts spell="Overpower" id=7887 authored=11585
 - warrior-fury level=50 kind=zero_casts spell="Overpower" id=11584 authored=11585

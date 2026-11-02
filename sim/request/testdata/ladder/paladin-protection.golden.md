@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-10000000000000000-00000000000000000 | main_hand:263407 | 11.5 | 7 | other:attack/1=60.9, spell:1311647=41.9, spell:679=18.2, spell:1311650=17.4, spell:20271=17.4 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928} |
-| 20 | 00000000000000000-15302000000000000-00000000000000000 | main_hand:7230 | 20.0 | 8 | other:attack/1=51.8, spell:1311654=32.4, spell:1866=16.1, spell:1311655=10.7, spell:20271=10.7 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928} |
-| 30 | 00000000000000000-15302102511000000-00000000000000000 | main_hand:13045 | 31.5 | 10 | other:attack/1=62.2, spell:20231=34.9, spell:680=16.9, spell:20183=14.3, spell:20271=11.1 | {SpellID: 20925} |
-| 38 | 00000000000000000-15302102513501000-00000000000000000 | main_hand:13045 | 34.2 | 10 | other:attack/1=64.7, spell:20415=29.8, spell:2495=18.5, spell:20411=8.8, spell:20271=5.7 | - |
-| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:13045 | 34.7 | 12 | other:attack/1=64.0, spell:2495=30.4, spell:20415=7.3, spell:407632=2.5, spell:20411=2.1 | - |
-| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:13045 | 43.2 | 12 | other:attack/1=63.5, spell:5569=30.3, spell:20417=7.4, spell:407632=3.3, spell:20413=2.6 | - |
-| 60 | 05005000000000000-15302102513501031-50030000000000000 | main_hand:22736 | 109.5 | 12 | other:attack/1=68.2, spell:10333=30.3, spell:20418=7.7, spell:407632=2.6, spell:20414=2.4 | - |
+| 10 | 00000000000000000-10000000000000000-00000000000000000 | main_hand:263407 | 10.8 | 7 | other:attack/1=60.9, spell:1311647=41.9, spell:679=18.2, spell:1311650=17.4, spell:20271=17.4 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928} |
+| 20 | 00000000000000000-15302000000000000-00000000000000000 | main_hand:7230 | 18.8 | 8 | other:attack/1=51.8, spell:1311654=32.4, spell:1866=16.1, spell:1311655=10.7, spell:20271=10.7 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928} |
+| 30 | 00000000000000000-15302102511000000-00000000000000000 | main_hand:13045 | 29.9 | 10 | other:attack/1=62.2, spell:20231=34.9, spell:680=16.9, spell:20183=14.3, spell:20271=11.1 | {SpellID: 20925} |
+| 38 | 00000000000000000-15302102513501000-00000000000000000 | main_hand:13045 | 32.4 | 10 | other:attack/1=64.7, spell:20415=29.8, spell:2495=18.5, spell:20411=8.8, spell:20271=5.7 | - |
+| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:13045 | 32.5 | 12 | other:attack/1=64.0, spell:2495=30.4, spell:20415=7.3, spell:407632=2.5, spell:20411=2.1 | - |
+| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:13045 | 40.5 | 12 | other:attack/1=63.5, spell:5569=30.3, spell:20417=7.4, spell:407632=3.3, spell:20413=2.6 | - |
+| 60 | 05005000000000000-15302102513501031-50030000000000000 | main_hand:22736 | 104.3 | 12 | other:attack/1=68.2, spell:10333=30.3, spell:20418=7.7, spell:407632=2.6, spell:20414=2.4 | - |
 
 ## Learned but unused (informational)
 
@@ -133,12 +134,14 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
+- Consecration (spell 20922)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20961)
 - Judgement of Righteousness (spell 20283)
 
 ### Level 50
 
+- Consecration (spell 20923)
 - Exorcism (spell 10312)
 - Hammer of Wrath (spell 24275)
 - Holy Wrath (spell 2812)

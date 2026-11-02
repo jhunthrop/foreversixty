@@ -67,14 +67,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   rule as the talent's own spell id.
   Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
-  to the id sim/internal/spellranks.HighestLearnedSpellID says the
-  engine's OWN rank rewrite actually casts at this level (not a second,
-  approximate copy of that resolution - this ladder calls the same
-  function sim/request's rewriteRotationRanks calls), that never fires
+  to the id the engine's OWN rank rewrite actually casts at this level
+  (sim/request's rankResolver: the spec's per-band rank choice, else
+  sim/internal/spellranks.LearnedSpellID; not a second, approximate copy
+  of that resolution - this ladder calls the same function
+  sim/request's rewriteRotationRanks calls), that never fires
   in the run - unless the engine could not resolve that id at all
   (already counted as unresolved) or data/curated/apl/<spec>.json's
   expected_idle array names the LINE'S AUTHORED id with a reason.
-  HighestLearnedSpellID returning "not learned" means the engine's own
+  LearnedSpellID returning "not learned" means the engine's own
   rewrite already dropped the line before the request was built, which
   is not a violation to report twice. At level 60 the request skips the
   rewrite (the rotation was authored for level 60), so the id a line
@@ -98,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:277247 off_hand:3651 | 9.9 | 5 | spell:3606=69.3, other:attack/1=37.9, spell:529=31.4, spell:3599=6.3, spell:20572=2.0 | - |
-| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:4820 | 19.6 | 5 | spell:6350=68.4, other:attack/1=67.3, spell:915=24.2, spell:6363=5.4, spell:8052=2.0 | {SpellID: 16246} |
-| 30 | 5510331300000000-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4066 | 32.2 | 7 | other:attack/1=88.2, spell:6351=69.6, spell:943=26.6, spell:6364=4.9, spell:8053=3.1 | {SpellID: 408490} |
-| 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 41.0 | 8 | other:attack/1=91.3, spell:6351=65.5, spell:10391=16.8, spell:408490=5.2, spell:8053=4.6 | - |
-| 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 45.5 | 8 | other:attack/1=87.0, spell:6352=65.9, spell:10391=20.6, spell:6365=4.2, spell:1238299=3.1 | - |
-| 50 | 5510331300001350-030000000000000000-5030000000000000 | main_hand:17710 off_hand:10195 | 61.0 | 8 | other:attack/1=71.2, spell:10435=64.8, spell:15207=23.0, spell:10437=3.7, spell:1238300=3.4 | - |
-| 60 | 5510331300001350-030000000000000000-5033520000000000 | main_hand:19360 off_hand:22819 | 86.3 | 8 | spell:10436=67.9, other:attack/1=46.3, spell:15208=25.1, spell:1326047=3.7, spell:10438=3.6 | - |
+| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:277247 off_hand:3651 | 9.7 | 5 | spell:3606=69.3, other:attack/1=37.9, spell:529=31.4, spell:3599=6.3, spell:20572=2.0 | - |
+| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:4820 | 19.2 | 5 | spell:6350=68.4, other:attack/1=67.3, spell:915=24.2, spell:6363=5.4, spell:8052=2.0 | {SpellID: 16246} |
+| 30 | 5510331300000000-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4066 | 29.4 | 7 | other:attack/1=77.3, spell:6351=61.5, spell:915=33.3, spell:6364=4.3, spell:8053=3.8 | {SpellID: 408490} |
+| 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 33.2 | 8 | other:attack/1=66.8, spell:6351=54.8, spell:915=34.5, spell:8053=4.1, spell:6364=3.9 | - |
+| 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:23168 off_hand:4652 | 33.4 | 8 | other:attack/1=65.5, spell:915=34.8, spell:6352=22.9, spell:8050=9.5, spell:408490=5.6 | - |
+| 50 | 5510331300001350-030000000000000000-5030000000000000 | main_hand:17710 off_hand:10195 | 52.9 | 8 | spell:915=55.6, spell:10435=40.6, other:attack/1=21.5, spell:408490=8.1, spell:8052=6.9 | - |
+| 60 | 5510331300001350-030000000000000000-5033520000000000 | main_hand:19360 off_hand:22819 | 82.9 | 8 | spell:10436=69.6, other:attack/1=43.3, spell:15207=27.4, spell:10438=3.7, spell:29228=3.6 | - |
 
 ## Learned but unused (informational)
 
@@ -130,6 +131,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8037)
 - Lava Burst (spell 408490)
+- Lightning Bolt (spell 943)
 - Stormstrike (spell 410156)
 
 ### Level 38
@@ -139,24 +141,31 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
+- Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
 ### Level 40
 
 - Chain Lightning (spell 930)
 - Earth Shock (spell 10412)
+- Flame Shock (spell 10447)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
+- Lava Burst (spell 1238299)
+- Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
 ### Level 50
 
 - Chain Lightning (spell 2860)
 - Earth Shock (spell 10413)
+- Flame Shock (spell 10447)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
+- Lava Burst (spell 1238300)
+- Lightning Bolt (spell 15207)
 - Stormstrike (spell 410156)
 
 ### Level 60
@@ -166,6 +175,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10473)
 - Frostbrand Attack (spell 16353)
+- Lightning Bolt (spell 15208)
 - Stormstrike (spell 410156)
 
 ## Violations found in this run
