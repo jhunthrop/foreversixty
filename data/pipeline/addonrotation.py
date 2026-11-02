@@ -42,6 +42,9 @@ from pipeline.spelltext import SpellText, load_spell_text
 #: sim/request/ladder.go's own `ladderLevels`. See the module docstring.
 LEVEL_BANDS = [10, 20, 30, 38, 40, 50, 60]
 
+#: The level at which the site runs a curated list exactly as written.
+MAX_LEVEL = 60
+
 
 class AddonRotationError(SystemExit):
     """A curated APL or spellranks file says something the generator will not publish."""
@@ -128,6 +131,9 @@ def _family_ranks(
         if all(rank.get("rank", 0) == 0 for rank in ranks):
             trained = [rank for rank in ranks if rank["id"] in trainable_ids]
             ranks = trained or ranks
+        # An Ahn'Qiraj book rank is not a trainer's: the sim's rank rewrite
+        # never casts one, so neither does the addon.
+        ranks = [rank for rank in ranks if not rank.get("book")]
         pairs = sorted((rank["level"], rank["id"]) for rank in ranks)
         # A level-0 row is an alternate id the client carries with no learn
         # level of its own (Rapid Fire's 28755 beside the real 3045 at 26,
@@ -189,7 +195,15 @@ def _resolve(families: dict[str, list[tuple[int, int]]], id_to_family: dict[int,
     learned = [rank for rank in families[family] if rank[0] <= level]
     if not learned:
         return None
-    return family, learned[-1][1]
+    # The site runs a band-60 list as written, deliberate lower ranks and
+    # all (sim/request's rank rewrite applies below 60 only).
+    if level >= MAX_LEVEL and any(rank[1] == spell_id for rank in learned):
+        return family, spell_id
+    # Two ids can share the top learned level (Water Shield's buff and its
+    # proc; a Burning Crusade copy of Lesser Healing Wave's rank 6): keep
+    # the one the list names, as the sim's rewrite does.
+    top = [rank[1] for rank in learned if rank[0] == learned[-1][0]]
+    return family, spell_id if spell_id in top else top[-1]
 
 
 def _resolve_icon(spell_id: int, icon_of: Callable[[int], str] | None) -> str:

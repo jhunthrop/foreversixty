@@ -328,8 +328,12 @@ def test_known_spells_pin_to_their_verified_client_icon():
     """Regression pin for player-review sweep 15's "wrong icon" report: re-verified in
     sweep 16 against a fresh wago.tools SpellMisc/ManifestInterfaceData fetch and
     Wowhead Classic's own icondb id, both of which agree with what this build already
-    committed. See KNOWN_GOOD_ROTATION_ICONS's own doc."""
-    rotations = build_rotations(Path("builds"), BUILD)
+    committed. See KNOWN_GOOD_ROTATION_ICONS's own doc. It reads the active
+    build: an older build's spellicons.json holds only the ids its own
+    rotations named then (1.60.1.70374's has Heroic Strike's book rank 25286,
+    which the addon no longer shows, and not the trainer's rank 8, 11567)."""
+    active = json.loads(Path("../web/src/data/active-build.json").read_text(encoding="utf-8"))["build"]
+    rotations = build_rotations(Path("builds"), active)
     for spec, expected_by_name in KNOWN_GOOD_ROTATION_ICONS.items():
         band_60 = next(band for band in rotations[spec] if band.level == 60)
         icon_by_name = {line.name: line.icon for line in band_60.lines}
@@ -395,3 +399,69 @@ def test_the_committed_personas_name_the_heals_the_rank_finding_reads():
     spellranks = json.loads(Path("builds/1.60.1.70630/spellranks.json").read_text(encoding="utf-8"))
     ids = coach_persona_spell_ids(Path("curated"), spellranks)
     assert 10965 in ids  # Greater Heal, Rank 4
+
+
+#: Restoration shaman and Holy priest rows as the 70707 spellranks.json lists
+#: them: Healing Wave's rank 10 (25357) is an Ahn'Qiraj book rank (item 21291
+#: "Tablet of Healing Wave X" teaches it); Lesser Healing Wave's rank 6 has a
+#: Burning Crusade copy (27624) at the same level; Water Shield's buff
+#: (408510) and its proc (408511) share level 20; Renew is cast at rank 3 on
+#: purpose at 60.
+_HEALER_RANKS = {
+    "build": BUILD,
+    "classes": {
+        "shaman": {
+            "Healing Wave": [
+                {"id": 8005, "level": 40, "rank": 7},
+                {"id": 10396, "level": 56, "rank": 9},
+                {"book": True, "id": 25357, "level": 60, "rank": 10},
+            ],
+            "Lesser Healing Wave": [
+                {"id": 10466, "level": 44, "rank": 4},
+                {"id": 10468, "level": 60, "rank": 6},
+                {"id": 27624, "level": 60, "rank": 6},
+            ],
+            "Water Shield": [
+                {"id": 408510, "level": 20, "rank": 0},
+                {"id": 408511, "level": 20, "rank": 0},
+            ],
+        },
+        "priest": {
+            "Renew": [
+                {"id": 6074, "level": 14, "rank": 2},
+                {"id": 6075, "level": 20, "rank": 3},
+                {"id": 10928, "level": 50, "rank": 8},
+                {"id": 10929, "level": 56, "rank": 9},
+            ],
+        },
+    },
+}
+
+
+def _healer_bands(spec: str, curated_dir: Path) -> dict:
+    return {band.level: band.lines for band in build_rotation(spec, curated_dir, _HEALER_RANKS)}
+
+
+def test_a_book_rank_is_never_the_rank_a_band_casts(tmp_path):
+    _write_apl(tmp_path, "shaman-restoration", [_cast(10396, rank=9, notes="Healing Wave.")])
+    assert [line.spell_id for line in _healer_bands("shaman-restoration", tmp_path)[60]] == [10396]
+
+
+def test_a_rank_shared_by_two_ids_keeps_the_one_the_list_names(tmp_path):
+    _write_apl(tmp_path, "shaman-restoration", [
+        _cast(10468, rank=6, notes="Lesser Healing Wave."),
+        _cast(408510, notes="Water Shield."),
+    ])
+    bands = _healer_bands("shaman-restoration", tmp_path)
+    assert [line.spell_id for line in bands[60]] == [10468, 408510]
+    assert [line.spell_id for line in bands[50]] == [10466, 408510]
+
+
+def test_the_level_sixty_band_casts_the_list_as_written(tmp_path):
+    """The site runs a band-60 list as written (sim/cmd/spec-breakdown and
+    the request path rewrite ranks only below 60), so a deliberate lower
+    rank there is what the player is told to cast."""
+    _write_apl(tmp_path, "priest-holy", [_cast(6075, rank=3, notes="Renew on the tank.")])
+    bands = _healer_bands("priest-holy", tmp_path)
+    assert [line.spell_id for line in bands[60]] == [6075]
+    assert [line.spell_id for line in bands[50]] == [10928]
