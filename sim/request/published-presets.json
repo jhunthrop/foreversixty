@@ -120,6 +120,13 @@
           "blessing_of_might"
         ],
         "consumes": []
+      },
+      {
+        "from_level": 14,
+        "buffs": [
+          "blessing_of_wisdom"
+        ],
+        "consumes": []
       }
     ],
     "paladin-protection": [
