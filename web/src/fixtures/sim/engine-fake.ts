@@ -522,8 +522,13 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       const base = await runSim(JSON.stringify({ ...request }), callbackId);
       const result = JSON.parse(base) as SimResult;
       // Seeded off the stat name, so the same request gives the same weights every time.
+      // The reference's own DPS per point; every weight is relative to it (sim/api
+      // StatWeight.DPSPerPoint is weight times this).
+      const referenceDpsPerPoint = 0.06;
       const weights = request.weights.stats.map((stat) => {
-        if (stat === request.weights.reference) return { stat, weight: 1, error: 0 };
+        if (stat === request.weights.reference) {
+          return { stat, weight: 1, error: 0, dps_per_point: referenceDpsPerPoint };
+        }
         const random = seeded([...stat].reduce((sum, ch) => sum + ch.charCodeAt(0), 0));
         const weight = Math.round(random() * 3000) / 100;
         const error = Math.round(random() * 200) / 100 + 0.01;
@@ -531,7 +536,13 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
         // end before the real engine sends it (D45): a weight the error bar swallows --
         // the figure is not clearly bigger than its own uncertainty -- is not distinguish-
         // able from zero.
-        return { stat, weight, error, ...(weight <= error ? { insignificant: true } : {}) };
+        return {
+          stat,
+          weight,
+          error,
+          dps_per_point: weight * referenceDpsPerPoint,
+          ...(weight <= error ? { insignificant: true } : {}),
+        };
       });
       return JSON.stringify({ ...result, request, weights });
     },

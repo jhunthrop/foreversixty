@@ -15,6 +15,7 @@
 // warrior guide lists Strength and Agility ahead of Critical strike and Hit, but both are
 // `insignificant` at band 60) -- the card always follows the sim in that case.
 import { statLabelForSpec } from '../sim/weights-display';
+import { isHasteStat } from '../bis/scale-view';
 import type { BisStatWeight } from '../bis/types';
 
 export interface RailStatRow {
@@ -22,15 +23,11 @@ export interface RailStatRow {
   /** `undefined` means "Not significant" -- the row is never dropped (tenet 4). */
   value: number | undefined;
   /** Haste has no rating in this client and is per 1%, never point-for-point against a
-   *  primary stat (owner correction 2026-09-30, `panel-view.ts` `isHasteStat`): it sits
+   *  primary stat (owner correction 2026-09-30, `scale-view.ts` `isHasteStat`): it sits
    *  outside the normalization and the rail prints it "per 1%". */
   perPercent?: boolean;
   /** Absolute DPS per point of the stat (per 1% for haste), when the file publishes it. */
   dpsPerPoint?: number;
-}
-
-function isHasteStat(stat: string): boolean {
-  return stat === 'melee_haste' || stat === 'spell_haste';
 }
 
 /**

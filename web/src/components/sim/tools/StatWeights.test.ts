@@ -1,18 +1,14 @@
 // web/src/components/sim/tools/StatWeights.test.ts
-// D45/D46's own component-level check on the *live* tool page -- fix round 1 found coverage
-// resting only on SavedWeights.svelte's static render plus the shared predicate, but D46 was
-// specifically about the live page (the table above the COPY FOR PAWN button). A weight the
-// engine flagged `insignificant` renders greyed with the label here, and the Pawn string
-// below the table never contains it -- both off `createBulkStore`'s real `weights`/`pawn`
-// derivations, not a hand-mocked store, so this exercises the actual component wiring
-// (`StatWeights.svelte`'s `$derived(pawnString(...))`, its `{@const significant =
-// isSignificant(row)}`), not a re-statement of weights.ts's own unit tests.
+// The live tool page's own component-level check, off `createBulkStore`'s real `weights`
+// derivation: a weight the engine flagged `insignificant` renders greyed, and the table reads
+// as the published weights do (owner, 2026-09-30; round 11) -- top stat 1.00, no Pawn string.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import weightsFixture from '../../../fixtures/sim/weights-result.json';
 import { createBulkStore } from '../../../lib/sim/bulk-store.svelte';
 import type { WeightsResult } from '../../../lib/sim/bulk-types';
-import { bulkCopy, WEIGHT_INSIGNIFICANT_LABEL } from '../../../lib/sim/copy';
+import { bisCopy } from '../../../lib/bis/copy';
+import { bulkCopy } from '../../../lib/sim/copy';
 import type { StatWeight } from '../../../lib/sim/types';
 import { weightsEngineIterations, WEIGHTS_BROWSER_DEFAULT_ITERATIONS } from '../../../lib/sim/weights';
 import StatWeights from './StatWeights.svelte';
@@ -39,16 +35,14 @@ function renderWeights(weights: StatWeight[]): string {
   return body;
 }
 
-/** The whole `<li data-testid="sim-weight-<stat>">…</li>` element for one row -- a class
- *  that renders before the test id (it does: `class` comes before `data-testid`) is not
- *  lost the way slicing the body on the test id string alone would lose it. */
+/** The whole `<div data-testid="sim-weight-<stat>">…</div>` row element for one stat. */
 function rowFor(body: string, stat: string): string {
-  const match = new RegExp(`<li[^>]*data-testid="sim-weight-${stat}"[^>]*>.*?</li>`, 's').exec(body);
-  if (match === null) throw new Error(`no <li> rendered for stat "${stat}"`);
+  const match = new RegExp(`<div[^>]*data-testid="sim-weight-${stat}"[^>]*>.*?</div>`, 's').exec(body);
+  if (match === null) throw new Error(`no row rendered for stat "${stat}"`);
   return match[0];
 }
 
-describe('StatWeights: the greyed row and the Pawn string agree (D45/D46, live page)', () => {
+describe('StatWeights: the published SimulationCraft form (live page)', () => {
   it('greys exactly the row the engine flagged insignificant, and no other', () => {
     const weights: StatWeight[] = [
       { stat: 'attack_power', weight: 1, error: 0 },
@@ -59,21 +53,23 @@ describe('StatWeights: the greyed row and the Pawn string agree (D45/D46, live p
     const critRow = rowFor(body, 'crit');
     const strengthRow = rowFor(body, 'strength');
     expect(critRow).toContain('opacity-50');
-    expect(critRow).toContain(WEIGHT_INSIGNIFICANT_LABEL);
+    expect(critRow).toContain(bisCopy.weightsNotSignificant);
     expect(strengthRow).not.toContain('opacity-50');
-    expect(strengthRow).not.toContain(WEIGHT_INSIGNIFICANT_LABEL);
+    expect(strengthRow).not.toContain(bisCopy.weightsNotSignificant);
   });
 
-  it('D46: the Pawn string omits exactly the greyed row, never disagreeing with the table', () => {
+  it('normalizes to the top stat, shows DPS per point, and carries no Pawn string', () => {
     const weights: StatWeight[] = [
-      { stat: 'attack_power', weight: 1, error: 0 },
-      { stat: 'strength', weight: 2.14, error: 0.06 },
-      { stat: 'crit', weight: 14.37, error: 22.55, insignificant: true },
+      { stat: 'attack_power', weight: 1, error: 0.01, dps_per_point: 0.06 },
+      { stat: 'strength', weight: 2, error: 0.06, dps_per_point: 0.12 },
     ];
     const body = renderWeights(weights);
-    expect(body).not.toContain('CritRating=');
-    expect(body).toContain('AttackPower=1.00');
-    expect(body).toContain('Strength=2.14');
+    expect(rowFor(body, 'strength')).toContain('1.00');
+    expect(rowFor(body, 'strength')).toContain('0.120 DPS');
+    expect(rowFor(body, 'attack_power')).toContain('0.50');
+    expect(body).toContain('normalized to Strength = 1.00');
+    expect(body).not.toContain('Pawn');
+    expect(body.indexOf('sim-weight-strength')).toBeLessThan(body.indexOf('sim-weight-attack_power'));
   });
 
   it('a result with no insignificant rows greys nothing', () => {
@@ -87,8 +83,7 @@ describe('StatWeights: the greyed row and the Pawn string agree (D45/D46, live p
     // the substring "opacity-50" without meaning a row is greyed.
     expect(rowFor(body, 'attack_power')).not.toContain('opacity-50');
     expect(rowFor(body, 'strength')).not.toContain('opacity-50');
-    expect(body).not.toContain(WEIGHT_INSIGNIFICANT_LABEL);
-    expect(body).toContain('Strength=2.14');
+    expect(body).not.toContain(bisCopy.weightsNotSignificant);
   });
 });
 

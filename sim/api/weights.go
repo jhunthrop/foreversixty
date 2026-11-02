@@ -71,6 +71,12 @@ type StatWeight struct {
 	// tell "significant" from "field absent" (an older client, a
 	// fixture predating this field).
 	Insignificant bool `json:"insignificant"`
+	// DPSPerPoint is the engine's own un-normalised gain per point of the
+	// stat (HPS per point for a healer's table): Weight times the
+	// reference's own figure. A page shows weights as the published ones
+	// are (SimulationCraft scale factors, top stat = 1.00, with this
+	// figure beside each); omitted by an older engine.
+	DPSPerPoint float64 `json:"dps_per_point,omitempty"`
 }
 
 // KnownStats is the closed vocabulary a weights request may name: the
