@@ -100,7 +100,7 @@ func TestParseSpellRanksChainsRanksAndDropsRankZeroDuplicates(t *testing.T) {
 	}
 }
 
-func TestHighestLearnedSpellIDResolvesByLevel(t *testing.T) {
+func TestLearnedSpellIDResolvesByLevel(t *testing.T) {
 	hunter := spellRanksExcerpt(t)["hunter"]
 	cases := []struct {
 		name      string
@@ -119,9 +119,9 @@ func TestHighestLearnedSpellIDResolvesByLevel(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			gotID, gotOK := highestLearnedIn(hunter, c.id, c.level)
+			gotID, gotOK := learnedIn(hunter, c.id, c.level)
 			if gotID != c.wantID || gotOK != c.wantKnown {
-				t.Errorf("highestLearnedIn(%d, %d) = (%d, %v), want (%d, %v)", c.id, c.level, gotID, gotOK, c.wantID, c.wantKnown)
+				t.Errorf("learnedIn(%d, %d) = (%d, %v), want (%d, %v)", c.id, c.level, gotID, gotOK, c.wantID, c.wantKnown)
 			}
 		})
 	}
@@ -136,7 +136,7 @@ func TestParseSpellRanksRejectsAnEmptyTable(t *testing.T) {
 	}
 }
 
-// The active build's embedded table loads and HighestLearnedSpellID
+// The active build's embedded table loads and LearnedSpellID
 // answers something for a real class/id pair. This is the same
 // "the embed loads" guard simdb_test.go's TestDatabaseLoads gives
 // simdb.bin and enchants.json.
@@ -155,15 +155,15 @@ func TestEmbeddedSpellRanksLoad(t *testing.T) {
 	// Serpent Sting's top trainer rank (13555) is unchanged at level 60; its
 	// rank 9 (25295) is an Ahn'Qiraj book rank, which resolves to the trainer
 	// rank while the engine leaves the book out.
-	if id, ok := HighestLearnedSpellID("hunter", 13555, 60); !ok || id != 13555 {
-		t.Errorf(`HighestLearnedSpellID("hunter", 13555, 60) = (%d, %v), want (13555, true)`, id, ok)
+	if id, ok := LearnedSpellID("hunter", 13555, 60); !ok || id != 13555 {
+		t.Errorf(`LearnedSpellID("hunter", 13555, 60) = (%d, %v), want (13555, true)`, id, ok)
 	}
 	wantBook := int32(13555)
 	if core.IncludeAQ {
 		wantBook = 25295
 	}
-	if id, ok := HighestLearnedSpellID("hunter", 25295, 60); !ok || id != wantBook {
-		t.Errorf(`HighestLearnedSpellID("hunter", 25295, 60) = (%d, %v), want (%d, true)`, id, ok, wantBook)
+	if id, ok := LearnedSpellID("hunter", 25295, 60); !ok || id != wantBook {
+		t.Errorf(`LearnedSpellID("hunter", 25295, 60) = (%d, %v), want (%d, true)`, id, ok, wantBook)
 	}
 }
 
@@ -202,7 +202,7 @@ func TestBookRanksAreLearnedOnlyWhileTheEngineIncludesThem(t *testing.T) {
 	if core.IncludeAQ {
 		want = 25296
 	}
-	got, ok := highestLearnedIn(table["hunter"], 14322, 60)
+	got, ok := learnedIn(table["hunter"], 14322, 60)
 	if !ok || got != want {
 		t.Errorf("Aspect of the Hawk at level 60 resolves to %d (ok=%v), want %d for IncludeAQ=%v", got, ok, want, core.IncludeAQ)
 	}
@@ -225,18 +225,20 @@ const inferiorRankExcerpt = `{"build":"x","classes":{"hunter":{"Aspect of the Ha
   {"id":14321,"rank":5,"level":48},
   {"id":14322,"rank":6,"level":58,"inferior":true}]}}}`
 
-// An inferior rank is never the highest learned rank: the rewrite keeps the
-// strongest learnable rank, whichever rank id the rotation named.
+// An inferior rank is never the highest learned rank: a rotation naming the
+// inferior top rank, or the strongest rank, casts the strongest learnable
+// rank. One naming a lower rank on purpose keeps it (a downrank is never
+// lifted).
 func TestInferiorRanksAreNeverTheHighestLearnedRank(t *testing.T) {
 	table, err := parseSpellRanks([]byte(inferiorRankExcerpt))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, named := range []int32{14320, 14321, 14322} {
+	for _, c := range []struct{ named, want int32 }{{14320, 14320}, {14321, 14321}, {14322, 14321}} {
 		for _, level := range []int{48, 58, 60} {
-			got, ok := highestLearnedIn(table["hunter"], named, level)
-			if !ok || got != 14321 {
-				t.Errorf("named %d at level %d resolves to %d (ok=%v), want 14321", named, level, got, ok)
+			got, ok := learnedIn(table["hunter"], c.named, level)
+			if !ok || got != c.want {
+				t.Errorf("named %d at level %d resolves to %d (ok=%v), want %d", c.named, level, got, ok, c.want)
 			}
 		}
 	}
@@ -247,10 +249,10 @@ func TestInferiorRankStillGatesByTheRanksBeforeIt(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got, ok := highestLearnedIn(table["hunter"], 14322, 40); !ok || got != 14320 {
+	if got, ok := learnedIn(table["hunter"], 14322, 40); !ok || got != 14320 {
 		t.Errorf("named 14322 at level 40 resolves to %d (ok=%v), want 14320", got, ok)
 	}
-	if _, ok := highestLearnedIn(table["hunter"], 14322, 30); ok {
+	if _, ok := learnedIn(table["hunter"], 14322, 30); ok {
 		t.Error("named 14322 at level 30 resolves, want unlearned")
 	}
 }
@@ -266,7 +268,7 @@ func TestInferiorIdInAMixedTierResolvesToItsSoundSibling(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got, ok := highestLearnedIn(table["hunter"], 14325, 60); !ok || got != 1213268 {
+	if got, ok := learnedIn(table["hunter"], 14325, 60); !ok || got != 1213268 {
 		t.Errorf("named 14325 at level 60 resolves to %d (ok=%v), want 1213268", got, ok)
 	}
 }
@@ -292,7 +294,7 @@ func TestABookRankIDResolvesToTheHighestTrainerRankLearned(t *testing.T) {
 		{50, 14321, true},
 		{40, 0, false}, // nothing of the spell learned yet: the line is dropped
 	} {
-		got, ok := highestLearnedIn(table["hunter"], 25296, tc.level)
+		got, ok := learnedIn(table["hunter"], 25296, tc.level)
 		if ok != tc.wantOK || (ok && got != tc.want) {
 			t.Errorf("book id 25296 at level %d: got (%d, %v), want (%d, %v)", tc.level, got, ok, tc.want, tc.wantOK)
 		}
@@ -309,10 +311,10 @@ func TestRankLevelOverrideGatesARankAtTheEnginesLevel(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got, ok := highestLearnedIn(table["druid"], 1238069, 49); !ok || got != 407995 {
+	if got, ok := learnedIn(table["druid"], 1238069, 49); !ok || got != 407995 {
 		t.Errorf("Primal Bite at level 49: got (%d, %v), want rank 1 (407995, true)", got, ok)
 	}
-	if got, ok := highestLearnedIn(table["druid"], 1238069, 50); !ok || got != 1238069 {
+	if got, ok := learnedIn(table["druid"], 1238069, 50); !ok || got != 1238069 {
 		t.Errorf("Primal Bite at level 50: got (%d, %v), want (1238069, true)", got, ok)
 	}
 }
@@ -330,10 +332,10 @@ func TestSingleTierOverridesGateTheirIDs(t *testing.T) {
 		{"warrior", 1680, 36},   // Whirlwind
 		{"warrior", 2458, 30},   // Berserker Stance
 	} {
-		if _, ok := HighestLearnedSpellID(tc.class, tc.id, tc.level-1); ok {
+		if _, ok := LearnedSpellID(tc.class, tc.id, tc.level-1); ok {
 			t.Errorf("%s %d is learned at level %d, not %d", tc.class, tc.id, tc.level, tc.level-1)
 		}
-		if got, ok := HighestLearnedSpellID(tc.class, tc.id, tc.level); !ok || got != tc.id {
+		if got, ok := LearnedSpellID(tc.class, tc.id, tc.level); !ok || got != tc.id {
 			t.Errorf("%s %d at level %d: got (%d, %v)", tc.class, tc.id, tc.level, got, ok)
 		}
 	}
@@ -360,12 +362,12 @@ func TestARankAboveTheLevelCapDoesNotSetTheTiersLevel(t *testing.T) {
 		level int
 		want  int32
 	}{{39, 1239696}, {40, 1239697}, {49, 1239697}, {50, 1239699}} {
-		if got, ok := highestLearnedIn(table["mage"], 1239700, c.level); !ok || got != c.want {
+		if got, ok := learnedIn(table["mage"], 1239700, c.level); !ok || got != c.want {
 			t.Errorf("Arcane Blast at level %d = (%d, %v), want (%d, true)", c.level, got, ok, c.want)
 		}
 	}
-	if got, ok := HighestLearnedSpellID("mage", 1239700, 45); !ok || got != 1239697 {
-		t.Errorf(`embedded table: HighestLearnedSpellID("mage", 1239700, 45) = (%d, %v), want (1239697, true)`, got, ok)
+	if got, ok := LearnedSpellID("mage", 1239700, 45); !ok || got != 1239697 {
+		t.Errorf(`embedded table: LearnedSpellID("mage", 1239700, 45) = (%d, %v), want (1239697, true)`, got, ok)
 	}
 }
 
@@ -373,13 +375,13 @@ func TestARankAboveTheLevelCapDoesNotSetTheTiersLevel(t *testing.T) {
 // SkillLineAbility row (AcquireMethod 0). The tier's other id, 1329, is
 // Era's: no SkillLineAbility row and no BaseLevel, but listed first at 40.
 func TestMutilateRankOneIsLearnedAtThirty(t *testing.T) {
-	if _, ok := HighestLearnedSpellID("rogue", 1241584, 29); ok {
+	if _, ok := LearnedSpellID("rogue", 1241584, 29); ok {
 		t.Error("Mutilate is learned at 29")
 	}
-	if got, ok := HighestLearnedSpellID("rogue", 1241584, 30); !ok || got != 1310707 {
+	if got, ok := LearnedSpellID("rogue", 1241584, 30); !ok || got != 1310707 {
 		t.Errorf("Mutilate at 30: got (%d, %v), want (1310707, true)", got, ok)
 	}
-	if got, _ := HighestLearnedSpellID("rogue", 1241584, 40); got != 399956 {
+	if got, _ := LearnedSpellID("rogue", 1241584, 40); got != 399956 {
 		t.Errorf("Mutilate at 40: got %d, want 399956", got)
 	}
 }
@@ -388,10 +390,67 @@ func TestMutilateRankOneIsLearnedAtThirty(t *testing.T) {
 // "Requires level 20" and Blizzard's 15 October beta notes agree, and the
 // engine registers it there since lane/r8-hybrids.
 func TestShredRankOneIsLearnedAtTwenty(t *testing.T) {
-	if got, ok := HighestLearnedSpellID("druid", 9830, 20); !ok || got != 5221 {
+	if got, ok := LearnedSpellID("druid", 9830, 20); !ok || got != 5221 {
 		t.Errorf("Shred at level 20: got (%d, %v), want (5221, true)", got, ok)
 	}
-	if _, ok := HighestLearnedSpellID("druid", 9830, 19); ok {
+	if _, ok := LearnedSpellID("druid", 9830, 19); ok {
 		t.Error("Shred is learned at level 19")
+	}
+}
+
+// An authored rank below the top is a deliberate downrank: the rewrite
+// never lifts it. Below the level that rank is learned at, the highest
+// rank learned under it stands in.
+func TestLearnedUpToKeepsAnAuthoredDownrank(t *testing.T) {
+	hunter := spellRanksExcerpt(t)["hunter"]
+	cases := []struct {
+		name      string
+		id        int32
+		level     int
+		wantID    int32
+		wantKnown bool
+	}{
+		{"rank 5 at 60 stays rank 5", 13552, 60, 13552, true},
+		{"rank 5 at 50 stays rank 5, not rank 7", 13552, 50, 13552, true},
+		{"rank 5 below its own level falls to rank 4", 13552, 30, 13551, true},
+		{"the top rank still resolves to the highest learned", 25295, 38, 13552, true},
+		{"a Forever copy of rank 5 stays in its band", 425733, 50, 425733, true},
+		{"nothing learned yet", 13552, 3, 0, false},
+		{"an untracked id is untouched", 999999, 20, 999999, true},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gotID, gotOK := learnedIn(hunter, c.id, c.level)
+			if gotID != c.wantID || gotOK != c.wantKnown {
+				t.Errorf("learnedIn(%d, %d) = (%d, %v), want (%d, %v)", c.id, c.level, gotID, gotOK, c.wantID, c.wantKnown)
+			}
+		})
+	}
+}
+
+// A per-band rank choice names a rank number of the authored spell's chain.
+func TestRankOfResolvesAChosenRank(t *testing.T) {
+	hunter := spellRanksExcerpt(t)["hunter"]
+	cases := []struct {
+		name      string
+		id        int32
+		rank      int
+		level     int
+		wantID    int32
+		wantKnown bool
+	}{
+		{"rank 6 of the top rank at 50", 25295, 6, 50, 13553, true},
+		{"rank 6 is not learned at 40", 25295, 6, 40, 0, false},
+		{"a rank the chain does not have", 25295, 12, 60, 0, false},
+		{"a Forever id picks the Forever copy", 425737, 6, 50, 425734, true},
+		{"an untracked id has no ranks", 999999, 2, 60, 0, false},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gotID, gotOK := rankOfIn(hunter, c.id, c.rank, c.level)
+			if gotID != c.wantID || gotOK != c.wantKnown {
+				t.Errorf("rankOfIn(%d, %d, %d) = (%d, %v), want (%d, %v)", c.id, c.rank, c.level, gotID, gotOK, c.wantID, c.wantKnown)
+			}
+		})
 	}
 }

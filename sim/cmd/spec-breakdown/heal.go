@@ -79,7 +79,7 @@ func runHealReport(o options) (string, error) {
 	if err := simdb.Attach(engineReq); err != nil {
 		return "", fmt.Errorf("attaching the item database: %w", err)
 	}
-	rotation, err := loadRotation(o.rotation, specs.ByKey[o.spec].ClassSlug, o.band)
+	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, o.band)
 	if err != nil {
 		return "", err
 	}
