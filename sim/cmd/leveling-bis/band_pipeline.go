@@ -175,6 +175,13 @@ func (r bandRanker) finish(fw *factionWork) (*factionRun, error) {
 	for _, n := range setNotes {
 		r.logf("%s: %s", fw.faction, n)
 	}
+	if r.castsShoot {
+		var wandNotes []string
+		verified, wandNotes = finalWandCheck(r.runner, r.spec, fw.race, r.spec.ClassSlug, r.band, r.talents, verified, fw.pickBySlot)
+		for _, n := range wandNotes {
+			r.logf("%s: %s", fw.faction, n)
+		}
+	}
 	considered = append(considered, consideredSet{Label: consideredBeforeConfirmed, Picks: verified.picks})
 	verified, held, err := preferConfirmedStats(r.runner, r.spec, fw.race, r.spec.ClassSlug, r.band, r.talents, verified, fw.pickBySlot)
 	if err != nil {

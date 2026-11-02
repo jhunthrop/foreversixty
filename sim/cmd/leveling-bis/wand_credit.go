@@ -119,3 +119,31 @@ func rankWandSlot(runner engineRunner, spec specInfo, race, classSlug string, le
 	}
 	return out, notes
 }
+
+// finalWandCheck re-runs the wand tournament on the band's final set, after
+// verify and set completion have changed the slots around the wand, and
+// adopts a wand that measures ahead of the worn one by swapMargin. The
+// band's set DPS becomes that measurement (the same harness verify uses),
+// and the ranged slot's verify swap, which no longer describes the pick, is
+// dropped.
+func finalWandCheck(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, vb verifiedBand, bySlot map[string][]scored) (verifiedBand, []string) {
+	current := vb.picks["ranged"].Item
+	if current == nil {
+		return vb, nil
+	}
+	ranked, notes := rankWandSlot(runner, spec, race, classSlug, level, talents, vb.picks, bySlot)
+	best := ranked["ranged"].Item
+	if best == nil || best.ID == current.ID || !beatsByMargin(best.MeasuredDPS, vb.setDPS) {
+		return vb, nil
+	}
+	out := vb
+	out.picks = ranked
+	out.setDPS = best.MeasuredDPS
+	out.swaps = nil
+	for _, sw := range vb.swaps {
+		if sw.Slot != "ranged" {
+			out.swaps = append(out.swaps, sw)
+		}
+	}
+	return out, append(notes, fmt.Sprintf("ranged: final set wears %s (%.1f) over %s (%.1f)", best.Name, best.MeasuredDPS, current.Name, vb.setDPS))
+}
