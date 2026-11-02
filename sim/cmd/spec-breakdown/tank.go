@@ -17,6 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
 	"github.com/jhunthrop/foreversixty/sim/request"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
 	"github.com/wowsims/classic/sim/core/stats"
@@ -67,7 +68,7 @@ func runTankReport(o options) (string, error) {
 	if err := simdb.Attach(engineReq); err != nil {
 		return "", fmt.Errorf("attaching the item database: %w", err)
 	}
-	rotation, err := loadRotation(o.rotation)
+	rotation, err := loadRotation(o.rotation, specs.ByKey[o.spec].ClassSlug, o.band)
 	if err != nil {
 		return "", err
 	}

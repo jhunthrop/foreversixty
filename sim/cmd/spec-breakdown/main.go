@@ -116,7 +116,7 @@ func run(o options) error {
 	if err != nil {
 		return err
 	}
-	rotation, err := loadRotation(o.rotation)
+	rotation, err := loadRotation(o.rotation, specs.ByKey[o.spec].ClassSlug, o.band)
 	if err != nil {
 		return err
 	}
@@ -137,8 +137,10 @@ func run(o options) error {
 }
 
 // loadRotation reads the "rotation" object of a curated rotation file; an
-// empty path keeps the spec's own rotation.
-func loadRotation(path string) (*proto.APLRotation, error) {
+// empty path keeps the spec's own rotation. Below level 60 its ranks are
+// rewritten to the ones class has learned by level, as the published
+// rotation's are.
+func loadRotation(path, class string, level int) (*proto.APLRotation, error) {
 	if path == "" {
 		return nil, nil
 	}
@@ -154,6 +156,11 @@ func loadRotation(path string) (*proto.APLRotation, error) {
 	}
 	if len(file.Rotation) == 0 {
 		return nil, fmt.Errorf("%s has no \"rotation\" object", path)
+	}
+	if level < api.MaxLevel {
+		if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, class, level); err != nil {
+			return nil, fmt.Errorf("rewriting %s to level %d: %w", path, level, err)
+		}
 	}
 	rotation := &proto.APLRotation{}
 	if err := protojson.Unmarshal(file.Rotation, rotation); err != nil {
