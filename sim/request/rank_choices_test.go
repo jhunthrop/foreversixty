@@ -149,13 +149,13 @@ func TestRewriteAtSixtyTakesOnlyThePresetsRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	choices := rankChoices{15208: {{FromLevel: 60, ToLevel: 60, Rank: 4, Preset: BarePreset}}}
+	choices := rankChoices{15207: {{FromLevel: 60, ToLevel: 60, Rank: 4, Preset: BarePreset}}}
 	bare, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forPreset(BarePreset))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(bare), `"spellId":915`) || strings.Contains(string(bare), `"spellId":15208`) {
-		t.Error("bare 60 should cast Lightning Bolt rank 4 (915) in place of 15208")
+	if !strings.Contains(string(bare), `"spellId":915`) || strings.Contains(string(bare), `"spellId":15207`) {
+		t.Error("bare 60 should cast Lightning Bolt rank 4 (915) in place of 15207")
 	}
 	raid, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forPreset(RaidPreset))
 	if err != nil {

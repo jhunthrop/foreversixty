@@ -353,9 +353,8 @@ func TestRewriteKeepsTheAuthoredDownranksBelowSixty(t *testing.T) {
 		{"priest-discipline", "priest", 50, []int32{6075, 3747}, []int32{10928, 10899}},
 		{"priest-discipline", "priest", 40, []int32{3747}, []int32{6066}},
 		{"priest-discipline", "priest", 20, []int32{600}, []int32{3747}},
-		// The tank's Flash of Light is authored at the top rank, so 19942 is
-		// also there at 50; the party members' rank 4 must survive beside it.
-		{"paladin-holy", "paladin", 50, []int32{19941, 19942}, nil},
+		// The party's Flash of Light rank 4 and the tank's rank 1 both survive.
+		{"paladin-holy", "paladin", 50, []int32{19941, 19750}, []int32{19942}},
 	}
 	for _, c := range cases {
 		ids := rotationIDs(t, c.spec, c.class, c.level, nil)
@@ -379,7 +378,7 @@ func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	const topBolt = 15208 // Lightning Bolt rank 10, as the rotation is authored
+	const topBolt = 15207 // Lightning Bolt rank 9, as the rotation is authored
 	choices := rankChoices{topBolt: {{FromLevel: 40, ToLevel: 49, Rank: 6}, {FromLevel: 50, ToLevel: 55, Rank: 7}}}
 	for _, c := range []struct {
 		level      int
@@ -390,7 +389,7 @@ func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 		{49, 6041, 10392},  // still rank 6 at 49
 		{50, 10391, 15207}, // rank 7 from 50
 		{55, 10391, 10392}, // through 55
-		{56, 15208, 10391}, // past the row: the top learned rank again
+		{56, 15207, 10391}, // past the row: the authored rank 9 again
 	} {
 		got, err := rewriteRotationRanks(raw, "shaman", c.level, choices)
 		if err != nil {

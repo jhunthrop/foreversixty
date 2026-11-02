@@ -39,7 +39,7 @@
     "druid-restoration": [
       {
         "spell": "Rejuvenation",
-        "authored": 9841,
+        "authored": 2090,
         "bands": [
           {
             "from_level": 20,
@@ -86,27 +86,6 @@
       }
     ],
     "paladin-holy": [
-      {
-        "spell": "Flash of Light",
-        "authored": 19943,
-        "bands": [
-          {
-            "from_level": 30,
-            "to_level": 39,
-            "rank": 1
-          },
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 1
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 1
-          }
-        ]
-      },
       {
         "spell": "Holy Light",
         "authored": 10329,
@@ -217,7 +196,7 @@
     "shaman-elemental": [
       {
         "spell": "Lightning Bolt",
-        "authored": 15208,
+        "authored": 15207,
         "bands": [
           {
             "from_level": 30,

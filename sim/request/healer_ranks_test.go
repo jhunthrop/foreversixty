@@ -17,10 +17,10 @@ import (
 func TestHealerListsCastTheTopTrainerRankUnlessChosen(t *testing.T) {
 	const build = "../../data/builds/1.60.1.70707/spellranks.json"
 	chosen := map[string]map[int]bool{ // spec -> spell id the rank rule picked
-		"priest-holy":        {6075: true},
-		"priest-discipline":  {6075: true, 3747: true},
-		"paladin-holy":       {19941: true, 1311606: true},
-		"druid-restoration":  {},
+		"priest-holy":        {6075: true, 9472: true},
+		"priest-discipline":  {6075: true, 3747: true, 2054: true},
+		"paladin-holy":       {19941: true, 1311606: true, 19750: true},
+		"druid-restoration":  {2090: true},
 		"shaman-restoration": {},
 	}
 	var ranks struct {
