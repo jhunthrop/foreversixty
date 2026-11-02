@@ -21,7 +21,7 @@ import { EMPTY_ESTIMATE } from './estimate';
 import { precisionOf, precisionPlan, STEP_ITERATIONS, type PrecisionId } from './precision';
 import { settingsFromRequest } from './request-json';
 import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunInput, type RunUpdate } from './run';
-import { encounterFor, requestPresetFor, type SimSettings } from './settings';
+import { encounterFor, isRequestPreset, requestPresetFor, type SimSettings } from './settings';
 import type { SourceResult } from './sources';
 import type { SimPhase } from './store.svelte';
 import type { SimRequest, SimResult } from './types';
@@ -218,6 +218,11 @@ export function createRequestMethods(deps: StoreRequestDeps): RequestMethods {
         randomSeed: request.random_seed,
         targetError: request.target_error,
         stepIterations: STEP_ITERATIONS,
+        // As written: the edited request's preset picks the ranks (round 9), and its role
+        // figure is asked for when it asks. Dropping them ran a pasted Bare request on the
+        // published preset's ranks.
+        roleMetrics: request.role_metrics === true,
+        preset: isRequestPreset(request.preset) ? request.preset : undefined,
       });
     },
   };
