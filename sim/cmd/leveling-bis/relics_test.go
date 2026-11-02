@@ -1,6 +1,8 @@
 package main
 
 import (
+	"maps"
+	"slices"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -70,12 +72,27 @@ func TestAProcWithBlankTextIsRankedWhenModelledAndFlaggedWhenNot(t *testing.T) {
 	if !hasImplementedEffect(modelled) {
 		t.Error("Lord General's Sword is engine-implemented with a blank spell text; hasImplementedEffect = false, want true so a sim ranks it")
 	}
-	unmodelled := candidate{ID: kindlingStave}
+	// Kindling Stave was the unmodelled example until the engine registered
+	// its Ignition proc; the engine's own answer now ranks it.
+	if !hasImplementedEffect(candidate{ID: kindlingStave}) {
+		t.Error("Kindling Stave's Ignition is registered in the engine; hasImplementedEffect = false, want true")
+	}
+	unmodelledID := 0
+	for _, id := range slices.Sorted(maps.Keys(clientEffectItemIDs)) {
+		if !effectImplemented(id) {
+			unmodelledID = id
+			break
+		}
+	}
+	if unmodelledID == 0 {
+		t.Fatal("every client-effect item is engine-modelled; the fixture needs another unmodelled example")
+	}
+	unmodelled := candidate{ID: unmodelledID}
 	if hasImplementedEffect(unmodelled) {
-		t.Error("Kindling Stave's proc is not in the engine; hasImplementedEffect = true, want false")
+		t.Errorf("item %d's effect is not in the engine; hasImplementedEffect = true, want false", unmodelledID)
 	}
 	if !trinketEffectUnmodelled(unmodelled) {
-		t.Error("Kindling Stave carries a proc the engine does not simulate; the unmodelled flag = false, want true")
+		t.Errorf("item %d carries an effect the engine does not simulate; the unmodelled flag = false, want true", unmodelledID)
 	}
 	if trinketEffectUnmodelled(candidate{ID: shadowsongsSorrow}) {
 		t.Error("Shadowsong's Sorrow has no proc; the unmodelled flag = true, want false")
