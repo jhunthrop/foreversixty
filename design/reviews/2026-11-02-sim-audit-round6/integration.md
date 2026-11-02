@@ -133,3 +133,20 @@ Verdicts on the lane reports, the before/after table and the page shots:
   - Protection paladin at 96 to 98% of a warrior and bear at about 85% are plausible. The bear figure is provisional on Lacerate's factor.
   - The healer moves are plausible in direction.
   - The caster moves are what a player expects when Improved Scorch stops covering the raid.
+
+## After the push
+
+- **Fork master moved to b57765fb9.** The site push is cceb98ab1.
+- **CI caught three checks my gates did not run.** Each is fixed on main:
+  - ruff E501 in test_coachrules.py (7c70df66e)
+  - check-checkout.sh committed without its executable bit (7c70df66e)
+  - prettier on wasm-fetch.ts (c2fd5f845)
+  - The gates script now runs `npm run format:check` too.
+- **The addon suite was already red on main from the 8baffe5fc nightly.** Two specs hardcoded the hunter's band-20 Deadmines pick and belt. They now read the pick from the shipped Data (2c5b85218). The warrior Deadmines spec still hardcodes its pick.
+- **data.yml's refetch of 70707 stopped at fetch-wowhead, as the pipeline lane predicted.** Wowhead's live feed lists only 397 of 689 seeded supplement items (58%, against a 90% floor). Re-dispatched with `allow_shrink`, which still carries the seeded records for the missing items, it regenerated and committed the layered outputs and simdb (c0bd0bd3d):
+  - items 25,853, unchanged
+  - spells +22
+  - loot sources 3,213 to 3,199
+  - The 14 dropped sources are Alterac Valley world drops and the PvP rank 5 and 10 entries; they are listed for round 7.
+- **bis.yml is dispatched on c0bd0bd3d** (run 41363895819).
+- **web deployed c2fd5f845** with the gzipped module.

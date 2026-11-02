@@ -137,7 +137,10 @@ Open going into round 7:
   - Hawk Eye to Deadly Aspects for Survival: +5% bare, at the cost of range utility, the same class of choice as Grim Reach.
   - The gzipped sim.wasm transfer is at 95% of its 4.5 MB budget.
 - **After this round's nightly, check:**
-  - The first client.yml push job re-fetches 70707. Its fetch-wowhead step may go red: a local run got 397 of 689 items, under the 90% floor.
+  - Wowhead's live feed lists only 58% of the seeded supplement. Run 41363024342 needed `allow_shrink`, and every fetch will until the feed recovers or the floor is revisited: the owner decides which.
+  - Loot lost 14 sources at c0bd0bd3d: Alterac Valley world drops and PvP ranks 5 and 10. Confirm they should go.
+  - A real /sim run in production loads the gzipped module.
+  - The warrior Deadmines addon spec still hardcodes its pick.
   - /tiers/healer reorders, with Discipline passing Holy paladin.
   - The warlock and raid caster ranged slots leave Torch of Light.
   - The new Survival and Beast Mastery builds publish.
