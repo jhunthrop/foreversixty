@@ -3,8 +3,8 @@ title: Frost Mage in Forever
 classSlug: mage
 spec: frost
 role: dps
-build: 'FS1:1.60.1.70707:mage:gnome:230005/23023/253510130100301231:'
-raidBuild: 'FS1:1.60.1.70707:mage:gnome:2300052/5102/253510130101301221:'
+build: 'FS1:1.60.1.70753:mage:gnome:230005/23023/253510130100301231:'
+raidBuild: 'FS1:1.60.1.70753:mage:gnome:2300052/5102/253510130101301221:'
 recommendedRaces: [gnome, troll]
 statPriority: [Hit, Spell power, Frost power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Frost Mage in Forever, and what is confirmed versus projected from the beta.'

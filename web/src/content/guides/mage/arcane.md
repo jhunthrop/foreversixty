@@ -3,8 +3,8 @@ title: Arcane Mage in Forever
 classSlug: mage
 spec: arcane
 role: dps
-build: 'FS1:1.60.1.70707:mage:gnome:141005213100301531/32023/0532:'
-raidBuild: 'FS1:1.60.1.70707:mage:gnome:131205213100301531/3/05350003:'
+build: 'FS1:1.60.1.70753:mage:gnome:141005213100301531/32023/0532:'
+raidBuild: 'FS1:1.60.1.70753:mage:gnome:131205213100301531/3/05350003:'
 recommendedRaces: [gnome, orc]
 statPriority: [Spell power, Arcane power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Arcane Mage in Forever, and what is confirmed versus projected from the beta.'
