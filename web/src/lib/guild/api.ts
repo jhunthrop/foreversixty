@@ -226,6 +226,10 @@ export interface GuildRosterRow {
   /** Newest report this character's account uploaded; `null` when none. */
   last_report_at?: string | null;
   may_approve?: boolean;
+  /** The character's sim input is its FS1 export (api sims.ExportIsInputSQL; gear consent only),
+   *  so the Open in simulator / planner slot has links to offer. Read at first paint to decide
+   *  whether the row holds that slot at all; absent from an API that predates it. */
+  sim_export?: boolean;
   /**
    * Computed server-side (a later security-review response, item 7) from the exact same
    * rank-protects-rank rule the DELETE .../characters/{key} route itself enforces, from

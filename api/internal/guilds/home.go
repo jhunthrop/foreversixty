@@ -17,6 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
+	"github.com/jhunthrop/foreversixty/api/internal/sims"
 )
 
 // HomeReportsPerPage is the page size of the guild home's "this week's
@@ -168,6 +169,10 @@ type RosterRow struct {
 	// row is not already verified - the Roster tab's own Approve control (contract's
 	// own field, mirroring MayRemove's convention).
 	MayApprove bool `json:"may_approve"`
+	// SimExport is true when the character's sim input is its FS1 export (sims.ExportIsInputSQL),
+	// so the Roster tab's Open in simulator / planner slot has links to offer; false below gear
+	// consent. The web decides from it at first paint whether the row holds that slot at all.
+	SimExport bool `json:"sim_export"`
 	// Addon is this character's line in the guild's newest addon roster snapshot
 	// (AddonMemberView), matched by name; null when the guild has no snapshot or the
 	// snapshot does not carry this character. Never omitted.
@@ -367,7 +372,8 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 		       case when gm.consent in ('gear', 'gear_bags') then fm.role end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.ilvl end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.faction end,
-		       case when gm.consent in ('gear', 'gear_bags') then ae.export end
+		       case when gm.consent in ('gear', 'gear_bags') then ae.export end,
+		       `+rosterSimExportSQL+`
 		from guild_characters gc
 		join addon_exports ae on ae.character_key = gc.character_key
 		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
@@ -401,6 +407,11 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 	return out, nil
 }
 
+// rosterSimExportSQL is RosterRow.SimExport's column in both roster queries (addon_exports
+// aliased ae, guild_members gm): the export is the sim input, read only at gear consent.
+var rosterSimExportSQL = `case when gm.consent in ('gear', 'gear_bags') then ` +
+	sims.ExportIsInputSQL("ae") + ` else false end`
+
 // scanRosterRow reads one row of a roster query (the columns HomeRoster and
 // invitedRosterRows both select, in this order) and finishes it: the remove and approve flags
 // against the viewing actor, and the class, spec and gear the export decodes to. extra are a
@@ -410,7 +421,7 @@ func (s *Store) scanRosterRow(rows pgx.Rows, g Guild, actorID int64, moderator, 
 	var export, faction *string
 	dest := append([]any{&row.CharacterKey, &row.ownerUserID, &row.Region, &row.Ruleset, &row.Name, &row.Rank,
 		&row.Verified, &row.LoggedRecently, &row.LoggedAt, &row.Consent, &row.Class, &row.Spec, &row.Role,
-		&row.ItemLevel, &faction, &export}, extra...)
+		&row.ItemLevel, &faction, &export, &row.SimExport}, extra...)
 	if err := rows.Scan(dest...); err != nil {
 		return RosterRow{}, fmt.Errorf("guilds: home roster: %w", err)
 	}

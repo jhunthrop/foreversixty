@@ -18,6 +18,10 @@ export const HOME_UPGRADES_MAX_RESERVE_PX = 1600;
  *  and 1440: the no-spec, no-gear and no-list states are all this tall. */
 export const HOME_UPGRADES_FALLBACK_PX = 147;
 
+/** The reserved height as a CSS length: the island's loading card holds exactly this, so a
+ *  skeleton taller than the settled state never pushes the page down for a frame. */
+export const HOME_UPGRADES_RESERVE_HEIGHT = `var(${HOME_UPGRADES_RESERVE_VAR}, ${HOME_UPGRADES_FALLBACK_PX}px)`;
+
 /** Stores the settled card height for the next visit. */
 export function storeUpgradesReserve(pixels: number): void {
   writeReserve(HOME_UPGRADES_RESERVE_KEY, pixels, HOME_UPGRADES_MAX_RESERVE_PX);

@@ -9,6 +9,7 @@
 // one of these hrefs by hand.
 import { plannerHrefFor, simHrefFor, type CurrentCharacter } from '../current-character';
 import { plannerCodeHref, simCodeHref } from '../handoff-links';
+import type { GuildRosterRow } from './api';
 
 function syntheticCurrent(code: string): CurrentCharacter {
   // Only `.source` and `.ref` are read by plannerHrefFor/simHrefFor's 'code' branch; the
@@ -31,4 +32,12 @@ export function rosterSimHref(code: string): string {
   } catch {
     return simCodeHref(code);
   }
+}
+
+/** Whether a roster row holds the Open in simulator / planner slot, decided from the home's own
+ *  payload so the row is drawn at its final height at first paint: gear shared and an export the
+ *  sim input reads (`sim_export`). An API that predates `sim_export` keeps the slot, and its
+ *  lookup decides. */
+export function rosterHoldsHandoff(row: Pick<GuildRosterRow, 'consent' | 'sim_export'>): boolean {
+  return row.consent !== 'roster' && row.sim_export !== false;
 }

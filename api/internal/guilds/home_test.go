@@ -164,6 +164,68 @@ func TestHomeRosterClassFromExportWhenNoFightMetrics(t *testing.T) {
 	}
 }
 
+// TestHomeRosterSimExport: sim_export is true exactly when the row's FS1 export is its sim input
+// (sims.ExportIsInputSQL) and the account shares gear, so the web knows at first paint whether a
+// roster row holds the Open in simulator / planner slot.
+func TestHomeRosterSimExport(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	if err := db.EnsureMetricsPartitions(ctx, h.pool, time.Now(), 0); err != nil {
+		t.Fatal(err)
+	}
+	seedRankedReport(t, h.pool, gid, "simexportfight")
+	const fs1Code = "FS1:1.60.1.70009:warrior:human:0/0/0:head=12640"
+
+	seed := func(name, export, consent string, capturedAgo time.Duration) int64 {
+		t.Helper()
+		uid := seedUser(t, h.pool, name+"@example.com")
+		key := "us/hardcore/" + name
+		seedCharacter(t, h.pool, gid, uid, key, "member", true)
+		if _, err := h.pool.Exec(ctx, `
+			insert into addon_exports (character_key, user_id, region, ruleset, name, export, captured_at, updated_at)
+			values ($1, $2, 'us', 'hardcore', $3, $4, now() - $5::interval, now())`,
+			key, uid, name, export, fmt.Sprintf("%d seconds", int(capturedAgo.Seconds()))); err != nil {
+			t.Fatal(err)
+		}
+		recomputeMembership(t, h.pool, gid, uid)
+		if _, err := h.pool.Exec(ctx,
+			`update guild_members set consent = $3 where guild_id = $1 and user_id = $2`, gid, uid, consent); err != nil {
+			t.Fatal(err)
+		}
+		return uid
+	}
+	viewer := seed("simexportfresh", fs1Code, "gear", 0)
+	seed("simexportstale", fs1Code, "gear", 48*time.Hour)
+	seed("simexportplain", `{"slots":[]}`, "gear", 0)
+	seed("simexportroster", fs1Code, "roster", 0)
+	// A fight newer than the stale export makes the fight its sim input.
+	if _, err := h.pool.Exec(ctx,
+		`insert into fight_metrics (report_id, fight_index, player_key, class, spec, ilvl, fought_at)
+		 values ('simexportfight', 0, 'us/hardcore/simexportstale', 'Warrior', 'Fury', 60, now() - interval '1 hour')`); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: viewer, Role: "user", Method: "session"}
+	var view HomeView
+	h.data(h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), ""), &view)
+	got := map[string]bool{}
+	for _, row := range view.Roster {
+		got[row.Name] = row.SimExport
+	}
+	want := map[string]bool{
+		"simexportfresh":  true,
+		"simexportstale":  false,
+		"simexportplain":  false,
+		"simexportroster": false,
+	}
+	for name, w := range want {
+		if v, ok := got[name]; !ok || v != w {
+			t.Errorf("%s: sim_export = %v (present %v), want %v", name, v, ok, w)
+		}
+	}
+}
+
 func TestHomeReportsListsOnlyTheTrailingWeek(t *testing.T) {
 	h := newHTTPHarness(t)
 	ctx := context.Background()

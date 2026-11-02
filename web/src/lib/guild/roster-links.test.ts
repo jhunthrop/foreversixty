@@ -8,7 +8,21 @@
 // own compatibility rule, so a future change to either module's behaviour needs to change
 // only this file.
 import { describe, expect, it } from 'vitest';
-import { rosterPlannerHref, rosterSimHref } from './roster-links';
+import { rosterHoldsHandoff, rosterPlannerHref, rosterSimHref } from './roster-links';
+
+describe('rosterHoldsHandoff', () => {
+  it('holds the slot only for shared gear whose export the simulator reads', () => {
+    expect(rosterHoldsHandoff({ consent: 'gear', sim_export: true })).toBe(true);
+    expect(rosterHoldsHandoff({ consent: 'gear_bags', sim_export: true })).toBe(true);
+    expect(rosterHoldsHandoff({ consent: 'gear', sim_export: false })).toBe(false);
+    expect(rosterHoldsHandoff({ consent: 'roster', sim_export: true })).toBe(false);
+  });
+
+  it('keeps the slot, for its lookup to decide, when the API predates sim_export', () => {
+    expect(rosterHoldsHandoff({ consent: 'gear' })).toBe(true);
+    expect(rosterHoldsHandoff({ consent: 'roster' })).toBe(false);
+  });
+});
 
 const CODE = 'FS1:1.60.1.69893:warrior:human:0/0/0:';
 

@@ -2,7 +2,7 @@
 // Row bands (design/specs/2026-11-01-row-bands.md): every lit row (the viewer's own row, an
 // addressed fight) is a rounded band whose content sits at least 12 px inside both sides, at
 // 1440 and 390; an unlit row keeps square corners so its hairline runs straight; a link row's
-// hover band is a raised ground with a ring; and a roster row with no export keeps no blank slot.
+// hover band is a raised ground with a ring. (The roster's handoff slot: guild-roster-handoff.spec.ts.)
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { CHARACTER_PATH } from './support/character-fixture';
@@ -36,15 +36,6 @@ for (const width of WIDTHS) {
       await stubGuild(page, 'member');
       await gotoHydrated(page, `${GUILD_PAGE}#roster`, 'guild-roster-rows');
       await expectRoomyBands(page, 1);
-    });
-
-    test('a roster row with no export keeps no blank handoff slot', async ({ page }) => {
-      await stubGuild(page, 'member');
-      await gotoHydrated(page, `${GUILD_PAGE}#roster`, 'guild-roster-rows');
-      const slots = page.getByTestId('guild-roster-handoff');
-      await expect(slots.first()).toHaveAttribute('data-state', 'empty');
-      await expect(slots.first()).toBeHidden();
-      await expect(slots.first().locator('..')).toBeHidden();
     });
 
     test('the readiness own row is a rounded band holding its content', async ({ page }) => {

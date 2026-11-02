@@ -2051,7 +2051,7 @@ components:
     GuildRosterRow:
       type: object
       description: One roster row. Draw Remove and Approve exactly when may_remove and may_approve.
-      required: [character_key, region, ruleset, name, rank, verified, consent, logged_at, logged_recently, attendance, account_key, supporter, last_report_at, may_remove, may_approve, addon]
+      required: [character_key, region, ruleset, name, rank, verified, consent, logged_at, logged_recently, attendance, account_key, supporter, last_report_at, may_remove, may_approve, sim_export, addon]
       properties:
         character_key: { type: string }
         region: { type: string }
@@ -2068,6 +2068,7 @@ components:
         last_report_at: { type: [string, "null"], format: date-time }
         may_remove: { type: boolean }
         may_approve: { type: boolean }
+        sim_export: { type: boolean, description: "The character's sim input is its FS1 export (gear consent only): the Roster tab's Open in simulator / planner slot has links to offer." }
         addon: { $ref: '#/components/schemas/GuildRosterAddon' }
         class: { type: string, x-name: className }
         spec: { type: string }

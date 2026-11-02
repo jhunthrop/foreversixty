@@ -21,7 +21,7 @@
   import { specDisplayName } from '../../lib/sim/spec-label';
   import { dataUrl } from '../../lib/planner/load';
   import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
-  import { storeUpgradesReserve } from '../../lib/home/upgrades-layout';
+  import { HOME_UPGRADES_RESERVE_HEIGHT, storeUpgradesReserve } from '../../lib/home/upgrades-layout';
   import UpgradeRow from './UpgradeRow.svelte';
   import Card from '../ui/Card.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -90,12 +90,17 @@
   const extraAlreadyBisCount = $derived(result === null ? 0 : Math.max(0, result.alreadyBis.length - 3));
 </script>
 
-<div bind:this={box}>
+<!-- Loading, the card is exactly the height the slot reserved (the last settled state): the
+     skeleton is taller than the smallest states, and drawn at its own height it pushed the page
+     72 px down for the frame before a cached answer replaced it (header-finished-sim's shift).
+     The card clips it; it is a placeholder, not a state. -->
+<div bind:this={box} style:height={status === 'loading' ? HOME_UPGRADES_RESERVE_HEIGHT : undefined}>
   <Card
     glyph="list"
     title={homeUpgradesCopy.heading}
     action={fullListHref === undefined ? undefined : { label: fullListLabel, href: fullListHref }}
     testid="home-upgrades-body"
+    class={status === 'loading' ? 'h-full' : ''}
   >
     {#if status === 'loading'}
       <Skeleton lines={4} rowHeight="h-5" testid="home-upgrades-skeleton" />

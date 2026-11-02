@@ -3086,6 +3086,8 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     public let lastReportAt: Date?
     public let mayRemove: Bool
     public let mayApprove: Bool
+    /// The character's sim input is its FS1 export (gear consent only): the Roster tab's Open in simulator / planner slot has links to offer.
+    public let simExport: Bool
     public let addon: GuildRosterAddon?
     public let className: String?
     public let spec: String?
@@ -3117,6 +3119,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         lastReportAt: Date? = nil,
         mayRemove: Bool,
         mayApprove: Bool,
+        simExport: Bool,
         addon: GuildRosterAddon? = nil,
         className: String? = nil,
         spec: String? = nil,
@@ -3144,6 +3147,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         self.lastReportAt = lastReportAt
         self.mayRemove = mayRemove
         self.mayApprove = mayApprove
+        self.simExport = simExport
         self.addon = addon
         self.className = className
         self.spec = spec
@@ -3173,6 +3177,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         case lastReportAt
         case mayRemove
         case mayApprove
+        case simExport
         case addon
         case className = "class"
         case spec

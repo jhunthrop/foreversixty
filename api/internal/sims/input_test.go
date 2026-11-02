@@ -3,9 +3,11 @@ package sims
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -174,6 +176,53 @@ func TestSimInputReportsBlizzardSource(t *testing.T) {
 		t.Fatalf("Source = %q, want blizzard", in.Source)
 	}
 }
+
+// TestExportIsInputSQLAgreesWithSimInput holds ExportIsInputSQL to SimInput: for each case the
+// SQL is true exactly when SimInput answers with the export and the export is an FS1 code.
+func TestExportIsInputSQLAgreesWithSimInput(t *testing.T) {
+	h := newHarness(t)
+	ensureMetricsPartition(h)
+	now := time.Now().UTC()
+	const fs1Code = "FS1:1.60.1.69893:warrior:orc:0/0/0:head=12640"
+	cases := []struct {
+		name, export, source string
+		exportAt             time.Time
+		fightAt              *time.Time
+		want                 bool
+	}{
+		{"an FS1 export alone", fs1Code, "addon", now, nil, true},
+		{"a Blizzard FS1 export alone", fs1Code, "blizzard", now, nil, true},
+		{"an export that is not FS1", `{"slots":[]}`, "addon", now, nil, false},
+		{"an FS1 export older than a fight", fs1Code, "addon", now.Add(-48 * time.Hour), ptr(now.Add(-time.Hour)), false},
+		{"an FS1 export newer than a fight", fs1Code, "addon", now, ptr(now.Add(-48 * time.Hour)), true},
+	}
+	for i, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			name := fmt.Sprintf("agree%d", i)
+			key := "us/normal/" + name
+			if c.fightAt != nil {
+				seedFightRow(h, key, name, "Warrior", "warrior-fury", *c.fightAt)
+			}
+			seedExportWithSource(h, key, "us", "normal", name, c.export, c.source, c.exportAt)
+			in, _, ok, err := h.store.SimInput(t.Context(), key)
+			if err != nil || !ok {
+				t.Fatalf("SimInput: ok=%v err=%v", ok, err)
+			}
+			simInputSaysExport := in.Source != "fight" && strings.HasPrefix(c.export, "FS1:")
+			var sqlSays bool
+			if err := h.store.Pool.QueryRow(t.Context(),
+				`select `+ExportIsInputSQL("ae")+` from addon_exports ae where ae.character_key = $1`, key).
+				Scan(&sqlSays); err != nil {
+				t.Fatal(err)
+			}
+			if sqlSays != simInputSaysExport || sqlSays != c.want {
+				t.Fatalf("SQL says %v, SimInput says %v (source %q), want %v", sqlSays, simInputSaysExport, in.Source, c.want)
+			}
+		})
+	}
+}
+
+func ptr[T any](v T) *T { return &v }
 
 func TestSimInputServesTheCharacterWithNoBucket(t *testing.T) {
 	h := newHarness(t)

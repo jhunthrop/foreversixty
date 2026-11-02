@@ -30,6 +30,7 @@
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
   import { addonSnapshotLine } from '../../lib/guild/roster-addon';
+  import { rosterHoldsHandoff } from '../../lib/guild/roster-links';
   import {
     RANKS_PENDING_LINE,
     entryFacts,
@@ -591,7 +592,7 @@
                 class="contents lg:ml-auto lg:flex lg:w-[190px] lg:shrink-0 lg:flex-nowrap lg:items-center lg:justify-end lg:gap-3"
                 data-testid="guild-roster-actions"
               >
-                {#if row.consent !== 'roster'}
+                {#if rosterHoldsHandoff(row)}
                   <div
                     class="basis-full pl-12 has-[[data-state=empty]]:hidden max-lg:order-3 lg:basis-auto lg:pl-0"
                   >

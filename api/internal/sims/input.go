@@ -61,6 +61,19 @@ type FightRef struct {
 // the field is always valid JSON rather than a bare null.
 var emptyGear = json.RawMessage(`{}`)
 
+// ExportIsInputSQL is SimInput's source choice as a SQL boolean over the addon_exports row
+// aliased `alias`: true exactly when that export is the character's sim input and is an FS1
+// code, the case in which the web's roster handoff (lib/addon-export.ts lookupAddonExport) has
+// a simulator and planner link to offer. SimInput picks the export when it was captured after
+// the character's newest live fight (fight_metrics.state <> 'removed'), the fight otherwise;
+// TestExportIsInputSQLAgreesWithSimInput holds the two together.
+func ExportIsInputSQL(alias string) string {
+	return fmt.Sprintf(`(%[1]s.export like 'FS1:%%' and not exists (
+		select 1 from fight_metrics sim_fight
+		where sim_fight.player_key = %[1]s.character_key and sim_fight.state <> 'removed'
+		  and sim_fight.fought_at >= %[1]s.captured_at))`, alias)
+}
+
 // SimInput assembles a character's model from the database. It reports
 // false when the character is not known at all. The buffs come from the
 // bucket and are the handler's to add.

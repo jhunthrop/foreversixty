@@ -223,6 +223,7 @@ func (s *Store) invitedRosterRows(ctx context.Context, guildID int64, g Guild) (
 		       case when gm.consent in ('gear', 'gear_bags') then fm.ilvl end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.faction end,
 		       case when gm.consent in ('gear', 'gear_bags') then ae.export end,
+		       `+rosterSimExportSQL+`,
 		       gc.character_key
 		from guild_characters gc
 		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id

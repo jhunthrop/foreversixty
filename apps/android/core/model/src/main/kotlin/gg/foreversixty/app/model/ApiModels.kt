@@ -1165,6 +1165,8 @@ data class GuildRosterRow(
     @SerialName("last_report_at") val lastReportAt: String? = null,
     @SerialName("may_remove") val mayRemove: Boolean,
     @SerialName("may_approve") val mayApprove: Boolean,
+    /** The character's sim input is its FS1 export (gear consent only): the Roster tab's Open in simulator / planner slot has links to offer. */
+    @SerialName("sim_export") val simExport: Boolean,
     @SerialName("addon") val addon: GuildRosterAddon? = null,
     @SerialName("class") val className: String? = null,
     @SerialName("spec") val spec: String? = null,

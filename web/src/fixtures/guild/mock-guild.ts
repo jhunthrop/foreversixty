@@ -292,6 +292,8 @@ function toRosterRow(name: string): GuildRosterRow {
     last_report_at: logged ? '2026-12-22T21:40:00Z' : '2026-12-15T19:00:00Z',
     may_approve: !verified,
     may_remove: rank !== 'leader',
+    // The mock world stubs no sim input, so no row's export is one the simulator reads.
+    sim_export: false,
   };
 }
 
