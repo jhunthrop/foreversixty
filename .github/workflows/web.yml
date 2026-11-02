@@ -3,6 +3,8 @@
 # Job graph (see the ci-web-fast lane's change, 2026-09-30):
 #
 #   build --+--> build-real (real-data build + its postbuild checks, off the critical path)
+#           +--> real-engine (the real sim.wasm + the four real-engine specs; gated by
+#           |    real-engine-scope on pull requests, off the deploy path)
 #           +--> e2e (matrix: shard 1-4/4)     ----+
 #           +--> lhci (matrix: shard 1-3/3, 2-3 of the 7 budgeted URLs each) --+--> deploy
 #                                                                    (main push/dispatch only)
@@ -196,6 +198,151 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-failures-shard-${{ matrix.shard }}
+          path: |
+            web/test-results/
+            web/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+  # The four real-engine Playwright specs (web/package.json's test:e2e:real-engine: the /sim
+  # smoke run, Top Gear, weights and talents) against the real sim.wasm, built the way
+  # `deploy` builds it. Every other e2e serves the checked-in fake engine, and these four
+  # skip without a published wasm, so before this job nothing ran them and three went stale
+  # unseen (round 6, design/reviews/2026-11-02-sim-audit-round6/page.md P3). Here a missing
+  # wasm, or any skipped spec, FAILS the job. `real-engine-scope` limits a pull request to
+  # changes that can move the wasm, its loader or these specs; push, dispatch always run.
+  real-engine-scope:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.scope.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: scope
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENT" != pull_request ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          git fetch -q --depth=1 origin "$BASE"
+          changed=$(git diff --name-only "$BASE" HEAD)
+          if printf '%s\n' "$changed" | grep -qE '^(sim/|logs/|Makefile$|data/builds/[^/]+/(simdb\.bin|enchants\.json|spellranks\.json)$|web/src/data/active-build\.json$|web/src/lib/sim/|web/tests/e2e/(sim-[a-z-]*real-engine\.spec\.ts|support/real-engine\.ts)$|web/playwright\.config\.ts$|web/package(-lock)?\.json$|\.github/actions/pin-engine/|\.github/workflows/web\.yml$)'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "no change reaches the wasm, its loader or the real-engine specs" >> "$GITHUB_STEP_SUMMARY"
+          fi
+  real-engine:
+    needs: [build, real-engine-scope]
+    if: needs.real-engine-scope.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      # The wasm's inputs, exactly: the engine pin, the sim/ and logs/ trees (sim/go.mod's
+      # `go` line picks the toolchain, so it is in the sim tree), the Makefile, and the
+      # active build's three embedded files. git's own tree and blob ids, so the key moves
+      # only when a byte that is compiled in does.
+      - name: the wasm's cache key
+        id: wasm-key
+        working-directory: .
+        run: |
+          pin=$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)
+          test -n "$pin" || { echo "sim/enginever/version.go has no Version"; exit 1; }
+          build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)
+          test -n "$build" || { echo "web/src/data/active-build.json has no build"; exit 1; }
+          inputs=$(git rev-parse HEAD:sim HEAD:logs HEAD:Makefile \
+            "HEAD:data/builds/$build/simdb.bin" "HEAD:data/builds/$build/enchants.json" "HEAD:data/builds/$build/spellranks.json")
+          echo "key=sim-wasm-v1-$pin-$(printf '%s\n' "$inputs" | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
+      - id: wasm-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            artifacts/ARTIFACT_ID
+            web/public/_sim/
+          key: ${{ steps.wasm-key.outputs.key }}
+      # A miss builds the wasm exactly as `deploy` does: setup-go on sim/go.mod's version,
+      # the pinned engine, make simdb, make publish-wasm (which runs make artifacts and its
+      # 4.5 MB gzipped budget). setup-go's own cache is off: its key is sim/go.sum alone,
+      # shared with sim.yml's native test jobs, so it would restore a cache with no js/wasm
+      # objects in it. This one holds the wasm build's objects and modules.
+      - if: steps.wasm-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache: false }
+      - if: steps.wasm-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-wasm-${{ runner.os }}-${{ hashFiles('sim/go.mod', 'sim/go.sum', 'sim/enginever/version.go') }}
+          restore-keys: go-wasm-${{ runner.os }}-
+      - if: steps.wasm-cache.outputs.cache-hit != 'true'
+        uses: ./.github/actions/pin-engine
+      - name: build and publish sim.wasm.gz and sim.js
+        if: steps.wasm-cache.outputs.cache-hit != 'true'
+        working-directory: .
+        run: |
+          make simdb
+          make publish-wasm
+      - name: the published wasm is there
+        working-directory: .
+        run: |
+          id=$(cat artifacts/ARTIFACT_ID)
+          pin=$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)
+          case "$id" in "$pin-"*) ;; *) echo "artifact '$id' does not belong to engine $pin"; exit 1;; esac
+          dir="web/public/_sim/$id"
+          test -f "$dir/sim.wasm.gz" || { echo "missing $dir/sim.wasm.gz"; exit 1; }
+          test -f "$dir/sim.js" || { echo "missing $dir/sim.js"; exit 1; }
+          bytes=$(wc -c < "$dir/sim.wasm.gz" | tr -d ' ')
+          echo "sim.wasm.gz: $bytes bytes ($id, cache hit: ${{ steps.wasm-cache.outputs.cache-hit == 'true' }})" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "PUBLIC_SIM_ARTIFACT=$id" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
+        with:
+          {
+            node-version-file: web/.node-version,
+            cache: npm,
+            cache-dependency-path: web/package-lock.json,
+          }
+      - run: npm ci
+      - name: read the pinned Playwright version
+        id: playwright-version
+        run: |
+          echo "version=$(node -p "require('./package-lock.json').packages['node_modules/@playwright/test'].version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+      - run: npx playwright install --with-deps chromium
+      # The real-data build with the real engine, as `deploy`'s, but on the dead API port
+      # (tests/hermetic.ts) like every e2e dist. Its postbuild check-sim-engine-artifact.mjs
+      # fails if dist/_sim/ lacks the pair.
+      - name: build the real-data dist with the real engine
+        run: npm run build
+        env:
+          FOREVER_DATA: real
+          PUBLIC_SIM_ENGINE: wasm
+          PUBLIC_API_BASE_URL: http://127.0.0.1:9
+      # A skipped spec is a failure here: each spec skips itself when the wasm or its
+      # exports are missing, which in this job means the build above went wrong.
+      - name: the four real-engine specs, none skipped
+        run: |
+          npm run test:e2e:real-engine -- --reporter=list,json
+          node -e '
+            const { stats } = JSON.parse(require("fs").readFileSync(process.env.PLAYWRIGHT_JSON_OUTPUT_NAME, "utf8"));
+            console.log("passed " + stats.expected + ", failed " + stats.unexpected + ", flaky " + stats.flaky + ", skipped " + stats.skipped);
+            if (stats.skipped > 0 || stats.expected === 0) {
+              console.error("a real-engine spec skipped: the wasm or one of its exports is missing");
+              process.exit(1);
+            }'
+        env:
+          E2E_SKIP_BUILD: '1'
+          PLAYWRIGHT_JSON_OUTPUT_NAME: ${{ runner.temp }}/real-engine-results.json
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failures-real-engine
           path: |
             web/test-results/
             web/playwright-report/
