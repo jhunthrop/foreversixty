@@ -28,7 +28,7 @@
      these testids keeps working unchanged. -->
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
-  import { rotationDrawerContent } from '../../lib/sim/rotations';
+  import { loadRotationNotes, rotationDrawerContent, type RotationNotes } from '../../lib/sim/rotations';
   import Disclosure from './Disclosure.svelte';
 
   let {
@@ -47,7 +47,17 @@
     triggerTestId?: string;
   } = $props();
 
-  const drawer = $derived(rotationDrawerContent(spec));
+  // The notes are their own chunk (rotations.ts), loaded once the island has mounted; the drawer
+  // is closed until then. A failed load reads as "no notes yet", never as a broken drawer.
+  let notes = $state<RotationNotes | null>(null);
+  loadRotationNotes().then(
+    (loaded) => (notes = loaded),
+    (error: unknown) => {
+      console.error('sim: the rotation notes did not load', error);
+      notes = {};
+    },
+  );
+  const drawer = $derived(rotationDrawerContent(spec, notes));
 </script>
 
 <Disclosure
@@ -60,7 +70,9 @@
   panelTestId={`${idPrefix}-drawer-panel`}
 >
   <p class="text-[13px]">{drawer.intro}</p>
-  {#if drawer.steps.length > 0}
+  {#if drawer.steps === null}
+    <!-- still loading: nothing rather than "no notes" -->
+  {:else if drawer.steps.length > 0}
     <ol class="flex list-decimal flex-col gap-1 pl-5 text-[13px]" data-testid={`${idPrefix}-drawer-steps`}>
       {#each drawer.steps as step, index (index)}
         <li>{step}</li>
