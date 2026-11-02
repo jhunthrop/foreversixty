@@ -176,6 +176,7 @@ export function pickEnchants(
 /** What each consumable the raid-ready preset uses gives. A new id needs a line here. */
 export const CONSUMABLE_GIVES: Readonly<Record<string, string>> = {
   alcohol_rumsey_rum_black_label: 'Stamina',
+  cerebral_cortex_compound: 'Intellect',
   conjured_demonic_rune: 'Mana, used on cooldown',
   elixir_of_firepower: 'Fire spell damage',
   elixir_of_fortitude: 'Health',
@@ -195,10 +196,12 @@ export const CONSUMABLE_GIVES: Readonly<Record<string, string>> = {
   food_sages_tea: 'Healing power',
   food_smoked_desert_dumpling: 'Strength (well fed)',
   food_tender_wolf_steak: 'Agility (well fed)',
+  gizzard_gum: 'Spirit',
   greater_arcane_elixir: 'Spell power',
   greater_clerics_elixir: 'Healing power',
   greater_mageblood_elixir: 'Mana per 5 sec',
   greater_stoneshield_potion: 'Armor for two minutes',
+  ground_scorpok_assay: 'Agility',
   juju_might: 'Attack power',
   juju_power: 'Strength',
   conjured_rogue_thistle_tea: 'Energy, used when it runs low',

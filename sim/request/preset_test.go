@@ -412,8 +412,10 @@ func TestRetributionPaladinRunsNoSanctityAura(t *testing.T) {
 }
 
 // A slot holds one consumable: where a preset lists two for one slot (a food and the lower
-// level food behind it), the first the character can use is the one it carries, so a
-// level-40 caster eats Nightfin Soup and a level-60 caster Baked Salmon (round 9).
+// level food behind it, or a class's pick and its group's), the first the character can use
+// is the one it carries, the spec's and class's lists ahead of the group's. So a level-40
+// caster eats Nightfin Soup and a level-60 caster Baked Salmon, and a rogue takes Ground
+// Scorpok Assay where the melee group lists R.O.I.D.S. (round 9).
 func TestEachConsumableSlotCarriesTheFirstUsableEntry(t *testing.T) {
 	presets := loadRealPresets(t)
 	levels := loadRealItemLevels(t)
@@ -455,6 +457,15 @@ func TestEachConsumableSlotCarriesTheFirstUsableEntry(t *testing.T) {
 		{"rogue-combat", 60, "food_poached_sunscale_salmon"},
 		{"hunter-marksmanship", 60, "food_poached_sunscale_salmon"},
 		{"priest-holy", 60, "food_sages_tea"},
+		// The Blasted Lands slot: the spec's and class's lists beat the group's.
+		{"warrior-fury", 60, "r_o_i_d_s"},
+		{"rogue-combat", 60, "ground_scorpok_assay"},
+		{"druid-feral", 60, "ground_scorpok_assay"},
+		{"hunter-beast-mastery", 60, "ground_scorpok_assay"},
+		{"mage-frost", 60, "cerebral_cortex_compound"},
+		{"shaman-restoration", 60, "cerebral_cortex_compound"},
+		{"priest-discipline", 60, "gizzard_gum"},
+		{"druid-feral-bear", 60, "r_o_i_d_s"},
 	} {
 		if got := ConsumesAtLevel(all[c.spec], c.level); !slices.Contains(got, c.food) {
 			t.Errorf("%s at %d eats no %s: %v", c.spec, c.level, c.food, got)
