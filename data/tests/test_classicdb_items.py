@@ -900,3 +900,29 @@ def test_extract_records_reads_a_shields_block():
     )
     records, _ = extract_records(_sql([row]))
     assert records[0].block == 40
+
+
+def test_every_title_ranked_rank_covers_both_factions():
+    """Round 8: "Stone Guard's" ranked Forever's Horde rank-10 set (Lady
+    Palanseer's ilvl 53 Stone Guard's armour) while its Alliance twin
+    (Captain Dirgehammer's Knight's armour) has no usable title, so 20 Horde
+    items sat in pvp:rank-10:horde against one Alliance tabard. A rank the
+    title table names must name it for both sides (or by a shared title)."""
+    from pipeline.classicdb_items import HONOR_RANK_BY_TITLE
+    from pipeline.loot.pvp_faction import title_faction
+
+    sides: dict[int, set[str | None]] = {}
+    for title, rank in HONOR_RANK_BY_TITLE.items():
+        sides.setdefault(rank, set()).add(title_faction(f"{title} Cloak"))
+    lopsided = {
+        rank: found for rank, found in sides.items()
+        if None not in found and found != {"alliance", "horde"}
+    }
+    assert not lopsided
+
+
+def test_forevers_rank_10_armour_names_no_rank_on_either_side():
+    """Forever's server tooltips (nether.wowhead.com/forever/tooltip/item/
+    220801 and 220794, 2026-11-01) show only "Requires Level 50" on both."""
+    assert honor_rank_for_name("Stone Guard's Plate Armor") is None
+    assert honor_rank_for_name("Knight's Plate Hauberk") is None

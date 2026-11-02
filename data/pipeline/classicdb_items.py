@@ -564,13 +564,20 @@ def classic_honor_ranks(items: list[ClassicDbItem]) -> dict[int, int]:
 #: begins ordinary item names (Knight's Seal of the Dawn, Knight's Lance);
 #: the ranks 5 and 6 titles (Private's, Scout's, Corporal's, Grunt's) are
 #: left out for the same reason.
+#:
+#: Round 8: so is Horde's rank-10 "Stone Guard's". With Alliance's "Knight's"
+#: out, it ranked only Lady Palanseer's ilvl 53 Stone Guard's armour, 20 Horde
+#: items in pvp:rank-10:horde against none of Captain Dirgehammer's Knight's
+#: twins; Forever's server tooltips show only "Requires Level 50" on both
+#: (nether.wowhead.com/forever/tooltip/item/220801 and 220794, 2026-11-01).
+#: Both sets stay on their vendors. Stone Guard's Herald (272450) keeps rank
+#: 10 by re-itemisation from 15199, whose ItemSparse.RequiredPVPRank is 10.
 HONOR_RANK_BY_TITLE: dict[str, int] = {
     "Sergeant's": 7,
     "Senior Sergeant's": 8,
     "Master Sergeant's": 8,
     "First Sergeant's": 9,
     "Sergeant Major's": 9,
-    "Stone Guard's": 10,
     "Blood Guard's": 11,
     "Knight-Lieutenant's": 11,
     "Legionnaire's": 12,
