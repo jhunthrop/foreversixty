@@ -85,7 +85,6 @@ const (
 	consideredBeforeVerify    = "the set before the verify swaps"
 	consideredBeforeSets      = "the set before set completion"
 	consideredBeforeConfirmed = "the set before the confirmed-stats check"
-	consideredLadderWeights   = "the set the ladder weights pick"
 )
 
 // keptAlternative is the published note of a band whose final set lost to a
