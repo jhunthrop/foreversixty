@@ -233,7 +233,8 @@ describe('healerSetViewFor', () => {
     expect(low.rows.find((r) => r.heading === 'Hard pull')).toEqual({
       heading: 'Hard pull',
       figures: '3 mobs in Wailing Caverns (2 Deviate Lasher, 1 Druid of the Fang), 1.61 times the last boss',
-      reason: '',
+      reason:
+        "A modelled hard pull, not an average one: a quarter of the dungeons' mobs come in pulls at least this hard.",
     });
     // A file published before pulls has no pull row.
     const older = healerSetViewFor(healerBand({ band: 30 }), banded)!.disclosure!;

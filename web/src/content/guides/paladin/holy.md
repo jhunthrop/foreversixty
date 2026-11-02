@@ -59,7 +59,7 @@ The build is 31 points in Holy, 12 in Protection and 8 in Retribution. Chosen by
 - **Holy Shock** is the instant heal, and **Boundless Light** makes it crit far more often on anyone you have not sworn **Oath of Light** to.
 - **Holy Power** now makes your heals' critical strikes heal for more, rather than crit more often; **Light's Vigil** is the capstone.
 - **Divine Intellect** moved to Protection's first row and still lifts your mana pool.
-- In Retribution, **Benediction** makes Holy Shock and your other instants cheaper, and **Conviction** now adds critical strike to every spell, heals included, which feeds Illumination and Holy Power. Taking those eight points instead of twenty in Protection measured about +5% healing in our simulator.
+- In Retribution, **Benediction** makes Holy Shock and your other instants cheaper, and **Conviction** now adds critical strike to every spell, heals included, while you wield a melee weapon, which feeds Illumination and Holy Power. Taking those eight points instead of twenty in Protection measured about +5% healing in our simulator.
 
 **Oath of Light** is sworn on the tank before the pull: for five minutes your Holy Light, Flash of Light and Holy Shock heal that one ally for more (the old Blessing of Light amounts, with Holy Shock added), and since most of your healing lands on the tank it is the biggest single gain in the tree. Open the planner at [/planner?class=paladin](/planner?class=paladin) to adjust it.
 

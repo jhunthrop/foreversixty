@@ -81,7 +81,7 @@ This build spends 33 points in Protection, 8 in Retribution and 10 in Holy, and 
 - **Iron Creed** — more threat on Holy Strike, and while Righteous Fury is on, Holy Strike also cuts the damage you take for a few seconds.
 - **Shieldsworn** — the capstone: Holy Strike's cooldown drops to six seconds, which keeps Iron Creed up all the time, and each Holy Strike also fires Holy Shield's damage and Shield Specialization's mana while Holy Shield is up. It is the largest single gain in the build, mostly in threat.
 
-**Retribution**: five points in **Deflection**, five percent more Parry and the only parry a paladin can get from a talent, then **Conviction** for critical strike on every attack and spell.
+**Retribution**: five points in **Deflection**, five percent more Parry and the only parry a paladin can get from a talent, then **Conviction** for critical strike on every attack and spell while you wield a melee weapon.
 
 **Holy**: **Divine Strength** for the raw Strength, and **Improved Seals** for more Seal of Fury and Judgement damage.
 

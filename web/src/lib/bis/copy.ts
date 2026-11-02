@@ -466,6 +466,8 @@ export const bisCopy = {
     content: readonly { name: string; last_boss: string; boss_level: number }[],
   ): string => content.map((c) => `${c.name} (${c.last_boss}, level ${c.boss_level})`).join(', '),
   healerProfilePullHeading: 'Hard pull',
+  healerProfilePullReason:
+    "A modelled hard pull, not an average one: a quarter of the dungeons' mobs come in pulls at least this hard.",
   healerProfilePullLine: (
     size: number,
     dungeon: string,

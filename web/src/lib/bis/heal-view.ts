@@ -127,7 +127,7 @@ function pullRows(row: BisHealBandRow): HealProfileRow[] {
         pulls.pull.mobs,
         multiplier,
       ),
-      reason: '',
+      reason: bisCopy.healerProfilePullReason,
     },
   ];
 }

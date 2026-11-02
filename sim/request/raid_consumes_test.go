@@ -150,6 +150,27 @@ func TestRaidConsumesGiveRoguesTheirPoisons(t *testing.T) {
 	}
 }
 
+// Shamans never dual wield in Forever, so no shaman raid row at any level carries an off-hand
+// imbue, stone or oil (the wow-player review of round 11's main-hand stone fix asked for it).
+func TestNoShamanRaidRowCarriesAnOffHandConsumable(t *testing.T) {
+	all, err := RaidConsumes(loadRealPresets(t), loadRealItemLevels(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for spec, rows := range all {
+		if !strings.HasPrefix(spec, "shaman-") {
+			continue
+		}
+		for _, row := range rows {
+			for _, id := range row.Consumes {
+				if strings.HasPrefix(id, "off_hand_") {
+					t.Errorf("%s from level %d carries %s", spec, row.FromLevel, id)
+				}
+			}
+		}
+	}
+}
+
 // Owner ruling (round 5): one priest gives Power Infusion to one player, so no preset and
 // no default carries it.
 func TestNoRaidDefaultCarriesPowerInfusion(t *testing.T) {
