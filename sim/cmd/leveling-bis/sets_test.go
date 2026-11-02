@@ -367,3 +367,35 @@ func TestTrySetCompletionTriesTheCloseAlternativesToTheCheapestPieces(t *testing
 		t.Errorf("legs MeasuredDPS = %v, want the winning trial's 108", out["legs"].Item.MeasuredDPS)
 	}
 }
+
+// Round 9: the 100-iteration screen is too noisy for a rage-driven Fury
+// warrior to demand a 0.5% lead. Fury band 30 Alliance's best Defias Leather
+// four screened 61.9 against 61.7 (+0.3%) and was never confirmed, though
+// the 300-iteration confirm measures 62.4 against 61.6 (+1.3%, beyond
+// error). The best-screening trial is confirmed whenever it screens ahead
+// of the baseline at all; the confirm keeps the margin and the error bar.
+func TestTrySetCompletionConfirmsTheBestScreenThatLeadsAtAll(t *testing.T) {
+	picks := map[string]slotPick{
+		"head":  {Item: &scored{candidate: candidate{ID: 10, Name: "Loose Head"}, Score: 9}},
+		"chest": {Item: &scored{candidate: candidate{ID: 20, Name: "Loose Chest"}, Score: 9}},
+	}
+	bySlot := map[string][]scored{
+		"head":  {setItem(11, "Set Head", testSetID, "head")},
+		"chest": {setItem(21, "Set Chest", testSetID, "chest")},
+	}
+	screenOrConfirm := func(req api.SimRequest) (float64, error) {
+		trial := gearKey(req.Character.Gear) == gear(11, 21)
+		switch {
+		case req.Iterations == trinketRankIterations && trial:
+			return 100.3, nil // +0.3% on the noisy screen
+		case trial:
+			return 102, nil // +2% on the confirm
+		}
+		return 100, nil
+	}
+	fake := &fakeEngine{DPSFunc: screenOrConfirm}
+	out, _ := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, testCatalog())
+	if out["head"].Item.ID != 11 || out["chest"].Item.ID != 21 {
+		t.Fatalf("head %d chest %d, want the set pair confirmed and adopted", out["head"].Item.ID, out["chest"].Item.ID)
+	}
+}

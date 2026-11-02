@@ -195,11 +195,6 @@ func beatsBeyondError(dps, dpsErr, baseline, baselineErr float64) bool {
 	return beatsByMargin(dps, baseline) && dps-baseline > math.Hypot(dpsErr, baselineErr)
 }
 
-// setScreenMargin is how far a screening run must beat its baseline to earn a
-// full-length confirmation: half of swapMargin, so a trial the short run
-// already finds losing or tied never costs the 300-iteration run.
-const setScreenMargin = swapMargin / 2
-
 // setReading is one sim run's mean and standard error.
 type setReading struct{ dps, stdErr float64 }
 
@@ -242,8 +237,10 @@ func (c *setCompletion) baseline(cached **setReading, iterations int) (setReadin
 	return **cached, nil
 }
 
-// screens is whether a short run of trial leaves it worth confirming, with
-// that run's mean.
+// screens is a short run of trial: whether it leads the working picks at
+// all, and its mean. The 100-iteration screen is too noisy to demand a
+// margin (round 9: Fury band 30's Defias Leather four led by 0.3% there and
+// by 1.3% at 300 iterations); the confirm keeps swapMargin and the error.
 func (c *setCompletion) screens(trial setTrial) (bool, float64, error) {
 	base, err := c.baseline(&c.screenBase, trinketRankIterations)
 	if err != nil {
@@ -253,7 +250,7 @@ func (c *setCompletion) screens(trial setTrial) (bool, float64, error) {
 	if err != nil {
 		return false, 0, err
 	}
-	return reading.dps > base.dps*(1+setScreenMargin), reading.dps, nil
+	return reading.dps > base.dps, reading.dps, nil
 }
 
 // confirms is whether a verification-length run of trial beats the working
