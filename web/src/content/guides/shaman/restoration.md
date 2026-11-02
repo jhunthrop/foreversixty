@@ -52,7 +52,7 @@ The build is nearly all Restoration, with the other ten points in Enhancement: T
 
 - **Improved Healing Wave** shortens Healing Wave, and **Healing Way** strengthens it; **Purification** is a flat multiplier on every heal.
 - **Tidal Focus** makes the healing spells cheaper (and adds hit, which a healer does not use), **Mindfulness** keeps part of your regeneration running while you cast, and **Tidal Mastery** adds critical chance.
-- **Water Shield** returns mana on a critical heal, **Mana Tide Totem** refills the group, **Restorative Totems** strengthens Healing Stream and Mana Spring, and **Healing Focus** protects your casts from pushback.
+- **Water Shield** returns mana when you are hit and when you land a critical heal, **Mana Tide Totem** refills the group, **Restorative Totems** strengthens Healing Stream and Mana Spring, and **Healing Focus** protects your casts from pushback.
 - **Nature's Swiftness** is the instant emergency heal, and **Riptide** is the capstone: a direct heal plus a heal over time, and a stronger Chain Heal on its target.
 
 The sim found any build that keeps that core scores the same, because the points that differ change nothing a healer casts. Open the planner at [/planner?class=shaman](/planner?class=shaman) to adjust it.

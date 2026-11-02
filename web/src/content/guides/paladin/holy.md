@@ -61,11 +61,11 @@ The build is 31 points in Holy, 12 in Protection and 8 in Retribution. Chosen by
 - **Divine Intellect** moved to Protection's first row and still lifts your mana pool.
 - In Retribution, **Benediction** makes Holy Shock and your other instants cheaper, and **Conviction** now adds critical strike to every spell, heals included, which feeds Illumination and Holy Power. Taking those eight points instead of twenty in Protection measured about +5% healing in our simulator.
 
-Oath of Light is taken, but the client does not yet say how much it adds, so the simulator counts it as nothing. Open the planner at [/planner?class=paladin](/planner?class=paladin) to adjust it.
+**Oath of Light** is sworn on the tank before the pull: for five minutes your Holy Light, Flash of Light and Holy Shock heal that one ally for more (the old Blessing of Light amounts, with Holy Shock added), and since most of your healing lands on the tank it is the biggest single gain in the tree. Open the planner at [/planner?class=paladin](/planner?class=paladin) to adjust it.
 
 ## Rotation and priority
 
-The curated rotation leans on **Flash of Light** as the staple (Blessing of Light is gone in Forever): it is the most efficient heal per mana for both the tank and the party. **Divine Favor** into **Holy Light** answers a tank who is nearly dead. **Holy Shock** and a second Holy Light line only fire while your mana is keeping up with the share of the fight that is left; a healer who is short on mana, which is the usual case, heals as a Flash of Light healer. You are one of the five your group's raid damage reaches, so you heal yourself like any other party member.
+The curated rotation swears **Oath of Light** on the tank before the pull and leans on **Flash of Light** as the staple (Blessing of Light is gone in Forever): it is the most efficient heal per mana for both the tank and the party. **Divine Favor** into **Holy Light** answers a tank who is nearly dead. **Holy Shock** and a second Holy Light line only fire while your mana is keeping up with the share of the fight that is left; a healer who is short on mana, which is the usual case, heals as a Flash of Light healer. You are one of the five your group's raid damage reaches, so you heal yourself like any other party member.
 
 **Light's Vigil** is taken because it is the capstone point, but it is left out of the rotation: its party heal costs about as much mana as ten Flash of Lights, and against the profile's small raid pulses most of it would go to waste. The rotation does not downrank.
 
