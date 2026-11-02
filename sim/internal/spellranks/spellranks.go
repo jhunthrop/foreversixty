@@ -164,9 +164,14 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 			aliases = append(aliases, row.ID)
 			continue
 		}
-		if _, seen := levelByRank[row.Rank]; !seen {
+		if seenLevel, seen := levelByRank[row.Rank]; !seen {
 			levelByRank[row.Rank] = row.Level
 			ranks = append(ranks, row.Rank)
+		} else if seenLevel > core.CharacterMaxLevel && row.Level > 0 && row.Level <= core.CharacterMaxLevel {
+			// A row above the level cap is an NPC copy no player learns
+			// (Arcane Blast rank 3: 42896 at 76 listed before the player's
+			// 1239697 at 40), so a sibling within the cap sets the level.
+			levelByRank[row.Rank] = row.Level
 		}
 		idsByRank[row.Rank] = append(idsByRank[row.Rank], row.ID)
 		if !row.Inferior {

@@ -334,3 +334,33 @@ func TestSingleTierOverridesGateTheirIDs(t *testing.T) {
 		}
 	}
 }
+
+// TestARankAboveTheLevelCapDoesNotSetTheTiersLevel: spellranks.json lists
+// Arcane Blast rank 3 twice, the NPC copy 42896 at level 76 first and the
+// player's 1239697 at level 40 (SpellLevels 148351) second. The tier
+// trusted the first row, so a level 40 to 49 mage "learned" rank 3 at 76
+// and cast rank 2 (1239696, 78 base points against rank 3's 101).
+func TestARankAboveTheLevelCapDoesNotSetTheTiersLevel(t *testing.T) {
+	table, err := parseSpellRanks([]byte(`{"build": "test", "classes": {"mage": {"Arcane Blast": [
+		{"id": 400574, "level": 20, "rank": 1},
+		{"id": 1239696, "level": 30, "rank": 2},
+		{"id": 42896, "level": 76, "rank": 3},
+		{"id": 1239697, "level": 40, "rank": 3},
+		{"id": 1239699, "level": 50, "rank": 4},
+		{"id": 1239700, "level": 60, "rank": 5}
+	]}}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		level int
+		want  int32
+	}{{39, 1239696}, {40, 1239697}, {49, 1239697}, {50, 1239699}} {
+		if got, ok := highestLearnedIn(table["mage"], 1239700, c.level); !ok || got != c.want {
+			t.Errorf("Arcane Blast at level %d = (%d, %v), want (%d, true)", c.level, got, ok, c.want)
+		}
+	}
+	if got, ok := HighestLearnedSpellID("mage", 1239700, 45); !ok || got != 1239697 {
+		t.Errorf(`embedded table: HighestLearnedSpellID("mage", 1239700, 45) = (%d, %v), want (1239697, true)`, got, ok)
+	}
+}
