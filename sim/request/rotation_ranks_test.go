@@ -3,6 +3,7 @@ package request
 import (
 	"encoding/json"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -23,7 +24,7 @@ import (
 // NOT unranked in the engine's own sense: sim/hunter/multi_shot.go gates
 // rank 1 (2643) on RequiredLevel 18. sim/internal/spellranks'
 // singleTierLevelOverrides (rotation-accuracy program, 2026-09-28)
-// carries this id specifically so HighestLearnedSpellID agrees with the
+// carries this id specifically so LearnedSpellID agrees with the
 // engine below level 18, rather than treating 2643 as always-learned the
 // way a genuinely unranked ability (Bloodrage, Judgement) is.
 const hunterSpecForRankTests = "hunter-beast-mastery"
@@ -53,7 +54,7 @@ func unmarshalGeneric(t *testing.T, b []byte) any {
 // at 18 - well below 38).
 func TestRewriteRotationRanksResolvesAHunterAtLevel38(t *testing.T) {
 	raw := readHunterAPL(t)
-	got, err := rewriteRotationRanks(raw, "hunter", 38)
+	got, err := rewriteRotationRanks(raw, "hunter", 38, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -78,7 +79,7 @@ func TestRewriteRotationRanksResolvesAHunterAtLevel38(t *testing.T) {
 // the engine to nil out.
 func TestRewriteRotationRanksKeepsAnActionWhoseConditionNamesAnUnlearnedSpell(t *testing.T) {
 	raw := readHunterAPL(t)
-	got, err := rewriteRotationRanks(raw, "hunter", 18)
+	got, err := rewriteRotationRanks(raw, "hunter", 18, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,7 +100,7 @@ func TestRewriteRotationRanksKeepsAnActionWhoseConditionNamesAnUnlearnedSpell(t 
 // learned by level 60" always returns the id already there.
 func TestRewriteRotationRanksAtMaxLevelIsUnchanged(t *testing.T) {
 	raw := readHunterAPL(t)
-	got, err := rewriteRotationRanks(raw, "hunter", api.MaxLevel)
+	got, err := rewriteRotationRanks(raw, "hunter", api.MaxLevel, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -116,7 +117,7 @@ func TestRewriteRotationRanksAtMaxLevelIsUnchanged(t *testing.T) {
 // level-MaxLevel rotation is exactly what it always was.
 func TestRotationAtMaxLevelParsesTheEmbedDirectly(t *testing.T) {
 	raw := readHunterAPL(t)
-	viaRewrite, err := rewriteRotationRanks(raw, "hunter", api.MaxLevel)
+	viaRewrite, err := rewriteRotationRanks(raw, "hunter", api.MaxLevel, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -146,7 +147,7 @@ func TestRotationAtMaxLevelParsesTheEmbedDirectly(t *testing.T) {
 // package's own comment and this file's hunterSpecForRankTests comment.
 func TestRewriteRotationRanksDropsAnUnlearnedRankedSpell(t *testing.T) {
 	raw := readHunterAPL(t)
-	got, err := rewriteRotationRanks(raw, "hunter", 3)
+	got, err := rewriteRotationRanks(raw, "hunter", 3, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -298,5 +299,108 @@ func TestFilterRankedActionsDropsWholeTopLevelEntries(t *testing.T) {
 	// A non-array value passes through unchanged.
 	if v := filterRankedActions("not an array", resolve); v != "not an array" {
 		t.Errorf("filterRankedActions altered a non-array value: %v", v)
+	}
+}
+
+// rotationIDs is every spellId number in a rewritten rotation.
+func rotationIDs(t *testing.T, spec, class string, level int) map[int32]bool {
+	t.Helper()
+	raw, err := aplFS.ReadFile("apl/" + spec + ".apl.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := rewriteRotationRanks(raw, class, level, specRankChoices(spec))
+	if err != nil {
+		t.Fatal(err)
+	}
+	ids := map[int32]bool{}
+	var walk func(any)
+	walk = func(node any) {
+		switch v := node.(type) {
+		case map[string]any:
+			if n, ok := v["spellId"].(float64); ok {
+				ids[int32(n)] = true
+			}
+			for _, val := range v {
+				walk(val)
+			}
+		case []any:
+			for _, val := range v {
+				walk(val)
+			}
+		}
+	}
+	walk(unmarshalGeneric(t, got))
+	return ids
+}
+
+// Owner ruling 3 (round 9): a deliberate band-60 downrank is respected below
+// 60, never lifted to the top learned rank. Holy and Discipline cast Renew
+// rank 3 (6075, learned at 20) and Discipline casts Power Word: Shield rank 4
+// (3747, learned at 24); the rewrite used to lift them to Renew rank 8
+// (10928) and Shield rank 8 (10899) at band 50. Below the level the authored
+// rank is learned at, the highest rank under it stands in.
+func TestRewriteKeepsTheAuthoredDownranksBelowSixty(t *testing.T) {
+	cases := []struct {
+		spec, class string
+		level       int
+		want        []int32
+		lifted      []int32
+	}{
+		{"priest-holy", "priest", 50, []int32{6075}, []int32{10928}},
+		{"priest-holy", "priest", 30, []int32{6075}, []int32{6076}},
+		{"priest-holy", "priest", 16, []int32{6074}, []int32{6075}},
+		{"priest-discipline", "priest", 50, []int32{6075, 3747}, []int32{10928, 10899}},
+		{"priest-discipline", "priest", 40, []int32{3747}, []int32{6066}},
+		{"priest-discipline", "priest", 20, []int32{600}, []int32{3747}},
+		// The tank's Flash of Light is authored at the top rank, so 19942 is
+		// also there at 50; the party members' rank 4 must survive beside it.
+		{"paladin-holy", "paladin", 50, []int32{19941, 19942}, nil},
+	}
+	for _, c := range cases {
+		ids := rotationIDs(t, c.spec, c.class, c.level)
+		for _, id := range c.want {
+			if !ids[id] {
+				t.Errorf("%s at %d: the authored downrank should cast %d", c.spec, c.level, id)
+			}
+		}
+		for _, id := range c.lifted {
+			if ids[id] {
+				t.Errorf("%s at %d: %d is a lift above the authored rank", c.spec, c.level, id)
+			}
+		}
+	}
+}
+
+// A per-band rank choice is honoured from its level until the next row, and
+// only there: below the first row the authored rank's rule stands.
+func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
+	raw, err := aplFS.ReadFile("apl/shaman-elemental.apl.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	const topBolt = 15208 // Lightning Bolt rank 10, as the rotation is authored
+	choices := rankChoices{topBolt: {{FromLevel: 40, Rank: 6}, {FromLevel: 50, Rank: 7}}}
+	for _, c := range []struct {
+		level      int
+		want, lost int32
+	}{
+		{38, 10391, 0},     // no row yet: rank 7, the top learned at 38
+		{40, 6041, 10391},  // rank 6 from 40
+		{49, 6041, 10392},  // still rank 6 at 49
+		{50, 10391, 15207}, // rank 7 from 50
+		{59, 10391, 15208}, // and up to 59
+	} {
+		got, err := rewriteRotationRanks(raw, "shaman", c.level, choices)
+		if err != nil {
+			t.Fatal(err)
+		}
+		s := string(got)
+		if !strings.Contains(s, `"spellId":`+strconv.Itoa(int(c.want))) {
+			t.Errorf("level %d: want Lightning Bolt %d", c.level, c.want)
+		}
+		if c.lost != 0 && strings.Contains(s, `"spellId":`+strconv.Itoa(int(c.lost))) {
+			t.Errorf("level %d: %d should have been replaced by the band's choice", c.level, c.lost)
+		}
 	}
 }

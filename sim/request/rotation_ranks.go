@@ -8,8 +8,9 @@ import (
 )
 
 // rewriteRotationRanks rewrites every ranked spell's id in an embedded
-// APL's JSON to the highest rank the character's class has learned by
-// level, and drops any top-level action that CASTS a ranked spell with
+// APL's JSON to the rank the character casts at level (rankResolver: the
+// band's rank choice, else the highest learned rank not above the
+// authored one), and drops any top-level action that CASTS a ranked spell with
 // no rank learned yet (a condition naming one is the engine's to nil
 // out: see castKeys).
 //
@@ -58,20 +59,28 @@ import (
 // OTHER value context (Cmp, Math, Min/Max, a bare condition) tolerates
 // a nilled-out operand the same way AND/OR does - dropping the action
 // is safe wherever a spellId can appear, not just inside AND/OR.
+//
+// Which rank: a ranked spell casts the rank rankResolver picks, which is
+// the spec's per-band rank choice (data/curated/rank-choices.json) where
+// one names the authored id at this level, and otherwise the highest rank
+// learned that is not above the authored one (spellranks.LearnedSpellID):
+// a rotation authored at the top rank casts the highest learned rank, and
+// a deliberate band-60 downrank (Holy priest's Renew rank 3) keeps its
+// rank below 60 instead of being lifted (owner ruling 3, round 9).
+//
 // RewriteRotationRanks is rewriteRotationRanks for a rotation file read
-// outside the embedded APLs (spec-breakdown's -rotation).
-func RewriteRotationRanks(raw []byte, class string, level int) ([]byte, error) {
-	return rewriteRotationRanks(raw, class, level)
+// outside the embedded APLs (spec-breakdown's -rotation), with spec's own
+// rank choices, so a copy of the published rotation casts what it does.
+func RewriteRotationRanks(raw []byte, spec, class string, level int) ([]byte, error) {
+	return rewriteRotationRanks(raw, class, level, specRankChoices(spec))
 }
 
-func rewriteRotationRanks(raw []byte, class string, level int) ([]byte, error) {
+func rewriteRotationRanks(raw []byte, class string, level int, choices rankChoices) ([]byte, error) {
 	var root map[string]any
 	if err := json.Unmarshal(raw, &root); err != nil {
 		return nil, fmt.Errorf("the embedded APL is not valid JSON: %w", err)
 	}
-	resolve := func(id int32) (int32, bool) {
-		return spellranks.HighestLearnedSpellID(class, id, level)
-	}
+	resolve := rankResolver(class, level, choices)
 	for _, key := range []string{"prepullActions", "priorityList"} {
 		if v, ok := root[key]; ok {
 			root[key] = filterRankedActions(v, resolve)
@@ -158,5 +167,21 @@ func rewriteRankedSpellIDs(node any, resolve func(int32) (int32, bool), drop *bo
 		for _, item := range v {
 			rewriteRankedSpellIDs(item, resolve, drop, underCast)
 		}
+	}
+}
+
+// rankResolver is the id a rotation's authored id casts at level: the
+// band's rank choice for it where choices names one and that rank is
+// learned, otherwise the highest learned rank not above the authored one.
+// The ladder harness calls the same function, so it and the rewrite never
+// disagree about what a line casts.
+func rankResolver(class string, level int, choices rankChoices) func(int32) (int32, bool) {
+	return func(id int32) (int32, bool) {
+		if rank, ok := choices.rankAt(id, level); ok {
+			if chosen, learned := spellranks.SpellIDOfRank(class, id, rank, level); learned {
+				return chosen, true
+			}
+		}
+		return spellranks.LearnedSpellID(class, id, level)
 	}
 }

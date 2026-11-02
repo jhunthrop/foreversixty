@@ -333,9 +333,9 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 					continue // harness rule 1: this talent has zero points at this level.
 				}
 				if rankLevel, isRank := rankLevelByID[id]; isRank && rankLevel > level {
-					if _, learned := spellranks.HighestLearnedSpellID(class, int32(id), level); learned {
+					if _, learned := spellranks.LearnedSpellID(class, int32(id), level); learned {
 						t.Fatalf("%s level=%d: id %d is an above-band spellranks.json rank (learned at %d) "+
-							"that spellranks.HighestLearnedSpellID nonetheless calls learned at %d - the rewrite "+
+							"that spellranks.LearnedSpellID nonetheless calls learned at %d - the rewrite "+
 							"and this assertion disagree", spec.Spec, level, id, rankLevel, level)
 					}
 					continue // harness rule 1: the rewrite already drops a CAST of this id.
@@ -346,12 +346,13 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		}
 
 		// Rule 1: a curated rotation line, resolved to the id
-		// sim/internal/spellranks.HighestLearnedSpellID says the engine
-		// itself casts at this level - the exact function
-		// sim/request's own rewriteRotationRanks calls, not a second,
+		// rankResolver says the engine itself casts at this level - the
+		// exact function sim/request's own rewriteRotationRanks calls
+		// (the spec's per-band rank choices included), not a second,
 		// approximate copy of its resolution - that never fired.
+		castAt := rankResolver(class, level, specRankChoices(spec.Spec))
 		for authoredID := range authoredIDs {
-			learnedID32, learned := spellranks.HighestLearnedSpellID(class, int32(authoredID), level)
+			learnedID32, learned := castAt(int32(authoredID))
 			if level >= api.MaxLevel {
 				// rotation() skips the rank rewrite at MaxLevel: the
 				// engine runs the line exactly as authored, so the id it

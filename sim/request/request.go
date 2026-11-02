@@ -847,7 +847,7 @@ func rotation(name, class string, level int) (*proto.APLRotation, error) {
 	// and the guarantee that a level-MaxLevel rotation is byte-for-byte
 	// what it always was.
 	if level < api.MaxLevel {
-		b, err = rewriteRotationRanks(b, class, level)
+		b, err = rewriteRotationRanks(b, class, level, specRankChoices(name))
 		if err != nil {
 			return nil, fmt.Errorf("request: rewriting %q's rotation for level %d: %w", name, level, err)
 		}

@@ -116,7 +116,7 @@ func run(o options) error {
 	if err != nil {
 		return err
 	}
-	rotation, err := loadRotation(o.rotation, specs.ByKey[o.spec].ClassSlug, o.band)
+	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.band)
 	if err != nil {
 		return err
 	}
@@ -138,9 +138,11 @@ func run(o options) error {
 
 // loadRotation reads the "rotation" object of a curated rotation file; an
 // empty path keeps the spec's own rotation. Below level 60 its ranks are
-// rewritten to the ones class has learned by level, as the published
-// rotation's are.
-func loadRotation(path, class string, level int) (*proto.APLRotation, error) {
+// rewritten exactly as the published rotation's are: the spec's per-band
+// rank choices for the ids it names, otherwise the highest rank learned by
+// level that is not above the authored one (so a probe that names a lower
+// rank keeps it).
+func loadRotation(path, spec, class string, level int) (*proto.APLRotation, error) {
 	if path == "" {
 		return nil, nil
 	}
@@ -158,7 +160,7 @@ func loadRotation(path, class string, level int) (*proto.APLRotation, error) {
 		return nil, fmt.Errorf("%s has no \"rotation\" object", path)
 	}
 	if level < api.MaxLevel {
-		if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, class, level); err != nil {
+		if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, spec, class, level); err != nil {
 			return nil, fmt.Errorf("rewriting %s to level %d: %w", path, level, err)
 		}
 	}
