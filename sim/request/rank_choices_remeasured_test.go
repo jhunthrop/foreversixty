@@ -15,6 +15,9 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 		{"Lava Burst at 50", "shaman-elemental", "shaman", BarePreset, 50, 1238299, 408490},
 		{"Lava Burst at 59", "shaman-elemental", "shaman", BarePreset, 59, 1238299, 408490},
 		{"Lava Burst at 45 keeps rank 1", "shaman-elemental", "shaman", BarePreset, 45, 408490, 1238299},
+		// Since Swiftmend leaves the effect up (fork 9badd243f), Rejuvenation rank 10 (9841)
+		// loses to the rotation's own rank 4 (2090) at bare 60.
+		{"Rejuvenation at bare 60", "druid-restoration", "druid", BarePreset, 60, 2090, 9841},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset))
 		if !ids[c.want] || ids[c.not] {
