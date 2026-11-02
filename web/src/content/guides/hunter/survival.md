@@ -76,6 +76,7 @@ Survival is a melee spec in Forever: the Hunter stands in weapon range for the w
 
 - **Role:** Melee DPS, played without a pet (Lone Wolf)
 - **Brings:** Hunter's Mark on the target; no raid-wide buff
+- **Strength of Earth Totem:** Forever's totem gives less Strength than Era's, and the sim uses Forever's value. That is why Survival's Horde raid number fell: the totem, not the build.
 
 ## Talents and builds
 

@@ -50,7 +50,7 @@ function worldDropTitle(source: LootSource): string {
 }
 
 function pvpTitle(source: LootSource): string {
-  return source.rank !== undefined && (source.faction === 'alliance' || source.faction === 'horde')
+  return source.faction === 'alliance' || source.faction === 'horde'
     ? pvpSourceLabel(source.rank, source.faction)
     : source.name;
 }

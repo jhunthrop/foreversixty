@@ -34,6 +34,13 @@ describe('pvpSourceLabel', () => {
     expect(pvpSourceLabel(11, 'alliance')).toBe('PvP rank 11 · Knight-Lieutenant · Alliance');
   });
 
+  // Round 8 (owner ruling 2026-11-01): Forever's PvP rewards need no rank, so a pvp source
+  // can arrive with none; it reads as the ranker's own label, never "PvP rank 0".
+  it('names an unranked PvP reward with its faction, never rank 0', () => {
+    expect(pvpSourceLabel(undefined, 'horde')).toBe('PvP reward · Horde');
+    expect(pvpSourceLabel(0, 'alliance')).toBe('PvP reward · Alliance');
+  });
+
   it('falls back to rank and faction alone when the rank has no known title', () => {
     expect(pvpSourceLabel(4, 'alliance')).toBe('PvP rank 4 · Alliance');
   });
