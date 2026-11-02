@@ -12,6 +12,7 @@ package request
 
 import (
 	"fmt"
+	"math"
 	"sort"
 
 	"github.com/wowsims/classic/sim/core/proto"
@@ -64,11 +65,84 @@ func (c HealBandContent) damagePerSecond() float64 {
 	return c.meleeDPS()*max(0, 1-casting) + spells
 }
 
+// HealPullMob is one kind of trash mob in a band's stated pull: how many of it the pull
+// holds, its creature_template melee figures and the damage a second it deals to the tank
+// (its melee and the spells it aims at its victim) and to the group (spells at a random
+// target or an area), derived offline the way a last boss's are.
+type HealPullMob struct {
+	NPCID                int                `json:"npc_id"`
+	Name                 string             `json:"name"`
+	Count                int                `json:"count"`
+	Level                int                `json:"level"`
+	Rank                 int                `json:"rank"`
+	MinMeleeDmg          float64            `json:"min_melee_dmg"`
+	MaxMeleeDmg          float64            `json:"max_melee_dmg"`
+	DamageMultiplier     float64            `json:"damage_multiplier"`
+	MeleeAttackPower     float64            `json:"melee_attack_power"`
+	AttackTimeMS         float64            `json:"melee_base_attack_time_ms"`
+	TankDamagePerSecond  float64            `json:"tank_damage_per_second"`
+	GroupDamagePerSecond float64            `json:"group_damage_per_second"`
+	Spells               []HealPullMobSpell `json:"spells"`
+}
+
+// HealPullMobSpell is one damaging spell a trash mob casts in combat, with its source row.
+type HealPullMobSpell struct {
+	SpellID         int     `json:"spell_id"`
+	Name            string  `json:"name"`
+	DamagePerCast   float64 `json:"damage_per_cast"`
+	IntervalSeconds float64 `json:"interval_seconds"`
+	Hits            string  `json:"hits"`
+	Source          string  `json:"source"`
+}
+
+// HealPull is the pull at the band's stated percentile: where it stands and what it holds.
+type HealPull struct {
+	Dungeon       string        `json:"dungeon"`
+	CreatureGUIDs []int         `json:"creature_guids"`
+	Mobs          []HealPullMob `json:"mobs"`
+}
+
+// damagePerSecond is the pull's damage a second: every mob's, tank and group, at its count.
+func (p HealPull) damagePerSecond() float64 {
+	total := 0.0
+	for _, m := range p.Mobs {
+		total += float64(m.Count) * (m.TankDamagePerSecond + m.GroupDamagePerSecond)
+	}
+	return total
+}
+
+// HealPullDungeon is one of the band's dungeons in the pull count.
+type HealPullDungeon struct {
+	Name                      string `json:"name"`
+	MapID                     int    `json:"map_id"`
+	TrashMobs                 int    `json:"trash_mobs"`
+	TrashPulls                int    `json:"trash_pulls"`
+	MobWeightedMedianPullSize int    `json:"mob_weighted_median_pull_size"`
+}
+
+// HealBandPulls is the band's trash, pulled under the pull rule (bands.pull_rule): how many
+// mobs and pulls its dungeons hold, the median and the stated percentile's pull (both
+// weighted by mobs, so a pull counts once for each mob killed in it), and the share of the
+// trash's damage aimed at the tank.
+type HealBandPulls struct {
+	TrashMobs                 int               `json:"trash_mobs"`
+	TrashPulls                int               `json:"trash_pulls"`
+	MobWeightedMedianPullSize int               `json:"mob_weighted_median_pull_size"`
+	PullSize                  int               `json:"pull_size"`
+	MedianPullDamagePerSecond float64           `json:"median_pull_damage_per_second"`
+	PullDamagePerSecond       float64           `json:"pull_damage_per_second"`
+	TankShare                 float64           `json:"tank_share"`
+	Dungeons                  []HealPullDungeon `json:"dungeons"`
+	Pull                      HealPull          `json:"pull"`
+}
+
 // HealBand is one band's content, the client figures for it, and the profile figures the
 // rule derives from them at the tuned scale.
 type HealBand struct {
 	Level            int               `json:"level"`
 	Content          []HealBandContent `json:"content"`
+	Pulls            *HealBandPulls    `json:"pulls,omitempty"`
+	PullMultiplier   float64           `json:"pull_multiplier"`
 	ContentDamageMod float64           `json:"content_damage_mod"`
 	PlayerHealth     float64           `json:"player_health"`
 	TankHealth       float64           `json:"tank_health"`
@@ -77,9 +151,24 @@ type HealBand struct {
 	PulseDamage      float64           `json:"pulse_damage"`
 }
 
-// damage is the band's content damage: the median of its last bosses' damage a second, a
-// half-way median between the middle two, times the content's damage modifier.
+// damage is the band's content damage: the median of its last bosses' damage a second (a
+// half-way median between the middle two), times the pull multiplier, times the content's
+// damage modifier.
 func (b HealBand) damage() float64 {
+	return b.bossDamage() * b.pullMultiplier() * b.ContentDamageMod
+}
+
+// pullMultiplier is the band's stated trash pull over its median last boss, never below 1:
+// the band fights the harder of the two. A band with no pulls (the raid) is 1.
+func (b HealBand) pullMultiplier() float64 {
+	if b.Pulls == nil {
+		return 1
+	}
+	return max(1, b.Pulls.PullDamagePerSecond/b.bossDamage())
+}
+
+// bossDamage is the median of the last bosses' damage a second.
+func (b HealBand) bossDamage() float64 {
 	dps := make([]float64, len(b.Content))
 	for i, c := range b.Content {
 		dps[i] = c.damagePerSecond()
@@ -90,18 +179,28 @@ func (b HealBand) damage() float64 {
 	if n%2 == 0 {
 		median = (dps[n/2-1] + dps[n/2]) / 2
 	}
-	return median * b.ContentDamageMod
+	return median
 }
 
 // HealBands is the profile's band table: the rule, the content window it names, the
 // reference band (the curated top-level figures) and one row per band, lowest first.
 type HealBands struct {
 	Rule           string              `json:"rule"`
+	PullRule       HealPullRule        `json:"pull_rule"`
 	WindowLevels   int                 `json:"window_levels"`
 	ReferenceLevel int                 `json:"reference_level"`
 	Notes          string              `json:"notes"`
 	Rows           []HealBand          `json:"rows"`
 	Sources        []HealProfileSource `json:"sources"`
+}
+
+// HealPullRule is how a band's trash is cut into pulls and which pull the band fights:
+// creatures within the assistance radius of each other (and spawn groups and links that
+// aggro together) are one pull, and the band fights the pull at the stated percentile,
+// weighted by mobs. The rule text is in bands.rule.
+type HealPullRule struct {
+	AssistRadiusYards float64 `json:"assist_radius_yards"`
+	Percentile        float64 `json:"percentile"`
 }
 
 // healBandFigures are the four figures a band changes.
@@ -167,6 +266,9 @@ func (p HealProfile) validateBands() error {
 	if b.Rule == "" || b.WindowLevels <= 0 || len(b.Rows) == 0 {
 		return fmt.Errorf("%w: bands states its rule, its window and its rows", ErrBadHealProfile)
 	}
+	if b.PullRule.AssistRadiusYards <= 0 || b.PullRule.Percentile <= 0 || b.PullRule.Percentile >= 1 {
+		return fmt.Errorf("%w: bands.pull_rule states a positive assistance radius and a percentile inside (0, 1)", ErrBadHealProfile)
+	}
 	hasReference := false
 	for i, row := range b.Rows {
 		if i > 0 && row.Level <= b.Rows[i-1].Level {
@@ -185,6 +287,9 @@ func (p HealProfile) validateBands() error {
 				}
 			}
 		}
+		if err := b.validatePulls(row); err != nil {
+			return err
+		}
 		hasReference = hasReference || row.Level == b.ReferenceLevel
 	}
 	if !hasReference {
@@ -199,6 +304,45 @@ func (p HealProfile) validateBands() error {
 		if got != want {
 			return fmt.Errorf("%w: band %d states %+v, the rule derives %+v", ErrBadHealProfile, row.Level, got, want)
 		}
+	}
+	return nil
+}
+
+// pullFigureTolerance is the rounding the offline derivation states pull figures to: half a
+// tenth of a point a second for each mob in the pull.
+const pullFigureTolerance = 0.05
+
+// validatePulls refuses a band below the reference with no pulls, a raid band with pulls,
+// a stated pull whose mobs do not sum to its stated damage, and a stated multiplier that is
+// not the rule's (to the hundredth it is stated to).
+func (b HealBands) validatePulls(row HealBand) error {
+	if row.Level == b.ReferenceLevel {
+		if row.Pulls != nil || row.PullMultiplier != 1 {
+			return fmt.Errorf("%w: the reference band (a raid) states no pulls and a pull multiplier of 1", ErrBadHealProfile)
+		}
+		return nil
+	}
+	pulls := row.Pulls
+	if pulls == nil || pulls.PullSize <= 0 || len(pulls.Pull.Mobs) == 0 || len(pulls.Dungeons) == 0 || len(pulls.Pull.CreatureGUIDs) != pulls.PullSize {
+		return fmt.Errorf("%w: band %d states its dungeons' pulls and the pull it fights, spawn by spawn", ErrBadHealProfile, row.Level)
+	}
+	count := 0
+	for _, m := range pulls.Pull.Mobs {
+		count += m.Count
+		for _, sp := range m.Spells {
+			if sp.Source == "" || sp.IntervalSeconds <= 0 {
+				return fmt.Errorf("%w: band %d: %s's %s states its source and a positive interval", ErrBadHealProfile, row.Level, m.Name, sp.Name)
+			}
+		}
+	}
+	if count != pulls.PullSize {
+		return fmt.Errorf("%w: band %d's pull holds %d mobs, it states %d", ErrBadHealProfile, row.Level, count, pulls.PullSize)
+	}
+	if got := pulls.Pull.damagePerSecond(); math.Abs(got-pulls.PullDamagePerSecond) > pullFigureTolerance*float64(pulls.PullSize) {
+		return fmt.Errorf("%w: band %d's pull mobs deal %.1f a second, it states %.1f", ErrBadHealProfile, row.Level, got, pulls.PullDamagePerSecond)
+	}
+	if want := math.Round(row.pullMultiplier()*100) / 100; row.PullMultiplier != want {
+		return fmt.Errorf("%w: band %d states pull multiplier %v, the rule derives %v", ErrBadHealProfile, row.Level, row.PullMultiplier, want)
 	}
 	return nil
 }
