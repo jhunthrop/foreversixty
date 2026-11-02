@@ -134,7 +134,7 @@ func validateSpec(ctx context.Context, d ValidateDeps, spec, phase, engineVersio
 				Ref:  fmt.Sprintf("%s:%d", p.ReportID, p.FightIndex),
 			},
 			Character: character,
-			Encounter: withEncounterDefaults(simapi.EncounterSpec{DurationSec: p.DurationSec}),
+			Encounter: defaultEncounterOf(p.DurationSec),
 		}, nil)
 		if err != nil {
 			return err

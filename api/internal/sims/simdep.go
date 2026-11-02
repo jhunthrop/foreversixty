@@ -78,25 +78,31 @@ type Engine interface {
 	runner.Planner
 }
 
-// withEncounterDefaults fills a partially specified encounter from the
-// envelope's own defaults. Zero is not a legal value for any of these
-// fields, so "unset" and "zero" do not have to be told apart, and a
-// request that arrives with an empty encounter is runnable rather than
-// rejected by SimRequest.Validate for a sixty-second floor it never
-// meant to break.
+// withEncounterDefaults fills the two encounter fields a client may leave
+// out and that have no legal zero, the fight length and the target count,
+// from the envelope's own defaults, so a request that arrives with an empty
+// encounter is runnable rather than rejected by SimRequest.Validate for a
+// floor it never meant to break. Variation and the execute ratio are left
+// as sent: zero is a real choice for both (the settings bar's "no
+// variation" and "execute phase off"), and the engine runs it as one.
 func withEncounterDefaults(e simapi.EncounterSpec) simapi.EncounterSpec {
 	d := simapi.DefaultEncounter()
 	if e.DurationSec == 0 {
 		e.DurationSec = d.DurationSec
 	}
-	if e.Variation == 0 {
-		e.Variation = d.Variation
-	}
 	if e.Targets == 0 {
 		e.Targets = d.Targets
 	}
-	if e.ExecuteRatio == 0 {
-		e.ExecuteRatio = d.ExecuteRatio
+	return e
+}
+
+// defaultEncounterOf is the settings bar's default encounter, for a request
+// the server builds itself (an in-game "Sim me", a fight's score, a parse's
+// validation), at durationSec when the fight has a length of its own.
+func defaultEncounterOf(durationSec int) simapi.EncounterSpec {
+	e := simapi.DefaultEncounter()
+	if durationSec > 0 {
+		e.DurationSec = durationSec
 	}
 	return e
 }

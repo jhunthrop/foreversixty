@@ -223,7 +223,7 @@ func browserResult(spec string, mean float64) simapi.SimResult {
 			EngineVersion: testEngine, Spec: spec, Iterations: defaultIterations,
 			Source:    simapi.CharacterSource{Kind: simapi.SourceAddon, Ref: "us/normal/baelgrim"},
 			Character: aCharacter(class, race),
-			Encounter: withEncounterDefaults(simapi.EncounterSpec{}),
+			Encounter: defaultEncounterOf(0),
 		},
 		DPS:           simapi.Estimate{Mean: mean, StdDev: 80, Error: 1.5, Min: mean - 200, Max: mean + 200},
 		IterationsRun: defaultIterations, DurationMS: 2400,
