@@ -21,6 +21,13 @@ const (
 // Tea for healers).
 func presetFoodsByRole(t *testing.T) map[string][]string {
 	t.Helper()
+	return presetConsumablesByRole(t, func(id string) bool { return strings.HasPrefix(id, "food_") })
+}
+
+// presetConsumablesByRole is, per role, the label of every consumable keep accepts that a
+// spec of that role carries in the published raid preset at its top band.
+func presetConsumablesByRole(t *testing.T, keep func(id string) bool) map[string][]string {
+	t.Helper()
 	var raid struct {
 		Specs map[string][]struct {
 			Consumes []string `json:"consumes"`
@@ -73,7 +80,7 @@ func presetFoodsByRole(t *testing.T) map[string][]string {
 			t.Fatalf("%s: no raid-consumes rows", s.Spec)
 		}
 		for _, id := range rows[len(rows)-1].Consumes {
-			if !strings.HasPrefix(id, "food_") {
+			if !keep(id) {
 				continue
 			}
 			label, ok := labels[id]
@@ -86,7 +93,7 @@ func presetFoodsByRole(t *testing.T) map[string][]string {
 		}
 	}
 	if len(out) == 0 {
-		t.Fatal("the preset names no food: the tables moved")
+		t.Fatal("the preset names none of these consumables: the tables moved")
 	}
 	return out
 }
@@ -160,3 +167,25 @@ func TestCatalogue_EachFoodCarriesItsUseSpellAndItsWellFed(t *testing.T) {
 		}
 	}
 }
+
+// Each role's combat potion list names every potion its specs drink in the published preset
+// at the top band, so the coach credits the potion the site tells them to drink. Round 10:
+// the damage list held only Mighty Rage Potion, so a mage or a Shadow priest drinking the
+// preset's Major Mana Potion earned no credit, and the auras lane's 30-second Frenzy and
+// Spellblasting potions joined the preset.
+func TestCatalogue_PotionsAreThePublishedPresetsPotions(t *testing.T) {
+	c := Load()
+	for role, want := range presetConsumablesByRole(t, isPotion) {
+		var got []string
+		for _, e := range c.Roles[role].CombatPotion.Entries {
+			got = append(got, e.Name)
+		}
+		for _, name := range want {
+			if !slices.Contains(got, name) {
+				t.Errorf("%s combat potions %v lack the preset's %s", role, got, name)
+			}
+		}
+	}
+}
+
+func isPotion(id string) bool { return strings.HasSuffix(id, "_potion") }
