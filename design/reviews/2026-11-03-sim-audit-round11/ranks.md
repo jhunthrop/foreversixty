@@ -116,12 +116,24 @@ Measured on this branch merged with site wt/r11-casters 90d81da8b and fork lane/
 
 On this branch alone, without the casters change, S1's row still wins (+2.5%). The two must land together.
 
+## Healer rows after the heal level-penalty change (round-11 interaction, counted separately)
+
+The healers lane takes the below-level-20 coefficient penalty off heals (fork 074edfadf, from beta logs). Measured on this branch merged with site wt/r11-healers d81fcc67a and fork lane/r11-healers 89da891cc, Horde, effective HPS on the heal profile, seeds 1 / 50001, 10,000 iterations (`out/heal-h.jsonl`, `out/heal-h2.jsonl`). No healer row exists at raid 60: the raid fight runs the curated rotation as written.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| H1 | **Restoration shaman's bare-60 Healing Wave should be rank 2.** Rank 2 (332, learned at 6) beats the row's rank 3 (547, learned at 12) by +5.55% / +5.65%. Rank 1 loses 5.8% to rank 2. The fight still runs dry (mana lasts 69 of 300 s, against 69 at rank 3), so the healer mana rule holds. Against the rotation's own rank the row now gains +19.5% (it was +13.3% at rank 3 on this tree, and +3.7% on the pin). Riptide rank 2 still wins with it (+3.4%). Without 074edfadf, rank 3 beats rank 2 by 2.2%, so the two must land together. Test: `TestReMeasuredRankChoicesCastTheWinningRank` (failed first). | `sweep.py`, `reconfirm.py` on the merged tree | CONFIRMED-BUG (interaction) | R11 healers 074edfadf | S fef26d2ef |
+| H2 | **Holy paladin's Holy Light rank 3 heals 4.6% more than the row's rank 4, but it is held.** At rank 3 the bare-60 fight ends with mana unspent (mana lasts 634 s of 300, against 143 s at rank 4). Under the healer mana rule a row may not turn a fight that runs dry into one that ends with mana to spare. Rank 4 stays (+4.9% / +4.7% over the default); ranks 1 and 2 lose. | `sweep.py` | held by the healer mana rule | - | - |
+| H3 | Every other bare-60 healer row holds, and none gains much more than before: Discipline Heal 4 (+1.4%, down from +2.6% on the pin), Binding Heal 1 (+3.4%), Holy priest Flash Heal 7 (+8.8%), Prayer of Healing 1 (+0.3%), Lightwell 1 (+1.3%). Holy priest's rows are unchanged to the hundredth. | `out/heal-h.jsonl` | Aligned | - | - |
+| H4 | **Discipline's Lesser Heal rank 3 (2053) in place of Heal rank 1 (2054)**, every Heal id in the rotation swapped: raid 60 +2.06% / +2.09%; bare 60 +7.8% / +7.8% against the published bare row (Heal rank 4). The fight runs dry either way (mana lasts 117 s against 115 raid, 63 s against 63 bare). It clears the round-9 bar, but it is not a rank choice. Lesser Heal is its own spell, not a rank of Heal, and a row can only pick a rank of the spell the rotation names. So it is a rotation edit to `data/curated/apl/priest-discipline.json` and its fork copy, which belongs to the healers lane. If the rotation swaps, Discipline's bare-60 Heal row has to go in the same change (`TestCuratedRankChoicesAreCastableDownranks` fails on a row whose authored id the rotation no longer names). Lesser Heal ranks 1 and 2 were not tried. | `-rotation out/disc-lh3.json` on the merged tree | for the healers lane | - | - |
+
 ## Before/after
 
 | spec, band | metric | before, seed 1 | after, seed 1 | change seed 1 / 50001 |
 |---|---|---|---|---|
 | shaman-elemental, bare 50 | DPS | 151.8 | 153.2 | +0.92% / +1.00% |
 | druid-restoration, bare 60 | effective HPS | 412.5 | 416.9 | +1.07% / +0.97% (mana lasts 224 s to 238 s of 300) |
+| shaman-restoration, bare 60, with the healers branch | effective HPS | 407.4 | 430.0 | +5.55% / +5.65% (rank 3 to rank 2) |
 | priest-shadow, bare 60, Horde, with the casters branch | DPS | 365.1 | 381.8 | +4.59% / +4.60% (row dropped; Alliance 355.1 to 347.4, -2.1%) |
 
 "Before" is `$R/sb-before` from `$R/site-before/sim`, and "after" is this branch on the pin. The Shadow row is measured with and without the row on the merged casters tree. No other spec or band moves.
