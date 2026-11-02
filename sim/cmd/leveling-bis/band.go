@@ -335,8 +335,11 @@ const pvpRankCap = 10
 // against the whole build: no non-"pvp" source carries one), so this
 // is still false by construction for an ordinary vendor/quest/rep/etc.
 // source.
+//
+// An unranked source carrying a TitleRank (round 8) is gated on that rank,
+// so relabelling a source does not move default eligibility.
 func pvpRankExceedsCap(s itemSource) bool {
-	return s.Rank > pvpRankCap
+	return max(s.Rank, s.TitleRank) > pvpRankCap
 }
 
 // pvpSourceLabel is the on-screen source line for a pvp-sourced pick,

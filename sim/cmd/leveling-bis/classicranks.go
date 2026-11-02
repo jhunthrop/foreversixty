@@ -69,8 +69,8 @@ func dropNonRankRewards(idx lootIndex, unranked map[int]bool) lootIndex {
 			if s.Kind == "pvp" {
 				continue
 			}
-			if s.Kind == "vendor" && s.Rank != 0 {
-				s.Rank, s.Title, s.Label = 0, "", s.SourceName
+			if s.Kind == "vendor" && (s.Rank != 0 || s.TitleRank != 0) {
+				s.Rank, s.TitleRank, s.Title, s.Label = 0, 0, "", s.SourceName
 			}
 			kept = append(kept, s)
 		}
