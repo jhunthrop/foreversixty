@@ -34,7 +34,7 @@ struct WidgetSnapshotTests {
         assertSnapshot(
             of: framed,
             as: keyWindow
-                ? .image(drawHierarchyInKeyWindow: true, precision: 0.99, perceptualPrecision: 0.98, layout: layout, traits: traits)
+                ? .keyWindowImage(layout: layout, traits: traits)
                 : .image(precision: 0.99, perceptualPrecision: 0.98, layout: layout, traits: traits),
             testName: name
         )
