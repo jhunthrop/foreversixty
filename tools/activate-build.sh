@@ -20,7 +20,8 @@
 #      generated data": Data.lua tracks the ACTIVE build).
 #   4. Every guide's FS1 build code is re-stamped (web/scripts/reencode-guide-builds.mjs,
 #      which proves each code legal against the new trees first) and the guides' data
-#      links follow.
+#      links follow. The planner vectors both mobile apps replay
+#      (apps/shared/fixtures/planner-rules.json) are regenerated over the new trees.
 #   5. The three addon TOCs take the Interface number the client version implies, the
 #      addon's patch version is bumped with a changelog line, and the tag the push
 #      makes releases it to CurseForge and Wago, so players get a Data.lua and an
@@ -257,7 +258,7 @@ NEW_IFACE=$((10#$MAJOR * 10000 + 10#$MINOR * 100 + 10#$PATCH))
 OLD_IFACE="$(sed -n 's/^## Interface: *\([0-9]*\).*/\1/p' addon/ForeverSixty/ForeverSixty.toc)"
 
 echo "activating $NEW (was $ACTIVE); Interface $OLD_IFACE -> $NEW_IFACE"
-MOVED_PATHS=("$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides api/internal/bnetbuild/testdata/era-kiloz.fs1)
+MOVED_PATHS=("$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides apps/shared/fixtures/planner-rules.json api/internal/bnetbuild/testdata/era-kiloz.fs1)
 UNDO="git restore --staged --worktree -- ${MOVED_PATHS[*]} && git clean -fd -- $NEW_DIR"
 FIX_THEN_REDO="fix what the reason names on main, then $REDO"
 
@@ -294,6 +295,11 @@ run node web/scripts/reencode-guide-builds.mjs
 { grep -rl "foreversixty.gg/data/$ACTIVE/" web/src/content/guides || true; } | while read -r f; do
   sed -i.bak "s#foreversixty.gg/data/$ACTIVE/#foreversixty.gg/data/$NEW/#g" "$f" && rm -f "$f.bak"
 done
+
+# 3b. The planner vectors the iOS and Android apps replay, over the new trees (web's
+#     planner-rules-codegen test fails on a vector file stamped with another build).
+step "the apps' planner vectors (web/scripts/gen-planner-rules.mjs)" "$FIX_THEN_REDO"
+run node web/scripts/gen-planner-rules.mjs
 
 # 4. The addon's default builds, from the guides just moved, then the build's
 #    weights copy, addon-data.json and the addon's Data.lua.

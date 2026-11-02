@@ -268,6 +268,8 @@ make_full_move_repo() {
 		"$dir/data/curated/coach" "$dir/sim/enginever"
 	cp "$PINNED" "$dir/tools/engine/pinned-build.sh"
 	echo 'console.log("43 guide build(s) re-stamped");' >"$dir/web/scripts/reencode-guide-builds.mjs"
+	mkdir -p "$dir/apps/shared/fixtures"
+	echo 'import { writeFileSync } from "node:fs"; writeFileSync("apps/shared/fixtures/planner-rules.json", "{}");' >"$dir/web/scripts/gen-planner-rules.mjs"
 	echo "see https://foreversixty.gg/data/$OLD_BUILD/talents" >"$dir/web/src/content/guides/mage/frost.md"
 	echo 'package trees // reads web/src/data/active-build.json' >"$dir/api/internal/trees/trees.go"
 	echo "FS1:$OLD_BUILD:warrior:human:x" >"$dir/api/internal/bnetbuild/testdata/era-kiloz.fs1"
@@ -321,6 +323,7 @@ assert "green move: pushed the move" contains "$(git -C "$d.git" log -1 --format
 assert "green move: tagged the addon" equal "$(git -C "$d.git" tag -l 'addon-v*')" "addon-v2.1.8"
 assert "green move: the ranking waits (the stub engine stamp is unreadable)" contains "$OUT" "ranking waits for engine follow"
 assert "green move: the failed dispatches fail the run" equal "$STATUS" 1
+assert "green move: the apps' planner vectors are regenerated and committed" equal "$(git -C "$d.git" show "main:apps/shared/fixtures/planner-rules.json")" "{}"
 assert "green move: dps-per-point is carried" equal "$(git -C "$d.git" show "main:data/builds/$NEW_BUILD/dps-per-point.json")" '{"warrior-arms": {"dps": 0.2}}'
 assert "green move: with a marker naming the build it was measured on" equal "$(git -C "$d.git" show "main:data/builds/$NEW_BUILD/dps-per-point.carried-from")" "$OLD_BUILD"
 
