@@ -10,6 +10,136 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 4 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round4/ (warlock, physical, hybrids, casters, integration) | 33 fixed (warlock 6, physical 6, hybrids 8, casters 7, integrator 6); 1 from the wow-player review | f8a5f94ce | no |
 | 5 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round5/ (warlock, physical, hybrids, casters, ranker, page, integration) | 30 fixed (warlock 1, casters 8, hybrids 4, physical 6, ranker 3, page 5, integrator 1); 2 more from the wow-player review | 8baffe5fc | no |
 | 6 | 2026-11-01 to 2026-11-02 | design/reviews/2026-11-02-sim-audit-round6/ (warlock, casters, physical, hybrids, healers, ranker, pipeline, wasm, page, integration) | 71 fixed (warlock 5, casters 11, physical 10, hybrids 17, healers 10, pipeline 5, ranker 4, wasm 3, page 5, integrator 1) | b57765fb9 | no |
+| 7 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round7/ (warlock, casters, physical, hybrids, healers, pipeline, ci, page, ranker, integration) | 55 fixed (warlock 3, casters 5, physical 8, hybrids 11, healers 16, ranker 1, pipeline 1, ci 1, page 7 with 2 from the wow-player review, integrator 2) | cd4dfdcc0 | no |
+
+## Round 7 at a glance
+
+The owner's rulings this round:
+- **Survival:** Hawk Eye's points go to Deadly Aspects. In the raid build, which already had 5/5, they went to Lightning Reflexes and Rapid Killing.
+- **The Wowhead refresh carries saved records by itself.** The floor is on the carried catalogue, and only a record whose item left the client is dropped, loudly.
+- **CI builds the wasm and runs the four real-engine browser tests** (`real-engine` in web.yml).
+- **/sim's bundle has room again** from trimming code: sim-island went from 87,518 to 74,834 bytes, with the budget unchanged.
+- **Every action a published result carries has a name.** Ignite and Shoot were already in their true schools; a test holds them.
+- **Mid-round, the owner held every BiS and data refresh until a zero round.** bis run 41363895819 was cancelled, and the bis, data and engine workflows are off. Picks were measured locally and never committed.
+- **The 14 dropped loot sources are recorded, not acted on.** Our two loot generators disagree about battlegrounds, so loot.json flips every pair of runs.
+
+Confirmed and fixed, by group (rows and evidence in each report):
+- **Warlock (3).**
+  - The mana potion waited for the execute phase.
+  - Destruction lacked Elixir of Shadow Power beside Fire Power.
+  - Spirit was weighed at zero although Life Tap scales with it.
+- **Casters (5).**
+  - Shadowform's cost cut was summed with Mental Agility.
+  - Arcane Instability's all-crit missed wands and procs.
+  - Silent Resolve and Searing Light missed schools.
+  - Three Wowhead-supplement wands were Physical.
+- **Physical (8).**
+  - Rend crits and Impale; Bloodthrill 5 s.
+  - Dual Wield Specialization on Whirlwind's and Mutilate's off hand.
+  - Hemorrhage normalized.
+  - Feral attack power, in simdb and in the item files.
+  - The warrior Deadmines addon spec.
+- **Hybrids (11).**
+  - Strength of Earth 42 and Grace of Air 77.
+  - Mark of the Chosen.
+  - Moonkin Aura counted twice, and Insect Swarm's crit.
+  - Judgement of Fury on the melee table, Iron Creed, the shared immunity cooldown, Hammer of the Righteous at 4 targets.
+  - The planner's equip stats.
+  - Held items replacing the main hand.
+- **Healers (16).**
+  - Mana Spring cancelled by Blessing of Wisdom, and Mana Spring's rank below 60.
+  - Oath of Light.
+  - Healing Stream uncounted; Water Shield on pulses.
+  - Pushback on raid pulses: the resist chance, the delay cap.
+  - The Focus talents.
+  - Clearcasting from HoTs, Bloom's crit.
+  - Ankh of Life.
+  - Spiritual Healing on Binding Heal.
+  - The heal profile retune, 1.65 to 1.85.
+- **Ranker (1).** A one-hander that replaced a two-hander left the off hand empty.
+- **Pipeline (1).** The manual `allow_shrink` for the Wowhead feed.
+- **CI (1).** No job ran the real-engine specs.
+- **Page (7).**
+  - Unnamed spells.
+  - Raid-buffed without the class kit.
+  - Crit rates rounded per worker.
+  - Zero-damage rows counted as Physical.
+  - From the wow-player review: the "<1"-hit wand row, and internal spell names.
+- **Integrator (2).** data's APL rank test and spellranks' dead Greater Blessing of Light override had both been red on main since c0bd0bd3d.
+
+Before and after, pin b57765fb9 against cd4dfdcc0, raid preset, band 60, 10,000 iterations. Alliance / horde, seed 1; seed 50001 is within 0.2:
+- **Restoration shaman:** +26.0 / +26.1 HPS.
+- **Holy paladin:** +13.2 / +13.9 HPS.
+- **Restoration druid:** +4.0 / +4.0 HPS.
+- **Subtlety:** -2.9 / -2.9.
+- **Demonology:** +1.9 / +2.0.
+- **Bear threat:** -1.4 / -1.9.
+- **Affliction:** +1.7 / +1.7.
+- **Destruction:** +1.6 / +1.6.
+- **Discipline:** +1.5 / +0.8 HPS.
+- **Arms:** -1.4 / -1.4.
+- **Enhancement:** -1.3 / -1.3.
+- **Elemental:** +1.2 / +1.2.
+- **Protection warrior threat:** -1.1 / -1.2.
+- **Holy priest:** +0.4 / +1.1 HPS.
+- **Every other spec:** within 1.
+
+The healer columns include the profile retune; healers.md splits it out.
+
+The item-data fixes and re-ranks reach published numbers only at the owner's single refresh after a zero round. Those are:
+- the supplement wands' school (band 50 bare casters +1 to +4.6%)
+- held items
+- feral attack power
+- the one-hand casters' off hands (+1.2 to +3.3% locally)
+- the new Holy and Discipline priest and Survival builds
+- the coverage re-check
+- /tiers/healer's new order (shaman first)
+
+Open going into round 8:
+- **Owner decisions.**
+  - The 14 loot sources: which loot generator is right about battlegrounds.
+  - Survival's separate raid build at +0.7% over leveling.
+  - Display wording for about 413 client spells with internal names (none in a published result).
+  - Copy: /tiers/healer's model caveat, and why Survival's number fell.
+- **After the owner's refresh, check:**
+  - published picks against the local re-rank
+  - heal-profile coverage on the re-picked sets
+  - /tiers/healer
+  - Torch of Light out of warlock raid sets
+  - Survival on Deadly Aspects
+  - the real-engine CI job's first run
+- **Blocked on level-60 logs** (launch is 2026-11-04): every round-6 row, plus the following.
+  - Oath of Light: scaled or flat.
+  - Gift of Nature on Tranquility.
+  - Same-op percent stacking.
+  - Fire Power on the Fireball and Pyroblast burns.
+  - A Fire wand crit and Ignite.
+  - The wand hit table.
+  - Rage from damage taken by level.
+  - Heroic Strike as a swing.
+  - Battle Shout's rounding.
+  - Eviscerate's attack power.
+  - Holy Shield crits, Toughness's armor, Holy Strike's flat damage.
+  - Barkskin in bear, Searing Totem's attack, Fire Nova's range.
+  - The Ahn'Qiraj book ranks at trainers.
+- **Single source or open:**
+  - Concentration Aura (unmodelled, at most +1.3%).
+  - Healing Wave rank 10.
+  - Chain Heal's party-only jumps.
+  - Power in Light.
+  - forever-bugs #419.
+- **Held under the adoption rule:**
+  - Marksmanship +0.9%.
+  - Affliction +0.7%.
+  - Destruction +0.1 to +0.2%.
+  - Fire's Improved Scorch line +0.4%.
+  - Assassination leveling +3.6% (drops Murder and Venom).
+  - Discipline's Inspiration.
+- **Page and pipeline:**
+  - The character-page chunk has 2 bytes of headroom.
+  - sim.wasm.gz is at 94.7% of its budget.
+  - `real-engine` does not gate deploy.
+  - normalize's `allow_shrink` re-baseline input and client.yml's hint.
 
 ## Round 6 at a glance
 
