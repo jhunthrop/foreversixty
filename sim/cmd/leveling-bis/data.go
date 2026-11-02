@@ -1081,14 +1081,21 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 func vendorInheritsStockSide(idx lootIndex) lootIndex {
 	sides := map[int]map[string]bool{}
 	for _, srcs := range idx {
-		repSideOfItem := ""
+		// An item both sides' reputations sell (the WSG bracers, under
+		// Silverwing Sentinels and Warsong Outriders alike) says nothing
+		// about which side its vendor serves.
+		itemSides := map[string]bool{}
 		for _, s := range srcs {
 			if s.Kind == "rep" && s.Side != "" {
-				repSideOfItem = s.Side
+				itemSides[s.Side] = true
 			}
 		}
-		if repSideOfItem == "" {
+		if len(itemSides) != 1 {
 			continue
+		}
+		var repSideOfItem string
+		for side := range itemSides {
+			repSideOfItem = side
 		}
 		for _, s := range srcs {
 			if s.Kind == "vendor" && s.NpcID != 0 {
