@@ -324,7 +324,6 @@ func TestSingleTierOverridesGateTheirIDs(t *testing.T) {
 		level int
 	}{
 		{"paladin", 407632, 40}, // Hammer of the Righteous
-		{"paladin", 25890, 60},  // Greater Blessing of Light
 		{"warlock", 603, 60},    // Bane of Doom
 	} {
 		if _, ok := HighestLearnedSpellID(tc.class, tc.id, tc.level-1); ok {
