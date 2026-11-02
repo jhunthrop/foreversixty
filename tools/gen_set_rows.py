@@ -142,6 +142,7 @@ def main(build_dir, fork_dir):
         opts = aura_options.get(sp)
         chance = int(opts["ProcChance"]) if opts else 0
         internal_cooldown = int(opts["ProcCategoryRecovery"]) if opts else 0
+        proc_type_mask = int(opts["ProcTypeMask_0"]) if opts else 0
         duration = durations.get(duration_index.get(sp, 0), 0)
         effs = []
         for e in sorted(effects[sp], key=lambda e: int(e["EffectIndex"])):
@@ -171,6 +172,8 @@ def main(build_dir, fork_dir):
             head.append("ProcChance: %d" % chance)
         if internal_cooldown:
             head.append("InternalCooldownMS: %d" % internal_cooldown)
+        if proc_type_mask:
+            head.append("ProcTypeMask: %d" % proc_type_mask)
         head.append("Effects: []ClientEffect{%s}" % ", ".join(effs))
         lines.append("\t%d: {%s}," % (sp, ", ".join(head)))
     lines += ["}", ""]
