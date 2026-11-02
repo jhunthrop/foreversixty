@@ -86,13 +86,13 @@ func TestNoPhysicalSpecCarriesACasterStatAndNoCasterSpecCarriesAMeleeStat(t *tes
 	}
 }
 
-// TestFeralAttackPowerBelongsToDruidFeralAndNowhereElse pins the
-// brief's one named-stat rule directly, rather than leaving it to
-// fall out of the forbidden-pair table alone.
-func TestFeralAttackPowerBelongsToDruidFeralAndNowhereElse(t *testing.T) {
+// TestFeralAttackPowerBelongsToTheFeralSpecsAndNowhereElse pins the
+// named-stat rule directly: Cat and Bear form both turn feral attack
+// power into attack power, so both feral specs weigh it.
+func TestFeralAttackPowerBelongsToTheFeralSpecsAndNowhereElse(t *testing.T) {
 	for _, spec := range All {
 		carries := slices.Contains(spec.WeightStats, "feral_attack_power")
-		want := spec.Spec == "druid-feral"
+		want := spec.Spec == "druid-feral" || spec.Spec == "druid-feral-bear"
 		if carries != want {
 			t.Errorf("%s carries feral_attack_power=%v, want %v", spec.Spec, carries, want)
 		}

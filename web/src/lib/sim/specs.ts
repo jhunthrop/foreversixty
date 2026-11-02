@@ -68,6 +68,7 @@ export const SPECS: readonly Spec[] = [
       'strength',
       'agility',
       'attack_power',
+      'feral_attack_power',
       'hit',
       'crit',
       'expertise',
