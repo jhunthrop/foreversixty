@@ -1594,11 +1594,11 @@ func idLearnLevel(ranks spellRanksFile, class string) map[int]int {
 // a second copy of a grouping already computed elsewhere, not a live
 // dependency on it.
 var idLearnLevelOverrides = map[string]map[int]int{
-	"druid":   {5217: 24, 5229: 12, 22812: 44, 22842: 36},
+	"druid":   {5217: 24, 5229: 12, 22812: 44, 22842: 36, 29166: 40},
 	"hunter":  {2643: 18, 3045: 26, 469145: 60},
 	"paladin": {407632: 40},
 	"warlock": {603: 60},
-	"warrior": {1719: 50},
+	"warrior": {1680: 36, 1719: 50, 2458: 30},
 }
 
 // warnedSpellID pulls the bare spell id out of an engine warning

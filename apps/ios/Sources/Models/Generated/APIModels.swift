@@ -4081,7 +4081,7 @@ public struct LootQuest: Codable, Sendable, Equatable {
 }
 
 public struct LootSource: Codable, Sendable, Equatable {
-    /// raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, …
+    /// raid:<zone>, dungeon:<zone>, vendor:<npc>, pvp:rank-<n>:<side>, pvp:title-rank-<n>:<side>, …
     public let id: String
     public let kind: String
     public let name: String
@@ -4101,6 +4101,8 @@ public struct LootSource: Codable, Sendable, Equatable {
     public let faction: String?
     public let factionSource: String?
     public let title: String?
+    /// Era honor rank the item's title implies, on a pvp source with no rank lock (rank absent); eligibility only, not a lock.
+    public let titleRank: Int?
     public let levelMin: Int?
     public let levelMax: Int?
     public let rareSpawn: Bool?
@@ -4126,6 +4128,7 @@ public struct LootSource: Codable, Sendable, Equatable {
         faction: String? = nil,
         factionSource: String? = nil,
         title: String? = nil,
+        titleRank: Int? = nil,
         levelMin: Int? = nil,
         levelMax: Int? = nil,
         rareSpawn: Bool? = nil,
@@ -4150,6 +4153,7 @@ public struct LootSource: Codable, Sendable, Equatable {
         self.faction = faction
         self.factionSource = factionSource
         self.title = title
+        self.titleRank = titleRank
         self.levelMin = levelMin
         self.levelMax = levelMax
         self.rareSpawn = rareSpawn

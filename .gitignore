@@ -119,6 +119,12 @@ data/builds/*/raw/hotfixes/*
 !data/builds/*/raw/wowhead/
 data/builds/*/raw/wowhead/*
 !data/builds/*/raw/wowhead/items.json
+# round 8, owner ruling 3: the Map.csv instance types and ItemSparse PvP
+# ranks `loot` read (pipeline.loot.classification), so `loot-merge` builds
+# loot.json from the same facts without the client CSVs.
+!data/builds/*/raw/client/
+data/builds/*/raw/client/*
+!data/builds/*/raw/client/loot-classification.json
 data/.icon-cache/
 
 # git worktrees for parallel plan execution

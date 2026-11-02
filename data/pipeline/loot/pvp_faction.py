@@ -307,28 +307,6 @@ def _backfill_vendor_items_into_pvp_buckets(
     return out, backfilled
 
 
-def ranks_with_item_evidence(ranks: dict[int, int], item_rows: list[dict]) -> dict[int, int]:
-    """The `ranks` whose item carries its own evidence of being a rank
-    reward: a rank title (`title_faction`, or the shared "Sergeant's" rank
-    `pipeline.classicdb_items.honor_rank_for_name` reads) or a faction
-    restriction.
-
-    For ranks recovered from a committed loot.json in merge-only mode,
-    which carry whatever an earlier run filed wrongly (Scalemail Vest and
-    the Season of Discovery Warsong stock under pvp:rank-12:horde). Every
-    rank the client's RequiredPVPRank states on 1.60.1.70658 is on such an
-    item, so this drops no real one (bis-phase-gate lane, 2026-10-30).
-    """
-    evidenced = {
-        int(row["id"])
-        for row in item_rows
-        if row.get("faction_restriction")
-        or title_faction(str(row["name"])) is not None
-        or honor_rank_for_name(str(row["name"])) is not None
-    }
-    return {item_id: rank for item_id, rank in ranks.items() if item_id in evidenced}
-
-
 def drop_non_rank_rewards(
     sources: list[LootSource], not_rank_rewards: frozenset[int]
 ) -> tuple[list[LootSource], int]:
@@ -361,6 +339,48 @@ def drop_non_rank_rewards(
         if kept:
             out.append(source.model_copy(update={"items": kept}))
     return out, dropped
+
+
+def unlock_title_only_ranks(document: LootFile, locked: frozenset[int]) -> LootFile:
+    """`document` with every `pvp:rank-N:<side>` item whose rank only its
+    title implies moved to `pvp:title-rank-N:<side>`: kind pvp, `rank`
+    None, `title_rank` N, named "PvP reward (<Side>)".
+
+    `locked` is every id the client's ItemSparse.RequiredPVPRank or
+    classic-db ranks; an id re-itemised from one (`reitemised_from`, the
+    Forever tabards, whose server text names a rank) is locked too. Owner
+    ruling (round 8): where the client data does not show how an item is
+    sold, it is a PvP reward with no rank lock. Forever's server text on
+    its titled PvP gear (227198, 231630, 234555 ...) shows only a level.
+    Every listing keeps its faction and, read as `rank or title_rank`, its
+    rank, so the ranker's rank cap can stay byte-identical."""
+    sources: list[LootSource] = []
+    for source in document.sources:
+        if source.kind != "pvp" or source.rank is None or source.faction is None:
+            sources.append(source)
+            continue
+        inherited = source.reitemised_from or {}
+        kept = [i for i in source.items or [] if i in locked or str(i) in inherited]
+        unlocked = [i for i in source.items or [] if i not in kept]
+        if not unlocked:
+            sources.append(source)
+            continue
+        if kept:
+            sources.append(source.model_copy(update={"items": kept}))
+        sources.append(
+            source.model_copy(
+                update={
+                    "id": f"pvp:title-rank-{source.rank}:{source.faction}",
+                    "name": f"PvP reward ({source.faction.capitalize()})",
+                    "rank": None,
+                    "title_rank": source.rank,
+                    "title": None,
+                    "items": unlocked,
+                    "reitemised_from": None,
+                }
+            )
+        )
+    return document.model_copy(update={"sources": sources})
 
 
 @dataclass(frozen=True)

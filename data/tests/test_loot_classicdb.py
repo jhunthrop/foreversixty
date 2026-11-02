@@ -22,7 +22,6 @@ import pytest
 
 from pipeline.classic_sources import ClassicDbSourceRecord, load_classic_sources
 from pipeline.forkdb import ForkDatabase, load_fork_database
-from pipeline.loot import types_from_committed_loot
 from pipeline.loot.classicdb import (
     _CREATURE_KINDS,
     _item_instance_zone_consensus,
@@ -31,11 +30,14 @@ from pipeline.loot.classicdb import (
     fork_instance_npc_zones,
     instance_zone_by_map,
 )
+from pipeline.loot.classification import load_classification, loot_instance_types
 from pipeline.loot.sources import item_factions
 from pipeline.normalize.gear import SLOT_BY_INVENTORY_TYPE
 from pipeline.quest_levels import load_quest_levels
 
-BUILD = "1.60.1.70374"
+BUILD = json.loads(
+    (Path(__file__).parents[2] / "web/src/data/active-build.json").read_text(encoding="utf-8")
+)["build"]
 BUILD_DIR = Path("builds") / BUILD
 
 
@@ -179,7 +181,7 @@ def test_every_fork_known_instance_boss_lands_in_its_own_instance_from_classic_d
         if inventory_type in SLOT_BY_INVENTORY_TYPE
     }
     zone_names = {int(row["id"]): row["name"] for row in zone_rows}
-    types = types_from_committed_loot(BUILD_DIR)
+    types = loot_instance_types(load_classification(BUILD_DIR))
     classic_sources = load_classic_sources(BUILD_DIR)
     quest_levels = load_quest_levels(BUILD_DIR)
     factions = item_factions(fork, build_items)

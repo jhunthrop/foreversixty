@@ -9,7 +9,6 @@
   import HistoryReserve from './character/HistoryReserve.svelte';
   import ProfileDescriptor from './character/ProfileDescriptor.svelte';
   import CharacterNotFound from './CharacterNotFound.svelte';
-  import CoachHistoryList from './coach/CoachHistoryList.svelte';
   import CharacterUnlogged from './CharacterUnlogged.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
   import { fetchMeOnce, type MeCharacter } from '../lib/account/api';
@@ -50,6 +49,8 @@
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
+  import { createLazyComponent } from '../lib/report/lazy-component.svelte';
+  import type { Component } from 'svelte';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -250,6 +251,16 @@
         ratingProbe = 'none';
       });
   });
+  /** The owner's coach history (Premium only, last on the page): its own chunk, so no other
+   *  viewer's bundle carries it. The list draws nothing until its first page is read anyway. */
+  const coachHistory = createLazyComponent<{ path: CharacterPath }>(
+    () =>
+      import('./coach/CoachHistoryList.svelte') as Promise<{ default: Component<{ path: CharacterPath }> }>,
+  );
+  $effect(() => {
+    if (own !== null && coachEntitled) coachHistory.load();
+  });
+
   /** No score yet and gear to show: the gear card leads, above the empty score card (W.9). */
   const gearFirst = $derived(
     data !== null && !hasScore(foreverOf(data)) && data.gear !== undefined && data.gear.length > 0,
@@ -446,8 +457,8 @@
 
     <!-- The coach's stored reviews of this character (log coach spec 3.5): the owner on Premium
          only, last on the page so its late arrival moves nothing above it. -->
-    {#if own !== null && coachEntitled}
-      <CoachHistoryList path={resolved} />
+    {#if own !== null && coachEntitled && coachHistory.current}
+      <coachHistory.current path={resolved} />
     {/if}
   </div>
 {/if}

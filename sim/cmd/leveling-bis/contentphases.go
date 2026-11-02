@@ -407,7 +407,13 @@ func loadGatedLootIndex(repoRoot, buildDir string, itemFactionRestriction map[in
 	if err != nil {
 		return nil, nil, err
 	}
-	gated, missing := gates.apply(dropNonRankRewards(idx, unranked))
+	ranked := dropNonRankRewards(idx, unranked)
+	if dropped := droppedToNoSource(idx, ranked); len(dropped) > 0 {
+		if _, err := fmt.Fprintf(warn, "warning: %d item(s) lost their only source because classic-db names no honor rank for them: %v\n", len(dropped), dropped); err != nil {
+			return nil, nil, fmt.Errorf("writing the unranked-pvp warning: %w", err)
+		}
+	}
+	gated, missing := gates.apply(ranked)
 	if len(missing) > 0 {
 		if _, err := fmt.Fprintf(warn, "warning: content-phases: %d gated ids are not in %s's loot.json; their gates are kept: %s\n",
 			len(missing), filepath.Base(buildDir), strings.Join(missing, "; ")); err != nil {

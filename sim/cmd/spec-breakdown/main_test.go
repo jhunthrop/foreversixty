@@ -201,11 +201,11 @@ func TestLoadRotation(t *testing.T) {
 	badProto := filepath.Join(dir, "badproto.json")
 	writeFile(t, badProto, `{"rotation":{"noSuchField":1}}`)
 
-	rot, err := loadRotation(valid)
+	rot, err := loadRotation(valid, "rogue", 60)
 	if err != nil || len(rot.GetPriorityList()) != 1 {
 		t.Fatalf("valid rotation: %v, %v", rot, err)
 	}
-	if rot, err := loadRotation(""); rot != nil || err != nil {
+	if rot, err := loadRotation("", "rogue", 60); rot != nil || err != nil {
 		t.Errorf("empty path = %v, %v; want nil, nil", rot, err)
 	}
 	tests := []struct{ name, path, wantErr string }{
@@ -216,7 +216,7 @@ func TestLoadRotation(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			if _, err := loadRotation(tc.path); err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+			if _, err := loadRotation(tc.path, "rogue", 60); err == nil || !strings.Contains(err.Error(), tc.wantErr) {
 				t.Errorf("err = %v, want containing %q", err, tc.wantErr)
 			}
 		})
@@ -399,5 +399,21 @@ func TestBuildRequestRejectsUnknownSpecAndMissingEntry(t *testing.T) {
 func TestRunRequiresSpec(t *testing.T) {
 	if err := run(options{}); err == nil || !strings.Contains(err.Error(), "-spec is required") {
 		t.Errorf("err = %v", err)
+	}
+}
+
+// Below level 60 a -rotation file is rewritten to the band's ranks, as the
+// published rotation is (request's rewriteRotationRanks), so a level-60
+// file can be probed at every band: Shadow Bolt rank 9 (11661) is rank 5
+// (1106) at 30.
+func TestLoadRotationRewritesRanksBelowSixty(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "rot.json")
+	writeFile(t, path, `{"rotation":{"priorityList":[{"action":{"castSpell":{"spellId":{"spellId":11661,"rank":9}}}}]}}`)
+	rot, err := loadRotation(path, "warlock", 30)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := rot.GetPriorityList()[0].GetAction().GetCastSpell().GetSpellId().GetSpellId(); got != 1106 {
+		t.Errorf("Shadow Bolt at level 30 reads %d, want 1106", got)
 	}
 }

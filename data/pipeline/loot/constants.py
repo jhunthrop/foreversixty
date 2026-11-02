@@ -16,6 +16,17 @@ from collections.abc import Iterable
 #: become drop sources.
 INSTANCE_KIND: dict[int, str] = {1: "dungeon", 2: "raid"}
 
+#: `Map.InstanceType` of a battleground (Alterac Valley 30, Warsong Gulch 489,
+#: Arathi Basin 529).
+BATTLEGROUND_INSTANCE_TYPE = 3
+
+#: Owner ruling 3 (sim-accuracy round 8): whether a battleground's creatures
+#: and objects are loot sources. True files them as open-world sources
+#: (`world:alterac-ram`, the world-drop bands): loot.json as committed at
+#: 1.60.1.70707. False gives a battleground zone no source at all. Both loot
+#: generators read this one switch (`pipeline.loot.classification`).
+BATTLEGROUND_SPAWNS_ARE_SOURCES = True
+
 #: drop-sources-2 lane, 2026-09-29: the world-drop-pattern rule
 #: `pipeline.loot.wowhead` applies to a wowhead item page's own
 #: `dropped-by` list (see that module's own doc for the full

@@ -72,6 +72,7 @@ const (
 	arcaneBrillianceBuff = "arcane_brilliance"
 	giftOfTheWildBuff    = "gift_of_the_wild"
 	blessingOfMightBuff  = "blessing_of_might"
+	blessingOfWisdomBuff = "blessing_of_wisdom"
 	devotionAuraBuff     = "devotion_aura"
 	huntersMarkBuff      = "hunters_mark"
 	heartOfTheLionBuff   = "heart_of_the_lion"
@@ -80,6 +81,10 @@ const (
 // blessingOfMightLevel is the level Blessing of Might's first rank is
 // learned. Arcane Intellect and Mark of the Wild are rank 1 at level 1.
 const blessingOfMightLevel = 4
+
+// blessingOfWisdomLevel is the level Blessing of Wisdom's first rank is
+// learned (client spell 19742).
+const blessingOfWisdomLevel = 14
 
 // huntersMarkLevel is the level Hunter's Mark's first rank is learned
 // (client spell 1130).
@@ -108,9 +113,14 @@ const huntersMarkLevel = 6
 //     tables do not state) and neither the Feral nor the Balance build
 //     can take it, so every druid spec carries the plain buff.
 //
-//   - Any paladin spec, from level 4 (Blessing of Might's first rank):
-//     Blessing of Might. Forever's Holy tree has no Improved Blessing of
-//     Might, so no ":improved" form.
+//   - Retribution and Protection, from level 4 (Blessing of Might's first
+//     rank): Blessing of Might. Forever's Holy tree has no Improved
+//     Blessing of Might, so no ":improved" form.
+//
+//   - paladin-holy, from level 14 (Blessing of Wisdom's first rank,
+//     client spell 19742): Blessing of Wisdom, the healer's mana
+//     blessing. One paladin's blessings on a target are one at a time,
+//     so it replaces Might, which the Holy paladin carries from 4 to 13.
 //
 //   - paladin-protection, from level 1: Devotion Aura, the armor aura a
 //     Protection paladin runs (client spell 465, rank 1). Blessing of
@@ -144,6 +154,8 @@ func KitBuffs(spec string, level int) []string {
 		return []string{giftOfTheWildBuff}
 	case spec == "paladin-protection":
 		return paladinKitBuffs(level, devotionAuraBuff)
+	case spec == "paladin-holy" && level >= blessingOfWisdomLevel:
+		return []string{blessingOfWisdomBuff}
 	case isClassSpec(spec, "paladin"):
 		return paladinKitBuffs(level)
 	case spec == "hunter-survival" && level >= huntersMarkLevel:

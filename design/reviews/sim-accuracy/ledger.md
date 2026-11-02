@@ -11,6 +11,137 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 5 | 2026-11-01 | design/reviews/2026-11-01-sim-audit-round5/ (warlock, physical, hybrids, casters, ranker, page, integration) | 30 fixed (warlock 1, casters 8, hybrids 4, physical 6, ranker 3, page 5, integrator 1); 2 more from the wow-player review | 8baffe5fc | no |
 | 6 | 2026-11-01 to 2026-11-02 | design/reviews/2026-11-02-sim-audit-round6/ (warlock, casters, physical, hybrids, healers, ranker, pipeline, wasm, page, integration) | 71 fixed (warlock 5, casters 11, physical 10, hybrids 17, healers 10, pipeline 5, ranker 4, wasm 3, page 5, integrator 1) | b57765fb9 | no |
 | 7 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round7/ (warlock, casters, physical, hybrids, healers, pipeline, ci, page, ranker, integration) | 55 fixed (warlock 3, casters 5, physical 8, hybrids 11, healers 16, ranker 1, pipeline 1, ci 1, page 7 with 2 from the wow-player review, integrator 2) | cd4dfdcc0 | no |
+| 8 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round8/ (warlock, casters, physical, hybrids, healers, auras, items, ranker, pipeline, page, wasm, integration) | 67 fixed (warlock 5, casters 5, physical 5, hybrids 4, healers 14, auras 11, items 13, ranker 5, pipeline 3, page 1, wasm 2, integrator 2; Innervate, shaman regen and Curse of Recklessness were each found by two lanes) | 40021374a | no |
+
+## Round 8 at a glance
+
+The owner's rulings this round:
+- **Survival has one build at 60.** Its raid build was +0.7% over leveling, under the 1% bar; raids use the leveling build.
+- **Two copy notes.**
+  - /tiers/healer says no level-60 log is behind the healer order yet.
+  - Survival's guide says why its raid number fell: Forever's Strength of Earth Totem and Curse of Recklessness, on either faction, not the build. The page lane's first draft said "Horde"; the integrator corrected it.
+- **One loot generator.**
+  - `loot` and `loot-merge` build through one function from `raw/client/loot-classification.json` and write byte-identical loot.json.
+  - Mid-round the owner ruled that battlegrounds and PvP ranks exist at launch. Alterac Valley and Arathi Basin spawns are sources on every run.
+  - The rank 5/10 tabards keep their client rank.
+  - 467 PvP listings whose rank came only from their Era title are now unranked "PvP reward" sources. **The client does not say how Forever sells them**: ItemExtendedCost has honor costs but no item link. They keep a `title_rank` the ranker reads, so BiS eligibility is unchanged.
+  - Darkspear Islands has no loot in the client; its vendor is a source, gated "later".
+- **Headroom.**
+  - The character chunk went from 18,427 to 17,260 of 18,432 bytes (the coach history list loads lazily).
+  - sim.wasm.gz went from 95.0% to 90.6% of 4.5 MiB with a byte-identical module (pigz zopfli, and the budget now gates the shipped file).
+- **The ranker's treatment of PvP and battleground items is recorded, unchanged.** Rank 1 to 10 rewards are open; rank 11+ are alternatives only. No battleground item is eligible: the "battleground-reputation" and "darkspear-islands" gates are "later".
+
+Confirmed and fixed, by group (rows and evidence in each report):
+- **Warlock (5).**
+  - Kindling Stave's Ignition was unmodelled.
+  - Necropile Drain fired on every cast.
+  - A shared 10 ms recovery ate procs.
+  - Display only: Demonic Sacrifice's buff ids, and prepull aura uptime.
+- **Casters (5).**
+  - Arcane Blast's rank from 40 to 49.
+  - Innervate below 40.
+  - Balance's bare filler ran dry.
+  - Shaman regen 17 + Spirit/5.
+  - The rank table trusting an NPC copy.
+- **Physical (5).**
+  - Curse of Recklessness 505 armor, no attack power.
+  - 26 weapon procs at their client damage.
+  - Whirlwind before 36 and Berserker Stance before 30.
+  - Mutilate rank 1 at 30.
+  - The stale Raptor Strike note.
+- **Hybrids (4).** Shred rank 1 at 20; Faerie Fire in Cat and Bear Form; Stormstrike normalized.
+- **Healers (14).**
+  - "Damage and healing" bonuses heal (Devout 3-piece).
+  - The sub-20 level penalty.
+  - Innervate at 40.
+  - Shaman regen.
+  - Lightwell ticked three renews.
+  - Twin Disciplines on Prayer of Mending.
+  - Divine Grace, Contingency Plan.
+  - Desperate Prayer is dwarf-only.
+  - The Holy paladin kit's Wisdom.
+  - The shared HoT-aura guard.
+  - Two note fixes.
+- **Auras (11).**
+  - Fortitude, Divine Spirit, Blood Pact and Windfury Totem by rank.
+  - Leader of the Pack and Moonkin Aura at their talent levels.
+  - Elemental's own Mana Spring stacking with the raid's.
+  - Curse of Recklessness.
+  - Every raid debuff by the raid's level.
+  - Caster-only debuffs out of the raid flags.
+  - Six foods and two elixirs at Forever's values.
+- **Items (13).**
+  - Stat 45 heals.
+  - Wowhead percentages to the decimal.
+  - Stat 50 is bonus armor.
+  - Manual Crowd Pummeler 3 min.
+  - Fiery War Axe, Bow of Searing Arrows, Gut Ripper.
+  - 14 unmodelled effects on picked items.
+  - Wizard oils heal.
+- **Ranker (5).**
+  - Paladins train axes.
+  - Weights measured on a naked character (bands now rank under both weight sets).
+  - An empty stat trinket.
+  - "PvP rank 0".
+  - Ankh of Life in both trinket slots.
+- **Pipeline (3).** The loot flip, the merge losing client ranks, the lopsided Stone Guard's rank 10.
+- **Page (1).** "PvP rank 0" labels.
+- **Wasm (2).** A plain gzip; the budget measured a different file than the one deployed.
+- **Integrator (2).** wasm-gzip.sh lacked its exec bit (deploy would stop); the Survival line's "Horde".
+
+Before and after, pin cd4dfdcc0 against 40021374a, raid preset, band 60, 10,000 iterations. Alliance / horde, seed 1; seed 50001 is within 0.2:
+- **Every physical attacker** falls 1.1 to 2.0%: the curse, and Survival -1.7 / -1.7.
+- **Retribution** -0.2 / -0.1 (Smoked Desert Dumplings offset the curse).
+- **Damage casters** rise 1.4 to 2.2%: foods, debuff ranks, Ignition. Balance +2.2, Frost +2.0, warlocks +1.6 to +1.9.
+- **Restoration shaman:** +2.2 / +2.2 HPS.
+- **Discipline:** +1.6 / +0.9 HPS.
+- **Holy paladin:** +0.9 / +1.0 HPS.
+- **Restoration druid:** +0.9 / +0.9 HPS.
+- **Elemental:** +0.7 / +0.8.
+- **Tanks:** Protection paladin +0.6 / +0.7, Protection warrior -0.6 / -0.7, bear -1.5 / -1.4.
+
+The bare bands move far more. integration.md has the largest moves, among them Balance bare 40 and 50 +23 and +26%, Restoration druid bare 20 -24%, and Holy paladin bare 20 to 50 +11 to +20%.
+
+The item-data fixes and re-ranks reach published numbers only at the owner's single refresh after a zero round:
+- this round's: stat 45, decimals, stat 50, paladin axes, the Pummeler and the other item effects at the leveling bands, geared weights, the healer sets, the Survival single build, the loot relabel
+- round 7's: held items, feral attack power, supplement wands, one-hand casters' off hands, the priest builds, the coverage check, /tiers/healer's order
+
+Open going into round 9:
+- **Owner decisions.**
+  - Open the "battleground-reputation" and "darkspear-islands" gates at launch?
+  - Keep the `title_rank` cap?
+  - How Forever sells the 467 "PvP reward" items: not in the client data.
+  - Rotation policy: always the top learned rank. Elemental runs dry bare; downranking measured +14% at band 50. The rewrite lifts the band-60 Renew and Shield downranks below 60.
+  - Demonology's wasted sacrifice at bands 30 to 50.
+  - Brotli or no-inlining for sim.wasm.
+  - The time-bound Survival line after launch.
+- **After the owner's refresh, check:**
+  - the published picks against local re-ranks, especially the healer sets with stat 45 and the Pummeler bands
+  - heal-profile coverage
+  - /tiers/healer's order
+  - the Raptor Strike note on the guide's Rotation card (it reads nightly addon-data)
+  - the Survival single build
+  - paladin axes
+- **Blocked on level-60 logs** (launch is 2026-11-04): every round-6 and round-7 row, plus the following.
+  - The one-a-minute rate for "chance on" procs with no client rate.
+  - Armor-debuff stacking under aura 674.
+  - The sub-20 level penalty.
+  - Swiftmend's amount.
+  - Faerie Fire's form threat.
+- **Single source or open:**
+  - One crit stat for melee and spell.
+  - Mana Tide's tick.
+  - Retribution Aura, Thorns and Stoneskin ranks.
+  - Tank weight sweeps that disagree between seeds.
+  - The Satchels; Red Dragonscale Leggings.
+  - Concentration Aura, Healing Wave rank 10, Chain Heal's party-only jumps, Power in Light, forever-bugs #419.
+- **Held under the adoption rule:** Marksmanship +0.9%, Affliction +0.7%, Destruction, Fire's Improved Scorch line +0.4%, Assassination leveling +3.6%, Discipline's Inspiration.
+- **Page and pipeline:**
+  - `real-engine` does not gate deploy.
+  - `allow_shrink` while data.yml passes it to `loot`.
+  - The coach catalogue's old foods.
+  - The four dead caster-only flags on the custom /sim panel.
+  - The Discord bot skips an unranked PvP line.
 
 ## Round 7 at a glance
 

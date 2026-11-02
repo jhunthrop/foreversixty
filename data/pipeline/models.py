@@ -462,6 +462,14 @@ class LootSource(BaseModel):
     #: for every other kind, and for a pvp source whose rank falls
     #: outside the known 14-rank ladder (rank_title's own doc).
     title: str | None = None
+    #: The Era honor rank an item's title implies ("Knight-Lieutenant's" ->
+    #: 11), for a `pvp` source whose items carry no rank lock in Forever:
+    #: neither the client (ItemSparse.RequiredPVPRank) nor classic-db ranks
+    #: them, and Forever's server text shows only a level (round 8, owner
+    #: ruling). Such a source has `rank` None and reads "PvP reward". This
+    #: field is for eligibility only (the ranker's rank cap), not a lock.
+    #: Exactly one of `rank` and `title_rank` is set on a pvp source.
+    title_rank: int | None = None
     bosses: list[LootBoss] | None = None
     trash: list[int] | None = None
     items: list[int] | None = None

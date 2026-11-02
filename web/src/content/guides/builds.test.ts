@@ -300,3 +300,16 @@ describe('guide build codes decode to a legal, complete build on the active data
     ).toEqual([]);
   });
 });
+
+// Owner ruling, sim-accuracy round 8: Survival's separate raid build measured only +0.7% over
+// its leveling build in the band-60 raid run, under the talent adoption rule's 1% bar, so
+// Survival has one build at 60. Raids (the raid preset, the planner and addon defaults, the
+// ranker's raid pass) read the leveling build through the missing `raidBuild:`.
+describe('Survival has one build at 60', () => {
+  it('hunter/survival carries no separate raidBuild:', () => {
+    const survival = guides.find((g) => g.id === 'hunter/survival');
+    expect(survival, 'hunter/survival: no such guide').toBeDefined();
+    expect(guides.some((g) => g.id === `hunter/survival${RAID_SUFFIX}`)).toBe(false);
+    expect(survival?.frontmatter.raidBuild).toBeUndefined();
+  });
+});

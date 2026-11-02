@@ -98,12 +98,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-01000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 12.2 | 5 | other:attack/2=107.1, other:attack/1=54.4, other:rage_gain=38.1, spell:1680=18.2, spell:284/1=16.0 | {SpellID: 12328}, {SpellID: 23894} |
-| 20 | 00000000000000000-05150000000000000-000000000000000000 | main_hand:2236 off_hand:2194 | 24.2 | 5 | other:rage_gain=118.5, other:attack/1=97.2, other:attack/2=73.0, spell:285/1=24.5, spell:285=24.3 | {SpellID: 12328}, {SpellID: 23894} |
-| 30 | 00000000000000000-05153105010000000-000000000000000000 | main_hand:7687 off_hand:6692 | 48.9 | 6 | other:rage_gain=105.7, other:attack/2=76.0, other:attack/1=54.4, spell:1608/1=22.0, spell:1608=21.6 | {SpellID: 12328}, {SpellID: 23894} |
+| 10 | 00000000000000000-01000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 11.2 | 4 | other:attack/2=107.1, other:rage_gain=38.1, spell:284/1=36.9, spell:284=36.4, other:attack/1=33.7 | {SpellID: 12328} |
+| 20 | 00000000000000000-05150000000000000-000000000000000000 | main_hand:2236 off_hand:2194 | 23.9 | 5 | other:rage_gain=121.7, other:attack/1=75.8, other:attack/2=73.0, spell:285/1=46.0, spell:285=45.7 | {SpellID: 12328} |
+| 30 | 00000000000000000-05153105010000000-000000000000000000 | main_hand:7687 off_hand:6692 | 46.7 | 5 | other:rage_gain=108.1, other:attack/2=76.0, spell:1608/1=38.9, spell:1608=38.3, other:attack/1=37.7 | {SpellID: 12328} |
 | 38 | 00000000000000000-05153105022011300-000000000000000000 | main_hand:868 off_hand:6829 | 73.8 | 7 | other:rage_gain=117.0, other:attack/2=86.7, other:attack/1=66.2, spell:11564/1=24.8, spell:11564=24.6 | {SpellID: 23894} |
-| 40 | 00000000000000000-05153105022011401-000000000000000000 | main_hand:2164 off_hand:9359 | 88.8 | 9 | other:rage_gain=119.7, other:attack/1=102.4, other:attack/2=84.4, spell:20660=20.7, spell:23881=19.4 | - |
-| 50 | 34200000000000000-05153105022011501-000000000000000000 | main_hand:810 off_hand:2163 | 135.9 | 9 | other:attack/2=141.4, other:rage_gain=140.6, other:attack/1=87.7, spell:20661=21.9, spell:23892=19.4 | - |
+| 40 | 00000000000000000-05153105022011401-000000000000000000 | main_hand:2164 off_hand:9359 | 89.4 | 8 | other:rage_gain=119.7, other:attack/1=102.4, other:attack/2=84.4, spell:20660=20.7, spell:23881=19.4 | - |
+| 50 | 34200000000000000-05153105022011501-000000000000000000 | main_hand:810 off_hand:2163 | 137.6 | 9 | other:attack/2=141.4, other:rage_gain=140.6, other:attack/1=87.7, spell:20661=21.9, spell:23892=19.4 | - |
 | 60 | 34320003002000000-05153105022011501-200000000000000000 | main_hand:22736 off_hand:23054 | 257.9 | 9 | other:rage_gain=101.8, other:attack/2=73.6, other:attack/1=64.1, spell:23894=19.3, spell:20662=19.2 | - |
 
 ## Learned but unused (informational)
@@ -119,7 +119,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Hamstring (spell 1715)
 - Mocking Blow (spell 694)
-- Overpower (spell 7384)
 - Rend (spell 6547)
 - Revenge (spell 6572)
 - Shield Bash (spell 72)
@@ -192,4 +191,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- warrior-fury level=30 kind=zero_casts spell="Overpower" id=7887 authored=11585
+- warrior-fury level=38 kind=zero_casts spell="Overpower" id=7887 authored=11585
+- warrior-fury level=40 kind=zero_casts spell="Overpower" id=7887 authored=11585
+- warrior-fury level=50 kind=zero_casts spell="Overpower" id=11584 authored=11585
+- warrior-fury level=60 kind=zero_casts spell="Overpower" id=11585 authored=11585

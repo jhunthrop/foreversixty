@@ -164,9 +164,14 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 			aliases = append(aliases, row.ID)
 			continue
 		}
-		if _, seen := levelByRank[row.Rank]; !seen {
+		if seenLevel, seen := levelByRank[row.Rank]; !seen {
 			levelByRank[row.Rank] = row.Level
 			ranks = append(ranks, row.Rank)
+		} else if seenLevel > core.CharacterMaxLevel && row.Level > 0 && row.Level <= core.CharacterMaxLevel {
+			// A row above the level cap is an NPC copy no player learns
+			// (Arcane Blast rank 3: 42896 at 76 listed before the player's
+			// 1239697 at 40), so a sibling within the cap sets the level.
+			levelByRank[row.Rank] = row.Level
 		}
 		idsByRank[row.Rank] = append(idsByRank[row.Rank], row.ID)
 		if !row.Inferior {
@@ -212,6 +217,7 @@ var singleTierLevelOverrides = map[string]map[int32]int{
 		5229:  12, // Enrage; sim/druid/enrage.go: registerEnrageSpell returns below enrageLearnLevel
 		22812: 44, // Barkskin; sim/druid/barkskin.go: registerBarkskinCD returns below barkskinLearnLevel
 		22842: 36, // Frenzied Regeneration; sim/druid/frenzied_regeneration.go: registerFrenziedRegenerationCD returns below its learn level
+		29166: 40, // Innervate; sim/druid/innervate.go: registerInnervateCD returns below InnervateLevel 40
 	},
 	"hunter": {
 		2643:   18, // Multi-Shot rank 1; sim/hunter/multi_shot.go's rank table, RequiredLevel 18 (this build's spellranks.json never lists Multi-Shot's higher client ranks 14288/14289/14290/25294 at all, so 2643 is the only id this override, or this table's own callers, ever resolve it to)
@@ -222,7 +228,9 @@ var singleTierLevelOverrides = map[string]map[int32]int{
 		407632: 40, // Hammer of the Righteous; sim/paladin/hammer_of_the_righteous.go: hammerOfTheRighteousLevel = 40, registration returns below it
 	},
 	"warrior": {
+		1680: 36, // Whirlwind; sim/warrior/whirlwind.go: knowsWhirlwind (SpellLevels BaseLevel 36)
 		1719: 50, // Recklessness; sim/warrior/recklessness.go returns below level 50
+		2458: 30, // Berserker Stance; sim/warrior/stances.go: knowsStance (SpellLevels BaseLevel 30)
 	},
 	"warlock": {
 		603: 60, // Bane of Doom; sim/warlock/curses.go registers it with RequiredLevel: 60
@@ -340,11 +348,14 @@ func sameBandOrFirst(ids []int32, original int32) int32 {
 // Found by the site's rotation ladder (sim/request/ladder_test.go) reporting
 // the id unresolved at the lowest rung that straddles the two levels.
 var rankLevelOverrides = map[string]map[int32]int{
+	"rogue": {
+		// Mutilate rank 1: spellranks.json lists Era's 1329 (no
+		// SkillLineAbility row, no BaseLevel) first, at 40; Forever's rank 1
+		// is 1310707, SpellLevels BaseLevel 30, and sim/rogue/mutilate.go's
+		// mutilateLearnLevels starts at 30.
+		1310707: 30,
+	},
 	"druid": {
-		// Shred rank 1: spellranks.json carries the client's level-20 row;
-		// sim/druid/shred.go's shredLearnLevels starts at 22 (its comment: "the
-		// level-20 rank-0 id is an internal copy, not a player rank").
-		5221: 22,
 		// Primal Bite: client 1.60.1.70707's hotfix made it the Feral
 		// capstone (learned at 40) and moved its ranks; spellranks.json still
 		// carries the pre-hotfix 25/36/48/60, and sim/druid/primal_bite.go's

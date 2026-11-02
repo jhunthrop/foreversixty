@@ -2793,3 +2793,27 @@ func TestBuildReportKeepsAnEffectBearingTrinketEvenWhenItsMeasuredGainIsInsignif
 		t.Fatalf("trinket2 row = %+v, want item 11811 published with no EmptyReason (a real effect_text exempts it from trinketLowGain, the same way trinketEffectExempt already exempts a score-zero trinket)", row)
 	}
 }
+
+// Round 8: Retribution's raid band 60 (Horde) published trinket1 empty
+// while its pick, Rune of the Guard Captain (+42 attack power, +7 hit, no
+// effect), measured 4.6 DPS above the next trinket in the set. The raid
+// preset's noise (a gain of a few DPS against a standard error near 6) kept
+// the gain under trinketGainSignificant's bar. The gate exists for a
+// trinket worth nothing (Rune of Perfection: spell penetration and stamina
+// for an Arms warrior). A trinket whose stats the band's significant
+// weights value has a known positive worth and is never emptied for noise.
+func TestBuildReportKeepsAStatTrinketTheWeightsValueWhenItsGainIsNoisy(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{
+			candidate:   candidate{ID: 19120, Name: "Rune of the Guard Captain", Stats: map[string]float64{"attack_power": 42, "hit": 7}},
+			Score:       58.4,
+			MeasuredDPS: 666.1, MeasuredGainDPS: 2.0, MeasuredGainStdErr: 6.0, GainMeasured: true,
+		}},
+	}
+	r := buildReport(reportSpec(), 60, "horde", "undead", "", 0, nil, nil, picks, 666.1, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	for _, s := range r.Slots {
+		if s.Slot == "trinket1" && (s.ItemID != 19120 || s.EmptyReason != "") {
+			t.Fatalf("trinket1 row = %+v, want Rune of the Guard Captain published (its stats carry real weight)", s)
+		}
+	}
+}

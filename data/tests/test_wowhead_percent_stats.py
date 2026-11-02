@@ -75,3 +75,17 @@ def test_a_percent_stat_reaches_the_engine_undivided_and_a_rating_divided() -> N
     # hitrtng 10 at 10 a percent is 1%; the unified StatHit carries it.
     assert stats[pb.Stat.Value("StatHit")] == 1.0
     assert stats[pb.Stat.Value("StatDefense")] == 2.0
+
+
+def test_a_fractional_percent_stat_reaches_the_engine_unrounded() -> None:
+    """Blackcrow 12651 is wowhead `hitpct` 0.9 and Might of Hakkar 10838
+    `hitpct` 0.5: the planner's integer contract rounds them (0.5 to 0 under
+    banker's rounding), but the engine reads a float and must get the
+    stated percentage (sim audit round 8, items lane)."""
+    stats = list(
+        build_wowhead_sim_items([_ring({"hitpct": 0.9, "critstrkpct": 0.5})], RATING_FACTORS)[
+            0
+        ].stats
+    )
+    assert stats[pb.Stat.Value("StatHit")] == 0.9
+    assert stats[pb.Stat.Value("StatCrit")] == 0.5

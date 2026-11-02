@@ -335,8 +335,11 @@ const pvpRankCap = 10
 // against the whole build: no non-"pvp" source carries one), so this
 // is still false by construction for an ordinary vendor/quest/rep/etc.
 // source.
+//
+// An unranked source carrying a TitleRank (round 8) is gated on that rank,
+// so relabelling a source does not move default eligibility.
 func pvpRankExceedsCap(s itemSource) bool {
-	return s.Rank > pvpRankCap
+	return max(s.Rank, s.TitleRank) > pvpRankCap
 }
 
 // pvpSourceLabel is the on-screen source line for a pvp-sourced pick,
@@ -352,12 +355,22 @@ func pvpRankExceedsCap(s itemSource) bool {
 // falls outside pipeline.loot.pvp_faction.rank_title's known 14-rank
 // ladder, that function's own doc) - falls back to naming just the
 // rank and faction rather than printing an empty title segment.
+//
+// A source with no rank (Forever's PvP rewards need none, owner ruling
+// 2026-11-01) reads "PvP reward", never "PvP rank 0"; an empty part is
+// left out rather than printed as a dangling separator.
 func pvpSourceLabel(rank int, title, faction string) string {
-	factionLabel := titleCase(faction)
-	if title == "" {
-		return fmt.Sprintf("PvP rank %d · %s", rank, factionLabel)
+	parts := []string{"PvP reward"}
+	if rank > 0 {
+		parts = []string{fmt.Sprintf("PvP rank %d", rank)}
+		if title != "" {
+			parts = append(parts, title)
+		}
 	}
-	return fmt.Sprintf("PvP rank %d · %s · %s", rank, title, factionLabel)
+	if faction != "" {
+		parts = append(parts, titleCase(faction))
+	}
+	return strings.Join(parts, " · ")
 }
 
 // bandPool is everything candidatesBySlot/pick need for one band and

@@ -143,9 +143,9 @@ test('a ticked consumable multiplies the combination count (contract 10.1 A5)', 
     timeout: 20_000,
   });
   // FURY is warrior-fury, so the candidates offered are Fury's published raid set
-  // (sim/request/raid-consumes.json) -- elixir_of_the_mongoose and food_grilled_squid fill
+  // (sim/request/raid-consumes.json) -- elixir_of_the_mongoose and food_smoked_desert_dumpling fill
   // two different Consumes fields (agility elixir, food), which the multiplier counts on.
-  await page.getByTestId('sim-consumable-food_grilled_squid').check();
+  await page.getByTestId('sim-consumable-food_smoked_desert_dumpling').check();
   await page.getByTestId('sim-consumable-elixir_of_the_mongoose').check();
   // (1 head + 1) x 2 alternatives
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(4), {

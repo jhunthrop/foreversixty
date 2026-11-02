@@ -2,9 +2,9 @@ name: sim
 on:
   push:
     branches: [main]
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-gzip.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   pull_request:
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-gzip.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
@@ -149,13 +149,9 @@ jobs:
       # measurement, so a regression fails here rather than quietly
       # costing every visitor a second.
       - name: wasm size budget
-        run: |
-          bytes=$(gzip -9 -c artifacts/sim.wasm | wc -c)
-          mb=$(awk -v b="$bytes" 'BEGIN { printf "%.2f", b/1048576 }')
-          echo "sim.wasm gzipped: ${mb} MB"
-          budget=$(sed -n 's/^WASM_BUDGET_MB = //p' Makefile)
-          awk -v b="$bytes" -v m="$budget" 'BEGIN { exit (b <= m*1048576) ? 0 : 1 }' || {
-            echo "sim.wasm is ${mb} MB gzipped, over the ${budget} MB budget"; exit 1; }
+        # The same script and compression `make artifacts` gates on: the budget measures
+        # the sim.wasm.gz the site deploys (tools/wasm-gzip.sh, pigz -11).
+        run: ./tools/wasm-gzip.sh artifacts/sim.wasm artifacts/sim.wasm.gz "$(sed -n 's/^WASM_BUDGET_MB = //p' Makefile)"
       # Pinned, because the smoke test below is the only end-to-end gate
       # on the browser artifact and a runner-image bump would otherwise
       # silently change the host it is proved against.

@@ -111,7 +111,7 @@ function healerNotes(ctx: NoteContext): NoteSegment[][] {
   const seconds = requireContext(ctx.healSeconds, 'the heal profile duration', ctx.role);
   return [
     plain(
-      `Effective healing per second over ${seconds} seconds against a stand-in Phase 1 fight: tank hits and raid-wide pulses, not a named boss. Overhealing is not counted. Mana and raid utility are not ranked here.`,
+      `Effective healing per second over ${seconds} seconds against a stand-in Phase 1 fight: tank hits and raid-wide pulses, not a named boss. Overhealing is not counted. Mana and raid utility are not ranked here. No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist.`,
     ),
     freshSixtyNote(ctx.presetLabel),
     [

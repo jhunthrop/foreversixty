@@ -299,20 +299,21 @@ func TestABookRankIDResolvesToTheHighestTrainerRankLearned(t *testing.T) {
 	}
 }
 
-// Shred rank 1 is learned at 22 by the pinned engine, 20 by the client row.
+// Primal Bite rank 2 (1238069) is learned at 50 by the pinned engine; the
+// table's row says 36.
 func TestRankLevelOverrideGatesARankAtTheEnginesLevel(t *testing.T) {
-	const excerpt = `{"build":"x","classes":{"druid":{"Shred":[
-	  {"id":5221,"rank":1,"level":20},
-	  {"id":6800,"rank":2,"level":30}]}}}`
+	const excerpt = `{"build":"x","classes":{"druid":{"Primal Bite":[
+	  {"id":407995,"rank":1,"level":25},
+	  {"id":1238069,"rank":2,"level":36}]}}}`
 	table, err := parseSpellRanks([]byte(excerpt))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, ok := highestLearnedIn(table["druid"], 6800, 20); ok {
-		t.Error("Shred is learned at level 22 by the engine, not at 20")
+	if got, ok := highestLearnedIn(table["druid"], 1238069, 49); !ok || got != 407995 {
+		t.Errorf("Primal Bite at level 49: got (%d, %v), want rank 1 (407995, true)", got, ok)
 	}
-	if got, ok := highestLearnedIn(table["druid"], 6800, 22); !ok || got != 5221 {
-		t.Errorf("Shred at level 22: got (%d, %v), want (5221, true)", got, ok)
+	if got, ok := highestLearnedIn(table["druid"], 1238069, 50); !ok || got != 1238069 {
+		t.Errorf("Primal Bite at level 50: got (%d, %v), want (1238069, true)", got, ok)
 	}
 }
 
@@ -323,8 +324,11 @@ func TestSingleTierOverridesGateTheirIDs(t *testing.T) {
 		id    int32
 		level int
 	}{
+		{"druid", 29166, 40},    // Innervate
 		{"paladin", 407632, 40}, // Hammer of the Righteous
 		{"warlock", 603, 60},    // Bane of Doom
+		{"warrior", 1680, 36},   // Whirlwind
+		{"warrior", 2458, 30},   // Berserker Stance
 	} {
 		if _, ok := HighestLearnedSpellID(tc.class, tc.id, tc.level-1); ok {
 			t.Errorf("%s %d is learned at level %d, not %d", tc.class, tc.id, tc.level, tc.level-1)
@@ -332,5 +336,62 @@ func TestSingleTierOverridesGateTheirIDs(t *testing.T) {
 		if got, ok := HighestLearnedSpellID(tc.class, tc.id, tc.level); !ok || got != tc.id {
 			t.Errorf("%s %d at level %d: got (%d, %v)", tc.class, tc.id, tc.level, got, ok)
 		}
+	}
+}
+
+// TestARankAboveTheLevelCapDoesNotSetTheTiersLevel: spellranks.json lists
+// Arcane Blast rank 3 twice, the NPC copy 42896 at level 76 first and the
+// player's 1239697 at level 40 (SpellLevels 148351) second. The tier
+// trusted the first row, so a level 40 to 49 mage "learned" rank 3 at 76
+// and cast rank 2 (1239696, 78 base points against rank 3's 101).
+func TestARankAboveTheLevelCapDoesNotSetTheTiersLevel(t *testing.T) {
+	table, err := parseSpellRanks([]byte(`{"build": "test", "classes": {"mage": {"Arcane Blast": [
+		{"id": 400574, "level": 20, "rank": 1},
+		{"id": 1239696, "level": 30, "rank": 2},
+		{"id": 42896, "level": 76, "rank": 3},
+		{"id": 1239697, "level": 40, "rank": 3},
+		{"id": 1239699, "level": 50, "rank": 4},
+		{"id": 1239700, "level": 60, "rank": 5}
+	]}}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		level int
+		want  int32
+	}{{39, 1239696}, {40, 1239697}, {49, 1239697}, {50, 1239699}} {
+		if got, ok := highestLearnedIn(table["mage"], 1239700, c.level); !ok || got != c.want {
+			t.Errorf("Arcane Blast at level %d = (%d, %v), want (%d, true)", c.level, got, ok, c.want)
+		}
+	}
+	if got, ok := HighestLearnedSpellID("mage", 1239700, 45); !ok || got != 1239697 {
+		t.Errorf(`embedded table: HighestLearnedSpellID("mage", 1239700, 45) = (%d, %v), want (1239697, true)`, got, ok)
+	}
+}
+
+// Mutilate rank 1 is 1310707, SpellLevels BaseLevel 30 and a trainable
+// SkillLineAbility row (AcquireMethod 0). The tier's other id, 1329, is
+// Era's: no SkillLineAbility row and no BaseLevel, but listed first at 40.
+func TestMutilateRankOneIsLearnedAtThirty(t *testing.T) {
+	if _, ok := HighestLearnedSpellID("rogue", 1241584, 29); ok {
+		t.Error("Mutilate is learned at 29")
+	}
+	if got, ok := HighestLearnedSpellID("rogue", 1241584, 30); !ok || got != 1310707 {
+		t.Errorf("Mutilate at 30: got (%d, %v), want (1310707, true)", got, ok)
+	}
+	if got, _ := HighestLearnedSpellID("rogue", 1241584, 40); got != 399956 {
+		t.Errorf("Mutilate at 40: got %d, want 399956", got)
+	}
+}
+
+// Shred rank 1 (5221) is learned at 20: the client row, Wowhead Forever's
+// "Requires level 20" and Blizzard's 15 October beta notes agree, and the
+// engine registers it there since lane/r8-hybrids.
+func TestShredRankOneIsLearnedAtTwenty(t *testing.T) {
+	if got, ok := HighestLearnedSpellID("druid", 9830, 20); !ok || got != 5221 {
+		t.Errorf("Shred at level 20: got (%d, %v), want (5221, true)", got, ok)
+	}
+	if _, ok := HighestLearnedSpellID("druid", 9830, 19); ok {
+		t.Error("Shred is learned at level 19")
 	}
 }

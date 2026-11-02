@@ -54,6 +54,7 @@ from pipeline.models import GearItem, Item
 from pipeline.normalize.effects import equip_stat_folds_out_text
 from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
+    MODIFIER_ALSO_GRANTS,
     PLANNER_QUALITIES,
     SLOT_BY_INVENTORY_TYPE,
     STAT_BY_MODIFIER_ID,
@@ -564,13 +565,20 @@ def classic_honor_ranks(items: list[ClassicDbItem]) -> dict[int, int]:
 #: begins ordinary item names (Knight's Seal of the Dawn, Knight's Lance);
 #: the ranks 5 and 6 titles (Private's, Scout's, Corporal's, Grunt's) are
 #: left out for the same reason.
+#:
+#: Round 8: so is Horde's rank-10 "Stone Guard's". With Alliance's "Knight's"
+#: out, it ranked only Lady Palanseer's ilvl 53 Stone Guard's armour, 20 Horde
+#: items in pvp:rank-10:horde against none of Captain Dirgehammer's Knight's
+#: twins; Forever's server tooltips show only "Requires Level 50" on both
+#: (nether.wowhead.com/forever/tooltip/item/220801 and 220794, 2026-11-01).
+#: Both sets stay on their vendors. Stone Guard's Herald (272450) keeps rank
+#: 10 by re-itemisation from 15199, whose ItemSparse.RequiredPVPRank is 10.
 HONOR_RANK_BY_TITLE: dict[str, int] = {
     "Sergeant's": 7,
     "Senior Sergeant's": 8,
     "Master Sergeant's": 8,
     "First Sergeant's": 9,
     "Sergeant Major's": 9,
-    "Stone Guard's": 10,
     "Blood Guard's": 11,
     "Knight-Lieutenant's": 11,
     "Legionnaire's": 12,
@@ -701,7 +709,8 @@ def planner_stats(item: ClassicDbItem) -> dict[str, int]:
         key = STAT_BY_MODIFIER_ID[stat_id]
         if key is None:
             continue
-        stats[key] = stats.get(key, 0) + amount
+        for granted in (key, *MODIFIER_ALSO_GRANTS.get(stat_id, ())):
+            stats[granted] = stats.get(granted, 0) + amount
     return stats
 
 
@@ -983,9 +992,7 @@ def effect_text(
     for slot in item.spells:
         spell = spells.get(slot.spell_id)
         rendered = (
-            _render_spell_text(spell, slot.trigger, item.id, item.name, spells)
-            if spell
-            else None
+            _render_spell_text(spell, slot.trigger, item.id, item.name, spells) if spell else None
         )
         if rendered is None:
             client_name = client_spell_names.get(slot.spell_id)
@@ -1053,9 +1060,7 @@ def to_gear_item(
         if is_weapon and speed > 0
         else 0.0
     )
-    base_icon = _classicdb_client_icon(
-        item.id, client_icon_file_ids or {}, icon_names or {}
-    )
+    base_icon = _classicdb_client_icon(item.id, client_icon_file_ids or {}, icon_names or {})
     icon, icon_source = resolve_icon_name(base_icon, item.id, fork_icons, wowhead_icons)
     stats = planner_stats(item)
     equipped = equip_stats(item, spells)

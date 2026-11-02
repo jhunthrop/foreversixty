@@ -99,10 +99,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-00000000000000000-01000000000000000 | main_hand:263407 | 14.6 | 5 | other:attack/1=61.0, spell:25740=52.1, spell:20271=18.6, spell:20280=18.6, spell:679=18.6 | {SpellID: 1310735}, {SpellID: 20920} |
-| 20 | 00000000000000000-00000000000000000-05231000000000000 | main_hand:6953 | 32.5 | 6 | other:attack/1=57.3, spell:25739=46.5, spell:20271=20.2, spell:20281=20.2, spell:1866=17.7 | {SpellID: 1310735}, {SpellID: 20375} |
+| 20 | 00000000000000000-00000000000000000-05231000000000000 | main_hand:6953 | 33.8 | 6 | other:attack/1=57.3, spell:25739=46.7, spell:20271=20.1, spell:20281=20.1, spell:1866=17.7 | {SpellID: 1310735}, {SpellID: 20375} |
 | 30 | 00000000000000000-00000000000000000-05233301001300000 | main_hand:13045 | 51.0 | 6 | other:attack/1=63.1, spell:25738=53.9, other:mana_gain=23.1, spell:20271=23.1, spell:20282=23.1 | {SpellID: 1310735} |
 | 38 | 00000000000000000-00000000000000000-05233301001301340 | main_hand:10758 | 73.4 | 6 | other:attack/1=55.5, spell:25737=47.5, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | {SpellID: 1310735} |
-| 40 | 01000000000000000-00000000000000000-05233301001301350 | main_hand:1982 | 85.2 | 6 | other:attack/1=52.4, spell:25737=44.8, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | {SpellID: 1310735} |
+| 40 | 01000000000000000-00000000000000000-05233301001301350 | main_hand:1982 | 86.1 | 6 | other:attack/1=52.4, spell:25737=44.8, other:mana_gain=23.1, spell:20271=23.1, spell:20283=23.1 | {SpellID: 1310735} |
 | 50 | 05024000000000000-00000000000000000-05233301001301350 | main_hand:2915 | 111.9 | 7 | other:attack/1=79.4, spell:25735=66.3, other:mana_gain=21.8, spell:20271=21.8, spell:20285=21.8 | {SpellID: 1310735} |
 | 60 | 05025000200000000-50200000000000000-05233301001301350 | main_hand:22798 | 197.7 | 7 | other:attack/1=48.3, spell:25713=41.2, other:mana_gain=22.0, spell:20271=22.0, spell:20286=22.0 | {SpellID: 1310735} |
 
