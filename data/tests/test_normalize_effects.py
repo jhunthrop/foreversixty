@@ -164,3 +164,22 @@ def test_an_item_with_no_effects_is_empty():
     idx = index([], [])
     assert idx.stats(9) == {}
     assert idx.text(9) == ""
+
+
+def test_a_feral_form_attack_power_spell_is_feral_attack_power_with_its_client_line():
+    """"+$s1 Attack Power in Cat, Bear, and Dire Bear forms only." (26153 on
+    Mace of Unending Life, ShapeshiftMask 145) is feral attack power in
+    items/<class>.json too, read by the same SpellShapeshift helper simdb uses
+    (`equip.feral_form_spells`), so the ranker never credits a warrior or a
+    hunter with it. The planner has no feral stat line, so the client's own
+    sentence stays as the item's effect text."""
+    text = "+$s1 Attack Power in Cat, Bear, and Dire Bear forms only."
+    idx = EffectIndex(
+        [{"ParentItemID": "21407", "SpellID": "26153", "TriggerType": str(EQUIP_TRIGGER)}],
+        [],
+        [effect(26153, 99, 140)],
+        _spell_text({26153: text}),
+        feral_form_only={26153},
+    )
+    assert idx.stats(21407) == {"feral_attack_power": 140}
+    assert "Cat, Bear, and Dire Bear forms only" in idx.text(21407)

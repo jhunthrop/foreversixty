@@ -48,6 +48,7 @@ from __future__ import annotations
 from collections.abc import Container, Mapping, Sequence
 
 from pipeline.simdb.equip import (
+    FERAL_ATTACK_POWER_KEY,
     TRIGGER_ON_EQUIP,
     EquipEffectError,
     index_spell_effects,
@@ -122,6 +123,7 @@ class EffectIndex:
         item_x_item_effect_rows: Sequence[Mapping[str, str]],
         spell_effect_rows: Sequence[Mapping[str, str]],
         spell_text: SpellText,
+        feral_form_only: Container[int] = frozenset(),
     ) -> None:
         item_effect_rows = list(item_effect_rows)
         item_x_item_effect_rows = list(item_x_item_effect_rows)
@@ -134,6 +136,8 @@ class EffectIndex:
         )
         self._effects_by_spell = index_spell_effects(list(spell_effect_rows))
         self._spell_text = spell_text
+        # `equip.feral_form_spells`: the same SpellShapeshift reading simdb uses.
+        self._feral_form_only = feral_form_only
 
     def stats(self, item_id: int) -> dict[str, int]:
         """The item's on-equip spells' stats, summed and rounded to `int`.
@@ -145,7 +149,7 @@ class EffectIndex:
         equip_spell_ids = self._equip_spells_by_item.get(item_id, [])
         if not equip_spell_ids:
             return {}
-        bonus = spell_bonus(equip_spell_ids, self._effects_by_spell)
+        bonus = spell_bonus(equip_spell_ids, self._effects_by_spell, self._feral_form_only)
         return {key: int(round(amount)) for key, amount in bonus.stats.items()}
 
     def text(self, item_id: int) -> str:
@@ -161,10 +165,13 @@ class EffectIndex:
         excluded regardless.
         """
         equip_spell_ids = self._equip_spells_by_item.get(item_id, [])
+        # Feral attack power has no planner stat line, so a spell that grants
+        # only that keeps its client sentence as text.
         equip_ids_with_stats = {
             spell_id
             for spell_id in equip_spell_ids
-            if spell_bonus([spell_id], self._effects_by_spell).stats
+            if set(spell_bonus([spell_id], self._effects_by_spell, self._feral_form_only).stats)
+            - {FERAL_ATTACK_POWER_KEY}
         }
         parts = [
             self._spell_text.describe(spell_id)

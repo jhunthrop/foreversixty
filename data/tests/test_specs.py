@@ -338,9 +338,11 @@ def test_no_physical_spec_carries_a_caster_stat_and_no_caster_spec_carries_a_mel
         assert not carried, f"{record.spec} carries {carried}"
 
 
-def test_feral_attack_power_belongs_to_druid_feral_and_nowhere_else():
+def test_feral_attack_power_belongs_to_the_two_feral_specs_and_nowhere_else():
+    """Cat and Bear form both turn feral attack power into attack power, and
+    items/<class>.json states form-gated attack power under that key."""
     carriers = {record.spec for record in specs() if "feral_attack_power" in record.weight_stats}
-    assert carriers == {"druid-feral"}
+    assert carriers == {"druid-feral", "druid-feral-bear"}
 
 
 def test_an_empty_weight_stats_is_rejected(tmp_path: Path):
