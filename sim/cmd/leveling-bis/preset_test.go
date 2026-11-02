@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/request"
 )
 
 // raidBuffedDPS is what the fake engine reports for a request carrying
@@ -199,6 +200,25 @@ func TestBareEntriesAreWrittenBeforeTheirRaidTwins(t *testing.T) {
 	for key, preset := range firstSeen {
 		if preset != presetBare {
 			t.Errorf("%s: the first entry is %q, want bare", key, preset)
+		}
+	}
+}
+
+// Round 9 (ranks lane): rank choices are per preset, and a request with no
+// preset takes PublishedPreset(level), which is raid at 60. Every request a
+// pass builds names the pass's preset, so the bare-60 rank rows reach the
+// bare-60 sets.
+func TestEveryPassRequestNamesItsPreset(t *testing.T) {
+	base := specInfo{Spec: "priest-shadow", ClassSlug: "priest", ReferenceStat: "spell_power", WeightStats: []string{"spell_power"}}
+	for _, band := range []int{40, 60} {
+		for _, pass := range passesFor(base, band, request.ResolvedPreset{}) {
+			ch := bandCharacter("verify", "undead", "priest", base.Spec, band, "", nil)
+			if got := plainRequest(pass.spec, ch, 10, 7).Preset; got != pass.name {
+				t.Errorf("band %d %s pass: plain request preset %q, want %q", band, pass.name, got, pass.name)
+			}
+			if got := weightsRequest(pass.spec, ch, 10, weightsSeed).Preset; got != pass.name {
+				t.Errorf("band %d %s pass: weights request preset %q, want %q", band, pass.name, got, pass.name)
+			}
 		}
 	}
 }

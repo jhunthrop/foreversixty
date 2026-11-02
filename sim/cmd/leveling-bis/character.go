@@ -207,6 +207,7 @@ func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed in
 		Iterations:    iterations,
 		RandomSeed:    seed,
 		Weights:       &api.WeightsSpec{Stats: spec.WeightStats, Reference: spec.ReferenceStat},
+		Preset:        spec.rankPreset(),
 	}
 }
 
@@ -249,5 +250,6 @@ func plainRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed int6
 		Encounter:     leveling.RankerEncounter(),
 		Iterations:    iterations,
 		RandomSeed:    seed,
+		Preset:        spec.rankPreset(),
 	}
 }
