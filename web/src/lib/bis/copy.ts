@@ -461,6 +461,10 @@ export const bisCopy = {
   healerProfilePulseHeading: 'Raid pulses',
   healerProfilePulseLine: (damage: number, intervalSeconds: number, members: number): string =>
     `${damage.toLocaleString('en-US')} damage to ${members} members every ${intervalSeconds} seconds`,
+  healerProfileContentHeading: 'Content',
+  healerProfileContentLine: (
+    content: readonly { name: string; last_boss: string; boss_level: number }[],
+  ): string => content.map((c) => `${c.name} (${c.last_boss}, level ${c.boss_level})`).join(', '),
   healerProfileFightHeading: 'Fight',
   healerProfileFightLine: (duration: string): string => `${duration} long`,
 } as const;
