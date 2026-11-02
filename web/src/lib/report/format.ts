@@ -190,6 +190,20 @@ export function formatPercent(value: number): string {
 }
 
 /**
+ * A row's landed count. A sim row is a per-fight average rounded to a whole count, so an
+ * action that dealt damage in a few fights out of a hundred (a Fire mage's wand) has a count
+ * that rounds to 0 beside a real amount; that reads "<1", never "0".
+ */
+export function formatLanded(landed: number, amount: number): string {
+  return landed === 0 && amount > 0 ? '<1' : String(landed);
+}
+
+/** A share of a total; a share above zero too small for one decimal reads "<0.1%", not "0.0%". */
+export function formatShare(value: number): string {
+  return value > 0 && value < 0.05 ? '<0.1%' : formatPercent(value);
+}
+
+/**
  * Class colours are tokens, never hex literals: design/DESIGN-SYSTEM.md owns the values
  * and src/styles/tokens.css holds them. A class the token set does not name -- the engine
  * can emit an inferred class from a future expansion -- gets the body colour rather than

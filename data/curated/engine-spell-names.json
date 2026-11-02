@@ -1,5 +1,5 @@
 {
-  "notes": "Names for spell ids the sim engine (the wowsims-forever fork) reports that no class's spellconst or talents name: world buffs and racials no class spellbook owns, and the ids the Forever client's SpellName table does not carry at all (mostly the Era ids of talent ranks and procs that Forever renumbered). web/scripts/sync-data.mjs publishes them in simnames/_shared.json; every other spell a result carries is named from the client's spells.json, published in shards beside it. sim/cmd/spec-breakdown's TestEveryPublishedResultActionHasAName sims every published entry and fails on an id that neither the client nor this file names. Each entry names the engine file that uses the id. Delete an entry the day the engine moves to a client id.",
+  "notes": "Names for spell ids the sim engine (the wowsims-forever fork) reports that no class's spellconst or talents name: world buffs and racials no class spellbook owns, and the ids the Forever client's SpellName table does not carry at all (mostly the Era ids of talent ranks and procs that Forever renumbered). web/scripts/sync-data.mjs publishes them in simnames/_shared.json; every other spell a result carries is named from the client's spells.json, published in shards beside it. sim/cmd/spec-breakdown's TestEveryPublishedResultActionHasAName sims every published entry and fails on an id that neither the client nor this file names. It also gives a player-facing name to a client spell whose client name is internal (\"S03 - ...\"); TestNoPublishedResultActionShowsAnInternalName fails on any published action that would show one. Each entry names the engine file that uses the id. Delete an entry the day the engine moves to a client id.",
   "spells": {
     "8514": {
       "name": "Windfury Totem",
@@ -216,6 +216,14 @@
     "58984": {
       "name": "Elune's Light",
       "engine": "sim/core/racials.go: a racial no class spellbook owns"
+    },
+    "450527": {
+      "name": "Sudden Insight",
+      "engine": "sim/core/client_sets_gen.go: a set bonus whose client name is internal (\"S03 - Mana Proc on Cast - Magister's Regalia\"); the player sees the mana it restores as Sudden Insight (450554, \"Restores 200 mana.\", Wowhead Forever tooltip 2026-11-02)"
+    },
+    "450576": {
+      "name": "Sudden Insight",
+      "engine": "sim/core/client_sets_gen.go: a set bonus whose client name is internal (\"S03 - Mana Proc on Cast - Vestments of the Devout\"); the player sees the mana it restores as Sudden Insight (450554, \"Restores 200 mana.\", Wowhead Forever tooltip 2026-11-02)"
     },
     "1000101": {
       "name": "Eureka!",
