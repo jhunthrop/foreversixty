@@ -23,6 +23,9 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 		// rank (19280); Shadow Word: Death rank 2 still wins there.
 		{"Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, 60, 19280, 2944},
 		{"Shadow Word: Death at bare 60 keeps rank 2", "priest-shadow", "priest", BarePreset, 60, 1309633, 1309636},
+		// Without the level penalty on heals (healers lane, 074edfadf), Healing Wave rank 2
+		// (332) beats rank 3 (547) by 5.6% at bare 60, and the fight still runs dry.
+		{"Healing Wave at bare 60", "shaman-restoration", "shaman", BarePreset, 60, 332, 547},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset))
 		if !ids[c.want] || ids[c.not] {
