@@ -31,6 +31,7 @@ import pytest
 from pipeline.classicdb_items import ClassicDbItem, write_extract
 from pipeline.loot import ENCHANTS, LOOT, SUFFIXES, _pvp_ranks_with_classic_db, write_loot_files
 from pipeline.loot.buffs import SIMBUFFS
+from pipeline.loot.classification import CLASSIFICATION
 from pipeline.manifest import read_manifest, verify, write_manifest
 from pipeline.models import LootFile, LootSource
 from pipeline.normalize import write_document
@@ -144,9 +145,10 @@ def test_check_no_sockets_runs_on_the_loot_path(tmp_path: Path):
         run(tmp_path, sparse_rows=socketed)
 
 
-def test_write_loot_files_returns_the_five_paths_it_writes(tmp_path: Path):
+def test_write_loot_files_returns_the_paths_it_writes(tmp_path: Path):
     paths, build_dir = run(tmp_path)
     assert paths == [
+        build_dir / CLASSIFICATION,
         build_dir / LOOT,
         build_dir / ENCHANTS,
         build_dir / SUFFIXES,

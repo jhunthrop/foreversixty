@@ -307,28 +307,6 @@ def _backfill_vendor_items_into_pvp_buckets(
     return out, backfilled
 
 
-def ranks_with_item_evidence(ranks: dict[int, int], item_rows: list[dict]) -> dict[int, int]:
-    """The `ranks` whose item carries its own evidence of being a rank
-    reward: a rank title (`title_faction`, or the shared "Sergeant's" rank
-    `pipeline.classicdb_items.honor_rank_for_name` reads) or a faction
-    restriction.
-
-    For ranks recovered from a committed loot.json in merge-only mode,
-    which carry whatever an earlier run filed wrongly (Scalemail Vest and
-    the Season of Discovery Warsong stock under pvp:rank-12:horde). Every
-    rank the client's RequiredPVPRank states on 1.60.1.70658 is on such an
-    item, so this drops no real one (bis-phase-gate lane, 2026-10-30).
-    """
-    evidenced = {
-        int(row["id"])
-        for row in item_rows
-        if row.get("faction_restriction")
-        or title_faction(str(row["name"])) is not None
-        or honor_rank_for_name(str(row["name"])) is not None
-    }
-    return {item_id: rank for item_id, rank in ranks.items() if item_id in evidenced}
-
-
 def drop_non_rank_rewards(
     sources: list[LootSource], not_rank_rewards: frozenset[int]
 ) -> tuple[list[LootSource], int]:

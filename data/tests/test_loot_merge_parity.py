@@ -1,39 +1,27 @@
-"""loot-parity lane, 2026-09-30: `write_loot_files` (`loot`) and
-`merge_loot_files` (`loot-merge`) already share one builder
-(`pipeline.loot.sources.build_loot`) -- the gap this lane's own report
-measured on build 1.60.1.70009 was never a second, unshared build
-function. It was `merge_loot_files`'s OWN `types_from_committed_loot`
-recovering an incomplete `types` (zone id -> dungeon/raid code) next to
-`write_loot_files`'s raw-`Map.csv` `instance_types()`: a published
-`LootSource.zone_id` is only ever the fork's OWN AtlasLoot-era zone id
-for an instance, never the second, unpublished `zones.json` row for the
-SAME instance that carries its real DB2 `Map.ID`-joined zone id (and the
-real `map_id` `pipeline.loot.classicdb.instance_zone_by_map` needs to
-place a classic-db-only trash mob inside it). Measured regression this
-closed: Blackrock Depths 292 -> 143 items, Blackrock Spire 296 -> 106,
-on that build -- see `pipeline/loot/__init__.py::types_from_committed_
-loot`'s own doc for the fix.
+"""`write_loot_files` (`loot`) and `merge_loot_files` (`loot-merge`) must
+write the same loot.json from the same inputs.
 
-This module is the regression guard: `test_types_from_committed_loot.py`
--- style unit tests for the fix's own name-based backfill (and the
-false-positive it must not reintroduce, Westfall's own real open-world
-zone id sharing its literal name with The Deadmines' third, mislabeled
-`zones.json` row), plus one end-to-end test that runs BOTH `loot` and
-`loot-merge` over the same small fixture build, with a synthetic
-"Test Depths" dungeon shaped exactly like the BRD/BRS bug (a published
-zone id with `map_id: 0` next to an unpublished one with the real
-`map_id`, and a classic-db-only trash npc the fork's own database never
-names at all), and asserts the two commands' `sources` agree.
+Both build it through one function (`pipeline.loot._build_and_write_loot`)
+from one classification of the client's Map.csv and ItemSparse.csv, which
+`loot` writes to `raw/client/loot-classification.json` and the merge reads.
+Before round 8 the merge recovered instance types and PvP ranks from the
+committed loot.json instead: first it lost Blackrock Depths' real instance
+zone (loot-parity lane, 2026-09-30, the "Test Depths" fixture below), then it
+disagreed about Alterac Valley and Arathi Basin and a re-itemised PvP tabard,
+so loot.json flipped on every pair of runs (round 8, owner ruling 3).
 """
 
 from __future__ import annotations
 
 import json
+import os
 import shutil
 from pathlib import Path
 
+import pytest
+
 from pipeline.classic_sources import ClassicDbSourceRecord, write_classic_sources
-from pipeline.loot import LOOT, merge_loot_files, types_from_committed_loot, write_loot_files
+from pipeline.loot import LOOT, merge_loot_files, write_loot_files
 from pipeline.manifest import write_manifest
 
 HERE = Path(__file__).parent
@@ -44,86 +32,6 @@ BUILD = "1.60.1.69893"
 RAW_FILES = ("Map.csv", "ItemSparse.csv", "SpellMisc.csv", "Item.csv",
              "ManifestInterfaceData.csv")
 JSON_FILES = ("zones.json", "items.json", "spells.json")
-
-
-# ---------------------------------------------------------------------------
-# types_from_committed_loot: the fix itself, isolated from any build at all.
-# ---------------------------------------------------------------------------
-
-_COMMITTED = {
-    "sources": [
-        {"id": "dungeon:blackrock-depths", "kind": "dungeon", "name": "Blackrock Depths",
-         "zone_id": 1584, "bosses": [{"id": "x:1", "name": "A Boss", "npc_id": 1,
-                                       "items": [1]}]},
-        {"id": "raid:molten-core", "kind": "raid", "name": "Molten Core", "zone_id": 2717,
-         "bosses": [{"id": "y:1", "name": "Lucifron", "npc_id": 2, "items": [2]}]},
-    ]
-}
-
-#: The exact shape build 1.60.1.70009 carries: the published, fork-used
-#: zone id (`map_id: 0`, a bare continent -- `instance_zone_by_map`'s own
-#: exclusion), the real DB2 instance zone id sharing its name (`map_id:
-#: 230`, what a classic-db creature record's own `map_id` column needs to
-#: join against), and Westfall's own true open-world zone -- a real,
-#: UNRELATED zone that happens to share its literal name with The
-#: Deadmines' own third, mislabeled `zones.json` row (id 206 on the real
-#: build; modelled here as sharing "Molten Core" instead, any name would
-#: do) and must never be swept in by a name-only match.
-_ZONE_ROWS = [
-    {"id": 1584, "name": "Blackrock Depths", "map_id": 0},
-    {"id": 17803, "name": "Blackrock Depths", "map_id": 230},
-    {"id": 2717, "name": "Molten Core", "map_id": 409},
-    {"id": 40, "name": "Molten Core", "map_id": 0},  # decoy: real open-world zone, same name
-]
-
-
-def test_the_published_zone_id_alone_is_recovered_without_zone_rows(tmp_path: Path):
-    build_dir = tmp_path / "build"
-    build_dir.mkdir()
-    (build_dir / LOOT).write_text(json.dumps(_COMMITTED), encoding="utf-8")
-    assert types_from_committed_loot(build_dir) == {1584: 1, 2717: 2}
-
-
-def test_a_same_named_zone_row_with_a_real_map_id_is_backfilled(tmp_path: Path):
-    """The BRD/BRS fix: `17803` never became a `LootSource.zone_id`
-    itself, but shares Blackrock Depths' name and carries a real
-    (non-continent) `map_id` -- exactly what `instance_zone_by_map`
-    needs and could not otherwise ever learn from committed data alone."""
-    build_dir = tmp_path / "build"
-    build_dir.mkdir()
-    (build_dir / LOOT).write_text(json.dumps(_COMMITTED), encoding="utf-8")
-    types = types_from_committed_loot(build_dir, _ZONE_ROWS)
-    assert types[17803] == 1  # dungeon, same code as the published 1584
-    assert types[1584] == 1
-    assert types[2717] == 2
-
-
-def test_a_same_named_zone_row_with_a_bare_continent_map_id_is_never_backfilled(tmp_path: Path):
-    """The false positive the fix must not reintroduce: zone 40 shares
-    Molten Core's name but is a real, unrelated open-world zone (`map_id:
-    0`) -- promoting it to "raid" would fold every one of the fork's own
-    open-world drops there into the raid bucket (measured on the real
-    build as `dungeon:westfall` inflating 125 -> 191 items before this
-    exclusion existed)."""
-    build_dir = tmp_path / "build"
-    build_dir.mkdir()
-    (build_dir / LOOT).write_text(json.dumps(_COMMITTED), encoding="utf-8")
-    types = types_from_committed_loot(build_dir, _ZONE_ROWS)
-    assert 40 not in types
-
-
-def test_a_zone_with_currently_zero_sourced_items_stays_unrecovered(tmp_path: Path):
-    """Documented degradation (the function's own doc): a dungeon/raid
-    zone absent from the committed sources entirely -- not even under a
-    same-named duplicate -- is invisible to this recovery, same as
-    before the fix."""
-    build_dir = tmp_path / "build"
-    build_dir.mkdir()
-    (build_dir / LOOT).write_text(json.dumps(_COMMITTED), encoding="utf-8")
-    types = types_from_committed_loot(
-        build_dir, [*_ZONE_ROWS, {"id": 9999, "name": "Uldaman", "map_id": 70}]
-    )
-    assert 9999 not in types
 
 
 # ---------------------------------------------------------------------------
@@ -296,7 +204,7 @@ def test_loot_merge_agrees_with_loot_on_the_same_committed_caches(tmp_path: Path
     ItemSparse.csv read a second time -- and assert its own
     `dungeon:test-depths` names the exact same items. Before this lane's
     fix, `loot-merge` dropped item 5010 to `world:test-depths-trash`
-    instead (`types_from_committed_loot` never recovering zone id 5002's
+    instead (its recovery from the committed loot.json never finding zone id 5002's
     real `map_id`)."""
     root = _prepare_build(tmp_path)
     engine_dir = _augmented_engine(tmp_path)
@@ -366,3 +274,204 @@ def test_loot_merge_agrees_on_source_shape_and_origin_labels(tmp_path: Path):
     depths_keys, depths_origin, _ = full_shapes["dungeon:test-depths"]
     assert "source_origin" in depths_keys
     assert depths_origin == "classic-db"
+
+
+# ---------------------------------------------------------------------------
+# Round 8, owner ruling 3: one source of truth for the battleground and PvP
+# rank classification. `loot` read Map.csv (Alterac Valley is a type-3
+# battleground, so its spawns got no source) while `loot-merge` recovered
+# instance types from the committed loot.json (no battlegrounds, so the same
+# spawns became world sources), and loot.json flipped on every pair of runs.
+# ---------------------------------------------------------------------------
+
+#: Alterac Valley's client map id and AreaTable zone id.
+_AV_MAP_ID = 30
+_AV_ZONE_ID = 2597
+_AV_CREATURE_ITEM = 5020
+_AV_OBJECT_ITEM = 5021
+#: The tabard shape: a classic id the client gives a RequiredPVPRank, and
+#: the Forever re-itemised id with the same name and slot that supersedes it.
+_CLASSIC_TABARD = 15196
+_FOREVER_TABARD = 272694
+
+
+def _prepare_battleground_build(tmp_path: Path) -> Path:
+    root = _prepare_build(tmp_path)
+    build_dir = root / BUILD
+    zones = json.loads((build_dir / "zones.json").read_text(encoding="utf-8"))
+    zones.append(
+        {"id": _AV_ZONE_ID, "name": "Alterac Valley", "map_id": _AV_MAP_ID,
+         "map_name": "Alterac Valley", "parent_id": None, "level_min": None, "level_max": None}
+    )
+    (build_dir / "zones.json").write_text(json.dumps(zones), encoding="utf-8")
+
+    tabard = {"quality": 1, "item_level": 20, "required_level": 0, "class_id": 4,
+              "subclass_id": 0, "inventory_type": 19}
+    items = json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
+    items += [
+        {"id": _AV_CREATURE_ITEM, "name": "Alterac Ram Hide", "quality": 1, "item_level": 55,
+         "required_level": 0, "class_id": 12, "subclass_id": 0, "inventory_type": 0},
+        {"id": _AV_OBJECT_ITEM, "name": "Coldtooth Supplies", "quality": 1, "item_level": 55,
+         "required_level": 0, "class_id": 12, "subclass_id": 0, "inventory_type": 0},
+        {"id": _CLASSIC_TABARD, "name": "Private's Tabard", **tabard},
+        {"id": _FOREVER_TABARD, "name": "Private's Tabard", **tabard},
+    ]
+    (build_dir / "items.json").write_text(json.dumps(items), encoding="utf-8")
+
+    raw = build_dir / "raw"
+    with (raw / "Map.csv").open("a", encoding="utf-8") as handle:
+        handle.write(f"{_AV_MAP_ID},PVPZone01,Alterac Valley,3,{_AV_ZONE_ID}\n")
+    with (raw / "ItemSparse.csv").open("a", encoding="utf-8") as handle:
+        handle.write(f"{_CLASSIC_TABARD},Private's Tabard,5,0,0,0\n")
+
+    from pipeline.classic_sources import load_classic_sources
+
+    records = load_classic_sources(build_dir)
+    records[_AV_CREATURE_ITEM] = [
+        ClassicDbSourceRecord(
+            kind="creature_drop", npc_id=10990, name="Alterac Ram", map_id=_AV_MAP_ID,
+            chance=50.0,
+        )
+    ]
+    records[_AV_OBJECT_ITEM] = [
+        ClassicDbSourceRecord(
+            kind="object_drop", object_id=178785, name="Coldtooth Supplies",
+            map_id=_AV_MAP_ID, chance=100.0,
+        )
+    ]
+    write_classic_sources(build_dir, records)
+    return root
+
+
+def _curated_dir(tmp_path: Path) -> Path:
+    curated = tmp_path / "curated"
+    curated.mkdir()
+    shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
+    for name in ("content-phases.json", "phases.json"):
+        shutil.copy(Path("curated") / name, curated / name)
+    return curated
+
+
+def _items_anywhere(document: dict) -> set[int]:
+    return {item for source in document["sources"] for item in _dungeon_items(document,
+                                                                              source["id"])}
+
+
+@pytest.mark.parametrize("spawns_are_sources", [True, False])
+def test_loot_and_loot_merge_write_byte_identical_loot_json(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, spawns_are_sources: bool
+):
+    """Full run, merge, full run, merge over one fixture with Alterac
+    Valley spawns and a client-ranked PvP tabard: all four loot.json files
+    are byte-identical, whichever way the battleground switch is set, and
+    the switch alone decides whether the spawns are sources."""
+    monkeypatch.setattr(
+        "pipeline.loot.constants.BATTLEGROUND_SPAWNS_ARE_SOURCES", spawns_are_sources,
+        raising=False,
+    )
+    root = _prepare_battleground_build(tmp_path)
+    engine_dir = _augmented_engine(tmp_path)
+    curated = _curated_dir(tmp_path)
+    loot_path = root / BUILD / LOOT
+    outputs = []
+    for _ in range(2):
+        write_loot_files(
+            BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
+            curated_dir=curated, ids_md=FIXTURES / "IDS.md",
+        )
+        outputs.append(loot_path.read_bytes())
+        merge_loot_files(
+            BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
+            curated_dir=curated,
+        )
+        outputs.append(loot_path.read_bytes())
+
+    assert outputs[1] == outputs[0], "loot-merge disagrees with loot"
+    assert len(set(outputs)) == 1, "loot.json flips between runs"
+
+    document = json.loads(outputs[0])
+    sourced = _items_anywhere(document)
+    by_id = {source["id"]: source for source in document["sources"]}
+    if spawns_are_sources:
+        assert _AV_CREATURE_ITEM in by_id["world:alterac-ram"]["items"]
+        assert _AV_OBJECT_ITEM in by_id["world:coldtooth-supplies"]["items"]
+    else:
+        assert {_AV_CREATURE_ITEM, _AV_OBJECT_ITEM}.isdisjoint(sourced)
+    assert _FOREVER_TABARD in sourced
+
+
+def test_loot_merge_fails_fast_without_the_full_runs_classification(tmp_path: Path):
+    """No silent fallback to guessing instance types from an old loot.json:
+    a build `loot` never ran on is refused with the command to run."""
+    root = _prepare_battleground_build(tmp_path)
+    engine_dir = _augmented_engine(tmp_path)
+    with pytest.raises(SystemExit, match="python -m pipeline loot"):
+        merge_loot_files(
+            BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
+            curated_dir=_curated_dir(tmp_path),
+        )
+
+
+# ---------------------------------------------------------------------------
+# The committed build: the merge is a fixed point on its own inputs, and the
+# full run (where the raw client tables are on disk) writes the same bytes.
+# Needs FOREVER_ENGINE_PATH, like test_loot_classicdb.py's committed-build
+# checks.
+# ---------------------------------------------------------------------------
+
+ACTIVE_BUILD = json.loads(
+    (HERE.parent.parent / "web/src/data/active-build.json").read_text(encoding="utf-8")
+)["build"]
+
+
+def _engine_or_skip() -> Path:
+    engine = os.environ.get("FOREVER_ENGINE_PATH")
+    if not engine or not (Path(engine) / "assets" / "database" / "db.json").exists():
+        pytest.skip("FOREVER_ENGINE_PATH is unset or has no assets/database/db.json")
+    return Path(engine)
+
+
+def _copy_committed_build(tmp_path: Path, with_raw_tables: bool) -> Path:
+    """The active build's committed files (raw/ client CSVs only when asked)."""
+    source = Path("builds") / ACTIVE_BUILD
+    root = tmp_path / "builds"
+    shutil.copytree(
+        source, root / ACTIVE_BUILD,
+        ignore=None if with_raw_tables else shutil.ignore_patterns("*.csv", "*.txt"),
+    )
+    if not with_raw_tables:
+        hotfixes = source / "raw" / "hotfixes"
+        shutil.copytree(hotfixes, root / ACTIVE_BUILD / "raw" / "hotfixes", dirs_exist_ok=True)
+    return root
+
+
+def test_the_committed_loot_json_is_a_fixed_point_of_the_merge(tmp_path: Path):
+    engine = _engine_or_skip()
+    root = _copy_committed_build(tmp_path, with_raw_tables=False)
+    loot_path = root / ACTIVE_BUILD / LOOT
+    merge_loot_files(ACTIVE_BUILD, engine_dir=engine, root=root)
+    first = loot_path.read_bytes()
+    merge_loot_files(ACTIVE_BUILD, engine_dir=engine, root=root)
+    assert loot_path.read_bytes() == first
+
+
+def test_the_full_run_writes_the_merges_bytes_on_the_committed_build(tmp_path: Path):
+    engine = _engine_or_skip()
+    raw = Path("builds") / ACTIVE_BUILD / "raw"
+    if not all((raw / name).exists() for name in ("Map.csv", "ItemSparse.csv")):
+        pytest.skip(f"no raw client tables under {raw}; run `python -m pipeline fetch`")
+    merged_root = _copy_committed_build(tmp_path / "merge", with_raw_tables=False)
+    merge_loot_files(ACTIVE_BUILD, engine_dir=engine, root=merged_root)
+    full_root = _copy_committed_build(tmp_path / "full", with_raw_tables=True)
+    write_loot_files(ACTIVE_BUILD, engine_dir=engine, root=full_root)
+    assert (full_root / ACTIVE_BUILD / LOOT).read_bytes() == (
+        merged_root / ACTIVE_BUILD / LOOT
+    ).read_bytes()
+
+
+def test_battleground_spawns_are_loot_sources():
+    """Owner ruling 3 (round 8): battlegrounds are in Forever at launch, so
+    Alterac Valley's and Arathi Basin's creatures and objects stay sources."""
+    from pipeline.loot import constants
+
+    assert constants.BATTLEGROUND_SPAWNS_ARE_SOURCES is True

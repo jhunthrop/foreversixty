@@ -14,7 +14,6 @@ from pipeline.loot.pvp_faction import (
     TITLE_FACTION,
     PvpFactionStats,
     rank_title,
-    ranks_with_item_evidence,
     split_pvp_sources_by_faction,
     title_faction,
     vendor_npc_factions,
@@ -352,23 +351,6 @@ def test_split_pvp_sources_by_faction_never_backfills_a_known_non_rank_reward():
         not_rank_rewards=frozenset({19510, 19595}),
     )  # fmt: skip
     assert not [s for s in result.sources if s.kind == "pvp"]
-
-
-def test_ranks_recovered_from_an_earlier_loot_json_need_evidence_on_the_item():
-    """Merge-only mode recovers ranks from the committed loot.json, which
-    also carries whatever an earlier run filed wrongly -- Scalemail Vest
-    and the Season of Discovery Warsong stock under pvp:rank-12:horde. Every
-    rank the client states on 1.60.1.70658 is on an item with a rank title
-    or a faction restriction, so a recovered rank keeps only those."""
-    item_rows = [
-        {"id": 285, "name": "Scalemail Vest", "faction_restriction": ""},
-        {"id": 211500, "name": "Resilient Cloth Headband", "faction_restriction": ""},
-        {"id": 227046, "name": "Knight-Captain's Plate Hauberk", "faction_restriction": ""},
-        {"id": 16341, "name": "Sergeant's Cloak", "faction_restriction": ""},
-        {"id": 272000, "name": "Some Forever Reward", "faction_restriction": "horde_only"},
-    ]
-    recovered = {285: 12, 211500: 12, 227046: 12, 16341: 7, 272000: 9}
-    assert ranks_with_item_evidence(recovered, item_rows) == {227046: 12, 16341: 7, 272000: 9}
 
 
 def test_split_pvp_sources_by_faction_backfills_only_an_item_naming_its_rank():
