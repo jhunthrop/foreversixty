@@ -17,6 +17,11 @@ import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
     <!-- Rebuild spec §4.A: the h1 now lives inside the island (`PlannerHead.svelte`) --
          it reads "{Class} talents", never the tool's own name "Build planner" (which stays
          the page's <title>, Base.astro's own <head>, unchanged). -->
-    <Planner client:load treeVersion={activeBuild.build} classSlug={DEFAULT_CLASS_SLUG} />
+    <!-- `client:after-paint`, not `client:load` (src/directives/after-paint.ts): the island's
+         server-rendered head is the page's largest contentful paint, and `client:load` put its
+         whole chain -- some 80 module requests, ~175 KB -- ahead of that first paint, so
+         Lighthouse's simulation charged every byte to FCP and LCP (2026-11-02: a median
+         score of 0.84 and LCP 4.1 s on a quiet machine, against the 0.90 budget). -->
+    <Planner client:after-paint treeVersion={activeBuild.build} classSlug={DEFAULT_CLASS_SLUG} />
   </main>
 </Base>

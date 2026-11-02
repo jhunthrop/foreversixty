@@ -91,9 +91,12 @@ export function paintFace(field: HTMLElement): void {
     icon.src = option.dataset.icon;
 }
 
-/** Boots every static field under `root` (Select.astro's script). */
+/** Boots every static field under `root` (Select.astro's script, after first paint): each
+ *  face is painted once from its select's current value, so a choice made before the boot
+ *  landed shows, then follows every change. */
 export function bootStaticFields(root: ParentNode = document): void {
   for (const field of root.querySelectorAll<HTMLElement>('[data-listbox][data-static]')) {
+    paintFace(field);
     const handle = attachListbox(field);
     field.addEventListener('change', () => {
       paintFace(field);

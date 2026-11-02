@@ -105,14 +105,16 @@ jobs:
           path: web/dist
           retention-days: 1
   # BUILD MODE (owner, 2026-10-04): until the page pass is done, a push to main deploys on the
-  # `build` job alone (check, lint, format, unit tests, fixture build). build-real and lhci
-  # still run on schedule / workflow_dispatch only, and none of the three gate deploy. e2e runs
+  # `build` job alone (check, lint, format, unit tests, fixture build). build-real still runs
+  # on schedule / workflow_dispatch only, and none of build-real, e2e or lhci gate deploy. lhci
+  # runs on every push as well (2026-11-02): skipped on push, /planner sat under its 0.90
+  # budget for weeks and lhci-nightly was red every night from 10-18 to 11-01 unseen;
+  # `lhci-alert` below now keeps one open issue while either is red. e2e runs
   # on every push as well (2026-10-31): skipped on push it sat red on dispatch and schedule from
   # 10-29 to 10-31 while every push read green. Four shards of ~12 min of tests (~17 min a
   # shard with setup, in parallel beside deploy) on a public repository's free runners, so a
   # push's commit status is red the moment the suite is. To re-enable gating: restore
-  # `needs: [build, build-real, e2e, lhci]` on deploy, lhci's `if:` to
-  # `github.event_name != 'schedule'` and drop build-real's `if:`.
+  # `needs: [build, build-real, e2e, lhci]` on deploy and drop build-real's `if:`.
   build-real:
     needs: build
     if: github.event_name != 'push'
@@ -353,7 +355,7 @@ jobs:
           retention-days: 7
   lhci:
     needs: build
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     defaults: { run: { working-directory: web } }
@@ -411,6 +413,39 @@ jobs:
       - run: npm run lhci
         env:
           FOREVER_DATA: fixture
+  # A red budget on main that nobody reads is no budget: lhci-nightly failed every night from
+  # 2026-10-18 to 11-01 with no one the wiser. This keeps ONE open issue while main's push
+  # pass (`lhci`) or the nightly full pass (`lhci-nightly`) is red, adds a comment per further
+  # red run, and closes it on the next green one. Pull requests are left to their own checks.
+  lhci-alert:
+    needs: [lhci, lhci-nightly]
+    if: >-
+      always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' &&
+      (needs.lhci.result != 'skipped' || needs.lhci-nightly.result != 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: { contents: read, issues: write }
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TITLE: 'Lighthouse budget is red on main'
+      RED: ${{ contains(fromJSON('["failure","cancelled"]'), needs.lhci.result) || contains(fromJSON('["failure","cancelled"]'), needs.lhci-nightly.result) }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      EVENT: ${{ github.event_name }}
+      SHA: ${{ github.sha }}
+    steps:
+      - name: open, update or close the Lighthouse issue
+        run: |
+          open=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number,title \
+            --jq ".[] | select(.title == env.TITLE) | .number" | head -n 1)
+          body="The $EVENT run on $SHA failed a web/lighthouserc.json budget: $RUN_URL -- its log names each URL, assertion and value. Reproduce on a quiet machine (load average under 4) with \`npm run lhci:push\` in web/."
+          if [ "$RED" = true ]; then
+            if [ -n "$open" ]; then gh issue comment "$open" --body "$body"
+            else gh issue create --title "$TITLE" --body "$body"; fi
+            echo "::error title=Lighthouse budget red::$RUN_URL"
+          elif [ -n "$open" ]; then
+            gh issue close "$open" --comment "Green again on $SHA ($EVENT): $RUN_URL"
+          fi
   deploy:
     needs: [build]
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')

@@ -14,7 +14,13 @@ const props = Astro.props as Props;
 <Select {...props} staticField />
 
 <script>
-  import { bootStaticFields } from '../../lib/ui/select-boot';
+  // Booted after first paint, or at the first pointer, key or focus event
+  // (src/lib/after-paint.ts), like the header's wiring: the native select under the face
+  // already works without it, and as an eager module chain (this script, select-boot) it sat
+  // ahead of the BiS page's first paint, where Lighthouse charged it one more round trip of
+  // simulated LCP on about a third of runs (2,253 ms against the 2,200 ms budget, 2026-11-02).
+  // bootStaticFields repaints every face once, so a value picked before it lands still shows.
+  import { afterPaint } from '../../lib/after-paint';
 
-  bootStaticFields();
+  afterPaint(() => void import('../../lib/ui/select-boot').then((m) => m.bootStaticFields()));
 </script>

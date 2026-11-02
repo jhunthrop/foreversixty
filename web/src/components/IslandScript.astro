@@ -12,6 +12,14 @@
 // CI runs in a row). Injecting the module two frames in guarantees the shell has painted
 // first; src/lib/islands/boot.ts then holds the mount itself until the fonts have swapped.
 // A background tab paints no frames, so a timer loads the bundle within a second there.
+//
+// "Two frames in" was not enough (2026-11-02, five quiet local runs of /sim and of
+// /sim/simfixtureab): the first frame is not always the first CONTENTFUL one, and on the
+// runs where the bundle's request started ahead of that paint the score fell from 0.98 to
+// 0.88-0.90 (FCP 1.7 s -> 2.3 s, LCP 2.1 s -> 3.5 s), the same race on a narrower window.
+// The bundle now waits for the browser's own first-contentful-paint entry, the signal
+// src/directives/after-paint.ts already uses for the Astro islands, and loads on the next
+// frame after it.
 // No `modulepreload`: a preloaded module is compiled before the first paint, which put the
 // whole 57 KB bundle back into that paint's chain (a constant 2.1 s FCP instead of 1.4 s).
 interface Props {
@@ -32,7 +40,21 @@ const { src } = Astro.props;
       module.src = src;
       document.head.appendChild(module);
     };
-    requestAnimationFrame(() => requestAnimationFrame(load));
+    const soon = () => requestAnimationFrame(() => requestAnimationFrame(load));
     setTimeout(load, 1000);
+    if (typeof PerformanceObserver === 'undefined') {
+      soon();
+      return;
+    }
+    try {
+      const observer = new PerformanceObserver((list) => {
+        if (list.getEntriesByName('first-contentful-paint').length === 0) return;
+        observer.disconnect();
+        soon();
+      });
+      observer.observe({ type: 'paint', buffered: true });
+    } catch {
+      soon();
+    }
   })(document.currentScript);
 </script>
