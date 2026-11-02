@@ -574,11 +574,6 @@
         "authored": 10396,
         "bands": [
           {
-            "from_level": 20,
-            "to_level": 29,
-            "rank": 1
-          },
-          {
             "from_level": 40,
             "to_level": 49,
             "rank": 2
