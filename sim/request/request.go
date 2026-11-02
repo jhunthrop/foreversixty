@@ -859,12 +859,15 @@ func warriorOptions(p *proto.Player) {
 }
 
 // tankWarriorOptions is the Protection warrior: Defensive Stance from the
-// first swing, Commanding Shout for the health, no rage banked at the pull.
+// first swing, no rage banked at the pull. The engine reads no shout option;
+// the rotation casts Battle Shout. Commanding Shout (403435) is a Season of
+// Discovery rune with no SkillLineAbility row, so a Forever warrior cannot
+// learn it, and the field names Battle Shout as the Fury and Arms options do.
 func tankWarriorOptions(p *proto.Player) {
 	p.Spec = &proto.Player_TankWarrior{TankWarrior: &proto.TankWarrior{
 		Options: &proto.TankWarrior_Options{
 			StartingRage: defaultStartingRage,
-			Shout:        proto.WarriorShout_WarriorShoutCommanding,
+			Shout:        proto.WarriorShout_WarriorShoutBattle,
 			Stance:       proto.WarriorStance_WarriorStanceDefensive,
 		},
 	}}
