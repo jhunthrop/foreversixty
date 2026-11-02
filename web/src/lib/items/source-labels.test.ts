@@ -31,7 +31,8 @@ describe('pvpRankTitle', () => {
 
 describe('pvpSourceLabel', () => {
   it('names the rank, its title and the faction', () => {
-    expect(pvpSourceLabel(11, 'alliance')).toBe('PvP rank 11 · Knight-Lieutenant · Alliance');
+    expect(pvpSourceLabel(11, 'alliance')).toBe('PvP rank 7 · Knight-Lieutenant · Alliance');
+    expect(pvpSourceLabel(18, 'alliance')).toBe('PvP rank 14 · Grand Marshal · Alliance');
   });
 
   // Round 8 (owner ruling 2026-11-01): Forever's PvP rewards need no rank, so a pvp source
@@ -42,6 +43,6 @@ describe('pvpSourceLabel', () => {
   });
 
   it('falls back to rank and faction alone when the rank has no known title', () => {
-    expect(pvpSourceLabel(4, 'alliance')).toBe('PvP rank 4 · Alliance');
+    expect(pvpSourceLabel(19, 'alliance')).toBe('PvP rank 15 · Alliance');
   });
 });

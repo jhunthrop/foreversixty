@@ -73,12 +73,15 @@ const HORDE_PVP_TITLES = [
  *  in-game rank title for `faction` ("Knight-Lieutenant" for alliance rank 11). `undefined`
  *  for a rank outside the ladder -- should not happen; loot.json only ever writes 5-18, but
  *  a caller sees a title-less line rather than an out-of-bounds crash if it ever did. */
+/** The client's RequiredPVPRank minus the in-game rank: 5 is rank 1 (Private / Scout). */
+const CLIENT_PVP_RANK_OFFSET = 4;
+
 export function pvpRankTitle(faction: 'alliance' | 'horde', rank: number): string | undefined {
   const titles = faction === 'alliance' ? ALLIANCE_PVP_TITLES : HORDE_PVP_TITLES;
   return titles[rank - 5];
 }
 
-/** "PvP rank 11 · Knight-Lieutenant · Alliance" -- never the bare bucket name "Rank 11"
+/** "PvP rank 7 · Knight-Lieutenant · Alliance" (client rank 11) -- never the bare bucket name "Rank 11"
  *  (third wow-player sweep defect, 2026-09-29): a player reads a source by what they'd
  *  actually see at the Quartermaster, the rank NUMBER and the reward's own TITLE and
  *  faction, not a pipeline id. Falls back to naming just the rank and faction when the rank
@@ -88,9 +91,12 @@ export function pvpSourceLabel(rank: number | undefined, faction: 'alliance' | '
   const factionLabel = faction === 'alliance' ? 'Alliance' : 'Horde';
   // Forever's PvP rewards need no rank (owner ruling 2026-11-01): a source with none reads
   // "PvP reward · Horde", the ranker's own words, never "PvP rank 0".
-  if (rank === undefined || rank < 1) return `PvP reward · ${factionLabel}`;
-  const title = pvpRankTitle(faction, rank);
+  // `rank` is the client's RequiredPVPRank; the line names the in-game rank, 4 lower
+  // (sim-accuracy round 11: "PvP rank 18 · Grand Marshal" named a rank that does not exist).
+  const inGameRank = rank === undefined ? 0 : rank - CLIENT_PVP_RANK_OFFSET;
+  if (inGameRank < 1) return `PvP reward · ${factionLabel}`;
+  const title = pvpRankTitle(faction, rank as number);
   return title === undefined
-    ? `PvP rank ${rank} · ${factionLabel}`
-    : `PvP rank ${rank} · ${title} · ${factionLabel}`;
+    ? `PvP rank ${inGameRank} · ${factionLabel}`
+    : `PvP rank ${inGameRank} · ${title} · ${factionLabel}`;
 }
