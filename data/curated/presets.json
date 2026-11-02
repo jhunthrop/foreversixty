@@ -389,23 +389,38 @@
           ],
           "warlock-destruction": [
             {
+              "id": "elixir_of_shadow_power",
+              "label": "Elixir of Shadow Power",
+              "reason": "+40 Shadow damage (client spell 11474) for Corruption, the banes, Shadow Bolt and Shadowburn. Classic elixirs of different schools stack: the Battle and Guardian categories arrived in patch 2.1.0."
+            },
+            {
               "id": "elixir_of_firepower",
               "label": "Elixir of Fire Power",
-              "reason": "Destruction's rotation is fire-led (Immolate, Conflagrate, Incinerate)."
+              "reason": "+10 Fire damage (client spell 7844) for Immolate, Soul Fire, Conflagrate and Incinerate. It stacks with Elixir of Shadow Power. Forever's Elixir of Greater Firepower recipe (21547) makes the Elixir of Holy Power (21546) instead, so +10 is the Fire elixir there is."
             }
           ],
           "warlock-affliction": [
             {
               "id": "elixir_of_shadow_power",
               "label": "Elixir of Shadow Power",
-              "reason": "School power elixir."
+              "reason": "+40 Shadow damage (client spell 11474) for Corruption, the banes, Shadow Bolt and Shadowburn. Classic elixirs of different schools stack: the Battle and Guardian categories arrived in patch 2.1.0."
+            },
+            {
+              "id": "elixir_of_firepower",
+              "label": "Elixir of Fire Power",
+              "reason": "+10 Fire damage (client spell 7844) for Immolate, Soul Fire, Conflagrate and Incinerate. It stacks with Elixir of Shadow Power. Forever's Elixir of Greater Firepower recipe (21547) makes the Elixir of Holy Power (21546) instead, so +10 is the Fire elixir there is."
             }
           ],
           "warlock-demonology": [
             {
               "id": "elixir_of_shadow_power",
               "label": "Elixir of Shadow Power",
-              "reason": "School power elixir."
+              "reason": "+40 Shadow damage (client spell 11474) for Corruption, the banes, Shadow Bolt and Shadowburn. Classic elixirs of different schools stack: the Battle and Guardian categories arrived in patch 2.1.0."
+            },
+            {
+              "id": "elixir_of_firepower",
+              "label": "Elixir of Fire Power",
+              "reason": "+10 Fire damage (client spell 7844) for Immolate, Soul Fire, Conflagrate and Incinerate. It stacks with Elixir of Shadow Power. Forever's Elixir of Greater Firepower recipe (21547) makes the Elixir of Holy Power (21546) instead, so +10 is the Fire elixir there is."
             }
           ],
           "priest-shadow": [

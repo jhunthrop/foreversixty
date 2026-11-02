@@ -1244,10 +1244,18 @@
         ]
       },
       {
+        "from_level": 18,
+        "consumes": [
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
         "from_level": 35,
         "consumes": [
           "food_runn_tum_tuber_surprise",
-          "conjured_demonic_rune"
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1255,7 +1263,8 @@
         "consumes": [
           "food_runn_tum_tuber_surprise",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1264,7 +1273,8 @@
           "food_runn_tum_tuber_surprise",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1274,7 +1284,8 @@
           "food_runn_tum_tuber_surprise",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1285,7 +1296,8 @@
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1297,7 +1309,8 @@
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       }
     ],
@@ -1309,10 +1322,18 @@
         ]
       },
       {
+        "from_level": 18,
+        "consumes": [
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
+        ]
+      },
+      {
         "from_level": 35,
         "consumes": [
           "food_runn_tum_tuber_surprise",
-          "conjured_demonic_rune"
+          "conjured_demonic_rune",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1320,7 +1341,8 @@
         "consumes": [
           "food_runn_tum_tuber_surprise",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1329,7 +1351,8 @@
           "food_runn_tum_tuber_surprise",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1339,7 +1362,8 @@
           "food_runn_tum_tuber_surprise",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1350,7 +1374,8 @@
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       },
       {
@@ -1362,7 +1387,8 @@
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
-          "elixir_of_shadow_power"
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
         ]
       }
     ],
@@ -1389,11 +1415,21 @@
         ]
       },
       {
+        "from_level": 40,
+        "consumes": [
+          "food_runn_tum_tuber_surprise",
+          "conjured_demonic_rune",
+          "elixir_of_shadow_power",
+          "elixir_of_firepower"
+        ]
+      },
+      {
         "from_level": 45,
         "consumes": [
           "food_runn_tum_tuber_surprise",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
+          "elixir_of_shadow_power",
           "elixir_of_firepower"
         ]
       },
@@ -1404,6 +1440,7 @@
           "food_runn_tum_tuber_surprise",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
+          "elixir_of_shadow_power",
           "elixir_of_firepower"
         ]
       },
@@ -1415,6 +1452,7 @@
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
+          "elixir_of_shadow_power",
           "elixir_of_firepower"
         ]
       },
@@ -1427,6 +1465,7 @@
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
+          "elixir_of_shadow_power",
           "elixir_of_firepower"
         ]
       }

@@ -111,3 +111,25 @@ func TestShieldTanksWeighBlockValueBesideBlock(t *testing.T) {
 		}
 	}
 }
+
+// warlockDamageStats is what every warlock spec's damage reads beyond spell
+// power, intellect and the ratings. Forever's Life Tap converts its flat
+// amount plus one point per point of Spirit (client 11689: "Spirit
+// increases the amount converted"), and every published warlock set taps
+// a dozen times or more a fight, so Spirit buys back Life Tap's globals:
+// Divine Spirit's +40 is +1.1% on the bare band-60 sets. Every warlock
+// rotation keeps Corruption and Immolate up, one Shadow and one Fire DoT.
+var warlockDamageStats = []string{"spirit", "shadow_power", "fire_power"}
+
+func TestEveryWarlockSpecWeighsSpiritAndBothOfItsSchools(t *testing.T) {
+	for _, spec := range All {
+		if spec.ClassSlug != "warlock" {
+			continue
+		}
+		for _, stat := range warlockDamageStats {
+			if !slices.Contains(spec.WeightStats, stat) {
+				t.Errorf("%s WeightStats %v lack %q", spec.Spec, spec.WeightStats, stat)
+			}
+		}
+	}
+}
