@@ -332,7 +332,8 @@ def test_known_spells_pin_to_their_verified_client_icon():
     build: an older build's spellicons.json holds only the ids its own
     rotations named then (1.60.1.70374's has Heroic Strike's book rank 25286,
     which the addon no longer shows, and not the trainer's rank 8, 11567)."""
-    active = json.loads(Path("../web/src/data/active-build.json").read_text(encoding="utf-8"))["build"]
+    active_json = Path("../web/src/data/active-build.json").read_text(encoding="utf-8")
+    active = json.loads(active_json)["build"]
     rotations = build_rotations(Path("builds"), active)
     for spec, expected_by_name in KNOWN_GOOD_ROTATION_ICONS.items():
         band_60 = next(band for band in rotations[spec] if band.level == 60)

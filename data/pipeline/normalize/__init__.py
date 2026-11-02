@@ -157,7 +157,6 @@ def normalize_build(
     from pipeline.normalize.dungeons import normalize_dungeons
     from pipeline.normalize.effects import EffectIndex
     from pipeline.normalize.factions import load_factions
-    from pipeline.simdb.equip import area_conditional_spells, feral_form_spells
     from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
     from pipeline.normalize.item_curves import load_item_curves
     from pipeline.normalize.itemnames import write_item_names
@@ -185,6 +184,7 @@ def normalize_build(
         overlay_wowhead_talents,
     )
     from pipeline.normalize.zones import normalize_zones
+    from pipeline.simdb.equip import area_conditional_spells, feral_form_spells
     from pipeline.spelltext import ExtraRows, load_spell_text
 
     build_dir = root / build

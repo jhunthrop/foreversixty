@@ -136,8 +136,10 @@ def _minimal_client_tables(tmp_path, *, class_mask_overrides=None):
     fixture matches `WEAPON_SUBCLASSES` exactly unless a test overrides one
     skill line's mask."""
     masks = {
-        44: 1 + 2 + 4 + 8 + 64,  # Axes: warrior, paladin, hunter, rogue, shaman (70707: spell 196 mask 79)
-        172: 1 + 2 + 4 + 64,  # Two-Handed Axes: warrior, paladin, hunter, shaman (70707: spell 197 mask 71)
+        # Axes: warrior, paladin, hunter, rogue, shaman (70707: spell 196 mask 79)
+        44: 1 + 2 + 4 + 8 + 64,
+        # Two-Handed Axes: warrior, paladin, hunter, shaman (70707: spell 197 mask 71)
+        172: 1 + 2 + 4 + 64,
         45: 1 + 4 + 8,  # Bows
         46: 1 + 4 + 8,  # Guns
         54: 1 + 2 + 8 + 16 + 64 + 1024,  # Maces: + paladin, rogue, priest, shaman, druid
