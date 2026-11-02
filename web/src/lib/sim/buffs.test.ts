@@ -94,7 +94,7 @@ describe('the catalogue', () => {
 
   // Round 8 D3 (engine a56f0d992, in pin 40021374a): Forever made four debuffs the caster's
   // own, so the raid flags apply nothing; round 9 (engine 35fa13a5a): Forever deleted Curse of
-  // Shadow. The request still accepts the ids (a saved sim that named one keeps running); the
+  // Shadow, and Winter's Chill (engine d1dc542c7) is the applying mage's own. The request still accepts the ids (a saved sim that named one keeps running); the
   // panel stops offering a box that does nothing.
   it('offers none of the debuffs the engine ignores', () => {
     const debuffs = rowsIn('debuffs').map((row) => row.id);
@@ -105,6 +105,7 @@ describe('the catalogue', () => {
       'improved_shadow_bolt',
       'stormstrike',
       'curse_of_shadow',
+      'winters_chill',
     ]) {
       expect(debuffs, inert).not.toContain(inert);
       expect(INERT_BUFFS, inert).toContain(inert);

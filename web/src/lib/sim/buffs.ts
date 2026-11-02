@@ -153,7 +153,8 @@ export const CATALOGUE: readonly BuffRow[] = buildCatalogue(file);
  * (aura 270/271, damage taken from the caster), so the raid flags give the raid nothing and
  * each class keeps its own from its talents. Curse of Shadow (casters lane, engine 35fa13a5a,
  * round 9): Forever deleted it from the client (no SpellName or SpellEffect row for 17862 or
- * 17937 in 70707); Curse of the Elements covers every school. They stay in the catalogue and the request
+ * 17937 in 70707); Curse of the Elements covers every school. Winter's Chill (auras lane, engine d1dc542c7,
+ * round 9): 12579 is aura 271, the applying mage's own, so the raid flag applies nothing. They stay in the catalogue and the request
  * vocabulary, so a saved sim that named one still runs.
  */
 export const INERT_BUFFS: readonly string[] = [
@@ -162,6 +163,7 @@ export const INERT_BUFFS: readonly string[] = [
   'improved_shadow_bolt',
   'shadow_weaving',
   'stormstrike',
+  'winters_chill',
 ];
 
 /** One group's offered rows, alphabetical by id so the panel's order never depends on IDS.md's. */
