@@ -90,7 +90,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune"
         ]
@@ -123,7 +123,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune"
         ]
@@ -156,7 +156,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune"
@@ -191,7 +191,7 @@
         "consumes": [
           "flask_of_supreme_power",
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune"
@@ -229,6 +229,39 @@
           "juju_power",
           "r_o_i_d_s",
           "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "buffs": [
+          "gift_of_the_wild",
+          "arcane_brilliance",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -333,6 +366,39 @@
         ]
       },
       {
+        "from_level": 35,
+        "buffs": [
+          "gift_of_the_wild",
+          "arcane_brilliance",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might",
+          "food_poached_sunscale_salmon"
+        ]
+      },
+      {
         "from_level": 43,
         "buffs": [
           "gift_of_the_wild",
@@ -362,7 +428,8 @@
           "elixir_of_greater_defense",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -394,10 +461,10 @@
         "consumes": [
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
-          "food_smoked_desert_dumpling",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "food_smoked_desert_dumpling"
         ]
       },
       {
@@ -429,11 +496,11 @@
         "consumes": [
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
-          "food_smoked_desert_dumpling",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
           "juju_might",
-          "greater_stoneshield_potion"
+          "greater_stoneshield_potion",
+          "food_smoked_desert_dumpling"
         ]
       },
       {
@@ -466,11 +533,11 @@
           "flask_of_the_titans",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
-          "food_smoked_desert_dumpling",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
           "juju_might",
-          "greater_stoneshield_potion"
+          "greater_stoneshield_potion",
+          "food_smoked_desert_dumpling"
         ]
       }
     ],
@@ -704,7 +771,7 @@
         "consumes": [
           "juju_power",
           "r_o_i_d_s",
-          "food_grilled_squid",
+          "food_poached_sunscale_salmon",
           "juju_might"
         ]
       },
@@ -738,7 +805,7 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "food_grilled_squid",
+          "food_poached_sunscale_salmon",
           "juju_might"
         ]
       },
@@ -772,7 +839,7 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "food_grilled_squid",
+          "food_poached_sunscale_salmon",
           "juju_might",
           "major_mana_potion"
         ]
@@ -840,7 +907,7 @@
         "consumes": [
           "juju_power",
           "r_o_i_d_s",
-          "food_grilled_squid",
+          "food_poached_sunscale_salmon",
           "juju_might"
         ]
       },
@@ -874,7 +941,7 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "food_grilled_squid",
+          "food_poached_sunscale_salmon",
           "juju_might"
         ]
       },
@@ -908,7 +975,7 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "food_grilled_squid",
+          "food_poached_sunscale_salmon",
           "juju_might",
           "major_mana_potion"
         ]
@@ -1008,7 +1075,7 @@
         "consumes": [
           "juju_power",
           "r_o_i_d_s",
-          "food_grilled_squid",
+          "food_poached_sunscale_salmon",
           "juju_might"
         ]
       },
@@ -1042,7 +1109,7 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "food_grilled_squid",
+          "food_poached_sunscale_salmon",
           "juju_might"
         ]
       },
@@ -1076,7 +1143,7 @@
           "elixir_of_the_mongoose",
           "juju_power",
           "r_o_i_d_s",
-          "food_grilled_squid",
+          "food_poached_sunscale_salmon",
           "juju_might",
           "major_mana_potion"
         ]
@@ -1171,7 +1238,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune"
         ]
@@ -1204,7 +1271,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune"
         ]
@@ -1237,7 +1304,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune"
@@ -1272,7 +1339,7 @@
         "consumes": [
           "flask_of_supreme_power",
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune"
@@ -1400,7 +1467,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_firepower"
@@ -1434,7 +1501,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_firepower"
@@ -1468,7 +1535,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -1504,7 +1571,7 @@
         "consumes": [
           "flask_of_supreme_power",
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -1633,7 +1700,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_frost_power"
@@ -1667,7 +1734,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_frost_power"
@@ -1701,7 +1768,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -1737,7 +1804,7 @@
         "consumes": [
           "flask_of_supreme_power",
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -1898,8 +1965,7 @@
           "food_sages_tea",
           "main_hand_imbue:brilliant_mana_oil",
           "major_mana_potion",
-          "conjured_demonic_rune",
-          "major_mana_potion"
+          "conjured_demonic_rune"
         ]
       },
       {
@@ -1933,8 +1999,7 @@
           "food_sages_tea",
           "main_hand_imbue:brilliant_mana_oil",
           "major_mana_potion",
-          "conjured_demonic_rune",
-          "major_mana_potion"
+          "conjured_demonic_rune"
         ]
       },
       {
@@ -1971,8 +2036,7 @@
           "food_sages_tea",
           "main_hand_imbue:brilliant_mana_oil",
           "major_mana_potion",
-          "conjured_demonic_rune",
-          "major_mana_potion"
+          "conjured_demonic_rune"
         ]
       }
     ],
@@ -2044,6 +2108,40 @@
         ]
       },
       {
+        "from_level": 35,
+        "buffs": [
+          "blessing_of_might",
+          "devotion_aura",
+          "arcane_brilliance",
+          "gift_of_the_wild",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might",
+          "food_nightfin_soup"
+        ]
+      },
+      {
         "from_level": 43,
         "buffs": [
           "blessing_of_might",
@@ -2074,7 +2172,8 @@
           "elixir_of_greater_defense",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "food_nightfin_soup"
         ]
       },
       {
@@ -2107,10 +2206,10 @@
         "consumes": [
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
-          "food_smoked_desert_dumpling",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "food_baked_salmon"
         ]
       },
       {
@@ -2143,11 +2242,11 @@
         "consumes": [
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
-          "food_smoked_desert_dumpling",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
           "juju_might",
-          "major_mana_potion"
+          "major_mana_potion",
+          "food_baked_salmon"
         ]
       },
       {
@@ -2181,11 +2280,11 @@
           "flask_of_the_titans",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
-          "food_smoked_desert_dumpling",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
           "juju_might",
-          "major_mana_potion"
+          "major_mana_potion",
+          "food_baked_salmon"
         ]
       }
     ],
@@ -2252,6 +2351,39 @@
           "juju_power",
           "r_o_i_d_s",
           "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "buffs": [
+          "blessing_of_might",
+          "arcane_brilliance",
+          "gift_of_the_wild",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -2850,7 +2982,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_shadow_power"
@@ -2884,7 +3016,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_shadow_power"
@@ -2918,7 +3050,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -2954,7 +3086,7 @@
         "consumes": [
           "flask_of_supreme_power",
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -3132,7 +3264,7 @@
           "juju_might",
           "off_hand_stone:dense_sharpening_stone",
           "conjured_rogue_thistle_tea",
-          "food_grilled_squid"
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -3170,7 +3302,7 @@
           "juju_might",
           "off_hand_stone:dense_sharpening_stone",
           "conjured_rogue_thistle_tea",
-          "food_grilled_squid"
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -3209,7 +3341,7 @@
           "main_hand_stone:elemental_sharpening_stone",
           "off_hand_stone:dense_sharpening_stone",
           "conjured_rogue_thistle_tea",
-          "food_grilled_squid"
+          "food_poached_sunscale_salmon"
         ]
       }
     ],
@@ -3383,7 +3515,7 @@
           "juju_might",
           "off_hand_stone:dense_sharpening_stone",
           "conjured_rogue_thistle_tea",
-          "food_grilled_squid"
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -3421,7 +3553,7 @@
           "juju_might",
           "off_hand_stone:dense_sharpening_stone",
           "conjured_rogue_thistle_tea",
-          "food_grilled_squid"
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -3460,7 +3592,7 @@
           "main_hand_stone:elemental_sharpening_stone",
           "off_hand_stone:dense_sharpening_stone",
           "conjured_rogue_thistle_tea",
-          "food_grilled_squid"
+          "food_poached_sunscale_salmon"
         ]
       }
     ],
@@ -3634,7 +3766,7 @@
           "juju_might",
           "off_hand_stone:dense_sharpening_stone",
           "conjured_rogue_thistle_tea",
-          "food_grilled_squid"
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -3672,7 +3804,7 @@
           "juju_might",
           "off_hand_stone:dense_sharpening_stone",
           "conjured_rogue_thistle_tea",
-          "food_grilled_squid"
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -3711,7 +3843,7 @@
           "main_hand_stone:elemental_sharpening_stone",
           "off_hand_stone:dense_sharpening_stone",
           "conjured_rogue_thistle_tea",
-          "food_grilled_squid"
+          "food_poached_sunscale_salmon"
         ]
       }
     ],
@@ -3804,7 +3936,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune"
         ]
@@ -3837,7 +3969,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune"
         ]
@@ -3870,11 +4002,10 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
-          "conjured_demonic_rune",
-          "major_mana_potion"
+          "conjured_demonic_rune"
         ]
       },
       {
@@ -3906,11 +4037,10 @@
         "consumes": [
           "flask_of_supreme_power",
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
-          "conjured_demonic_rune",
-          "major_mana_potion"
+          "conjured_demonic_rune"
         ]
       }
     ],
@@ -3979,6 +4109,40 @@
           "juju_power",
           "r_o_i_d_s",
           "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "buffs": [
+          "arcane_brilliance",
+          "gift_of_the_wild",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "main_hand_imbue:windfury_weapon",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -4180,8 +4344,7 @@
           "food_sages_tea",
           "main_hand_imbue:brilliant_mana_oil",
           "major_mana_potion",
-          "conjured_demonic_rune",
-          "major_mana_potion"
+          "conjured_demonic_rune"
         ]
       },
       {
@@ -4215,8 +4378,7 @@
           "food_sages_tea",
           "main_hand_imbue:brilliant_mana_oil",
           "major_mana_potion",
-          "conjured_demonic_rune",
-          "major_mana_potion"
+          "conjured_demonic_rune"
         ]
       },
       {
@@ -4253,8 +4415,7 @@
           "food_sages_tea",
           "main_hand_imbue:brilliant_mana_oil",
           "major_mana_potion",
-          "conjured_demonic_rune",
-          "major_mana_potion"
+          "conjured_demonic_rune"
         ]
       }
     ],
@@ -4412,7 +4573,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_shadow_power",
@@ -4447,7 +4608,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_shadow_power",
@@ -4482,7 +4643,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -4519,7 +4680,7 @@
         "consumes": [
           "flask_of_supreme_power",
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -4682,7 +4843,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_shadow_power",
@@ -4717,7 +4878,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_shadow_power",
@@ -4752,7 +4913,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -4789,7 +4950,7 @@
         "consumes": [
           "flask_of_supreme_power",
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -4952,7 +5113,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_shadow_power",
@@ -4987,7 +5148,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "conjured_demonic_rune",
           "elixir_of_shadow_power",
@@ -5022,7 +5183,7 @@
         ],
         "consumes": [
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -5059,7 +5220,7 @@
         "consumes": [
           "flask_of_supreme_power",
           "greater_arcane_elixir",
-          "food_nightfin_soup",
+          "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
           "conjured_demonic_rune",
@@ -5099,6 +5260,39 @@
           "juju_power",
           "r_o_i_d_s",
           "juju_might"
+        ]
+      },
+      {
+        "from_level": 35,
+        "buffs": [
+          "arcane_brilliance",
+          "gift_of_the_wild",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -5269,7 +5463,8 @@
           "juju_power",
           "r_o_i_d_s",
           "juju_might",
-          "off_hand_imbue:dense_sharpening_stone"
+          "off_hand_imbue:dense_sharpening_stone",
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -5414,6 +5609,39 @@
         ]
       },
       {
+        "from_level": 35,
+        "buffs": [
+          "arcane_brilliance",
+          "gift_of_the_wild",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "juju_might",
+          "food_poached_sunscale_salmon"
+        ]
+      },
+      {
         "from_level": 43,
         "buffs": [
           "arcane_brilliance",
@@ -5443,7 +5671,8 @@
           "elixir_of_greater_defense",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "food_poached_sunscale_salmon"
         ]
       },
       {
@@ -5475,10 +5704,10 @@
         "consumes": [
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
-          "food_smoked_desert_dumpling",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
-          "juju_might"
+          "juju_might",
+          "food_smoked_desert_dumpling"
         ]
       },
       {
@@ -5510,11 +5739,11 @@
         "consumes": [
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
-          "food_smoked_desert_dumpling",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
           "juju_might",
-          "mighty_rage_potion"
+          "mighty_rage_potion",
+          "food_smoked_desert_dumpling"
         ]
       },
       {
@@ -5547,11 +5776,11 @@
           "flask_of_the_titans",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
-          "food_smoked_desert_dumpling",
           "alcohol_rumsey_rum_black_label",
           "juju_power",
           "juju_might",
-          "mighty_rage_potion"
+          "mighty_rage_potion",
+          "food_smoked_desert_dumpling"
         ]
       }
     ]

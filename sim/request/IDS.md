@@ -184,12 +184,14 @@ lets the two share a weapon, and the engine refuses anything else there.
 | `flask_of_distilled_wisdom` | Consumes.flask |
 | `flask_of_supreme_power` | Consumes.flask |
 | `flask_of_the_titans` | Consumes.flask |
+| `food_baked_salmon` | Consumes.food |
 | `food_bless_sunfruit` | Consumes.food |
 | `food_blessed_sunfruit_juice` | Consumes.food |
 | `food_dirges_kick_chimaerok_chops` | Consumes.food |
 | `food_grilled_squid` | Consumes.food |
 | `food_hot_wolf_ribs` | Consumes.food |
 | `food_nightfin_soup` | Consumes.food |
+| `food_poached_sunscale_salmon` | Consumes.food |
 | `food_runn_tum_tuber_surprise` | Consumes.food |
 | `food_sagefish_delight` | Consumes.food |
 | `food_sages_tea` | Consumes.food |
