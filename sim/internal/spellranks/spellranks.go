@@ -342,6 +342,13 @@ func sameBandOrFirst(ids []int32, original int32) int32 {
 // Found by the site's rotation ladder (sim/request/ladder_test.go) reporting
 // the id unresolved at the lowest rung that straddles the two levels.
 var rankLevelOverrides = map[string]map[int32]int{
+	"rogue": {
+		// Mutilate rank 1: spellranks.json lists Era's 1329 (no
+		// SkillLineAbility row, no BaseLevel) first, at 40; Forever's rank 1
+		// is 1310707, SpellLevels BaseLevel 30, and sim/rogue/mutilate.go's
+		// mutilateLearnLevels starts at 30.
+		1310707: 30,
+	},
 	"druid": {
 		// Shred rank 1: spellranks.json carries the client's level-20 row;
 		// sim/druid/shred.go's shredLearnLevels starts at 22 (its comment: "the

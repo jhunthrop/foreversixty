@@ -336,3 +336,18 @@ func TestSingleTierOverridesGateTheirIDs(t *testing.T) {
 		}
 	}
 }
+
+// Mutilate rank 1 is 1310707, SpellLevels BaseLevel 30 and a trainable
+// SkillLineAbility row (AcquireMethod 0). The tier's other id, 1329, is
+// Era's: no SkillLineAbility row and no BaseLevel, but listed first at 40.
+func TestMutilateRankOneIsLearnedAtThirty(t *testing.T) {
+	if _, ok := HighestLearnedSpellID("rogue", 1241584, 29); ok {
+		t.Error("Mutilate is learned at 29")
+	}
+	if got, ok := HighestLearnedSpellID("rogue", 1241584, 30); !ok || got != 1310707 {
+		t.Errorf("Mutilate at 30: got (%d, %v), want (1310707, true)", got, ok)
+	}
+	if got, _ := HighestLearnedSpellID("rogue", 1241584, 40); got != 399956 {
+		t.Errorf("Mutilate at 40: got %d, want 399956", got)
+	}
+}
