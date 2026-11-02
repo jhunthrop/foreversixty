@@ -134,7 +134,11 @@ def test_trainables_follow_a_skill_line_row_the_push_removes_or_adds(mage_root):
 # --- the CLI: fetch never leaves a build shipped-only ------------------------
 
 
-def test_fetch_layers_the_push_after_the_download(monkeypatch, tmp_path):
+def test_fetch_layers_the_push_and_the_item_pushes_after_the_download(monkeypatch, tmp_path):
+    """Sim-accuracy round 11, items lane: a local `fetch` + `normalize` without
+    `fetch-wago-hotfixes` lost 165 hotfix-only items (gated as a shrink) and put
+    404 more on wowhead or classic-db stats. The item pair's pushes are part of
+    the fetched build, the same as every other table's."""
     calls: list[tuple] = []
     monkeypatch.setattr(
         "pipeline.wago.fetch_build",
@@ -144,8 +148,16 @@ def test_fetch_layers_the_push_after_the_download(monkeypatch, tmp_path):
         "pipeline.hotfix_push.layer_hotfix_push",
         lambda build, offline=False: calls.append(("layer", build, offline)) or {"tables": {}},
     )
+    monkeypatch.setattr(
+        "pipeline.wago_hotfixes.fetch_wago_hotfixes",
+        lambda build, product: calls.append(("item-pushes", build, product)) or {},
+    )
     cli.main(["fetch", "--product", "wowf", "--build", BUILD])
-    assert calls == [("fetch", "wowf", BUILD), ("layer", BUILD, False)]
+    assert calls == [
+        ("fetch", "wowf", BUILD),
+        ("layer", BUILD, False),
+        ("item-pushes", BUILD, "wowf"),
+    ]
 
 
 def test_layer_hotfix_push_has_an_explicit_offline_mode(monkeypatch):
