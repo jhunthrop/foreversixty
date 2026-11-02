@@ -1,6 +1,6 @@
 package request
 
-// The consumables every spec carries under the raid preset at each level, for the /sim page.
+// The buffs and consumables every spec carries under the raid preset at each level, for the /sim page.
 //
 // The BiS ranker, the tier list and spec-breakdown resolve the raid preset for a spec and
 // layer the class kit on top (a rogue's poisons, Thistle Tea; a Survival hunter's ranged
@@ -20,9 +20,11 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
-// LevelConsumes is the set a spec carries from FromLevel until the next row's level.
+// LevelConsumes is the set a spec carries from FromLevel until the next row's level: the
+// buffs (the class kit's first, then the preset's) and the consumables.
 type LevelConsumes struct {
 	FromLevel int      `json:"from_level"`
+	Buffs     []string `json:"buffs"`
 	Consumes  []string `json:"consumes"`
 }
 
@@ -56,24 +58,34 @@ func RaidConsumes(presets Presets, levels ItemLevels) (map[string][]LevelConsume
 func levelRows(resolved ResolvedPreset, levels ItemLevels, spec string) ([]LevelConsumes, error) {
 	var rows []LevelConsumes
 	for level := 1; level <= api.MaxLevel; level++ {
-		_, consumeIDs := resolved.UsableAt(level, levels).Layer(leveling.KitBuffs(spec, level), leveling.KitConsumes(spec, level))
-		if len(rows) == 0 || !slices.Equal(rows[len(rows)-1].Consumes, consumeIDs) {
-			rows = append(rows, LevelConsumes{FromLevel: level, Consumes: consumeIDs})
+		buffs, consumeIDs := resolved.UsableAt(level, levels).Layer(leveling.KitBuffs(spec, level), leveling.KitConsumes(spec, level))
+		if len(rows) == 0 || !slices.Equal(rows[len(rows)-1].Consumes, consumeIDs) || !slices.Equal(rows[len(rows)-1].Buffs, buffs) {
+			rows = append(rows, LevelConsumes{FromLevel: level, Buffs: buffs, Consumes: consumeIDs})
 		}
 	}
 	return rows, nil
 }
 
-// ConsumesAtLevel is the row in force at level; rows start at level 1.
-func ConsumesAtLevel(rows []LevelConsumes, level int) []string {
-	var at []string
+// rowAtLevel is the row in force at level; rows start at level 1.
+func rowAtLevel(rows []LevelConsumes, level int) LevelConsumes {
+	var at LevelConsumes
 	for _, row := range rows {
 		if row.FromLevel > level {
 			break
 		}
-		at = row.Consumes
+		at = row
 	}
 	return at
+}
+
+// ConsumesAtLevel is the consumables in force at level.
+func ConsumesAtLevel(rows []LevelConsumes, level int) []string {
+	return rowAtLevel(rows, level).Consumes
+}
+
+// BuffsAtLevel is the buffs in force at level.
+func BuffsAtLevel(rows []LevelConsumes, level int) []string {
+	return rowAtLevel(rows, level).Buffs
 }
 
 // RaidConsumesJSON is RaidConsumes as the committed file states it.

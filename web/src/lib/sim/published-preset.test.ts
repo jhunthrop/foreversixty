@@ -25,6 +25,7 @@ beforeAll(() => loadPresetSets());
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 const GENERATED = path.join(REPO, 'sim', 'request', 'published-presets.json');
+const RAID_SETS = path.join(REPO, 'sim', 'request', 'raid-consumes.json');
 const BIS_DIR = path.join(REPO, 'data', 'builds', activeBuild.build, 'bis');
 const BANDS = [20, 30, 40, 50, 60] as const;
 
@@ -40,8 +41,15 @@ interface Generated {
 
 const generated = JSON.parse(readFileSync(GENERATED, 'utf8')) as Generated;
 
+const raidSets = (JSON.parse(readFileSync(RAID_SETS, 'utf8')) as { specs: Record<string, LevelSet[]> }).specs;
+
 function bareAt(spec: string, level: number): LevelSet {
   return generated.bare[spec]!.filter((row) => row.from_level <= level).at(-1)!;
+}
+
+/** The raid set the published raid number sends: the kit's buffs layered under the raid list. */
+function raidAt(spec: string, level: number): LevelSet {
+  return raidSets[spec]!.filter((row) => row.from_level <= level).at(-1)!;
 }
 
 const PAGE_ID = { bare: 'bare', raid: 'raid-buffed' } as const;
@@ -89,7 +97,8 @@ describe('the page defaults to the preset the band publishes', () => {
           expect(settings.consumables, `${spec} ${level}`).toEqual(bareAt(spec, level).consumes);
         } else {
           expect(settings.preset, `${spec} ${level}`).toBe('raid-buffed');
-          expect(settings.buffs).toEqual([...RAID_BUFFS]);
+          expect(settings.buffs, `${spec} ${level}`).toEqual(raidAt(spec, level).buffs);
+          expect(settings.consumables, `${spec} ${level}`).toEqual(raidAt(spec, level).consumes);
         }
       }
     }
@@ -120,5 +129,7 @@ describe('the page defaults to the preset the band publishes', () => {
     const swapped = withSpecForPreset(picked, 'rogue-combat', 30);
     expect(swapped.preset).toBe('raid-buffed');
     expect(swapped.buffs).toEqual([...RAID_BUFFS]);
+    const protection = withSpecForPreset(picked, 'paladin-protection', 40);
+    expect([...protection.buffs].sort()).toEqual(['devotion_aura', ...RAID_BUFFS].sort());
   });
 });

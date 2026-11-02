@@ -5,7 +5,7 @@ import { MAX_LEVEL } from './character';
 import { durationLabel, encounterLabel } from './encounter';
 import { applyFightStyle, DEFAULT_STYLE_ID, type FightStyleId } from './styles';
 import raidPreset from '../../data/generated/raid-preset.json';
-import { bareSetAt, raidConsumesAt } from './preset-sets';
+import { bareSetAt, raidSetAt } from './preset-sets';
 import { DEFAULT_ENCOUNTER, TARGET_TYPE_IDS, type CooldownSpec, type EncounterSpec } from './types';
 
 export { durationLabel, encounterLabel };
@@ -154,12 +154,14 @@ export function publishedPresetAt(level: number): StaticPresetId {
 }
 
 /**
- * The preset's buff half for one spec key at the character's level. Raid-buffed is the
- * curated raid list for everyone; Bare is the spec's class kit at that level (a mage's Arcane
- * Intellect, a Survival hunter's mark), from the bare table (preset-sets.ts; load it first).
+ * The preset's buff half for one spec key at the character's level, from the preset tables
+ * (preset-sets.ts; load them first). Raid-buffed is the curated raid list with the spec's
+ * class kit layered first (a Protection paladin's Devotion Aura), as the published raid
+ * numbers send it; with no character yet, the raid list alone. Bare is the spec's class kit
+ * at that level (a mage's Arcane Intellect, a Survival hunter's mark).
  */
 export function presetBuffs(preset: StaticPresetId, spec: string, level: number): readonly string[] {
-  return preset === 'bare' ? bareSetAt(spec, level).buffs : RAID_BUFFS;
+  return preset === 'bare' ? bareSetAt(spec, level).buffs : (raidSetAt(spec, level)?.buffs ?? RAID_BUFFS);
 }
 
 /**
@@ -170,7 +172,7 @@ export function presetBuffs(preset: StaticPresetId, spec: string, level: number)
  * set: the request then sims what it says it does.
  */
 export function presetConsumables(preset: StaticPresetId, spec: string, level: number): readonly string[] {
-  return preset === 'bare' ? bareSetAt(spec, level).consumes : raidConsumesAt(spec, level);
+  return preset === 'bare' ? bareSetAt(spec, level).consumes : (raidSetAt(spec, level)?.consumes ?? []);
 }
 
 export interface SimSettings {

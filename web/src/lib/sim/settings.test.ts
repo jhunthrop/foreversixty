@@ -178,14 +178,23 @@ describe('defaultSettings', () => {
  * one of the 70 accepted, no ErrUnknownBuff, no ErrUnknownConsume, no ErrAmbiguousConsume.
  */
 describe('the Raid-buffed preset', () => {
-  it('is the curated raid preset’s buffs and debuffs, the list every published level-60 number is simmed under, never split by spec', () => {
+  it('is the curated raid preset’s buffs and debuffs, the list every published level-60 number is simmed under', () => {
     const curated = JSON.parse(readFileSync(CURATED_PRESETS, 'utf8')) as {
       presets: { raid: { buffs: { id: string }[]; debuffs: { id: string }[] } };
     };
     const raid = curated.presets.raid;
     expect([...RAID_BUFFS]).toEqual([...raid.buffs.map((b) => b.id), ...raid.debuffs.map((d) => d.id)]);
-    expect(presetBuffs('raid-buffed', FURY, MAX)).toBe(RAID_BUFFS);
-    expect(presetBuffs('raid-buffed', 'paladin-protection', 40)).toBe(RAID_BUFFS);
+    expect(presetBuffs('raid-buffed', FURY, MAX)).toEqual(RAID_BUFFS);
+    expect(presetBuffs('raid-buffed', '', MAX)).toBe(RAID_BUFFS);
+  });
+
+  // Ledger, round 6: the ranker layers the class kit under the raid list (sim/request
+  // ResolvedPreset.Layer), so a Protection paladin's published raid number keeps its
+  // Devotion Aura; the page sent the raid list alone.
+  it('layers the class kit’s buffs under the raid list, as the published numbers do', () => {
+    const protection = presetBuffs('raid-buffed', 'paladin-protection', MAX);
+    expect([...protection].sort()).toEqual(['devotion_aura', ...RAID_BUFFS].sort());
+    expect(presetBuffs('raid-buffed', 'paladin-protection', 40)).toContain('devotion_aura');
   });
 
   it('carries Heart of the Lion and none of the buffs the raid preset refuses (round 3 C3)', () => {
