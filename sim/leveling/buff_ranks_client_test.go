@@ -222,3 +222,38 @@ func TestJudgementRanksMatchTheClient(t *testing.T) {
 		}
 	}
 }
+
+// Strength of Earth and Grace of Air Totem (fork sim/core/buff_ranks.go):
+// each rank's cast spell is learned at the rank's level, and the aura spell
+// its totem puts on the party states the rank's amount (aura 29: Strength,
+// misc 0; Agility, misc 1). Pinned against 70707, whose rows retuned both.
+func TestEarthAndAirTotemRanksMatchTheClient(t *testing.T) {
+	client := loadClassFrom(t, trueshotAuraSpellconstDir, "shaman")
+	totems := []struct {
+		label string
+		ranks core.BuffRanks
+		auras []int32
+		misc  int32
+	}{
+		{"Strength of Earth", core.StrengthOfEarthRanks, []int32{8076, 8162, 8163, 10441, 25362}, 0},
+		{"Grace of Air", core.GraceOfAirRanks, []int32{8836, 10626, 25360}, 1},
+	}
+	for _, totem := range totems {
+		if len(totem.auras) != len(totem.ranks) {
+			t.Fatalf("%s: %d aura spells for %d ranks", totem.label, len(totem.auras), len(totem.ranks))
+		}
+		for i, rank := range totem.ranks {
+			cast, ok := client.ByID(rank.SpellID)
+			if !ok || cast.SpellLevel != rank.Level {
+				t.Errorf("%s %d: client level %d (found %v), engine %d", totem.label, rank.SpellID, cast.SpellLevel, ok, rank.Level)
+			}
+			aura, ok := client.ByID(totem.auras[i])
+			if !ok {
+				t.Fatalf("%s aura %d is not in the client table", totem.label, totem.auras[i])
+			}
+			if amount := findEffect(aura, auraModStat, totem.misc).Amount; amount != rank.Amount {
+				t.Errorf("%s aura %d: engine amount %v, client %v", totem.label, aura.ID, rank.Amount, amount)
+			}
+		}
+	}
+}

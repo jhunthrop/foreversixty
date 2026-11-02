@@ -25,6 +25,7 @@ from pipeline.wowhead_items import (
     WowheadItem,
     class_allowed,
     load_items,
+    planner_stats,
     raw_path,
     supplement,
     to_gear_item,
@@ -58,6 +59,48 @@ def load_required_levels(build_dir: Path) -> dict[int, int]:
     if not path.exists():
         return {}
     return {item.id: item.required_level for item in load_items(path)}
+
+
+def load_payload_items(build_dir: Path) -> list[WowheadItem]:
+    """Every item the build's carried Wowhead payload names, or `[]` without one."""
+    path = raw_path(build_dir)
+    return load_items(path) if path.exists() else []
+
+
+def fill_client_equip_stats(
+    records: list[ClassItems], wowhead_items: list[WowheadItem]
+) -> list[ClassItems]:
+    """`records`, each client row carrying Wowhead's stat wherever its own is absent.
+
+    The planner's half of `pipeline.simdb.equip_fill`: a hotfix item's
+    ItemXItemEffect link never reaches the client tables, so its on-equip spell
+    damage and healing were in simdb (which the sim scores) but not in
+    items/<class>.json (which the planner shows). The rule is simdb's: only a
+    stat the client row leaves out is taken, a stated one is never overridden,
+    and only client rows (`stats_source` None) are touched."""
+    by_id = {item.id: item for item in wowhead_items}
+    filled = 0
+    out: list[ClassItems] = []
+    for record in records:
+        items = []
+        for item in record.items:
+            source = by_id.get(item.id)
+            missing = (
+                {
+                    key: amount
+                    for key, amount in planner_stats(source).items()
+                    if amount and not item.stats.get(key)
+                }
+                if source is not None and item.stats_source is None
+                else {}
+            )
+            if missing:
+                filled += 1
+                item = item.model_copy(update={"stats": {**item.stats, **missing}})
+            items.append(item)
+        out.append(record.model_copy(update={"items": items}))
+    logger.info("wowhead: filled on-equip stats on %d client class-item rows", filled)
+    return out
 
 
 def merge_items(items: list[Item], picked: list[WowheadItem]) -> list[Item]:

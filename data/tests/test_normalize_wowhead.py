@@ -22,7 +22,13 @@ from test_normalize_build import HERE, prepare
 from pipeline import wowhead_items as wh
 from pipeline.models import ClassItems, Item, ItemSetRecord
 from pipeline.normalize import normalize_build
-from pipeline.normalize.wowhead import load_supplement, merge_class_items, merge_items, merge_sets
+from pipeline.normalize.wowhead import (
+    fill_client_equip_stats,
+    load_supplement,
+    merge_class_items,
+    merge_items,
+    merge_sets,
+)
 
 FIXTURE = HERE / "fixtures" / "wowhead-gear-planner.js"
 #: The two ids test_wowhead_items.py already proved supplement() excludes: the belt
@@ -223,3 +229,71 @@ def test_normalize_build_joins_a_supplement_item_into_a_set_the_client_has(
     sets = json.loads((result.build_dir / "sets.json").read_text())
     battlegear = next(s for s in sets if s["id"] == 209)
     assert battlegear["item_ids"] == [16866, 16867, 271218]
+
+
+# --- On-equip stats a client row loses (sim-accuracy round 7) -----------------
+#
+# simdb already gives a client item Wowhead's on-equip stat wherever its own
+# row states zero (pipeline/simdb/equip_fill.py): a hotfix item's
+# ItemXItemEffect link never reaches the client tables. items/<class>.json is
+# what the planner shows, and it showed those items without the stat the sim
+# scores (Benediction 18608: no "+195 healing, +65 damage"; Staff of Jordan).
+
+
+_BENEDICTION = wh.WowheadItem(
+    id=18608,
+    name="Benediction",
+    quality=4,
+    item_level=75,
+    required_level=60,
+    class_id=2,
+    subclass_id=10,
+    inventory_type=17,
+    icon="inv_staff_30",
+    class_mask=16,
+    stats={"int": 31, "spi": 12, "sta": 10, "spldmg": 65, "splheal": 195},
+    set_id=None,
+    unique=True,
+    armor=0,
+    damage_min=89,
+    damage_max=155,
+    speed=3.0,
+    dps=40.67,
+)
+
+
+def _client_staff(stats: dict[str, int], stats_source: str | None = None) -> ClassItems:
+    """Benediction's client row: the client's own stats and none of Wowhead's."""
+    item = wh.to_gear_item(_BENEDICTION.model_copy(update={"stats": {}})).model_copy(
+        update={"stats": stats, "stats_source": stats_source}
+    )
+    return ClassItems(build="1.60.1.70707", class_slug="priest", items=[item])
+
+
+def test_a_client_item_takes_wowheads_equip_stats_where_its_row_has_none() -> None:
+    (record,) = fill_client_equip_stats(
+        [_client_staff({"intellect": 31, "spirit": 12, "stamina": 10})], [_BENEDICTION]
+    )
+    assert record.items[0].stats == {
+        "intellect": 31,
+        "spirit": 12,
+        "stamina": 10,
+        "spell_power": 65,
+        "healing": 195,
+    }
+
+
+def test_a_stat_the_client_row_states_is_never_overridden() -> None:
+    (record,) = fill_client_equip_stats(
+        [_client_staff({"intellect": 30, "healing": 100})], [_BENEDICTION]
+    )
+    assert record.items[0].stats["intellect"] == 30
+    assert record.items[0].stats["healing"] == 100
+    assert record.items[0].stats["spell_power"] == 65
+
+
+def test_a_supplement_row_and_an_unlisted_item_are_left_alone() -> None:
+    classicdb = _client_staff({"intellect": 31}, stats_source="classic-db")
+    assert fill_client_equip_stats([classicdb], [_BENEDICTION]) == [classicdb]
+    client = _client_staff({"intellect": 31})
+    assert fill_client_equip_stats([client], []) == [client]
