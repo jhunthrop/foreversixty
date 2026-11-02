@@ -3711,6 +3711,12 @@
             "name": "Wrath",
             "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
             "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 5177,
+            "name": "Wrath",
+            "condition": "Wrath as the filler while the mana pool is behind the fight's pace and Innervate is cooling down.",
+            "icon": "spell_nature_abolishmagic"
           }
         ]
       },
@@ -3748,6 +3754,12 @@
             "icon": "spell_nature_abolishmagic"
           },
           {
+            "spell_id": 5178,
+            "name": "Wrath",
+            "condition": "Wrath as the filler while the mana pool is behind the fight's pace and Innervate is cooling down.",
+            "icon": "spell_nature_abolishmagic"
+          },
+          {
             "spell_id": 2912,
             "name": "Starfire",
             "condition": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
@@ -3759,33 +3771,39 @@
         "level": 30,
         "lines": [
           {
-            "spell_id": 8927,
+            "spell_id": 8925,
             "name": "Moonfire",
             "condition": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
             "icon": "spell_nature_starfall"
           },
           {
-            "spell_id": 5180,
+            "spell_id": 5179,
             "name": "Wrath",
             "condition": "When the next Starfire would not finish before the fight ends: Wrath still does.",
             "icon": "spell_nature_abolishmagic"
           },
           {
-            "spell_id": 8927,
+            "spell_id": 8925,
             "name": "Moonfire",
             "condition": "Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.",
             "icon": "spell_nature_starfall"
           },
           {
-            "spell_id": 24974,
+            "spell_id": 5570,
             "name": "Insect Swarm",
             "condition": "Keep Insect Swarm ticking; each refresh costs one global.",
             "icon": "spell_nature_insectswarm"
           },
           {
-            "spell_id": 5180,
+            "spell_id": 5179,
             "name": "Wrath",
             "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
+            "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 5179,
+            "name": "Wrath",
+            "condition": "Wrath as the filler while the mana pool is behind the fight's pace and Innervate is cooling down.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -3800,33 +3818,39 @@
         "level": 38,
         "lines": [
           {
-            "spell_id": 8928,
+            "spell_id": 8925,
             "name": "Moonfire",
             "condition": "When less time is left than a Wrath takes to cast, only an instant lands in time; Moonfire's direct damage is the best instant.",
             "icon": "spell_nature_starfall"
           },
           {
-            "spell_id": 6780,
+            "spell_id": 5179,
             "name": "Wrath",
             "condition": "When the next Starfire would not finish before the fight ends: Wrath still does.",
             "icon": "spell_nature_abolishmagic"
           },
           {
-            "spell_id": 8928,
+            "spell_id": 8925,
             "name": "Moonfire",
             "condition": "Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.",
             "icon": "spell_nature_starfall"
           },
           {
-            "spell_id": 24974,
+            "spell_id": 5570,
             "name": "Insect Swarm",
             "condition": "Keep Insect Swarm ticking; each refresh costs one global.",
             "icon": "spell_nature_insectswarm"
           },
           {
-            "spell_id": 6780,
+            "spell_id": 5179,
             "name": "Wrath",
             "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
+            "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 5179,
+            "name": "Wrath",
+            "condition": "Wrath as the filler while the mana pool is behind the fight's pace and Innervate is cooling down.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -3871,6 +3895,12 @@
             "icon": "spell_nature_abolishmagic"
           },
           {
+            "spell_id": 6780,
+            "name": "Wrath",
+            "condition": "Wrath as the filler while the mana pool is behind the fight's pace and Innervate is cooling down.",
+            "icon": "spell_nature_abolishmagic"
+          },
+          {
             "spell_id": 8950,
             "name": "Starfire",
             "condition": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
@@ -3909,6 +3939,12 @@
             "spell_id": 8905,
             "name": "Wrath",
             "condition": "Eclipse (the talent): with no Eclipse charge banked, Wrath.",
+            "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 8905,
+            "name": "Wrath",
+            "condition": "Wrath as the filler while the mana pool is behind the fight's pace and Innervate is cooling down.",
             "icon": "spell_nature_abolishmagic"
           },
           {
@@ -3953,7 +3989,13 @@
             "icon": "spell_nature_abolishmagic"
           },
           {
-            "spell_id": 25298,
+            "spell_id": 9912,
+            "name": "Wrath",
+            "condition": "Wrath as the filler while the mana pool is behind the fight's pace and Innervate is cooling down.",
+            "icon": "spell_nature_abolishmagic"
+          },
+          {
+            "spell_id": 9876,
             "name": "Starfire",
             "condition": "Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.",
             "icon": "spell_arcane_starfire"
@@ -3989,6 +4031,12 @@
         "level": 20,
         "lines": [
           {
+            "spell_id": 770,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Cat Form whenever the target lacks it: Forever's Cat Form (Passive) makes it free with a 6 second cooldown and a 1 second global cooldown, so a cat keeps its own armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 8925,
             "name": "Moonfire",
             "condition": "Below level 20, before Cat Form is learned, keep Moonfire ticking -- the same upkeep line Balance uses.",
@@ -4015,13 +4063,13 @@
           {
             "spell_id": 5221,
             "name": "Shred",
-            "condition": "Shred builds combo points the rest of the time.",
+            "condition": "Shred builds combo points the rest of the time, from level 24 (Ferocious Bite's first rank is the level marker).",
             "icon": "spell_shadow_vampiricaura"
           },
           {
             "spell_id": 1082,
             "name": "Claw",
-            "condition": "Claw is the fallback builder below level 22, before Shred is learned.",
+            "condition": "Claw builds combo points below level 24, before Ferocious Bite: rank 1 Shred, learned at 20 since client 1.60.1.70707, does less there (see the Shred line).",
             "icon": "ability_druid_rake"
           }
         ]
@@ -4029,6 +4077,12 @@
       {
         "level": 30,
         "lines": [
+          {
+            "spell_id": 778,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Cat Form whenever the target lacks it: Forever's Cat Form (Passive) makes it free with a 6 second cooldown and a 1 second global cooldown, so a cat keeps its own armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
+          },
           {
             "spell_id": 8927,
             "name": "Moonfire",
@@ -4062,13 +4116,13 @@
           {
             "spell_id": 6800,
             "name": "Shred",
-            "condition": "Shred builds combo points the rest of the time.",
+            "condition": "Shred builds combo points the rest of the time, from level 24 (Ferocious Bite's first rank is the level marker).",
             "icon": "spell_shadow_vampiricaura"
           },
           {
             "spell_id": 3029,
             "name": "Claw",
-            "condition": "Claw is the fallback builder below level 22, before Shred is learned.",
+            "condition": "Claw builds combo points below level 24, before Ferocious Bite: rank 1 Shred, learned at 20 since client 1.60.1.70707, does less there (see the Shred line).",
             "icon": "ability_druid_rake"
           }
         ]
@@ -4081,6 +4135,12 @@
             "name": "Ravage",
             "condition": "Open with Ravage from Prowl at the pull.",
             "icon": "ability_druid_ravage"
+          },
+          {
+            "spell_id": 778,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Cat Form whenever the target lacks it: Forever's Cat Form (Passive) makes it free with a 6 second cooldown and a 1 second global cooldown, so a cat keeps its own armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 8928,
@@ -4115,13 +4175,13 @@
           {
             "spell_id": 8992,
             "name": "Shred",
-            "condition": "Shred builds combo points the rest of the time.",
+            "condition": "Shred builds combo points the rest of the time, from level 24 (Ferocious Bite's first rank is the level marker).",
             "icon": "spell_shadow_vampiricaura"
           },
           {
             "spell_id": 5201,
             "name": "Claw",
-            "condition": "Claw is the fallback builder below level 22, before Shred is learned.",
+            "condition": "Claw builds combo points below level 24, before Ferocious Bite: rank 1 Shred, learned at 20 since client 1.60.1.70707, does less there (see the Shred line).",
             "icon": "ability_druid_rake"
           }
         ]
@@ -4134,6 +4194,12 @@
             "name": "Ravage",
             "condition": "Open with Ravage from Prowl at the pull.",
             "icon": "ability_druid_ravage"
+          },
+          {
+            "spell_id": 778,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Cat Form whenever the target lacks it: Forever's Cat Form (Passive) makes it free with a 6 second cooldown and a 1 second global cooldown, so a cat keeps its own armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 8929,
@@ -4168,13 +4234,13 @@
           {
             "spell_id": 8992,
             "name": "Shred",
-            "condition": "Shred builds combo points the rest of the time.",
+            "condition": "Shred builds combo points the rest of the time, from level 24 (Ferocious Bite's first rank is the level marker).",
             "icon": "spell_shadow_vampiricaura"
           },
           {
             "spell_id": 5201,
             "name": "Claw",
-            "condition": "Claw is the fallback builder below level 22, before Shred is learned.",
+            "condition": "Claw builds combo points below level 24, before Ferocious Bite: rank 1 Shred, learned at 20 since client 1.60.1.70707, does less there (see the Shred line).",
             "icon": "ability_druid_rake"
           }
         ]
@@ -4187,6 +4253,12 @@
             "name": "Ravage",
             "condition": "Open with Ravage from Prowl at the pull.",
             "icon": "ability_druid_ravage"
+          },
+          {
+            "spell_id": 9749,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Cat Form whenever the target lacks it: Forever's Cat Form (Passive) makes it free with a 6 second cooldown and a 1 second global cooldown, so a cat keeps its own armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9833,
@@ -4221,13 +4293,13 @@
           {
             "spell_id": 9829,
             "name": "Shred",
-            "condition": "Shred builds combo points the rest of the time.",
+            "condition": "Shred builds combo points the rest of the time, from level 24 (Ferocious Bite's first rank is the level marker).",
             "icon": "spell_shadow_vampiricaura"
           },
           {
             "spell_id": 9849,
             "name": "Claw",
-            "condition": "Claw is the fallback builder below level 22, before Shred is learned.",
+            "condition": "Claw builds combo points below level 24, before Ferocious Bite: rank 1 Shred, learned at 20 since client 1.60.1.70707, does less there (see the Shred line).",
             "icon": "ability_druid_rake"
           }
         ]
@@ -4240,6 +4312,12 @@
             "name": "Ravage",
             "condition": "Open with Ravage from Prowl at the pull.",
             "icon": "ability_druid_ravage"
+          },
+          {
+            "spell_id": 9907,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Cat Form whenever the target lacks it: Forever's Cat Form (Passive) makes it free with a 6 second cooldown and a 1 second global cooldown, so a cat keeps its own armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 9835,
@@ -4266,7 +4344,7 @@
             "icon": "ability_ghoulfrenzy"
           },
           {
-            "spell_id": 31018,
+            "spell_id": 22829,
             "name": "Ferocious Bite",
             "condition": "At 5 combo points with Rip having more than 6 seconds left, Ferocious Bite dumps them instead of capping out.",
             "icon": "ability_druid_ferociousbite"
@@ -4274,13 +4352,13 @@
           {
             "spell_id": 9830,
             "name": "Shred",
-            "condition": "Shred builds combo points the rest of the time.",
+            "condition": "Shred builds combo points the rest of the time, from level 24 (Ferocious Bite's first rank is the level marker).",
             "icon": "spell_shadow_vampiricaura"
           },
           {
             "spell_id": 9850,
             "name": "Claw",
-            "condition": "Claw is the fallback builder below level 22, before Shred is learned.",
+            "condition": "Claw builds combo points below level 24, before Ferocious Bite: rank 1 Shred, learned at 20 since client 1.60.1.70707, does less there (see the Shred line).",
             "icon": "ability_druid_rake"
           }
         ]
@@ -4301,6 +4379,12 @@
       {
         "level": 20,
         "lines": [
+          {
+            "spell_id": 770,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Bear Form whenever the target lacks it: free in form with a 6 second cooldown (Bear Form (Passive)), and it carries threat in Bear Form since the 15 October beta notes; it keeps the armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
+          },
           {
             "spell_id": 6808,
             "name": "Maul",
@@ -4323,6 +4407,12 @@
             "name": "Lacerate",
             "condition": "Lacerate (a Feral talent since client 1.60.1.70707) to start the bleed, to build it to five stacks, and again when under 3 s remain; the bleed is what turns on Rend and Tear, and since 70707 its hit is 10% weapon damage per stack already up, so building to five measured about 3% more threat and 2% more damage in the tank fight than refreshing at one stack.",
             "icon": "ability_druid_lacerate"
+          },
+          {
+            "spell_id": 778,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Bear Form whenever the target lacks it: free in form with a 6 second cooldown (Bear Form (Passive)), and it carries threat in Bear Form since the 15 October beta notes; it keeps the armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 6809,
@@ -4352,6 +4442,12 @@
             "name": "Lacerate",
             "condition": "Lacerate (a Feral talent since client 1.60.1.70707) to start the bleed, to build it to five stacks, and again when under 3 s remain; the bleed is what turns on Rend and Tear, and since 70707 its hit is 10% weapon damage per stack already up, so building to five measured about 3% more threat and 2% more damage in the tank fight than refreshing at one stack.",
             "icon": "ability_druid_lacerate"
+          },
+          {
+            "spell_id": 778,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Bear Form whenever the target lacks it: free in form with a 6 second cooldown (Bear Form (Passive)), and it carries threat in Bear Form since the 15 October beta notes; it keeps the armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 8972,
@@ -4387,6 +4483,12 @@
             "name": "Lacerate",
             "condition": "Lacerate (a Feral talent since client 1.60.1.70707) to start the bleed, to build it to five stacks, and again when under 3 s remain; the bleed is what turns on Rend and Tear, and since 70707 its hit is 10% weapon damage per stack already up, so building to five measured about 3% more threat and 2% more damage in the tank fight than refreshing at one stack.",
             "icon": "ability_druid_lacerate"
+          },
+          {
+            "spell_id": 778,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Bear Form whenever the target lacks it: free in form with a 6 second cooldown (Bear Form (Passive)), and it carries threat in Bear Form since the 15 October beta notes; it keeps the armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 8972,
@@ -4430,6 +4532,12 @@
             "icon": "ability_druid_lacerate"
           },
           {
+            "spell_id": 9749,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Bear Form whenever the target lacks it: free in form with a 6 second cooldown (Bear Form (Passive)), and it carries threat in Bear Form since the 15 October beta notes; it keeps the armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 9880,
             "name": "Maul",
             "condition": "Queue Maul on the next swing whenever 15 rage is on hand, which keeps the rest for Primal Bite and Lacerate.",
@@ -4471,6 +4579,12 @@
             "icon": "ability_druid_lacerate"
           },
           {
+            "spell_id": 9907,
+            "name": "Faerie Fire",
+            "condition": "Faerie Fire in Bear Form whenever the target lacks it: free in form with a 6 second cooldown (Bear Form (Passive)), and it carries threat in Bear Form since the 15 October beta notes; it keeps the armor reduction up when no raid Faerie Fire is on the target (tag 1 is the in-form cast).",
+            "icon": "inv_misc_questionmark"
+          },
+          {
             "spell_id": 9881,
             "name": "Maul",
             "condition": "Queue Maul on the next swing whenever 15 rage is on hand, which keeps the rest for Primal Bite and Lacerate.",
@@ -4504,7 +4618,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
+            "condition": "Swiftmend whenever the tank is under 75%, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4569,7 +4683,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
+            "condition": "Swiftmend whenever the tank is under 75%, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4640,7 +4754,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
+            "condition": "Swiftmend whenever the tank is under 75%, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4656,7 +4770,7 @@
             "icon": "spell_nature_resistnature"
           },
           {
-            "spell_id": 417061,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
@@ -4668,31 +4782,31 @@
             "icon": "spell_nature_healingtouch"
           },
           {
-            "spell_id": 417061,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417061,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "A hurt party member gets Rejuvenation, at the same pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417061,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417061,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417061,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
@@ -4717,7 +4831,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
+            "condition": "Swiftmend whenever the tank is under 75%, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4733,7 +4847,7 @@
             "icon": "spell_nature_resistnature"
           },
           {
-            "spell_id": 417062,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
@@ -4745,31 +4859,31 @@
             "icon": "spell_nature_healingtouch"
           },
           {
-            "spell_id": 417062,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417062,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "A hurt party member gets Rejuvenation, at the same pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417062,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417062,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417062,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
@@ -4800,7 +4914,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
+            "condition": "Swiftmend whenever the tank is under 75%, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4816,7 +4930,7 @@
             "icon": "spell_nature_resistnature"
           },
           {
-            "spell_id": 417063,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
@@ -4828,31 +4942,31 @@
             "icon": "spell_nature_healingtouch"
           },
           {
-            "spell_id": 417063,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417063,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "A hurt party member gets Rejuvenation, at the same pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417063,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417063,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417063,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
@@ -4883,7 +4997,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
+            "condition": "Swiftmend whenever the tank is under 75%, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4899,7 +5013,7 @@
             "icon": "spell_nature_resistnature"
           },
           {
-            "spell_id": 417064,
+            "spell_id": 9839,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
@@ -4911,31 +5025,31 @@
             "icon": "spell_nature_healingtouch"
           },
           {
-            "spell_id": 417064,
+            "spell_id": 9839,
             "name": "Rejuvenation",
             "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417064,
+            "spell_id": 9839,
             "name": "Rejuvenation",
             "condition": "A hurt party member gets Rejuvenation, at the same pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417064,
+            "spell_id": 9839,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417064,
+            "spell_id": 9839,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417064,
+            "spell_id": 9839,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
@@ -4958,7 +5072,7 @@
             "icon": "spell_nature_ravenform"
           },
           {
-            "spell_id": 25297,
+            "spell_id": 9889,
             "name": "Healing Touch",
             "condition": "Gated on knowing the spell as well: a druid without the talent has no Nature's Swiftness aura, and an unresolved condition would let this cast run unconditionally.",
             "icon": "spell_nature_healingtouch"
@@ -4966,7 +5080,7 @@
           {
             "spell_id": 18562,
             "name": "Swiftmend",
-            "condition": "Swiftmend as the last-ditch button under 30%: it eats the tank's Rejuvenation or Regrowth with the least time left for its whole heal at once, paced like Healing Touch.",
+            "condition": "Swiftmend whenever the tank is under 75%, paced like Healing Touch.",
             "icon": "inv_relics_idolofrejuvenation"
           },
           {
@@ -4976,49 +5090,49 @@
             "icon": "spell_nature_tranquility"
           },
           {
-            "spell_id": 436946,
+            "spell_id": 9858,
             "name": "Regrowth",
             "condition": "The tank's two heals over time stay up for the whole fight: Regrowth is the most healing per mana in the kit and Rejuvenation stacks with it.",
             "icon": "spell_nature_resistnature"
           },
           {
-            "spell_id": 417068,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 25297,
+            "spell_id": 9889,
             "name": "Healing Touch",
             "condition": "Healing Touch is the big direct heal; it is paced so the mana lasts: only while the mana bar is above the share of the fight still to come.",
             "icon": "spell_nature_healingtouch"
           },
           {
-            "spell_id": 417068,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "You are one of the five: a hurt healer gets Rejuvenation at the party pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417068,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "A hurt party member gets Rejuvenation, at the same pace.",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417068,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417068,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
           },
           {
-            "spell_id": 417068,
+            "spell_id": 2090,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation"
@@ -5033,7 +5147,7 @@
           {
             "spell_id": 13549,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
+            "condition": "Serpent Sting kept up whenever it is about to fall off (under 1.5 s left, so a refresh drops at most its last tick; refreshing under 5 s clipped a tick a cast) and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
             "icon": "ability_hunter_quickshot"
           },
           {
@@ -5056,7 +5170,7 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
+            "condition": "Serpent Sting kept up whenever it is about to fall off (under 1.5 s left, so a refresh drops at most its last tick; refreshing under 5 s clipped a tick a cast) and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
             "icon": "ability_hunter_quickshot"
           },
           {
@@ -5085,7 +5199,7 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
+            "condition": "Serpent Sting kept up whenever it is about to fall off (under 1.5 s left, so a refresh drops at most its last tick; refreshing under 5 s clipped a tick a cast) and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
             "icon": "ability_hunter_quickshot"
           },
           {
@@ -5114,7 +5228,7 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
+            "condition": "Serpent Sting kept up whenever it is about to fall off (under 1.5 s left, so a refresh drops at most its last tick; refreshing under 5 s clipped a tick a cast) and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
             "icon": "ability_hunter_quickshot"
           },
           {
@@ -5149,7 +5263,7 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
+            "condition": "Serpent Sting kept up whenever it is about to fall off (under 1.5 s left, so a refresh drops at most its last tick; refreshing under 5 s clipped a tick a cast) and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
             "icon": "ability_hunter_quickshot"
           },
           {
@@ -5184,7 +5298,7 @@
           {
             "spell_id": 13554,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
+            "condition": "Serpent Sting kept up whenever it is about to fall off (under 1.5 s left, so a refresh drops at most its last tick; refreshing under 5 s clipped a tick a cast) and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
             "icon": "ability_hunter_quickshot"
           },
           {
@@ -5217,9 +5331,9 @@
             "icon": "ability_upgrademoonglaive"
           },
           {
-            "spell_id": 25295,
+            "spell_id": 13555,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
+            "condition": "Serpent Sting kept up whenever it is about to fall off (under 1.5 s left, so a refresh drops at most its last tick; refreshing under 5 s clipped a tick a cast) and Multi-Shot is not about to come off cooldown: the cited guide's own rotation step, not skipped.",
             "icon": "ability_hunter_quickshot"
           },
           {
@@ -5383,7 +5497,7 @@
           {
             "spell_id": 415336,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below.",
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), with no mana gate (the condition is always true): a 20% mana gate that once protected Mongoose Bite measured as a small loss.",
             "icon": "ability_meleedamage"
           }
         ]
@@ -5394,7 +5508,7 @@
           {
             "spell_id": 415337,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below.",
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), with no mana gate (the condition is always true): a 20% mana gate that once protected Mongoose Bite measured as a small loss.",
             "icon": "ability_meleedamage"
           },
           {
@@ -5423,7 +5537,7 @@
           {
             "spell_id": 415338,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below.",
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), with no mana gate (the condition is always true): a 20% mana gate that once protected Mongoose Bite measured as a small loss.",
             "icon": "ability_meleedamage"
           },
           {
@@ -5470,7 +5584,7 @@
           {
             "spell_id": 415340,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below.",
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), with no mana gate (the condition is always true): a 20% mana gate that once protected Mongoose Bite measured as a small loss.",
             "icon": "ability_meleedamage"
           },
           {
@@ -5517,7 +5631,7 @@
           {
             "spell_id": 415341,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below.",
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), with no mana gate (the condition is always true): a 20% mana gate that once protected Mongoose Bite measured as a small loss.",
             "icon": "ability_meleedamage"
           },
           {
@@ -5564,7 +5678,7 @@
           {
             "spell_id": 415342,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below.",
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), with no mana gate (the condition is always true): a 20% mana gate that once protected Mongoose Bite measured as a small loss.",
             "icon": "ability_meleedamage"
           },
           {
@@ -5609,9 +5723,9 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 415343,
+            "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below.",
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), with no mana gate (the condition is always true): a 20% mana gate that once protected Mongoose Bite measured as a small loss.",
             "icon": "ability_meleedamage"
           },
           {
@@ -5645,7 +5759,7 @@
             "icon": "spell_fire_flameshock"
           },
           {
-            "spell_id": 27633,
+            "spell_id": 14268,
             "name": "Wing Clip",
             "condition": "Wing Clip on every free global, only while a Windfury Totem reaches the hunter (the gate asks whether the engine registered the totem's attack power buff, spell 10610, so a character with no totem skips the line): a cheap main-hand special that rolls the totem's extra attack and any weapon proc, which the other lines leave idle.",
             "icon": "ability_rogue_trip"
@@ -5687,6 +5801,12 @@
         "level": 20,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 12042,
             "name": "Arcane Power",
             "condition": "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own.",
@@ -5722,6 +5842,12 @@
         "level": 30,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 12042,
             "name": "Arcane Power",
             "condition": "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own.",
@@ -5746,7 +5872,7 @@
             "icon": "spell_arcane_blast"
           },
           {
-            "spell_id": 8406,
+            "spell_id": 7322,
             "name": "Frostbolt",
             "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
@@ -5756,6 +5882,12 @@
       {
         "level": 38,
         "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
           {
             "spell_id": 12042,
             "name": "Arcane Power",
@@ -5781,7 +5913,7 @@
             "icon": "spell_arcane_blast"
           },
           {
-            "spell_id": 8408,
+            "spell_id": 7322,
             "name": "Frostbolt",
             "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
@@ -5791,6 +5923,12 @@
       {
         "level": 40,
         "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
           {
             "spell_id": 12042,
             "name": "Arcane Power",
@@ -5827,6 +5965,12 @@
         "level": 50,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 12042,
             "name": "Arcane Power",
             "condition": "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own.",
@@ -5862,6 +6006,12 @@
         "level": 60,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 12042,
             "name": "Arcane Power",
             "condition": "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own.",
@@ -5874,7 +6024,7 @@
             "icon": "spell_nature_enchantarmor"
           },
           {
-            "spell_id": 25345,
+            "spell_id": 10212,
             "name": "Arcane Missiles",
             "condition": "Missile Barrage is the talent proc that empowers your next Arcane Missiles cast -- fire the empowered Missiles under it, where the Arcane guide places the payoff.",
             "icon": "spell_nature_starfall"
@@ -5886,7 +6036,7 @@
             "icon": "spell_arcane_blast"
           },
           {
-            "spell_id": 25304,
+            "spell_id": 10181,
             "name": "Frostbolt",
             "condition": "Frostbolt is the filler once the Blast line stops.",
             "icon": "spell_frost_frostbolt02"
@@ -5918,7 +6068,7 @@
           {
             "spell_id": 12051,
             "name": "Evocation",
-            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
             "icon": "spell_nature_purge"
           },
           {
@@ -5947,11 +6097,11 @@
           {
             "spell_id": 12051,
             "name": "Evocation",
-            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
             "icon": "spell_nature_purge"
           },
           {
-            "spell_id": 8444,
+            "spell_id": 2948,
             "name": "Scorch",
             "condition": "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.",
             "icon": "spell_fire_soulburn"
@@ -5969,7 +6119,7 @@
             "icon": "spell_fire_fireball"
           },
           {
-            "spell_id": 8444,
+            "spell_id": 2948,
             "name": "Scorch",
             "condition": "Scorch is the filler: at 150 mana for a 1.5 second cast it spends mana far more efficiently than Fireball (395 mana for 3 seconds), and a Fire mage is mana-bound well before a fight ends.",
             "icon": "spell_fire_soulburn"
@@ -5988,11 +6138,11 @@
           {
             "spell_id": 12051,
             "name": "Evocation",
-            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
             "icon": "spell_nature_purge"
           },
           {
-            "spell_id": 8445,
+            "spell_id": 2948,
             "name": "Scorch",
             "condition": "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.",
             "icon": "spell_fire_soulburn"
@@ -6010,7 +6160,7 @@
             "icon": "spell_fire_fireball"
           },
           {
-            "spell_id": 8445,
+            "spell_id": 2948,
             "name": "Scorch",
             "condition": "Scorch is the filler: at 150 mana for a 1.5 second cast it spends mana far more efficiently than Fireball (395 mana for 3 seconds), and a Fire mage is mana-bound well before a fight ends.",
             "icon": "spell_fire_soulburn"
@@ -6029,7 +6179,7 @@
           {
             "spell_id": 12051,
             "name": "Evocation",
-            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
             "icon": "spell_nature_purge"
           },
           {
@@ -6039,7 +6189,7 @@
             "icon": "spell_fire_sealoffire"
           },
           {
-            "spell_id": 8446,
+            "spell_id": 2948,
             "name": "Scorch",
             "condition": "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.",
             "icon": "spell_fire_soulburn"
@@ -6051,13 +6201,13 @@
             "icon": "spell_fire_fireball02"
           },
           {
-            "spell_id": 400621,
+            "spell_id": 8412,
             "name": "Fire Blast",
             "condition": "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts.",
             "icon": "spell_fire_fireball"
           },
           {
-            "spell_id": 8446,
+            "spell_id": 2948,
             "name": "Scorch",
             "condition": "Scorch is the filler: at 150 mana for a 1.5 second cast it spends mana far more efficiently than Fireball (395 mana for 3 seconds), and a Fire mage is mana-bound well before a fight ends.",
             "icon": "spell_fire_soulburn"
@@ -6076,7 +6226,7 @@
           {
             "spell_id": 12051,
             "name": "Evocation",
-            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
             "icon": "spell_nature_purge"
           },
           {
@@ -6086,7 +6236,7 @@
             "icon": "spell_fire_sealoffire"
           },
           {
-            "spell_id": 10205,
+            "spell_id": 2948,
             "name": "Scorch",
             "condition": "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.",
             "icon": "spell_fire_soulburn"
@@ -6104,7 +6254,7 @@
             "icon": "spell_fire_fireball"
           },
           {
-            "spell_id": 10205,
+            "spell_id": 2948,
             "name": "Scorch",
             "condition": "Scorch is the filler: at 150 mana for a 1.5 second cast it spends mana far more efficiently than Fireball (395 mana for 3 seconds), and a Fire mage is mana-bound well before a fight ends.",
             "icon": "spell_fire_soulburn"
@@ -6123,7 +6273,7 @@
           {
             "spell_id": 12051,
             "name": "Evocation",
-            "condition": "Evocation below 5% mana: once Clearcasting pays for one spell rather than fifteen seconds of them, a Fire mage runs dry well before a long fight ends, and Evocation is the only mana cooldown the class has.",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
             "icon": "spell_nature_purge"
           },
           {
@@ -6145,7 +6295,7 @@
             "icon": "spell_fire_fireball02"
           },
           {
-            "spell_id": 400623,
+            "spell_id": 10199,
             "name": "Fire Blast",
             "condition": "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts.",
             "icon": "spell_fire_fireball"
@@ -6157,7 +6307,7 @@
             "icon": "spell_fire_soulburn"
           },
           {
-            "spell_id": 25306,
+            "spell_id": 10151,
             "name": "Fireball",
             "condition": "Fireball only before Scorch is trained (it comes at level 22), where Scorch cannot be cast and the list would otherwise have no filler.",
             "icon": "spell_fire_flamebolt"
@@ -6187,6 +6337,12 @@
         "level": 20,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 1312002,
             "name": "Ice Lance",
             "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.",
@@ -6209,6 +6365,12 @@
       {
         "level": 30,
         "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
           {
             "spell_id": 400640,
             "name": "Ice Lance",
@@ -6239,6 +6401,12 @@
         "level": 38,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 1240044,
             "name": "Ice Lance",
             "condition": "Ice Lance on a Fingers of Frost charge: the charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.",
@@ -6267,6 +6435,12 @@
       {
         "level": 40,
         "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
           {
             "spell_id": 11426,
             "name": "Ice Barrier",
@@ -6303,6 +6477,12 @@
         "level": 50,
         "lines": [
           {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
+          {
             "spell_id": 13031,
             "name": "Ice Barrier",
             "condition": "Keep Ice Barrier up: the talent adds 15% Frost damage for a minute after a cast and another 5% while the shield holds (client 1.60.1.70707).",
@@ -6338,7 +6518,13 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 1213278,
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when mana is nearly gone and at least 30 seconds of the fight are left: it is every mage's mana cooldown from level 20 (an 8 second channel at +1500% mana regeneration, 8 minute cooldown), so a mage that runs dry casts it instead of wanding.",
+            "icon": "spell_nature_purge"
+          },
+          {
+            "spell_id": 13033,
             "name": "Ice Barrier",
             "condition": "Keep Ice Barrier up: the talent adds 15% Frost damage for a minute after a cast and another 5% while the shield holds (client 1.60.1.70707).",
             "icon": "spell_ice_lament"
@@ -6350,7 +6536,7 @@
             "icon": "spell_frost_frostblast"
           },
           {
-            "spell_id": 25345,
+            "spell_id": 10212,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles on a Missile Barrage proc, raid build only (needs the talent).",
             "icon": "spell_nature_starfall"
@@ -6362,7 +6548,7 @@
             "icon": "spell_frost_glacier"
           },
           {
-            "spell_id": 25304,
+            "spell_id": 10181,
             "name": "Frostbolt",
             "condition": "Frostbolt is the filler between Fingers of Frost charges.",
             "icon": "spell_frost_frostbolt02"
@@ -6377,7 +6563,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "Holy Light (rank 9) is the big heal and the only one that outheals the tank by itself.",
+            "condition": "Holy Light (rank 8, the top rank a trainer teaches: rank 9 is an Ahn'Qiraj book) is the big heal and the only one that outheals the tank by itself.",
             "icon": "spell_holy_holybolt"
           },
           {
@@ -6394,7 +6580,7 @@
           {
             "spell_id": 647,
             "name": "Holy Light",
-            "condition": "Holy Light (rank 9) is the big heal and the only one that outheals the tank by itself.",
+            "condition": "Holy Light (rank 8, the top rank a trainer teaches: rank 9 is an Ahn'Qiraj book) is the big heal and the only one that outheals the tank by itself.",
             "icon": "spell_holy_holybolt"
           },
           {
@@ -6447,7 +6633,7 @@
           {
             "spell_id": 1042,
             "name": "Holy Light",
-            "condition": "Holy Light (rank 9) is the big heal and the only one that outheals the tank by itself.",
+            "condition": "Holy Light (rank 8, the top rank a trainer teaches: rank 9 is an Ahn'Qiraj book) is the big heal and the only one that outheals the tank by itself.",
             "icon": "spell_holy_holybolt"
           },
           {
@@ -6493,7 +6679,7 @@
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 19939,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "spell_holy_flashheal"
@@ -6536,7 +6722,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "Holy Light (rank 9) is the big heal and the only one that outheals the tank by itself.",
+            "condition": "Holy Light (rank 8, the top rank a trainer teaches: rank 9 is an Ahn'Qiraj book) is the big heal and the only one that outheals the tank by itself.",
             "icon": "spell_holy_holybolt"
           },
           {
@@ -6582,7 +6768,7 @@
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 19940,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "spell_holy_flashheal"
@@ -6625,7 +6811,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "Holy Light (rank 9) is the big heal and the only one that outheals the tank by itself.",
+            "condition": "Holy Light (rank 8, the top rank a trainer teaches: rank 9 is an Ahn'Qiraj book) is the big heal and the only one that outheals the tank by itself.",
             "icon": "spell_holy_holybolt"
           },
           {
@@ -6635,43 +6821,43 @@
             "icon": "spell_holy_holybolt"
           },
           {
-            "spell_id": 20473,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple.",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20473,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20473,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20473,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20473,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20473,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 19940,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "spell_holy_flashheal"
@@ -6714,7 +6900,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "Holy Light (rank 9) is the big heal and the only one that outheals the tank by itself.",
+            "condition": "Holy Light (rank 8, the top rank a trainer teaches: rank 9 is an Ahn'Qiraj book) is the big heal and the only one that outheals the tank by itself.",
             "icon": "spell_holy_holybolt"
           },
           {
@@ -6724,73 +6910,73 @@
             "icon": "spell_holy_holybolt"
           },
           {
-            "spell_id": 20929,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple.",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20929,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20929,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20929,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20929,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20929,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 19942,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19942,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19942,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19942,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19942,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19942,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "",
             "icon": "spell_holy_flashheal"
@@ -6801,85 +6987,85 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 25292,
+            "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "Holy Light (rank 9) is the big heal and the only one that outheals the tank by itself.",
+            "condition": "Holy Light (rank 8, the top rank a trainer teaches: rank 9 is an Ahn'Qiraj book) is the big heal and the only one that outheals the tank by itself.",
             "icon": "spell_holy_holybolt"
           },
           {
-            "spell_id": 25292,
+            "spell_id": 10329,
             "name": "Holy Light",
             "condition": "Surplus mana buys throughput: Holy Light on a tank below 70 percent, but only while mana is no more than five points behind the fight clock.",
             "icon": "spell_holy_holybolt"
           },
           {
-            "spell_id": 20930,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple.",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20930,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20930,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20930,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20930,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 20930,
+            "spell_id": 1311606,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight"
           },
           {
-            "spell_id": 19943,
+            "spell_id": 19750,
             "name": "Flash of Light",
             "condition": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19943,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "You are one of the five party members the raid pulses reach; you are healed like the other four.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19943,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19943,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19943,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 19943,
+            "spell_id": 19941,
             "name": "Flash of Light",
             "condition": "",
             "icon": "spell_holy_flashheal"
@@ -7140,7 +7326,7 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
-            "spell_id": 20922,
+            "spell_id": 26573,
             "name": "Consecration",
             "condition": "Consecration last and only above half mana: about one threat per mana against ten for Hammer of the Righteous, so it is the use of mana the tank has to spare.",
             "icon": "spell_holy_innerfire"
@@ -7205,7 +7391,7 @@
             "icon": "spell_holy_excorcism_02"
           },
           {
-            "spell_id": 20923,
+            "spell_id": 26573,
             "name": "Consecration",
             "condition": "Consecration last and only above half mana: about one threat per mana against ten for Hammer of the Righteous, so it is the use of mana the tank has to spare.",
             "icon": "spell_holy_innerfire"
@@ -7264,7 +7450,7 @@
             "icon": "spell_holy_righteousfury"
           },
           {
-            "spell_id": 415073,
+            "spell_id": 10314,
             "name": "Exorcism",
             "condition": "Exorcism on Undead and Demons only; the engine refuses it on any other target.",
             "icon": "spell_holy_excorcism_02"
@@ -7344,7 +7530,7 @@
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "condition": "Consecration last, while the mana left after it still pays for the seal, Judgement and Holy Strike and the pool is no more than a fifth behind the fight's pace.",
             "icon": "spell_holy_innerfire"
           }
         ]
@@ -7389,9 +7575,9 @@
             "icon": "classicon_paladin"
           },
           {
-            "spell_id": 20116,
+            "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "condition": "Consecration last, while the mana left after it still pays for the seal, Judgement and Holy Strike and the pool is no more than a fifth behind the fight's pace.",
             "icon": "spell_holy_innerfire"
           }
         ]
@@ -7436,9 +7622,9 @@
             "icon": "classicon_paladin"
           },
           {
-            "spell_id": 20116,
+            "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "condition": "Consecration last, while the mana left after it still pays for the seal, Judgement and Holy Strike and the pool is no more than a fifth behind the fight's pace.",
             "icon": "spell_holy_innerfire"
           }
         ]
@@ -7483,9 +7669,9 @@
             "icon": "classicon_paladin"
           },
           {
-            "spell_id": 20922,
+            "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "condition": "Consecration last, while the mana left after it still pays for the seal, Judgement and Holy Strike and the pool is no more than a fifth behind the fight's pace.",
             "icon": "spell_holy_innerfire"
           }
         ]
@@ -7536,9 +7722,9 @@
             "icon": "classicon_paladin"
           },
           {
-            "spell_id": 20923,
+            "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "condition": "Consecration last, while the mana left after it still pays for the seal, Judgement and Holy Strike and the pool is no more than a fifth behind the fight's pace.",
             "icon": "spell_holy_innerfire"
           }
         ]
@@ -7553,7 +7739,7 @@
             "icon": "spell_holy_righteousfury"
           },
           {
-            "spell_id": 415073,
+            "spell_id": 10314,
             "name": "Exorcism",
             "condition": "Exorcism on cooldown against Undead and Demons: learnable at level 20, a 15 second cooldown Holy nuke that only lands on those two target types.",
             "icon": "spell_holy_excorcism_02"
@@ -7591,7 +7777,7 @@
           {
             "spell_id": 20924,
             "name": "Consecration",
-            "condition": "Consecration last, as the filler between Judgement, Exorcism and Holy Strike, and only while mana is above 65 percent: it is the most expensive button on the list, and below that line the mana is worth more to the rest of the rotation.",
+            "condition": "Consecration last, while the mana left after it still pays for the seal, Judgement and Holy Strike and the pool is no more than a fifth behind the fight's pace.",
             "icon": "spell_holy_innerfire"
           }
         ]
@@ -7631,7 +7817,7 @@
             "icon": "spell_holy_powerwordshield"
           },
           {
-            "spell_id": 425270,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
@@ -7756,13 +7942,13 @@
             "icon": "spell_holy_penance"
           },
           {
-            "spell_id": 6065,
+            "spell_id": 3747,
             "name": "Power Word: Shield",
             "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
           },
           {
-            "spell_id": 425271,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
@@ -7834,52 +8020,52 @@
             "icon": "spell_holy_prayerofhealing02"
           },
           {
-            "spell_id": 6063,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6063,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6063,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6063,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6063,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6063,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6063,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6063,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           }
         ]
       },
@@ -7923,13 +8109,13 @@
             "icon": "spell_holy_penance"
           },
           {
-            "spell_id": 6066,
+            "spell_id": 3747,
             "name": "Power Word: Shield",
             "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
           },
           {
-            "spell_id": 425273,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
@@ -8001,52 +8187,52 @@
             "icon": "spell_holy_prayerofhealing02"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           }
         ]
       },
@@ -8090,13 +8276,13 @@
             "icon": "spell_holy_penance"
           },
           {
-            "spell_id": 6066,
+            "spell_id": 3747,
             "name": "Power Word: Shield",
             "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
           },
           {
-            "spell_id": 425273,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
@@ -8174,28 +8360,28 @@
             "icon": "spell_holy_greaterheal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
             "spell_id": 2060,
@@ -8204,28 +8390,28 @@
             "icon": "spell_holy_greaterheal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           }
         ]
       },
@@ -8275,13 +8461,13 @@
             "icon": "spell_holy_powerwordshield"
           },
           {
-            "spell_id": 425275,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
-            "spell_id": 1240773,
+            "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
             "icon": "spell_holy_blindingheal"
@@ -8293,7 +8479,7 @@
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 1240773,
+            "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
             "icon": "spell_holy_blindingheal"
@@ -8305,7 +8491,7 @@
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 1240773,
+            "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
             "icon": "spell_holy_blindingheal"
@@ -8317,7 +8503,7 @@
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 1240773,
+            "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
             "icon": "spell_holy_blindingheal"
@@ -8329,7 +8515,7 @@
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 1240773,
+            "spell_id": 401937,
             "name": "Binding Heal",
             "condition": "Binding Heal in place of the Flash Heal below it while you are under 90 percent yourself: same cost and cast, and it heals you as much as the target.",
             "icon": "spell_holy_blindingheal"
@@ -8341,7 +8527,7 @@
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 10960,
+            "spell_id": 596,
             "name": "Prayer of Healing",
             "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
@@ -8353,28 +8539,28 @@
             "icon": "spell_holy_greaterheal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
             "spell_id": 10963,
@@ -8383,28 +8569,28 @@
             "icon": "spell_holy_greaterheal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           }
         ]
       },
@@ -8448,13 +8634,13 @@
             "icon": "spell_holy_penance"
           },
           {
-            "spell_id": 27607,
+            "spell_id": 3747,
             "name": "Power Word: Shield",
             "condition": "On a hurt tank whenever Weakened Soul is off him.",
             "icon": "spell_holy_powerwordshield"
           },
           {
-            "spell_id": 425277,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
@@ -8466,7 +8652,7 @@
             "icon": "spell_holy_blindingheal"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 10917,
             "name": "Flash Heal",
             "condition": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.",
             "icon": "spell_holy_flashheal"
@@ -8478,7 +8664,7 @@
             "icon": "spell_holy_blindingheal"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 10917,
             "name": "Flash Heal",
             "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
@@ -8490,7 +8676,7 @@
             "icon": "spell_holy_blindingheal"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 10917,
             "name": "Flash Heal",
             "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
@@ -8502,7 +8688,7 @@
             "icon": "spell_holy_blindingheal"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 10917,
             "name": "Flash Heal",
             "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
@@ -8514,76 +8700,76 @@
             "icon": "spell_holy_blindingheal"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 10917,
             "name": "Flash Heal",
             "condition": "An emergency Flash Heal on a party member, only while the mana bar keeps up with 70 percent of the share of the fight left.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 25316,
+            "spell_id": 10961,
             "name": "Prayer of Healing",
             "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
           },
           {
-            "spell_id": 25314,
+            "spell_id": 10965,
             "name": "Greater Heal",
             "condition": "Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.",
             "icon": "spell_holy_greaterheal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 25314,
+            "spell_id": 10965,
             "name": "Greater Heal",
             "condition": "Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.",
             "icon": "spell_holy_greaterheal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02"
+            "icon": "spell_holy_heal"
           }
         ]
       }
@@ -8610,7 +8796,7 @@
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
-            "spell_id": 425270,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
@@ -8717,7 +8903,7 @@
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
-            "spell_id": 425271,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
@@ -8830,13 +9016,13 @@
             "icon": "spell_holy_powerinfusion_shadow"
           },
           {
-            "spell_id": 425273,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
-            "spell_id": 9474,
+            "spell_id": 9472,
             "name": "Flash Heal",
             "condition": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.",
             "icon": "spell_holy_flashheal"
@@ -8949,13 +9135,13 @@
             "icon": "spell_holy_prayerofmendingtga"
           },
           {
-            "spell_id": 425273,
+            "spell_id": 6077,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
-            "spell_id": 9474,
+            "spell_id": 9472,
             "name": "Flash Heal",
             "condition": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.",
             "icon": "spell_holy_flashheal"
@@ -9068,7 +9254,7 @@
             "icon": "spell_holy_prayerofmendingtga"
           },
           {
-            "spell_id": 425275,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
@@ -9104,7 +9290,7 @@
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 10960,
+            "spell_id": 596,
             "name": "Prayer of Healing",
             "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
@@ -9187,43 +9373,43 @@
             "icon": "spell_holy_prayerofmendingtga"
           },
           {
-            "spell_id": 425277,
+            "spell_id": 6075,
             "name": "Renew",
             "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 9472,
             "name": "Flash Heal",
             "condition": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 10917,
             "name": "Flash Heal",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 10917,
             "name": "Flash Heal",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 10917,
             "name": "Flash Heal",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 27608,
+            "spell_id": 10917,
             "name": "Flash Heal",
             "condition": "",
             "icon": "spell_holy_flashheal"
           },
           {
-            "spell_id": 25316,
+            "spell_id": 10961,
             "name": "Prayer of Healing",
             "condition": "Prayer of Healing on a party member once three of the four are under 85%.",
             "icon": "spell_holy_prayerofhealing02"
@@ -9354,13 +9540,13 @@
         "level": 30,
         "lines": [
           {
-            "spell_id": 992,
+            "spell_id": 970,
             "name": "Shadow Word: Pain",
             "condition": "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT.",
             "icon": "spell_shadow_shadowwordpain"
           },
           {
-            "spell_id": 19276,
+            "spell_id": 2944,
             "name": "Devouring Plague",
             "condition": "Devouring Plague is kept up: its 24-second cooldown lets it be reapplied when it expires, and its ticks crit.",
             "icon": "spell_shadow_devouringplague"
@@ -9389,13 +9575,13 @@
         "level": 38,
         "lines": [
           {
-            "spell_id": 2767,
+            "spell_id": 970,
             "name": "Shadow Word: Pain",
             "condition": "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT.",
             "icon": "spell_shadow_shadowwordpain"
           },
           {
-            "spell_id": 19277,
+            "spell_id": 2944,
             "name": "Devouring Plague",
             "condition": "Devouring Plague is kept up: its 24-second cooldown lets it be reapplied when it expires, and its ticks crit.",
             "icon": "spell_shadow_devouringplague"
@@ -9436,19 +9622,19 @@
             "icon": "spell_shadow_shadowwordpain"
           },
           {
-            "spell_id": 19277,
+            "spell_id": 2944,
             "name": "Devouring Plague",
             "condition": "Devouring Plague is kept up: its 24-second cooldown lets it be reapplied when it expires, and its ticks crit.",
             "icon": "spell_shadow_devouringplague"
           },
           {
-            "spell_id": 8106,
+            "spell_id": 8104,
             "name": "Mind Blast",
             "condition": "Inner Focus into Mind Blast: a free Mind Blast with extra crit chance whenever Inner Focus is ready.",
             "icon": "spell_shadow_unholyfrenzy"
           },
           {
-            "spell_id": 8106,
+            "spell_id": 8104,
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown ahead of Mind Flay: it is the bigger hit per cast time, and Shadowform halves its cost and doubles its crit bonus.",
             "icon": "spell_shadow_unholyfrenzy"
@@ -9477,25 +9663,25 @@
             "icon": "spell_shadow_shadowwordpain"
           },
           {
-            "spell_id": 19278,
+            "spell_id": 2944,
             "name": "Devouring Plague",
             "condition": "Devouring Plague is kept up: its 24-second cooldown lets it be reapplied when it expires, and its ticks crit.",
             "icon": "spell_shadow_devouringplague"
           },
           {
-            "spell_id": 10945,
+            "spell_id": 8102,
             "name": "Mind Blast",
             "condition": "Inner Focus into Mind Blast: a free Mind Blast with extra crit chance whenever Inner Focus is ready.",
             "icon": "spell_shadow_unholyfrenzy"
           },
           {
-            "spell_id": 10945,
+            "spell_id": 8102,
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown ahead of Mind Flay: it is the bigger hit per cast time, and Shadowform halves its cost and doubles its crit bonus.",
             "icon": "spell_shadow_unholyfrenzy"
           },
           {
-            "spell_id": 1309635,
+            "spell_id": 1309633,
             "name": "Shadow Word: Death",
             "condition": "Shadow Word: Death on cooldown ahead of Mind Flay, as both Forever guides order it; below 20% target health Early Demise adds crit chance.",
             "icon": "spell_shadow_demonicfortitude"
@@ -9512,7 +9698,7 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 27605,
+            "spell_id": 10894,
             "name": "Shadow Word: Pain",
             "condition": "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT.",
             "icon": "spell_shadow_shadowwordpain"
@@ -9723,7 +9909,7 @@
             "icon": "ability_rogue_slicedice"
           },
           {
-            "spell_id": 31016,
+            "spell_id": 11300,
             "name": "Eviscerate",
             "condition": "Eviscerate at four or more combo points, whenever its 35 energy is there.",
             "icon": "ability_rogue_eviscerate"
@@ -9922,7 +10108,7 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 31016,
+            "spell_id": 11300,
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points, checked ahead of Slice and Dice so a full finisher is never traded for a refresh.",
             "icon": "ability_rogue_eviscerate"
@@ -9934,7 +10120,7 @@
             "icon": "ability_rogue_slicedice"
           },
           {
-            "spell_id": 462717,
+            "spell_id": 11281,
             "name": "Backstab",
             "condition": "Backstab is the builder when a dagger is in the main hand (Backstab refuses to cast otherwise): it hits for 150% weapon damage against Sinister Strike's 100%, and Puncturing Wounds adds crit and an extra combo point chance to it.",
             "icon": "ability_backstab"
@@ -10151,7 +10337,7 @@
             "icon": "ability_rogue_rupture"
           },
           {
-            "spell_id": 31016,
+            "spell_id": 11300,
             "name": "Eviscerate",
             "condition": "Eviscerate at three or more combo points while Rupture is running, so combo points built during a Rupture are spent instead of idling.",
             "icon": "ability_rogue_eviscerate"
@@ -10270,7 +10456,7 @@
             "icon": "spell_fire_sealoffire"
           },
           {
-            "spell_id": 943,
+            "spell_id": 915,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
@@ -10323,7 +10509,7 @@
             "icon": "spell_fire_sealoffire"
           },
           {
-            "spell_id": 10391,
+            "spell_id": 915,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
@@ -10334,7 +10520,7 @@
         "level": 40,
         "lines": [
           {
-            "spell_id": 1238299,
+            "spell_id": 408490,
             "name": "Lava Burst",
             "condition": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight.",
             "icon": "spell_shaman_lavaburst"
@@ -10346,7 +10532,7 @@
             "icon": "spell_nature_manaregentotem"
           },
           {
-            "spell_id": 10447,
+            "spell_id": 8050,
             "name": "Flame Shock",
             "condition": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
             "icon": "spell_fire_flameshock"
@@ -10376,7 +10562,7 @@
             "icon": "spell_fire_sealoffire"
           },
           {
-            "spell_id": 10391,
+            "spell_id": 915,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
@@ -10387,7 +10573,7 @@
         "level": 50,
         "lines": [
           {
-            "spell_id": 1238300,
+            "spell_id": 408490,
             "name": "Lava Burst",
             "condition": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight.",
             "icon": "spell_shaman_lavaburst"
@@ -10399,7 +10585,7 @@
             "icon": "spell_nature_manaregentotem"
           },
           {
-            "spell_id": 10447,
+            "spell_id": 8052,
             "name": "Flame Shock",
             "condition": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
             "icon": "spell_fire_flameshock"
@@ -10429,7 +10615,7 @@
             "icon": "spell_fire_sealoffire"
           },
           {
-            "spell_id": 15207,
+            "spell_id": 915,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
@@ -10482,7 +10668,7 @@
             "icon": "spell_fire_sealoffire"
           },
           {
-            "spell_id": 15208,
+            "spell_id": 15207,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt is the rest of the single-target rotation.",
             "icon": "spell_nature_lightning"
@@ -10588,12 +10774,6 @@
             "icon": "spell_nature_earthbindtotem"
           },
           {
-            "spell_id": 8512,
-            "name": "Windfury Totem",
-            "condition": "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would.",
-            "icon": "spell_nature_windfury"
-          },
-          {
             "spell_id": 10391,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt at five Maelstrom Weapon stacks, right after Stormstrike so its +20% on the next Lightning Bolt is up: each stack takes 4% a talent rank off the bolt's cast time and mana, so 5/5 makes it instant and free.",
@@ -10621,12 +10801,6 @@
             "name": "Strength of Earth Totem",
             "condition": "Keep Strength of Earth Totem down; refreshing it needs no aura or spell id to check, since totem upkeep is tracked by slot, not by buff.",
             "icon": "spell_nature_earthbindtotem"
-          },
-          {
-            "spell_id": 8512,
-            "name": "Windfury Totem",
-            "condition": "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would.",
-            "icon": "spell_nature_windfury"
           },
           {
             "spell_id": 10391,
@@ -10658,10 +10832,10 @@
             "icon": "spell_nature_earthbindtotem"
           },
           {
-            "spell_id": 10613,
-            "name": "Windfury Totem",
-            "condition": "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would.",
-            "icon": "spell_nature_windfury"
+            "spell_id": 8835,
+            "name": "Grace of Air Totem",
+            "condition": "Keep Grace of Air Totem down for its Agility.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 15207,
@@ -10687,16 +10861,16 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 25361,
+            "spell_id": 10442,
             "name": "Strength of Earth Totem",
             "condition": "Keep Strength of Earth Totem down; refreshing it needs no aura or spell id to check, since totem upkeep is tracked by slot, not by buff.",
             "icon": "spell_nature_earthbindtotem"
           },
           {
-            "spell_id": 27621,
-            "name": "Windfury Totem",
-            "condition": "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would.",
-            "icon": "spell_nature_windfury"
+            "spell_id": 10627,
+            "name": "Grace of Air Totem",
+            "condition": "Keep Grace of Air Totem down for its Agility.",
+            "icon": "inv_misc_questionmark"
           },
           {
             "spell_id": 15208,
@@ -10711,7 +10885,7 @@
             "icon": "spell_fire_searingtotem"
           },
           {
-            "spell_id": 1220751,
+            "spell_id": 10414,
             "name": "Earth Shock",
             "condition": "Earth Shock on the shock cooldown while mana is above 50 percent.",
             "icon": "spell_nature_earthshock"
@@ -10732,7 +10906,7 @@
           {
             "spell_id": 409941,
             "name": "Water Shield",
-            "condition": "Water Shield (the Restoration talent) is kept up for its mana return on critical heals.",
+            "condition": "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit.",
             "icon": "ability_shaman_watershield"
           },
           {
@@ -10765,9 +10939,9 @@
             "icon": "spell_frost_summonwaterelemental"
           },
           {
-            "spell_id": 408511,
+            "spell_id": 408510,
             "name": "Water Shield",
-            "condition": "Water Shield (the Restoration talent) is kept up for its mana return on critical heals.",
+            "condition": "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit.",
             "icon": "ability_shaman_watershield"
           },
           {
@@ -10836,9 +11010,9 @@
             "icon": "spell_frost_summonwaterelemental"
           },
           {
-            "spell_id": 408511,
+            "spell_id": 408510,
             "name": "Water Shield",
-            "condition": "Water Shield (the Restoration talent) is kept up for its mana return on critical heals.",
+            "condition": "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit.",
             "icon": "ability_shaman_watershield"
           },
           {
@@ -10907,9 +11081,9 @@
             "icon": "spell_frost_summonwaterelemental"
           },
           {
-            "spell_id": 408511,
+            "spell_id": 408510,
             "name": "Water Shield",
-            "condition": "Water Shield (the Restoration talent) is kept up for its mana return on critical heals.",
+            "condition": "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit.",
             "icon": "ability_shaman_watershield"
           },
           {
@@ -10978,9 +11152,9 @@
             "icon": "spell_frost_summonwaterelemental"
           },
           {
-            "spell_id": 408511,
+            "spell_id": 408510,
             "name": "Water Shield",
-            "condition": "Water Shield (the Restoration talent) is kept up for its mana return on critical heals.",
+            "condition": "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit.",
             "icon": "ability_shaman_watershield"
           },
           {
@@ -11085,9 +11259,9 @@
             "icon": "spell_frost_summonwaterelemental"
           },
           {
-            "spell_id": 408511,
+            "spell_id": 408510,
             "name": "Water Shield",
-            "condition": "Water Shield (the Restoration talent) is kept up for its mana return on critical heals.",
+            "condition": "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit.",
             "icon": "ability_shaman_watershield"
           },
           {
@@ -11192,9 +11366,9 @@
             "icon": "spell_frost_summonwaterelemental"
           },
           {
-            "spell_id": 408511,
+            "spell_id": 408510,
             "name": "Water Shield",
-            "condition": "Water Shield (the Restoration talent) is kept up for its mana return on critical heals.",
+            "condition": "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit.",
             "icon": "ability_shaman_watershield"
           },
           {
@@ -11210,37 +11384,37 @@
             "icon": "spell_nature_ravenform"
           },
           {
-            "spell_id": 25357,
+            "spell_id": 10396,
             "name": "Healing Wave",
             "condition": "The instant Healing Wave.",
             "icon": "spell_nature_magicimmunity"
           },
           {
-            "spell_id": 27624,
+            "spell_id": 10468,
             "name": "Lesser Healing Wave",
             "condition": "Lesser Healing Wave is the fast heal for a tank that is falling.",
             "icon": "spell_nature_healingwavelesser"
           },
           {
-            "spell_id": 27624,
+            "spell_id": 10468,
             "name": "Lesser Healing Wave",
             "condition": "",
             "icon": "spell_nature_healingwavelesser"
           },
           {
-            "spell_id": 27624,
+            "spell_id": 10468,
             "name": "Lesser Healing Wave",
             "condition": "",
             "icon": "spell_nature_healingwavelesser"
           },
           {
-            "spell_id": 27624,
+            "spell_id": 10468,
             "name": "Lesser Healing Wave",
             "condition": "",
             "icon": "spell_nature_healingwavelesser"
           },
           {
-            "spell_id": 27624,
+            "spell_id": 10468,
             "name": "Lesser Healing Wave",
             "condition": "",
             "icon": "spell_nature_healingwavelesser"
@@ -11282,7 +11456,7 @@
             "icon": "spell_nature_healingwavegreater"
           },
           {
-            "spell_id": 25357,
+            "spell_id": 10396,
             "name": "Healing Wave",
             "condition": "Healing Wave is the efficient tank heal.",
             "icon": "spell_nature_magicimmunity"
@@ -11535,7 +11709,7 @@
             "icon": "spell_shadow_burningspirit"
           },
           {
-            "spell_id": 25311,
+            "spell_id": 11672,
             "name": "Corruption",
             "condition": "Corruption is the cheapest DoT per damage and goes down first, then is kept up throughout.",
             "icon": "spell_shadow_abominationexplosion"
@@ -11553,13 +11727,13 @@
             "icon": "spell_shadow_requiem"
           },
           {
-            "spell_id": 25309,
+            "spell_id": 11668,
             "name": "Immolate",
             "condition": "Immolate is kept up as a fourth DoT, recast when under 3 seconds remain: its damage over time is worth more than the Shadow Bolt it replaces for a global, and recasting in its last 3 seconds beats waiting for it to lapse.",
             "icon": "spell_fire_immolation"
           },
           {
-            "spell_id": 25307,
+            "spell_id": 11661,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt fills every remaining global while the DoTs run their course.",
             "icon": "spell_shadow_shadowbolt"
@@ -11800,7 +11974,7 @@
             "icon": "spell_shadow_burningspirit"
           },
           {
-            "spell_id": 25311,
+            "spell_id": 11672,
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.",
             "icon": "spell_shadow_abominationexplosion"
@@ -11818,13 +11992,13 @@
             "icon": "spell_shadow_curseofsargeras"
           },
           {
-            "spell_id": 25309,
+            "spell_id": 11668,
             "name": "Immolate",
             "condition": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
             "icon": "spell_fire_immolation"
           },
           {
-            "spell_id": 25307,
+            "spell_id": 11661,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt is the filler between DoT refreshes: with the Imp's sacrifice and the Succubus' Master Demonologist both raising Shadow damage, it beats Searing Pain.",
             "icon": "spell_shadow_shadowbolt"
@@ -11949,7 +12123,7 @@
             "icon": "spell_shadow_scourgebuild"
           },
           {
-            "spell_id": 1106,
+            "spell_id": 1088,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt is the filler while you have not yet learned the Incinerate talent (or have not reached its level-40 requirement); once you have, Incinerate takes priority instead.",
             "icon": "spell_shadow_shadowbolt"
@@ -11996,7 +12170,7 @@
             "icon": "spell_shadow_scourgebuild"
           },
           {
-            "spell_id": 7641,
+            "spell_id": 1088,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt is the filler while you have not yet learned the Incinerate talent (or have not reached its level-40 requirement); once you have, Incinerate takes priority instead.",
             "icon": "spell_shadow_shadowbolt"
@@ -12113,7 +12287,7 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 25311,
+            "spell_id": 11672,
             "name": "Corruption",
             "condition": "Corruption goes down first and is kept up throughout: it is cheap sustained damage that does not compete with your casts.",
             "icon": "spell_shadow_abominationexplosion"
@@ -12137,7 +12311,7 @@
             "icon": "spell_shadow_curseofsargeras"
           },
           {
-            "spell_id": 25309,
+            "spell_id": 11668,
             "name": "Immolate",
             "condition": "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is recast when under 3 seconds remain.",
             "icon": "spell_fire_immolation"
@@ -12161,7 +12335,7 @@
             "icon": "spell_fire_burnout"
           },
           {
-            "spell_id": 25307,
+            "spell_id": 11661,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt is the filler while you have not yet learned the Incinerate talent (or have not reached its level-40 requirement); once you have, Incinerate takes priority instead.",
             "icon": "spell_shadow_shadowbolt"
@@ -12480,7 +12654,7 @@
             "icon": "ability_racial_bloodrage"
           },
           {
-            "spell_id": 25289,
+            "spell_id": 11551,
             "name": "Battle Shout",
             "condition": "Keep Battle Shout up.",
             "icon": "ability_warrior_battleshout"
@@ -12492,7 +12666,7 @@
             "icon": "ability_gouge"
           },
           {
-            "spell_id": 27580,
+            "spell_id": 21553,
             "name": "Mortal Strike",
             "condition": "Mortal Strike is the highest damage per rage button and comes off a six second cooldown.",
             "icon": "ability_warrior_savageblow"
@@ -12510,13 +12684,13 @@
             "icon": "inv_sword_48"
           },
           {
-            "spell_id": 1310200,
+            "spell_id": 11605,
             "name": "Slam",
             "condition": "Slam on its cooldown between Mortal Strikes, only with Improved Slam talented (the gate reads Slam's cast time, which only the talent shortens): it then no longer stops the swing and its cooldown is 15 seconds instead of 18.",
             "icon": "ability_warrior_decisivestrike"
           },
           {
-            "spell_id": 27584,
+            "spell_id": 7373,
             "name": "Hamstring",
             "condition": "Hamstring on every free global once Rend, Mortal Strike, Overpower and Execute are spent, only while a Windfury Totem reaches the warrior (the gate asks whether the engine registered the totem's attack power buff, spell 10610, so a character with no totem skips the line): 10 rage for 45 damage, and a main-hand special that rolls the totem's extra attack and weapon procs.",
             "icon": "ability_shockwave"
@@ -12576,6 +12750,12 @@
             "icon": "ability_warrior_battleshout"
           },
           {
+            "spell_id": 7384,
+            "name": "Overpower",
+            "condition": "Overpower whenever its dodge window is open.",
+            "icon": "ability_meleedamage"
+          },
+          {
             "spell_id": 285,
             "name": "Heroic Strike",
             "condition": "Heroic Strike as the rage dump, never below 40 rage.",
@@ -12609,6 +12789,12 @@
             "name": "Execute",
             "condition": "Execute below 20 percent.",
             "icon": "inv_sword_48"
+          },
+          {
+            "spell_id": 7887,
+            "name": "Overpower",
+            "condition": "Overpower whenever its dodge window is open.",
+            "icon": "ability_meleedamage"
           },
           {
             "spell_id": 1608,
@@ -12650,6 +12836,12 @@
             "name": "Whirlwind",
             "condition": "Whirlwind while Bloodthirst is down.",
             "icon": "ability_whirlwind"
+          },
+          {
+            "spell_id": 7887,
+            "name": "Overpower",
+            "condition": "Overpower whenever its dodge window is open.",
+            "icon": "ability_meleedamage"
           },
           {
             "spell_id": 11564,
@@ -12697,6 +12889,12 @@
             "name": "Whirlwind",
             "condition": "Whirlwind while Bloodthirst is down.",
             "icon": "ability_whirlwind"
+          },
+          {
+            "spell_id": 7887,
+            "name": "Overpower",
+            "condition": "Overpower whenever its dodge window is open.",
+            "icon": "ability_meleedamage"
           },
           {
             "spell_id": 11565,
@@ -12752,6 +12950,12 @@
             "icon": "ability_whirlwind"
           },
           {
+            "spell_id": 11584,
+            "name": "Overpower",
+            "condition": "Overpower whenever its dodge window is open.",
+            "icon": "ability_meleedamage"
+          },
+          {
             "spell_id": 11566,
             "name": "Heroic Strike",
             "condition": "Heroic Strike as the rage dump, never below 40 rage.",
@@ -12781,7 +12985,7 @@
             "icon": "ability_criticalstrike"
           },
           {
-            "spell_id": 25289,
+            "spell_id": 11551,
             "name": "Battle Shout",
             "condition": "Keep Battle Shout up.",
             "icon": "ability_warrior_battleshout"
@@ -12805,7 +13009,13 @@
             "icon": "ability_whirlwind"
           },
           {
-            "spell_id": 25286,
+            "spell_id": 11585,
+            "name": "Overpower",
+            "condition": "Overpower whenever its dodge window is open.",
+            "icon": "ability_meleedamage"
+          },
+          {
+            "spell_id": 11567,
             "name": "Heroic Strike",
             "condition": "Heroic Strike as the rage dump, never below 40 rage.",
             "icon": "ability_rogue_ambush"
@@ -13190,7 +13400,7 @@
             "icon": "ability_defend"
           },
           {
-            "spell_id": 25288,
+            "spell_id": 11601,
             "name": "Revenge",
             "condition": "Revenge the moment it is available: it only lights after a dodge, parry or block, costs 5 rage (2 with Focused Rage 3) and is the most threat per rage on the bar.",
             "icon": "ability_warrior_revenge"
@@ -13202,7 +13412,7 @@
             "icon": "inv_shield_05"
           },
           {
-            "spell_id": 461810,
+            "spell_id": 11581,
             "name": "Thunder Clap",
             "condition": "Keep Thunder Clap on the boss: the 20 percent attack speed slow is the largest cut to damage taken after Shield Block, and it lasts 30 seconds, so refresh inside the last 3.",
             "icon": "spell_nature_thunderclap"
@@ -13214,7 +13424,7 @@
             "icon": "ability_warrior_sunder"
           },
           {
-            "spell_id": 25286,
+            "spell_id": 11567,
             "name": "Heroic Strike",
             "condition": "Heroic Strike with spare rage: the best threat per rage after Revenge, and it costs no global cooldown.",
             "icon": "ability_rogue_ambush"
@@ -94930,6 +95140,36 @@
           [
             3,
             1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            3,
+            2,
             2
           ],
           [
@@ -94946,76 +95186,6 @@
             3,
             1,
             2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            2
-          ],
-          [
-            3,
-            2,
-            2
-          ],
-          [
-            3,
-            2,
-            2
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
-            3,
-            3
           ],
           [
             3,
@@ -95024,13 +95194,78 @@
           ],
           [
             3,
-            4,
+            1,
             2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            3,
+            3,
+            3
           ],
           [
             3,
             5,
             1
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            4,
+            2
           ],
           [
             3,
@@ -95100,26 +95335,6 @@
           [
             1,
             1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
             3
           ],
           [
@@ -95156,11 +95371,6 @@
             1,
             2,
             1
-          ],
-          [
-            1,
-            2,
-            2
           ],
           [
             1,
@@ -95190,6 +95400,36 @@
           [
             3,
             1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            3,
+            2,
             2
           ],
           [
@@ -95206,76 +95446,6 @@
             3,
             1,
             2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            2
-          ],
-          [
-            3,
-            2,
-            2
-          ],
-          [
-            3,
-            2,
-            2
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
-            3,
-            3
           ],
           [
             3,
@@ -95284,13 +95454,78 @@
           ],
           [
             3,
-            4,
+            1,
             2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            3,
+            3,
+            3
           ],
           [
             3,
             5,
             1
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            4,
+            2
           ],
           [
             3,
@@ -95360,26 +95595,6 @@
           [
             1,
             1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
             3
           ],
           [
@@ -95416,11 +95631,6 @@
             1,
             2,
             1
-          ],
-          [
-            1,
-            2,
-            2
           ],
           [
             1,
@@ -96679,19 +96889,19 @@
             2
           ],
           [
-            2,
             1,
-            1
+            1,
+            2
           ],
           [
-            2,
             1,
-            1
+            1,
+            2
           ],
           [
-            2,
             1,
-            1
+            1,
+            2
           ],
           [
             2,
@@ -96866,6 +97076,16 @@
           [
             3,
             5,
+            1
+          ],
+          [
+            3,
+            5,
+            1
+          ],
+          [
+            3,
+            5,
             2
           ],
           [
@@ -96895,113 +97115,103 @@
           ],
           [
             3,
-            6,
-            3
-          ],
-          [
-            3,
-            6,
-            3
-          ],
-          [
-            3,
             7,
             2
           ],
           [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            2,
-            1,
-            1
-          ],
-          [
-            2,
-            1,
-            1
-          ],
-          [
-            2,
-            1,
-            1
-          ],
-          [
-            2,
-            1,
-            3
-          ],
-          [
-            2,
-            1,
-            3
-          ],
-          [
-            2,
-            1,
-            3
-          ],
-          [
-            2,
-            1,
-            3
-          ],
-          [
-            2,
-            1,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
             3,
-            1
+            6,
+            3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
           ],
           [
             2,
@@ -100150,16 +100360,6 @@
           [
             1,
             1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
             3
           ],
           [
@@ -100205,47 +100405,47 @@
           [
             1,
             2,
-            3
-          ],
-          [
-            1,
-            3,
-            1
-          ],
-          [
-            1,
-            3,
-            1
-          ],
-          [
-            1,
-            3,
-            1
-          ],
-          [
-            1,
-            3,
-            2
-          ],
-          [
-            1,
-            3,
-            3
-          ],
-          [
-            1,
-            3,
-            3
-          ],
-          [
-            1,
-            3,
             3
           ],
           [
             1,
             3,
             4
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            1,
+            3,
+            3
+          ],
+          [
+            1,
+            3,
+            3
+          ],
+          [
+            1,
+            3,
+            3
           ],
           [
             1,
@@ -100274,16 +100474,6 @@
           ],
           [
             1,
-            6,
-            3
-          ],
-          [
-            1,
-            5,
-            3
-          ],
-          [
-            1,
             5,
             3
           ],
@@ -100306,6 +100496,26 @@
             1,
             6,
             3
+          ],
+          [
+            1,
+            6,
+            3
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
           ],
           [
             2,
@@ -100410,16 +100620,6 @@
           [
             1,
             1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
             3
           ],
           [
@@ -100465,47 +100665,47 @@
           [
             1,
             2,
-            3
-          ],
-          [
-            1,
-            3,
-            1
-          ],
-          [
-            1,
-            3,
-            1
-          ],
-          [
-            1,
-            3,
-            1
-          ],
-          [
-            1,
-            3,
-            2
-          ],
-          [
-            1,
-            3,
-            3
-          ],
-          [
-            1,
-            3,
-            3
-          ],
-          [
-            1,
-            3,
             3
           ],
           [
             1,
             3,
             4
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            1,
+            3,
+            3
+          ],
+          [
+            1,
+            3,
+            3
+          ],
+          [
+            1,
+            3,
+            3
           ],
           [
             1,
@@ -100534,16 +100734,6 @@
           ],
           [
             1,
-            6,
-            3
-          ],
-          [
-            1,
-            5,
-            3
-          ],
-          [
-            1,
             5,
             3
           ],
@@ -100566,6 +100756,26 @@
             1,
             6,
             3
+          ],
+          [
+            1,
+            6,
+            3
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
           ],
           [
             2,
@@ -100672,6 +100882,21 @@
           [
             2,
             1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
             2
           ],
           [
@@ -100802,21 +101027,6 @@
           [
             2,
             5,
-            3
-          ],
-          [
-            2,
-            6,
-            3
-          ],
-          [
-            2,
-            6,
-            3
-          ],
-          [
-            2,
-            6,
             3
           ],
           [
@@ -100825,14 +101035,19 @@
             2
           ],
           [
-            1,
-            1,
-            2
+            2,
+            6,
+            3
           ],
           [
-            1,
-            1,
-            2
+            2,
+            6,
+            3
+          ],
+          [
+            2,
+            6,
+            3
           ],
           [
             1,
@@ -100876,6 +101091,16 @@
           ],
           [
             1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
             3,
             1
           ],
@@ -100893,21 +101118,6 @@
             1,
             3,
             2
-          ],
-          [
-            1,
-            3,
-            3
-          ],
-          [
-            1,
-            3,
-            3
-          ],
-          [
-            1,
-            3,
-            3
           ],
           [
             1,
@@ -100932,6 +101142,21 @@
           [
             2,
             1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
             2
           ],
           [
@@ -101062,21 +101287,6 @@
           [
             2,
             5,
-            3
-          ],
-          [
-            2,
-            6,
-            3
-          ],
-          [
-            2,
-            6,
-            3
-          ],
-          [
-            2,
-            6,
             3
           ],
           [
@@ -101085,14 +101295,19 @@
             2
           ],
           [
-            1,
-            1,
-            2
+            2,
+            6,
+            3
           ],
           [
-            1,
-            1,
-            2
+            2,
+            6,
+            3
+          ],
+          [
+            2,
+            6,
+            3
           ],
           [
             1,
@@ -101136,6 +101351,16 @@
           ],
           [
             1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
             3,
             1
           ],
@@ -101153,21 +101378,6 @@
             1,
             3,
             2
-          ],
-          [
-            1,
-            3,
-            3
-          ],
-          [
-            1,
-            3,
-            3
-          ],
-          [
-            1,
-            3,
-            3
           ],
           [
             1,
@@ -101845,6 +102055,11 @@
           ],
           [
             1,
+            6,
+            3
+          ],
+          [
+            1,
             4,
             3
           ],
@@ -101866,11 +102081,6 @@
           [
             1,
             5,
-            2
-          ],
-          [
-            1,
-            7,
             2
           ],
           [
@@ -109133,6 +109343,8 @@
     "707": 1,
     "740": 30,
     "769": 16,
+    "770": 18,
+    "778": 18,
     "779": 16,
     "780": 16,
     "871": 28,
@@ -109144,7 +109356,6 @@
     "959": 1,
     "970": 4,
     "980": 8,
-    "992": 4,
     "996": 30,
     "1014": 8,
     "1020": 34,
@@ -109171,6 +109382,7 @@
     "2054": 16,
     "2060": 40,
     "2061": 20,
+    "2090": 4,
     "2458": 30,
     "2495": 6,
     "2565": 16,
@@ -109181,6 +109393,7 @@
     "2912": 20,
     "2941": 1,
     "2944": 20,
+    "2948": 22,
     "2974": 12,
     "3029": 20,
     "3044": 6,
@@ -109188,12 +109401,14 @@
     "3140": 1,
     "3472": 1,
     "3599": 10,
+    "3747": 6,
     "5143": 8,
     "5144": 8,
     "5145": 8,
     "5171": 10,
     "5177": 1,
     "5178": 1,
+    "5179": 1,
     "5180": 1,
     "5186": 1,
     "5188": 1,
@@ -109209,8 +109424,8 @@
     "5675": 26,
     "6063": 16,
     "6064": 16,
-    "6065": 6,
-    "6066": 6,
+    "6075": 8,
+    "6077": 8,
     "6192": 1,
     "6217": 8,
     "6222": 4,
@@ -109239,6 +109454,7 @@
     "6809": 10,
     "7322": 4,
     "7372": 8,
+    "7373": 8,
     "7379": 14,
     "7384": 12,
     "7386": 10,
@@ -109258,7 +109474,6 @@
     "8102": 10,
     "8104": 10,
     "8105": 10,
-    "8106": 10,
     "8160": 10,
     "8161": 10,
     "8190": 26,
@@ -109267,18 +109482,16 @@
     "8402": 1,
     "8406": 4,
     "8408": 4,
+    "8412": 6,
     "8416": 8,
     "8417": 8,
-    "8444": 22,
-    "8445": 22,
-    "8446": 22,
     "8492": 26,
-    "8512": 32,
     "8621": 1,
     "8623": 1,
     "8624": 1,
     "8639": 20,
     "8640": 20,
+    "8835": 42,
     "8903": 1,
     "8905": 1,
     "8918": 30,
@@ -109295,42 +109508,56 @@
     "9474": 20,
     "9492": 20,
     "9493": 20,
+    "9749": 18,
     "9752": 20,
     "9754": 16,
     "9829": 20,
     "9830": 20,
     "9833": 4,
     "9835": 4,
+    "9839": 4,
     "9849": 20,
     "9850": 20,
+    "9858": 12,
     "9862": 30,
     "9863": 30,
     "9866": 32,
     "9867": 32,
     "9875": 20,
+    "9876": 20,
     "9880": 10,
     "9881": 10,
     "9888": 1,
+    "9889": 1,
     "9896": 20,
+    "9907": 18,
     "9908": 16,
     "9912": 1,
     "10149": 1,
+    "10151": 1,
     "10160": 26,
     "10161": 26,
     "10180": 4,
-    "10205": 22,
+    "10181": 4,
+    "10199": 6,
     "10207": 22,
     "10211": 8,
+    "10212": 8,
+    "10314": 20,
     "10328": 1,
+    "10329": 1,
     "10333": 6,
     "10391": 1,
     "10395": 1,
+    "10396": 1,
+    "10414": 4,
     "10437": 10,
     "10438": 10,
-    "10447": 10,
+    "10442": 10,
     "10462": 20,
     "10463": 20,
     "10466": 20,
+    "10468": 20,
     "10495": 26,
     "10496": 26,
     "10497": 26,
@@ -109338,41 +109565,53 @@
     "10586": 26,
     "10587": 26,
     "10605": 32,
-    "10613": 32,
     "10622": 40,
     "10623": 40,
+    "10627": 42,
     "10893": 4,
+    "10894": 4,
     "10899": 6,
     "10916": 20,
-    "10945": 10,
+    "10917": 20,
     "10947": 10,
-    "10960": 30,
+    "10961": 30,
     "10963": 40,
+    "10965": 40,
     "11129": 40,
     "11273": 20,
     "11275": 20,
+    "11281": 4,
     "11293": 1,
     "11294": 1,
     "11299": 1,
+    "11300": 1,
     "11366": 20,
     "11426": 40,
     "11549": 1,
     "11550": 1,
+    "11551": 1,
     "11564": 1,
     "11565": 1,
     "11566": 1,
+    "11567": 1,
     "11572": 4,
     "11573": 4,
     "11574": 4,
+    "11581": 6,
     "11584": 12,
     "11585": 12,
     "11596": 10,
     "11597": 10,
     "11600": 14,
+    "11601": 14,
+    "11605": 20,
     "11659": 1,
+    "11661": 1,
     "11665": 1,
     "11667": 1,
+    "11668": 1,
     "11671": 4,
+    "11672": 4,
     "11687": 6,
     "11688": 6,
     "11689": 6,
@@ -109389,13 +109628,17 @@
     "12525": 20,
     "12975": 1,
     "13031": 40,
+    "13033": 40,
     "13549": 4,
     "13550": 4,
     "13551": 4,
     "13552": 4,
     "13554": 4,
+    "13555": 4,
     "13795": 16,
+    "14266": 1,
     "14267": 12,
+    "14268": 12,
     "14269": 16,
     "14270": 16,
     "14271": 16,
@@ -109437,16 +109680,12 @@
     "18881": 30,
     "18930": 25,
     "18932": 25,
-    "19276": 20,
-    "19277": 20,
-    "19278": 20,
     "19280": 20,
     "19574": 40,
     "19750": 20,
     "19939": 20,
     "19940": 20,
-    "19942": 20,
-    "19943": 20,
+    "19941": 20,
     "20116": 20,
     "20163": 10,
     "20271": 4,
@@ -109460,7 +109699,6 @@
     "20419": 10,
     "20422": 10,
     "20423": 10,
-    "20473": 30,
     "20658": 24,
     "20660": 24,
     "20661": 24,
@@ -109471,19 +109709,17 @@
     "20918": 20,
     "20919": 20,
     "20920": 20,
-    "20922": 20,
-    "20923": 20,
     "20924": 20,
     "20925": 30,
     "20927": 30,
     "20928": 30,
-    "20929": 30,
-    "20930": 30,
     "21551": 40,
+    "21553": 40,
     "22568": 24,
     "22812": 44,
     "22827": 24,
     "22828": 24,
+    "22829": 24,
     "22842": 36,
     "23881": 40,
     "23892": 40,
@@ -109496,40 +109732,12 @@
     "24120": 30,
     "24239": 44,
     "24275": 44,
-    "24974": 20,
     "24975": 20,
     "24976": 20,
     "24977": 20,
-    "25286": 1,
-    "25288": 14,
-    "25289": 1,
-    "25292": 1,
-    "25295": 4,
-    "25297": 1,
-    "25298": 20,
-    "25304": 4,
-    "25306": 1,
-    "25307": 1,
-    "25309": 1,
-    "25311": 4,
-    "25314": 40,
-    "25316": 30,
-    "25345": 8,
-    "25357": 1,
-    "25361": 10,
     "26573": 20,
-    "27580": 40,
-    "27584": 8,
-    "27605": 4,
-    "27607": 6,
-    "27608": 20,
-    "27621": 32,
-    "27624": 20,
-    "27633": 12,
     "29166": 40,
     "29228": 10,
-    "31016": 1,
-    "31018": 24,
     "399956": 30,
     "400574": 20,
     "400618": 6,
@@ -109537,7 +109745,6 @@
     "400620": 6,
     "400621": 6,
     "400622": 6,
-    "400623": 6,
     "400640": 20,
     "401859": 40,
     "401937": 25,
@@ -109550,7 +109757,7 @@
     "408344": 12,
     "408345": 12,
     "408490": 30,
-    "408511": 1,
+    "408510": 1,
     "408521": 40,
     "409941": 1,
     "412758": 40,
@@ -109558,33 +109765,19 @@
     "415069": 20,
     "415070": 20,
     "415071": 20,
-    "415073": 20,
     "415336": 1,
     "415337": 1,
     "415338": 1,
     "415340": 1,
     "415341": 1,
     "415342": 1,
-    "415343": 1,
     "417058": 4,
     "417059": 4,
-    "417061": 4,
-    "417062": 4,
-    "417063": 4,
-    "417064": 4,
-    "417068": 4,
     "425268": 8,
-    "425270": 8,
-    "425271": 8,
-    "425273": 8,
-    "425275": 8,
-    "425277": 8,
     "436938": 12,
     "436940": 12,
     "436942": 12,
     "436944": 12,
-    "436946": 12,
-    "461810": 6,
     "461826": 6,
     "461827": 6,
     "461828": 6,
@@ -109595,20 +109788,15 @@
     "462712": 4,
     "462713": 4,
     "462714": 4,
-    "462717": 4,
-    "1213278": 40,
     "1220746": 4,
     "1220747": 4,
     "1220748": 4,
     "1220749": 4,
     "1220750": 4,
-    "1220751": 4,
     "1235826": 25,
     "1235827": 25,
     "1238069": 40,
     "1238073": 40,
-    "1238299": 30,
-    "1238300": 30,
     "1239242": 40,
     "1239243": 40,
     "1239696": 20,
@@ -109621,7 +109809,6 @@
     "1240720": 30,
     "1240721": 30,
     "1240771": 25,
-    "1240773": 25,
     "1240774": 25,
     "1240826": 40,
     "1240827": 40,
@@ -109640,13 +109827,11 @@
     "1299332": 30,
     "1309595": 32,
     "1309633": 32,
-    "1309635": 32,
     "1309636": 32,
     "1310196": 20,
     "1310197": 20,
     "1310198": 20,
     "1310199": 20,
-    "1310200": 20,
     "1310707": 30,
     "1310994": 1,
     "1311606": 30,

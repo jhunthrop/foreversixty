@@ -284,6 +284,10 @@
       "name": "Flask of the Titans",
       "icon": "inv_potion_62"
     },
+    "food_baked_salmon": {
+      "name": "Baked Salmon",
+      "icon": "inv_misc_fish_20"
+    },
     "food_bless_sunfruit": {
       "name": "Blessed Sunfruit",
       "icon": "inv_misc_food_41"
@@ -308,6 +312,10 @@
       "name": "Nightfin Soup",
       "icon": "inv_drink_17"
     },
+    "food_poached_sunscale_salmon": {
+      "name": "Poached Sunscale Salmon",
+      "icon": "inv_misc_fish_19"
+    },
     "food_runn_tum_tuber_surprise": {
       "name": "Runn Tum Tuber Surprise",
       "icon": "inv_misc_food_63"
@@ -331,6 +339,10 @@
     "food_tender_wolf_steak": {
       "name": "Tender Wolf Steak",
       "icon": "spell_shadow_sealofkings"
+    },
+    "frenzy_potion": {
+      "name": "Frenzy Potion",
+      "icon": "inv_potiond_3"
     },
     "frost_resistance_aura": {
       "name": "Frost Resistance Aura",
@@ -496,6 +508,202 @@
       "name": "Magic Resistance Potion",
       "icon": "temp"
     },
+    "main_hand_imbue:blessed_wizard_oil": {
+      "name": "Blessed Wizard Oil",
+      "icon": "inv_potion_26"
+    },
+    "main_hand_imbue:brilliant_mana_oil": {
+      "name": "Brilliant Mana Oil",
+      "icon": "inv_potion_100"
+    },
+    "main_hand_imbue:brilliant_wizard_oil": {
+      "name": "Brilliant Wizard Oil",
+      "icon": "inv_potion_105"
+    },
+    "main_hand_imbue:consecrated_sharpening_stone": {
+      "name": "Consecrated Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_02"
+    },
+    "main_hand_imbue:deadly_poison": {
+      "name": "Deadly Poison",
+      "icon": "ability_rogue_dualweild"
+    },
+    "main_hand_imbue:dense_sharpening_stone": {
+      "name": "Dense Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_05"
+    },
+    "main_hand_imbue:dense_weightstone": {
+      "name": "Dense Weightstone",
+      "icon": "inv_stone_weightstone_05"
+    },
+    "main_hand_imbue:elemental_sharpening_stone": {
+      "name": "Elemental Sharpening Stone",
+      "icon": "inv_stone_02"
+    },
+    "main_hand_imbue:flametongue_weapon": {
+      "name": "Flametongue Weapon",
+      "icon": "spell_fire_flametounge"
+    },
+    "main_hand_imbue:frost_oil": {
+      "name": "Frost Oil",
+      "icon": "inv_potion_20"
+    },
+    "main_hand_imbue:frostbrand_weapon": {
+      "name": "Frostbrand Weapon",
+      "icon": "spell_frost_frostbrand"
+    },
+    "main_hand_imbue:instant_poison": {
+      "name": "Instant Poison",
+      "icon": "ability_poisons"
+    },
+    "main_hand_imbue:lesser_mana_oil": {
+      "name": "Lesser Mana Oil",
+      "icon": "inv_potion_99"
+    },
+    "main_hand_imbue:lesser_wizard_oil": {
+      "name": "Lesser Wizard Oil",
+      "icon": "inv_potion_103"
+    },
+    "main_hand_imbue:minor_mana_oil": {
+      "name": "Minor Mana Oil",
+      "icon": "inv_potion_98"
+    },
+    "main_hand_imbue:minor_wizard_oil": {
+      "name": "Minor Wizard Oil",
+      "icon": "inv_poison_mindnumbing"
+    },
+    "main_hand_imbue:rockbiter_weapon": {
+      "name": "Rockbiter Weapon",
+      "icon": "spell_nature_rockbiter"
+    },
+    "main_hand_imbue:shadow_oil": {
+      "name": "Shadow Oil",
+      "icon": "inv_potion_23"
+    },
+    "main_hand_imbue:solid_sharpening_stone": {
+      "name": "Solid Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_04"
+    },
+    "main_hand_imbue:solid_weightstone": {
+      "name": "Solid Weightstone",
+      "icon": "inv_stone_weightstone_04"
+    },
+    "main_hand_imbue:windfury": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury"
+    },
+    "main_hand_imbue:windfury_weapon": {
+      "name": "Windfury Weapon",
+      "icon": "spell_nature_cyclone"
+    },
+    "main_hand_imbue:wizard_oil": {
+      "name": "Wizard Oil",
+      "icon": "inv_potion_104"
+    },
+    "main_hand_imbue:wound_poison": {
+      "name": "Wound Poison",
+      "icon": "inv_misc_herb_16"
+    },
+    "main_hand_stone:blessed_wizard_oil": {
+      "name": "Blessed Wizard Oil",
+      "icon": "inv_potion_26"
+    },
+    "main_hand_stone:brilliant_mana_oil": {
+      "name": "Brilliant Mana Oil",
+      "icon": "inv_potion_100"
+    },
+    "main_hand_stone:brilliant_wizard_oil": {
+      "name": "Brilliant Wizard Oil",
+      "icon": "inv_potion_105"
+    },
+    "main_hand_stone:consecrated_sharpening_stone": {
+      "name": "Consecrated Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_02"
+    },
+    "main_hand_stone:deadly_poison": {
+      "name": "Deadly Poison",
+      "icon": "ability_rogue_dualweild"
+    },
+    "main_hand_stone:dense_sharpening_stone": {
+      "name": "Dense Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_05"
+    },
+    "main_hand_stone:dense_weightstone": {
+      "name": "Dense Weightstone",
+      "icon": "inv_stone_weightstone_05"
+    },
+    "main_hand_stone:elemental_sharpening_stone": {
+      "name": "Elemental Sharpening Stone",
+      "icon": "inv_stone_02"
+    },
+    "main_hand_stone:flametongue_weapon": {
+      "name": "Flametongue Weapon",
+      "icon": "spell_fire_flametounge"
+    },
+    "main_hand_stone:frost_oil": {
+      "name": "Frost Oil",
+      "icon": "inv_potion_20"
+    },
+    "main_hand_stone:frostbrand_weapon": {
+      "name": "Frostbrand Weapon",
+      "icon": "spell_frost_frostbrand"
+    },
+    "main_hand_stone:instant_poison": {
+      "name": "Instant Poison",
+      "icon": "ability_poisons"
+    },
+    "main_hand_stone:lesser_mana_oil": {
+      "name": "Lesser Mana Oil",
+      "icon": "inv_potion_99"
+    },
+    "main_hand_stone:lesser_wizard_oil": {
+      "name": "Lesser Wizard Oil",
+      "icon": "inv_potion_103"
+    },
+    "main_hand_stone:minor_mana_oil": {
+      "name": "Minor Mana Oil",
+      "icon": "inv_potion_98"
+    },
+    "main_hand_stone:minor_wizard_oil": {
+      "name": "Minor Wizard Oil",
+      "icon": "inv_poison_mindnumbing"
+    },
+    "main_hand_stone:rockbiter_weapon": {
+      "name": "Rockbiter Weapon",
+      "icon": "spell_nature_rockbiter"
+    },
+    "main_hand_stone:shadow_oil": {
+      "name": "Shadow Oil",
+      "icon": "inv_potion_23"
+    },
+    "main_hand_stone:solid_sharpening_stone": {
+      "name": "Solid Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_04"
+    },
+    "main_hand_stone:solid_weightstone": {
+      "name": "Solid Weightstone",
+      "icon": "inv_stone_weightstone_04"
+    },
+    "main_hand_stone:windfury": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury"
+    },
+    "main_hand_stone:windfury_weapon": {
+      "name": "Windfury Weapon",
+      "icon": "spell_nature_cyclone"
+    },
+    "main_hand_stone:wizard_oil": {
+      "name": "Wizard Oil",
+      "icon": "inv_potion_104"
+    },
+    "main_hand_stone:wound_poison": {
+      "name": "Wound Poison",
+      "icon": "inv_misc_herb_16"
+    },
+    "major_frenzy_potion": {
+      "name": "Major Frenzy Potion",
+      "icon": "inv_potione_6"
+    },
     "major_healing_potion": {
       "name": "Major Healing Potion",
       "icon": "temp"
@@ -503,6 +711,10 @@
     "major_mana_potion": {
       "name": "Major Mana Potion",
       "icon": "inv_potion_76"
+    },
+    "major_spellblasting_potion": {
+      "name": "Major Spellblasting Potion",
+      "icon": "inv_potione_4"
     },
     "mana_potion": {
       "name": "Mana Potion",
@@ -527,6 +739,198 @@
     "nature_resistance_totem": {
       "name": "Nature Resistance Totem",
       "icon": "spell_nature_natureresistancetotem"
+    },
+    "off_hand_imbue:blessed_wizard_oil": {
+      "name": "Blessed Wizard Oil",
+      "icon": "inv_potion_26"
+    },
+    "off_hand_imbue:brilliant_mana_oil": {
+      "name": "Brilliant Mana Oil",
+      "icon": "inv_potion_100"
+    },
+    "off_hand_imbue:brilliant_wizard_oil": {
+      "name": "Brilliant Wizard Oil",
+      "icon": "inv_potion_105"
+    },
+    "off_hand_imbue:consecrated_sharpening_stone": {
+      "name": "Consecrated Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_02"
+    },
+    "off_hand_imbue:deadly_poison": {
+      "name": "Deadly Poison",
+      "icon": "ability_rogue_dualweild"
+    },
+    "off_hand_imbue:dense_sharpening_stone": {
+      "name": "Dense Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_05"
+    },
+    "off_hand_imbue:dense_weightstone": {
+      "name": "Dense Weightstone",
+      "icon": "inv_stone_weightstone_05"
+    },
+    "off_hand_imbue:elemental_sharpening_stone": {
+      "name": "Elemental Sharpening Stone",
+      "icon": "inv_stone_02"
+    },
+    "off_hand_imbue:flametongue_weapon": {
+      "name": "Flametongue Weapon",
+      "icon": "spell_fire_flametounge"
+    },
+    "off_hand_imbue:frost_oil": {
+      "name": "Frost Oil",
+      "icon": "inv_potion_20"
+    },
+    "off_hand_imbue:frostbrand_weapon": {
+      "name": "Frostbrand Weapon",
+      "icon": "spell_frost_frostbrand"
+    },
+    "off_hand_imbue:instant_poison": {
+      "name": "Instant Poison",
+      "icon": "ability_poisons"
+    },
+    "off_hand_imbue:lesser_mana_oil": {
+      "name": "Lesser Mana Oil",
+      "icon": "inv_potion_99"
+    },
+    "off_hand_imbue:lesser_wizard_oil": {
+      "name": "Lesser Wizard Oil",
+      "icon": "inv_potion_103"
+    },
+    "off_hand_imbue:minor_mana_oil": {
+      "name": "Minor Mana Oil",
+      "icon": "inv_potion_98"
+    },
+    "off_hand_imbue:minor_wizard_oil": {
+      "name": "Minor Wizard Oil",
+      "icon": "inv_poison_mindnumbing"
+    },
+    "off_hand_imbue:rockbiter_weapon": {
+      "name": "Rockbiter Weapon",
+      "icon": "spell_nature_rockbiter"
+    },
+    "off_hand_imbue:shadow_oil": {
+      "name": "Shadow Oil",
+      "icon": "inv_potion_23"
+    },
+    "off_hand_imbue:solid_sharpening_stone": {
+      "name": "Solid Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_04"
+    },
+    "off_hand_imbue:solid_weightstone": {
+      "name": "Solid Weightstone",
+      "icon": "inv_stone_weightstone_04"
+    },
+    "off_hand_imbue:windfury": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury"
+    },
+    "off_hand_imbue:windfury_weapon": {
+      "name": "Windfury Weapon",
+      "icon": "spell_nature_cyclone"
+    },
+    "off_hand_imbue:wizard_oil": {
+      "name": "Wizard Oil",
+      "icon": "inv_potion_104"
+    },
+    "off_hand_imbue:wound_poison": {
+      "name": "Wound Poison",
+      "icon": "inv_misc_herb_16"
+    },
+    "off_hand_stone:blessed_wizard_oil": {
+      "name": "Blessed Wizard Oil",
+      "icon": "inv_potion_26"
+    },
+    "off_hand_stone:brilliant_mana_oil": {
+      "name": "Brilliant Mana Oil",
+      "icon": "inv_potion_100"
+    },
+    "off_hand_stone:brilliant_wizard_oil": {
+      "name": "Brilliant Wizard Oil",
+      "icon": "inv_potion_105"
+    },
+    "off_hand_stone:consecrated_sharpening_stone": {
+      "name": "Consecrated Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_02"
+    },
+    "off_hand_stone:deadly_poison": {
+      "name": "Deadly Poison",
+      "icon": "ability_rogue_dualweild"
+    },
+    "off_hand_stone:dense_sharpening_stone": {
+      "name": "Dense Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_05"
+    },
+    "off_hand_stone:dense_weightstone": {
+      "name": "Dense Weightstone",
+      "icon": "inv_stone_weightstone_05"
+    },
+    "off_hand_stone:elemental_sharpening_stone": {
+      "name": "Elemental Sharpening Stone",
+      "icon": "inv_stone_02"
+    },
+    "off_hand_stone:flametongue_weapon": {
+      "name": "Flametongue Weapon",
+      "icon": "spell_fire_flametounge"
+    },
+    "off_hand_stone:frost_oil": {
+      "name": "Frost Oil",
+      "icon": "inv_potion_20"
+    },
+    "off_hand_stone:frostbrand_weapon": {
+      "name": "Frostbrand Weapon",
+      "icon": "spell_frost_frostbrand"
+    },
+    "off_hand_stone:instant_poison": {
+      "name": "Instant Poison",
+      "icon": "ability_poisons"
+    },
+    "off_hand_stone:lesser_mana_oil": {
+      "name": "Lesser Mana Oil",
+      "icon": "inv_potion_99"
+    },
+    "off_hand_stone:lesser_wizard_oil": {
+      "name": "Lesser Wizard Oil",
+      "icon": "inv_potion_103"
+    },
+    "off_hand_stone:minor_mana_oil": {
+      "name": "Minor Mana Oil",
+      "icon": "inv_potion_98"
+    },
+    "off_hand_stone:minor_wizard_oil": {
+      "name": "Minor Wizard Oil",
+      "icon": "inv_poison_mindnumbing"
+    },
+    "off_hand_stone:rockbiter_weapon": {
+      "name": "Rockbiter Weapon",
+      "icon": "spell_nature_rockbiter"
+    },
+    "off_hand_stone:shadow_oil": {
+      "name": "Shadow Oil",
+      "icon": "inv_potion_23"
+    },
+    "off_hand_stone:solid_sharpening_stone": {
+      "name": "Solid Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_04"
+    },
+    "off_hand_stone:solid_weightstone": {
+      "name": "Solid Weightstone",
+      "icon": "inv_stone_weightstone_04"
+    },
+    "off_hand_stone:windfury": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury"
+    },
+    "off_hand_stone:windfury_weapon": {
+      "name": "Windfury Weapon",
+      "icon": "spell_nature_cyclone"
+    },
+    "off_hand_stone:wizard_oil": {
+      "name": "Wizard Oil",
+      "icon": "inv_potion_104"
+    },
+    "off_hand_stone:wound_poison": {
+      "name": "Wound Poison",
+      "icon": "inv_misc_herb_16"
     },
     "power_infusions": {
       "name": "Power Infusion",
@@ -599,6 +1003,10 @@
     "sheen_of_zanza": {
       "name": "Sheen of Zanza",
       "icon": "inv_potion_29"
+    },
+    "spellblasting_potion": {
+      "name": "Spellblasting Potion",
+      "icon": "inv_potiond_2"
     },
     "spirit_of_zanza": {
       "name": "Spirit of Zanza",
