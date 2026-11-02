@@ -58,23 +58,15 @@ export const PLANS: Record<PlanKey, Plan> = {
 
 /** The founder window closes at 6 January 23:59:59 America/Los_Angeles; it has no opening instant. */
 export const FOUNDER_WINDOW_CLOSES = '2027-01-07T08:00:00Z';
+// The two dates below are literals, not `toLocaleDateString(..., { timeZone })` calls: this
+// module is in the account chunk every island page loads, and building those two time-zoned
+// formats at import cost ~5 ms of real CPU in the hydration task (the planner's and the
+// simulator's longest tasks on CI, 2026-11-02). plans.test.ts derives both from
+// FOUNDER_WINDOW_CLOSES, so the literals cannot drift from the instant.
 /** The last founder day, one date style for every surface: `6 Jan 2027`. */
-export const FOUNDER_LAST_DAY = new Date(Date.parse(FOUNDER_WINDOW_CLOSES) - 1).toLocaleDateString('en-GB', {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  timeZone: 'America/Los_Angeles',
-});
+export const FOUNDER_LAST_DAY = '6 Jan 2027';
 /** The founder line's long date style, `6 January 2027`; the same last day as FOUNDER_LAST_DAY. */
-export const FOUNDER_PRICE_UNTIL = new Date(Date.parse(FOUNDER_WINDOW_CLOSES) - 1).toLocaleDateString(
-  'en-GB',
-  {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'America/Los_Angeles',
-  },
-);
+export const FOUNDER_PRICE_UNTIL = '6 January 2027';
 /** Days before a yearly renewal that the renewal email goes out. */
 export const RENEWAL_REMINDER_DAYS = 7;
 /** Days after a first charge within which a refund is granted. */

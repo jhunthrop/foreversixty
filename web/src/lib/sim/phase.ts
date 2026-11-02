@@ -110,15 +110,19 @@ export function hasOpened(phases: readonly PhaseRow[], name: string | undefined,
   return when.getTime() >= Date.parse(row.start);
 }
 
-const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
+// Built on first use, not at import: a time-zoned Intl format is milliseconds of CPU to build,
+// and at import it landed in the simulator's hydration task (see billing/plans.ts).
+let dateFormat: Intl.DateTimeFormat | undefined;
 
 /** "9 December 2026", or "" for a phase with no start, for "later", and for an unknown. */
 export function openDateLabel(phases: readonly PhaseRow[], name: string): string {
   const start = phaseStart(phases, name);
-  return start === null ? '' : DATE_FORMAT.format(start);
+  if (start === null) return '';
+  dateFormat ??= new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+  return dateFormat.format(start);
 }

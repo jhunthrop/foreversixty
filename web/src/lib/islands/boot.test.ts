@@ -57,10 +57,27 @@ describe('scheduleBoot', () => {
     frames[0](0);
     expect(frames).toHaveLength(2);
     frames[1](0);
-    // Still on its own task after the second frame.
+    // Still on its own task after the second frame, and after the Intl warm-up's own task.
     expect(boot).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(0);
+    expect(boot).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
     expect(boot).toHaveBeenCalledTimes(1);
+  });
+
+  it('builds the first Intl number format in a task before the boot, not inside it', async () => {
+    const order: string[] = [];
+    const real = Intl.NumberFormat;
+    vi.spyOn(Intl, 'NumberFormat').mockImplementation(function NumberFormat(
+      ...args: ConstructorParameters<typeof Intl.NumberFormat>
+    ) {
+      order.push('intl');
+      return new real(...args);
+    });
+    const boot = vi.fn(() => order.push('boot'));
+    scheduleBoot(boot, 'interactive');
+    await vi.runAllTimersAsync();
+    expect(order).toEqual(['intl', 'boot']);
   });
 
   it('waits for the fonts already loading, so the swap paints on the shell, not the island', async () => {

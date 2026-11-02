@@ -35,6 +35,7 @@
   import type { ItemsStatus } from '../../lib/sim/store.svelte';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { engineLabel, isStale } from '../../lib/sim/version';
+  import { yieldToMain } from '../../lib/yield';
   import CopyForGame from '../CopyForGame.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
@@ -250,6 +251,29 @@
   if (kind === 'weights') savedWeightsLazy.load();
   else if (kind !== 'run') savedCombosLazy.load();
   else simResultsLazy.load();
+
+  // The page draws in three tasks, not one: the heading and the DPS header, then the character
+  // strip (about 6 ms of the mount alone on a fast desktop: the paperdoll and its slots), then the
+  // cards under the results (details, rotation, the actions row). As one task the mount was
+  // ~9 ms there and ~186 ms of CI's throttled Lighthouse profile, most of /sim/<id>'s Total
+  // Blocking Time against its 200 ms budget (2026-11-02). Each stage only adds below what is
+  // drawn, and the results themselves arrive later still (their own chunk). A server render has
+  // no tasks to spread, so it draws every stage at once.
+  const ALL_STAGES = 2;
+  let drawnStage = $state(typeof window === 'undefined' ? ALL_STAGES : 0);
+  onMount(() => {
+    let cancelled = false;
+    void (async () => {
+      while (drawnStage < ALL_STAGES) {
+        await yieldToMain();
+        if (cancelled) return;
+        drawnStage += 1;
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  });
 </script>
 
 {#snippet lazyFallback(lazy: LazyLoadState)}
@@ -304,16 +328,18 @@
 <!-- A weights result has no gear story (design 7): nothing was tried in any slot, so the
      strip shows no grid rather than the equipped set a weights run never touched for its
      own sake. -->
-<CharacterStrip
-  {character}
-  {items}
-  {itemsStatus}
-  gearKnown={kind !== 'weights' && gearKnown}
-  readonly
-  {plannerHref}
-  {talentPoints}
-  onchange={() => {}}
-/>
+{#if drawnStage >= 1}
+  <CharacterStrip
+    {character}
+    {items}
+    {itemsStatus}
+    gearKnown={kind !== 'weights' && gearKnown}
+    readonly
+    {plannerHref}
+    {talentPoints}
+    onchange={() => {}}
+  />
+{/if}
 
 {#if kind === 'weights'}
   {#if savedWeightsLazy.current}
@@ -339,26 +365,28 @@
   {@render lazyFallback(simResultsLazy)}
 {/if}
 
-<DetailsCard {result} />
+{#if drawnStage >= 2}
+  <DetailsCard {result} />
 
-<RotationCard spec={result.request.spec} {fidelity} />
+  <RotationCard spec={result.request.spec} {fidelity} />
 
-<div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0">
-  <button
-    type="button"
-    class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-    onclick={onrerun}
-    data-testid="sim-run-yourself"
-  >
-    {simCopy.runThisYourself}
-  </button>
-  <button
-    type="button"
-    class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-    onclick={() => void copyLink()}
-    data-testid="sim-saved-copy"
-  >
-    {copied ? simCopy.copied : simCopy.copyLink}
-  </button>
-  <CopyForGame code={gameCode} testid="sim-saved-copy-for-game" />
-</div>
+  <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0">
+    <button
+      type="button"
+      class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
+      onclick={onrerun}
+      data-testid="sim-run-yourself"
+    >
+      {simCopy.runThisYourself}
+    </button>
+    <button
+      type="button"
+      class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
+      onclick={() => void copyLink()}
+      data-testid="sim-saved-copy"
+    >
+      {copied ? simCopy.copied : simCopy.copyLink}
+    </button>
+    <CopyForGame code={gameCode} testid="sim-saved-copy-for-game" />
+  </div>
+{/if}

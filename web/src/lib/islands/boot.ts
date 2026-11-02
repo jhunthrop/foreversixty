@@ -41,12 +41,27 @@ function afterNextPaint(run: () => void): void {
   });
 }
 
+/**
+ * Builds the page's first Intl number format. The first one in a page initialises ICU, ~4 ms of
+ * real CPU on a fast desktop (2026-11-02), whichever line happens to call `toLocaleString`
+ * first; inside the mount that put it in the simulator's longest task, which CI's 4x-throttled
+ * profile turned into most of /sim/<id>'s blocking time. Run in a task of its own, it is paid
+ * between tasks instead.
+ */
+function warmIntl(): void {
+  if (typeof Intl === 'undefined') return;
+  new Intl.NumberFormat('en-US').format(0);
+}
+
 /** Schedules `boot` for a fresh task once the document has been parsed and its shell has painted. */
 export function scheduleBoot(boot: () => void, readyState: ReadyState = document.readyState): void {
   const later = (): void => {
     void fontsSettled().then(() => {
       afterNextPaint(() => {
-        setTimeout(boot, 0);
+        setTimeout(() => {
+          warmIntl();
+          setTimeout(boot, 0);
+        }, 0);
       });
     });
   };

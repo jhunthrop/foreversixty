@@ -21,6 +21,10 @@ const afterPaint: ClientDirective = (load) => {
     if (started) return;
     started = true;
     const start = await load();
+    // Its own task: the island's module graph evaluates as `load` resolves, and hydrating in the
+    // same task made one long task of both (the planner's 147 ms on CI, 2026-11-02), which Total
+    // Blocking Time counts past 50 ms. A zero timeout ends the task between the two.
+    await new Promise((resolve) => setTimeout(resolve, 0));
     await start();
   };
   const soon = (): void => void setTimeout(() => void hydrate(), BEAT_AFTER_PAINT_MS);

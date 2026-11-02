@@ -21,7 +21,7 @@
   import type { TalentIndex } from '../../lib/planner/rules';
   import { SPECS } from '../../lib/sim/specs';
   import { gridSize } from '../../lib/planner/grid';
-  import { yieldToMain } from '../../lib/planner/yield';
+  import { yieldToMain } from '../../lib/yield';
   import { scrollFade, updateScrollFade } from '../../lib/scroll-fade';
   import TreeGrid from './TreeGrid.svelte';
 

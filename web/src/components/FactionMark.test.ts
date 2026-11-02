@@ -32,4 +32,11 @@ describe('FactionMark', () => {
     const html = await c.renderToString(FactionMark, { props: { faction: 'alliance', size: 36 } });
     expect(html).toContain('alt=""');
   });
+
+  it('loads lazily at low fetch priority (decorative: it never joins the text paint, ClassCrest.astro)', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(FactionMark, { props: { faction: 'horde', size: 20 } });
+    expect(html).toContain('loading="lazy"');
+    expect(html).toContain('fetchpriority="low"');
+  });
 });

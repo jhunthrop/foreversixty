@@ -1,6 +1,8 @@
 // web/src/lib/billing/plans.test.ts
 import { describe, expect, it } from 'vitest';
 import {
+  FOUNDER_LAST_DAY,
+  FOUNDER_PRICE_UNTIL,
   FOUNDER_WINDOW_CLOSES,
   PLANS,
   RAID_SIZES,
@@ -29,6 +31,24 @@ describe('founderOpen', () => {
 
   it('has no opening instant', () => {
     expect(founderOpen(new Date('2020-01-01T00:00:00Z'))).toBe(true);
+  });
+});
+
+describe('the founder dates', () => {
+  // The literals stand in for these two time-zoned formats (built at import they cost the
+  // hydration task ~5 ms); this keeps them the window's own last Pacific day.
+  const lastInstant = new Date(Date.parse(FOUNDER_WINDOW_CLOSES) - 1);
+  const pacific = (month: 'short' | 'long'): string =>
+    lastInstant.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month,
+      year: 'numeric',
+      timeZone: 'America/Los_Angeles',
+    });
+
+  it('are the last Pacific day of the founder window', () => {
+    expect(FOUNDER_LAST_DAY).toBe(pacific('short'));
+    expect(FOUNDER_PRICE_UNTIL).toBe(pacific('long'));
   });
 });
 

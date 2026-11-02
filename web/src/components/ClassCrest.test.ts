@@ -33,6 +33,12 @@ describe('ClassCrest', () => {
     expect(html).toContain('loading="lazy"');
   });
 
+  it('asks for low fetch priority on the lazy path, so a visible crest never joins the text paint', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(ClassCrest, { props: { slug: 'hunter', size: 64 } });
+    expect(html).toContain('fetchpriority="low"');
+  });
+
   it('loads eagerly, but never at fetchpriority=high, when the caller marks it above the fold (review round 1 item 6)', async () => {
     // fetchpriority="high" measurably regressed the index page's LCP from ~1.1s to ~6.9s
     // against web/lighthouserc.json's own throttled mobile profile (see ClassCrest.astro's
