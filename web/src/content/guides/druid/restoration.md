@@ -63,7 +63,7 @@ The build leaves out the capstone Wild Growth and Improved Regrowth: the sim mea
 
 The tank keeps **Regrowth** and **Rejuvenation** up for the whole fight, and the heals over time carry most of the work. **Healing Touch** fires only on a real hole in the tank's health and only while your mana is keeping up with the share of the fight that is left, so the mana lasts instead of running dry at the first long fight. A hurt party member gets **Rejuvenation**, you included, and **Tranquility** goes out when two of the five are well down. **Swiftmend** goes on the tank whenever he is under three quarters health and your mana is keeping pace. **Nature's Swiftness** into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and **Innervate** goes on you when you are low.
 
-The rotation does not downrank.
+The rotation casts Rejuvenation at rank 4 on every target: over a long raid fight it returns more healing for its mana than the top rank. Every other heal is the top rank.
 
 ## Stat priority
 
