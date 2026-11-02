@@ -4,7 +4,7 @@ package request
 //
 // The curated profile is the level-60 raid fight. Each leveling band fights the same fight
 // at its own level: bands.rule in data/curated/heal-profile.json states how a band's
-// content and its figures are derived (its last bosses' melee damage, the client's
+// content and its figures are derived (its last bosses' melee and spell damage, the client's
 // dungeon damage modifier and expected player health), and each band row states the
 // figures it comes to. This file is the one place that turns a band row into
 // the engine's raid damage model; Attach and AttachWeights resolve the band from the
@@ -20,15 +20,29 @@ import (
 // HealBandContent is one dungeon (or raid) a band's content is made of, by its last boss
 // and that boss's creature_template melee figures.
 type HealBandContent struct {
-	Name             string  `json:"name"`
-	LastBoss         string  `json:"last_boss"`
-	NPCID            int     `json:"npc_id"`
-	BossLevel        int     `json:"boss_level"`
-	MinMeleeDmg      float64 `json:"min_melee_dmg"`
-	MaxMeleeDmg      float64 `json:"max_melee_dmg"`
-	DamageMultiplier float64 `json:"damage_multiplier"`
-	MeleeAttackPower float64 `json:"melee_attack_power"`
-	AttackTimeMS     float64 `json:"melee_base_attack_time_ms"`
+	Name             string          `json:"name"`
+	LastBoss         string          `json:"last_boss"`
+	NPCID            int             `json:"npc_id"`
+	BossLevel        int             `json:"boss_level"`
+	MinMeleeDmg      float64         `json:"min_melee_dmg"`
+	MaxMeleeDmg      float64         `json:"max_melee_dmg"`
+	DamageMultiplier float64         `json:"damage_multiplier"`
+	MeleeAttackPower float64         `json:"melee_attack_power"`
+	AttackTimeMS     float64         `json:"melee_base_attack_time_ms"`
+	Spells           []HealBossSpell `json:"spells"`
+}
+
+// HealBossSpell is one damaging spell a last boss casts in combat: its mean damage a cast
+// at the boss's level, the mean of its AI's repeat timer, and how long the boss spends
+// casting (or channelling) it. Each row names its source and how the damage was derived.
+type HealBossSpell struct {
+	SpellID         int     `json:"spell_id"`
+	Name            string  `json:"name"`
+	Source          string  `json:"source"`
+	DamagePerCast   float64 `json:"damage_per_cast"`
+	Derivation      string  `json:"derivation"`
+	IntervalSeconds float64 `json:"interval_seconds"`
+	CastSeconds     float64 `json:"cast_seconds"`
 }
 
 // meleeDPS is the boss's melee damage a second: its hit as cmangos'
@@ -37,6 +51,17 @@ type HealBandContent struct {
 func (c HealBandContent) meleeDPS() float64 {
 	hit := c.MeleeAttackPower/14 + (c.MinMeleeDmg+c.MaxMeleeDmg)/2*c.DamageMultiplier
 	return hit / (c.AttackTimeMS / 1000)
+}
+
+// damagePerSecond is the boss's melee, less the share of the fight it spends casting, plus
+// each spell's damage a cast over its interval.
+func (c HealBandContent) damagePerSecond() float64 {
+	casting, spells := 0.0, 0.0
+	for _, s := range c.Spells {
+		casting += s.CastSeconds / s.IntervalSeconds
+		spells += s.DamagePerCast / s.IntervalSeconds
+	}
+	return c.meleeDPS()*max(0, 1-casting) + spells
 }
 
 // HealBand is one band's content, the client figures for it, and the profile figures the
@@ -52,12 +77,12 @@ type HealBand struct {
 	PulseDamage      float64           `json:"pulse_damage"`
 }
 
-// damage is the band's content damage: the median of its last bosses' melee damage a
-// second, a half-way median between the middle two, times the content's damage modifier.
+// damage is the band's content damage: the median of its last bosses' damage a second, a
+// half-way median between the middle two, times the content's damage modifier.
 func (b HealBand) damage() float64 {
 	dps := make([]float64, len(b.Content))
 	for i, c := range b.Content {
-		dps[i] = c.meleeDPS()
+		dps[i] = c.damagePerSecond()
 	}
 	sort.Float64s(dps)
 	n := len(dps)
@@ -153,6 +178,11 @@ func (p HealProfile) validateBands() error {
 		for _, c := range row.Content {
 			if c.AttackTimeMS <= 0 || c.meleeDPS() <= 0 {
 				return fmt.Errorf("%w: band %d: %s states a positive melee hit and attack time", ErrBadHealProfile, row.Level, c.LastBoss)
+			}
+			for _, sp := range c.Spells {
+				if sp.IntervalSeconds <= 0 || sp.DamagePerCast < 0 || sp.CastSeconds < 0 || sp.Source == "" {
+					return fmt.Errorf("%w: band %d: %s's %s states its source, a positive interval and no negative damage", ErrBadHealProfile, row.Level, c.LastBoss, sp.Name)
+				}
 			}
 		}
 		hasReference = hasReference || row.Level == b.ReferenceLevel

@@ -33,10 +33,10 @@
     "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every five seconds three of the five members of the healer's group, the healer among them, take 555, about 333 damage a second spread over the group the healer stands in. The healer is one of the five because raid-wide damage does not skip the player casting the heals; until round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md) it landed only on the four others, so every group heal put a fifth of its healing on a healer who was never hurt. The total is unchanged: three members a pulse, now chosen from five. Scaled by the same 1.85 as the tank hit, so the tank-to-raid ratio and the cadence are what they were."
   },
   "bands": {
-    "rule": "Below 60 each band fights the same fight at its own level (owner ruling, sim-accuracy round 10): the same length, cadence, spread and members, with the damage its own content deals and the health a character of the band has. A band's content is the open dungeons whose last boss stands from the band's level to five levels above it, the dungeons a group of that level goes to; at 60 it is the open raid, because the level-60 profile is a raid fight. A last boss's melee damage a second is its creature_template hit, melee attack power over 14 plus the mean of its minimum and maximum melee damage times its damage multiplier, over its attack time (cmangos Creature::UpdateDamagePhysical). A band's damage is the median of its last bosses' melee damage a second times the content's client damage modifier, and the tank hit and the raid pulse both scale by that against the reference band's, so the tank-to-raid ratio stays what it is at 60. The tank's and the members' health scale by the client's expected player health at the band's level against level 60's. The tuning scale multiplies every band alike, so a band keeps its place inside the tuning bounds. A level between two bands fights the band at or below it, the way rank choices run from one band to the next, and a level below 20 fights band 20. Each row states its derived figures, and loading refuses a row whose figures are not the rule's.",
+    "rule": "Below 60 each band fights the same fight at its own level (owner ruling, sim-accuracy round 10): the same length, cadence, spread and members, with the damage its own content deals and the health a character of the band has. A band's content is the open dungeons whose last boss stands from the band's level to five levels above it, the dungeons a group of that level goes to; at 60 it is the open raid, because the level-60 profile is a raid fight. A last boss's damage a second is its melee plus its spells. Its melee is its creature_template hit, melee attack power over 14 plus the mean of its minimum and maximum melee damage times its damage multiplier, over its attack time (cmangos Creature::UpdateDamagePhysical), less the share of the fight it spends casting or channelling. Its spells are every damaging spell its AI casts while it is tanked (the spell list its template names, else its EventAI rows, else its script, at the melee-range timers; at 60, Onyxia's ground phase), each counted once a cast on one target: the cast's mean damage at the boss's level (cmangos spell_template, the 1.12 values: base points, dice and points per level; ticks of a periodic aura over its duration; a weapon-damage effect as one melee hit plus its bonus; triggered spells as they trigger) over the mean of its repeat timer. Heals, buffs, summons, crowd control without damage and one-off health-threshold casts are left out. A band's damage is the median of its last bosses' damage a second times the content's client damage modifier, and the tank hit and the raid pulse both scale by that against the reference band's, so the tank-to-raid ratio stays what it is at 60. The tank's and the members' health scale by the client's expected player health at the band's level against level 60's. The tuning scale multiplies every band alike, so a band keeps its place inside the tuning bounds. A level between two bands fights the band at or below it, the way rank choices run from one band to the next, and a level below 20 fights band 20. Each row states its derived figures, and loading refuses a row whose figures are not the rule's.",
     "window_levels": 5,
     "reference_level": 60,
-    "notes": "Client 1.60.1.70707 holds no creature's damage: CreatureDifficulty lists 184 creatures and none of these bosses, and ExpectedStat's creature columns are one generic curve with no line between a dungeon boss and a raid boss (scaling the level-60 raid fight down that curve left a level-20 healer covering about a tenth of the fight and dry inside 30 seconds, the very fault the ruling names). So the bosses' damage is creature_template's (cmangos classic-db, the commit data/pipeline/classic_quest_levels.py pins), their levels are creature_template's and Wowhead's Forever tooltips agree on every one, and the client supplies the rest: ExpectedStat (the Classic set, ExpansionID -2, row id = level) gives PlayerHealth; ContentTuningXExpected rows 3400 to 3428 give every Classic dungeon's content tuning (5237 to 5256, which LFGDungeons names) ExpectedStatMod 489, creature melee and spell damage times 1.2, while the raids' tuning (4509) has none, so the dungeon bands carry 1.2 and the raid 1.0. That modifier is one client table with no Blizzard post behind it. Shadowfang Keep (Archmage Arugal, 26), Blackfathom Deeps (Aku'mai, 28), the Stockade (Bazil Thredd, 29), Scarlet Monastery's Library (Arcanist Doan, 37), Uldaman (Archaedas, 47) and Zul'Farrak (Chief Ukorz Sandscalp, 48) fall between bands under the five-level window; Forever's new dungeons state no boss in either source and are left out. The last bosses of the band-30 dungeons are casters with light melee, so band 30's damage is band 20's while its health is higher: the content says so, and the rule does not smooth it.",
+    "notes": "Client 1.60.1.70707 holds no creature's damage: CreatureDifficulty lists 184 creatures and none of these bosses, and ExpectedStat's creature columns are one generic curve with no line between a dungeon boss and a raid boss (scaling the level-60 raid fight down that curve left a level-20 healer covering about a tenth of the fight and dry inside 30 seconds, the very fault the ruling names). So the bosses' damage is creature_template's (cmangos classic-db, the commit data/pipeline/classic_quest_levels.py pins), their levels are creature_template's and Wowhead's Forever tooltips agree on every one, and the client supplies the rest: ExpectedStat (the Classic set, ExpansionID -2, row id = level) gives PlayerHealth; ContentTuningXExpected rows 3400 to 3428 give every Classic dungeon's content tuning (5237 to 5256, which LFGDungeons names) ExpectedStatMod 489, creature melee and spell damage times 1.2, while the raids' tuning (4509) has none, so the dungeon bands carry 1.2 and the raid 1.0. That modifier is one client table with no Blizzard post behind it. Shadowfang Keep (Archmage Arugal, 26), Blackfathom Deeps (Aku'mai, 28), the Stockade (Bazil Thredd, 29), Scarlet Monastery's Library (Arcanist Doan, 37), Uldaman (Archaedas, 47) and Zul'Farrak (Chief Ukorz Sandscalp, 48) fall between bands under the five-level window; Forever's new dungeons state no boss in either source and are left out. The client stores these bosses' spells only in a scaled form whose formula it does not state (Wowhead's tooltips print no amount for them), so the amounts are spell_template's. Each spell row names the AI source of its timer: cmangos classic-db creature_spell_list and creature_ai_scripts, and the mangos-classic ScriptDevAI scripts boss_herod.cpp, boss_mograine_and_whitemane.cpp, boss_thermaplugg.cpp and boss_onyxia.cpp at commit ff13624. A dungeon pull is often several mobs at once, and the rule counts one boss: what would settle a pull factor is a source for how many mobs a band's pulls hold, and none is used.",
     "rows": [
       {
         "level": 20,
@@ -50,7 +50,8 @@
             "max_melee_dmg": 30.0,
             "damage_multiplier": 2.45,
             "melee_attack_power": 74,
-            "melee_base_attack_time_ms": 1500
+            "melee_base_attack_time_ms": 1500,
+            "spells": []
           },
           {
             "name": "Wailing Caverns",
@@ -61,15 +62,26 @@
             "max_melee_dmg": 42.0,
             "damage_multiplier": 2.4,
             "melee_attack_power": 78,
-            "melee_base_attack_time_ms": 2000
+            "melee_base_attack_time_ms": 2000,
+            "spells": [
+              {
+                "spell_id": 8150,
+                "name": "Thundercrack",
+                "source": "creature_ai_scripts: Mutanus the Devourer - Cast Thundercrack",
+                "damage_per_cast": 104.0,
+                "derivation": "104 direct",
+                "interval_seconds": 13.0,
+                "cast_seconds": 0.0
+              }
+            ]
           }
         ],
         "content_damage_mod": 1.2,
         "player_health": 503,
         "tank_health": 1836,
         "member_health": 966,
-        "tank_hit_damage": 124,
-        "pulse_damage": 32
+        "tank_hit_damage": 89,
+        "pulse_damage": 23
       },
       {
         "level": 30,
@@ -83,7 +95,18 @@
             "max_melee_dmg": 57.0,
             "damage_multiplier": 1.7,
             "melee_attack_power": 104,
-            "melee_base_attack_time_ms": 2000
+            "melee_base_attack_time_ms": 2000,
+            "spells": [
+              {
+                "spell_id": 8292,
+                "name": "Chain Bolt",
+                "source": "creature_ai_scripts: Charlga Razorflank - Cast Chain Bolt",
+                "damage_per_cast": 161.7,
+                "derivation": "162 direct",
+                "interval_seconds": 3.5,
+                "cast_seconds": 2.5
+              }
+            ]
           },
           {
             "name": "Gnomeregan",
@@ -94,7 +117,18 @@
             "max_melee_dmg": 62.8,
             "damage_multiplier": 2.4,
             "melee_attack_power": 114,
-            "melee_base_attack_time_ms": 2000
+            "melee_base_attack_time_ms": 2000,
+            "spells": [
+              {
+                "spell_id": 10101,
+                "name": "Knock Away",
+                "source": "boss_thermaplugg.cpp: SPELL_KNOCK_AWAY, urand(17000, 20000)",
+                "damage_per_cast": 170.3,
+                "derivation": "weapon hit 140 + 30",
+                "interval_seconds": 18.5,
+                "cast_seconds": 0.0
+              }
+            ]
           },
           {
             "name": "Scarlet Monastery Graveyard",
@@ -105,15 +139,44 @@
             "max_melee_dmg": 58.0,
             "damage_multiplier": 1.7,
             "melee_attack_power": 106,
-            "melee_base_attack_time_ms": 2000
+            "melee_base_attack_time_ms": 2000,
+            "spells": [
+              {
+                "spell_id": 8814,
+                "name": "Flame Spike",
+                "source": "creature_spell_list 454301: Bloodmage Thalnos - Flame Spike",
+                "damage_per_cast": 214.0,
+                "derivation": "214 direct",
+                "interval_seconds": 12.0,
+                "cast_seconds": 3.0
+              },
+              {
+                "spell_id": 12470,
+                "name": "Fire Nova",
+                "source": "creature_spell_list 454301: Bloodmage Thalnos - Fire Nova",
+                "damage_per_cast": 159.0,
+                "derivation": "159 direct",
+                "interval_seconds": 10.5,
+                "cast_seconds": 0.0
+              },
+              {
+                "spell_id": 8053,
+                "name": "Flame Shock",
+                "source": "creature_spell_list 454301: Bloodmage Thalnos - Flame Shock",
+                "damage_per_cast": 190.5,
+                "derivation": "94 direct; 4 ticks x 24",
+                "interval_seconds": 38.0,
+                "cast_seconds": 0.0
+              }
+            ]
           }
         ],
         "content_damage_mod": 1.2,
         "player_health": 878,
         "tank_health": 3204,
         "member_health": 1687,
-        "tank_hit_damage": 124,
-        "pulse_damage": 32
+        "tank_hit_damage": 128,
+        "pulse_damage": 33
       },
       {
         "level": 40,
@@ -127,7 +190,27 @@
             "max_melee_dmg": 93.0,
             "damage_multiplier": 3.3,
             "melee_attack_power": 136,
-            "melee_base_attack_time_ms": 2500
+            "melee_base_attack_time_ms": 2500,
+            "spells": [
+              {
+                "spell_id": 15496,
+                "name": "Cleave",
+                "source": "boss_herod.cpp: SPELL_CLEAVE, urand(7500, 17500)",
+                "damage_per_cast": 318.7,
+                "derivation": "weapon hit 279 + 40",
+                "interval_seconds": 12.5,
+                "cast_seconds": 0.0
+              },
+              {
+                "spell_id": 8989,
+                "name": "Whirlwind",
+                "source": "boss_herod.cpp: SPELL_WHIRLWIND, urand(15000, 25000)",
+                "damage_per_cast": 2283.3,
+                "derivation": "5 x triggered 15578 (weapon hit 279 + 178)",
+                "interval_seconds": 20.0,
+                "cast_seconds": 10.0
+              }
+            ]
           },
           {
             "name": "Razorfen Downs",
@@ -138,7 +221,36 @@
             "max_melee_dmg": 72.0,
             "damage_multiplier": 4.0,
             "melee_attack_power": 132,
-            "melee_base_attack_time_ms": 2000
+            "melee_base_attack_time_ms": 2000,
+            "spells": [
+              {
+                "spell_id": 15531,
+                "name": "Frost Nova",
+                "source": "creature_ai_scripts: Amnennar the Coldbringer - Cast Frost Nova",
+                "damage_per_cast": 120.0,
+                "derivation": "120 direct",
+                "interval_seconds": 15.0,
+                "cast_seconds": 0.0
+              },
+              {
+                "spell_id": 13009,
+                "name": "Amnennar's Wrath",
+                "source": "creature_ai_scripts: Amnennar the Coldbringer - Cast Amnennar's Wrath",
+                "damage_per_cast": 0.0,
+                "derivation": "",
+                "interval_seconds": 12.0,
+                "cast_seconds": 0.0
+              },
+              {
+                "spell_id": 15530,
+                "name": "Frostbolt",
+                "source": "creature_ai_scripts: Amnennar the Coldbringer - Cast Frostbolt",
+                "damage_per_cast": 196.0,
+                "derivation": "196 direct",
+                "interval_seconds": 3.9,
+                "cast_seconds": 3.0
+              }
+            ]
           },
           {
             "name": "Scarlet Monastery Cathedral",
@@ -149,15 +261,26 @@
             "max_melee_dmg": 77.0,
             "damage_multiplier": 2.0,
             "melee_attack_power": 142,
-            "melee_base_attack_time_ms": 2000
+            "melee_base_attack_time_ms": 2000,
+            "spells": [
+              {
+                "spell_id": 9481,
+                "name": "Holy Smite",
+                "source": "boss_mograine_and_whitemane.cpp: WHITEMANE_ACTION_HOLY_SMITE, melee mode urand(3500, 8000)",
+                "damage_per_cast": 150.0,
+                "derivation": "150 direct",
+                "interval_seconds": 5.75,
+                "cast_seconds": 2.5
+              }
+            ]
           }
         ],
         "content_damage_mod": 1.2,
         "player_health": 1353,
         "tank_health": 4938,
         "member_health": 2599,
-        "tank_hit_damage": 294,
-        "pulse_damage": 77
+        "tank_hit_damage": 154,
+        "pulse_damage": 40
       },
       {
         "level": 50,
@@ -171,7 +294,27 @@
             "max_melee_dmg": 444.0,
             "damage_multiplier": 1.0,
             "melee_attack_power": 182,
-            "melee_base_attack_time_ms": 2000
+            "melee_base_attack_time_ms": 2000,
+            "spells": [
+              {
+                "spell_id": 21909,
+                "name": "Dust Field",
+                "source": "creature_ai_scripts: Princess Theradras - Cast Dust Field",
+                "damage_per_cast": 1200.0,
+                "derivation": "8 x triggered 21868 (150 direct)",
+                "interval_seconds": 22.5,
+                "cast_seconds": 0.0
+              },
+              {
+                "spell_id": 21832,
+                "name": "Boulder",
+                "source": "creature_ai_scripts: Princess Theradras - Cast Boulder",
+                "damage_per_cast": 450.0,
+                "derivation": "450 direct",
+                "interval_seconds": 9.0,
+                "cast_seconds": 2.0
+              }
+            ]
           },
           {
             "name": "Sunken Temple",
@@ -182,15 +325,35 @@
             "max_melee_dmg": 408.0,
             "damage_multiplier": 1.0,
             "melee_attack_power": 167,
-            "melee_base_attack_time_ms": 1208
+            "melee_base_attack_time_ms": 1208,
+            "spells": [
+              {
+                "spell_id": 11876,
+                "name": "War Stomp",
+                "source": "creature_ai_scripts: Shade of Eranikus - Cast War Stomp",
+                "damage_per_cast": 401.9,
+                "derivation": "weapon hit 374 + 28",
+                "interval_seconds": 20.0,
+                "cast_seconds": 0.0
+              },
+              {
+                "spell_id": 12891,
+                "name": "Acid Breath",
+                "source": "creature_ai_scripts: Shade of Eranikus - Cast Acid Breath",
+                "damage_per_cast": 932.5,
+                "derivation": "9 ticks x 42; 550 direct",
+                "interval_seconds": 25.0,
+                "cast_seconds": 0.0
+              }
+            ]
           }
         ],
         "content_damage_mod": 1.2,
         "player_health": 1928,
         "tank_health": 7036,
         "member_health": 3703,
-        "tank_hit_damage": 677,
-        "pulse_damage": 177
+        "tank_hit_damage": 547,
+        "pulse_damage": 143
       },
       {
         "level": 60,
@@ -204,7 +367,54 @@
             "max_melee_dmg": 145.6,
             "damage_multiplier": 15.0,
             "melee_attack_power": 268,
-            "melee_base_attack_time_ms": 2000
+            "melee_base_attack_time_ms": 2000,
+            "spells": [
+              {
+                "spell_id": 18435,
+                "name": "Flame Breath",
+                "source": "boss_onyxia.cpp: SPELL_FLAMEBREATH, urand(10000, 20000)",
+                "damage_per_cast": 3500.0,
+                "derivation": "3500 direct",
+                "interval_seconds": 15.0,
+                "cast_seconds": 2.0
+              },
+              {
+                "spell_id": 19983,
+                "name": "Cleave",
+                "source": "boss_onyxia.cpp: SPELL_CLEAVE, urand(5000, 10000)",
+                "damage_per_cast": 2249.6,
+                "derivation": "weapon hit 1935 + 315",
+                "interval_seconds": 7.5,
+                "cast_seconds": 0.0
+              },
+              {
+                "spell_id": 15847,
+                "name": "Tail Sweep",
+                "source": "boss_onyxia.cpp: SPELL_TAILSWEEP, urand(15000, 20000)",
+                "damage_per_cast": 800.0,
+                "derivation": "800 direct",
+                "interval_seconds": 17.5,
+                "cast_seconds": 0.0
+              },
+              {
+                "spell_id": 18500,
+                "name": "Wing Buffet",
+                "source": "boss_onyxia.cpp: SPELL_WINGBUFFET, urand(15000, 30000)",
+                "damage_per_cast": 750.0,
+                "derivation": "750 direct",
+                "interval_seconds": 22.5,
+                "cast_seconds": 1.0
+              },
+              {
+                "spell_id": 19633,
+                "name": "Knock Away",
+                "source": "boss_onyxia.cpp: SPELL_KNOCK_AWAY, urand(25000, 40000)",
+                "damage_per_cast": 1964.6,
+                "derivation": "weapon hit 1935 + 30",
+                "interval_seconds": 32.5,
+                "cast_seconds": 0.0
+              }
+            ]
           }
         ],
         "content_damage_mod": 1.0,
@@ -222,8 +432,18 @@
         "kind": "site"
       },
       {
+        "label": "cmangos classic-db spell_template, creature_spell_list and creature_ai_scripts (commit ec4f596146be6467ea93c57397858e329e2db852): the bosses' spell amounts and timers",
+        "url": "https://github.com/cmangos/classic-db/blob/ec4f596146be6467ea93c57397858e329e2db852/Full_DB/ClassicDB_1_12_1_z2815.sql.gz",
+        "kind": "site"
+      },
+      {
         "label": "cmangos mangos-classic, Creature::UpdateDamagePhysical: a creature's hit from its template",
         "url": "https://github.com/cmangos/mangos-classic/blob/master/src/game/Entities/StatSystem.cpp",
+        "kind": "site"
+      },
+      {
+        "label": "cmangos mangos-classic ScriptDevAI boss scripts (commit ff13624): Herod, Whitemane, Thermaplugg and Onyxia's spell timers",
+        "url": "https://github.com/cmangos/mangos-classic/tree/ff13624a4be74816796bc0f8555f03011438144e/src/game/AI/ScriptDevAI/scripts",
         "kind": "site"
       },
       {
@@ -244,6 +464,11 @@
       {
         "label": "wago.tools, LFGDungeons, client 1.60.1.70707 (each dungeon's content tuning)",
         "url": "https://wago.tools/db2/LFGDungeons/csv?build=1.60.1.70707",
+        "kind": "site"
+      },
+      {
+        "label": "wago.tools, SpellCastTimes and SpellDuration, client 1.60.1.70707 (cast and channel times)",
+        "url": "https://wago.tools/db2/SpellCastTimes/csv?build=1.60.1.70707",
         "kind": "site"
       }
     ]
