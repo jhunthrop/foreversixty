@@ -84,7 +84,10 @@ const PAGE_ISLAND_BUDGETS = [
   // section is on the page's first view for a character with gear, so lazy-loading it would
   // trade bytes for a second paint of the frame; 18 KB keeps the same ~0.1 KB slack per KB
   // the other page islands have and still trips an accidental heavy import.
-  { component: 'Character', limitBytes: 18 * 1024 },
+  // +256 bytes (row-band sweep, 2026-11-01): the fight tables' marked and addressed rows are the
+  // shared row band (lib/ui/row.ts), now a chunk of its own; the entry gains only the preload
+  // entries naming it (+38 bytes gzipped measured, 18,424 -> 18,462), with the slack restored.
+  { component: 'Character', limitBytes: 18 * 1024 + 256 },
   { component: 'GuildShell', limitBytes: 16 * 1024 },
   // Lane bis-tooltip-host (2026-09-29): one BisTooltipHost per /bis/<class>/<spec> page
   // replaces roughly 840 per-row ItemHover islands with delegated document-level listeners

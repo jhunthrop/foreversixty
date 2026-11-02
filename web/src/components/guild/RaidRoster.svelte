@@ -12,7 +12,7 @@
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCount } from '../../lib/guild/raid-page';
   import type { OfficerLine } from '../../lib/guild/raid-page-types';
-  import { OWN_ROW_WASH } from '../../lib/guild/raid-report-styles';
+  import { ownRowBand } from '../../lib/ui/row';
   import { rosterGroups, rosterSelectId, type RosterRow } from '../../lib/guild/raid-roster';
   import { SIGNUP_STATES } from '../../lib/guild/segments-keys';
   import type { FilterOption } from '../../lib/rankings/options';
@@ -117,10 +117,10 @@
   <!-- §7 caps: 36 px desktop, 44 phone before a note. A bare row centres crest, name and the
        officer select (32 desktop, 44 phone) with no padding past them; a noted row runs from the top. -->
   <li
-    class="rounded-control flex min-h-11 break-inside-avoid gap-3 px-2 md:min-h-9 {entry.note === ''
-      ? 'items-center'
-      : 'items-start py-1.5'}"
-    style={entry.own ? `background: ${OWN_ROW_WASH}` : undefined}
+    class="rounded-control flex min-h-11 break-inside-avoid gap-3 {ownRowBand(
+      entry.own,
+      2,
+    )} md:min-h-9 {entry.note === '' ? 'items-center' : 'items-start py-1.5'}"
     aria-busy={busy}
     data-testid="raid-roster-row"
   >

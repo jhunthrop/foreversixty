@@ -19,6 +19,7 @@
   import { RANKING_METRICS } from '../../lib/rankings/url';
   import { formatAmount, percentileToken, rowLink } from '../../lib/report/format';
   import { executionHref, executionLabel, executionTitle } from '../../lib/sim/execution';
+  import { ROW_BAND_MARK, ROW_BAND_REACH, ROW_BAND_TARGET } from '../../lib/ui/row';
 
   let {
     title,
@@ -61,10 +62,10 @@
     note?: ((row: Row) => string | null) | null;
   } = $props();
 
-  /** The address's target (L8.5 fix round 2 items 3 and 5): a 2px gold left edge and a gold tint
-   *  over the page's ground, eased over 120ms, landing 96px under the window's top. */
-  const TARGET =
-    ' scroll-mt-24 transition-[background-color,box-shadow] duration-[120ms] target:bg-[rgba(229,185,85,.08)] target:shadow-[inset_2px_0_0_var(--color-gold)]';
+  /** The address's target (L8.5 fix round 2 items 3 and 5): the marked band (a 2px gold left edge
+   *  and a gold tint, eased over 120ms), landing 96px under the window's top. While targeted the
+   *  row takes the band's reach for its 8px padding (lib/ui/row.ts ROW_BAND_REACH[2]). */
+  const TARGET = ` scroll-mt-24 ${ROW_BAND_TARGET} target:-mx-1 target:px-3`;
   /** "rated 65" on a line of its own, right-aligned under the parse: it spans Boss to Parse %, so
    *  it never widens a column (Spec is not drawn on a phone, so two columns there, three from
    *  md). */
@@ -93,8 +94,10 @@
   } as const;
   const GRID = $derived(GRIDS[columns]);
   const ratedNoteClass = $derived(columns === 'full' ? RATED_NOTE : RATED_NOTE_NO_SPEC);
-  /** The marked row's gold edge and tint: the address target's look, without its id or scroll. */
-  const MARKED = ' scroll-mt-24 bg-[rgba(229,185,85,.08)] shadow-[inset_2px_0_0_var(--color-gold)]';
+  /** A row's padding and band: the marked band (the address target's look, without its id) or the
+   *  list's 8px padding. */
+  const MARKED = `${ROW_BAND_MARK} ${ROW_BAND_REACH[2]} scroll-mt-24`;
+  const rowPadding = (row: Row): string => (isMarked(row) ? MARKED : 'px-2');
   const isMarked = (row: Row): boolean =>
     selected !== null && selected.has(fightKey(row.report_id, row.fight_index));
 </script>
@@ -140,7 +143,7 @@
       <!-- L8.5 ruling 1: the rating card's weakest part links here (fix round 2: the target's
            gold edge and tint, 96px under the window's top). -->
       <li
-        class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${GRID}${rowId === null ? '' : TARGET}${isMarked(row) ? MARKED : ''}`}
+        class={`border-line-soft grid min-h-11 items-center gap-3 border-b py-2 text-[14px] ${GRID} ${rowPadding(row)}${rowId === null ? '' : TARGET}`}
         id={rowId === null ? undefined : rowId(row)}
         data-marked={isMarked(row) ? 'true' : undefined}
       >

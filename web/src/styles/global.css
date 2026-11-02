@@ -572,6 +572,58 @@ html[data-session='1'][data-history='1'] .history-reserve {
   }
 }
 
+/* Row bands (row-band sweep 2026-11-01, design/specs/2026-11-01-row-bands.md). A row that lights
+   up inside a list (the viewer's own row, a marked or addressed fight, a link row's hover) is a
+   rounded band, never a square stripe: it takes the control radius, holds its content 12 px in
+   (lib/ui/row.ts ROW_BAND_REACH gives a flush row that room without moving its content), and
+   the hairlines on either side of it step back while it is lit, so the band reads as the row
+   itself. Plain CSS, outside the layers, so it outranks the rows' own border-line-soft rules.
+   A row that runs edge to edge in a clipped card (the account, rankings, tier and BiS lists)
+   is already contained by the card and keeps its full-bleed ground. */
+.row-band {
+  border-radius: var(--radius-control);
+  transition:
+    background-color 120ms ease-out,
+    box-shadow 120ms ease-out;
+}
+.row-band-own {
+  background-color: var(--row-hover);
+}
+.row-band-mark,
+.row-band-target:target {
+  background-color: rgba(229, 185, 85, 0.08);
+  box-shadow: inset 2px 0 0 var(--color-gold);
+}
+.row-band-hover:active {
+  background-color: #171d2b;
+}
+:is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active),
+:is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active) + * {
+  border-top-color: transparent;
+}
+:is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active),
+:has(+ :is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active)) {
+  border-bottom-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  .row-band-hover:hover:not(:active) {
+    background-color: var(--color-card-top);
+  }
+  .row-band-hover:hover,
+  .row-band-hover:hover + * {
+    border-top-color: transparent;
+  }
+  .row-band-hover:hover,
+  :has(+ .row-band-hover:hover) {
+    border-bottom-color: transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .row-band {
+    transition: none;
+  }
+}
+
 /* /account: with no session hint on <html> the visitor can only resolve to the sign-in
    prompt, so the loading skeletons and the signed-out floor that matched them collapse
    (Account.svelte's loading branch explains the floor). */

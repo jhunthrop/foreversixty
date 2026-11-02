@@ -9,7 +9,8 @@
   import type { ConsumableBefore, RaidConsumables } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, usedChips } from '../../lib/guild/attendance-copy';
   import { PILL_WARN } from '../../lib/guild/pill-styles';
-  import { OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { ownRowBand } from '../../lib/ui/row';
   import { consumableOrder } from '../../lib/guild/report-view';
   import { visibleRows } from '../../lib/guild/night';
   import { classColorVar } from '../../lib/report/format';
@@ -68,8 +69,10 @@
   <ul bind:this={list}>
     {#each shown as row (row.character_key)}
       <li
-        class="{ROW_DIVIDER} grid min-h-11 grid-cols-1 items-center gap-x-4 gap-y-1 px-1 py-2 {COLUMNS}"
-        style={ownKeys.includes(row.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
+        class="{ROW_DIVIDER} grid min-h-11 grid-cols-1 items-center gap-x-4 gap-y-1 {ownRowBand(
+          ownKeys.includes(row.character_key),
+          1,
+        )} py-2 {COLUMNS}"
         tabindex="-1"
         data-testid="raid-consumable-row"
       >

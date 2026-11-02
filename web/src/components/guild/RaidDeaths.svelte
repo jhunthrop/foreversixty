@@ -7,7 +7,8 @@
   import { focusRowAt } from '../../lib/guild/focus-now';
   import type { RaidDeathRow } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, deathSplit } from '../../lib/guild/attendance-copy';
-  import { BAR_FILL, BAR_TRACK, OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { BAR_FILL, BAR_TRACK, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { ownRowBand } from '../../lib/ui/row';
   import { deathCount, deathOrder } from '../../lib/guild/report-view';
   import { visibleRows } from '../../lib/guild/night';
   import { classColorVar } from '../../lib/report/format';
@@ -52,8 +53,10 @@
         <!-- Phone: line 1 crest, the whole name and the count; line 2 the bar and the split.
              From 768 one 40 px row: crest, name, bar, count, split. -->
         <li
-          class="{ROW_DIVIDER} grid min-h-[52px] grid-cols-[20px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-1 py-1.5 md:flex md:min-h-10 md:py-0"
-          style={ownKeys.includes(row.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
+          class="{ROW_DIVIDER} grid min-h-[52px] grid-cols-[20px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 {ownRowBand(
+            ownKeys.includes(row.character_key),
+            1,
+          )} py-1.5 md:flex md:min-h-10 md:py-0"
           tabindex="-1"
           data-testid="raid-death-row"
         >

@@ -159,7 +159,7 @@ describe('the outcome cell', () => {
     expect(flat).not.toContain('Benchwarmer 0/4');
   });
 
-  it('washes the own row', () => {
-    expect(view(ALL)).toContain('background:rgba(229,185,85,.06)');
+  it('washes the own row on the shared own band', () => {
+    expect(view(ALL)).toContain('row-band row-band-own');
   });
 });

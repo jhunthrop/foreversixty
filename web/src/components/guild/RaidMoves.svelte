@@ -13,7 +13,8 @@
     onBoss,
   } from '../../lib/guild/attendance-copy';
   import { SEP } from '../../lib/guild/raid-copy';
-  import { OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { ownRowBand } from '../../lib/ui/row';
   import { dateLabel } from '../../lib/guild/raid-time';
   import { biggestMoves } from '../../lib/guild/report-view';
   import { classColorVar } from '../../lib/report/format';
@@ -53,8 +54,10 @@
         <!-- From 768: who, `on {Boss}`, the figures and the delta right-aligned. Below: who and the
              delta, then `on Onyxia · DPS 238 → 291`. -->
         <li
-          class="{ROW_DIVIDER} grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-0.5 px-1 py-1.5 md:grid-cols-[minmax(0,1fr)_auto_auto_56px]"
-          style={ownKeys.includes(move.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
+          class="{ROW_DIVIDER} grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-0.5 {ownRowBand(
+            ownKeys.includes(move.character_key),
+            1,
+          )} py-1.5 md:grid-cols-[minmax(0,1fr)_auto_auto_56px]"
           data-testid="raid-move-row"
         >
           <span class="flex min-w-0 items-center gap-2">

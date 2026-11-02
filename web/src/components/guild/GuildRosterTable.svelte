@@ -62,6 +62,7 @@
     type RosterSortKey,
   } from '../../lib/guild/roster-sort';
   import { button } from '../../lib/ui/button';
+  import { ownRowBand } from '../../lib/ui/row';
   import Card from '../ui/Card.svelte';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import FactLine from './FactLine.svelte';
@@ -516,7 +517,7 @@
             {@const subtitle = altOf.has(row.character_key)
               ? `${specLine}${specLine === '' ? '' : ' · '}alt of ${altOf.get(row.character_key)}`
               : specLine}
-            <div class={`${ROW} ${pinned ? 'bg-[rgba(229,185,85,.06)]' : ''}`}>
+            <div class={`${ROW} ${ownRowBand(pinned, 0)}`}>
               <ClassCrestRing characterClass={row.class ?? ''} size={36} />
               <!-- At lg the name block is a fixed 240 px and its subtitle one ellipsised line (the whole
                text in the title), so every row's rank and stats start at the same left edge. -->

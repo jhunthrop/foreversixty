@@ -6,6 +6,7 @@
   import type { RaidReport } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, killRowText, unnamedLine } from '../../lib/guild/attendance-copy';
   import { ROW_DIVIDER, ROW_LINK } from '../../lib/guild/raid-report-styles';
+  import { ROW_BAND_REACH } from '../../lib/ui/row';
   import RaidBlock from './RaidBlock.svelte';
 
   let { report, reportId }: { report: RaidReport; reportId: string } = $props();
@@ -20,7 +21,7 @@
       <li class={ROW_DIVIDER}>
         <a
           href={fightHref(entry.fight_index)}
-          class="{ROW_LINK} flex min-h-11 items-baseline gap-3 px-1 py-2.5"
+          class="{ROW_LINK} {ROW_BAND_REACH[1]} flex min-h-11 items-baseline gap-3 py-2.5"
           data-testid="raid-kill-row"
         >
           <span class="text-muted numeric w-4 text-[13px]">{index + 1}</span>

@@ -24,6 +24,7 @@
   import { stampParts } from '../../lib/guild/raid-time';
   import { guildRaidHref } from '../../lib/characters';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { ROW_BAND_HOVER } from '../../lib/ui/row';
   import LoadError from '../ui/LoadError.svelte';
   import Figures from './Figures.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -66,7 +67,7 @@
   const SENTENCE_ID = (id: string): string => `raid-match-elsewhere-${id}`;
 
   function rowClass(row: MatchCandidate): string {
-    return picker.isTaken(row) ? `${ROW} opacity-50` : `${ROW} hover:bg-card-top cursor-pointer`;
+    return picker.isTaken(row) ? `${ROW} opacity-50` : `${ROW} ${ROW_BAND_HOVER} cursor-pointer`;
   }
 
   function tabStop(row: MatchCandidate): number {

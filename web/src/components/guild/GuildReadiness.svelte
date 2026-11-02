@@ -37,6 +37,7 @@
     type ReadinessCellKind,
   } from '../../lib/guild/readiness-view';
   import GuildPlanGate from './GuildPlanGate.svelte';
+  import { ownRowBand } from '../../lib/ui/row';
 
   let {
     rows,
@@ -257,138 +258,144 @@
   <div class="flex flex-col" data-testid="guild-readiness-rows">
     {#each ordered as row (row.character_key)}
       {@const pinned = row.character_key === myCharacterKey}
-      <!-- Desktop grid -->
-      <div
-        class={`border-line-soft hidden items-center gap-2 border-b px-1 py-2 md:grid ${pinned ? 'bg-[rgba(229,185,85,.06)]' : ''}`}
-        style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
-        data-testid={`guild-readiness-row-${row.character_key}`}
-      >
-        <span class="flex min-w-0 items-center gap-2">
-          <ClassCrestRing characterClass={row.class} size={26} />
-          <span class="truncate text-[13px] font-bold" style={`color:${classColorVar(row.class)}`}>
-            {row.name}{pinned ? ' (you)' : ''}
-          </span>
-        </span>
-        {#if row.no_export}
-          {#each NO_EXPORT_CELLS as cell (cell)}<span
-              class="text-muted text-[12px]"
-              data-testid="guild-readiness-dash">{DASH}</span
-            >{/each}
-        {:else}
-          <span class={`numeric text-[12px] ${gearGapTextClass(row)}`}>{gearGapLabel(row)}</span>
-          {#if enchantKind(row) === 'consent'}
-            <span class="text-muted text-[12px]">{enchantLabel(row)}</span>
-          {:else}
-            <span class={pillClass(enchantKind(row))} style={ENCHANT_PILL_STYLE} title={enchantLabel(row)}
-              >{enchantPillText(row)}</span
-            >
-          {/if}
-          {#if consumablesKind(row) === 'consent'}
-            <span class="text-muted text-[12px]">{consumablesLabel(row)}</span>
-          {:else}
-            <span class={pillClass(consumablesKind(row))}>{consumablesLabel(row)}</span>
-          {/if}
-          {#if talentPointsKind(row) === 'warn'}
-            <span class={pillClass('warn', true)}>{talentPointsLabel(row)}</span>
-          {:else}
-            <span class="text-muted text-[12px]">{talentPointsLabel(row)}</span>
-          {/if}
-          <span class={`numeric text-[12px] ${itemLevelTextClass(itemLevelKind(row))}`}
-            >{itemLevelLabel(row)}</span
-          >
-        {/if}
-        {@render syncedCell(row, 'text-[11px]', syncedDay(row))}
-        {#if officer}
-          <button
-            class={NUDGE_BTN}
-            onclick={() => void onNudge(row)}
-            disabled={officerReadOnly}
-            aria-describedby={gateDescribedBy}
-            aria-label={`Nudge ${row.name}`}
-            data-testid={`guild-readiness-nudge-${row.character_key}`}
-          >
-            {copiedKey === row.character_key ? 'Copied' : 'Nudge'}
-          </button>
-        {/if}
-      </div>
-
-      <!-- Phone stacked card: its own Tailwind `md:hidden` (not a scoped <style> block --
-           see this component's own header comment) is the only thing controlling display
-           at this breakpoint, so there is no cascade-order risk of it fighting the desktop
-           grid's `hidden md:grid` above. -->
-      <div
-        class={`border-line-soft flex flex-col gap-2.5 border-b px-1 py-2.5 md:hidden ${pinned ? 'bg-[rgba(229,185,85,.06)]' : ''}`}
-        data-testid={`guild-readiness-row-${row.character_key}`}
-      >
-        <div class="flex items-center justify-between gap-2">
+      <!-- One box per raider holds the rule and the own band (lib/ui/row.ts), so the band and the
+           rules beside it are the same at every width whichever layout below is shown. -->
+      <div class={`border-line-soft border-b ${ownRowBand(pinned, 1)}`}>
+        <!-- Desktop grid -->
+        <div
+          class="hidden items-center gap-2 py-2 md:grid"
+          style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
+          data-testid={`guild-readiness-row-${row.character_key}`}
+        >
           <span class="flex min-w-0 items-center gap-2">
             <ClassCrestRing characterClass={row.class} size={26} />
             <span class="truncate text-[13px] font-bold" style={`color:${classColorVar(row.class)}`}>
               {row.name}{pinned ? ' (you)' : ''}
             </span>
           </span>
-          {@render syncedCell(row, 'text-[11px]', `Synced ${syncedDay(row)}`)}
-        </div>
-        {#if row.no_export}
-          <div class="flex flex-wrap gap-4">
-            {#each NO_EXPORT_CELLS as cell (cell)}<span class={CHIP}
-                ><span class="quiet-label">{cell}</span><span
-                  class="text-muted"
-                  data-testid="guild-readiness-dash">{DASH}</span
-                ></span
+          {#if row.no_export}
+            {#each NO_EXPORT_CELLS as cell (cell)}<span
+                class="text-muted text-[12px]"
+                data-testid="guild-readiness-dash">{DASH}</span
               >{/each}
-          </div>
-        {:else}
-          <div class="flex flex-wrap gap-4">
-            <span class={CHIP}
-              ><span class="quiet-label">Gear gap</span><span class={gearGapTextClass(row)}
-                >{gearGapLabel(row)}</span
-              ></span
+          {:else}
+            <span class={`numeric text-[12px] ${gearGapTextClass(row)}`}>{gearGapLabel(row)}</span>
+            {#if enchantKind(row) === 'consent'}
+              <span class="text-muted text-[12px]">{enchantLabel(row)}</span>
+            {:else}
+              <span class={pillClass(enchantKind(row))} style={ENCHANT_PILL_STYLE} title={enchantLabel(row)}
+                >{enchantPillText(row)}</span
+              >
+            {/if}
+            {#if consumablesKind(row) === 'consent'}
+              <span class="text-muted text-[12px]">{consumablesLabel(row)}</span>
+            {:else}
+              <span class={pillClass(consumablesKind(row))}>{consumablesLabel(row)}</span>
+            {/if}
+            {#if talentPointsKind(row) === 'warn'}
+              <span class={pillClass('warn', true)}>{talentPointsLabel(row)}</span>
+            {:else}
+              <span class="text-muted text-[12px]">{talentPointsLabel(row)}</span>
+            {/if}
+            <span class={`numeric text-[12px] ${itemLevelTextClass(itemLevelKind(row))}`}
+              >{itemLevelLabel(row)}</span
             >
-            <span class={CHIP}>
-              <span class="quiet-label">Enchants</span>
-              {#if enchantKind(row) === 'consent'}
-                {enchantLabel(row)}
-              {:else}
-                <span class={pillClass(enchantKind(row))} style={ENCHANT_PILL_STYLE} title={enchantLabel(row)}
-                  >{enchantPillText(row)}</span
-                >
-              {/if}
+          {/if}
+          {@render syncedCell(row, 'text-[11px]', syncedDay(row))}
+          {#if officer}
+            <button
+              class={NUDGE_BTN}
+              onclick={() => void onNudge(row)}
+              disabled={officerReadOnly}
+              aria-describedby={gateDescribedBy}
+              aria-label={`Nudge ${row.name}`}
+              data-testid={`guild-readiness-nudge-${row.character_key}`}
+            >
+              {copiedKey === row.character_key ? 'Copied' : 'Nudge'}
+            </button>
+          {/if}
+        </div>
+
+        <!-- Phone stacked card: its own Tailwind `md:hidden` (not a scoped <style> block --
+           see this component's own header comment) is the only thing controlling display
+           at this breakpoint, so there is no cascade-order risk of it fighting the desktop
+           grid's `hidden md:grid` above. -->
+        <div
+          class="flex flex-col gap-2.5 py-2.5 md:hidden"
+          data-testid={`guild-readiness-row-${row.character_key}`}
+        >
+          <div class="flex items-center justify-between gap-2">
+            <span class="flex min-w-0 items-center gap-2">
+              <ClassCrestRing characterClass={row.class} size={26} />
+              <span class="truncate text-[13px] font-bold" style={`color:${classColorVar(row.class)}`}>
+                {row.name}{pinned ? ' (you)' : ''}
+              </span>
             </span>
-            <span class={CHIP}>
-              <span class="quiet-label">Consumables</span>
-              {#if consumablesKind(row) === 'consent'}
-                {consumablesLabel(row)}
-              {:else}
-                <span class={pillClass(consumablesKind(row))}>{consumablesLabel(row)}</span>
-              {/if}
-            </span>
-            <span class={CHIP}>
-              <span class="quiet-label">Talent points</span>
-              {#if talentPointsKind(row) === 'warn'}
-                <span class={pillClass('warn', true)}>{talentPointsLabel(row)}</span>
-              {:else}
-                {talentPointsLabel(row)}
-              {/if}
-            </span>
-            <span class={CHIP}>
-              <span class="quiet-label">Item level</span>
-              <span class={itemLevelTextClass(itemLevelKind(row))}>{itemLevelLabel(row)}</span>
-            </span>
+            {@render syncedCell(row, 'text-[11px]', `Synced ${syncedDay(row)}`)}
           </div>
-        {/if}
-        {#if officer}
-          <button
-            class={`${NUDGE_BTN} w-fit`}
-            onclick={() => void onNudge(row)}
-            disabled={officerReadOnly}
-            aria-describedby={gateDescribedBy}
-            aria-label={`Nudge ${row.name}`}
-            data-testid={`guild-readiness-nudge-${row.character_key}`}
-          >
-            {copiedKey === row.character_key ? 'Copied' : 'Nudge'}
-          </button>
-        {/if}
+          {#if row.no_export}
+            <div class="flex flex-wrap gap-4">
+              {#each NO_EXPORT_CELLS as cell (cell)}<span class={CHIP}
+                  ><span class="quiet-label">{cell}</span><span
+                    class="text-muted"
+                    data-testid="guild-readiness-dash">{DASH}</span
+                  ></span
+                >{/each}
+            </div>
+          {:else}
+            <div class="flex flex-wrap gap-4">
+              <span class={CHIP}
+                ><span class="quiet-label">Gear gap</span><span class={gearGapTextClass(row)}
+                  >{gearGapLabel(row)}</span
+                ></span
+              >
+              <span class={CHIP}>
+                <span class="quiet-label">Enchants</span>
+                {#if enchantKind(row) === 'consent'}
+                  {enchantLabel(row)}
+                {:else}
+                  <span
+                    class={pillClass(enchantKind(row))}
+                    style={ENCHANT_PILL_STYLE}
+                    title={enchantLabel(row)}>{enchantPillText(row)}</span
+                  >
+                {/if}
+              </span>
+              <span class={CHIP}>
+                <span class="quiet-label">Consumables</span>
+                {#if consumablesKind(row) === 'consent'}
+                  {consumablesLabel(row)}
+                {:else}
+                  <span class={pillClass(consumablesKind(row))}>{consumablesLabel(row)}</span>
+                {/if}
+              </span>
+              <span class={CHIP}>
+                <span class="quiet-label">Talent points</span>
+                {#if talentPointsKind(row) === 'warn'}
+                  <span class={pillClass('warn', true)}>{talentPointsLabel(row)}</span>
+                {:else}
+                  {talentPointsLabel(row)}
+                {/if}
+              </span>
+              <span class={CHIP}>
+                <span class="quiet-label">Item level</span>
+                <span class={itemLevelTextClass(itemLevelKind(row))}>{itemLevelLabel(row)}</span>
+              </span>
+            </div>
+          {/if}
+          {#if officer}
+            <button
+              class={`${NUDGE_BTN} w-fit`}
+              onclick={() => void onNudge(row)}
+              disabled={officerReadOnly}
+              aria-describedby={gateDescribedBy}
+              aria-label={`Nudge ${row.name}`}
+              data-testid={`guild-readiness-nudge-${row.character_key}`}
+            >
+              {copiedKey === row.character_key ? 'Copied' : 'Nudge'}
+            </button>
+          {/if}
+        </div>
       </div>
     {/each}
   </div>

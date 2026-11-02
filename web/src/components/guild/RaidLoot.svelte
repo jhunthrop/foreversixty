@@ -6,7 +6,8 @@
 <script lang="ts">
   import type { RaidLootGroup } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, byName } from '../../lib/guild/attendance-copy';
-  import { OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { ownRowBand } from '../../lib/ui/row';
   import { lootOrder } from '../../lib/guild/report-view';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
@@ -54,8 +55,10 @@
             <!-- From 768: item, arrow, awardee, `by` right-aligned on one grid. Below: the item, then
                  the arrow, awardee and `by` on line 2. -->
             <li
-              class="{ROW_DIVIDER} grid min-h-11 grid-cols-[16px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-1 py-1.5 md:grid-cols-[minmax(0,1fr)_16px_minmax(0,1fr)_auto]"
-              style={ownKeys.includes(award.character_key) ? `background:${OWN_ROW_WASH}` : undefined}
+              class="{ROW_DIVIDER} grid min-h-11 grid-cols-[16px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 {ownRowBand(
+                ownKeys.includes(award.character_key),
+                1,
+              )} py-1.5 md:grid-cols-[minmax(0,1fr)_16px_minmax(0,1fr)_auto]"
               data-testid="raid-loot-row"
             >
               <span class="col-span-3 min-w-0 md:col-span-1"

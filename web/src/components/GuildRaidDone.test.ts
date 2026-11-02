@@ -98,7 +98,7 @@ describe('a done raid, officer', () => {
   });
 
   it('washes the officer own row in the attendance rows', () => {
-    expect(body).toContain('background:rgba(229,185,85,.06)');
+    expect(body).toContain('row-band row-band-own');
   });
 });
 

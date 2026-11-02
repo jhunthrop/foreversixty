@@ -12,6 +12,45 @@ export const ROW_HOVER = 'transition-colors duration-[120ms] hover:bg-row-hover'
 export const ROW_INTERACTIVE =
   'cursor-pointer transition-colors duration-[120ms] hover:bg-row-hover active:bg-gold/10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold';
 
+/**
+ * Row bands (global.css `.row-band`): a row that lights up inside a list is a rounded band whose
+ * content sits 12 px in. A row whose list pads it by less reaches out by the difference, so its
+ * content keeps the list's left edge and the band grows into the gutter, keyed by the list's own
+ * side padding in Tailwind steps (0, `px-1`, `px-2`). Apply it to the lit row only.
+ */
+export const ROW_BAND_REACH = {
+  0: '-mx-3 px-3',
+  1: '-mx-2 px-3',
+  2: '-mx-1 px-3',
+} as const;
+
+/** The viewer's own row: the gold wash on a band. */
+export const ROW_BAND_OWN = 'row-band row-band-own';
+
+/** A marked row (a selected fight): the 8% gold wash and the 2 px gold edge on a band. */
+export const ROW_BAND_MARK = 'row-band row-band-mark';
+
+/** A row the address may name (`#id`): the marked look while it is the target. */
+export const ROW_BAND_TARGET = 'row-band row-band-target';
+
+/** A link row's hover and press ground, on a band. */
+export const ROW_BAND_HOVER = 'row-band row-band-hover';
+
+/** A list's own side padding in the same steps: the class an unlit row keeps. */
+const ROW_PAD = { 0: '', 1: 'px-1', 2: 'px-2' } as const;
+
+/** A row's side padding and band in a list padded `pad` steps: lit (the viewer's own row, a marked
+ *  fight), the band and its reach; unlit, the list's padding. The row's class string carries no
+ *  `px-*` of its own, so the two never compete. */
+export function rowBand(band: string | null, pad: keyof typeof ROW_BAND_REACH): string {
+  return band === null ? ROW_PAD[pad] : `${band} ${ROW_BAND_REACH[pad]}`;
+}
+
+/** The viewer's own row, or the list's padding: `rowBand` with the own band. */
+export function ownRowBand(own: boolean, pad: keyof typeof ROW_BAND_REACH): string {
+  return rowBand(own ? ROW_BAND_OWN : null, pad);
+}
+
 /** The label, sub and value classes of a row's text. */
 export const ROW_LABEL = 'text-[15px] font-semibold [overflow-wrap:anywhere]';
 export const ROW_SUB = 'text-muted text-[13px]';

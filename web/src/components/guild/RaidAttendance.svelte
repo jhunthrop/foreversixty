@@ -10,7 +10,8 @@
   import { bossPullsHead, excusedLabel, pullsOf } from '../../lib/guild/night-copy';
   import { raidCopy } from '../../lib/guild/raid-copy';
   import { canExcuse, groupAttendance, outcomeText } from '../../lib/guild/night';
-  import { BAR_FILL, BAR_TRACK, OWN_ROW_WASH, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { BAR_FILL, BAR_TRACK, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
+  import { ownRowBand } from '../../lib/ui/row';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Figures from './Figures.svelte';
@@ -38,8 +39,6 @@
   } = $props();
 
   const groups = $derived(groupAttendance(rows));
-  const washOf = (row: RaidAttendanceRow): string | undefined =>
-    row.own ? `background:${OWN_ROW_WASH}` : undefined;
   const missed = (row: RaidAttendanceRow): boolean => row.pulls_present < row.pulls_total;
 </script>
 
@@ -59,8 +58,10 @@
 
 {#snippet fullRow(row: RaidAttendanceRow)}
   <li
-    class="{ROW_DIVIDER} grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-2 py-2 md:min-h-[52px] md:grid-cols-[minmax(200px,1.4fr)_132px_minmax(180px,1fr)_120px_112px]"
-    style={washOf(row)}
+    class="{ROW_DIVIDER} grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 {ownRowBand(
+      row.own,
+      2,
+    )} py-2 md:min-h-[52px] md:grid-cols-[minmax(200px,1.4fr)_132px_minmax(180px,1fr)_120px_112px]"
     aria-busy={busy[row.character_key] === true}
     data-testid="raid-attendance-row"
   >
@@ -118,8 +119,7 @@
 
 {#snippet compactRow(row: RaidAttendanceRow)}
   <li
-    class="rounded-control flex min-h-11 items-center gap-3 px-2 md:min-h-9"
-    style={washOf(row)}
+    class="rounded-control flex min-h-11 items-center gap-3 {ownRowBand(row.own, 2)} md:min-h-9"
     data-testid="raid-attendance-compact-row"
   >
     <ClassCrestRing characterClass={row.class} size={24} />

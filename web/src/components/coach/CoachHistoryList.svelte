@@ -18,6 +18,7 @@
   } from '../../lib/coach/history-list';
   import { scrollBehavior } from '../../lib/character/history-layout';
   import type { CharacterPath } from '../../lib/characters';
+  import { ROW_BAND_HOVER, ROW_BAND_REACH } from '../../lib/ui/row';
   import LoadError from '../ui/LoadError.svelte';
 
   let { path, apiBase = undefined }: { path: CharacterPath; apiBase?: string } = $props();
@@ -63,8 +64,7 @@
     if (window.location.hash === `#${SECTION_ID}`) section.scrollIntoView({ behavior: scrollBehavior() });
   });
 
-  const ROW =
-    'border-line-soft hover:bg-card-top focus-visible:outline-gold group flex min-h-14 items-center gap-2 border-b px-2 py-2 text-[13px] leading-[18px] focus-visible:-outline-offset-2 focus-visible:outline-2';
+  const ROW = `border-line-soft focus-visible:outline-gold group flex min-h-14 items-center gap-2 border-b py-2 text-[13px] leading-[18px] focus-visible:-outline-offset-2 focus-visible:outline-2 ${ROW_BAND_HOVER} ${ROW_BAND_REACH[2]}`;
   const TAG = 'border-line-soft text-muted rounded-control shrink-0 border px-1.5 text-[12px] leading-[18px]';
 </script>
 

@@ -8,6 +8,7 @@
   import type { GuildRaidView } from '../../lib/guild/api';
   import { plannedRowView } from '../../lib/guild/planned-row';
   import { SEP } from '../../lib/guild/raid-copy';
+  import { ROW_BAND_HOVER } from '../../lib/ui/row';
   import RaidChip from './RaidChip.svelte';
 
   let {
@@ -67,7 +68,7 @@
 
 <a
   {href}
-  class="group border-line-soft hover:bg-card-top focus-visible:outline-gold block border-b transition-colors duration-[120ms] focus-visible:outline-2 focus-visible:-outline-offset-2 active:bg-[#171d2b]"
+  class="group border-line-soft focus-visible:outline-gold block border-b focus-visible:outline-2 focus-visible:-outline-offset-2 {ROW_BAND_HOVER}"
   data-testid={testid}
 >
   <span

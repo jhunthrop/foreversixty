@@ -149,16 +149,16 @@ describe('CharacterFightTable', () => {
     const ids = [...withIds.matchAll(/<li class="([^"]*)" id="([^"]*)"/g)];
     expect(ids.map((match) => match[2])).toEqual(['fight-r1-1', 'fight-r1-2']);
     // Fix round 2 items 3 and 5: scrolled to 96px under the window's top, and marked while it is
-    // the address's target with a 2px gold left edge and a gold tint over the page's ground,
-    // eased in over 120ms.
+    // the address's target: the shared target band (global.css .row-band-target, the 2px gold
+    // edge and gold tint eased over 120ms) with the band's reach for the list's 8px padding.
     for (const match of ids) {
       expect(match[1].split(' ')).toEqual(
         expect.arrayContaining([
           'scroll-mt-24',
-          'target:shadow-[inset_2px_0_0_var(--color-gold)]',
-          'target:bg-[rgba(229,185,85,.08)]',
-          'transition-[background-color,box-shadow]',
-          'duration-[120ms]',
+          'row-band',
+          'row-band-target',
+          'target:-mx-1',
+          'target:px-3',
         ]),
       );
       expect(match[1].split(' ')).not.toContain('target:bg-raised');
@@ -251,7 +251,12 @@ describe('CharacterFightTable, the History list props', () => {
     const rows = [...out.matchAll(/<li class="([^"]*)"[^>]*>/g)].slice(1);
     expect(rows[0][0]).not.toContain('data-marked');
     expect(rows[1][0]).toContain('data-marked="true"');
-    expect(rows[1][1]).toContain('shadow-[inset_2px_0_0_var(--color-gold)]');
+    // The shared marked band (global.css .row-band-mark: the gold edge and tint) with its reach.
+    expect(rows[1][1].split(' ')).toEqual(
+      expect.arrayContaining(['row-band', 'row-band-mark', '-mx-1', 'px-3']),
+    );
+    expect(rows[0][1].split(' ')).toContain('px-2');
+    expect(rows[0][1]).not.toContain('row-band');
     expect(rows[1][0]).not.toContain(' id=');
   });
 
