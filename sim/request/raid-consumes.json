@@ -687,7 +687,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "greater_stoneshield_potion",
+          "mighty_rage_potion",
           "food_smoked_desert_dumpling",
           "elixir_of_greater_defense",
           "elixir_of_fortitude",
@@ -724,7 +724,8 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "greater_stoneshield_potion",
+          "mighty_rage_potion",
+          "main_hand_imbue:elemental_sharpening_stone",
           "food_smoked_desert_dumpling",
           "flask_of_the_titans",
           "elixir_of_greater_defense",
