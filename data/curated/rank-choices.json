@@ -45,12 +45,6 @@
             "from_level": 50,
             "to_level": 59,
             "rank": 1
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 10,
-            "preset": "bare"
           }
         ]
       }
@@ -452,12 +446,6 @@
             "from_level": 50,
             "to_level": 59,
             "rank": 1
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 1,
-            "preset": "bare"
           }
         ]
       },
@@ -535,7 +523,7 @@
           {
             "from_level": 50,
             "to_level": 59,
-            "rank": 1
+            "rank": 2
           },
           {
             "from_level": 60,
@@ -564,7 +552,7 @@
           {
             "from_level": 60,
             "to_level": 60,
-            "rank": 3,
+            "rank": 2,
             "preset": "bare"
           }
         ]
