@@ -104,15 +104,39 @@ func engineRun(s simSetup) (dpsFunc, error) {
 // simRotation sims one rotation in this process and returns the
 // estimate with the player's own metrics (the cast tally reads them).
 func simRotation(s simSetup, r rotation, iterations int) (api.Estimate, *proto.UnitMetrics, error) {
+	apl, err := s.engineRotation(r)
+	if err != nil {
+		return api.Estimate{}, nil, err
+	}
+	return inproc.PlainRunWithRotation(s.request(iterations), apl)
+}
+
+// engineRotation is r as the engine casts it under this search's preset: the
+// preset's rank choices (data/curated/rank-choices.json) applied, as /sim and
+// the ranker apply them, so a bare-60 search fights the published bare-60
+// rotation. r itself keeps its authored ids for the report.
+func (s simSetup) engineRotation(r rotation) (*proto.APLRotation, error) {
 	b, err := r.marshalIndent()
 	if err != nil {
-		return api.Estimate{}, nil, fmt.Errorf("encoding the rotation to sim: %w", err)
+		return nil, fmt.Errorf("encoding the rotation to sim: %w", err)
+	}
+	if b, err = request.RewriteRotationRanks(b, s.spec.Spec, s.spec.ClassSlug, s.presetName(), s.level); err != nil {
+		return nil, fmt.Errorf("applying the preset's rank choices: %w", err)
 	}
 	apl := &proto.APLRotation{}
 	if err := protojson.Unmarshal(b, apl); err != nil {
-		return api.Estimate{}, nil, fmt.Errorf("the mutated rotation does not parse as an engine APL: %w", err)
+		return nil, fmt.Errorf("the mutated rotation does not parse as an engine APL: %w", err)
 	}
-	return inproc.PlainRunWithRotation(s.request(iterations), apl)
+	return apl, nil
+}
+
+// presetName is the preset this search layers, named on its requests and used
+// for the rank choices, as the ranker's own passes do.
+func (s simSetup) presetName() string {
+	if s.preset != nil {
+		return request.RaidPreset
+	}
+	return request.BarePreset
 }
 
 // request is the band's character against the ranker's encounter.
@@ -125,5 +149,6 @@ func (s simSetup) request(iterations int) api.SimRequest {
 		Encounter:     leveling.RankerEncounter(),
 		Iterations:    iterations,
 		RandomSeed:    s.seed,
+		Preset:        s.presetName(),
 	}
 }
