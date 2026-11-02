@@ -109,10 +109,12 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Holy Strike on its own ten-second cooldown, whenever it is up. "
             "It spends the globals Judgement and seal upkeep leave idle."
         ),
-        # retribution.md: "a loss on a bare character ... only cast while mana is above 65%".
+        # retribution.md (round 10, ranks lane): "cast it only while the mana left after it still
+        # pays for your Seal, Judgement and Holy Strike, and while your mana is no more than about a
+        # fifth behind the share of the fight still to go".
         "Consecration": (
-            "Consecration last, and only while mana is above sixty-five percent. "
-            "Against one target it is a loss without the raid's mana support."
+            "Consecration last, while the mana left after it still pays for your seal, Judgement and Holy Strike. "
+            "Do not let your mana fall far behind the fight."
         ),
     },
     "priest-shadow": {

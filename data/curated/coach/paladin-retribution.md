@@ -25,7 +25,7 @@ This is the Retribution Paladin as the site's guide describes it. Retribution is
 - Exorcism on cooldown against Undead and Demons: learnable at level twenty, a fifteen second cooldown Holy nuke that only lands on those two target types.
 - Hammer of Wrath below twenty percent target health, at its highest rank.
 - Holy Strike on its own ten-second cooldown, whenever it is up. It spends the globals Judgement and seal upkeep leave idle.
-- Consecration last, and only while mana is above sixty-five percent. Against one target it is a loss without the raid's mana support.
+- Consecration last, while the mana left after it still pays for your seal, Judgement and Holy Strike. Do not let your mana fall far behind the fight.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
