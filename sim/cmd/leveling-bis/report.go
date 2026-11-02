@@ -2194,7 +2194,10 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 	// worded generically instead of pinning it to whichever items
 	// happen to carry this shape in any one build, which a data refresh
 	// can freely change without making this sentence false.
-	b.WriteString("Forever unifies melee, ranged and spell hit into one stat, and likewise crit, one point higher on both tables at once (wowsims-forever's `proto/common.proto` StatHit/StatCrit, `data/pipeline/simdb/statmap.py`, `research/01-official-facts.md`) - a caster item carrying only Hit/Crit with no Intellect or Spell Power still raises that caster's own spell hit and crit chance, and is a correct pick, not a scoring bug.\n\n")
+	// Round 10: since round 9's crit split (engine 497deb4fc) the crit
+	// tables are separate; only item crit rating (ItemSparse stat 32) and
+	// the all-table auras reach both, so the sentence says that.
+	b.WriteString("Forever unifies melee, ranged and spell hit into one stat. An item's crit rating reaches every table too, one point higher on melee, ranged and spell crit at once, while Agility raises melee and ranged crit only and Intellect spell crit only (wowsims-forever's `proto/common.proto` StatHit/StatCrit, `data/pipeline/simdb/statmap.py`, `research/01-official-facts.md`). So a caster item carrying only Hit/Crit with no Intellect or Spell Power still raises that caster's own spell hit and crit chance, and is a correct pick, not a scoring bug.\n\n")
 
 	byFaction := map[string][]bandReport{}
 	var factions []string
