@@ -576,6 +576,21 @@ export const simCopy = {
     explosive: 'Explosives',
   } as Record<string, string>,
   gradeLabel: { off: 'Off', on: 'On', improved: 'Improved' } as Record<string, string>,
+  /** The weapon section's slots (imbue-rows.ts). A rogue's poisoned hand takes a stone too. */
+  imbueSlotLabel: {
+    main_hand_imbue: 'Main hand',
+    main_hand_stone: 'Main hand, beside the poison',
+    off_hand_imbue: 'Off hand',
+    off_hand_stone: 'Off hand, beside the poison',
+  } as Record<string, string>,
+  imbueKindLabel: {
+    'sharpening-stone': 'Sharpening stones',
+    weightstone: 'Weightstones',
+    oil: 'Oils',
+    poison: 'Poisons',
+    shaman: 'Shaman weapon imbues',
+    other: 'Other',
+  } as Record<string, string>,
   /** The three-way control's own accessible name; the buff's name is beside it. */
   gradeFor: (name: string): string => `${name}, how good a version`,
 

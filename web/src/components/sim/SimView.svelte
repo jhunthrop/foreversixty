@@ -826,6 +826,7 @@
             <BuffPanel
               settings={store.settings}
               build={store.character.tree_version}
+              classSlug={store.character.class_slug}
               names={store.buffNames}
               disabled={store.phase === 'running' || store.serverRunning}
               onchange={(next) => store.setSettings(next)}

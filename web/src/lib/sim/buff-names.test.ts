@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY_BUFF_NAMES, buffIcon, buffLabel } from './buff-names';
+import { EMPTY_BUFF_NAMES, buffIcon, buffLabel, imbueLabel } from './buff-names';
 
 const names = {
   entries: {
@@ -47,5 +47,12 @@ describe('buffIcon', () => {
   it('is null when there is no icon, so the row renders without one', () => {
     expect(buffIcon('1.15.9', 'thorns', names)).toBeNull();
     expect(buffIcon('1.15.9', 'thorns', null)).toBeNull();
+  });
+});
+
+describe('imbueLabel', () => {
+  it("is the build's item name with no hand, else the humanised item half", () => {
+    expect(imbueLabel('main_hand_imbue:shadow_oil', names)).toBe('Shadow Oil');
+    expect(imbueLabel('off_hand_stone:frost_oil', EMPTY_BUFF_NAMES)).toBe('Frost oil');
   });
 });

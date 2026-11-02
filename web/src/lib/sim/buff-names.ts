@@ -44,3 +44,13 @@ export function buffIcon(build: string, id: string, names: BuffNames | null): st
   const icon = names?.entries[id]?.icon;
   return icon === undefined || icon === '' ? null : dataUrl(build, `icons/${icon}.webp`);
 }
+
+/**
+ * A weapon row's own name, without the hand: the weapon section (imbue-rows.ts) already
+ * heads each slot, so "Brilliant Wizard Oil" rather than "Main hand imbue: Brilliant...".
+ */
+export function imbueLabel(id: string, names: BuffNames | null): string {
+  const known = names?.entries[id]?.name;
+  if (known !== undefined && known !== '') return known;
+  return humanise(id.slice(id.indexOf(':') + 1));
+}
