@@ -16,7 +16,7 @@
 set -euo pipefail
 
 IOS_NAME="Forever Sixty Test (iPhone 17, iOS 26.5)"
-# The runtime CI renders snapshot goldens on (ios.yml pins Xcode 26.6 / iOS 26.5), so a
+# The runtime CI renders snapshot goldens on (ios.yml pins Xcode 27.1 / iOS 26.5), so a
 # local run compares against the same pixels. Falls back to the newest runtime if missing.
 IOS_RUNTIME="com.apple.CoreSimulator.SimRuntime.iOS-26-5"
 IOS_TYPE="com.apple.CoreSimulator.SimDeviceType.iPhone-17"

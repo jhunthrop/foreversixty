@@ -50,8 +50,9 @@ env:
   XCODEGEN_VERSION: '2.46.0'
 jobs:
   release:
-    # macOS so one run builds both apps and makes one release commit.
-    runs-on: macos-latest
+    # macOS so one run builds both apps and makes one release commit; the xcode-27 image carries
+    # XCODE_VERSION (macos-latest has no Xcode 27), the same Xcode ios.yml and the lanes build with.
+    runs-on: xcode-27
     timeout-minutes: 60
     permissions:
       contents: write
