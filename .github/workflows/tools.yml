@@ -10,15 +10,15 @@
 # tools/tests/test_wasm_gzip.sh (the deployed sim.wasm.gz and its budget gate) and
 # tools/tests/play-upload.test.ts
 # (its Play upload, against a stub of the API), then
-# shellcheck over every script and actionlint over the move's workflows. Plain bash with stubs
+# shellcheck over every script and actionlint over every workflow. Plain bash with stubs
 # and scratch git repositories: no network, no database, no secrets.
 name: tools
 on:
   push:
     branches: [main]
-    paths: ['tools/**', '.github/workflows/**', '.github/actions/**']
+    paths: ['tools/**', '.github/workflows/**', '.github/actions/**', '.github/actionlint.yaml']
   pull_request:
-    paths: ['tools/**', '.github/workflows/**', '.github/actions/**']
+    paths: ['tools/**', '.github/workflows/**', '.github/actions/**', '.github/actionlint.yaml']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
@@ -54,6 +54,6 @@ jobs:
         run: |
           curl -sSL -o /tmp/actionlint.tgz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
           tar -xzf /tmp/actionlint.tgz -C /tmp actionlint
-          # The workflows the client move runs through; the others carry older shellcheck
-          # findings (api, companion, data, sim) that are their lanes' to clear.
-          /tmp/actionlint .github/workflows/client.yml .github/workflows/bis.yml .github/workflows/engine.yml .github/workflows/tools.yml .github/workflows/apps-release.yml .github/workflows/android.yml
+          # Every workflow, with .github/actionlint.yaml (the xcode-27 runner label and the
+          # held data.yml's shellcheck findings).
+          /tmp/actionlint

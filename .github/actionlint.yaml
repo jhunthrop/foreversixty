@@ -1,0 +1,12 @@
+# actionlint's config (tools.yml runs actionlint over every workflow).
+self-hosted-runner:
+  # The larger macOS runner ios.yml and apps-release.yml build on: its image carries
+  # Xcode 27.1, which macos-latest does not.
+  labels:
+    - xcode-27
+paths:
+  # data.yml is held (disabled) until a zero sim-accuracy round and nobody edits it until
+  # then; its shellcheck findings are cleared when it comes back.
+  .github/workflows/data.yml:
+    ignore:
+      - 'shellcheck reported issue in this script'
