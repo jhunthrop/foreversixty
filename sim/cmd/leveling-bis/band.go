@@ -320,7 +320,24 @@ func legendaryGatedLater(c candidate) bool {
 // picking pool (main.go's runSpec, pickBySlot) excludes it from being
 // the DEFAULT pick. See pick.go's excludeAbovePvpRankCap for exactly
 // where that line is drawn.
+//
+// The cap is an in-game rank (1 to 14). Round 11: loot.json's `rank` and
+// `title_rank` are the client's RequiredPVPRank, which is the in-game
+// rank plus clientPvpRankOffset, so they go through inGamePvpRank before
+// the comparison and the label. Read raw, the cap sat at Knight / Stone
+// Guard (rank 6) and the labels said "PvP rank 18 · Grand Marshal".
 const pvpRankCap = 10
+
+// clientPvpRankOffset is RequiredPVPRank minus the in-game rank: the
+// client's field runs 5 (Private / Scout, rank 1) to 18 (Grand Marshal /
+// High Warlord, rank 14), data/pipeline/loot/pvp_faction.py's rank_title.
+const clientPvpRankOffset = 4
+
+// inGamePvpRank is the in-game honor rank a client RequiredPVPRank names,
+// or 0 when the field names none (0, or the dishonorable 1 to 4).
+func inGamePvpRank(field int) int {
+	return max(field-clientPvpRankOffset, 0)
+}
 
 // pvpRankExceedsCap reports whether s carries a PvP rank above
 // pvpRankCap. Checked on Rank alone, not Kind == "pvp": a PvP rank
@@ -347,7 +364,7 @@ const pvpRankCap = 10
 // a cost's money, items and currencies but not the item it prices, and the
 // vendor-to-cost link is server-side.
 func pvpRankExceedsCap(s itemSource) bool {
-	return max(s.Rank, s.TitleRank) > pvpRankCap
+	return inGamePvpRank(max(s.Rank, s.TitleRank)) > pvpRankCap
 }
 
 // pvpSourceLabel is the on-screen source line for a pvp-sourced pick,
@@ -364,10 +381,12 @@ func pvpRankExceedsCap(s itemSource) bool {
 // ladder, that function's own doc) - falls back to naming just the
 // rank and faction rather than printing an empty title segment.
 //
-// A source with no rank (Forever's PvP rewards need none, owner ruling
+// field is the client's RequiredPVPRank; the line names the in-game rank
+// (inGamePvpRank). A source with no rank (Forever's PvP rewards need none, owner ruling
 // 2026-11-01) reads "PvP reward", never "PvP rank 0"; an empty part is
 // left out rather than printed as a dangling separator.
-func pvpSourceLabel(rank int, title, faction string) string {
+func pvpSourceLabel(field int, title, faction string) string {
+	rank := inGamePvpRank(field)
 	parts := []string{"PvP reward"}
 	if rank > 0 {
 		parts = []string{fmt.Sprintf("PvP rank %d", rank)}

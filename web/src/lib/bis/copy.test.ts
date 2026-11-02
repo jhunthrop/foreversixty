@@ -20,12 +20,12 @@ describe('pvpRankTitle', () => {
 
 describe('pvpSourceLabel', () => {
   it('names the rank, its title and the faction -- never the bare "Rank N" bucket name', () => {
-    expect(bisCopy.pvpSourceLabel(11, 'alliance')).toBe('PvP rank 11 · Knight-Lieutenant · Alliance');
-    expect(bisCopy.pvpSourceLabel(11, 'horde')).toBe('PvP rank 11 · Blood Guard · Horde');
+    expect(bisCopy.pvpSourceLabel(11, 'alliance')).toBe('PvP rank 7 · Knight-Lieutenant · Alliance');
+    expect(bisCopy.pvpSourceLabel(11, 'horde')).toBe('PvP rank 7 · Blood Guard · Horde');
   });
 
   it('falls back to rank and faction alone when the rank has no known title', () => {
-    expect(bisCopy.pvpSourceLabel(4, 'alliance')).toBe('PvP rank 4 · Alliance');
+    expect(bisCopy.pvpSourceLabel(19, 'alliance')).toBe('PvP rank 15 · Alliance');
   });
 });
 

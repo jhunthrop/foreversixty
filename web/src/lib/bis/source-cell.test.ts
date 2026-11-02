@@ -280,7 +280,7 @@ describe('resolveSourceCell', () => {
   it('resolves a vendor-kind rank reward (rank + faction present) as a pvp cell, never the bare npc name', () => {
     const cell = resolveSourceCell(slot({ item_id: 110, source_kind: 'vendor' }), 'horde', LOOT, 'fallback');
     expect(cell).toEqual({ kind: 'pvp', rank: 18, faction: 'horde' });
-    expect(describeSourceCell(cell)).toBe('PvP rank 18 · High Warlord · Horde');
+    expect(describeSourceCell(cell)).toBe('PvP rank 14 · High Warlord · Horde');
   });
 
   it('still resolves an ordinary vendor (no rank/faction on the source) to the plain npc line', () => {
@@ -379,7 +379,7 @@ describe('describeSourceCell', () => {
     );
     expect(describeSourceCell({ kind: 'zone', place: 'Dun Morogh' })).toBe('Dun Morogh');
     expect(describeSourceCell({ kind: 'pvp', rank: 11, faction: 'alliance' })).toBe(
-      'PvP rank 11 · Knight-Lieutenant · Alliance',
+      'PvP rank 7 · Knight-Lieutenant · Alliance',
     );
     expect(describeSourceCell({ kind: 'unknown', label: 'Vendors' })).toBe('Vendors');
   });

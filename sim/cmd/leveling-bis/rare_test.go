@@ -448,7 +448,7 @@ func TestARivalAboveThePvpRankCapDoesNotCoverTheSlot(t *testing.T) {
 	for _, c := range []struct {
 		rank     int
 		rareKept bool
-	}{{pvpRankCap + 1, true}, {pvpRankCap, false}} {
+	}{{pvpRankCap + clientPvpRankOffset + 1, true}, {pvpRankCap + clientPvpRankOffset, false}} {
 		idx := lootIndex{
 			9400: {{Kind: "world", Label: "Rohh the Silent (rare)", RareSpawn: true}},
 			9401: {{Kind: "pvp", Label: "Rank (Horde)", Side: "horde", Rank: c.rank}},

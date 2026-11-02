@@ -451,7 +451,7 @@ func TestLoadLootIndexVendorInheritsPvpFactionSideAndLabel(t *testing.T) {
 	if vendorRow.Rank != 18 || vendorRow.Side != "alliance" {
 		t.Errorf("Captain O'Neal's vendor row = %+v, want Rank 18, Side alliance", vendorRow)
 	}
-	wantLabel := "PvP rank 18 · Grand Marshal · Alliance"
+	wantLabel := "PvP rank 14 · Grand Marshal · Alliance"
 	if vendorRow.Label != wantLabel {
 		t.Errorf("Captain O'Neal's vendor row Label = %q, want %q", vendorRow.Label, wantLabel)
 	}

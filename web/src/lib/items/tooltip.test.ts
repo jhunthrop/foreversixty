@@ -184,14 +184,14 @@ describe('itemTooltipModel', () => {
     // Rank 10 is Blizzard's client RequiredPVPRank; Horde's own in-game title for it is
     // "Stone Guard" (pvpRankTitle(horde, 10) === HORDE_PVP_TITLES[5]).
     expect(itemTooltipModel(item({ id: 5 }), sources).sourceLines).toEqual([
-      'PvP rank 10 · Stone Guard · Horde',
+      'PvP rank 6 · Stone Guard · Horde',
     ]);
   });
 
   it('skips a rank quartermaster vendor line when a pvp source already names the same item', () => {
     // Fourth wow-player sweep, item 2: Captain O'Neal's own vendor row
     // duplicates pvp:rank-18:alliance's item list verbatim -- the tooltip
-    // must say "PvP rank 18 · Grand Marshal · Alliance" once, not that AND
+    // must say "PvP rank 14 · Grand Marshal · Alliance" once, not that AND
     // a redundant bare "Captain O'Neal" line for the same purchase.
     const loot: LootFile = {
       sources: [
@@ -208,7 +208,7 @@ describe('itemTooltipModel', () => {
     };
     const sources: ItemTooltipSources = { loot, sets: [] };
     expect(itemTooltipModel(item({ id: 6 }), sources).sourceLines).toEqual([
-      'PvP rank 18 · Grand Marshal · Alliance',
+      'PvP rank 14 · Grand Marshal · Alliance',
     ]);
   });
 
