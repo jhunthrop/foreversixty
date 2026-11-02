@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/shaman/elemental.md
   - data/curated/apl/shaman-elemental.json
-  - data/builds/1.60.1.70630/spellconst/shaman.json
+  - data/builds/1.60.1.70707/spellconst/shaman.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -26,6 +26,8 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is Sham
 - Lightning Bolt on every free global.
 - Chain Lightning only against two or more targets. It hits every target for close to single-target Lightning Bolt damage.
 - Magma Totem in place of Searing Totem against two or more targets.
+- Keep Flame Shock on the target. Its damage plus Lava Burst's +twenty percent beats the Lightning Bolt it replaces, and Call of Flame stretches it to twenty-one seconds, so it costs about one global in fourteen.
+- Elemental Mastery goes on cooldown with your trinkets; for its fifteen seconds every Lightning Bolt is a one and a half second cast.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
@@ -37,7 +39,7 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is Sham
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Nightfin Soup); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Baked Salmon); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

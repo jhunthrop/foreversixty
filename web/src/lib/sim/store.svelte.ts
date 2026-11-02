@@ -29,7 +29,7 @@ import { buildSimRequest, type RunHandle, type RunInput } from './run';
 import {
   defaultSettings,
   encounterFor,
-  requestPresetOf,
+  requestPresetFor,
   settingsLabel,
   withSpecForPreset,
   type SimSettings,
@@ -642,7 +642,7 @@ export function createSimStore(init: SimStoreInit) {
         iterations: plan.iterations,
         targetError: plan.targetError,
         stepIterations: plan.step,
-        preset: requestPresetOf(settings.preset),
+        preset: requestPresetFor(settings),
       };
 
       // The cancel/restore/phase decision from here on is runRequest()'s own too --
@@ -710,7 +710,7 @@ export function createSimStore(init: SimStoreInit) {
           encounter: encounterFor(settings.encounter, character.level),
           iterations: plan.iterations,
           targetError: plan.targetError,
-          preset: requestPresetOf(settings.preset),
+          preset: requestPresetFor(settings),
         });
 
         let simId: string;

@@ -67,6 +67,15 @@ describe('settingsFromRequest', () => {
     );
   });
 
+  it("keeps the request's preset for the run, and only a preset the engine knows", () => {
+    expect(settingsFromRequest({ ...request, preset: 'bare' }).rankPreset).toBe('bare');
+    expect(settingsFromRequest({ ...request, preset: 'raid' }).rankPreset).toBe('raid');
+    const { preset: _preset, ...none } = request;
+    expect('rankPreset' in settingsFromRequest(none as SimRequest)).toBe(false);
+    const odd = { ...request, preset: 'toString' } as unknown as SimRequest;
+    expect('rankPreset' in settingsFromRequest(odd)).toBe(false);
+  });
+
   it('copies rather than sharing, so editing the page never edits the pasted request', () => {
     const settings = settingsFromRequest(request);
     expect(settings.buffs).not.toBe(request.character.buffs);

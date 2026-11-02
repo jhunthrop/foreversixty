@@ -23,8 +23,13 @@ def _load(path: Path) -> Any:
 
 @cache
 def _labels() -> dict[str, str]:
-    groups = _load(PRESETS_PATH)["presets"]["raid"]["consumes"]["groups"]
-    return {entry["id"]: entry["label"] for group in groups.values() for entry in group["ids"]}
+    """Every raid consumable's label: the role groups', and the class and spec additions'
+    (a spec's own food, such as the tanks' Smoked Desert Dumplings, lives only in by_spec)."""
+    consumes = _load(PRESETS_PATH)["presets"]["raid"]["consumes"]
+    entries = [entry for group in consumes["groups"].values() for entry in group["ids"]]
+    for section in ("by_class", "by_spec"):
+        entries += [entry for rows in consumes[section].values() for entry in rows]
+    return {entry["id"]: entry["label"] for entry in entries}
 
 
 def preset_food(slug: str) -> str:

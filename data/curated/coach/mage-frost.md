@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/mage/frost.md
   - data/curated/apl/mage-frost.json
-  - data/builds/1.60.1.70630/spellconst/mage.json
+  - data/builds/1.60.1.70707/spellconst/mage.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -20,8 +20,11 @@ This is the Frost Mage as the site's guide describes it. Frost is the Mage contr
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
+- Keep Ice Barrier up. The talent adds fifteen percent Frost damage for a minute after a cast and another five percent while the shield holds.
 - Frostbolt is the filler between Fingers of Frost charges.
-- Ice Lance on a Fingers of Frost charge. The charge makes the target count as Frozen, so Ice Lance deals triple damage and Shatter's crit bonus applies.
+- Arcane Missiles on a Missile Barrage proc, raid build only.
+- Ice Lance on a Fingers of Frost charge. The charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.
+- Cone of Cold within ten yards on five Winter's Chill stacks, which every rank reaches.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
@@ -33,7 +36,7 @@ This is the Frost Mage as the site's guide describes it. Frost is the Mage contr
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Nightfin Soup); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Baked Salmon); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

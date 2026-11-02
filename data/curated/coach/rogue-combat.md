@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/combat.md
   - data/curated/apl/rogue-combat.json
-  - data/builds/1.60.1.70630/spellconst/rogue.json
+  - data/builds/1.60.1.70707/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -38,7 +38,7 @@ This is the Combat Rogue as the site's guide describes it. Combat is the Rogue w
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Grilled Squid). The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Poached Sunscale Salmon). The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

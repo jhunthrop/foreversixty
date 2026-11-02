@@ -387,6 +387,26 @@ def raid_buff_icon_names(curated_dir: Path = Path("curated")) -> set[str]:
     return {entry["icon"] for entry in json.loads(path.read_text(encoding="utf-8"))["buffs"]}
 
 
+def simbuff_icon_names(build_dir: Path) -> set[str]:
+    """Every icon `simbuffs.json` names: the /sim page's buff panel draws
+    one beside each buff, debuff, elixir, food, potion and weapon imbue.
+    No talent, item, rotation or raid-buff list names most of them (an
+    elixir, a food, an oil), so without this their art 404s. `icons` runs
+    before `loot` on a full night, so a new id's icon follows a night later.
+    Empty before the build's first loot run."""
+    path = build_dir / "simbuffs.json"
+    if not path.exists():
+        return set()
+    entries = json.loads(path.read_text(encoding="utf-8"))["entries"]
+    return {entry["icon"] for entry in entries.values() if entry.get("icon")}
+
+
+def not_in_client(names: set[str], by_name: dict[str, int]) -> set[str]:
+    """The names the client's ManifestInterfaceData has no file for, which
+    only wowhead's hosted copy can supply."""
+    return {name for name in names if name not in by_name}
+
+
 def wanted_icons(
     build_dir: Path, names: dict[int, str], extra: frozenset[str] = frozenset()
 ) -> dict[int, str]:
@@ -449,6 +469,7 @@ def icons_for_build(
         rotation_icon_names(build_dir, curated_dir)
         | spec_icon_names(curated_dir)
         | raid_buff_icon_names(curated_dir)
+        | simbuff_icon_names(build_dir)
     )
     wanted = wanted_icons(build_dir, names, frozenset(extra))
 
@@ -465,7 +486,9 @@ def icons_for_build(
         **wanted,
         **{by_name[name]: name for name in supplement_names if name in by_name},
     }
-    zamimg_names = {name for name in supplement_names if name not in by_name}
+    # A buff panel icon the client's manifest does not list (Forever's own
+    # classic_ability_druid_demoralizingroar) falls back to wowhead's copy too.
+    zamimg_names = not_in_client(supplement_names | simbuff_icon_names(build_dir), by_name)
 
     written = download_icons(wanted, build_dir / "icons", cache_dir, client, version=build)
     written += download_zamimg_icons(zamimg_names, build_dir / "icons", cache_dir, client)

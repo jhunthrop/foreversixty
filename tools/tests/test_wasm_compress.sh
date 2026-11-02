@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Tests for tools/wasm-gzip.sh, which writes the sim.wasm.gz the site deploys and gates
-# the transfer budget on it (Makefile `artifacts`, sim.yml's artifact job). Plain bash, no
+# Tests for tools/wasm-compress.sh, which writes the sim.wasm.gz and sim.wasm.br the site
+# deploys and gates each one's transfer budget on it (Makefile `artifacts`, sim.yml's
+# artifact job). Plain bash, no
 # bats, the shape of tools/tests/test_remeasure.sh. The input is a compressible stand-in
 # for the module, not a real wasm: the script never reads the format.
 #
-#   bash tools/tests/test_wasm_gzip.sh
+#   bash tools/tests/test_wasm_compress.sh
 #
 # Prints "ok N tests" and exits 0 when every assertion holds; names each failure and exits
 # 1 otherwise.
@@ -12,7 +13,7 @@ set -uo pipefail
 
 HERE=$(cd "$(dirname "$0")" && pwd)
 readonly HERE
-readonly SCRIPT=$HERE/../wasm-gzip.sh
+readonly SCRIPT=$HERE/../wasm-compress.sh
 
 SCRATCH=$(mktemp -d)
 trap 'rm -rf "$SCRATCH"' EXIT
@@ -67,7 +68,7 @@ assert "bad budget: exits 1" equal "$STATUS" 1
 
 STATUS=0
 OUT=$("$SCRIPT" "$module" 2>&1) || STATUS=$?
-assert "wrong arguments: exits 1 with usage" contains "$STATUS:$OUT" "1:wasm-gzip: usage"
+assert "wrong arguments: exits 1 with usage" contains "$STATUS:$OUT" "1:wasm-compress: usage"
 
 # A pigz whose stream does not inflate back is refused before the budget is read.
 mkdir -p "$SCRATCH/bin"
@@ -76,23 +77,49 @@ chmod +x "$SCRATCH/bin/pigz"
 STATUS=0
 OUT=$(PATH="$SCRATCH/bin:$PATH" "$SCRIPT" "$module" "$SCRATCH/bad.gz" 4.5 2>&1) || STATUS=$?
 assert "a stream that does not inflate: exits 1" equal "$STATUS" 1
-assert "a stream that does not inflate: says so" contains "$OUT" "does not inflate back"
+assert "a stream that does not inflate: says so" contains "$OUT" "does not decompress back"
 assert "a stream that does not inflate: writes nothing" test ! -e "$SCRATCH/bad.gz"
 
-# The callers: the budget and the deployed file both come from this script, and nothing
+# The brotli file: the same proof and budget, and the codec comes from the extension.
+br=$SCRATCH/sim.wasm.br
+STATUS=0
+OUT=$("$SCRIPT" "$module" "$br" 4.5 2>&1) || STATUS=$?
+assert "brotli within budget: exits 0 ($OUT)" equal "$STATUS" 0
+assert "writes a brotli stream the system brotli decodes to the module" cmp -s <(brotli -dc "$br") "$module"
+assert "brotli reports its own file" contains "$OUT" "sim.wasm.br:"
+assert "smaller than our gzip ($(wc -c <"$br" | tr -d ' ') vs $ours)" test "$(wc -c <"$br" | tr -d ' ')" -lt "$ours"
+STATUS=0
+OUT=$("$SCRIPT" "$module" "$SCRATCH/tiny.br" 0.001 2>&1) || STATUS=$?
+assert "brotli over budget: exits 1" equal "$STATUS" 1
+printf '#!/usr/bin/env bash\nprintf "not brotli"\n' >"$SCRATCH/bin/brotli"
+chmod +x "$SCRATCH/bin/brotli"
+STATUS=0
+OUT=$(PATH="$SCRATCH/bin:$PATH" "$SCRIPT" "$module" "$SCRATCH/bad.br" 4.5 2>&1) || STATUS=$?
+assert "a brotli stream that does not decode: exits 1" equal "$STATUS" 1
+assert "a brotli stream that does not decode: writes nothing" test ! -e "$SCRATCH/bad.br"
+STATUS=0
+OUT=$("$SCRIPT" "$module" "$SCRATCH/sim.wasm.zst" 4.5 2>&1) || STATUS=$?
+assert "an unknown extension: exits 1 and says so" contains "$STATUS:$OUT" "1:wasm-compress: $SCRATCH/sim.wasm.zst is neither"
+
+# The callers: each budget and each deployed file come from this script, and nothing
 # compresses the module a second, different way.
 ROOT=$HERE/../..
 # The single quotes are the point: these are the Makefile's own make-variable spellings.
 # shellcheck disable=SC2016
 assert "make artifacts writes and gates sim.wasm.gz with the script" \
-	grep -qF './tools/wasm-gzip.sh $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.wasm.gz $(WASM_BUDGET_MB)' "$ROOT/Makefile"
+	grep -qF './tools/wasm-compress.sh $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.wasm.gz $(WASM_BUDGET_MB)' "$ROOT/Makefile"
 # shellcheck disable=SC2016
-assert "publish-wasm deploys that file as is" \
-	grep -qF 'cp $(ARTIFACT_DIR)/sim.wasm.gz "$(WEB_SIM_DIR)/$$id/sim.wasm.gz"' "$ROOT/Makefile"
-assert "sim.yml's budget step runs the script" \
-	grep -qF './tools/wasm-gzip.sh artifacts/sim.wasm artifacts/sim.wasm.gz' "$ROOT/.github/workflows/sim.yml"
-assert "no caller gzips sim.wasm itself" \
-	bash -c "! grep -nE 'gzip -9[^|]*sim\.wasm' '$ROOT/Makefile' '$ROOT/.github/workflows/sim.yml' '$ROOT/.github/workflows/web.yml'"
+assert "make artifacts writes and gates sim.wasm.br with the script" \
+	grep -qF './tools/wasm-compress.sh $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.wasm.br $(WASM_BR_BUDGET_MB)' "$ROOT/Makefile"
+# shellcheck disable=SC2016
+assert "publish-wasm deploys both files as they are" \
+	grep -qF 'cp $(ARTIFACT_DIR)/sim.wasm.gz $(ARTIFACT_DIR)/sim.wasm.br "$(WEB_SIM_DIR)/$$id/"' "$ROOT/Makefile"
+assert "sim.yml's budget step runs the script on the gzip" \
+	grep -qF './tools/wasm-compress.sh artifacts/sim.wasm artifacts/sim.wasm.gz' "$ROOT/.github/workflows/sim.yml"
+assert "sim.yml's budget step runs the script on the brotli" \
+	grep -qF './tools/wasm-compress.sh artifacts/sim.wasm artifacts/sim.wasm.br' "$ROOT/.github/workflows/sim.yml"
+assert "no caller gzips or brotlis sim.wasm itself" \
+	bash -c "! grep -nE '(gzip -9|brotli )[^|]*sim\.wasm' '$ROOT/Makefile' '$ROOT/.github/workflows/sim.yml' '$ROOT/.github/workflows/web.yml'"
 
 if [[ $FAILED -gt 0 ]]; then
 	echo "$FAILED failed, $PASSED passed" >&2

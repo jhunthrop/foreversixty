@@ -155,6 +155,20 @@ export function requestPresetOf(preset: BuffPresetId): RequestPreset | undefined
   return (Object.keys(PAGE_PRESET) as RequestPreset[]).find((name) => PAGE_PRESET[name] === preset);
 }
 
+/** True for a preset name the engine knows; a request's own field is untrusted input. */
+export function isRequestPreset(value: unknown): value is RequestPreset {
+  return typeof value === 'string' && Object.hasOwn(PAGE_PRESET, value);
+}
+
+/**
+ * The `preset` a run of these settings sends: the page pick's, or for Custom the preset of
+ * the request it was applied from (round 10: "Apply to the page" used to drop it, so a Bare
+ * request applied and run again ranked spells as Raid).
+ */
+export function requestPresetFor(settings: SimSettings): RequestPreset | undefined {
+  return settings.preset === 'custom' ? settings.rankPreset : requestPresetOf(settings.preset);
+}
+
 /**
  * The preset the published number at `level` is simmed under (owner ruling, round 6): the
  * ranker publishes every band below 60 bare and headlines 60 with the raid entry. The rule
@@ -202,6 +216,12 @@ export interface SimSettings {
   consumables: string[];
   /** Cooldown timing rows (contract 1.7). Empty means "everything on cooldown". */
   cooldowns: CooldownSpec[];
+  /**
+   * Custom only: the preset the request these lists were applied from named, which a run
+   * keeps sending (requestPresetFor). Absent for a list built by hand; any preset the
+   * player picks clears it.
+   */
+  rankPreset?: RequestPreset;
 }
 
 /**
@@ -248,8 +268,9 @@ export function withPreset(
   spec: string,
   level: number,
 ): SimSettings {
-  if (preset === 'custom') return { ...settings, preset, presetChosen: true };
-  return applyPreset({ ...settings, presetChosen: true }, preset, spec, level);
+  const { rankPreset: _applied, ...picked } = settings;
+  if (preset === 'custom') return { ...picked, preset, presetChosen: true };
+  return applyPreset({ ...picked, presetChosen: true }, preset, spec, level);
 }
 
 /**

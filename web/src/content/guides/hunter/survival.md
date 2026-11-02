@@ -75,7 +75,7 @@ Survival is a melee spec in Forever: the Hunter stands in weapon range for the w
 
 - **Role:** Melee DPS, played without a pet (Lone Wolf)
 - **Brings:** Hunter's Mark on the target; no raid-wide buff
-- **Why the raid number fell:** Forever's Strength of Earth Totem gives less Strength than Era's, and Forever's Curse of Recklessness strips less armor. The sim uses Forever's values for both, on either faction. The raid buffs moved the number, not the build.
+- **What the raid adds:** less than an Era guide suggests. Forever's Strength of Earth Totem gives less Strength than Era's, and Forever's Curse of Recklessness strips less armor. The sim uses Forever's values for both, on either faction, so the raid number reflects Forever's buffs, not a weaker build.
 
 ## Talents and builds
 

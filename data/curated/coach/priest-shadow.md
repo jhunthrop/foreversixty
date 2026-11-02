@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/priest/shadow.md
   - data/curated/apl/priest-shadow.json
-  - data/builds/1.60.1.70630/spellconst/priest.json
+  - data/builds/1.60.1.70707/spellconst/priest.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -26,6 +26,8 @@ This is the Shadow Priest as the site's guide describes it. Shadow is the Priest
 - Mind Blast only when Mind Flay cannot be cast.
 - Shadow Word: Death first below twenty percent target health. While it is on its fifteen-second cooldown, Mind Blast, then Mind Flay.
 - Shoot with your wand on any global where nothing else is ready.
+- Devouring Plague is kept up: its twenty-four-second cooldown lets it be reapplied when it expires, and its ticks crit.
+- Shadowform.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
@@ -37,7 +39,7 @@ This is the Shadow Priest as the site's guide describes it. Shadow is the Priest
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Nightfin Soup); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Baked Salmon); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

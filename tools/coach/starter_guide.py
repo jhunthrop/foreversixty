@@ -4,7 +4,7 @@ Rules (round 4 rulings P1, P4, P6):
 - an ability is listed only when the rotation section names it positively: not in a clause about a
   loss or an older way to play, not as the far side of a comparison, not as another spell's effect;
 - an ability the guide rules out (is no longer a, not part of the loop, left out, there is no, with
-  no, replaces, its own guide) or conditions (only with a totem, without a talent) is never listed;
+  no, replaces, its own guide, is gone, cannot learn, does not cast, has no use for) or conditions (only with a totem, without a talent) is never listed;
 - order is the first clause the ability leads, else its first positive mention;
 - a term the guide says the build no longer takes is never cited.
 """
@@ -39,7 +39,7 @@ RULED_OUT_ALL_BEFORE = re.compile(
 )
 # Rule-outs whose subject is the first ability of the clause.
 RULED_OUT_SUBJECT = re.compile(
-    r"\b(is no longer an?|no upgrade|is not an?|has its own guide|removed|left out of|never be cast)\b",
+    r"\b(is no longer an?|no upgrade|is not an?|has its own guide|removed|left out of|never be cast|is gone|cannot learn|does not cast|has no use for)\b",
     re.IGNORECASE,
 )
 # Rule-outs that name the ability right after the phrase.

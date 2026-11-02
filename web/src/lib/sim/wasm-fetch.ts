@@ -8,6 +8,8 @@
 //
 // The body is sniffed rather than trusted: a host that labels the file Content-Encoding: gzip
 // (astro preview does, so every local and e2e build takes that path) makes fetch inflate it already, and inflating a module a second time would throw.
+// Production's Worker sends a browser that accepts brotli the sim.wasm.br beside the file,
+// labelled Content-Encoding: br (wasm-serve.ts), so that body arrives as the module too.
 
 const GZIP_MAGIC = [0x1f, 0x8b] as const;
 const WASM_MAGIC = [0x00, 0x61, 0x73, 0x6d] as const;

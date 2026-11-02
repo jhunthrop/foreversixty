@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/priest/discipline.md
   - data/curated/apl/priest-discipline.json
-  - data/builds/1.60.1.70630/spellconst/priest.json
+  - data/builds/1.60.1.70707/spellconst/priest.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -21,10 +21,10 @@ This is the Discipline Priest as the site's guide describes it. Discipline is th
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - The rotation leads with Penance whenever it is ready, and keeps Power Word: Shield on a tank who is taking damage and is not under Weakened Soul.
-- Renew and Prayer of Mending go on the tank.
 - Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.
+- Binding Heal.
 - Prayer of Healing answers several party members being hurt together.
-- Heal is the efficient filler.
+- Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

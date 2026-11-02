@@ -91,6 +91,11 @@ ARTIFACT_DIR ?= artifacts
 # The design's browser download budget, gzipped. The same number gates
 # `make artifacts` and the sim workflow's artifact job.
 WASM_BUDGET_MB = 4.5
+# The brotli file's own budget: the download production serves (web/src/worker.ts
+# answers the .gz request with the .br bytes when the browser accepts br). The
+# 2026-11-02 module is 3,098,291 bytes (2.95 MiB) as brotli against 4,313,767
+# as gzip; this keeps about the gzip budget's headroom.
+WASM_BR_BUDGET_MB = 3.5
 # 2026-10-08: raised from 4 when the tank and healer specs (eight more
 # simmed specs on top of twenty) took the engine to 4.08 MB; the
 # engine-only baseline is 3.31 MB, so the growth is the specs, not bloat.
@@ -268,11 +273,12 @@ artifacts: simdb
 #	The budget is ENFORCED here, not only printed: CI gated it while the
 #	Makefile reported it, so a local build could sail past the size the
 #	pipeline would refuse and nobody found out until the push.
-#	tools/wasm-gzip.sh writes the sim.wasm.gz publish-wasm deploys and gates
-#	the budget on that file, so the number is the visitor's download, not a
-#	second compression of the module. It needs pigz (on GitHub's ubuntu image;
-#	`brew install pigz` on a Mac).
-	@./tools/wasm-gzip.sh $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.wasm.gz $(WASM_BUDGET_MB)
+#	tools/wasm-compress.sh writes the sim.wasm.gz and sim.wasm.br publish-wasm
+#	deploys and gates each budget on that file, so the number is the visitor's
+#	download, not a second compression of the module. It needs pigz and brotli
+#	(on GitHub's ubuntu image; `brew install pigz brotli` on a Mac).
+	@./tools/wasm-compress.sh $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.wasm.gz $(WASM_BUDGET_MB)
+	@./tools/wasm-compress.sh $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.wasm.br $(WASM_BR_BUDGET_MB)
 
 .PHONY: publish-wasm
 # publish-wasm puts the browser pair where the web loads them, under the
@@ -296,14 +302,16 @@ publish-wasm: artifacts
 #	2026-11-01 deploy, 94% of Cloudflare's 25 MiB per-file static-asset
 #	limit, and one file over it refuses the whole deploy. The gzip is the
 #	file `artifacts` wrote and measured against WASM_BUDGET_MB, copied as is,
-#	so that budget gates the deployed bytes.
+#	so that budget gates the deployed bytes. sim.wasm.br beside it (gated by
+#	WASM_BR_BUDGET_MB) is what production's Worker sends a browser that
+#	accepts brotli, under the .gz's URL (web/src/worker.ts).
 	@sha=$$(./$(ARTIFACT_DIR)/forever-sim -version); \
 	test -n "$$sha" || { echo "forever-sim -version printed nothing"; exit 1; }; \
 	digest=$$( (sha256sum $(ARTIFACT_DIR)/sim.wasm 2>/dev/null || shasum -a 256 $(ARTIFACT_DIR)/sim.wasm) | cut -c1-12 ); \
 	test -n "$$digest" || { echo "could not hash $(ARTIFACT_DIR)/sim.wasm"; exit 1; }; \
 	id="$$sha-$$digest"; \
 	mkdir -p "$(WEB_SIM_DIR)/$$id"; \
-	cp $(ARTIFACT_DIR)/sim.wasm.gz "$(WEB_SIM_DIR)/$$id/sim.wasm.gz"; \
+	cp $(ARTIFACT_DIR)/sim.wasm.gz $(ARTIFACT_DIR)/sim.wasm.br "$(WEB_SIM_DIR)/$$id/"; \
 	cp $(ARTIFACT_DIR)/sim.js "$(WEB_SIM_DIR)/$$id/"; \
 	printf '%s\n' "$$id" > $(ARTIFACT_DIR)/ARTIFACT_ID; \
 	echo "published to $(WEB_SIM_DIR)/$$id"

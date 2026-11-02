@@ -486,8 +486,10 @@ def wowhead_additions(
         for (level_min, level_max), items in sorted(
             world_drop.items(),
             key=lambda pair: (
-                pair[0][0] is None, pair[0][0] or 0,
-                pair[0][1] is None, pair[0][1] or 0,
+                pair[0][0] is None,
+                pair[0][0] or 0,
+                pair[0][1] is None,
+                pair[0][1] or 0,
             ),
         )
     )

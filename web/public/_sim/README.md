@@ -2,7 +2,9 @@
 
 `sim.wasm.gz` (the module, gzipped; `web/src/lib/sim/wasm-fetch.ts` inflates it in the page,
 because the raw module is within a few percent of Cloudflare's 25 MiB per-file limit) and
-`sim.js`, built from the site's own `sim/` Go module (`sim/cmd/wasm`) at one
+`sim.wasm.br` (the same module as brotli, about 28% smaller: production's Worker sends it,
+labelled `Content-Encoding: br`, to every browser that accepts brotli, under the `.gz`'s URL;
+`web/src/lib/sim/wasm-serve.ts`) and `sim.js`, built from the site's own `sim/` Go module (`sim/cmd/wasm`) at one
 pinned engine version, served with
 `Cache-Control: public, max-age=31536000, immutable` — the directory name carries the engine sha AND a hash of the wasm's own
 bytes (`make publish-wasm` writes the name to `artifacts/ARTIFACT_ID`; web.yml hands it to the

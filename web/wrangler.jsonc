@@ -13,7 +13,10 @@
     "binding": "ASSETS",
     // /b/* is the shared build proxy. /logs-data/* is report files out of the R2 bucket,
     // and /duckdb-runtime/* the two DuckDB engine modules out of the same one (they are
-    // over the 25 MiB static-asset cap; see scripts/duckdb-runtime.mjs). The shell
+    // over the 25 MiB static-asset cap; see scripts/duckdb-runtime.mjs).
+    // /_sim/*/sim.wasm.gz is the engine module: a browser that accepts brotli is sent the
+    // sim.wasm.br beside it, about 28% smaller (src/lib/sim/wasm-serve.ts); sim.js and
+    // everything else under /_sim/ stays asset-first. The shell
     // prefixes are served from the static shells with their unfurl tags rewritten from the
     // API's JSON (see src/worker.ts). /sim itself is not listed: it is a plain static
     // shell with no request-time id, and the tightest LCP budget on this lane. Every other
@@ -23,6 +26,7 @@
       "/b/*",
       "/logs-data/*",
       "/duckdb-runtime/*",
+      "/_sim/*/sim.wasm.gz",
       "/reports/*",
       "/rankings/*",
       "/character/*",

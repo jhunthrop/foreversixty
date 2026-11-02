@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/mage/arcane.md
   - data/curated/apl/mage-arcane.json
-  - data/builds/1.60.1.70630/spellconst/mage.json
+  - data/builds/1.60.1.70707/spellconst/mage.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -22,9 +22,9 @@ This is the Arcane Mage as the site's guide describes it. Arcane is the Mage bur
 
 - Arcane Power on cooldown: a flat thirty percent damage cooldown with no cast time of its own.
 - Presence of Mind on cooldown: free and makes the next cast instant.
-- Arcane Blast twice, never a third time. The client charges it fifteen percent of base mana and each stack of its own buff raises the next cast's cost by one hundred seventy-five percent, so the second Blast is affordable and the third is not.
+- Arcane Blast until its buff carries three stacks. Past three, keep blasting while your mana is ahead of the fight.
 - Arcane Missiles: Whenever Missile Barrage's proc is active, fire an empowered Arcane Missiles at top rank to cash in the proc.
-- Frostbolt is the filler once two Blasts are up: a cheaper, faster cast than Arcane Missiles that still enjoys the Blast buff on your other spells and still has a twenty percent chance to proc Missile Barrage.
+- Frostbolt is the filler once the Blast line stops.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
@@ -36,7 +36,7 @@ This is the Arcane Mage as the site's guide describes it. Arcane is the Mage bur
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Nightfin Soup); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Baked Salmon); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

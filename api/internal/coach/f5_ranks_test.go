@@ -16,6 +16,11 @@ func TestRanks(t *testing.T) {
 		{name: "prot Sunder Rank 4 at level 60", in: protSunderRank(t, 60, 4, 22),
 			wantTitle: "Sunder Armor: 22 casts of Rank 4", wantSev: SeverityMinor},
 		{name: "deliberate downrank is never flagged", in: withDownrank(protSunderRank(t, 60, 4, 22), "Sunder Armor"), none: true},
+		// Round 10: the site's own per-band rank choice (data/curated/rank-choices.json) is
+		// what its rotation casts, so a player casting it is following the advice.
+		{name: "the site's rank choice at the level is never flagged", in: withRankChoice(protSunderRank(t, 60, 4, 22), "Sunder Armor", 4), none: true},
+		{name: "a rank below the site's choice still fires", in: withRankChoice(protSunderRank(t, 60, 3, 22), "Sunder Armor", 4),
+			wantTitle: "Sunder Armor: 22 casts of Rank 3", wantSev: SeverityMinor},
 		{name: "no level: couldn't check", in: protSunderRank(t, 0, 4, 22), none: true, wantCannot: true},
 		{name: "one stray cast of a once-cast family is quiet", in: protSunderRank(t, 60, 4, 1), none: true},
 		{name: "2 of 2 casts below the top rank fires on the percent branch", in: protSunderRank(t, 60, 4, 2),

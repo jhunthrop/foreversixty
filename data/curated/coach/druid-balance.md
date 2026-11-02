@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/druid/balance.md
   - data/curated/apl/druid-balance.json
-  - data/builds/1.60.1.70630/spellconst/druid.json
+  - data/builds/1.60.1.70707/spellconst/druid.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,16 +14,17 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Balance Druid as the site's guide describes it. Balance is the Druid ranged caster tree: Starfire and Insect Swarm damage from Moonkin Form, which gives the party a critical strike aura. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Balance Druid as the site's guide describes it. Balance is the Druid ranged caster tree: Starfire, Moonfire and Insect Swarm damage from Moonkin Form, which gives the party a critical strike aura. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Be in Moonkin Form before the pull and stay in it. The form gives you three percent more critical strike chance, and every spell in this loop can be cast from it.
-- Keep Insect Swarm ticking; it is a cheap DoT with no GCD contention beyond its application.
-- Starfire is the whole rest of the rotation once Insect Swarm is ticking.
-- Wrath: Eclipse, if talented, rewards weaving in a Wrath cast periodically, since it shortens your next two Starfire casts, so it is worth folding into the priority once you have taken it.
+- Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.
+- Keep Insect Swarm ticking; each refresh costs one global.
+- Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.
+- Eclipse: with no Eclipse charge banked, Wrath.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
@@ -35,7 +36,7 @@ This is the Balance Druid as the site's guide describes it. Balance is the Druid
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Nightfin Soup); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Baked Salmon); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/hunter/marksmanship.md
   - data/curated/apl/hunter-marksmanship.json
-  - data/builds/1.60.1.70630/spellconst/hunter.json
+  - data/builds/1.60.1.70707/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,16 +14,16 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Marksmanship Hunter as the site's guide describes it. Marksmanship is the Hunter ranged spec built on Aimed Shot, the hardest single shot of the three trees, boosted by Careful Aim and Mortal Shots. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Marksmanship Hunter as the site's guide describes it. Marksmanship is the Hunter ranged spec built on the shots themselves: Multi-Shot on its cooldown, an Aimed Shot opener, boosted by Careful Aim and Mortal Shots. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.
-- Before the pull, Aspect of the Hawk goes up and the opening Aimed Shot begins casting so it lands close to the start of the fight.
-- Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit.
-- Multi-Shot as the filler between Aimed Shots.
+- Aspect of the Hawk goes up before the pull.
+- Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.
+- Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
+- Rapid Fire timed to land with an incoming auto shot just as Multi-Shot is about to come off cooldown, so both benefit.
 - Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, so keep a mana reserve.
 
 **The mistakes the coach looks for, by finding.**
@@ -36,7 +36,7 @@ This is the Marksmanship Hunter as the site's guide describes it. Marksmanship i
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Grilled Squid); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Poached Sunscale Salmon); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

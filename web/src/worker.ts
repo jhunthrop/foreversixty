@@ -1,6 +1,6 @@
 // The only server code in web/. wrangler.jsonc's run_worker_first lists exactly the
 // prefixes this handler owns -- the shared build proxy, report files and the DuckDB
-// runtime out of R2, and the four shells -- and every other path is served straight from
+// runtime out of R2, the engine module's brotli negotiation, and the four shells -- and every other path is served straight from
 // the static assets with no Worker execution at all.
 //
 // Shared builds are rendered by the Go API, but their links have to stay on foreversixty.gg:
@@ -35,6 +35,7 @@ import {
 import { SAMPLE_LEGACY_IDS, SAMPLE_REPORT_PATH } from './lib/report/sample';
 import type { ReportMeta } from './lib/report/types';
 import type { SimResult } from './lib/sim/types';
+import { serveSimWasm, SIM_WASM_PATH } from './lib/sim/wasm-serve';
 
 export interface Env {
   /** Origin of the Go API, from `vars` in wrangler.jsonc. */
@@ -565,6 +566,7 @@ export default {
     if (url.pathname.startsWith(DUCKDB_RUNTIME_PREFIX)) {
       return serveDuckdbRuntime(request, env, url.pathname);
     }
+    if (SIM_WASM_PATH.test(url.pathname)) return serveSimWasm(request, env.ASSETS);
 
     const shell = SHELL_ROUTES.find((route) => url.pathname.startsWith(route.prefix));
     // A path under a shell prefix that is not a valid id, slug or character path -- a

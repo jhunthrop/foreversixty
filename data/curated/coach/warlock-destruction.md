@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/warlock/destruction.md
   - data/curated/apl/warlock-destruction.json
-  - data/builds/1.60.1.70630/spellconst/warlock.json
+  - data/builds/1.60.1.70707/spellconst/warlock.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -21,13 +21,13 @@ This is the Destruction Warlock as the site's guide describes it. Destruction is
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Corruption goes down first and is kept up throughout. It is cheap sustained damage that does not compete with your casts.
-- Bane of Doom is the one curse kept up. It deals its whole damage when the minute is out, so recast it the moment it fires.
+- Bane of Doom is the one curse kept up. It deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains.
+- Bane of Agony in the last minute, when a Doom would not fire before the fight ends.
 - Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is recast when under three seconds remain.
 - Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up.
 - Shadowburn is cast on cooldown whenever its reagent cost is acceptable, with no execute-phase gate. It is strong burst at any target health.
 - Incinerate is Destruction's signature filler, dealing bonus damage while Immolate is active.
-- Shadow Bolt is the filler while you have not yet learned the Incinerate talent. Once you have, Incinerate takes priority instead.
-- Shoot with your wand once mana is under forty percent. It costs nothing, so mana regenerates while it keeps damage going.
+- Shadow Bolt.
 - Life Tap to keep casting once mana runs low.
 
 **The mistakes the coach looks for, by finding.**
@@ -40,7 +40,7 @@ This is the Destruction Warlock as the site's guide describes it. Destruction is
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Nightfin Soup); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Supreme Power); food (Baked Salmon); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

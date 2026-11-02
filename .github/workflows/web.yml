@@ -42,7 +42,7 @@ on:
       - sim/**
       - data/builds/**
       - Makefile
-      - tools/wasm-gzip.sh
+      - tools/wasm-compress.sh
       - .github/actions/pin-engine/**
       - .github/workflows/web.yml
   pull_request:
@@ -51,7 +51,7 @@ on:
       - sim/**
       - data/builds/**
       - Makefile
-      - tools/wasm-gzip.sh
+      - tools/wasm-compress.sh
       - .github/actions/pin-engine/**
       - .github/workflows/web.yml
   workflow_dispatch:
@@ -239,7 +239,7 @@ jobs:
           if [ "$EVENT" != pull_request ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
           git fetch -q --depth=1 origin "$BASE"
           changed=$(git diff --name-only "$BASE" HEAD)
-          if printf '%s\n' "$changed" | grep -qE '^(sim/|logs/|Makefile$|tools/wasm-gzip\.sh$|data/builds/[^/]+/(simdb\.bin|enchants\.json|spellranks\.json)$|web/src/data/active-build\.json$|web/src/lib/sim/|web/tests/e2e/(sim-[a-z-]*real-engine\.spec\.ts|support/real-engine\.ts)$|web/playwright\.config\.ts$|web/package(-lock)?\.json$|\.github/actions/pin-engine/|\.github/workflows/web\.yml$)'; then
+          if printf '%s\n' "$changed" | grep -qE '^(sim/|logs/|Makefile$|tools/wasm-compress\.sh$|data/builds/[^/]+/(simdb\.bin|enchants\.json|spellranks\.json)$|web/src/data/active-build\.json$|web/src/lib/sim/|web/tests/e2e/(sim-[a-z-]*real-engine\.spec\.ts|support/real-engine\.ts)$|web/playwright\.config\.ts$|web/package(-lock)?\.json$|\.github/actions/pin-engine/|\.github/workflows/web\.yml$)'; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
@@ -255,7 +255,7 @@ jobs:
       - uses: actions/checkout@v4
       # The wasm's inputs, exactly: the engine pin, the sim/ and logs/ trees (sim/go.mod's
       # `go` line picks the toolchain, so it is in the sim tree), the Makefile and
-      # tools/wasm-gzip.sh (which writes the cached sim.wasm.gz), and the active build's
+      # tools/wasm-compress.sh (which writes the cached sim.wasm.gz and .br), and the active build's
       # three embedded files. git's own tree and blob ids, so the key moves
       # only when a byte that is compiled in does.
       - name: the wasm's cache key
@@ -266,7 +266,7 @@ jobs:
           test -n "$pin" || { echo "sim/enginever/version.go has no Version"; exit 1; }
           build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)
           test -n "$build" || { echo "web/src/data/active-build.json has no build"; exit 1; }
-          inputs=$(git rev-parse HEAD:sim HEAD:logs HEAD:Makefile HEAD:tools/wasm-gzip.sh \
+          inputs=$(git rev-parse HEAD:sim HEAD:logs HEAD:Makefile HEAD:tools/wasm-compress.sh \
             "HEAD:data/builds/$build/simdb.bin" "HEAD:data/builds/$build/enchants.json" "HEAD:data/builds/$build/spellranks.json")
           echo "key=sim-wasm-v1-$pin-$(printf '%s\n' "$inputs" | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
       - id: wasm-cache
@@ -308,9 +308,11 @@ jobs:
           case "$id" in "$pin-"*) ;; *) echo "artifact '$id' does not belong to engine $pin"; exit 1;; esac
           dir="web/public/_sim/$id"
           test -f "$dir/sim.wasm.gz" || { echo "missing $dir/sim.wasm.gz"; exit 1; }
+          test -f "$dir/sim.wasm.br" || { echo "missing $dir/sim.wasm.br"; exit 1; }
           test -f "$dir/sim.js" || { echo "missing $dir/sim.js"; exit 1; }
           bytes=$(wc -c < "$dir/sim.wasm.gz" | tr -d ' ')
-          echo "sim.wasm.gz: $bytes bytes ($id, cache hit: ${{ steps.wasm-cache.outputs.cache-hit == 'true' }})" | tee -a "$GITHUB_STEP_SUMMARY"
+          br_bytes=$(wc -c < "$dir/sim.wasm.br" | tr -d ' ')
+          echo "sim.wasm.gz: $bytes bytes, sim.wasm.br: $br_bytes bytes ($id, cache hit: ${{ steps.wasm-cache.outputs.cache-hit == 'true' }})" | tee -a "$GITHUB_STEP_SUMMARY"
           echo "PUBLIC_SIM_ARTIFACT=$id" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v4
         with:
@@ -491,7 +493,7 @@ jobs:
         working-directory: .
         run: make simdb
       # publish-wasm runs `make artifacts` itself (the build, sim.js, forever-sim and the
-      # budget-gated sim.wasm.gz), so a separate `make artifacts` step only did it twice.
+      # budget-gated sim.wasm.gz and sim.wasm.br), so a separate `make artifacts` step only did it twice.
       - name: build and publish the browser pair under web/public/_sim/<engine sha>-<wasm hash>/
         working-directory: .
         run: |
@@ -518,8 +520,9 @@ jobs:
           fi
           case "$PUBLIC_SIM_ARTIFACT" in "$pin-"*) ;; *) echo "PUBLIC_SIM_ARTIFACT '$PUBLIC_SIM_ARTIFACT' does not belong to engine $pin"; exit 1;; esac
           test -f "web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm.gz" || { echo "missing web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm.gz"; exit 1; }
+          test -f "web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm.br" || { echo "missing web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm.br"; exit 1; }
           test -f "web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.js"   || { echo "missing web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.js"; exit 1; }
-          echo "engine $pin: sim.wasm.gz and sim.js published as $PUBLIC_SIM_ARTIFACT for the production build"
+          echo "engine $pin: sim.wasm.gz, sim.wasm.br and sim.js published as $PUBLIC_SIM_ARTIFACT for the production build"
       # CF_PAGES makes the build fail if src/data/links.json still holds a PLACEHOLDER link.
       # FOREVER_DATA is unset here on purpose: a real build prerenders no fixture report,
       # rankings, character or guild page and publishes no public/logs-data/.

@@ -9,7 +9,7 @@
 // question ("can this run?") can come back in. None of the three is a rule written here.
 import { simCopy } from './copy';
 import type { RequestValidation, RequestValidationError } from './engine';
-import { defaultSettings, type SimSettings } from './settings';
+import { defaultSettings, isRequestPreset, type SimSettings } from './settings';
 import type { SimRequest } from './types';
 
 /**
@@ -71,7 +71,8 @@ function withDefined<T extends object>(base: T, patch: T): T {
  * under one would mean the next preset change silently discarded it.
  */
 export function settingsFromRequest(request: SimRequest): SimSettings {
-  // Only the encounter is read: the preset is custom and the lists are the request's own.
+  // The page pick is Custom and the lists are the request's own; its preset rides along, so
+  // a run of the applied settings ranks spells under the preset the request named.
   const base = defaultSettings();
   return {
     encounter: withDefined(base.encounter, request.encounter),
@@ -80,6 +81,7 @@ export function settingsFromRequest(request: SimRequest): SimSettings {
     buffs: [...(request.character.buffs ?? [])],
     consumables: [...(request.character.consumes ?? [])],
     cooldowns: (request.character.cooldowns ?? []).map((row) => ({ ...row, at_sec: [...row.at_sec] })),
+    ...(isRequestPreset(request.preset) ? { rankPreset: request.preset } : {}),
   };
 }
 

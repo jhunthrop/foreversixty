@@ -48,7 +48,12 @@
       "combat_potion": {
         "max_uses": 2,
         "entries": [
-          { "spell_id": 17528, "name": "Mighty Rage Potion", "verified": "1.60.1.69893/spells.json#17528" }
+          { "spell_id": 17528, "name": "Mighty Rage Potion", "verified": "1.60.1.69893/spells.json#17528" },
+          { "spell_id": 17531, "name": "Major Mana Potion", "verified": "1.60.1.70707/spells.json#17531" },
+          { "spell_id": 1251936, "name": "Frenzy Potion", "verified": "1.60.1.70707/spells.json#1251936" },
+          { "spell_id": 1251940, "name": "Major Frenzy Potion", "verified": "1.60.1.70707/spells.json#1251940" },
+          { "spell_id": 1251923, "name": "Spellblasting Potion", "verified": "1.60.1.70707/spells.json#1251923" },
+          { "spell_id": 1251932, "name": "Major Spellblasting Potion", "verified": "1.60.1.70707/spells.json#1251932" }
         ]
       }
     },
@@ -136,7 +141,13 @@
       "combat_potion": {
         "max_uses": 2,
         "entries": [
-          { "spell_id": 17528, "name": "Mighty Rage Potion", "verified": "1.60.1.69893/spells.json#17528" }
+          { "spell_id": 17528, "name": "Mighty Rage Potion", "verified": "1.60.1.69893/spells.json#17528" },
+          { "spell_id": 17531, "name": "Major Mana Potion", "verified": "1.60.1.70707/spells.json#17531" },
+          { "spell_id": 17540, "name": "Greater Stoneshield Potion", "verified": "1.60.1.70707/spells.json#17540" },
+          { "spell_id": 1251936, "name": "Frenzy Potion", "verified": "1.60.1.70707/spells.json#1251936" },
+          { "spell_id": 1251940, "name": "Major Frenzy Potion", "verified": "1.60.1.70707/spells.json#1251940" },
+          { "spell_id": 1251923, "name": "Spellblasting Potion", "verified": "1.60.1.70707/spells.json#1251923" },
+          { "spell_id": 1251932, "name": "Major Spellblasting Potion", "verified": "1.60.1.70707/spells.json#1251932" }
         ]
       }
     }

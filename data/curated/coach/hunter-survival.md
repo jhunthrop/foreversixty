@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/hunter/survival.md
   - data/curated/apl/hunter-survival.json
-  - data/builds/1.60.1.70630/spellconst/hunter.json
+  - data/builds/1.60.1.70707/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -20,12 +20,14 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Raptor Strike.
+- Before the pull, Aspect of the Beast goes up: in Forever it is the melee aspect, raising melee attack power by one hundred ten at rank four.
+- Hunter's Mark stays on the target for Expose Prey.
+- Rapid Fire goes out with the other cooldowns, because in Forever it speeds up melee swings as well as shots.
+- Raptor Strike is queued on the swing timer with no mana gate at all.
 - Counterattack only after you parry: it is free and cannot be blocked, dodged or parried.
 - Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.
 - Lacerate whenever its bleed has fallen off.
-- Strider Kick as the lowest-priority filler on its own eight second cooldown.
-- Immolation Trap.
+- Strider Kick on its own short cooldown, ahead of Immolation Trap.
 - Wing Clip only with a Windfury Totem in the group, on a global with nothing else ready. Without the totem it loses damage.
 
 **The mistakes the coach looks for, by finding.**
@@ -38,7 +40,7 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Grilled Squid); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Poached Sunscale Salmon); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
 
 ## Drills
 

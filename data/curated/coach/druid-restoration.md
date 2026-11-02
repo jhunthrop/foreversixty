@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/druid/restoration.md
   - data/curated/apl/druid-restoration.json
-  - data/builds/1.60.1.70630/spellconst/druid.json
+  - data/builds/1.60.1.70707/spellconst/druid.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -21,7 +21,7 @@ This is the Restoration Druid as the site's guide describes it. Restoration is t
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - The tank keeps Regrowth and Rejuvenation up for the whole fight, and the heals over time carry most of the work.
-- A hurt party member gets Rejuvenation, and Tranquility goes out when two are well down.
+- A hurt party member gets Rejuvenation, you included, and Tranquility goes out when two of the five are well down.
 - Nature's Swiftness into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and Innervate goes on you when you are low.
 
 **The mistakes the coach looks for, by finding.**
