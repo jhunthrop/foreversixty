@@ -321,6 +321,7 @@ func weightSummaries(parts []api.SimResult, total int) summary.Summary {
 	var order []string
 	actors := map[string]*summary.Actor{}
 	rows := map[string]map[abilityKey]*summary.Ability{}
+	sums := map[string]map[abilityKey]*rowSums{}
 	var rowOrder = map[string][]abilityKey{}
 
 	for _, p := range parts {
@@ -333,6 +334,7 @@ func weightSummaries(parts []api.SimResult, total int) summary.Summary {
 				shell.Abilities, shell.Targets, shell.Series = nil, nil, nil
 				actors[src.GUID] = &shell
 				rows[src.GUID] = map[abilityKey]*summary.Ability{}
+				sums[src.GUID] = map[abilityKey]*rowSums{}
 				order = append(order, src.GUID)
 				dst = &shell
 			}
@@ -351,31 +353,18 @@ func weightSummaries(parts []api.SimResult, total int) summary.Summary {
 				cur, seen := rows[src.GUID][k]
 				if !seen {
 					shell := ab
-					shell.Total, shell.Effective = 0, 0
-					shell.Overheal, shell.Overkill, shell.Absorbed = 0, 0, 0
-					shell.Resisted, shell.Blocked = 0, 0
-					shell.Hits, shell.Crits, shell.Ticks = 0, 0, 0
 					shell.Min, shell.Max = ab.Min, ab.Max
 					shell.Misses = nil
 					rows[src.GUID][k] = &shell
+					sums[src.GUID][k] = &rowSums{}
 					rowOrder[src.GUID] = append(rowOrder[src.GUID], k)
 					cur = &shell
 				}
-				cur.Total += weigh(ab.Total, w)
-				cur.Effective += weigh(ab.Effective, w)
-				cur.Overheal += weigh(ab.Overheal, w)
-				cur.Overkill += weigh(ab.Overkill, w)
-				cur.Absorbed += weigh(ab.Absorbed, w)
-				cur.Resisted += weigh(ab.Resisted, w)
-				cur.Blocked += weigh(ab.Blocked, w)
-				cur.Hits += weigh(ab.Hits, w)
-				cur.Crits += weigh(ab.Crits, w)
-				cur.Ticks += weigh(ab.Ticks, w)
+				sums[src.GUID][k].add(ab, w)
 				// Min and Max are extremes, not averages: weighting them
 				// would report a spread no iteration ever saw.
 				cur.Min = min(cur.Min, ab.Min)
 				cur.Max = max(cur.Max, ab.Max)
-				cur.Misses = mergeMisses(cur.Misses, ab.Misses, w)
 			}
 		}
 	}
@@ -386,7 +375,7 @@ func weightSummaries(parts []api.SimResult, total int) summary.Summary {
 		a.Abilities = make([]summary.Ability, 0, len(rowOrder[guid]))
 		a.Total, a.Effective = 0, 0
 		for _, k := range rowOrder[guid] {
-			ab := *rows[guid][k]
+			ab := sums[guid][k].rounded(*rows[guid][k])
 			a.Total += ab.Total
 			a.Effective += ab.Effective
 			a.Abilities = append(a.Abilities, ab)
@@ -460,6 +449,56 @@ type abilityKey struct {
 	Via     string
 }
 
+// rowSums is one merged row's weighed counters, kept unrounded until every
+// part is in. Rounding each part's share first lost a count a part saw less
+// than twice per fight: eight parts with 3 Ignite crits a fight each rounded
+// 3/8 to 0 and the row read a 0.0% crit rate (round 7, page lane).
+type rowSums struct {
+	total, effective, overheal, overkill, absorbed float64
+	resisted, blocked, hits, crits, ticks          float64
+	misses                                         map[string]float64
+}
+
+// add weighs one part's row into the sums.
+func (s *rowSums) add(ab summary.Ability, w float64) {
+	s.total += float64(ab.Total) * w
+	s.effective += float64(ab.Effective) * w
+	s.overheal += float64(ab.Overheal) * w
+	s.overkill += float64(ab.Overkill) * w
+	s.absorbed += float64(ab.Absorbed) * w
+	s.resisted += float64(ab.Resisted) * w
+	s.blocked += float64(ab.Blocked) * w
+	s.hits += float64(ab.Hits) * w
+	s.crits += float64(ab.Crits) * w
+	s.ticks += float64(ab.Ticks) * w
+	for kind, n := range ab.Misses {
+		if s.misses == nil {
+			s.misses = map[string]float64{}
+		}
+		s.misses[kind] += float64(n) * w
+	}
+}
+
+// rounded is row with the summed counters, each rounded once.
+func (s *rowSums) rounded(row summary.Ability) summary.Ability {
+	r := func(v float64) int64 { return int64(math.Round(v)) }
+	row.Total, row.Effective = r(s.total), r(s.effective)
+	row.Overheal, row.Overkill, row.Absorbed = r(s.overheal), r(s.overkill), r(s.absorbed)
+	row.Resisted, row.Blocked = r(s.resisted), r(s.blocked)
+	row.Hits, row.Crits, row.Ticks = r(s.hits), r(s.crits), r(s.ticks)
+	row.Misses = nil
+	for kind, n := range s.misses {
+		if r(n) == 0 {
+			continue // "0 dodge" is not something a row says (adapter addMiss)
+		}
+		if row.Misses == nil {
+			row.Misses = make(map[string]int64, len(s.misses))
+		}
+		row.Misses[kind] = r(n)
+	}
+	return row
+}
+
 // weigh takes an iteration-share of a per-fight figure. It ROUNDS: a
 // truncation biases every row of a four-way split low by up to one per
 // part, which on a table of forty rows is a visible shortfall against
@@ -496,21 +535,6 @@ func mergeSeries(dst, src []int64, w float64) []int64 {
 	}
 	for i, v := range src {
 		dst[i] += weigh(v, w)
-	}
-	return dst
-}
-
-// mergeMisses folds one part's outcome counters into the running map,
-// allocating rather than writing into the part's own.
-func mergeMisses(dst, src map[string]int64, w float64) map[string]int64 {
-	if len(src) == 0 {
-		return dst
-	}
-	if dst == nil {
-		dst = make(map[string]int64, len(src))
-	}
-	for k, v := range src {
-		dst[k] += weigh(v, w)
 	}
 	return dst
 }
