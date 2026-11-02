@@ -52,6 +52,14 @@ describe('buildSimRequest', () => {
     expect(buildSimRequest({ ...input, roleMetrics: true }).role_metrics).toBe(true);
   });
 
+  // Round 9 (ranks lane): rank choices follow the request's preset; an empty one means the
+  // preset the level is published under (raid at 60), so a bare page run must say so.
+  it('carries the rank preset only when one is given', () => {
+    expect('preset' in buildSimRequest(input)).toBe(false);
+    expect(buildSimRequest({ ...input, preset: 'bare' }).preset).toBe('bare');
+    expect(buildSimRequest({ ...input, preset: 'raid' }).preset).toBe('raid');
+  });
+
   it('round-trips through JSON unchanged, which is all the wasm is handed', () => {
     expect(JSON.parse(JSON.stringify(buildSimRequest(input)))).toEqual(buildSimRequest(input));
   });

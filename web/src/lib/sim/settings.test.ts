@@ -6,6 +6,7 @@ import generated from '../../data/generated/sim-ids.json';
 import { selectedIn } from './buffs';
 import { simCopy } from './copy';
 import {
+  requestPresetOf,
   BUFF_PRESETS,
   DEFAULT_TARGET_LEVEL,
   defaultSettings,
@@ -624,5 +625,15 @@ describe('targetLevelFor', () => {
     const resolved = encounterFor({ ...DEFAULT_ENCOUNTER, target_level: 63, targets: 2 }, 15);
     expect(resolved.target_level).toBe(18);
     expect(resolved.targets).toBe(2);
+  });
+});
+
+describe('requestPresetOf', () => {
+  // The request's `preset` (sim/request BarePreset and RaidPreset) for the page's pick; Custom
+  // names none, so the engine follows the preset the level is published under.
+  it('names the request preset of each static pick and none for Custom', () => {
+    expect(requestPresetOf('bare')).toBe('bare');
+    expect(requestPresetOf('raid-buffed')).toBe('raid');
+    expect(requestPresetOf('custom')).toBeUndefined();
   });
 });

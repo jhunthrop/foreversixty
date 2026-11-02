@@ -33,6 +33,12 @@ No row moves any spec's DPS: nothing here touches the engine, the presets or the
 | --- | --- | --- | --- | --- |
 | P6 | **The Debuffs section offered five boxes that do nothing.** Shadow Weaving, Improved Scorch, Improved Shadow Bolt and Stormstrike are the caster's own in Forever (round 8 D3, E a56f0d992, an ancestor of pin 40021374a); at the pin no engine code reads those four `Debuffs` fields (`git grep` over sim/, excluding protos and tests). Curse of Shadow is deleted from the client (casters lane, E 35fa13a5a, integrator's request). | Before: 24 boxes, shots `sim-custom-debuffs-1440-before.png`, `-390-before.png`. After: 19, `-after.png` (Playwright on a local fixture build; every server stopped). `INERT_BUFFS` in `web/src/lib/sim/buffs.ts`; `rowsIn` leaves them out. The catalogue and the request vocabulary keep them, so a saved sim that named one still runs. Test first: buffs.test.ts "offers none of the debuffs the engine ignores". Note: Curse of Shadow does nothing only once 35fa13a5a is pinned. | Panel item (round 8 open), fixed | S c55381ed1 |
 
+## Rank preset in the /sim request (integrator follow-up, on wt/r9-ranks c0f19a3bb)
+
+| # | finding | evidence and source | confirmed? | fix sha |
+| --- | --- | --- | --- | --- |
+| P7 | **/sim sent no `preset`, so a level-60 character on Bare got the raid ranks.** The ranks lane made rank choices preset-aware (`api.SimRequest.Preset`; empty means `PublishedPreset(level)`, raid at 60). | `sim/request/rank_choices.go` rankPreset. The page now sends the player's pick on all three paths: the browser run, the request drawer and the server run. Bare sends "bare", Raid-buffed sends "raid", and Custom sends nothing. A hand-built buff list is nobody's preset, so Custom gets the published preset. `requestPresetOf` lives in settings.ts. Tests first: run.test.ts, settings.test.ts and store.test.ts ("a bare pick runs bare in the browser, the drawer and on the server"; red, then green). astro check: 0 errors. e2e sim-request, sim-buffs, sim-settings, sim-drops and current-character: 62 passed on a fresh fixture build. The only visible change is the drawer's JSON, which now ends `"preset": "bare"`: shots `sim-request-drawer-bare-1440-before.png` and `-after.png`. A request applied from the drawer becomes Custom (unchanged), so its preset is not carried back onto the page. Run as written, it keeps it. | Wiring, done | S (this commit) |
+
 ## Before/after
 
 No DPS change: no engine, preset or request change in this lane.
@@ -44,6 +50,8 @@ No DPS change: no engine, preset or request change in this lane.
 - **Page:** the panel's labels come from humanised ids where simbuffs.json has no name ("Hunters mark", "Curse of elements", "Winters chill").
 
 ## Still open
+
+- The fixture build of wt/r9-ranks failed `sync:rotations`: druid-restoration, priest-holy and shaman-elemental step notes named a review path, a date or a data file. The integrator fixed this on int/r9. My verification build used an uncommitted local strip of those notes.
 
 - P4 rests on one source (the client's spell durations). A level-60 Forever log after launch will show whether COMBATANT_INFO lists Well Fed (expected) or Nutritious Food at the pull.
 
