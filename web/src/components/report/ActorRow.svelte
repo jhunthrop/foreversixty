@@ -296,11 +296,14 @@
     return new Set([...seen.entries()].filter(([, ids]) => ids.size > 1).map(([name]) => name));
   });
 
-  /** The row's amount by spell school: how much was physical, how much magic. */
+  /** The row's amount by spell school: how much was physical, how much magic. A row that
+   *  dealt nothing (a sim's cooldown, potion or mana gain, which carries no school) is no
+   *  school's share. */
   const schoolSplit = $derived.by(() => {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const totals = new Map<string, { name: string; token: string; total: number }>();
     for (const ability of shownAbilities) {
+      if (ability.effective <= 0) continue;
       const name = schoolName(ability.school) || 'Physical';
       const found = totals.get(name);
       if (found === undefined)
