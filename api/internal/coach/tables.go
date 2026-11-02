@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/sim/request"
 )
 
 const manifestFile = "manifest.json"
@@ -174,7 +175,11 @@ func (f *FileTables) TablesFor(ctx context.Context, row summary.RosterRow, encou
 	if err != nil {
 		return Tables{}, err
 	}
-	t := Tables{Rules: rules, Spells: class.spells, Trainable: class.trainable, WorstActions: worst}
+	choices, err := rankChoicesAt(slug, class.trainable, int(row.Level))
+	if err != nil {
+		return Tables{}, err
+	}
+	t := Tables{Rules: rules, Spells: class.spells, Trainable: class.trainable, RankChoices: choices, WorstActions: worst}
 	t.Rotation, t.RotationOK = sims.RotationFor(build, slug, int(row.Level))
 	cat := consumables.Load()
 	t.Consumables, _ = cat.For(row.Role)
@@ -183,6 +188,25 @@ func (f *FileTables) TablesFor(ctx context.Context, row summary.RosterRow, encou
 		t.Mechanics = &m
 	}
 	return t, nil
+}
+
+// rankChoicesAt is Tables.RankChoices: for each trainable family, the ranks the spec's
+// rotation chooses at level (sim/request's embedded rank-choices.json).
+func rankChoicesAt(slug string, trainable map[string][]TrainableRank, level int) (map[string][]int, error) {
+	var out map[string][]int
+	for family := range trainable {
+		ranks, err := request.ChosenRanks(slug, family, level)
+		if err != nil {
+			return nil, fmt.Errorf("coach tables: %w", err)
+		}
+		if len(ranks) > 0 {
+			if out == nil {
+				out = map[string][]int{}
+			}
+			out[family] = ranks
+		}
+	}
+	return out, nil
 }
 
 func classSlug(class string) string { return strings.ReplaceAll(strings.ToLower(class), " ", "-") }

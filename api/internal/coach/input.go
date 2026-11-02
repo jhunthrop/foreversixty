@@ -21,9 +21,13 @@ type Input struct {
 
 // Tables is the data the checks read beside the fight.
 type Tables struct {
-	Rules       SpecRules                  // data/curated/coach/<spec>.json; zero value = no file
-	Spells      map[int64]SpellConst       // the class's spellconst for the fight's build
-	Trainable   map[string][]TrainableRank // family -> ranks with the level each is learned
+	Rules     SpecRules                  // data/curated/coach/<spec>.json; zero value = no file
+	Spells    map[int64]SpellConst       // the class's spellconst for the fight's build
+	Trainable map[string][]TrainableRank // family -> ranks with the level each is learned
+	// RankChoices is family -> the ranks data/curated/rank-choices.json has the spec's
+	// rotation cast at the player's level (a mana-bound band's downrank); F5 never calls
+	// those low. Nil where no row holds the level.
+	RankChoices map[string][]int
 	Rotation    sims.Rotation
 	RotationOK  bool
 	Consumables consumables.RoleCatalogue

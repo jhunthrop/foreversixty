@@ -42,6 +42,13 @@ func withDownrank(in Input, family string) Input {
 	return in
 }
 
+// withRankChoice is in with rank listed as the site's rank choice for family at the
+// player's level.
+func withRankChoice(in Input, family string, rank int) Input {
+	in.Tables.RankChoices = map[string][]int{family: {rank}}
+	return in
+}
+
 // holyOverheal is the Holy priest casting casts of spellID, which overhealed overhealPct
 // percent of healTotalFixture, with refs as the comparison.
 func holyOverheal(t *testing.T, spellID int64, casts int, overhealPct int64, refs Refs) Input {
