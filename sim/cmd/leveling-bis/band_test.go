@@ -620,6 +620,11 @@ func TestPvpSourceLabel(t *testing.T) {
 		{"a known rank/title", 9, "Master Sergeant", "alliance", "PvP rank 9 · Master Sergeant · Alliance"},
 		{"a horde rank/title", 18, "High Warlord", "horde", "PvP rank 18 · High Warlord · Horde"},
 		{"no title (rank outside the known ladder) falls back to rank and faction", 4, "", "alliance", "PvP rank 4 · Alliance"},
+		// Round 8: Forever's PvP rewards need no rank (owner ruling 2026-11-01),
+		// and loot.json may carry a pvp source without one.
+		{"no rank names a PvP reward, never rank 0", 0, "", "horde", "PvP reward · Horde"},
+		{"no rank and no faction", 0, "", "", "PvP reward"},
+		{"a rank with no faction has no trailing separator", 9, "Sergeant Major", "", "PvP rank 9 · Sergeant Major"},
 	}
 	for _, tc := range cases {
 		if got := pvpSourceLabel(tc.rank, tc.title, tc.faction); got != tc.want {

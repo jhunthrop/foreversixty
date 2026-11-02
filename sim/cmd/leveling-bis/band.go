@@ -352,12 +352,22 @@ func pvpRankExceedsCap(s itemSource) bool {
 // falls outside pipeline.loot.pvp_faction.rank_title's known 14-rank
 // ladder, that function's own doc) - falls back to naming just the
 // rank and faction rather than printing an empty title segment.
+//
+// A source with no rank (Forever's PvP rewards need none, owner ruling
+// 2026-11-01) reads "PvP reward", never "PvP rank 0"; an empty part is
+// left out rather than printed as a dangling separator.
 func pvpSourceLabel(rank int, title, faction string) string {
-	factionLabel := titleCase(faction)
-	if title == "" {
-		return fmt.Sprintf("PvP rank %d · %s", rank, factionLabel)
+	parts := []string{"PvP reward"}
+	if rank > 0 {
+		parts = []string{fmt.Sprintf("PvP rank %d", rank)}
+		if title != "" {
+			parts = append(parts, title)
+		}
 	}
-	return fmt.Sprintf("PvP rank %d · %s · %s", rank, title, factionLabel)
+	if faction != "" {
+		parts = append(parts, titleCase(faction))
+	}
+	return strings.Join(parts, " · ")
 }
 
 // bandPool is everything candidatesBySlot/pick need for one band and
