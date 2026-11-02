@@ -675,8 +675,8 @@ func restorationDruidOptions(p *proto.Player) {
 // statement of intent, and it is what the talent search mutates.
 func hunterOptions(p *proto.Player) {
 	options := &proto.Hunter_Options{
-		Ammo:           proto.Hunter_Options_ThoriumHeadedArrow,
-		QuiverBonus:    proto.Hunter_Options_Speed15,
+		Ammo:           hunterAmmoAt(p.Level),
+		QuiverBonus:    hunterQuiverAt(p.Level),
 		PetType:        proto.Hunter_Options_Cat,
 		PetAttackSpeed: proto.Hunter_Options_OneTwo,
 		PetUptime:      fullPetUptime,
@@ -686,6 +686,56 @@ func hunterOptions(p *proto.Player) {
 		options.PetUptime = 0
 	}
 	p.Spec = &proto.Player_Hunter{Hunter: &proto.Hunter{Options: options}}
+}
+
+// hunterLevelPick is the best item of a kind a hunter of at least level can
+// use.
+type hunterLevelPick[T any] struct {
+	level int32
+	pick  T
+}
+
+// hunterAmmo is the best ammo by required level (Wowhead Forever item
+// tooltips): Sharp Arrow 3.5 DPS (10), Razor Arrow 7.5 (25), Jagged Arrow 13
+// (40), Mithril Gyro-Shot 15 (44), Ice Threaded Arrow 16.5 (51), Thorium
+// Headed Arrow 17.5 (52). The engine does not match ammo to the bow or gun,
+// so the Gyro-Shot stands for a bow's Jagged Arrow from 44 to 50.
+var hunterAmmo = []hunterLevelPick[proto.Hunter_Options_Ammo]{
+	{52, proto.Hunter_Options_ThoriumHeadedArrow},
+	{51, proto.Hunter_Options_IceThreadedArrow},
+	{44, proto.Hunter_Options_MithrilGyroShot},
+	{40, proto.Hunter_Options_JaggedArrow},
+	{25, proto.Hunter_Options_RazorArrow},
+	{10, proto.Hunter_Options_SharpArrow},
+}
+
+// hunterQuiver is the best quiver by required level: Light Quiver 10% (no
+// level), Heavy Quiver 12% (30), Quickdraw Quiver 13% (40), Gnoll Skin
+// Bandolier 15% (55).
+var hunterQuiver = []hunterLevelPick[proto.Hunter_Options_QuiverBonus]{
+	{55, proto.Hunter_Options_Speed15},
+	{40, proto.Hunter_Options_Speed13},
+	{30, proto.Hunter_Options_Speed12},
+	{1, proto.Hunter_Options_Speed10},
+}
+
+// bestHunterPick is the first pick, highest level first, a hunter of level
+// can use, or fallback.
+func bestHunterPick[T any](picks []hunterLevelPick[T], level int32, fallback T) T {
+	for _, p := range picks {
+		if level >= p.level {
+			return p.pick
+		}
+	}
+	return fallback
+}
+
+func hunterAmmoAt(level int32) proto.Hunter_Options_Ammo {
+	return bestHunterPick(hunterAmmo, level, proto.Hunter_Options_AmmoNone)
+}
+
+func hunterQuiverAt(level int32) proto.Hunter_Options_QuiverBonus {
+	return bestHunterPick(hunterQuiver, level, proto.Hunter_Options_Speed10)
 }
 
 // hunterTakesLoneWolf reads the Lone Wolf point off a hunter talent string.
