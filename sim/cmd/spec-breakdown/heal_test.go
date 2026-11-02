@@ -86,3 +86,27 @@ func TestSplitManaFlowsOfAnEmptyRunIsEmpty(t *testing.T) {
 		t.Errorf("income %v and spend %v, want both empty", income, spend)
 	}
 }
+
+// The crit table shows each heal's direct crit rate and tick crit rate, so
+// an auditor reads which table a heal rolls and whether its ticks crit.
+func TestWriteHealCritsShowsDirectAndTickCritRates(t *testing.T) {
+	player := &proto.UnitMetrics{Actions: []*proto.ActionMetrics{
+		{Id: spellID(2054, 0), Targets: []*proto.TargetedActionMetrics{{Casts: 8, Hits: 6, Crits: 2, Healing: 800}}},
+		{Id: spellID(139, 0), Targets: []*proto.TargetedActionMetrics{{Casts: 2, Ticks: 9, CritTicks: 1, Healing: 200}}},
+		{Id: spellID(14751, 0), Targets: []*proto.TargetedActionMetrics{{Casts: 4}}},
+	}}
+	names := map[int32]string{2054: "Heal", 139: "Renew", 14751: "Inner Focus"}
+	var b strings.Builder
+
+	writeHealCrits(&b, player, names, healTestIterations)
+
+	out := b.String()
+	for _, want := range []string{"| Heal (2054) | 4.0 | 25.0 | 0.0 | - |", "| Renew (139) | 0.0 | - | 5.0 | 10.0 |"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("table lacks %q:\n%s", want, out)
+		}
+	}
+	if strings.Contains(out, "Inner Focus") {
+		t.Errorf("an action that healed nothing is listed:\n%s", out)
+	}
+}

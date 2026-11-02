@@ -125,6 +125,7 @@ func healMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *p
 	writeManaTable(&b, "Mana income", "per fight", "per second", income, secs, false)
 	writeManaTable(&b, "Mana spend", "per fight", "per second", spend, secs, true)
 	writeFreeCasts(&b, p, names, iters, spend)
+	writeHealCrits(&b, p, names, iters)
 	return b.String()
 }
 
@@ -208,4 +209,36 @@ func writeFreeCasts(b *strings.Builder, p *proto.UnitMetrics, names map[int32]st
 		}
 		fmt.Fprintf(b, "| %s | %.1f | %.0f |\n", name, casts/iters, healed/iters)
 	}
+}
+
+// writeHealCrits lists every action that healed with its direct landings
+// and ticks per fight and the share of each that crit, so a reader can see
+// which table a heal rolls and whether its ticks crit. The engine counts a
+// landing as a hit or a crit, never both, and a tick likewise.
+func writeHealCrits(b *strings.Builder, p *proto.UnitMetrics, names map[int32]string, iters float64) {
+	b.WriteString("\n| Heal crits | landed per fight | crit % | ticks per fight | tick crit % |\n|---|---|---|---|---|\n")
+	for _, a := range p.GetActions() {
+		var healing, hits, crits, ticks, critTicks float64
+		for _, t := range a.GetTargets() {
+			healing += t.GetHealing()
+			hits += float64(t.GetHits())
+			crits += float64(t.GetCrits())
+			ticks += float64(t.GetTicks())
+			critTicks += float64(t.GetCritTicks())
+		}
+		if healing == 0 {
+			continue
+		}
+		landed, ticked := hits+crits, ticks+critTicks
+		fmt.Fprintf(b, "| %s | %.1f | %s | %.1f | %s |\n", actionName(a.GetId(), names), landed/iters, percentOf(crits, landed), ticked/iters, percentOf(critTicks, ticked))
+	}
+}
+
+// percentOf is part as a percentage of whole to one decimal, or "-" when
+// there is no whole.
+func percentOf(part, whole float64) string {
+	if whole == 0 {
+		return "-"
+	}
+	return fmt.Sprintf("%.1f", 100*part/whole)
 }
