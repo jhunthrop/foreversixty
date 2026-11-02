@@ -593,8 +593,8 @@ func TestPvpRankExceedsCap(t *testing.T) {
 		src  itemSource
 		want bool
 	}{
-		{"pvp rank 10 (the cap itself) does not exceed it", itemSource{Kind: "pvp", Rank: 10}, false},
-		{"pvp rank 11 exceeds it", itemSource{Kind: "pvp", Rank: 11}, true},
+		{"client rank 14 (in-game rank 10, the cap itself) does not exceed it", itemSource{Kind: "pvp", Rank: 14}, false},
+		{"client rank 15 (in-game rank 11) exceeds it", itemSource{Kind: "pvp", Rank: 15}, true},
 		{"pvp rank 18 exceeds it", itemSource{Kind: "pvp", Rank: 18}, true},
 		{"a non-pvp source with no inherited rank is never capped", itemSource{Kind: "quest", Rank: 0}, false},
 		{"a vendor row that inherited a pvp rank IS capped, same as the pvp source itself", itemSource{Kind: "vendor", Rank: 18}, true},
@@ -617,14 +617,14 @@ func TestPvpSourceLabel(t *testing.T) {
 		title, faction string
 		want           string
 	}{
-		{"a known rank/title", 9, "Master Sergeant", "alliance", "PvP rank 9 · Master Sergeant · Alliance"},
-		{"a horde rank/title", 18, "High Warlord", "horde", "PvP rank 18 · High Warlord · Horde"},
-		{"no title (rank outside the known ladder) falls back to rank and faction", 4, "", "alliance", "PvP rank 4 · Alliance"},
+		{"a known rank/title (client 8 is rank 4)", 8, "Master Sergeant", "alliance", "PvP rank 4 · Master Sergeant · Alliance"},
+		{"a horde rank/title (client 18 is rank 14)", 18, "High Warlord", "horde", "PvP rank 14 · High Warlord · Horde"},
+		{"no title falls back to rank and faction", 9, "", "alliance", "PvP rank 5 · Alliance"},
 		// Round 8: Forever's PvP rewards need no rank (owner ruling 2026-11-01),
 		// and loot.json may carry a pvp source without one.
 		{"no rank names a PvP reward, never rank 0", 0, "", "horde", "PvP reward · Horde"},
 		{"no rank and no faction", 0, "", "", "PvP reward"},
-		{"a rank with no faction has no trailing separator", 9, "Sergeant Major", "", "PvP rank 9 · Sergeant Major"},
+		{"a rank with no faction has no trailing separator", 9, "Sergeant Major", "", "PvP rank 5 · Sergeant Major"},
 	}
 	for _, tc := range cases {
 		if got := pvpSourceLabel(tc.rank, tc.title, tc.faction); got != tc.want {

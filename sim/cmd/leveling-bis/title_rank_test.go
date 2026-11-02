@@ -15,7 +15,7 @@ func TestAnUnrankedPvpSourceCarryingATitleRankKeepsTheRankCap(t *testing.T) {
 	dir := t.TempDir()
 	lootJSON := `{
 		"sources": [
-			{"id": "pvp:reward:horde", "kind": "pvp", "name": "PvP reward", "faction": "horde", "title_rank": 12, "items": [3001]},
+			{"id": "pvp:reward:horde", "kind": "pvp", "name": "PvP reward", "faction": "horde", "title_rank": 16, "items": [3001]},
 			{"id": "vendor:12792", "kind": "vendor", "name": "Lady Palanseer", "npc_id": 12792, "faction": "horde", "items": [3001]},
 			{"id": "pvp:reward:horde-low", "kind": "pvp", "name": "PvP reward", "faction": "horde", "title_rank": 8, "items": [3002]}
 		],
@@ -33,7 +33,7 @@ func TestAnUnrankedPvpSourceCarryingATitleRankKeepsTheRankCap(t *testing.T) {
 	}
 	for _, s := range idx[3001] {
 		if !pvpRankExceedsCap(s) {
-			t.Errorf("%s source %+v: pvpRankExceedsCap = false, want true (title_rank 12 is above the cap)", s.Kind, s)
+			t.Errorf("%s source %+v: pvpRankExceedsCap = false, want true (title_rank 16, General, rank 12, is above the cap)", s.Kind, s)
 		}
 	}
 	pool := excludeAbovePvpRankCap([]scored{
@@ -45,7 +45,7 @@ func TestAnUnrankedPvpSourceCarryingATitleRankKeepsTheRankCap(t *testing.T) {
 	}
 	for _, s := range idx[3002] {
 		if pvpRankExceedsCap(s) {
-			t.Errorf("idx[3002] %+v: title_rank 8 is within the cap", s)
+			t.Errorf("idx[3002] %+v: title_rank 8 (rank 4) is within the cap", s)
 		}
 	}
 	if got, want := idx[3002][0].Label, "PvP reward · Horde"; got != want {
