@@ -7,7 +7,7 @@
 // id through buff-names.ts's own `buffLabel`, which already humanises an id the build's
 // table has no row for rather than printing it bare (the raid-leader review's own finding).
 import { buffLabel, type BuffNames } from './buff-names';
-import { BUFF_GROUPS, rowsIn, type BuffGroupId } from './buffs';
+import { BUFF_GROUPS, IMPROVED_SUFFIX, rowsIn, type BuffGroupId } from './buffs';
 import { presetBuffs, presetConsumables, type BuffPresetId } from './settings';
 
 export interface PresetSummaryRow {
@@ -35,8 +35,12 @@ export function presetSummary(
   const applied = new Set([...presetBuffs(preset, spec, level), ...presetConsumables(preset, spec, level)]);
   return BUFF_GROUPS.map((group) => ({
     group,
-    rows: rowsIn(group)
-      .filter((row) => applied.has(row.id))
-      .map((row) => ({ id: row.id, label: buffLabel(row.id, names) })),
+    // A graded row is applied in its plain or its improved form (the raid's Mana Spring is
+    // the Restoration shaman's improved totem); the summary names the form the preset sends.
+    rows: rowsIn(group).flatMap((row) =>
+      [row.id, `${row.id}${IMPROVED_SUFFIX}`]
+        .filter((id) => applied.has(id))
+        .map((id) => ({ id, label: buffLabel(id, names) })),
+    ),
   })).filter((entry) => entry.rows.length > 0);
 }

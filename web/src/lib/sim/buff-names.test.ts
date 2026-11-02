@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY_BUFF_NAMES, buffIcon, buffLabel, imbueLabel } from './buff-names';
+import { EMPTY_BUFF_NAMES, buffIcon, buffLabel, imbueLabel, type BuffNames } from './buff-names';
 
 const names = {
   entries: {
@@ -54,5 +54,26 @@ describe('imbueLabel', () => {
   it("is the build's item name with no hand, else the humanised item half", () => {
     expect(imbueLabel('main_hand_imbue:shadow_oil', names)).toBe('Shadow Oil');
     expect(imbueLabel('off_hand_stone:frost_oil', EMPTY_BUFF_NAMES)).toBe('Frost oil');
+  });
+});
+
+// Round 11: the raid preset carries `mana_spring_totem:improved` (the Restoration shaman's
+// totem). The table names the plain id only, so the improved form read "Mana spring totem:
+// Improved" with no icon in the preset summary.
+describe('an improved buff', () => {
+  const improvedNames: BuffNames = {
+    entries: { mana_spring_totem: { name: 'Mana Spring Totem', icon: 'spell_nature_manaregentotem' } },
+  };
+
+  it('is named by its own buff and the grade', () => {
+    expect(buffLabel('mana_spring_totem:improved', improvedNames)).toBe('Mana Spring Totem (Improved)');
+    expect(buffLabel('mana_spring_totem:improved', null)).toBe('Mana spring totem (Improved)');
+  });
+
+  it("draws its own buff's icon", () => {
+    expect(buffIcon('1.60.1.70707', 'mana_spring_totem:improved', improvedNames)).toBe(
+      buffIcon('1.60.1.70707', 'mana_spring_totem', improvedNames),
+    );
+    expect(buffIcon('1.60.1.70707', 'mana_spring_totem', improvedNames)).not.toBeNull();
   });
 });

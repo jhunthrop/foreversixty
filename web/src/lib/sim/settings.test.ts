@@ -251,7 +251,8 @@ describe('the Raid-buffed preset', () => {
       ...selectedIn(selection, 'player-buffs'),
       ...selectedIn(selection, 'debuffs'),
     ];
-    expect(new Set(grouped)).toEqual(new Set(RAID_BUFFS));
+    // selectedIn names a graded row by its plain id; the raid's Mana Spring is improved.
+    expect(new Set(grouped)).toEqual(new Set(RAID_BUFFS.map((id) => id.replace(/:improved$/, ''))));
   });
 });
 
