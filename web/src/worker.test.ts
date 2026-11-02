@@ -1004,3 +1004,34 @@ describe('/sim/<sim_id>', () => {
     expect(assets.fetch).toHaveBeenCalledTimes(3);
   });
 });
+
+describe('/_sim/<artifact>/sim.wasm.gz', () => {
+  it('hands the engine module to the brotli negotiation', async () => {
+    const assets = {
+      fetch: vi.fn<AssetFetch>(
+        async (request) =>
+          new Response(new Uint8Array([1, 2, 3]), {
+            headers: { etag: `"${new URL(request.url).pathname}"` },
+          }),
+      ),
+    };
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/_sim/4d3129cae-cc1844615a14/sim.wasm.gz', {
+        headers: { 'accept-encoding': 'gzip, br' },
+      }),
+      { API_BASE_URL, ASSETS: assets },
+    );
+    expect(response.headers.get('content-encoding')).toBe('br');
+    expect(response.headers.get('etag')).toBe('"/_sim/4d3129cae-cc1844615a14/sim.wasm.br"');
+  });
+
+  it('leaves sim.js to the static assets', async () => {
+    const env = envWith('glue');
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/_sim/4d3129cae-cc1844615a14/sim.js'),
+      env,
+    );
+    expect(await response.text()).toBe('glue');
+    expect(response.headers.get('content-encoding')).toBeNull();
+  });
+});

@@ -2,9 +2,9 @@ name: sim
 on:
   push:
     branches: [main]
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-gzip.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-compress.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   pull_request:
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-gzip.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-compress.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
@@ -149,9 +149,12 @@ jobs:
       # measurement, so a regression fails here rather than quietly
       # costing every visitor a second.
       - name: wasm size budget
-        # The same script and compression `make artifacts` gates on: the budget measures
-        # the sim.wasm.gz the site deploys (tools/wasm-gzip.sh, pigz -11).
-        run: ./tools/wasm-gzip.sh artifacts/sim.wasm artifacts/sim.wasm.gz "$(sed -n 's/^WASM_BUDGET_MB = //p' Makefile)"
+        # The same script and compression `make artifacts` gates on: each budget measures
+        # a file the site deploys (tools/wasm-compress.sh: sim.wasm.gz with pigz -11, and
+        # sim.wasm.br, brotli -q 11, the bytes production sends a browser that takes br).
+        run: |
+          ./tools/wasm-compress.sh artifacts/sim.wasm artifacts/sim.wasm.gz "$(sed -n 's/^WASM_BUDGET_MB = //p' Makefile)"
+          ./tools/wasm-compress.sh artifacts/sim.wasm artifacts/sim.wasm.br "$(sed -n 's/^WASM_BR_BUDGET_MB = //p' Makefile)"
       # Pinned, because the smoke test below is the only end-to-end gate
       # on the browser artifact and a runner-image bump would otherwise
       # silently change the host it is proved against.
