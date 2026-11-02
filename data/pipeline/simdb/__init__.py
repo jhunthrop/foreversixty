@@ -55,6 +55,7 @@ from pipeline.simdb.equip import (
     equip_bonuses,
     feral_form_spells,
     index_spell_effects,
+    item_crit_bonuses,
     item_effect_spells,
 )
 from pipeline.simdb.equip_fill import with_wowhead_equip_stats
@@ -305,6 +306,12 @@ def build_sim_database(
             set_names,
             fork_columns,
             classicdb_untracked,
+            client_crit=item_crit_bonuses(
+                item_effect_rows,
+                link_rows,
+                effects_by_spell,
+                {row.id for row in classicdb_supplement},
+            ),
         )
         sources.update({item.id: "classic-db" for item in classicdb_sim_items})
         items = sorted((*items, *classicdb_sim_items), key=lambda row: row.id)
