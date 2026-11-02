@@ -5,6 +5,7 @@ import {
   BUFF_GROUPS,
   CATALOGUE,
   IMPROVED_SUFFIX,
+  INERT_BUFFS,
   buildCatalogue,
   gradeOf,
   listFor,
@@ -88,6 +89,29 @@ describe('the catalogue', () => {
   it('names every group', () => {
     for (const group of BUFF_GROUPS) {
       expect(simCopy.buffGroupLabel[group], group).toBeTruthy();
+    }
+  });
+
+  // Round 8 D3 (engine a56f0d992, in pin 40021374a): Forever made four debuffs the caster's
+  // own, so the raid flags apply nothing; round 9 (engine 35fa13a5a): Forever deleted Curse of
+  // Shadow. The request still accepts the ids (a saved sim that named one keeps running); the
+  // panel stops offering a box that does nothing.
+  it('offers none of the debuffs the engine ignores', () => {
+    const debuffs = rowsIn('debuffs').map((row) => row.id);
+    expect(debuffs).toContain('sunder_armor');
+    for (const inert of [
+      'shadow_weaving',
+      'improved_scorch',
+      'improved_shadow_bolt',
+      'stormstrike',
+      'curse_of_shadow',
+    ]) {
+      expect(debuffs, inert).not.toContain(inert);
+      expect(INERT_BUFFS, inert).toContain(inert);
+      expect(
+        CATALOGUE.some((row) => row.id === inert),
+        inert,
+      ).toBe(true);
     }
   });
 
