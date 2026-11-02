@@ -435,7 +435,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		return err
 	}
 
-	factions := []struct{ name, race string }{
+	factions := []factionRace{
 		{"alliance", guide.AllianceRace},
 		{"horde", guide.HordeRace},
 	}
@@ -521,10 +521,6 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 					}
 					first := pickBand(items, lootIdx, specInfo, band, factions[0].name, w, wandCredit, weaponSubclasses, requiresDagger)
 					return buildGear(clearTrinketPlaceholders(first.picks))
-				},
-				func(gear []api.GearSlot) (float64, float64, error) {
-					ch := bandCharacter("weights-check", factions[0].race, specInfo.ClassSlug, specInfo.Spec, band, engineTalents, gear)
-					return runner.RunPlainDPSWithError(plainRequest(specInfo, ch, guardIterations(specInfo), verifySeed))
 				})
 			if err != nil {
 				return err
@@ -576,150 +572,55 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			}
 			log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 
-			work := make(map[string]*factionWork, len(factions))
-			for _, f := range factions {
-				// A wand is worth what the band's own set shoots with it
-				// (wand_credit.go): the first pass credits a whole fight of
-				// shooting so the set wears a wand, a sim of that set
-				// measures the credit, and the band is picked again at it.
-				wandCredit := 0.0
-				if castsShoot {
-					wandCredit = fullWandScorePerDPS(bandReferenceDPSPerPoint)
+			// Round 8: a band ranked by a geared sweep is ranked by the
+			// ladder sweep too, start to finish, and each faction publishes
+			// the better verified set (band_pipeline.go chooseRun).
+			ranker := bandRanker{
+				runner: runner, spec: specInfo, pass: pass.name, band: band, talents: engineTalents,
+				items: items, lootIdx: lootIdx, weaponSubclasses: weaponSubclasses,
+				requiresDagger: requiresDagger, castsShoot: castsShoot, setCat: setCat, factions: factions,
+			}
+			variants := []rankingWeights{{
+				label: "geared", request: wreq, result: wresult, weights: weights,
+				referenceDPSPerPoint: bandReferenceDPSPerPoint, reason: weightsReason, lowConfidence: weightsLowConfidence,
+			}}
+			if measured.ladder == nil {
+				variants[0].label = "ladder"
+			} else {
+				l := measured.ladder
+				variants = append(variants, rankingWeights{
+					label: "ladder", request: l.request, result: l.result, weights: effectiveWeights(l.result),
+					referenceDPSPerPoint: l.referenceDPSPerPoint, reason: l.reason, lowConfidence: l.lowConfidence,
+				})
+			}
+			rankStart := time.Now()
+			runs := make([]map[string]*factionRun, len(variants))
+			for i, v := range variants {
+				if runs[i], err = ranker.rank(v); err != nil {
+					return err
 				}
-				first := pickBand(items, lootIdx, specInfo, band, f.name, weights, wandCredit, weaponSubclasses, requiresDagger)
-				if castsShoot {
-					credit, err := measureWandCredit(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, first.picks, bandReferenceDPSPerPoint)
-					if err != nil {
+			}
+			log.Printf("leveling-bis: %s band %d %s: ranked under %d weight set(s) in %.1fs", spec, band, pass.name, len(variants), time.Since(rankStart).Seconds())
+
+			for _, f := range factions {
+				chosen := 0
+				if len(runs) > 1 {
+					finals := make([]map[string]slotPick, len(runs))
+					for i := range runs {
+						finals[i] = runs[i][f.name].verified.picks
+					}
+					var scores []float64
+					if chosen, scores, err = chooseRun(runner, specInfo, f.race, band, engineTalents, finals); err != nil {
 						return fmt.Errorf("band %d %s: %w", band, f.name, err)
 					}
-					log.Printf("leveling-bis: %s band %d %s %s: wand credit %.4f score per wand DPS (whole fight %.4f)", spec, band, f.name, pass.name, credit, fullWandScorePerDPS(bandReferenceDPSPerPoint))
-					first = pickBand(items, lootIdx, specInfo, band, f.name, weights, credit, weaponSubclasses, requiresDagger)
+					log.Printf("leveling-bis: %s band %d %s %s: publishing the %s weights' set (geared %.1f, ladder %.1f)", spec, band, f.name, pass.name, variants[chosen].label, scores[0], scores[1])
 				}
-				pool, bySlot, pickBySlot, picks := first.pool, first.bySlot, first.pickBySlot, first.picks
-
-				// Trinkets carry no scorable stats (score.go's own doc), so
-				// pick()'s score-based choice for trinket1/trinket2 is
-				// really just "lowest item id" - replace it with an
-				// engine-verified ranking of the top item-level candidates
-				// (trinkets.go; this lane's brief). trinket1 first so
-				// trinket2's own ranking sees trinket1's final pick, not
-				// its score-based placeholder.
-				//
-				// This lane's brief (bis-ranker-integrity-6), item 5: the
-				// comment above only ever protected trinket2's OWN view of
-				// trinket1 - it never noticed that trinket1's OWN
-				// rankTrinketSlot call (running first) still reads
-				// picks["trinket2"] as its own pair-mate to exclude, and at
-				// that point picks["trinket2"] is STILL pick()'s bare
-				// score()-based placeholder, not a real decision -
-				// clearTrinketPlaceholders' own doc (pick.go) has the full
-				// repro and reasoning.
-				picks = clearTrinketPlaceholders(picks)
-				trinketStart := time.Now()
-				for _, slot := range []string{"trinket1", "trinket2"} {
-					var notes []string
-					picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot, slot, weights)
-					for _, n := range notes {
-						log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
-					}
-				}
-				trinketSeconds := time.Since(trinketStart).Seconds()
-				work[f.name] = &factionWork{faction: f.name, race: f.race, pool: pool, bySlot: bySlot, pickBySlot: pickBySlot, picks: picks, trinketSeconds: trinketSeconds}
-			}
-
-			// This lane's brief (bis-ranker-integrity-15, twelfth sweep): both
-			// factions' own rankTrinketSlot tournaments just above are now
-			// finished for this band - reconcile trinket1/trinket2 across
-			// them before either faction's picks continue into
-			// rankSlotWithEffects/trySetCompletion/verifyBand below, so a
-			// faction-neutral item's own published verdict never differs
-			// between Alliance and Horde for a reason that is really just
-			// one side's own sim noise landing on the wrong side of a shared
-			// bar (druid-feral band 50, druid-balance band 50 - this lane's
-			// own repro; faction_trinkets.go's own doc has the full design).
-			allianceWork, hordeWork := work["alliance"], work["horde"]
-			var reconcileNotes []string
-			allianceWork.picks, hordeWork.picks, reconcileNotes = reconcileFactionTrinkets(
-				runner, specInfo, specInfo.ClassSlug, band, engineTalents, lootIdx,
-				factionTrinketInputs{Faction: "alliance", Race: allianceWork.race, BySlot: allianceWork.bySlot}, allianceWork.picks,
-				factionTrinketInputs{Faction: "horde", Race: hordeWork.race, BySlot: hordeWork.bySlot}, hordeWork.picks,
-			)
-			for _, n := range reconcileNotes {
-				log.Printf("leveling-bis: %s band %d faction reconcile: %s", spec, band, n)
-			}
-
-			for _, f := range factions {
-				fw := work[f.name]
-				pool := fw.pool
-				bySlot := fw.bySlot
-				pickBySlot := fw.pickBySlot
-				picks := fw.picks
-				trinketSeconds := fw.trinketSeconds
-
-				// Every other slot with an engine-implemented effect
-				// candidate (rank.go; this lane's brief, item 3): score()
-				// cannot see a proc at all, so a slot score() would
-				// otherwise decide on stats alone gets a real verify pass
-				// against its own implemented-effect candidates.
-				effectStart := time.Now()
-				for _, slot := range slotsNeedingEffectVerification(pickBySlot) {
-					var notes []string
-					picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot, slot)
-					for _, n := range notes {
-						log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
-					}
-				}
-
-				effectSeconds := time.Since(effectStart).Seconds()
-
-				// Re-assert pick()'s own two-hand/off-hand rule: the effect
-				// pass just above can replace main_hand's pick with a
-				// two-hander without knowing off_hand exists (see pick.go's
-				// enforceTwoHandOffHandInvariant doc - this lane's report
-				// names every spec it found the gap on).
-				// The reverse too: a one-hander that replaced a two-hander
-				// gets the off hand the two-hander had emptied.
-				picks = fillEmptyOffHand(specInfo.Spec, pickBySlot, enforceTwoHandOffHandInvariant(picks))
-
+				run, v := runs[chosen][f.name], variants[chosen]
+				wreq, wresult, bandReferenceDPSPerPoint, weightsReason, weightsLowConfidence := v.request, v.result, v.referenceDPSPerPoint, v.reason, v.lowConfidence
+				pool, bySlot, pickBySlot := run.pool, run.bySlot, run.pickBySlot
+				trinketSeconds, effectSeconds := run.trinketSeconds, run.effectSeconds
+				verified, considered, heldUnconfirmed := run.verified, run.considered, run.heldUnconfirmed
 				verifyStart := time.Now()
-				verified, err := verifyAndSwap(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, picks, pickBySlot)
-				if err != nil {
-					return fmt.Errorf("band %d %s: %w", band, f.name, err)
-				}
-				// Every set this band passes through is one the guard
-				// (keepVerifyBest, incumbent.go) may publish instead.
-				considered := []consideredSet{
-					{Label: consideredBeforeVerify, Picks: picks},
-					{Label: consideredBeforeSets, Picks: verified.picks},
-				}
-				// Set completion runs on the swapped set, so a set trial must
-				// beat the picks the page would otherwise publish (sets.go).
-				var setNotes []string
-				verified, setNotes, err = completeSets(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, pickBySlot, setCat)
-				if err != nil {
-					return fmt.Errorf("band %d %s: %w", band, f.name, err)
-				}
-				for _, n := range setNotes {
-					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
-				}
-				considered = append(considered, consideredSet{Label: consideredBeforeConfirmed, Picks: verified.picks})
-				var heldUnconfirmed int
-				verified, heldUnconfirmed, err = preferConfirmedStats(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, pickBySlot)
-				if err != nil {
-					return fmt.Errorf("band %d %s: %w", band, f.name, err)
-				}
-				if measured.ladder != nil {
-					ladderCredit := 0.0
-					if castsShoot {
-						ladderCredit = fullWandScorePerDPS(measured.ladder.referenceDPSPerPoint)
-					}
-					ladderPass := pickBand(items, lootIdx, specInfo, band, f.name, effectiveWeights(measured.ladder.result), ladderCredit, weaponSubclasses, requiresDagger)
-					ladderSet, err := ladderWeightsSet(runner, specInfo, f.race, band, engineTalents, ladderPass, verified.picks, setCat)
-					if err != nil {
-						return fmt.Errorf("band %d %s: %w", band, f.name, err)
-					}
-					considered = append(considered, consideredSet{Label: consideredLadderWeights, Picks: ladderSet})
-				}
 				incumbentGear := incumbents[incumbentKey{Band: band, Preset: pass.name, Faction: f.name}]
 				if incumbent, ok := incumbentPicks(incumbentGear, verified.picks, pickBySlot); ok {
 					considered = append(considered, consideredSet{Label: consideredIncumbent, Picks: incumbent})
@@ -738,7 +639,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				for _, e := range verifyErrors {
 					log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
 				}
-				verifySeconds := time.Since(verifyStart).Seconds()
+				verifySeconds := run.verifySeconds + time.Since(verifyStart).Seconds()
 
 				report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, priorPicks[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage, bySlot, bandReferenceDPSPerPoint, weightsReason)
 				// This lane's brief (ranker-weights-anchor), item 3:

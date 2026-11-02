@@ -121,45 +121,10 @@ func gearedWeightsFixture() (*fakeEngine, firstPassGear) {
 	return fake, firstPass
 }
 
-func scoreByHead(scores map[int]float64) setMeasure {
-	return func(gear []api.GearSlot) (float64, float64, error) {
-		for _, g := range gear {
-			if g.Slot == "head" {
-				return scores[g.ItemID], 0.5, nil
-			}
-		}
-		return 0, 0.5, nil
-	}
-}
-
-func TestGearedBandWeightsKeepsTheLadderSweepWhenItsSetMeasuresBetter(t *testing.T) {
-	fake, firstPass := gearedWeightsFixture()
-	ladder := api.CharacterSpec{Level: 30, Gear: []api.GearSlot{{Slot: "ranged", ItemID: 9}}}
-	got, err := gearedBandWeights(fake, specInfo{Spec: "hunter-marksmanship", ReferenceStat: "ranged_attack_power"}, 30, 5, "", ladder, firstPass, scoreByHead(map[int]float64{1: 110, 2: 100}))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if w := got.result["agility"].Weight; w != 1.8 {
-		t.Errorf("agility = %v, want the ladder sweep's 1.8 (its set measures 110 against 100)", w)
-	}
-}
-
-func TestGearedBandWeightsTakesTheGearedSweepWhenItsSetIsNoWorse(t *testing.T) {
-	fake, firstPass := gearedWeightsFixture()
-	ladder := api.CharacterSpec{Level: 30, Gear: []api.GearSlot{{Slot: "ranged", ItemID: 9}}}
-	got, err := gearedBandWeights(fake, specInfo{Spec: "hunter-marksmanship", ReferenceStat: "ranged_attack_power"}, 30, 5, "", ladder, firstPass, scoreByHead(map[int]float64{1: 100.2, 2: 100}))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if w := got.result["agility"].Weight; w != 0.9 {
-		t.Errorf("agility = %v, want the geared sweep's 0.9 (the ladder set is ahead by less than its error)", w)
-	}
-}
-
 func TestGearedBandWeightsHandsBackTheLadderSweepItReplaced(t *testing.T) {
 	fake, firstPass := gearedWeightsFixture()
 	ladder := api.CharacterSpec{Level: 30, Gear: []api.GearSlot{{Slot: "ranged", ItemID: 9}}}
-	got, err := gearedBandWeights(fake, specInfo{Spec: "hunter-marksmanship", ReferenceStat: "ranged_attack_power"}, 30, 5, "", ladder, firstPass, scoreByHead(map[int]float64{1: 100, 2: 100}))
+	got, err := gearedBandWeights(fake, specInfo{Spec: "hunter-marksmanship", ReferenceStat: "ranged_attack_power"}, 30, 5, "", ladder, firstPass)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -168,34 +133,32 @@ func TestGearedBandWeightsHandsBackTheLadderSweepItReplaced(t *testing.T) {
 	}
 }
 
-func TestLadderWeightsContenderWearsTheFinalSetsTrinkets(t *testing.T) {
-	item := func(id int) *scored { return &scored{candidate: candidate{ID: id}} }
-	ladderPicks := map[string]slotPick{"head": {Item: item(1)}, "trinket1": {Item: item(90)}}
-	final := map[string]slotPick{"head": {Item: item(2)}, "trinket1": {Item: item(91)}, "trinket2": {Item: item(92)}}
-	got := ladderWeightsContender(ladderPicks, final)
-	if got["head"].Item.ID != 1 || got["trinket1"].Item.ID != 91 || got["trinket2"].Item.ID != 92 {
-		t.Errorf("contender = head %d, trinkets %d/%d; want the ladder head 1 and the final trinkets 91/92", got["head"].Item.ID, got["trinket1"].Item.ID, got["trinket2"].Item.ID)
+// chooseRun: a faction publishes the run whose set measures higher. Both
+// sets are simmed at the same seed and iteration count, so their
+// difference carries far less noise than either error alone; a tie keeps the
+// first run (the geared sweep's).
+func TestChooseRunPublishesTheLadderSetWhenItMeasuresBetter(t *testing.T) {
+	head := func(id int) map[string]slotPick {
+		return map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: id}}}}
 	}
-	if ladderPicks["trinket1"].Item.ID != 90 {
-		t.Error("ladderWeightsContender changed its input")
+	cases := []struct {
+		name   string
+		ladder float64
+		want   int
+	}{
+		{"the ladder set is better beyond error", 110, 1},
+		{"the ladder set is ahead within either error", 100.3, 1},
+		{"a tie keeps the geared set", 100, 0},
+		{"the ladder set is worse", 90, 0},
 	}
-}
-
-// The guard's ladder-weights contender goes through the verify swaps the
-// band's own set does: a runner-up that measures better is promoted.
-func TestLadderWeightsSetRunsTheVerifySwaps(t *testing.T) {
-	one := scored{candidate: candidate{ID: 1, Name: "One", Slots: []string{"head"}}, Score: 2}
-	two := scored{candidate: candidate{ID: 2, Name: "Two", Slots: []string{"head"}}, Score: 1}
-	pass := bandPicks{
-		picks:      map[string]slotPick{"head": {Item: &one, RunnerUp: &two}},
-		pickBySlot: map[string][]scored{"head": {one, two}},
-	}
-	fake := &fakeEngine{DefaultDPS: 500, DPSByGear: map[string]float64{"head=2;": 600}, DefaultStdErr: 0.1}
-	got, err := ladderWeightsSet(fake, specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}, "dwarf", 30, "", pass, map[string]slotPick{}, setCatalog{})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got["head"].Item == nil || got["head"].Item.ID != 2 {
-		t.Fatalf("head = %+v, want the runner-up (id 2) the verify swap promotes", got["head"].Item)
+	for _, tc := range cases {
+		fake := &fakeEngine{DPSByGear: map[string]float64{"head=1;": 100, "head=2;": tc.ladder}, DefaultStdErr: 0.5}
+		got, scores, err := chooseRun(fake, specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}, "dwarf", 30, "", []map[string]slotPick{head(1), head(2)})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.want {
+			t.Errorf("%s: chooseRun = %d (scores %v), want %d", tc.name, got, scores, tc.want)
+		}
 	}
 }
