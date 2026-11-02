@@ -47,6 +47,19 @@ describe('tierNotes', () => {
     );
   });
 
+  it('says the healer order has no level-60 log behind it yet (owner ruling, round 8)', () => {
+    const first = flat(tierNotes({ ...CTX, role: 'healer', healSeconds: 300 })[0]!);
+    expect(first).toContain(
+      'No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist.',
+    );
+    for (const role of ['dps', 'tank'] as const) {
+      const text = tierNotes({ ...CTX, role, bossSwingSeconds: 2 })
+        .map(flat)
+        .join(' ');
+      expect(text).not.toContain('level-60 log');
+    }
+  });
+
   it('fails fast when a profile figure is missing', () => {
     expect(() => tierNotes({ ...CTX, role: 'healer' })).toThrow(/heal profile duration/);
     expect(() => tierNotes({ ...CTX, role: 'tank' })).toThrow(/boss swing speed/);
