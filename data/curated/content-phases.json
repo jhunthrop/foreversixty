@@ -368,8 +368,8 @@
       "confidence": "confirmed",
       "why": "Owner ruling, sim-accuracy round 9 (2026-11-02): battlegrounds and PvP ranks run from launch (Blizzard's 'How PvP Progression in Forever Works', 7 October, ranks battleground honor across every original map, Alterac Valley included). The gate stays so every battleground quartermaster and the Alterac Valley summons and quests keep one named key; repStandingObtainable still holds revered and exalted to level 60.",
       "factions": [
-        {"id": 889, "name": "Silverwing Sentinels"},
-        {"id": 890, "name": "Warsong Outriders"},
+        {"id": 889, "name": "Warsong Outriders"},
+        {"id": 890, "name": "Silverwing Sentinels"},
         {"id": 509, "name": "The League of Arathor"},
         {"id": 510, "name": "The Defilers"},
         {"id": 729, "name": "Frostwolf Clan"},

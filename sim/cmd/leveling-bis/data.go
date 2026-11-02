@@ -824,8 +824,9 @@ func trashCreatures(src lootSource, id int) []string {
 }
 
 // repSide names the reputations only one side can earn, by the client's
-// faction id as this build's loot.json carries it: Warsong Outriders 890 /
-// Silverwing Sentinels 889, The Defilers 510 / The League of Arathor 509,
+// faction id, which loot.json keeps since round 10 (items lane S 34e994332;
+// Faction 1.60.1.70707): Warsong Outriders 889 / Silverwing Sentinels 890,
+// The Defilers 510 / The League of Arathor 509,
 // Frostwolf Clan 729 / Stormpike Guard 730. Outrunner's Bow (a Warsong
 // Outriders reward) was once the ALLIANCE level-20 hunter's bow.
 // factionExclusiveDungeons is every dungeon source id (lootSource.ID)
@@ -841,8 +842,8 @@ var factionExclusiveDungeons = map[string]string{
 }
 
 var repSide = map[int]string{
-	890: "horde", 510: "horde", 729: "horde",
-	889: "alliance", 509: "alliance", 730: "alliance",
+	889: "horde", 510: "horde", 729: "horde",
+	890: "alliance", 509: "alliance", 730: "alliance",
 	// Darkspear Islands (round 9): Darkspear Raiders and Theramore
 	// Expeditionary Force, under Horde Forces 892 and Alliance Forces 891
 	// in the client's Faction table.
@@ -935,8 +936,8 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 	if err := json.Unmarshal(b, &f); err != nil {
 		return nil, nil, fmt.Errorf("decoding loot.json: %w", err)
 	}
-	// factionNames is faction id -> the fork's own name for it (e.g. 889
-	// -> "Silverwing Sentinels"), read from every rep source's own Name
+	// factionNames is faction id -> the name loot.json gives it (e.g. 889
+	// -> "Warsong Outriders"), read from every rep source's own Name
 	// before any item is added, so correctedRepSource can name a
 	// misattributed item's ACTUAL faction without hand-spelling a label
 	// that could drift from the fork's own spelling.

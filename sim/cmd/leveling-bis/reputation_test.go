@@ -85,9 +85,9 @@ func TestTheClassFileCarriesTheItemsReputation(t *testing.T) {
 // its rep-sourced stock names.
 func TestAQuartermasterTakesTheSideOfItsRepStock(t *testing.T) {
 	idx := lootIndex{
-		19570: {{Kind: "rep", Side: "alliance", Standing: "revered", FactionID: 889}, {Kind: "vendor", NpcID: 14753, Label: "Illiyana Moonblaze"}},
+		19570: {{Kind: "rep", Side: "alliance", Standing: "revered", FactionID: 890}, {Kind: "vendor", NpcID: 14753, Label: "Illiyana Moonblaze"}},
 		// Both sides' quartermasters sell the WSG bracers, under both reps.
-		19595:  {{Kind: "rep", Side: "alliance", FactionID: 889}, {Kind: "rep", Side: "horde", FactionID: 890}, {Kind: "vendor", NpcID: 14753, Label: "Illiyana Moonblaze"}},
+		19595:  {{Kind: "rep", Side: "alliance", FactionID: 890}, {Kind: "rep", Side: "horde", FactionID: 889}, {Kind: "vendor", NpcID: 14753, Label: "Illiyana Moonblaze"}},
 		212580: {{Kind: "vendor", NpcID: 14753, Label: "Illiyana Moonblaze"}},
 		212584: {{Kind: "vendor", NpcID: 14754, Side: "horde", Label: "Kelm Hargunth"}},
 		5000:   {{Kind: "vendor", NpcID: 777, Label: "A neutral vendor"}},

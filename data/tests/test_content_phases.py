@@ -226,7 +226,7 @@ def test_zone_kind_and_faction_gates(tmp_path):
                 id="rep:silverwing-sentinels:exalted",
                 kind="rep",
                 name="Silverwing Sentinels",
-                faction_id=889,
+                faction_id=890,
                 standing="exalted",
                 items=[19595],
             ),
@@ -243,7 +243,7 @@ def test_zone_kind_and_faction_gates(tmp_path):
     gates = [
         _gate("dm", zones=[{"id": 2557, "name": "Dire Maul"}, {"id": 1377, "name": "Silithus"}]),
         _gate("honor", kinds=["pvp"]),
-        _gate("bg", factions=[{"id": 889, "name": "Silverwing Sentinels"}]),
+        _gate("bg", factions=[{"id": 890, "name": "Silverwing Sentinels"}]),
     ]
     out, _ = _apply(tmp_path, gates, document)
     by_id = _by_id(out)

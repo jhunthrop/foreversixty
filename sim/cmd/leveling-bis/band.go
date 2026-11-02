@@ -106,7 +106,8 @@ var repStandingObtainable = map[string]bool{"friendly": true, "honored": true}
 // Illiyana Moonblaze in Ashenvale - wowhead's own pages confirm Scout's
 // is Horde and Sentinel's is Alliance), but loot.json's mined rep source
 // has each under the OTHER side's WSG faction (Scout's under Silverwing
-// Sentinels/889, Sentinel's under Warsong Outriders/890) - the exact
+// Sentinels/890, Sentinel's under Warsong Outriders/889, by the client's
+// ids) - the exact
 // inverse of the item's own client-stated restriction. Since a
 // faction-restricted item can only ever reach this function already
 // carrying the one faction that can equip it, that hard restriction is
