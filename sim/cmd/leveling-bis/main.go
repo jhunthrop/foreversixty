@@ -365,8 +365,14 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// band's own eligible()/pick()/tournament pass runs.
 	items = markNotInSimDB(items)
 	items = withEngineWeaponDamage(items, simdb.Weapon)
-	// A tank is ranked on tank score, not damage (score_tank.go).
-	runner = roleRunner(runner, specInfo)
+	// A tank is ranked on tank score, not damage (score_tank.go). The
+	// memo (memo.go) answers every repeated sim from the first run of it.
+	memo := newMemoRunner(roleRunner(runner, specInfo))
+	runner = memo
+	defer func() {
+		hits, misses := memo.stats()
+		log.Printf("leveling-bis: %s: sim memo: %d sims run, %d answered from memory", spec, misses, hits)
+	}()
 	// itemFactionRestriction: item id -> its own client-stated
 	// faction_restriction, for correctedRepSource's general check
 	// (data.go's own doc: a mined rep source's Side is wrong for a real
