@@ -216,7 +216,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		// SAME build, repositioned onto engineLayout's own field
 		// order; the character below is spent from engineTalents, not
 		// talents (engineLayout's own doc).
-		talents := leveling.LadderTalentString(activeTrees, targets, spec.TreeIndex, level)
+		talents := leveling.LadderTalentString(activeTrees, targets, spec.TreeIndex, level, leveling.ForSpec(spec.Spec))
 		engineTalents, err := engineLayout.Reposition(activeTrees, talents)
 		if err != nil {
 			t.Fatalf("%s level %d: converting talents to the engine's own layout: %v", spec.Spec, level, err)

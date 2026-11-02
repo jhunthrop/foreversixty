@@ -508,7 +508,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// or paladin and shaman misread every talent at and after the
 			// first talent whose tree position moved between the engine's
 			// proto build and the active one (this lane's own brief).
-			talents, engineTalents, err := bandTalentStrings(activeTrees, targets.forPass(pass.name), specInfo.TreeIndex, band, engineLayout)
+			talents, engineTalents, err := bandTalentStrings(activeTrees, targets.forPass(pass.name), specInfo.TreeIndex, band, engineLayout, leveling.ForSpec(specInfo.Spec))
 			if err != nil {
 				return fmt.Errorf("band %d: %w", band, err)
 			}
@@ -803,8 +803,8 @@ func formatWeights(order []string, weights map[string]api.StatWeight) string {
 // that invariant for a real class the two layouts are known to
 // differ on, rather than trusting every call site to keep passing the
 // right one of the two strings by hand.
-func bandTalentStrings(activeTrees []leveling.TalentTree, targets map[int]int, treeIndex, band int, layout talentLayout) (site, engine string, err error) {
-	site = leveling.LadderTalentString(activeTrees, targets, treeIndex, band)
+func bandTalentStrings(activeTrees []leveling.TalentTree, targets map[int]int, treeIndex, band int, layout talentLayout, opts ...leveling.LadderOption) (site, engine string, err error) {
+	site = leveling.LadderTalentString(activeTrees, targets, treeIndex, band, opts...)
 	engine, err = layout.Reposition(activeTrees, site)
 	if err != nil {
 		return "", "", fmt.Errorf("converting talents to the engine's own layout: %w", err)

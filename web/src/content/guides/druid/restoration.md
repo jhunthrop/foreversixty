@@ -32,7 +32,7 @@ Restoration is the Druid healer tree: Rejuvenation and Regrowth on many targets,
 
 - Heals over time on several targets keep a group healthy at low cost
 - Mana efficiency talents let it out-sustain other healers over a long fight
-- Swiftmend turns a running heal over time into an instant heal
+- Swiftmend heals for a whole Regrowth or Rejuvenation at once and leaves the heal over time running
 - Nature's Swiftness into Healing Touch answers a nearly dead tank
 
 ### Weaknesses
@@ -50,10 +50,10 @@ Restoration is the Druid healer tree: Rejuvenation and Regrowth on many targets,
 
 The build spends most of its points in Restoration and fills Balance with the periodic-healing and critical-chance talents. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
 
-- **Naturalist** shortens Healing Touch, **Gift of Nature** strengthens every heal, and **Improved Rejuvenation** strengthens Rejuvenation.
+- **Naturalist** shortens Healing Touch, **Gift of Nature** strengthens every heal but Tranquility (in Forever it reaches heals over time only through its periodic half, which names Rejuvenation, Regrowth and Wild Growth), and **Improved Rejuvenation** strengthens Rejuvenation.
 - **Reflection** keeps part of your regeneration running while you cast, **Tranquil Spirit** makes Healing Touch and Tranquility cheaper, and **Living Spirit** lifts Spirit.
 - **Bloom** (1 point, new in client 1.60.1.70707) heals the target for your Spirit whenever a Rejuvenation or Regrowth runs its full duration; with heals over time doing most of the work it was the largest single gain the sim found for this build, about +10% healing over the alternatives for that point. It took the point of Gift of the Earthmother, which left the tree in the same patch.
-- **Swiftmend** (it eats the heal over time it reads) and **Nature's Swiftness** are the burst tools.
+- **Swiftmend** and **Nature's Swiftness** are the burst tools. In Forever, Swiftmend does not use up the heal over time it reads (it prefers a Regrowth), so it is worth casting on cooldown whenever the tank is hurt, not only in an emergency.
 - From Balance, **Genesis** adds 10% to every heal over time, **Nature's Majesty** adds critical chance, and **Nature's Splendor** lengthens your heal-over-time spells. Moonglow and Improved Moonfire only buy the points that open Nature's Splendor: in this client they touch damage spells alone.
 - **Heart of the Wild** (5 points, 10% more Intellect) takes the points that used to go to Improved Wrath, which only speeds up and cheapens Wrath; about +1% healing in our run.
 
@@ -61,9 +61,9 @@ The build leaves out the capstone Wild Growth and Improved Regrowth: the sim mea
 
 ## Rotation and priority
 
-The tank keeps **Regrowth** and **Rejuvenation** up for the whole fight, and the heals over time carry most of the work. **Healing Touch** fires only on a real hole in the tank's health and only while your mana is keeping up with the share of the fight that is left, so the mana lasts instead of running dry at the first long fight. A hurt party member gets **Rejuvenation**, you included, and **Tranquility** goes out when two of the five are well down. **Nature's Swiftness** into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and **Innervate** goes on you when you are low.
+The tank keeps **Regrowth** and **Rejuvenation** up for the whole fight, and the heals over time carry most of the work. **Healing Touch** fires only on a real hole in the tank's health and only while your mana is keeping up with the share of the fight that is left, so the mana lasts instead of running dry at the first long fight. A hurt party member gets **Rejuvenation**, you included, and **Tranquility** goes out when two of the five are well down. **Swiftmend** goes on the tank whenever he is under three quarters health and your mana is keeping pace. **Nature's Swiftness** into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and **Innervate** goes on you when you are low.
 
-The rotation does not downrank.
+The rotation casts Rejuvenation at rank 4 on every target: over a long raid fight it returns more healing for its mana than the top rank. Every other heal is the top rank.
 
 ## Stat priority
 

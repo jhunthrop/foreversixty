@@ -297,7 +297,25 @@ export interface BisHealProfile {
   tank: { health: number; hit_damage: number; swing_seconds: number; reason: string };
   members: { health: number; reason: string };
   pulse: { damage: number; interval_seconds: number; members: number; reason: string };
+  /** The profile at each leveling band (sim/request/healprofile_bands.go): the top-level
+   *  figures are the reference band's. Absent on a file published before 2026-11-03. */
+  bands?: BisHealBands;
   sources: { label: string; url: string; kind: 'blessing' | 'site' | 'blizzard' }[];
+}
+
+export interface BisHealBands {
+  rule: string;
+  reference_level: number;
+  rows: BisHealBandRow[];
+}
+
+export interface BisHealBandRow {
+  level: number;
+  content: { name: string; last_boss: string; boss_level: number }[];
+  tank_health: number;
+  member_health: number;
+  tank_hit_damage: number;
+  pulse_damage: number;
 }
 
 export interface BisBand {

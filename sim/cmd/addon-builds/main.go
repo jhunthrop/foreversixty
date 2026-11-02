@@ -102,7 +102,7 @@ func specBuild(repoRoot, active string, spec specs.Spec, read guideReader, name 
 	if err != nil {
 		return build{}, err
 	}
-	points, err := leveling.LadderPointOrder(trees, leveling.GuideTalentTargets(trees, digits), spec.TreeIndex)
+	points, err := leveling.LadderPointOrder(trees, leveling.GuideTalentTargets(trees, digits), spec.TreeIndex, leveling.ForSpec(spec.Spec))
 	if err != nil {
 		return build{}, err
 	}

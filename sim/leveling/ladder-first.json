@@ -1,0 +1,44 @@
+{
+  "notes": "Per-spec leveling reservations (sim-accuracy round 10). Below 60 a band's talent build is the guide's level-60 build cut down by the top-row-down walk (sim/leveling LadderTalentString). A spec listed here takes these ranks of its own tree first, in order, each once the build can legally hold it and never past the guide's own rank for that talent, then walks as before; so the ladder only ever adds points and its level-60 build is the guide's. A row is adopted only where the band builds it makes beat the plain walk's beyond error at seeds 1 and 50001 (10,000 iterations, the band's own heal profile, both factions), keep every talent the engine models only by a probe as zero, drop nothing the rotation casts and lose at no band. The evidence is in design/reviews/2026-11-03-sim-audit-round10/healprofile.md. sim/leveling embeds a copy (make ladder-first-sync); TestEmbeddedLadderFirstMatchesCurated holds it to this file.",
+  "specs": {
+    "druid-restoration": {
+      "reason": "On each band's own fight, Restoration levels better with Heart of the Wild, two ranks of Reflection and Bloom ahead of the top rows' other points, and Nature's Swiftness held as soon as it can be: beyond error at band 20 and band 30, both factions, and no band loses.",
+      "first": [
+        {
+          "talent": "Heart of the Wild",
+          "rank": 5
+        },
+        {
+          "talent": "Reflection",
+          "rank": 2
+        },
+        {
+          "talent": "Bloom",
+          "rank": 1
+        },
+        {
+          "talent": "Nature's Swiftness",
+          "rank": 1
+        }
+      ]
+    },
+    "priest-discipline": {
+      "reason": "On band 20's own fight, Meditation ahead of Mental Agility's first rank beats the plain walk beyond error, both factions; no other band changes.",
+      "first": [
+        {
+          "talent": "Meditation",
+          "rank": 1
+        }
+      ]
+    },
+    "priest-holy": {
+      "reason": "Prayer of Mending, which the rotation casts, is the Holy tree's deepest talent; the plain walk leaves it out at band 40, and taking it there beats the plain walk beyond error, both factions; no other band changes.",
+      "first": [
+        {
+          "talent": "Prayer of Mending",
+          "rank": 1
+        }
+      ]
+    }
+  }
+}

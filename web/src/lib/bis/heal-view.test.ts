@@ -128,6 +128,62 @@ describe('healerSetViewFor', () => {
     expect(disclosure.rows.find((r) => r.heading === 'Fight')!.figures).toBe('5:00 long');
   });
 
+  it("shows a sub-60 band its own band's figures and content, and level 60 the profile's", () => {
+    const banded: BisHealProfile = {
+      ...PROFILE,
+      bands: {
+        rule: 'Band rule.',
+        reference_level: 60,
+        rows: [
+          {
+            level: 20,
+            content: [
+              { name: 'The Deadmines', last_boss: 'Edwin VanCleef', boss_level: 21 },
+              { name: 'Wailing Caverns', last_boss: 'Mutanus the Devourer', boss_level: 22 },
+            ],
+            tank_health: 1836,
+            member_health: 966,
+            tank_hit_damage: 124,
+            pulse_damage: 32,
+          },
+          {
+            level: 60,
+            content: [{ name: "Onyxia's Lair", last_boss: 'Onyxia', boss_level: 63 }],
+            tank_health: 9500,
+            member_health: 5000,
+            tank_hit_damage: 1150,
+            pulse_damage: 450,
+          },
+        ],
+      },
+    };
+    const low = healerSetViewFor(healerBand({ band: 20 }), banded)!.disclosure!;
+    expect(low.rows.map((r) => r.heading)).toEqual([
+      'Fight',
+      'Content',
+      'Tank',
+      'Raid members',
+      'Raid pulses',
+    ]);
+    expect(low.rows.find((r) => r.heading === 'Content')).toEqual({
+      heading: 'Content',
+      figures: 'The Deadmines (Edwin VanCleef, level 21), Wailing Caverns (Mutanus the Devourer, level 22)',
+      reason: 'Band rule.',
+    });
+    expect(low.rows.find((r) => r.heading === 'Tank')).toEqual({
+      heading: 'Tank',
+      figures: '1,836 health, a 124 hit every 2 seconds',
+      reason: '',
+    });
+    expect(low.rows.find((r) => r.heading === 'Raid members')!.figures).toBe('966 health each');
+    expect(low.rows.find((r) => r.heading === 'Raid pulses')!.figures).toBe(
+      '32 damage to 3 members every 4 seconds',
+    );
+    const top = healerSetViewFor(healerBand(), banded)!.disclosure!;
+    expect(top.rows.map((r) => r.heading)).toEqual(['Fight', 'Tank', 'Raid members', 'Raid pulses']);
+    expect(top.rows.find((r) => r.heading === 'Tank')!.reason).toBe('Tank reason.');
+  });
+
   it('falls back to set_dps and no metric cells when the band publishes no metrics', () => {
     const view = healerSetViewFor(healerBand({ metrics: undefined, set_dps: 250.04 }), PROFILE)!;
     expect(view.figure).toBe('250.0');

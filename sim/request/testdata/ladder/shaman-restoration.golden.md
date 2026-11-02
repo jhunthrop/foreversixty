@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-000000000000000000-1000000000000000 | main_hand:263937 | 9.7 | 2 | spell:332=35.8, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
-| 20 | 0000000000000000-000000000000000000-5510000000000000 | main_hand:890 | 30.5 | 5 | spell:5672=750.0, spell:547=37.7, spell:20572=3.0, spell:5394=1.7, spell:8004=0.3 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
-| 30 | 0000000000000000-000000000000000000-5530003311000000 | main_hand:9604 | 44.2 | 6 | spell:6371=749.7, spell:547=61.1, other:mana_gain=37.0, spell:408510=13.0, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190} |
-| 38 | 0000000000000000-000000000000000000-5530003315400000 | main_hand:873 | 70.5 | 6 | spell:6371=749.8, spell:547=75.8, other:mana_gain=38.2, spell:408510=13.4, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 17354} |
-| 40 | 0000000000000000-000000000000000000-5530003315510000 | main_hand:873 | 79.3 | 8 | spell:6372=716.5, spell:547=79.9, other:mana_gain=42.2, spell:408510=13.4, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 408521} |
-| 50 | 0000000000000000-000000000000000000-5530003315513151 | main_hand:812 | 139.1 | 10 | spell:10460=717.4, spell:547=63.4, other:mana_gain=42.0, spell:408510=13.3, spell:10466=11.6 | - |
-| 60 | 0000000000000000-055000000000000000-5530003315513151 | main_hand:19355 | 170.3 | 10 | spell:10461=718.2, other:mana_gain=40.8, spell:10468=18.5, spell:408510=12.9, spell:10396=6.0 | - |
+| 10 | 0000000000000000-000000000000000000-1000000000000000 | main_hand:263937 | 8.9 | 2 | spell:332=32.9, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
+| 20 | 0000000000000000-000000000000000000-5510000000000000 | main_hand:890 | 28.4 | 5 | spell:5672=750.0, spell:913=12.4, spell:8004=10.8, spell:20572=3.0, spell:5394=1.6 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 408510} |
+| 30 | 0000000000000000-000000000000000000-5530003311000000 | main_hand:9604 | 44.7 | 6 | spell:6371=749.9, other:mana_gain=36.3, spell:939=23.0, spell:408510=12.8, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190} |
+| 38 | 0000000000000000-000000000000000000-5530003315400000 | main_hand:873 | 54.4 | 5 | spell:6371=749.8, other:mana_gain=36.8, spell:959=18.2, spell:408510=12.9, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 17354} |
+| 40 | 0000000000000000-000000000000000000-5530003315510000 | main_hand:873 | 64.4 | 6 | spell:6372=749.8, other:mana_gain=36.4, spell:8005=15.8, spell:408510=12.8, spell:20572=3.0 | {SpellID: 16188}, {SpellID: 408521} |
+| 50 | 0000000000000000-000000000000000000-5530003315513151 | main_hand:812 | 163.7 | 10 | spell:10460=718.0, other:mana_gain=41.0, spell:1239242=13.2, spell:408510=13.0, spell:10466=8.2 | - |
+| 60 | 0000000000000000-055000000000000000-5530003315513151 | main_hand:19355 | 169.3 | 10 | spell:10461=718.2, other:mana_gain=40.8, spell:10468=18.5, spell:408510=12.9, spell:10396=6.0 | - |
 
 ## Learned but unused (informational)
 
@@ -196,4 +196,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- shaman-restoration level=38 kind=zero_casts spell="Lesser Healing Wave" id=8010 authored=10468
+- shaman-restoration level=40 kind=zero_casts spell="Lesser Healing Wave" id=8010 authored=10468
+- shaman-restoration level=40 kind=zero_casts spell="Mana Tide Totem" id=17354 authored=1325256

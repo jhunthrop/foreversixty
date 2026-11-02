@@ -103,9 +103,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 0000000000000000-0000000000000000-500230100000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 36.5 | 2 | other:attack/2=107.2, other:attack/1=93.7, spell:14261=27.8, spell:13795=6.1 | {SpellID: 10610}, {SpellID: 1317257} |
 | 30 | 0000000000000000-0000000000000000-500230231050000000 | main_hand:6692 off_hand:23168 ranged:274748 | 68.1 | 5 | other:attack/2=134.2, other:attack/1=57.5, spell:14262=21.0, spell:24118=9.6, spell:14302=4.6 | {SpellID: 10610}, {SpellID: 1242634}, {SpellID: 1317257} |
 | 38 | 0000000000000000-0000000000000000-500230231051222100 | main_hand:869 off_hand:6829 ranged:2825 | 113.9 | 7 | other:attack/2=85.6, other:attack/1=50.6, spell:14263=21.9, spell:1317257=20.6, spell:14269=13.7 | {SpellID: 10610} |
-| 40 | 0000000000000000-0000000000000000-500230231051222111 | main_hand:2164 off_hand:9465 ranged:2825 | 119.4 | 7 | other:attack/2=104.5, other:attack/1=83.3, spell:14264=21.3, spell:1317257=19.3, spell:14269=16.7 | {SpellID: 10610} |
-| 50 | 5000000000000000-0010000000000000-500230231051222151 | main_hand:2163 off_hand:6660 ranged:2824 | 165.9 | 7 | other:attack/2=177.0, other:attack/1=142.8, spell:14270=21.8, spell:14265=21.6, spell:1317257=17.8 | {SpellID: 10610} |
-| 60 | 5000000000000000-0050050010000000-500230231051222151 | main_hand:22736 off_hand:23054 ranged:22811 | 346.1 | 7 | other:attack/2=79.1, other:attack/1=53.3, spell:14266=23.0, spell:1317257=20.7, spell:14271=13.6 | {SpellID: 10610} |
+| 40 | 0000000000000000-0000000000000000-500230231051222111 | main_hand:2164 off_hand:9465 ranged:2825 | 119.5 | 7 | other:attack/2=104.5, other:attack/1=83.3, spell:14264=21.3, spell:1317257=19.3, spell:14269=16.7 | {SpellID: 10610} |
+| 50 | 5000000000000000-0010000000000000-500230231051222151 | main_hand:2163 off_hand:6660 ranged:2824 | 166.2 | 7 | other:attack/2=177.0, other:attack/1=142.8, spell:14270=21.8, spell:14265=21.6, spell:1317257=17.8 | {SpellID: 10610} |
+| 60 | 5000000000000000-0050050010000000-500230231051222151 | main_hand:22736 off_hand:23054 ranged:22811 | 347.1 | 7 | other:attack/2=79.1, other:attack/1=53.3, spell:14266=23.0, spell:1317257=20.7, spell:14271=13.6 | {SpellID: 10610} |
 
 ## Learned but unused (informational)
 
