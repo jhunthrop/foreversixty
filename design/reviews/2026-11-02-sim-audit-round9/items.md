@@ -1,0 +1,108 @@
+# Sim audit round 9: items lane
+
+Scope: item data from the client to the engine. That covers `simdb.bin` and the item files, the four temporary enchants the presets use, weapon damage and speed, set bonuses, procs and use effects. It covers every published BiS band (`data/builds/1.60.1.70707/bis/*.json`, bands 20 to 60, both presets).
+
+**Method.**
+- **Picks.** The 719 distinct picked items. They are the same 719 as round 8: the bis workflow is held.
+- **Simdb.** Regenerated locally from the layered 70707 raw tables (hotfix push in) and decoded. It was used for every measurement and never committed.
+- **Tooltips.** All 662 Wowhead Forever item tooltips were fetched again on 2026-11-02, so nothing rests on round 8's cache. Each pick's stats, armor, weapon damage, speed and school, required level, classes, unique and set id were compared with them. The 55 feed-only picks were compared with `raw/wowhead/items.json` line by line.
+- **Effects.** Every ItemEffect row on a pick, and every spell those rows trigger, was dumped from SpellEffect, SpellMisc, SpellAuraOptions and SpellCooldowns. Each was then read against its engine registration.
+- **Wider sweep.** I also swept the effects on every one of the 11,463 simdb items, so that effects the ranker never sees on unpicked candidates got checked too.
+
+Scripts and outputs are in `scratchpad/r9/items/` (`scripts/`, `work/`).
+
+## Round 8's open rows
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| A1 | **Satchels of Bombs' thrown damage** (I5). Ours is 0-11, 1-20 and 1-32. Wowhead's is 2-10, 2-20 and 2-31. Dark Iron agrees at 2-39. | ItemSparse gives no damage, only DmgVariance 0.6 and a QualityModifier (−5.33, −10.1, −16.33, −20.3). The client builds a tooltip from `ItemDamageThrown` plus those two columns. Our formula is `(dps + QM) × speed ± dps × speed × variance/2`. It reproduces Wowhead exactly on all 13 other QualityModifier weapons, including Atiesh's fractional 130.17-243.17, Benediction and Thunderfury. On the four Satchels, Wowhead's minimum is a flat 2 at four item levels, and its maximum (10.34, 19.8, 31.34, 39.4) fits no ItemDamage row. So Wowhead's Satchel numbers do not come from the client rows. No published spec throws (the only picks are Protection warrior ranged at 20 and 50). | Aligned with the client (Wowhead outlier; no published number) | - |
+| A2 | **Red Dragonscale Leggings 252603 Intellect, 32 against the tooltip's 31** (I6). | Budget 45 (RandPropPoints 61 EpicF_0) × 7000/10000 = 31.5. All 38 other exact halves in the client round half up on Wowhead Forever's server tooltips (re-read 2026-11-02). One of them is Windfelt Gloves 5630, which also uses a 7000 split: 3.5 shows as 4. Wowhead's own feed says 32 for this item. A float32 product gives exactly 31.5 too, so nothing in the client produces 31. | Aligned with the client (the tooltip is a single outlier) | - |
+
+## Round 8's fixes, re-verified
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| V1 | Stat 45 heals. Stat 41 is healing only, 42 is damage only, and 45 is both. The feed's `splpwr` without `splheal` counts as 45, and `splheal` beside it is the total healing. | Re-checked on the regenerated simdb. Gemburst Circlet (splpwr 4, splheal 9) reads SP 4 / healing 9; Spritecaster Cape (splpwr 14) reads 14 / 14; Atiesh's "healing 300, damage 120". The engine heals from HealingPower only (`spell_result.go:249`) and damages from SpellPower + SpellDamage. | Aligned | - |
+| V2 | Wowhead percentages reach the engine to the decimal. | Blackcrow 0.9 hit, Savage Gladiator Chain 1.5 crit, Rune of the Guard Captain 0.7 hit, Outlaw's Collar 1.5 crit, all in the regenerated simdb. | Aligned | - |
+| V3 | Stat 50 is bonus armor. | Tree Bark Jacket 1486 is +60 StatBonusArmor. **Correction to round 8's note:** "no published number moves" was wrong. The tank score (`sim/cmd/leveling-bis/score_tank.go`) includes damage taken and TMI, so bonus armor counts in it once simdb is regenerated. | Aligned | - |
+| V4 | Manual Crowd Pummeler. | ItemEffect 98990 has CoolDownMSec 180000 and 3 charges, and 13494 is aura 319 at 50% for 30 sec. The engine matches (`item_effects.go:1687`, 3 min). The charges never bind: a fight holds at most 2 uses. | Aligned | - |
+| V5 | Fiery War Axe, Bow of Searing Arrows, Gut Ripper. | 18796 is 262 with variance 0.2386, plus aura 3 at 20 every 2 sec for 6 sec. 29638 is 28 with variance 0.3636. 18107 is 105 with variance 0.2407, plus dummy 100/25. All three match the engine. | Aligned | - |
+| V6 | The 14 round-8 effects. Toxic Revenger (aura 3, 14 every 3 sec for 12 sec). Gloves of Holy Might (112 ±10%). Boot Flask (aura 23 → 12278 75 Fire every 1 sec for 5 sec, 5 min). The hauberks (energize 300 tenths, 1 h, 15 sec category 1141). Spire of Hakkar (aura 53, 28 every 2 sec for 8 sec). Wall of the Dead (3%, aura 674 150 for 20 sec). Cloak of Flames 7, Sporid Cape 1. Black Menace 77, Verigan's Fist 49 ±21%, Claw 35, Thornspike 45, Teebu's 140, Nightblade, Hammer of the Northern Wind, Coldrage. | Each row was dumped again from SpellEffect, SpellMisc and SpellAuraOptions. All match, except Aegis's cooldown (R1 below). | Aligned | - |
+| V7 | Wizard oils heal. | 25113 is aura 13 + 135 at 36 and aura 57 at 1. 25116 (Brilliant Mana Oil) is aura 85 at 15 and 135 at 30. 22755 (Elemental Sharpening Stone) is aura 52 at 2. Enchant 1643 is +8 damage. All match `consumes.go`. | Aligned | - |
+| V8 | **The one-a-minute rule never overrides a client rate.** The whole 70707 client has one SpellAuraOptions row with a PPM: 248813, for spell 1326019 "Holy Smite" on item 5028, at 2 a minute. That item has no ItemSparse row, so it is not in simdb or in any pick. Every engine user of `core.UnstatedProcsPerMinute` was checked. The weapon procs (trigger 2) have no rate column at all. Gloves of Holy Might and Toxic Revenger are trigger 2. Ignition, Blood Siphon and Necropile are ProcChance 100 at 10 ms. Rogue Armor Energize, Bloodmail, Warrior's Resolve 450587 and Roar of the Crowd are ProcChance 100. All of these say "chance" in their server text. Every stated chance below 100 is read as stated: Wall of the Dead 3, Mark of the Chosen 2 with a 2 min recovery, Talons of Wrath 50, Revitalize 4, Deathbone Surge 15 with 1 min, the mana procs 5, Devious Strike 5. | wago SpellProcsPerMinute 70707 (11 rows) and SpellAuraOptions, read 2026-11-02. Server text: nether.wowhead.com/forever/tooltip/spell/27787, 1299948, 1299740, 450587, 1301123. | Aligned | - |
+
+## Item crit (for the crit lane)
+
+Full notes: `scratchpad/r9/items/crit-notes.md`.
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| C1 | **Forever items carry no melee-only or spell-only crit.** All 978 crit rows in ItemSparse use stat **32, CRIT_RATING**. None uses 19, 20 or 21. `combatratings.txt` level 60 gives Crit - Melee = Ranged = Spell = 14. Wowhead Forever prints "Improves your chance to get a critical strike by N%" on caster gear too: Robe of the Archmage 14152 says "by 1.0%" and Gloves of Spell Mastery 14146 says "by 2.0%". Both were Era "with spells" items. So when Crit is split, item stat 32 (pipeline `crit` → StatCrit) has to feed melee and spell crit both. | ItemSparse census (`critcensus.py`); tooltips re-read 2026-11-02 | Aligned (input to the crit lane) | - |
+| C2 | The other crit sources. Equip aura 52 (melee) appears only on Blackhand's Breadth 13965. Aura 57 (spell) is on Atiesh 22589, Eye of the Beast 13968 and 236401, and aura 290 (all) on 278611. The pipeline ignores 57 and 290 (`equip.IGNORED_AURAS`). None of these items is picked, and 13965, 13968, 236401 and 278611 have no kept row. Set bonuses (`client_sets.go:391`): 7598 aura 52 should be melee, 23570 aura 57 spell, and Gladiator 1314795 / Imperial 1251991 / Eskhandar 1314828 aura 290 both. Elemental Sharpening Stone is aura 52 (melee); Brilliant Wizard Oil is aura 57 (spell). | client rows | Aligned (input to the crit lane) | - |
+
+## Fresh re-audit: item data
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| D1 | All 662 tooltip picks agree with the regenerated simdb on every field the comparator reads. The 23 rows it flags are all explained. Twelve are parser gaps: "+14 Attack Power. This effect is tripled in Forest...", "+8 Block Value" next to the shield's own block, and fishing or skinning skill. Five are slaying lines, which the owner's ruling makes worth nothing. The other six are the relics' "all classes" allowlist narrowed by proficiency, the warrior-only mail gauntlets, A1 and A2. | `work/cmp-fresh.txt`. None of the 662 tooltips changed since 2026-11-01. | Aligned | - |
+| D2 | All 55 feed-only picks match the feed, stat by stat. That includes weapon damage and speed, percentages, and the healing/spell-power split from V1. | `raw/wowhead/items.json` side by side | Aligned | - |
+| D3 | Molten Heart of the Mountain's "+2 Weapon Damage" (51 picks) reaches the engine as `bonusPhysicalDamage` 2 (`character.go:276`). | simdb row | Aligned | - |
+| D4 | **Inconsistency, small.** A feed-only item's `armorbonus` is folded into Armor (`wowhead_items.py:244`). A client item's stat 50 is BonusArmor (V3). Protection paladin's Toughness scales equipment Armor only (`tank_talents.go:114`). So Ornate Adamantium Breastplate 15413 (feed armor 657 + bonus 150; picked by Protection paladin and warrior 60) gets Toughness on its 150, and a client stat-50 item would not. | It is at most 15 armor on one paladin pick. Which one is right depends on whether Forever's Toughness scales bonus armor, which nothing in the client states. | OPEN | - |
+| D5 | 1,351 simdb candidates have neither an ItemSparse row nor a feed record, so they carry Classic-db (Era) stats. None is picked. Their Forever versions can differ. For example, Counterattack Lodestone 18537 is Era's 22 AP, but its client ItemEffect is 1318938, "+30 Attack Power, doubled against Mechanical". | `pipeline.classicdb_items` fallback | OPEN (data lane; no published number) | - |
+
+## Fresh re-audit: item effects
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| R1 | **Aegis of the Scarlet Commander's Scarlet Retribution fired on every block.** The client gives it a 5 sec cooldown. It is the published off hand of Protection warrior and paladin at 40, and Holy Shield blocks about 40% of swings, so the cooldown binds. The proc now fires at most once every 5 sec. | 1293539: SpellCooldowns RecoveryTime 5000. Wowhead Forever: "5 sec cooldown. Deals 13 to 15 Holy damage every time you block." Test `TestAegisOfTheScarletCommanderHitsBack` failed (cooldown 0s), then passed. | CONFIRMED-BUG | E 13b4768d3 |
+| R2 | **Dormant Heart of the Mountain had no effect.** This is the healer one of the three Hearts (249473, level 50, same source as Frozen and Molten, which 149 slots pick). Its equip 1249118 is aura 42 on a helpful cast, ProcChance 100, no recovery. It triggers 1249119 "Eternal Power": aura 135 +40 healing and aura 13 +13 damage for 15 sec. With no stats besides resistances, no healer band could pick it, and healers' trinkets at 50 and 60 are Uther's Strength, Ankh of Life, Evonice's and Shard of the Splithooves. Every rank of Greater Heal, Healing Touch, Healing Wave and Holy Light now grants it, and nothing else does. The fork's item database lacks the trinket, so it registers through the new `core.NewClientItemEffect`. | Wowhead Forever: "Your casts of Greater Heal, Healing Touch, Healing Wave, or Holy Light in combat grant up to 40 increased healing and up to 13 increased damage for 15 sec." Rows 1249118 and 1249119. Test `TestDormantHeartOfTheMountainGrantsEternalPowerOnGreaterHeal` failed (0% uptime), then passed: 98.6% on Greater Heal, 0 on Flash Heal. In trinket 2 at raid 60, horde, 3000 iterations: Holy paladin 642.5 → 653.3 effective HPS, Restoration shaman 823.8 → 839.4, Restoration druid 768.6 → 782.1. A Holy priest gains nothing, because the 60 rotation casts Heal and Flash Heal, never Greater Heal. | CONFIRMED-BUG | E e03fe62a5 |
+| R3 | No sim effect, by design. Ring of Saviors 1447 (use +300 armor for 20 sec, 10 min) and Arena Grand Master 19024 (use absorb 810 to 1350, 9 min) are tank picks at 50 and 60. The engine skips every survival cooldown unless `HpPercentForDefensives` > 0 (`major_cooldown.go:154`). The site never sets it, and Smoking Heart of the Mountain is treated the same way. The rest also have no sim effect: Guardian Talisman's Guarded (aura 152, aggro radius), Arena Master and Arena Grand Master's damage reduction (Battle Ring and The Maul only), Petrolspill's +10% Fire taken, Horned Viking Helmet's charge, Robe of the Void's pet heal, Cookie's Stirring Rod's cooking speed, Truefaith's fade, Kam's Walking Stick, the Forsaken weapons' and Staff of Westfall's run speed, Archmagister's experience, Evonice's slow fall, and the Satchels' explosion (no spec throws). | ItemEffect and SpellEffect rows; tooltips. | Aligned | - |
+| R4 | Robe of the Archmage's 1 min category (18385 CategoryRecoveryTime 60000) is modelled as the conjured cooldown (`item_effects.go:3466`). The Hearts' 15 sec category 1141 is the offensive-trinket cooldown. | client rows | Aligned | - |
+| R5 | More unmodelled effects on unpicked candidates at level 45+: `work/unmodelled-candidates.txt` (325 rows, most of them phase 2 and later). Two phase-1 ones could change a pick once modelled. Mindtap Talisman 18371 (use: 1,250 mana over 10 sec, −60 Intellect for 2 min) could matter for healers and casters. Force of Will 11810 ("when struck, a chance to reduce all damage taken by 51 for 10 sec", 30 sec) could matter for tanks. | rows 1302205, 15594; tooltips | OPEN (rates and APL use; next item round) | - |
+
+## Set bonuses and temporary enchants
+
+Every set a published band reaches with 2 or more pieces was checked again against the 70707 rows, at every threshold it reaches. The sets are Gladiator, Deathbone Guardian, Stormshroud, Devilsaur, Ironfeather, Defias, Scarlet Crusade, Magister's, Devout, Shadowcraft (up to 5), Elements, Lightforge, Valor and the PvP rank sets 1618-1665. Spot checks:
+- Devilsaur 460230: aura 54 and 55 at 2.
+- Ironfeather 14799 and Magister's/Devout 9346: aura 13 + 135, damage and healing.
+- Shadowcraft 9336: aura 99 + 124 at 30.
+- Deathbone 7516: defense 3.
+- Mana-regen 18378: 8.
+- Stamina 14462: 15.
+
+The procs use the chances in V8. All aligned.
+
+The four preset imbues (Brilliant Wizard Oil, Brilliant Mana Oil, Elemental Sharpening Stone, Dense Sharpening Stone) are in V7. They are the only imbues in `data/curated/presets.json`.
+
+## Cross-cutting
+
+| # | finding | evidence and source | confirmed? | fix sha |
+|---|---|---|---|---|
+| X1 | **The ranker's list of engine-implemented item effects is stale.** `sim/cmd/leveling-bis/effectids_generated.go` was generated from fork 912a458f7 on 2026-10-07. The ranker uses it to decide which candidates get a real sim (`hasImplementedEffect`, `trinketShortlist`) and which picks get the `effect_unmodelled` flag. Seventeen picked items have engine effects but are missing from the map, so their effects are ignored when ranking and the page says "not simulated": Ankh of Life (42 slots), Kindling Stave (21), Robe of the Archmage (12), Spire of Hakkar, Toxic Revenger, Gloves of Holy Might, Black Menace, Verigan's Fist, Thornspike, Claw of the Shadowmancer, Sporid Cape, Cloak of Flames, Boot Flask, both hauberks, Aegis and Wall of the Dead. Dormant Heart (R2) would be missed too. Regenerating with `sim/scripts/effectids.py` is not enough on its own. Its regex no longer sees helper registrations (`registerClientWeaponProc`, `registerStruckDamage`, loops), so on the pin it would find 188 ids and drop 26 that are really implemented. | `python3 sim/scripts/effectids.py <fork> --check` → stale; `core.HasItemEffect` for every pick after `RegisterAll`. | CONFIRMED-BUG (ranker lane's file; routed) | - |
+| X2 | **The committed `simdb.bin` predates round 8's pipeline fixes.** It was committed at c0bd0bd3d, 2026-11-01 23:47Z, and the data workflow is held. A regeneration from origin/main changes 2,212 items: stat 45 healing and stat 50 bonus armor (I1, I3), 224 held off-hands gaining HandTypeOffHand, 46 paladin axe allowlists, and 3 wand schools (Pyric Caduceus, Noxious Shooter, Peacekeeper Wand). Until simdb is regenerated, published numbers do not include those fixes. | `scripts/simdbdiff.py` on committed vs regenerated | Integrator note | - |
+
+## Before/after
+
+10,000 iterations at seeds 1 and 50001. Before is engine 40021374a with origin/main and a regenerated simdb in both. After is `lane/r9-items` 13b4768d3. Only Aegis (R1) moves a published set. Dormant Heart (R2) is worn by no published set. Fire mage 60, Holy paladin 60 and Holy priest 60 are identical before and after.
+
+| spec | band | metric | alliance seed 1 / 50001 | horde seed 1 / 50001 | absolute, alliance seed 1 |
+|---|---|---|---|---|---|
+| Protection paladin | 40 bare | threat/s | −1.9% / −1.8% | −1.7% / −1.7% | 199.2 → 195.5 |
+| Protection warrior | 40 bare | threat/s | −0.9% / −1.0% | −1.0% / −1.1% | 377.3 → 373.8 |
+| both | 40 bare | damage taken/s | 0.0 | 0.0 | 241.8 → 241.8 |
+
+## For other lanes
+
+- **Ranker lane (X1).** Replace the static map with the engine's own answer. Call `engine.RegisterAll()` and then `core.HasItemEffect(id)`; the site already links the engine. Or fix `effectids.py` and regenerate at the pin. After that, re-rank healers at 50 and 60, where Dormant Heart of the Mountain should enter the trinket slots, and the 17 items above.
+- **Integrator (X2).** Regenerate simdb at the pin. Round 8's healer and bonus-armor fixes are not live without it.
+- **Crit lane.** See C1 and C2 and `scratchpad/r9/items/crit-notes.md`. Item stat 32 is both melee and spell crit.
+- **Healer lanes.** Dormant Heart pays only for the four named heals. A Holy priest's 60 rotation (Heal and Flash Heal) never triggers it.
+
+## Still open
+
+1. D4: does Forever's Toughness scale bonus armor? It is at most 15 armor.
+2. D5: the 1,351 candidates on Era stats.
+3. R5: Mindtap Talisman and Force of Will.
+4. The one-a-minute rate itself (round 8's row 2), which still waits on level-60 logs.
+
+Sources: wago.tools db2 1.60.1.70707 with the layered hotfix push (`data/builds/1.60.1.70707/raw`), and wago SpellProcsPerMinute 70707 (2026-11-02). nether.wowhead.com/forever/tooltip/item and /spell, read 2026-11-02.
