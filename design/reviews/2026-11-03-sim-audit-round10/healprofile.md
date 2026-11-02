@@ -207,3 +207,124 @@ Level 60, bare and raid, both factions, all five healers: +0.00% / +0.00% (profi
 - Boss spell damage is not in the rule (no client or creature_template field gives it). This undercounts the caster last bosses of band 30 (Charlga Razorflank, Bloodmage Thalnos) and Whitemane.
 - T1 to T5 (per-band talent builds) wait for a mechanism.
 - Tests deselected: none. sim/request TestRotationLadder fails on the five healer goldens by design (integrator regenerates at the pin).
+
+## Follow-up (integrator): boss spells in the rule, and per-band builds
+
+This section supersedes the band figures, rank rows and coverage above.
+
+### F1. The rule counts the last bosses' spells
+
+The old rule counted boss melee only, so band 30, whose last bosses are casters, came out equal to band 20. A last boss's damage per second is now:
+- **Melee**, less the share of the fight it spends casting or channelling.
+- **Plus** each damaging spell its AI casts while tanked: mean damage per cast at its level, divided by the mean of its repeat timer.
+
+Where each figure comes from:
+- **Timers:** the spell list the template names, else its EventAI rows, else its ScriptDevAI script. Melee-range timers only. Onyxia counts her ground phase.
+- **Amounts:** cmangos `spell_template`, using the 1.12 base points, dice and points per level. A periodic aura counts its ticks over its duration. A weapon-damage effect counts as one melee hit plus its bonus. Triggered spells count as they trigger.
+- **Cast and channel times:** client SpellCastTimes and SpellDuration.
+- **Why not the client's amounts:** the client stores these NPC spells only in a scaled form whose formula it does not state, and Wowhead's tooltips print no number for them.
+- **Left out:** heals, buffs, summons, crowd control without damage, and one-off health-threshold casts.
+- **Counting:** each spell counts once per cast, on one target.
+- **Where it is stated:** still in one place, `bands.rule`. Each spell row in heal-profile.json names its source and derivation. Loading refuses a row with no source or no positive interval. Tests were written first: `healprofile_bands_test.go`.
+
+Sources: classic-db `creature_spell_list` 454301 and `creature_ai_scripts` (commit ec4f596), and mangos-classic ScriptDevAI `boss_herod.cpp`, `boss_mograine_and_whitemane.cpp`, `boss_thermaplugg.cpp` and `boss_onyxia.cpp` (commit ff13624).
+
+| boss | spells counted (damage per cast, interval) | damage per second, melee + spells |
+|---|---|---|
+| Edwin VanCleef (20) | none (Thrash passive, allies summon) | 46.8 |
+| Mutanus the Devourer (20) | Thundercrack 104 / 13 s | 55.2 |
+| Charlga Razorflank (30) | Chain Bolt 162 / 3.5 s (2.5 s cast) | 59.4 |
+| Mekgineer Thermaplugg (30) | Knock Away 170 / 18.5 s (walking bombs are summons, left out) | 79.3 |
+| Bloodmage Thalnos (30) | Flame Spike 214 / 12 s, Fire Nova 159 / 10.5 s, Flame Shock 190 / 38 s (Shadow Bolt is his ranged-mode main spell, left out) | 73.3 |
+| Herod (40) | Cleave 319 / 12.5 s, Whirlwind 2,283 / 20 s (10 s channel) | 195.4 |
+| Amnennar the Coldbringer (40) | Frost Nova 120 / 15 s, Frostbolt 196 / 3.9 s (3 s cast) | 88.7 |
+| High Inquisitor Whitemane (40) | Holy Smite 150 / 5.75 s (melee mode, 2.5 s cast) | 67.1 |
+| Princess Theradras (50) | Dust Field 1,200 / 22.5 s, Boulder 450 / 9 s | 261.6 |
+| Shade of Eranikus (50) | War Stomp 402 / 20 s, Acid Breath 932 / 25 s | 366.9 |
+| Onyxia (60) | Flame Breath 3,500 / 15 s, Cleave 2,250 / 7.5 s, Tail Sweep 800 / 17.5 s, Wing Buffet 750 / 22.5 s, Knock Away 1,965 / 32.5 s | 1,468.1 |
+
+New band figures at the tuned scale (60 unchanged):
+
+| band | median boss damage per second x mod | tank health / hit | members / pulse | incoming per second |
+|---|---|---|---|---|
+| 20 | 51.0 x 1.2 | 1,836 / 89 | 966 / 23 | 41 |
+| 30 | 73.3 x 1.2 | 3,204 / 128 | 1,687 / 33 | 59 |
+| 40 | 88.7 x 1.2 | 4,938 / 154 | 2,599 / 40 | 71 |
+| 50 | 314.3 x 1.2 | 7,036 / 547 | 3,703 / 143 | 252 |
+| 60 | 1,468.1 x 1.0 | 9,500 / 2,128 | 5,000 / 555 | 978 |
+
+- **Band 30 is no longer equal to band 20.**
+- **Bands 20 and 40 get lighter.** Onyxia's own spells raise the reference by half, and the dungeon bosses' spells add less than that.
+- **Open item, pulls of several mobs.** A dungeon pull is often several mobs, and the rule counts one boss. A source for how many mobs a band's pulls hold would settle a pull factor. None is used, so no multiplier is added.
+
+Commit: S 64a1c9717.
+
+### F2. Per-band healer builds
+
+**Mechanism** (S a09dd3b99, tests first):
+- `data/curated/ladder-first.json` is embedded in sim/leveling (`make ladder-first-sync`).
+- It names, per spec, ranks of the spec's own tree that `LadderTalentString` takes first. It takes one rank a step, each once the build can legally hold it, and never past the guide's rank for that talent.
+- The ladder only adds points, and level 60 is the guide's build.
+- A spec with no row walks byte for byte as before. Only the three healers below have rows, so DPS specs are unchanged.
+- The behaviour is passed as `leveling.ForSpec`. Every production caller passes it: leveling-bis, addon-builds, dps-per-point, rotation-search, talent-search and the ladder test.
+- Tests:
+  - `ladder_first_test.go`: the walk unchanged without a row; reserved ranks taken one at a time; the guide's targets respected.
+  - `ladder_first_curated_test.go`: every curated row is legal at every level from 10 to 60, never takes back a point, ends on the guide's level-60 build, and names real talents of the spec's own tree.
+
+**Search:**
+- Baseline: the current guide's plain walk. The published entries predate the healers lane's guide changes for the druid, Discipline and Holy.
+- Hill climb over every legal one-point move that stays inside the guide's ranks, at 2,000 iterations, while a move gains at least 1%. Then 10,000 iterations, seeds 1 and 50001, both factions, every band.
+- Adoption rule:
+  - gain of at least 1% at both seeds
+  - no talent dropped that a level-60 probe shows the engine ignores (removing it leaves the raid heal run exactly the same)
+  - no talent dropped that grants a spell the rotation casts
+  - no band loses
+
+| spec | first ranks | band build change | gain, seed 1 / 50001 (alliance; horde) |
+|---|---|---|---|
+| Restoration druid | Heart of the Wild 5, Reflection 2, Bloom 1, Nature's Swiftness 1 | 20: Nature's Focus 5 to 3, Naturalist 1 to 0, Reflection 0 to 2, Bloom 0 to 1. 30: Bloom 1 and Nature's Swiftness kept. 40 to 60: unchanged. | 20: +23.76% / +23.76%; horde +24.58% / +24.58%. 30: +2.08% / +2.08%; horde +2.47% / +2.28%. 40: +0.00%. |
+| Discipline | Meditation 1 | 20: Mental Agility 1 to 0, Meditation 0 to 1. Others unchanged. | +1.95% / +1.95%; horde +1.68% / +1.68% |
+| Holy | Prayer of Mending 1 | 40: Spiritual Healing's last point to Prayer of Mending. The plain walk left the rotation's own capstone out at 40. Others unchanged. | +6.89% / +7.05%; horde +7.84% / +7.84% |
+
+Not adopted:
+- **Holy paladin 20, Healing Light to Illumination:** +0.91% / +1.21%, horde +0.31%, so it misses 1% at seed 1.
+- **Restoration druid 50, Improved Tranquility to Genesis:** +1.8% at 2,000 iterations, but it moves a point out of the own tree, which a reservation cannot express. It is small.
+- **No move at 1% or more:** shaman at any band; Discipline 30 to 50; Holy 20, 30 and 50; druid 40.
+- **The earlier T1 to T5 moves** (Discipline Wand Specialization, shaman Water Shield, Holy 50 Spiritual Guidance and the rest) are void. They were measured from the stale published builds on the melee-only profile, and Spiritual Guidance 5 would go past the guide's level-60 rank.
+
+The guides and planner state no band build (each healer guide's Leveling section names no talents), so no text changed. `data/builds/1.60.1.70707/addon-builds.json` follows for the three specs, as its committed-copy test requires.
+
+### F3. Rank rows on the final bands and builds
+
+Same method as before, now run with each band's final build (`-talents`), plus two checks: no row may turn a fight that runs dry into one with mana unspent, and no faction may lose. Commit: S 90d16b4f0.
+
+| spec | levels | row | gain vs default, seed 1 / 50001 (horde) |
+|---|---|---|---|
+| Restoration druid | 50-59 | Rejuvenation 8 (added; an uprank) | +1.36% / +1.40% (+1.4%) |
+| Discipline | 50-59 | Shield 8, Prayer of Healing 1, Binding Heal 1 (kept) | set +2.5% (+2.5%) |
+| Holy | 40-49 | Renew 5 (added; an uprank) | +1.17% / +1.17% (+0.3% / +0.4%) |
+| Holy | 50-59 | Flash Heal 6, Prayer of Healing 1 (kept) | set +10.4% (+10.6%) |
+
+Dropped:
+- **Rejuvenation 7 at 40:** loses 0.6%.
+- **Holy Light 3 at 50:** gains 2% but turns a fight that runs dry at 274 s into one that ends with mana unspent.
+- **Discipline Shield 5 at 30:** inside the printing resolution.
+- **The Discipline band-40 set** (Shield 1, Prayer of Healing 1, Penance 1): loses 2%.
+- **Heal 4 at 50.**
+- **Holy Prayer of Healing 1 at 40, Lightwell 1 at 50.**
+- **Chain Heal 1 at 50:** loses 0.4%.
+- **Discipline Shield 2 at 20:** +1.3% alliance but -3.6% horde, so not adopted.
+
+### Bare coverage per band (final state, alliance, seed 1, effective HPS / incoming)
+
+| band | druid | paladin | Discipline | Holy | shaman |
+|---|---|---|---|---|---|
+| 20 | 92% | 81% | 78% | 85% | 94% |
+| 30 | 92% | 92% | 93% | 92% | 92% |
+| 40 | 90% | 89% | 93% | 98% | 92% |
+| 50 | 95% | 72% | 79% | 87% | 98% |
+| 60 | 40% | 32% | 29% | 33% | 39% |
+
+- With the bosses' spells counted, every sub-60 band is covered at 72 to 98% by bare healers, against 29 to 40% at 60.
+- **Owner question, still open:** level 60's own retune rule would add a per-band multiplier, roughly x2 to x4 by the earlier sweep. It is not applied.
+- **Still open:** pull size (see F1).
