@@ -507,6 +507,17 @@
             "preset": "bare"
           }
         ]
+      },
+      {
+        "spell": "Chain Heal",
+        "authored": 10623,
+        "bands": [
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 1
+          }
+        ]
       }
     ],
     "warlock-destruction": [
