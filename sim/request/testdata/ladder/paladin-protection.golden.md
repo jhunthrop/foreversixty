@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-10000000000000000-00000000000000000 | main_hand:263407 | 11.3 | 7 | other:attack/1=60.9, spell:1311647=41.9, spell:679=18.1, spell:1311650=17.3, spell:20271=17.3 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928} |
-| 20 | 00000000000000000-15302000000000000-00000000000000000 | main_hand:7230 | 19.6 | 8 | other:attack/1=51.9, spell:1311654=32.3, spell:1866=16.1, spell:1311655=10.7, spell:20271=10.7 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928} |
-| 30 | 00000000000000000-15302102511000000-00000000000000000 | main_hand:13045 | 30.9 | 10 | other:attack/1=62.1, spell:20231=35.1, spell:680=16.9, spell:20183=14.3, spell:20271=11.1 | {SpellID: 20928} |
-| 38 | 00000000000000000-15302102513501000-00000000000000000 | main_hand:13045 | 33.5 | 11 | other:attack/1=62.4, spell:20415=29.3, spell:2495=16.7, spell:20411=11.0, spell:20271=7.9 | {SpellID: 20928} |
-| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:13045 | 33.8 | 12 | other:attack/1=62.4, spell:2495=29.9, spell:20415=7.4, spell:20411=2.7, spell:407632=2.5 | - |
-| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:13045 | 42.1 | 12 | other:attack/1=62.4, spell:5569=30.0, spell:20417=7.4, spell:407632=3.7, spell:20413=2.6 | - |
-| 60 | 05005000000000000-15302102513501031-50030000000000000 | main_hand:22736 | 106.4 | 12 | other:attack/1=65.9, spell:10333=30.2, spell:20418=7.7, spell:407632=2.4, spell:20414=2.4 | - |
+| 10 | 00000000000000000-10000000000000000-00000000000000000 | main_hand:263407 | 11.5 | 7 | other:attack/1=60.9, spell:1311647=41.9, spell:679=18.2, spell:1311650=17.4, spell:20271=17.4 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928} |
+| 20 | 00000000000000000-15302000000000000-00000000000000000 | main_hand:7230 | 20.0 | 8 | other:attack/1=51.8, spell:1311654=32.4, spell:1866=16.1, spell:1311655=10.7, spell:20271=10.7 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928} |
+| 30 | 00000000000000000-15302102511000000-00000000000000000 | main_hand:13045 | 31.5 | 10 | other:attack/1=62.2, spell:20231=34.9, spell:680=16.9, spell:20183=14.3, spell:20271=11.1 | {SpellID: 20925} |
+| 38 | 00000000000000000-15302102513501000-00000000000000000 | main_hand:13045 | 34.2 | 10 | other:attack/1=64.7, spell:20415=29.8, spell:2495=18.5, spell:20411=8.8, spell:20271=5.7 | - |
+| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:13045 | 34.7 | 12 | other:attack/1=64.0, spell:2495=30.4, spell:20415=7.3, spell:407632=2.5, spell:20411=2.1 | - |
+| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:13045 | 43.2 | 12 | other:attack/1=63.5, spell:5569=30.3, spell:20417=7.4, spell:407632=3.3, spell:20413=2.6 | - |
+| 60 | 05005000000000000-15302102513501031-50030000000000000 | main_hand:22736 | 109.5 | 12 | other:attack/1=68.2, spell:10333=30.3, spell:20418=7.7, spell:407632=2.6, spell:20414=2.4 | - |
 
 ## Learned but unused (informational)
 
@@ -155,4 +155,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- paladin-protection level=38 kind=zero_casts spell="Divine Protection" id=5573 authored=5573

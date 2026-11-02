@@ -98,13 +98,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-00000000000000000000-1000000000000000 | main_hand:263937 | 17.5 | 4 | spell:5186=32.1, spell:1058=24.0, spell:1259799=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
-| 20 | 0000000000000000-00000000000000000000-5051000000000000 | main_hand:890 | 26.5 | 5 | spell:1430=24.2, spell:8938=11.0, spell:5188=5.3, spell:1259799=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
-| 30 | 0000000000000000-00000000000000000000-5053005110010000 | main_hand:9604 | 51.5 | 7 | spell:2091=24.3, spell:8940=6.5, spell:5189=3.1, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 18562} |
-| 38 | 0000000000000000-00000000000000000000-5053005153110000 | main_hand:873 | 72.3 | 8 | spell:3627=23.9, spell:8941=6.6, spell:8903=2.2, spell:1259799=2.0, spell:17116=2.0 | - |
-| 40 | 0000000000000000-00000000000000000000-5053005153112000 | main_hand:873 | 83.2 | 8 | spell:8910=23.2, spell:8941=6.3, spell:8903=2.2, spell:1259799=2.0, spell:17116=2.0 | - |
-| 50 | 4300000000000000-00000000000000000000-5053005153113200 | main_hand:812 | 123.0 | 8 | spell:9839=23.0, spell:9856=5.8, spell:1259799=2.0, spell:17116=2.0, spell:9888=1.4 | - |
-| 60 | 4532200100000000-00000000000000000000-5053005153113200 | main_hand:19355 | 177.1 | 8 | spell:9841=18.2, spell:9858=5.1, spell:18562=2.8, spell:1259799=2.0, spell:17116=2.0 | - |
+| 10 | 0000000000000000-00000000000000000000-1000000000000000 | main_hand:263937 | 17.2 | 4 | spell:5186=30.8, spell:1058=25.4, spell:1259799=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
+| 20 | 0000000000000000-00000000000000000000-5051000000000000 | main_hand:890 | 27.4 | 5 | spell:1430=24.3, spell:8938=11.0, spell:5188=6.0, spell:1259799=2.0, spell:29166=1.0 | {SpellID: 17116}, {SpellID: 18562} |
+| 30 | 0000000000000000-00000000000000000000-5053005110010000 | main_hand:9604 | 52.8 | 7 | spell:2091=24.4, spell:8940=6.8, spell:5189=3.5, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 18562} |
+| 38 | 0000000000000000-00000000000000000000-5053005153110000 | main_hand:873 | 74.9 | 8 | spell:3627=24.0, spell:8941=7.0, spell:8903=2.5, spell:18562=2.1, spell:1259799=2.0 | - |
+| 40 | 0000000000000000-00000000000000000000-5053005153112000 | main_hand:873 | 85.6 | 8 | spell:8910=23.1, spell:8941=6.7, spell:8903=2.6, spell:1259799=2.0, spell:17116=2.0 | - |
+| 50 | 4300000000000000-00000000000000000000-5053005153113200 | main_hand:812 | 126.7 | 8 | spell:9839=23.0, spell:9856=6.2, spell:1259799=2.0, spell:17116=2.0, spell:9888=1.6 | - |
+| 60 | 4532200100000000-00000000000000000000-5053005153113200 | main_hand:19355 | 182.1 | 8 | spell:9841=18.3, spell:9858=5.2, spell:18562=2.7, spell:1259799=2.0, spell:17116=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -132,7 +132,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 3029)
 - Entangling Roots (spell 5195)
+- Ferocious Bite (spell 1328618)
 - Insect Swarm (spell 24974)
+- Lacerate (spell 1328617)
 - Maul (spell 6809)
 - Moonfire (spell 8927)
 - Rake (spell 1822)
@@ -148,6 +150,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Entangling Roots (spell 5196)
 - Ferocious Bite (spell 22568)
 - Insect Swarm (spell 24974)
+- Lacerate (spell 1328616)
 - Maul (spell 8972)
 - Moonfire (spell 8928)
 - Rake (spell 1823)
@@ -165,6 +168,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Ferocious Bite (spell 22827)
 - Hurricane (spell 16914)
 - Insect Swarm (spell 24975)
+- Lacerate (spell 1328616)
 - Maul (spell 8972)
 - Moonfire (spell 8929)
 - Primal Bite (spell 407995)

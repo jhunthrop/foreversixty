@@ -103,8 +103,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 0000000000000000-0000000000000000-500230231050000000 | main_hand:6692 off_hand:23168 ranged:274748 | 86.2 | 5 | other:attack/2=134.2, other:attack/1=57.5, spell:14262=21.1, spell:24118=9.6, spell:14302=4.6 | {SpellID: 10610}, {SpellID: 1242634}, {SpellID: 1317257} |
 | 38 | 0000000000000000-0000000000000000-500230231051222100 | main_hand:869 off_hand:6829 ranged:2825 | 131.6 | 7 | other:attack/2=85.6, other:attack/1=49.4, spell:14263=23.1, spell:1317257=21.4, spell:14269=13.4 | {SpellID: 10610} |
 | 40 | 0000000000000000-0000000000000000-500230231051222111 | main_hand:2164 off_hand:9465 ranged:2825 | 136.2 | 8 | other:attack/2=104.5, other:attack/1=81.1, spell:14264=23.5, spell:1317257=20.5, spell:14269=16.6 | {SpellID: 10610} |
-| 50 | 2000000000000000-3010000000000000-500230231051222151 | main_hand:2163 off_hand:6660 ranged:2824 | 174.5 | 7 | other:attack/2=161.0, other:attack/1=126.1, spell:14265=23.5, spell:14270=21.1, spell:1317257=19.5 | {SpellID: 10610} |
-| 60 | 2000000000000000-3050050010000000-500230231051222151 | main_hand:22736 off_hand:23054 ranged:22811 | 351.8 | 7 | other:attack/2=74.0, other:attack/1=48.6, spell:14266=22.7, spell:1317257=21.3, spell:14271=13.2 | {SpellID: 10610} |
+| 50 | 5000000000000000-0010000000000000-500230231051222151 | main_hand:2163 off_hand:6660 ranged:2824 | 180.7 | 7 | other:attack/2=176.2, other:attack/1=139.9, spell:14265=23.8, spell:14270=21.5, spell:1317257=19.4 | {SpellID: 10610} |
+| 60 | 5000000000000000-0050050010000000-500230231051222151 | main_hand:22736 off_hand:23054 ranged:22811 | 366.5 | 7 | other:attack/2=79.0, other:attack/1=52.3, spell:14266=23.9, spell:1317257=21.3, spell:14271=13.6 | {SpellID: 10610} |
 
 ## Learned but unused (informational)
 

@@ -100,9 +100,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:3440 | 9.0 | 2 | spell:6807/1=56.1, spell:6807=55.4, other:attack/1=17.7 | - |
 | 20 | 0000000000000000-55100000000000000000-0000000000000000 | main_hand:7230 | 19.9 | 3 | spell:6808/1=72.8, spell:6808=71.8, spell:779=32.6, other:attack/1=1.3, other:rage_gain=0.2 | - |
-| 30 | 0000000000000000-55230330000000000000-0000000000000000 | main_hand:13045 | 31.8 | 3 | spell:6809/1=72.9, spell:6809=71.9, spell:780=57.0, other:attack/1=1.2, other:rage_gain=0.2 | - |
-| 38 | 0000000000000000-55230332023100000000-0000000000000000 | main_hand:13045 | 47.0 | 4 | spell:769=74.0, spell:8972/1=72.6, spell:8972=70.2, other:attack/1=2.9, spell:22842=1.5 | - |
-| 40 | 0000000000000000-55230332023102000000-0000000000000000 | main_hand:13045 | 47.6 | 4 | spell:769=76.0, spell:8972/1=72.6, spell:8972=70.2, other:rage_gain=9.7, other:attack/1=2.9 | {SpellID: 407995} |
+| 30 | 0000000000000000-55230330000000000000-0000000000000000 | main_hand:13045 | 31.8 | 3 | spell:6809/1=72.9, spell:6809=71.9, spell:780=57.0, other:attack/1=1.2, other:rage_gain=0.2 | {SpellID: 1328617} |
+| 38 | 0000000000000000-55230332023100000000-0000000000000000 | main_hand:13045 | 59.3 | 5 | spell:8972/1=71.5, spell:8972=68.5, spell:769=59.4, spell:1328616=28.2, other:attack/1=4.6 | - |
+| 40 | 0000000000000000-55230332023102000000-0000000000000000 | main_hand:13045 | 60.3 | 5 | spell:8972/1=71.4, spell:8972=68.6, spell:769=60.7, spell:1328616=28.8, other:rage_gain=10.8 | {SpellID: 407995} |
 | 50 | 0000000000000000-55230332023102125110-0000000000000000 | main_hand:13045 | 111.9 | 7 | spell:9880/1=71.4, spell:9880=68.4, spell:9754=46.2, spell:1235826=31.9, spell:1238069=29.3 | - |
 | 60 | 0000000000000000-55230332023102125510-0510000000000000 | main_hand:22632 | 193.7 | 7 | spell:9881/1=72.2, spell:9881=69.8, spell:9908=50.5, spell:1235827=32.0, other:rage_gain=30.2 | - |
 
@@ -129,7 +129,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 3029)
 - Entangling Roots (spell 5195)
+- Ferocious Bite (spell 1328618)
 - Insect Swarm (spell 24974)
+- Lacerate (spell 1328617)
 - Moonfire (spell 8927)
 - Rake (spell 1822)
 - Rip (spell 9492)

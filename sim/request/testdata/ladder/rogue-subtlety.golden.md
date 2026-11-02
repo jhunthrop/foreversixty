@@ -101,10 +101,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:1287 off_hand:2088 | 11.0 | 3 | other:attack/1=153.1, other:attack/2=134.0, spell:1757=40.5, spell:5171/3=11.1, spell:1784=1.0 | {SpellID: 11275}, {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
 | 20 | 00000000000000000-00000000000000000-5320100000000000000 | main_hand:2236 off_hand:2194 | 25.0 | 4 | other:attack/1=121.4, other:attack/2=73.0, spell:1758=40.3, spell:1943/4=9.7, spell:1785=1.0 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
 | 30 | 00000000000000000-00000000000000000-5320201310013000000 | main_hand:23168 off_hand:7687 | 44.1 | 8 | other:attack/1=130.2, other:attack/2=76.2, spell:1760=31.7, spell:8639/4=9.6, spell:14278=9.0 | {SpellID: 16511} |
-| 38 | 00000000000000000-00000000000000000-5320201310013211400 | main_hand:6831 off_hand:6829 | 60.0 | 8 | other:attack/1=132.2, other:attack/2=90.3, spell:16511=46.8, spell:8640/4=6.8, spell:5171/3=5.6 | - |
-| 40 | 00000000000000000-00000000000000000-5320201310013211501 | main_hand:2164 off_hand:9359 | 70.8 | 9 | other:attack/1=111.2, other:attack/2=87.1, spell:16511=50.6, spell:8640/4=7.1, spell:5171/3=6.2 | - |
-| 50 | 00532000000000000-00000000000000000-5320201310013211501 | main_hand:2163 off_hand:6660 | 100.0 | 8 | other:attack/2=164.3, other:attack/1=152.6, spell:16511=49.4, spell:11273/4=8.3, spell:6774/3=7.3 | - |
-| 60 | 00532310101400000-00000000000000000-5320201310013211501 | main_hand:22802 off_hand:23054 | 191.6 | 13 | other:attack/1=127.9, other:attack/2=85.4, spell:16511=57.7, spell:11275/4=9.3, spell:6774/3=6.4 | - |
+| 38 | 00000000000000000-00000000000000000-5320201310013211400 | main_hand:6831 off_hand:6829 | 60.5 | 8 | other:attack/1=132.2, other:attack/2=90.3, spell:16511=46.8, spell:8640/4=6.8, spell:5171/3=5.6 | - |
+| 40 | 00000000000000000-00000000000000000-5320201310013211501 | main_hand:2164 off_hand:9359 | 70.4 | 9 | other:attack/1=111.2, other:attack/2=87.1, spell:16511=50.6, spell:8640/4=7.1, spell:5171/3=6.2 | - |
+| 50 | 00532000000000000-00000000000000000-5320201310013211501 | main_hand:2163 off_hand:6660 | 101.3 | 8 | other:attack/2=164.3, other:attack/1=152.6, spell:16511=49.4, spell:11273/4=8.3, spell:6774/3=7.3 | - |
+| 60 | 00532310101400000-00000000000000000-5320201310013211501 | main_hand:22802 off_hand:23054 | 190.8 | 13 | other:attack/1=127.9, other:attack/2=85.4, spell:16511=57.7, spell:11275/4=9.3, spell:6774/3=6.4 | - |
 
 ## Learned but unused (informational)
 
