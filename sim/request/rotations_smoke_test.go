@@ -194,12 +194,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 408498}": "Maelstrom Weapon is a talent (sim/shaman/talents.go); this build takes none, and the Lightning Bolt line's auraIsKnown gate skips it.",
 	},
 	"warlock-affliction": {
-		"{OtherID: 13}":    noPotionWarning,
 		"{SpellID: 18288}": "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
 		"{SpellID: 18881}": "Siphon Life is a talent (sim/warlock/siphon_life.go); this build takes none.",
 	},
 	"warlock-demonology": {
-		"{OtherID: 13}":     noPotionWarning,
 		"{SpellID: 19028}":  "Soul Link is a talent (sim/warlock/talents.go's applySoulLink); this build takes none.",
 		"{SpellID: 18788}":  "Demonic Sacrifice is a talent (sim/warlock/talents.go's applyDemonicSacrifice); this build takes none.",
 		"{SpellID: 440873}": "Decimation's buff comes from its talent (sim/warlock/talents.go); this build takes none.",
@@ -207,7 +205,6 @@ var smokeBuildWarnings = map[string]map[string]string{
 	"warlock-destruction": {
 		"{SpellID: 1293813}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
 		"{SpellID: 412758}":  "Shadow Bolt's spellIsKnown(412758) gate (rotation-accuracy program, 2026-09-28) checks Incinerate's rank-1 id directly; this build takes no Incinerate talent, so the id it checks is as unregistered as 1293813 above.",
-		"{OtherID: 13}":      noPotionWarning,
 		"{SpellID: 18871}":   "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
 		"{SpellID: 18932}":   "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
 	},
@@ -226,9 +223,6 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 1322605}": "Shifting Power is a Feral talent (hotfix-only spell 1322605, sim/druid/shifting_power.go, gated on Talents.ShiftingPower); this build takes none.",
 	},
 }
-
-const noPotionWarning = "OtherActionPotion: this build carries no consumables, so there is " +
-	"no potion for the engine to resolve the action against."
 
 func TestEveryWrittenRotationRunsInTheEngine(t *testing.T) {
 	registerEngine.Do(engine.RegisterAll)
