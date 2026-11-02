@@ -155,3 +155,28 @@ func TestGearedBandWeightsTakesTheGearedSweepWhenItsSetIsNoWorse(t *testing.T) {
 		t.Errorf("agility = %v, want the geared sweep's 0.9 (the ladder set is ahead by less than its error)", w)
 	}
 }
+
+func TestGearedBandWeightsHandsBackTheLadderSweepItReplaced(t *testing.T) {
+	fake, firstPass := gearedWeightsFixture()
+	ladder := api.CharacterSpec{Level: 30, Gear: []api.GearSlot{{Slot: "ranged", ItemID: 9}}}
+	got, err := gearedBandWeights(fake, specInfo{Spec: "hunter-marksmanship", ReferenceStat: "ranged_attack_power"}, 30, 5, "", ladder, firstPass, scoreByHead(map[int]float64{1: 100, 2: 100}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.ladder == nil || got.ladder.result["agility"].Weight != 1.8 {
+		t.Fatalf("ladder = %+v, want the replaced ladder sweep (agility 1.8) for the guard's contender", got.ladder)
+	}
+}
+
+func TestLadderWeightsContenderWearsTheFinalSetsTrinkets(t *testing.T) {
+	item := func(id int) *scored { return &scored{candidate: candidate{ID: id}} }
+	ladderPicks := map[string]slotPick{"head": {Item: item(1)}, "trinket1": {Item: item(90)}}
+	final := map[string]slotPick{"head": {Item: item(2)}, "trinket1": {Item: item(91)}, "trinket2": {Item: item(92)}}
+	got := ladderWeightsContender(ladderPicks, final)
+	if got["head"].Item.ID != 1 || got["trinket1"].Item.ID != 91 || got["trinket2"].Item.ID != 92 {
+		t.Errorf("contender = head %d, trinkets %d/%d; want the ladder head 1 and the final trinkets 91/92", got["head"].Item.ID, got["trinket1"].Item.ID, got["trinket2"].Item.ID)
+	}
+	if ladderPicks["trinket1"].Item.ID != 90 {
+		t.Error("ladderWeightsContender changed its input")
+	}
+}

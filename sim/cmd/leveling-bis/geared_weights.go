@@ -19,6 +19,10 @@ type bandWeights struct {
 	// measured the reference stat positive beyond its error.
 	reason        string
 	lowConfidence bool
+	// ladder is the bare ladder sweep when a geared sweep replaced it: the
+	// set its weights pick is one more set the band's guard measures
+	// (ladderWeightsContender).
+	ladder *bandWeights
 }
 
 // measureBandWeights sweeps ch's stat weights. A sweep whose reference stat
@@ -109,6 +113,7 @@ func gearedBandWeights(runner engineRunner, spec specInfo, band, iterations int,
 	if gearKeyOf(wornSet) == gearKeyOf(bareSet) {
 		return worn, nil
 	}
+	worn.ladder = &bare
 	bareScore, bareErr, err := measure(bareSet)
 	if err != nil {
 		return bandWeights{}, fmt.Errorf("band %d measuring the ladder weights' set: %w", band, err)
@@ -122,6 +127,21 @@ func gearedBandWeights(runner engineRunner, spec specInfo, band, iterations int,
 		return bare, nil
 	}
 	return worn, nil
+}
+
+// ladderWeightsContender is the set the ladder sweep's weights pick for a
+// faction, wearing the trinkets the band's final set earned (pick() places
+// trinkets by score only; the trinket tournament decides them): the guard
+// (keepVerifyBest) measures it beside the band's final set, so ranking by a
+// geared sweep never publishes a set worse beyond error than ranking by the
+// ladder sweep would have. Round 8: Balance band 50's geared weights picked
+// a first pass no worse than the ladder's, yet its final set measured 0.8%
+// (Alliance) and 1.9% (Horde) below the ladder-weighted run's.
+func ladderWeightsContender(ladderPicks, final map[string]slotPick) map[string]slotPick {
+	out := clonePicksMap(ladderPicks)
+	out["trinket1"] = final["trinket1"]
+	out["trinket2"] = final["trinket2"]
+	return out
 }
 
 // wearOver is set worn over base: every slot set fills, plus base's items
