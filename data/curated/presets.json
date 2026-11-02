@@ -15,7 +15,7 @@
   "presets": {
     "raid": {
       "label": "Raid-ready, Phase 1",
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); the engine also applies Kings to Alliance characters only, so the two factions would differ. If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might and Blessing of Wisdom to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free.",
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. Paladins and shamans are on both factions in Forever, so the blessings and the totems reach either faction's raid entry. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free. Forever's foods give the stat of the Well Fed their aura 227 effect triggers, not Era's: of the foods the engine models, Nightfin Soup (22 spell damage) is the caster's, Smoked Desert Dumplings (20 Strength) a strength user's and a tank's, and Grilled Squid (1% critical strike) an agility user's (round 8, design/reviews/2026-11-02-sim-audit-round8/auras.md).",
       "buffs": [
         {
           "id": "arcane_brilliance",
@@ -148,9 +148,9 @@
                 "reason": "Spell power, the engine's spell-power elixir slot; client level 47."
               },
               {
-                "id": "food_runn_tum_tuber_surprise",
-                "label": "Runn Tum Tuber Surprise",
-                "reason": "Caster food, client level 35."
+                "id": "food_nightfin_soup",
+                "label": "Nightfin Soup",
+                "reason": "Caster food: 22 spell damage while well fed (item 13931, spell 1249513, Well Fed 1249520); client level 35. Runn Tum Tuber Surprise is 15 Intellect in Forever and measured 1 to 2% behind for every damage caster."
               },
               {
                 "id": "main_hand_imbue:brilliant_wizard_oil",
@@ -237,11 +237,6 @@
                 "reason": "Strength."
               },
               {
-                "id": "food_grilled_squid",
-                "label": "Grilled Squid",
-                "reason": "Agility food, client level 35."
-              },
-              {
                 "id": "juju_might",
                 "label": "Juju Might",
                 "reason": "Attack power. It shares the engine's attack-power slot with Winterfall Firewater and is the stronger of the two."
@@ -283,7 +278,7 @@
               {
                 "id": "food_grilled_squid",
                 "label": "Grilled Squid",
-                "reason": "Agility food, client level 35."
+                "reason": "Agility user's food: 1% critical strike while well fed in Forever (item 13928, Well Fed 1249523, aura 290; Era's was 10 Agility); client level 35. Smoked Desert Dumplings' Strength gives a hunter no ranged attack power and measured about 1% behind for Beast Mastery and Marksmanship and 0.2% behind for Survival."
               },
               {
                 "id": "juju_might",
@@ -313,9 +308,9 @@
                 "reason": "Health, the engine's health elixir slot."
               },
               {
-                "id": "food_tender_wolf_steak",
-                "label": "Tender Wolf Steak",
-                "reason": "Stamina food a Phase 1 tank can cook: the recipe is a vendor book. Dirge's Kick Chimaerok Chops is left out: its recipe comes from the Ahn'Qiraj scepter chain, which is not on the roadmap."
+                "id": "food_smoked_desert_dumpling",
+                "label": "Smoked Desert Dumplings",
+                "reason": "Tank food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. Forever's Tender Wolf Steak is 15 Agility, not stamina and spirit, and the engine models no stamina food a Phase 1 tank can cook (Dirge's Chops is the Ahn'Qiraj scepter chain's); the dumplings measured 0.5 to 0.8% more threat than the steak for all three tanks."
               },
               {
                 "id": "alcohol_rumsey_rum_black_label",
@@ -369,6 +364,11 @@
               "id": "conjured_rogue_thistle_tea",
               "label": "Thistle Tea",
               "reason": "Rogue energy consumable (item 7676, +100 Energy, 5 minute cooldown), the rogue's counterpart of the warrior's rage potion; cooked from a vendor recipe."
+            },
+            {
+              "id": "food_grilled_squid",
+              "label": "Grilled Squid",
+              "reason": "Agility user's food: 1% critical strike while well fed in Forever (item 13928, Well Fed 1249523; Era's was 10 Agility); client level 35. Smoked Desert Dumplings measured 0.05 to 0.2% behind for the three rogue specs."
             }
           ]
         },
@@ -435,6 +435,41 @@
               "id": "greater_stoneshield_potion",
               "label": "Greater Stoneshield Potion",
               "reason": "Armor for two minutes, the bear's potion: a druid has no rage potion in the preset and no mana to spend."
+            }
+          ],
+          "warrior-arms": [
+            {
+              "id": "food_smoked_desert_dumpling",
+              "label": "Smoked Desert Dumplings",
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
+            }
+          ],
+          "warrior-fury": [
+            {
+              "id": "food_smoked_desert_dumpling",
+              "label": "Smoked Desert Dumplings",
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
+            }
+          ],
+          "paladin-retribution": [
+            {
+              "id": "food_smoked_desert_dumpling",
+              "label": "Smoked Desert Dumplings",
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
+            }
+          ],
+          "shaman-enhancement": [
+            {
+              "id": "food_smoked_desert_dumpling",
+              "label": "Smoked Desert Dumplings",
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
+            }
+          ],
+          "druid-feral": [
+            {
+              "id": "food_smoked_desert_dumpling",
+              "label": "Smoked Desert Dumplings",
+              "reason": "Strength user's food: 20 Strength while well fed (item 20452, Well Fed 1248422); client level 45. It measured 0.4 to 0.6% ahead of Grilled Squid (1% critical strike in Forever)."
             }
           ]
         }
