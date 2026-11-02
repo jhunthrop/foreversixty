@@ -464,4 +464,38 @@ def test_the_level_sixty_band_casts_the_list_as_written(tmp_path):
     _write_apl(tmp_path, "priest-holy", [_cast(6075, rank=3, notes="Renew on the tank.")])
     bands = _healer_bands("priest-holy", tmp_path)
     assert [line.spell_id for line in bands[60]] == [6075]
-    assert [line.spell_id for line in bands[50]] == [10928]
+
+
+def test_a_deliberate_lower_rank_is_never_lifted_below_sixty(tmp_path):
+    """Owner ruling 3 (round 9): below 60 the sim casts the highest rank
+    learned that is not above the list's own (sim/internal/spellranks
+    LearnedSpellID), so Renew rank 3 stays rank 3, and below its level the
+    rank under it stands in."""
+    _write_apl(tmp_path, "priest-holy", [_cast(6075, rank=3, notes="Renew on the tank.")])
+    bands = _healer_bands("priest-holy", tmp_path)
+    assert [line.spell_id for line in bands[50]] == [6075]
+    assert [line.spell_id for line in bands[10]] == []
+    assert [line.spell_id for line in _healer_bands_at("priest-holy", tmp_path, 16)] == [6074]
+
+
+def test_a_band_casts_the_rank_choice_the_curated_table_names(tmp_path):
+    """data/curated/rank-choices.json picks a lower rank over a band below 60,
+    as the sim's rewrite does (sim/request rankResolver)."""
+    _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
+    (tmp_path / "rank-choices.json").write_text(json.dumps({"specs": {"priest-holy": [
+        {"spell": "Renew", "authored": 10929,
+         "bands": [{"from_level": 50, "to_level": 59, "rank": 3}]}]}}), encoding="utf-8")
+    bands = _healer_bands("priest-holy", tmp_path)
+    assert [line.spell_id for line in bands[40]] == [6075]
+    assert [line.spell_id for line in bands[50]] == [6075]
+    assert [line.spell_id for line in bands[60]] == [10929]
+
+
+def _healer_bands_at(spec: str, curated_dir: Path, level: int) -> list:
+    from pipeline import addonrotation
+    original = addonrotation.LEVEL_BANDS
+    addonrotation.LEVEL_BANDS = [level]
+    try:
+        return build_rotation(spec, curated_dir, _HEALER_RANKS)[0].lines
+    finally:
+        addonrotation.LEVEL_BANDS = original

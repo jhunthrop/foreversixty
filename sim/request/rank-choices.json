@@ -1,5 +1,5 @@
 {
-  "notes": "Per-band rank choices (owner ruling 3, sim-accuracy round 9). Below level 60 the site rewrites a rotation's ranked spells: by default each casts the highest rank learned that is not above the rank the band-60 rotation names, so a deliberate downrank there (Holy priest's Renew rank 3) is kept. A row here overrides that for one spec's authored spell id from from_level through to_level (one ten-level band; outside every row the default rule stands): the rotation casts that rank instead. A row is adopted only where the fight is mana-bound and the lower rank raises the band's published number (bare below 60) beyond the error at seeds 1 and 50001, 10000 iterations; the evidence is in design/reviews/2026-11-02-sim-audit-round9/ranks.md. Level 60 runs the curated rotation as written, so a band-60 rank belongs in data/curated/apl, not here. sim/request embeds a copy (make rank-choices-sync); TestEmbeddedRankChoicesMatchCurated holds it to this file.",
+  "notes": "Per-band rank choices (owner ruling 3, sim-accuracy round 9). Below level 60 the site rewrites a rotation's ranked spells: by default each casts the highest rank learned that is not above the rank the band-60 rotation names, so a deliberate downrank there (Holy priest's Renew rank 3) is kept. A row here overrides that for one spec's authored spell id from from_level through to_level (one ten-level band; outside every row the default rule stands): the rotation casts that rank instead. A row is adopted only where the fight is mana-bound and the lower rank raises the band's published number (bare below 60) by at least 1% for damage and 2% for effective healing (the healer rank rule of design/reviews/2026-10-08-healer-mana-audit.md), beyond the error at seeds 1 and 50001, 10000 iterations; a healer row never turns a fight that runs dry into one that ends with mana unspent, and every healer row is measured on the level-60 heal profile; the evidence is in design/reviews/2026-11-02-sim-audit-round9/ranks.md. Level 60 runs the curated rotation as written, so a band-60 rank belongs in data/curated/apl, not here. sim/request embeds a copy (make rank-choices-sync); TestEmbeddedRankChoicesMatchCurated holds it to this file.",
   "specs": {
     "druid-balance": [
       {
@@ -54,6 +54,19 @@
         ]
       }
     ],
+    "mage-arcane": [
+      {
+        "spell": "Frostbolt",
+        "authored": 10181,
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 4
+          }
+        ]
+      }
+    ],
     "mage-fire": [
       {
         "spell": "Scorch",
@@ -83,6 +96,11 @@
             "rank": 1
           },
           {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1
+          },
+          {
             "from_level": 50,
             "to_level": 59,
             "rank": 1
@@ -96,7 +114,7 @@
           {
             "from_level": 40,
             "to_level": 49,
-            "rank": 2
+            "rank": 3
           },
           {
             "from_level": 50,
@@ -111,11 +129,6 @@
         "spell": "Renew",
         "authored": 6075,
         "bands": [
-          {
-            "from_level": 30,
-            "to_level": 39,
-            "rank": 1
-          },
           {
             "from_level": 40,
             "to_level": 49,
