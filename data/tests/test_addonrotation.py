@@ -500,3 +500,65 @@ def _healer_bands_at(spec: str, curated_dir: Path, level: int) -> list:
         return build_rotation(spec, curated_dir, _HEALER_RANKS)[0].lines
     finally:
         addonrotation.LEVEL_BANDS = original
+
+
+def test_a_band_names_the_id_the_sim_casts_when_a_rank_has_a_forever_copy(tmp_path):
+    """A rank the client carries twice (Exorcism rank 1: the trainer's 879 and
+    the Forever copy 415068) resolves within the list's own id band, the rule
+    the sim's rewrite applies (sim/internal/spellranks sameBandOrFirst): the
+    band names the spell the sim casts, not the copy no trainer teaches."""
+    ranks = {"build": BUILD, "classes": {"paladin": {"Exorcism": [
+        {"id": 879, "level": 20, "rank": 1},
+        {"id": 415068, "level": 20, "rank": 1},
+        {"id": 5614, "level": 28, "rank": 2},
+        {"id": 10314, "level": 60, "rank": 6},
+    ]}}}
+    _write_apl(tmp_path, "paladin-retribution", [_cast(10314, rank=6, notes="Exorcism.")])
+    rotation = build_rotation("paladin-retribution", tmp_path, ranks)
+    bands = {band.level: band.lines for band in rotation}
+    assert [line.spell_id for line in bands[20]] == [879]
+    assert [line.spell_id for line in bands[30]] == [5614]
+
+
+def test_two_ranks_learned_at_one_level_cast_the_higher(tmp_path):
+    """Counterattack ranks 1 and 2 are both learned at 30 in Forever; the sim
+    casts rank 2 there, so the band names rank 2."""
+    ranks = {"build": BUILD, "classes": {"hunter": {"Counterattack": [
+        {"id": 19306, "level": 30, "rank": 1},
+        {"id": 1242634, "level": 30, "rank": 2},
+        {"id": 20910, "level": 54, "rank": 4},
+    ]}}}
+    _write_apl(tmp_path, "hunter-survival", [_cast(20910, rank=4, notes="Counterattack.")])
+    bands = {band.level: band.lines for band in build_rotation("hunter-survival", tmp_path, ranks)}
+    assert [line.spell_id for line in bands[30]] == [1242634]
+
+
+def test_a_talents_own_spell_joins_the_rotation_from_its_tiers_level(tmp_path):
+    """Stormstrike is the Enhancement talent the rotation leads with; no
+    trainer teaches it, so spellranks.json does not track it, and the addon
+    used to drop the line at every band. It now joins from the level its
+    tier opens (tier 3: level 25), as the sim casts it once talented."""
+    from pipeline.addonrotation import load_talent_spells
+
+    build_dir = tmp_path / "builds" / BUILD
+    (build_dir / "talents").mkdir(parents=True)
+    (build_dir / "talents" / "shaman.json").write_text(json.dumps({"trees": [{"talents": [
+        {"name": "Stormstrike", "tier": 3, "spell_id": 17364},
+        {"name": "Thundering Strikes", "tier": 0, "spell_id": 16255},
+    ]}]}), encoding="utf-8")
+    ranks = {"build": BUILD, "classes": {"shaman": {"Earth Shock": [
+        {"id": 8042, "level": 4, "rank": 1},
+        {"id": 10414, "level": 60, "rank": 7},
+    ]}}}
+    _write_apl(tmp_path, "shaman-enhancement", [
+        _cast(17364, notes="Stormstrike."), _cast(10414, rank=7, notes="Earth Shock."),
+    ])
+    talents = load_talent_spells(build_dir, "shaman")
+    rotation = build_rotation("shaman-enhancement", tmp_path, ranks, talent_spells=talents)
+    bands = {band.level: band.lines for band in rotation}
+    assert [line.name for line in bands[20]] == ["Earth Shock"]
+    assert [(line.spell_id, line.name) for line in bands[30]] == [
+        (17364, "Stormstrike"),
+        (8042, "Earth Shock"),
+    ]
+    assert [line.spell_id for line in bands[60]] == [17364, 10414]
