@@ -1,9 +1,8 @@
-package request
+package rankchoices
 
 // A read of the per-band rank choices for code outside the rotation: the log coach
 // (api/internal/coach F5) must not call a lower rank a mistake where the site's own
-// rotation casts it. This reads the same embedded table rank_choices.go rewrites rotations
-// from; it changes nothing about that rewrite.
+// rotation casts it. sim/request rewrites rotations from the same embedded table.
 
 import (
 	"encoding/json"
@@ -13,14 +12,14 @@ import (
 )
 
 // rankChoicesByName is spec -> spellranks.json spell name -> that spell's rows.
-var rankChoicesByName = sync.OnceValues(func() (map[string]map[string][]RankChoiceRow, error) {
-	var file rankChoicesFile
-	if err := json.Unmarshal(rankChoicesJSON, &file); err != nil {
+var rankChoicesByName = sync.OnceValues(func() (map[string]map[string][]Row, error) {
+	var file File
+	if err := json.Unmarshal(JSON, &file); err != nil {
 		return nil, fmt.Errorf("rank choices: the table is not readable: %w", err)
 	}
-	out := make(map[string]map[string][]RankChoiceRow, len(file.Specs))
+	out := make(map[string]map[string][]Row, len(file.Specs))
 	for spec, spells := range file.Specs {
-		byName := make(map[string][]RankChoiceRow, len(spells))
+		byName := make(map[string][]Row, len(spells))
 		for _, sp := range spells {
 			byName[sp.Spell] = append(byName[sp.Spell], sp.Bands...)
 		}

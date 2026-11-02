@@ -27,7 +27,7 @@ func TestEmbeddedRankChoicesMatchCurated(t *testing.T) {
 		t.Fatalf("reading the curated rank choices: %v", err)
 	}
 	if string(curated) != string(rankChoicesJSON) {
-		t.Fatal("sim/request/rank-choices.json differs from data/curated/rank-choices.json; run `make rank-choices-sync`")
+		t.Fatal("sim/rankchoices/rank-choices.json differs from data/curated/rank-choices.json; run `make rank-choices-sync`")
 	}
 	if _, err := embeddedRankChoices(); err != nil {
 		t.Fatalf("the embedded rank choices do not load: %v", err)

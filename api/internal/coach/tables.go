@@ -19,7 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
-	"github.com/jhunthrop/foreversixty/sim/request"
+	"github.com/jhunthrop/foreversixty/sim/rankchoices"
 )
 
 const manifestFile = "manifest.json"
@@ -191,11 +191,11 @@ func (f *FileTables) TablesFor(ctx context.Context, row summary.RosterRow, encou
 }
 
 // rankChoicesAt is Tables.RankChoices: for each trainable family, the ranks the spec's
-// rotation chooses at level (sim/request's embedded rank-choices.json).
+// rotation chooses at level (sim/rankchoices' embedded rank-choices.json).
 func rankChoicesAt(slug string, trainable map[string][]TrainableRank, level int) (map[string][]int, error) {
 	var out map[string][]int
 	for family := range trainable {
-		ranks, err := request.ChosenRanks(slug, family, level)
+		ranks, err := rankchoices.ChosenRanks(slug, family, level)
 		if err != nil {
 			return nil, fmt.Errorf("coach tables: %w", err)
 		}

@@ -6,46 +6,29 @@ package request
 // Owner ruling 3, sim-accuracy round 9: a mana-bound fight downranks.
 //
 // data/curated/rank-choices.json is the single source; `make
-// rank-choices-sync` copies it here, and TestEmbeddedRankChoicesMatchCurated
+// rank-choices-sync` copies it to sim/rankchoices, which embeds it, and TestEmbeddedRankChoicesMatchCurated
 // fails when the copy is stale. The table is parsed once per process, so the
 // rewrite adds a map lookup per ranked id and nothing else to a /sim run.
 
 import (
-	_ "embed"
 	"encoding/json"
 	"fmt"
 	"slices"
 	"sync"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/rankchoices"
 )
 
-//go:embed rank-choices.json
-var rankChoicesJSON []byte
+// rankChoicesJSON is the table's embedded bytes (sim/rankchoices).
+var rankChoicesJSON = rankchoices.JSON
 
-// RankChoiceRow is one band's choice: from FromLevel through ToLevel the
-// spell casts rank Rank. Outside every row the default rule stands. A row
-// naming a Preset (BarePreset or RaidPreset) applies only to a request
-// simmed under it; one with none applies to both.
-type RankChoiceRow struct {
-	FromLevel int    `json:"from_level"`
-	ToLevel   int    `json:"to_level"`
-	Rank      int    `json:"rank"`
-	Preset    string `json:"preset,omitempty"`
-}
+// RankChoiceRow is one band's choice; see rankchoices.Row.
+type RankChoiceRow = rankchoices.Row
 
-// rankChoiceSpell is one authored spell id's rows, as the curated file
-// writes them.
-type rankChoiceSpell struct {
-	// Spell is the spellranks.json name of Authored's spell, for a reader.
-	Spell    string          `json:"spell"`
-	Authored int32           `json:"authored"`
-	Bands    []RankChoiceRow `json:"bands"`
-}
+type rankChoiceSpell = rankchoices.Spell
 
-type rankChoicesFile struct {
-	Specs map[string][]rankChoiceSpell `json:"specs"`
-}
+type rankChoicesFile = rankchoices.File
 
 // rankChoices is one spec's rows by authored id, each list ascending by
 // FromLevel.

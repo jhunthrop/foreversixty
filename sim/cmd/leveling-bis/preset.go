@@ -61,7 +61,7 @@ func passesFor(base specInfo, band int, raid request.ResolvedPreset) []rankPass 
 }
 
 // rankPreset is the preset a pass's requests name, so the rotation casts
-// that preset's rank choices (sim/request rank-choices.json): the raid
+// that preset's rank choices (data/curated/rank-choices.json): the raid
 // pass is raid, every other pass bare. Without it a request falls back to
 // PublishedPreset(level), which is raid at 60, and the bare-60 rank rows
 // would never reach the bare-60 sets.

@@ -339,11 +339,12 @@ heal-profile-sync:
 
 .PHONY: rank-choices-sync
 # rank-choices-sync copies the curated per-band rank choices (which rank of a
-# ranked spell a rotation casts at a band below 60) to the file sim/request
-# embeds. data/curated/rank-choices.json is the single source;
+# ranked spell a rotation casts at a band below 60) to the file sim/rankchoices
+# embeds (engine-free, so the log coach in api/ reads it as sim/request does).
+# data/curated/rank-choices.json is the single source;
 # sim/request's TestEmbeddedRankChoicesMatchCurated fails when the copy is stale.
 rank-choices-sync:
-	cp data/curated/rank-choices.json sim/request/rank-choices.json
+	cp data/curated/rank-choices.json sim/rankchoices/rank-choices.json
 
 .PHONY: ladder-first-sync
 # ladder-first-sync copies the curated per-spec leveling reservations (talent
