@@ -1,221 +1,245 @@
 # Sim-accuracy round 9: ranks lane (owner ruling 3)
 
-Ruling: rotations may downrank. When a fight is mana-bound, the rotation casts the rank that gives the most damage or healing over the fight. Deliberate band-60 downranks are kept, never undone by a top-rank rule.
+Ruling: rotations may downrank. When a fight is mana-bound, the rotation casts the rank that does the most damage or healing over the fight. A deliberate lower rank in a curated rotation is kept and is never undone by a top-rank rule.
 
-Site branch `wt/r9-ranks`. No engine change. Measured with spec-breakdown, horde, 10,000 iterations, seeds 1 and 50001, published preset per band (bare 20 to 60, raid 60), engine 40021374a. "Before" is origin/main 55a1212f7. Healers use `-heal` (effective HPS on data/curated/heal-profile.json); paladin-protection uses `-tank` (threat/s).
+Integrator's rule for this lane: adopt any rank, higher or lower, that raises the published number beyond the error. That means seeds 1 and 50001 at 10,000 iterations both agree. There is no 1% or 2% bar. Two further checks apply:
+- A healer row must not turn a fight that runs dry into one that ends with mana unspent.
+- Defensive cooldowns are excluded (Divine Protection, Divine Shield, Ice Barrier, Mana Shield, the armors and the like). Threat per second gives them no credit for the immunity or shield they provide.
+
+Where it was measured: site branch `wt/r9-ranks`, fork branch `lane/r9-ranks`, horde, published preset per band (bare 20 to 60, raid 60). Healers are scored with `-heal`, which is effective HPS on data/curated/heal-profile.json. paladin-protection is scored with `-tank` (threat/s); its out-of-mana seconds come from the plain run.
+- **"int/r9"** means the integrator's merged engine, pinned here at 3b4ae7a9a (crit, casters, hybrids, healers, items, warlock, auras and physical), plus those lanes' site branches merged into a scratch site worktree. "Before" is the same tree without this lane.
+- A first pass on the round-8 engine (40021374a) is superseded by the int/r9 numbers below.
+- The int/r9 engine moved while I measured (the physical and auras lanes merged). The tables below were re-run on one pinned snapshot. Every adopted row was re-confirmed there.
 
 ## Mechanism
 
 | # | finding | evidence and source | confirmed? | fix sha |
 |---|---|---|---|---|
-| M1 | **The rank rewrite undid the deliberate downranks below 60.** `sim/request/rotation_ranks.go` moved every ranked spell to the top rank learned at the band. So below 60 Holy and Discipline's Renew rank 3, Discipline's Power Word: Shield rank 4, and Holy paladin's party Flash of Light rank 4 and Holy Shock rank 1 were raised to the band's top rank. | Failing first: `TestRewriteKeepsTheAuthoredDownranksBelowSixty`. At band 50, Renew 6075 came out as 10928 and Shield 3747 as 10899. | CONFIRMED-BUG | S 5c63f6719 |
-| M2 | **New default rule.** `spellranks.LearnedSpellID` (renamed from HighestLearnedSpellID) gives the highest rank learned that is **not above the authored rank**. A rotation written at the top rank behaves exactly as before. A deliberate lower rank keeps its rank, and below that rank's learn level the rank under it is used. Ids for an Ahn'Qiraj book rank cap at the top trainer rank. | `TestLearnedUpToKeepsAnAuthoredDownrank`. `sim/internal/spellranks/spellranks.go` (learnedIn, authoredTier). | - | S 5c63f6719 |
-| M3 | **Per-band rank choice.** `data/curated/rank-choices.json` (spec, then authored id, then rows of `{from_level, to_level, rank}`) is copied to `sim/request/rank-choices.json` by `make rank-choices-sync`. The table is parsed once per process. The rewrite (`rankResolver`) takes a row's rank where one covers the level; otherwise M2 applies. The site's /sim, the ranker and the nightly (all through `request.rotation`), spec-breakdown `-rotation` and the ladder harness's zero-casts rule all call the same resolver. Level 60 still runs the curated rotation as written. | `TestRewriteHonoursAPerBandRankChoice`, `TestThePublishedRotationTakesTheCuratedRankChoices`, `TestCuratedRankChoicesAreCastableDownranks` (every row names a spec, an id its rotation casts, the right spell, a band below 60, a rank learned at from_level and a rank lower than the default), `TestEmbeddedRankChoicesMatchCurated`. | - | S 5c63f6719, 5f1cbfacf |
-| M4 | **A probe can pin a rank.** spec-breakdown `-rotation` used to raise the top rank back before the probe ran, so a probe below 60 could not test a lower rank (warlock lane's report). Under M2, a probe that names a lower rank keeps it. | `sim/cmd/spec-breakdown/main.go` loadRotation | - | S 5c63f6719 |
-| M5 | **The addon now casts the sim's ranks.** `data/pipeline/addonrotation.py` follows M2 and M3 below 60: it never raises above the list's own rank, and a band's row wins. It is built on the healers lane's a65bd8111, cherry-picked here as 547d3f60f. | `test_a_deliberate_lower_rank_is_never_lifted_below_sixty`, `test_a_band_casts_the_rank_choice_the_curated_table_names`. The test asserting Renew is lifted at 50 is replaced. | CONFIRMED-BUG (same as M1, player-facing) | S 134d5065f |
+| M1 | **The rank rewrite undid deliberate downranks below 60.** `sim/request/rotation_ranks.go` moved every ranked spell to the band's top learned rank. Below 60 that raised Holy and Discipline's Renew rank 3, Discipline's Power Word: Shield rank 4, and Holy paladin's party Flash of Light rank 4 and Holy Shock rank 1. | Failing first: `TestRewriteKeepsTheAuthoredDownranksBelowSixty`. At 50, Renew 6075 came out 10928 and Shield 3747 came out 10899. | CONFIRMED-BUG | S 5c63f6719 |
+| M2 | **Default rule.** `spellranks.LearnedSpellID` (was HighestLearnedSpellID) casts the highest rank learned that is **not above the authored rank**. A rotation written at the top rank behaves as before. An id naming an Ahn'Qiraj book rank caps at the top trainer rank. | `TestLearnedUpToKeepsAnAuthoredDownrank`, `TestRankOfResolvesAChosenRank` | - | S 5c63f6719 |
+| M3 | **Per-band rank choices.** `data/curated/rank-choices.json` holds rows per spec and authored id: `{from_level, to_level, rank, preset?}`. `make rank-choices-sync` copies it to `sim/request`, and it is parsed once per process. Everything resolves through `request.rankResolver`: the site's /sim, the ranker and the nightly (`request.rotation`), spec-breakdown `-rotation` and the ladder's zero-casts rule. | `TestRewriteHonoursAPerBandRankChoice`, `TestThePublishedRotationTakesTheCuratedRankChoices`, `TestCuratedRankChoicesAreCastableDownranks`, `TestEmbeddedRankChoicesMatchCurated` | - | S 5c63f6719, 5f1cbfacf |
+| M4 | **Preset-aware rows.** A row may name `"preset": "bare"` or `"raid"`; a row without one applies to both. `api.SimRequest` gains an optional `preset`. When it is empty, the request takes the preset its level is published under (`request.PublishedPreset`), which is the /sim page's default. Unknown names are refused. At 60 the curated rotation still runs as written unless a row for that preset names one of its ids. A row at 60 for both presets is refused, because that rank belongs in the rotation itself. | Failing first: `TestRankChoicesFollowThePreset`, `TestRewriteAtSixtyTakesOnlyThePresetsRows`, `TestBuildRefusesAnUnknownPreset` | - | S 49356dbcf |
+| M5 | **A probe can pin a rank.** spec-breakdown `-rotation` used to raise the top rank back before the probe ran. It now uses the same resolver and sends `-preset`. | `sim/cmd/spec-breakdown/main.go` loadRotation | - | S 5c63f6719, 49356dbcf |
+| M6 | **The addon raised the same downranks.** `data/pipeline/addonrotation.py` now follows M2 and M3 below 60: it never raises a rank above the rotation's own, and a bare row wins. It is built on the healers lane's a65bd8111, cherry-picked unchanged as 547d3f60f. | `test_a_deliberate_lower_rank_is_never_lifted_below_sixty`, `test_a_band_casts_the_rank_choice_the_curated_table_names` | CONFIRMED-BUG | S 134d5065f, 49356dbcf |
+| M7 | **Holy paladin's fork mana test priced Holy Light rank 8 at 660,** the book rank 9's cost. The client cost is 580 (spellconst 10329; `sim/paladin/holy_light.go` agrees). The tank's Flash of Light used to dominate the sum and hid the error. | `sim/paladin/holy/rotation_test.go` | CONFIRMED-BUG (test only) | E 0a9ef0d0c |
 
-Why per-band data and not a search at run time: /sim stays fast (one map lookup per ranked id). Each choice is a reviewed row with evidence. The ladder and the addon read the same answer.
+A flat rank per band was enough. A "behind the pace" second line was never better than the best flat rank: Elemental 50 measured +38.2% paced against +39.4% flat, and at raid 60 flat rank 9 beat the paced line.
 
-Flat or behind-the-pace? For Elemental at 50, rank 4 cast all fight gave 152.0. Rank 4 cast only while mana is behind the fight's pace gave 150.6 (+38.2% vs +39.4%). Pacing at x0.8 and x1.2 was no better. The casters lane found the same. A flat per-band rank needs no new rotation lines.
+## Band 60 raid: rotation ranks changed (curated rotation and fork copy)
 
-## Adoption rule used
+These are the headline numbers. The rotations, the guides and the addon read these ranks.
 
-- **Damage specs:** adopt a lower rank where the fight runs dry and the gain is at least 1% at both seeds, beyond the stated error.
-- **Healers:** the same, with the healer rank rule's 2% bar (design/reviews/2026-10-08-healer-mana-audit.md). A healer row must not turn a fight that runs dry into one that ends with mana unspent (integrator's check).
-- **Method:** every lower learned rank of every ranked spell a rotation names, swapped in alone at 3,000 iterations (`scratchpad r9/ranks/sweep.py`). Then lower ranks were combined, adding one at a time while each added at least 1% (`greedy.py`). Then the final set was confirmed at 10,000 iterations on both seeds.
-- **Ranks learned below 20:** these were allowed, because the engine applies the sub-20 coefficient penalty (`sim/core/spell.go` levelPenalty).
-- **Every healer row is measured on the level-60 heal profile.** The healers lane notes that this profile is the level-60 Phase 1 fight at every band. Below 60, nearly nothing overheals, so these rows are pure mana efficiency. The owner may want to rule on whether the profile should scale below 60.
+| spec | change | raid 60 seed 1 / 50001 | raid 60, seed 1 | mana, s |
+|---|---|---|---|---|
+| shaman-elemental | Lightning Bolt rank 9 (15207) all fight, top rank 10 before | +0.58% / +0.56% | 464.2 to 466.9 DPS | OOM 5.5 to 0.3 |
+| priest-holy | the tank's Flash Heal rank 2 (9472) | +2.27% / +2.18% | 678.0 to 693.4 HPS | lasts 137.2 to 461.5 |
+| priest-discipline | Heal rank 1 (2054) | +1.02% / +1.02% | 618.6 to 624.9 | lasts 112.4 to 114.8 |
+| paladin-holy | the tank's Flash of Light rank 1 (19750) | +1.44% / +1.55% | 632.3 to 641.4 | lasts 250.0 to 257.1 |
+| druid-restoration | Rejuvenation rank 4 (2090) on every target | +0.28% / +0.30% | 777.0 to 779.2 | lasts 287.7 to 383.3 |
 
-## Adopted per-band choices (rank-choices.json)
+- **Elemental gain shrank on the pinned engine.** Before the auras and physical merges it measured +2.08% / +2.04%.
+- **Restoration druid's party-only split did not hold on int/r9.** The healers lane measured +3.2% on its own engine. On int/r9, all casts at rank 4 did better.
+- **Bare 60 keeps the stronger rank where these changes would lose there.** Through the bare-60 rows below:
+  - Holy keeps Flash Heal rank 7 on the tank.
+  - Discipline keeps Heal rank 4.
+  - Restoration druid keeps Rejuvenation rank 10.
 
-| spec | levels | change | gain seed 1 / 50001 | absolute, seed 1 | mana, s (before to after) |
-|---|---|---|---|---|---|
-| shaman-elemental | 30-39 | Lightning Bolt rank 4 (915), Flame Shock rank 1 (8050) | +10.17% / +9.94% | 46.2 to 50.9 DPS | OOM 90.2 to 60.4 |
-| shaman-elemental | 40-49 | Lightning Bolt rank 4, Flame Shock rank 1 | +18.51% / +18.80% | 83.2 to 98.6 | OOM 97.2 to 41.6 |
-| shaman-elemental | 50-59 | Lightning Bolt rank 4, Lava Burst rank 2 (1238299), Flame Shock rank 3 (8053) | +46.37% / +46.69% | 108.9 to 159.4 | OOM 94.0 to 5.3 |
-| priest-shadow | 30-39 | Shadow Word: Pain rank 3 (970), Devouring Plague rank 1 (2944) | +4.39% / +4.39% | 56.9 to 59.4 | OOM 91.9 to 92.8 |
-| priest-shadow | 40-49 | Devouring Plague rank 1, Mind Blast rank 4 (8104) | +4.70% / +4.86% | 125.6 to 131.5 | OOM 70.8 to 58.7 |
-| priest-shadow | 50-59 | Devouring Plague rank 1, Mind Blast rank 2 (8102), Shadow Word: Death rank 2 (1309633) | +7.45% / +7.39% | 189.2 to 203.3 | OOM 67.4 to 40.6 |
-| druid-balance | 30-39 | Wrath rank 4 (5179), Moonfire rank 3 (8925), Insect Swarm rank 1 (5570) | +13.89% / +13.89% | 65.5 to 74.6 | OOM 48.0 to 9.7 |
-| mage-fire | 40-49 | Scorch rank 1 (2948) | +5.71% / +5.71% | 147.0 to 155.4 | OOM 55.6 to 23.0 |
-| mage-fire | 50-59 | Scorch rank 1 | +6.20% / +6.19% | 182.2 to 193.5 | OOM 58.2 to 19.4 |
-| mage-arcane | 30-39 | Frostbolt rank 4 (7322) | +1.46% / +1.46% (on the casters lane's Evocation branch: +1.21% / +1.45%) | 75.6 to 76.7 | OOM 47.5 to 30.6 |
-| paladin-holy | 30-39 | Flash of Light rank 1 (19750) on the tank | +22.13% / +22.13% | 70.5 to 86.1 HPS | lasts 28.4 to 28.7 |
-| paladin-holy | 40-49 | Flash of Light rank 1 on the tank, Holy Light rank 3 (647) | +50.92% / +51.08% | 124.7 to 188.2 | lasts 36.2 to 118.5 |
-| paladin-holy | 50-59 | Flash of Light rank 1 on the tank, Holy Light rank 3 | +60.25% / +60.22% | 152.2 to 243.9 | lasts 44.3 to 210.2 |
-| shaman-restoration | 20-29 | Healing Wave rank 3 (547) | +8.60% / +8.60% | 46.5 to 50.5 | lasts 31.9 to 50.1 |
-| shaman-restoration | 30-39 | Healing Wave rank 3 | +13.62% / +13.62% | 85.9 to 97.6 | lasts 44.3 to 125.8 |
-| shaman-restoration | 40-49 | Healing Wave rank 3 | +19.46% / +19.46% | 144.4 to 172.5 | lasts 39.3 to 249.3 |
-| shaman-restoration | 50-59 | Healing Wave rank 3 | +10.41% / +10.36% | 225.8 to 249.3 | lasts 48.6 to 62.4 |
-| priest-discipline | 40-49 | Binding Heal rank 1 (401937), Renew rank 1 (139) | +13.09% / +13.02% (vs main; Renew's own part +2.85%) | 143.6 to 162.4 | lasts 47.6 to 57.8 |
-| priest-discipline | 50-59 | Binding Heal rank 1 | +7.95% / +7.90% | 206.2 to 222.6 | lasts 49.6 to 62.5 |
-| druid-restoration | 20-29 | Rejuvenation rank 1 (774) | +2.54% / +2.54% | 39.4 to 40.4 | lasts 253.4 to 252.8 |
-| druid-restoration | 30-39 | Rejuvenation rank 2 (1058) | +10.26% / +10.16% | 98.4 to 108.5 | lasts 199.8 to 223.1 |
+## Per-band rows (rank-choices.json), re-confirmed on int/r9
 
-From the default rule alone (M2, no row):
-- **Holy priest:** Renew rank 3 kept. +0.77/+0.62% at 30, +1.76/+1.68% at 40, +5.72/+5.60% at 50.
-- **Discipline at 30:** Renew rank 3 and Shield rank 4 kept, +0.78/+0.78%.
-- **Holy paladin's party Flash of Light rank 4:** also kept, and part of its rows' gains.
+Each row is the published rotation (the raid-60 ranks above in place) with its band's rows, measured against the same rotation under the default rule alone. All rows are bare. Healer rows are **measured on the level-60 heal profile**. The healers lane notes that this profile is the level-60 Phase 1 fight at every band, so below 60 these rows are pure mana efficiency. The owner may want to rule on whether the profile should scale below 60.
 
-Not adopted:
-- **Holy paladin, band 40, Holy Light rank 2:** +53.9%, but mana lasts 453 s of a 300 s fight, so it ends with mana unspent. Rank 3 together with the tank's Flash of Light rank 1 is the row above.
-- **Discipline, band 30, Renew rank 1:** +1.8%, under the 2% bar.
-- **Paladin-protection, Divine Protection or Divine Shield rank 1 (+1.9 to +3.7% threat):** a defensive cooldown, not a mana choice. See "For other lanes".
-- **Paladin-protection and Retribution, Consecration rank 1 (+1.3 to +1.6%):** Retribution is out of mana for 1.3 s, so the fight is not mana-bound. See "For other lanes".
+| spec | levels | choice | gain seed 1 / 50001 | seed 1 | mana, s | note |
+|---|---|---|---|---|---|---|
+| druid-balance | 30-39 | Wrath rank 4 (5179); Moonfire rank 3 (8925); Insect Swarm rank 1 (5570) | +15.58% / +15.74% | 62.9 to 72.7 DPS | OOM 49.2 to 10.3 |  |
+| druid-restoration | 20-29 | Rejuvenation rank 1 (774) | +2.08% / +2.08% | 38.5 to 39.3 HPS | lasts 253.2 to 252.4 |  |
+| druid-restoration | 30-39 | Rejuvenation rank 2 (1058) | +6.19% / +6.20% | 100.1 to 106.3 HPS | lasts 211.2 to 222.5 |  |
+| druid-restoration | 40-49 | Rejuvenation rank 7 (8910) | +1.94% / +1.94% | 169.8 to 173.1 HPS | lasts 255.0 to 213.1 |  |
+| druid-restoration | 50-59 | Rejuvenation rank 8 (9839) | +1.22% / +1.18% | 262.5 to 265.7 HPS | lasts 246.8 to 213.9 |  |
+| druid-restoration | 60, bare only | Rejuvenation rank 10 (9841) | +5.15% / +5.21% | 367.2 to 386.1 HPS | lasts 243.6 to 222.5 |  |
+| hunter-beast-mastery | 40-49 | Aimed Shot rank 1 (19434) | +0.39% / +0.39% | 154.0 to 154.6 DPS | OOM 104.3 to 99.6 |  |
+| hunter-beast-mastery | 60, bare only | Aimed Shot rank 1 (19434) | +0.38% / +0.34% | 291.8 to 292.9 DPS | OOM 91.6 to 86.7 |  |
+| hunter-marksmanship | 60, bare only | Aimed Shot rank 1 (19434) | +0.32% / +0.25% | 283.3 to 284.2 DPS | OOM 46.3 to 46.4 |  |
+| mage-arcane | 30-39 | Frostbolt rank 4 (7322) | +1.34% / +1.46% | 82.0 to 83.1 DPS | OOM 22.4 to 12.0 |  |
+| mage-fire | 30-39 | Scorch rank 1 (2948) | +1.00% / +1.15% | 69.7 to 70.4 DPS | OOM 75.7 to 64.7 |  |
+| mage-fire | 40-49 | Scorch rank 1 (2948); Fire Blast rank 4 (8412) | +6.30% / +6.50% | 144.5 to 153.6 DPS | OOM 55.7 to 13.4 |  |
+| mage-fire | 50-59 | Scorch rank 1 (2948) | +6.26% / +6.31% | 179.0 to 190.2 DPS | OOM 58.2 to 19.4 |  |
+| paladin-holy | 40-49 | Holy Light rank 3 (647) | +5.45% / +5.64% | 165.0 to 174.0 HPS | lasts 36.6 to 111.3 |  |
+| paladin-holy | 50-59 | Holy Light rank 3 (647) | +10.07% / +10.08% | 206.5 to 227.3 HPS | lasts 44.8 to 191.9 |  |
+| paladin-holy | 60, bare only | Holy Light rank 4 (1026) | +4.91% / +4.70% | 284.9 to 298.9 HPS | lasts 59.2 to 143.6 |  |
+| paladin-protection | 40-49 | Consecration rank 1 (26573) | +1.21% / +1.32% | 189.9 to 192.2 threat/s | OOM 19.4 to 17.3 |  |
+| paladin-protection | 50-59 | Consecration rank 1 (26573) | +1.80% / +1.73% | 282.9 to 288.0 threat/s | OOM 16.3 to 14.0 |  |
+| paladin-protection | 60, bare only | Consecration rank 1 (26573) | +2.88% / +2.95% | 412.7 to 424.6 threat/s | OOM 5.3 to 3.9 |  |
+| paladin-retribution | 30-39 | Consecration rank 1 (26573) | +0.57% / +0.72% | 70.0 to 70.4 DPS | OOM 0.0 to 0.0 | adopted: Consecration is rationed by a mana line |
+| paladin-retribution | 40-49 | Consecration rank 1 (26573) | +0.99% / +1.09% | 100.8 to 101.8 DPS | OOM 0.0 to 0.0 | adopted: Consecration is rationed by a mana line |
+| paladin-retribution | 50-59 | Consecration rank 1 (26573) | +1.65% / +1.65% | 163.2 to 165.9 DPS | OOM 1.3 to 0.1 |  |
+| priest-discipline | 30-39 | Renew rank 1 (139); Power Word: Shield rank 5 (6065) | +2.35% / +2.35% | 89.3 to 91.4 HPS | lasts 44.5 to 46.2 |  |
+| priest-discipline | 40-49 | Binding Heal rank 1 (401937); Power Word: Shield rank 2 (592) | +10.80% / +10.80% | 141.7 to 157.0 HPS | lasts 49.8 to 55.5 |  |
+| priest-discipline | 50-59 | Binding Heal rank 1 (401937); Power Word: Shield rank 8 (10899) | +13.71% / +13.71% | 194.8 to 221.5 HPS | lasts 52.3 to 62.6 |  |
+| priest-discipline | 60, bare only | Binding Heal rank 1 (401937); Heal rank 4 (6064) | +6.81% / +6.92% | 275.9 to 294.7 HPS | lasts 53.8 to 62.6 |  |
+| priest-holy | 40-49 | Flash Heal rank 4 (9474) | +3.98% / +3.98% | 115.6 to 120.2 HPS | lasts 35.7 to 30.4 |  |
+| priest-holy | 50-59 | Flash Heal rank 6 (10916) | +13.90% / +13.97% | 159.7 to 181.9 HPS | lasts 55.7 to 40.2 |  |
+| priest-holy | 60, bare only | Flash Heal rank 7 (10917); Lightwell rank 1 (724); Prayer of Healing rank 1 (596) | +11.02% / +10.99% | 281.2 to 312.2 HPS | lasts 88.6 to 55.0 |  |
+| priest-shadow | 30-39 | Shadow Word: Pain rank 3 (970); Devouring Plague rank 1 (2944) | +4.44% / +4.43% | 56.3 to 58.8 DPS | OOM 91.9 to 92.8 |  |
+| priest-shadow | 40-49 | Devouring Plague rank 1 (2944); Mind Blast rank 4 (8104) | +4.69% / +4.77% | 123.6 to 129.4 DPS | OOM 70.8 to 58.7 |  |
+| priest-shadow | 50-59 | Devouring Plague rank 1 (2944); Mind Blast rank 2 (8102); Shadow Word: Death rank 2 (1309633) | +7.42% / +7.35% | 186.1 to 199.9 DPS | OOM 67.4 to 40.6 |  |
+| priest-shadow | 60, bare only | Devouring Plague rank 1 (2944); Shadow Word: Death rank 2 (1309633) | +3.47% / +3.49% | 343.4 to 355.3 DPS | OOM 19.0 to 7.6 |  |
+| shaman-elemental | 30-39 | Lightning Bolt rank 4 (915) | +8.53% / +8.51% | 43.4 to 47.1 DPS | OOM 95.8 to 74.8 |  |
+| shaman-elemental | 40-49 | Lightning Bolt rank 4 (915); Flame Shock rank 1 (8050); Lava Burst rank 1 (408490) | +21.66% / +21.95% | 77.1 to 93.8 DPS | OOM 101.7 to 42.4 |  |
+| shaman-elemental | 50-59 | Lightning Bolt rank 4 (915); Lava Burst rank 1 (408490); Flame Shock rank 2 (8052) | +50.60% / +50.79% | 100.8 to 151.8 DPS | OOM 98.8 to 1.4 |  |
+| shaman-elemental | 60, bare only | Lightning Bolt rank 4 (915); Lava Burst rank 2 (1238299) | +36.14% / +36.27% | 140.0 to 190.6 DPS | OOM 79.9 to 2.0 |  |
+| shaman-enhancement | 60, bare only | Strength of Earth Totem rank 1 (8075) | +1.13% / +0.99% | 212.0 to 214.4 DPS | OOM 0.0 to 0.0 | NOT adopted: not mana-bound |
+| shaman-restoration | 20-29 | Healing Wave rank 3 (547) | +8.50% / +8.50% | 45.9 to 49.8 HPS | lasts 31.9 to 50.1 |  |
+| shaman-restoration | 30-39 | Healing Wave rank 3 (547) | +13.35% / +13.35% | 83.9 to 95.1 HPS | lasts 42.8 to 119.8 |  |
+| shaman-restoration | 40-49 | Healing Wave rank 3 (547) | +19.16% / +19.16% | 142.5 to 169.8 HPS | lasts 39.1 to 243.9 |  |
+| shaman-restoration | 50-59 | Healing Wave rank 3 (547) | +10.29% / +10.29% | 222.5 to 245.4 HPS | lasts 48.1 to 62.0 |  |
+| shaman-restoration | 60, bare only | Healing Wave rank 3 (547); Riptide rank 2 (1239242) | +12.86% / +12.83% | 332.8 to 375.6 HPS | lasts 74.8 to 67.4 |  |
+| warlock-destruction | 30-39 | Shadow Bolt rank 4 (1088) | +0.57% / +0.57% | 87.7 to 88.2 DPS | OOM 2.8 to 1.8 |  |
 
-## Every spec and band (published rotation, before to after)
+- **Holy paladin band 40:** the best single rank was Holy Light rank 2 (+12.9%), but its mana lasts 402 s of a 300 s fight, so it ends with mana unspent. Holy Light rank 3 is the best choice that still runs dry.
+- **Not adopted:** Enhancement's Strength of Earth Totem rank 1 at bare 60 (+1.1% / +1.0%). Enhancement never runs dry, and a weaker Strength buff raising damage needs explaining first (see "For other lanes").
+- **Swept with no gain:** Affliction and Demonology warlocks, Frost mage, Survival hunter, and Balance outside band 30.
+- **Not swept:** rogues, warriors and feral druids, which use no mana. Their rotations name only top ranks and have no row, so they cast exactly what they did before.
 
-Specs without mana are not swept: rogues, warriors, Feral and Guardian druid. Their rotations name only top-rank ids and have no row, so the resolver returns exactly what it did before. Every band 60 is unchanged, because the rotation runs as written there. Destruction keeps `spellIsKnown(412758)` (Incinerate rank 1) as written below 60, and its numbers did not move.
+Method: `scratchpad r9/ranks/int/`. `sweep.py` tries every learned rank of every ranked spell the rotation names, higher or lower, one at a time, at 3,000 iterations; defensives are excluded. `greedy2.py` combines ranks while each step adds at least 0.3%. `adopt.py` and `reconfirm.py` confirm at 10,000 iterations on both seeds. The pass mark is: DPS gain above twice the combined stated error at both seeds; healer and tank gain above 0.2% at both seeds, with the seeds agreeing. The engine applies the sub-20 coefficient penalty (`sim/core/spell.go` levelPenalty), so ranks learned below 20 were candidates.
 
-Columns: published metric seed 1 (DPS; HPS for healers; threat/s for paladin-protection), gain at seed 1 / 50001, and mana seconds. Mana seconds are out-of-mana seconds for damage specs and "mana lasts" for healers. Paladin-protection reports none.
+## Every spec and band on int/r9 (published rotation, before to after this lane)
+
+Columns: published metric at seed 1, the change at seed 1 / 50001, and mana seconds. Mana seconds are out-of-mana seconds for damage and "mana lasts" for healers; paladin-protection reports none in the tank fight.
 
 | spec | band | metric, seed 1 | change | mana, s |
 |---|---|---|---|---|
-| druid-balance | bare 20 | 25.8 to 25.8 | +0.00% / +0.00% | 20.8 to 20.8 |
-| druid-balance | bare 30 | 65.5 to 74.6 | +13.89% / +13.89% | 48.0 to 9.7 |
-| druid-balance | bare 40 | 156.1 to 156.1 | +0.00% / +0.00% | 5.8 to 5.8 |
-| druid-balance | bare 50 | 198.8 to 198.8 | +0.00% / +0.00% | 7.9 to 7.9 |
-| druid-balance | bare 60 | 289.2 to 289.2 | +0.00% / +0.00% | 0.5 to 0.5 |
-| druid-balance | raid 60 | 579.5 to 579.5 | +0.00% / +0.00% | 0.0 to 0.0 |
-| druid-restoration | bare 20 | 39.4 to 40.4 | +2.54% / +2.54% | 253.4 to 252.8 |
-| druid-restoration | bare 30 | 98.4 to 108.5 | +10.26% / +10.16% | 199.8 to 223.1 |
-| druid-restoration | bare 40 | 176.5 to 176.5 | +0.00% / +0.00% | 213.2 to 213.2 |
-| druid-restoration | bare 50 | 271.0 to 271.0 | +0.00% / +0.00% | 214.6 to 214.6 |
-| druid-restoration | bare 60 | 393.3 to 393.3 | +0.00% / +0.00% | 222.4 to 222.4 |
-| druid-restoration | raid 60 | 777.3 to 777.3 | +0.00% / +0.00% | 287.9 to 287.9 |
-| hunter-beast-mastery | bare 20 | 105.6 to 105.6 | +0.00% / +0.00% | 103.8 to 103.8 |
-| hunter-beast-mastery | bare 30 | 136.3 to 136.3 | +0.00% / +0.00% | 117.5 to 117.5 |
-| hunter-beast-mastery | bare 40 | 190.4 to 190.4 | +0.00% / +0.00% | 105.4 to 105.4 |
-| hunter-beast-mastery | bare 50 | 242.5 to 242.5 | +0.00% / +0.00% | 110.5 to 110.5 |
-| hunter-beast-mastery | bare 60 | 309.3 to 309.3 | +0.00% / +0.00% | 96.8 to 96.8 |
-| hunter-beast-mastery | raid 60 | 661.8 to 661.8 | +0.00% / +0.00% | 0.0 to 0.0 |
-| hunter-marksmanship | bare 20 | 103.4 to 103.4 | +0.00% / +0.00% | 25.8 to 25.8 |
-| hunter-marksmanship | bare 30 | 138.4 to 138.4 | +0.00% / +0.00% | 15.7 to 15.7 |
-| hunter-marksmanship | bare 40 | 184.0 to 184.0 | +0.00% / +0.00% | 35.7 to 35.7 |
-| hunter-marksmanship | bare 50 | 242.8 to 242.8 | +0.00% / +0.00% | 37.7 to 37.7 |
-| hunter-marksmanship | bare 60 | 305.2 to 305.2 | +0.00% / +0.00% | 46.3 to 46.3 |
-| hunter-marksmanship | raid 60 | 653.1 to 653.1 | +0.00% / +0.00% | 0.0 to 0.0 |
-| hunter-survival | bare 20 | 69.9 to 69.9 | +0.00% / +0.00% | 0.1 to 0.1 |
-| hunter-survival | bare 30 | 103.9 to 103.9 | +0.00% / +0.00% | 0.0 to 0.0 |
-| hunter-survival | bare 40 | 173.3 to 173.3 | +0.00% / +0.00% | 9.9 to 9.9 |
-| hunter-survival | bare 50 | 222.8 to 222.8 | +0.00% / +0.00% | 0.0 to 0.0 |
-| hunter-survival | bare 60 | 316.8 to 316.8 | +0.00% / +0.00% | 0.0 to 0.0 |
-| hunter-survival | raid 60 | 759.5 to 759.5 | +0.00% / +0.00% | 0.0 to 0.0 |
-| mage-arcane | bare 20 | 36.5 to 36.5 | +0.00% / +0.00% | 71.7 to 71.7 |
-| mage-arcane | bare 30 | 75.6 to 76.7 | +1.46% / +1.46% | 47.5 to 30.6 |
-| mage-arcane | bare 40 | 155.5 to 155.5 | +0.00% / +0.00% | 16.1 to 16.1 |
-| mage-arcane | bare 50 | 196.5 to 196.5 | +0.00% / +0.00% | 24.5 to 24.5 |
-| mage-arcane | bare 60 | 319.8 to 319.8 | +0.00% / +0.00% | 25.7 to 25.7 |
-| mage-arcane | raid 60 | 601.4 to 601.4 | +0.00% / +0.00% | 1.0 to 1.0 |
-| mage-fire | bare 20 | 35.2 to 35.2 | +0.00% / +0.00% | 68.4 to 68.4 |
-| mage-fire | bare 30 | 70.9 to 70.9 | +0.00% / +0.00% | 75.9 to 75.9 |
-| mage-fire | bare 40 | 147.0 to 155.4 | +5.71% / +5.71% | 55.6 to 23.0 |
-| mage-fire | bare 50 | 182.2 to 193.5 | +6.20% / +6.19% | 58.2 to 19.4 |
-| mage-fire | bare 60 | 342.2 to 342.2 | +0.00% / +0.00% | 21.1 to 21.1 |
-| mage-fire | raid 60 | 670.8 to 670.8 | +0.00% / +0.00% | 0.0 to 0.0 |
-| mage-frost | bare 20 | 36.7 to 36.7 | +0.00% / +0.00% | 99.6 to 99.6 |
-| mage-frost | bare 30 | 62.7 to 62.7 | +0.00% / +0.00% | 75.2 to 75.2 |
-| mage-frost | bare 40 | 144.8 to 144.8 | +0.00% / +0.00% | 60.3 to 60.3 |
-| mage-frost | bare 50 | 193.8 to 193.8 | +0.00% / +0.00% | 64.4 to 64.4 |
-| mage-frost | bare 60 | 299.3 to 299.3 | +0.00% / +0.00% | 50.2 to 50.2 |
-| mage-frost | raid 60 | 601.5 to 601.5 | +0.00% / +0.00% | 0.0 to 0.0 |
-| paladin-holy | bare 20 | 30.1 to 30.1 | +0.00% / +0.00% | 43.1 to 43.1 |
-| paladin-holy | bare 30 | 70.5 to 86.1 | +22.13% / +22.13% | 28.4 to 28.7 |
-| paladin-holy | bare 40 | 124.7 to 188.2 | +50.92% / +51.08% | 36.2 to 118.5 |
-| paladin-holy | bare 50 | 152.2 to 243.9 | +60.25% / +60.22% | 44.3 to 210.2 |
-| paladin-holy | bare 60 | 220.1 to 220.1 | +0.00% / +0.00% | 59.8 to 59.8 |
-| paladin-holy | raid 60 | 648.2 to 648.2 | +0.00% / +0.00% | 258.4 to 258.4 |
-| paladin-protection | bare 20 | 41.8 to 41.8 | +0.00% / +0.00% | None to None |
-| paladin-protection | bare 30 | 68.9 to 68.9 | +0.00% / +0.00% | None to None |
-| paladin-protection | bare 40 | 200.6 to 200.6 | +0.00% / +0.00% | None to None |
-| paladin-protection | bare 50 | 292.8 to 292.8 | +0.00% / +0.00% | None to None |
-| paladin-protection | bare 60 | 428.3 to 428.3 | +0.00% / +0.00% | None to None |
-| paladin-protection | raid 60 | 1018.2 to 1018.2 | +0.00% / +0.00% | None to None |
-| paladin-retribution | bare 20 | 41.1 to 41.1 | +0.00% / +0.00% | 0.1 to 0.1 |
-| paladin-retribution | bare 30 | 73.3 to 73.3 | +0.00% / +0.00% | 0.0 to 0.0 |
-| paladin-retribution | bare 40 | 108.2 to 108.2 | +0.00% / +0.00% | 0.0 to 0.0 |
-| paladin-retribution | bare 50 | 179.3 to 179.3 | +0.00% / +0.00% | 1.3 to 1.3 |
-| paladin-retribution | bare 60 | 259.8 to 259.8 | +0.00% / +0.00% | 0.0 to 0.0 |
-| paladin-retribution | raid 60 | 658.8 to 658.8 | +0.00% / +0.00% | 0.0 to 0.0 |
-| priest-discipline | bare 20 | 29.5 to 29.5 | +0.00% / +0.00% | 29.0 to 29.0 |
-| priest-discipline | bare 30 | 89.3 to 90.0 | +0.78% / +0.78% | 43.5 to 44.5 |
-| priest-discipline | bare 40 | 143.6 to 162.4 | +13.09% / +13.02% | 47.6 to 57.8 |
-| priest-discipline | bare 50 | 206.2 to 222.6 | +7.95% / +7.90% | 49.6 to 62.5 |
-| priest-discipline | bare 60 | 288.4 to 288.4 | +0.00% / +0.00% | 53.9 to 53.9 |
-| priest-discipline | raid 60 | 620.0 to 620.0 | +0.00% / +0.00% | 112.7 to 112.7 |
-| priest-holy | bare 20 | 30.5 to 30.5 | +0.00% / +0.00% | 24.4 to 24.4 |
-| priest-holy | bare 30 | 64.7 to 65.2 | +0.77% / +0.62% | 26.1 to 26.3 |
-| priest-holy | bare 40 | 119.3 to 121.4 | +1.76% / +1.68% | 29.4 to 30.5 |
-| priest-holy | bare 50 | 173.2 to 183.1 | +5.72% / +5.60% | 38.5 to 40.3 |
-| priest-holy | bare 60 | 309.2 to 309.2 | +0.00% / +0.00% | 50.9 to 50.9 |
-| priest-holy | raid 60 | 674.1 to 674.1 | +0.00% / +0.00% | 135.0 to 135.0 |
-| priest-shadow | bare 20 | 35.6 to 35.6 | +0.00% / +0.00% | 90.2 to 90.2 |
-| priest-shadow | bare 30 | 56.9 to 59.4 | +4.39% / +4.39% | 91.9 to 92.8 |
-| priest-shadow | bare 40 | 125.6 to 131.5 | +4.70% / +4.86% | 70.8 to 58.7 |
-| priest-shadow | bare 50 | 189.2 to 203.3 | +7.45% / +7.39% | 67.4 to 40.6 |
-| priest-shadow | bare 60 | 349.4 to 349.4 | +0.00% / +0.00% | 19.0 to 19.0 |
-| priest-shadow | raid 60 | 724.2 to 724.2 | +0.00% / +0.00% | 0.0 to 0.0 |
-| shaman-elemental | bare 20 | 22.5 to 22.5 | +0.00% / +0.00% | 92.6 to 92.6 |
-| shaman-elemental | bare 30 | 46.2 to 50.9 | +10.17% / +9.94% | 90.2 to 60.4 |
-| shaman-elemental | bare 40 | 83.2 to 98.6 | +18.51% / +18.80% | 97.2 to 41.6 |
-| shaman-elemental | bare 50 | 108.9 to 159.4 | +46.37% / +46.69% | 94.0 to 5.3 |
-| shaman-elemental | bare 60 | 143.8 to 143.8 | +0.00% / +0.00% | 83.7 to 83.7 |
-| shaman-elemental | raid 60 | 476.8 to 476.8 | +0.00% / +0.00% | 3.9 to 3.9 |
-| shaman-enhancement | bare 20 | 33.8 to 33.8 | +0.00% / +0.00% | 0.0 to 0.0 |
-| shaman-enhancement | bare 30 | 69.0 to 69.0 | +0.00% / +0.00% | 0.0 to 0.0 |
-| shaman-enhancement | bare 40 | 123.9 to 123.9 | +0.00% / +0.00% | 0.4 to 0.4 |
-| shaman-enhancement | bare 50 | 160.3 to 160.3 | +0.00% / +0.00% | 0.0 to 0.0 |
-| shaman-enhancement | bare 60 | 217.3 to 217.3 | +0.00% / +0.00% | 0.0 to 0.0 |
-| shaman-enhancement | raid 60 | 594.0 to 594.0 | +0.00% / +0.00% | 0.0 to 0.0 |
-| shaman-restoration | bare 20 | 46.5 to 50.5 | +8.60% / +8.60% | 31.9 to 50.1 |
-| shaman-restoration | bare 30 | 85.9 to 97.6 | +13.62% / +13.62% | 44.3 to 125.8 |
-| shaman-restoration | bare 40 | 144.4 to 172.5 | +19.46% / +19.46% | 39.3 to 249.3 |
-| shaman-restoration | bare 50 | 225.8 to 249.3 | +10.41% / +10.36% | 48.6 to 62.4 |
-| shaman-restoration | bare 60 | 337.6 to 337.6 | +0.00% / +0.00% | 76.2 to 76.2 |
-| shaman-restoration | raid 60 | 838.9 to 838.9 | +0.00% / +0.00% | 263.3 to 263.3 |
-| warlock-affliction | bare 20 | 54.5 to 54.5 | +0.00% / +0.00% | 0.0 to 0.0 |
-| warlock-affliction | bare 30 | 88.2 to 88.2 | +0.00% / +0.00% | 0.0 to 0.0 |
-| warlock-affliction | bare 40 | 135.1 to 135.1 | +0.00% / +0.00% | 0.0 to 0.0 |
-| warlock-affliction | bare 50 | 196.6 to 196.6 | +0.00% / +0.00% | 0.0 to 0.0 |
-| warlock-affliction | bare 60 | 291.4 to 291.4 | +0.00% / +0.00% | 0.7 to 0.7 |
-| warlock-affliction | raid 60 | 585.2 to 585.2 | +0.00% / +0.00% | 0.0 to 0.0 |
-| warlock-demonology | bare 20 | 48.2 to 48.2 | +0.00% / +0.00% | 0.0 to 0.0 |
-| warlock-demonology | bare 30 | 80.5 to 80.5 | +0.00% / +0.00% | 0.0 to 0.0 |
-| warlock-demonology | bare 40 | 142.0 to 142.0 | +0.00% / +0.00% | 0.0 to 0.0 |
-| warlock-demonology | bare 50 | 208.8 to 208.8 | +0.00% / +0.00% | 1.8 to 1.8 |
-| warlock-demonology | bare 60 | 326.1 to 326.1 | +0.00% / +0.00% | 3.9 to 3.9 |
-| warlock-demonology | raid 60 | 654.9 to 654.9 | +0.00% / +0.00% | 0.7 to 0.7 |
-| warlock-destruction | bare 20 | 53.0 to 53.0 | +0.00% / +0.00% | 3.1 to 3.1 |
-| warlock-destruction | bare 30 | 89.3 to 89.3 | +0.00% / +0.00% | 2.8 to 2.8 |
-| warlock-destruction | bare 40 | 141.2 to 141.2 | +0.00% / +0.00% | 3.5 to 3.5 |
-| warlock-destruction | bare 50 | 239.0 to 239.0 | +0.00% / +0.00% | 2.0 to 2.0 |
-| warlock-destruction | bare 60 | 358.5 to 358.5 | +0.00% / +0.00% | 4.5 to 4.5 |
-| warlock-destruction | raid 60 | 649.7 to 649.7 | +0.00% / +0.00% | 0.6 to 0.6 |
-
-Hunters (Beast Mastery and Marksmanship run dry for 15 to 117 s on bare bands) gain nothing from any lower rank: their damage is mostly auto shot and pet, and every lower Arcane Shot, Serpent Sting or Aimed Shot rank came within ±0.4%. Enhancement, Retribution, warlocks (Life Tap) and Frost mage gain nothing either. Frost mage's +4 to +11% at 30 to 40 disappears once the casters lane's Evocation line is in.
-
-## Band 60 (the rotation as written; not changed here)
-
-A flat lower rank at 60 changes both presets. These candidates are for the APL owners:
-
-| spec | change | raid 60 | bare 60 | note |
-|---|---|---|---|---|
-| priest-holy | Flash Heal rank 2 (9472) | +1.63% / +1.53% | -8.44% / -8.44% | under the healer 2% bar; bare loses |
-| priest-discipline | Heal rank 1 (2054) | +1.24% / +1.19% | -3.22% / -3.22% | under the bar; bare loses |
-| paladin-holy | tank Flash of Light rank 1 | +1.40% / +1.39% | +35.21% / +35.27% | raid under the 2% bar |
-| shaman-elemental | Lightning Bolt rank 9 all fight | -0.02% / -0.04% | +5.49% / +5.42% | casters lane: rank 9 **behind the pace** is +2.0 to +2.2% raid on their Clearcasting fix (E ff4bae666) |
-| druid-restoration | party Rejuvenation rank 4 (2090) | +3.2 / +3.3% (healers lane's table) | - | needs the party's casts split from the tank's in the list |
-| shaman-elemental, paladin-holy, shaman-restoration | Lightning Bolt rank 4 / Holy Light rank 3 / Healing Wave rank 3 | (raid not mana-bound) | +37% / +38% / +10% (3,000 iterations) | bare 60 only; would need a preset-aware choice or a pace line |
+| druid-balance | bare 20 | 25.0 to 25.0 | +0.00% / +0.00% | 21.7 to 21.7 |
+| druid-balance | bare 30 | 62.9 to 72.7 | +15.58% / +15.74% | 49.2 to 10.3 |
+| druid-balance | bare 40 | 151.0 to 151.0 | +0.00% / +0.00% | 6.3 to 6.3 |
+| druid-balance | bare 50 | 191.5 to 191.5 | +0.00% / +0.00% | 8.7 to 8.7 |
+| druid-balance | bare 60 | 280.4 to 280.4 | +0.00% / +0.00% | 0.5 to 0.5 |
+| druid-balance | raid 60 | 565.2 to 565.2 | +0.00% / +0.00% | 0.0 to 0.0 |
+| druid-restoration | bare 20 | 38.5 to 39.3 | +2.08% / +2.08% | 253.2 to 252.4 |
+| druid-restoration | bare 30 | 96.6 to 106.3 | +10.04% / +10.05% | 199.3 to 222.5 |
+| druid-restoration | bare 40 | 173.1 to 173.1 | +0.00% / +0.00% | 213.1 to 213.1 |
+| druid-restoration | bare 50 | 265.7 to 265.7 | +0.00% / +0.00% | 213.9 to 213.9 |
+| druid-restoration | bare 60 | 386.1 to 386.1 | +0.00% / +0.00% | 222.5 to 222.5 |
+| druid-restoration | raid 60 | 777.0 to 779.2 | +0.28% / +0.30% | 287.7 to 383.3 |
+| hunter-beast-mastery | bare 20 | 64.7 to 64.7 | +0.00% / +0.00% | 100.0 to 100.0 |
+| hunter-beast-mastery | bare 30 | 99.2 to 99.2 | +0.00% / +0.00% | 115.4 to 115.4 |
+| hunter-beast-mastery | bare 40 | 154.0 to 154.6 | +0.39% / +0.39% | 104.3 to 99.6 |
+| hunter-beast-mastery | bare 50 | 215.5 to 215.5 | +0.00% / +0.00% | 106.6 to 106.6 |
+| hunter-beast-mastery | bare 60 | 291.8 to 292.9 | +0.38% / +0.34% | 91.6 to 86.7 |
+| hunter-beast-mastery | raid 60 | 633.4 to 633.4 | +0.00% / +0.00% | 0.0 to 0.0 |
+| hunter-marksmanship | bare 20 | 63.3 to 63.3 | +0.00% / +0.00% | 20.5 to 20.5 |
+| hunter-marksmanship | bare 30 | 99.5 to 99.5 | +0.00% / +0.00% | 16.1 to 16.1 |
+| hunter-marksmanship | bare 40 | 152.6 to 152.6 | +0.00% / +0.00% | 36.5 to 36.5 |
+| hunter-marksmanship | bare 50 | 213.2 to 213.2 | +0.00% / +0.00% | 38.1 to 38.1 |
+| hunter-marksmanship | bare 60 | 283.3 to 284.2 | +0.32% / +0.25% | 46.3 to 46.4 |
+| hunter-marksmanship | raid 60 | 623.0 to 623.0 | +0.00% / +0.00% | 0.0 to 0.0 |
+| hunter-survival | bare 20 | 47.2 to 47.2 | +0.00% / +0.00% | 0.1 to 0.1 |
+| hunter-survival | bare 30 | 80.3 to 80.3 | +0.00% / +0.00% | 0.0 to 0.0 |
+| hunter-survival | bare 40 | 152.8 to 152.8 | +0.00% / +0.00% | 19.1 to 19.1 |
+| hunter-survival | bare 50 | 201.9 to 201.9 | +0.00% / +0.00% | 0.0 to 0.0 |
+| hunter-survival | bare 60 | 295.2 to 295.2 | +0.00% / +0.00% | 0.0 to 0.0 |
+| hunter-survival | raid 60 | 734.9 to 734.9 | +0.00% / +0.00% | 0.0 to 0.0 |
+| mage-arcane | bare 20 | 43.8 to 43.8 | +0.00% / +0.00% | 19.1 to 19.1 |
+| mage-arcane | bare 30 | 82.0 to 83.1 | +1.34% / +1.46% | 22.4 to 12.0 |
+| mage-arcane | bare 40 | 159.6 to 159.6 | +0.00% / +0.00% | 6.6 to 6.6 |
+| mage-arcane | bare 50 | 206.0 to 206.0 | +0.00% / +0.00% | 10.8 to 10.8 |
+| mage-arcane | bare 60 | 329.5 to 329.5 | +0.00% / +0.00% | 10.7 to 10.7 |
+| mage-arcane | raid 60 | 600.2 to 600.2 | +0.00% / +0.00% | 0.7 to 0.7 |
+| mage-fire | bare 20 | 34.5 to 34.5 | +0.00% / +0.00% | 68.4 to 68.4 |
+| mage-fire | bare 30 | 69.7 to 70.4 | +1.00% / +1.15% | 75.7 to 64.7 |
+| mage-fire | bare 40 | 144.5 to 153.6 | +6.30% / +6.50% | 55.7 to 13.4 |
+| mage-fire | bare 50 | 179.0 to 190.2 | +6.26% / +6.31% | 58.2 to 19.4 |
+| mage-fire | bare 60 | 329.6 to 329.6 | +0.00% / +0.00% | 24.2 to 24.2 |
+| mage-fire | raid 60 | 660.8 to 660.8 | +0.00% / +0.00% | 0.7 to 0.7 |
+| mage-frost | bare 20 | 44.0 to 44.0 | +0.00% / +0.00% | 52.9 to 52.9 |
+| mage-frost | bare 30 | 75.7 to 75.7 | +0.00% / +0.00% | 21.9 to 21.9 |
+| mage-frost | bare 40 | 183.1 to 183.1 | +0.00% / +0.00% | 6.7 to 6.7 |
+| mage-frost | bare 50 | 244.5 to 244.5 | +0.00% / +0.00% | 11.5 to 11.5 |
+| mage-frost | bare 60 | 343.0 to 343.0 | +0.00% / +0.00% | 4.9 to 4.9 |
+| mage-frost | raid 60 | 594.1 to 594.1 | +0.00% / +0.00% | 0.0 to 0.0 |
+| paladin-holy | bare 20 | 29.5 to 29.5 | +0.00% / +0.00% | 43.0 to 43.0 |
+| paladin-holy | bare 30 | 65.3 to 78.4 | +20.06% / +19.91% | 28.0 to 28.2 |
+| paladin-holy | bare 40 | 116.5 to 174.0 | +49.36% / +49.57% | 35.4 to 111.3 |
+| paladin-holy | bare 50 | 143.4 to 227.3 | +58.51% / +58.44% | 42.8 to 191.9 |
+| paladin-holy | bare 60 | 206.5 to 298.9 | +44.75% / +44.39% | 57.1 to 143.6 |
+| paladin-holy | raid 60 | 632.3 to 641.4 | +1.44% / +1.55% | 250.0 to 257.1 |
+| paladin-protection | bare 20 | 40.0 to 40.0 | +0.00% / +0.00% | 59.2 to 59.2 |
+| paladin-protection | bare 30 | 66.0 to 66.0 | +0.00% / +0.00% | 13.8 to 13.8 |
+| paladin-protection | bare 40 | 189.9 to 192.2 | +1.21% / +1.32% | 19.4 to 17.3 |
+| paladin-protection | bare 50 | 282.9 to 288.0 | +1.80% / +1.73% | 16.3 to 14.0 |
+| paladin-protection | bare 60 | 412.7 to 424.6 | +2.88% / +2.95% | 5.3 to 3.9 |
+| paladin-protection | raid 60 | 993.8 to 993.8 | +0.00% / +0.00% | 0.0 to 0.0 |
+| paladin-retribution | bare 20 | 39.0 to 39.0 | +0.00% / +0.00% | 0.1 to 0.1 |
+| paladin-retribution | bare 30 | 70.0 to 70.4 | +0.57% / +0.72% | 0.0 to 0.0 |
+| paladin-retribution | bare 40 | 100.8 to 101.8 | +0.99% / +1.09% | 0.0 to 0.0 |
+| paladin-retribution | bare 50 | 163.2 to 165.9 | +1.65% / +1.65% | 1.3 to 0.1 |
+| paladin-retribution | bare 60 | 241.4 to 241.4 | +0.00% / +0.00% | 0.0 to 0.0 |
+| paladin-retribution | raid 60 | 621.3 to 621.3 | +0.00% / +0.00% | 0.0 to 0.0 |
+| priest-discipline | bare 20 | 29.3 to 29.3 | +0.00% / +0.00% | 29.0 to 29.0 |
+| priest-discipline | bare 30 | 88.5 to 91.4 | +3.28% / +3.16% | 43.5 to 46.2 |
+| priest-discipline | bare 40 | 142.3 to 157.0 | +10.33% / +10.33% | 47.6 to 55.5 |
+| priest-discipline | bare 50 | 204.1 to 221.5 | +8.53% / +8.53% | 49.5 to 62.6 |
+| priest-discipline | bare 60 | 285.2 to 294.7 | +3.33% / +3.47% | 53.6 to 62.6 |
+| priest-discipline | raid 60 | 618.6 to 624.9 | +1.02% / +1.02% | 112.4 to 114.8 |
+| priest-holy | bare 20 | 30.1 to 30.1 | +0.00% / +0.00% | 24.3 to 24.3 |
+| priest-holy | bare 30 | 64.0 to 64.4 | +0.63% / +0.63% | 26.1 to 26.3 |
+| priest-holy | bare 40 | 118.1 to 120.2 | +1.78% / +1.69% | 29.3 to 30.4 |
+| priest-holy | bare 50 | 171.9 to 181.9 | +5.82% / +5.76% | 38.3 to 40.2 |
+| priest-holy | bare 60 | 307.1 to 312.2 | +1.66% / +1.63% | 50.8 to 55.0 |
+| priest-holy | raid 60 | 678.0 to 693.4 | +2.27% / +2.18% | 137.2 to 461.5 |
+| priest-shadow | bare 20 | 35.3 to 35.3 | +0.00% / +0.00% | 90.2 to 90.2 |
+| priest-shadow | bare 30 | 56.3 to 58.8 | +4.44% / +4.43% | 91.9 to 92.8 |
+| priest-shadow | bare 40 | 123.6 to 129.4 | +4.69% / +4.77% | 70.8 to 58.7 |
+| priest-shadow | bare 50 | 186.1 to 199.9 | +7.42% / +7.35% | 67.4 to 40.6 |
+| priest-shadow | bare 60 | 343.4 to 355.3 | +3.47% / +3.49% | 19.0 to 7.6 |
+| priest-shadow | raid 60 | 712.2 to 712.2 | +0.00% / +0.00% | 0.0 to 0.0 |
+| shaman-elemental | bare 20 | 22.2 to 22.2 | +0.00% / +0.00% | 92.6 to 92.6 |
+| shaman-elemental | bare 30 | 43.4 to 47.1 | +8.53% / +8.51% | 95.8 to 74.8 |
+| shaman-elemental | bare 40 | 77.1 to 93.8 | +21.66% / +21.95% | 101.7 to 42.4 |
+| shaman-elemental | bare 50 | 100.8 to 151.8 | +50.60% / +50.79% | 98.8 to 1.4 |
+| shaman-elemental | bare 60 | 132.9 to 190.6 | +43.42% / +43.45% | 89.3 to 2.0 |
+| shaman-elemental | raid 60 | 464.2 to 466.9 | +0.58% / +0.56% | 5.5 to 0.3 |
+| shaman-enhancement | bare 20 | 32.0 to 32.0 | +0.00% / +0.00% | 0.0 to 0.0 |
+| shaman-enhancement | bare 30 | 63.2 to 63.2 | +0.00% / +0.00% | 0.0 to 0.0 |
+| shaman-enhancement | bare 40 | 115.7 to 115.7 | +0.00% / +0.00% | 0.5 to 0.5 |
+| shaman-enhancement | bare 50 | 154.8 to 154.8 | +0.00% / +0.00% | 0.0 to 0.0 |
+| shaman-enhancement | bare 60 | 212.0 to 212.0 | +0.00% / +0.00% | 0.0 to 0.0 |
+| shaman-enhancement | raid 60 | 575.8 to 575.8 | +0.00% / +0.00% | 0.0 to 0.0 |
+| shaman-restoration | bare 20 | 45.9 to 49.8 | +8.50% / +8.50% | 31.9 to 50.1 |
+| shaman-restoration | bare 30 | 83.9 to 95.1 | +13.35% / +13.35% | 42.8 to 119.8 |
+| shaman-restoration | bare 40 | 142.5 to 169.8 | +19.16% / +19.16% | 39.1 to 243.9 |
+| shaman-restoration | bare 50 | 222.5 to 245.4 | +10.29% / +10.29% | 48.1 to 62.0 |
+| shaman-restoration | bare 60 | 332.8 to 375.6 | +12.86% / +12.83% | 74.8 to 67.4 |
+| shaman-restoration | raid 60 | 838.0 to 838.0 | +0.00% / +0.00% | 266.2 to 266.2 |
+| warlock-affliction | bare 20 | 53.7 to 53.7 | +0.00% / +0.00% | 0.0 to 0.0 |
+| warlock-affliction | bare 30 | 87.1 to 87.1 | +0.00% / +0.00% | 0.0 to 0.0 |
+| warlock-affliction | bare 40 | 132.9 to 132.9 | +0.00% / +0.00% | 0.0 to 0.0 |
+| warlock-affliction | bare 50 | 193.3 to 193.3 | +0.00% / +0.00% | 0.0 to 0.0 |
+| warlock-affliction | bare 60 | 286.9 to 286.9 | +0.00% / +0.00% | 0.7 to 0.7 |
+| warlock-affliction | raid 60 | 573.2 to 573.2 | +0.00% / +0.00% | 0.0 to 0.0 |
+| warlock-demonology | bare 20 | 47.7 to 47.7 | +0.00% / +0.00% | 0.0 to 0.0 |
+| warlock-demonology | bare 30 | 79.5 to 79.5 | +0.00% / +0.00% | 0.0 to 0.0 |
+| warlock-demonology | bare 40 | 140.7 to 140.7 | +0.00% / +0.00% | 0.0 to 0.0 |
+| warlock-demonology | bare 50 | 206.7 to 206.7 | +0.00% / +0.00% | 2.0 to 2.0 |
+| warlock-demonology | bare 60 | 323.4 to 323.4 | +0.00% / +0.00% | 3.8 to 3.8 |
+| warlock-demonology | raid 60 | 642.6 to 642.6 | +0.00% / +0.00% | 0.3 to 0.3 |
+| warlock-destruction | bare 20 | 52.3 to 52.3 | +0.00% / +0.00% | 3.1 to 3.1 |
+| warlock-destruction | bare 30 | 87.7 to 88.2 | +0.57% / +0.57% | 2.8 to 1.8 |
+| warlock-destruction | bare 40 | 138.7 to 138.7 | +0.00% / +0.00% | 3.5 to 3.5 |
+| warlock-destruction | bare 50 | 234.6 to 234.6 | +0.00% / +0.00% | 2.0 to 2.0 |
+| warlock-destruction | bare 60 | 351.9 to 351.9 | +0.00% / +0.00% | 4.5 to 4.5 |
+| warlock-destruction | raid 60 | 638.9 to 638.9 | +0.00% / +0.00% | 0.4 to 0.4 |
 
 ## For other lanes
 
-- **Integrator:** every TestRotationLadder golden moves: the rules header text (resolver renamed) and the downranked bands of the specs above. Regenerate at the pin. 547d3f60f is the healers lane's a65bd8111 cherry-picked unchanged; 134d5065f builds on it.
-- **Healers / integrator:** the notes of priest-holy, priest-discipline and paladin-holy still say "The site runs this list as written at band 60 and lifts every ranked spell to the highest rank learned below it". That is no longer true below 60. The notes are long single lines, so this lane left them alone to keep the merge clean. Suggested replacement: "Below 60 a ranked spell casts the highest rank learned that is not above the rank named here, or the band's row in data/curated/rank-choices.json."
-- **Healers:** the band-60 raid rows above (Restoration druid +3.2% clears the 2% bar). Whether the heal profile should scale below 60 is a question for the owner.
-- **Casters:** Elemental raid 60 Lightning Bolt rank 9 behind the pace (+2.0 to +2.2% on your engine) is a new rotation line at 60, yours to add if it holds after the pin.
-- **Hybrids / tank:** paladin-protection gains threat when it casts Divine Protection or Divine Shield rank 1 instead of the top rank (bare 20 to 50, +1.9 to +3.7%). A shorter defensive should not raise threat; check what the longer one blocks. Consecration rank 1 beats the top rank on a single target for Retribution 50 (+1.5%) and Protection 40 to 60 (+1.3 to +3.1%) without a mana shortage; check the Consecration line's value on one target.
+- **Integrator:**
+  - **Ladder goldens:** every TestRotationLadder golden moves. The rules header text changed (resolver renamed), and so did the bands and ranks above. Regenerate at the pin.
+  - **Addon commit:** 547d3f60f is the healers lane's a65bd8111, unchanged. Merging wt/r9-healers with wt/r9-ranks conflicts in data/tests/test_addonrotation.py; take wt/r9-ranks's side.
+  - **Fork copies:** the fork copies of the five changed rotations sync in E 0a9ef0d0c.
+- **Platform:** the /sim page can send `preset` (`"bare"` or `"raid"`) from its preset selector. Without it, a request falls back to the published preset for its level, which is the page's default; a user who switches a 60 to bare gets the raid ranks. The TypeScript envelope type is hand-written (web/src/lib/sim/types.ts).
+- **Ranker:** sim/cmd/leveling-bis should set `api.SimRequest.Preset` to the pass's preset. Today its bare-60 pass falls back to the raid preset (`PublishedPreset(60)`), so the bare-60 rows do not reach the published bare-60 BiS until it does.
+- **Hybrids:** Enhancement casts Strength of Earth Totem rank 1 at bare 60 for +1% with no mana shortage. A weaker Strength buff should not raise damage, so check what the lower rank changes.
+- **Healers:** the heal profile is the level-60 fight at every band (owner question above).
 
 ## Still open
 
-- Band-60 rank choices that differ by preset (bare 60 versus raid 60) cannot be expressed per level. The headline at 60 is raid (`PublishedPreset`), so this lane left 60 as written.
-- A choice keyed by authored id cannot split one spell's tank casts from its party casts when both lines name the same id. Today the rotations give them distinct ids where it matters (Holy paladin's Flash of Light).
+- A row is keyed by authored id. To split one spell's tank casts from its party casts, the two lines must name different ids, as Holy priest's Flash Heal and Holy paladin's Flash of Light now do.
