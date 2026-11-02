@@ -325,6 +325,8 @@ func TestSingleTierOverridesGateTheirIDs(t *testing.T) {
 	}{
 		{"paladin", 407632, 40}, // Hammer of the Righteous
 		{"warlock", 603, 60},    // Bane of Doom
+		{"warrior", 1680, 36},   // Whirlwind
+		{"warrior", 2458, 30},   // Berserker Stance
 	} {
 		if _, ok := HighestLearnedSpellID(tc.class, tc.id, tc.level-1); ok {
 			t.Errorf("%s %d is learned at level %d, not %d", tc.class, tc.id, tc.level, tc.level-1)
@@ -362,5 +364,20 @@ func TestARankAboveTheLevelCapDoesNotSetTheTiersLevel(t *testing.T) {
 	}
 	if got, ok := HighestLearnedSpellID("mage", 1239700, 45); !ok || got != 1239697 {
 		t.Errorf(`embedded table: HighestLearnedSpellID("mage", 1239700, 45) = (%d, %v), want (1239697, true)`, got, ok)
+	}
+}
+
+// Mutilate rank 1 is 1310707, SpellLevels BaseLevel 30 and a trainable
+// SkillLineAbility row (AcquireMethod 0). The tier's other id, 1329, is
+// Era's: no SkillLineAbility row and no BaseLevel, but listed first at 40.
+func TestMutilateRankOneIsLearnedAtThirty(t *testing.T) {
+	if _, ok := HighestLearnedSpellID("rogue", 1241584, 29); ok {
+		t.Error("Mutilate is learned at 29")
+	}
+	if got, ok := HighestLearnedSpellID("rogue", 1241584, 30); !ok || got != 1310707 {
+		t.Errorf("Mutilate at 30: got (%d, %v), want (1310707, true)", got, ok)
+	}
+	if got, _ := HighestLearnedSpellID("rogue", 1241584, 40); got != 399956 {
+		t.Errorf("Mutilate at 40: got %d, want 399956", got)
 	}
 }
