@@ -257,3 +257,30 @@ func TestEarthAndAirTotemRanksMatchTheClient(t *testing.T) {
 		}
 	}
 }
+
+// Thorns, Retribution Aura and Stoneskin (fork sim/core/buff_ranks.go, round
+// 9): each rank's damage to an attacker (aura 15) or Physical damage taken
+// (aura 14, misc 1, stated negative) at its SpellLevel, pinned against 70707.
+func TestReactiveAuraRanksMatchTheClient(t *testing.T) {
+	const (
+		auraDamageShield   = 15
+		auraModDamageTaken = 14
+		miscPhysical       = 1
+		stoneskinSign      = -1
+	)
+	assertRanks(t, "Thorns", loadClassFrom(t, trueshotAuraSpellconstDir, "druid"), core.ThornsRanks, auraDamageShield, 0, false)
+	assertRanks(t, "Retribution Aura", loadClassFrom(t, trueshotAuraSpellconstDir, "paladin"), core.RetributionAuraRanks, auraDamageShield, 0, false)
+	shaman := loadClassFrom(t, trueshotAuraSpellconstDir, "shaman")
+	for _, rank := range core.StoneskinRanks {
+		spell, ok := shaman.ByID(rank.SpellID)
+		if !ok {
+			t.Fatalf("Stoneskin %d is not in the client table", rank.SpellID)
+		}
+		if spell.SpellLevel != rank.Level {
+			t.Errorf("Stoneskin %d: engine learns at %d, client at %d", rank.SpellID, rank.Level, spell.SpellLevel)
+		}
+		if amount := stoneskinSign * findEffect(spell, auraModDamageTaken, miscPhysical).Amount; amount != rank.Amount {
+			t.Errorf("Stoneskin %d: engine reduction %v, client %v", rank.SpellID, rank.Amount, amount)
+		}
+	}
+}
