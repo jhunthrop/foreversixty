@@ -410,6 +410,18 @@ test.describe('signed in, desktop', () => {
       await held;
       await route.fallback();
     });
+    // The first visit cached /v1/me (lib/data/query.ts), and with the session cookie the live
+    // header draws from that cache the moment it mounts, so holding the request held nothing:
+    // the loading header lived only until the mount, and a check that came later found the
+    // filled header instead (CI, 2026-11-02). Dropping the cached answer makes the reload
+    // wait on the held request, as a first visit does; the gear hint the skeleton reads stays.
+    await page.evaluate(() => {
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith('fs.q.') && (localStorage.getItem(key) ?? '').includes('/v1/me"')) {
+          localStorage.removeItem(key);
+        }
+      }
+    });
     await page.reload();
     await expect(page.getByTestId('character-header-loading')).toBeVisible();
     const before = await page.getByTestId('bis-class-warrior').boundingBox();
