@@ -29,7 +29,11 @@
         { "spell_id": 1248401, "name": "Smoked Desert Dumplings", "verified": "1.60.1.70707/simconsumes.json#20452" },
         { "spell_id": 1248422, "name": "Smoked Desert Dumplings", "verified": "1.60.1.70707/spells.json#1248422" },
         { "spell_id": 1249513, "name": "Nightfin Soup", "verified": "1.60.1.70707/simconsumes.json#13931" },
-        { "spell_id": 1249520, "name": "Nightfin Soup", "verified": "1.60.1.70707/spells.json#1249520" }
+        { "spell_id": 1249520, "name": "Nightfin Soup", "verified": "1.60.1.70707/spells.json#1249520" },
+        { "spell_id": 1249516, "name": "Baked Salmon", "verified": "1.60.1.70707/simconsumes.json#13935" },
+        { "spell_id": 1249520, "name": "Baked Salmon", "verified": "1.60.1.70707/spells.json#1249520" },
+        { "spell_id": 1249515, "name": "Poached Sunscale Salmon", "verified": "1.60.1.70707/simconsumes.json#13932" },
+        { "spell_id": 1249519, "name": "Poached Sunscale Salmon", "verified": "1.60.1.70707/spells.json#1249519" }
       ],
       "weapon_enchant": [
         { "spell_id": 22756, "name": "Elemental Sharpening Stone", "verified": "1.60.1.69893/spells.json#22756" },
@@ -116,7 +120,9 @@
       ],
       "food": [
         { "spell_id": 1248401, "name": "Smoked Desert Dumplings", "verified": "1.60.1.70707/simconsumes.json#20452" },
-        { "spell_id": 1248422, "name": "Smoked Desert Dumplings", "verified": "1.60.1.70707/spells.json#1248422" }
+        { "spell_id": 1248422, "name": "Smoked Desert Dumplings", "verified": "1.60.1.70707/spells.json#1248422" },
+        { "spell_id": 1249516, "name": "Baked Salmon", "verified": "1.60.1.70707/simconsumes.json#13935" },
+        { "spell_id": 1249520, "name": "Baked Salmon", "verified": "1.60.1.70707/spells.json#1249520" }
       ],
       "weapon_enchant": [
         { "spell_id": 22756, "name": "Elemental Sharpening Stone", "verified": "1.60.1.69893/spells.json#22756" }

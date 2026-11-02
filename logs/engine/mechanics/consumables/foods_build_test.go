@@ -27,25 +27,38 @@ func presetFoodsByRole(t *testing.T) map[string][]string {
 		} `json:"specs"`
 	}
 	readJSON(t, raidConsumesPath, &raid)
+	type labelled struct {
+		ID    string `json:"id"`
+		Label string `json:"label"`
+	}
 	var presets struct {
 		Presets struct {
 			Raid struct {
 				Consumes struct {
 					Groups map[string]struct {
-						IDs []struct {
-							ID    string `json:"id"`
-							Label string `json:"label"`
-						} `json:"ids"`
+						IDs []labelled `json:"ids"`
 					} `json:"groups"`
+					ByClass map[string][]labelled `json:"by_class"`
+					BySpec  map[string][]labelled `json:"by_spec"`
 				} `json:"consumes"`
 			} `json:"raid"`
 		} `json:"presets"`
 	}
 	readJSON(t, presetsPath, &presets)
+	// Round 9 moved foods into the class and spec lists too (a level-gated pair per spec),
+	// so a food's label can sit in any of the three.
 	labels := map[string]string{}
-	for _, g := range presets.Presets.Raid.Consumes.Groups {
+	consumes := presets.Presets.Raid.Consumes
+	for _, g := range consumes.Groups {
 		for _, id := range g.IDs {
 			labels[id.ID] = id.Label
+		}
+	}
+	for _, lists := range []map[string][]labelled{consumes.ByClass, consumes.BySpec} {
+		for _, ids := range lists {
+			for _, id := range ids {
+				labels[id.ID] = id.Label
+			}
 		}
 	}
 	var specs []struct {
