@@ -106,6 +106,22 @@ func TestTheBattlegroundGatesOpenAtLaunch(t *testing.T) {
 	}
 }
 
+// Round 9: the client's reputation sources (items lane F3) reach The
+// Watchers and Powderfuse. Powderfuse opens with the Riverglades at launch;
+// The Watchers has no launch zone on record and stays gated.
+func TestTheForeverZoneReputationsFollowTheLaunchEvidence(t *testing.T) {
+	g, err := loadContentGates(publishedRepoRoot)
+	if err != nil {
+		t.Fatalf("loadContentGates: %v", err)
+	}
+	if ref, ok := g.factions[2819]; !ok || ref.opens != "later" {
+		t.Errorf("The Watchers (2819) = %+v, want gated later", ref)
+	}
+	if closed, known := g.gateClosed["powderfuse"]; !known || closed {
+		t.Errorf("powderfuse gate: known %v, closed %v; want open at launch", known, closed)
+	}
+}
+
 func TestParseContentGatesFailsFast(t *testing.T) {
 	cases := map[string]string{
 		"unknown phase":  `[{"key": "a", "phase": "phase-9", "npcs": [{"id": 1, "name": "x"}]}]`,
