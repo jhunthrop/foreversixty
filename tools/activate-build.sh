@@ -236,7 +236,7 @@ done
 # (design/reviews/2026-10-30-70707-dps-drop.md). The fix is a new fetch, which carries
 # the lost items forward from raw/wowhead/items.json.
 step "checking $NEW's items against $ACTIVE's floors (pipeline build-floors)" \
-  "gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=$NEW (add -f allow_shrink=true only if its fetch-wowhead step refuses a live feed whose lost items the carry file holds), then $REDO"
+  "gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=$NEW (its fetch-wowhead step carries the items the live feed lost), then $REDO"
 run in_dir data uv run python -m pipeline build-floors --build "$NEW" --against "$ACTIVE"
 
 # The Interface number Blizzard's TOC convention gives this version (1.60.1 -> 16001).

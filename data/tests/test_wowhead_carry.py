@@ -8,6 +8,13 @@ committed `raw/wowhead/items.json` seeded from the previous build: live records 
 a seeded record the feed no longer lists is kept, and it is dropped only when the
 client loses the item or gains its own `ItemSparse` row for it.
 
+Owner ruling, sim-accuracy round 7: the carry is automatic. A feed that lists only part
+of the seeded supplement passes (70707's refetch listed 397 of 689, 58%), because the
+saved records carry the rest. The size floor applies to the carried catalogue: the
+seeded supplement items the merge still holds. A record lost because its item left
+the client (no `Item` row) is the client's word and is dropped, but it counts as lost,
+so a client table that lost many items still fails loudly.
+
 Same fixture as test_wowhead_items.py: the cloak (279865) and the sword (271218) are
 the planner gear the client lacks; the belt (11726) is the client's.
 """
@@ -113,18 +120,85 @@ def test_fetch_merges_the_live_feed_into_the_builds_own_carry_file(tmp_path: Pat
     build_dir = tmp_path / "1.60.1.2"
     _write_client(build_dir / "raw", item_ids=FIXTURE_IDS, sparse_ids={BELT})
     _seed(build_dir)
-    # The feed lost the cloak but kept the sword: coverage 50% fails the floor...
-    with pytest.raises(wh.WowheadCoverageError, match="1 of 2"):
-        wh.fetch_wowhead("1.60.1.2", root=tmp_path, client=_client(_payload_without(CLOAK)))
-    assert not wh.payload_path(build_dir).exists()
-    # ...and a deliberate run past the floor still carries the cloak.
-    path = wh.fetch_wowhead(
-        "1.60.1.2", root=tmp_path, client=_client(_payload_without(CLOAK)), allow_shrink=True
-    )
+    # The feed lost the cloak but kept the sword: coverage 50%, and the cloak is carried.
+    path = wh.fetch_wowhead("1.60.1.2", root=tmp_path, client=_client(_payload_without(CLOAK)))
     assert path == build_dir / "raw" / "wowhead" / "items.json"
     document = json.loads(path.read_text(encoding="utf-8"))
     assert document["carried"] == [CLOAK] and document["live"] == 5
+    assert document["dropped"] == []
     assert {item.id for item in wh.load_items(path)} == FIXTURE_IDS
+    assert wh.payload_path(build_dir).exists()
+
+
+def test_a_complete_feed_carries_nothing(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    build_dir = tmp_path / "1.60.1.2"
+    _write_client(build_dir / "raw", item_ids=FIXTURE_IDS, sparse_ids={BELT})
+    _seed(build_dir)
+    with caplog.at_level("INFO", logger="pipeline.wowhead_items"):
+        path = wh.fetch_wowhead("1.60.1.2", root=tmp_path, client=_client(FIXTURE.read_text()))
+    document = json.loads(path.read_text(encoding="utf-8"))
+    assert document["carried"] == [] and document["dropped"] == []
+    assert "lists 2 of 2 seeded supplement items (100%); 0 records carried" in caplog.text
+
+
+#: Twelve planner swords the client lacks, cloned from the fixture's sword.
+SUPPLEMENT_IDS = tuple(range(900001, 900013))
+
+
+def _supplement_records(ids: tuple[int, ...] = SUPPLEMENT_IDS) -> dict[int, dict]:
+    sword = wh.payload_records(FIXTURE.read_text(encoding="utf-8"))[SWORD]
+    return {i: {**sword, "id": i, "name": f"Sword {i}"} for i in ids}
+
+
+def _seed_supplement(build_dir: Path, *, client_ids: set[int]) -> None:
+    _write_client(build_dir / "raw", item_ids=client_ids, sparse_ids=set())
+    wh.write_records(
+        wh.raw_path(build_dir), _supplement_records(), build=build_dir.name, seeded_from=None
+    )
+
+
+def test_a_feed_at_58_percent_carries_the_saved_records_and_passes(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """70707's refetch: the live feed listed 397 of 689 seeded supplement items."""
+    build_dir = tmp_path / "1.60.1.2"
+    _seed_supplement(build_dir, client_ids=set(SUPPLEMENT_IDS))
+    live = _supplement_records(SUPPLEMENT_IDS[:7])
+    with caplog.at_level("INFO", logger="pipeline.wowhead_items"):
+        path = wh.merge_live_feed(build_dir, live)
+    document = json.loads(path.read_text(encoding="utf-8"))
+    assert document["carried"] == list(SUPPLEMENT_IDS[7:]) and document["live"] == 7
+    assert {int(i) for i in document["items"]} == set(SUPPLEMENT_IDS)
+    assert "lists 7 of 12 seeded supplement items (58%); 5 records carried" in caplog.text
+
+
+def test_a_carried_catalogue_that_really_shrank_fails(tmp_path: Path) -> None:
+    """Five seeded items are gone from the live feed AND from the client's Item table:
+    the merge cannot carry them, and the catalogue keeps 7 of 12, under the floor."""
+    build_dir = tmp_path / "1.60.1.2"
+    _seed_supplement(build_dir, client_ids=set(SUPPLEMENT_IDS[:7]))
+    before = wh.raw_path(build_dir).read_text(encoding="utf-8")
+    with pytest.raises(wh.WowheadCarryError, match=r"keeps 7 of the 12 seeded supplement items"):
+        wh.merge_live_feed(build_dir, _supplement_records(SUPPLEMENT_IDS[:7]))
+    assert wh.raw_path(build_dir).read_text(encoding="utf-8") == before
+
+
+def test_a_record_whose_item_left_the_client_is_dropped_and_counted(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """The client's Item table no longer lists one seeded item: it is not in the game,
+    so its saved record is dropped (the client is the truth), recorded as dropped, and
+    counted against the floor (11 of 12 passes it)."""
+    gone = SUPPLEMENT_IDS[-1]
+    build_dir = tmp_path / "1.60.1.2"
+    _seed_supplement(build_dir, client_ids=set(SUPPLEMENT_IDS) - {gone})
+    with caplog.at_level("INFO", logger="pipeline.wowhead_items"):
+        path = wh.merge_live_feed(build_dir, _supplement_records(SUPPLEMENT_IDS[:7]))
+    document = json.loads(path.read_text(encoding="utf-8"))
+    assert str(gone) not in document["items"]
+    assert document["dropped"] == [gone]
+    assert document["carried"] == list(SUPPLEMENT_IDS[7:-1])
+    assert "1 dropped (no Item row)" in caplog.text
 
 
 def test_fetch_seeds_from_the_newest_other_build_when_it_has_no_file_of_its_own(

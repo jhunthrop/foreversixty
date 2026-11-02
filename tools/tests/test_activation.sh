@@ -411,7 +411,7 @@ assert "floors: exits 1" equal "$STATUS" 1
 assert "floors: the guard ran on the new build against the active one" contains "$(cat "$d/stubs/uv-calls")" "run python -m pipeline build-floors --build $NEW_BUILD --against $OLD_BUILD"
 assert "floors: the summary names the step" contains "$SUMMARY" "**Step:** checking $NEW_BUILD's items against $OLD_BUILD's floors (pipeline build-floors)"
 assert "floors: the reason quotes the pipeline" contains "$SUMMARY" "takes 396 items' stats from wowhead, below 90% of $OLD_BUILD's 688"
-assert "floors: the hand command re-fetches the build" contains "$SUMMARY" "**To finish or redo the move:** gh workflow run data.yml -f product=wowf -f build=$NEW_BUILD (add -f allow_shrink=true only if"
+assert "floors: the hand command re-fetches the build" contains "$SUMMARY" "**To finish or redo the move:** gh workflow run data.yml -f product=wowf -f build=$NEW_BUILD (its fetch-wowhead step carries the items the live feed lost), then"
 assert "floors: and then reruns the move" contains "$SUMMARY" "then gh workflow run client.yml -f build=$NEW_BUILD -f product=wowf"
 assert "floors: it stopped before the re-encode" lacks "$OUT" "== re-encoding the guide builds"
 assert "floors: nothing to undo, so no undo line" lacks "$SUMMARY" "undo the half-made move"

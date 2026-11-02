@@ -30,10 +30,11 @@ CROSS_BUILD_ITEMS_RATIO = 0.98
 #: count gate alone cannot see it.
 WOWHEAD_ITEMS_FLOOR_RATIO = 0.9
 
-#: `fetch-wowhead` refuses a live feed that lists fewer than 90% of the seeded
-#: supplement (the planner gear the client lacks): 70685's 7 of 688 and 70707's 396
-#: of 688 both fail it.
-MIN_LIVE_COVERAGE = 0.9
+#: `fetch-wowhead` carries the seeded records a live feed no longer lists (70707's
+#: refetch listed 397 of 689, 58%), and refuses a carried catalogue that keeps fewer
+#: than 90% of the seeded supplement (the planner gear the client lacks): only
+#: records whose item left the client's Item table can be lost that way.
+MIN_CARRIED_COVERAGE = 0.9
 
 _BUILD_NAME = re.compile(r"^[0-9]+(\.[0-9]+)+$")
 
