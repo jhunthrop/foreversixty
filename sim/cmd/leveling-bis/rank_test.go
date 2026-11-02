@@ -54,8 +54,8 @@ func TestEffectVerifiedInSimCatchesAnItemSimdbSilentlyStrips(t *testing.T) {
 	// as unverified; which ids those are moves with the catalogue (Hand of
 	// Justice itself is Known since the classic-db supplement), so find one.
 	var absent int
-	for id := range engineImplementedEffectItemIDs {
-		if !simdb.Known(int32(id)) {
+	for _, id := range []int{19019, 17182, 22691, 23054, 19364, 21134, 22798, 19019} {
+		if effectImplemented(id) && !simdb.Known(int32(id)) {
 			absent = id
 			break
 		}
@@ -74,7 +74,7 @@ func TestEffectVerifiedInSimCatchesAnItemSimdbSilentlyStrips(t *testing.T) {
 	// slotsNeedingEffectVerification) even though that sim cannot be
 	// trusted to have verified its effect.
 	if !hasImplementedEffect(handOfJustice.candidate) {
-		t.Error("Hand of Justice (11815) is a real effectids_generated.go entry; hasImplementedEffect = false, want true")
+		t.Error("Hand of Justice (11815) has an engine effect; hasImplementedEffect = false, want true")
 	}
 }
 

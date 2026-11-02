@@ -16,6 +16,11 @@
       "kind": "blizzard"
     },
     {
+      "label": "Blizzard, Battle for the Darkspear Islands in World of Warcraft: Forever",
+      "url": "https://worldofwarcraft.blizzard.com/news/24307308",
+      "kind": "blizzard"
+    },
+    {
       "label": "BiS phase audit, 2026-10-30",
       "url": "https://github.com/jhunthrop/foreversixty/blob/main/design/reviews/2026-10-30-bis-phase-audit.md",
       "kind": "site"
@@ -358,10 +363,10 @@
       "key": "battleground-reputation",
       "label": "Warsong Gulch, Arathi Basin and Alterac Valley reputation and rewards",
       "original_patch": "1.5 to 1.7",
-      "phase": "later",
-      "date": "unannounced",
-      "confidence": "uncertain",
-      "why": "Blizzard says the original battlegrounds remain but gives no launch list. Gated under the house rule, with every battleground quartermaster and the Alterac Valley summons and quests.",
+      "phase": "launch",
+      "date": "2026-11-04",
+      "confidence": "confirmed",
+      "why": "Owner ruling, sim-accuracy round 9 (2026-11-02): battlegrounds and PvP ranks run from launch (Blizzard's 'How PvP Progression in Forever Works', 7 October, ranks battleground honor across every original map, Alterac Valley included). The gate stays so every battleground quartermaster and the Alterac Valley summons and quests keep one named key; repStandingObtainable still holds revered and exalted to level 60.",
       "factions": [
         {"id": 889, "name": "Silverwing Sentinels"},
         {"id": 890, "name": "Warsong Outriders"},
@@ -405,10 +410,10 @@
       "key": "darkspear-islands",
       "label": "Darkspear Islands battleground rewards",
       "original_patch": "Forever",
-      "phase": "later",
-      "date": "unannounced",
-      "confidence": "uncertain",
-      "why": "Forever's new 15v15 battleground has no announced timing.",
+      "phase": "launch",
+      "date": "2026-11-04",
+      "confidence": "confirmed",
+      "why": "Owner ruling, sim-accuracy round 9 (2026-11-02): Forever's new 15v15 battleground, levels 30 to 60, is a launch battleground (Blizzard's 'Battle for the Darkspear Islands', 7 October, and 'Forever goes live globally 4 November'). Creeg Bothunk sells its reputation rewards.",
       "npcs": [
         {"id": 263570, "name": "Creeg Bothunk"}
       ]

@@ -393,6 +393,27 @@ def armor_type_for(item_class_id: int, subclass_id: int) -> str | None:
     return ARMOR_TYPE_BY_SUBCLASS.get(subclass_id)
 
 
+#: ItemSparse's `MinReputation` as a standing: the client's reputation ranks
+#: 0 (Hated) to 7 (Exalted). Only the ranks a reward can need are named.
+REPUTATION_STANDINGS: dict[int, str] = {
+    3: "neutral",
+    4: "friendly",
+    5: "honored",
+    6: "revered",
+    7: "exalted",
+}
+
+
+def reputation_for(faction_id: int | None, standing: int | None) -> dict[str, int | str] | None:
+    """The row's `reputation`: ItemSparse's `MinFactionID` and `MinReputation`
+    as `{"faction_id", "standing"}`, or None for no requirement, no column, or
+    a rank the table above does not name. The BiS ranker holds every source of
+    such an item to this standing (sim/cmd/leveling-bis/reputation.go)."""
+    if not faction_id or standing not in REPUTATION_STANDINGS:
+        return None
+    return {"faction_id": faction_id, "standing": REPUTATION_STANDINGS[standing]}
+
+
 def bonding_for(value: int | None) -> str | None:
     """ItemSparse's `Bonding` as the contract's word, or None for no column,
     no binding, or a value the client table does not define."""
@@ -1027,6 +1048,10 @@ def build_class_items(
             weapon_type=weapon_type_for(item_class_id, subclass_id, inventory_type),
             bonding=bonding_for(_optional_int(row, "Bonding")),
             armor_type=armor_type_for(item_class_id, subclass_id),
+            reputation=reputation_for(
+                _optional_int(row, "MinFactionID"), _optional_int(row, "MinReputation")
+            ),
+            limit_category=_optional_int(row, "LimitCategory") or None,
         )
         candidates.append(
             (

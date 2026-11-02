@@ -73,6 +73,39 @@ func TestTheCuratedContentPhasesLoad(t *testing.T) {
 	}
 }
 
+// Owner ruling, round 9 (2026-11-02): battlegrounds and PvP ranks are
+// live at launch and Darkspear Islands is a launch battleground, so the
+// battleground reputation, quartermaster and Creeg Bothunk sources are open.
+func TestTheBattlegroundGatesOpenAtLaunch(t *testing.T) {
+	g, err := loadContentGates(publishedRepoRoot)
+	if err != nil {
+		t.Fatalf("loadContentGates: %v", err)
+	}
+	for _, key := range []string{"battleground-reputation", "darkspear-islands"} {
+		if closed, known := g.gateClosed[key]; !known || closed {
+			t.Errorf("gate %s: known %v, closed %v; want open at launch", key, known, closed)
+		}
+	}
+	loot := `{"sources": [
+		{"id": "vendor:263570", "kind": "vendor", "name": "Creeg Bothunk", "npc_id": 263570, "items": [272060]},
+		{"id": "rep:warsong-outriders:honored", "kind": "rep", "name": "Warsong Outriders", "faction_id": 890, "standing": "honored", "items": [19109]}
+	], "quests": {}}`
+	dir := t.TempDir()
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), loot); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	idx, _ = g.apply(idx)
+	for _, item := range []int{272060, 19109} {
+		if got := opensOf(t, idx, item); len(got) != 1 || got[0] != "" {
+			t.Errorf("item %d opens %v, want open at launch", item, got)
+		}
+	}
+}
+
 func TestParseContentGatesFailsFast(t *testing.T) {
 	cases := map[string]string{
 		"unknown phase":  `[{"key": "a", "phase": "phase-9", "npcs": [{"id": 1, "name": "x"}]}]`,

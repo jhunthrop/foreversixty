@@ -72,10 +72,10 @@ const (
 // excludePaired's own rule in pick.go) from list, so neither
 // topByItemLevel nor topByScore below can ever ask to equip the same
 // physical trinket twice.
-func excludePairMate(list []scored, excludeID int, excludeName string) []scored {
+func excludePairMate(list []scored, mate pairMate) []scored {
 	candidates := make([]scored, 0, len(list))
 	for _, c := range list {
-		if c.ID == excludeID || (excludeName != "" && c.Name == excludeName) {
+		if mate.excludes(c.candidate) {
 			continue
 		}
 		candidates = append(candidates, c)
@@ -87,8 +87,8 @@ func excludePairMate(list []scored, excludeID int, excludeName string) []scored 
 // item level first (ties broken by id, ascending, for a stable order
 // across runs). list is assumed already pair-mate-filtered
 // (excludePairMate).
-func topByItemLevel(list []scored, excludeID int, excludeName string) []scored {
-	candidates := excludePairMate(list, excludeID, excludeName)
+func topByItemLevel(list []scored, mate pairMate) []scored {
+	candidates := excludePairMate(list, mate)
 	sort.SliceStable(candidates, func(i, j int) bool {
 		if candidates[i].ItemLevel != candidates[j].ItemLevel {
 			return candidates[i].ItemLevel > candidates[j].ItemLevel
@@ -175,8 +175,8 @@ func hasUseEffect(c candidate) bool {
 // protected (see the union this function used to keep unconditionally,
 // in its history above), it just no longer stands in for "was this
 // candidate worth a sim at all" the way it used to.
-func trinketShortlist(list []scored, excludeID int, excludeName string, weights map[string]float64) []scored {
-	filtered := excludePairMate(list, excludeID, excludeName)
+func trinketShortlist(list []scored, mate pairMate, weights map[string]float64) []scored {
+	filtered := excludePairMate(list, mate)
 
 	qualifying := make([]scored, 0, len(filtered))
 	for _, c := range filtered {
@@ -189,7 +189,7 @@ func trinketShortlist(list []scored, excludeID int, excludeName string, weights 
 	}
 
 	byScore := qualifying[:trinketShortlistBound]
-	byItemLevel := topByItemLevel(qualifying, 0, "")
+	byItemLevel := topByItemLevel(qualifying, pairMate{})
 
 	seen := make(map[int]bool, len(byScore)+len(byItemLevel))
 	out := make([]scored, 0, len(byScore)+len(byItemLevel))
@@ -243,12 +243,11 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 		out[k] = v
 	}
 
-	var mateID int
-	var mateName string
-	if mate, ok := pairSlot[slot]; ok && picks[mate].Item != nil {
-		mateID, mateName = picks[mate].Item.ID, picks[mate].Item.Name
+	var mate pairMate
+	if mateSlot, ok := pairSlot[slot]; ok {
+		mate = mateOf(picks[mateSlot].Item)
 	}
-	candidates := trinketShortlist(bySlot[slot], mateID, mateName, weights)
+	candidates := trinketShortlist(bySlot[slot], mate, weights)
 	if len(candidates) == 0 {
 		return out, nil
 	}

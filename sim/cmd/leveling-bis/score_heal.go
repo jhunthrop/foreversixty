@@ -251,7 +251,7 @@ type healFieldsAttacher interface {
 // attachHealerFields puts a healer's keys on its band report; a damage
 // spec's runner is not a healFieldsAttacher and the report is left alone.
 func attachHealerFields(report *bandReport, runner engineRunner, spec specInfo, race, classSlug string, band int, talents string, picks map[string]slotPick) error {
-	attacher, ok := runner.(healFieldsAttacher)
+	attacher, ok := unwrapRunner(runner).(healFieldsAttacher)
 	if !ok {
 		return nil
 	}

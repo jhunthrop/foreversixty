@@ -90,6 +90,17 @@ def test_the_go_hand_lists_now_live_in_the_curated_file():
     assert index.npcs[15192].opens == "later"  # Anachronos, gate deleted in 3592e40a5
 
 
+@pytest.mark.parametrize("key", ["battleground-reputation", "darkspear-islands"])
+def test_the_battlegrounds_open_at_launch(key):
+    """Owner ruling, round 9 (2026-11-02): Blizzard confirms battlegrounds
+    and PvP ranks at launch, and Darkspear Islands is a launch battleground,
+    so both reward gates sit at launch and close nothing."""
+    gate = {gate.key: gate for gate in load_content_phases(CURATED).gates}[key]
+    assert (gate.phase, gate.date, gate.confidence) == ("launch", "2026-11-04", "confirmed")
+    index = load_content_phases(CURATED).index()
+    assert 889 not in index.factions and 263570 not in index.npcs
+
+
 @pytest.mark.parametrize(
     ("gate", "message"),
     [

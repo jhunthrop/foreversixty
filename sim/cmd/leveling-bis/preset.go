@@ -12,7 +12,7 @@ import (
 // class kit); a raid entry adds data/curated/presets.json's Phase 1 raid
 // context on top of the same character.
 const (
-	presetBare = "bare"
+	presetBare = request.BarePreset
 	presetRaid = request.RaidPreset
 )
 
@@ -58,4 +58,16 @@ func passesFor(base specInfo, band int, raid request.ResolvedPreset) []rankPass 
 	raided := base
 	raided.Applied = &raid
 	return append(passes, rankPass{name: presetRaid, spec: raided})
+}
+
+// rankPreset is the preset a pass's requests name, so the rotation casts
+// that preset's rank choices (sim/request rank-choices.json): the raid
+// pass is raid, every other pass bare. Without it a request falls back to
+// PublishedPreset(level), which is raid at 60, and the bare-60 rank rows
+// would never reach the bare-60 sets.
+func (s specInfo) rankPreset() string {
+	if s.Applied != nil {
+		return presetRaid
+	}
+	return presetBare
 }

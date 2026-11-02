@@ -180,6 +180,11 @@ class ClassTalents(BaseModel):
     trees: list[TalentTree]
 
 
+class ItemReputation(BaseModel):
+    faction_id: int
+    standing: Literal["neutral", "friendly", "honored", "revered", "exalted"]
+
+
 class GearItem(BaseModel):
     id: int
     name: str
@@ -316,6 +321,16 @@ class GearItem(BaseModel):
     #: SubclassID (`pipeline.normalize.gear.armor_type_for`); `None` for a
     #: cloak, a neck, a ring, a trinket, a weapon or a relic.
     armor_type: Literal["cloth", "leather", "mail", "plate", "shield"] | None = None
+    #: Sim-accuracy round 9 (ranker lane): the client's reputation requirement,
+    #: ItemSparse.MinFactionID and MinReputation
+    #: (`pipeline.normalize.gear.reputation_for`). `None` for none, and for a
+    #: classic-db or wowhead row. The BiS ranker gates every source of the item
+    #: on it (sim/cmd/leveling-bis/reputation.go).
+    reputation: ItemReputation | None = None
+    #: Round 9 (ranker lane): the client's ItemSparse.LimitCategory, the
+    #: "Unique-Equipped: <family> (1)" line. `None` for none. The BiS ranker never
+    #: pairs two items of one category (sim/cmd/leveling-bis/pair.go).
+    limit_category: int | None = None
 
 
 class ClassItems(BaseModel):

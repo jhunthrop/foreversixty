@@ -136,10 +136,9 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 		return rankRelicSlot(runner, spec, race, classSlug, level, talents, picks, bySlot, slot)
 	}
 
-	var mateID int
-	var mateName string
-	if mate, ok := pairSlot[slot]; ok && picks[mate].Item != nil {
-		mateID, mateName = picks[mate].Item.ID, picks[mate].Item.Name
+	var mate pairMate
+	if mateSlot, ok := pairSlot[slot]; ok {
+		mate = mateOf(picks[mateSlot].Item)
 	}
 
 	pool := bySlot[slot]
@@ -164,7 +163,7 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 	// effect items. Without it, verify only ever compared the pick with an
 	// effect item (round 5: Arcane's Kindling Stave was checked against a
 	// sword 47 DPS behind it, never against Glowing Brightwood Staff).
-	if ru := current.RunnerUp; ru != nil && !seen[ru.ID] && ru.ID != mateID && (mateName == "" || ru.Name != mateName) &&
+	if ru := current.RunnerUp; ru != nil && !seen[ru.ID] && !mate.excludes(ru.candidate) &&
 		!(slot == "main_hand" && leveling.DualWieldSpecs[spec.Spec] && ru.TwoHand) {
 		candidates = append(candidates, *ru)
 		seen[ru.ID] = true
@@ -173,7 +172,7 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 		if len(candidates) >= 1+effectRankTopN {
 			break
 		}
-		if seen[c.ID] || c.ID == mateID || (mateName != "" && c.Name == mateName) {
+		if seen[c.ID] || mate.excludes(c.candidate) {
 			continue
 		}
 		if !hasImplementedEffect(c.candidate) {

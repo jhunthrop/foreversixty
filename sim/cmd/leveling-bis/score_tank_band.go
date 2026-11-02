@@ -191,7 +191,7 @@ func annotateTankBand(runner engineRunner, spec specInfo, race string, level int
 	if spec.Role != roleTank {
 		return nil
 	}
-	tank, ok := runner.(tankRunner)
+	tank, ok := unwrapRunner(runner).(tankRunner)
 	if !ok {
 		return fmt.Errorf("%s is a tank but its runner is not a tank runner", spec.Spec)
 	}

@@ -234,12 +234,7 @@ func sortCandidates(list []scored) {
 //     an off_hand item at all" once main_hand's pick is two-handed.
 func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 	out := make(map[string]slotPick, len(slotOrder))
-	var fingerUsedID int
-	var fingerUsedName string
-	var fingerHasPick bool
-	var trinketUsedID int
-	var trinketUsedName string
-	var trinketHasPick bool
+	var fingerMate, trinketMate pairMate
 	var mainHandTwoHand bool
 	var mainHand *scored
 
@@ -247,13 +242,9 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 		list := bySlot[slot]
 		switch slot {
 		case "finger2":
-			if fingerHasPick {
-				list = excludePaired(list, fingerUsedID, fingerUsedName)
-			}
+			list = excludePaired(list, fingerMate)
 		case "trinket2":
-			if trinketHasPick {
-				list = excludePaired(list, trinketUsedID, trinketUsedName)
-			}
+			list = excludePaired(list, trinketMate)
 		case "main_hand":
 			// score() (see its own comment) converts a weapon's DPS to
 			// attack power per slot in isolation, with no term for the
@@ -317,13 +308,9 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 
 		switch slot {
 		case "finger1":
-			if sp.Item != nil {
-				fingerUsedID, fingerUsedName, fingerHasPick = sp.Item.ID, sp.Item.Name, true
-			}
+			fingerMate = mateOf(sp.Item)
 		case "trinket1":
-			if sp.Item != nil {
-				trinketUsedID, trinketUsedName, trinketHasPick = sp.Item.ID, sp.Item.Name, true
-			}
+			trinketMate = mateOf(sp.Item)
 		case "main_hand":
 			if sp.Item != nil {
 				mainHandTwoHand = sp.Item.TwoHand
@@ -387,7 +374,7 @@ func offHandCandidates(spec string, bySlot map[string][]scored, main *scored) []
 		list = mergeByScore(list, offHandWeapons(bySlot["main_hand"]))
 	}
 	if main != nil {
-		list = excludePaired(list, main.ID, main.Name)
+		list = excludePaired(list, mateOf(main))
 	}
 	if dualWield {
 		return weaponsOnly(list)
@@ -431,12 +418,12 @@ func withMainHand(spec string, bySlot map[string][]scored, picks map[string]slot
 	return fillEmptyOffHand(spec, bySlot, out)
 }
 
-// excludePaired drops an id or a name already used by this slot's
-// pair-mate from a candidate list, preserving order.
-func excludePaired(list []scored, usedID int, usedName string) []scored {
+// excludePaired drops what this slot's pair mate rules out (pair.go)
+// from a candidate list, preserving order.
+func excludePaired(list []scored, mate pairMate) []scored {
 	out := make([]scored, 0, len(list))
 	for _, s := range list {
-		if s.ID == usedID || s.Name == usedName {
+		if mate.excludes(s.candidate) {
 			continue
 		}
 		out = append(out, s)
@@ -562,7 +549,7 @@ func twoHandBeatsPair(bySlot map[string][]scored) bool {
 	bestMain := oneHanders[0]
 	pairScore := roundScore(bestMain.Score)
 
-	offPool := weaponsOnly(excludePaired(mergeByScore(bySlot["off_hand"], offHandWeapons(oneHanders)), bestMain.ID, bestMain.Name))
+	offPool := weaponsOnly(excludePaired(mergeByScore(bySlot["off_hand"], offHandWeapons(oneHanders)), mateOf(&bestMain)))
 	if len(offPool) > 0 {
 		pairScore = roundScore(pairScore + offPool[0].Score)
 	}
