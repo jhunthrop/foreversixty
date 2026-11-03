@@ -915,7 +915,7 @@
           {plannerCopy.noTalentRanksNote}
         {:else if codeNote.dropped === 0}
           Talents loaded from a character. The order points were spent in is not recorded in game, so this is
-          the lowest-tier-first order that reaches the same tree.
+          one way to level into the same tree: the main tree first, each talent as soon as its row opens.
         {:else}
           Talents loaded from a character, minus
           <span class="numeric">{codeNote.dropped}</span>

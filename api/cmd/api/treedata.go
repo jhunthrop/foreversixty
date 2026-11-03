@@ -29,17 +29,19 @@ func inferrer(data *trees.Data) *spec.Inferrer {
 
 // talentLayouts loads the active build's talent layout, which is what
 // turns a fight's recorded talent ids into the engine's positional
-// string. A build with no layout is not fatal: the scorer then refuses
-// every character, which is what it already does for the missing race.
+// string and what holds a server run to the game's talent rules. A build
+// with no layout is not fatal: the scorer then refuses every character,
+// which is what it already does for the missing race, and server runs go
+// unchecked.
 func talentLayouts(dir string, data *trees.Data, log *slog.Logger) *talents.Layouts {
 	build, ok := data.Active()
 	if !ok {
-		log.Warn("sims", "state", "no client build", "effect", "no execution scores")
+		log.Warn("sims", "state", "no client build", "effect", "no execution scores, no talent check on server runs")
 		return nil
 	}
 	layouts, err := talents.Load(filepath.Join(dir, build.Version, "talents"))
 	if err != nil {
-		log.Warn("sims", "state", "no talent layout", "err", err, "effect", "no execution scores")
+		log.Warn("sims", "state", "no talent layout", "err", err, "effect", "no execution scores, no talent check on server runs")
 		return nil
 	}
 	return layouts

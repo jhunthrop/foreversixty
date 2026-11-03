@@ -4469,7 +4469,7 @@ enum Copy {
     /// Open this build in the planner
     static var planOpenInPlanner: String { text("plan.openInPlanner") }
 
-    /// Loaded the {band} build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order.
+    /// Loaded the {band} build. The order shown is one way to level into it: the main tree first, each talent as soon as its row opens.
     static func planLoadedNote(band: String) -> String {
         format("plan.loadedNote", band)
     }

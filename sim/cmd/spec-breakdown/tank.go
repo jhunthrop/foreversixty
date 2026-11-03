@@ -54,7 +54,7 @@ type bossSwingRow struct {
 }
 
 func runTankReport(o options) (string, error) {
-	req, err := buildRequest(o)
+	req, err := legalRequest(o)
 	if err != nil {
 		return "", err
 	}

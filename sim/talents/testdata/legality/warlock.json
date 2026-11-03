@@ -1,0 +1,492 @@
+{
+ "build": "1.60.1.70753",
+ "class_slug": "warlock",
+ "trees": [
+  {
+   "name": "Affliction",
+   "position": 0,
+   "talents": [
+    {
+     "id": 105921,
+     "name": "Improved Life Tap",
+     "tier": 0,
+     "column": 0,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105925,
+     "name": "Suppression",
+     "tier": 0,
+     "column": 1,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105924,
+     "name": "Improved Corruption",
+     "tier": 0,
+     "column": 2,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105923,
+     "name": "Grim Reach",
+     "tier": 1,
+     "column": 0,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105922,
+     "name": "Soul Harvest",
+     "tier": 1,
+     "column": 1,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105920,
+     "name": "Improved Drains",
+     "tier": 1,
+     "column": 2,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105919,
+     "name": "Improved Bane of Agony",
+     "tier": 2,
+     "column": 0,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105918,
+     "name": "Fel Concentration",
+     "tier": 2,
+     "column": 1,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105916,
+     "name": "Amplify Curse",
+     "tier": 2,
+     "column": 2,
+     "max_rank": 1,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105917,
+     "name": "Pandemic",
+     "tier": 2,
+     "column": 3,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 110876,
+     "name": "Malevolence",
+     "tier": 3,
+     "column": 0,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105914,
+     "name": "Nightfall",
+     "tier": 3,
+     "column": 1,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105913,
+     "name": "Curse of Exhaustion",
+     "tier": 3,
+     "column": 2,
+     "max_rank": 1,
+     "prereq_talent_id": 105916,
+     "prereq_rank": 1
+    },
+    {
+     "id": 105912,
+     "name": "Siphon Life",
+     "tier": 4,
+     "column": 1,
+     "max_rank": 1,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105911,
+     "name": "Soul Siphon",
+     "tier": 4,
+     "column": 2,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105910,
+     "name": "Shadow Mastery",
+     "tier": 5,
+     "column": 2,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105909,
+     "name": "Wrack",
+     "tier": 6,
+     "column": 1,
+     "max_rank": 1,
+     "prereq_talent_id": 105912,
+     "prereq_rank": 1
+    }
+   ]
+  },
+  {
+   "name": "Demonology",
+   "position": 1,
+   "talents": [
+    {
+     "id": 105905,
+     "name": "Improved Health Funnel",
+     "tier": 0,
+     "column": 0,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105908,
+     "name": "Improved Imp",
+     "tier": 0,
+     "column": 1,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105907,
+     "name": "Demonic Embrace",
+     "tier": 0,
+     "column": 2,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105906,
+     "name": "Unholy Power",
+     "tier": 0,
+     "column": 3,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105902,
+     "name": "Demonic Aegis",
+     "tier": 1,
+     "column": 0,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105904,
+     "name": "Improved Voidwalker",
+     "tier": 1,
+     "column": 1,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105903,
+     "name": "Fel Vitality",
+     "tier": 1,
+     "column": 2,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105899,
+     "name": "Demonic Energies",
+     "tier": 1,
+     "column": 3,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105901,
+     "name": "Improved Sayaad",
+     "tier": 2,
+     "column": 0,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105900,
+     "name": "Demonic Sacrifice",
+     "tier": 2,
+     "column": 1,
+     "max_rank": 1,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105898,
+     "name": "Master Summoner",
+     "tier": 2,
+     "column": 2,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105897,
+     "name": "Decimation",
+     "tier": 3,
+     "column": 0,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105895,
+     "name": "Fel Domination",
+     "tier": 3,
+     "column": 2,
+     "max_rank": 1,
+     "prereq_talent_id": 105898,
+     "prereq_rank": 2
+    },
+    {
+     "id": 105896,
+     "name": "Demonic Brand",
+     "tier": 3,
+     "column": 3,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105894,
+     "name": "Improved Felhunter",
+     "tier": 4,
+     "column": 0,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105892,
+     "name": "Soul Link",
+     "tier": 4,
+     "column": 1,
+     "max_rank": 1,
+     "prereq_talent_id": 105900,
+     "prereq_rank": 1
+    },
+    {
+     "id": 105893,
+     "name": "Demonic Knowledge",
+     "tier": 4,
+     "column": 2,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105891,
+     "name": "Master Demonologist",
+     "tier": 5,
+     "column": 2,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105890,
+     "name": "Demonic Pact",
+     "tier": 6,
+     "column": 1,
+     "max_rank": 1,
+     "prereq_talent_id": 105892,
+     "prereq_rank": 1
+    }
+   ]
+  },
+  {
+   "name": "Destruction",
+   "position": 2,
+   "talents": [
+    {
+     "id": 105881,
+     "name": "Destructive Reach",
+     "tier": 0,
+     "column": 0,
+     "max_rank": 2,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105889,
+     "name": "Improved Shadow Bolt",
+     "tier": 0,
+     "column": 1,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105888,
+     "name": "Bane",
+     "tier": 0,
+     "column": 2,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105885,
+     "name": "Molten Skin",
+     "tier": 1,
+     "column": 0,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105887,
+     "name": "Cataclysm",
+     "tier": 1,
+     "column": 1,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105886,
+     "name": "Aftermath",
+     "tier": 1,
+     "column": 2,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105883,
+     "name": "Ruin",
+     "tier": 2,
+     "column": 1,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105884,
+     "name": "Shadowburn",
+     "tier": 2,
+     "column": 2,
+     "max_rank": 1,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105882,
+     "name": "Intensity",
+     "tier": 3,
+     "column": 0,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105879,
+     "name": "Agonizing Flames",
+     "tier": 3,
+     "column": 1,
+     "max_rank": 3,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105880,
+     "name": "Conflagrate",
+     "tier": 3,
+     "column": 2,
+     "max_rank": 1,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105878,
+     "name": "Pyroclasm",
+     "tier": 4,
+     "column": 0,
+     "max_rank": 2,
+     "prereq_talent_id": 105882,
+     "prereq_rank": 3
+    },
+    {
+     "id": 105876,
+     "name": "Bane of Havoc",
+     "tier": 4,
+     "column": 1,
+     "max_rank": 1,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105877,
+     "name": "Fire and Brimstone",
+     "tier": 4,
+     "column": 2,
+     "max_rank": 3,
+     "prereq_talent_id": 105880,
+     "prereq_rank": 1
+    },
+    {
+     "id": 105875,
+     "name": "Shadow and Flame",
+     "tier": 5,
+     "column": 2,
+     "max_rank": 5,
+     "prereq_talent_id": null,
+     "prereq_rank": null
+    },
+    {
+     "id": 105874,
+     "name": "Incinerate",
+     "tier": 6,
+     "column": 1,
+     "max_rank": 1,
+     "prereq_talent_id": 105876,
+     "prereq_rank": 1
+    }
+   ]
+  }
+ ]
+}

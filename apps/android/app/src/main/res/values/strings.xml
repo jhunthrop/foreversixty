@@ -1352,7 +1352,7 @@
     <string name="plan_planBuild">Plan a build</string>
     <string name="plan_yourBuilds">Your builds</string>
     <string name="plan_openInPlanner">Open this build in the planner</string>
-    <string name="plan_loadedNote">Loaded the %1$s build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order.</string>
+    <string name="plan_loadedNote">Loaded the %1$s build. The order shown is one way to level into it: the main tree first, each talent as soon as its row opens.</string>
     <string name="plan_shared_title">Shared build</string>
     <string name="plan_shared_head">%1$s %2$s %3$s</string>
     <string name="plan_shared_meta" tools:ignore="PluralsCandidate">%1$s · Saved %2$s · %3$d views</string>
