@@ -183,19 +183,44 @@ def _cast_lines(rotation: dict) -> list[dict]:
     return lines
 
 
+def apl_cast_spell_ids(rotation: object) -> set[int]:
+    """Every spell id a curated rotation casts, anywhere in it: the pre-pull
+    actions (the guide's opener: a warlock's Summon Imp, a druid's Prowl) as
+    well as the priority list, whether or not a rank family resolves it."""
+    ids: set[int] = set()
+    if isinstance(rotation, dict):
+        cast = rotation.get("castSpell")
+        if isinstance(cast, dict) and isinstance(cast.get("spellId"), dict):
+            spell_id = cast["spellId"].get("spellId")
+            if isinstance(spell_id, int) and not isinstance(spell_id, bool):
+                ids.add(spell_id)
+        for value in rotation.values():
+            ids |= apl_cast_spell_ids(value)
+    elif isinstance(rotation, list):
+        for value in rotation:
+            ids |= apl_cast_spell_ids(value)
+    return ids
+
+
 #: Forever's own spell ids start here; a rank with a classic id and a
 #: Forever copy resolves within the band the list names
 #: (sim/internal/spellranks foreverIDFloor).
 FOREVER_ID_FLOOR = 100000
 
 
-def _rank_choice_id(spellranks: dict, class_slug: str, family: str, spell_id: int,
-                    rank: int, level: int) -> int | None:
+def _rank_choice_id(
+    spellranks: dict, class_slug: str, family: str, spell_id: int, rank: int, level: int
+) -> int | None:
     """The id of `rank` of `family` learned by `level`, in the list's id band
     (sim/internal/spellranks SpellIDOfRank), or None."""
-    ids = [row["id"] for row in spellranks.get("classes", {}).get(class_slug, {}).get(family, [])
-           if row.get("rank") == rank and not row.get("book") and not row.get("inferior")
-           and 0 < row["level"] <= level]
+    ids = [
+        row["id"]
+        for row in spellranks.get("classes", {}).get(class_slug, {}).get(family, [])
+        if row.get("rank") == rank
+        and not row.get("book")
+        and not row.get("inferior")
+        and 0 < row["level"] <= level
+    ]
     same_band = [i for i in ids if (i >= FOREVER_ID_FLOOR) == (spell_id >= FOREVER_ID_FLOOR)]
     return (same_band or ids or [None])[0]
 
@@ -227,8 +252,12 @@ def load_rank_choices(curated_dir: Path, spec: str) -> dict[int, list[dict]]:
     return {spell["authored"]: spell["bands"] for spell in spells}
 
 
-def _resolve(families: dict[str, list[tuple[int, int]]], id_to_family: dict[int, str],
-             spell_id: int, level: int) -> tuple[str, int] | None:
+def _resolve(
+    families: dict[str, list[tuple[int, int]]],
+    id_to_family: dict[int, str],
+    spell_id: int,
+    level: int,
+) -> tuple[str, int] | None:
     """The (family name, id) this ability casts at `level`, or None when
     the curated id is not one spellranks.json tracks for this class (an
     engine-internal or item-proc id the ladder itself would call
@@ -312,9 +341,7 @@ def build_rotation(
             condition = _one_line(cast["notes"])
             icon = _resolve_icon(resolved_id, icon_of)
             lines.append(
-                AddonRotationLine(
-                    spell_id=resolved_id, name=name, condition=condition, icon=icon
-                )
+                AddonRotationLine(spell_id=resolved_id, name=name, condition=condition, icon=icon)
             )
         bands.append(AddonRotationBand(level=level, lines=lines))
     return bands
@@ -417,6 +444,13 @@ def compute_spell_icons(
         for band in build_rotation(spec, curated_dir, spellranks, icon_of, trainable_ids):
             for line in band.lines:
                 icons.setdefault(line.spell_id, line.icon)
+        # Every cast the list names as written, pre-pull included: the guide's opener and its
+        # priority rows show the client's icon for each, even a spell no rank family resolves
+        # (a pet summon, Prowl, a talent spell such as Divine Favor).
+        apl_text = (apl_dir / f"{spec}.json").read_text(encoding="utf-8")
+        rotation = json.loads(apl_text).get("rotation", {})
+        for spell_id in sorted(apl_cast_spell_ids(rotation)):
+            icons.setdefault(spell_id, _resolve_icon(spell_id, icon_of))
     # Spells a guide names that no rotation line does (the cooldown list: a trainer spell such as
     # Evocation): `curated/extra-spell-icons.json` lists their ids so they get an icon too.
     extra_path = curated_dir / "extra-spell-icons.json"
@@ -482,9 +516,7 @@ def write_spell_icons(
     icons = compute_spell_icons(root, build, curated_dir)
     path = root / build / "spellicons.json"
     payload = {str(spell_id): icon for spell_id, icon in icons.items()}
-    path.write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return path
 
 
