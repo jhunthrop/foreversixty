@@ -383,8 +383,9 @@ apl-sync:
 # copy, a copy whose content drifted, or a fork copy whose curated source
 # went away all fail here, in CI as well as locally.
 #
-# The comparison is of PARSED json, not bytes: what the copies must agree
-# on is the rotation.
+# The comparison is of PARSED json, not bytes, notes stripped: what the
+# copies must agree on is what the engine runs. Notes are display text the
+# curated file alone owns, so a notes-only edit passes with no sync or pin.
 #
 # ENGINE_DIR is the engine checkout, as for engine-pin.
 apl-check:
