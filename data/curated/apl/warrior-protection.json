@@ -1,7 +1,7 @@
 {
   "spec": "warrior-protection",
   "state": "written",
-  "notes": "Protection warrior at 60 in Defensive Stance with a shield: Shield Slam and Revenge on cooldown, Shield Block whenever its buff is down, Battle Shout kept up, Thunder Clap held on the boss, Sunder Armor as the global-cooldown filler and Heroic Strike with spare rage. Every priority was measured on the engine's tank harness (a level 63 boss, one 2 second melee swing, steady healing; sim/warrior/tank_warrior's TestRotationVariations records the figures): Shield Block cuts damage taken by about 18 percent, a Thunder Clap upkeep by another 16 percent for 6 percent of threat, Sunder Armor as the filler adds about 24 percent threat, and the Heroic Strike threshold moves nothing because a Forever tank is cooldown-limited, not rage-limited, at this gear. Last Stand and Shield Wall are gated on health: they never fire on a fight the healers hold and cut the chance of death on one they do not. Demoralizing Shout is not in the rotation: it takes attack power off the boss, and the curated tank boss has none to take. Every rank named here is checked against the spellconst of the newest client build.",
+  "notes": "Protection warrior at 60 in Defensive Stance with a shield: Shield Slam and Revenge on cooldown, Shield Block whenever its buff is down, Battle Shout kept up, Thunder Clap held on the boss, Sunder Armor as the global-cooldown filler and Heroic Strike with spare rage. Every priority was measured on the engine's tank harness (a level 63 boss, one 2 second melee swing, steady healing; sim/warrior/tank_warrior's TestRotationVariations records the figures): Shield Block cuts damage taken by about 18 percent, a Thunder Clap upkeep by another 16 percent for 6 percent of threat, Sunder Armor as the filler adds about 24 percent threat, and the Heroic Strike threshold moves nothing because a Forever tank is cooldown-limited, not rage-limited, at this gear. Last Stand and Shield Wall are gated on health: they never fire on a fight the healers hold and cut the chance of death on one they do not. Demoralizing Shout is not in the rotation: it takes attack power off the boss, and the curated tank boss has none to take. Every rank named here is checked against the spellconst of the newest client build. 2026-11-02 (launch guide rewrite, round-11 engine, 10000 iterations, seeds 1 and 50001, raid / bare): Bloodrage before the pull and Battle Shout with its rage, as a tank plays it (the shout at -1 s alone had no rage to cast with), so the first Sunder or Shield Slam is paid for: threat 1082 to 1080 a second (-0.2%, about two standard errors) and damage taken unchanged over the full fight, threat unchanged over the first 20 seconds; kept because it is how the pull is played. Swapping Revenge and Shield Slam, and Shield Block after Shield Slam, were inside the error too.",
   "expected_idle": [
     {
       "id": 2565,
@@ -44,6 +44,20 @@
         "action": {
           "castSpell": {
             "spellId": {
+              "spellId": 2687
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-2.5s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
               "spellId": 11551,
               "rank": 6
             }
@@ -51,7 +65,7 @@
         },
         "doAtValue": {
           "const": {
-            "val": "-1s"
+            "val": "-1.5s"
           }
         }
       }
@@ -130,7 +144,7 @@
         }
       },
       {
-        "notes": "Whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+        "notes": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
         "action": {
           "condition": {
             "cmp": {
