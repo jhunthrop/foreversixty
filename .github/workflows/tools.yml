@@ -8,6 +8,8 @@
 # tools/tests/test_release_apps.sh (the apps' release command),
 # tools/tests/test_remeasure.sh (bis.yml's dps-per-point re-measure and its manifest),
 # tools/tests/test_wasm_compress.sh (the deployed sim.wasm.gz and .br and their budget gates),
+# tools/tests/test_land.sh (the integrator's land/** landing command),
+# tools/tests/test_go_test_shard.sh (api.yml's go test shards),
 # tools/tests/test_apl_check.py (apl-check and apl-sync ignore the curated-only notes) and
 # tools/tests/play-upload.test.ts
 # (its Play upload, against a stub of the API), then
@@ -16,17 +18,18 @@
 name: tools
 on:
   push:
-    branches: [main]
+    branches: [main, 'land/**']
     paths: ['tools/**', '.github/workflows/**', '.github/actions/**', '.github/actionlint.yaml']
   pull_request:
     paths: ['tools/**', '.github/workflows/**', '.github/actions/**', '.github/actionlint.yaml']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
-  group: tools-${{ github.ref }}
+  group: tools-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
   # A newer push cancels a branch or pull request run; main's runs always finish, or a
   # quick second push leaves production undeployed (2026-11-02: two hours).
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  # A land/** run (tools/land.sh) is grouped by its sha and is never cancelled.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
 env:
   ACTIONLINT_VERSION: 1.7.12
 jobs:
@@ -46,6 +49,10 @@ jobs:
         run: bash tools/tests/test_remeasure.sh
       - name: the sim.wasm.gz and sim.wasm.br compression and budgets
         run: bash tools/tests/test_wasm_compress.sh
+      - name: the landing command
+        run: bash tools/tests/test_land.sh
+      - name: the api test shards
+        run: bash tools/tests/test_go_test_shard.sh
       - name: apl-check and apl-sync, notes curated-only
         run: python3 -m unittest discover -s tools/tests -p 'test_apl*.py'
       # 24 runs the TypeScript directly, with no packages.

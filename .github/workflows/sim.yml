@@ -1,17 +1,18 @@
 name: sim
 on:
   push:
-    branches: [main]
+    branches: [main, 'land/**']
     paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-compress.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   pull_request:
     paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-compress.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
-  group: sim-${{ github.ref }}
+  group: sim-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
   # A newer push cancels a branch or pull request run; main's runs always finish, or a
   # quick second push leaves production undeployed (2026-11-02: two hours).
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  # A land/** run (tools/land.sh) is grouped by its sha and is never cancelled.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
 
 jobs:
   test:
