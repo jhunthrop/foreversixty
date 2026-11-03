@@ -231,9 +231,11 @@ test("a second save while the first build's sim is still running never overwrite
   );
 
   // A second, different save starts while the first build's sim is still held above.
-  // Still a whole build, so it still sims: one point moves from Arms into Flurry.
+  // Still a whole build, so it still sims: one point moves from Axe Specialization, the
+  // deepest Arms talent, into Flurry. Arms is spent each talent the moment its row opens
+  // (orderFromRanks), so an Arms point on a shallow row is what a deeper one stands on.
   await showTree(page, 'Arms');
-  await page.getByTestId('talent-1001').click({ button: 'right' });
+  await page.getByTestId('talent-1007').click({ button: 'right' });
   await showTree(page, 'Fury');
   await page.getByTestId(LAST_TALENT).click();
   await expect(page.getByTestId('share-link')).not.toBeVisible();
