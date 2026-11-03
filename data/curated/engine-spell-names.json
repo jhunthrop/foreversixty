@@ -145,6 +145,10 @@
       "name": "Holy Shield",
       "engine": "sim/paladin/holy_shield.go procID: the damage of Holy Shield ranks 1 to 3"
     },
+    "27179": {
+      "name": "Holy Shield",
+      "engine": "sim/paladin/holy_shield.go procID: the damage of Holy Shield rank 4 (1239570, client 1.60.1.70753)"
+    },
     "22817": {
       "name": "Fengus' Ferocity",
       "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
