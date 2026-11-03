@@ -9,7 +9,9 @@ on:
 permissions: { contents: read }
 concurrency:
   group: logs-${{ github.ref }}
-  cancel-in-progress: true
+  # A newer push cancels a branch or pull request run; main's runs always finish, or a
+  # quick second push leaves production undeployed (2026-11-02: two hours).
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   test:
     runs-on: ubuntu-latest

@@ -69,7 +69,9 @@ env:
 # deploy was cancelled, leaving main undeployed), so the group carries the event name.
 concurrency:
   group: web-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
+  # A newer push cancels a branch or pull request run; main's runs always finish, or a
+  # quick second push leaves production undeployed (2026-11-02: two hours).
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -17,7 +17,9 @@ jobs:
     # never cancelled (web.yml lost a deploy that way on 2026-10-02).
     concurrency:
       group: api-test-${{ github.ref }}
-      cancel-in-progress: true
+      # A newer push cancels a branch or pull request run; main's runs always finish, or a
+      # quick second push leaves production undeployed (2026-11-02: two hours).
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     defaults: { run: { working-directory: api } }
     services:
       postgres:
@@ -85,7 +87,9 @@ jobs:
     timeout-minutes: 45
     concurrency:
       group: api-image-${{ github.ref }}
-      cancel-in-progress: true
+      # A newer push cancels a branch or pull request run; main's runs always finish, or a
+      # quick second push leaves production undeployed (2026-11-02: two hours).
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
