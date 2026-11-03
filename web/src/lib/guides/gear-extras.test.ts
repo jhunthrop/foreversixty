@@ -273,8 +273,10 @@ describe('the guide’s consumables are the sim’s', () => {
   it('gives each hunter what its play uses: bow hunters no Strength items, Survival its frenzy potion', () => {
     for (const spec of ['hunter-beast-mastery', 'hunter-marksmanship']) {
       const ids = simRaidConsumes(spec, {}).map((row) => row.id);
-      for (const id of ['juju_power', 'juju_might', 'r_o_i_d_s', 'food_grilled_squid'])
+      for (const id of ['juju_power', 'r_o_i_d_s', 'food_grilled_squid'])
         expect(ids).not.toContain(id);
+      // Forever's Juju Might (16329) also gives 40 ranged attack power (aura 124).
+      expect(ids).toContain('juju_might');
       expect(ids).toContain('major_mana_potion');
     }
     const survival = simRaidConsumes('hunter-survival', {}).map((row) => row.id);
