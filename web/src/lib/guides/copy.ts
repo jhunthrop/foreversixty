@@ -56,8 +56,6 @@ export const guidesCopy = {
   /** The one data-source line, in the page's footer beside the Updated stamp, never in the reading flow. */
   dataSourceLine: (build: string): string =>
     `Numbers from client build ${build}, checked against launch logs as they come in.`,
-  /** The muted tag beside `Updated` in the header: the beta is not over. */
-  betaTag: 'Beta',
   headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string): string =>
     `${role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank'} · Updated ${updated}`,
   strengths: 'Strengths',

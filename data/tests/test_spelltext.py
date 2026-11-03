@@ -45,9 +45,7 @@ def test_periodic_total_multiplies_by_the_tick_count():
 
 def test_unresolvable_tokens_stay_verbatim():
     text = fixture_text()
-    assert text.describe(21838) == (
-        "Gives you a $h% chance to generate an additional Rage point."
-    )
+    assert text.describe(21838) == ("Gives you a $h% chance to generate an additional Rage point.")
 
 
 def test_at_spellicon_is_dropped():
@@ -124,6 +122,44 @@ def test_rolled_effects_render_as_a_range():
         }
     )
     assert text.describe(11366) == "Causes 141 to 187 Fire damage."
+
+
+def _one_spell(description: str, effects: dict | None = None):
+    from pipeline.spelltext import SpellRow, SpellText
+
+    row = SpellRow(description=description, duration_ms=None, icon_file_id=0, effects=effects or {})
+    return SpellText({1: row})
+
+
+def test_a_radius_on_an_effect_the_row_lacks_reads_the_spells_one_radius():
+    from pipeline.spelltext import Effect
+
+    # Piercing Howl: one effect, its radius kept in index 1, and the text says $a2.
+    effects = {0: Effect(base_points=0, die_sides=0, period_ms=0, radius=10.0)}
+    text = _one_spell("Causes all enemies within $a2 yds to be Dazed.", effects)
+    assert text.describe(1) == "Causes all enemies within 10 yds to be Dazed."
+
+
+def test_two_radii_that_disagree_leave_the_token():
+    from pipeline.spelltext import Effect
+
+    effects = {
+        0: Effect(base_points=0, die_sides=0, period_ms=0, radius=10.0),
+        1: Effect(base_points=0, die_sides=0, period_ms=0, radius=20.0),
+    }
+    assert _one_spell("Within $a3 yds.", effects).describe(1) == "Within $a3 yds."
+
+
+def test_gender_text_names_both():
+    text = _one_spell("Deals 82 Fire damage to $ghimself:herself; and nearby enemies.")
+    assert text.describe(1) == "Deals 82 Fire damage to himself or herself and nearby enemies."
+
+
+def test_a_condition_on_the_reader_reads_its_otherwise_branch():
+    text = _one_spell("Restores health. $?pc142418[Experience is increased by 5%.][]")
+    assert text.describe(1) == "Restores health."
+    text = _one_spell("Heals you$?s123[ and your pet][].")
+    assert text.describe(1) == "Heals you."
 
 
 def test_minute_durations_render_as_minutes():
@@ -234,9 +270,10 @@ def test_overrides_reach_an_effect_the_spell_has_no_row_for():
 
 def test_effect_amount_folds_eras_die_side_into_the_amount():
     """Era states "Attack Power 24" as 23 + 1."""
-    assert effect_amount(
-        {"EffectBasePoints": "23", "EffectBasePointsF": "0", "EffectDieSides": "1"}
-    ) == 24
+    assert (
+        effect_amount({"EffectBasePoints": "23", "EffectBasePointsF": "0", "EffectDieSides": "1"})
+        == 24
+    )
 
 
 def test_effect_amount_reads_the_modern_column_as_final():

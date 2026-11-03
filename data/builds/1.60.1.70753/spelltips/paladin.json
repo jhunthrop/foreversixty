@@ -845,7 +845,7 @@
       "passive": false,
       "cooldown_ms": 3600000,
       "range_yd": 40.0,
-      "description": "The paladin sacrifices $ghimself:herself; to remove the targeted party member from harms way.  Enemies will stop attacking the protected party member, who will be immune to all harmful attacks but cannot take any action for 3 min."
+      "description": "The paladin sacrifices himself or herself to remove the targeted party member from harms way.  Enemies will stop attacking the protected party member, who will be immune to all harmful attacks but cannot take any action for 3 min."
     },
     "19834": {
       "name": "Blessing of Might",

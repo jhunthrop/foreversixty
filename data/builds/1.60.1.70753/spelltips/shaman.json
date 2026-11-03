@@ -104,7 +104,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 88 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by $?a415096[20%][30%].  Affects 3 total targets."
+      "description": "Hurls a lightning bolt at the enemy, dealing 88 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets."
     },
     "526": {
       "name": "Cure Poison",
@@ -234,7 +234,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 100 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by $?a415096[20%][30%].  Affects 3 total targets."
+      "description": "Hurls a lightning bolt at the enemy, dealing 100 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets."
     },
     "939": {
       "name": "Healing Wave",
@@ -312,7 +312,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals the friendly target for 251, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is $?a415096[65%][50%] as effective as the previous target.  Heals 3 total targets."
+      "description": "Heals the friendly target for 251, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is 50% as effective as the previous target.  Heals 3 total targets."
     },
     "2008": {
       "name": "Ancestral Spirit",
@@ -364,7 +364,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 112 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by $?a415096[20%][30%].  Affects 3 total targets."
+      "description": "Hurls a lightning bolt at the enemy, dealing 112 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets."
     },
     "2870": {
       "name": "Cure Disease",
@@ -1768,7 +1768,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 123 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by $?a415096[20%][30%].  Affects 3 total targets."
+      "description": "Hurls a lightning bolt at the enemy, dealing 123 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets."
     },
     "10613": {
       "name": "Windfury Totem",
@@ -1807,7 +1807,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals the friendly target for 335, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is $?a415096[65%][50%] as effective as the previous target.  Heals 3 total targets."
+      "description": "Heals the friendly target for 335, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is 50% as effective as the previous target.  Heals 3 total targets."
     },
     "10623": {
       "name": "Chain Heal",
@@ -1820,7 +1820,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals the friendly target for 490, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is $?a415096[65%][50%] as effective as the previous target.  Heals 3 total targets."
+      "description": "Heals the friendly target for 490, then jumps to heal additional nearby targets.  If cast on a party member, the heal will only jump to other party members.  Each jump is 50% as effective as the previous target.  Heals 3 total targets."
     },
     "10627": {
       "name": "Grace of Air Totem",

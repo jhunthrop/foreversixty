@@ -390,7 +390,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a cheetah, increasing movement speed by 30%.  If the hunter takes damage, $ghe:she; will be dazed for 4 sec.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a cheetah, increasing movement speed by 30%.  If the hunter takes damage, he or she will be dazed for 4 sec.  Only one Aspect can be active at a time."
     },
     "5384": {
       "name": "Feign Death",

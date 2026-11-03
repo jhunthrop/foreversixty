@@ -182,7 +182,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs 162 Fire damage$?s11094[ and grants a 0% chance to reflect Fire spells and effects][].  Lasts 30 sec."
+      "description": "Absorbs 162 Fire damage.  Lasts 30 sec."
     },
     "587": {
       "name": "Conjure Food",
@@ -195,7 +195,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 muffins, providing the mage and $ghis:her; allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 muffins, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "597": {
       "name": "Conjure Food",
@@ -208,7 +208,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 loaves of bread, providing the mage and $ghis:her; allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 loaves of bread, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "604": {
       "name": "Dampen Magic",
@@ -299,7 +299,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 loaves of rye, providing the mage and $ghis:her; allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 loaves of rye, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "1008": {
       "name": "Amplify Magic",
@@ -650,7 +650,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of water, providing the mage and $ghis:her; allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 bottles of water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "5505": {
       "name": "Conjure Water",
@@ -663,7 +663,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of fresh water, providing the mage and $ghis:her; allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 bottles of fresh water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "5506": {
       "name": "Conjure Water",
@@ -676,7 +676,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of purified water, providing the mage and $ghis:her; allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 bottles of purified water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "6117": {
       "name": "Mage Armor",
@@ -702,7 +702,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 bottles of spring water, providing the mage and $ghis:her; allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 bottles of spring water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "6129": {
       "name": "Conjure Food",
@@ -715,7 +715,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 loaves of pumpernickel, providing the mage and $ghis:her; allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 loaves of pumpernickel, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "6131": {
       "name": "Frost Nova",
@@ -754,7 +754,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${162+($SPFR*0.1)*(0/100+1)} Frost damage$?s11189[ and grants a 0% chance to negate Frost damage][].  Lasts 30 sec."
+      "description": "Absorbs ${162+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec."
     },
     "7300": {
       "name": "Frost Armor",
@@ -1118,7 +1118,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs 285 Fire damage$?s11094[ and grants a 0% chance to reflect Fire spells and effects][].  Lasts 30 sec."
+      "description": "Absorbs 285 Fire damage.  Lasts 30 sec."
     },
     "8458": {
       "name": "Fire Ward",
@@ -1131,7 +1131,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs 463 Fire damage$?s11094[ and grants a 0% chance to reflect Fire spells and effects][].  Lasts 30 sec."
+      "description": "Absorbs 463 Fire damage.  Lasts 30 sec."
     },
     "8461": {
       "name": "Frost Ward",
@@ -1144,7 +1144,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${284+($SPFR*0.1)*(0/100+1)} Frost damage$?s11189[ and grants a 0% chance to negate Frost damage][].  Lasts 30 sec."
+      "description": "Absorbs ${284+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec."
     },
     "8462": {
       "name": "Frost Ward",
@@ -1157,7 +1157,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${463+($SPFR*0.1)*(0/100+1)} Frost damage$?s11189[ and grants a 0% chance to negate Frost damage][].  Lasts 30 sec."
+      "description": "Absorbs ${463+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec."
     },
     "8492": {
       "name": "Cone of Cold",
@@ -1248,7 +1248,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures $?s442543[${$max(20,2)}][2] bottles of mineral water, providing the mage and $ghis:her; allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 bottles of mineral water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "10139": {
       "name": "Conjure Water",
@@ -1261,7 +1261,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures $?s442543[${$max(20,2)}][2] bottles of sparkling water, providing the mage and $ghis:her; allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 bottles of sparkling water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "10140": {
       "name": "Conjure Water",
@@ -1274,7 +1274,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures $?s442543[${$max(20,10)}][10] bottles of crystal water, providing the mage and $ghis:her; allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 10 bottles of crystal water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "10144": {
       "name": "Conjure Food",
@@ -1287,7 +1287,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 loaves of sourdough, providing the mage and $ghis:her; allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 loaves of sourdough, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "10145": {
       "name": "Conjure Food",
@@ -1300,7 +1300,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 2 sweet rolls, providing the mage and $ghis:her; allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 2 sweet rolls, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "10148": {
       "name": "Fireball",
@@ -1508,7 +1508,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${668+($SPFR*0.1)*(0/100+1)} Frost damage$?s11189[ and grants a 0% chance to negate Frost damage][].  Lasts 30 sec."
+      "description": "Absorbs ${668+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec."
     },
     "10179": {
       "name": "Frostbolt",
@@ -1807,7 +1807,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs 668 Fire damage$?s11094[ and grants a 0% chance to reflect Fire spells and effects][].  Lasts 30 sec."
+      "description": "Absorbs 668 Fire damage.  Lasts 30 sec."
     },
     "10225": {
       "name": "Fire Ward",
@@ -1820,7 +1820,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs 913 Fire damage$?s11094[ and grants a 0% chance to reflect Fire spells and effects][].  Lasts 30 sec."
+      "description": "Absorbs 913 Fire damage.  Lasts 30 sec."
     },
     "10230": {
       "name": "Frost Nova",
@@ -2847,7 +2847,7 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs ${913+($SPFR*0.1)*(0/100+1)} Frost damage$?s11189[ and grants a 0% chance to negate Frost damage][].  Lasts 30 sec."
+      "description": "Absorbs ${913+($SPFR*0.1)*(0/100+1)} Frost damage.  Lasts 30 sec."
     },
     "28612": {
       "name": "Conjure Food",
@@ -2860,7 +2860,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 10 cinnamon rolls, providing the mage and $ghis:her; allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 10 cinnamon rolls, providing the mage and his or her allies with something to eat.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "29074": {
       "name": "Master of Elements",
@@ -2977,7 +2977,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Conjures 20 bottles of mountain spring water, providing the mage and $ghis:her; allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Conjures 20 bottles of mountain spring water, providing the mage and his or her allies with something to drink.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
     },
     "469055": {
       "name": "Fire Volley",

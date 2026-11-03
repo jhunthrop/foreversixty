@@ -2642,7 +2642,7 @@
     "food_baked_salmon": {
       "item_id": 13935,
       "spell_id": 1249516,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 28 Spell Damage for 15 min. $?pc142418[Additionally, experience gained from kills is increased by 5%.][]"
+      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 28 Spell Damage for 15 min."
     },
     "food_bless_sunfruit": {
       "item_id": 13810,
@@ -2662,42 +2662,42 @@
     "food_hot_wolf_ribs": {
       "item_id": 13851,
       "spell_id": 1248391,
-      "use": "Restores $o1 health over 27 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 10 Agility for 15 min. $?pc142418[Additionally, experience gained from kills is increased by 5%.][]"
+      "use": "Restores $o1 health over 27 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 10 Agility for 15 min."
     },
     "food_nightfin_soup": {
       "item_id": 13931,
       "spell_id": 1249513,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 22 Spell Damage for 15 min. $?pc142418[Additionally, experience gained from kills is increased by 5%.][]"
+      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 22 Spell Damage for 15 min."
     },
     "food_poached_sunscale_salmon": {
       "item_id": 13932,
       "spell_id": 1249515,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 40 Attack Power for 15 min. $?pc142418[Additionally, experience gained from kills is increased by 5%.][]"
+      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 40 Attack Power for 15 min."
     },
     "food_runn_tum_tuber_surprise": {
       "item_id": 18254,
       "spell_id": 1248396,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 15 Intellect for 15 min. $?pc142418[Additionally, experience gained from kills is increased by 5%.][]"
+      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 15 Intellect for 15 min."
     },
     "food_sagefish_delight": {
       "item_id": 21217,
       "spell_id": 1249507,
-      "use": "Restores $o1 health over 24 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 7 Spell Damage for 15 min. $?pc142418[Additionally, experience gained from kills is increased by 5%.][]"
+      "use": "Restores $o1 health over 24 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 7 Spell Damage for 15 min."
     },
     "food_sages_tea": {
       "item_id": 249870,
       "spell_id": 1249925,
-      "use": "Restores $o1 mana over 30 sec.  Must remain seated while drinking. If you spend at least 10 sec eating, you will become well fed and gain 44 Healing Power for 15 min. $?pc142418[Additionally, experience gained from kills is increased by 5%.][]"
+      "use": "Restores $o1 mana over 30 sec.  Must remain seated while drinking. If you spend at least 10 sec eating, you will become well fed and gain 44 Healing Power for 15 min."
     },
     "food_smoked_desert_dumpling": {
       "item_id": 20452,
       "spell_id": 1248401,
-      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 20 Strength for 15 min. $?pc142418[Additionally, experience gained from kills is increased by 5%.][]"
+      "use": "Restores $o1 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 20 Strength for 15 min."
     },
     "food_smoked_sagefish": {
       "item_id": 21072,
       "spell_id": 1249504,
-      "use": "Restores $o1 health over 21 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 4 Spell Damage for 15 min. $?pc142418[Additionally, experience gained from kills is increased by 5%.][]"
+      "use": "Restores $o1 health over 21 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 4 Spell Damage for 15 min."
     },
     "frenzy_potion": {
       "item_id": 250940,

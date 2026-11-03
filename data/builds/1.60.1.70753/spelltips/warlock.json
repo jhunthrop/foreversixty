@@ -533,7 +533,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Ignites the area surrounding the caster, causing 82 Fire damage to $ghimself:herself; and 82 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec."
+      "description": "Ignites the area surrounding the caster, causing 82 Fire damage to himself or herself and 82 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec."
     },
     "2362": {
       "name": "Create Spellstone",
@@ -1157,7 +1157,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Ignites the area surrounding the caster, causing 137 Fire damage to $ghimself:herself; and 137 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec."
+      "description": "Ignites the area surrounding the caster, causing 137 Fire damage to himself or herself and 137 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec."
     },
     "11684": {
       "name": "Hellfire",
@@ -1170,7 +1170,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Ignites the area surrounding the caster, causing 206 Fire damage to $ghimself:herself; and 206 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec."
+      "description": "Ignites the area surrounding the caster, causing 206 Fire damage to himself or herself and 206 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec."
     },
     "11687": {
       "name": "Life Tap",
