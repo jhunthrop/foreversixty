@@ -3,7 +3,7 @@ title: Feral Druid in Forever
 classSlug: druid
 spec: feral
 role: dps
-build: 'FS1:1.60.1.70753:druid:night-elf:0/50212032123012123001/555023:'
+build: 'FS1:1.60.1.70753:druid:night-elf:01/50212032123012123001/535033:'
 raidBuild: 'FS1:1.60.1.70753:druid:night-elf:05002/50230032023011125001/05503:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Strength, Agility, Critical strike, Attack power, Feral attack power, Hit, Melee haste]
@@ -55,7 +55,7 @@ The cat opens with Ravage, keeps Rip on the boss, Shreds from behind and turns m
 
 ## Talents and builds
 
-The leveling build takes the points a questing cat wants first: Feral Charge to close on runners, Brutal Impact for a longer Pounce stun. At 60, respec into the raid build. It beats the leveling build even without raid buffs, because it finishes Rend and Tear and moves the filler points into Genesis and Nature's Majesty.
+The leveling build takes the points a questing cat wants first: Feral Charge to close on runners, Brutal Impact for a longer Pounce stun. From 50, its Restoration points go to Genesis, three points of Heart of the Wild and the third point of Natural Shapeshifter, which out-damage the last two points of Heart of the Wild. At 60, respec into the raid build. It beats the leveling build even without raid buffs, because it finishes Rend and Tear and moves the filler points into Genesis and Nature's Majesty.
 
 - **Shredding Attacks** (3 points): Shred drops to 42 energy, and Shred is most of your globals.
 - **Savage Fury** (2 points): 10% more damage on Shred, Claw and Rake.
