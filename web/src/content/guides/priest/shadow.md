@@ -90,7 +90,7 @@ The leveling build carries two points of Wand Specialization, because you wand a
 
 **Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice. Shadowfiend cannot be learned at launch.
 
-**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Gnome Eureka! on two Mind Blasts and a Shadow Word: Death (it only helps direct damage, so a Mind Flay under it is wasted), Troll Berserking and Night Elf Elune's Light whenever they are up.
+**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Gnome Eureka! on a Mind Blast, a Shadow Word: Death and the Mind Flay after them (it skips Shadow Word: Pain and Devouring Plague, so never spend it on a refresh), Troll Berserking and Night Elf Elune's Light whenever they are up.
 
 ## Stat priority
 
@@ -106,7 +106,7 @@ Flask of Supreme Power, or Elixir of Shadow Power with Greater Arcane Elixir whe
 
 ## Races
 
-**Gnome** is the Alliance pick. Eureka! makes your next three direct casts 10% cheaper and 10% stronger for 15 seconds on a 2 minute cooldown: line it up with Mind Blast and Shadow Word: Death. Expansive Mind adds 5% mana. The Gnome priest spells are Contingency Plan, a ward that shields and heals an ally who drops below 35%, and Confounding Flash, which confuses nearby enemies for a few seconds.
+**Gnome** is the Alliance pick. Eureka! makes your spells 10% cheaper and 10% stronger for 8 seconds on a 2 minute cooldown: line it up with Mind Blast and Shadow Word: Death. Expansive Mind adds 5% mana. The Gnome priest spells are Contingency Plan, a ward that shields and heals an ally who drops below 35%, and Confounding Flash, which confuses nearby enemies for a few seconds.
 
 **Undead** is the Horde pick. Touch of the Grave procs Shadow damage off your hits, Will of the Forsaken breaks fears, and Dark Sacrifice trades your health for mana once a fight.
 

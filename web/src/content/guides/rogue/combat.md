@@ -88,7 +88,7 @@ Blade Flurry hits anything next to your target. Never turn it on next to a Sappe
 
 ### Trash, threat and survival
 
-- **Kidney Shot** costs no energy in Forever and stuns longer per combo point. Use it on casters and on the mob beating on your healer. **Kick** stops a cast for 25 energy. **Gouge** buys a few seconds on a loose add.
+- **Kidney Shot** costs 25 energy, sits on a 20 second cooldown and stuns longer per combo point, up to 6 seconds at five. Use it on casters and on the mob beating on your healer. **Kick** stops a cast for 25 energy. **Gouge** buys a few seconds on a loose add.
 - **Redirect** (trained at level 1) lifts your combo points off a target and hands them to the next enemy you hit within 15 seconds. When a trash mob is about to die with points on it, Redirect and finish the next one.
 - **Feint** on cooldown on any boss where you sit near the tank's threat. **Vanish** drops you from the threat table entirely, but a bleed or DoT ticking on you puts you straight back in combat, so make it your emergency button.
 - **Evasion** does nothing against spells. Pop it when a melee trash mob turns on you and walk it back to the tank.

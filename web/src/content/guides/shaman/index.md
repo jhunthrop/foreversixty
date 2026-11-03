@@ -29,7 +29,7 @@ Shaman is the totem class: a caster, a melee fighter and a healer who all bring 
 - **Fire Nova** is an instant spell that bursts from your active Fire totem, not a totem of its own.
 - **Elemental Mastery** speeds up Lightning Bolt and Lava Burst for 15 seconds instead of granting a crit.
 - **Lava Burst, Maelstrom Weapon and Water Shield** are new talents; Enhancement ends in Rage of the Farseer and Restoration in Riptide.
-- **Melee and spell hit** are one stat, and so are melee and spell crit, which Enhancement feels most.
+- **Hit and crit on gear count everywhere.** A hit or crit piece raises your melee and your spells alike, which Enhancement feels most. Agility still gives melee crit and Intellect spell crit.
 
 ## Races
 

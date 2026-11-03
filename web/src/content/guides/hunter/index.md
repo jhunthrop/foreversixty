@@ -28,7 +28,7 @@ Hunter is Forever's physical damage class. All three specs deal damage, and in F
 
 - **Pets are reworked.** A pet copies 10% of your attack power and all of your crit, and it gets no buffs from your raid. Your gear is what makes it hit.
 - **Aimed Shot is a trained spell** with a 2 second cast, and it shares one 6 second cooldown with Multi-Shot. Instant Multi-Shot wins that cooldown, so Aimed Shot is an opener.
-- **Heart of the Lion** is a hunter spell from level 1: 10% more stats and extra attack power for everyone near you, and another 10% stats for you.
+- **Heart of the Lion** is a hunter spell from level 1: 10% more stats and extra attack power (280 melee and ranged at 60) for everyone near you, and another 10% stats for you.
 - **Aspect of the Beast** gives melee attack power, which makes it the Survival aspect. Aspect of the Hawk stays the ranged one.
 - **Trueshot Aura** is ranged attack power only, for your party and raid.
 - **Mail from 40.** Hunters wear leather until 40.

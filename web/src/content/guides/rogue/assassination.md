@@ -54,8 +54,8 @@ The raid build goes 31/18/2: down Assassination to Mutilate and all five points 
 - **Mutilate** (1 point): strikes with both daggers for 75% weapon damage plus a flat bonus each, 20% more against a poisoned target, for two combo points.
 - **Seal Fate** (5 points in the raid build): a crit from a builder adds a combo point. Mutilate can only trigger it once a cast, even when both hands crit.
 - **Cold Blood** (1 point): your next Mutilate or Eviscerate is a guaranteed crit, on a 3 minute cooldown. Save it for an Eviscerate at four or more points.
-- **Lethality** (5 points): Mutilate crits hit 20% harder, and with Malice and Puncturing Wounds you crit a lot.
-- **Vile Poisons** (5 points): 20% more poison damage.
+- **Lethality** (5 points, 3 in the raid build): Mutilate crits hit up to 20% harder, and with Malice and Puncturing Wounds you crit a lot.
+- **Vile Poisons** (5 points, 2 in the raid build): up to 20% more poison damage.
 - **Improved Poisons** (5 points): poisons apply more often and often keep their charge.
 
 Murder only works on Humanoid and Giant targets: check the boss's type before you count on it, and enjoy it on every humanoid trash pull. Ruthlessness and Relentless Strikes keep finishers flowing. Improved Sinister Strike and Lightning Reflexes in the raid build are there to reach Flawless Execution, not for what they do.
@@ -88,7 +88,7 @@ Mutilate costs 60, so you will often sit on four points waiting for energy. That
 
 ### Trash, threat and survival
 
-- **Kidney Shot** costs no energy in Forever and stuns longer per combo point: use it on casters and on whatever is hitting your healer. Kick, Gouge and Blind handle the rest.
+- **Kidney Shot** costs 25 energy, sits on a 20 second cooldown and stuns longer per combo point, up to 6 seconds at five: use it on casters and on whatever is hitting your healer. Kick, Gouge and Blind handle the rest.
 - **Redirect** (trained at level 1) lifts your combo points off a dying mob and hands them to the next enemy you hit within 15 seconds.
 - **Feint** on cooldown on bosses where you sit near the tank's threat. **Vanish** drops you from the threat table, but a bleed or DoT on you puts you back in combat, so keep it for emergencies.
 - **Evasion** is for the melee trash mob that turns on you. It does nothing against spells.

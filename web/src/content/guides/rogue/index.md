@@ -27,9 +27,10 @@ Rogue is still energy, combo points and stealth, but Forever moves all three tre
 - **Poisons and stones stack.** A sharpening stone sits on a weapon beside a poison. Deadly Poison on the main hand and Instant Poison on the off hand is right for all three trees.
 - **Redirect** is trained at level 1: it takes your combo points off one target and gives them to the next enemy you hit within 15 seconds.
 - **Poised** comes at 18: at full energy out of combat, your next ability costs less. Open from full energy.
-- **Kidney Shot costs no energy.** Use it freely on trash.
 - **No weapon-skill racials.** Night Elf's Elune's Light and Troll's Berserking are the burst racials; Human gets 1% crit instead of sword skill.
 
 ## Races
 
-Skyborne can be rogues on both factions.
+Every Classic rogue race is back: Human, Dwarf, Night Elf and Gnome for the Alliance, Orc, Undead and Troll for the Horde, and the Skyborne on both factions. None of Forever's six new race and class pairs is a rogue.
+
+Racials are reworked and none of them adds weapon skill, so pick for the button you press. Night Elf's **Elune's Light** (10% crit for 15 seconds) and Troll's **Berserking** (10% attack speed for 15 seconds), both on 3 minute cooldowns, are the raid picks. Orc's **Blood Fury** is 10% attack power for 15 seconds every 2 minutes and close behind. A Gnome's **Eureka!** makes your attacks 10% cheaper and 10% harder for 8 seconds every 2 minutes. Human's **Ruthless** is a passive 1% crit and Dwarf's **Artisan's Precision** a passive 1% hit. Undead's **Will of the Forsaken** breaks fears, and Skyborne get a little haste on everything from **Wind Blessed**.
