@@ -945,7 +945,8 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "ground_scorpok_assay"
+          "ground_scorpok_assay",
+          "juju_might"
         ]
       },
       {
@@ -976,7 +977,8 @@
         ],
         "consumes": [
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       },
       {
@@ -1008,7 +1010,8 @@
         "consumes": [
           "elixir_of_the_mongoose",
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       },
       {
@@ -1041,7 +1044,8 @@
           "major_mana_potion",
           "elixir_of_the_mongoose",
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       }
     ],
@@ -1073,7 +1077,8 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "ground_scorpok_assay"
+          "ground_scorpok_assay",
+          "juju_might"
         ]
       },
       {
@@ -1104,7 +1109,8 @@
         ],
         "consumes": [
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       },
       {
@@ -1136,7 +1142,8 @@
         "consumes": [
           "elixir_of_the_mongoose",
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       },
       {
@@ -1169,7 +1176,8 @@
           "major_mana_potion",
           "elixir_of_the_mongoose",
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       }
     ],
@@ -1202,8 +1210,8 @@
         ],
         "consumes": [
           "juju_power",
-          "juju_might",
-          "ground_scorpok_assay"
+          "ground_scorpok_assay",
+          "juju_might"
         ]
       },
       {
@@ -1234,8 +1242,8 @@
         ],
         "consumes": [
           "juju_power",
-          "juju_might",
-          "ground_scorpok_assay"
+          "ground_scorpok_assay",
+          "juju_might"
         ]
       },
       {
@@ -1268,9 +1276,9 @@
           "main_hand_imbue:dense_sharpening_stone",
           "off_hand_imbue:dense_sharpening_stone",
           "juju_power",
-          "juju_might",
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       },
       {
@@ -1303,10 +1311,10 @@
           "main_hand_imbue:dense_sharpening_stone",
           "off_hand_imbue:dense_sharpening_stone",
           "juju_power",
-          "juju_might",
           "elixir_of_the_mongoose",
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       },
       {
@@ -1339,11 +1347,11 @@
           "main_hand_imbue:dense_sharpening_stone",
           "off_hand_imbue:dense_sharpening_stone",
           "juju_power",
-          "juju_might",
           "major_mana_potion",
           "elixir_of_the_mongoose",
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       },
       {
@@ -1376,11 +1384,11 @@
           "main_hand_imbue:elemental_sharpening_stone",
           "off_hand_imbue:dense_sharpening_stone",
           "juju_power",
-          "juju_might",
           "major_mana_potion",
           "elixir_of_the_mongoose",
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       },
       {
@@ -1414,10 +1422,10 @@
           "main_hand_imbue:elemental_sharpening_stone",
           "off_hand_imbue:dense_sharpening_stone",
           "juju_power",
-          "juju_might",
           "elixir_of_the_mongoose",
           "ground_scorpok_assay",
-          "food_poached_sunscale_salmon"
+          "food_poached_sunscale_salmon",
+          "juju_might"
         ]
       }
     ],
