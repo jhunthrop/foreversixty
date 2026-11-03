@@ -1409,6 +1409,41 @@ components:
             Whether this account may run sims on our servers. Set by hand until
             payments exist; the web reads it to decide whether to offer the
             server lane at all.
+    GoLink:
+      type: object
+      description: >-
+        A tracked short link, foreversixty.gg/go/<slug>. target is always a path on this site
+        (one leading slash, never two, no backslash or whitespace), so a link is never an open
+        redirect.
+      required: [slug, target, label, created_at]
+      properties:
+        slug: { type: string, pattern: '^[a-z0-9][a-z0-9-]{0,39}$' }
+        target: { type: string, maxLength: 200 }
+        label: { type: string, maxLength: 80 }
+        created_at: { type: string, format: date-time }
+    GoLinkInput:
+      type: object
+      required: [slug, target, label]
+      properties:
+        slug: { type: string, pattern: '^[a-z0-9][a-z0-9-]{0,39}$' }
+        target: { type: string, maxLength: 200 }
+        label: { type: string, maxLength: 80 }
+    GoLinkFunnel:
+      description: >-
+        One link's funnel. clicks are people's, bot_clicks known crawlers' and link previews'
+        (both summed over every day). sign_ins are the accounts whose first link this was,
+        linked those with a character, premium those holding Premium now by the entitlements
+        rule.
+      allOf:
+        - $ref: '#/components/schemas/GoLink'
+        - type: object
+          required: [clicks, bot_clicks, sign_ins, linked, premium]
+          properties:
+            clicks: { type: integer, format: int64 }
+            bot_clicks: { type: integer, format: int64 }
+            sign_ins: { type: integer, format: int64 }
+            linked: { type: integer, format: int64 }
+            premium: { type: integer, format: int64 }
     # ---------------------------------------------------------------------------------------
     # Native apps v1 (docs/contracts/app-v1.md). The iOS and Android models are generated from
     # these schemas (web/scripts/gen-mobile-api.mjs); api/internal/contract/openapi_test.go
@@ -6735,3 +6770,140 @@ paths:
           x-fixture-route: cdn.talents.{class}
           x-fixtures: [cdn.talents.warrior]
           content: { application/json: { schema: { $ref: '#/components/schemas/TalentsFile' } } }
+  /v1/golinks/{slug}:
+    get:
+      summary: A tracked link's target, for the site Worker's /go/<slug> redirect
+      operationId: resolveGoLink
+      description: >-
+        No auth, cached a minute (a miss too). Skips the router's per-IP budget: every call
+        comes from the Worker's egress.
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: The link's target
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [slug, target]
+                        properties:
+                          slug: { type: string }
+                          target: { type: string }
+        '404':
+          description: No link has that slug
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/golinks/{slug}/clicks:
+    post:
+      summary: Count one click on a tracked link (the site Worker, after its redirect)
+      operationId: countGoLinkClick
+      description: >-
+        No auth. One counter per link per UTC day, bots apart; nothing about the visitor is
+        sent or stored. 600 a minute per link, whoever calls. An empty body counts a person.
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, properties: { bot: { type: boolean } } }
+      responses:
+        '204': { description: Counted }
+        '400':
+          description: The body is not JSON
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: No link has that slug
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: The link's minute budget is spent
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/arrival:
+    post:
+      summary: Record the tracked link a new account arrived from
+      operationId: recordArrival
+      description: >-
+        Session. The site sends the slug it kept in sessionStorage with the first signed-in
+        page. Recorded only for an account created in the last hour that has none yet, and
+        never overwritten; recorded says whether this call set it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [slug], properties: { slug: { type: string } } }
+      responses:
+        '200':
+          description: Whether the arrival was recorded
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [recorded], properties: { recorded: { type: boolean } } }
+        '400':
+          description: No slug, or not a slug's shape
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/golinks:
+    get:
+      summary: Every tracked link with its funnel (the owner's /admin/links page)
+      operationId: listGoLinks
+      description: Admin browser session only. private, no-store. Oldest link first.
+      responses:
+        '200':
+          description: The links
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [links]
+                        properties:
+                          links: { type: array, items: { $ref: '#/components/schemas/GoLinkFunnel' } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the admin
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    post:
+      summary: Create a tracked link
+      operationId: createGoLink
+      description: Admin browser session only. Surrounding spaces are trimmed.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/GoLinkInput' } } }
+      responses:
+        '201':
+          description: The new link
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GoLink' } } }
+        '400':
+          description: A field is refused; error.fields names it
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the admin
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: A link already has that slug
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }

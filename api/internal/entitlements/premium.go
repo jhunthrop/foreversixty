@@ -36,6 +36,10 @@ func standardEntitlementSQL(userExpr string) string {
 		))`
 }
 
+// PremiumSQL is standardEntitlementSQL for a query outside this package that has to count
+// Premium accounts by the same rule (the tracked links' funnel), so the rule has one home.
+func PremiumSQL(userExpr string) string { return standardEntitlementSQL(userExpr) }
+
 // hasStandardEntitlement is every feature's rule except the per-guild ones:
 // Premium from a personal plan or a held seat. Guild membership alone grants
 // nothing. IsSupporter reuses this exact rule (the supporter mark and every

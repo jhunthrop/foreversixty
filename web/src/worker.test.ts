@@ -19,6 +19,26 @@ function envWith(assetBody = 'asset') {
 
 afterEach(() => vi.unstubAllGlobals());
 
+describe('tracked links', () => {
+  it('answers /go/<slug> itself and hands the count to the execution context', async () => {
+    const upstream = vi.fn<GlobalFetch>(async (input) =>
+      (input as Request).method === 'POST'
+        ? new Response(null, { status: 204 })
+        : new Response(JSON.stringify({ ok: true, data: { slug: 'youtube', target: '/' }, error: null })),
+    );
+    vi.stubGlobal('fetch', upstream);
+    const env = envWith();
+    const waitUntil = vi.fn<(promise: Promise<unknown>) => void>();
+    const response = await worker.fetch(new Request('https://foreversixty.gg/go/youtube'), env, {
+      waitUntil,
+    });
+    expect(response.status).toBe(302);
+    expect(response.headers.get('location')).toBe('https://foreversixty.gg/?golink=youtube');
+    expect(waitUntil).toHaveBeenCalledTimes(1);
+    expect(env.ASSETS.fetch).not.toHaveBeenCalled();
+  });
+});
+
 describe('the sample report', () => {
   it('sends the old database id to the bundled page', async () => {
     const response = await worker.fetch(

@@ -28,6 +28,19 @@ describe('Base layout', () => {
     expect(html).toContain('property="og:site_name" content="Forever Sixty"');
   });
 
+  it('inlines the arrival and beacon script with its settings, loading no third-party script itself', async () => {
+    const container = await createPageContainer();
+    const html = await container.renderToString(Base, {
+      props: { title: 'Guides', description: 'x', path: '/guides' },
+    });
+    expect(html).toContain('data-beacon-token="b6d2adf8cec64540805310e82ef35b3c"');
+    expect(html).toContain('data-beacon-host="foreversixty.gg"');
+    expect(html).toContain('data-key="fs.arrival"');
+    expect(html).toContain('lib/golinks/arrival.inline.js');
+    // The beacon is added by the script after load on the production host, never as markup.
+    expect(html).not.toContain('<script src="https://static.cloudflareinsights.com');
+  });
+
   it('gives the homepage the game name and the WebSite node', async () => {
     const container = await createPageContainer();
     const html = await container.renderToString(Base, {

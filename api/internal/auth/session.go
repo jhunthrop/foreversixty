@@ -44,6 +44,10 @@ func (a Actor) IsApp() bool { return a.IsDevice() && a.DeviceKind == DeviceKindA
 // stay with a browser session.
 func (a Actor) IsModerator() bool { return !a.IsApp() && (a.Role == "moderator" || a.Role == "admin") }
 
+// IsAdmin reports whether the actor is the site's owner, the only role that reads the
+// tracked links' funnel. Like moderation, it stays with a browser session.
+func (a Actor) IsAdmin() bool { return !a.IsApp() && a.Role == "admin" }
+
 type ctxKey int
 
 const actorKey ctxKey = 1
@@ -261,6 +265,18 @@ func RequireSession(h http.HandlerFunc) http.HandlerFunc {
 		}
 		h(w, r)
 	}
+}
+
+// RequireAdmin wraps a handler only the site's admin reaches: a signed-in account holder
+// is told 403, anyone else gets RequireSession's 401.
+func RequireAdmin(h http.HandlerFunc) http.HandlerFunc {
+	return RequireSession(func(w http.ResponseWriter, r *http.Request) {
+		if !ActorFrom(r.Context()).IsAdmin() {
+			httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "this page is for the site's owner", nil)
+			return
+		}
+		h(w, r)
+	})
 }
 
 // RequireBrowserSession wraps a handler that only a browser session may reach: billing
