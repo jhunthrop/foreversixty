@@ -89,6 +89,8 @@ describe("web.yml's deploy gate", () => {
   it('deploys a workflow_dispatch on main, and nothing off main or on a pull request', () => {
     expect(deployRuns({ event: 'workflow_dispatch', results: GREEN })).toBe(true);
     expect(deployRuns({ ref: 'refs/heads/feature', results: GREEN })).toBe(false);
+    // A batch landing's checks run on land/<n> (tools/land.sh); only main's run deploys it.
+    expect(deployRuns({ ref: 'refs/heads/land/7', results: GREEN })).toBe(false);
     expect(deployRuns({ event: 'pull_request', results: GREEN })).toBe(false);
   });
 

@@ -11,7 +11,7 @@
 name: coach
 on:
   push:
-    branches: [main]
+    branches: [main, 'land/**']
     paths: &inputs
       - tools/coach/**
       - data/curated/coach/**
@@ -31,10 +31,11 @@ on:
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
-  group: coach-${{ github.ref }}
+  group: coach-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
   # A newer push cancels a branch or pull request run; main's runs always finish, or a
   # quick second push leaves production undeployed (2026-11-02: two hours).
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  # A land/** run (tools/land.sh) is grouped by its sha and is never cancelled.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
 jobs:
   starters:
     runs-on: ubuntu-latest

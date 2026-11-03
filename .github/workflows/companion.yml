@@ -5,7 +5,7 @@ on:
   # filter here would silently never release. Pull requests, where
   # the cost of running matters, are filtered.
   push:
-    branches: [main]
+    branches: [main, 'land/**']
     tags: ['companion-v*']
   pull_request:
     paths: ['companion/**', 'logs/**', 'docs/contracts/**', '.github/workflows/companion.yml']
@@ -17,7 +17,7 @@ on:
         default: false
 permissions: { contents: read }
 concurrency:
-  group: companion-${{ github.ref }}
+  group: companion-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
   # A newer push supersedes a pull request's run; a release run on main or a tag is
   # left to finish, or two pushes in a minute lose the release in between.
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -47,10 +47,15 @@ jobs:
         with: { fetch-depth: 0 }
       # The same diff the version job decides a release by, so the two can
       # never disagree about what "touches the companion" means.
+      # A new branch (a land/** batch, tools/land.sh) has no `before`: it is diffed against
+      # where it leaves main.
       - id: filter
         env:
           BEFORE: ${{ github.event.before }}
         run: |
+          if [ "$BEFORE" = 0000000000000000000000000000000000000000 ]; then
+            BEFORE=$(git merge-base origin/main "$GITHUB_SHA" 2>/dev/null || true)
+          fi
           if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE" 2>/dev/null \
              && ! git diff --name-only "$BEFORE" "$GITHUB_SHA" \
                   | grep -qE '^(companion/|logs/|docs/contracts/|\.github/workflows/companion\.yml)'; then
@@ -118,7 +123,8 @@ jobs:
     # up the needs chain skips its dependants unless the condition says
     # otherwise -- so every job below test asks for test's own result instead
     # of inheriting the chain (the 2026-10-15 dispatch released nothing).
-    if: ${{ !cancelled() && needs.test.result == 'success' && github.event_name != 'pull_request' }}
+    # A land/** batch only proves the tests; its release is cut once main has the sha.
+    if: ${{ !cancelled() && needs.test.result == 'success' && github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/heads/land/') }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     outputs:

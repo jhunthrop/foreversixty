@@ -1,17 +1,18 @@
 name: logs
 on:
   push:
-    branches: [main]
+    branches: [main, 'land/**']
     paths: ['logs/**', '.github/workflows/logs.yml']
   pull_request:
     paths: ['logs/**', '.github/workflows/logs.yml']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
-  group: logs-${{ github.ref }}
+  group: logs-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
   # A newer push cancels a branch or pull request run; main's runs always finish, or a
   # quick second push leaves production undeployed (2026-11-02: two hours).
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  # A land/** run (tools/land.sh) is grouped by its sha and is never cancelled.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
 jobs:
   test:
     runs-on: ubuntu-latest
