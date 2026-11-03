@@ -67,7 +67,7 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 - **Cruelty** and **Unbridled Wrath** (10 points): 5% crit, and a 60% chance at an extra rage point on every weapon hit. These are the first points you spend.
 - **Furious Precision** (3 points): 10% more hit with the off hand, which cuts the off-hand misses that cost you rage.
 - **Improved Execute** (2 points): Execute costs 10 rage instead of 15, so the rage you hold goes into damage.
-- **Raging Blows** (1 point): Whirlwind costs 3 less rage. You press it every time it comes off cooldown.
+- **Raging Blows** (1 point): Whirlwind and Cleave cost 3 less rage. You press Whirlwind every time it comes off cooldown.
 - **Enrage** (2 points): a 30% chance at 4% more physical damage for 12 seconds after you get hit. Two points fill out the row.
 - **Improved Heroic Strike** (3 points): Heroic Strike costs 3 less. It is your rage dump, and you press it a lot.
 - **Improved Rend**, **Deep Wounds** and **Impale** (8 points in Arms): every crit leaves a bleed for 60% of your weapon's average damage and your ability crits hit 20% harder. Fury crits a lot, so this is the best use of the Arms points.

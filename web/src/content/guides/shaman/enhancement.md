@@ -88,7 +88,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Stat priority
 
-Hit covers your swings, your Stormstrike and your shocks at once in Forever, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Agility gives crit and armor, and crit keeps Flurry up. Strength is attack power twice over.
+Hit covers your swings, your Stormstrike and your shocks at once in Forever, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Strength is attack power twice over.
 
 ## Best in slot
 

@@ -177,7 +177,7 @@
         }
       },
       {
-        "notes": "Aimed Shot when the shared cooldown comes up and your next auto shot is more than 1.2 seconds away, so the cast starts right after a shot leaves. Since the 3 November hotfix it hits about twice as hard as before and beats Multi-Shot on that cooldown whenever the cast fits; with an auto shot about to fire, take Multi-Shot instead and keep the auto rolling.",
+        "notes": "Aimed Shot when the shared cooldown comes up right after an auto shot fires. Since the 3 November hotfix it hits about twice as hard as before, but for Beast Mastery it is only a small extra over Multi-Shot, and Multi-Shot on every cooldown is fine. If you are partway to your next auto shot, take Multi-Shot and keep the auto rolling.",
         "action": {
           "condition": {
             "cmp": {

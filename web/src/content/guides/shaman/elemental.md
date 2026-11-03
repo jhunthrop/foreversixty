@@ -49,7 +49,7 @@ Elemental is the shaman's caster spec: Flame Shock and Lava Burst for the big hi
 
 ## Talents and builds
 
-The leveling build goes deep Elemental and spends the rest in Restoration for Tidal Focus, Mindfulness, Totemic Focus and Natural Grace: 5% spell hit, mana regeneration while you cast, cheaper totems and less threat while you quest. Tidal Focus comes first because a Lightning Bolt that misses is the most expensive cast you make; Improved Healing Wave only speeds up a heal your damage rotation never casts. The raid build takes Elemental Mastery as the 31st point, then trades the leveling comforts for Thundering Strikes and Ancestral Knowledge (10% more Intellect), and keeps Tidal Focus.
+The leveling build spends every point in Elemental until 50. From 50 the rest go to Restoration: Tidal Focus for 5% spell hit and all three points of Mindfulness, so half your mana regeneration keeps running while you cast. At 60 it adds Natural Grace, Totemic Focus and Improved Reincarnation: less threat, cheaper totems and a shorter Reincarnation cooldown. Tidal Focus comes first because a Lightning Bolt that misses is the most expensive cast you make; Improved Healing Wave only speeds up a heal your damage rotation never casts. The raid build takes Elemental Mastery as the 31st point, then trades the leveling comforts for Thundering Strikes and Ancestral Knowledge (10% more Intellect), and keeps Tidal Focus.
 
 Elemental Mastery is reworked in Forever: for 15 seconds Lightning Bolt and Lava Burst cast half a second faster and Chain Lightning has no cooldown. With Elemental Alacrity that makes Lightning Bolt a 1.5 second cast. It no longer guarantees a crit.
 
