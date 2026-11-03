@@ -218,3 +218,23 @@ func TestPowerInfusionOnlyWhenTheRequestNamesIt(t *testing.T) {
 		t.Errorf("power_infusions gives %d, want 1", ticked.Individual.GetPowerInfusions())
 	}
 }
+
+// Juju Might (spell 16329) is 40 attack power (aura 99) and 40 ranged attack power
+// (aura 124) in the 1.60.1.70753 client, so every hunter carries it, bow or melee.
+// Juju Power is Strength, which gives a hunter no ranged attack power, so only the
+// melee Survival hunter carries it (sim-accuracy round 12, itemscrit).
+func TestEveryHunterCarriesJujuMightAndOnlySurvivalJujuPower(t *testing.T) {
+	all, err := RaidConsumes(loadRealPresets(t), loadRealItemLevels(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, spec := range []string{"hunter-beast-mastery", "hunter-marksmanship", "hunter-survival"} {
+		at60 := ConsumesAtLevel(all[spec], api.MaxLevel)
+		if !slices.Contains(at60, "juju_might") {
+			t.Errorf("%s at 60: %v has no juju_might", spec, at60)
+		}
+		if wantPower := spec == "hunter-survival"; slices.Contains(at60, "juju_power") != wantPower {
+			t.Errorf("%s at 60: %v, juju_power wanted %v", spec, at60, wantPower)
+		}
+	}
+}

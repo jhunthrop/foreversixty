@@ -15,12 +15,19 @@ var JSON []byte
 // Row is one band's choice: from FromLevel through ToLevel the spell casts rank Rank.
 // Outside every row the default rule stands. A row naming a Preset (sim/request's
 // BarePreset or RaidPreset) applies only to a request simmed under it; one with none
-// applies to both.
+// applies to both. A row naming Races (sim/request race slugs) applies only to a
+// character of one of them; one with none applies to every race. Races are keyed only
+// where the races' best ranks differ beyond error (owner ruling 3, sim-accuracy round 13),
+// and a race named by no row of a band casts the default rule there.
 type Row struct {
-	FromLevel int    `json:"from_level"`
-	ToLevel   int    `json:"to_level"`
-	Rank      int    `json:"rank"`
-	Preset    string `json:"preset,omitempty"`
+	FromLevel int      `json:"from_level"`
+	ToLevel   int      `json:"to_level"`
+	Rank      int      `json:"rank"`
+	Preset    string   `json:"preset,omitempty"`
+	Races     []string `json:"races,omitempty"`
+	// Note is the row's evidence for a reader. A race row says what each race
+	// measured and which racial drives the split.
+	Note string `json:"note,omitempty"`
 }
 
 // Spell is one authored spell id's rows, as the curated file writes them.
@@ -33,5 +40,7 @@ type Spell struct {
 
 // File is the table's shape.
 type File struct {
+	// Notes is the table's own prose for a reader.
+	Notes string             `json:"notes"`
 	Specs map[string][]Spell `json:"specs"`
 }

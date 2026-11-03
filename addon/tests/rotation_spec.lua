@@ -305,6 +305,75 @@ end)
 
 -- L3.7 pre-item (round A review): a second line whose only word that fits is a figure keeps that
 -- one word rather than cutting down to none.
+-- A line whose rank a race's rank-choice row changes (round 13) carries each keyed
+-- race's id in raceSpellId, by the site's race slug; the band shows the player's own.
+describe("Rotation with a race's rank", function()
+	local SPLIT = {
+		build = DATA.build,
+		classes = DATA.classes,
+		weights = {},
+		rotations = { ["warrior-fury"] = {
+			{ level = 50, lines = {
+				{ spellId = 285, name = "Heroic Strike", condition = "",
+					raceSpellId = { ["undead"] = 1608, ["night-elf"] = 284 } },
+			} },
+		} },
+	}
+
+	local function shownFor(raceToken, factionToken)
+		mock.install({
+			class = { name = "Warrior", token = "WARRIOR" },
+			race = raceToken and { name = raceToken, token = raceToken } or nil,
+			globals = { UnitFactionGroup = function() return factionToken end },
+		})
+		helper.load("Compat")
+		helper.load("Gear")
+		local Rotation = helper.load("Rotation")
+		local model = Rotation.model(SPLIT, BUILD, RANKS, 55, true)
+		mock.uninstall()
+		return model.lines[1].spellId
+	end
+
+	it("shows each keyed race its own id, by the client's race token", function()
+		assert.are.equal(1608, shownFor("Scourge", "Horde"))
+		assert.are.equal(284, shownFor("NightElf", "Alliance"))
+	end)
+
+	it("keeps the line's own id for a race no row names, or a client that names no race", function()
+		assert.are.equal(285, shownFor("Troll", "Horde"))
+		assert.are.equal(285, shownFor(nil, nil))
+	end)
+
+	it("never writes the race's id into the shipped band", function()
+		shownFor("Scourge", "Horde")
+		assert.are.equal(285, SPLIT.rotations["warrior-fury"][1].lines[1].spellId)
+	end)
+end)
+
+describe("Compat.playerRaceSlug", function()
+	local function slugFor(raceToken, factionToken)
+		mock.install({
+			race = raceToken and { name = raceToken, token = raceToken } or nil,
+			globals = { UnitFactionGroup = function() return factionToken end },
+		})
+		local Compat = helper.load("Compat")
+		local slug = Compat.playerRaceSlug()
+		mock.uninstall()
+		return slug
+	end
+
+	it("names the site's slug for each client token", function()
+		assert.are.equal("undead", slugFor("Scourge", "Horde"))
+		assert.are.equal("night-elf", slugFor("NightElf", "Alliance"))
+		assert.are.equal("windshaper-skyborne", slugFor("Skyborne", "Horde"))
+		assert.are.equal("high-order-skyborne", slugFor("Skyborne", "Alliance"))
+	end)
+
+	it("is nil where the client names no race", function()
+		assert.is_nil(slugFor(nil, nil))
+	end)
+end)
+
 describe("Rotation.cutCount with a figure first", function()
 	local Rotation = require("Rotation")
 

@@ -1,0 +1,49 @@
+hunter-marksmanship  DPS 622.5 +/- 0.2
+out of mana: 0.0 s of 180 s
+consumes: [major_mana_potion elixir_of_the_mongoose ground_scorpok_assay food_poached_sunscale_salmon juju_might]
+buffs: [heart_of_the_lion arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionShoot | 346.2 | 55.6 | 98.50 | 94.20 | 661 | 18.9 | 4.4 | 0.0 | 0.0 | 0.0 |
+| Multi-Shot (2643) | 123.2 | 19.8 | 29.26 | 27.98 | 792 | 19.0 | 4.4 | 0.0 | 0.0 | 0.0 |
+| Cat: OtherActionAttack#1 | 79.2 | 12.7 | 150.61 | 134.19 | 106 | 21.8 | 4.4 | 6.5 | 40.0 | 21.2 |
+| Arcane Shot (14287) | 50.3 | 8.1 | 29.96 | 28.64 | 316 | 19.0 | 4.4 | 0.0 | 0.0 | 0.0 |
+| Cat: Bite (17261) | 12.3 | 2.0 | 15.53 | 13.83 | 160 | 19.3 | 4.4 | 6.5 | 0.0 | 0.0 |
+| Cat: Claw (3009) | 7.8 | 1.3 | 17.12 | 15.27 | 92 | 19.5 | 4.3 | 6.5 | 0.0 | 0.0 |
+| Aimed Shot (20904) | 3.9 | 0.6 | 1.00 | 0.96 | 737 | 17.2 | 4.5 | 0.0 | 0.0 | 0.0 |
+| Aspect of the Hawk (14322) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rapid Fire (3045) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionMove | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 76.65 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| spell (26297) | 0.0 | 0.0 | 1.50 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.08 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Aspect of the Hawk (14322) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Heart of the Lion (409580) | 100.1 | 1.00 |
+| Deadly Aspects (19552) | 45.0 | 9.37 |
+| spell (26297) | 11.6 | 1.50 |
+| Rapid Fire (3045) | 8.3 | 1.00 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| OtherActionMove | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2530.3 | 2476.4 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 239.7 | 56.3 |
+| item 13444 | ResourceTypeMana | 1940.0 | 1940.0 |
+| Aspect of the Hawk (14322) | ResourceTypeMana | -110.0 | -110.0 |
+| Arcane Shot (14287) | ResourceTypeMana | -4839.1 | -4839.1 |
+| Aimed Shot (20904) | ResourceTypeMana | -263.5 | -263.5 |
+| Multi-Shot (2643) | ResourceTypeMana | -5946.0 | -5946.0 |
+| Rapid Fire (3045) | ResourceTypeMana | -100.0 | -100.0 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 4458.8 | 4458.5 |

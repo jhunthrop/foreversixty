@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/request"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core/proto"
 )
@@ -58,6 +59,22 @@ func TestTheWeightsRequestWeighsOnlyTheReferenceStatAtSixty(t *testing.T) {
 	}
 	if mage.Character.DistanceFromTarget == 0 {
 		t.Fatal("a caster stands out of melee range")
+	}
+}
+
+// A band's character is the bare band's (its gear, the class kit, no
+// preset buffs), so its request must say bare: a level-60 request with no
+// preset takes the raid preset's rank choices (request.PublishedPreset),
+// and band 60 then ran the raid rotation's ranks on bare gear (Elemental
+// went dry and measured about half its bare spell power figure).
+func TestABandIsMeasuredUnderTheBarePresetAndTheRaidUnderTheRaids(t *testing.T) {
+	spec := specs.ByKey["shaman-elemental"]
+	ch := api.CharacterSpec{Class: "shaman", Level: 60}
+	if got := weightsRequest(spec, ch, nil, 250, 7).Preset; got != request.BarePreset {
+		t.Errorf("band request preset = %q, want %q", got, request.BarePreset)
+	}
+	if got := weightsRequest(spec, ch, &request.ResolvedPreset{}, 250, 7).Preset; got != request.RaidPreset {
+		t.Errorf("raid request preset = %q, want %q", got, request.RaidPreset)
 	}
 }
 
@@ -259,5 +276,26 @@ func TestAPartialRunMergesBandByBandAndNoBandsKeepsThemAll(t *testing.T) {
 	frost := got["mage-frost"]
 	if frost.DPS != 0.4824 || len(frost.Bands) != 1 || frost.Bands["20"].DPS != 0.1811 {
 		t.Fatalf("mage-frost = %+v, want the new spec figure and its band 20 kept", frost)
+	}
+}
+
+// Cat Form's attacks never use the weapon's damage, so the cat gets no
+// weapon term at any band or at 60, whatever the engine's sweep reads (it
+// measured 1.1 DPS per weapon DPS once the requests named their preset).
+func TestTheCatHasNoWeaponTerm(t *testing.T) {
+	m := fakeMeasurer{"druid-feral": {0.1, 0.001, 1.1, 0.001}}
+	picked := []specs.Spec{specs.ByKey["druid-feral"]}
+	got, _ := measureAll(picked, fakeCharacter, nil, m, 100, 7)
+	if got["druid-feral"].WeaponDPS != 0 {
+		t.Fatalf("raid entry = %+v, want no weapon term", got["druid-feral"])
+	}
+	characterFor := func(spec specs.Spec, band int) (api.CharacterSpec, error) {
+		return api.CharacterSpec{Name: "x", Race: "night-elf", Class: spec.ClassSlug, Level: bandLevel(band)}, nil
+	}
+	bands, _ := measureBands(picked, []int{20, 60}, characterFor, m, 100, 7)
+	for band, figures := range bands["druid-feral"] {
+		if figures.WeaponDPS != 0 {
+			t.Fatalf("band %s = %+v, want no weapon term", band, figures)
+		}
 	}
 }

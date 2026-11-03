@@ -1,0 +1,26 @@
+package request
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"testing"
+)
+
+// Scratch (not committed): print each band's figures under the rule for the file at $HP.
+func TestZZPrintBandFigures(t *testing.T) {
+	raw, err := os.ReadFile(os.Getenv("HP"))
+	if err != nil {
+		t.Skip()
+	}
+	var p HealProfile
+	if err := json.Unmarshal(raw, &p); err != nil {
+		t.Fatal(err)
+	}
+	out := map[int]healBandFigures{}
+	for _, row := range p.Bands.Rows {
+		out[row.Level] = p.figuresFor(row, p.Tuning.Scale)
+	}
+	b, _ := json.Marshal(out)
+	fmt.Println("FIGURES " + string(b))
+}

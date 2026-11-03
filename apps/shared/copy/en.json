@@ -1271,7 +1271,7 @@
     "plan.planBuild": "Plan a build",
     "plan.yourBuilds": "Your builds",
     "plan.openInPlanner": "Open this build in the planner",
-    "plan.loadedNote": "Loaded the {band} build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order.",
+    "plan.loadedNote": "Loaded the {band} build. The order shown is one way to level into it: the main tree first, each talent as soon as its row opens.",
     "plan.shared.title": "Shared build",
     "plan.shared.head": "{race} {className} {totals}",
     "plan.shared.meta": { "text": "{title} · Saved {date} · {n} views", "notPlural": true, "args": {"n": "int"} },

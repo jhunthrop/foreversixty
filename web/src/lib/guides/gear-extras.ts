@@ -189,6 +189,7 @@ export const CONSUMABLE_GIVES: Readonly<Record<string, string>> = {
   elixir_of_fortitude: 'Health',
   elixir_of_frost_power: 'Frost spell damage',
   elixir_of_greater_defense: 'Armor',
+  elixir_of_holy_power: 'Holy spell damage',
   elixir_of_sages: 'Spirit and spell critical strike',
   elixir_of_shadow_power: 'Shadow spell damage',
   elixir_of_the_mongoose: 'Agility and critical strike',

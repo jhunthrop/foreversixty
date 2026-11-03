@@ -195,3 +195,41 @@ func TestShadowCastsDarkSacrificeWhenManaIsBehind(t *testing.T) {
 		}
 	}
 }
+
+// Sim audit round 13: Balance opens like the other casters, with a Wrath
+// timed to finish on the pull (1.5 s with Improved Wrath 5/5, then its
+// flight), instead of starting its first cast at the pull.
+func TestBalanceOpensWithAPrePullWrath(t *testing.T) {
+	const wrathRank8 = 9912
+	curated, err := loadLadderCurated(repoRoot, "druid-balance")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	if len(rot.PrepullActions) != 1 {
+		t.Fatalf("Balance prepull has %d lines, want one Wrath", len(rot.PrepullActions))
+	}
+	p := rot.PrepullActions[0]
+	if got := p.GetAction().GetCastSpell().GetSpellId().GetSpellId(); got != wrathRank8 {
+		t.Errorf("Balance prepull casts %d, want Wrath rank 8 (%d)", got, wrathRank8)
+	}
+	if got := p.GetDoAtValue().GetConst().GetVal(); got != "-1.5s" {
+		t.Errorf("Balance prepull Wrath at %q, want -1.5s (its cast ends on the pull)", got)
+	}
+}
+
+// Round 13: the Shadow guide keeps Vampiric Embrace up on the boss ("On the
+// boss, keep it up: it costs a global every 30 seconds"), so the list casts
+// it, above Mind Flay, its filler.
+func TestShadowKeepsVampiricEmbraceUp(t *testing.T) {
+	const (
+		vampiricEmbrace = 15286
+		mindFlay        = 18807
+		shadowSpecKey   = "priest-shadow"
+	)
+	ids := castOrder(t, shadowSpecKey)
+	requireBefore(t, shadowSpecKey, ids, vampiricEmbrace, mindFlay)
+}

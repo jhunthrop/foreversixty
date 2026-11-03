@@ -3,7 +3,7 @@ title: Balance Druid in Forever
 classSlug: druid
 spec: balance
 role: dps
-build: 'FS1:1.60.1.70753:druid:night-elf:5232221115100151/0/553303:'
+build: 'FS1:1.60.1.70753:druid:night-elf:5232220115101151/0/555301:'
 raidBuild: 'FS1:1.60.1.70753:druid:night-elf:5232220115501351/0/505003:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
@@ -56,7 +56,7 @@ Balance is the Moonkin: two DoTs on the boss, Wrath to bank Eclipse charges, and
 
 ## Talents and builds
 
-The leveling build takes Heart of the Wild and Reflection, because mana is what runs out while questing. The raid build moves those points into Improved Starfire, Eclipse, Nature's Grace and the rest of Naturalist (2% damage a point): the full Starfire loop. At full ranks, Improved Starfire makes Starfire a 3 second cast, and each Wrath banks two Eclipse charges (up to four), each taking another half second off one Starfire. Nature's Grace makes every non-periodic crit speed up your casting and your global cooldown for 3 seconds.
+The leveling build takes Heart of the Wild and Reflection, because mana is what runs out while questing, plus all five points of Naturalist (2% damage a point) and Nature's Grace once you reach it. The raid build moves Heart of the Wild and Reflection into Improved Starfire, Eclipse and Subtlety: the full Starfire loop. At full ranks, Improved Starfire makes Starfire a 3 second cast, and each Wrath banks two Eclipse charges (up to four), each taking another half second off one Starfire. Nature's Grace makes every non-periodic crit speed up your casting and your global cooldown for 3 seconds.
 
 - **Vengeance** (5 points): the crit damage bonus of your Arcane and Nature spells is doubled.
 - **Moonfury** (5 points): 10% more Arcane and Nature damage.
@@ -70,9 +70,9 @@ From Restoration, Nature's Focus saves your Starfire from pushback 70% of the ti
 
 ## Rotation and priority
 
-**Before the pull.** Shift into Moonkin Form and stay there. Every spell you cast in this loop works in form.
+**Before the pull.** Shift into Moonkin Form and stay there. Every spell you cast in this loop works in form. Start a Wrath so it finishes as the tank pulls; it lands after the tank's first hit.
 
-**Open.** Moonfire, then Insect Swarm, then Wrath for your first Eclipse charges, then Starfire.
+**Open.** After that Wrath, Moonfire, then Insect Swarm, then Starfire on the Eclipse charges the Wrath banked.
 
 **The loop.**
 
@@ -104,7 +104,7 @@ Potions work in Moonkin Form in Forever, so you never shift out to drink. On a l
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren gets more health and War Stomp. Alliance Skyborne get Read Ley Line, a burst of mana regeneration.
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren gets more health and War Stomp. Alliance Skyborne get Read Leyline, a burst of mana regeneration. The sim does not cast it on its own; a custom rotation can.
 
 ## Professions
 

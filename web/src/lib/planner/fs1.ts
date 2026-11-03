@@ -413,37 +413,25 @@ export interface OrderFromRanks {
 
 /**
  * An FS1 code carries a final tree, not the order it was spent in -- nothing in the game
- * records that. The planner needs an order, so this reconstructs a legal one by repeatedly
- * spending wherever the planner's own rules allow, lowest tier first, left to right. It
- * uses canAddPoint rather than reimplementing the gates, so an order it produces is one
+ * records that. The planner, the guide's leveling strip and the addon's talent window need an
+ * order, so this reconstructs the one a player levels with, one point at a time:
+ *   1. the tree with the most points first (the spec's own tree), then the next;
+ *   2. within a tree, the deepest row a point can go in, so a talent is taken the moment
+ *      its row opens (a Shadow priest's Mind Flay at level 20, not after the top rows fill);
+ *   3. within a row, the talent with the fewest ranks still to go, so a started talent is
+ *      finished before the next opens; then left to right.
+ * It uses canAddPoint rather than reimplementing the gates, so an order it produces is one
  * the planner and the API both accept by construction.
  */
 export function orderFromRanks(index: TalentIndex, treeRanks: number[][]): OrderFromRanks {
-  const wanted = new Map<number, number>();
-  index.trees.forEach((tree, treeIndex) => {
-    const ranks = treeRanks[treeIndex] ?? [];
-    tree.talents.forEach((talent, talentIndex) => {
-      const rank = Math.min(ranks[talentIndex] ?? 0, talent.max_rank);
-      if (rank > 0) wanted.set(talent.id, rank);
-    });
-  });
-
+  const wanted = wantedRanks(index, treeRanks);
+  const treeOrder = treesByWantedPoints(index, wanted);
   const spent = new Map<number, number>();
   let order: number[] = [];
-  let progress = true;
-  while (progress) {
-    progress = false;
-    for (const tree of index.trees) {
-      const byTier = [...tree.talents].sort((a, b) => a.tier - b.tier || a.column - b.column);
-      for (const talent of byTier) {
-        const target = wanted.get(talent.id) ?? 0;
-        while ((spent.get(talent.id) ?? 0) < target && canAddPoint(index, order, talent.id).ok) {
-          order = withPoint(order, talent.id);
-          spent.set(talent.id, (spent.get(talent.id) ?? 0) + 1);
-          progress = true;
-        }
-      }
-    }
+  for (let next = nextPoint(index, treeOrder, wanted, spent, order); next !== undefined;) {
+    order = withPoint(order, next);
+    spent.set(next, (spent.get(next) ?? 0) + 1);
+    next = nextPoint(index, treeOrder, wanted, spent, order);
   }
 
   const dropped = [...wanted.entries()]
@@ -452,6 +440,46 @@ export function orderFromRanks(index: TalentIndex, treeRanks: number[][]): Order
     .sort((a, b) => a - b);
 
   return { order, dropped };
+}
+
+function wantedRanks(index: TalentIndex, treeRanks: number[][]): Map<number, number> {
+  const wanted = new Map<number, number>();
+  index.trees.forEach((tree, treeIndex) => {
+    const ranks = treeRanks[treeIndex] ?? [];
+    tree.talents.forEach((talent, talentIndex) => {
+      const rank = Math.min(ranks[talentIndex] ?? 0, talent.max_rank);
+      if (rank > 0) wanted.set(talent.id, rank);
+    });
+  });
+  return wanted;
+}
+
+/** The trees, most wanted points first; a tie keeps tab order. */
+function treesByWantedPoints(index: TalentIndex, wanted: ReadonlyMap<number, number>): TalentIndex['trees'] {
+  const pointsIn = (tree: TalentIndex['trees'][number]): number =>
+    tree.talents.reduce((total, talent) => total + (wanted.get(talent.id) ?? 0), 0);
+  return index.trees
+    .map((tree, position) => ({ tree, position, points: pointsIn(tree) }))
+    .sort((a, b) => b.points - a.points || a.position - b.position)
+    .map(({ tree }) => tree);
+}
+
+/** The next point by the three rules above, or undefined when no wanted rank can be placed. */
+function nextPoint(
+  index: TalentIndex,
+  treeOrder: TalentIndex['trees'],
+  wanted: ReadonlyMap<number, number>,
+  spent: ReadonlyMap<number, number>,
+  order: number[],
+): number | undefined {
+  const toGo = (id: number): number => (wanted.get(id) ?? 0) - (spent.get(id) ?? 0);
+  for (const tree of treeOrder) {
+    const open = tree.talents
+      .filter((talent) => toGo(talent.id) > 0 && canAddPoint(index, order, talent.id).ok)
+      .sort((a, b) => b.tier - a.tier || toGo(a.id) - toGo(b.id) || a.column - b.column);
+    if (open.length > 0) return open[0]!.id;
+  }
+  return undefined;
 }
 
 export interface RemapTreeRanks {

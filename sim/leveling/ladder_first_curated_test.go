@@ -12,11 +12,21 @@ var ladderFirstSpecs = map[string]struct {
 	class, slug string
 	tree        int
 }{
-	"druid-restoration":  {"druid", "restoration", 2},
-	"paladin-holy":       {"paladin", "holy", 0},
-	"priest-discipline":  {"priest", "discipline", 0},
-	"priest-holy":        {"priest", "holy", 1},
-	"shaman-restoration": {"shaman", "restoration", 2},
+	"druid-feral-bear":    {"druid", "feral-bear", 1},
+	"druid-restoration":   {"druid", "restoration", 2},
+	"hunter-survival":     {"hunter", "survival", 2},
+	"mage-fire":           {"mage", "fire", 1},
+	"paladin-holy":        {"paladin", "holy", 0},
+	"paladin-protection":  {"paladin", "protection", 1},
+	"priest-discipline":   {"priest", "discipline", 0},
+	"priest-holy":         {"priest", "holy", 1},
+	"rogue-assassination": {"rogue", "assassination", 0},
+	"rogue-subtlety":      {"rogue", "subtlety", 2},
+	"shaman-restoration":  {"shaman", "restoration", 2},
+	"warlock-affliction":  {"warlock", "affliction", 0},
+	"warlock-demonology":  {"warlock", "demonology", 1},
+	"warrior-arms":        {"warrior", "arms", 0},
+	"warrior-fury":        {"warrior", "fury", 1},
 }
 
 // Every curated reservation is sound on the active build: its spec is one this test knows,
@@ -32,7 +42,7 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 	for spec, row := range embeddedLadderFirst().Specs {
 		info, ok := ladderFirstSpecs[spec]
 		if !ok {
-			t.Errorf("%s: not a healer this lane's mechanism covers; add it to ladderFirstSpecs with its tree", spec)
+			t.Errorf("%s: not a spec this test knows; add it to ladderFirstSpecs with its tree", spec)
 			continue
 		}
 		trees, err := LoadTalentTrees(repoRoot, active, info.class)
@@ -59,12 +69,24 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 				t.Errorf("%s: %q reserved at rank %d, past the guide's %d", spec, r.Talent, r.Rank, targets[node.ID])
 			}
 		}
+		chain := pathToDeepestTarget(own, targets)
+		capstone := chain[len(chain)-1]
 		var prev map[int]int
 		for level := 10; level <= 60; level++ {
 			s := LadderTalentString(trees, targets, info.tree, level, ForSpec(spec))
 			ranks, err := TalentRanksFromString(trees, s)
 			if err != nil {
 				t.Fatal(err)
+			}
+			// A reservation replaces the walk's spine, so at a published band it must not lose
+			// the capstone the spine would have given. (Between bands, Discipline at 35 and
+			// Restoration shaman at 46 to 49 still do: sim-accuracy round 13, walk lane.)
+			plain, err := TalentRanksFromString(trees, LadderTalentString(trees, targets, info.tree, level))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if level%10 == 0 && plain[capstone.ID] > 0 && ranks[capstone.ID] == 0 {
+				t.Errorf("%s level %d: %q drops %s, which the plain walk's spine holds", spec, level, s, capstone.Name)
 			}
 			for ti, part := range strings.Split(s, "-") {
 				d := make([]int, len(part))
@@ -84,6 +106,36 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 		}
 		if got, want := LadderTalentString(trees, targets, info.tree, 60, ForSpec(spec)), LadderTalentString(trees, targets, info.tree, 60); got != want {
 			t.Errorf("%s at 60: %q, want the guide build's %q", spec, got, want)
+		}
+	}
+}
+
+// Sim-accuracy round 12 (healprofile): Restoration shaman holds Water Shield, which the
+// rotation casts, at band 20, ahead of Tidal Focus's fourth rank
+// (design/reviews/2026-11-03-sim-audit-round12/healprofile.md). Round 13 (walk) holds Mana
+// Tide Totem next, which moves band 30's Tidal Mastery point onto it.
+func TestRestorationShamanHoldsWaterShieldAtTwenty(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	active, err := ReadActiveBuild(repoRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	trees, err := LoadTalentTrees(repoRoot, active, "shaman")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, digits, err := GuideBuildTalents(repoRoot, "shaman", "restoration")
+	if err != nil {
+		t.Fatal(err)
+	}
+	targets := GuideTalentTargets(trees, digits)
+	for level, want := range map[int]string{
+		20: "0000000000000000-000000000000000000-5320000010000000",
+		30: "0000000000000000-000000000000000000-5530003310010000",
+		40: "0000000000000000-000000000000000000-5530003315510000",
+	} {
+		if got := LadderTalentString(trees, targets, 2, level, ForSpec("shaman-restoration")); got != want {
+			t.Errorf("level %d: %s, want %s", level, got, want)
 		}
 	}
 }

@@ -147,8 +147,25 @@ type HealBand struct {
 	PlayerHealth     float64           `json:"player_health"`
 	TankHealth       float64           `json:"tank_health"`
 	MemberHealth     float64           `json:"member_health"`
+	TankShare        float64           `json:"tank_share"`
+	Split            *HealBandSplit    `json:"split,omitempty"`
 	TankHitDamage    float64           `json:"tank_hit_damage"`
 	PulseDamage      float64           `json:"pulse_damage"`
+}
+
+// HealBandSplit is the logged evidence for a band's tank share (bands.split_rule): how many
+// logged five-man fights its own content holds, how many fights the share rests on (its
+// content's, or every logged beta dungeon's when Pooled), and their tank share's median and
+// quartiles. Derived offline from foreverlogs.gg; Source names the cache and the tool.
+type HealBandSplit struct {
+	ContentFights   int      `json:"content_fights"`
+	Pooled          bool     `json:"pooled"`
+	Fights          int      `json:"fights"`
+	Dungeons        []string `json:"dungeons"`
+	MedianTankShare float64  `json:"median_tank_share"`
+	Q25             float64  `json:"q25"`
+	Q75             float64  `json:"q75"`
+	Source          string   `json:"source"`
 }
 
 // damage is the band's content damage: the median of its last bosses' damage a second (a
@@ -187,6 +204,7 @@ func (b HealBand) bossDamage() float64 {
 type HealBands struct {
 	Rule           string              `json:"rule"`
 	PullRule       HealPullRule        `json:"pull_rule"`
+	SplitRule      HealSplitRule       `json:"split_rule"`
 	WindowLevels   int                 `json:"window_levels"`
 	ReferenceLevel int                 `json:"reference_level"`
 	Notes          string              `json:"notes"`
@@ -201,6 +219,13 @@ type HealBands struct {
 type HealPullRule struct {
 	AssistRadiusYards float64 `json:"assist_radius_yards"`
 	Percentile        float64 `json:"percentile"`
+}
+
+// HealSplitRule is how a band's tank share is taken from logs: the median over its content's
+// logged five-man fights, or over every logged beta dungeon's when its content has fewer than
+// MinFights. The rule text is in bands.rule.
+type HealSplitRule struct {
+	MinFights int `json:"min_fights"`
 }
 
 // healBandFigures are the four figures a band changes.
@@ -247,16 +272,31 @@ func (p HealProfile) bandFigures() healBandFigures {
 	return p.figuresFor(p.Bands.bandFor(p.Band), p.Tuning.Scale)
 }
 
+// The band's incoming damage a second is the reference's times the content ratio; its tank
+// share (the reference's own split at the reference band) puts that much on the tank hit and
+// the rest on the pulse, at the profile's cadence.
 func (p HealProfile) figuresFor(row HealBand, scale float64) healBandFigures {
 	ref := p.Bands.reference()
 	damage := row.damage() / ref.damage()
 	health := row.PlayerHealth / ref.PlayerHealth
+	tankDPS, groupDPS := p.baseSplit()
+	share := tankDPS / (tankDPS + groupDPS)
+	if row.Level != p.Bands.ReferenceLevel {
+		share = row.TankShare
+	}
+	incoming := (tankDPS + groupDPS) * damage
 	return healBandFigures{
 		TankHealth:    scaled(p.Tank.Health, health),
 		MemberHealth:  scaled(p.Members.Health, health),
-		TankHitDamage: scaled(p.Tuning.BaseTankHitDamage*damage, scale),
-		PulseDamage:   scaled(p.Tuning.BasePulseDamage*damage, scale),
+		TankHitDamage: scaled(share*incoming*p.Tank.SwingSeconds, scale),
+		PulseDamage:   scaled((1-share)*incoming*p.Pulse.IntervalSeconds/float64(p.Pulse.Members), scale),
 	}
+}
+
+// baseSplit is the unscaled reference fight's damage a second on the tank and on the group.
+func (p HealProfile) baseSplit() (tank, group float64) {
+	return p.Tuning.BaseTankHitDamage / p.Tank.SwingSeconds,
+		p.Tuning.BasePulseDamage * float64(p.Pulse.Members) / p.Pulse.IntervalSeconds
 }
 
 // validateBands refuses a band table the rule cannot run on, and a row whose stated
@@ -290,6 +330,9 @@ func (p HealProfile) validateBands() error {
 		if err := b.validatePulls(row); err != nil {
 			return err
 		}
+		if err := p.validateSplit(row); err != nil {
+			return err
+		}
 		hasReference = hasReference || row.Level == b.ReferenceLevel
 	}
 	if !hasReference {
@@ -304,6 +347,37 @@ func (p HealProfile) validateBands() error {
 		if got != want {
 			return fmt.Errorf("%w: band %d states %+v, the rule derives %+v", ErrBadHealProfile, row.Level, got, want)
 		}
+	}
+	return nil
+}
+
+// validateSplit refuses a reference band that states logs or a share other than the
+// profile's own, and a band below it whose share is not its logged median (to the thousandth
+// it is stated to), rests on fewer fights than the rule asks, or pools when it need not.
+func (p HealProfile) validateSplit(row HealBand) error {
+	b := p.Bands
+	if b.SplitRule.MinFights <= 0 {
+		return fmt.Errorf("%w: bands.split_rule states a positive minimum of fights", ErrBadHealProfile)
+	}
+	if row.Level == b.ReferenceLevel {
+		tank, group := p.baseSplit()
+		if row.Split != nil || row.TankShare != math.Round(tank/(tank+group)*1000)/1000 {
+			return fmt.Errorf("%w: the reference band states no logs and the profile's own tank share", ErrBadHealProfile)
+		}
+		return nil
+	}
+	s := row.Split
+	if s == nil || s.Source == "" || len(s.Dungeons) == 0 {
+		return fmt.Errorf("%w: band %d states its split's logged fights and their source", ErrBadHealProfile, row.Level)
+	}
+	if s.Fights < b.SplitRule.MinFights || s.Pooled != (s.ContentFights < b.SplitRule.MinFights) || (!s.Pooled && s.Fights != s.ContentFights) {
+		return fmt.Errorf("%w: band %d's split rests on %d fights (%d its content's, pooled %v); the rule pools under %d", ErrBadHealProfile, row.Level, s.Fights, s.ContentFights, s.Pooled, b.SplitRule.MinFights)
+	}
+	if s.Q25 > s.MedianTankShare || s.MedianTankShare > s.Q75 || s.Q75 >= 1 || s.Q25 <= 0 {
+		return fmt.Errorf("%w: band %d's split states quartiles %v and %v around median %v", ErrBadHealProfile, row.Level, s.Q25, s.Q75, s.MedianTankShare)
+	}
+	if row.TankShare != math.Round(s.MedianTankShare*1000)/1000 {
+		return fmt.Errorf("%w: band %d states tank share %v, its logged median is %v", ErrBadHealProfile, row.Level, row.TankShare, s.MedianTankShare)
 	}
 	return nil
 }

@@ -138,6 +138,12 @@ func TestRaidPresetConsumesFollowTheRole(t *testing.T) {
 		{"hunter-survival", []string{"food_poached_sunscale_salmon"}, []string{"food_smoked_desert_dumpling", "food_grilled_squid"}},
 		{"warrior-protection", []string{"food_smoked_desert_dumpling"}, []string{"food_tender_wolf_steak", "food_baked_salmon"}},
 		{"paladin-protection", []string{"food_baked_salmon"}, []string{"food_smoked_desert_dumpling"}},
+		// Forever's Elixir of Holy Power (item 21546, spell 1310077: 40 Holy
+		// spell damage) was Era's Elixir of Greater Firepower; no other
+		// elixir gives Holy damage, so both Holy-damage paladins carry it
+		// beside their other elixirs (round 12).
+		{"paladin-retribution", []string{"elixir_of_holy_power"}, []string{"elixir_of_greater_firepower"}},
+		{"paladin-protection", []string{"elixir_of_holy_power"}, []string{"elixir_of_greater_firepower"}},
 		{"priest-shadow", []string{"food_baked_salmon", "food_nightfin_soup"}, []string{"food_runn_tum_tuber_surprise"}},
 	}
 	for _, c := range cases {

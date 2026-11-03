@@ -533,6 +533,73 @@ def test_a_band_casts_the_rank_choice_the_curated_table_names(tmp_path):
     assert [line.spell_id for line in bands[60]] == [10929]
 
 
+def test_a_race_rank_choice_below_sixty_names_each_races_rank(tmp_path):
+    """A rank-choice row may name races (round 13). The addon carries one
+    rotation per band for every race, so a line whose rank a race row changes
+    keeps the every-race id as `spell_id` and names each keyed race's own id
+    in `race_spell_ids`; the addon picks by the player's race. A race no row
+    names casts `spell_id`."""
+    _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
+    (tmp_path / "rank-choices.json").write_text(
+        json.dumps(
+            {
+                "specs": {
+                    "priest-holy": [
+                        {
+                            "spell": "Renew",
+                            "authored": 10929,
+                            "bands": [
+                                {"from_level": 40, "to_level": 49, "rank": 2},
+                                {
+                                    "from_level": 50,
+                                    "to_level": 59,
+                                    "rank": 3,
+                                    "races": ["undead", "night-elf"],
+                                },
+                                {"from_level": 50, "to_level": 59, "rank": 2, "races": ["gnome"]},
+                            ],
+                        }
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    bands = _healer_bands("priest-holy", tmp_path)
+    assert [(line.spell_id, line.race_spell_ids) for line in bands[40]] == [(6074, {})]
+    [line] = bands[50]
+    assert line.spell_id == 10928
+    assert line.race_spell_ids == {"gnome": 6074, "night-elf": 6075, "undead": 6075}
+
+
+def test_a_race_row_that_casts_the_every_race_id_names_no_race(tmp_path):
+    """A race row whose rank resolves to the line's own id adds nothing."""
+    _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
+    (tmp_path / "rank-choices.json").write_text(
+        json.dumps(
+            {
+                "specs": {
+                    "priest-holy": [
+                        {
+                            "spell": "Renew",
+                            "authored": 10929,
+                            "bands": [
+                                {"from_level": 40, "to_level": 49, "rank": 2, "races": ["troll"]},
+                                {"from_level": 40, "to_level": 49, "rank": 2, "races": ["human"]},
+                            ],
+                        }
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    bands = _healer_bands("priest-holy", tmp_path)
+    [line] = bands[40]
+    assert line.spell_id != 6074
+    assert line.race_spell_ids == {"human": 6074, "troll": 6074}
+
+
 def _healer_bands_at(spec: str, curated_dir: Path, level: int) -> list:
     from pipeline import addonrotation
 
@@ -674,3 +741,53 @@ def test_compute_spell_icons_covers_the_prepull_casts_no_rank_family_resolves(tm
     icons = compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
     assert 688 in icons
     assert 23894 in icons
+
+
+def test_the_lua_names_each_races_id_only_where_they_differ():
+    """Data.lua carries `raceSpellId` on a line only where a race row changes
+    its rank, keyed by the site's race slug (quoted: `night-elf` is no bare Lua
+    name); the addon reads it by the player's race."""
+    from pipeline.addonlua import _rotations_lua
+    from pipeline.models import AddonRotationBand, AddonRotationLine
+
+    every = AddonRotationLine(spell_id=8092, name="Mind Blast", condition="", icon="x")
+    split = AddonRotationLine(
+        spell_id=10945,
+        name="Mind Blast",
+        condition="",
+        icon="x",
+        race_spell_ids={"undead": 8103, "night-elf": 8102},
+    )
+    lua = "\n".join(
+        _rotations_lua(
+            {
+                "priest-shadow": [
+                    AddonRotationBand(level=40, lines=[every]),
+                    AddonRotationBand(level=50, lines=[split]),
+                ]
+            }
+        )
+    )
+    assert '{ spellId = 8092, name = "Mind Blast", condition = "" },' in lua
+    assert (
+        '{ spellId = 10945, name = "Mind Blast", condition = "", '
+        'raceSpellId = { ["night-elf"] = 8102, ["undead"] = 8103 } },' in lua
+    )
+    assert "faction" not in lua
+
+
+def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts():
+    """Sim-accuracy round 12 (healprofile): at band 40 the curated rows cast
+    Flash of Light rank 3 on the tank and rank 1 on the group. The addon's
+    list names those ranks' own ids, both learned by 40: rank 3 is 19940
+    (level 34), rank 1 is 19750 (level 20); Holy Light rank 1 is 635."""
+    spellranks = json.loads(Path("builds/1.60.1.70753/spellranks.json").read_text(encoding="utf-8"))
+    learned = {r["id"]: r["level"] for r in spellranks["classes"]["paladin"]["Flash of Light"]}
+    assert learned[19940] <= 40 and learned[19750] <= 40
+    band = next(
+        b for b in build_rotation("paladin-holy", Path("curated"), spellranks) if b.level == 40
+    )
+    flash = [line.spell_id for line in band.lines if line.name == "Flash of Light"]
+    assert flash[0] == 19940  # the tank's line comes first in the list
+    assert set(flash[1:]) == {19750}
+    assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {635}

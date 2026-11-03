@@ -1,6 +1,27 @@
 {
   "notes": "Per-spec leveling reservations (sim-accuracy round 10). Below 60 a band's talent build is the guide's level-60 build cut down by the top-row-down walk (sim/leveling LadderTalentString). A spec listed here takes these ranks of its own tree first, in order, each once the build can legally hold it and never past the guide's own rank for that talent, then walks as before; so the ladder only ever adds points and its level-60 build is the guide's. A row is adopted only where the band builds it makes beat the plain walk's beyond error at seeds 1 and 50001 (10,000 iterations, the band's own heal profile, both factions), keep every talent the engine models only by a probe as zero, drop nothing the rotation casts and lose at no band. The evidence is in design/reviews/2026-11-03-sim-audit-round10/healprofile.md and design/reviews/2026-11-03-sim-audit-round11/healprofile.md. sim/leveling embeds a copy (make ladder-first-sync); TestEmbeddedLadderFirstMatchesCurated holds it to this file.",
   "specs": {
+    "druid-feral-bear": {
+      "reason": "The rotation casts Lacerate (the 15-point row, rank 1 at 25, behind Savage Fury 2) and Primal Bite (the 30-point row, rank 1 at 40, behind Leader of the Pack). A level 30 druid's 21 points hold Lacerate and a level 40 druid's 31 hold Primal Bite, but the plain walk spends them on Shredding Attacks and Blood Frenzy. Taking each as soon as it fits raises threat on the tank fight beyond error at bands 20 (Savage Fury's first rank for Feral Swiftness's, about 5%), 30 (about 41%) and 40 (about 19%), both factions, seeds 1 and 50001 (sim-accuracy round 13, hybrids); damage taken rises about 1 to 2% without the dodge points. Bands 50 and 60 already carry both and do not change.",
+      "first": [
+        {
+          "talent": "Savage Fury",
+          "rank": 2
+        },
+        {
+          "talent": "Lacerate",
+          "rank": 1
+        },
+        {
+          "talent": "Leader of the Pack",
+          "rank": 1
+        },
+        {
+          "talent": "Primal Bite",
+          "rank": 1
+        }
+      ]
+    },
     "druid-restoration": {
       "reason": "On each band's own fight, Restoration levels better with Heart of the Wild, all three ranks of Reflection and Bloom ahead of the top rows' other points, and Nature's Swiftness held as soon as it can be: beyond error at band 20 (round 11's pull profile, both factions) and band 30 (round 10), and no band loses.",
       "first": [
@@ -22,11 +43,46 @@
         }
       ]
     },
+    "hunter-survival": {
+      "reason": "The rotation casts Strider Kick (the 20-point row, learned at 30). A level 30 hunter's 21 points hold it, but the plain walk spends the last one on Predator's Edge's fifth rank. Taking Strider Kick as soon as it fits gains about 10% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); the other bands do not change. Lacerating Strikes, the walk's own capstone from 40, is held after it so the reservation never costs it.",
+      "first": [
+        {
+          "talent": "Strider Kick",
+          "rank": 1
+        },
+        {
+          "talent": "Lacerating Strikes",
+          "rank": 1
+        }
+      ]
+    },
+    "mage-fire": {
+      "reason": "The rotation casts Pyroblast (the 10-point row, learned at 20). A level 20 mage's 11 points hold it, but the plain walk spends the last one on Ignite's fifth rank. Taking Pyroblast as soon as it fits gains about 2% at band 20, beyond error at seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); the other bands do not change.",
+      "first": [
+        {
+          "talent": "Pyroblast",
+          "rank": 1
+        }
+      ]
+    },
     "paladin-holy": {
       "reason": "On band 30's own fight, Oath of Light ahead of Infusion of Light's second rank beats the plain walk beyond error, both factions; no other band changes.",
       "first": [
         {
           "talent": "Oath of Light",
+          "rank": 1
+        }
+      ]
+    },
+    "paladin-protection": {
+      "reason": "Holy Shield, which the rotation casts from rank 1 at 30, sits on the 21-point row; a level 30 paladin's 21 points hold it, but the plain walk spends the 21st on Improved Righteous Fury. Taking Holy Shield as soon as it fits (and Shieldsworn as soon as it fits, the capstone the spine already gave band 40) raises band 30's threat beyond error on the tank fight, both factions, seeds 1 and 50001 (sim-accuracy round 12, hybrids); damage taken rises about 2% with the Improved Righteous Fury point gone. No other band changes.",
+      "first": [
+        {
+          "talent": "Holy Shield",
+          "rank": 1
+        },
+        {
+          "talent": "Shieldsworn",
           "rank": 1
         }
       ]
@@ -57,12 +113,98 @@
         }
       ]
     },
+    "rogue-assassination": {
+      "reason": "The rotation casts Mutilate (the 20-point row, learned at 30). A level 30 rogue's 21 points hold it, but the plain walk spends them on Vile Poisons' second rank. Taking Mutilate as soon as it fits gains about 8% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Cold Blood alongside it measured under 1% more and is not reserved. Between 36 and 39 Mutilate takes the point the walk's spine gave Seal Fate; holding Seal Fate as well cost about 0.5% at band 40, so it is not reserved.",
+      "first": [
+        {
+          "talent": "Mutilate",
+          "rank": 1
+        }
+      ]
+    },
+    "rogue-subtlety": {
+      "reason": "The rotation casts Ghostly Strike (the 10-point row), Premeditation (the 15-point row) and Hemorrhage (the 20-point row, learned at 30, behind Serrated Blades 3). The plain walk reaches Ghostly Strike only at 21 and Hemorrhage only at 31. Elusiveness's first rank is held ahead of them because the engine does not model it (Vanish is never cast), so Ghostly Strike's point at 20 comes from Opportunity and Hemorrhage's at 30 from Initiative, and Premeditation, which the opener casts, is kept. About 2.6% at band 20 and 6.7% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane).",
+      "first": [
+        {
+          "talent": "Elusiveness",
+          "rank": 1
+        },
+        {
+          "talent": "Ghostly Strike",
+          "rank": 1
+        },
+        {
+          "talent": "Premeditation",
+          "rank": 1
+        },
+        {
+          "talent": "Serrated Blades",
+          "rank": 3
+        },
+        {
+          "talent": "Hemorrhage",
+          "rank": 1
+        }
+      ]
+    },
     "shaman-restoration": {
-      "reason": "On band 20's own fight, Mindfulness's second rank ahead of Tidal Focus's last rank beats the plain walk beyond error, both factions; no other band changes.",
+      "reason": "On band 20's own fight, Mindfulness's second rank ahead of Tidal Focus's last rank beats the plain walk beyond error, both factions (round 11); Water Shield, which the rotation casts, taken as soon as it can be held (ahead of Tidal Focus's fourth rank) beats that beyond error at band 20 too, both factions (round 12); no other band changes. Mana Tide Totem (the 15-point row), which the rotation casts, is held next: at band 30 it takes Tidal Mastery's point and gains about 1.9% effective healing, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); Nature's Swiftness and Riptide at 30 and 40 measured lower or under 1% and are not reserved.",
       "first": [
         {
           "talent": "Mindfulness",
           "rank": 2
+        },
+        {
+          "talent": "Water Shield",
+          "rank": 1
+        },
+        {
+          "talent": "Mana Tide Totem",
+          "rank": 1
+        }
+      ]
+    },
+    "warlock-affliction": {
+      "reason": "The rotation casts Siphon Life (the 20-point row, learned at 30). A level 30 warlock's 21 points hold it, but the plain walk spends the last one on Pandemic. Taking Siphon Life as soon as it fits gains about 1.3% at band 30, beyond error at seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Wrack, the walk's own capstone from 40, is held after it so the reservation never costs it.",
+      "first": [
+        {
+          "talent": "Siphon Life",
+          "rank": 1
+        },
+        {
+          "talent": "Wrack",
+          "rank": 1
+        }
+      ]
+    },
+    "warlock-demonology": {
+      "reason": "The rotation casts Soul Link before the pull (the 20-point row, behind Demonic Sacrifice). A level 30 warlock's 21 points hold it, but the plain walk spends the last one on Decimation's second rank, which does nothing before Soul Fire at 48. Taking Soul Link as soon as it fits gains about 2.3% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Demonic Sacrifice is not reserved: the rotation never casts it without Demonic Pact, and at 20 it could only replace Demonic Aegis, which the engine does not model; the walk reaches it on its own by 30.",
+      "first": [
+        {
+          "talent": "Soul Link",
+          "rank": 1
+        }
+      ]
+    },
+    "warrior-arms": {
+      "reason": "The rotation casts Mortal Strike (the 30-point row, learned at 40, behind Sweeping Strikes). A level 40 warrior's 31 points hold it, but the plain walk spends the last one on Weaponmaster. Taking Mortal Strike as soon as it fits gains about 20% at band 40, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane).",
+      "first": [
+        {
+          "talent": "Mortal Strike",
+          "rank": 1
+        }
+      ]
+    },
+    "warrior-fury": {
+      "reason": "The rotation casts Death Wish (the 20-point row). A level 30 warrior's 21 points hold it, but the plain walk spends the last one on Enrage. Taking Death Wish as soon as it fits gains about 3.8% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Bloodthirst, the walk's own capstone from 40, is held after it so the reservation never costs it.",
+      "first": [
+        {
+          "talent": "Death Wish",
+          "rank": 1
+        },
+        {
+          "talent": "Bloodthirst",
+          "rank": 1
         }
       ]
     }

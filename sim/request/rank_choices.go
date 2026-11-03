@@ -11,7 +11,9 @@ package request
 // rewrite adds a map lookup per ranked id and nothing else to a /sim run.
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"slices"
 	"sync"
@@ -34,17 +36,27 @@ type rankChoicesFile = rankchoices.File
 // FromLevel.
 type rankChoices map[int32][]RankChoiceRow
 
-// forPreset is c with only the rows that apply under preset.
-func (c rankChoices) forPreset(preset string) rankChoices {
+// forRequest is c with only the rows that apply to a request simmed under
+// preset for a character of race (a slug of races).
+func (c rankChoices) forRequest(preset, race string) rankChoices {
 	out := make(rankChoices, len(c))
 	for id, rows := range c {
 		for _, row := range rows {
-			if row.Preset == "" || row.Preset == preset {
+			if appliesTo(row.Preset, preset) && racesInclude(row.Races, race) {
 				out[id] = append(out[id], row)
 			}
 		}
 	}
 	return out
+}
+
+// appliesTo reports whether a row keyed key ("" for every value) applies to value.
+func appliesTo(key, value string) bool { return key == "" || key == value }
+
+// racesInclude reports whether a row keyed to races (none for every race)
+// applies to race.
+func racesInclude(races []string, race string) bool {
+	return len(races) == 0 || slices.Contains(races, race)
 }
 
 // rankAt is the rank the row holding level chooses for id, if any.
@@ -61,7 +73,12 @@ func (c rankChoices) rankAt(id int32, level int) (int, bool) {
 // refusing a duplicate authored id, an empty row or two rows that overlap.
 func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 	var file rankChoicesFile
-	if err := json.Unmarshal(b, &file); err != nil {
+	dec := json.NewDecoder(bytes.NewReader(b))
+	// Strict: a key the table does not define (the deleted "faction" key, a
+	// typo of "races") fails here rather than silently applying a row to
+	// every race.
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&file); err != nil {
 		return nil, fmt.Errorf("rank choices: the table is not readable: %w", err)
 	}
 	out := make(map[string]rankChoices, len(file.Specs))
@@ -77,11 +94,16 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 				if row.Preset != "" && row.Preset != BarePreset && row.Preset != RaidPreset {
 					return nil, fmt.Errorf("%w: rank choices: %s %d names preset %q", ErrUnknownPreset, spec, sp.Authored, row.Preset)
 				}
+				if err := checkRowRaces(row.Races); err != nil {
+					return nil, fmt.Errorf("rank choices: %s %d from level %d: %w", spec, sp.Authored, row.FromLevel, err)
+				}
 				if row.ToLevel < row.FromLevel {
 					return nil, fmt.Errorf("rank choices: %s %d has a row from level %d to %d", spec, sp.Authored, row.FromLevel, row.ToLevel)
 				}
-				if i > 0 && row.FromLevel <= rows[i-1].ToLevel && overlapPresets(row, rows[i-1]) {
-					return nil, fmt.Errorf("rank choices: %s %d has two rows at level %d", spec, sp.Authored, row.FromLevel)
+				for _, prev := range rows[:i] {
+					if row.FromLevel <= prev.ToLevel && overlap(row, prev) {
+						return nil, fmt.Errorf("rank choices: %s %d has two rows at level %d", spec, sp.Authored, row.FromLevel)
+					}
 				}
 			}
 			bySpell[sp.Authored] = rows
@@ -91,24 +113,53 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 	return out, nil
 }
 
-// overlapPresets reports whether two rows can apply to the same request.
-func overlapPresets(a, b RankChoiceRow) bool {
-	return a.Preset == "" || b.Preset == "" || a.Preset == b.Preset
+// checkRowRaces refuses a row's race key unless it is absent (every race) or
+// names known race slugs, each once.
+func checkRowRaces(rowRaces []string) error {
+	if rowRaces != nil && len(rowRaces) == 0 {
+		return errors.New("a row's races name no race; leave the key out for every race")
+	}
+	for i, race := range rowRaces {
+		if _, ok := races[race]; !ok {
+			return fmt.Errorf("%w: %q", ErrUnknownRace, race)
+		}
+		if slices.Contains(rowRaces[:i], race) {
+			return fmt.Errorf("a row names %q twice", race)
+		}
+	}
+	return nil
+}
+
+// overlap reports whether two rows can apply to the same request: their
+// presets and their races both meet.
+func overlap(a, b RankChoiceRow) bool {
+	return keysMeet(a.Preset, b.Preset) && racesMeet(a.Races, b.Races)
+}
+
+// keysMeet reports whether two rows' keys ("" for every value) share a value.
+func keysMeet(a, b string) bool { return a == "" || b == "" || a == b }
+
+// racesMeet reports whether two rows' race keys (none for every race) share a race.
+func racesMeet(a, b []string) bool {
+	if len(a) == 0 || len(b) == 0 {
+		return true
+	}
+	return slices.ContainsFunc(a, func(race string) bool { return slices.Contains(b, race) })
 }
 
 var embeddedRankChoices = sync.OnceValues(func() (map[string]rankChoices, error) {
 	return parseRankChoices(rankChoicesJSON)
 })
 
-// specRankChoices is spec's rows under preset from the embedded table; none
-// when the spec has no row (or the embed is unreadable, which
+// specRankChoices is spec's rows under preset for race from the embedded
+// table; none when the spec has no row (or the embed is unreadable, which
 // TestEmbeddedRankChoicesMatchCurated fails on).
-func specRankChoices(spec, preset string) rankChoices {
+func specRankChoices(spec, preset, race string) rankChoices {
 	all, err := embeddedRankChoices()
 	if err != nil {
 		return nil
 	}
-	return all[spec].forPreset(preset)
+	return all[spec].forRequest(preset, race)
 }
 
 // rankPreset is the preset a request's rank choices follow: the one it

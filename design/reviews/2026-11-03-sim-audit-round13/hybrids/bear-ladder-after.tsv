@@ -1,0 +1,12 @@
+20	horde	1	after	 damage taken /s = 105.7   chance of death = 99.9%   threat /s = 61.4  
+20	horde	50001	after	 damage taken /s = 105.7   chance of death = 99.8%   threat /s = 61.4  
+20	alliance	1	after	 damage taken /s = 103.9   chance of death = 99.6%   threat /s = 60.2  
+20	alliance	50001	after	 damage taken /s = 103.9   chance of death = 99.6%   threat /s = 60.2  
+30	horde	1	after	 damage taken /s = 215.9   chance of death = 100.0%   threat /s = 109.0  
+30	horde	50001	after	 damage taken /s = 216.3   chance of death = 100.0%   threat /s = 109.0  
+30	alliance	1	after	 damage taken /s = 212.9   chance of death = 100.0%   threat /s = 109.5  
+30	alliance	50001	after	 damage taken /s = 212.9   chance of death = 100.0%   threat /s = 109.4  
+40	horde	1	after	 damage taken /s = 316.5   chance of death = 100.0%   threat /s = 209.1  
+40	horde	50001	after	 damage taken /s = 316.9   chance of death = 100.0%   threat /s = 209.0  
+40	alliance	1	after	 damage taken /s = 310.8   chance of death = 100.0%   threat /s = 210.9  
+40	alliance	50001	after	 damage taken /s = 311.1   chance of death = 100.0%   threat /s = 210.9  

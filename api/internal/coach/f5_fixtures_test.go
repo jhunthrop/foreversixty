@@ -35,6 +35,18 @@ func protSunderRank(t *testing.T, level int64, rank int, casts int) Input {
 	return in
 }
 
+// sunderRank3ID is Sunder Armor rank 3's spell id in the Protection warrior's tables.
+func sunderRank3ID(t *testing.T) int64 {
+	t.Helper()
+	for _, r := range protInput(t).Tables.Trainable["Sunder Armor"] {
+		if r.Rank == 3 {
+			return r.ID
+		}
+	}
+	t.Fatal("no Sunder Armor rank 3")
+	return 0
+}
+
 // withDownrank is in with family listed as a deliberate downrank.
 func withDownrank(in Input, family string) Input {
 	in.Tables.Rules.Downranks = append(slices.Clone(in.Tables.Rules.Downranks),

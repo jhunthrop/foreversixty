@@ -128,7 +128,7 @@
         ]
       },
       {
-        "text": "Holy Strike is on a 12 second cooldown and had reached rank 5 by level 38 in the demo; Seal of Fury's absorb is worth about half the Holy damage it adds, and Judging it taunts for 4 seconds at 10 yards where every other taunt is 5.",
+        "text": "Holy Strike is on a 10 second cooldown and reaches rank 5 at level 36; Seal of Fury's absorb is worth about half the Holy damage it adds, and Judging it taunts for 3 seconds at 10 yards.",
         "sources": [
           {
             "label": "Blizzard, Deep Dive panel recap",
@@ -143,7 +143,7 @@
         ]
       },
       {
-        "text": "Holy gains Improved Holy Strike, Voice of Truth, Reverence, Infusion of Light and Light's Vigil; Protection gains Improved Seal of Fury, Shield Specialization, Swift Judgement, Templar's Bulwark and Iron Creed; Retribution gains Vindication, Sacred Arbiter, Champion of the Light, Instrument of Law and Twist of Light.",
+        "text": "Holy gains Reverence, Infusion of Light and Light's Vigil; Protection gains Shield Specialization, Swift Judgement, Templar's Bulwark and Iron Creed; Retribution gains Sacred Arbiter and Champion of the Light.",
         "sources": [
           {
             "label": "Blizzard, Deep Dive panel recap",
@@ -278,7 +278,7 @@
         ]
       },
       {
-        "text": "New talents include Mutilate and Venom in Assassination, Restless Blades in Combat and Cutthroat in Subtlety; Weapon Expertise now reduces enemy dodge and parry chance instead of granting weapon skill.",
+        "text": "New talents include Mutilate and Venom in Assassination and Cutthroat in Subtlety; Weapon Expertise now reduces enemy dodge and parry chance instead of granting weapon skill.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",
@@ -408,7 +408,7 @@
         ]
       },
       {
-        "text": "Lightning Bolt and Chain Lightning cast half a second faster than Classic before any talent, and Ghost Wolf's base cast is 2 seconds with Improved Ghost Wolf making it instant and usable indoors at 2 of 2.",
+        "text": "Lightning Bolt and Chain Lightning cast half a second faster than Classic before any talent, and Ghost Wolf's base cast is 3 seconds with Improved Ghost Wolf making it instant and usable indoors at 2 of 2.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
@@ -428,7 +428,7 @@
         ]
       },
       {
-        "text": "New talents include Lava Burst in Elemental, Maelstrom Weapon and Spirit Weapons in Enhancement and Water Shield in Restoration; Stormstrike now increases the Nature damage you deal rather than amplifying the next two Nature sources on the target.",
+        "text": "New talents include Lava Burst in Elemental, Maelstrom Weapon and Spirit Weapons in Enhancement and Water Shield in Restoration; Stormstrike now makes your own next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder, rather than the next two Nature hits from anyone.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",
@@ -483,7 +483,7 @@
         ]
       },
       {
-        "text": "Two new abilities appear in the demo: Frostfire Bolt, which counts as both Fire and Frost and is named by four talents, and Comprehend Scroll, seen on a Skyborne Mage.",
+        "text": "Two new abilities appear in the demo: Frostfire Bolt, which counts as both Fire and Frost and is named by three talents, and Comprehend Scroll, seen on a Skyborne Mage.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
@@ -493,7 +493,7 @@
         ]
       },
       {
-        "text": "Mage has the fewest new talents and the most changed of any class in one tally of the demo trees; Arcane Blast and Hot Streak are new and Improved Counterspell's silence is guaranteed but short at rank 1.",
+        "text": "Mage has the fewest new talents and the most changed of any class in one tally of the demo trees; Arcane Blast and Heating Up are new and Improved Counterspell's silence is guaranteed but short at rank 1.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",
@@ -538,7 +538,7 @@
         ]
       },
       {
-        "text": "Banes and Curses are separate categories, so one of each can run on a target: Curse of Agony is Bane of Agony and Curse of Doom is Bane of Doom. Enslave Demon is renamed Subjugate Demon, and a new Incubus summon is named by four Demonology talents.",
+        "text": "Banes and Curses are separate categories, so one of each can run on a target: Curse of Agony is Bane of Agony and Curse of Doom is Bane of Doom. Enslave Demon is renamed Subjugate Demon, and a new Incubus summon stands beside the Succubus in eight Demonology talents.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
@@ -548,7 +548,7 @@
         ]
       },
       {
-        "text": "New talents include Pandemic, Drain Hope and Malevolence, which lets damage-over-time effects critically strike; Warlock has the largest tree rework of any class in one tally of the demo trees.",
+        "text": "New talents include Malevolence (5% Shadow crit), Pandemic, Wrack, Decimation, Demonic Pact, Shadow and Flame, Incinerate and Bane of Havoc; Warlock has the largest tree rework of any class in one tally of the demo trees.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",
@@ -593,17 +593,22 @@
         ]
       },
       {
-        "text": "Omen of Clarity and Nature's Grasp are trainable rather than talents; Revive is a new 10 second out-of-combat resurrection, Lacerate is in as a baseline Bear bleed learned after level 30, and Cure Poison is gone.",
+        "text": "Omen of Clarity and Nature's Grasp are trainable rather than talents; Revive is a new 10 second out-of-combat resurrection, Lacerate is a Bear bleed on the Feral tree's 15-point row, learned at 25.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
             "url": "https://talentsforever.com/data.json",
             "kind": "community"
+          },
+          {
+            "label": "Wowhead Forever, Lacerate rank 1 (talent, requires level 25)",
+            "url": "https://www.wowhead.com/forever/spell=1328617/lacerate",
+            "kind": "community"
           }
         ]
       },
       {
-        "text": "New talents include Genesis in Balance, Nature's Majesty and Berserk in Feral; Feral Charge gains a separate Cat version and Primal Fury also grants combo points on Cat critical strikes.",
+        "text": "New talents include Genesis and Nature's Majesty in Balance and Shifting Power, Predatory Discipline, Rend and Tear and Natural Instinct in Feral; Blood Frenzy also adds combo points on Cat builder crits.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",

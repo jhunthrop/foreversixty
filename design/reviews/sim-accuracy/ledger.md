@@ -15,6 +15,8 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 9 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round9/ (warlock, casters, physical, hybrids, healers, auras, items, crit, ranks, ranker, platform, integration) | 67 fixed (warlock 1, casters 4, physical 10, hybrids 6, healers 6, auras 11, items 5, crit 8, ranks 3, ranker 6, platform 3, integrator 4) | 4d3129cae | no |
 | 10 | 2026-11-02 | design/reviews/2026-11-03-sim-audit-round10/ (warlock, casters, physical, hybrids, healers, healprofile, ranks, crit, auras, items, ranker, platform, integration) | 88 fixed (warlock 3, casters 5, physical 6, hybrids 5, healers 11, healprofile 3, ranks 3, crit 5, auras 3, items 30, ranker 4, platform 9, integrator 1) | cfcb76e80 | no |
 | 11 | 2026-11-02 | design/reviews/2026-11-03-sim-audit-round11/ (regression, warlock, casters, physical, hybrids, healers, healprofile, crit, auras, items, ranks, ranker, platform, integration) | 55 fixed (regression 5, warlock 3, casters 6, physical 4, hybrids 1, crit 5, items 6, auras 5, healers 4, ranks 2, ranker 1, platform 9, integrator 1, plus 3 side effects of round-11 fixes caught before merge); by origin: 6 caused by round 9, 6 by round 10, 1 mixed, 39 older; plus 11 healprofile rows that follow ruling 1 | 47df4a89d (client 1.60.1.70753) | no |
+| 12 | 2026-11-03 | design/reviews/2026-11-03-sim-audit-round12/ (regmelee, regcast, warlock, casters, physical, hybrids, healers, healprofile, auras, itemscrit, holypower, ranks, trainables, guides, platform, integration) | 69 fixed (guides 11, regmelee 7, ranks 6, auras 5, healers 5, healprofile 5, hybrids 5, trainables 5, physical 4, casters 4, itemscrit 3, platform 3, holypower 2, warlock 1, regcast 1, coordinator 2); by origin: 23 caused by the landing (11 of them guide prose), 1 by round 11, 2 by round 10, 1 by round 9, 37 older, 5 new data | not pinned: fork int/r12 (batch landing pending) | no |
+| 13 | 2026-11-03 | design/reviews/2026-11-03-sim-audit-round13/ (core, regmelee, regcast, warlock, casters, physical, hybrids, healers, auras, ranks, trainables, guides, platform, hotfix, walk, review, integration) | 67 fixed (guides 25, walk 10, hotfix 6, casters 5, ranks 5, healers 4, platform 3, trainables 2, hybrids 2, physical 2, auras 2, regmelee 1); by origin: 6 caused by round 12, 10 by the landing, 1 by round 9, 44 older, 6 new data (5 from the 2026-11-03 hotfix push) | not pinned: fork int/r13 on int/r12 (batch landing pending) | no |
 
 ## Loop structure
 
@@ -49,6 +51,97 @@ Picks and deltas that only a full re-rank can show. Each row is checked in the v
 | MR11 | melee set procs on auto-attacks only | the cat, rogues, Retribution, Arms and Fury at the bands that wear Defias, Shadowcraft, Valor or Bloodmail | proc flags from the client | round 11 items S1 |
 | MR12 | round 10's carry-overs | Frost after Fingers of Frost; healer trinkets and relics; the Undead race picks | listed at round 10 | round 10 |
 | MR13 | the refresh's data run | run fetch with the item hotfix layer; do NOT record a 165-item drop; `--allow-shrink` is still needed for the wowhead-stats gate | the 165 ids live in the 70532 and 70707 item pushes | round 11 items, ranker |
+| MR14 | hunter gear without spell power; Juju Might in the bow sets | Beast Mastery, Marksmanship, every band | Arcane Shot, Serpent Sting and Volley take no spell power (E 05b72a3b5); Juju Might gives ranged attack power (S 0206582a6) | round 12 physical, itemscrit |
+| MR15 | paladin raid picks with Elixir of Holy Power | Retribution, Protection paladin, raid 60 (picks, weights, tiers) | new consumable in the preset (E 46be83bcd, S 408d35cde) | round 12 holypower |
+| MR16 | the new band builds | cat bands 50 and 60 (leveling build) and raid 60 (c0f5432b2's raid build); Protection paladin band 30 (Holy Shield); Enhancement on b2e4a3bc5's builds | builds change; the published entries carry the old ones | round 12 hybrids |
+| MR17 | sub-60 healer picks on the logged split | the five healers, bands 20 to 50; Restoration shaman 20 and Holy paladin 40 above all; the druid idol slot at 60 (Idol of Swiftness) | tank share from beta trash logs; rank rows; Water Shield build; idol registered | round 12 healprofile, healers |
+| MR18 | Fury and Frost talents in the BiS files | Fury bare and raid 60; mage-frost bare bands | Fury's build moves dead points; Frost's leveling build kept on audit | round 12 regmelee, casters |
+| MR19 | haste scale factors, and guide builds against the stale published builds | every spec's haste; Holy, Discipline, Restoration druid builds | dps-per-point band preset and the core cast-timing fix; the published builds predate the guides | round 12 casters, healers |
+| MR20 | hunters on the 2026-11-03 hotfix push | Beast Mastery, Marksmanship, Survival, every band; Marksmanship's Lone Wolf raid build | Aimed Shot, Arcane Shot, Serpent Sting, Sniper Shot, Aspect of the Hawk, Trueshot Aura raised (single source: the push; Wowhead still shows the old text) | round 13 hotfix |
+| MR21 | healer picks after the rotation fixes; the druid's raid scale | Restoration druid (coverage about 95%: owner retune of 1.85), Holy priest | Rejuvenation ranks and pacing, Prayer of Mending whenever ready | round 13 healers |
+| MR22 | the walk's band builds | Arms, Fury, Survival, Assassination, Subtlety, Demonology, Affliction, Fire, Restoration shaman, the bear; bands 20 to 40 | cast talents that fit are now taken | round 13 walk, hybrids |
+| MR23 | Subtlety and Shadow | Subtlety picks and weights (armor ignore as a share); Shadow with Vampiric Embrace | E b08a1c83c; Vampiric Embrace upkeep | round 13 physical, healers |
+| MR24 | the round's guide builds | Elemental bare 50/60 (Tidal Focus), Balance bare 30 to 60, Affliction raid (Improved Bane of Agony), Fury raid (Raging Blows) | owner rulings 1 and 2; adoption rule | round 13 casters, warlock, regmelee |
+| MR25 | dps-per-point and haste weights | every spec | random regen phase; Elemental's Lava Burst tie | round 13 core, casters |
+
+## Round 13 at a glance
+
+Client 1.60.1.70753, built on round 12's unlanded heads (site int/r12 93c5d2510, fork int/r12 076a5a517). Nothing is pinned or pushed: site `int/r13` and fork `int/r13` wait for the batch landing (integration.md "For the integrator").
+
+The owner's rulings this round:
+- **Tidal Focus** for Elemental at bare 50/60: adopted (+5.7 to +6.1%).
+- **Improved Bane of Agony** for Affliction raid: adopted on the Shadow-build precedent (+0.72% on the guide build).
+- **Rank rows keyed by race:** built end to end; the faction key is deleted.
+- **The mana regen tick's phase is random per fight:** done; every spec within ±0.3%. Energy has no tick in Forever.
+- **Arcane Shot spell power (E 05b72a3b5): kept, pending the owner's in-game tooltip check.**
+- **The level-60 heal split:** the owner's Warcraft Logs key arrived mid-round. The fetcher (vanilla.warcraftlogs.com MC/Onyxia/BWL as a provisional proxy) stopped when gcloud's login expired; 60 stays 0.659 until `gcloud auth login`.
+
+**The 2026-11-03 hotfix push** (wago, 14:14 UTC; the committed hotfix-push.json from 11-02 is empty) buffs hunters: Aimed Shot 166 to 350, Arcane Shot 217 to 280, Serpent Sting 83 to 100 a tick, Sniper Shot 295 to 590, Aspect of the Hawk rank 6 55 to 110, Trueshot Aura 50 to 100. **Single source: the push itself.** Wowhead's Forever tooltips still show the old text (checked 2026-11-03). Layering the push is the first regen step at the landing.
+
+67 bugs fixed:
+- **6 caused by round 12:** two guide fixes, the Lightwell row, two mobile-planner leftovers of the strip-order change, and the int/r12 merge that dropped four preset reasons. No round-12 sim fix caused a sim bug.
+- **10 caused by the landing**, all guide prose.
+- **51 newly found:** 44 older, 6 new data (5 from the hotfix push), 1 from round 9.
+
+26 are guide or landing copy; 41 are sim, data or tool bugs. Two lanes added mid-round found 16 (hotfix 6, walk 10).
+
+Fixed, by group (rows and evidence in each report):
+- **Hunters (hotfix 6):** the push's values; Aimed Shot on the shared cooldown; Marksmanship keeps Serpent Sting and raids with Lone Wolf.
+- **Leveling bands (walk 10, hybrids 1):** bands that left out a cast talent that fits (Arms 40 Mortal Strike, Survival 30, Assassination 30, Subtlety 20/30, Fury 30, Demonology 30, Fire 20, Restoration shaman 30, Affliction 30, the bear 30/40).
+- **Healers (4):** Restoration druid Rejuvenation ranks and pacing; Holy's Prayer of Mending; Shadow's Vampiric Embrace.
+- **Casters (5):** Elemental's Lava Burst tie and Searing Totem; Balance's Nature's Grace and pre-pull Wrath; Frostfire Bolt's speed.
+- **Physical (2), regmelee (1), hybrids (1):** Serrated Blades as a share of armor; Demoralizing Shout's threat; Fury's Raging Blows; Templar's Bulwark's gate.
+- **Ranks (5), trainables (2), platform (3), auras (2), guides (25):** race-keyed rows; auto-learned spells; illegal talent strings refused; the mobile planners; Read Leyline; guide facts.
+
+Before and after (raid preset, band 60, 10,000 iterations, seeds 1 and 50001, both factions):
+- **Restoration druid +12.0** (effective HPS), **Marksmanship +12.7 to +12.9**, **Beast Mastery +6.2 to +6.4**, **Holy priest +1.4 to +1.6**.
+- **Shadow -3.9 to -4.0** (Vampiric Embrace), **Subtlety -1.1**.
+- Balance +0.5; every other spec within ±0.2.
+- Below 60: Restoration druid bare 60 +40%, Holy bare 60 +22%, bear band 30 +41% (threat), Arms 40 +20%, Survival 30 +10%, Assassination 30 +8%, Elemental bare 50/60 +6%.
+
+Open going into round 14:
+- **Owner decisions:** Protection paladin band 20 Templar's Bulwark; same-instant ties in core (Discipline at exactly 0% haste); the Restoration druid's heal scale; the tank boss's attack power.
+- **Verify in game:** Arcane Shot's tooltip with spell power up; Era book ranks at a level-60 trainer; six Wowhead-baseline talents; Heart of the Lion; the push's values once Wowhead re-scrapes; gcloud reauth for the 60 split.
+- **Regression lane next round:** everything this round changed (the race key, the regen phase, the push's values, the walk rows, the healer rotations, the legality check).
+
+## Round 12 at a glance
+
+Client 1.60.1.70753, from the combined landing c6bdc855c (round 11 plus the launch-day guide lanes) and pin 2606bc05e. Nothing is pinned or pushed: site `int/r12` and fork `int/r12` wait for one batch landing (integration.md "For the integrator" lists the pin and the regen order).
+
+The owner's rulings this round:
+- **Rank rows are adopted beyond error.** The 1% bar is for builds. The six sub-1% rows stay; three rows held for missing 1% are adopted.
+- **A faction key on rank rows,** only where factions differ beyond error. Eight rows are keyed; every one turns on the published race (a race key is an open owner question).
+- **The heal split below 60 comes from beta trash logs.** The tank's share is the median share of group damage the tank took, about 0.68 at 20 to 50; 60 stays 0.659 until a level-60 log is readable. Line of sight stays out of the pull rule.
+
+69 bugs fixed:
+- **23 caused by the landing:** 11 guide prose, plus rotations, rank rows and builds.
+- **4 caused by earlier rounds:** 1 by round 11, 2 by round 10, 1 by round 9.
+- **37 older.**
+- **5 from new data:** Poised for rogues and cats, Primal Bite's removed rank, Command's demon row, Voice of Truth's move.
+
+The count rose from 55. Two new lanes (guides, trainables) found 16, and the landing caused 23. Earlier rounds' fixes caused only 4, down from 13.
+
+Fixed, by group (rows and evidence in each report):
+- **Regression (8).** The landing's pre-pull Bloodrage recast the raid's shout; Arms charged after Bloodrage; Arms swapped stance for an unlearned Recklessness; Improved Charge rage; Dire Bear Enrage armor; Fury's dead points; shout copy; the healing priest's Inner Fire during Lightwell.
+- **Negative haste explained (casters 4).** Evocation's lost tick; a cast ending on the global finished late; Inner Fire skipped under slowing; dps-per-point on raid ranks with bare gear.
+- **Physical (4) and hybrids (5).** Poised for rogues and the cat; Thunder Clap's raid debuff; missile speeds (hunters, wands, Hammer of Wrath, and the warlock lane's bolts); Arcane Shot without spell power; Primal Bite rank 3; Protection paladin band 30's Holy Shield; Shred note.
+- **Auras (5).** Windfury Totem ends with the totem; Blood Fury heals; Orc Command on demons and guardians.
+- **Healers (5) and healprofile (5).** Vampiric Embrace 20%; Idol of Swiftness; Reflection; Power Infusion's cost; the logged split, Discipline and Holy paladin rows, Restoration shaman 20's Water Shield.
+- **Items (5).** Juju Might back for bow hunters; consumable amounts; item haste once; Elixir of Holy Power for paladins.
+- **Ranks (6).** Rows the landing's rotations needed, faction rows, the Destruction Corruption row.
+- **Trainables (5), guides (11), platform (3), coordinator (2).** The pipeline agrees with the live tree (all five questioned spells are baseline); guide facts the client contradicts; talent strips in spend order; the weights headline; the coach's rank rule; guide cooldowns; the paladin landing.
+
+Before and after (raid preset, band 60, 10,000 iterations, seeds 1 and 50001, both factions):
+- **Protection paladin +2.2 to +2.3** (threat) and **Retribution +1.6**: Elixir of Holy Power.
+- **Marksmanship +1.0 to +1.1**: Juju Might.
+- **Beast Mastery -0.5**: Juju Might, less Arcane Shot's lost spell power.
+- Discipline and Holy +0.2 to +0.4; rogues +0.1 to +0.24; warlocks -0.03 to -0.44; the rest within 0.2.
+- Below 60: Protection paladin band 30 +38 to +40% (threat), Restoration shaman 20 +12 to +16%, Arms bare 30/40 +2.4 to +3.6%, Holy paladin 40 +2.8 to +3.1%.
+
+Open going into round 13:
+- **Owner decisions** (all answered in round 13): Tidal Focus at bare 50/60 (the reviewer would adopt it); a race key on rank rows; regen-tick phase randomisation; a warcraftlogs key for the level-60 split; Improved Bane of Agony under the Shadow-build precedent.
+- **Verify:** Arcane Shot's tooltip with spell power up, before launch; Bloodrage's in-combat flag; Prayer of Mending hops; Blood Fury heals; Lightwell and Binding Heal rank 1; the round-11 log list.
+- **Regression lane next round:** everything this round changed (Poised, faction rows, the split, travel times, the Holy Power elixir, the Arms opener).
 
 ## Round 11 at a glance
 

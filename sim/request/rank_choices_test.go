@@ -132,7 +132,7 @@ func TestRankChoicesFollowThePreset(t *testing.T) {
 		{BarePreset, 60, 2, true},
 		{RaidPreset, 60, 0, false},
 	} {
-		rank, ok := all["x"].forPreset(c.preset).rankAt(7, c.level)
+		rank, ok := all["x"].forRequest(c.preset, "orc").rankAt(7, c.level)
 		if ok != c.wantFound || rank != c.rank {
 			t.Errorf("%s at %d: rankAt = (%d, %v), want (%d, %v)", c.preset, c.level, rank, ok, c.rank, c.wantFound)
 		}
@@ -150,14 +150,14 @@ func TestRewriteAtSixtyTakesOnlyThePresetsRows(t *testing.T) {
 		t.Fatal(err)
 	}
 	choices := rankChoices{15207: {{FromLevel: 60, ToLevel: 60, Rank: 4, Preset: BarePreset}}}
-	bare, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forPreset(BarePreset))
+	bare, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forRequest(BarePreset, "orc"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !strings.Contains(string(bare), `"spellId":915`) || strings.Contains(string(bare), `"spellId":15207`) {
 		t.Error("bare 60 should cast Lightning Bolt rank 4 (915) in place of 15207")
 	}
-	raid, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forPreset(RaidPreset))
+	raid, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forRequest(RaidPreset, "orc"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -177,4 +177,111 @@ func TestBuildRefusesAnUnknownPreset(t *testing.T) {
 	if _, err := Build(req); !errors.Is(err, ErrUnknownPreset) {
 		t.Errorf("Build with preset %q: err = %v, want ErrUnknownPreset", req.Preset, err)
 	}
+}
+
+// A row may name races (owner ruling 3, round 13): it then applies only to a
+// character of one of them, where the races' best ranks differ beyond error. A
+// row with none applies to every race, and rows for different races may share a
+// band.
+func TestRankChoicesFollowTheRace(t *testing.T) {
+	all, err := parseRankChoices([]byte(`{"specs":{"x":[{"authored":7,"bands":[
+		{"from_level":50,"to_level":59,"rank":3},
+		{"from_level":60,"to_level":60,"rank":2,"preset":"bare","races":["gnome","troll"]},
+		{"from_level":60,"to_level":60,"rank":4,"preset":"bare","races":["undead"]}]}]}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		preset, race string
+		level, rank  int
+		wantFound    bool
+	}{
+		{BarePreset, "gnome", 55, 3, true},
+		{BarePreset, "undead", 55, 3, true},
+		{BarePreset, "gnome", 60, 2, true},
+		{BarePreset, "troll", 60, 2, true},
+		{BarePreset, "undead", 60, 4, true},
+		{BarePreset, "human", 60, 0, false},
+		{RaidPreset, "gnome", 60, 0, false},
+	} {
+		rank, ok := all["x"].forRequest(c.preset, c.race).rankAt(7, c.level)
+		if ok != c.wantFound || rank != c.rank {
+			t.Errorf("%s %s at %d: rankAt = (%d, %v), want (%d, %v)", c.preset, c.race, c.level, rank, ok, c.rank, c.wantFound)
+		}
+	}
+	for _, raw := range []string{
+		// an unknown race
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":60,"to_level":60,"rank":2,"preset":"bare","races":["murloc"]}]}]}}`,
+		// a race list that names no race
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":60,"to_level":60,"rank":2,"preset":"bare","races":[]}]}]}}`,
+		// a race named twice in one row
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":60,"to_level":60,"rank":2,"preset":"bare","races":["troll","troll"]}]}]}}`,
+		// two rows for one race
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":60,"to_level":60,"rank":2,"preset":"bare","races":["troll","orc"]},{"from_level":60,"to_level":60,"rank":3,"preset":"bare","races":["orc"]}]}]}}`,
+		// an every-race row beside a race's row
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":60,"to_level":60,"rank":2,"preset":"bare"},{"from_level":60,"to_level":60,"rank":3,"preset":"bare","races":["troll"]}]}]}}`,
+		// the faction key is gone: a row naming one is refused, not read as every race
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":60,"to_level":60,"rank":2,"preset":"bare","faction":"horde"}]}]}}`,
+	} {
+		if _, err := parseRankChoices([]byte(raw)); err == nil {
+			t.Errorf("accepted %s", raw)
+		}
+	}
+}
+
+// A race row names only races that can play the spec's class in Forever
+// (combos.json of the active build), so no row is dead weight.
+func TestRaceRankChoicesNameRacesOfTheClass(t *testing.T) {
+	var file rankChoicesFile
+	readJSON(t, curatedRankChoices, &file)
+	playable := playableRaces(t)
+	for spec, spells := range file.Specs {
+		class := specs.ByKey[spec].ClassSlug
+		for _, sp := range spells {
+			for _, row := range sp.Bands {
+				for _, race := range row.Races {
+					if !playable[class][race] {
+						t.Errorf("%s %s from %d: %s cannot be a %s", spec, sp.Spell, row.FromLevel, race, class)
+					}
+				}
+			}
+		}
+	}
+}
+
+// playableRaces is class slug -> race slug -> true for every race and class pair
+// the active build's combos.json allows.
+func playableRaces(t *testing.T) map[string]map[string]bool {
+	t.Helper()
+	dir := filepath.Join("..", "..", "data", "builds", activeBuild(t))
+	var races []struct {
+		ID   int    `json:"id"`
+		Slug string `json:"slug"`
+	}
+	var classes []struct {
+		ID   int    `json:"id"`
+		Slug string `json:"slug"`
+	}
+	var combos []struct {
+		Race  int `json:"race_id"`
+		Class int `json:"class_id"`
+	}
+	readJSON(t, filepath.Join(dir, "races.json"), &races)
+	readJSON(t, filepath.Join(dir, "classes.json"), &classes)
+	readJSON(t, filepath.Join(dir, "combos.json"), &combos)
+	raceSlug, classSlug := map[int]string{}, map[int]string{}
+	for _, r := range races {
+		raceSlug[r.ID] = r.Slug
+	}
+	for _, c := range classes {
+		classSlug[c.ID] = c.Slug
+	}
+	out := map[string]map[string]bool{}
+	for _, c := range combos {
+		if out[classSlug[c.Class]] == nil {
+			out[classSlug[c.Class]] = map[string]bool{}
+		}
+		out[classSlug[c.Class]][raceSlug[c.Race]] = true
+	}
+	return out
 }

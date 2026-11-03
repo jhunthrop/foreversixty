@@ -97,7 +97,7 @@ Adds and AoE: on two targets, put Bane of Havoc on the one that must die and spe
 
 ## Stat priority
 
-Spell power first. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Hit matters up to the cap shown above, and Suppression gives you 5% of it. Fire power is the better school stat, since Incinerate, Immolate and Conflagrate are most of your damage; Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need. Spirit only matters through Life Tap.
+Spell power first. Hit matters up to the cap shown above, and Suppression gives you 5% of it. Fire power is the better school stat, since Incinerate, Immolate and Conflagrate are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need. Spirit only matters through Life Tap.
 
 ## Best in slot
 

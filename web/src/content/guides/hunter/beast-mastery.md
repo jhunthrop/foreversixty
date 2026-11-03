@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70753:hunter:dwarf:5420001505001251/00523500014/0:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Beast Mastery Hunter in Forever: talents for leveling and raids, the shot priority, pet handling, stats, consumables and race picks.'
-updated: 2026-11-02
+updated: 2026-11-03
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -57,7 +57,7 @@ Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial 
 ### In a raid
 
 - **Role:** Ranged physical DPS with a pet
-- **Brings:** Heart of the Lion (10% stats and attack power for everyone near you), Trueshot Aura (50 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
+- **Brings:** Heart of the Lion (10% stats and attack power for everyone near you), Trueshot Aura (100 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
 
 ## Talents and builds
 
@@ -82,7 +82,7 @@ Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of 
 
 As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and Berserking or Blood Fury together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
-From there the fight is Multi-Shot every six seconds, Serpent Sting when it is about to drop, and Arcane Shot in the gaps while you have mana. Do not cast Aimed Shot again after the opener. It shares Multi-Shot's cooldown and its 2 second cast holds your auto shot, so it loses to Multi-Shot every time.
+From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. Multi-Shot on cooldown is fine. Aimed Shot on that cooldown is a small extra for a Beast Mastery hunter: if the cooldown comes up right after an auto shot fires, cast Aimed Shot, which hits about twice as hard since the November hotfix. Otherwise take Multi-Shot, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot while you have mana.
 
 Auto Shot does more damage than any button you press, so protect it:
 
@@ -90,7 +90,7 @@ Auto Shot does more damage than any button you press, so protect it:
 - Fire your instants right after an auto shot leaves, so they never push the next one back.
 - Stay outside 8 yards. Inside it you cannot shoot at all.
 
-When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Multi-Shot going. Drink a Major Mana Potion before you need it, not at 5%.
+When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed Shot and Multi-Shot going. Drink a Major Mana Potion before you need it, not at 5%.
 
 **The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Pets in Forever get no buffs from your raid, so the only way to make it stronger is your own gear. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
 
@@ -100,7 +100,7 @@ When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Multi-S
 
 There is no execute phase for a hunter: the priority holds to the end.
 
-**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up, and Scatter Shot (trained at 30) buys a few seconds against something loose in the back line.
+**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up. Freezing Trap takes care of anything loose in the back line.
 
 ## Stat priority
 

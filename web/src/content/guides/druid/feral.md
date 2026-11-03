@@ -3,7 +3,7 @@ title: Feral Druid in Forever
 classSlug: druid
 spec: feral
 role: dps
-build: 'FS1:1.60.1.70753:druid:night-elf:0/50212032123012123001/555023:'
+build: 'FS1:1.60.1.70753:druid:night-elf:01/50212032123012123001/535033:'
 raidBuild: 'FS1:1.60.1.70753:druid:night-elf:05002/50230032023011125001/05503:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Strength, Agility, Critical strike, Attack power, Feral attack power, Hit, Melee haste]
@@ -55,19 +55,19 @@ The cat opens with Ravage, keeps Rip on the boss, Shreds from behind and turns m
 
 ## Talents and builds
 
-The leveling build takes the points a questing cat wants first: Feral Charge to close on runners, Brutal Impact for a longer Pounce stun. At 60, respec into the raid build. It beats the leveling build even without raid buffs, because it finishes Rend and Tear and moves the filler points into Genesis and Nature's Majesty.
+The leveling build takes the points a questing cat wants first: Feral Charge to close on runners, Brutal Impact for a longer Pounce stun. From 50, the leveling build puts one point in Balance for Genesis and, in Restoration, takes three points of Heart of the Wild plus the third point of Natural Shapeshifter. Together they out-damage the last two points of Heart of the Wild. At 60, respec into the raid build. It beats the leveling build even without raid buffs, because it finishes Rend and Tear and moves the filler points into Genesis and Nature's Majesty.
 
 - **Shredding Attacks** (3 points): Shred drops to 42 energy, and Shred is most of your globals.
 - **Savage Fury** (2 points): 10% more damage on Shred, Claw and Rake.
 - **Rend and Tear**: 2% more melee damage a point against a bleeding target, 10% at 5. Rip keeps the boss bleeding, so it is on for the whole fight after your first finisher.
-- **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and a bonus combo point on every builder crit. Crit is what makes your 5 points come quickly.
+- **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and a bonus combo point on builder crits (every time with both points while leveling, a 50% chance with the raid build's single point). Crit is what makes your 5 points come quickly.
 - **Predatory Strikes** (3 points): 150% of your level as attack power in Cat Form.
 - **Predatory Discipline** (1 point): Ferocious Bite keeps the bonus damage from your extra energy but no longer spends it. It also opens Shifting Power.
 - **Shifting Power** (1 point): the capstone, 40 energy for mana on an 8 second cooldown. It replaces Tiger's Fury, and without it the cat runs out of things to press.
 - **Leader of the Pack** (1 point): the raid's crit aura. Take it in every build.
 - **Heart of the Wild** and **Naturalist**: 10% more Strength in Cat Form and 10% more damage of every kind. These are why a cat goes into Restoration at all.
 
-The raid build skips Furor. In Forever it no longer hands you energy on a shift; it only keeps your bar when you leave Cat Form. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. The raid build's Balance points are Genesis, 10% more periodic damage (a bigger Rip), and Nature's Majesty, 4% crit. Natural Shapeshifter (2 points leveling, 3 in the raid build) makes Shifting Power cheaper, which is mana you spend every 8 seconds. Primal Bite and Lacerate are bear buttons, and Brutal Impact and Feral Charge are for questing.
+The raid build skips Furor. In Forever it no longer hands you energy on a shift; it only keeps your bar when you leave Cat Form. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. The raid build's Balance points are Genesis, 10% more periodic damage (a bigger Rip), and Nature's Majesty, 4% crit. Natural Shapeshifter (3 points in both builds) makes Shifting Power cheaper, which is mana you spend every 8 seconds. Primal Bite and Lacerate are bear buttons, and Brutal Impact and Feral Charge are for questing.
 
 ## Rotation and priority
 
@@ -109,4 +109,4 @@ Skinning and Leatherworking is the classic cat pair: leather is your armor, and 
 
 ## Leveling
 
-Cat Form arrives at 20. Before that, play as a caster: Moonfire, then Wrath, and Bear Form from 10 when a pull gets heavy. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. Open from Prowl with Ravage from behind once you learn it at 32, or Pounce from 36 when you cannot get behind. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Take Feral Charge early. Respec into the raid build at 60.
+Cat Form arrives at 20. Before that, play as a caster: Moonfire, then Wrath, and Bear Form from 10 when a pull gets heavy. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind once Shredding Attacks has it at 42 energy; before that, Claw buys more damage for its energy. Open from Prowl with Ravage from behind once you learn it at 32, or Pounce from 36 when you cannot get behind. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Take Feral Charge early. Respec into the raid build at 60.

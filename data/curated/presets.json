@@ -35,7 +35,7 @@
         {
           "id": "divine_spirit",
           "label": "Divine Spirit",
-          "reason": "Spirit, a Discipline talent a Phase 1 raid priest takes."
+          "reason": "Spirit from a raid priest. In Forever it is a trainer spell (SkillLineAbility, Discipline, ranks at 30, 40, 50 and 60), not a talent, so every priest brings it."
         },
         {
           "id": "blessing_of_might",
@@ -55,12 +55,12 @@
         {
           "id": "trueshot_aura",
           "label": "Trueshot Aura",
-          "reason": "Attack power from a raid hunter, a Marksmanship talent that exists in the live tree."
+          "reason": "Ranged attack power only (aura 124, 50 at 60; Forever dropped the melee half) from a raid hunter, a Marksmanship talent that exists in the live tree."
         },
         {
           "id": "heart_of_the_lion",
           "label": "Heart of the Lion",
-          "reason": "Any Phase 1 raid has a hunter. The client's area aura (spell 409583, sent every 14 seconds by the hunter's own Heart of the Lion, 409580) gives every ally within 100 yards, the whole raid and not only the party, 10% to every stat and 40 plus 4 per level above 1 melee and ranged attack power (276 at 60). A hunter in the raid sets it anyway; the entry is what every other class receives."
+          "reason": "Any Phase 1 raid has a hunter. The client's area aura (spell 409583, sent every 14 seconds by the hunter's own Heart of the Lion, 409580) gives every ally within 100 yards, the whole raid and not only the party, 10% to every stat and 40 plus 4 per level above 1 melee and ranged attack power (280 at 60: 40 + 4 x 60, Wowhead Forever's tooltip reads 280). A hunter in the raid sets it anyway; the entry is what every other class receives."
         },
         {
           "id": "leader_of_the_pack",
@@ -80,7 +80,7 @@
         {
           "id": "windfury_totem",
           "label": "Windfury Totem",
-          "reason": "In the 1.60 client the totem (spells 8512, 10613, 10614) is an aura on every party member that gives each main-hand hit a 20% chance of one extra attack with 246 extra attack power at rank 3, not a weapon enchant (only the shaman's own Windfury Weapon is), so it stacks with a poison or a sharpening stone on the weapon. A shaman with Windfury Weapon on the main hand does not receive it."
+          "reason": "In the 1.60 client the totem (spells 8512, 10613, 10614) is an aura on every party member that gives each main-hand hit a 20% chance of one extra attack with 246 extra attack power at rank 3, not a weapon enchant (only the shaman's own Windfury Weapon is), so it stacks with a poison or a sharpening stone on the weapon. A shaman with Windfury Weapon on the main hand does not receive it. The totem's aura (8515, 10609, 10612) has no duration: it ends with the totem, with none of vanilla's 10-second linger."
         },
         {
           "id": "mana_spring_totem:improved",
@@ -294,6 +294,11 @@
                 "id": "food_poached_sunscale_salmon",
                 "label": "Poached Sunscale Salmon",
                 "reason": "Agility user's food: 40 attack power and 40 ranged attack power while well fed (item 13932, Well Fed 1249519; Mightfish Steak 13934 is the same at 45); client level 35. It measured 0.2 to 0.8% ahead of Grilled Squid (1% critical strike in Forever) for the rogue and hunter specs (round 9)."
+              },
+              {
+                "id": "juju_might",
+                "label": "Juju Might",
+                "reason": "40 attack power and 40 ranged attack power for every hunter: Forever's Juju Might (spell 16329) carries a second effect, aura 124 ranged attack power 40, beside Era's aura 99 melee attack power 40, so a bow hunter gains from it too (round 12). It shares the engine's attack-power slot with Winterfall Firewater and is the stronger of the two."
               }
             ]
           },
@@ -422,12 +427,7 @@
             {
               "id": "juju_power",
               "label": "Juju Power",
-              "reason": "Strength: 30 (spell 16323), for the melee Survival hunter only: Strength gives a hunter melee attack power and no ranged attack power, so a bow hunter (Beast Mastery, Marksmanship) gains nothing from it. Elixir of Giants is item 9206 in the Forever client, renamed Elixir of Greater Strength, at 25 Strength (spell 11405), so Juju Power is the stronger of the engine's two strength elixirs (round 10)."
-            },
-            {
-              "id": "juju_might",
-              "label": "Juju Might",
-              "reason": "Melee attack power, for the melee Survival hunter only: it does not raise ranged attack power, so a bow hunter gains nothing from it. It shares the engine's attack-power slot with Winterfall Firewater and is the stronger of the two."
+              "reason": "Strength: 30 (spell 16323), for the melee Survival hunter only: Strength gives a hunter melee attack power and no ranged attack power, so a bow hunter (Beast Mastery, Marksmanship) gains nothing from it. Elixir of Giants is item 9206 in the Forever client, renamed Elixir of Greater Strength, at 25 Strength (spell 11405), so Juju Power is the stronger of the engine's two strength elixirs (round 10). Juju Might comes from the hunter group."
             }
           ],
           "druid-restoration": [
@@ -542,6 +542,11 @@
           ],
           "paladin-protection": [
             {
+              "id": "elixir_of_holy_power",
+              "label": "Elixir of Holy Power",
+              "reason": "40 Holy spell damage for 30 minutes (item 21546, spell 1310077, aura 13 on the Holy school): Forever's rework of the Elixir of Greater Firepower, client level 40. Recipe 21547 (Alchemy 250) drops from the Dark Iron Taskmasters and Slavers of Searing Gorge. No other elixir gives Holy damage, so it costs no other slot. A paladin tank's threat is Holy spell damage: it measured about 2.2% more threat (round 12)."
+            },
+            {
               "id": "major_spellblasting_potion",
               "label": "Major Spellblasting Potion",
               "reason": "47 spell damage for 30 seconds (item 250937, spell 1251932), in the potion category, so it shares the two-minute timer with a mana potion; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). A paladin tank's threat is Holy spell damage: it measured about 0.9% more threat than Major Mana Potion (round 10); below level 55 the mana potion holds the slot."
@@ -619,6 +624,11 @@
             }
           ],
           "paladin-retribution": [
+            {
+              "id": "elixir_of_holy_power",
+              "label": "Elixir of Holy Power",
+              "reason": "40 Holy spell damage for 30 minutes (item 21546, spell 1310077, aura 13 on the Holy school): Forever's rework of the Elixir of Greater Firepower, client level 40. Recipe 21547 (Alchemy 250) drops from the Dark Iron Taskmasters and Slavers of Searing Gorge. No other elixir gives Holy damage, so it costs no other slot. Seal of Command, its Judgement, Consecration and Hammer of Wrath are Holy: it measured about 1.6% more DPS (round 12)."
+            },
             {
               "id": "food_smoked_desert_dumpling",
               "label": "Smoked Desert Dumplings",

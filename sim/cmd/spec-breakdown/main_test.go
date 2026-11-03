@@ -201,11 +201,11 @@ func TestLoadRotation(t *testing.T) {
 	badProto := filepath.Join(dir, "badproto.json")
 	writeFile(t, badProto, `{"rotation":{"noSuchField":1}}`)
 
-	rot, err := loadRotation(valid, "rogue-combat", "rogue", "raid", 60)
+	rot, err := loadRotation(valid, "rogue-combat", "rogue", "raid", "human", 60)
 	if err != nil || len(rot.GetPriorityList()) != 1 {
 		t.Fatalf("valid rotation: %v, %v", rot, err)
 	}
-	if rot, err := loadRotation("", "rogue-combat", "rogue", "raid", 60); rot != nil || err != nil {
+	if rot, err := loadRotation("", "rogue-combat", "rogue", "raid", "human", 60); rot != nil || err != nil {
 		t.Errorf("empty path = %v, %v; want nil, nil", rot, err)
 	}
 	tests := []struct{ name, path, wantErr string }{
@@ -216,7 +216,7 @@ func TestLoadRotation(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			if _, err := loadRotation(tc.path, "rogue-combat", "rogue", "raid", 60); err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+			if _, err := loadRotation(tc.path, "rogue-combat", "rogue", "raid", "human", 60); err == nil || !strings.Contains(err.Error(), tc.wantErr) {
 				t.Errorf("err = %v, want containing %q", err, tc.wantErr)
 			}
 		})
@@ -310,6 +310,37 @@ func TestBuildRequestLayersEntryAndOverrides(t *testing.T) {
 	}
 	if got := over.Character.Buffs; got[len(got)-1] != "extra" || len(got) != len(c.Buffs)+1 {
 		t.Errorf("buffs = %v, want kit buffs plus extra", got)
+	}
+}
+
+// -race replaces the published entry's race, keeping its gear and talents, so a
+// race-keyed rank row (round 13) can be measured on every race of the class.
+func TestBuildRequestTakesTheRace(t *testing.T) {
+	o := baseOptions(bisFixture(t))
+	o.race = "gnome"
+	req, err := buildRequest(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if req.Character.Race != "gnome" || req.Character.Talents != "0023" || len(req.Character.Gear) != 2 {
+		t.Errorf("character = %+v, want the entry as a gnome", req.Character)
+	}
+}
+
+// A -rotation file casts the race's rank choices: Shadow at 50 casts Mind Blast
+// rank 3 (8103) as an Undead.
+func TestLoadRotationFollowsTheRace(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "rot.json")
+	writeFile(t, path, `{"rotation":{"priorityList":[{"action":{"castSpell":{"spellId":{"spellId":10947}}}}]}}`)
+	rot, err := loadRotation(path, "priest-shadow", "priest", "bare", "undead", 50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := rot.GetPriorityList()[0].GetAction().GetCastSpell().GetSpellId().GetSpellId(); got != 8103 {
+		t.Errorf("an Undead at 50 casts Mind Blast %d, want 8103", got)
+	}
+	if _, err := loadRotation(path, "priest-shadow", "priest", "bare", "horde", 50); err == nil {
+		t.Error("a faction in place of a race was accepted")
 	}
 }
 
@@ -409,7 +440,7 @@ func TestRunRequiresSpec(t *testing.T) {
 func TestLoadRotationRewritesRanksBelowSixty(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "rot.json")
 	writeFile(t, path, `{"rotation":{"priorityList":[{"action":{"castSpell":{"spellId":{"spellId":11661,"rank":9}}}}]}}`)
-	rot, err := loadRotation(path, "warlock-affliction", "warlock", "bare", 30)
+	rot, err := loadRotation(path, "warlock-affliction", "warlock", "bare", "orc", 30)
 	if err != nil {
 		t.Fatal(err)
 	}

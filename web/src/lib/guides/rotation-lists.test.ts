@@ -407,14 +407,7 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
       new Map(),
       spellLookupFor(BUILD, 'priest'),
     ).map((item) => item.name);
-    for (const name of [
-      'Shadowfiend',
-      'Feedback',
-      'Divine Grace',
-      'Dark Sacrifice',
-      "Elune's Grace",
-      'Lightwell',
-    ]) {
+    for (const name of ['Shadowfiend', 'Feedback', 'Divine Grace', 'Dark Sacrifice', "Elune's Grace"]) {
       expect(priest).not.toContain(name);
     }
     expect(priest).toContain('Fear Ward');
@@ -462,7 +455,10 @@ describe('specCooldowns keeps to the spec’s own play', () => {
     expect(protection).toContain('Shield Wall');
   });
 
-  it('never lists a spell the live tree removed (Voice of Truth, Lightwell)', () => {
+  // Voice of Truth (20) and Lightwell (40) are trainer spells on 70753, not removed talents:
+  // they stay off only because no spec's curated row names them (Lightwell is the healing
+  // priests' prepull cast, so their rotation list carries it).
+  it('leaves a long baseline cooldown no curated row names off (Voice of Truth, Lightwell)', () => {
     for (const spec of ['paladin-holy', 'paladin-protection', 'paladin-retribution']) {
       expect(names('paladin', spec)).not.toContain('Voice of Truth');
     }

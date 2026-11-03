@@ -565,6 +565,61 @@ function Compat.playerRaceClass()
 	return race, className, token
 end
 
+--- Client race token -> the site's race slug, for the eight base races. A
+--- rule cannot produce this map: `Scourge` is the client's token for what
+--- the site calls `undead` -- no amount of casing or hyphenation gets there
+--- -- and the multi-word tokens (`NightElf`) carry no separator a rule could
+--- split on either. Spike check 16 is what would confirm these against the
+--- beta client; data/builds/1.60.1.69893/races.json is what confirms them
+--- against the site today.
+Compat.RACE_SLUGS = {
+	Human = "human",
+	Orc = "orc",
+	Dwarf = "dwarf",
+	NightElf = "night-elf",
+	Scourge = "undead",
+	Tauren = "tauren",
+	Gnome = "gnome",
+	Troll = "troll",
+}
+
+--- A fallback for a race token `Compat.RACE_SLUGS` does not carry -- Forever's
+--- two new races, whose client tokens are not yet known (spike check 16).
+--- PascalCase gets a hyphen inserted at each internal word boundary, so
+--- something like `HighOrderSkyborne` degrades to a plausible slug instead
+--- of to nothing; it is not run against the eight base races, which have
+--- their real slugs in the map above.
+local function pascalCaseSlugify(token)
+	return (token:gsub("(%l)(%u)", "%1-%2"):gsub("(%d)(%u)", "%1-%2"):lower())
+end
+
+--- The site's race slug for the client's own race. The map first; the
+--- fallback only for a token the map does not carry.
+--- The beta client reports both Skyborne peoples under one token, "Skyborne"; the
+--- site's race table has a row per faction (high-order-skyborne for the Alliance,
+--- windshaper-skyborne for the Horde), so the faction picks the row.
+Compat.SKYBORNE_BY_FACTION = {
+	Alliance = "high-order-skyborne",
+	Horde = "windshaper-skyborne",
+}
+
+function Compat.playerRaceSlug()
+	if type(UnitRace) ~= "function" then
+		return nil
+	end
+	local raceToken = select(2, UnitRace("player"))
+	if raceToken == nil then
+		return nil
+	end
+	if raceToken == "Skyborne" and type(UnitFactionGroup) == "function" then
+		local faction = UnitFactionGroup("player")
+		if Compat.SKYBORNE_BY_FACTION[faction] ~= nil then
+			return Compat.SKYBORNE_BY_FACTION[faction]
+		end
+	end
+	return Compat.RACE_SLUGS[raceToken] or pascalCaseSlugify(raceToken)
+end
+
 --- "alliance" or "horde", the BiS table's own faction keys, or nil where the
 --- client cannot say (a test double with no UnitFactionGroup, a neutral
 --- character before it picks a side).

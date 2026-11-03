@@ -34,6 +34,10 @@ var (
 	// which is a corrupt input rather than a digit the engine could
 	// read.
 	ErrTooManyRanks = errors.New("talents: too many ranks")
+	// ErrIllegalBuild is a talent string the game would refuse: a rank
+	// past a talent's last, a row not yet open, a prerequisite unmet, or
+	// more points than the character's level gives.
+	ErrIllegalBuild = errors.New("talents: illegal build")
 )
 
 // Layouts is one client build's talent layout, by class slug.
@@ -51,12 +55,17 @@ type layout struct {
 
 type tree struct {
 	position int
+	name     string
 	nodes    []node
 }
 
 type node struct {
-	id      int64
-	maxRank int
+	id         int64
+	name       string
+	tier       int
+	maxRank    int
+	prereqID   int64
+	prereqRank int
 }
 
 type position struct {
@@ -67,12 +76,16 @@ type position struct {
 type layoutFile struct {
 	ClassSlug string `json:"class_slug"`
 	Trees     []struct {
-		Position int `json:"position"`
+		Position int    `json:"position"`
+		Name     string `json:"name"`
 		Talents  []struct {
-			ID      int64 `json:"id"`
-			MaxRank int   `json:"max_rank"`
-			Tier    int   `json:"tier"`
-			Column  int   `json:"column"`
+			ID         int64  `json:"id"`
+			Name       string `json:"name"`
+			MaxRank    int    `json:"max_rank"`
+			Tier       int    `json:"tier"`
+			Column     int    `json:"column"`
+			PrereqID   int64  `json:"prereq_talent_id"`
+			PrereqRank int    `json:"prereq_rank"`
 		} `json:"talents"`
 	} `json:"trees"`
 }
@@ -126,10 +139,13 @@ func build(f layoutFile) layout {
 			if max <= 0 {
 				max = 1
 			}
-			nodes = append(nodes, node{id: ta.ID, maxRank: max})
+			nodes = append(nodes, node{
+				id: ta.ID, name: ta.Name, tier: ta.Tier, maxRank: max,
+				prereqID: ta.PrereqID, prereqRank: ta.PrereqRank,
+			})
 			l.index[ta.ID] = position{tree: ti, slot: si, maxRank: max}
 		}
-		l.trees = append(l.trees, tree{position: t.Position, nodes: nodes})
+		l.trees = append(l.trees, tree{position: t.Position, name: t.Name, nodes: nodes})
 	}
 	return l
 }

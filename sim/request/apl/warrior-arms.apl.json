@@ -5,18 +5,31 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 2687
+            "spellId": 11578,
+            "rank": 3
           }
         }
       },
       "doAtValue": {
         "const": {
-          "val": "-2.5s"
+          "val": "0s"
         }
       }
     },
     {
       "action": {
+        "condition": {
+          "not": {
+            "val": {
+              "auraIsActive": {
+                "auraId": {
+                  "spellId": 11551,
+                  "rank": 6
+                }
+              }
+            }
+          }
+        },
         "castSpell": {
           "spellId": {
             "spellId": 11551,
@@ -26,22 +39,7 @@
       },
       "doAtValue": {
         "const": {
-          "val": "-1.5s"
-        }
-      }
-    },
-    {
-      "action": {
-        "castSpell": {
-          "spellId": {
-            "spellId": 11578,
-            "rank": 3
-          }
-        }
-      },
-      "doAtValue": {
-        "const": {
-          "val": "-0.5s"
+          "val": "0s"
         }
       }
     }
@@ -61,6 +59,13 @@
               {
                 "isExecutePhase": {
                   "threshold": "E20"
+                }
+              },
+              {
+                "spellIsKnown": {
+                  "spellId": {
+                    "spellId": 1719
+                  }
                 }
               },
               {

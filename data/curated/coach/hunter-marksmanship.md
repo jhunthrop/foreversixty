@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Marksmanship Hunter as the site's guide describes it. Marksmanship puts the damage in your own shots: Multi-Shot on cooldown, Arcane Shot in the gaps, and an auto shot you never let slip. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Marksmanship Hunter as the site's guide describes it. Marksmanship puts the damage in your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Serpent Sting kept rolling, Arcane Shot in the gaps, and an auto shot you never let slip. In a raid you play it with no pet, through Lone Wolf. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
@@ -23,18 +23,19 @@ This is the Marksmanship Hunter as the site's guide describes it. Marksmanship p
 - Aspect of the Hawk goes up before the pull.
 - Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.
 - Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin.
-- Hunter's Mark whenever the target is not marked.
+- Mark the boss with Hunter's Mark, then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight.
 - Rapid Fire on the pull, as an auto shot leaves and Multi-Shot is about to come back.
-- Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
+- Keep Serpent Sting rolling and refresh it only as it runs out.
 - On a movement phase, fire Arcane Shot and Multi-Shot on the run and plant your feet the moment you can.
-- Claw: Bring a cat and train it the top ranks of Claw, Bite and Growl as you level.
-- Turn off Growl in raids and send it to the boss's back.
+- Claw: Level with a cat and train it the top ranks of Claw, Bite and Growl as you go.
+- Growl: If you raid with the leveling build instead, turn off Growl and send the cat to the boss's back.
 - Feign Death when you get close to the tank's threat, not after the boss turns.
+- Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - Volley is a mana-heavy channel, worth it only on a big pack that lives through it.
 - Freezing Trap is your crowd control, laid before the pull.
 - Explosive Trap under a pack the tank is holding is good damage for its mana.
 - Tranquilizing Shot removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage.
-- Distracting Shot pulls an add onto you so the pet can pick it up, and Scatter Shot buys a few seconds against something loose in the back line.
+- Distracting Shot pulls an add onto you so the pet can pick it up.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

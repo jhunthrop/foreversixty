@@ -26,7 +26,7 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - Serpent Sting when it is about to drop.
-- When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Multi-Shot going.
+- When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed Shot and Multi-Shot going.
 - Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin.
 - Hunter's Mark whenever the target is not marked.
 - A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage.
@@ -37,7 +37,7 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Freezing Trap is the hunter's crowd control: lay it before the pull, and remember any damage breaks it.
 - Explosive Trap under a pack the tank is holding is good damage for its mana.
 - Tranquilizing Shot removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage.
-- Distracting Shot pulls an add onto you so the pet can pick it up, and Scatter Shot buys a few seconds against something loose in the back line.
+- Distracting Shot pulls an add onto you so the pet can pick it up.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

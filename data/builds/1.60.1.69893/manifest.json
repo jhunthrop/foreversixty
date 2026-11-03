@@ -4,7 +4,7 @@
   "fetched_at": "2026-09-21T02:27:30.610068Z",
   "files": {
     "addon-data.json": "5fccf2a7d617c8a923088af61ec8e679b7781bced7945e5cd3a4693deb0d61c9",
-    "classes.json": "b154118d07e977509fde4e8450b64e8804d4c77f8706aadfebe15fee711e5ff7",
+    "classes.json": "2253bce9473b41e417054e441274dfefa432b2777395485c6b506f42f5ed5503",
     "combos.json": "a8de5ed9500af546f9954b5f6e1635986f0719c5b31295976517fafc47a0a938",
     "dungeons.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
     "enchants.json": "61b13d0be7fb50448fce853bd13902ec0975cec0526690c27cb44baa8d96945d",
@@ -1411,7 +1411,7 @@
     "items.json": "aff091b355ca81c9d0bb0a5480351f5560324fb64262ffc7d5ec7f1fdb8927c1",
     "levels.json": "d8237fd3524d284222f5df3863bd70fc1066a8b2d723428292859f9baff378a5",
     "loot.json": "81ae7275477d43bccff061f47b94e53c646de619311d096c94b0713cd2df5878",
-    "races.json": "8586506ae9143f37f99a34f2257c9e805d26e1112c28f4b7bf232caf007a7aca",
+    "races.json": "eb0e9bbb9f6ccd5326073cdde5dd3d5a95dc94efe0b9eacad32eae0083adfacd",
     "sets.json": "4e8b83541b0367e2341408f6a5e4f0f382a0b6d39f50f1b90043ff5022db72b8",
     "simbuffs.json": "3058148499e213c7528efd2f45f00ce9b921b41a50441d5a6df6f04e851fa389",
     "simconsumes.json": "4413586f1e1561fdf9f317fa43a5c112d7ddafc58202e33cee42c278c6f2737e",

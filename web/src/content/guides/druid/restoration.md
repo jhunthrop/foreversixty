@@ -80,7 +80,7 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 
 **The party.** A hurt party member gets a Rejuvenation, you included. Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
 
-**Ranks.** Cast Rejuvenation rank 4 on everyone. It costs under a third of the top rank's mana, and your healing power adds the same to every rank, so it still heals for half or more. Over a long fight that is more healing from the same mana. Use the top ranks of Regrowth and Healing Touch.
+**Ranks.** Cast Rejuvenation rank 1 on a hurt party member. Rank 1 carries the same bonus healing as the top rank in Forever, so on a geared druid it heals for a large share of the top rank at a small fraction of the mana: by far your cheapest healing. On the tank, use the top rank in a raid. While leveling, your healing power is still low and most of a Rejuvenation is its base heal, so rank 1 barely dents a tank's damage; a middle rank such as rank 4 keeps the heal sizeable and your mana going. Use the top ranks of Regrowth and Healing Touch.
 
 **Mana.** Innervate is yours from level 40. Cast it on yourself when you are low: it multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit. A Major Mana Potion and a Demonic Rune cover the rest.
 
@@ -96,7 +96,7 @@ Potions and runes work in any form in Forever, though you heal in caster form an
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren gets more health, which keeps you alive through raid damage. Alliance Skyborne get Read Ley Line, a burst of mana regeneration that a druid healer will use every fight.
+Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren gets more health, which keeps you alive through raid damage. Alliance Skyborne get Read Leyline, a burst of mana regeneration a druid healer can press every fight. The sim does not cast it on its own; add it to a custom rotation to see it.
 
 ## Professions
 

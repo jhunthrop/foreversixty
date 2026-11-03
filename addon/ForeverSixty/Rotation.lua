@@ -13,6 +13,7 @@ ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Gear = ns.Gear or require("Gear")
 local Follow = ns.Follow or require("Follow")
+local Compat = ns.Compat or require("Compat")
 
 local Rotation = {}
 
@@ -52,6 +53,32 @@ local function bandFor(bands, level)
 	return chosen
 end
 
+--- `band` as the player's race casts it: a line whose rank a race's rank-choice row
+--- changes (data/curated/rank-choices.json, round 13) carries each keyed race's id in
+--- `raceSpellId` by the site's race slug, and the copy shows the player's own. The
+--- shipped band is never written; a race no row names, or a client that names no
+--- race, keeps each line's own `spellId`.
+local function ofRace(band)
+	if band == nil then
+		return nil
+	end
+	local race = Compat.playerRaceSlug()
+	local lines = {}
+	for index, line in ipairs(band.lines) do
+		local id = race and type(line.raceSpellId) == "table" and line.raceSpellId[race] or nil
+		if id ~= nil and id ~= line.spellId then
+			local copy = {}
+			for key, value in pairs(line) do
+				copy[key] = value
+			end
+			copy.spellId = id
+			line = copy
+		end
+		lines[index] = line
+	end
+	return { level = band.level, lines = lines }
+end
+
 --- The rotation card's model. `visible` is false only when the spec has
 --- no rotation at all (an unwritten APL, or Data.lua predates this
 --- field); a band that resolved but is genuinely empty (mage-frost below
@@ -59,7 +86,7 @@ end
 --- which the card draws as nothing rather than hiding the whole card.
 function Rotation.model(data, build, ranks, level, advanced)
 	local bands = specBands(data, build, ranks)
-	local band = bandFor(bands, level)
+	local band = ofRace(bandFor(bands, level))
 	if band == nil then
 		return { visible = false, lines = {} }
 	end
@@ -99,8 +126,8 @@ function Rotation.newAbilities(data, build, ranks, previousLevel, level)
 		return {}
 	end
 	local bands = specBands(data, build, ranks)
-	local before = bandFor(bands, previousLevel)
-	local after = bandFor(bands, level)
+	local before = ofRace(bandFor(bands, previousLevel))
+	local after = ofRace(bandFor(bands, level))
 	if after == nil then
 		return {}
 	end
@@ -177,6 +204,7 @@ function Rotation.upcoming(data, build, ranks, level, limit)
 	for _, line in ipairs(band.lines) do
 		held[line.name] = true
 	end
+	nextBand = ofRace(nextBand)
 	local found = {}
 	for _, line in ipairs(nextBand.lines) do
 		if limit ~= nil and #found >= limit then

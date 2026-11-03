@@ -33,7 +33,7 @@
     "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every five seconds three of the five members of the healer's group, the healer among them, take 555, about 333 damage a second spread over the group the healer stands in. The healer is one of the five because raid-wide damage does not skip the player casting the heals; until round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md) it landed only on the four others, so every group heal put a fifth of its healing on a healer who was never hurt. The total is unchanged: three members a pulse, now chosen from five. Scaled by the same 1.85 as the tank hit, so the tank-to-raid ratio and the cadence are what they were."
   },
   "bands": {
-    "rule": "Below 60 each band fights the same fight at its own level (owner ruling, sim-accuracy round 10): the same length, cadence, spread and members, with the damage its own content deals and the health a character of the band has. A band's content is the open dungeons whose last boss stands from the band's level to five levels above it, the dungeons a group of that level goes to; at 60 it is the open raid, because the level-60 profile is a raid fight. A last boss's damage a second is its melee plus its spells. Its melee is its creature_template hit, melee attack power over 14 plus the mean of its minimum and maximum melee damage times its damage multiplier, over its attack time (cmangos Creature::UpdateDamagePhysical), less the share of the fight it spends casting or channelling. Its spells are every damaging spell its AI casts while it is tanked (the spell list its template names, else its EventAI rows, else its script, at the melee-range timers; at 60, Onyxia's ground phase), each counted once a cast on one target: the cast's mean damage at the boss's level (cmangos spell_template, the 1.12 values: base points, dice and points per level; ticks of a periodic aura over its duration; a weapon-damage effect as one melee hit plus its bonus; triggered spells as they trigger) over the mean of its repeat timer. Heals, buffs, summons, crowd control without damage and one-off health-threshold casts are left out. A band's damage is the median of its last bosses' damage a second times the content's client damage modifier, and the tank hit and the raid pulse both scale by that against the reference band's, so the tank-to-raid ratio stays what it is at 60. The tank's and the members' health scale by the client's expected player health at the band's level against level 60's. The tuning scale multiplies every band alike, so a band keeps its place inside the tuning bounds. A level between two bands fights the band at or below it, the way rank choices run from one band to the next, and a level below 20 fights band 20. Each row states its derived figures, and loading refuses a row whose figures are not the rule's. Pulls (owner ruling, sim-accuracy round 11): a dungeon is mostly trash, and a hard trash pull often hits harder than the last boss. A band's trash is every creature its dungeons spawn that is hostile to players (client FactionTemplate) and can be fought, less its bosses (instance_encounters), vendors, critters and hidden triggers; a spawn with a random entry stands for its first listed one (creature_spawn_entry, else spawn_group_entry). It is cut into pulls the way the server pulls: a pulled creature calls every creature of its own faction within its assistance radius, and each of those calls the next (mangos-classic Creature::MarkCallAssistanceOnPull), and spawn groups that aggro together and aggro-linked creatures (creature_linking, creature_linking_template) come with them. The radius is the creature's own CallForHelp where creature_template states one, else bands.pull_rule's (10 yards, TrinityCore's CreatureFamilyAssistanceRadius: cmangos ships 5, which pulls most of the Deadmines one mob at a time). Line of sight is not checked. A pull's damage a second is the sum of its mobs', each counted the way a last boss is (melee less its casting share, plus its repeating in-combat spells from creature_spell_list or EventAI, once a cast on one target). Pulls are weighted by the mobs in them, because a run spends its time killing mobs, and the band fights the pull at bands.pull_rule's percentile (the 75th: a quarter of a run's mobs come in pulls at least this hard). The pull multiplier is that pull's damage a second over the median last boss's, never below 1, so a band fights the harder of the two; the band's damage is its median last boss's times the pull multiplier times the content's damage modifier. A pull's mobs all stand on the tank, so the trash's melee and aimed spells are the tank's; the tank-to-raid ratio is still kept as at 60. Each band row states its dungeons' pull counts, the pull it fights spawn by spawn, and that pull's mobs, and loading refuses a pull whose mobs do not sum to it or a multiplier that is not the rule's.",
+    "rule": "Below 60 each band fights the same fight at its own level (owner ruling, sim-accuracy round 10): the same length, cadence, spread and members, with the damage its own content deals and the health a character of the band has. A band's content is the open dungeons whose last boss stands from the band's level to five levels above it, the dungeons a group of that level goes to; at 60 it is the open raid, because the level-60 profile is a raid fight. A last boss's damage a second is its melee plus its spells. Its melee is its creature_template hit, melee attack power over 14 plus the mean of its minimum and maximum melee damage times its damage multiplier, over its attack time (cmangos Creature::UpdateDamagePhysical), less the share of the fight it spends casting or channelling. Its spells are every damaging spell its AI casts while it is tanked (the spell list its template names, else its EventAI rows, else its script, at the melee-range timers; at 60, Onyxia's ground phase), each counted once a cast on one target: the cast's mean damage at the boss's level (cmangos spell_template, the 1.12 values: base points, dice and points per level; ticks of a periodic aura over its duration; a weapon-damage effect as one melee hit plus its bonus; triggered spells as they trigger) over the mean of its repeat timer. Heals, buffs, summons, crowd control without damage and one-off health-threshold casts are left out. A band's damage is the median of its last bosses' damage a second times the content's client damage modifier, and the band's incoming damage a second scales by that against the reference band's; how it splits between the tank hit and the raid pulse is the split rule's. The tank's and the members' health scale by the client's expected player health at the band's level against level 60's. The tuning scale multiplies every band alike, so a band keeps its place inside the tuning bounds. A level between two bands fights the band at or below it, the way rank choices run from one band to the next, and a level below 20 fights band 20. Each row states its derived figures, and loading refuses a row whose figures are not the rule's. Pulls (owner ruling, sim-accuracy round 11): a dungeon is mostly trash, and a hard trash pull often hits harder than the last boss. A band's trash is every creature its dungeons spawn that is hostile to players (client FactionTemplate) and can be fought, less its bosses (instance_encounters), vendors, critters and hidden triggers; a spawn with a random entry stands for its first listed one (creature_spawn_entry, else spawn_group_entry). It is cut into pulls the way the server pulls: a pulled creature calls every creature of its own faction within its assistance radius, and each of those calls the next (mangos-classic Creature::MarkCallAssistanceOnPull), and spawn groups that aggro together and aggro-linked creatures (creature_linking, creature_linking_template) come with them. The radius is the creature's own CallForHelp where creature_template states one, else bands.pull_rule's (10 yards, TrinityCore's CreatureFamilyAssistanceRadius: cmangos ships 5, which pulls most of the Deadmines one mob at a time). Line of sight is not checked. A pull's damage a second is the sum of its mobs', each counted the way a last boss is (melee less its casting share, plus its repeating in-combat spells from creature_spell_list or EventAI, once a cast on one target). Pulls are weighted by the mobs in them, because a run spends its time killing mobs, and the band fights the pull at bands.pull_rule's percentile (the 75th: a quarter of a run's mobs come in pulls at least this hard). The pull multiplier is that pull's damage a second over the median last boss's, never below 1, so a band fights the harder of the two; the band's damage is its median last boss's times the pull multiplier times the content's damage modifier. Split (owner ruling, sim-accuracy round 12): the tank's share of a band's incoming damage is taken from logs, not from spawns, because spawns assume every mob stays on the tank for the whole pull (the pulls' own figures put 96 to 99 percent of trash damage on the tank) and real groups do not play that way. It is the median, over the band's dungeons' logged trash fights on foreverlogs.gg (the beta), of the share of the damage the group's players take from creatures that lands on the group's tank; a band fights a trash pull, so trash fights are the ones counted. The group is the three to six players seen in the fight; the tank is the warrior, paladin or druid who takes the most creature melee over all of that group's fights in the report, so a fight where a loose mob, a pet or a caster took the hits still counts against the tank's share. Pets and player-on-player damage are left out, because the profile heals players. A band whose dungeons hold fewer than bands.split_rule's minimum of logged trash fights takes the median over every logged beta dungeon's trash fights (the beta stops at about level 30, so bands 40 and 50 do). The tank hit carries that share of the band's incoming damage a second at the profile's swing, and the pulse the rest at its cadence. Level 60 keeps the profile's own split (1,150 a 3.3-second hit against 300 to three members every 5 seconds, 0.659 on the tank) until public level-60 raid logs can be read. Each band row states the logged fights its share rests on, and loading refuses a share that is not their median. Each band row states its dungeons' pull counts, the pull it fights spawn by spawn, and that pull's mobs, and loading refuses a pull whose mobs do not sum to it or a multiplier that is not the rule's.",
     "pull_rule": {
       "assist_radius_yards": 10,
       "percentile": 0.75
@@ -168,8 +168,22 @@
         "player_health": 503,
         "tank_health": 1836,
         "member_health": 966,
-        "tank_hit_damage": 143,
-        "pulse_damage": 37
+        "tank_share": 0.679,
+        "split": {
+          "content_fights": 218,
+          "pooled": false,
+          "fights": 218,
+          "dungeons": [
+            "Deadmines",
+            "Wailing Caverns"
+          ],
+          "median_tank_share": 0.679,
+          "q25": 0.443,
+          "q75": 0.892,
+          "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
+        },
+        "tank_hit_damage": 147,
+        "pulse_damage": 35
       },
       {
         "level": 30,
@@ -338,8 +352,23 @@
         "player_health": 878,
         "tank_health": 3204,
         "member_health": 1687,
-        "tank_hit_damage": 263,
-        "pulse_damage": 69
+        "tank_share": 0.687,
+        "split": {
+          "content_fights": 182,
+          "pooled": false,
+          "fights": 182,
+          "dungeons": [
+            "Gnomeregan",
+            "Razorfen Kraul",
+            "SM Graveyard"
+          ],
+          "median_tank_share": 0.6873,
+          "q25": 0.4989,
+          "q75": 0.8863,
+          "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
+        },
+        "tank_hit_damage": 274,
+        "pulse_damage": 63
       },
       {
         "level": 40,
@@ -548,8 +577,33 @@
         "player_health": 1353,
         "tank_health": 4938,
         "member_health": 2599,
-        "tank_hit_damage": 470,
-        "pulse_damage": 123
+        "tank_share": 0.677,
+        "split": {
+          "content_fights": 6,
+          "pooled": true,
+          "fights": 990,
+          "dungeons": [
+            "Blackfathom Deeps",
+            "Deadmines",
+            "Excavation Site: Wetlands (Forever)",
+            "Gnomeregan",
+            "Ragefire Chasm",
+            "Razorfen Kraul",
+            "Ruins of Lordaeron (Forever)",
+            "SM Armory",
+            "SM Graveyard",
+            "Shadowfang Keep",
+            "The Stockade",
+            "Wailing Caverns",
+            "arcane wing (Forever)"
+          ],
+          "median_tank_share": 0.677,
+          "q25": 0.4286,
+          "q75": 0.8751,
+          "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
+        },
+        "tank_hit_damage": 482,
+        "pulse_damage": 116
       },
       {
         "level": 50,
@@ -723,8 +777,33 @@
         "player_health": 1928,
         "tank_health": 7036,
         "member_health": 3703,
-        "tank_hit_damage": 1010,
-        "pulse_damage": 263
+        "tank_share": 0.677,
+        "split": {
+          "content_fights": 0,
+          "pooled": true,
+          "fights": 990,
+          "dungeons": [
+            "Blackfathom Deeps",
+            "Deadmines",
+            "Excavation Site: Wetlands (Forever)",
+            "Gnomeregan",
+            "Ragefire Chasm",
+            "Razorfen Kraul",
+            "Ruins of Lordaeron (Forever)",
+            "SM Armory",
+            "SM Graveyard",
+            "Shadowfang Keep",
+            "The Stockade",
+            "Wailing Caverns",
+            "arcane wing (Forever)"
+          ],
+          "median_tank_share": 0.677,
+          "q25": 0.4286,
+          "q75": 0.8751,
+          "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
+        },
+        "tank_hit_damage": 1037,
+        "pulse_damage": 250
       },
       {
         "level": 60,
@@ -793,6 +872,7 @@
         "player_health": 2603,
         "tank_health": 9500,
         "member_health": 5000,
+        "tank_share": 0.659,
         "tank_hit_damage": 2128,
         "pulse_damage": 555
       }
@@ -863,7 +943,10 @@
         "url": "https://wago.tools/db2/FactionTemplate/csv?build=1.60.1.70707",
         "kind": "site"
       }
-    ]
+    ],
+    "split_rule": {
+      "min_fights": 30
+    }
   },
   "sources": [
     {

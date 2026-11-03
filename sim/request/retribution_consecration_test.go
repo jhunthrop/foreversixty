@@ -125,7 +125,7 @@ func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 		{BarePreset, 60, 20923},
 		{RaidPreset, 60, retributionConsecrationID},
 	} {
-		ids := rotationIDs(t, "paladin-retribution", "paladin", c.level, specRankChoices("paladin-retribution", c.preset))
+		ids := rotationIDs(t, "paladin-retribution", "paladin", c.level, specRankChoices("paladin-retribution", c.preset, "human"))
 		if !ids[c.want] {
 			t.Errorf("%s %d: Consecration does not cast %d", c.preset, c.level, c.want)
 		}

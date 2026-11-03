@@ -50,6 +50,7 @@ type options struct {
 	preset     string
 	band       int
 	faction    string
+	race       string
 	iterations int
 	seed       int64
 	consumes   string
@@ -72,6 +73,7 @@ func main() {
 	flag.StringVar(&o.preset, "preset", "raid", "bare or raid")
 	flag.IntVar(&o.band, "band", 60, "BiS band")
 	flag.StringVar(&o.faction, "faction", "alliance", "faction of the published entry")
+	flag.StringVar(&o.race, "race", "", "race slug replacing the published entry's (its gear and talents kept); the race's rank choices follow it")
 	flag.IntVar(&o.iterations, "iterations", 20000, "iterations")
 	flag.Int64Var(&o.seed, "seed", 1, "random seed")
 	flag.StringVar(&o.consumes, "consumes", "", "comma list replacing the kit and preset consumables")
@@ -112,11 +114,11 @@ func run(o options) error {
 		fmt.Print(out)
 		return nil
 	}
-	req, err := buildRequest(o)
+	req, err := legalRequest(o)
 	if err != nil {
 		return err
 	}
-	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, o.band)
+	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, req.Character.Race, o.band)
 	if err != nil {
 		return err
 	}
@@ -139,10 +141,10 @@ func run(o options) error {
 // loadRotation reads the "rotation" object of a curated rotation file; an
 // empty path keeps the spec's own rotation. Its ranks are rewritten
 // exactly as the published rotation's are: the spec's rank choices under
-// preset for the ids it names, otherwise (below 60) the highest rank
+// preset for race for the ids it names, otherwise (below 60) the highest rank
 // learned by level that is not above the authored one, so a probe that
 // names a lower rank keeps it. At 60 an id with no row stays as written.
-func loadRotation(path, spec, class, preset string, level int) (*proto.APLRotation, error) {
+func loadRotation(path, spec, class, preset, race string, level int) (*proto.APLRotation, error) {
 	if path == "" {
 		return nil, nil
 	}
@@ -159,7 +161,7 @@ func loadRotation(path, spec, class, preset string, level int) (*proto.APLRotati
 	if len(file.Rotation) == 0 {
 		return nil, fmt.Errorf("%s has no \"rotation\" object", path)
 	}
-	if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, spec, class, preset, level); err != nil {
+	if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, spec, class, preset, race, level); err != nil {
 		return nil, fmt.Errorf("rewriting %s to level %d: %w", path, level, err)
 	}
 	rotation := &proto.APLRotation{}
@@ -265,8 +267,12 @@ func buildRequest(o options) (api.SimRequest, error) {
 	if o.duration > 0 {
 		encounter.DurationSec = o.duration
 	}
+	race := entry.Race
+	if o.race != "" {
+		race = o.race
+	}
 	character := api.CharacterSpec{
-		Name: "breakdown", Race: entry.Race, Class: info.ClassSlug, Level: o.band,
+		Name: "breakdown", Race: race, Class: info.ClassSlug, Level: o.band,
 		Talents: talents, Gear: gear, Buffs: kitBuffs, Consumes: kitConsumes,
 	}
 	// Where the ranker stands the spec (leveling-bis's bandCharacter), so

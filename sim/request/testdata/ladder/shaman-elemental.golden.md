@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:5587 off_hand:3651 | 9.4 | 5 | spell:3606=67.0, other:attack/1=44.8, spell:529=30.9, spell:3599=6.1, spell:20572=2.0 | - |
-| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:4820 | 19.2 | 5 | spell:6350=68.4, other:attack/1=67.3, spell:915=24.2, spell:6363=5.4, spell:8052=2.0 | - |
-| 30 | 5510331300000000-000000000000000000-0000000000000000 | main_hand:271931 off_hand:4066 | 31.1 | 7 | other:attack/1=73.8, spell:6351=59.1, spell:915=35.5, spell:6364=4.2, spell:8053=3.7 | {SpellID: 408490} |
-| 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:271930 off_hand:4652 | 39.5 | 7 | other:attack/1=63.3, spell:6351=54.3, spell:915=36.9, spell:8053=4.2, spell:408490=4.1 | - |
-| 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:271930 off_hand:4652 | 41.2 | 8 | other:attack/1=62.0, spell:915=37.1, spell:6352=31.9, spell:8050=9.4, spell:408490=5.9 | - |
-| 50 | 5510331300001350-030000000000000000-5030000000000000 | main_hand:271929 off_hand:10195 | 58.7 | 8 | spell:915=57.3, spell:10435=40.2, other:attack/1=26.7, spell:1238299=7.5, spell:8052=6.7 | - |
-| 60 | 5510331300001350-030000000000000000-5033520000000000 | main_hand:23451 off_hand:22819 | 85.9 | 8 | spell:10436=68.5, other:attack/1=51.3, spell:15207=27.2, spell:10438=3.6, spell:29228=3.5 | - |
+| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:5587 off_hand:3651 | 9.4 | 5 | spell:3606=68.7, other:attack/1=46.0, spell:529=30.5, spell:3599=6.2, spell:20572=2.0 | {SpellID: 1326047} |
+| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:4820 | 19.3 | 5 | spell:6350=68.6, other:attack/1=66.9, spell:915=24.2, spell:6363=5.4, spell:8052=2.0 | {SpellID: 1326047} |
+| 30 | 5510331300000000-000000000000000000-0000000000000000 | main_hand:271931 off_hand:4066 | 31.1 | 7 | other:attack/1=76.8, spell:6351=58.1, spell:915=33.5, spell:8050=9.0, spell:6364=4.0 | {SpellID: 408490} |
+| 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:271930 off_hand:4652 | 40.4 | 8 | other:attack/1=67.6, spell:6351=54.4, spell:915=33.7, spell:8050=9.3, spell:408490=5.4 | - |
+| 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:271930 off_hand:4652 | 41.4 | 8 | other:attack/1=62.9, spell:915=36.4, spell:6352=34.3, spell:8050=9.5, spell:408490=5.8 | - |
+| 50 | 5510331300001350-030000000000000000-0530000000000000 | main_hand:271929 off_hand:10195 | 62.1 | 8 | spell:915=57.3, spell:10435=40.3, other:attack/1=26.7, spell:1238299=7.6, spell:8052=6.5 | - |
+| 60 | 5510331300001350-030000000000000000-0533520000000000 | main_hand:23451 off_hand:22819 | 92.8 | 8 | spell:10436=69.4, other:attack/1=58.2, spell:15207=27.2, spell:10438=3.6, spell:29228=3.4 | - |
 
 ## Learned but unused (informational)
 
@@ -125,6 +125,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 30
 
 - Earth Shock (spell 8046)
+- Flame Shock (spell 8053)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8037)
@@ -134,10 +135,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Chain Lightning (spell 421)
 - Earth Shock (spell 10412)
+- Flame Shock (spell 8053)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
-- Lightning Bolt (spell 10391)
 
 ### Level 40
 
@@ -158,6 +159,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
 - Lava Burst (spell 1238300)
+- Lightning Bolt (spell 15207)
 
 ### Level 60
 
@@ -169,4 +171,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- shaman-elemental level=38 kind=zero_casts spell="Lightning Bolt" id=10391 authored=15208
+None.

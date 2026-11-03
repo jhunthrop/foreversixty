@@ -48,7 +48,7 @@ Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal throug
 
 ## Talents and builds
 
-Forty-one points in Restoration and ten in Enhancement. Thundering Strikes is 5% crit on your heals, because Forever has one crit stat, and crits are what fire Water Shield. Ancestral Knowledge is 10% more Intellect. Nothing in Elemental helps a heal.
+Forty-one points in Restoration and ten in Enhancement. Thundering Strikes is 5% crit on your heals, because in Forever it raises spells as well as attacks, and crits are what fire Water Shield. Ancestral Knowledge is 10% more Intellect. Nothing in Elemental helps a heal.
 
 - **Improved Healing Wave** (5 points): Healing Wave casts in 2.5 seconds instead of 3.
 - **Tidal Focus** (5 points): 5% cheaper heals.

@@ -25,7 +25,11 @@
 #
 #   push     -- when no newer build exists: asks whether the server pushed hotfixes for
 #               the active build since it was layered (pipeline push-check) and, if so,
-#               runs data.yml's fetch job for the active build again (refetch).
+#               runs data.yml's fetch job for the active build again (refetch). While the
+#               data workflow is disabled (the refresh hold) nothing would layer it, so
+#               push-alert opens "Hotfix push for <build> is not layered" (label
+#               hotfix-push-unlayered) or comments on it; a run that finds the record
+#               current closes it (tools/client-alert.sh push | push-layered).
 #
 # A stopped move (the watch, the fetch or the activation) opens the issue "Client build
 # <build> is blocked" (label client-build-blocked) with the step, the reason, the hand
@@ -148,14 +152,17 @@ jobs:
   # build, which re-layers the push, regenerates every output and commits it as
   # forever-data-bot. Its new hotfix-push.json moves engine.yml's follow hash, so the
   # 05:07 follow regenerates the fork from it. Skipped while a newer build moves in.
+  # A disabled data workflow (the refresh hold) is never called: push-alert says so.
   push:
     needs: watch
     if: needs.watch.outputs.newer != 'true' && inputs.inspect != true
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions: { contents: read, actions: read }
     outputs:
       moved: ${{ steps.check.outputs.moved }}
       product: ${{ steps.check.outputs.product }}
+      data_state: ${{ steps.data.outputs.state }}
     defaults: { run: { working-directory: data } }
     steps:
       - uses: actions/checkout@v4
@@ -171,16 +178,47 @@ jobs:
           test -n "$product" || { echo "$manifest names no product"; exit 1; }
           echo "product=$product" >> "$GITHUB_OUTPUT"
           uv run python -m pipeline push-check --build "$ACTIVE"
+      - name: is the data workflow enabled?
+        id: data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: echo "state=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/data.yml" --jq .state)" >> "$GITHUB_OUTPUT"
 
   refetch:
     needs: [watch, push]
-    if: needs.push.outputs.moved == 'true'
+    if: needs.push.outputs.moved == 'true' && needs.push.outputs.data_state == 'active'
     uses: ./.github/workflows/data.yml
     permissions: { contents: write }
     secrets: inherit
     with:
       product: ${{ needs.push.outputs.product }}
       build: ${{ needs.watch.outputs.active }}
+
+  # A push nothing will layer gets an issue that stays open until the record is current.
+  push-alert:
+    needs: [watch, push]
+    if: needs.push.result == 'success' && (needs.push.outputs.moved == 'false' || needs.push.outputs.data_state != 'active')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: { contents: read, issues: write }
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: open or close the unlayered-push issue
+        env:
+          ACTIVE: ${{ needs.watch.outputs.active }}
+          MOVED: ${{ needs.push.outputs.moved }}
+          PRODUCT: ${{ needs.push.outputs.product }}
+          DATA_STATE: ${{ needs.push.outputs.data_state }}
+        run: |
+          if [ "$MOVED" = true ]; then
+            echo "::warning title=hotfix push not layered::wago.tools lists a hotfix push for $ACTIVE that is not layered, and the data workflow is $DATA_STATE"
+            tools/client-alert.sh push "$ACTIVE"
+          else
+            tools/client-alert.sh push-layered "$ACTIVE"
+          fi
 
   activate:
     needs: [watch, fetch]

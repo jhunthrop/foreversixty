@@ -59,7 +59,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 - **Inner Focus** (1 point): a free spell with 25% more crit every 3 minutes.
 - **Meditation** (3 points) and **Mental Strength** (5 points): regeneration while casting, and a deeper bar.
 - **Holy Specialization** (5 points), **Divine Fury** (5 points) and **Improved Healing** (3 points): more crits for Divine Aegis, faster Heal and Greater Heal, and cheaper direct heals.
-- **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and casts that raid damage no longer pushes back.
+- **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and casts that raid damage rarely pushes back.
 
 **Power Infusion** is not in the build because it adds nothing to your own healing. In a raid with a mage or warlock worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to your best caster on their burst. Open the [planner](/planner?class=priest) to make the swap.
 

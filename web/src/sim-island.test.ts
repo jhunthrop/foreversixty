@@ -5,7 +5,7 @@
 // shell's no-JS paragraph would otherwise sit under the rendered island forever -- and
 // dropping the pre-hydration shell's min-h reservation once the island takes over the
 // element's own height.
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
 import { readInlineResult, simIdFor } from './sim-island';
 import fixtureResult from './fixtures/sim/result.json';
 
@@ -18,8 +18,28 @@ import fixtureResult from './fixtures/sim/result.json';
 // classes from the mount element before handing off to Svelte.
 vi.mock('svelte', () => ({ mount: vi.fn() }));
 
+// The static import above evaluates sim-island once, and its own scheduleBoot runs boot() a
+// frame and two tasks later. On real timers that boot could land inside the boot() test below,
+// after it had built its #sim element, and strip the reservation before the test's own module
+// even ran: the test failed about one run in five under load. Every timer in this file is
+// fake from before that import, and the boot() test clears whatever the first instance left
+// queued, so only the instance under test can boot into its document.
+vi.hoisted(() => {
+  const toFake: ('setTimeout' | 'clearTimeout' | 'requestAnimationFrame' | 'cancelAnimationFrame')[] = [
+    'setTimeout',
+    'clearTimeout',
+    'requestAnimationFrame',
+    'cancelAnimationFrame',
+  ];
+  vi.useFakeTimers({ toFake });
+});
+
 afterEach(() => {
   document.body.innerHTML = '';
+});
+
+afterAll(() => {
+  vi.useRealTimers();
 });
 
 function mountElement(attributes: Record<string, string> = {}): HTMLElement {
@@ -59,17 +79,14 @@ describe('readInlineResult', () => {
 
 describe('boot()', () => {
   it('removes the shell min-h reservation from the mount element once the island mounts', async () => {
+    vi.clearAllTimers();
     document.body.innerHTML = '<div id="sim" data-sim-mount class="min-h-[1408px] md:min-h-[819px]"></div>';
     vi.resetModules();
-    vi.useFakeTimers({
-      toFake: ['setTimeout', 'clearTimeout', 'requestAnimationFrame', 'cancelAnimationFrame'],
-    });
     await import('./sim-island');
     const target = document.getElementById('sim')!;
     // scheduleBoot mounts after the shell has painted, so the reservation is still on.
     expect(target.className).toContain('min-h-[1408px]');
     await vi.runAllTimersAsync();
-    vi.useRealTimers();
     expect(target.className).not.toContain('min-h-[1408px]');
     expect(target.className).not.toContain('min-h-[819px]');
   });

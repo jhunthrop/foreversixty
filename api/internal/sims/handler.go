@@ -15,6 +15,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/runner"
+	"github.com/jhunthrop/foreversixty/sim/talents"
 )
 
 // filterKinds is the five kinds a history filter accepts, in the
@@ -84,7 +85,11 @@ type Service struct {
 	Summaries Getter
 	// EngineVersion is the pinned engine build this deployment runs.
 	EngineVersion string
-	Log           *slog.Logger
+	// Talents is the active build's talent layout. A server run whose
+	// talents the game would refuse is answered 400 (talentsLegal). Nil
+	// means no layout loaded, and runs are not checked.
+	Talents *talents.Layouts
+	Log     *slog.Logger
 }
 
 // Mount registers every simulator route. POST /v1/sims/run is mounted

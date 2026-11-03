@@ -317,10 +317,22 @@ export interface BisHealBandRow {
   pulls?: BisHealBandPulls;
   /** The pull's damage over the median last boss's, never below 1. */
   pull_multiplier?: number;
+  /** 0..1 share of the band's incoming damage that lands on the tank (sim-accuracy round 12).
+   *  Absent on a file published before 2026-11-04. */
+  tank_share?: number;
+  /** The logged fights the share is the median of; absent on the raid band (no level-60 logs). */
+  split?: BisHealBandSplit;
   tank_health: number;
   member_health: number;
   tank_hit_damage: number;
   pulse_damage: number;
+}
+
+export interface BisHealBandSplit {
+  fights: number;
+  /** True when the band's own dungeons had too few logged fights, so every logged beta dungeon counts. */
+  pooled: boolean;
+  dungeons: string[];
 }
 
 export interface BisHealBandPulls {

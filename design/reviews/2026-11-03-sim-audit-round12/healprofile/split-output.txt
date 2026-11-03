@@ -1,0 +1,59 @@
+== run tank, boss
+band 20 content                                run-tank fights  179  median 0.745  IQR 0.52-0.90  pooled 0.686
+band 30 content                                run-tank fights  109  median 0.557  IQR 0.38-0.80  pooled 0.472
+band 40 content                                run-tank fights 2
+all beta dungeons                              run-tank fights  849  median 0.634  IQR 0.43-0.87  pooled 0.570
+== run tank, trash
+band 20 content                                run-tank fights  218  median 0.679  IQR 0.44-0.89  pooled 0.636
+band 30 content                                run-tank fights  182  median 0.687  IQR 0.50-0.89  pooled 0.637
+band 40 content                                run-tank fights    6  median 0.886  IQR 0.79-1.00  pooled 0.810
+all beta dungeons                              run-tank fights  990  median 0.677  IQR 0.43-0.88  pooled 0.615
+== run tank, boss and trash together
+band 20 content                                run-tank fights  397  median 0.710  IQR 0.49-0.90  pooled 0.659
+band 30 content                                run-tank fights  291  median 0.656  IQR 0.44-0.86  pooled 0.563
+band 40 content                                run-tank fights    8  median 0.886  IQR 0.77-1.00  pooled 0.865
+all beta dungeons                              run-tank fights 1839  median 0.656  IQR 0.43-0.87  pooled 0.593
+== logged trash pull sizes
+band 20 content                                logged trash fights 221: mobs per fight median 4, mob-weighted median 8, q75 15
+band 30 content                                logged trash fights 186: mobs per fight median 5.0, mob-weighted median 8, q75 13
+Deadmines                                      logged trash fights 125: mobs per fight median 5, mob-weighted median 10, q75 17
+Wailing Caverns                                logged trash fights 96: mobs per fight median 3.0, mob-weighted median 6, q75 8
+Razorfen Kraul                                 logged trash fights 110: mobs per fight median 4.0, mob-weighted median 7, q75 10
+Gnomeregan                                     logged trash fights 11: mobs per fight median 8, mob-weighted median 9, q75 18
+SM Graveyard                                   logged trash fights 65: mobs per fight median 5, mob-weighted median 9, q75 15
+== boss
+band 20 content                                fights  179  tanked  172 (96%)  median 0.767  IQR 0.58-0.91  pooled 0.705  melee share 0.80
+band 30 content                                fights  109  tanked  100 (92%)  median 0.595  IQR 0.44-0.81  pooled 0.492  melee share 0.52
+band 40 content                                fights    2  (too few with a tank: 2)
+Deadmines                                      fights   97  tanked   93 (96%)  median 0.829  IQR 0.59-0.94  pooled 0.728  melee share 0.86
+Wailing Caverns                                fights   82  tanked   79 (96%)  median 0.707  IQR 0.57-0.85  pooled 0.672  melee share 0.70
+Razorfen Kraul                                 fights   67  tanked   60 (90%)  median 0.524  IQR 0.44-0.79  pooled 0.463  melee share 0.51
+Gnomeregan                                     fights    5  tanked    5 (100%)  median 0.621  IQR 0.37-0.84  pooled 0.603  melee share 0.82
+SM Graveyard                                   fights   37  tanked   35 (95%)  median 0.676  IQR 0.44-0.87  pooled 0.524  melee share 0.46
+SM Armory                                      fights    2  (too few with a tank: 2)
+Shadowfang Keep                                fights  140  tanked  125 (89%)  median 0.729  IQR 0.61-0.95  pooled 0.699  melee share 1.00
+Blackfathom Deeps                              fights   51  tanked   42 (82%)  median 0.562  IQR 0.48-0.71  pooled 0.548  melee share 0.53
+The Stockade                                   fights   53  tanked   45 (85%)  median 0.748  IQR 0.53-1.00  pooled 0.685  melee share 0.96
+Ragefire Chasm                                 fights   10  tanked    8 (80%)  median 0.538  IQR 0.44-0.72  pooled 0.571  melee share 0.71
+Ruins of Lordaeron (Forever)                   fights  103  tanked   96 (93%)  median 0.650  IQR 0.54-0.96  pooled 0.637  melee share 0.77
+Excavation Site: Wetlands (Forever)            fights  119  tanked  112 (94%)  median 0.648  IQR 0.47-0.90  pooled 0.630  melee share 0.68
+arcane wing (Forever)                          fights   89  tanked   75 (84%)  median 0.607  IQR 0.40-0.77  pooled 0.517  melee share 0.32
+all beta dungeons                              fights  855  tanked  777 (91%)  median 0.673  IQR 0.50-0.89  pooled 0.607  melee share 0.77
+== trash
+band 20 content                                fights  221  tanked  194 (88%)  median 0.723  IQR 0.57-0.92  pooled 0.681  melee share 0.84
+band 30 content                                fights  186  tanked  170 (91%)  median 0.742  IQR 0.58-0.89  pooled 0.675  melee share 0.98
+band 40 content                                fights    6  tanked    6 (100%)  median 0.886  IQR 0.79-1.00  pooled 0.810  melee share 1.00
+Deadmines                                      fights  125  tanked  119 (95%)  median 0.777  IQR 0.60-0.92  pooled 0.723  melee share 0.84
+Wailing Caverns                                fights   96  tanked   75 (78%)  median 0.662  IQR 0.49-0.88  pooled 0.584  melee share 0.82
+Razorfen Kraul                                 fights  110  tanked  100 (91%)  median 0.745  IQR 0.60-0.89  pooled 0.707  melee share 0.97
+Gnomeregan                                     fights   11  tanked   11 (100%)  median 0.580  IQR 0.48-0.70  pooled 0.542  melee share 0.93
+SM Graveyard                                   fights   65  tanked   59 (91%)  median 0.779  IQR 0.52-0.92  pooled 0.665  melee share 1.00
+SM Armory                                      fights    6  tanked    6 (100%)  median 0.886  IQR 0.79-1.00  pooled 0.810  melee share 1.00
+Shadowfang Keep                                fights  101  tanked   76 (75%)  median 0.699  IQR 0.56-0.88  pooled 0.670  melee share 1.00
+Blackfathom Deeps                              fights   63  tanked   49 (78%)  median 0.672  IQR 0.47-0.81  pooled 0.552  melee share 0.74
+The Stockade                                   fights   55  tanked   53 (96%)  median 0.831  IQR 0.70-0.94  pooled 0.790  melee share 0.95
+Ragefire Chasm                                 fights   24  tanked   21 (88%)  median 0.710  IQR 0.50-0.79  pooled 0.625  melee share 0.84
+Ruins of Lordaeron (Forever)                   fights  132  tanked  107 (81%)  median 0.689  IQR 0.58-0.92  pooled 0.646  melee share 1.00
+Excavation Site: Wetlands (Forever)            fights  142  tanked  124 (87%)  median 0.753  IQR 0.57-0.97  pooled 0.640  melee share 0.93
+arcane wing (Forever)                          fights   78  tanked   59 (76%)  median 0.733  IQR 0.57-0.92  pooled 0.663  melee share 0.66
+all beta dungeons                              fights 1008  tanked  859 (85%)  median 0.734  IQR 0.57-0.91  pooled 0.666  melee share 0.93

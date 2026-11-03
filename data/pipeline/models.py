@@ -799,6 +799,11 @@ class AddonRotationLine(BaseModel):
     #: `TalentEntry.spell_id`: the emitted key order is this schema's
     #: only compatibility surface, so new fields go on the end.
     icon: str
+    #: Each race's own id (by the site's race slug) where a race's
+    #: rank-choice row (round 13) casts a different rank from `spell_id`,
+    #: which is what every other race casts; empty where every race casts
+    #: `spell_id`. Appended last, like `icon`.
+    race_spell_ids: dict[str, int] = {}
 
 
 class AddonRotationBand(BaseModel):

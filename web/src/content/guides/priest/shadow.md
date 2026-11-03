@@ -78,7 +78,7 @@ The leveling build carries two points of Wand Specialization, because you wand a
 
 **Shadow Word: Death backlash.** Every cast that does not kill the target hits you for 30% of your maximum health. Cast it on cooldown anyway, and keep Vampiric Embrace up so your own damage heals it back.
 
-**Vampiric Embrace.** On the boss, keep it up: it costs a global every 30 seconds, a few percent of your own damage, and in return your whole group heals for 20% of every Shadow spell you land. On a fight with group damage that is a lot of healing, and it pays for Shadow Word: Death. On a fight where your group takes nothing, skip it and push damage.
+**Vampiric Embrace.** On the boss, keep it up: it costs a global every 30 seconds, a few percent of your own damage, and in return your whole group heals for 20% of every Shadow spell you land. On a fight with group damage that is a lot of healing, and it pays for Shadow Word: Death. On a fight where your group takes nothing, skip it and push damage. The sim keeps Vampiric Embrace up and counts only your damage, not the group healing.
 
 **Execute.** Nothing changes below 20%, except that Early Demise makes Shadow Word: Death crit far more often. Drop Shadow Word: Pain in the last 10 seconds of a fight; it will not tick out.
 
@@ -90,7 +90,7 @@ The leveling build carries two points of Wand Specialization, because you wand a
 
 **Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice. Shadowfiend cannot be learned at launch.
 
-**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Gnome Eureka! on two Mind Blasts and a Shadow Word: Death (it only helps direct damage, so a Mind Flay under it is wasted), Troll Berserking and Night Elf Elune's Light whenever they are up.
+**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Gnome Eureka! on a Mind Blast, a Shadow Word: Death and the Mind Flay after them (it skips Shadow Word: Pain and Devouring Plague, so never spend it on a refresh), Troll Berserking and Night Elf Elune's Light whenever they are up.
 
 ## Stat priority
 
@@ -106,7 +106,7 @@ Flask of Supreme Power, or Elixir of Shadow Power with Greater Arcane Elixir whe
 
 ## Races
 
-**Gnome** is the Alliance pick. Eureka! makes your next three direct casts 10% cheaper and 10% stronger for 15 seconds on a 2 minute cooldown: line it up with Mind Blast and Shadow Word: Death. Expansive Mind adds 5% mana. The Gnome priest spells are Contingency Plan, a ward that shields and heals an ally who drops below 35%, and Confounding Flash, which confuses nearby enemies for a few seconds.
+**Gnome** is the Alliance pick. Eureka! makes your spells 10% cheaper and 10% stronger for 8 seconds on a 2 minute cooldown: line it up with Mind Blast and Shadow Word: Death. Expansive Mind adds 5% mana. The Gnome priest spells are Contingency Plan, a ward that shields and heals an ally who drops below 35%, and Confounding Flash, which confuses nearby enemies for a few seconds.
 
 **Undead** is the Horde pick. Touch of the Grave procs Shadow damage off your hits, Will of the Forsaken breaks fears, and Dark Sacrifice trades your health for mana once a fight.
 
@@ -120,6 +120,6 @@ Tailoring makes a lot of the cloth you wear before raids, so it pays for itself.
 
 Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap after every kill lets you chain pulls without drinking.
 
-The strips below take Shadow Focus and Blackout first, which is right for dungeon bosses. For questing, take Spirit Tap first at level 10, then Improved Shadow Word: Pain and Improved Mind Blast, so Mind Flay is your point at 20. Improved Mind Flay, Vampiric Embrace and Shadow Weaving come next, and every point in Shadow gets you to Shadowform at 40.
+Each strip below shows the build for that level range, its talents listed in the order a leveling priest takes them. Those builds buy Shadow Focus and Blackout early, which is right for dungeon bosses. For questing, take Spirit Tap first at level 10, then two points of Blackout, Improved Shadow Word: Pain and Improved Mind Blast, so Mind Flay is your point at 20. Improved Mind Flay, Vampiric Embrace and Shadow Weaving come next, and every point in Shadow gets you to Shadowform at 40.
 
 In Shadowform you cannot cast Renew or a heal. Power Word: Shield still works, so shield before the pull and let Vampiric Embrace and Devouring Plague top you up. Leave the form only for a heal you really need. Solo, cast Shadow Word: Death only when it will kill or you are well above half health: the backlash is real.

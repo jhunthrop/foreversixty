@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 01000000000000000-00000000000000000-000000000000000000 | main_hand:263407 | 12.2 | 6 | other:attack/1=39.0, other:rage_gain=38.3, spell:284/1=22.4, spell:284=22.1, spell:6546=17.7 | {SpellID: 10610} |
-| 20 | 03323000000000000-00000000000000000-000000000000000000 | main_hand:2205 | 23.3 | 7 | other:rage_gain=39.4, other:attack/1=32.9, spell:285/1=21.4, spell:285=20.9, spell:6547=14.6 | {SpellID: 10610} |
-| 30 | 03325213020000000-00000000000000000-000000000000000000 | main_hand:13045 | 40.6 | 9 | other:rage_gain=98.8, other:attack/1=44.3, spell:1608/1=19.2, spell:1608=18.8, spell:5308=12.4 | {SpellID: 10610}, {SpellID: 1719} |
-| 38 | 03325213032500000-00000000000000000-000000000000000000 | main_hand:870 | 71.3 | 9 | other:rage_gain=99.2, other:attack/1=35.4, spell:11564/1=15.9, spell:11564=15.5, spell:20658=12.7 | {SpellID: 10610}, {SpellID: 1719} |
-| 40 | 03325213032511000-00000000000000000-000000000000000000 | main_hand:1982 | 80.1 | 9 | other:rage_gain=98.7, other:attack/1=36.1, spell:11565/1=16.7, spell:11565=16.3, spell:20660=13.0 | {SpellID: 10610}, {SpellID: 12294}, {SpellID: 1719} |
-| 50 | 03325213032515001-05000000000000000-000000000000000000 | main_hand:2915 | 131.0 | 11 | other:rage_gain=100.3, other:attack/1=79.1, spell:21551=21.3, spell:11584=16.1, spell:20661=11.0 | {SpellID: 10610} |
-| 60 | 03325213032515001-05050000000000000-005000000000000000 | main_hand:22798 | 226.6 | 11 | other:rage_gain=125.6, other:attack/1=47.5, spell:21553=23.4, spell:11585=13.0, spell:20662=10.1 | {SpellID: 10610} |
+| 10 | 01000000000000000-00000000000000000-000000000000000000 | main_hand:263407 | 12.2 | 6 | other:attack/1=38.9, other:rage_gain=38.1, spell:284/1=22.5, spell:284=22.1, spell:6546=17.9 | {SpellID: 10610} |
+| 20 | 03323000000000000-00000000000000000-000000000000000000 | main_hand:2205 | 23.2 | 7 | other:rage_gain=38.8, other:attack/1=32.8, spell:285/1=21.5, spell:285=21.1, spell:6547=14.3 | {SpellID: 10610} |
+| 30 | 03325213020000000-00000000000000000-000000000000000000 | main_hand:13045 | 41.8 | 8 | other:rage_gain=98.3, other:attack/1=44.1, spell:1608/1=19.4, spell:1608=19.0, spell:6548=11.9 | {SpellID: 10610}, {SpellID: 1719} |
+| 38 | 03325213032500000-00000000000000000-000000000000000000 | main_hand:870 | 74.6 | 8 | other:rage_gain=98.4, other:attack/1=35.3, spell:11564/1=16.0, spell:11564=15.6, spell:7887=14.2 | {SpellID: 10610}, {SpellID: 1719} |
+| 40 | 03325213032510001-00000000000000000-000000000000000000 | main_hand:1982 | 97.5 | 9 | other:rage_gain=100.1, other:attack/1=52.1, spell:12294=19.7, spell:7887=17.1, spell:11572=10.4 | {SpellID: 10610}, {SpellID: 1719} |
+| 50 | 03325213032515001-05000000000000000-000000000000000000 | main_hand:2915 | 131.0 | 11 | other:rage_gain=100.1, other:attack/1=79.1, spell:21551=21.2, spell:11584=15.9, spell:20661=11.1 | {SpellID: 10610} |
+| 60 | 03325213032515001-05050000000000000-005000000000000000 | main_hand:22798 | 227.6 | 11 | other:rage_gain=125.1, other:attack/1=47.4, spell:21553=23.2, spell:11585=13.0, spell:20662=10.1 | {SpellID: 10610} |
 
 ## Learned but unused (informational)
 
@@ -145,7 +145,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Bloodthirst (spell 23881)
 - Hamstring (spell 7372)
 - Mocking Blow (spell 7402)
-- Mortal Strike (spell 12294)
 - Pummel (spell 6552)
 - Revenge (spell 7379)
 - Shield Bash (spell 1671)
@@ -181,4 +180,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- warrior-arms level=30 kind=zero_casts id=2458 authored=2458 (untracked ability; not in spellranks.json's rank chains)
+- warrior-arms level=38 kind=zero_casts id=2458 authored=2458 (untracked ability; not in spellranks.json's rank chains)
+- warrior-arms level=40 kind=zero_casts id=2458 authored=2458 (untracked ability; not in spellranks.json's rank chains)

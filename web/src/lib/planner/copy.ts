@@ -44,7 +44,7 @@ export const plannerCopy = {
    *  "Talents loaded from a character" wording is false for it, so it gets its own, honest
    *  copy naming the band instead. */
   bandLoadedNote: (bandLabel: string): string =>
-    `Loaded the ${bandLabel} build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order.`,
+    `Loaded the ${bandLabel} build. The order shown is one way to level into it: the main tree first, each talent as soon as its row opens.`,
   /** A link that carries gear but no talent ranks (a build link from a log). */
   noTalentRanksNote: 'This link carries no talent ranks.',
   /** The record carries more points than any legal order reaches: name what the planner kept. */

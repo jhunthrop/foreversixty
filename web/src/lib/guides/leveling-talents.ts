@@ -1,9 +1,9 @@
 // web/src/lib/guides/leveling-talents.ts
-// A leveling band's talents as the list a player works through, in the order to take them: the
-// talents of the band before keep their places, and what the band adds comes after them, the
-// build's main tree first and each tree from its first row down. A talent whose rank rose since
-// the band before is marked, so the strip also shows what each band adds. Pure over the decoded
-// trees `decodeBandTalents` produces.
+// A leveling band's talents as the list a player works through, in the order the points are
+// spent: one order for every band (the guide's level 60 build through the planner's
+// `orderFromRanks`, see `bandSpendOrder`), each talent placed by its first point, so a talent
+// never moves between bands. A talent whose rank rose since the band before is marked, so the
+// strip also shows what each band adds. Pure over the decoded trees `decodeBandTalents` produces.
 import type { DecodedTreeView } from './build-tree';
 
 export interface LevelingTalentChip {
@@ -16,38 +16,39 @@ export interface LevelingTalentChip {
 }
 
 /** One chip list per band, bands in level order; `undefined` (a band whose talents did not
- *  decode) gives an empty list and does not break the order for the next one. */
+ *  decode) gives an empty list. `spendOrder` is one talent id per point; a lit talent it does
+ *  not name follows the ones it does, by tree position, row and column. */
 export function levelingChipRows(
   bands: readonly (readonly DecodedTreeView[] | undefined)[],
+  spendOrder: readonly number[],
 ): LevelingTalentChip[][] {
-  const order: number[] = [];
+  const firstPoint = new Map<number, number>();
+  spendOrder.forEach((id, point) => {
+    if (!firstPoint.has(id)) firstPoint.set(id, point);
+  });
   const ranks = new Map<number, number>();
   return bands.map((trees, bandIndex) => {
     if (trees === undefined) return [];
-    const lit = new Map<number, { talent: DecodedTreeView['talents'][number]; main: number }>();
-    const byPoints = trees
-      .map((tree, index) => ({ tree, index }))
-      .sort((a, b) => b.tree.points - a.tree.points || a.index - b.index);
-    byPoints.forEach(({ tree }, main) => {
-      for (const talent of tree.talents) if (talent.rank > 0) lit.set(talent.id, { talent, main });
-    });
-    const added = [...lit.values()]
-      .filter(({ talent }) => !order.includes(talent.id))
-      .sort((a, b) => a.main - b.main || a.talent.tier - b.talent.tier || a.talent.column - b.talent.column);
-    for (const { talent } of added) order.push(talent.id);
-    const chips = order
-      .filter((id) => lit.has(id))
-      .map((id): LevelingTalentChip => {
-        const { talent } = lit.get(id)!;
-        return {
-          name: talent.name,
-          icon: talent.icon,
-          rank: talent.rank,
-          maxRank: talent.max_rank,
-          isNew: bandIndex > 0 && talent.rank > (ranks.get(id) ?? 0),
-        };
-      });
-    for (const { talent } of lit.values()) ranks.set(talent.id, talent.rank);
+    const lit = [...trees]
+      .sort((a, b) => a.position - b.position)
+      .flatMap((tree) =>
+        [...tree.talents]
+          .filter((talent) => talent.rank > 0)
+          .sort((a, b) => a.tier - b.tier || a.column - b.column),
+      );
+    const unnamed = spendOrder.length;
+    const place = (id: number, fallback: number): number => firstPoint.get(id) ?? unnamed + fallback;
+    const chips = lit
+      .map((talent, fallback) => ({ talent, at: place(talent.id, fallback) }))
+      .sort((a, b) => a.at - b.at)
+      .map(({ talent }): LevelingTalentChip => ({
+        name: talent.name,
+        icon: talent.icon,
+        rank: talent.rank,
+        maxRank: talent.max_rank,
+        isNew: bandIndex > 0 && talent.rank > (ranks.get(talent.id) ?? 0),
+      }));
+    for (const talent of lit) ranks.set(talent.id, talent.rank);
     return chips;
   });
 }

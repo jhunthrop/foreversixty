@@ -28,7 +28,7 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 - Eviscerate at four or more combo points.
 - Mutilate is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.
 - Deadly Poison on the main hand, Instant Poison on the off hand, with a sharpening stone beside each in Forever.
-- Kidney Shot costs no energy in Forever and stuns longer per combo point: use it on casters and on whatever is hitting your healer.
+- Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five: use it on casters and on whatever is hitting your healer.
 - Kick, Gouge and Blind handle the rest.
 - Redirect lifts your combo points off a dying mob and hands them to the next enemy you hit within fifteen seconds.
 - Feint on cooldown on bosses where you sit near the tank's threat.

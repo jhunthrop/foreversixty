@@ -85,7 +85,7 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 ## Stat priority
 
-On a long fight the mana stats win: Spirit and mp5 buy more healing over five minutes than a point of healing power, and Spiritual Guidance and Meditation make Spirit the best of them. Intellect deepens the bar. Healing power is still what makes each cast count. Critical strike is last for Holy, since Inspiration only adds armor. Spell power with no healing on it does nothing for a heal.
+On a long fight mp5 wins: a point of it buys more healing over five minutes than a point of healing power. Healing power comes next, then Spirit, which Spiritual Guidance and Meditation turn into both healing and mana. Intellect deepens the bar. Critical strike is last for Holy, since Inspiration only adds armor. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
@@ -101,7 +101,7 @@ Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric
 
 **Undead** is the Horde pick for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. Will of the Forsaken breaks fears.
 
-**Gnome** brings Eureka!, three heals 10% stronger and 10% cheaper for 15 seconds every 2 minutes, and Expansive Mind's 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Troll** gets Berserking, 10% cast speed. **Night Elf** has Elune's Light, 10% crit for 15 seconds. **Dwarf** has Stoneform and Desperate Prayer, a free self heal.
+**Gnome** brings Eureka!, 8 seconds of 10% stronger and 10% cheaper heals every 2 minutes, and Expansive Mind's 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Troll** gets Berserking, 10% cast speed. **Night Elf** has Elune's Light, 10% crit for 15 seconds. **Dwarf** has Stoneform and Desperate Prayer, a free self heal.
 
 ## Professions
 

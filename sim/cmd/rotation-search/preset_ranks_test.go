@@ -19,7 +19,7 @@ func TestCandidatesCastThePresetsRankChoices(t *testing.T) {
 		t.Fatalf("Shadow Word: Death rank 2 at 60 = %d, %v", rank2, ok)
 	}
 	r := rotation{Type: "TypeAPL", PriorityList: []entry{{Action: action{"castSpell": map[string]any{"spellId": map[string]any{"spellId": float64(authored)}}}}}}
-	bare := simSetup{spec: specInfo{Spec: spec, ClassSlug: "priest"}, level: 60, seed: 1}
+	bare := simSetup{spec: specInfo{Spec: spec, ClassSlug: "priest"}, band: bisBand{Faction: "horde", Race: "undead"}, level: 60, seed: 1}
 
 	apl, err := bare.engineRotation(r)
 	if err != nil {

@@ -1,7 +1,7 @@
 {
   "spec": "warrior-arms",
   "state": "written",
-  "notes": "Vanilla Arms at 60: Rend and Mortal Strike are the priority openers, Overpower is a bare cast so it only lands when the dodge-triggered aura from sim/warrior/overpower.go is up, and Heroic Strike was the rage dump (removed below). Recklessness (sim/warrior/recklessness.go) is a Berserker Stance spell, so Arms reaches it with a stance swap in the execute phase (below); Arms has no Death Wish (that talent lives in the Fury tree only). The fork's warrior/apls/dps_no_reck.apl.json preset is actually Bloodthirst-based (a Fury list despite the generic name); there is no Arms-specific preset upstream, so this is adapted from it plus the community rotation order. The cited Warcraft Tavern guide has a dedicated Arms Warrior PvE rotation section reading, verbatim: 'Keep Rend applied at all times on your primary target. After that, use Mortal Strike on cooldown. When MS is on cooldown, use Overpower as a filler ability. When MS and OP are on cooldown, use Heroic Strike or Cleave depending on the number of enemies.' -- this file's order matches that sentence exactly. The guide does not put Execute in that same priority sentence and calls the ability 'a touchy topic' for Arms given the spec's poor rage generation; Execute is kept here anyway, gated to the execute-phase window and ordered below Overpower so it never competes with Mortal Strike or Overpower for a global, which is a defensible read of the guide's caution rather than a contradiction of it. Every rank named here is checked against the spellconst of the newest client build in builds/ -- Overpower and Mortal Strike each carry an extra low rank in this build that vanilla did not have, so the highest-numbered rank, not the highest rank number remembered from live Classic, is what is named. Nothing here is Forever-specific yet: the validation job (design section 6) is the evidence for changing it. Rotation search (2026-10-06, level 60, 800 iterations, seed 7): the Heroic Strike rage dump is removed, since its rage is better spent on Mortal Strike and Overpower; about +1.4 percent in that run. 2026-10-31 (theorycraft audit fixes): Slam joins the priority below Execute, gated on Improved Slam (Slam's cast time under 1.5 s), which the raid build now takes: every Forever Arms source plays Mortal Strike, Overpower and Slam. In the execute phase the rotation swaps to Berserker Stance while Recklessness is ready, and the cooldown autocast fires it; the engine now carries baseline Tactical Mastery, so the swap keeps 10 rage. 2026-11-02 (launch guide rewrite, round-11 engine, 10000 iterations, seeds 1 and 50001, raid / bare): the opener is played as in game (Bloodrage, Battle Shout, Charge before the pull; the old Battle Shout at -1 s had no rage to cast with), Overpower moves ahead of Mortal Strike (its window closes, the cooldown does not), Heroic Strike returns only at 90 rage or more, Hamstring stops from 25% and the Berserker swap waits for the first Execute to spend the bar. 707.3 to 719.5 raid (+1.7%), 246.9 to 251.1 bare (+1.7%); bare by level 26.3 to 29.7 at 20, 52.5 to 58.4 at 30, 94.3 to 103.0 at 40, 183.1 to 186.4 at 50. Execute ahead of Mortal Strike in the execute phase was +1.6% bare but -0.3% raid, so Mortal Strike keeps the slot. Hamstring pooling alone +0.1%; Slam and Heroic Strike pooling lost.",
+  "notes": "Vanilla Arms at 60: Rend and Mortal Strike are the priority openers, Overpower is a bare cast so it only lands when the dodge-triggered aura from sim/warrior/overpower.go is up, and Heroic Strike was the rage dump (removed below). Recklessness (sim/warrior/recklessness.go) is a Berserker Stance spell, so Arms reaches it with a stance swap in the execute phase (below); Arms has no Death Wish (that talent lives in the Fury tree only). The fork's warrior/apls/dps_no_reck.apl.json preset is actually Bloodthirst-based (a Fury list despite the generic name); there is no Arms-specific preset upstream, so this is adapted from it plus the community rotation order. The cited Warcraft Tavern guide has a dedicated Arms Warrior PvE rotation section reading, verbatim: 'Keep Rend applied at all times on your primary target. After that, use Mortal Strike on cooldown. When MS is on cooldown, use Overpower as a filler ability. When MS and OP are on cooldown, use Heroic Strike or Cleave depending on the number of enemies.' -- this file's order matches that sentence exactly. The guide does not put Execute in that same priority sentence and calls the ability 'a touchy topic' for Arms given the spec's poor rage generation; Execute is kept here anyway, gated to the execute-phase window and ordered below Overpower so it never competes with Mortal Strike or Overpower for a global, which is a defensible read of the guide's caution rather than a contradiction of it. Every rank named here is checked against the spellconst of the newest client build in builds/ -- Overpower and Mortal Strike each carry an extra low rank in this build that vanilla did not have, so the highest-numbered rank, not the highest rank number remembered from live Classic, is what is named. Nothing here is Forever-specific yet: the validation job (design section 6) is the evidence for changing it. Rotation search (2026-10-06, level 60, 800 iterations, seed 7): the Heroic Strike rage dump is removed, since its rage is better spent on Mortal Strike and Overpower; about +1.4 percent in that run. 2026-10-31 (theorycraft audit fixes): Slam joins the priority below Execute, gated on Improved Slam (Slam's cast time under 1.5 s), which the raid build now takes: every Forever Arms source plays Mortal Strike, Overpower and Slam. In the execute phase the rotation swaps to Berserker Stance while Recklessness is ready, and the cooldown autocast fires it; the engine now carries baseline Tactical Mastery, so the swap keeps 10 rage. 2026-11-02 (launch guide rewrite, round-11 engine, 10000 iterations, seeds 1 and 50001, raid / bare): the opener is played as in game (Bloodrage, Battle Shout, Charge before the pull; the old Battle Shout at -1 s had no rage to cast with), Overpower moves ahead of Mortal Strike (its window closes, the cooldown does not), Heroic Strike returns only at 90 rage or more, Hamstring stops from 25% and the Berserker swap waits for the first Execute to spend the bar. 707.3 to 719.5 raid (+1.7%), 246.9 to 251.1 bare (+1.7%); bare by level 26.3 to 29.7 at 20, 52.5 to 58.4 at 30, 94.3 to 103.0 at 40, 183.1 to 186.4 at 50. Execute ahead of Mortal Strike in the execute phase was +1.6% bare but -0.3% raid, so Mortal Strike keeps the slot. Hamstring pooling alone +0.1%; Slam and Heroic Strike pooling lost. 2026-11-03 (round 12): the opener is Charge at -2 s, then Battle Shout at -1.5 s with the Charge's rage (skipped when a raid warrior's shout is already up), and Bloodrage on the pull from the priority list. Charge cannot be used in combat and the client still ships Bloodrage's in-combat effect (29131 aura 94), so a Bloodrage before the Charge is gone. The execute-phase Berserker swap now also asks spellIsKnown(Recklessness), so a warrior below 50 stays in Battle Stance. 2026-11-03 (round 13, wow-player review): Charge moves from -2 s to the pull (0 s), so a raid Arms warrior never reaches the boss before the tank; in the bare bands the warrior pulls with it. The pre-pull Battle Shout follows it at 0 s, paid by the Charge's rage, and is still skipped under a raid shout.",
   "engineering_notes": {
     "3": "Fix round 3: Rend's DoT lives on the target, not the warrior, so the gate is dotIsActive against the current target rather than auraIsActive against the caster -- the same shape shaman-elemental and druid-feral already use for their own DoT upkeep checks. The old auraIsActive gate never resolved (nil condition, read as always true), so Rend was recast on every free global.",
     "5": "Gated by the engine's ExtraCastCondition mechanism (not a player-visible condition check) against the dodge-triggered proc aura."
@@ -30,18 +30,31 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2687
+              "spellId": 11578,
+              "rank": 3
             }
           }
         },
         "doAtValue": {
           "const": {
-            "val": "-2.5s"
+            "val": "0s"
           }
         }
       },
       {
         "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 11551,
+                    "rank": 6
+                  }
+                }
+              }
+            }
+          },
           "castSpell": {
             "spellId": {
               "spellId": 11551,
@@ -51,22 +64,7 @@
         },
         "doAtValue": {
           "const": {
-            "val": "-1.5s"
-          }
-        }
-      },
-      {
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 11578,
-              "rank": 3
-            }
-          }
-        },
-        "doAtValue": {
-          "const": {
-            "val": "-0.5s"
+            "val": "0s"
           }
         }
       }
@@ -86,6 +84,13 @@
                 {
                   "isExecutePhase": {
                     "threshold": "E20"
+                  }
+                },
+                {
+                  "spellIsKnown": {
+                    "spellId": {
+                      "spellId": 1719
+                    }
                   }
                 },
                 {

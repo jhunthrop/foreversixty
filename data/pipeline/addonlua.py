@@ -53,6 +53,16 @@ def _class_lua(slug: str, tabs: list) -> str:
     return "\n".join(lines)
 
 
+def _race_ids_lua(ids: dict[str, int]) -> str:
+    """`, raceSpellId = { ["undead"] = .., .. }` for a line whose rank a race's
+    row changes (round 13), else nothing. Keys are the site's race slugs,
+    quoted because `night-elf` is no bare Lua name."""
+    if not ids:
+        return ""
+    pairs = ", ".join(f"[{_quote(race)}] = {ids[race]}" for race in sorted(ids))
+    return f", raceSpellId = {{ {pairs} }}"
+
+
 def _rotations_lua(rotations: dict) -> list[str]:
     lines = ["\trotations = {"]
     for spec in sorted(rotations):
@@ -60,9 +70,10 @@ def _rotations_lua(rotations: dict) -> list[str]:
         for band in rotations[spec]:
             lines.append(f"\t\t\t{{ level = {band.level}, lines = {{")
             for line in band.lines:
+                races = _race_ids_lua(line.race_spell_ids)
                 lines.append(
                     f"\t\t\t\t{{ spellId = {line.spell_id}, name = {_quote(line.name)}, "
-                    f"condition = {_quote(line.condition)} }},"
+                    f"condition = {_quote(line.condition)}{races} }},"
                 )
             lines.append("\t\t\t} },")
         lines.append("\t\t},")
@@ -85,9 +96,7 @@ BIS_FIELD_SEPARATOR = "|"
 
 def _bis_field(value: str) -> str:
     if BIS_FIELD_SEPARATOR in value:
-        raise AddonBisError(
-            f"{value!r} contains the BiS field separator {BIS_FIELD_SEPARATOR!r}"
-        )
+        raise AddonBisError(f"{value!r} contains the BiS field separator {BIS_FIELD_SEPARATOR!r}")
     return value
 
 
@@ -293,7 +302,7 @@ def render_lua(data: AddonData) -> str:
         GENERATED,
         "-- Source: data/builds/<build>/addon-data.json",
         "local _, ns = ...",
-        "ns = type(ns) == \"table\" and ns or {}",
+        'ns = type(ns) == "table" and ns or {}',
         "",
         "ns.Data = {",
         f"\tbuild = {_quote(data.build)},",

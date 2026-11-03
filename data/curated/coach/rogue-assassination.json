@@ -38,13 +38,13 @@
       "spell_ids": [
         1856,
         11327,
-        1857,
         11329,
         27617,
-        1285372
+        1285372,
+        1857
       ],
       "talent": false,
-      "verified": "1.60.1.70753/spellconst/rogue.json#1285372"
+      "verified": "1.60.1.70753/spellconst/rogue.json#1857"
     }
   ],
   "efficiency": []

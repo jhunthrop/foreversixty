@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-10000000000000000-00000000000000000 | main_hand:263407 | 10.8 | 7 | other:attack/1=60.9, spell:1311647=41.9, spell:679=18.2, spell:1311650=17.4, spell:20271=17.4 | {SpellID: 1239570}, {SpellID: 1310994}, {SpellID: 1311015} |
-| 20 | 00000000000000000-15302000000000000-00000000000000000 | main_hand:7230 | 18.8 | 8 | other:attack/1=51.8, spell:1311654=32.4, spell:1866=16.1, spell:1311655=10.7, spell:20271=10.7 | {SpellID: 1239570}, {SpellID: 1310994}, {SpellID: 1311015} |
-| 30 | 00000000000000000-15302102511000000-00000000000000000 | main_hand:13045 | 29.9 | 10 | other:attack/1=62.2, spell:20231=34.9, spell:680=16.9, spell:20183=14.3, spell:20271=11.1 | {SpellID: 20925} |
-| 38 | 00000000000000000-15302102513501000-00000000000000000 | main_hand:10570 | 34.3 | 10 | other:attack/1=58.8, spell:20415=27.1, spell:2495=18.6, spell:20411=8.8, spell:20271=5.7 | - |
-| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:10570 | 35.5 | 12 | other:attack/1=58.3, spell:2495=30.4, spell:20415=6.8, spell:407632=2.6, spell:20411=2.1 | - |
-| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:10570 | 43.5 | 12 | other:attack/1=57.9, spell:5569=30.4, spell:20417=6.8, spell:407632=3.3, spell:20413=2.7 | - |
-| 60 | 05005000000000000-15302102513501031-50030000000000000 | main_hand:22736 | 101.6 | 12 | other:attack/1=68.3, spell:10333=30.3, spell:20418=7.7, spell:20414=2.3, spell:407632=1.8 | - |
+| 10 | 00000000000000000-10000000000000000-00000000000000000 | main_hand:263407 | 10.9 | 7 | other:attack/1=60.9, spell:1311647=42.7, spell:679=18.2, spell:1311650=17.6, spell:20271=17.6 | {SpellID: 1239570}, {SpellID: 1310994}, {SpellID: 1311015} |
+| 20 | 00000000000000000-15302000000000000-00000000000000000 | main_hand:7230 | 18.8 | 8 | other:attack/1=51.9, spell:1311654=32.3, spell:1866=16.0, spell:1311655=10.6, spell:20271=10.6 | {SpellID: 1239570}, {SpellID: 1310994}, {SpellID: 1311015} |
+| 30 | 00000000000000000-15302102510001000-00000000000000000 | main_hand:13045 | 29.3 | 10 | other:attack/1=62.2, spell:20231=32.0, spell:680=18.5, spell:20183=12.1, spell:20271=8.9 | - |
+| 38 | 00000000000000000-15302102513501000-00000000000000000 | main_hand:10570 | 34.4 | 10 | other:attack/1=58.9, spell:20415=26.5, spell:2495=18.5, spell:20411=8.9, spell:20271=5.9 | - |
+| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:10570 | 31.6 | 12 | other:attack/1=58.6, spell:679=30.4, spell:20415=6.8, spell:407632=3.0, spell:20411=2.2 | - |
+| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:10570 | 43.9 | 12 | other:attack/1=58.4, spell:5569=30.4, spell:20417=6.9, spell:407632=3.4, spell:20413=2.8 | - |
+| 60 | 05005000000000000-15302102513501031-50030000000000000 | main_hand:22736 | 102.0 | 12 | other:attack/1=68.0, spell:10333=30.3, spell:20418=7.6, spell:20414=2.3, spell:407632=1.5 | - |
 
 ## Learned but unused (informational)
 
@@ -136,6 +136,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Consecration (spell 20922)
 - Exorcism (spell 5615)
+- Holy Strike (spell 2495)
 - Judgement of Command (spell 20961)
 - Judgement of Righteousness (spell 20283)
 
@@ -158,8 +159,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
+- paladin-protection level=30 kind=zero_casts spell="Holy Shield" id=20925 authored=1239570
 - paladin-protection level=38 kind=zero_casts spell="Divine Protection" id=5573 authored=5573
 - paladin-protection level=38 kind=zero_casts spell="Holy Shield" id=20925 authored=1239570
+- paladin-protection level=40 kind=dps_regression dps=31.6 prev_dps=34.4
 - paladin-protection level=40 kind=zero_casts spell="Holy Shield" id=20927 authored=1239570
 - paladin-protection level=50 kind=zero_casts spell="Holy Shield" id=20928 authored=1239570
 - paladin-protection level=60 kind=zero_casts spell="Holy Shield" id=1239570 authored=1239570
