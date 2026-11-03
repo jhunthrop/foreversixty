@@ -14,22 +14,29 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Destruction Warlock as the site's guide describes it. Destruction is Warlock's direct-damage spec: it keeps Immolate on the target to fuel Conflagrate and Incinerate, and finishes with Shadowburn. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Destruction Warlock as the site's guide describes it. Destruction keeps Immolate on the boss, fires Conflagrate and Shadowburn on cooldown to hold both halves of Shadow and Flame, and casts Incinerate in between. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Corruption goes down first and is kept up throughout. It is cheap sustained damage that does not compete with your casts.
-- Bane of Doom is the one curse kept up. It deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains.
-- Bane of Agony in the last minute, when a Doom would not fire before the fight ends.
-- Curse of the Elements goes up once, before the bane: in Forever a curse and a bane hold separate slots, so it sits beside Bane of Agony or Bane of Doom and lasts five minutes.
-- Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is recast when under three seconds remain.
-- Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up.
-- Shadowburn is cast on cooldown whenever its reagent cost is acceptable, with no execute-phase gate. It is strong burst at any target health.
-- Incinerate is Destruction's signature filler, dealing bonus damage while Immolate is active.
-- Shadow Bolt.
-- Life Tap to keep casting once mana runs low.
+- Before the pull: Demon Armor on, Succubus out, at least one shard spare for Shadowburn, a Healthstone, and Life Tap to full while the healers top you off.
+- Lash of Pain: You have no Demonology talents, but the Succubus still earns her shard: her melee and Lash of Pain out-damage the Imp's Firebolt.
+- Corruption whenever it has fallen off.
+- Bane of Doom the moment the last one fires, with a minute or more of the fight left.
+- Bane of Agony in the last minute, once Doom has fired.
+- Immolate with three seconds or less left on it.
+- Conflagrate on cooldown while Immolate is up.
+- Shadowburn on cooldown, at any boss health.
+- Incinerate for every other cast.
+- Curse of the Elements when no warlock's is on the target.
+- Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
+- Searing Pain is a threat spell, not a damage spell, and Incinerate does more.
+- Life Tap below ten percent mana.
+- Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
+- In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
+- Rain of Fire for trash packs that stay put.
+- Hellfire burns you as well.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
