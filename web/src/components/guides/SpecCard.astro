@@ -9,6 +9,7 @@
 // own session read -- see the class landing page's own header comment for why this stays a
 // build-time prop rather than a client fetch).
 import { guidesCopy } from '../../lib/guides/copy';
+import { publishedIcon } from '../../lib/bis/spec-icon';
 import { dataUrl } from '../../lib/planner/load';
 import { setMetricLine, type SetMetric } from '../../lib/guides/role-metric';
 
@@ -34,12 +35,13 @@ const {
   specName,
   role,
   description,
-  icon,
+  icon: specIcon,
   setMetric,
   href,
   build,
   isYourSpec = false,
 } = Astro.props;
+const icon = publishedIcon(build, specIcon);
 ---
 
 <div class="spec-card panel" data-testid={`guide-spec-card-${specName.toLowerCase().replace(/\s+/g, '-')}`}>

@@ -154,7 +154,7 @@ function bandViewsFor(faction: Faction, infos: readonly BandInfo[], preset?: Bis
       rotationLines:
         rotationEntry === undefined
           ? []
-          : rotationLinesFor(rotationEntry, build, specEntry.class_slug, specEntry.spec),
+          : rotationLinesFor(rotationEntry, build, specEntry.class_slug, specEntry.spec, bandTopLevel(band)),
       sourceGroups: sourceGroupsFor(info.rows),
       newAtBand: newAtBandLinesFor(
         info,

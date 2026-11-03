@@ -134,6 +134,56 @@ test.describe('phone', () => {
   });
 });
 
+const CLASS_SLUGS = ['druid', 'hunter', 'mage', 'paladin', 'priest', 'rogue', 'shaman', 'warlock', 'warrior'];
+/** The least room between the spec cards and the class notes below them. */
+const MIN_GAP_BELOW_CARDS = 16;
+
+test.describe('class landings', () => {
+  for (const [label, viewport] of [
+    ['390', PHONE],
+    ['1440', DESKTOP],
+  ] as const) {
+    test.describe(label, () => {
+      test.use({ viewport });
+
+      for (const classSlug of CLASS_SLUGS) {
+        test(`/guides/${classSlug} keeps every spec tab on screen and the notes clear of the cards`, async ({
+          page,
+        }) => {
+          await page.goto(`/guides/${classSlug}`);
+          const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+          for (const tab of await page.locator('[data-testid^="bis-spec-tab-"]').all()) {
+            const box = await tab.boundingBox();
+            expect(box).not.toBeNull();
+            expect(box!.x).toBeGreaterThanOrEqual(0);
+            expect(box!.x + box!.width).toBeLessThanOrEqual(clientWidth);
+          }
+          const gap = await page.getByTestId('guide-class-spec-cards').evaluate((cards) => {
+            const next = cards.nextElementSibling;
+            return next === null
+              ? null
+              : next.getBoundingClientRect().top - cards.getBoundingClientRect().bottom;
+          });
+          if (gap !== null) expect(gap).toBeGreaterThanOrEqual(MIN_GAP_BELOW_CARDS);
+        });
+      }
+    });
+  }
+
+  test.describe('1440 row', () => {
+    test.use({ viewport: DESKTOP });
+
+    test('/guides/druid sets its four spec cards in one row', async ({ page }) => {
+      await page.goto('/guides/druid');
+      const tops = await page
+        .locator('[data-testid="guide-class-spec-cards"] > div')
+        .evaluateAll((cards) => cards.map((card) => Math.round(card.getBoundingClientRect().top)));
+      expect(tops).toHaveLength(4);
+      expect(new Set(tops).size).toBe(1);
+    });
+  });
+});
+
 test.describe('no horizontal overflow', () => {
   for (const [label, viewport] of [
     ['390', PHONE],
