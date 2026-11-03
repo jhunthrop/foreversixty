@@ -132,7 +132,7 @@ func TestRankChoicesFollowThePreset(t *testing.T) {
 		{BarePreset, 60, 2, true},
 		{RaidPreset, 60, 0, false},
 	} {
-		rank, ok := all["x"].forPreset(c.preset).rankAt(7, c.level)
+		rank, ok := all["x"].forRequest(c.preset, HordeFaction).rankAt(7, c.level)
 		if ok != c.wantFound || rank != c.rank {
 			t.Errorf("%s at %d: rankAt = (%d, %v), want (%d, %v)", c.preset, c.level, rank, ok, c.rank, c.wantFound)
 		}
@@ -150,14 +150,14 @@ func TestRewriteAtSixtyTakesOnlyThePresetsRows(t *testing.T) {
 		t.Fatal(err)
 	}
 	choices := rankChoices{15207: {{FromLevel: 60, ToLevel: 60, Rank: 4, Preset: BarePreset}}}
-	bare, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forPreset(BarePreset))
+	bare, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forRequest(BarePreset, HordeFaction))
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !strings.Contains(string(bare), `"spellId":915`) || strings.Contains(string(bare), `"spellId":15207`) {
 		t.Error("bare 60 should cast Lightning Bolt rank 4 (915) in place of 15207")
 	}
-	raid, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forPreset(RaidPreset))
+	raid, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forRequest(RaidPreset, HordeFaction))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -176,5 +176,63 @@ func TestBuildRefusesAnUnknownPreset(t *testing.T) {
 	}
 	if _, err := Build(req); !errors.Is(err, ErrUnknownPreset) {
 		t.Errorf("Build with preset %q: err = %v, want ErrUnknownPreset", req.Preset, err)
+	}
+}
+
+// A row may name a faction (round 12): it then applies only to a character of
+// that faction, where the two factions' best ranks differ beyond error. A row
+// with none applies to both, and an Alliance and a Horde row may share a band.
+func TestRankChoicesFollowTheFaction(t *testing.T) {
+	all, err := parseRankChoices([]byte(`{"specs":{"x":[{"authored":7,"bands":[
+		{"from_level":50,"to_level":59,"rank":3},
+		{"from_level":60,"to_level":60,"rank":2,"preset":"bare","faction":"alliance"},
+		{"from_level":60,"to_level":60,"rank":4,"preset":"bare","faction":"horde"}]}]}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		preset, faction string
+		level, rank     int
+		wantFound       bool
+	}{
+		{BarePreset, AllianceFaction, 55, 3, true},
+		{BarePreset, HordeFaction, 55, 3, true},
+		{BarePreset, AllianceFaction, 60, 2, true},
+		{BarePreset, HordeFaction, 60, 4, true},
+		{RaidPreset, AllianceFaction, 60, 0, false},
+	} {
+		rank, ok := all["x"].forRequest(c.preset, c.faction).rankAt(7, c.level)
+		if ok != c.wantFound || rank != c.rank {
+			t.Errorf("%s %s at %d: rankAt = (%d, %v), want (%d, %v)", c.preset, c.faction, c.level, rank, ok, c.rank, c.wantFound)
+		}
+	}
+	for _, raw := range []string{
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":60,"to_level":60,"rank":2,"preset":"bare","faction":"neutral"}]}]}}`,
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":60,"to_level":60,"rank":2,"preset":"bare","faction":"horde"},{"from_level":60,"to_level":60,"rank":3,"preset":"bare","faction":"horde"}]}]}}`,
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":60,"to_level":60,"rank":2,"preset":"bare"},{"from_level":60,"to_level":60,"rank":3,"preset":"bare","faction":"horde"}]}]}}`,
+	} {
+		if _, err := parseRankChoices([]byte(raw)); err == nil {
+			t.Errorf("accepted %s", raw)
+		}
+	}
+}
+
+// Every race the request maps has a faction, and Skyborne's two slugs follow
+// the faction their racial is chosen for.
+func TestFactionOfRaceCoversEveryRace(t *testing.T) {
+	want := map[string]string{
+		"dwarf": AllianceFaction, "gnome": AllianceFaction, "human": AllianceFaction,
+		"night-elf": AllianceFaction, "high-order-skyborne": AllianceFaction,
+		"orc": HordeFaction, "tauren": HordeFaction, "troll": HordeFaction,
+		"undead": HordeFaction, "windshaper-skyborne": HordeFaction,
+	}
+	for race := range races {
+		got, err := FactionOfRace(race)
+		if err != nil || got != want[race] {
+			t.Errorf("FactionOfRace(%q) = (%q, %v), want %q", race, got, err, want[race])
+		}
+	}
+	if _, err := FactionOfRace("murloc"); err == nil {
+		t.Error("an unknown race has no faction")
 	}
 }

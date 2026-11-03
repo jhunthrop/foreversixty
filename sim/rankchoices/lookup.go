@@ -29,8 +29,9 @@ var rankChoicesByName = sync.OnceValues(func() (map[string]map[string][]Row, err
 })
 
 // ChosenRanks is every rank data/curated/rank-choices.json has spec's rotation cast of the
-// spell named name (its spellranks.json name) at level, under either preset, ascending and
-// without repeats: a log does not say which preset the player raided under. Nil means no
+// spell named name (its spellranks.json name) at level, under either preset and for either
+// faction, ascending and without repeats: a log does not say which preset the player raided
+// under, and a rank the site chooses for one faction is no mistake for the other. Nil means no
 // row holds level and the default rule (the highest rank learned) stands.
 func ChosenRanks(spec, name string, level int) ([]int, error) {
 	table, err := rankChoicesByName()

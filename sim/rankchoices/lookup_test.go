@@ -18,7 +18,10 @@ func TestChosenRanksReadsTheCuratedRowsAtALevel(t *testing.T) {
 		{"paladin-retribution", "Consecration", 25, nil},
 		{"druid-balance", "Moonfire", 30, []int{3}},
 		// Level 60's rows name a preset; a log does not say which, so either counts.
-		{"shaman-elemental", "Lightning Bolt", 60, []int{4}},
+		{"shaman-elemental", "Lightning Bolt", 60, []int{4, 7}},
+		// A faction's row counts for either faction (round 12): a log's rank is no mistake
+		// where the site casts it for one of them.
+		{"priest-shadow", "Mind Blast", 55, []int{2, 3}},
 		{"warrior-fury", "Bloodthirst", 60, nil},
 		{"paladin-retribution", "Seal of Righteousness", 40, nil},
 	} {

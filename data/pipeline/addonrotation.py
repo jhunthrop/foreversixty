@@ -32,6 +32,7 @@ from __future__ import annotations
 import json
 import re
 from collections.abc import Callable, Mapping
+from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
 
@@ -243,17 +244,50 @@ def _rank_choice_id(
 BARE_PRESET = "bare"
 
 
-def _band_rank(choices: dict, spell_id: int, level: int) -> int | None:
-    """The rank data/curated/rank-choices.json picks for the list's
-    `spell_id` at `level` (one spec's rows), or None outside every row. A
+#: The factions a rank-choice row may name (sim/request AllianceFaction, HordeFaction).
+FACTIONS = ("alliance", "horde")
+
+
+def _band_ranks(choices: dict, spell_id: int, level: int) -> dict[str | None, int]:
+    """The ranks data/curated/rank-choices.json picks for the list's
+    `spell_id` at `level` (one spec's rows), keyed by the faction a row
+    names (None for a row of both factions); empty outside every row. A
     band below 60 is the bare preset's, so a row for the raid preset only
     never applies here."""
+    ranks: dict[str | None, int] = {}
     for row in choices.get(spell_id, []):
         if row.get("preset", BARE_PRESET) != BARE_PRESET:
             continue
         if row["from_level"] <= level <= row["to_level"]:
-            return row["rank"]
-    return None
+            ranks[row.get("faction")] = row["rank"]
+    return ranks
+
+
+@dataclass(frozen=True)
+class _RankPick:
+    """One cast line's family at one band, for picking a chosen rank's id."""
+
+    spellranks: dict
+    class_slug: str
+    family: str
+    spell_id: int
+    level: int
+
+    def id_of(self, rank: int | None, fallback: int) -> int:
+        """`rank`'s id (`_rank_choice_id`), or `fallback` with no rank or no such id."""
+        if rank is None:
+            return fallback
+        chosen = _rank_choice_id(
+            self.spellranks, self.class_slug, self.family, self.spell_id, rank, self.level
+        )
+        return chosen if chosen is not None else fallback
+
+
+def _faction_ids(pick: _RankPick, ranks: dict[str | None, int], resolved_id: int) -> dict[str, int]:
+    """Each faction's id where a faction row casts other than `resolved_id`,
+    else empty (AddonRotationLine.faction_spell_ids)."""
+    ids = {f: pick.id_of(ranks.get(f), resolved_id) for f in FACTIONS}
+    return ids if any(i != resolved_id for i in ids.values()) else {}
 
 
 def load_rank_choices(curated_dir: Path, spec: str) -> dict[int, list[dict]]:
@@ -367,17 +401,22 @@ def build_rotation(
             if resolved is None:
                 continue
             name, resolved_id = resolved
-            # A per-band rank choice (sim/request rankResolver) wins below 60.
-            rank = _band_rank(choices, cast["spell_id"], level) if level < MAX_LEVEL else None
-            if rank is not None:
-                chosen = _rank_choice_id(
-                    spellranks, _class_slug(spec), name, cast["spell_id"], rank, level
-                )
-                resolved_id = chosen if chosen is not None else resolved_id
+            # A per-band rank choice (sim/request rankResolver) wins below 60;
+            # a faction's own row wins for that faction.
+            ranks = _band_ranks(choices, cast["spell_id"], level) if level < MAX_LEVEL else {}
+            pick = _RankPick(spellranks, _class_slug(spec), name, cast["spell_id"], level)
+            resolved_id = pick.id_of(ranks.get(None), resolved_id)
+            faction_ids = _faction_ids(pick, ranks, resolved_id)
             condition = _one_line(cast["notes"])
             icon = _resolve_icon(resolved_id, icon_of)
             lines.append(
-                AddonRotationLine(spell_id=resolved_id, name=name, condition=condition, icon=icon)
+                AddonRotationLine(
+                    spell_id=resolved_id,
+                    name=name,
+                    condition=condition,
+                    icon=icon,
+                    faction_spell_ids=faction_ids,
+                )
             )
         bands.append(AddonRotationBand(level=level, lines=lines))
     return bands

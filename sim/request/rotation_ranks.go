@@ -71,10 +71,13 @@ import (
 //
 // RewriteRotationRanks is rewriteRotationRanks for a rotation file read
 // outside the embedded APLs (spec-breakdown's -rotation), with spec's own
-// rank choices under preset, so a copy of the published rotation casts what
-// it does.
-func RewriteRotationRanks(raw []byte, spec, class, preset string, level int) ([]byte, error) {
-	return rewriteRotationRanks(raw, class, level, specRankChoices(spec, preset))
+// rank choices under preset for faction (AllianceFaction or HordeFaction), so
+// a copy of the published rotation casts what it does.
+func RewriteRotationRanks(raw []byte, spec, class, preset, faction string, level int) ([]byte, error) {
+	if faction != AllianceFaction && faction != HordeFaction {
+		return nil, fmt.Errorf("request: faction %q; rank choices follow %q or %q", faction, AllianceFaction, HordeFaction)
+	}
+	return rewriteRotationRanks(raw, class, level, specRankChoices(spec, preset, faction))
 }
 
 func rewriteRotationRanks(raw []byte, class string, level int, choices rankChoices) ([]byte, error) {

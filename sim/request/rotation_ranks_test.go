@@ -121,7 +121,7 @@ func TestRotationAtMaxLevelParsesTheEmbedDirectly(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	got, err := rotation(hunterSpecForRankTests, "hunter", RaidPreset, api.MaxLevel)
+	got, err := rotation(hunterSpecForRankTests, "hunter", RaidPreset, HordeFaction, api.MaxLevel)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -408,13 +408,13 @@ func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 // The curated table reaches the published rotation: Elemental's band-50 row
 // casts Lightning Bolt rank 4 (915) where the default rule casts rank 9. The
 // list's other Lightning Bolt line, the top rank while mana is ahead of the
-// fight, names no choice row and keeps the band's top rank (15207 at 50).
+// fight (15208), has its own row since round 12 and casts rank 7 (10391).
 func TestThePublishedRotationTakesTheCuratedRankChoices(t *testing.T) {
-	ids := rotationIDs(t, "shaman-elemental", "shaman", 50, specRankChoices("shaman-elemental", BarePreset))
+	ids := rotationIDs(t, "shaman-elemental", "shaman", 50, specRankChoices("shaman-elemental", BarePreset, HordeFaction))
 	if !ids[915] {
 		t.Errorf("Elemental at 50 should cast Lightning Bolt rank 4 (915) on its filler line")
 	}
-	if !ids[15207] {
-		t.Errorf("Elemental at 50 should keep rank 9 (15207) on its paced top-rank line")
+	if !ids[10391] || ids[15207] {
+		t.Errorf("Elemental at 50 should cast rank 7 (10391) on its paced line, not rank 9 (15207)")
 	}
 }

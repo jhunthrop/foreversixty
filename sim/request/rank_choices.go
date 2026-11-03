@@ -34,18 +34,22 @@ type rankChoicesFile = rankchoices.File
 // FromLevel.
 type rankChoices map[int32][]RankChoiceRow
 
-// forPreset is c with only the rows that apply under preset.
-func (c rankChoices) forPreset(preset string) rankChoices {
+// forRequest is c with only the rows that apply to a request simmed under
+// preset for a character of faction.
+func (c rankChoices) forRequest(preset, faction string) rankChoices {
 	out := make(rankChoices, len(c))
 	for id, rows := range c {
 		for _, row := range rows {
-			if row.Preset == "" || row.Preset == preset {
+			if appliesTo(row.Preset, preset) && appliesTo(row.Faction, faction) {
 				out[id] = append(out[id], row)
 			}
 		}
 	}
 	return out
 }
+
+// appliesTo reports whether a row keyed key ("" for every value) applies to value.
+func appliesTo(key, value string) bool { return key == "" || key == value }
 
 // rankAt is the rank the row holding level chooses for id, if any.
 func (c rankChoices) rankAt(id int32, level int) (int, bool) {
@@ -77,11 +81,16 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 				if row.Preset != "" && row.Preset != BarePreset && row.Preset != RaidPreset {
 					return nil, fmt.Errorf("%w: rank choices: %s %d names preset %q", ErrUnknownPreset, spec, sp.Authored, row.Preset)
 				}
+				if row.Faction != "" && row.Faction != AllianceFaction && row.Faction != HordeFaction {
+					return nil, fmt.Errorf("rank choices: %s %d names faction %q; a row's faction is %q or %q", spec, sp.Authored, row.Faction, AllianceFaction, HordeFaction)
+				}
 				if row.ToLevel < row.FromLevel {
 					return nil, fmt.Errorf("rank choices: %s %d has a row from level %d to %d", spec, sp.Authored, row.FromLevel, row.ToLevel)
 				}
-				if i > 0 && row.FromLevel <= rows[i-1].ToLevel && overlapPresets(row, rows[i-1]) {
-					return nil, fmt.Errorf("rank choices: %s %d has two rows at level %d", spec, sp.Authored, row.FromLevel)
+				for _, prev := range rows[:i] {
+					if row.FromLevel <= prev.ToLevel && overlap(row, prev) {
+						return nil, fmt.Errorf("rank choices: %s %d has two rows at level %d", spec, sp.Authored, row.FromLevel)
+					}
 				}
 			}
 			bySpell[sp.Authored] = rows
@@ -91,24 +100,28 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 	return out, nil
 }
 
-// overlapPresets reports whether two rows can apply to the same request.
-func overlapPresets(a, b RankChoiceRow) bool {
-	return a.Preset == "" || b.Preset == "" || a.Preset == b.Preset
+// overlap reports whether two rows can apply to the same request: their
+// presets and their factions both meet.
+func overlap(a, b RankChoiceRow) bool {
+	return keysMeet(a.Preset, b.Preset) && keysMeet(a.Faction, b.Faction)
 }
+
+// keysMeet reports whether two rows' keys ("" for every value) share a value.
+func keysMeet(a, b string) bool { return a == "" || b == "" || a == b }
 
 var embeddedRankChoices = sync.OnceValues(func() (map[string]rankChoices, error) {
 	return parseRankChoices(rankChoicesJSON)
 })
 
-// specRankChoices is spec's rows under preset from the embedded table; none
-// when the spec has no row (or the embed is unreadable, which
+// specRankChoices is spec's rows under preset for faction from the embedded
+// table; none when the spec has no row (or the embed is unreadable, which
 // TestEmbeddedRankChoicesMatchCurated fails on).
-func specRankChoices(spec, preset string) rankChoices {
+func specRankChoices(spec, preset, faction string) rankChoices {
 	all, err := embeddedRankChoices()
 	if err != nil {
 		return nil
 	}
-	return all[spec].forPreset(preset)
+	return all[spec].forRequest(preset, faction)
 }
 
 // rankPreset is the preset a request's rank choices follow: the one it

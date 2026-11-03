@@ -533,6 +533,44 @@ def test_a_band_casts_the_rank_choice_the_curated_table_names(tmp_path):
     assert [line.spell_id for line in bands[60]] == [10929]
 
 
+def test_a_faction_rank_choice_below_sixty_names_each_factions_rank(tmp_path):
+    """A rank-choice row may name a faction (round 12). The addon carries one
+    rotation per band for both factions, so a line whose rank a faction row
+    changes keeps the both-faction id as `spell_id` and names each faction's
+    own id in `faction_spell_ids`; the addon picks by the player's faction."""
+    _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
+    (tmp_path / "rank-choices.json").write_text(
+        json.dumps(
+            {
+                "specs": {
+                    "priest-holy": [
+                        {
+                            "spell": "Renew",
+                            "authored": 10929,
+                            "bands": [
+                                {"from_level": 40, "to_level": 49, "rank": 2},
+                                {"from_level": 50, "to_level": 59, "rank": 3, "faction": "horde"},
+                                {
+                                    "from_level": 50,
+                                    "to_level": 59,
+                                    "rank": 2,
+                                    "faction": "alliance",
+                                },
+                            ],
+                        }
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    bands = _healer_bands("priest-holy", tmp_path)
+    assert [(line.spell_id, line.faction_spell_ids) for line in bands[40]] == [(6074, {})]
+    [line] = bands[50]
+    assert line.spell_id == 10928
+    assert line.faction_spell_ids == {"alliance": 6074, "horde": 6075}
+
+
 def _healer_bands_at(spec: str, curated_dir: Path, level: int) -> list:
     from pipeline import addonrotation
 
@@ -674,3 +712,34 @@ def test_compute_spell_icons_covers_the_prepull_casts_no_rank_family_resolves(tm
     icons = compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
     assert 688 in icons
     assert 23894 in icons
+
+
+def test_the_lua_names_each_factions_id_only_where_they_differ():
+    """Data.lua carries `factionSpellId` on a line only where a faction row
+    changes its rank; the addon reads it by the player's faction."""
+    from pipeline.addonlua import _rotations_lua
+    from pipeline.models import AddonRotationBand, AddonRotationLine
+
+    both = AddonRotationLine(spell_id=8092, name="Mind Blast", condition="", icon="x")
+    split = AddonRotationLine(
+        spell_id=10945,
+        name="Mind Blast",
+        condition="",
+        icon="x",
+        faction_spell_ids={"alliance": 8102, "horde": 8103},
+    )
+    lua = "\n".join(
+        _rotations_lua(
+            {
+                "priest-shadow": [
+                    AddonRotationBand(level=40, lines=[both]),
+                    AddonRotationBand(level=50, lines=[split]),
+                ]
+            }
+        )
+    )
+    assert '{ spellId = 8092, name = "Mind Blast", condition = "" },' in lua
+    assert (
+        '{ spellId = 10945, name = "Mind Blast", condition = "", '
+        "factionSpellId = { alliance = 8102, horde = 8103 } }," in lua
+    )

@@ -69,7 +69,7 @@ func runTankReport(o options) (string, error) {
 	if err := simdb.Attach(engineReq); err != nil {
 		return "", fmt.Errorf("attaching the item database: %w", err)
 	}
-	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, o.band)
+	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, o.faction, o.band)
 	if err != nil {
 		return "", err
 	}

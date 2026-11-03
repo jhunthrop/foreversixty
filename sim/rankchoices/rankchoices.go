@@ -15,12 +15,16 @@ var JSON []byte
 // Row is one band's choice: from FromLevel through ToLevel the spell casts rank Rank.
 // Outside every row the default rule stands. A row naming a Preset (sim/request's
 // BarePreset or RaidPreset) applies only to a request simmed under it; one with none
-// applies to both.
+// applies to both. A row naming a Faction (sim/request's AllianceFaction or
+// HordeFaction) applies only to a character of that faction; one with none applies to
+// both. A faction is keyed only where the two factions' best ranks differ beyond error
+// (owner ruling, sim-accuracy round 12).
 type Row struct {
 	FromLevel int    `json:"from_level"`
 	ToLevel   int    `json:"to_level"`
 	Rank      int    `json:"rank"`
 	Preset    string `json:"preset,omitempty"`
+	Faction   string `json:"faction,omitempty"`
 }
 
 // Spell is one authored spell id's rows, as the curated file writes them.

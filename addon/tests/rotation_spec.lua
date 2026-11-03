@@ -305,6 +305,48 @@ end)
 
 -- L3.7 pre-item (round A review): a second line whose only word that fits is a figure keeps that
 -- one word rather than cutting down to none.
+-- A line whose rank a faction's rank-choice row changes (round 12) carries each
+-- faction's id in factionSpellId; the band shows the player's own.
+describe("Rotation with a faction's rank", function()
+	local SPLIT = {
+		build = DATA.build,
+		classes = DATA.classes,
+		weights = {},
+		rotations = { ["warrior-fury"] = {
+			{ level = 50, lines = {
+				{ spellId = 285, name = "Heroic Strike", condition = "", factionSpellId = { alliance = 284, horde = 1608 } },
+			} },
+		} },
+	}
+
+	local function shownFor(faction)
+		mock.install({
+			class = { name = "Warrior", token = "WARRIOR" },
+			globals = { UnitFactionGroup = function() return faction end },
+		})
+		helper.load("Compat")
+		helper.load("Gear")
+		local Rotation = helper.load("Rotation")
+		local model = Rotation.model(SPLIT, BUILD, RANKS, 55, true)
+		mock.uninstall()
+		return model.lines[1].spellId
+	end
+
+	it("shows the Horde id to a Horde player and the Alliance id to an Alliance one", function()
+		assert.are.equal(1608, shownFor("Horde"))
+		assert.are.equal(284, shownFor("Alliance"))
+	end)
+
+	it("keeps the line's own id where the client names no faction", function()
+		assert.are.equal(285, shownFor(nil))
+	end)
+
+	it("never writes the faction's id into the shipped band", function()
+		shownFor("Horde")
+		assert.are.equal(285, SPLIT.rotations["warrior-fury"][1].lines[1].spellId)
+	end)
+end)
+
 describe("Rotation.cutCount with a figure first", function()
 	local Rotation = require("Rotation")
 
