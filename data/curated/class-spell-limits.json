@@ -1,0 +1,24 @@
+{
+  "notes": "Class trainer spells a guide's cooldown list must not offer to every player of the class. raceLocked: the races that learn the spell, read from SkillLineAbility RaceMasks_0 (client 1.60.1.70707; Human 1, Dwarf 4, Night Elf 8, Undead 16, Gnome 64, Troll 128). notLearnable: spells on the class skill line that no player of the class can learn at launch, each with its reason. The guide's Races section covers the race-locked spells instead.",
+  "raceLocked": {
+    "priest": {
+      "Feedback": ["human"],
+      "Divine Grace": ["human"],
+      "Desperate Prayer": ["dwarf"],
+      "Chastise": ["dwarf"],
+      "Elune's Grace": ["night-elf"],
+      "Starshards": ["night-elf"],
+      "Touch of Weakness": ["undead"],
+      "Dark Sacrifice": ["undead"],
+      "Contingency Plan": ["gnome"],
+      "Confounding Flash": ["gnome"],
+      "Hex of Weakness": ["troll"],
+      "Shadowguard": ["troll"]
+    }
+  },
+  "notLearnable": {
+    "priest": {
+      "Shadowfiend": "Its skill-line row (401977) has no learn level, and no beta priest ever cast it."
+    }
+  }
+}

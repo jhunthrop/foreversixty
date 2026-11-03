@@ -56,7 +56,7 @@
         "action": {
           "autocastOtherCooldowns": {}
         },
-        "notes": "Mana potions, runes and other consumables the preset brings: the Major Mana Potion and the Demonic Rune, each used whenever it is ready and the bar has room for it. Nature's Swiftness is not spent here: the engine holds it back for a healer, and the list below casts it by hand."
+        "notes": "Mana potions and runes as soon as they fit under your mana cap: both are on their own cooldowns, so early use means a second use. Nature's Swiftness is saved for the emergency line below."
       },
       {
         "action": {
@@ -80,7 +80,7 @@
             }
           }
         },
-        "notes": "Mana Tide Totem once mana is low; it replaces the water totem for 13 s and the Healing Stream below is dropped again after."
+        "notes": "Mana Tide Totem when you drop below 25% mana: it restores mana to your whole party for 12 seconds. It takes the Water slot, so put Healing Stream back down when it ends. Rank 4 at 58."
       },
       {
         "action": {
@@ -101,7 +101,7 @@
             }
           }
         },
-        "notes": "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit."
+        "notes": "Water Shield whenever it is down: each of its three globes returns 2% of your maximum mana when you are hit or when one of your heals crits."
       },
       {
         "action": {
@@ -127,7 +127,7 @@
             }
           }
         },
-        "notes": "Healing Stream Totem heals the whole group every 2 s for its five-minute life."
+        "notes": "Healing Stream Totem whenever your Water slot is empty: it heals your party every 2 seconds for 5 minutes."
       },
       {
         "action": {
@@ -155,7 +155,7 @@
             }
           }
         },
-        "notes": "Nature's Swiftness turns the next Healing Wave into an instant heal when the tank is in danger."
+        "notes": "Nature's Swiftness when the tank drops below 25%: your next Healing Wave becomes instant."
       },
       {
         "action": {
@@ -201,7 +201,7 @@
             }
           }
         },
-        "notes": "The instant Healing Wave."
+        "notes": "Healing Wave right after Nature's Swiftness: the instant, full-size save."
       },
       {
         "action": {
@@ -234,7 +234,7 @@
             }
           }
         },
-        "notes": "Lesser Healing Wave is the fast heal for a tank that is falling."
+        "notes": "Lesser Healing Wave when the tank drops below 30%: a 1.5 second heal for a tank that is falling fast."
       },
       {
         "action": {
@@ -493,7 +493,7 @@
             }
           }
         },
-        "notes": "Riptide on the tank first: it is the most mana-efficient heal and lifts the Chain Heal below."
+        "notes": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more."
       },
       {
         "action": {
@@ -899,7 +899,7 @@
             }
           }
         },
-        "notes": "Chain Heal on the tank once any of the five party members (you among them) is under 90 percent, while the mana bar keeps up with 90 percent of the share of the fight left."
+        "notes": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and cast on a party member it only jumps to your party."
       },
       {
         "action": {
@@ -932,7 +932,7 @@
             }
           }
         },
-        "notes": "Healing Wave is the efficient tank heal. Below 60, the rank each band casts is chosen on that band's own fight, sized to the dungeons a group of its level runs."
+        "notes": "Healing Wave when the tank drops below 60%: your biggest efficient heal. Rank 9 is the top rank you can learn at launch; while leveling, cast the highest rank you have."
       }
     ]
   }
