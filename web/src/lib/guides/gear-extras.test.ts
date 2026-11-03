@@ -270,6 +270,19 @@ describe('the guide’s consumables are the sim’s', () => {
     expect(names).not.toContain('Runn Tum Tuber Surprise');
   });
 
+  it('gives each hunter what its play uses: bow hunters no Strength items, Survival its frenzy potion', () => {
+    for (const spec of ['hunter-beast-mastery', 'hunter-marksmanship']) {
+      const ids = simRaidConsumes(spec, {}).map((row) => row.id);
+      for (const id of ['juju_power', 'juju_might', 'r_o_i_d_s', 'food_grilled_squid'])
+        expect(ids).not.toContain(id);
+      expect(ids).toContain('major_mana_potion');
+    }
+    const survival = simRaidConsumes('hunter-survival', {}).map((row) => row.id);
+    expect(survival).toContain('major_frenzy_potion');
+    expect(survival).toContain('juju_might');
+    expect(survival).not.toContain('major_mana_potion');
+  });
+
   it('takes the level 60 row, not an earlier one', () => {
     const file = {
       specs: {

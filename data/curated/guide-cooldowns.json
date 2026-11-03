@@ -1,0 +1,33 @@
+{
+  "notes": "The baseline class trainer cooldowns (three minutes or longer, no talent needed) each spec guide's Cooldowns list shows, by spec key. A cooldown the spec's rotation casts is listed from the rotation already, and a talent cooldown is listed only when the guide's own build takes the talent, so neither belongs here. Anything not named here (a stun, a taunt the spec never presses, a spell another race or spec uses) stays off the list. The class lane owns its own rows; web/src/lib/guides/rotation-lists.test.ts checks every name is a trainer spell the class learns by level 60.",
+  "specs": {
+    "druid-balance": ["Innervate", "Rebirth"],
+    "druid-feral": ["Innervate", "Rebirth"],
+    "druid-feral-bear": ["Frenzied Regeneration", "Challenging Roar", "Rebirth"],
+    "druid-restoration": ["Innervate", "Tranquility", "Rebirth"],
+    "hunter-beast-mastery": ["Rapid Fire"],
+    "hunter-marksmanship": ["Rapid Fire"],
+    "hunter-survival": ["Rapid Fire"],
+    "mage-arcane": ["Evocation"],
+    "mage-fire": ["Evocation"],
+    "mage-frost": ["Evocation"],
+    "paladin-holy": ["Divine Shield", "Blessing of Protection", "Lay on Hands"],
+    "paladin-protection": ["Divine Shield", "Blessing of Protection", "Lay on Hands"],
+    "paladin-retribution": ["Blessing of Protection", "Lay on Hands"],
+    "priest-discipline": ["Fear Ward"],
+    "priest-holy": ["Fear Ward"],
+    "priest-shadow": ["Fear Ward"],
+    "rogue-assassination": ["Evasion", "Vanish"],
+    "rogue-combat": ["Evasion", "Vanish"],
+    "rogue-subtlety": ["Evasion", "Vanish"],
+    "shaman-elemental": [],
+    "shaman-enhancement": [],
+    "shaman-restoration": [],
+    "warlock-affliction": [],
+    "warlock-demonology": [],
+    "warlock-destruction": [],
+    "warrior-arms": ["Recklessness"],
+    "warrior-fury": ["Recklessness"],
+    "warrior-protection": ["Shield Wall", "Challenging Shout"]
+  }
+}

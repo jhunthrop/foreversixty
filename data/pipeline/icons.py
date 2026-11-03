@@ -486,6 +486,14 @@ def icons_for_build(
         **wanted,
         **{by_name[name]: name for name in supplement_names if name in by_name},
     }
+    # The guides' Races table shows every racial's own icon (pipeline.racialicons).
+    from pipeline.racialicons import RACIAL_TABLES, write_racial_icons
+
+    if all((raw / table).exists() for table in RACIAL_TABLES):
+        racial_path = write_racial_icons(build, root)
+        racial = set(json.loads(racial_path.read_text(encoding="utf-8")).values())
+        wanted = {**wanted, **{by_name[name]: name for name in racial if name in by_name}}
+
     # A buff panel icon the client's manifest does not list (Forever's own
     # classic_ability_druid_demoralizingroar) falls back to wowhead's copy too.
     zamimg_names = not_in_client(supplement_names | simbuff_icon_names(build_dir), by_name)

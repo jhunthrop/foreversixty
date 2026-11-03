@@ -54,13 +54,13 @@ for (const [label, viewport] of [
   test.describe(`Frost Mage guide at ${label}`, () => {
     test.use({ viewport });
 
-    test('has the nine sections in order, the status note once, and the header facts', async ({ page }) => {
+    test('has the nine sections in order, no status note, and the header facts', async ({ page }) => {
       await page.goto(PAGE);
       const ids = await page.locator('main h2[id]').evaluateAll((els) => els.map((el) => el.id));
       expect(ids.filter((id) => SECTION_IDS.includes(id))).toEqual(SECTION_IDS);
 
-      await expect(page.getByTestId('guide-status-note')).toHaveCount(1);
-      await expect(page.getByTestId('guide-status-note')).toContainText('The beta stops at level 30.');
+      await expect(page.getByTestId('guide-status-note')).toHaveCount(0);
+      await expect(page.getByTestId('content-footnote')).toContainText('Numbers from client build');
       await expect(page.getByTestId('guide-header-meta')).toContainText(
         /DPS · Updated \d{1,2} [A-Z][a-z]{2}/,
       );

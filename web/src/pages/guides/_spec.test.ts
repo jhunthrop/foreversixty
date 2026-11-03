@@ -126,10 +126,18 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     return container.renderToString(SpecPage, { props: { entry: loadGuideEntry('mage/frost') } });
   }
 
-  it('says the status once, at the top, and carries the header facts', async () => {
+  it('keeps sim talk out of the reading flow: one data-source line in the footer, no site pill', async () => {
     const html = await frostHtml();
-    expect(html.match(/data-testid="guide-status-note"/g)).toHaveLength(1);
-    expect(html).toContain('The beta stops at level 30.');
+    expect(html).not.toContain('data-testid="guide-status-note"');
+    // The guide's own reading flow (the site nav's "Simulator" link is not the guide speaking).
+    const main = html.slice(html.indexOf('<main'), html.lastIndexOf('</main>'));
+    const visible = main.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<[^>]+>/g, ' ');
+    const talk = [...visible.matchAll(/.{0,60}(?:simulator|simulated|this site).{0,40}/gi)];
+    expect(talk.map((m) => m[0])).toEqual([]);
+    expect(html).toMatch(
+      /data-testid="content-footnote"[^>]*>\s*Numbers from client build 1\.60\.1\.\d+, checked against launch logs/,
+    );
+    expect(main).not.toContain('This site');
     expect(html).toMatch(/DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
     // The header summary is the Overview's own sentence, not the frontmatter description.
     expect(html).toContain('Frost casts Frostbolt behind Ice Barrier');

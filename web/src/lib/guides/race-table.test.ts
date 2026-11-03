@@ -10,6 +10,7 @@ import {
   RACIAL_NAMES,
   RACIAL_PICKS,
   racialEffects,
+  racialIconsFor,
   raceNameFor,
   raceTableFor,
   recommendedRaceLines,
@@ -175,5 +176,28 @@ describe('raceNameFor', () => {
     const [first] = raceRows;
     expect(raceNameFor(BUILD, first!.slug)).toBe(first!.name);
     expect(raceNameFor(BUILD, 'who')).toBe('who');
+  });
+});
+
+describe('racial icons', () => {
+  const classes = ['druid', 'hunter', 'mage', 'paladin', 'priest', 'rogue', 'shaman', 'warlock', 'warrior'];
+  const kinds = ['caster', 'melee', 'ranged', 'healer', 'tank'] as const;
+
+  it('gives every racial a Races table shows the client’s own icon', () => {
+    const blank = new Set<string>();
+    for (const classSlug of classes) {
+      for (const kind of kinds) {
+        for (const row of raceTableFor(BUILD, classSlug, [], kind)) {
+          for (const racial of row.racials)
+            if (racial.icon === undefined) blank.add(`${row.slug}: ${racial.name}`);
+        }
+      }
+    }
+    expect([...blank]).toEqual([]);
+  });
+
+  it('matches a name the client spells differently (Read Leyline)', () => {
+    expect(racialIconsFor(BUILD).get('readleyline')).toBe('ability_mage_incantersabsorbtion');
+    expect(racialIconsFor(BUILD).get('eureka')).toBe('inv_gnometoy');
   });
 });

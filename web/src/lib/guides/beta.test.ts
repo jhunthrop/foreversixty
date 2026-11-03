@@ -12,9 +12,8 @@ describe('the beta cap copy', () => {
   });
 
   it('names the level 30 cap only before launch', () => {
-    expect(guidesCopy.statusNote(BEFORE)).toContain('The beta stops at level 30.');
     expect(guidesCopy.indexHonestyLine(BEFORE)).toContain('The beta stops at level 30.');
-    expect(guidesCopy.statusNote(AT_LAUNCH)).not.toMatch(/beta|level 30/i);
     expect(guidesCopy.indexHonestyLine(AT_LAUNCH)).not.toMatch(/beta|level 30/i);
+    expect(guidesCopy.indexHonestyLine(AT_LAUNCH)).not.toMatch(/simulat|this site/i);
   });
 });

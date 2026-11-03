@@ -5,10 +5,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { loadRotations, rotationEntryFor, rotationLinesFor } from '../bis/rotation-view';
+import { decodeBuildTrees } from './build-tree';
 import type { CollapsedLine } from '../bis/rotation-collapse';
 import {
   clauseOf,
+  cutCooldown,
   formatCooldown,
+  litTalentsOf,
+  talentCooldownCuts,
   loadApl,
   specCooldowns,
   prepullCasts,
@@ -247,7 +251,11 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
   const items = specCooldowns(
     BUILD,
     'mage',
-    new Set(['Cold Snap', 'Ice Block']),
+    'mage-frost',
+    new Map([
+      ['Cold Snap', 1],
+      ['Ice Block', 1],
+    ]),
     spellLookupFor(BUILD, 'mage'),
   );
 
@@ -268,17 +276,32 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
   });
 
   it('never lists a long-cast utility spell as a fight cooldown', () => {
-    const shaman = specCooldowns(BUILD, 'shaman', new Set(), spellLookupFor(BUILD, 'shaman')).map(
-      (item) => item.name,
-    );
+    const shaman = specCooldowns(
+      BUILD,
+      'shaman',
+      'shaman-elemental',
+      new Map(),
+      spellLookupFor(BUILD, 'shaman'),
+    ).map((item) => item.name);
     expect(shaman).not.toContain('Astral Recall');
   });
 
   it('leaves out race-locked and unlearnable class spells, and keeps a baseline one', () => {
-    const priest = specCooldowns(BUILD, 'priest', new Set(), spellLookupFor(BUILD, 'priest')).map(
-      (item) => item.name,
-    );
-    for (const name of ['Shadowfiend', 'Feedback', 'Divine Grace', 'Dark Sacrifice', "Elune's Grace"]) {
+    const priest = specCooldowns(
+      BUILD,
+      'priest',
+      'priest-shadow',
+      new Map(),
+      spellLookupFor(BUILD, 'priest'),
+    ).map((item) => item.name);
+    for (const name of [
+      'Shadowfiend',
+      'Feedback',
+      'Divine Grace',
+      'Dark Sacrifice',
+      "Elune's Grace",
+      'Lightwell',
+    ]) {
       expect(priest).not.toContain(name);
     }
     expect(priest).toContain('Fear Ward');
@@ -292,7 +315,11 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
     const rogue = specCooldowns(
       BUILD,
       'rogue',
-      new Set(['Adrenaline Rush', 'Cold Blood']),
+      'rogue-combat',
+      new Map([
+        ['Adrenaline Rush', 1],
+        ['Cold Blood', 1],
+      ]),
       spellLookupFor(BUILD, 'rogue'),
     );
     expect(rogue.find((item) => item.name === 'Adrenaline Rush')?.clause).toBe('5 min cooldown');
@@ -302,6 +329,92 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
 
   it('takes a lit talent’s icon from the talent file', () => {
     expect(items.find((item) => item.name === 'Cold Snap')?.icon).toBe('spell_frost_wizardmark');
+  });
+});
+
+describe('specCooldowns keeps to the spec’s own play', () => {
+  const names = (classSlug: string, spec: string): string[] =>
+    specCooldowns(BUILD, classSlug, spec, new Map(), spellLookupFor(BUILD, classSlug)).map(
+      (item) => item.name,
+    );
+
+  it('lists only the baseline cooldowns the spec’s curated list names', () => {
+    for (const spec of ['warrior-arms', 'warrior-fury']) {
+      const arms = names('warrior', spec);
+      for (const name of ['Intimidating Shout', 'Challenging Shout', 'Retaliation'])
+        expect(arms).not.toContain(name);
+    }
+    const protection = names('warrior', 'warrior-protection');
+    expect(protection).not.toContain('Recklessness');
+    expect(protection).toContain('Shield Wall');
+  });
+
+  it('never lists a spell the live tree removed (Voice of Truth, Lightwell)', () => {
+    for (const spec of ['paladin-holy', 'paladin-protection', 'paladin-retribution']) {
+      expect(names('paladin', spec)).not.toContain('Voice of Truth');
+    }
+    for (const spec of ['priest-discipline', 'priest-holy', 'priest-shadow']) {
+      expect(names('priest', spec)).not.toContain('Lightwell');
+    }
+  });
+
+  it('names only trainer spells the class learns by level 60 in the curated list', () => {
+    const curated = JSON.parse(
+      readFileSync(path.join(REPO, 'data/curated/guide-cooldowns.json'), 'utf8'),
+    ) as {
+      specs: Record<string, string[]>;
+    };
+    for (const [spec, list] of Object.entries(curated.specs)) {
+      const classSlug = spec.split('-')[0]!;
+      const trainables = JSON.parse(
+        readFileSync(path.join(REPO, 'data/builds', BUILD, 'trainables', `${classSlug}.json`), 'utf8'),
+      ) as { trainables: { name: string; ranks: { level: number }[] }[] };
+      const learnable = new Set(
+        trainables.trainables.filter((t) => t.ranks.some((rank) => rank.level <= 60)).map((t) => t.name),
+      );
+      for (const name of list) expect(learnable.has(name), `${spec}: ${name}`).toBe(true);
+    }
+  });
+});
+
+describe('talent cooldown cuts', () => {
+  it('reads Guardian’s Favor at the rank the build takes', () => {
+    expect(
+      talentCooldownCuts(BUILD, 'paladin', new Map([["Guardian's Favor", 2]])).get('Blessing of Protection'),
+    ).toBe(120_000);
+    expect(
+      talentCooldownCuts(BUILD, 'paladin', new Map([["Guardian's Favor", 1]])).get('Blessing of Protection'),
+    ).toBe(60_000);
+    expect(talentCooldownCuts(BUILD, 'paladin', new Map()).size).toBe(0);
+  });
+
+  it('shows Holy’s Blessing of Protection at 3 min with Guardian’s Favor 2/2', () => {
+    const holy = specCooldowns(
+      BUILD,
+      'paladin',
+      'paladin-holy',
+      new Map([["Guardian's Favor", 2]]),
+      spellLookupFor(BUILD, 'paladin'),
+    );
+    expect(holy.find((item) => item.name === 'Blessing of Protection')?.clause).toBe('3 min cooldown');
+  });
+
+  it('never cuts below zero', () => {
+    expect(cutCooldown(60_000, 120_000)).toBe(0);
+    expect(cutCooldown(60_000, undefined)).toBe(60_000);
+  });
+
+  it('litTalentsOf keeps the highest rank either build takes', () => {
+    const lit = litTalentsOf([
+      {
+        talents: [
+          { name: 'A', rank: 1 },
+          { name: 'B', rank: 0 },
+        ],
+      },
+      { talents: [{ name: 'A', rank: 3 }] },
+    ]);
+    expect([...lit]).toEqual([['A', 3]]);
   });
 });
 
@@ -346,8 +459,11 @@ describe('every spell a guide renders has the client’s icon', () => {
       const talents = JSON.parse(
         readFileSync(path.join(REPO, 'data/builds', BUILD, 'talents', `${classSlug}.json`), 'utf8'),
       ) as { trees: { talents: { name: string }[] }[] };
-      const lit = new Set(talents.trees.flatMap((tree) => tree.talents.map((talent) => talent.name)));
-      const blank = specCooldowns(BUILD, classSlug, lit, spellLookupFor(BUILD, classSlug))
+      const lit = new Map(
+        talents.trees.flatMap((tree) => tree.talents.map((talent) => [talent.name, 1] as const)),
+      );
+      const blank = GUIDE_SPECS.filter((guide) => guide.classSlug === classSlug)
+        .flatMap(({ spec }) => specCooldowns(BUILD, classSlug, spec, lit, spellLookupFor(BUILD, classSlug)))
         .filter((item) => item.icon === undefined)
         .map((item) => item.name);
       expect(blank).toEqual([]);
@@ -358,5 +474,29 @@ describe('every spell a guide renders has the client’s icon', () => {
     const lookup = spellLookupFor(BUILD, 'warlock');
     expect(lookup(688)?.icon).toBe('spell_shadow_summonimp');
     expect(lookup(712)?.icon).toBe('spell_shadow_summonsuccubus');
+  });
+});
+
+describe('the guide builds’ own cooldowns', () => {
+  function guideCode(file: string, key: 'build' | 'raidBuild'): string {
+    const raw = readFileSync(path.join(GUIDES_DIR, file), 'utf8');
+    return new RegExp(`^${key}: '([^']+)'`, 'm').exec(raw)?.[1] ?? '';
+  }
+
+  it('lists Adrenaline Rush for Combat, which its builds take', () => {
+    const trees = (['build', 'raidBuild'] as const).flatMap(
+      (key) => decodeBuildTrees(BUILD, guideCode('rogue/combat.md', key)) ?? [],
+    );
+    const lit = litTalentsOf(trees);
+    const names = specCooldowns(BUILD, 'rogue', 'rogue-combat', lit, spellLookupFor(BUILD, 'rogue'));
+    expect(names.map((item) => item.name)).toContain('Adrenaline Rush');
+  });
+
+  it('shows Holy’s Blessing of Protection less what the Holy build’s Guardian’s Favor takes off', () => {
+    const lit = litTalentsOf(decodeBuildTrees(BUILD, guideCode('paladin/holy.md', 'build')) ?? []);
+    const rank = lit.get("Guardian's Favor") ?? 0;
+    const holy = specCooldowns(BUILD, 'paladin', 'paladin-holy', lit, spellLookupFor(BUILD, 'paladin'));
+    const want = ['5 min cooldown', '4 min cooldown', '3 min cooldown'][rank];
+    expect(holy.find((item) => item.name === 'Blessing of Protection')?.clause).toBe(want);
   });
 });
