@@ -484,6 +484,12 @@ export const bisCopy = {
   ): string =>
     `${size} mobs in ${dungeon} (${mobs.map((m) => `${m.count} ${m.name}`).join(', ')}), ` +
     `${multiplier.toFixed(2)} times the last boss`,
+  healerProfileSplitHeading: 'Tank and group',
+  healerProfileSplitReason:
+    "From beta logs: in each five-man fight, the share of the group's damage taken that lands on its tank.",
+  healerProfileSplitLine: (share: number, fights: number, pooled: boolean): string =>
+    `The tank takes ${Math.round(share * 100)}% of the damage, the median of ${fights.toLocaleString('en-US')} ` +
+    (pooled ? 'logged beta dungeon fights (none at this band yet)' : 'logged beta fights in these dungeons'),
   healerProfileFightHeading: 'Fight',
   healerProfileFightLine: (duration: string): string => `${duration} long`,
 } as const;

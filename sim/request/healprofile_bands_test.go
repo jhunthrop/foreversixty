@@ -102,13 +102,13 @@ func TestHealProfileScalesEachBandByItsContent(t *testing.T) {
 		level                                int
 		tankHealth, memberHealth, hit, pulse float64
 	}{
-		{20, 1836, 966, 143, 37},
-		{29, 1836, 966, 143, 37},
-		{30, 3204, 1687, 263, 69},
-		{40, 4938, 2599, 470, 123},
-		{50, 7036, 3703, 1010, 263},
-		{59, 7036, 3703, 1010, 263},
-		{10, 1836, 966, 143, 37},
+		{20, 1836, 966, 147, 35},
+		{29, 1836, 966, 147, 35},
+		{30, 3204, 1687, 274, 63},
+		{40, 4938, 2599, 482, 116},
+		{50, 7036, 3703, 1037, 250},
+		{59, 7036, 3703, 1037, 250},
+		{10, 1836, 966, 147, 35},
 	}
 	for _, c := range cases {
 		m := profile.ForLevel(c.level).Model()
@@ -126,11 +126,11 @@ func TestHealProfileScalesEachBandByItsContent(t *testing.T) {
 func TestHealProfileAtScaleKeepsTheBand(t *testing.T) {
 	profile := mustCuratedHealProfile(t)
 	low := profile.AtScale(1.65)
-	if m := low.ForLevel(50).Model(); m.TankHitDamage != 900 || m.PulseDamage != 235 {
-		t.Errorf("band 50 at 1.65: hit %v pulse %v, want 900 / 235", m.TankHitDamage, m.PulseDamage)
+	if m := low.ForLevel(50).Model(); m.TankHitDamage != 925 || m.PulseDamage != 223 {
+		t.Errorf("band 50 at 1.65: hit %v pulse %v, want 925 / 223", m.TankHitDamage, m.PulseDamage)
 	}
-	if m := profile.ForLevel(50).AtScale(1.65).Model(); m.TankHitDamage != 900 || m.PulseDamage != 235 {
-		t.Errorf("band 50 then 1.65: hit %v pulse %v, want 900 / 235", m.TankHitDamage, m.PulseDamage)
+	if m := profile.ForLevel(50).AtScale(1.65).Model(); m.TankHitDamage != 925 || m.PulseDamage != 223 {
+		t.Errorf("band 50 then 1.65: hit %v pulse %v, want 925 / 223", m.TankHitDamage, m.PulseDamage)
 	}
 	if m := low.Model(); m.TankHitDamage != 1898 || m.PulseDamage != 495 {
 		t.Errorf("reference at 1.65: hit %v pulse %v, want 1898 / 495", m.TankHitDamage, m.PulseDamage)
@@ -157,13 +157,13 @@ func TestHealProfileAttachUsesTheHealersBand(t *testing.T) {
 		Encounter: &proto.Encounter{Duration: 180},
 	}
 	profile.Attach(req)
-	if m := req.Raid.RaidDamageModel; m.TankHitDamage != 470 || m.TankHealth != 4938 {
-		t.Errorf("a level-40 healer's raid: hit %v on %v health, want 470 on 4938", m.TankHitDamage, m.TankHealth)
+	if m := req.Raid.RaidDamageModel; m.TankHitDamage != 482 || m.TankHealth != 4938 {
+		t.Errorf("a level-40 healer's raid: hit %v on %v health, want 482 on 4938", m.TankHitDamage, m.TankHealth)
 	}
 	weights := &proto.StatWeightsRequest{Player: &proto.Player{Level: 20}, Encounter: &proto.Encounter{Duration: 180}}
 	profile.AttachWeights(weights)
-	if m := weights.RaidDamageModel; m.TankHitDamage != 143 || m.PulseDamage != 37 {
-		t.Errorf("a level-20 weights request: hit %v pulse %v, want 143 / 37", m.TankHitDamage, m.PulseDamage)
+	if m := weights.RaidDamageModel; m.TankHitDamage != 147 || m.PulseDamage != 35 {
+		t.Errorf("a level-20 weights request: hit %v pulse %v, want 147 / 35", m.TankHitDamage, m.PulseDamage)
 	}
 }
 
@@ -174,11 +174,11 @@ func TestHealProfileRefusesABandFigureThatIsNotTheRules(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	field := regexp.MustCompile(`"tank_hit_damage": 470`)
+	field := regexp.MustCompile(`"tank_hit_damage": 482`)
 	if !field.Match(raw) {
-		t.Fatal("the curated band 40 no longer states tank_hit_damage 470; update this test")
+		t.Fatal("the curated band 40 no longer states tank_hit_damage 482; update this test")
 	}
-	if _, err := parseHealProfile(field.ReplaceAll(raw, []byte(`"tank_hit_damage": 471`)), "broken"); !errors.Is(err, ErrBadHealProfile) {
+	if _, err := parseHealProfile(field.ReplaceAll(raw, []byte(`"tank_hit_damage": 483`)), "broken"); !errors.Is(err, ErrBadHealProfile) {
 		t.Errorf("err = %v, want ErrBadHealProfile", err)
 	}
 }
@@ -273,4 +273,87 @@ func mustCuratedHealProfile(t *testing.T) HealProfile {
 		t.Fatalf("the curated profile does not load: %v", err)
 	}
 	return profile
+}
+
+// Owner ruling, sim-accuracy round 12: a band's split between the tank and the group comes
+// from logs, not from level 60's ratio. The band's total incoming damage a second stays the
+// rule's; the split only moves it between the tank hit and the raid pulse.
+func TestHealBandSplitMovesDamageNotTheTotal(t *testing.T) {
+	profile := mustCuratedHealProfile(t)
+	row := profile.Bands.bandFor(30)
+	ref := profile.Bands.reference()
+	incoming := func(f healBandFigures) float64 {
+		return f.TankHitDamage/profile.Tank.SwingSeconds + f.PulseDamage*float64(profile.Pulse.Members)/profile.Pulse.IntervalSeconds
+	}
+	scale := 1000.0 // a large scale, so whole-point rounding stays inside the tolerance
+	refFigures := profile.figuresFor(ref, scale)
+	for _, share := range []float64{0.5, 0.659, 0.9} {
+		row.TankShare = share
+		f := profile.figuresFor(row, scale)
+		wantTotal := incoming(refFigures) * row.damage() / ref.damage()
+		if got := incoming(f); math.Abs(got-wantTotal)/wantTotal > 1e-3 {
+			t.Errorf("share %v: incoming %v a second, want the band's %v", share, got, wantTotal)
+		}
+		if got := f.TankHitDamage / profile.Tank.SwingSeconds / incoming(f); math.Abs(got-share) > 1e-3 {
+			t.Errorf("share %v: the tank takes %v of the incoming damage", share, got)
+		}
+	}
+}
+
+// The reference band (a raid, no public level-60 logs yet) keeps the profile's own split,
+// so the tuned top-level figures are unchanged.
+func TestHealBandReferenceKeepsTheProfilesSplit(t *testing.T) {
+	profile := mustCuratedHealProfile(t)
+	tankDPS := profile.Tuning.BaseTankHitDamage / profile.Tank.SwingSeconds
+	groupDPS := profile.Tuning.BasePulseDamage * float64(profile.Pulse.Members) / profile.Pulse.IntervalSeconds
+	ref := profile.Bands.reference()
+	if want := math.Round(tankDPS/(tankDPS+groupDPS)*1000) / 1000; ref.TankShare != want || ref.Split != nil {
+		t.Errorf("reference band states share %v and split %+v, want the profile's own %v and no logs", ref.TankShare, ref.Split, want)
+	}
+}
+
+// Every band below the reference states its split under the one split rule: the logged
+// fights it rests on (its own content's, or every logged beta dungeon's when its content has
+// fewer than the rule's minimum) and a tank share that is their median.
+func TestCuratedHealBandsStateTheirSplit(t *testing.T) {
+	profile := mustCuratedHealProfile(t)
+	rule := profile.Bands.SplitRule
+	if rule.MinFights <= 0 {
+		t.Fatalf("the split rule states minimum %d fights", rule.MinFights)
+	}
+	for _, row := range profile.Bands.Rows {
+		if row.Level == profile.Bands.ReferenceLevel {
+			continue
+		}
+		s := row.Split
+		if s == nil {
+			t.Fatalf("band %d states no split", row.Level)
+		}
+		if s.Fights < rule.MinFights {
+			t.Errorf("band %d's split rests on %d fights, under the rule's %d", row.Level, s.Fights, rule.MinFights)
+		}
+		if s.Pooled != (s.ContentFights < rule.MinFights) {
+			t.Errorf("band %d: content fights %d, pooled %v; the rule pools under %d", row.Level, s.ContentFights, s.Pooled, rule.MinFights)
+		}
+		if row.TankShare != math.Round(s.MedianTankShare*1000)/1000 || s.Q25 > s.MedianTankShare || s.MedianTankShare > s.Q75 {
+			t.Errorf("band %d: tank share %v, logged median %v (IQR %v to %v)", row.Level, row.TankShare, s.MedianTankShare, s.Q25, s.Q75)
+		}
+	}
+}
+
+// Loading refuses a band whose tank share is not its logged median.
+func TestHealProfileRefusesASplitThatIsNotItsLogs(t *testing.T) {
+	raw, err := os.ReadFile(curatedHealProfile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	field := regexp.MustCompile(`"tank_share": (0\.\d+),\s*"split": \{`)
+	m := field.FindSubmatchIndex(raw)
+	if m == nil {
+		t.Fatal("no curated band states a tank share with its split; update this test")
+	}
+	broken := append(append(append([]byte{}, raw[:m[2]]...), []byte("0.123")...), raw[m[3]:]...)
+	if _, err := parseHealProfile(broken, "broken"); !errors.Is(err, ErrBadHealProfile) {
+		t.Errorf("err = %v, want ErrBadHealProfile", err)
+	}
 }

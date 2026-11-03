@@ -132,6 +132,19 @@ function pullRows(row: BisHealBandRow): HealProfileRow[] {
   ];
 }
 
+/** The band's logged tank-and-group split, when its row states one (files from 2026-11-04 on). */
+function splitRows(row: BisHealBandRow): HealProfileRow[] {
+  const { tank_share: share, split } = row;
+  if (share === undefined || split === undefined) return [];
+  return [
+    {
+      heading: bisCopy.healerProfileSplitHeading,
+      figures: bisCopy.healerProfileSplitLine(share, split.fights, split.pooled),
+      reason: bisCopy.healerProfileSplitReason,
+    },
+  ];
+}
+
 function disclosureFor(profile: BisHealProfile, level: number): HealProfileDisclosure {
   const { tank, members, pulse } = profile;
   const row = bandRowFor(profile, level);
@@ -150,6 +163,7 @@ function disclosureFor(profile: BisHealProfile, level: number): HealProfileDiscl
             reason: profile.bands?.rule ?? '',
           },
           ...pullRows(row),
+          ...splitRows(row),
         ];
   // A band row's reasons are the band rule's (the Content row); the top-level reasons
   // describe the reference band's figures and would misstate a band's.
