@@ -409,9 +409,12 @@ def main(argv: list[str] | None = None) -> int:
         _log_layer(hotfix_push.layer_hotfix_push(build))
         # The item pair's pushes too (sim-accuracy round 11): without them a
         # local fetch + normalize drops 165 hotfix-only items and puts 404 on
-        # wowhead or classic-db stats.
+        # wowhead or classic-db stats. Logged, like the layer: stdout's last
+        # line is the build data.yml reads.
         for table, count in wago_hotfixes.fetch_wago_hotfixes(build, args.product).items():
-            print(f"fetch-wago-hotfixes {table}: {count} rows")
+            logging.getLogger("pipeline.wago_hotfixes").info(
+                "fetch-wago-hotfixes %s: %d rows", table, count
+            )
     elif args.command == "push-check":
         import os
 

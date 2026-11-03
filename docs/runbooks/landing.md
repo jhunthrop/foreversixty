@@ -1,0 +1,43 @@
+# Landing a batch
+
+With more than one lane running, lanes never push to main: one integrator lands them
+together. The full CI suite runs once, on a `land/<n>` branch, and main is fast-forwarded to
+that exact commit when it is green. Target: 30 to 45 minutes from merge to main.
+
+1. Merge the lanes' branches onto `origin/main`, make the one engine pin, regenerate once and
+   run the fast local checks (lint, typecheck, unit tests, the touched e2e specs, apl-check).
+   No full Playwright, lhci, fork suite or `-race` sweeps locally: CI runs them.
+2. Push the batch to a new land branch: `git push origin HEAD:land/<n>`.
+3. Run `tools/land.sh land/<n>`. It:
+   - waits for every check workflow GitHub started for the branch's head sha (web with every
+     e2e shard, real-engine and lhci; sim; api in four test shards; data; tools; addon; logs;
+     coach; companion; ios; android; mobile-codegen; whichever the batch's paths reach);
+   - stops at the first failed job and lists every failed job with its link (exit 1);
+   - when all are green, runs `git push origin <sha>:main`, which only succeeds as a
+     fast-forward. If main moved meanwhile it says so (exit 2): merge `origin/main` into the
+     batch, push it as a new `land/<n+1>` and land that;
+   - deletes the land branch.
+4. The push to main starts main's own runs and the deploys (web, api, the companion
+   release). Watch them finish before the next landing.
+
+What runs where:
+
+- Every check workflow triggers on `land/**` pushes with the same path filters as main. A
+  new branch is diffed against main, so the batch's whole diff decides what runs. GitHub
+  reads at most 300 changed files for a path filter; a batch past that can miss a workflow,
+  so keep regenerated trees out of a batch that does not need them.
+- No deploy or release runs on `land/**`: web's and api's `deploy` jobs and the companion's
+  `version`/`build`/`release` run only on main (or a tag).
+- A `land/**` run is grouped by its sha and never cancelled, so nothing a landing waits on is
+  lost to a later push. Main's runs are never cancelled either. Branch and pull request runs
+  still cancel their superseded twin.
+- The api's go test is split across four parallel jobs by `tools/go-test-shard.sh`, each with
+  its own Postgres and `-race -p 1`; weights in `api/test-weights.txt`. Refresh the weights
+  from a recent log when one shard runs much longer than the others.
+
+- The slowest step under load is `actions/checkout`: the tree is ~2 GB (data/builds) and a
+  cold checkout took 5 to 16 minutes when a landing started ~35 jobs at once (2026-11-03).
+  No check job has a timeout under 20 minutes for that reason.
+
+`tools/land.sh` needs `gh` (signed in) and `jq`. Tunables: `LAND_POLL_SECONDS` (30),
+`LAND_SETTLE_SECONDS` (90), `LAND_TIMEOUT_SECONDS` (5400). Tests: `bash tools/tests/test_land.sh`.

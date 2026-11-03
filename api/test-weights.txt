@@ -1,0 +1,38 @@
+# api.yml's test shards (tools/go-test-shard.sh): seconds each api package's
+# `go test -race -cover -p 1` took in CI (api run 41583911037, 2026-11-03). Unlisted packages
+# weigh 1. Refresh from a recent run's log when one shard runs much longer than the others.
+github.com/jhunthrop/foreversixty/api/internal/guilds 305
+github.com/jhunthrop/foreversixty/api/internal/discordbot 174
+github.com/jhunthrop/foreversixty/api/internal/coach 125
+github.com/jhunthrop/foreversixty/api/internal/sims 92
+github.com/jhunthrop/foreversixty/api/internal/rankings 90
+github.com/jhunthrop/foreversixty/api/internal/bnetbuild 81
+github.com/jhunthrop/foreversixty/api/internal/reports 74
+github.com/jhunthrop/foreversixty/api/internal/billing 49
+github.com/jhunthrop/foreversixty/api/internal/auth 47
+github.com/jhunthrop/foreversixty/api/internal/notify 44
+github.com/jhunthrop/foreversixty/api/cmd/seedguild 41
+github.com/jhunthrop/foreversixty/api/internal/addon 36
+github.com/jhunthrop/foreversixty/api/internal/contract 27
+github.com/jhunthrop/foreversixty/api/internal/rating 27
+github.com/jhunthrop/foreversixty/api/internal/entitlements 26
+github.com/jhunthrop/foreversixty/api/internal/db 24
+github.com/jhunthrop/foreversixty/api/internal/sheet 19
+github.com/jhunthrop/foreversixty/api/internal/builds 17
+github.com/jhunthrop/foreversixty/api/internal/seats 15
+github.com/jhunthrop/foreversixty/api/internal/bnetimport 13
+github.com/jhunthrop/foreversixty/api/internal/dataaddon 13
+github.com/jhunthrop/foreversixty/api/cmd/coacheval 12
+github.com/jhunthrop/foreversixty/api/cmd/api 11
+github.com/jhunthrop/foreversixty/api/internal/parse 11
+github.com/jhunthrop/foreversixty/api/internal/trees 7
+github.com/jhunthrop/foreversixty/api/internal/events 3
+github.com/jhunthrop/foreversixty/api/internal/golinks 3
+github.com/jhunthrop/foreversixty/api/internal/livesurface 3
+github.com/jhunthrop/foreversixty/api/internal/push 3
+github.com/jhunthrop/foreversixty/api/internal/rating/presence 3
+github.com/jhunthrop/foreversixty/api/internal/server 3
+github.com/jhunthrop/foreversixty/api/internal/engine 2
+github.com/jhunthrop/foreversixty/api/internal/metrics 2
+github.com/jhunthrop/foreversixty/api/internal/site 2
+github.com/jhunthrop/foreversixty/api/internal/synclog 2
