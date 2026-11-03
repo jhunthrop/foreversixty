@@ -47974,7 +47974,8 @@
             5431,
             9394,
             9398,
-            287975
+            287975,
+            288898
           ],
           "item_chances": {
             "2459": 100.0,
@@ -47982,7 +47983,8 @@
             "5431": 12.5
           },
           "reitemised_from": {
-            "287975": 2459
+            "287975": 2459,
+            "288898": 2459
           },
           "item_source_origin": {
             "4544": "wowhead",
@@ -116300,7 +116302,8 @@
         287966,
         287967,
         287968,
-        287975
+        287975,
+        288898
       ],
       "reitemised_from": {
         "217017": 19978,
@@ -116370,7 +116373,8 @@
         "287966": 118,
         "287967": 858,
         "287968": 2455,
-        "287975": 2459
+        "287975": 2459,
+        "288898": 2459
       }
     }
   ],
@@ -151745,6 +151749,35 @@
         "classes": [
           "priest"
         ]
+      }
+    ],
+    "288898": [
+      {
+        "quest_id": 451,
+        "name": "A Recipe For Death",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 9,
+        "level": 18,
+        "level_source": "classic-db"
+      },
+      {
+        "quest_id": 509,
+        "name": "Elixir of Agony",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 24,
+        "level": 28,
+        "level_source": "classic-db"
+      },
+      {
+        "quest_id": 853,
+        "name": "Apothecary Zamah",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 10,
+        "level": 15,
+        "level_source": "classic-db"
       }
     ],
     "226969": [

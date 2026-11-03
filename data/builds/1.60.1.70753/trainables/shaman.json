@@ -852,7 +852,7 @@
     {
       "name": "Lava Burst",
       "skill_line": "Elemental Combat",
-      "source": "skill_line_ability",
+      "source": "talent",
       "active": true,
       "cost": 265,
       "cost_type": 0,

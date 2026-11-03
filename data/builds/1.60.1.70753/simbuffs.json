@@ -196,10 +196,6 @@
       "name": "Elixir of Greater Firepower",
       "icon": "inv_potion_60"
     },
-    "elixir_of_holy_power": {
-      "name": "Elixir of Holy Power",
-      "icon": "inv_potion_62"
-    },
     "elixir_of_lesser_agility": {
       "name": "Elixir of Lesser Agility",
       "icon": "inv_potion_92"
@@ -716,10 +712,6 @@
       "name": "Major Mana Potion",
       "icon": "inv_potion_76"
     },
-    "major_menders_potion": {
-      "name": "Major Mender's Potion",
-      "icon": "inv_potione_2"
-    },
     "major_spellblasting_potion": {
       "name": "Major Spellblasting Potion",
       "icon": "inv_potione_4"
@@ -735,10 +727,6 @@
     "mana_tide_totems": {
       "name": "Mana Tide Totem",
       "icon": "spell_frost_summonwaterelemental"
-    },
-    "menders_potion": {
-      "name": "Mender's Potion",
-      "icon": "inv_potiond_6"
     },
     "mighty_rage_potion": {
       "name": "Mighty Rage Potion",
