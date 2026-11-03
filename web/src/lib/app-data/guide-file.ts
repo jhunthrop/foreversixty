@@ -16,13 +16,14 @@ import { pageUpdatedAt } from '../guides/guide-header';
 import { guideHitCapLine, schoolHitTalent } from '../guides/hit-cap-line';
 import { keyTalentsFor } from '../guides/key-talents';
 import { plainText, splitOverview } from '../guides/overview';
-import { raceTableFor, specKindOf } from '../guides/race-table';
+import { raceTableFor, racialCooldownsFor, specKindOf } from '../guides/race-table';
 import { railStatRows } from '../guides/rail-stats';
 import {
   loadApl,
   rotationListsFrom,
   specCooldowns,
   spellLookupFor,
+  type GuideRole,
   type RotationItem,
   litTalentsOf,
   talentCooldownCuts,
@@ -35,7 +36,7 @@ import type { GuideSource } from './guide-content';
 export const GUIDE_LEVEL = 60;
 
 export type GuideSectionId = 'overview' | 'talents' | 'rotation' | 'stats' | 'gear' | 'races';
-export type GuideRole = 'dps' | 'healer' | 'tank';
+export type { GuideRole } from '../guides/rotation-lists';
 
 export interface AppGuideRace {
   slug: string;
@@ -232,6 +233,7 @@ interface RotationContext {
   build: string;
   classSlug: string;
   spec: string;
+  role: GuideRole;
   litTalents: LitTalents;
 }
 
@@ -245,6 +247,8 @@ function rotationOf(ctx: RotationContext): AppGuideFile['rotation'] {
     facts,
     specCooldowns(ctx.build, ctx.classSlug, ctx.spec, ctx.litTalents, facts),
     talentCooldownCuts(ctx.build, ctx.classSlug, ctx.litTalents),
+    racialCooldownsFor(ctx.build, ctx.classSlug),
+    ctx.role,
   );
   return {
     opener: lists.opener.map(spellOf),
@@ -314,7 +318,7 @@ export function buildGuideFile(
   const raceRows = raceTableFor(build, classSlug, data.recommendedRaces, specKindOf(classSlug, spec, role));
   const litTalents = litTalentsOf([...levelingTrees, ...(raidTrees ?? [])]);
 
-  const rotation = rotationOf({ build, classSlug, spec, litTalents });
+  const rotation = rotationOf({ build, classSlug, spec, role, litTalents });
 
   const guide: Omit<AppGuideFile, 'sections'> = {
     build,

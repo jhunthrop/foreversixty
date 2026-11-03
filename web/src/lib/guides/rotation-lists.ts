@@ -9,6 +9,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { CollapsedLine } from '../bis/rotation-collapse';
 import { repoRoot, spellIcons } from '../data/build-files';
+import type { RacialCooldown } from './race-table';
 
 export interface RotationItem {
   /** Absent for a step that names no spell ("Then follow the priority list"). */
@@ -146,7 +147,11 @@ export function rotationListsFrom(
   /** Further cooldown spells of the spec (`specCooldowns`), after the ones its priority names. */
   extraCooldowns: readonly RotationItem[] = [],
   /** What the build's talents take off a spell's cooldown, by spell name (`talentCooldownCuts`). */
-  cuts: ReadonlyMap<string, number> = new Map(),
+  cooldownCuts: ReadonlyMap<string, CooldownCut> = new Map(),
+  /** The racial cooldowns of the class's races (`racialCooldownsFor`), named on the trinket line. */
+  racialCooldowns: readonly RacialCooldown[] = [],
+  /** The guide's role; a healer's trinket line is worded by healing. */
+  role: GuideRole = 'dps',
 ): RotationLists {
   const priority = lines.map(lineItem);
 
@@ -174,10 +179,12 @@ export function rotationListsFrom(
   const candidates = [...opener, ...priority.filter((item) => item.spellId !== undefined)];
   for (const item of candidates) {
     const facts = spellFacts(item.spellId!);
-    if (facts === undefined || facts.cooldownMs < COOLDOWN_FLOOR_MS || seen.has(item.name)) continue;
+    if (facts === undefined) continue;
+    const cooldownMs = cutCooldown(facts.cooldownMs, cooldownCuts.get(facts.name));
+    if (cooldownMs < COOLDOWN_FLOOR_MS || seen.has(item.name)) continue;
     seen.add(item.name);
     const fromLine = priority.find((line) => line.name === item.name)?.clause;
-    const when = `${formatCooldown(cutCooldown(facts.cooldownMs, cuts.get(item.name)))} cooldown`;
+    const when = `${formatCooldown(cooldownMs)} cooldown`;
     const plain = fromLine === undefined || fromLine === '' || /^on cooldown$/i.test(fromLine);
     cooldowns.push({ ...item, clause: plain ? when : `${when}. ${fromLine}` });
   }
@@ -187,12 +194,23 @@ export function rotationListsFrom(
     cooldowns.push(item);
   }
   if (usesCooldownPass(apl)) {
-    cooldowns.push({
-      name: 'Trinkets, racials and potions',
-      clause: 'On cooldown, with your biggest damage',
-    });
+    cooldowns.push({ name: COOLDOWN_PASS_NAME, clause: cooldownPassClause(racialCooldowns, role) });
   }
   return { opener, priority, cooldowns };
+}
+
+export type GuideRole = 'dps' | 'healer' | 'tank';
+
+const COOLDOWN_PASS_NAME = 'Trinkets, racials and potions';
+const COOLDOWN_PASS_CLAUSE = 'On cooldown, with your biggest damage';
+const HEALER_COOLDOWN_PASS_CLAUSE = 'On cooldown, when your healing matters most';
+
+/** "On cooldown, with your biggest damage: Eureka! (Gnome), Berserking (Troll)". */
+function cooldownPassClause(racials: readonly RacialCooldown[], role: GuideRole): string {
+  const lead = role === 'healer' ? HEALER_COOLDOWN_PASS_CLAUSE : COOLDOWN_PASS_CLAUSE;
+  if (racials.length === 0) return lead;
+  const named = racials.map((entry) => `${entry.racial} (${entry.race})`).join(', ');
+  return `${lead}: ${named}`;
 }
 
 // --- disk readers ---------------------------------------------------------------------------
@@ -215,9 +233,23 @@ function spellConst(build: string, classSlug: string): SpellConstFile | undefine
   return constCache.get(key);
 }
 
-/** A spell lookup over the build's spell constants and icon table. */
+/** The class's talent spells by spell id: an active talent (Demonic Sacrifice, Soul Link) has
+ *  no spell-constant row, but a rotation still casts it. */
+function talentSpells(build: string, classSlug: string): Map<number, { name: string; icon: string }> {
+  const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
+  const byId = new Map<number, { name: string; icon: string }>();
+  if (!existsSync(file)) return byId;
+  for (const tree of (JSON.parse(readFileSync(file, 'utf8')) as TalentNameFile).trees) {
+    for (const talent of tree.talents) byId.set(talent.spell_id, { name: talent.name, icon: talent.icon });
+  }
+  return byId;
+}
+
+/** A spell lookup over the build's spell constants and icon table, falling back to the class's
+ *  talent spells for a talent with no constants row. */
 export function spellLookupFor(build: string, classSlug: string): SpellLookup {
   const constants = spellConst(build, classSlug);
+  const talents = talentSpells(build, classSlug);
   const icons = spellIcons(build);
   // A pre-pull rank id often has no icon of its own; another rank of the same spell does.
   const iconByName = new Map<string, string>();
@@ -227,7 +259,15 @@ export function spellLookupFor(build: string, classSlug: string): SpellLookup {
   }
   return (spellId) => {
     const row = constants?.spells[String(spellId)];
-    if (row === undefined) return undefined;
+    if (row === undefined) {
+      const talent = talents.get(spellId);
+      if (talent === undefined) return undefined;
+      return {
+        name: talent.name,
+        icon: iconFor(build, icons[String(spellId)] ?? talent.icon),
+        cooldownMs: 0,
+      };
+    }
     const icon = icons[String(spellId)] ?? iconByName.get(row.name);
     const iconExists =
       icon !== undefined && existsSync(path.join(repoRoot(), 'data/builds', build, 'icons', `${icon}.webp`));
@@ -274,8 +314,14 @@ interface TalentNameFile {
 /** The talents a guide's builds take, by name, with the highest rank either build takes. */
 export type LitTalents = ReadonlyMap<string, number>;
 
+/** A talent's cut to one spell's cooldown: a flat amount ("by 2 min") and a share ("by 90%"). */
+export interface CooldownCut {
+  ms: number;
+  percent: number;
+}
+
 const COOLDOWN_CUT =
-  /Reduces the cooldown of your ([A-Z][A-Za-z' ]+?)(?: spell| ability)? by (\d+(?:\.\d+)?) (sec|min)/g;
+  /Reduces the cooldown of your ([A-Z][A-Za-z' ]+?)(?: spell| ability)? by (\d+(?:\.\d+)?) ?(sec|min|%)/g;
 
 /** The talents any of `trees` spends points in, at the highest rank any of them takes. */
 export function litTalentsOf(
@@ -289,18 +335,24 @@ export function litTalentsOf(
 }
 
 /** A cooldown less a talent's cut, never below zero. */
-export function cutCooldown(ms: number, cut: number | undefined): number {
-  return Math.max(0, ms - (cut ?? 0));
+export function cutCooldown(ms: number, cut: CooldownCut | undefined): number {
+  if (cut === undefined) return ms;
+  return Math.max(0, (ms - cut.ms) * (1 - cut.percent / 100));
 }
 
 /**
  * What the lit talents take off each spell's cooldown, read from the client's own talent rank
  * text at the rank the build takes ("Reduces the cooldown of your Blessing of Protection by 2
- * min": Guardian's Favor 2/2), in milliseconds by spell name.
+ * min": Guardian's Favor 2/2; "by 90%": Soul Fire), by spell name. The client's spell constants
+ * carry the base cooldown only.
  */
-export function talentCooldownCuts(build: string, classSlug: string, lit: LitTalents): Map<string, number> {
+export function talentCooldownCuts(
+  build: string,
+  classSlug: string,
+  lit: LitTalents,
+): Map<string, CooldownCut> {
   const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
-  const cuts = new Map<string, number>();
+  const cuts = new Map<string, CooldownCut>();
   if (!existsSync(file)) return cuts;
   for (const tree of (JSON.parse(readFileSync(file, 'utf8')) as TalentNameFile).trees) {
     for (const talent of tree.talents) {
@@ -308,9 +360,14 @@ export function talentCooldownCuts(build: string, classSlug: string, lit: LitTal
       const text = rank > 0 ? talent.ranks?.[rank - 1]?.description : undefined;
       if (text === undefined) continue;
       for (const match of text.matchAll(COOLDOWN_CUT)) {
-        const ms = Number(match[2]) * (match[3] === 'min' ? 60_000 : 1000);
+        const amount = Number(match[2]);
+        const add: CooldownCut =
+          match[3] === '%'
+            ? { ms: 0, percent: amount }
+            : { ms: amount * (match[3] === 'min' ? 60_000 : 1000), percent: 0 };
         for (const name of match[1]!.split(/,\s*|\s+and\s+/)) {
-          cuts.set(name.trim(), (cuts.get(name.trim()) ?? 0) + ms);
+          const held = cuts.get(name.trim()) ?? { ms: 0, percent: 0 };
+          cuts.set(name.trim(), { ms: held.ms + add.ms, percent: held.percent + add.percent });
         }
       }
     }
@@ -418,7 +475,7 @@ export function specCooldowns(
   for (const talent of talentSpells) {
     if (seen.has(talent.name) || !litTalents.has(talent.name)) continue;
     const facts = spellFacts(talent.spellId);
-    const cooldownMs = facts?.cooldownMs ?? 0;
+    const cooldownMs = cutCooldown(facts?.cooldownMs ?? 0, cuts.get(talent.name));
     if (cooldownMs < TALENT_COOLDOWN_FLOOR_MS || cooldownMs > COOLDOWN_CEILING_MS) continue;
     seen.add(talent.name);
     items.push({

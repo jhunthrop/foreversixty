@@ -13,7 +13,8 @@ import SpecCard from '../../../components/guides/SpecCard.astro';
 import Content from '../../../layouts/Content.astro';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
-import { classLandingSetDps } from '../../../lib/guides/class-dps';
+import { classLandingSetMetric } from '../../../lib/guides/class-dps';
+import type { SetMetric } from '../../../lib/guides/role-metric';
 import { guidesCopy } from '../../../lib/guides/copy';
 import { splitFirstParagraph } from '../../../lib/guides/first-paragraph';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
@@ -61,7 +62,7 @@ interface SpecCardView {
   role: 'dps' | 'healer' | 'tank';
   description: string;
   icon?: string;
-  dps?: number;
+  setMetric?: SetMetric;
   href: string;
 }
 
@@ -75,7 +76,12 @@ const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => 
       role: guide.data.role,
       description: guide.data.description ?? '',
       icon: specTabIcon(build, classSlug, s.tree_index),
-      dps: classLandingSetDps(build, `${classSlug}-${s.spec_slug}`, classSlug, guide.data.recommendedRaces),
+      setMetric: classLandingSetMetric(
+        build,
+        `${classSlug}-${s.spec_slug}`,
+        classSlug,
+        guide.data.recommendedRaces,
+      ),
       href: `/guides/${classSlug}/${s.spec_slug}`,
     },
   ];
@@ -120,7 +126,7 @@ const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => 
         role={card.role}
         description={card.description}
         icon={card.icon}
-        dps={card.dps}
+        setMetric={card.setMetric}
         href={card.href}
         build={build}
       />

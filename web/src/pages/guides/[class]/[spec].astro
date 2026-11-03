@@ -64,7 +64,7 @@ import { loadGearExtras } from '../../../lib/guides/gear-extras';
 import { guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
-import { raceTableFor, specKindOf } from '../../../lib/guides/race-table';
+import { raceTableFor, racialCooldownsFor, specKindOf } from '../../../lib/guides/race-table';
 import {
   litTalentsOf,
   loadApl,
@@ -167,6 +167,8 @@ const rotationListsData =
         spellFacts,
         specCooldowns(build, classSlug, fullSpecId, litTalents, spellFacts),
         talentCooldownCuts(build, classSlug, litTalents),
+        racialCooldownsFor(build, classSlug),
+        role,
       );
 const hitTalent = schoolHitTalent(raidTrees ?? buildTrees);
 const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');

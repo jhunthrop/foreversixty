@@ -1,5 +1,5 @@
 // web/src/lib/guides/class-dps.ts
-// The class landing's spec-card DPS line (rebuild spec §4.B) and the Leveling band strip's
+// The class landing's spec-card set figure (rebuild spec §4.B) and the Leveling band strip's
 // own faction pick (§4.D) share one rule, stated once here rather than twice: the guide's
 // own first `recommendedRaces` entry decides which faction's band data to read. Never a
 // literal DPS number or a hardcoded race/faction table in this module (round-1 mock review
@@ -7,9 +7,9 @@
 import { existsSync } from 'node:fs';
 import { bandEntry, loadBisFile, realBisPath } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
-import { headlineDpsOf } from '../bis/tank-view';
 import { classRows, racesForClass } from '../planner/reference';
-import type { BisFile, BisExpertiseToCap, BisHitToCap, BisStatWeight, Faction } from '../bis/types';
+import type { BisFile, BisExpertiseToCap, BisHitToCap, BisRole, BisStatWeight, Faction } from '../bis/types';
+import { roleOf, setMetricOf, type SetMetric } from './role-metric';
 
 /**
  * Whether the real pipeline has published a BiS file for this spec -- `loadBisFile` (used
@@ -57,31 +57,34 @@ export function factionForFirstRace(
 }
 
 /**
- * The class landing's own Set DPS line (spec §4.B): this spec's band-60 `set_dps`, at the
- * faction `factionForFirstRace` resolves -- `undefined` for a spec with no ranked BiS file
- * (Protection) or no band-60 row at that faction, never a zero or a dash standing in for
+ * The class landing card's set figure (spec §4.B): this spec's band-60 set, at the faction
+ * `factionForFirstRace` resolves, in its role's own unit (`setMetricOf`: damage, healing, or
+ * damage taken for a tank). `undefined` for a spec with no ranked BiS file, no band-60 row at
+ * that faction, or a tank band with no metrics, never a zero or a dash standing in for
  * missing data (tenet 8).
  */
-export function classLandingSetDps(
+export function classLandingSetMetric(
   build: string,
   /** The spec's full id (`specs.json`'s own `spec` field, e.g. `"warrior-fury"`) -- the
    *  BiS file's own name on disk, not the bare spec slug (`"fury"`). */
   spec: string,
   classSlug: string,
   recommendedRaces: readonly string[],
-): number | undefined {
+): SetMetric | undefined {
   const file = rankedBisFile(build, spec);
   if (file === undefined) return undefined;
   const faction = factionForFirstRace(classSlug, recommendedRaces);
   if (faction === undefined) return undefined;
   const band = bandEntry(file, 60, faction);
-  return band === undefined ? undefined : headlineDpsOf(band);
+  return band === undefined ? undefined : setMetricOf(band);
 }
 
 /** This spec's band-60 stat weights, plus the file-level timestamp they were published
  *  with -- everything `railStatRows` (rail-stats.ts) and its own "Updated" caption need. */
 export interface Band60Weights {
   weights: readonly BisStatWeight[];
+  /** The role the band was ranked for: decides the unit its per-point figures are in. */
+  role: BisRole;
   hasteScaleFactor: number | null;
   hitToCap: BisHitToCap | null;
   expertiseToCap: BisExpertiseToCap | null;
@@ -95,7 +98,7 @@ export interface Band60Weights {
  * -- the one load path the Stat priority rail card and `GuideStatTable.astro` (live-numbers
  * lane, 2026-10-06) share, so a guide's own numbers never diverge by reading the band
  * through two different call sequences. `undefined` for a spec with no ranked BiS file or
- * no band-60 row at that faction, same as `classLandingSetDps`'s own "real data only" rule.
+ * no band-60 row at that faction, same as `classLandingSetMetric`'s own "real data only" rule.
  */
 export function band60Weights(
   build: string,
@@ -111,6 +114,7 @@ export function band60Weights(
   if (band === undefined) return undefined;
   return {
     weights: band.weights,
+    role: roleOf(band),
     hasteScaleFactor: band.haste_scale_factor ?? null,
     hitToCap: band.hit_to_cap ?? null,
     expertiseToCap: band.expertise_to_cap ?? null,

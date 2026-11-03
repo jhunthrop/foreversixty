@@ -12,14 +12,15 @@ import {
   cutCooldown,
   formatCooldown,
   litTalentsOf,
-  talentCooldownCuts,
   loadApl,
   specCooldowns,
   prepullCasts,
+  talentCooldownCuts,
   rotationListsFrom,
   spellLookupFor,
   usesCooldownPass,
   type SpellFacts,
+  type SpellLookup,
 } from './rotation-lists';
 
 const BUILD = activeBuild.build;
@@ -214,6 +215,35 @@ describe('rotationListsFrom', () => {
       'Trinkets, racials and potions',
     ]);
   });
+
+  it('names the racial cooldowns of the class’s races on the trinket line', () => {
+    const { cooldowns } = rotationListsFrom(lines, apl, (id) => facts[id], [], new Map(), [
+      { race: 'Gnome', racial: 'Eureka!' },
+      { race: 'Troll', racial: 'Berserking' },
+    ]);
+    expect(cooldowns.at(-1)).toEqual({
+      name: 'Trinkets, racials and potions',
+      clause: 'On cooldown, with your biggest damage: Eureka! (Gnome), Berserking (Troll)',
+    });
+  });
+
+  it('keeps the trinket line plain when no race of the class has a racial cooldown', () => {
+    const { cooldowns } = rotationListsFrom(lines, apl, (id) => facts[id], [], new Map(), []);
+    expect(cooldowns.at(-1)!.clause).toBe('On cooldown, with your biggest damage');
+  });
+
+  it('words the trinket line for a healer by healing, not damage', () => {
+    const { cooldowns } = rotationListsFrom(
+      lines,
+      apl,
+      (id) => facts[id],
+      [],
+      new Map(),
+      [{ race: 'Gnome', racial: 'Eureka!' }],
+      'healer',
+    );
+    expect(cooldowns.at(-1)!.clause).toBe('On cooldown, when your healing matters most: Eureka! (Gnome)');
+  });
 });
 
 describe('the Frost Mage lists, from the real data', () => {
@@ -244,6 +274,57 @@ describe('the Frost Mage lists, from the real data', () => {
     expect(names).toContain('Aimed Shot');
     expect(lists.opener.find((item) => item.name === 'Aimed Shot')?.icon).toBeDefined();
     expect(lists.cooldowns.map((item) => item.name)).toContain('Bestial Wrath');
+  });
+});
+
+describe('the Demonology opener, from the real data', () => {
+  it('names every pre-pull cast, talent spells included', () => {
+    const lists = rotationListsFrom([], loadApl('warlock-demonology'), spellLookupFor(BUILD, 'warlock'));
+    // Demonic Sacrifice and Soul Link are talent spells with no spell-constant row; the
+    // opener must still name them, in time order, with their talent icons.
+    expect(lists.opener.map((item) => item.name)).toEqual([
+      'Summon Imp',
+      'Demonic Sacrifice',
+      'Summon Succubus',
+      'Soul Link',
+    ]);
+    const soulLink = lists.opener.find((item) => item.name === 'Soul Link');
+    expect(soulLink?.icon).toBeDefined();
+    expect(soulLink?.clause).toBe('2 s before the pull');
+  });
+});
+
+describe('talentCooldownCuts', () => {
+  it('reads a lit talent’s percent cut off its own rank text, at the rank taken', () => {
+    expect(talentCooldownCuts(BUILD, 'warlock', new Map([['Decimation', 2]])).get('Soul Fire')).toEqual({
+      ms: 0,
+      percent: 90,
+    });
+    expect(talentCooldownCuts(BUILD, 'warlock', new Map([['Decimation', 1]])).get('Soul Fire')).toEqual({
+      ms: 0,
+      percent: 45,
+    });
+  });
+
+  it('ignores a talent with no points', () => {
+    expect(talentCooldownCuts(BUILD, 'warlock', new Map()).size).toBe(0);
+  });
+
+  it('drops a spell whose cut cooldown falls under the floor from the Cooldowns list', () => {
+    const facts: SpellLookup = (id) =>
+      id === 17924 ? { name: 'Soul Fire', rank: 2, cooldownMs: 60_000 } : undefined;
+    const line = {
+      spellId: 17924,
+      name: 'Soul Fire',
+      rank: 2,
+      condition: 'Soul Fire while Decimation is up.',
+    };
+    const apl = { rotation: { priorityList: [] } };
+    expect(rotationListsFrom([line] as never, apl, facts).cooldowns.map((c) => c.name)).toEqual([
+      'Soul Fire',
+    ]);
+    const cuts = new Map([['Soul Fire', { ms: 0, percent: 90 }]]);
+    expect(rotationListsFrom([line] as never, apl, facts, [], cuts).cooldowns).toEqual([]);
   });
 });
 
@@ -381,10 +462,10 @@ describe('talent cooldown cuts', () => {
   it('reads Guardian’s Favor at the rank the build takes', () => {
     expect(
       talentCooldownCuts(BUILD, 'paladin', new Map([["Guardian's Favor", 2]])).get('Blessing of Protection'),
-    ).toBe(120_000);
+    ).toEqual({ ms: 120_000, percent: 0 });
     expect(
       talentCooldownCuts(BUILD, 'paladin', new Map([["Guardian's Favor", 1]])).get('Blessing of Protection'),
-    ).toBe(60_000);
+    ).toEqual({ ms: 60_000, percent: 0 });
     expect(talentCooldownCuts(BUILD, 'paladin', new Map()).size).toBe(0);
   });
 
@@ -400,8 +481,9 @@ describe('talent cooldown cuts', () => {
   });
 
   it('never cuts below zero', () => {
-    expect(cutCooldown(60_000, 120_000)).toBe(0);
+    expect(cutCooldown(60_000, { ms: 120_000, percent: 0 })).toBe(0);
     expect(cutCooldown(60_000, undefined)).toBe(60_000);
+    expect(cutCooldown(300_000, { ms: 60_000, percent: 50 })).toBe(120_000);
   });
 
   it('litTalentsOf keeps the highest rank either build takes', () => {
