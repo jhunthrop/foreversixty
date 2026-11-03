@@ -16,7 +16,7 @@ PLAYER_CLASSES = {
 
 FROSTBOLT_1, FROSTBOLT_2, FIREBALL_NPC, FROSTFIRE_1, FROSTFIRE_2 = 116, 205, 9001, 401502, 1237312
 PASSIVE, DNT_SPELL, TEST_SPELL, UA, PET_GROWL = 9100, 9101, 9102, 427717, 9200
-COLD_SNAP, IGNITE = 9300, 9301
+COLD_SNAP, IGNITE, FROSTBOLT_VARIANT = 9300, 9301, 9302
 MAGE_FAMILY, WARLOCK_FAMILY, HUNTER_FAMILY = 3, 5, 9
 FIRE_LINE, FROST_LINE, PET_LINE, WEAPON_LINE = 8, 6, 7, 5
 
@@ -44,6 +44,8 @@ def raw(tmp_path: Path) -> Path:
         FIREBALL_NPC: ("Fireball", "", 1, 0, 0, 0),
         COLD_SNAP: ("Cold Snap", "", 0, 0, 0, 480_000),  # a talent: no learn row, no rank
         IGNITE: ("Ignite", "", 0, 0, 0, 0),  # a passive talent
+        # a class-family Frostbolt with a rank and a level but no learn row (an NPC or proc copy)
+        FROSTBOLT_VARIANT: ("Frostbolt", "Rank 2", 8, 3500, 35, 0),
     }
     _write(tmp_path / "SpellName.csv", ["ID", "Name_lang"], [[i, s[0]] for i, s in spells.items()])
     _write(
@@ -76,6 +78,7 @@ def raw(tmp_path: Path) -> Path:
         FROSTBOLT_1: MAGE_FAMILY, FROSTBOLT_2: MAGE_FAMILY, FROSTFIRE_1: MAGE_FAMILY,
         FROSTFIRE_2: MAGE_FAMILY, DNT_SPELL: MAGE_FAMILY, UA: WARLOCK_FAMILY,
         PET_GROWL: HUNTER_FAMILY, COLD_SNAP: MAGE_FAMILY, IGNITE: MAGE_FAMILY,
+        FROSTBOLT_VARIANT: MAGE_FAMILY,
     }  # fmt: skip
     _write(
         tmp_path / "SpellClassOptions.csv",
@@ -372,3 +375,25 @@ def test_without_live_trees_nothing_is_tagged_a_talent(raw, tmp_path):
 def test_the_baseline_spells_round_12_settled_are_trainer_spells(slug, name):
     sources = {t["source"] for t in committed()[slug]["trainables"] if t["name"] == name}
     assert sources == {"skill_line_ability"}
+
+
+def test_a_class_spell_named_like_a_learn_row_ability_is_not_a_rank_of_it(raw):
+    """Aimed Shot 27632 (rank 6, 3 s) beside the trainer's 20904 (2 s), Primal Bite 1238073
+    (rank 4 at 60, its learn row removed by push 113283): the learn rows are the ability's
+    ranks, and a no-learn-row copy is neither a rank nor the source of its figures."""
+    frostbolt = {t.name: t for t in by_slug(raw)["mage"].trainables}["Frostbolt"]
+    assert [r.id for r in frostbolt.ranks] == [FROSTBOLT_1, FROSTBOLT_2]
+    assert frostbolt.cast_time_ms == 3000
+
+
+def test_a_learn_row_a_hotfix_push_removed_is_not_resurrected_as_a_class_spell(raw):
+    """A push (status 2) drops the row from raw/ but not from raw/shipped/: the spell had a
+    learn row, so the no-learn-row fallback must not list it."""
+    shipped = raw / "shipped"
+    shipped.mkdir()
+    _write(
+        shipped / "SkillLineAbility.csv",
+        ["ID", "SkillLine", "Spell", "ClassMask", "SupercedesSpell", "AcquireMethod"],
+        [[11, FIRE_LINE, UA, 256, 0, 0]],
+    )
+    assert "Unstable Affliction" not in names(by_slug(raw)["warlock"])
