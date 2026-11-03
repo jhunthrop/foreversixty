@@ -40,3 +40,33 @@ func TestEveryWarriorRotationShouts(t *testing.T) {
 		}
 	}
 }
+
+// The pre-pull shout is skipped when the aura is already up. The raid
+// preset carries a raid warrior's Battle Shout (the same aura, and in
+// Forever it reaches the whole raid), so an unconditional pre-pull cast
+// spent 10 of the opening Bloodrage's rage on nothing: Fury raid 60 about
+// -0.2% (round 12, regression-melee lane; the landing's Bloodrage at -2.5 s
+// is what first gave the old -1 s shout the rage to cast). The bare bands
+// have no raid shout, so they still shout before the pull.
+func TestWarriorPrepullShoutSkipsAnAuraAlreadyUp(t *testing.T) {
+	const battleShout = 11551
+	for _, spec := range []string{"warrior-arms", "warrior-fury", "warrior-protection"} {
+		curated, err := loadLadderCurated(repoRoot, spec)
+		if err != nil {
+			t.Fatal(err)
+		}
+		rot := &proto.APLRotation{}
+		if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+			t.Fatal(err)
+		}
+		for _, action := range rot.PrepullActions {
+			if action.GetAction().GetCastSpell().GetSpellId().GetSpellId() != battleShout {
+				continue
+			}
+			gate := action.GetAction().GetCondition().GetNot().GetVal().GetAuraIsActive()
+			if gate.GetAuraId().GetSpellId() != battleShout {
+				t.Errorf("%s: the pre-pull Battle Shout is not gated on its aura being down", spec)
+			}
+		}
+	}
+}
