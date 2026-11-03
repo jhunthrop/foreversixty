@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Marksmanship Hunter as the site's guide describes it. Marksmanship puts the damage in your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Serpent Sting kept rolling, Arcane Shot in the gaps, and an auto shot you never let slip. In a raid you play it with no pet, through Lone Wolf. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Marksmanship Hunter as the site's guide describes it. Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Serpent Sting rolling, Arcane Shot in the gaps. In a raid, no pet: Lone Wolf. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
