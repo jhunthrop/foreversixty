@@ -609,7 +609,7 @@
         ]
       },
       {
-        "text": "Racials in the beta client's spell data: Walk on Air (glide downward for 10 seconds on a 90 second cooldown), Read Ley Line (50% health and mana regeneration for 15 seconds, per Blizzard's 26 October notes), Wind Blessed (2% haste), Elemental Insight (5% damage to Elementals). Skyborne choose Horde or Alliance at creation. The client carries no row named Read Ley Line, so its numbers are the notes'.",
+        "text": "Racials in the beta client's spell data: Walk on Air (glide downward for 10 seconds on a 90 second cooldown), Read Ley Line (50% health and mana regeneration for 15 seconds), Wind Blessed (2% haste), Elemental Insight (5% damage to Elementals). Skyborne choose Horde or Alliance at creation. The client carries no row named Read Ley Line: its numbers are Blizzard's 26 October notes'.",
         "sources": [
           {
             "label": "Icy Veins, racial rework",

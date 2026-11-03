@@ -307,10 +307,14 @@ describe('the race text against the client’s spell rows', () => {
     expect(effect('dwarf', 'Big Game Hunter')).toMatch(/Beasts by 5%/);
   });
 
-  it('says which racials the client is silent on', () => {
+  it('says in the race data which racials the client is silent on, and keeps that out of the table', () => {
     const skyborne = raceBy('high-order-skyborne');
     if (skyborne === undefined || effect('high-order-skyborne', 'Read Ley Line') === undefined) return;
-    expect(effect('high-order-skyborne', 'Read Ley Line')).toMatch(/per Blizzard's 26 October notes/);
+    const text = skyborne.forever_changes.map((change) => change.text).join(' ');
+    expect(text).toMatch(/no row named Read Ley Line: its numbers are Blizzard's 26 October notes'/);
+    expect(effect('high-order-skyborne', 'Read Ley Line')).toBe(
+      '50% health and mana regeneration for 15 seconds',
+    );
   });
 });
 
