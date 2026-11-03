@@ -64,7 +64,9 @@ for (const [label, viewport] of [
       await expect(page.getByTestId('guide-header-meta')).toContainText(
         /DPS · Updated \d{1,2} [A-Z][a-z]{2}/,
       );
-      await expect(page.locator('.class-header-summary')).toContainText('Frost is the Mage control');
+      await expect(page.locator('.class-header-summary')).toContainText(
+        'Frost casts Frostbolt behind Ice Barrier',
+      );
       await noSidewaysScroll(page);
     });
 
@@ -76,18 +78,23 @@ for (const [label, viewport] of [
       await expect(page.getByTestId('guide-overview-raid')).toContainText('Brings:');
     });
 
-    test('shows both builds, the raid-build diff line and the key talents with icons', async ({ page }) => {
-      await page.goto(PAGE);
+    test('shows the one build, the key talents with icons, and a raid-build diff where one differs', async ({
+      page,
+    }) => {
+      // Arcane's raid build differs from its level 60 build; Frost plays one build for both.
+      await page.goto('/guides/mage/arcane');
       await expect(page.getByTestId('guide-build-leveling')).toBeVisible();
       await expect(page.getByTestId('guide-build-raid')).toBeVisible();
       await expect(page.getByTestId('guide-build-diff')).toContainText(
         /^The raid build moves \d+ points from /,
       );
-      await expect(page.getByTestId('guide-load-build')).toBeVisible();
       await expect(page.getByTestId('guide-sim-raid-build')).toBeVisible();
+      await page.goto(PAGE);
+      await expect(page.getByTestId('guide-build-both')).toBeVisible();
+      await expect(page.getByTestId('guide-load-build')).toBeVisible();
       const key = page.getByTestId('guide-key-talents');
       await expect(key.locator('h3')).toHaveText('Key talents');
-      await expect(key.locator('li').first()).toContainText('Improved Frostbolt');
+      await expect(key.locator('li').first()).toContainText('Ice Barrier');
       await expect(key.locator('li').first().locator('img')).toHaveCount(1);
       await imagesLoaded(page, '[data-testid="guide-key-talents"] img');
     });

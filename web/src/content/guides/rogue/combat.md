@@ -3,76 +3,116 @@ title: Combat Rogue in Forever
 classSlug: rogue
 spec: combat
 role: dps
-build: 'FS1:1.60.1.70707:rogue:night-elf:32531/32530300001515201/51:'
-raidBuild: 'FS1:1.60.1.70707:rogue:night-elf:005320105/31530300001515231/002:'
+build: 'FS1:1.60.1.70753:rogue:night-elf:32531/32530300001515201/51:'
+raidBuild: 'FS1:1.60.1.70753:rogue:night-elf:005320105/31530300001515231/002:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
-description: 'Combat Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-10-31
+description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents, races and professions that matter.'
+updated: 2026-11-02
 confidence: inferred
 sources:
+  - label: 'Blizzard, Rogue and Warlock class deep dive'
+    url: https://www.warcrafttavern.com/forever/news/poison-pets-rogue-warlock-deep-dive-for-wow-forever/
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
-    url: https://talentsforever.com/data.json
-    kind: community
-  - label: 'This site, stat weights'
+  - label: 'Forever Sixty stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'This site, character planner'
+  - label: 'Forever Sixty character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
 
 ## Overview
 
-Combat is the Rogue weapon-damage melee tree: Sinister Strike into Eviscerate, with Adrenaline Rush doubling energy regeneration during burst windows.
+Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from behind, Eviscerate at five points and Adrenaline Rush with Blade Flurry for the burst.
 
 ### Strengths
 
-- Most reliable sustained single-target damage of the three Rogue trees
-- Does not depend on poison uptime
-- Adrenaline Rush doubles energy regeneration in burst windows
-- Blade Flurry adds attack speed and a second melee target
+- The most forgiving raid rotation of the three trees: one builder, two finishers
+- Adrenaline Rush doubles your energy for 15 seconds, and Blade Flurry cleaves every swing onto a second target
+- Weapon Expertise and Precision cover dodge and hit inside the tree
+- Plays the same on every boss: stay behind, keep Slice and Dice up, spend at five
 
 ### Weaknesses
 
-- Burst is tied to Adrenaline Rush and Blade Flurry cooldowns
-- Best damage wants a dagger in the main hand for Backstab
-- Little stealth or stun utility in the raid build
+- Wants daggers at 60, so Backstab means standing behind the boss every second
+- Burst lives on two long cooldowns: a fight that needs damage in the last minute may find them still recharging
+- Little crowd control or stealth play in the raid build
 
 ### In a raid
 
-- **Role:** Melee damage dealer, sustained single target
-- **Brings:** Its own damage; no raid-wide buff or debuff
+- **Role:** Sustained single-target melee damage, with the best two-target cleave a rogue has
+- **Brings:** Kicks, Kidney Shots on trash and its own damage; no raid buff
 
 ## Talents and builds
 
-In rough priority order: **Improved Sinister Strike** lowers the energy cost of the spec's main combo builder early, which compounds for the rest of a leveling or raiding career. **Dual Wield Specialization** adds flat off-hand damage, a straightforward multiplier once dual-wielding. **Hack and Slash** now treats axes the same way it always treated swords, folded into one shared weapon-type group — this is the talent behind Rogues gaining access to one-handed axes at all in Forever. **Weapon Expertise**, reworked to reduce the chance enemies dodge or parry attacks rather than raising weapon skill, is a flat damage-uptime gain. **Blade Flurry** adds attack speed and a second melee target, useful whenever there's more than one target to hit. **Adrenaline Rush**, the tree's capstone, doubles energy regeneration for 15 seconds and is the spec's signature burst cooldown.
+The raid build goes 16/33/2: Combat to Adrenaline Rush, Assassination for Malice, Lethality and the finisher talents, two points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: Improved Gouge and Remorseless Attacks in place of Lethality and Relentless Strikes, which pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
 
-Point allocation runs deep into Combat to reach Adrenaline Rush at the bottom of the tree, roughly 31 points, with the remainder split as a few points in Assassination for crit and poison utility and a few in Subtlety for utility talents. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
+- **Adrenaline Rush** (1 point): double energy regeneration for 15 seconds on a 5 minute cooldown. Every Backstab you fit into it is a free one.
+- **Blade Flurry** (1 point): 20% attack speed for 15 seconds, and every melee hit also strikes a second nearby enemy. Two-target fights are where Combat beats the other trees.
+- **Hack and Slash** (5 points): Forever folds the old weapon specializations into one talent. Daggers and fists get 5% crit, swords and axes a 5% chance at an extra attack, maces ignore 15% of armor.
+- **Weapon Expertise** (2 points): 2% less chance to be dodged or parried. Every dodged Backstab is a wasted global and a combo point you did not get.
+- **Dual Wield Specialization** (5 points): 25% more off-hand damage on every off-hand swing.
+- **Puncturing Wounds** (3 points): 30% more crit on Backstab and a 45% chance at a second combo point. This is what makes daggers the Combat weapon in Forever.
+
+In the raid build, Lethality makes Backstab crits hit 20% harder, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Aggression adds 6% to Backstab and Eviscerate. Improved Eviscerate, Flawless Execution, Ruthlessness and Relentless Strikes all feed the finisher. Murder only works on Humanoid and Giant targets: check the boss's type before you count on it, and enjoy it on every humanoid trash pull. Lightning Reflexes and the first point of Improved Sinister Strike are the points that get you down the tree.
+
+[Open the planner](/planner?class=rogue) to change the build.
 
 ## Rotation and priority
 
-Open with Slice and Dice at three combo points, then spend combo points on Eviscerate at five: in this site's simulator, keeping Slice and Dice up the whole fight measured worse than putting those combo points into Eviscerate, so after the opener the simulated priority does not spend more points on it. Use Adrenaline Rush on cooldown as the burst window (Blade Flurry goes up alongside it whenever it is ready), and build with Backstab when a dagger is in your main hand: it hits for 150% weapon damage against Sinister Strike's 100%, and Puncturing Wounds adds crit and a chance at a second combo point to it. In this site's simulator the Backstab version beat the Sinister Strike one by about 10%. With a sword or mace in the main hand Backstab cannot be cast, and Sinister Strike builds instead. There is no opener-specific sequencing beyond that in the current simulated priority, and the tree's talent changes (cheaper Sinister Strike, stronger off-hand, Blade Flurry cleave) affect the numbers behind each swing rather than the order abilities are used in. Poisons are your weapon imbues: Deadly Poison on the main hand and Instant Poison on the off hand once Deadly is learned at 30. In this site's simulator that beat two Instants by a few percent in a raid and by about 10% at levels 30 to 50, and it beat the same two poisons the other way round. Thistle Tea goes in whenever energy is near empty: 100 Energy on a 5 minute cooldown.
+### The pull
+
+Check your poisons and stones before the pull. Stealth before the pull, walk in behind the boss, and open with **Garrote** once the tank has the boss. Garrote is a bleed, so the boss having no Sunders on it yet costs it nothing, and it gives you the combo point for Slice and Dice. Backstab out of stealth is the second best opener; Ambush is the weakest one for Combat, because none of Puncturing Wounds, Lethality or Aggression touch it. Cheap Shot is for trash: bosses are immune to stuns.
+
+Every rogue picks up **Poised** at 18: at full energy out of combat, your next ability costs less. Stand at full energy in stealth before you open.
+
+### The priority
+
+Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Sinister Strike only builds with a sword, axe, mace or fist in the main hand. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
+
+### Energy
+
+Backstab costs 60 and you are energy-limited all fight, so you spend the moment you can and wait on energy rather than clip anything. Never sit at full energy: anything over the cap is lost. Press **Adrenaline Rush** low on energy, never at the cap: on the pull, Garrote and one Backstab first, then Adrenaline Rush. Blade Flurry costs 25 and can go at any energy. Before an add you know is coming, let energy climb a little so the first cleaved swings have Backstabs behind them.
+
+**Thistle Tea** gives 100 energy on a 5 minute cooldown. Drink it when you are near empty, never during Adrenaline Rush.
+
+### Cooldowns and adds
+
+On a single target, Adrenaline Rush goes a few seconds into the pull with Blade Flurry, your racial, a trinket and a potion. On a 3 minute kill you get two Blade Flurries and one Adrenaline Rush, so do not hold them. If a fight brings adds in the first minute, hold Blade Flurry for them and keep Adrenaline Rush with it.
+
+Blade Flurry hits anything next to your target. Never turn it on next to a Sapped, Polymorphed, Shackled or Feared mob: one cleave breaks it and the pull goes wrong. Cancel the buff if you have to.
+
+### Trash, threat and survival
+
+- **Kidney Shot** costs no energy in Forever and stuns longer per combo point. Use it on casters and on the mob beating on your healer. **Kick** stops a cast for 25 energy. **Gouge** buys a few seconds on a loose add.
+- **Redirect** (trained at level 1) lifts your combo points off a target and hands them to the next enemy you hit within 15 seconds. When a trash mob is about to die with points on it, Redirect and finish the next one.
+- **Feint** on cooldown on any boss where you sit near the tank's threat. **Vanish** drops you from the threat table entirely, but a bleed or DoT ticking on you puts you straight back in combat, so make it your emergency button.
+- **Evasion** does nothing against spells. Pop it when a melee trash mob turns on you and walk it back to the tank.
 
 ## Stat priority
 
+Hit comes first: a missed Backstab is a wasted global and a lost combo point, and Precision only gets you part of the way. Agility gives attack power and crit together, which is why it beats Strength and raw attack power. Crit is worth more to Combat than it looks, because Lethality makes your Backstab crits bigger. Haste is rare on gear and good when you find it.
+
 ## Best in slot
 
-Dual Wield Specialization makes off-hand weapon damage worth checking specifically when comparing two weapon options. A new stat reducing the target's dodge and parry chance may appear on gear as itemization fills in, which is worth tracking alongside hit rating for a spec that depends on landing every Backstab or Sinister Strike.
+Combat wants **daggers at 60**. Hack and Slash gives daggers crit, and Backstab, Puncturing Wounds and Aggression stack on top of that, so daggers beat swords and axes in Forever. Keep a sword or axe for leveling and for any fight where you cannot stay behind the target. The off hand only needs to be fast and hit hard; Dual Wield Specialization makes it worth a real upgrade.
 
 ## Enchants and consumables
 
-A raid shaman's **Windfury Totem** is an aura on you, not a weapon enchant, so it stacks with your poisons; this site's raid-preset numbers include it.
+Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **Deadly Poison** on the main hand, **Instant Poison** on the off hand, and a stone on each hand. Deadly Poison on the main hand stacks fast off your Backstabs and stays up; Instant Poison goes on the off hand. Two Instants lose to that pair, and so does the same pair the other way round. A shaman's Windfury Totem is an aura on you, not a weapon enchant, so it stacks with poisons and stones.
 
 ## Races
 
+Night Elf on Alliance and Troll on Horde. **Elune's Light** is 10% crit for 15 seconds and **Berserking** 10% attack speed for 15 seconds, both on 3 minute cooldowns: line either up with Adrenaline Rush. Orc's **Blood Fury** is close behind for Horde, and Human's passive 1% crit is the Alliance fallback; Elune's Light beats it for raiding. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
+
 ## Professions
 
-Community convention favors **Engineering** for combat utility items alongside a gathering profession such as Mining or Herbalism for self-funded leveling and consumables, since Combat's damage doesn't scale from a crafting profession the way a caster's does.
+**Enchanting** is the one that changes your gear: Molten Heart of the Mountain and Frozen Heart of the Mountain are bind-on-pickup trinkets only an enchanter can make, and both are pre-raid picks. **Engineering** brings grenades and dynamite for trash. **Skinning** and **Leatherworking** pay for themselves, since Devilsaur and the Stormshroud pieces are leatherworking crafts. Heartseeker comes from a blacksmith; buy it, do not train for it.
 
 ## Leveling
 
-Combat is generally the strongest of the three Rogue trees for leveling: Adrenaline Rush and consistent weapon damage clear trash faster than Assassination's poison-uptime approach or Subtlety's stealth-oriented kit.
+Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. Open with Cheap Shot or Garrote from stealth, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Improved Gouge and Remorseless Attacks make that trick and back-to-back pulls faster. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and Vanish get you out of the pulls that go wrong.

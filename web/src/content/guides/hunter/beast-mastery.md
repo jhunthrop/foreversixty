@@ -3,96 +3,135 @@ title: Beast Mastery Hunter in Forever
 classSlug: hunter
 spec: beast-mastery
 role: dps
-build: 'FS1:1.60.1.70707:hunter:dwarf:5420001505001251/00524510012/0:'
-raidBuild: 'FS1:1.60.1.70707:hunter:dwarf:5420001505001251/00523500014/0:'
+build: 'FS1:1.60.1.70753:hunter:dwarf:5420001505001251/00524510012/0:'
+raidBuild: 'FS1:1.60.1.70753:hunter:dwarf:5420001505001251/00523500014/0:'
 recommendedRaces: [dwarf, troll]
-statPriority: [Agility, Critical strike, Ranged attack power, Hit, Attack speed]
-description: 'Beast Mastery Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-11-01
+statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
+description: 'How to play a Beast Mastery Hunter in Forever: talents for leveling and raids, the shot priority, pet handling, stats, consumables and race picks.'
+updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
-    url: https://talentsforever.com/data.json
+  - label: 'Warcraft Tavern, Hunter and Druid Deep Dive for WoW Forever'
+    url: https://www.warcrafttavern.com/forever/news/powershifting-is-back-sort-of-hunter-druid-deep-dive-for-wow-forever/
     kind: community
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/talents/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/talents/hunter.json
+  - label: 'Warcraft Tavern, Forever Hunter Guide'
+    url: https://warcrafttavern.com/forever/guides/hunter/
+    kind: community
+  - label: 'Forever Sixty build data, talents/hunter.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/talents/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/combos.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/combos.json
+  - label: 'Forever Sixty build data, spellconst/hunter.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/spellconst/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/races.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/races.json
+  - label: 'Forever Sixty build data, races.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/races.json
     kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/enchants.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/enchants.json
-    kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/simconsumes.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/simconsumes.json
-    kind: datamined
-  - label: 'This site, stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'This site, default rotation'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
-  - label: 'This site, character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
-  - label: 'wowsims-forever default hunter priority list'
-    url: https://github.com/wowsims/classic/blob/master/ui/hunter/apls/p1.apl.json
-    kind: community
-  - label: 'Warcraft Tavern, Beast Mastery Hunter rotation guide'
-    url: https://www.warcrafttavern.com/wow-classic/guides/pve-beast-mastery-hunter-rotations-cooldowns/
-    kind: community
 ---
 
 ## Overview
 
-Beast Mastery is the pet-focused ranged Hunter spec: the pet, drawing its stats from the Hunter's gear, deals much of the damage, and Bestial Wrath is its burst.
+Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial Wrath is the burst, and your shots fill every gap.
 
 ### Strengths
 
-- A large share of damage comes from the pet
-- Bestial Wrath gives the pet 50% more damage for 18 seconds
-- The pet absorbs hits and threat the Hunter would otherwise take
-- Careful Aim turns Intellect into attack power, which the pet shares
+- The pet takes 10% of your attack power and all of your crit, so every upgrade you wear makes it hit harder
+- Bestial Wrath twice in a three minute boss fight, the first on the pull with Rapid Fire
+- The pet holds adds and soaks hits while leveling, so you rarely stop to eat
+- Careful Aim turns Intellect into attack power for you and the pet
 
 ### Weaknesses
 
-- Damage depends on the pet staying alive and attacking
-- A fight of Classic length allows only one real burst window
-- Arcane Shot is its least mana-efficient filler
+- A dead or idle pet is a large part of your damage gone
+- The pet gets no raid buffs in Forever, so only your own gear makes it stronger
+- Mana runs out on long fights if you spend Arcane Shots freely
 
 ### In a raid
 
-- **Role:** Ranged single-target DPS with a pet
-- **Brings:** Trueshot Aura, ranged attack power for the party
+- **Role:** Ranged physical DPS with a pet
+- **Brings:** Heart of the Lion (10% stats and attack power for everyone near you), Trueshot Aura (50 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
 
 ## Talents and builds
 
-Reading the Beast Mastery tree in priority order for a pet-damage build: **Unleashed Fury** (a flat damage increase for pets and hawks) and **Ferocity** (pet critical strike chance) come first, since both scale every hit the pet lands afterward. **Focused Fire** follows — its damage bonus applies to the Hunter as well as the pet, unlike the two talents above it. **Frenzy** gives the pet a chance at bonus attack speed off its own critical strikes, compounding with Ferocity. **Bestial Discipline** helps mana sustain by letting some regeneration continue through casting. The tree's capstone, **Bestial Wrath**, is the spec's defining cooldown: an 18-second window of 50% additional pet damage.
+Thirty-one points in Beast Mastery buys every talent that makes the pet hit harder, then twenty in Marksmanship buys what makes you hit harder.
 
-To pay for that, the build drops **Hawk Eye** (ranged weapon range) and **Improved Concussive Shot** (a stun chance on Concussive Shot) entirely, and **Deflection** (parry chance) entirely — all three measured no damage benefit at all in the sim, so the points are better spent elsewhere for a pure DPS build even though they're real defensive or utility effects in a fight where parrying or kiting matters. In Marksmanship the build takes **Careful Aim** (5/5), which turns Intellect into melee and ranged attack power, and **Mortal Shots** (2/5), more critical strike damage on ranged abilities, in place of Improved Tracking, Improved Stings, Efficiency and Rapid Killing: about +1.9% in our level-60 raid run. The raid build moves one point from **Efficiency** and the point in **Rapid Killing** into two more ranks of Mortal Shots: with raid buffs and Judgement of Wisdom a Beast Mastery Hunter rarely runs short of mana, and the swap measures about +1.4% in our raid search run. Without raid buffs the hunter runs low on mana, so the leveling build keeps Efficiency. In Forever the pet takes a tenth of your attack power and all of your critical strike chance, and it gets no raid buffs of its own, so the Hunter's own gear and talents now raise the pet's damage too. Open the planner at [/planner?class=hunter](/planner?class=hunter) to build this out.
+- **Unleashed Fury** (5 points): 15% more damage for the pet on every hit, white or special
+- **Ferocity** (5 points): 10% pet crit on top of the crit it already copies from you, and every crit feeds Frenzy
+- **Frenzy** (5 points): a pet crit always grants 30% attack speed for 8 seconds, which with Ferocity is close to permanent
+- **Focused Fire** (2 points): 2% more damage for you and the pet while the pet is out, the one Beast Mastery talent that raises your own shots
+- **Bestial Wrath** (1 point): 50% more pet damage for 18 seconds every two minutes, and the pet ignores fear while it lasts
+- **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
+- **Careful Aim** (5 points): attack power equal to your Intellect, so a mail Intellect piece is an attack power piece for you and the pet
+- **Mortal Shots** (2 points): 12% more crit damage on your shots, 24% in the raid build at 4 points
+
+Endurance Training (4 points) keeps the pet alive through raid damage, Bestial Discipline (2 points) keeps half your mana regeneration running while you shoot, and Intimidation (1 point) is the way to Bestial Wrath and a free stun on trash. Bestial Swiftness gets the cat to the target sooner after every pull. Improved Stings (2 points) is the way down the Marksmanship tree and adds Serpent Sting damage on the way. The level 60 build's point in Rapid Killing takes a minute off Rapid Fire and makes your next shot after a kill hit 10% harder, which is worth more out in the world than in a raid. Hawk Eye, Improved Concussive Shot and Deflection add nothing to raid damage, so the build skips them.
+
+The raid build moves one point out of Efficiency and the point in Rapid Killing into Mortal Shots. With Judgement of Wisdom on the boss and a Major Mana Potion you do not run dry, and two more ranks of Mortal Shots beat the mana. Out in the world, keep the level 60 build: you will run out of mana long before you run out of targets.
 
 ## Rotation and priority
 
-This site's own simulator plays Beast Mastery on the same shot shell as Marksmanship, with Bestial Wrath layered in as this spec's own cooldown. In Forever, Multi-Shot and Aimed Shot share one 6-second cooldown. Instant Multi-Shot does more over a fight than Aimed Shot, whose cast pauses the auto shot, so Aimed Shot is only the opener: before the pull, Aspect of the Hawk goes up and the first Aimed Shot begins casting so it lands right as the fight opens. Once engaged, Bestial Wrath is used on cooldown first and timed to land together with Rapid Fire, since a fight of Classic length only gives room for one real burst window — stacking both cooldowns into it beats spreading them apart. Multi-Shot is then cast every time the shared cooldown comes up. Serpent Sting is refreshed whenever it's close to falling off and Multi-Shot is not about to come back, and Arcane Shot, which has its own cooldown, is the last filler whenever Multi-Shot is more than 1.5 seconds from ready and mana is above a 25% reserve. Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, hence the reserve floor. The priority list doesn't call for active pet repositioning beyond keeping the pet alive and attacking through the Bestial Wrath window.
+Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight. Send the pet in once the tank has the boss.
+
+As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and Berserking or Blood Fury together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
+
+From there the fight is Multi-Shot every six seconds, Serpent Sting when it is about to drop, and Arcane Shot in the gaps while you have mana. Do not cast Aimed Shot again after the opener. It shares Multi-Shot's cooldown and its 2 second cast holds your auto shot, so it loses to Multi-Shot every time.
+
+Auto Shot does more damage than any button you press, so protect it:
+
+- Stand still. Moving while an auto shot winds up cancels it.
+- Fire your instants right after an auto shot leaves, so they never push the next one back.
+- Stay outside 8 yards. Inside it you cannot shoot at all.
+
+When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Multi-Shot going. Drink a Major Mana Potion before you need it, not at 5%.
+
+**The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Pets in Forever get no buffs from your raid, so the only way to make it stronger is your own gear. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
+
+**Threat.** A Beast Mastery hunter with Bestial Wrath up can pass a fresh tank in the opening seconds. Watch your threat and Feign Death before you reach the tank, not after the boss turns. Feign Death can be resisted: if it says Resisted, you still have all your threat. The pet keeps its own threat, which is fine, since it sits behind the boss.
+
+**Trash.** Multi-Shot hits three targets and is your AoE on most packs. Volley is a channel, costs a lot of mana, and is worth it only on a big pack that will live through the whole channel. Freezing Trap is the hunter's crowd control: lay it before the pull, and remember any damage breaks it. Explosive Trap under a pack the tank is holding is good damage for its mana.
+
+There is no execute phase for a hunter: the priority holds to the end.
+
+**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up, and Scatter Shot (trained at 30) buys a few seconds against something loose in the back line.
 
 ## Stat priority
 
+Hit comes first until the hit cap shown above, because a missed auto shot is the most expensive thing that can happen to you. After hit, Agility and Intellect are close: Agility is attack power and crit, Intellect is attack power through Careful Aim and mana on top. Crit is better than it looks because the pet copies all of your crit chance. Plain attack power is the weakest per point, and haste is rare on gear but strong when you find it.
+
 ## Best in slot
+
+Hunters wear leather until 40 and mail from 40. Your ranged weapon is your real weapon, the melee weapon is there for its stats, so a two-hander with Agility or Intellect beats a fast one-hander with damage. The full lists by level are on the [Beast Mastery best in slot page](/bis/hunter/beast-mastery).
 
 ## Enchants and consumables
 
+Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 247x128 Accurascope once your raid's engineer can make it. Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers, where Careful Aim makes it count as attack power.
+
+**Ammo and quiver.** Carry the best ammo your level can use and plenty of it: arrows for a bow, bullets for a gun. Jagged Arrows from 40, Ice Threaded and Thorium Headed Arrows from the early 50s, or Thorium Shells from an engineer. The quiver or ammo pouch is a free 10 to 15% ranged attack speed, so upgrade it every time you can: Quickdraw Quiver from 40 and a 15% bag near 60. Run out of ammo in a raid and you do almost nothing.
+
+Forever's damage potions share the two-minute potion cooldown with mana potions, so a Beast Mastery hunter drinks Major Mana Potions. Elixir of the Mongoose is the elixir to keep up, with the food above and Ground Scorpok Assay alongside it.
+
 ## Races
+
+Dwarf for the Alliance: Artisan's Precision is 1% hit, and Big Game Hunter adds damage against beasts. Night Elf's Elune's Light (10% crit for 15 seconds) lines up with Rapid Fire on the pull, and Human's Ruthless is 1% crit. Humans can be Hunters for the first time in Forever.
+
+Troll for the Horde: Berserking is 10% attack speed for 15 seconds, and it stacks with Rapid Fire on the pull. Orc is the other strong Horde hunter: Blood Fury on the pull, and Command makes your pet hit 5% harder.
 
 ## Professions
 
-Community convention for Hunter favors **Skinning** for the cheap, plentiful leather this class already collects while killing beasts to level, often paired with **Leatherworking** for self-crafted agility gear, or **Engineering** for ranged-weapon scopes and trap-adjacent gadgets.
+Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash, and the target dummies and explosives that save wipes. Skinning and Leatherworking pay for your leveling, since you kill beasts all day, and Leatherworking makes strong leather and mail pieces before raid gear.
 
 ## Leveling
 
-Beast Mastery is generally regarded as the strongest leveling spec for Hunter: a durable, hard-hitting pet absorbs damage that would otherwise land on the Hunter and clears trash faster than Marksmanship's single-target focus or Survival's melee weaving.
+Beast Mastery is the best way to level a hunter. Tame your first pet at 10 and keep it within a few levels of you. The pet takes the hits, you shoot, and you rarely stop to eat.
+
+Open every pull with Hunter's Mark and Serpent Sting, send the pet, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+
+Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get, and Bestial Wrath comes the same level.

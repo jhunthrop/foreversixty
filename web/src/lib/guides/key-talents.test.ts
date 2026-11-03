@@ -51,6 +51,16 @@ describe('parseTalentBullets', () => {
     expect(bullets[0]!.why).toBe('Up to 0.5 seconds off the cast');
   });
 
+  it('reads a colon as the separator, so a guide needs no dash', () => {
+    const bullets = parseTalentBullets(
+      '- **Mortal Strike** (1 point): your best hit per rage.\n- **Ice Shards** and **Piercing Ice**: the multipliers.',
+    );
+    expect(bullets.map((b) => [b.names, b.why])).toEqual([
+      [['Mortal Strike'], 'Your best hit per rage'],
+      [['Ice Shards', 'Piercing Ice'], 'The multipliers'],
+    ]);
+  });
+
   it('skips a bullet with no dash or no bold name', () => {
     expect(parseTalentBullets('- **Role:** Caster\n- plain text — with a dash')).toEqual([]);
   });

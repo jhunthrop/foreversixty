@@ -1,16 +1,17 @@
 {
   "spec": "paladin-protection",
-  "build": "1.60.1.70707",
+  "build": "1.60.1.70753",
   "core": [
     {
       "family": "Holy Shield",
       "spell_ids": [
         20925,
         20927,
-        20928
+        20928,
+        1239570
       ],
       "talent": true,
-      "verified": "1.60.1.70707/spellconst/paladin.json#20928"
+      "verified": "1.60.1.70753/spellconst/paladin.json#1239570"
     },
     {
       "family": "Holy Strike",
@@ -25,7 +26,7 @@
         10333
       ],
       "talent": false,
-      "verified": "1.60.1.70707/spellconst/paladin.json#10333"
+      "verified": "1.60.1.70753/spellconst/paladin.json#10333"
     },
     {
       "family": "Hammer of the Righteous",
@@ -33,7 +34,7 @@
         407632
       ],
       "talent": false,
-      "verified": "1.60.1.70707/spellconst/paladin.json#407632"
+      "verified": "1.60.1.70753/spellconst/paladin.json#407632"
     },
     {
       "family": "Judgement",
@@ -41,7 +42,7 @@
         20271
       ],
       "talent": false,
-      "verified": "1.60.1.70707/spellconst/paladin.json#20271"
+      "verified": "1.60.1.70753/spellconst/paladin.json#20271"
     },
     {
       "family": "Swift Judgement",
@@ -49,21 +50,22 @@
         1310994
       ],
       "talent": true,
-      "verified": "1.60.1.70707/spellconst/paladin.json#1310994"
+      "verified": "1.60.1.70753/spellconst/paladin.json#1310994"
     }
   ],
   "auras": [
     {
-      "spell_id": 20928,
+      "spell_id": 1239570,
       "spell_ids": [
         20925,
         20927,
-        20928
+        20928,
+        1239570
       ],
       "name": "Holy Shield",
       "kind": "defensive",
       "talent": true,
-      "verified": "1.60.1.70707/spellconst/paladin.json#20928"
+      "verified": "1.60.1.70753/spellconst/paladin.json#1239570"
     }
   ],
   "downranks": [],
@@ -74,7 +76,7 @@
         1311015
       ],
       "talent": true,
-      "verified": "1.60.1.70707/spellconst/paladin.json#1311015"
+      "verified": "1.60.1.70753/spellconst/paladin.json#1311015"
     },
     {
       "family": "Divine Shield",
@@ -83,7 +85,7 @@
         1020
       ],
       "talent": false,
-      "verified": "1.60.1.70707/spellconst/paladin.json#1020"
+      "verified": "1.60.1.70753/spellconst/paladin.json#1020"
     },
     {
       "family": "Divine Protection",
@@ -94,7 +96,7 @@
         5573
       ],
       "talent": false,
-      "verified": "1.60.1.70707/spellconst/paladin.json#5573"
+      "verified": "1.60.1.70753/spellconst/paladin.json#5573"
     },
     {
       "family": "Lay on Hands",
@@ -104,7 +106,7 @@
         10310
       ],
       "talent": false,
-      "verified": "1.60.1.70707/spellconst/paladin.json#10310"
+      "verified": "1.60.1.70753/spellconst/paladin.json#10310"
     }
   ],
   "efficiency": []

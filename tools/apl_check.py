@@ -12,9 +12,11 @@ forgetting `make apl-sync` cannot pass - and so is every forever_*.apl.json
 the fork carries, so a copy whose curated source was renamed away is
 caught too.
 
-The comparison is of PARSED json, not bytes: what the copies must agree
-on is the rotation, and a difference in content is what a drifting copy
-means.
+The comparison is of PARSED json, not bytes, with every display field
+(apl_paths.DISPLAY_KEYS, the `notes`) stripped from both sides: what the
+copies must agree on is what the engine runs (actions, conditions, ranks,
+order). The notes belong to the curated file alone, so rewording one
+never needs `make apl-sync`, a fork commit or an engine pin.
 
 Run through `make apl-check`.
 """
@@ -35,9 +37,9 @@ def compare(label: str, path: pathlib.Path, curated_path: pathlib.Path, curated)
         copy = json.loads(path.read_text())
     except json.JSONDecodeError as err:
         return f"{path}: not valid json ({err})"
-    if copy != curated:
+    if apl_paths.semantics(copy) != apl_paths.semantics(curated):
         return (
-            f"{path} differs from {curated_path}'s rotation; "
+            f"{path} runs a different rotation from {curated_path}; "
             f"edit the curated file and run `make apl-sync`, never the other way"
         )
     return None

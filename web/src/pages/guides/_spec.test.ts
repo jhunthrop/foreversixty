@@ -132,7 +132,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toContain('The beta stops at level 30.');
     expect(html).toMatch(/DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
     // The header summary is the Overview's own sentence, not the frontmatter description.
-    expect(html).toContain('Frost is the Mage control and survivability spec');
+    expect(html).toContain('Frost casts Frostbolt behind Ice Barrier');
   });
 
   it('lays the Overview out as strengths, weaknesses and the raid role', async () => {
@@ -144,11 +144,17 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
 
   it('names the raid build’s difference in one line and lists the key talents with icons', async () => {
     const html = await frostHtml();
-    expect(html).toMatch(/data-testid="guide-build-diff"[^>]*>The raid build moves \d+ points? from /);
+    // Frost plays one build at 60 in and out of raids; Arcane's raid build differs.
+    const arcane = await container.renderToString(SpecPage, {
+      props: { entry: loadGuideEntry('mage/arcane') },
+    });
+    expect(arcane).toMatch(/data-testid="guide-build-diff"[^>]*>The raid build moves \d+ points? from /);
+    expect(html).toContain('data-testid="guide-build-both"');
     expect(html).toContain('data-testid="guide-key-talents"');
     expect(html).toContain('Improved Frostbolt');
     expect(html).toMatch(/guide-key-talent-0[\s\S]*?<img src="\/data\/[^"]+\/icons\/[^"]+\.webp"/);
-  });
+    // Two full guide renders in one test.
+  }, 20_000);
 
   it('numbers a priority with spell icons, names the real cooldowns, and prints the pre-pull Ice Barrier as the opener', async () => {
     const html = await frostHtml();
@@ -237,8 +243,10 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toContain('data-testid="guide-enchants"');
     expect(html).toContain('data-testid="guide-consumables"');
     expect(html).toContain('Elixir of Frost Power');
-    expect(html).toContain('replaces both elixirs');
-    expect(html).toContain('Without a flask');
+    // A Classic flask stacks with the elixirs: listed beside them, never instead of them.
+    expect(html).toContain('Flask of Supreme Power');
+    expect(html).not.toContain('replaces both elixirs');
+    expect(html).not.toContain('Without a flask');
     expect(html).not.toContain('The caster meal');
     expect(html).toContain('data-testid="guide-race-table"');
     expect(html).toContain('data-testid="guide-race-row-gnome"');
@@ -252,6 +260,9 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
         'Makes your damaging abilities cost 10% less Mana and deal 10% more damage for 8 seconds',
       );
       expect(html).not.toContain('next 3 abilities');
+      // The prose names Eureka! as the client has it (8 s, 10% damage, 10% cheaper), never the
+      // BlizzCon demo's reading.
+      expect(html).not.toMatch(/Eureka![^.<]*50%/);
     }
     expect(html).toContain('data-testid="guide-leveling-row-talents"');
     expect(html).toMatch(/leveling-chip-rank[^>]*>\d\/\d</);

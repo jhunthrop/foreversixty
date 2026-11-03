@@ -7,15 +7,22 @@
 // enchant data does not say which unit it is in). Enchants of a later phase and class-locked
 // ones are left out.
 //
-// Consumables: the ones the BiS ranker's raid-ready preset gives this spec, with the icon from
-// the build's `simbuffs.json` and a short "what it gives" line from CONSUMABLE_GIVES, which a
-// test holds to the preset: a consumable the preset adds without a line here fails the test.
-import { existsSync } from 'node:fs';
+// Consumables: the ones the sim's raid preset gives this spec at level 60, read from the source
+// of truth the sim itself runs (sim/request/raid-consumes.json, data/curated/presets.json
+// resolved per spec with the class kit, held current by a Go test), never from the published
+// BiS file, which trails a curated change until the next refresh. Labels come from
+// data/curated/presets.json, else the build's `simbuffs.json`, which also gives the icon; a
+// short "what it gives" line comes from CONSUMABLE_GIVES, which a test holds to the preset. A
+// Classic flask stacks with the battle and guardian elixirs, so all of them are listed together.
+import { existsSync, readFileSync } from 'node:fs';
+import path from 'node:path';
+import { repoRoot } from '../data/build-files';
 import { bandEntry } from '../bis/load';
 import { SLOT_DISPLAY_LABELS } from '../bis/slot-display-labels';
 import type { Slot } from '../planner/types';
 import { buildFile, readBuildJson } from './build-files';
 import { factionForFirstRace, rankedBisFile } from './class-dps';
+import { guidesCopy } from './copy';
 import type { BisBand, BisStatWeight } from '../bis/types';
 
 export interface EnchantRecord {
@@ -42,7 +49,7 @@ export type ConsumableKind = 'flask' | 'elixir' | 'other';
 
 export interface ConsumableRow {
   id: string;
-  /** A flask takes both elixir slots; an elixir is what a player without a flask uses. */
+  /** A flask and the elixirs are all used together (Classic flasks stack with elixirs). */
   kind: ConsumableKind;
   name: string;
   icon: string | undefined;
@@ -209,13 +216,32 @@ export const CONSUMABLE_GIVES: Readonly<Record<string, string>> = {
   'main_hand_imbue:brilliant_mana_oil': 'Mana per 5 sec and healing power, on the main hand',
   'main_hand_imbue:brilliant_wizard_oil': 'Spell power, on the main hand',
   'main_hand_imbue:elemental_sharpening_stone': 'Critical strike, on the main hand',
+  'main_hand_stone:elemental_sharpening_stone': 'Critical strike, on the main hand',
   major_frenzy_potion: 'Attack power for 30 sec, on the potion cooldown',
   major_mana_potion: 'Mana, used on cooldown',
   major_spellblasting_potion: 'Spell damage for 30 sec, on the potion cooldown',
   mighty_rage_potion: 'Rage',
   'off_hand_imbue:dense_sharpening_stone': 'Weapon damage, on the off hand',
+  'off_hand_stone:dense_sharpening_stone': 'Weapon damage, on the off hand',
   r_o_i_d_s: 'Strength',
 };
+
+/** A row of the consumables table, or a group heading between rows. */
+export type ConsumableLine = { header: string } | { row: ConsumableRow };
+
+/** The table's lines: the flask and the elixirs first, all used together, then the food, oil
+ *  and potions under their own heading. A flask never replaces an elixir in Classic. */
+export function consumableLines(rows: readonly ConsumableRow[]): ConsumableLine[] {
+  const kindOrder: Record<ConsumableKind, number> = { flask: 0, elixir: 1, other: 2 };
+  const ordered = [...rows].sort((a, b) => kindOrder[a.kind] - kindOrder[b.kind]);
+  const others = ordered.filter((row) => row.kind === 'other');
+  const headed = others.length > 0 && others.length < ordered.length;
+  return ordered.flatMap((row, index): ConsumableLine[] =>
+    headed && row.kind === 'other' && ordered[index - 1]?.kind !== 'other'
+      ? [{ header: guidesCopy.alsoUsed }, { row }]
+      : [{ row }],
+  );
+}
 
 export interface SimBuffEntry {
   name: string;
@@ -246,6 +272,61 @@ export function consumableRows(
   });
 }
 
+/** Class kit imbues the guide's Rotation and class sections cover, not bought consumables. */
+export const KIT_IMBUES: ReadonlySet<string> = new Set([
+  'main_hand_imbue:deadly_poison',
+  'main_hand_imbue:instant_poison',
+  'off_hand_imbue:deadly_poison',
+  'off_hand_imbue:instant_poison',
+  'main_hand_imbue:windfury_weapon',
+]);
+
+interface RaidConsumesFile {
+  specs: Record<string, { from_level: number; consumes: string[] }[]>;
+}
+
+/** The consumable ids the sim's raid preset sends `spec` at `level`, in the sim's order. */
+export function raidConsumeIds(file: RaidConsumesFile, spec: string, level: number): string[] {
+  const rows = (file.specs[spec] ?? []).filter((row) => row.from_level <= level);
+  return (
+    rows.reduce<{ from_level: number; consumes: string[] } | undefined>(
+      (best, row) => (best === undefined || row.from_level > best.from_level ? row : best),
+      undefined,
+    )?.consumes ?? []
+  );
+}
+
+/** Every `{ id, label }` the curated presets file names, at any depth. */
+export function curatedLabels(node: unknown, into: Map<string, string> = new Map()): Map<string, string> {
+  if (Array.isArray(node)) {
+    for (const item of node) curatedLabels(item, into);
+  } else if (typeof node === 'object' && node !== null) {
+    const record = node as Record<string, unknown>;
+    if (typeof record.id === 'string' && typeof record.label === 'string') into.set(record.id, record.label);
+    for (const value of Object.values(record)) curatedLabels(value, into);
+  }
+  return into;
+}
+
+function readRepoJson<T>(relativePath: string): T {
+  return JSON.parse(readFileSync(path.join(repoRoot(), relativePath), 'utf8')) as T;
+}
+
+/** The level 60 raid consumables the sim runs for `spec`, labelled, kit imbues left out. */
+export function simRaidConsumes(
+  spec: string,
+  simBuffs: Readonly<Record<string, SimBuffEntry>>,
+): { id: string; label: string }[] {
+  const file = readRepoJson<RaidConsumesFile>('sim/request/raid-consumes.json');
+  const labels = curatedLabels(readRepoJson<unknown>('data/curated/presets.json'));
+  return raidConsumeIds(file, spec, 60)
+    .filter((id) => !KIT_IMBUES.has(id))
+    .map((id) => ({
+      id,
+      label: labels.get(id) ?? (simBuffs[id] ?? simBuffs[id.split(':').pop() ?? ''])?.name ?? id,
+    }));
+}
+
 export interface GearExtras {
   enchants: EnchantRow[];
   consumables: ConsumableRow[];
@@ -267,8 +348,6 @@ export function loadGearExtras(
   const records = readBuildJson<EnchantRecord[]>(build, 'enchants.json') ?? [];
   const simBuffs =
     readBuildJson<{ entries: Record<string, SimBuffEntry> }>(build, 'simbuffs.json')?.entries ?? {};
-  const raid = file.presets?.raid;
-  const consumes = band.preset === 'raid' && raid !== undefined ? raid.consumes : [];
   return {
     enchants: pickEnchants(records, band.weights, {
       classSlug,
@@ -276,10 +355,8 @@ export function loadGearExtras(
       shield: hands.shield ?? false,
       hasOffHand: hands.hasOffHand ?? false,
     }),
-    consumables: consumableRows(
-      consumes.map((consume) => ({ id: String(consume.id), label: consume.label })),
-      simBuffs,
-      (icon) => existsSync(buildFile(build, 'icons', `${icon}.webp`)),
+    consumables: consumableRows(simRaidConsumes(spec, simBuffs), simBuffs, (icon) =>
+      existsSync(buildFile(build, 'icons', `${icon}.webp`)),
     ),
   };
 }

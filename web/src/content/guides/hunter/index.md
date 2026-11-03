@@ -1,8 +1,8 @@
 ---
 title: Hunter in Forever
 classSlug: hunter
-description: 'What the Hunter class does in Forever, its three specs, the new Human pairing, and what changed from 1.12.'
-updated: 2026-09-24
+description: 'What the Hunter plays like in Forever: the three specs, melee Survival, the reworked pets, Heart of the Lion and the new Human Hunter.'
+updated: 2026-11-02
 confidence: single-source
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -11,30 +11,32 @@ sources:
   - label: "Blizzard, What's Next panel recap"
     url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
     kind: blizzard
+  - label: 'Warcraft Tavern, Hunter and Druid Deep Dive for WoW Forever'
+    url: https://www.warcrafttavern.com/forever/news/powershifting-is-back-sort-of-hunter-druid-deep-dive-for-wow-forever/
+    kind: community
   - label: 'Wowhead, Skyborne First Look'
     url: https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829
     kind: community
-  - label: 'Power Up Gaming, Forever talent changes vs Classic'
-    url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/
-    kind: community
-  - label: 'Talents Forever (demo transcription)'
-    url: https://talentsforever.com/data.json
-    kind: community
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/combos.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/combos.json
+  - label: 'Forever Sixty build data, combos.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/combos.json
     kind: datamined
 ---
 
-Hunter is Forever's ranged physical damage class: a tamed pet, a bow or gun, traps, and a kit built for sustained damage rather than caster-style burst. All three specs are damage trees — Forever gives Hunter no tank or healing option — so choosing between them is about how the damage gets generated, not which role it fills in a group.
+Hunter is Forever's physical damage class with a pet and a bow. All three specs deal damage, and in Forever they no longer play the same way: two shoot, one fights in melee.
 
-The three specs:
+- **Beast Mastery** puts a big share of your damage in the pet. Bestial Wrath is the burst, and your shots fill the gaps.
+- **Marksmanship** puts the damage in your own shots: Multi-Shot on cooldown, Arcane Shot in the gaps, and an auto shot you never let slip.
+- **Survival** is a melee spec. Two weapons, Raptor Strike, Mongoose Bite and Lacerate, and Lone Wolf instead of a pet.
 
-- **Beast Mastery** invests heavily in a strengthened pet, so a large share of total damage comes from the animal rather than the Hunter's own shots.
-- **Marksmanship** centers on Aimed Shot, stacking ranged crit damage and Intellect-scaled Attack Power behind that one slow, hard-hitting cast.
-- **Survival** mixes ranged shots with melee weaving, leaning on traps and melee talents to stay effective at close range.
+What changed from Classic:
 
-**Human Hunter** is one of Blizzard's six confirmed new race and class pairs, giving the Alliance a Hunter option it never had in 1.12. Hunter is also open to the Skyborne on both factions — unlike Mage or Shaman, this class carries no faction restriction for that race.
+- **Pets are reworked.** A pet copies 10% of your attack power and all of your crit, and it gets no buffs from your raid. Your gear is what makes it hit.
+- **Aimed Shot is a trained spell** with a 2 second cast, and it shares one 6 second cooldown with Multi-Shot. Instant Multi-Shot wins that cooldown, so Aimed Shot is an opener.
+- **Heart of the Lion** is a hunter spell from level 1: 10% more stats and extra attack power for everyone near you, and another 10% stats for you.
+- **Aspect of the Beast** gives melee attack power, which makes it the Survival aspect. Aspect of the Hawk stays the ranged one.
+- **Trueshot Aura** is ranged attack power only, for your party and raid.
+- **Mail from 40.** Hunters wear leather until 40.
 
-Talent trees keep their familiar structure — seven rows, 51 points — but Forever adds a fourth one-point "gold medal" milestone at 16 points alongside the existing ones at 11, 21, and 31. Several talents that used to do nothing but unlock a group buff are baseline abilities instead, opening tree space for talents that change how the spec plays. Reading the demo trees, one outlet's tally puts Hunter at 15 brand-new talents, 16 that changed, and 19 left untouched — the largest untouched count of any class in that count, so the tree's overall shape should feel closer to 1.12 than most other classes will. On the baseline kit: Aimed Shot is now trainable rather than gated behind a Marksmanship talent, with a faster 2-second cast (down from 3 seconds in Classic) on a cooldown it shares with Multi-Shot; Aspect of the Beast now also grants melee attack power on top of making the Hunter untrackable; and Call Pet is renamed after whatever animal has been tamed. Hunter also picks up the itemization change Blizzard called out specifically for the class: melee, ranged, and spell hit chance collapse into one combined stat instead of three, which Blizzard says makes traps land more reliably.
+**Human Hunter** is one of the six new race and class pairs, so the Alliance has a Human Hunter for the first time. Skyborne can be Hunters on either faction.
 
-None of this has been tested at the level and raid content Hunters will actually play at launch — see each spec guide's Overview for what's confirmed versus projected. The Beast Mastery, Marksmanship, and Survival guides below cover talent priorities, rotation, stats, and gear for each tree.
+The Beast Mastery, Marksmanship and Survival guides below cover talents, the rotation, stats, gear and races for each spec.
