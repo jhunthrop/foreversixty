@@ -56,11 +56,12 @@ import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { railStatRows } from '../../../lib/guides/rail-stats';
 import { splitSpecSections, type SpecSection } from '../../../lib/guides/sections';
 import { diffBuilds, buildDiffLine } from '../../../lib/guides/build-diff';
-import { loadGuideBis } from '../../../lib/guides/guide-bis';
+import { guideTipsUrl, proseNames, specGuideData, withTipKeys } from '../../../lib/guides/guide-tips';
+import { linkProse } from '../../../lib/guides/prose-tips';
+import GuideTooltips from '../../../components/guides/GuideTooltips.svelte';
 import { schoolHitTalent } from '../../../lib/guides/hit-cap-line';
 import { pageScript } from '../../../lib/guides/page-script';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
-import { loadGearExtras } from '../../../lib/guides/gear-extras';
 import { guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
@@ -108,14 +109,35 @@ const fullSpecId = `${classSlug}-${specSlug}`;
 const className = classes.find((c) => c.slug === classSlug)?.name ?? classSlug;
 const role = entry.data.role ?? 'dps';
 
+// Tooltips: the guide's gear and its tooltip bundle in one read (lib/guides/guide-tips.ts).
+// Every talent, spell, racial, enchant and item the page names opens the game's tooltip; the
+// bundle is published beside the page and fetched on the first hover, focus or tap.
+const {
+  bis: guideBis,
+  extras: gearExtras,
+  bundle: tipBundle,
+} = specGuideData(build, classSlug, fullSpecId, entry.data.recommendedRaces);
+
+// Talents: both builds decoded for the key-talent icons and the raid-build diff.
+const buildTrees = buildCode === undefined ? [] : (decodeBuildTrees(build, buildCode) ?? []);
+const raidCode = entry.data.raidBuild;
+const raidTrees =
+  raidCode === undefined || raidCode === buildCode ? undefined : decodeBuildTrees(build, raidCode);
+
+// The prose's names, marked from the client data: a talent at the guide's raid build rank.
+const proseTargets = proseNames(build, classSlug, raidTrees ?? buildTrees, tipBundle);
+async function prose(markdown: string): Promise<string> {
+  return linkProse(await renderGuideMarkdown(markdown), proseTargets);
+}
+
 // Overview: a summary sentence (the header's) and three bullet blocks.
 const overview = splitOverview(sections.get('Overview') ?? '');
 const hasOverviewBlocks = overview.strengths !== '' || overview.weaknesses !== '' || overview.raid !== '';
 const overviewHeadingHtml = await renderGuideMarkdown('## Overview');
-const overviewFallbackHtml = hasOverviewBlocks ? '' : await renderGuideMarkdown(proseOnly('Overview'));
-const strengthsHtml = await renderGuideMarkdown(overview.strengths);
-const weaknessesHtml = await renderGuideMarkdown(overview.weaknesses);
-const raidHtml = await renderGuideMarkdown(overview.raid);
+const overviewFallbackHtml = hasOverviewBlocks ? '' : await prose(proseOnly('Overview'));
+const strengthsHtml = await prose(overview.strengths);
+const weaknessesHtml = await prose(overview.weaknesses);
+const raidHtml = await prose(overview.raid);
 
 // SpecTabs: every spec of this class, in the talent tree's own left-to-right order --
 // identical convention `/bis`'s own header already uses.
@@ -132,11 +154,6 @@ const specTabs: SpecTabEntry[] = catalogEntries.map((s) => ({
 const specName = catalogEntries.find((s) => s.spec_slug === specSlug)?.name ?? specSlug;
 const specIcon = specTabs.find((tab) => tab.active)?.icon;
 
-// Talents: both builds decoded for the key-talent icons and the raid-build diff.
-const buildTrees = buildCode === undefined ? [] : (decodeBuildTrees(build, buildCode) ?? []);
-const raidCode = entry.data.raidBuild;
-const raidTrees =
-  raidCode === undefined || raidCode === buildCode ? undefined : decodeBuildTrees(build, raidCode);
 const raidDiffLine =
   raidTrees === undefined || buildTrees.length === 0
     ? undefined
@@ -146,7 +163,7 @@ const keyTalents = keyTalentsFor(
   proseOnly('Talents and builds'),
   buildTrees.length > 0 ? buildTrees : undefined,
 );
-const talentsProseHtml = await renderGuideMarkdown(withoutTalentBullets(proseOnly('Talents and builds')));
+const talentsProseHtml = await prose(withoutTalentBullets(proseOnly('Talents and builds')));
 
 // Rail: Rotation card's first four level-60 lines (spec §4.C.2) -- the card is omitted
 // entirely when no rotation entry applies yet (spec §5's own state table), never a card
@@ -160,7 +177,7 @@ const rotationLines =
 const rotationBandLabel = String(bandTopLevel(60));
 const litTalents = litTalentsOf([...buildTrees, ...(raidTrees ?? [])]);
 const spellFacts = spellLookupFor(build, classSlug);
-const rotationListsData =
+const rotationListsUnkeyed =
   rotationEntry === undefined
     ? undefined
     : rotationListsFrom(
@@ -172,9 +189,11 @@ const rotationListsData =
         racialCooldownsFor(build, classSlug),
         role,
       );
+const rotationListsData =
+  rotationListsUnkeyed === undefined ? undefined : withTipKeys(rotationListsUnkeyed, tipBundle);
 const hitTalent = schoolHitTalent(raidTrees ?? buildTrees);
 const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');
-const rotationProseHtml = await renderGuideMarkdown(proseOnly('Rotation and priority'));
+const rotationProseHtml = await prose(proseOnly('Rotation and priority'));
 
 // Rail: Stat priority card's real per-point numbers read the spec's own band-60 BiS data, at
 // the faction the guide's first `recommendedRaces` entry resolves to (the same rule, stated
@@ -193,26 +212,15 @@ const statRows =
 // frontmatter list is only the fallback for a spec with no weights yet.
 const statPills = statRows.length > 0 ? statRows.map((row) => row.label) : entry.data.statPriority;
 const statPriorityHeadingHtml = await renderGuideMarkdown('## Stat priority');
-const statPriorityProseHtml = await renderGuideMarkdown(proseOnly('Stat priority'));
+const statPriorityProseHtml = await prose(proseOnly('Stat priority'));
 
-// Best in slot: the /bis picks per level range, plus the enchant and consumable tables that
-// follow the level 60 band's weights.
-const guideBis = loadGuideBis(build, classSlug, fullSpecId, entry.data.recommendedRaces);
+// Best in slot: the /bis picks per level range (guideBis, above), plus the enchant and
+// consumable tables that follow the level 60 band's weights (gearExtras).
 const bisHref = `/bis/${classSlug}/${specSlug}`;
-const topBand = guideBis?.panels.find(
-  (p) => p.faction === guideBis.defaultFaction && p.band === guideBis.defaultBand,
-);
-const mainHand = topBand?.rows.find((row) => row.slot === 'main_hand');
-const offHand = topBand?.rows.find((row) => row.slot === 'off_hand');
-const gearExtras = loadGearExtras(build, classSlug, fullSpecId, entry.data.recommendedRaces, {
-  twoHanded: mainHand?.typeLabel === 'Two-Handed Weapon',
-  shield: offHand?.typeLabel === 'Shield',
-  hasOffHand: offHand !== undefined && !offHand.empty,
-});
 const gearHeadingHtml = await renderGuideMarkdown('## Best in slot');
-const gearProseHtml = await renderGuideMarkdown(proseOnly('Best in slot'));
+const gearProseHtml = await prose(proseOnly('Best in slot'));
 const enchantsHeadingHtml = await renderGuideMarkdown('## Enchants and consumables');
-const enchantsProseHtml = await renderGuideMarkdown(proseOnly('Enchants and consumables'));
+const enchantsProseHtml = await prose(proseOnly('Enchants and consumables'));
 
 // Races: the pills as the summary, the table under them.
 const raceRows = raceTableFor(
@@ -222,8 +230,8 @@ const raceRows = raceTableFor(
   specKindOf(classSlug, fullSpecId, role),
 );
 const racesHeadingHtml = await renderGuideMarkdown('## Races');
-const racesProseHtml = await renderGuideMarkdown(proseOnly('Races'));
-const professionsHtml = await renderGuideMarkdown(sections.get('Professions') ?? '');
+const racesProseHtml = await prose(proseOnly('Races'));
+const professionsHtml = await prose(sections.get('Professions') ?? '');
 
 // The strip is the leveling journey: the guide's own level 60 build cut down to each range's
 // points, the same walk the sim's ladder uses (lib/guides/leveling-builds.ts), so it follows
@@ -240,7 +248,7 @@ const levelingRows: LevelingBandRow[] =
         talents: b.talents,
       }));
 const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
-const levelingProseHtml = await renderGuideMarkdown(proseOnly('Leveling'));
+const levelingProseHtml = await prose(proseOnly('Leveling'));
 
 const updatedStamp = dayMonth(pageUpdatedAt(entry.data.updated, ranked?.generated_at));
 const metaLine = guidesCopy.headerMeta(role, updatedStamp);
@@ -288,6 +296,7 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
             rotationBandLabel={rotationBandLabel}
             rotationLines={rotationLines.slice(0, 4)}
             statRows={statRows}
+            tips={tipBundle}
           />
         </div>
       )}
@@ -330,7 +339,7 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   )}
   <Fragment set:html={gearProseHtml} />
   <Fragment set:html={enchantsHeadingHtml} />
-  {gearExtras !== undefined && <GuideGearExtras build={build} extras={gearExtras} />}
+  {gearExtras !== undefined && <GuideGearExtras build={build} extras={gearExtras} tips={tipBundle} />}
   <Fragment set:html={enchantsProseHtml} />
   <Fragment set:html={racesHeadingHtml} />
   <RacePillRow
@@ -338,13 +347,14 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
     classSlug={entry.data.classSlug}
     recommendedRaces={entry.data.recommendedRaces}
   />
-  <RaceTable build={build} rows={raceRows} />
+  <RaceTable build={build} rows={raceRows} tips={tipBundle} />
   <Fragment set:html={racesProseHtml} />
   <Fragment set:html={professionsHtml} />
   <Fragment set:html={levelingHeadingHtml} />
   {levelingRows.length > 0 && <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} />}
   <Fragment set:html={levelingProseHtml} />
   <script is:inline set:html={pageScript}></script>
+  <GuideTooltips client:idle-after-load build={build} bundleUrl={guideTipsUrl(build, classSlug, specSlug)} />
 </Content>
 
 <style>
@@ -366,5 +376,36 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
      column's right edge. */
   main.measure-aside {
     max-width: none;
+  }
+  /* A name that opens the game tooltip (GuideTooltips.svelte mounts the panel inside it). The
+     row and pill hosts keep their own look; a name in the prose reads as a game link: the
+     spell or talent in the strong text colour, an item in its quality, both underlined dotted
+     so a reader knows it answers a hover, a focus or a tap. */
+  .gtip {
+    position: relative;
+    cursor: help;
+  }
+  .gtip:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  .prose span.gtip,
+  .guide-prose span.gtip,
+  p span.gtip,
+  li > span.gtip {
+    text-decoration: underline dotted;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    text-underline-offset: 3px;
+  }
+  p span.gtip:not(.gtip-item),
+  li > span.gtip:not(.gtip-item) {
+    color: var(--color-strong);
+    font-weight: 600;
+  }
+  .gtip [role='tooltip'] {
+    color: var(--color-text);
+    text-decoration: none;
+    cursor: default;
   }
 </style>

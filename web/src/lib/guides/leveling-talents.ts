@@ -7,6 +7,7 @@
 import type { DecodedTreeView } from './build-tree';
 
 export interface LevelingTalentChip {
+  id: number;
   name: string;
   icon: string;
   rank: number;
@@ -42,6 +43,7 @@ export function levelingChipRows(
       .map((talent, fallback) => ({ talent, at: place(talent.id, fallback) }))
       .sort((a, b) => a.at - b.at)
       .map(({ talent }): LevelingTalentChip => ({
+        id: talent.id,
         name: talent.name,
         icon: talent.icon,
         rank: talent.rank,

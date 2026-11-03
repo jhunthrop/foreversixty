@@ -290,6 +290,11 @@ jobs:
       # SimItem. Both refresh the same manifest, and the diff step at the
       # end sees the finished directory either way.
       - run: uv run python -m pipeline loot --build "$BUILD" --engine ../.engine $SHRINK
+      # The site's spell hover cards: every trainable rank, racial, enchant spell and
+      # consumable's on-use line, from the raw spell tables. After trainables and loot
+      # (it reads trainables/, enchants.json and simbuffs.json); simdb's manifest
+      # refresh below lists it.
+      - run: uv run python -m pipeline spelltips --build "$BUILD"
       # simdb reads the same raw inputs normalize does and refreshes
       # manifest.json, so it runs after the normalize that covers icons and
       # tree art rather than before it; simconst and levels ran before icons

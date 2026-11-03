@@ -14,6 +14,7 @@ import { bandSpendOrder, decodeBandTalents } from '../../lib/guides/build-tree';
 import { guidesCopy } from '../../lib/guides/copy';
 import { levelingChipRows } from '../../lib/guides/leveling-talents';
 import { dataUrl } from '../../lib/planner/load';
+import { talentTipKey } from '../../lib/tooltips/game-tip';
 
 export interface LevelingBandRow {
   band: number;
@@ -58,10 +59,12 @@ const chipRows = levelingChipRows(decoded, spendOrder);
           <ul class="leveling-chips" data-testid="guide-leveling-row-talents">
             {chips.map((chip) => (
               <li
-                class:list={['leveling-chip', chip.isNew && 'leveling-chip-new']}
-                title={chip.isNew ? guidesCopy.levelingNewTitle : undefined}
+                class:list={['leveling-chip', 'gtip', chip.isNew && 'leveling-chip-new']}
                 data-new={chip.isNew}
+                tabindex="0"
+                data-game-tip={talentTipKey(chip.id, chip.rank)}
               >
+                {chip.isNew && <span class="sr-only">{guidesCopy.levelingNewTitle}</span>}
                 <img
                   src={dataUrl(build, `icons/${chip.icon}.webp`)}
                   alt=""

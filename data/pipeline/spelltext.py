@@ -106,7 +106,7 @@ class Effect:
     base_points: int
     die_sides: int
     period_ms: int
-    #: Yards, from SpellRadius through EffectRadiusIndex_0. None: the effect has no radius.
+    #: Yards, from SpellRadius through EffectRadiusIndex_0 (else _1). None: no radius.
     radius: float | None = None
     #: EffectChainTargets. Zero: the effect does not chain.
     chain_targets: int = 0
@@ -468,7 +468,10 @@ def load_spell_text(
             base_points=_base_points(row),
             die_sides=int(row.get("EffectDieSides") or 0),
             period_ms=int(row["EffectAuraPeriod"]),
-            radius=radii.get(int(row.get("EffectRadiusIndex_0") or 0)),
+            # Classic rows often leave index 0 unset and keep the radius in index 1
+            # (Demoralizing Shout, Thunder Clap): either one is the effect's radius.
+            radius=radii.get(int(row.get("EffectRadiusIndex_0") or 0))
+            or radii.get(int(row.get("EffectRadiusIndex_1") or 0)),
             chain_targets=int(row.get("EffectChainTargets") or 0),
         )
     misc: dict[int, tuple[int | None, int, float | None]] = {}

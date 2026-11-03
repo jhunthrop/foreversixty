@@ -240,6 +240,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     tr.add_argument("--build", required=True)
 
+    st = sub.add_parser(
+        "spelltips",
+        help="write the game's own spell tooltips (builds/<build>/spelltips/) for the site's "
+        "hover cards; needs raw/ from `fetch`, then `trainables` and `loot`",
+    )
+    st.add_argument("--build", required=True)
+
     lv = sub.add_parser(
         "levels",
         help="write levels.json (per-level base stats) and spellranks.json (rank "
@@ -602,6 +609,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.trainables import write_trainables
 
         print(write_trainables(args.build))
+    elif args.command == "spelltips":
+        from pipeline.spelltips import write_spell_tips
+
+        print(write_spell_tips(args.build))
     elif args.command == "levels":
         from pipeline.levels import write_levels
         from pipeline.spellranks import write_spell_ranks

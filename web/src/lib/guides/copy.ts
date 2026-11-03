@@ -1,7 +1,6 @@
 // Every user-visible string the guides lane's own components (GuideBuildTree,
 // BuildActionButtons, RacePillRow, StatPriorityPills) render, reference voice throughout
 // (design/DESIGN-SYSTEM.md: state the thing and stop).
-import { betaOver } from './beta';
 
 /** The unit a role's per-point and set figures are in: a tank's per-point figures are
  *  tank-score points (mitigation, risk and threat combined), never damage. */
@@ -23,11 +22,8 @@ export const guidesCopy = {
   /** `/guides` index's own signed-in callout (spec §4.A/§6): `{specName}` and `{className}`
    *  come from the visitor's own character, e.g. "Your guide: Fury Warrior →". */
   signedInCallout: (specName: string, className: string): string => `Your guide: ${specName} ${className} →`,
-  /** The /guides index line. Before launch it names the beta cap; at launch the cap is gone. */
-  indexHonestyLine: (now: Date = new Date()): string =>
-    betaOver(now)
-      ? 'Talents, rotation and gear for every spec at 60.'
-      : 'The beta stops at level 30. Talents, rotation and gear for every spec at 60.',
+  /** The /guides index line, under the title: what every guide gives, for launch day on. */
+  indexLine: 'Talents, rotation and gear for every spec, from your first talent point to the raid at 60.',
   roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
     role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank',
   readTheGuide: 'Read the guide',
