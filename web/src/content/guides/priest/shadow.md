@@ -3,12 +3,12 @@ title: Shadow Priest in Forever
 classSlug: priest
 spec: shadow
 role: dps
-build: 'FS1:1.60.1.70753:priest:gnome:52401003113/0/54342001201300051:'
-raidBuild: 'FS1:1.60.1.70753:priest:gnome:32500003113/0/52352101201300251:'
+build: 'FS1:1.60.1.70753:priest:gnome:02510503103/0/54342001201300051:'
+raidBuild: 'FS1:1.60.1.70753:priest:gnome:00510503103/0/52352101201300251:'
 recommendedRaces: [gnome, undead]
 statPriority: [Intellect, Hit, Spell power, Shadow power, Critical strike, Spell haste, Spell penetration]
-description: 'Shadow Priest overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-09-24
+description: 'How to play Shadow Priest in Forever: talents for leveling and raids, the opener and priority, Vampiric Embrace, threat, mana, races and consumables.'
+updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -17,62 +17,109 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'This site, stat weights'
+  - label: 'Forever Sixty stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'This site, character planner'
+  - label: 'Forever Sixty talent planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
 
 ## Overview
 
-Shadow is the Priest damage-over-time caster: keep Shadow Word: Pain up, then Mind Blast and Mind Flay, with Vampiric Embrace healing as sustain.
+Shadow keeps two DoTs ticking, hits Mind Blast and Shadow Word: Death on cooldown, and fills with Mind Flay, all from Shadowform.
 
 ### Strengths
 
-- Strongest Priest spec for solo play and leveling
-- Shadow Weaving stacks a growing Shadow damage multiplier
-- Shadow Word: Death adds a burst of damage every 18 seconds
-- Vampiric Embrace gives self-sufficiency through damage dealt
+- The best way to level a priest: DoTs, a wand and Spirit Tap mean you rarely drink
+- Vampiric Embrace heals your whole group for a fifth of your Shadow damage
+- Shadow Word: Death is a second big instant on an 18 second cooldown
+- Every priest now has Devouring Plague, so Shadow carries two DoTs on any race
 
 ### Weaknesses
 
-- Mind Flay costs a talent point, and without it there is no filler spell
-- Damage depends on keeping Shadow Word: Pain up
-- A close fight wastes a late Shadow Word: Pain refresh, so it is skipped
+- No filler until Mind Flay at level 20, and Mind Flay is a talent in Forever
+- Mind Blast and Shadow Word: Death throw a lot of threat early in a pull
+- Shadowform blocks every healing spell, so helping your healers means leaving the form
 
 ### In a raid
 
-- **Role:** Caster damage dealer
-- **Brings:** Vampiric Embrace healing for the group, Power Word: Fortitude, and Shadow Weaving raising Shadow damage on the target
+- **Role:** Ranged caster damage
+- **Brings:** Vampiric Embrace on your group, Power Word: Fortitude, Divine Spirit, Fear Ward and Shadow Protection
 
 ## Talents and builds
 
-**Improved Mind Blast** still cuts Mind Blast's cooldown and holds 4 of its 5 points: the current client folded Shadow Affinity out of the tree, and the threat point it used to take goes here. The engine measures each of those points at no damage in this build, so the point moves to **Mental Agility**, taken at 3/3 (a mana-cost cut on Smite, Holy Fire and instant casts, measured by the engine as a real damage gain). **Silent Resolve**'s point (a threat talent, zero damage) and both points in **Early Demise** go to the same place, and the freed Shadow points go into a second rank of **Improved Shadow Word: Pain** (6 extra seconds of Shadow Word: Pain duration), which the probe credits as a clear damage gain. Early Demise, which raised Shadow Word: Death's critical strike chance below 20% health, is no longer taken: the engine measures it at zero damage in this build. **Power in Light**, **Holy Precision**, **Improved Power Word: Shield** and **Blackout** hold their ranks: the engine has no code path for them, so this site cannot measure what they are worth and the build leaves them alone. This build measures about +6.9% over the previous spend in our level-60 search run.
+You go deep Shadow for Shadowform and spend the rest in Discipline for mana and cheaper instants. Nothing in the Discipline tree's damage row helps you: Power in Light only touches Smite and Penance, and Holy Precision only Holy spells.
 
-Point allocation runs deep into Shadow to reach Shadowform at the bottom of the tree, 33 points, with the remaining 18 in Discipline: **Inner Focus** (1 point) is a required pick alongside the Meditation talent's mana regeneration while casting — it's the free, empowered Mind Blast cast this build's Rotation section calls out below, so it has to be taken for that line to be legal, not just Meditation. Open the planner at [/planner?class=priest](/planner?class=priest) to build this out.
+- **Shadowform** (1 point): 10% more Shadow damage, half the mana on every Shadow spell and double the critical damage bonus. It is the reason to be Shadow.
+- **Shadow Weaving** (3 points): every Shadow spell you land adds 2% Shadow damage taken from you, up to 5 stacks. In Forever it only raises your own damage, not a warlock's. It stacks in your first few globals and Mind Flay keeps it up.
+- **Darkness** (5 points): a flat 10% on every Shadow spell.
+- **Improved Mind Flay** (2 points): each Mind Flay tick hits 20% harder than the one before, which is why you never clip it.
+- **Improved Mind Blast** (4 to 5 points): each point takes half a second off Mind Blast's 8 second cooldown.
+- **Improved Shadow Word: Pain** (2 points): 6 more seconds of Pain, so fewer refreshes.
+- **Shadow Focus** (5 points): 5% Shadow hit, the cheapest hit you will ever get.
+- **Vampiric Embrace** (1 point): the group heal you keep on the boss in a raid. See the rotation for what it costs you.
+- **Early Demise** (2 points): 30% more Shadow Word: Death crit chance below 20%, the raid build's execute.
+- **Twin Disciplines** (5 points), **Mental Agility** (3 points) and **Inner Focus** (1 point): your instants hit harder and cost less, and Inner Focus is a free Mind Blast every 3 minutes.
+- **Meditation** (3 points) and **Mental Strength** (5 points): half your regeneration keeps running while you cast, and 10% more Intellect for a deeper bar.
+- **Silent Resolve** (1 point): 10% less threat. Take more of it if you keep pulling aggro.
+
+The leveling build carries two points of Wand Specialization, because you wand a lot on the way up. The raid build trades them, and two points of Blackout (bosses cannot be stunned), for Early Demise, Shadow Reach and the last point of Improved Mind Blast. Open the [planner](/planner?class=priest) to adjust either.
 
 ## Rotation and priority
 
-The core loop this site's simulator plays: keep Shadow Word: Pain up on the target unless the fight is close to ending, since refreshing it late would waste most of the remaining damage-over-time value. Keep Devouring Plague up too; in Forever every race learns it, not only Undead. Its 24-second cooldown lets you reapply it as it expires, and in Forever its ticks crit like Shadow Word: Pain's. Use Inner Focus on Mind Blast whenever it is ready, then cast Mind Blast on cooldown, ahead of Mind Flay: it is the bigger hit for its cast time, and Shadowform halves its cost and doubles its crit bonus like every other Shadow spell. Shadow Word: Death comes next, on cooldown rather than saved for the last 20% of the fight; it costs you 30% of your maximum health in backlash each cast, so let your healers know. Mind Flay fills every other global. Mind Flay needs its talent taken, since Forever gates it behind that pick rather than granting it as a baseline trainer spell (see Talents and builds below for when to take it while leveling). Wand only when nothing else can be cast: a wand shot cannot start during the global cooldown, so it never fits between spells. Reordering this way, Mind Blast over Mind Flay and Devouring Plague kept up, was worth about +12% at the time of the audit. The raid build still carries two points in Wand Specialization: wand shots no longer fit between spells, so those points do almost nothing, but moving them measured under 1% and the build keeps them until a larger change comes along.
+**Before the pull.** Buff the raid, then shift into Shadowform and drink back to full: the form costs mana, so never shift on the pull. Let the tank get two or three hits in before you press anything that is not a DoT.
+
+**Opener.** Shadow Word: Pain, Devouring Plague, then Mind Blast (with Inner Focus, so it is free and more likely to crit), Shadow Word: Death, and Mind Flay. By the end of that string Shadow Weaving is at five stacks.
+
+**Priority.** Keep Shadow Word: Pain up. Keep Devouring Plague up: it is on a 24 second cooldown and heals you as it ticks. Mind Blast on cooldown. Shadow Word: Death on cooldown. Mind Flay with everything else.
+
+**Never clip Mind Flay.** Improved Mind Flay makes the third tick the biggest, so a Mind Blast that comes off cooldown mid-channel waits for the channel to finish.
+
+**Shadow Word: Death backlash.** Every cast that does not kill the target hits you for 30% of your maximum health. Cast it on cooldown anyway, and keep Vampiric Embrace up so your own damage heals it back.
+
+**Vampiric Embrace.** On the boss, keep it up: it costs a global every 30 seconds, a few percent of your own damage, and in return your whole group heals for 20% of every Shadow spell you land. On a fight with group damage that is a lot of healing, and it pays for Shadow Word: Death. On a fight where your group takes nothing, skip it and push damage.
+
+**Execute.** Nothing changes below 20%, except that Early Demise makes Shadow Word: Death crit far more often. Drop Shadow Word: Pain in the last 10 seconds of a fight; it will not tick out.
+
+**AoE and adds.** Shadow has no real AoE. Put Shadow Word: Pain on adds that will live 15 seconds or more and keep your rotation on the kill target. Mind Flay slows by 50%, which is a good way to peel a runner off a healer.
+
+**Moving.** Shadow Word: Pain, Devouring Plague, Shadow Word: Death and Vampiric Embrace are all instant. Save a refresh or Shadow Word: Death for when you have to run.
+
+**Threat.** Mind Blast threatens hard. Fade sheds threat for a few seconds on a 30 second cooldown; use it the moment you climb past the tank, not after the boss turns. If you keep pulling, move a point from Mental Strength into Silent Resolve.
+
+**Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice. Shadowfiend cannot be learned at launch.
+
+**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Gnome Eureka! on two Mind Blasts and a Shadow Word: Death (it only helps direct damage, so a Mind Flay under it is wasted), Troll Berserking and Night Elf Elune's Light whenever they are up.
 
 ## Stat priority
 
+Spell power and Shadow power are the same stat to you. Hit is next until you reach the cap: Shadow Focus gives 5%, the rest comes from gear, and every miss is a lost Mind Blast. Critical strike is worth more than it looks because Shadowform doubles your crit bonus. Intellect matters only as mana, and with raid buffs you rarely run dry. Spell penetration does nothing against raid bosses.
+
 ## Best in slot
 
-Because bonus healing gear in Forever now also carries a fraction of bonus damage, some cloth pieces itemized for healers may carry incidental value for Shadow that they wouldn't have in 1.12 — worth checking case by case rather than assuming.
+Forever puts a third of a healing item's bonus on it as spell damage, so a healer's cloth piece often has some damage on it. It still loses to a real caster piece: take healing gear only when nothing with spell power drops.
 
 ## Enchants and consumables
 
+Flask of Supreme Power, or Elixir of Shadow Power with Greater Arcane Elixir when you do not have a flask. Brilliant Wizard Oil on the weapon. Use Forever's Spellblasting Potion on the pull; a Major Mana Potion and a Demonic Rune come out on a long fight. The Demonic Rune hurts you, so do not stack it with a Shadow Word: Death when your healers are busy.
+
 ## Races
+
+**Gnome** is the Alliance pick. Eureka! makes your next three direct casts 10% cheaper and 10% stronger for 15 seconds on a 2 minute cooldown: line it up with Mind Blast and Shadow Word: Death. Expansive Mind adds 5% mana. The Gnome priest spells are Contingency Plan, a ward that shields and heals an ally who drops below 35%, and Confounding Flash, which confuses nearby enemies for a few seconds.
+
+**Undead** is the Horde pick. Touch of the Grave procs Shadow damage off your hits, Will of the Forsaken breaks fears, and Dark Sacrifice trades your health for mana once a fight.
+
+**Night Elf** has Elune's Light, 10% crit for 15 seconds every 3 minutes, and **Troll** has Berserking, 10% cast speed. Both are close. **Dwarf** gets Artisan's Precision, 1% hit, which a Shadow priest always wants, plus Stoneform and Desperate Prayer. **Human** gets Ruthless, 1% crit.
 
 ## Professions
 
-Community convention for Shadow Priests favors **Tailoring** for caster cloth stats alongside **Enchanting** for weapon and gear enchants, the same combination general caster practice recommends across classes.
+Tailoring makes a lot of the cloth you wear before raids, so it pays for itself. Enchanting makes its own caster pieces and saves you the enchanting bill. A Gnome who wants Engineering gets more reliable devices from Engineering Specialization.
 
 ## Leveling
 
-Shadow is the strongest leveling spec for Priest by a wide margin: its damage-over-time kit provides both offense and self-healing that Discipline and Holy, built around supporting other players, don't have solo.
+Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap after every kill lets you chain pulls without drinking.
 
-Take **Mind Flay**'s single point the moment it's available at level 20, ahead of the level-60 build's own point order above. That order maxes Shadow Focus, Blackout and Spirit Tap first for a level-60 raider's hit and threat needs, but a leveling character walking those same points in sequence doesn't reach Mind Flay's row until several levels later — and until then there is no ranged filler at all beyond the wand, since Forever moved Mind Flay out of the baseline kit. Grab the 1-point prerequisite first, then fill Shadow Focus/Blackout/Spirit Tap and the rest of the tree behind it.
+The strips below take Shadow Focus and Blackout first, which is right for dungeon bosses. For questing, take Spirit Tap first at level 10, then Improved Shadow Word: Pain and Improved Mind Blast, so Mind Flay is your point at 20. Improved Mind Flay, Vampiric Embrace and Shadow Weaving come next, and every point in Shadow gets you to Shadowform at 40. Shadow Focus can wait until dungeons: mobs at your level rarely resist.
+
+In Shadowform you cannot cast Renew or a heal. Power Word: Shield still works, so shield before the pull and let Vampiric Embrace and Devouring Plague top you up. Leave the form only for a heal you really need. Solo, cast Shadow Word: Death only when it will kill or you are well above half health: the backlash is real.

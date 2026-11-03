@@ -257,6 +257,16 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
     expect(shaman).not.toContain('Astral Recall');
   });
 
+  it('leaves out race-locked and unlearnable class spells, and keeps a baseline one', () => {
+    const priest = specCooldowns(BUILD, 'priest', new Set(), spellLookupFor(BUILD, 'priest')).map(
+      (item) => item.name,
+    );
+    for (const name of ['Shadowfiend', 'Feedback', 'Divine Grace', 'Dark Sacrifice', "Elune's Grace"]) {
+      expect(priest).not.toContain(name);
+    }
+    expect(priest).toContain('Fear Ward');
+  });
+
   it('gives Evocation its icon from the spell icon data', () => {
     expect(items.find((item) => item.name === 'Evocation')?.icon).toBe('spell_nature_purge');
   });
