@@ -3,7 +3,7 @@ title: Elemental Shaman in Forever
 classSlug: shaman
 spec: elemental
 role: dps
-build: 'FS1:1.60.1.70753:shaman:dwarf:551033130000135/03/503352:'
+build: 'FS1:1.60.1.70753:shaman:dwarf:551033130000135/03/053352:'
 raidBuild: 'FS1:1.60.1.70753:shaman:dwarf:5510331300001351/055/053002:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Intellect, Spell power, Hit, Nature power, Critical strike, Spell haste, Spell penetration]
@@ -49,7 +49,7 @@ Elemental is the shaman's caster spec: Flame Shock and Lava Burst for the big hi
 
 ## Talents and builds
 
-The leveling build goes deep Elemental and spends the rest in Restoration for Improved Healing Wave, Totemic Focus and Natural Grace: cheaper totems, faster self-heals and less threat while you quest. The raid build takes Elemental Mastery as the 31st point, then trades the leveling comforts for Tidal Focus (5% hit), Thundering Strikes and Ancestral Knowledge (10% more Intellect). Tidal Focus is the reason the raid build goes into Restoration at all.
+The leveling build goes deep Elemental and spends the rest in Restoration for Tidal Focus, Mindfulness, Totemic Focus and Natural Grace: 5% spell hit, mana regeneration while you cast, cheaper totems and less threat while you quest. Tidal Focus comes first because a Lightning Bolt that misses is the most expensive cast you make; Improved Healing Wave only speeds up a heal your damage rotation never casts. The raid build takes Elemental Mastery as the 31st point, then trades the leveling comforts for Thundering Strikes and Ancestral Knowledge (10% more Intellect), and keeps Tidal Focus.
 
 Elemental Mastery is reworked in Forever: for 15 seconds Lightning Bolt and Lava Burst cast half a second faster and Chain Lightning has no cooldown. With Elemental Alacrity that makes Lightning Bolt a 1.5 second cast. It no longer guarantees a crit.
 
@@ -84,7 +84,7 @@ Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt
 
 ## Stat priority
 
-Spell hit caps at 16% against a raid boss. The raid build's Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, which leaves the 10% your gear has to find. Nature power only adds to Lightning Bolt, Chain Lightning and Earth Shock; Flame Shock, Lava Burst and Searing Totem are fire, so it ranks below plain spell power. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. Crit feeds Elemental Fury's doubled bonus. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
+Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, which leaves the 10% your gear has to find. Nature power only adds to Lightning Bolt, Chain Lightning and Earth Shock; Flame Shock, Lava Burst and Searing Totem are fire, so it ranks below plain spell power. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. Crit feeds Elemental Fury's doubled bonus. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
 
 ## Best in slot
 
