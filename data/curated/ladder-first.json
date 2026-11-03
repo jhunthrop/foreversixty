@@ -75,8 +75,12 @@
       ]
     },
     "paladin-protection": {
-      "reason": "Holy Shield, which the rotation casts from rank 1 at 30, sits on the 21-point row; a level 30 paladin's 21 points hold it, but the plain walk spends the 21st on Improved Righteous Fury. Taking Holy Shield as soon as it fits (and Shieldsworn as soon as it fits, the capstone the spine already gave band 40) raises band 30's threat beyond error on the tank fight, both factions, seeds 1 and 50001 (sim-accuracy round 12, hybrids); damage taken rises about 2% with the Improved Righteous Fury point gone. No other band changes.",
+      "reason": "Holy Shield, which the rotation casts from rank 1 at 30, sits on the 21-point row; a level 30 paladin's 21 points hold it, but the plain walk spends the 21st on Improved Righteous Fury. Taking Holy Shield as soon as it fits (and Shieldsworn as soon as it fits, the capstone the spine already gave band 40) raises band 30's threat beyond error on the tank fight, both factions, seeds 1 and 50001 (sim-accuracy round 12, hybrids); damage taken rises about 2% with the Improved Righteous Fury point gone. No other band changes. Templar's Bulwark (the 10-point row, no level gate since the 70707 hotfix) is reserved ahead of them by owner ruling (first, because the walk takes the longest legal prefix of the list and Holy Shield cannot fit below 30) (sim-accuracy round 14): at band 20 it takes the second Sacred Duty point, which shortens only Divine Shield, Divine Protection and Bulwark itself. On the tank fight chance of death falls from about 77% to 66% for about 2% less threat; survival wins for a tank at this band, a stated exception to the threat metric that is not generalised to other bands or specs. Bands 25 and up already hold Bulwark and do not change.",
       "first": [
+        {
+          "talent": "Templar's Bulwark",
+          "rank": 1
+        },
         {
           "talent": "Holy Shield",
           "rank": 1
