@@ -194,6 +194,7 @@ def test_test_dnt_pet_and_unattributed_spells_are_dropped(raw):
         ("Testimony", False),
         ("(DNT) Frostbolt", True),
         ("[DNT] Hydrate Seed Pod", True),
+        ("Rogue Passive (DND)", True),
         ("Copy of Frostbolt", True),
         ("Runecarving Test - Crippling Poison", True),
         ("", True),
@@ -397,3 +398,90 @@ def test_a_learn_row_a_hotfix_push_removed_is_not_resurrected_as_a_class_spell(r
         [[11, FIRE_LINE, UA, 256, 0, 0]],
     )
     assert "Unstable Affliction" not in names(by_slug(raw)["warlock"])
+
+
+def _add_spell(
+    raw: Path, spell_id: int, name: str, subtext: str, level: int, cost: int, family: int
+) -> None:
+    """Append one spell (no cast time, no cooldown) to every table the fixture writes."""
+    rows = {
+        "SpellName.csv": [spell_id, name],
+        "Spell.csv": [spell_id, subtext],
+        "SpellMisc.csv": [spell_id, 0, spell_id, spell_id],
+        "SpellCastTimes.csv": [spell_id, 0],
+        "SpellLevels.csv": [spell_id, 0, spell_id, level],
+        "SpellPower.csv": [spell_id, spell_id, cost, 0, 0],
+        "SpellCooldowns.csv": [spell_id, 0, spell_id, 0, 0],
+        "SpellClassOptions.csv": [10_000 + spell_id, spell_id, family],
+    }
+    for table, row in rows.items():
+        with (raw / table).open("a", newline="", encoding="utf-8") as handle:
+            csv.writer(handle).writerow(row)
+
+
+def _add_learn_rows(raw: Path, rows: list[list[object]]) -> None:
+    """Append SkillLineAbility rows: [ID, SkillLine, Spell, ClassMask, SupercedesSpell,
+    AcquireMethod]."""
+    with (raw / "SkillLineAbility.csv").open("a", newline="", encoding="utf-8") as handle:
+        csv.writer(handle).writerows(rows)
+
+
+FROSTBOLT_3, FROST_ARMOR, DEMON_CHARGE, FROSTFIRE_3 = 9400, 9401, 9402, 9403
+ICE_SHIELD, ICE_SHIELD_PROC = 9404, 9405
+
+
+def test_an_auto_learned_row_is_a_rank(raw):
+    """AcquireMethod 2 rows are learned with the skill line, not bought: every class's
+    starting rank 1s (Heroic Strike 78, Fireball 133, Smite 585), Battle Stance 2457,
+    Auto Shot 75, and Sniper Shot rank 3 1310786 at 58. Wowhead's live spellbook lists
+    each at its client level."""
+    _add_spell(raw, FROSTBOLT_3, "Frostbolt", "Rank 3", 14, 50, MAGE_FAMILY)
+    _add_spell(raw, FROST_ARMOR, "Frost Armor", "Rank 1", 1, 60, MAGE_FAMILY)
+    _add_learn_rows(
+        raw,
+        [
+            [20, FROST_LINE, FROSTBOLT_3, 128, FROSTBOLT_2, 2],
+            [21, FROST_LINE, FROST_ARMOR, 128, 0, 2],
+        ],
+    )
+    mage = {t.name: t for t in by_slug(raw)["mage"].trainables}
+    assert [r.id for r in mage["Frostbolt"].ranks] == [FROSTBOLT_1, FROSTBOLT_2, FROSTBOLT_3]
+    assert mage["Frostbolt"].source == "skill_line_ability"
+    assert [(r.id, r.level) for r in mage["Frost Armor"].ranks] == [(FROST_ARMOR, 1)]
+
+
+def test_an_unmasked_auto_learned_row_counts_only_as_a_rank_of_a_learn_row_ability(raw):
+    """Sniper Shot rank 3 (mask 0, the family names the class) joins its trainer ranks;
+    an unmasked auto-learned spell of no learnable ability (Metamorphosis : Demon Charge
+    412783, a Season of Discovery rune effect) is not a trainable."""
+    _add_spell(raw, FROSTFIRE_3, "Frostfire Bolt", "Rank 3", 60, 140, MAGE_FAMILY)
+    _add_spell(raw, DEMON_CHARGE, "Demon Charge", "", 1, 10, WARLOCK_FAMILY)
+    _add_learn_rows(
+        raw,
+        [
+            [22, FIRE_LINE, FROSTFIRE_3, 0, 0, 2],
+            [23, FIRE_LINE, DEMON_CHARGE, 0, 0, 2],
+        ],
+    )
+    records = by_slug(raw)
+    mage = {t.name: t for t in records["mage"].trainables}
+    assert [r.id for r in mage["Frostfire Bolt"].ranks] == [FROSTFIRE_1, FROSTFIRE_2, FROSTFIRE_3]
+    assert "Demon Charge" not in names(records["warlock"])
+
+
+def test_an_inactive_learn_row_spell_on_an_active_rank_is_its_effect_not_a_rank(raw):
+    """Lightning Shield 324 and its damage spell 26364 both carry a rank-1 learn row at 8
+    (so do Shadowguard 18137/28377, Explosive Trap 13813/13812, Tame Beast 1515/13481).
+    The effect is not a second rank 1, and the figures are the castable spell's."""
+    _add_spell(raw, ICE_SHIELD, "Ice Shield", "Rank 1", 8, 45, MAGE_FAMILY)
+    _add_spell(raw, ICE_SHIELD_PROC, "Ice Shield", "Rank 1", 8, 0, MAGE_FAMILY)
+    _add_learn_rows(
+        raw,
+        [
+            [24, FROST_LINE, ICE_SHIELD, 128, 0, 0],
+            [25, FROST_LINE, ICE_SHIELD_PROC, 0, 0, 0],
+        ],
+    )
+    shield = {t.name: t for t in by_slug(raw)["mage"].trainables}["Ice Shield"]
+    assert [r.id for r in shield.ranks] == [ICE_SHIELD]
+    assert shield.cost == 45

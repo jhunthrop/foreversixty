@@ -18,12 +18,21 @@ Unstable Affliction and Hydra Shot have no SkillLineAbility row in build
 1.60.1.70009, yet are gated by a level in `SpellLevels` like any trained spell.
 So a class-family spell (SpellClassSet) with a rank of 1 or more, a level and
 an active shape is also listed, tagged `source: "class_spell"`; the report keeps
-those apart from the learnable ones. Only AcquireMethod 0 rows with a learn
-level above 0 count as learnable: method 3 rows are Season of Discovery runes.
+those apart from the learnable ones. Only AcquireMethod 0 (trainer) and 2
+(learned with the skill line: every class's starting rank 1s, Battle Stance,
+Auto Shot, Sniper Shot rank 3 at 58) rows with a learn level above 0 count as
+learnable: method 3 rows are Season of Discovery runes. A method-2 row that
+names no class (mask 0) counts only as a rank of an ability with a trainer row:
+the unmasked ones of no such ability are rune effects (Metamorphosis : Demon
+Charge).
 
 **Ranks.** An ability is every spell sharing a name within the class, merged
 with every `SupercedesSpell` link: the client reuses one id chain per rank for
 most abilities and a fresh unlinked id per rank for others (Frostfire Bolt).
+Some ranks carry a second learn row for the spell the castable one fires
+(Lightning Shield 324 and its damage 26364, Explosive Trap 13813 and 13812,
+Shadowguard, Tame Beast, Reincarnation): an inactive spell on the same rank
+and level as an active one of its ability is that effect, not a rank.
 
 **Active.** A trainable is active when any rank has a power cost, a cast time
 or a cooldown -- the abilities a rotation can press. Passives (weapon skills,
@@ -83,9 +92,13 @@ CLASS_SKILL_LINES = frozenset(
     }
 )  # fmt: skip
 
-#: SkillLineAbility.AcquireMethod of a spell a player learns. Method 3 rows are
-#: Season of Discovery runes (learn level 0 or 1), which Forever does not teach.
+#: SkillLineAbility.AcquireMethod of a spell a player buys from a trainer. Method 3
+#: rows are Season of Discovery runes (learn level 0 or 1), which Forever does not teach.
 LEARN_ACQUIRE_METHOD = 0
+#: AcquireMethod of a spell learned with the skill line itself, at its level (a starting
+#: rank 1, Battle Stance, Auto Shot, Sniper Shot rank 3).
+AUTO_LEARN_ACQUIRE_METHOD = 2
+LEARNABLE_ACQUIRE_METHODS = frozenset({LEARN_ACQUIRE_METHOD, AUTO_LEARN_ACQUIRE_METHOD})
 
 #: Skill line reported for a spell found only through its class family.
 FAMILY_SKILL_LINE = ""
@@ -95,8 +108,9 @@ SOURCE_CLASS_SPELL = "class_spell"
 #: An ability a talent of the build's live tree teaches.
 SOURCE_TALENT = "talent"
 
-#: Name markers for test, duplicate and placeholder spells that are never learned.
-_EXCLUDED_NAME_MARKERS = ("DNT", "Copy of ", "zzOLD", "UNUSED")
+#: Name markers for test, duplicate and placeholder spells that are never learned
+#: ("(DND)": do not display, the client's hidden class passives).
+_EXCLUDED_NAME_MARKERS = ("DNT", "(DND)", "Copy of ", "zzOLD", "UNUSED")
 
 #: A development spell: "Test Maul", "Runecarving Test - Crippling Poison", "Tyler Test Imbue".
 _TEST_NAME = re.compile(r"\bTest\b|\bTesting\b")
@@ -136,6 +150,8 @@ class _Candidate(BaseModel):
     skill_line: str
     source: str
     supersedes: int
+    #: An auto-learned row naming no class: a rank only of an ability with a trainer row.
+    needs_trainer_row: bool = False
 
 
 def is_excluded_name(name: str) -> bool:
@@ -160,7 +176,10 @@ def _skill_line_names(raw: Path) -> dict[int, str]:
 
 
 def _ability_candidates(
-    raw: Path, family_by_spell: dict[int, int], level_of: Callable[[int], int]
+    raw: Path,
+    family_by_spell: dict[int, int],
+    level_of: Callable[[int], int],
+    names_of: Callable[[int], str],
 ) -> list[_Candidate]:
     lines = _skill_line_names(raw)
     found: list[_Candidate] = []
@@ -169,11 +188,11 @@ def _ability_candidates(
         if line is None:
             continue
         spell_id = int(row["Spell"])
-        if int(row["AcquireMethod"] or 0) != LEARN_ACQUIRE_METHOD or level_of(spell_id) < 1:
+        method = int(row["AcquireMethod"] or 0)
+        if method not in LEARNABLE_ACQUIRE_METHODS or level_of(spell_id) < 1:
             continue
-        slug = _class_from_mask(int(row["ClassMask"])) or _SLUG_BY_FAMILY.get(
-            family_by_spell.get(spell_id, -1)
-        )
+        masked = _class_from_mask(int(row["ClassMask"]))
+        slug = masked or _SLUG_BY_FAMILY.get(family_by_spell.get(spell_id, -1))
         if slug is None:
             continue
         found.append(
@@ -183,9 +202,24 @@ def _ability_candidates(
                 skill_line=line,
                 source=SOURCE_SKILL_LINE,
                 supersedes=int(row["SupercedesSpell"] or 0),
+                needs_trainer_row=method == AUTO_LEARN_ACQUIRE_METHOD and masked is None,
             )
         )
-    return found
+    return _with_trainer_rows(found, names_of)
+
+
+def _with_trainer_rows(found: list[_Candidate], names_of: Callable[[int], str]) -> list[_Candidate]:
+    """Drop the unmasked auto-learned rows of abilities no trainer row teaches."""
+    trained = {
+        (c.class_slug, names_of(c.spell_id))
+        for c in found
+        if c.source == SOURCE_SKILL_LINE and not c.needs_trainer_row
+    }
+    return [
+        c
+        for c in found
+        if not c.needs_trainer_row or (c.class_slug, names_of(c.spell_id)) in trained
+    ]
 
 
 def _family_by_spell(raw: Path) -> dict[int, int]:
@@ -318,7 +352,24 @@ def _group_by_ability(
     return groups
 
 
+def _without_effect_rows(group: list[_Candidate], tables: _SpellTables) -> list[_Candidate]:
+    """Drop an inactive learn-row spell holding the same rank and level as an active one
+    of its ability: it is the effect that spell fires (Lightning Shield 26364)."""
+    active = {
+        (tables.rank(c.spell_id), tables.level(c.spell_id))
+        for c in group
+        if tables.is_active(c.spell_id)
+    }
+    return [
+        c
+        for c in group
+        if tables.is_active(c.spell_id)
+        or (tables.rank(c.spell_id), tables.level(c.spell_id)) not in active
+    ]
+
+
 def _build_trainable(group: list[_Candidate], tables: _SpellTables) -> Trainable:
+    group = _without_effect_rows(group, tables)
     ranks = sorted(
         (
             TrainableRank(
@@ -447,7 +498,9 @@ def build_trainables(
     family_by_spell = _family_by_spell(raw)
     abilities = [
         c
-        for c in _ability_candidates(raw, family_by_spell, tables.level)
+        for c in _ability_candidates(
+            raw, family_by_spell, tables.level, lambda spell: tables.names.get(spell, "")
+        )
         if not is_excluded_name(tables.names.get(c.spell_id, ""))
     ]
     learned_names = {(c.class_slug, tables.names.get(c.spell_id, "")) for c in abilities}
