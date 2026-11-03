@@ -133,22 +133,20 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         ),
     },
     "priest-discipline": {
-        # discipline.md: "Binding Heal takes its place while you are hurt yourself, since it heals
-        # you as much as the target for the same mana".
-        "Binding Heal": "Binding Heal in Flash Heal's place while you are hurt yourself. It heals you as much as the target for the same mana.",
+        # discipline.md: "Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead."
+        "Dark Sacrifice": "Dark Sacrifice if you are Undead, once your mana is down enough.",
     },
     "priest-shadow": {
         "Shadow Word: Pain": "Shadow Word: Pain kept up, unless the fight is close to ending.",
-        "Inner Focus": (
-            "Inner Focus into Devouring Plague outside the execute window: "
-            "a free, empowered cast at its full top rank."
-        ),
-        "Mind Flay": "Mind Flay on every free global.",
-        "Mind Blast": "Mind Blast only when Mind Flay cannot be cast.",
+        # shadow.md: "Inner Focus on Mind Blast every time it is up"; "Mind Blast on cooldown.
+        # Shadow Word: Death on cooldown. Mind Flay with everything else"; "Nothing changes below 20%".
+        "Inner Focus": "Inner Focus on Mind Blast every time it is up: the Mind Blast is free and more likely to crit.",
+        "Mind Blast": "Mind Blast on cooldown, ahead of Mind Flay.",
         "Shadow Word: Death": (
-            "Shadow Word: Death first below twenty percent target health. "
-            "While it is on its fifteen-second cooldown, Mind Blast, then Mind Flay."
+            "Shadow Word: Death on cooldown, ahead of Mind Flay. "
+            "Keep Vampiric Embrace up so your own damage heals back its backlash."
         ),
+        "Mind Flay": "Mind Flay with everything else, and never clip it: the third tick is the biggest.",
         # shadow.md: "Wand shots fill any global where nothing else is ready."
         "Shoot": "Shoot with your wand on any global where nothing else is ready.",
         # shadow.md: "On long fights use a Major Mana Potion and a Demonic Rune once you are down that
@@ -175,10 +173,6 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Fire Nova on a Clearcasting proc only when your Fire totem is out and the boss stands close to it. "
             "Otherwise the proc goes to your next Lightning Bolt."
         ),
-    },
-    "priest-discipline": {
-        # discipline.md: "Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead."
-        "Dark Sacrifice": "Dark Sacrifice if you are Undead, once your mana is down enough.",
     },
     "shaman-enhancement": {
         # enhancement.md: imbues "applied before the pull and reapplied whenever it falls off".
@@ -211,9 +205,9 @@ GUIDE_ORDER: dict[str, tuple[str, ...]] = {
         "Righteous Fury", "Seal of Fury", "Holy Shield", "Hammer of the Righteous", "Holy Strike",
         "Judgement", "Consecration",
     ),
-    # shadow.md: "After that, Mind Flay on every free global comes before Mind Blast".
+    # shadow.md: "Mind Blast on cooldown. Shadow Word: Death on cooldown. Mind Flay with everything else".
     "priest-shadow": (
-        "Shadow Word: Pain", "Inner Focus", "Mind Flay", "Mind Blast", "Shadow Word: Death", "Shoot",
+        "Shadow Word: Pain", "Inner Focus", "Mind Blast", "Shadow Word: Death", "Mind Flay", "Shoot",
     ),
     # enhancement.md: the imbue is "applied before the pull", ahead of every rotation line.
     "shaman-enhancement": ("Windfury Weapon",),

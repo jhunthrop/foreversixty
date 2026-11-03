@@ -390,6 +390,20 @@ def test_swiftmend_carries_the_guides_gate() -> None:
     assert "under three quarters health" in line, line
 
 
+def test_shadow_priority_follows_the_launch_guide() -> None:
+    """Round 14 (regcast): the Shadow overrides kept the October rotation search's order
+    (Inner Focus into Devouring Plague, Mind Blast only when Mind Flay cannot be cast, Shadow
+    Word: Death only below twenty percent) after shadow.md and the rotation moved to Inner
+    Focus on Mind Blast, Mind Blast and Shadow Word: Death on cooldown ahead of Mind Flay."""
+    entries = dict(ps.priority_entries_of(ps.spec_row("priest-shadow")))
+    assert "Mind Blast" in entries["Inner Focus"] and "Devouring Plague" not in entries["Inner Focus"]
+    assert entries["Mind Blast"].startswith("Mind Blast on cooldown, ahead of Mind Flay")
+    assert entries["Shadow Word: Death"].startswith("Shadow Word: Death on cooldown")
+    names = [n for n, _ in ps.priority_entries_of(ps.spec_row("priest-shadow"))]
+    assert names.index("Mind Blast") < names.index("Mind Flay")
+    assert names.index("Shadow Word: Death") < names.index("Mind Flay")
+
+
 # Round 5 (wow-player read 4 rulings).
 
 def test_totem_conditional_abilities_carry_their_condition() -> None:
@@ -402,7 +416,7 @@ def test_guide_order_statements_win() -> None:
     elemental = priority_names("shaman-elemental")
     assert elemental[:2] == ["Mana Spring Totem", "Lava Burst"]
     shadow = priority_names("priest-shadow")
-    assert shadow.index("Mind Flay") < shadow.index("Mind Blast")
+    assert shadow.index("Mind Blast") < shadow.index("Mind Flay")
     prot = priority_names("paladin-protection")
     assert prot.index("Holy Shield") < prot.index("Judgement") < prot.index("Consecration")
     assert priority_names("druid-feral")[0] == "Shifting Power"
@@ -458,3 +472,12 @@ def test_long_sentences_split_where_the_part_reads_alone() -> None:
     assert short_sentences(line, "Bane of Doom").startswith("Bane of Doom is the one curse kept up. It deals")
     prefixed = "Wrath: Eclipse, if talented, rewards weaving in a Wrath cast: it shortens your next two Starfire casts a lot."
     assert short_sentences(prefixed, "Wrath").startswith("Wrath: Eclipse")
+
+
+def test_discipline_names_its_overrides_once() -> None:
+    """Round 14: GUIDE_LINES named "priest-discipline" twice, so the second entry (Dark
+    Sacrifice) silently replaced the first. The dead Binding Heal line is gone: the starter's
+    own line from the rotation ("under ninety percent yourself") is the guide's gate."""
+    assert set(ps.GUIDE_LINES["priest-discipline"]) == {"Dark Sacrifice"}
+    source = (Path(__file__).parent / "starter_overrides.py").read_text()
+    assert source.count('"priest-discipline": {') == 1
