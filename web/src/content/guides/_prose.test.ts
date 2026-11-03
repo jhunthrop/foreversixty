@@ -28,6 +28,7 @@ import { describe, expect, it } from 'vitest';
 
 /** Class slugs whose guides must pass. Each class lane adds its own when it lands. */
 export const ENFORCED_CLASSES: readonly string[] = [
+  'druid',
   'hunter',
   'mage',
   'paladin',

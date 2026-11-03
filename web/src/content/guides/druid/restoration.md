@@ -6,10 +6,13 @@ role: healer
 build: 'FS1:1.60.1.70753:druid:night-elf:05312001/0/55530051531132:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
-description: 'Talents, rotation, stats, and gear for Restoration Druid in Forever, and what is confirmed versus projected from the beta.'
-updated: 2026-10-07
+description: 'Restoration in Forever: the build, Rejuvenation and Regrowth ranks, Swiftmend that keeps the HoT, Bloom, Wild Growth and Innervate.'
+updated: 2026-11-02
 confidence: inferred
 sources:
+  - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
@@ -26,61 +29,79 @@ sources:
 
 ## Overview
 
-Restoration is the Druid healer tree: Rejuvenation and Regrowth on many targets, Healing Touch for real damage, and mana efficiency to last a long fight.
+Restoration heals with time: Regrowth and Rejuvenation on the tank all fight, Swiftmend as a free extra heal, Bloom when the HoTs run out, and Healing Touch for the holes.
 
 ### Strengths
 
-- Heals over time on several targets keep a group healthy at low cost
-- Mana efficiency talents let it out-sustain other healers over a long fight
-- Swiftmend heals for a whole Regrowth or Rejuvenation at once and leaves the heal over time running
-- Nature's Swiftness into Healing Touch answers a nearly dead tank
+- Swiftmend no longer eats the heal over time in Forever, so it is a second heal on a 15 second cooldown
+- Bloom heals again every time a Rejuvenation or Regrowth runs its full duration
+- HoTs keep ticking while you move, so you keep healing through movement
+- Innervate on yourself, with the Spirit you stack, buys a lot of mana
 
 ### Weaknesses
 
-- Heals over time are slow against sudden burst damage
-- Healing Touch is held back so mana lasts the fight
-- Spell power adds nothing to a heal; gear needs healing power
+- HoTs are slow against a sudden spike: you have to be ahead of the damage, not behind it
+- Healing Touch is a long, expensive cast, so it is for real holes only
+- Your big group heal, Tranquility, is on a long cooldown, and Wild Growth costs a capstone
 
 ### In a raid
 
-- **Role:** Healer, keeping the tank up with heals over time and group healing on pulses
-- **Brings:** Mark of the Wild for the group and Innervate for casters
+- **Role:** Tank healer, with HoTs on whoever takes damage
+- **Brings:** Gift of the Wild, Innervate, a battle rez, and Remove Curse and Abolish Poison
 
 ## Talents and builds
 
-The build spends most of its points in Restoration and fills Balance with the periodic-healing and critical-chance talents. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+The build is 39 points of Restoration and 12 of Balance. It is built for a tank-healing fight that runs your mana down.
 
-- **Naturalist** shortens Healing Touch, **Gift of Nature** strengthens every heal but Tranquility (in Forever it reaches heals over time only through its periodic half, which names Rejuvenation, Regrowth and Wild Growth), and **Improved Rejuvenation** strengthens Rejuvenation.
-- **Reflection** keeps part of your regeneration running while you cast, **Tranquil Spirit** makes Healing Touch and Tranquility cheaper, and **Living Spirit** lifts Spirit.
-- **Bloom** (1 point, new in client 1.60.1.70707) heals the target for your Spirit whenever a Rejuvenation or Regrowth runs its full duration; with heals over time doing most of the work it was the largest single gain the sim found for this build, about +10% healing over the alternatives for that point. It took the point of Gift of the Earthmother, which left the tree in the same patch.
-- **Swiftmend** and **Nature's Swiftness** are the burst tools. In Forever, Swiftmend does not use up the heal over time it reads (it prefers a Regrowth), so it is worth casting on cooldown whenever the tank is hurt, not only in an emergency.
-- From Balance, **Genesis** adds 10% to every heal over time, **Nature's Majesty** adds critical chance, and **Nature's Splendor** lengthens your heal-over-time spells. Moonglow and Improved Moonfire only buy the points that open Nature's Splendor: in this client they touch damage spells alone.
-- **Heart of the Wild** (5 points, 10% more Intellect) takes the points that used to go to Improved Wrath, which only speeds up and cheapens Wrath; about +1% healing in our run.
+- **Gift of Nature** (5 points): 10% more healing on your heals. In Forever it does not reach Tranquility.
+- **Improved Rejuvenation** (3 points): 15% more from your most-cast spell.
+- **Bloom** (1 point): when a Rejuvenation or Regrowth runs out on its own, the target is healed for your Spirit. With HoTs doing most of your healing, it is the best single point you take.
+- **Swiftmend** (1 point): an instant heal for the whole of a Regrowth or Rejuvenation on the target, and in Forever the HoT keeps ticking.
+- **Nature's Swiftness** (1 point): your next Healing Touch is instant, the save for a dying tank.
+- **Naturalist** (5 points): Healing Touch and Wild Growth half a second faster.
+- **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
+- **Improved Tranquility** (2 points): Tranquility with no threat and a much shorter cooldown.
+- **Heart of the Wild** (5 points): 10% more Intellect.
+- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow does nothing for a healer; it is the filler that gets you to Nature's Splendor's row, and the Improved Moonfire point is a spare.
 
-The build leaves out the capstone Wild Growth and Improved Regrowth: the sim measured both against spending those points elsewhere, and under this profile the points did better elsewhere. That is a statement about this rotation's mana pacing, not about the spells; since 1.60.1.70707 Wild Growth also has a 3 second cast. Measured again in round 6, with the raid pulses now reaching you too, the best Wild Growth line came out level with this rotation, within error, not ahead of it: Rejuvenation with Bloom heals more for its mana, and this fight runs your mana down before it runs out your time. In a fight with heavy group damage in bursts, take it. Nature's Focus stays as well: the raid's damage reaches you while you cast, and Nature's Focus keeps Healing Touch, Regrowth and Tranquility from losing casting time to it. Open the planner at [/planner?class=druid](/planner?class=druid) to adjust it.
+**Wild Growth.** The capstone heals a whole party over 7 seconds, but it is a 3 second cast with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility and put one point in Wild Growth.
 
 ## Rotation and priority
 
-The tank keeps **Regrowth** and **Rejuvenation** up for the whole fight, and the heals over time carry most of the work. **Healing Touch** fires only on a real hole in the tank's health and only while your mana is keeping up with the share of the fight that is left, so the mana lasts instead of running dry at the first long fight. A hurt party member gets **Rejuvenation**, you included, and **Tranquility** goes out when two of the five are well down. **Swiftmend** goes on the tank whenever he is under three quarters health and your mana is keeping pace. **Nature's Swiftness** into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and **Innervate** goes on you when you are low.
+**Before the pull.** Rejuvenation on the tank a few seconds before he pulls. Keep Mark of the Wild up on the raid.
 
-The rotation casts Rejuvenation at rank 4 on every target: over a long raid fight it returns more healing for its mana than the top rank. Every other heal is the top rank.
+**The tank.** Regrowth and Rejuvenation stay up on the tank for the whole fight. Let each one run out before you recast it: a HoT that runs its full duration triggers Bloom, and a refresh on top of it throws that heal away.
+
+**Swiftmend** goes on the tank whenever he is under 75%. In Forever it does not consume the HoT, so all it costs is a global and 20% of your base mana. Cast it on cooldown whenever there is damage to heal, not only in an emergency.
+
+**Healing Touch** fills the real holes: a tank under about half, while your mana is ahead of the fight. If your mana is behind, let the HoTs and Swiftmend carry it.
+
+**Nature's Swiftness** into Healing Touch is the save for a tank who is nearly dead.
+
+**The party.** A hurt party member gets a Rejuvenation, you included. Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
+
+**Ranks.** Cast Rejuvenation rank 4 on everyone. It costs under a third of the top rank's mana, and your healing power adds the same to every rank, so it still heals for half or more. Over a long fight that is more healing from the same mana. Use the top ranks of Regrowth and Healing Touch.
+
+**Mana.** Innervate is yours from level 40. Cast it on yourself when you are low: it multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit. A Major Mana Potion and a Demonic Rune cover the rest.
 
 ## Stat priority
 
-In simulator-derived order, per point of stat: **MP5** first, **Spirit** behind it, then **healing power**, **Intellect** and **critical strike**. Spirit also reaches the Living Spirit bonus. Items trade several points of one for few of another, so read the list as "which stat is cheap to give up".
-
-Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+A long tank fight runs you out of mana before it runs out of time, which is why MP5 and Spirit lead. Healing power is every heal, and your HoTs take a big share of it per tick. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
 
 ## Best in slot
 
 ## Enchants and consumables
 
+Potions and runes work in any form in Forever, though you heal in caster form anyway. A Brilliant Mana Oil on your weapon is healing and mana at once.
+
 ## Races
+
+Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren gets more health, which keeps you alive through raid damage. Alliance Skyborne get Read Ley Line, a burst of mana regeneration that a druid healer will use every fight.
 
 ## Professions
 
-Herbalism and Alchemy is the general Classic-era pairing for a Restoration healer, giving access to self-crafted mana and healing consumables.
+Herbalism and Alchemy is the healer pair: your own mana potions and elixirs.
 
 ## Leveling
 
-Feral is the stronger leveling choice for Druid overall, and Restoration is generally considered the slowest of the three specs to solo with, since its kit is built around sustaining others rather than dealing damage.
+Restoration is the slowest druid to quest with, because it is built to keep others alive, not to kill. Level as Feral and switch at 60, or heal dungeons on the way up: Rejuvenation and Regrowth carry a group from the low levels, and Healing Touch covers the big pulls.
