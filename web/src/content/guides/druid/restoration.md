@@ -80,7 +80,7 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 
 **The party.** A hurt party member gets a Rejuvenation, you included. Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
 
-**Ranks.** Cast Rejuvenation rank 4 on everyone. It costs under a third of the top rank's mana, and your healing power adds the same to every rank, so it still heals for half or more. Over a long fight that is more healing from the same mana. Use the top ranks of Regrowth and Healing Touch.
+**Ranks.** Cast Rejuvenation rank 1 on a hurt party member. Your healing power adds the same to every rank, and Forever keeps it whole on low ranks, so it is by far your cheapest healing. On the tank, use the top rank in a raid; while leveling, a middle rank such as rank 4 keeps your mana going. Use the top ranks of Regrowth and Healing Touch.
 
 **Mana.** Innervate is yours from level 40. Cast it on yourself when you are low: it multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit. A Major Mana Potion and a Demonic Rune cover the rest.
 
