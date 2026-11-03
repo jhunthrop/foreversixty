@@ -52,7 +52,7 @@
             }
           }
         },
-        "notes": "Eviscerate at five combo points, checked ahead of Slice and Dice so a full finisher is never traded for a refresh."
+        "notes": "Eviscerate at five combo points. It sits above Slice and Dice, so a full set of points never goes into a refresh."
       },
       {
         "action": {
@@ -107,7 +107,7 @@
             }
           }
         },
-        "notes": "Slice and Dice opened in the first 15 seconds as soon as three combo points are banked. It is not refreshed at five points: Eviscerate (checked first) takes the five-point sets, and a refresh in the 25 to 35 energy window before Eviscerate is affordable took every set on an energy-starved character, so Eviscerate never cast at levels 10 and 20."
+        "notes": "Slice and Dice in the first 15 seconds, at three or more combo points, when it is not up."
       },
       {
         "action": {
@@ -118,7 +118,7 @@
             }
           }
         },
-        "notes": "Backstab is the builder when a dagger is in the main hand (Backstab refuses to cast otherwise): it hits for 150% weapon damage against Sinister Strike's 100%, and Puncturing Wounds adds crit and an extra combo point chance to it."
+        "notes": "Backstab with a dagger in the main hand: Puncturing Wounds, Aggression and Lethality all land on it, and Puncturing Wounds can give it a second combo point."
       },
       {
         "action": {
@@ -128,7 +128,7 @@
             }
           }
         },
-        "notes": "Adrenaline Rush on cooldown: it doubles energy regeneration for 15 seconds."
+        "notes": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion."
       },
       {
         "action": {
@@ -170,7 +170,7 @@
             }
           }
         },
-        "notes": "Sinister Strike builds when Backstab cannot be cast (no dagger in the main hand). Held until 60 energy so a dagger build, which would have cast Backstab at that point, never spends the energy here."
+        "notes": "Sinister Strike only when Backstab cannot be cast (no dagger in the main hand), held to 60 energy so a dagger rogue never spends Backstab's energy here."
       }
     ]
   },

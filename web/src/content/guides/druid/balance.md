@@ -8,10 +8,13 @@ raidBuild: 'FS1:1.60.1.70753:druid:night-elf:5232220115501351/0/505003:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Intellect, Spell power, Nature power, Hit, Arcane power, Critical strike, Spell haste, Spell penetration]
-description: 'Talents, rotation, stats, and gear for Balance Druid in Forever, and what is confirmed versus projected from the beta.'
-updated: 2026-09-24
+description: 'Moonkin in Forever: the build, Eclipse with Wrath into Starfire, Moonfire and Insect Swarm upkeep, Innervate and mana.'
+updated: 2026-11-02
 confidence: inferred
 sources:
+  - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
@@ -31,56 +34,82 @@ sources:
 
 ## Overview
 
-Balance is the Druid ranged caster tree: Starfire, Moonfire and Insect Swarm damage from Moonkin Form, which gives the party a critical strike aura.
+Balance is the Moonkin: two DoTs on the boss, Wrath to bank Eclipse charges, and fast Starfires to spend them, all from a form that gives your group crit.
 
 ### Strengths
 
-- Moonkin Form raises party critical strike chance by 3% within 45 yards
-- Vengeance doubles critical damage on Arcane and Nature spells
-- Starfire and Wrath cover both long and short windows
-- Instant Moonfire finishes fights when no other cast will land
+- Moonkin Form gives everyone within 45 yards 3% crit, on spells and attacks alike
+- Vengeance doubles your Arcane and Nature crit bonus, so crit is worth more to you than to most casters
+- Eclipse turns every Wrath into two faster Starfires, a loop that is easy to play and hard to break
+- Hurricane has no cooldown in Forever, so you have a real AoE
 
 ### Weaknesses
 
-- Starfire's long cast (3.5 seconds untalented, 3 with Improved Starfire) leaves little room to move
-- Two DoTs to keep up alongside a long Starfire cast
-- Damage is confined to the Nature and Arcane schools
+- Starfire is a long cast: moving costs you more than it costs a mage
+- Two DoTs to keep up on top of the Eclipse loop
+- Moonkin Form cannot heal, so a battle rez or an emergency heal means shifting out
 
 ### In a raid
 
-- **Role:** Ranged caster damage
-- **Brings:** Moonkin Form, a 3% critical strike chance aura for party members within 45 yards
+- **Role:** Ranged caster DPS
+- **Brings:** Moonkin Form's 3% crit aura, Faerie Fire, Innervate and a battle rez
 
 ## Talents and builds
 
-- **Improved Wrath** — up to 0.5 seconds off Wrath's cast time and 50% off its mana cost at rank 5, a heavy early investment in the tree's other nuke.
-- **Genesis** (2 points) — 2% more periodic damage a rank on Moonfire and Insect Swarm (doubled in the 1.60.1.70707 hotfix).
-- **Vengeance** — up to a 100% critical-strike-damage bonus at rank 5 on Arcane and Nature spells, the tree's biggest single multiplier.
-- **Improved Starfire** — up to 0.5 seconds off Starfire's cast time and a 15% chance to stun the target at rank 5. The raid build takes all five; the leveling build keeps one rank and moves the rest into Eclipse and Reflection, which our level-60 search measured at about +15% for the leveling build on the 1.60.1.70707 trees, mostly from the mana Reflection saves.
-- **Insect Swarm** (1 point) — a second cheap DoT the rotation keeps running alongside Moonfire.
-- **Nature's Splendor** (1 point) — the one-point talent that the simulator credits with the largest single gain in this tree.
-- **Moonfury** — up to 10% more Arcane and Nature damage at rank 5.
-- **Eclipse** — reworked in Forever: each Wrath banks two charges, up to four, that take 0.17 seconds a rank off your next two Starfires for 15 seconds. The raid build takes all three ranks (0.5 seconds) and the fifth rank of Improved Wrath; the leveling build takes one.
-- **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party and raid members within 45 yards, on spells and attacks alike.
+The leveling build takes Heart of the Wild and Reflection, because mana is what runs out while questing. The raid build moves those points into Improved Starfire, Eclipse, Nature's Grace and the rest of Naturalist (2% damage a point): the full Starfire loop. At full ranks, Improved Starfire makes Starfire a 3 second cast, and each Wrath banks two Eclipse charges (up to four), each taking another half second off one Starfire. Nature's Grace makes every non-periodic crit speed up your casting and your global cooldown for 3 seconds.
 
-The Restoration points reach **Naturalist**, 2% more damage of every kind a rank (10% at 5/5 in the raid build, 6% in the leveling build). **Nature's Focus** opens the tree and **Subtlety** cuts the threat of your Nature and Arcane spells. The leveling build also takes **Heart of the Wild** (10% more Intellect; it moved from Feral to Restoration's top row in 1.60.1.70707) and **Reflection** (half your mana regeneration keeps running while you cast).
+- **Vengeance** (5 points): the crit damage bonus of your Arcane and Nature spells is doubled.
+- **Moonfury** (5 points): 10% more Arcane and Nature damage.
+- **Improved Wrath** (5 points): Wrath at 1.5 seconds and half the mana. It is what makes the Eclipse Wrath cheap enough to cast every loop.
+- **Improved Moonfire**, **Nature's Splendor** and **Insect Swarm**: a Moonfire worth its global, longer DoTs, and the second DoT.
+- **Nature's Reach** (2 points): 4% hit and longer range. Hit is the stat a fresh 60 Moonkin is shortest on.
+- **Moonglow** (3 points): your damage spells cost 25% less.
+- **Moonkin Form** (1 point): the capstone and the crit aura.
+
+From Restoration, Nature's Focus saves your Starfire from pushback 70% of the time when you take damage, and Subtlety cuts the threat of your Nature and Arcane spells. Both matter on a boss that hits the raid.
 
 ## Rotation and priority
 
-Be in Moonkin Form before the pull and stay in it: the form gives you 3% more critical strike chance, and every spell in this loop can be cast from it. Keep Moonfire and then Insect Swarm ticking on the target: with Improved Moonfire and Nature's Splendor, a Moonfire does more damage per second of casting than Starfire, and a raid-buffed Balance druid has the mana to keep both up. Starfire is everything else: cast it on repeat for the rest of the fight. Near the end of a fight, adjust for what will actually land: once less time is left than your next Starfire takes, switch to Wrath, which still finishes; once less is left than a Wrath takes, only the instant Moonfire lands in time. With the raid build's Improved Starfire and Improved Wrath, that is Starfire at 3 seconds (2.5 on an Eclipse charge) and Wrath at 1.5. With Eclipse, cast Wrath whenever you have no Eclipse charge banked: with Improved Wrath it is a 1.5-second cast, and the two charges turn the next two Starfires from 3-second into 2.5-second casts, so a Wrath and two quick Starfires do more than three plain Starfires in the same time. Without the talent, skip that Wrath.
+**Before the pull.** Shift into Moonkin Form and stay there. Every spell you cast in this loop works in form.
+
+**Open.** Moonfire, then Insect Swarm, then Wrath for your first Eclipse charges, then Starfire.
+
+**The loop.**
+
+1. Keep **Moonfire** and **Insect Swarm** ticking. Recast each one when it falls off.
+2. With no Eclipse charge banked, cast **Wrath**. A Wrath and two quick Starfires do more damage per second than plain Starfires.
+3. **Starfire** everything else, spending the charges.
+
+**Clearcasting.** Wrath never uses up a Clearcasting proc in Forever, so it always lands on a Starfire or a DoT. You do not need to do anything about it.
+
+**End of the fight.** Once there is less time left than a Starfire takes, cast Wrath. Once there is less than a Wrath, cast Moonfire for its instant hit.
+
+**Mana.** Moonglow makes every damage spell 25% cheaper, Clearcasting procs twice as often in Moonkin Form, and Judgement of Wisdom carries the rest. If you fall behind, lean on Wrath: with Improved Wrath it costs a fraction of a Starfire's mana and takes half its cast. Innervate goes on you when you will otherwise run dry before the boss dies. On a fight you can finish without it, give it to a healer with high Spirit, because Innervate multiplies Spirit regeneration and theirs is higher than yours.
+
+**Faerie Fire.** If no feral druid has it on the boss, put yours up. It costs a global and a little mana in caster form, so only do it when no one else will.
+
+**AoE.** Hurricane has no cooldown in Forever. On a pack that will live through the channel, Hurricane is your AoE; on a pack that dies fast, Moonfire the tough ones and get back on the boss.
+
+**Movement.** Moonfire and Insect Swarm are instant. Refresh them while you move, and save a few seconds of DoT time before a known move.
 
 ## Stat priority
+
+Spell power is damage on every cast. Hit is worth more to you than to most casters: a resisted Starfire is a 3 second cast for nothing, and a resisted Wrath is two lost Eclipse charges. Crit pays twice, through Vengeance and Nature's Grace. Intellect is your mana pool and a little crit.
 
 ## Best in slot
 
 ## Enchants and consumables
 
+Potions work in Moonkin Form in Forever, so you never shift out to drink. On a long fight, drink your mana potion the first time you are down that much, then the Demonic Rune on its own cooldown; the Rune costs health, so not while the raid is taking damage.
+
 ## Races
+
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren gets more health and War Stomp. Alliance Skyborne get Read Ley Line, a burst of mana regeneration.
 
 ## Professions
 
-Balance benefits from the same caster-support professions as any spellcaster: Tailoring for crafted spellcaster gear and Enchanting to self-apply spell power enchants are the general Classic-era convention.
+Tailoring makes some of the best early caster gear, and Enchanting puts spell power on it. Alchemy keeps you in mana potions.
 
 ## Leveling
 
-Balance is a reasonable leveling spec on its own, with Moonfire and Starfire providing ranged damage, but Feral is generally considered the stronger overall leveling choice for Druid thanks to Cat Form's mobility and Bear Form's durability.
+Balance levels fine with Wrath and Moonfire, and Moonkin Form at 40 makes it smooth. Feral is faster: Cat Form kills without drinking, and Bear Form survives the bad pulls. If you level as Balance, take Improved Wrath first, Moonfire every pull, and Wrath until the mob dies. Starfire is for the opener on a mob that is not yet on you.
