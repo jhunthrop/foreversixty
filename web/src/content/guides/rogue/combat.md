@@ -49,7 +49,7 @@ Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from be
 
 ## Talents and builds
 
-The raid build goes 16/33/2: Combat to Adrenaline Rush, Assassination for Malice, Lethality and the finisher talents, two points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: Improved Gouge and Remorseless Attacks in place of Lethality and Relentless Strikes, which pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
+The raid build goes 16/33/2: Combat to Adrenaline Rush, Assassination for Malice, Lethality and the finisher talents, two points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: Improved Gouge and Remorseless Attacks in place of Lethality and Relentless Strikes, and Camouflage in place of Aggression and Opportunity, which pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
 
 - **Adrenaline Rush** (1 point): double energy regeneration for 15 seconds on a 5 minute cooldown. Every Backstab you fit into it is a free one.
 - **Blade Flurry** (1 point): 20% attack speed for 15 seconds, and every melee hit also strikes a second nearby enemy. Two-target fights are where Combat beats the other trees.

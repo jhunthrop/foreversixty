@@ -77,6 +77,7 @@ export const BANNED_PROSE = {
     'we measured',
     'custom rotation',
     'damage figure',
+    'rank-choice',
     'the guide',
     'this guide',
     // A rotation note talks about the spell, never about the priority list it sits in.

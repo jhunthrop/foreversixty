@@ -70,7 +70,7 @@ The leveling build carries two points of Wand Specialization, because you wand a
 
 **Before the pull.** Buff the raid, then shift into Shadowform and drink back to full: the form costs mana, so never shift on the pull. Let the tank get two or three hits in before you press anything that is not a DoT.
 
-**Opener.** Shadow Word: Pain, Devouring Plague, then Mind Blast (with Inner Focus, so it is free and more likely to crit), Shadow Word: Death, and Mind Flay. By the end of that string Shadow Weaving is at five stacks.
+**Opener.** Shadow Word: Pain, Vampiric Embrace, Devouring Plague, then Mind Blast (with Inner Focus, so it is free and more likely to crit), Shadow Word: Death, and Mind Flay. By the end of that string Shadow Weaving is at five stacks.
 
 **Priority.** Keep Shadow Word: Pain up. Keep Devouring Plague up: it is on a 24 second cooldown and heals you as it ticks. Mind Blast on cooldown. Shadow Word: Death on cooldown. Mind Flay with everything else.
 

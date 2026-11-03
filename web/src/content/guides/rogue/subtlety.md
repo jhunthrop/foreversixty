@@ -48,7 +48,7 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage to bu
 
 ## Talents and builds
 
-One build does everything: 20 in Assassination for Malice, Ruthlessness, Murder, Improved Slice and Dice and Relentless Strikes, then 31 down Subtlety to Thousand Cuts.
+One build does everything: 20 in Assassination for Malice, Ruthlessness, Murder, Improved Slice and Dice and Relentless Strikes, plus Cold Blood, a point of Lethality and four of Improved Poisons, then 31 down Subtlety to Thousand Cuts.
 
 - **Hemorrhage** (1 point): your builder. 145% weapon damage with a dagger, one combo point, and the target takes 15% more damage from your Rupture.
 - **Serrated Blades** (3 points): ignore 9% of the target's armor, and Rupture deals 30% more.
@@ -82,7 +82,7 @@ Thousand Cuts is your energy talent: a Rupture that lapses also lapses the Hemor
 
 ### Cooldowns
 
-You have no burst cooldown of your own on a boss: line your racial, trinket and potion up at the pull. **Preparation** resets your other rogue cooldowns on a 10 minute timer, which on a raid boss mostly means a second Vanish or a second Evasion.
+Cold Blood is your one burst button: save it for a four or five point Eviscerate, and line your racial, trinket and potion up at the pull. **Preparation** resets your other rogue cooldowns on a 10 minute timer, which on a raid boss mostly means a second Vanish or a second Evasion.
 
 ### Trash, threat and survival
 

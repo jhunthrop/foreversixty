@@ -64,7 +64,7 @@ The raid build adds what the leveling build cannot use. Demonic Pact, the 31st p
 
 Improved Health Funnel, Demonic Aegis and Improved Voidwalker add no damage. They are path points that keep you and your demon alive. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
 
-Your demon scales from you in Forever, and raid buffs do not land on it. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets 8/17 of your hit. Demons almost never crit in melee against a boss. Lash of Pain crits at about a normal caster's rate, more with Malevolence.
+Your demon scales from you in Forever, and raid buffs do not land on it. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets 8/17 of your hit. Demons almost never crit in melee against a boss. Lash of Pain crits at about a normal caster's rate.
 
 ## Rotation and priority
 
@@ -78,7 +78,7 @@ The setup, in order, starting about a minute before the pull:
 
 Each summon is a 6 second cast with Master Summoner, and the Succubus costs a Soul Shard. Send the Succubus to the boss's back once the tank has it.
 
-On the pull: Curse of the Elements first if you hold it, then Corruption and Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight. Curses and banes have their own slots in Forever, so Curse of the Elements and Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
+On the pull: Corruption, then Curse of the Elements if you hold it, then Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight. Curses and banes have their own slots in Forever, so Curse of the Elements and Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 
 Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute left never lands, so in the last minute put Bane of Agony up instead. Doom's damage scales hard with your spell damage, which is why it beats Agony here.
 
@@ -98,7 +98,7 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Spell power first. Hit is close behind: Suppression gives you 5%, and the table above shows how much more you need. Shadow power is nearly as good as spell power, but Immolate and Soul Fire are Fire. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
+Spell power first, and Shadow power is nearly as good, though Immolate and Soul Fire are Fire. Hit comes next until the cap: Suppression gives you 5%, and the table above shows how much more you need. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
 
 ## Best in slot
 
