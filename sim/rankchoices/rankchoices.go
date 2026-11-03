@@ -25,6 +25,9 @@ type Row struct {
 	Rank      int    `json:"rank"`
 	Preset    string `json:"preset,omitempty"`
 	Faction   string `json:"faction,omitempty"`
+	// Note is the row's evidence for a reader. A faction row names the race it was
+	// measured on (each band's published race), and says when a racial drives it.
+	Note string `json:"note,omitempty"`
 }
 
 // Spell is one authored spell id's rows, as the curated file writes them.
