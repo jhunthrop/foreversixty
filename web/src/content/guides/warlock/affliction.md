@@ -4,7 +4,7 @@ classSlug: warlock
 spec: affliction
 role: dps
 build: 'FS1:1.60.1.70753:warlock:gnome:25522300130201351/200522/005:'
-raidBuild: 'FS1:1.60.1.70753:warlock:gnome:2552010013500105/00052/0550004:'
+raidBuild: 'FS1:1.60.1.70753:warlock:gnome:2552001013500105/00052/0550004:'
 recommendedRaces: [gnome, troll]
 statPriority: [Spell power, Shadow power, Intellect, Hit, Critical strike, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'
@@ -59,7 +59,7 @@ The leveling build is a real Affliction tree: Nightfall, Soul Siphon and Wrack m
 - **Siphon Life** (1 point): a 30 second DoT that heals you, and one more Affliction effect for Soul Siphon.
 - **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your Corruption and Bane of Agony. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. Cheap and strong solo, weaker than Shadow Bolt in a raid.
 
-The raid build trades Nightfall, Soul Siphon, Wrack, Soul Harvest and most of Improved Drains for three things. Malevolence gives your Shadow spells 5% crit, DoT ticks included. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit; in Forever that debuff is yours alone, not the raid's. Four points of Ruin raise the crit bonus of your Shadow Bolt and Immolate by 80%. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
+The raid build trades Nightfall, Soul Siphon, Wrack, Soul Harvest and Improved Drains for three things, and puts one point in Improved Bane of Agony for 5% more Agony damage, since a raid rotation casts no drain. Malevolence gives your Shadow spells 5% crit, DoT ticks included. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit; in Forever that debuff is yours alone, not the raid's. Four points of Ruin raise the crit bonus of your Shadow Bolt and Immolate by 80%. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
 
 ## Rotation and priority
 
