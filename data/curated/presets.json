@@ -55,7 +55,7 @@
         {
           "id": "trueshot_aura",
           "label": "Trueshot Aura",
-          "reason": "Ranged attack power only (aura 124, 50 at 60; Forever dropped the melee half) from a raid hunter, a Marksmanship talent that exists in the live tree."
+          "reason": "Ranged attack power only (aura 124, 100 at 60 since the server hotfix push of 3 November 2026, which doubled rank 5 from 50; Forever dropped the melee half) from a raid hunter, a Marksmanship talent that exists in the live tree."
         },
         {
           "id": "heart_of_the_lion",
