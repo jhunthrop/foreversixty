@@ -85,7 +85,7 @@ Then play the priority above. Raptor Strike replaces your next white hit instead
 
 You fire no shots in this spec. Your bow or gun is there for its stats.
 
-**Threat.** You sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, and Feign Death drops all of it if it lands; check the message, because both can fail. Deterrence is your emergency button when something turns on you.
+**Threat.** You sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, and Feign Death drops all of it if it lands; check the message, because either can miss or be resisted. Deterrence is your emergency button when something turns on you.
 
 **Trash.** Survival has little cleave of its own. Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest. Freezing Trap is your crowd control, laid before the pull.
 

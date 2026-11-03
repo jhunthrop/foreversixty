@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/paladin/retribution.md
   - data/curated/apl/paladin-retribution.json
-  - data/builds/1.60.1.70707/spellconst/paladin.json
+  - data/builds/1.60.1.70753/spellconst/paladin.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,18 +14,20 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Retribution Paladin as the site's guide describes it. Retribution is the Paladin melee damage tree: keep a Seal up, Judge on cooldown, and add Hammer of Wrath on targets low enough to execute. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Retribution Paladin as the site's guide describes it. Retribution is a two-handed Seal fighter: keep a Seal up, Judge every eight seconds, Holy Strike on cooldown, and finish with an instant Hammer of Wrath. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Seal of Righteousness about a second and a half before the pull. Reapply it just before it expires so it never lapses.
-- Judgement on cooldown: an off-the-global cast that unloads the seal's judgement effect and starts its ten second cooldown again.
-- Exorcism on cooldown against Undead and Demons: learnable at level twenty, a fifteen second cooldown Holy nuke that only lands on those two target types.
+- Put a Blessing of Might on yourself if nobody has given you one.
+- Judgement never consumes your Seal in Forever, so there is nothing to put back up after it.
+- Exorcism on cooldown, against Undead and Demons only.
 - Hammer of Wrath below twenty percent target health, at its highest rank.
 - Holy Strike on its own ten-second cooldown, whenever it is up. It spends the globals Judgement and seal upkeep leave idle.
 - Consecration last, while the mana left after it still pays for your seal, Judgement and Holy Strike. Do not let your mana fall far behind the fight.
+- Against a pack of Undead or Demons, Holy Wrath hits all of them; on anything else it does nothing, so leave it off your bars outside Scholomance, Stratholme and the like.
+- Seal of Righteousness about a second and a half before the pull. Reapply it just before it expires so it never lapses.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

@@ -26,6 +26,11 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Then the whole forty energy fits under the cap."
         ),
     },
+    "druid-feral-bear": {
+        # feral-bear.md priority items 2 and 3.
+        "Lacerate": "Lacerate until it has five stacks, then again when it has under three seconds left.",
+        "Faerie Fire": "Faerie Fire whenever the boss does not have it.",
+    },
     "hunter-beast-mastery": {
         # beast-mastery.md: "Aimed Shot is only the opener: before the pull, Aspect of the Hawk goes up
         # and the first Aimed Shot begins casting"; "Multi-Shot is then cast every time the shared
@@ -33,6 +38,8 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Aspect of the Hawk": "Aspect of the Hawk goes up before the pull.",
         "Aimed Shot": "Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.",
         "Multi-Shot": "Multi-Shot every time the cooldown it shares with Aimed Shot comes up.",
+        # beast-mastery.md: "Multi-Shot every six seconds, Serpent Sting when it is about to drop".
+        "Serpent Sting": "Serpent Sting when it is about to drop.",
     },
     "hunter-marksmanship": {
         # marksmanship.md: Multi-Shot and Aimed Shot share a cooldown; "Aimed Shot is the opener only:
@@ -97,6 +104,9 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Hammer of the Righteous is the largest single threat gain in this list."
         ),
         "Consecration": "Consecration only with spare mana, where it pays for itself in threat.",
+        # protection.md: "Templar's Bulwark first ... Divine Shield and Divine Protection come after it,
+        # once Forbearance is gone."
+        "Divine Shield": "Divine Shield and Divine Protection come after Templar's Bulwark, once Forbearance is gone.",
     },
     "paladin-retribution": {
         # retribution.md: "reapply Seal of Righteousness just before it expires so uptime never lapses".
@@ -131,6 +141,9 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         ),
         # shadow.md: "Wand shots fill any global where nothing else is ready."
         "Shoot": "Shoot with your wand on any global where nothing else is ready.",
+        # shadow.md: "On long fights use a Major Mana Potion and a Demonic Rune once you are down that
+        # much, and an Undead uses Dark Sacrifice."
+        "Dark Sacrifice": "Dark Sacrifice if you are Undead, on a long fight once your mana is well down.",
     },
     "shaman-elemental": {
         # elemental.md: "Mana Spring Totem goes down first ... starting it one global before the cooldowns".
@@ -146,6 +159,16 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "It hits every target for close to single-target Lightning Bolt damage."
         ),
         "Magma Totem": "Magma Totem in place of Searing Totem against two or more targets.",
+        # elemental.md: "Spend it on Fire Nova only if your Fire totem is out and the boss is within
+        # 10 yards of it, which from 20 yards it usually is not. Otherwise it goes to your next Lightning Bolt."
+        "Fire Nova": (
+            "Fire Nova on a Clearcasting proc only when your Fire totem is out and the boss stands close to it. "
+            "Otherwise the proc goes to your next Lightning Bolt."
+        ),
+    },
+    "priest-discipline": {
+        # discipline.md: "Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead."
+        "Dark Sacrifice": "Dark Sacrifice if you are Undead, once your mana is down enough.",
     },
     "shaman-enhancement": {
         # enhancement.md: imbues "applied before the pull and reapplied whenever it falls off".
@@ -162,6 +185,10 @@ GUIDE_ORDER: dict[str, tuple[str, ...]] = {
     # feral.md: Shifting Power "sits ahead of every finisher and builder in the order"; Rip at five
     # combo points, and Shred "fills every other global".
     "druid-feral": ("Shifting Power", "Rip", "Shred"),
+    # feral-bear.md: Dire Bear Form and Enrage before the pull, then the numbered priority list.
+    "druid-feral-bear": (
+        "Dire Bear Form", "Enrage", "Primal Bite", "Lacerate", "Faerie Fire", "Maul", "Swipe",
+    ),
     # beast-mastery.md: the opener, then Bestial Wrath with Rapid Fire, then Multi-Shot, Serpent
     # Sting and Arcane Shot last.
     "hunter-beast-mastery": (

@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/druid/feral-bear.md
   - data/curated/apl/druid-feral-bear.json
-  - data/builds/1.60.1.70707/spellconst/druid.json
+  - data/builds/1.60.1.70753/spellconst/druid.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,19 +14,23 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Feral Bear Druid as the site's guide describes it. Feral Bear is the Bear Form tank: a large health pool, form-multiplied Armor and Dodge, and Maul, Swipe, Lacerate and Primal Bite to hold a boss. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Feral Bear Druid as the site's guide describes it. The bear tanks on health and armor, with Dodge as its only avoidance and Lacerate, Primal Bite and Maul for threat. Cat DPS has [its own guide](/guides/druid/feral). The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Everything is in Bear Form, which Dire Bear Form replaces at level forty.
-- Primal Bite on its cooldown.
-- Lacerate built to five stacks and kept ticking: Rend and Tear reads it, and a cast on a full stack hits hardest.
-- Maul, queued on your next swing with spare Rage.
-- Swipe as the Rage dump.
-- Barkskin on its cooldown, a small cut in damage taken for a smaller cut in threat.
-- Frenzied Regeneration as the emergency heal: under half health with twenty rage to convert.
+- Be in Dire Bear Form.
+- Enrage a second before you pull: it gives you rage up front and two a second for ten seconds.
+- Primal Bite on cooldown, every six seconds.
+- Lacerate until it has five stacks, then again when it has under three seconds left.
+- Faerie Fire whenever the boss does not have it.
+- Maul queued on your next swing whenever you have fifteen rage spare.
+- Swipe moves to the top on a pack, with Lacerate on the target the raid will kill last.
+- Challenging Roar is your panic button when the pack runs to the healers.
+- Barkskin is twenty percent less damage for fifteen seconds every minute, and Forever lets you cast it in Bear Form.
+- Frenzied Regeneration turns rage into health and in Forever can heal you for your whole health bar given the rage; use it under half health with rage to spare, not at the pull.
+- Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

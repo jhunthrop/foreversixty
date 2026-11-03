@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/assassination.md
   - data/curated/apl/rogue-assassination.json
-  - data/builds/1.60.1.70707/spellconst/rogue.json
+  - data/builds/1.60.1.70753/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,17 +14,24 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Assassination Rogue as the site's guide describes it. Assassination is the Rogue poison-based melee damage tree: constant poison uptime, Mutilate as the builder, and Cold Blood for a guaranteed-critical finisher. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Assassination Rogue as the site's guide describes it. Assassination is the Forever rogue built on Mutilate: two daggers, two combo points a strike, Seal Fate crits for a third and a Cold Blood Eviscerate whenever it is up. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Poisons come first: Deadly Poison on the main hand and Instant Poison on the off hand once Deadly is learned at thirty.
-- Mutilate is this tree's builder: both weapons strike for two combo points a cast.
-- Slice and Dice ahead of Eviscerate, opened when it is down and refreshed under three seconds remaining, at four or more combo points.
-- Eviscerate at four or more combo points, whenever its thirty-five energy is there.
-- Cold Blood right before the finisher, for a guaranteed crit on the next Eviscerate.
+- Garrote: Stealth, get behind the boss and open with Garrote once the tank has the boss.
+- Ambush hits harder on paper, but it lands into that armor and gets none of Lethality's bonus.
+- Cheap Shot is for trash only: bosses are immune to stuns.
+- Cold Blood at four or more combo points, right before the Eviscerate.
+- Slice and Dice.
+- Eviscerate at four or more combo points.
+- Mutilate is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.
+- Deadly Poison on the main hand, Instant Poison on the off hand, with a sharpening stone beside each in Forever.
+- Kidney Shot costs no energy in Forever and stuns longer per combo point: use it on casters and on whatever is hitting your healer.
+- Kick, Gouge and Blind handle the rest.
+- Redirect lifts your combo points off a dying mob and hands them to the next enemy you hit within fifteen seconds.
+- Feint on cooldown on bosses where you sit near the tank's threat.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

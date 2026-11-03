@@ -229,34 +229,99 @@ def priority_text(slug: str) -> str:
     return "\n".join(ps.priority_lines(ps.spec_row(slug)))
 
 
+def starter_slugs() -> list[str]:
+    return [slug for slug in ps.spec_slugs() if slug not in ps.FULL_SPECS]
+
+
+def names_in(name: str, text: str) -> bool:
+    return bool(re.search(rf"\b{re.escape(name)}\b(?!-)", text))
+
+
+def test_only_abilities_the_guide_names_positively() -> None:
+    # The ruled-out set is read from each guide's rotation section, the single source of truth: a
+    # button the guide rules out or makes conditional is never named, unless a recorded correction
+    # restates the guide's condition for it.
+    for slug in starter_slugs():
+        row = ps.spec_row(slug)
+        ruled_out = ps.ruled_out_of(row) - set(ps.GUIDE_LINES.get(slug, {}))
+        text = priority_text(slug)
+        for name in ruled_out:
+            assert not names_in(name, text), (slug, name)
+
+
 @pytest.mark.parametrize(
-    ("slug", "ruled_out"),
+    ("prose", "names", "ruled_out"),
     [
-        # Balance's guide brought Moonfire back (Improved Moonfire with Nature's Splendor).
-        ("druid-feral", ["Moonfire", "Wrath", "Claw", "Bear Form", "Rake", "Tiger's Fury"]),
-        ("druid-feral-bear", ["Feral Charge", "Growl", "Bash"]),
-        ("mage-fire", ["Frostfire Bolt"]),
-        ("mage-arcane", ["Frostfire Bolt"]),
-        # Elemental's guide keeps Flame Shock up for Lava Burst (round 8).
-        ("shaman-elemental", ["Earth Shock", "Fire Nova"]),
-        ("shaman-enhancement", ["Flame Shock", "Fire Nova"]),
-        # Arms's guide presses Recklessness in Berserker Stance for the execute.
-        ("warrior-arms", ["Heroic Strike"]),
-        ("rogue-assassination", ["Sinister Strike", "Venom"]),
-        ("paladin-retribution", ["Seal of Command"]),
-        ("paladin-protection", ["Lay on Hands", "Exorcism"]),
-        ("priest-discipline", ["Shadowfiend", "Dark Sacrifice"]),
-        ("hunter-survival", ["Aimed Shot", "Serpent Sting"]),
-        ("hunter-marksmanship", ["Serpent Sting"]),
-        # The guides rule these out: Affliction's rotation does not cast Wrack, and a melee
-        # Survival hunter has no use for Aspect of the Falcon.
-        ("warlock-affliction", ["Wrack"]),
+        # feral.md, marksmanship.md, discipline.md, affliction.md, fire.md, assassination.md.
+        ("Rake is not worth its energy here: Rip alone keeps the boss bleeding.", {"Rake", "Rip"}, {"Rake"}),
+        ("Serpent Sting is not worth a global in this build either.", {"Serpent Sting"}, {"Serpent Sting"}),
+        ("Shadowfiend cannot be learned at launch.", {"Shadowfiend"}, {"Shadowfiend"}),
+        ("Wrack stays off your raid bars.", {"Wrack", "Shadow Bolt"}, {"Wrack"}),
+        ("You have no Ice Block and no Invisibility, so do not pull.", {"Ice Block", "Invisibility"},
+         {"Ice Block", "Invisibility"}),
+        ("Rupture and Expose Armor do not make the list.", {"Rupture", "Expose Armor"}, {"Rupture", "Expose Armor"}),
+        # A comparison is not a rule-out of the far side: frost.md.
+        (
+            (
+                "Frostfire Bolt is not a Frost filler: its hit is smaller than Frostbolt's and half your Frost "
+                "talents do nothing for it."
+            ),
+            {"Frostfire Bolt", "Frostbolt"},
+            {"Frostfire Bolt"},
+        ),
+        # A rule-out phrase about something else in the clause: protection.md.
+        ("Divine Shield and Divine Protection come after it, once Forbearance is gone.",
+         {"Divine Shield", "Divine Protection"}, set()),
+        # Mana to spare is pacing, not a group or talent condition: holy.md.
+        ("Holy Light on the tank below 70%, but only with mana to spare.", {"Holy Light"}, set()),
+        # Another spec's lack of a button rules nothing out for this one: affliction.md.
+        ("Demonology and Destruction have no Amplify Curse, which is why they run Doom.", {"Amplify Curse"}, set()),
     ],
 )
-def test_only_abilities_the_guide_names_positively(slug: str, ruled_out: list[str]) -> None:
-    text = priority_text(slug)
-    for name in ruled_out:
-        assert not re.search(rf"\b{re.escape(name)}\b(?!-)", text), (slug, name)
+def test_guide_rule_outs_are_read(prose: str, names: set[str], ruled_out: set[str]) -> None:
+    from starter_guide import excluded_abilities
+
+    assert excluded_abilities(prose, names) == ruled_out
+
+
+def test_situational_buttons_the_guide_recommends_are_kept() -> None:
+    # arms.md: Heroic Strike above ninety rage; feral.md: Claw when you cannot get behind;
+    # protection.md: Lay on Hands for the killing swing and Exorcism on Undead and Demons.
+    for slug, name in [
+        ("warrior-arms", "Heroic Strike"),
+        ("druid-feral", "Claw"),
+        ("paladin-protection", "Lay on Hands"),
+        ("paladin-protection", "Exorcism"),
+    ]:
+        assert name in priority_names(slug), (slug, name)
+        assert names_in(name, ps.rotation_prose(ps.spec_row(slug))), (slug, name)
+
+
+def test_a_form_named_as_a_state_is_not_a_button() -> None:
+    from starter_guide import guide_order
+
+    names = {"Faerie Fire", "Bear Form", "Dire Bear Form", "Barkskin"}
+    prose = "Be in Dire Bear Form. Faerie Fire from range. In Bear Form it is free. You can cast Barkskin in Bear Form."
+    assert guide_order(prose, names) == ["Dire Bear Form", "Faerie Fire", "Barkskin"]
+
+
+def test_markdown_structure_never_leaks_into_a_line() -> None:
+    for slug in starter_slugs():
+        for line in ps.priority_lines(ps.spec_row(slug)):
+            assert "\n" not in line and "#" not in line and ": - " not in line, (slug, line)
+
+
+def test_a_sentence_that_points_back_is_not_a_reason() -> None:
+    from starter_priority import guide_candidates
+
+    prose = "Riptide on the tank. It is your cheapest heal per mana, and it sets up the Chain Heal."
+    assert guide_candidates(prose, {"Riptide", "Chain Heal"}, frozenset()) == [("Riptide", "Riptide on the tank.")]
+
+
+def test_thousands_are_spelled() -> None:
+    assert ps.usable_sentence("Blizzard costs 1,400 mana, so it is for big pulls.") == (
+        "Blizzard costs one thousand four hundred mana, so it is for big pulls."
+    )
 
 
 def test_no_changelog_or_rotation_data_talk(tmp_path: Path) -> None:
@@ -355,11 +420,16 @@ def test_no_tool_speak(tmp_path: Path) -> None:
 
 
 def test_every_correction_restates_its_guide() -> None:
+    # The guide page shows the rotation data's priority list above its prose, so a button in that
+    # list is in the guide too (Survival's Lacerate and Strider Kick).
     for slug, lines in ps.GUIDE_LINES.items():
-        prose = ps.section_after(ps.read_text(ps.guide_path(ps.spec_row(slug))), ps.ROTATION_HEADING)
+        row = ps.spec_row(slug)
+        prose = ps.rotation_prose(row)
+        shown = ps.rotation_cast_names(row)
         for name, line in lines.items():
             assert line.startswith(name) and not re.search(r"\d", line), (slug, line)
-            assert name in prose or (name == "Shoot" and "wand" in prose.lower()), (slug, name)
+            in_guide = name in prose or name in shown or (name == "Shoot" and "wand" in prose.lower())
+            assert in_guide, (slug, name)
     for slug, order in ps.GUIDE_ORDER.items():
         assert set(order) <= set(priority_names(slug)) | {"Holy Strike"}, slug
 

@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/shaman/restoration.md
   - data/curated/apl/shaman-restoration.json
-  - data/builds/1.60.1.70707/spellconst/shaman.json
+  - data/builds/1.60.1.70753/spellconst/shaman.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,20 +14,22 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Restoration Shaman as the site's guide describes it. Restoration is Shaman's healing spec, built on Healing Wave, Chain Heal and Riptide, with totems that sustain the group's mana and health. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Restoration Shaman as the site's guide describes it. Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal through the group, and Water Shield and Mana Tide to keep the mana coming. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Water Shield is kept up for its mana: a globe returns mana when you are hit and when your spells crit.
-- Healing Stream Totem.
-- Riptide on the tank first: it is the most mana-efficient heal and lifts the Chain Heal below.
-- Healing Wave is the efficient tank heal.
-- Lesser Healing Wave is the fast heal for a tank that is falling.
-- Nature's Swiftness turns the next Healing Wave into an instant heal when the tank is in danger.
-- Chain Heal is cast on the tank, so Riptide's bonus applies, and it jumps to the most injured party members, you included.
-- Mana Tide Totem goes down when you are low.
+- Water Shield whenever it is down: each of its three globes returns two percent of your maximum mana when you are hit or when one of your heals crits.
+- Healing Stream Totem whenever your Water slot is empty: it heals your party every two seconds for five minutes.
+- Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it twenty-five percent more.
+- Chain Heal on the tank as soon as anyone in your party is hurt, as long as your mana is ahead of the fight.
+- Healing Wave right after Nature's Swiftness: the instant, full-size save.
+- Lesser Healing Wave when it is down to thirty percent and the next hit could kill it.
+- Nature's Swiftness when the tank drops below twenty-five percent: your next Healing Wave becomes instant.
+- Poison Cleansing Totem and Disease Cleansing Totem take the Water slot and clear your party every few seconds; drop one on fights that poison or disease.
+- Cure Poison and Cure Disease reach anyone the totems do not.
+- Ancestral Spirit brings a dead player back after the fight.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

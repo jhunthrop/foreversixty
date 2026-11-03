@@ -99,9 +99,6 @@ func personaFileRole(path string) (string, error) {
 // personaClaimWords are claims about guilds, rankings or real players a persona never makes.
 var personaClaimWords = regexp.MustCompile(`(?i)\b(guild|ranked|world first)\b`)
 
-// capitalisedRun is two or more capitalised words in a row: what a person's name looks like.
-var capitalisedRun = regexp.MustCompile(`\b[A-Z][a-z]+(?:[ \t]+[A-Z][a-z]+)+\b`)
-
 // ruleLine is a persona's own prohibition ("Never name a real player, guild or ranking"),
 // which names the thing it forbids.
 const ruleLine = "- Never"
@@ -136,20 +133,13 @@ func personaLabels(t *testing.T) map[string]bool {
 	return labels
 }
 
-func allLabels(run string, labels map[string]bool) bool {
-	for _, w := range strings.Fields(run) {
-		if !labels[strings.ToLower(w)] {
-			return false
-		}
-	}
-	return true
-}
-
 // TestPersonas_NoRealPeople: nothing in a persona outside the spell, item and boss
 // dictionaries looks like a person's name, and none claims a guild, a ranking or a first.
+// Game words ("Forever", "Succubus") and function words ("In", "The") are not names.
 func TestPersonas_NoRealPeople(t *testing.T) {
 	names := buildNames(t)
 	labels := personaLabels(t)
+	game := gameWords(names)
 	for _, s := range loadSpecs(t) {
 		p, err := LoadPersona(personaDir, s.Spec)
 		if err != nil {
@@ -158,10 +148,8 @@ func TestPersonas_NoRealPeople(t *testing.T) {
 		if claim := claimsOutsideRules(p.Body); claim != "" {
 			t.Errorf("%s: claims %q", s.Spec, claim)
 		}
-		for _, run := range capitalisedRun.FindAllString(maskNames(names, p.Body), -1) {
-			if !allLabels(run, labels) {
-				t.Errorf("%s: %q looks like a person's name", s.Spec, run)
-			}
+		for _, run := range personLikeRuns(maskNames(names, p.Body), labels, game) {
+			t.Errorf("%s: %q looks like a person's name", s.Spec, run)
 		}
 	}
 }

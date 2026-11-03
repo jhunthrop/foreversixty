@@ -15,9 +15,16 @@ import re
 from pathlib import Path
 from typing import Any
 
+from starter_guide import excluded_abilities
 from starter_kit import ALL_CODES, ROLE_CODES, consumable_paragraph, drills, mistakes
 from starter_overrides import GUIDE_LINES, GUIDE_ORDER, corrected
-from starter_priority import corroborated_note, is_bare, priority_entries
+from starter_priority import (
+    candidate_names,
+    cast_spell_id,
+    corroborated_note,
+    is_bare,
+    priority_entries,
+)
 from starter_text import DIGIT, number_words, spell_out_numbers, usable_sentence
 
 __all__ = [
@@ -108,11 +115,30 @@ def castable_names(row: dict[str, Any]) -> set[str]:
     return {spell["name"] for spell in spells if any(spell[key] for key in pressed)}
 
 
+def rotation_prose(row: dict[str, Any]) -> str:
+    return section_after(read_text(guide_path(row)), ROTATION_HEADING)
+
+
+def rotation_items(row: dict[str, Any]) -> list[dict[str, Any]]:
+    return load_json(apl_path(row["spec"]))["rotation"]["priorityList"]
+
+
 def priority_entries_of(row: dict[str, Any]) -> list[tuple[str, str]]:
-    prose = section_after(read_text(guide_path(row)), ROTATION_HEADING)
-    items = load_json(apl_path(row["spec"]))["rotation"]["priorityList"]
-    entries = priority_entries(items, spell_names(row), castable_names(row), prose, read_text(guide_path(row)))
+    guide = read_text(guide_path(row))
+    entries = priority_entries(rotation_items(row), spell_names(row), castable_names(row), rotation_prose(row), guide)
     return corrected(row["spec"], entries)
+
+
+def ruled_out_of(row: dict[str, Any]) -> set[str]:
+    """The buttons the guide's rotation section rules out or makes conditional, read the generator's way."""
+    names = candidate_names(rotation_items(row), spell_names(row), castable_names(row))
+    return excluded_abilities(rotation_prose(row), names)
+
+
+def rotation_cast_names(row: dict[str, Any]) -> set[str]:
+    """The buttons the guide page's own priority list shows: the rotation data's casts."""
+    names = spell_names(row)
+    return {names[i] for i in map(cast_spell_id, rotation_items(row)) if i is not None and i in names}
 
 
 def priority_lines(row: dict[str, Any]) -> list[str]:

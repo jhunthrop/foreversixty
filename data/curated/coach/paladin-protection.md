@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/paladin/protection.md
   - data/curated/apl/paladin-protection.json
-  - data/builds/1.60.1.70707/spellconst/paladin.json
+  - data/builds/1.60.1.70753/spellconst/paladin.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,20 +14,25 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Protection Paladin as the site's guide describes it. Protection is the Paladin tanking tree: Seal of Fury and Judgement hold threat from range, while Holy Shield, block and avoidance absorb damage. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Protection Paladin as the site's guide describes it. Protection tanks with a shield and Holy damage: Righteous Fury on, Holy Shield on cooldown, Holy Strike every six seconds, and Judgement of Fury as your taunt. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Righteous Fury is a setting, not a button: keep it on.
-- Seal of Fury kept up.
-- Holy Shield on cooldown.
+- Righteous Fury is a thirty minute buff, not a stance: cast it before the raid and keep it on all night.
+- Put up Seal of Fury about three seconds before the pull.
+- Press Holy Shield about two seconds before the boss reaches you, so all four charges are there for its first swings.
 - Hammer of the Righteous and Holy Strike on their cooldowns. Hammer of the Righteous is the largest single threat gain in this list.
-- Judgement on cooldown, and Swift Judgement whenever it is ready: it is a second Judgement on its own cooldown.
+- Holy Strike on cooldown: every six seconds with Shieldsworn, twenty mana, and your damage reduction from Iron Creed.
+- Pull with Judgement: under Seal of Fury it taunts, so the boss comes straight to you.
 - Consecration only with spare mana, where it pays for itself in threat.
-- Templar's Bulwark, Divine Protection and Divine Shield are for a fight you are losing.
-- Divine Shield and Divine Protection put Forbearance on you, which shares a timer with Templar's Bulwark.
+- Get Greater Blessing of Kings on yourself, and keep Devotion Aura on.
+- Then Swift Judgement, Holy Strike and Hammer of the Righteous in the first few globals.
+- Exorcism on Undead and Demons.
+- Templar's Bulwark first, at about a third of your health: a full health bar of absorb for eight seconds.
+- Divine Shield and Divine Protection come after Templar's Bulwark, once Forbearance is gone.
+- Lay on Hands is a full heal on a twenty minute cooldown: save it for the swing that would kill you.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

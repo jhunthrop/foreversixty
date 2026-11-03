@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/combat.md
   - data/curated/apl/rogue-combat.json
-  - data/builds/1.60.1.70707/spellconst/rogue.json
+  - data/builds/1.60.1.70753/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,19 +14,26 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Combat Rogue as the site's guide describes it. Combat is the Rogue weapon-damage melee tree: Sinister Strike into Eviscerate, with Adrenaline Rush doubling energy regeneration during burst windows. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Combat Rogue as the site's guide describes it. Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from behind, Eviscerate at five points and Adrenaline Rush with Blade Flurry for the burst. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Slice and Dice opened in the first fifteen seconds as soon as three combo points are banked.
-- Eviscerate at five combo points, checked ahead of Slice and Dice so a full finisher is never traded for a refresh.
-- Adrenaline Rush on cooldown: it doubles energy regeneration for fifteen seconds.
-- Blade Flurry.
-- Backstab is the builder when a dagger is in the main hand. It hits for one hundred fifty percent weapon damage against Sinister Strike's one hundred percent, and Puncturing Wounds adds crit and an extra combo point chance to it.
-- Sinister Strike builds when Backstab cannot be cast.
-- Poisons are your weapon imbues: Deadly Poison on the main hand and Instant Poison on the off hand once Deadly is learned at thirty.
+- Garrote: Stealth before the pull, walk in behind the boss, and open with Garrote once the tank has the boss.
+- Backstab with a dagger in the main hand: Puncturing Wounds, Aggression and Lethality all land on it, and Puncturing Wounds can give it a second combo point.
+- Ambush is the weakest one for Combat, because none of Puncturing Wounds, Lethality or Aggression touch it.
+- Cheap Shot is for trash: bosses are immune to stuns.
+- Slice and Dice in the first fifteen seconds, at three or more combo points, when it is not up.
+- Eviscerate at five combo points.
+- Sinister Strike only when Backstab cannot be cast, held to sixty energy so a dagger rogue never spends Backstab's energy here.
+- Adrenaline Rush on cooldown, with your racial, a trinket and a potion.
+- Blade Flurry costs twenty-five and can go at any energy.
+- Kidney Shot costs no energy in Forever and stuns longer per combo point.
+- Kick stops a cast for twenty-five energy.
+- Gouge buys a few seconds on a loose add.
+- Redirect lifts your combo points off a target and hands them to the next enemy you hit within fifteen seconds.
+- Feint on cooldown on any boss where you sit near the tank's threat.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
