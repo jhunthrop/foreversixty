@@ -14,6 +14,94 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 8 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round8/ (warlock, casters, physical, hybrids, healers, auras, items, ranker, pipeline, page, wasm, integration) | 67 fixed (warlock 5, casters 5, physical 5, hybrids 4, healers 14, auras 11, items 13, ranker 5, pipeline 3, page 1, wasm 2, integrator 2; Innervate, shaman regen and Curse of Recklessness were each found by two lanes) | 40021374a | no |
 | 9 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round9/ (warlock, casters, physical, hybrids, healers, auras, items, crit, ranks, ranker, platform, integration) | 67 fixed (warlock 1, casters 4, physical 10, hybrids 6, healers 6, auras 11, items 5, crit 8, ranks 3, ranker 6, platform 3, integrator 4) | 4d3129cae | no |
 | 10 | 2026-11-02 | design/reviews/2026-11-03-sim-audit-round10/ (warlock, casters, physical, hybrids, healers, healprofile, ranks, crit, auras, items, ranker, platform, integration) | 88 fixed (warlock 3, casters 5, physical 6, hybrids 5, healers 11, healprofile 3, ranks 3, crit 5, auras 3, items 30, ranker 4, platform 9, integrator 1) | cfcb76e80 | no |
+| 11 | 2026-11-02 | design/reviews/2026-11-03-sim-audit-round11/ (regression, warlock, casters, physical, hybrids, healers, healprofile, crit, auras, items, ranks, ranker, platform, integration) | 55 fixed (regression 5, warlock 3, casters 6, physical 4, hybrids 1, crit 5, items 6, auras 5, healers 4, ranks 2, ranker 1, platform 9, integrator 1, plus 3 side effects of round-11 fixes caught before merge); by origin: 6 caused by round 9, 6 by round 10, 1 mixed, 39 older; plus 11 healprofile rows that follow ruling 1 | 47df4a89d (client 1.60.1.70753) | no |
+
+## Loop structure
+
+The owner set this structure on 2026-11-02 (round 11). It replaces the round-by-round practice of re-ranking locally.
+
+1. **Bug-fix rounds run no regens.** A round uses sims, unit tests and small fixtures only. Each ranker bug is proven with a targeted fixture test (one spec, one band, low iterations). No local or CI BiS ranking run, data run or simdb rebuild happens in a bug-fix round. Anything that needs a full re-rank to see goes on the "Measure at refresh" list below. Spec DPS and HPS runs are fine; they run one at a time under `nice -n 15` with GOMAXPROCS at half the cores.
+2. **A zero round triggers one full regen, on CI.** When a whole round confirms zero bugs, CI runs the full regen once: data, then simdb.bin, then bis. It never runs on the local Mac.
+3. **A verification round audits the regenerated output.** It checks:
+   - slot legality;
+   - weapon picks;
+   - that no set scores below its own check;
+   - tier order;
+   - every row on the "Measure at refresh" list.
+
+   Fixes from the verification round get a regen of the affected specs only.
+
+## Measure at refresh
+
+Picks and deltas that only a full re-rank can show. Each row is checked in the verification round after the zero-round regen.
+
+| # | what | specs / bands / slots | why | from |
+|---|---|---|---|---|
+| MR2 | PvP source lines in the BiS files read the in-game rank | every published BiS file | label fix; the page moves at deploy | round 11 ranker K23 |
+| MR3 | the 18 specs not re-ranked locally in round 11 | Retribution, Protection paladin, Holy paladin (Libram of Infusion in the relic slot), the priests, rogues, shamans, warlocks, warriors; every band | the ranking hold stopped the local re-rank | round 11 ranker |
+| MR4 | Horde paladin gear after Touch of the Grave | Holy, Retribution, Protection paladin, Horde, every band | round 10's Touch of the Grave change; Horde paladins are undead | rounds 10 and 11 |
+| MR5 | healer picks on the pull-size heal profile | the five healers, bands 20 to 50 every slot; trinket and relic slots at 60 | round 11 healprofile pull multiplier | round 11 healprofile |
+| MR6 | Holy priest picks for the new races | Holy priest, both factions, every band | races are now human and undead | round 11 healers P1c |
+| MR7 | classic-db items restated from the client | Royal Seals of Eldre'Thalas, Counterattack Lodestone, Briarwood Reed; ranged-only hit on Trueaim, Marksman Bands, Infernal Trickster, Stoneshatter | client stats replace Era's key by key | round 11 items F1/F2 |
+| MR8 | the crit lane's item and enchant mapping | Blackhand's Breadth, Eye of the Beast, Atiesh; scopes 8720 and 8057, Biznicks 2523 | crit tables and use effects from the client | round 11 crit CR2 to CR5 |
+| MR9 | simdb's held bonus armor and rounding | 337 items' bonus armor; Blackcrow's hit, Savage Gladiator Chain's crit | the committed simdb predates S 946dde232 | round 11 items |
+| MR10 | bare warlock picks with Curse of the Elements in the rotation | the three warlock specs, bare bands | separate bane and curse slots | round 11 warlock |
+| MR11 | melee set procs on auto-attacks only | the cat, rogues, Retribution, Arms and Fury at the bands that wear Defias, Shadowcraft, Valor or Bloodmail | proc flags from the client | round 11 items S1 |
+| MR12 | round 10's carry-overs | Frost after Fingers of Frost; healer trinkets and relics; the Undead race picks | listed at round 10 | round 10 |
+| MR13 | the refresh's data run | run fetch with the item hotfix layer; do NOT record a 165-item drop; `--allow-shrink` is still needed for the wowhead-stats gate | the 165 ids live in the 70532 and 70707 item pushes | round 11 items, ranker |
+
+## Round 11 at a glance
+
+Client 1.60.1.70753 went live during the round (engine follow 9f42ff1b3); the pin 47df4a89d carries it, and every number is measured on it.
+
+The owner's rulings this round:
+- **The sub-60 heal profile adds a hard pull.** A band fights the harder of its median last boss and its 75th-percentile trash pull, weighted by mobs (assistance-radius chains from cmangos classic-db). Multipliers 20 ×1.61, 30 ×2.06, 40 ×3.05, 50 ×1.85. Bare coverage below 60 falls to 42-90%, and gear picks separate. Rank rows and five band builds are re-measured; the pick check is at the refresh.
+- **Conviction keeps its crit on heals.** The hotfix push made its aura crit on every table with no school or class mask, and 70753 ships it. Holy damage spells get it back.
+- **Retribution bare 20's small loss to the paced Consecration is accepted.**
+- **The 165 item ids are not gone.** They live in the item-hotfix layer round 10's local run skipped. The refresh must not drop them, and `fetch` now fetches the layer.
+- **PvP defaults stop at in-game rank 6.** Rank 7 and above stay alternatives. The cap reads the in-game rank, and no pick moves.
+- **No regens in bug-fix rounds.** See "Loop structure".
+
+New this round, the regression lane re-audited every round-9 and round-10 change. Of the 55 bugs fixed:
+- 13 were caused by earlier rounds' fixes: 6 by round 9, 6 by round 10, and 1 mixed (the stone fix: old for most melee specs, round 9 for Survival).
+- 39 were older bugs no round had found.
+- 3 were side effects of other round-11 fixes, caught before merge.
+
+The count is falling: 88 in round 10, 55 in round 11, or 66 counting the 11 healprofile rows that follow ruling 1.
+
+Confirmed and fixed, by group (rows and evidence in each report):
+- **Regression (5).** The search tools sent no preset; the coach flagged Elemental's own rank; a fork UI buff id; Healing Stream's school crit; the bear's potion notes.
+- **Warlock (3).** Banes and curses in separate slots (bare bands gain); Curse of the Elements stacking on the raid's; Conflagrate on a miss.
+- **Casters (6).** Arcane Clearcasting at -1000% (Arcane gains at raid); Improved Scorch on a hit; Arcane Missiles rank 1; Undead Shadow's Dark Sacrifice; Elemental's Mana Spring; Robe of the Archmage's shared minute.
+- **Physical (4).** Execute per rage by rank; Whirlwind's off hand; rage from damage taken at the tank's level; a Survival note.
+- **Hybrids (1).** Benediction on Holy Shield.
+- **Crit (5).** Conviction; Blackhand's Breadth and Eye of the Beast; Atiesh; the scopes and Biznicks.
+- **Items (6).** Melee set procs on auto-attacks only; Boot Flask crit; client stats over classic-db's; ranged-only hit; Blackfathom stone; the item push fetch.
+- **Auras (5).** Improved Mana Spring; the warrior tank's Battle Shout and its zero threat; a note; the Dense stone at 35-49.
+- **Healers (4).** Heals learned below 20 keep their coefficient (beta logs); Mender's potions; healer potions fire; Holy priest's races (human, undead).
+- **Ranks (2).** Lava Burst rank 2 at 50-59; Restoration druid's Rejuvenation 10 row.
+- **Ranker (1).** PvP labels name the in-game rank.
+- **Platform (9).** The drawer's preset; the addon's rotation ids and talent spells; the Enhancement guide's totems; the weights tool's SimC form; server encounter defaults; the coach's book ranks, Affliction rules and Swiftmend starter.
+- **Integrator (1).** The fork's CI had been red since 40021374a: a golden rounded differently on amd64 and arm64. It is green again.
+- **Round-11 side effects (3).** Shadow's Devouring Plague row after Dark Sacrifice; Restoration shaman's Healing Wave rank 2 and Discipline's Lesser Heal rank 3 after the heal coefficient fix.
+
+Before and after, raid preset, band 60, 10,000 iterations, seeds 1 and 50001, both factions, on 70753: Discipline +4.3 to +4.5, Arcane +1.7 / +1.8, bear +1.2 / +1.3 (threat), cat -1.3 to -1.5; Protection paladin and Restoration shaman about +0.8, Elemental +0.7, Fury -0.3 to -0.5; the rest within 0.6. Below 60 the warlocks gain 2 to 8% at bare bands and Arms and Fury lose up to 6.8% at 30 to 50; integration.md has the table.
+
+Open going into round 12:
+- **New in 70753:** Poised for rogues and the cat; Holy Shield rank 4 in the Protection paladin rotation; the Orc Command rows.
+- **Owner decisions:**
+  - Whether rank rows also need the 1% bar (six kept rows under it).
+  - A faction key on rank rows (Alliance Shadow at bare 60).
+  - Elemental's bare 50/60 Tidal Focus.
+  - The heal profile's tank-versus-group split and line of sight, and coverage as the sub-60 healer headline.
+- **Verify on logs:**
+  - Conviction on Holy damage after the push.
+  - The heal coefficient fix at 40 and above.
+  - Improved Moonfire, Searing Totem, Elemental Mastery, Ice Lance, Fire Power on DoT ticks.
+  - Raptor Strike's off-hand penalty; Healing Stream crit; spell modifier stacking.
+  - Round 10's log-blocked list.
+- **Held under the adoption rule:** Marksmanship, Improved Bane of Agony, Destruction's Immolate line, Fire's Improved Scorch line, Frost's search winner, Frost bare 20's Ice Shards, the band builds the reservation cannot express.
+- **Healers:** round 12 gives them a full client-row sweep (this round's lane could not).
 
 ## Round 10 at a glance
 
