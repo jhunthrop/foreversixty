@@ -1,0 +1,43 @@
+druid-balance band 30: Eclipse (tier 4, spell level 1, prereq -) fits 21 points, guide takes it
+druid-feral-bear band 30: Lacerate (tier 3, spell level 25, prereq Savage Fury) fits 21 points, guide takes it
+druid-feral-bear band 40: Primal Bite (tier 6, spell level 40, prereq Leader of the Pack) fits 31 points, guide takes it
+druid-restoration band 30: Swiftmend (tier 3, spell level 1, prereq -) fits 21 points, guide takes it
+druid-restoration band 38: Swiftmend (tier 3, spell level 1, prereq -) fits 29 points, guide takes it
+druid-restoration band 40: Swiftmend (tier 3, spell level 1, prereq -) fits 31 points, guide takes it
+hunter-survival band 30: Strider Kick (tier 4, spell level 30, prereq -) fits 21 points, guide takes it
+mage-arcane band 20: Arcane Blast (tier 2, spell level 20, prereq -) fits 11 points, guide takes it
+mage-arcane band 30: Presence of Mind (tier 4, spell level 1, prereq -) fits 21 points, guide takes it
+mage-fire band 20: Pyroblast (tier 2, spell level 20, prereq -) fits 11 points, guide takes it
+mage-frost band 20: Ice Lance (tier 2, spell level 20, prereq -) fits 11 points, guide takes it
+paladin-holy band 20: Divine Favor (tier 2, spell level 0, prereq -) fits 11 points, guide takes it
+paladin-holy band 30: Holy Shock (tier 4, spell level 30, prereq -) fits 21 points, guide takes it
+paladin-protection band 20: Templar's Bulwark (tier 2, spell level 0, prereq -) fits 11 points, guide takes it
+paladin-protection band 30: Holy Shield (tier 4, spell level 30, prereq -) fits 21 points, guide takes it
+paladin-retribution band 20: Seal of Command (tier 2, spell level 20, prereq -) fits 11 points, guide takes it
+priest-shadow band 20: Inner Focus (tier 2, spell level 0, prereq -) fits 11 points, guide takes it
+priest-shadow band 20: Mind Flay (tier 2, spell level 20, prereq -) fits 11 points, guide takes it
+priest-shadow band 30: Inner Focus (tier 2, spell level 0, prereq -) fits 21 points, guide takes it
+priest-shadow band 38: Inner Focus (tier 2, spell level 0, prereq -) fits 29 points, guide takes it
+priest-shadow band 40: Inner Focus (tier 2, spell level 0, prereq -) fits 31 points, guide takes it
+priest-shadow band 50: Inner Focus (tier 2, spell level 0, prereq -) fits 41 points, guide takes it
+rogue-assassination band 30: Mutilate (tier 4, spell level 30, prereq -) fits 21 points, guide takes it
+rogue-assassination band 30: Cold Blood (tier 3, spell level 0, prereq -) fits 21 points, guide takes it
+rogue-assassination band 38: Mutilate (tier 4, spell level 30, prereq -) fits 29 points, guide takes it
+rogue-subtlety band 20: Ghostly Strike (tier 2, spell level 0, prereq -) fits 11 points, guide takes it
+rogue-subtlety band 30: Hemorrhage (tier 4, spell level 30, prereq Serrated Blades) fits 21 points, guide takes it
+shaman-elemental band 30: Lava Burst (tier 4, spell level 30, prereq -) fits 21 points, guide takes it
+shaman-restoration band 20: Water Shield (tier 2, spell level 20, prereq -) fits 11 points, guide takes it
+shaman-restoration band 30: Nature's Swiftness (tier 4, spell level 1, prereq -) fits 21 points, guide takes it
+shaman-restoration band 30: Mana Tide Totem (tier 3, spell level 1, prereq -) fits 21 points, guide takes it
+shaman-restoration band 38: Nature's Swiftness (tier 4, spell level 1, prereq -) fits 29 points, guide takes it
+shaman-restoration band 40: Nature's Swiftness (tier 4, spell level 1, prereq -) fits 31 points, guide takes it
+shaman-restoration band 40: Riptide (tier 6, spell level 40, prereq Healing Way) fits 31 points, guide takes it
+warlock-affliction band 20: Amplify Curse (tier 2, spell level 0, prereq -) fits 11 points, guide takes it
+warlock-affliction band 30: Siphon Life (tier 4, spell level 30, prereq -) fits 21 points, guide takes it
+warlock-demonology band 20: Demonic Sacrifice (tier 2, spell level 0, prereq -) fits 11 points, guide takes it
+warlock-demonology band 30: Soul Link (tier 4, spell level 1, prereq Demonic Sacrifice) fits 21 points, guide takes it
+warlock-destruction band 20: Shadowburn (tier 2, spell level 20, prereq -) fits 11 points, guide takes it
+warlock-destruction band 30: Conflagrate (tier 3, spell level 25, prereq -) fits 21 points, guide takes it
+warrior-arms band 40: Mortal Strike (tier 6, spell level 40, prereq Sweeping Strikes) fits 31 points, guide takes it
+warrior-fury band 30: Death Wish (tier 4, spell level 1, prereq -) fits 21 points, guide takes it
+warrior-protection band 20: Last Stand (tier 2, spell level 1, prereq -) fits 11 points, guide takes it
