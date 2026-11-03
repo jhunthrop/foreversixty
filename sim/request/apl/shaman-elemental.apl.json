@@ -5,6 +5,21 @@
       "action": {
         "castSpell": {
           "spellId": {
+            "spellId": 10497,
+            "rank": 4
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-4s"
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
             "spellId": 15207,
             "rank": 9
           }
@@ -38,7 +53,7 @@
       }
     },
     {
-      "notes": "Mana Spring Totem when your Water slot is empty: 10 mana every 2 seconds to your party for 5 minutes pays back its 100 mana many times over. Two Mana Springs do not stack, so skip yours if a Restoration shaman already has one down for your group.",
+      "notes": "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies. 10 mana every 2 seconds to your party for 5 minutes pays back its 100 mana many times over. Two Mana Springs do not stack, so skip yours if a Restoration shaman already has one down for your group.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -201,26 +216,19 @@
       }
     },
     {
-      "notes": "Fire Nova on a Clearcasting proc: it is free then. It only hits within 10 yards of your Fire totem, so it lands on a boss only when your Searing Totem stands next to it.",
+      "notes": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first. It only hits within 10 yards of that totem; on a single boss your Searing Totem stands 20 yards out, and Lightning Bolt is the better cast.",
       "action": {
         "condition": {
-          "and": {
-            "vals": [
-              {
-                "auraIsKnown": {
-                  "auraId": {
-                    "spellId": 16246
-                  }
-                }
-              },
-              {
-                "auraIsActive": {
-                  "auraId": {
-                    "spellId": 16246
-                  }
-                }
+          "cmp": {
+            "op": "OpGe",
+            "lhs": {
+              "numberTargets": {}
+            },
+            "rhs": {
+              "const": {
+                "val": "2"
               }
-            ]
+            }
           }
         },
         "castSpell": {
@@ -232,7 +240,29 @@
       }
     },
     {
-      "notes": "Lightning Bolt for everything else: the cheaper rank, because a full raid fight runs the top rank dry. Rank 9 costs 190 mana to rank 10's 220 for about 9% less base damage and the same spell power bonus. Below 60, and without raid buffs, a lower rank does more in total for the same reason; when you are not short of mana, cast the top rank.",
+      "notes": "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left. Rank 10 costs 220 mana to rank 9's 190 for about 9% more base damage, so you spend the spare mana on it and drop to rank 9 as soon as you fall behind.",
+      "action": {
+        "condition": {
+          "cmp": {
+            "op": "OpGt",
+            "lhs": {
+              "currentManaPercent": {}
+            },
+            "rhs": {
+              "remainingTimePercent": {}
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 15208,
+            "rank": 10
+          }
+        }
+      }
+    },
+    {
+      "notes": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry. Below 60, and without raid buffs, a lower rank does more in total for the same reason.",
       "action": {
         "castSpell": {
           "spellId": {
