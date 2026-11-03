@@ -1,8 +1,8 @@
 ---
 title: Paladin in Forever
 classSlug: paladin
-description: 'What the Paladin class does in Forever, its three specs, the new Undead pairing, and what changed from 1.12.'
-updated: 2026-09-24
+description: 'What the Paladin does in Forever, its three specs, the new Undead Paladin, and what changed from 1.12.'
+updated: 2026-11-02
 confidence: confirmed
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -14,24 +14,26 @@ sources:
   - label: 'Wowhead, Undead Paladins coming to Forever'
     url: https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823
     kind: community
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/combos.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/combos.json
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/combos.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/combos.json
     kind: datamined
   - label: 'Power Up Gaming, Forever talent changes vs Classic'
     url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/
     kind: community
 ---
 
-Paladin is Forever's hybrid class: one tree heals a group, one tanks with a shield, and one fights in melee, and a single character can only train one of the three at a time. It was also the class Blizzard chose to demonstrate the Forever class rework in full at BlizzCon, so more of its talent trees and baseline kit is documented than for any other class right now.
+Paladin is the plate hybrid: one tree heals, one tanks with a shield, and one swings a two-hander. All three run on the same kit of Seals, Judgements and Blessings, and Forever reworked that kit from the ground up.
 
-The three specs:
+**Undead Paladin** is new in Forever: the Horde has paladins for the first time, so Horde raids get Blessings and paladin tanks too. A paladin can be Human, Dwarf or Undead.
 
-- **Holy** heals through direct casts backed by Holy Shock and Light's Vigil, with mana sustain built around Reverence and Illumination.
-- **Protection** tanks with a shield, using Seal of Fury's Judgement as a ranged taunt and Holy Shield for block uptime and threat.
-- **Retribution** fights in melee off Seal-based procs and Judgement, weaving in a Hammer of Wrath execute once a target is low.
+What changed from 1.12, for every paladin:
 
-**Undead Paladin** is confirmed as one of Blizzard's six new race and class pairs, giving the Horde a Paladin option it never had in 1.12. Paladin is not open to Skyborne at all on either faction — the class's only three playable races remain Human, Dwarf, and the new Undead, all checked directly against this build's own race and class combination table.
+- **Judgement no longer consumes your Seal.** You put a Seal up once every 30 seconds and Judge on cooldown. Old Seal twisting is dead: a new Seal just replaces the old one. Retribution's Unsealed Wrath brings a new kind of swap back at 60.
+- **Holy Strike** is a trainer spell from level 6, on a 10 second cooldown, and both melee specs press it.
+- **Consecration** is baseline from level 20, **Blessing of Kings** from 20, and **Hammer of the Righteous** from 40.
+- **Seal of Fury** and **Righteous Fury** come at level 10, so any paladin can tank a dungeon from Ragefire Chasm on.
+- **Blessings last an hour**, Greater Blessings included.
+- **Blessing of Light, Blessing of Salvation and Blessing of Sanctuary are gone.** Holy's Oath of Light takes Light's place on one target. With no Salvation, your raid's damage dealers have no threat drop, which puts more on the tank.
+- **Talent trees** keep seven rows and 51 points, with a one-point milestone talent at 11, 16, 21 and 31 points in each tree. Holy Shield moved to Protection's 21 point row.
 
-Several baseline changes apply across all three specs. Holy Strike returns at level 6 as a trainable attack rather than a talent, and Judgement no longer consumes whichever Seal is active, removing the constant re-casting that Seals demanded in 1.12. Consecration is baseline at level 20 instead of gated behind Protection, and Blessing of Kings moved from a talent to something every Paladin trains. Seal of Fury is new: a tanking Seal whose Judgement taunts at a longer range than other tanks get. Talent trees keep 1.12's seven rows and 51 points, but Forever adds a fourth one-point milestone talent at 16 points alongside the ones at 11, 21, and 31, and several talents that used to exist only to unlock a group buff are baseline abilities now, freeing tree space for talents that change how each spec actually plays.
-
-The beta only runs to level 30, so none of this is tested at the level and raid content Paladins will actually play at launch — see each spec guide's Overview for what's confirmed versus projected. The Holy, Protection, and Retribution guides below cover talent priorities, rotation, stats, and gear for each tree.
+Each spec guide above covers the talents, the rotation as you actually play it, stats, races and leveling.
