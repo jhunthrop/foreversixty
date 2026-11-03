@@ -278,3 +278,24 @@ func TestAPartialRunMergesBandByBandAndNoBandsKeepsThemAll(t *testing.T) {
 		t.Fatalf("mage-frost = %+v, want the new spec figure and its band 20 kept", frost)
 	}
 }
+
+// Cat Form's attacks never use the weapon's damage, so the cat gets no
+// weapon term at any band or at 60, whatever the engine's sweep reads (it
+// measured 1.1 DPS per weapon DPS once the requests named their preset).
+func TestTheCatHasNoWeaponTerm(t *testing.T) {
+	m := fakeMeasurer{"druid-feral": {0.1, 0.001, 1.1, 0.001}}
+	picked := []specs.Spec{specs.ByKey["druid-feral"]}
+	got, _ := measureAll(picked, fakeCharacter, nil, m, 100, 7)
+	if got["druid-feral"].WeaponDPS != 0 {
+		t.Fatalf("raid entry = %+v, want no weapon term", got["druid-feral"])
+	}
+	characterFor := func(spec specs.Spec, band int) (api.CharacterSpec, error) {
+		return api.CharacterSpec{Name: "x", Race: "night-elf", Class: spec.ClassSlug, Level: bandLevel(band)}, nil
+	}
+	bands, _ := measureBands(picked, []int{20, 60}, characterFor, m, 100, 7)
+	for band, figures := range bands["druid-feral"] {
+		if figures.WeaponDPS != 0 {
+			t.Fatalf("band %s = %+v, want no weapon term", band, figures)
+		}
+	}
+}

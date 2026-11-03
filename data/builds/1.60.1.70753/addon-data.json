@@ -110716,32 +110716,32 @@
       "reference": "attack_power",
       "dps": 0.1975,
       "healing": false,
-      "weapon_dps": 2.3315,
+      "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "attack_power",
           "dps": 0.0668,
-          "weapon_dps": 0.784
+          "weapon_dps": 0.0
         },
         "30": {
           "reference": "attack_power",
           "dps": 0.0795,
-          "weapon_dps": 0.9308
+          "weapon_dps": 0.0
         },
         "40": {
           "reference": "attack_power",
           "dps": 0.0897,
-          "weapon_dps": 1.028
+          "weapon_dps": 0.0
         },
         "50": {
           "reference": "attack_power",
           "dps": 0.1003,
-          "weapon_dps": 1.1477
+          "weapon_dps": 0.0
         },
         "60": {
           "reference": "attack_power",
           "dps": 0.1024,
-          "weapon_dps": 1.117
+          "weapon_dps": 0.0
         }
       }
     },
