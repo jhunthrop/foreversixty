@@ -45,7 +45,7 @@ Scope: everything the combined landing (site 8d0f78ea0..c6bdc855c, fork 47df4a89
 
 ## Before/after
 
-Raid 60. Before is `r12/before.tsv`; after is this lane (`lane/r12-regmelee` 5bf0f783d with `wt/r12-regmelee`). Each cell is seed 1 / seed 50001. Protection warrior and the bear are threat per second.
+Raid 60. Before is `r12/before.tsv`; after is this lane (`lane/r12-regmelee` ef4b989bb with `wt/r12-regmelee`). Each cell is seed 1 / seed 50001. Protection warrior and the bear are threat per second.
 
 | Spec | alliance % | horde % | seed 1 alliance / horde | cause |
 |---|---|---|---|---|
