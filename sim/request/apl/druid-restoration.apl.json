@@ -675,7 +675,7 @@
       }
     },
     {
-      "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it, so Bloom heals him when it does. On a raid fight your mana outlasts the fight with rank 4 on everyone, so the tank gets the rank that heals most; below 60 and without raid buffs it stays rank 4, the rank-choice rows.",
+      "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it, so Bloom heals him when it does. A raid fight's mana pays for the rank that heals the tank most; below 60 and without raid buffs it stays rank 4, the rank-choice rows.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -785,12 +785,12 @@
       }
     },
     {
-      "notes": "On a hurt party member under 70%, you included, while your mana keeps pace, at rank 7 in a raid. It costs about two thirds of the top rank's mana, and with it your mana lasts a raid fight to the end. Below 60 and without raid buffs it is rank 4, the rank-choice rows.",
+      "notes": "On a hurt party member under 70%, you included, at rank 1. Rank 1 is the cheapest healing you have: your healing power adds the same to every rank, and in Forever a rank learned below level 20 keeps the whole of it, so it heals for most of the top rank's amount at a fraction of the mana. It does not wait on the mana pace the costly heals follow.",
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 8910,
-            "rank": 7
+            "spellId": 774,
+            "rank": 1
           },
           "target": {
             "type": "Player",
@@ -823,33 +823,12 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 8910,
-                        "rank": 7
+                        "spellId": 774,
+                        "rank": 1
                       },
                       "targetUnit": {
                         "type": "Player",
                         "index": 0
-                      }
-                    }
-                  }
-                }
-              },
-              {
-                "cmp": {
-                  "op": "OpGt",
-                  "lhs": {
-                    "currentManaPercent": {}
-                  },
-                  "rhs": {
-                    "math": {
-                      "op": "OpMul",
-                      "lhs": {
-                        "remainingTimePercent": {}
-                      },
-                      "rhs": {
-                        "const": {
-                          "val": "1.2"
-                        }
                       }
                     }
                   }
@@ -864,8 +843,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 8910,
-            "rank": 7
+            "spellId": 774,
+            "rank": 1
           },
           "target": {
             "type": "Player",
@@ -898,33 +877,12 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 8910,
-                        "rank": 7
+                        "spellId": 774,
+                        "rank": 1
                       },
                       "targetUnit": {
                         "type": "Player",
                         "index": 1
-                      }
-                    }
-                  }
-                }
-              },
-              {
-                "cmp": {
-                  "op": "OpGt",
-                  "lhs": {
-                    "currentManaPercent": {}
-                  },
-                  "rhs": {
-                    "math": {
-                      "op": "OpMul",
-                      "lhs": {
-                        "remainingTimePercent": {}
-                      },
-                      "rhs": {
-                        "const": {
-                          "val": "1.2"
-                        }
                       }
                     }
                   }
@@ -939,8 +897,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 8910,
-            "rank": 7
+            "spellId": 774,
+            "rank": 1
           },
           "target": {
             "type": "Player",
@@ -973,33 +931,12 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 8910,
-                        "rank": 7
+                        "spellId": 774,
+                        "rank": 1
                       },
                       "targetUnit": {
                         "type": "Player",
                         "index": 2
-                      }
-                    }
-                  }
-                }
-              },
-              {
-                "cmp": {
-                  "op": "OpGt",
-                  "lhs": {
-                    "currentManaPercent": {}
-                  },
-                  "rhs": {
-                    "math": {
-                      "op": "OpMul",
-                      "lhs": {
-                        "remainingTimePercent": {}
-                      },
-                      "rhs": {
-                        "const": {
-                          "val": "1.2"
-                        }
                       }
                     }
                   }
@@ -1014,8 +951,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 8910,
-            "rank": 7
+            "spellId": 774,
+            "rank": 1
           },
           "target": {
             "type": "Player",
@@ -1048,33 +985,12 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 8910,
-                        "rank": 7
+                        "spellId": 774,
+                        "rank": 1
                       },
                       "targetUnit": {
                         "type": "Player",
                         "index": 3
-                      }
-                    }
-                  }
-                }
-              },
-              {
-                "cmp": {
-                  "op": "OpGt",
-                  "lhs": {
-                    "currentManaPercent": {}
-                  },
-                  "rhs": {
-                    "math": {
-                      "op": "OpMul",
-                      "lhs": {
-                        "remainingTimePercent": {}
-                      },
-                      "rhs": {
-                        "const": {
-                          "val": "1.2"
-                        }
                       }
                     }
                   }
@@ -1089,8 +1005,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 8910,
-            "rank": 7
+            "spellId": 774,
+            "rank": 1
           },
           "target": {
             "type": "Player",
@@ -1123,33 +1039,12 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 8910,
-                        "rank": 7
+                        "spellId": 774,
+                        "rank": 1
                       },
                       "targetUnit": {
                         "type": "Player",
                         "index": 4
-                      }
-                    }
-                  }
-                }
-              },
-              {
-                "cmp": {
-                  "op": "OpGt",
-                  "lhs": {
-                    "currentManaPercent": {}
-                  },
-                  "rhs": {
-                    "math": {
-                      "op": "OpMul",
-                      "lhs": {
-                        "remainingTimePercent": {}
-                      },
-                      "rhs": {
-                        "const": {
-                          "val": "1.2"
-                        }
                       }
                     }
                   }

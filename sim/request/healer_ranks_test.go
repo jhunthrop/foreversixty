@@ -20,7 +20,7 @@ func TestHealerListsCastTheTopTrainerRankUnlessChosen(t *testing.T) {
 		"priest-holy":        {6075: true, 9472: true},
 		"priest-discipline":  {6075: true, 3747: true, 2053: true},
 		"paladin-holy":       {19941: true, 1311606: true, 19750: true},
-		"druid-restoration":  {8910: true},
+		"druid-restoration":  {774: true},
 		"shaman-restoration": {},
 	}
 	var ranks struct {
@@ -156,16 +156,19 @@ func TestDisciplineFillsWithLesserHealRankThree(t *testing.T) {
 	}
 }
 
-// Round 13: at raid 60 the Restoration druid's mana outlasts the fight by
-// more than half again with Rejuvenation rank 4 on everyone, so the list
-// casts rank 10 (9841) on the tank and rank 7 (8910) on the party
-// (+2.3% effective HPS at seeds 1 and 50001, both factions). Every other
-// band and bare 60 keep what they cast before: rank 4 where it is learned,
-// rank 1 at 50 to 59, and below 22 the highest rank learned.
+// Round 13: at raid 60 the Restoration druid's mana outlasted the fight by
+// more than half again with Rejuvenation rank 4 on everyone, and the party's
+// Rejuvenation waited on the mana pace the costly heals follow. The tank's
+// Rejuvenation is rank 10 (9841) in a raid; the party's is rank 1 (774),
+// the cheapest healing a druid has (heals learned below 20 keep their whole
+// coefficient in Forever, round 11 C1), cast whenever someone is hurt. The
+// tank's line keeps what it cast before at every other band and at bare 60:
+// rank 4 where it is learned, rank 1 at 50 to 59, and below 28 the highest
+// rank learned up to rank 4.
 func TestRestorationDruidRejuvenationRanksByBand(t *testing.T) {
 	const (
 		tankRejuv  = 9841
-		partyRejuv = 8910
+		partyRejuv = 774
 	)
 	raw, err := os.ReadFile("../../data/curated/apl/druid-restoration.json")
 	if err != nil {
@@ -180,15 +183,15 @@ func TestRestorationDruidRejuvenationRanksByBand(t *testing.T) {
 	if strings.Contains(string(raw), `"spellId": 2090`) {
 		t.Fatal("the Restoration list still authors Rejuvenation rank 4 (2090)")
 	}
-	rejuv := map[int]int{1: 774, 2: 1058, 3: 1430, 4: 2090, 7: 8910, 10: 9841}
+	rejuv := map[int]int{1: 774, 2: 1058, 3: 1430, 4: 2090, 10: 9841}
 	cases := []struct {
 		level       int
 		preset      string
 		tank, party int
 	}{
-		{10, RaidPreset, 2, 2}, {16, RaidPreset, 3, 3}, {21, RaidPreset, 3, 3}, {22, RaidPreset, 4, 4},
-		{30, RaidPreset, 4, 4}, {45, RaidPreset, 4, 4}, {50, RaidPreset, 1, 1}, {59, RaidPreset, 1, 1},
-		{60, BarePreset, 4, 4}, {60, RaidPreset, 10, 7},
+		{10, RaidPreset, 2, 1}, {16, RaidPreset, 3, 1}, {21, RaidPreset, 3, 1}, {22, RaidPreset, 4, 1},
+		{30, RaidPreset, 4, 1}, {45, RaidPreset, 4, 1}, {50, RaidPreset, 1, 1}, {59, RaidPreset, 1, 1},
+		{60, BarePreset, 4, 1}, {60, RaidPreset, 10, 1},
 	}
 	for _, c := range cases {
 		for _, faction := range []string{AllianceFaction, HordeFaction} {
@@ -251,5 +254,48 @@ func TestHolyCastsPrayerOfMendingWheneverReady(t *testing.T) {
 	}
 	if !found {
 		t.Fatal("the Holy list does not cast Prayer of Mending (1240827)")
+	}
+}
+
+// The party's Rejuvenation is the druid's cheapest healing, so it does not
+// wait on the mana pace (round 13).
+func TestRestorationDruidPartyRejuvenationIsNotPaced(t *testing.T) {
+	raw, err := os.ReadFile("../../data/curated/apl/druid-restoration.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var file struct {
+		Rotation struct {
+			PriorityList []struct {
+				Action struct {
+					CastSpell *struct {
+						SpellID struct {
+							SpellID int `json:"spellId"`
+						} `json:"spellId"`
+						Target *struct {
+							Index int `json:"index"`
+						} `json:"target"`
+					} `json:"castSpell"`
+					Condition json.RawMessage `json:"condition"`
+				} `json:"action"`
+			} `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		t.Fatal(err)
+	}
+	party := 0
+	for _, line := range file.Rotation.PriorityList {
+		cast := line.Action.CastSpell
+		if cast == nil || cast.SpellID.SpellID != 774 || cast.Target == nil || cast.Target.Index > 4 {
+			continue
+		}
+		party++
+		if strings.Contains(string(line.Action.Condition), "currentManaPercent") {
+			t.Errorf("the party Rejuvenation on player %d waits on the mana pace", cast.Target.Index)
+		}
+	}
+	if party != 5 {
+		t.Errorf("%d party Rejuvenation rank 1 lines, want 5 (players 0 to 4)", party)
 	}
 }
