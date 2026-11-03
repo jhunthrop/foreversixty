@@ -2722,12 +2722,12 @@
       "quality": 4,
       "required_level": 1,
       "required_level_source": "client",
-      "item_level": 10,
+      "item_level": 30,
       "armor": 0,
       "stats": {
-        "intellect": 4,
-        "spirit": 2,
-        "stamina": 2
+        "intellect": 10,
+        "spirit": 4,
+        "stamina": 6
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -2743,7 +2743,7 @@
       "icon_source": "client",
       "weapon_type": null,
       "superseded_by": null,
-      "bonding": "pickup",
+      "bonding": "equip",
       "armor_type": null,
       "reputation": null,
       "limit_category": null
@@ -2823,13 +2823,13 @@
       "quality": 4,
       "required_level": 1,
       "required_level_source": "client",
-      "item_level": 10,
+      "item_level": 30,
       "armor": 0,
       "stats": {
-        "intellect": 2,
-        "stamina": 2,
-        "healing": 8,
-        "spell_power": 3
+        "intellect": 5,
+        "stamina": 4,
+        "healing": 21,
+        "spell_power": 7
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -2845,7 +2845,7 @@
       "icon_source": "client",
       "weapon_type": null,
       "superseded_by": null,
-      "bonding": "pickup",
+      "bonding": "equip",
       "armor_type": null,
       "reputation": null,
       "limit_category": null
@@ -2894,13 +2894,13 @@
       "quality": 4,
       "required_level": 1,
       "required_level_source": "client",
-      "item_level": 10,
+      "item_level": 30,
       "armor": 0,
       "stats": {
-        "intellect": 1,
-        "stamina": 1,
-        "spell_power": 6,
-        "healing": 6
+        "intellect": 3,
+        "stamina": 3,
+        "spell_power": 15,
+        "healing": 15
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -2916,7 +2916,7 @@
       "icon_source": "client",
       "weapon_type": null,
       "superseded_by": null,
-      "bonding": "pickup",
+      "bonding": "equip",
       "armor_type": null,
       "reputation": null,
       "limit_category": null
@@ -3927,11 +3927,11 @@
       "quality": 4,
       "required_level": 1,
       "required_level_source": "client",
-      "item_level": 10,
+      "item_level": 30,
       "armor": 0,
       "stats": {
-        "stamina": 4,
-        "defense": 1
+        "stamina": 10,
+        "defense": 2
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -3947,7 +3947,7 @@
       "icon_source": "client",
       "weapon_type": null,
       "superseded_by": null,
-      "bonding": "pickup",
+      "bonding": "equip",
       "armor_type": null,
       "reputation": null,
       "limit_category": null
@@ -4510,13 +4510,13 @@
       "quality": 4,
       "required_level": 1,
       "required_level_source": "client",
-      "item_level": 10,
+      "item_level": 30,
       "armor": 0,
       "stats": {
-        "stamina": 1,
-        "strength": 1,
-        "crit": 3,
-        "attack_power": 5
+        "stamina": 4,
+        "strength": 2,
+        "crit": 7,
+        "attack_power": 14
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -4532,7 +4532,7 @@
       "icon_source": "client",
       "weapon_type": null,
       "superseded_by": null,
-      "bonding": "pickup",
+      "bonding": "equip",
       "armor_type": null,
       "reputation": null,
       "limit_category": null
@@ -5035,11 +5035,11 @@
       "quality": 4,
       "required_level": 1,
       "required_level_source": "client",
-      "item_level": 10,
+      "item_level": 30,
       "armor": 0,
       "stats": {
-        "spell_power": 6,
-        "healing": 6
+        "spell_power": 16,
+        "healing": 16
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -5055,7 +5055,7 @@
       "icon_source": "client",
       "weapon_type": null,
       "superseded_by": null,
-      "bonding": "pickup",
+      "bonding": "equip",
       "armor_type": null,
       "reputation": null,
       "limit_category": null

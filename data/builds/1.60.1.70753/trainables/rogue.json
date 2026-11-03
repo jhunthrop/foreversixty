@@ -189,7 +189,7 @@
     {
       "name": "Coup de Grace",
       "skill_line": "Assassination",
-      "source": "skill_line_ability",
+      "source": "talent",
       "active": false,
       "cost": 0,
       "cost_type": 0,
@@ -313,7 +313,7 @@
     {
       "name": "Death Mark",
       "skill_line": "",
-      "source": "class_spell",
+      "source": "talent",
       "active": true,
       "cost": 25,
       "cost_type": 3,
