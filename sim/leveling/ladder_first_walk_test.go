@@ -28,7 +28,7 @@ func TestBandBuildsTakeTheCastTalentsThatFit(t *testing.T) {
 		{"rogue-subtlety", "rogue", "subtlety", 2, 30, "Hemorrhage", "00000000000000000-00000000000000000-5320201210013001000"},
 		{"shaman-restoration", "shaman", "restoration", 2, 30, "Mana Tide Totem", "0000000000000000-000000000000000000-5530003310010000"},
 		{"warlock-affliction", "warlock", "affliction", 0, 30, "Siphon Life", "25522300100001000-0000000000000000000-0000000000000000"},
-		{"warlock-demonology", "warlock", "demonology", 1, 30, "Soul Link", "00000000000000000-2332113101210001000-0000000000000000"},
+		{"warlock-demonology", "warlock", "demonology", 1, 30, "Soul Link", "00000000000000000-2035113101210001000-0000000000000000"},
 		{"warrior-arms", "warrior", "arms", 0, 40, "Mortal Strike", "03325213032510001-00000000000000000-000000000000000000"},
 		{"warrior-fury", "warrior", "fury", 1, 30, "Death Wish", "00000000000000000-05153105000010000-000000000000000000"},
 	}
