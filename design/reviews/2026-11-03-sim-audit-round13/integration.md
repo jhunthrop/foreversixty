@@ -241,7 +241,7 @@ Already done on the branches, not to redo: the fork goldens (E c555683de, E 4f81
 
 **Gates.** No lane ran a full suite. On int/r13 I ran the fork's sim/core, druid, hunter, mage, paladin, priest, rogue, shaman and warrior packages (green after M6), the merged sim/request tests M3/M4 touched, and the guide prose test. The full gate set runs once, at the landing. Not run: iOS `xcodebuild test` (platform used a swiftc harness over the same vectors).
 
-Heads at the end of round 13: fork `int/r13` 919616e88; site `int/r13`: the commit that records this line (the one before it adds this report).
+Heads at the end of round 13: fork `int/r13` 919616e88; site `int/r13` 2b1531073 (this report), plus the one commit that records this line.
 
 ## Measure at refresh (added this round)
 
