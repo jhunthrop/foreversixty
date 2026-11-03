@@ -160,6 +160,27 @@ def test_fetch_layers_the_push_and_the_item_pushes_after_the_download(monkeypatc
     ]
 
 
+def test_fetch_prints_the_build_last_after_the_item_pushes(monkeypatch, tmp_path, capsys):
+    """data.yml reads the fetched build from the last line `fetch` prints. The
+    pre-launch refresh (2026-11-03) read "fetch-wago-hotfixes Item: 136 rows"
+    there instead and failed: the item layer's counts go to the log."""
+
+    def fetch_build(product, build):
+        print(build)
+        return tmp_path / BUILD
+
+    monkeypatch.setattr("pipeline.wago.fetch_build", fetch_build)
+    monkeypatch.setattr(
+        "pipeline.hotfix_push.layer_hotfix_push", lambda build, offline=False: {"tables": {}}
+    )
+    monkeypatch.setattr(
+        "pipeline.wago_hotfixes.fetch_wago_hotfixes",
+        lambda build, product: {"Item": 136, "ItemSparse": 165},
+    )
+    cli.main(["fetch", "--product", "wowf", "--build", BUILD])
+    assert capsys.readouterr().out.splitlines()[-1] == BUILD
+
+
 def test_layer_hotfix_push_has_an_explicit_offline_mode(monkeypatch):
     calls: list[tuple] = []
     monkeypatch.setattr(

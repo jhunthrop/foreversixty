@@ -128013,7 +128013,7 @@
   },
   {
     "id": 1327245,
-    "name": "Thunderclap"
+    "name": "Warstomp"
   },
   {
     "id": 1327248,
@@ -128044,12 +128044,152 @@
     "name": "Arcane Bolt"
   },
   {
+    "id": 1327657,
+    "name": "Frost Breath"
+  },
+  {
+    "id": 1327713,
+    "name": "Terrifying Roar"
+  },
+  {
+    "id": 1327716,
+    "name": "Cleave"
+  },
+  {
+    "id": 1327726,
+    "name": "Rushing Charge"
+  },
+  {
+    "id": 1327736,
+    "name": "Elixir of Endless Intellect"
+  },
+  {
+    "id": 1327737,
+    "name": "Elixir of Endless Power"
+  },
+  {
+    "id": 1327738,
+    "name": "Elixir of Endless Healing"
+  },
+  {
+    "id": 1327751,
+    "name": "Elixir of Endless Rapidity"
+  },
+  {
+    "id": 1327753,
+    "name": "Elixir of Endless Opportunity"
+  },
+  {
+    "id": 1327754,
+    "name": "Scroll of Endless Fortitude"
+  },
+  {
     "id": 1327836,
     "name": "Denial of the Call"
   },
   {
     "id": 1327906,
     "name": "Camping"
+  },
+  {
+    "id": 1327926,
+    "name": "Ultra Hogger"
+  },
+  {
+    "id": 1327961,
+    "name": "Giga Hogger"
+  },
+  {
+    "id": 1327963,
+    "name": "Cosmic Hogger"
+  },
+  {
+    "id": 1327978,
+    "name": "Frenzy"
+  },
+  {
+    "id": 1327984,
+    "name": "Manastorm"
+  },
+  {
+    "id": 1327987,
+    "name": "Manastorm"
+  },
+  {
+    "id": 1327989,
+    "name": "Chill"
+  },
+  {
+    "id": 1327990,
+    "name": "Chill"
+  },
+  {
+    "id": 1327991,
+    "name": "Call Anathema"
+  },
+  {
+    "id": 1327993,
+    "name": "Call Benediction"
+  },
+  {
+    "id": 1328013,
+    "name": "Cleave"
+  },
+  {
+    "id": 1328019,
+    "name": "Mortal Strike"
+  },
+  {
+    "id": 1328022,
+    "name": "Ding!"
+  },
+  {
+    "id": 1328028,
+    "name": "Charge"
+  },
+  {
+    "id": 1328032,
+    "name": "Elixir of Endless Mana"
+  },
+  {
+    "id": 1328034,
+    "name": "Chain Lightning"
+  },
+  {
+    "id": 1328040,
+    "name": "Hurricane"
+  },
+  {
+    "id": 1328041,
+    "name": "Hurricane"
+  },
+  {
+    "id": 1328067,
+    "name": "Summon Infernal"
+  },
+  {
+    "id": 1328068,
+    "name": "Summon Infernal"
+  },
+  {
+    "id": 1328069,
+    "name": "Summon Infernal"
+  },
+  {
+    "id": 1328117,
+    "name": "Summon Infernal"
+  },
+  {
+    "id": 1328118,
+    "name": "Elixir of Endless Growth"
+  },
+  {
+    "id": 1328119,
+    "name": "Scroll of Endless Speed"
+  },
+  {
+    "id": 1328127,
+    "name": "Elixir of Endless Experience"
   },
   {
     "id": 1328198,
