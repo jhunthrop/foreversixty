@@ -92,7 +92,7 @@
         }
       },
       {
-        "notes": "Hunter's Mark whenever the target is not marked. One mark per target is enough: if another hunter's mark is already up, leave it.",
+        "notes": "In a raid, dismiss your pet before the pull: Lone Wolf works only with no pet out. Hunter's Mark whenever the target is not marked. One mark per target is enough: if another hunter's mark is already up, leave it.",
         "action": {
           "condition": {
             "not": {
@@ -167,7 +167,7 @@
         }
       },
       {
-        "notes": "Aimed Shot when the shared cooldown comes up and your next auto shot is more than 1.2 seconds away, so the cast starts right after a shot leaves. Since the 3 November hotfix it hits about twice as hard as before and beats Multi-Shot on that cooldown whenever the cast fits; with an auto shot about to fire, take Multi-Shot instead and keep the auto rolling.",
+        "notes": "Aimed Shot when the shared cooldown comes up right after an auto shot fires. Since the 3 November hotfix it hits about twice as hard as before, a small gain over Multi-Shot whenever the cast fits. If you are partway to your next auto shot, take Multi-Shot instead and keep the auto rolling.",
         "action": {
           "condition": {
             "cmp": {

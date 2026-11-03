@@ -573,7 +573,7 @@
         ]
       },
       {
-        "text": "Racials in the beta client's spell data: Walk on Air (glide downward for 10 seconds on a 90 second cooldown), Read Leyline (50% health and mana regeneration for 15 seconds on a 2 minute cooldown), Wind Blessed (2% haste), Elemental Insight (5% damage to Elementals). Skyborne choose Horde or Alliance at creation. Read Leyline is spell 1259705, which casts Energized 1270842.",
+        "text": "Racials in the beta client's spell data: Walk on Air (glide downward for 10 seconds on a 90 second cooldown), Read Leyline (50% health and mana regeneration for 15 seconds on a 2 minute cooldown), Wind Blessed (2% haste), Elemental Insight (5% damage to Elementals). Skyborne choose Horde or Alliance at creation. Read Leyline is spell 1259705, which casts Energized 1270842. The sim does not cast it on its own; a custom rotation can.",
         "sources": [
           {
             "label": "Icy Veins, racial rework",

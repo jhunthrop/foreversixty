@@ -44,3 +44,46 @@ func TestNoWarriorChargesAfterAPrepullBloodrage(t *testing.T) {
 		}
 	}
 }
+
+// A raid Arms warrior Charges on the pull, never before it: at -2 s the
+// Charge reached the boss ahead of the tank (round 13, wow-player review).
+// The pull is time 0 in every band, so one 0 s Charge serves the raid,
+// where the tank has just engaged, and the bare bands, where the warrior
+// pulls with it. The pre-pull Battle Shout follows the Charge, whose rage
+// pays for it.
+func TestArmsChargesOnThePullNotBefore(t *testing.T) {
+	const battleShout, charge = 11551, 11578
+	curated, err := loadLadderCurated(repoRoot, "warrior-arms")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	chargeIndex, shoutIndex := -1, -1
+	for i, action := range rot.PrepullActions {
+		at, err := time.ParseDuration(action.GetDoAtValue().GetConst().GetVal())
+		if err != nil {
+			t.Fatalf("pre-pull time %q: %v", action.GetDoAtValue().GetConst().GetVal(), err)
+		}
+		switch action.GetAction().GetCastSpell().GetSpellId().GetSpellId() {
+		case charge:
+			chargeIndex = i
+			if at != 0 {
+				t.Errorf("Charge at %v, want 0s (on the pull, not before the tank)", at)
+			}
+		case battleShout:
+			shoutIndex = i
+			if at != 0 {
+				t.Errorf("pre-pull Battle Shout at %v, want 0s, after the Charge that pays for it", at)
+			}
+		}
+	}
+	if chargeIndex < 0 {
+		t.Fatal("no Charge on the pull")
+	}
+	if shoutIndex >= 0 && shoutIndex < chargeIndex {
+		t.Errorf("pre-pull Battle Shout (action %d) comes before the Charge (action %d)", shoutIndex, chargeIndex)
+	}
+}
