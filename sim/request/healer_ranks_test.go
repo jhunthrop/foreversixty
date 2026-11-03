@@ -18,10 +18,10 @@ func TestHealerListsCastTheTopTrainerRankUnlessChosen(t *testing.T) {
 	const build = "../../data/builds/1.60.1.70707/spellranks.json"
 	chosen := map[string]map[int]bool{ // spec -> spell id the rank rule picked
 		"priest-holy":        {139: true, 2054: true},
-		"priest-discipline":  {139: true, 3747: true, 2053: true},
+		"priest-discipline":  {139: true, 3747: true, 2050: true},
 		"paladin-holy":       {19941: true, 1311606: true, 19750: true},
 		"druid-restoration":  {774: true},
-		"shaman-restoration": {},
+		"shaman-restoration": {332: true},
 	}
 	var ranks struct {
 		Classes map[string]map[string][]struct {
@@ -123,14 +123,16 @@ func TestHealerListNotesNameTheRankTheyCast(t *testing.T) {
 	}
 }
 
-// Discipline's party filler is Lesser Heal rank 3 (2053, level 10), not
-// Heal rank 1 (2054). Once heals learned below 20 kept their whole
-// coefficient (engine 074edfadf, sim-accuracy round 11), rank 3's 0.714 at
-// 75 mana out-healed Heal rank 1's 0.857 at 155 for a list that runs dry:
-// +1.8 to +2.1% at raid 60 and +7.8 to +8.8% at bare 60, both factions,
-// seeds 1 and 50001, 10,000 iterations. No list line names Heal rank 1, and
-// so no rank-choice row may either.
-func TestDisciplineFillsWithLesserHealRankThree(t *testing.T) {
+// Discipline's party filler is Lesser Heal, not Heal rank 1 (2054). Once
+// heals learned below 20 kept their whole coefficient (engine 074edfadf,
+// sim-accuracy round 11), Lesser Heal rank 3's 0.714 at 75 mana out-healed
+// Heal rank 1's 0.857 at 155 for a list that runs dry: +1.8 to +2.1% at raid
+// 60 and +7.8 to +8.8% at bare 60. Round 14, at the 2.3 heal scale: rank 1
+// (2050, level 1) heals more again, raid 60 +0.3 to +0.4% and bare 60 +4.3
+// to +4.5%, both factions, seeds 1 and 50001. Below 60 the line keeps what
+// it cast: rank 2 from 4 to 9 and rank 3 from 10 to 59. No list line names
+// Heal rank 1, and so no rank-choice row may either.
+func TestDisciplineFillsWithLesserHealRankOne(t *testing.T) {
 	raw, err := os.ReadFile("../../data/curated/apl/priest-discipline.json")
 	if err != nil {
 		t.Fatal(err)
@@ -138,8 +140,8 @@ func TestDisciplineFillsWithLesserHealRankThree(t *testing.T) {
 	if strings.Contains(string(raw), `"spellId": 2054`) {
 		t.Error("the Discipline list still casts Heal rank 1 (2054)")
 	}
-	if !strings.Contains(string(raw), `"spellId": 2053`) {
-		t.Error("the Discipline list does not cast Lesser Heal rank 3 (2053)")
+	if strings.Contains(string(raw), `"spellId": 2053`) || !strings.Contains(string(raw), `"spellId": 2050`) {
+		t.Error("the Discipline list does not author Lesser Heal rank 1 (2050)")
 	}
 	choices, err := os.ReadFile("../../data/curated/rank-choices.json")
 	if err != nil {
@@ -154,6 +156,85 @@ func TestDisciplineFillsWithLesserHealRankThree(t *testing.T) {
 			t.Error("rank-choices.json still has a Discipline row for Heal rank 1 (2054)")
 		}
 	}
+	var rotation struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &rotation); err != nil {
+		t.Fatal(err)
+	}
+	lesser := map[int]int{1: 2050, 2: 2052, 3: 2053}
+	for _, c := range []struct {
+		level  int
+		preset string
+		rank   int
+	}{{4, BarePreset, 2}, {9, BarePreset, 2}, {10, BarePreset, 3}, {20, BarePreset, 3}, {50, BarePreset, 3}, {59, BarePreset, 3}, {60, BarePreset, 1}, {60, RaidPreset, 1}} {
+		assertOnlyRank(t, rotation.Rotation, "priest-discipline", "priest", c.preset, "undead", c.level, lesser, c.rank)
+	}
+}
+
+// assertOnlyRank checks that the rewritten list casts the family's rank and
+// no other rank of it.
+func assertOnlyRank(t *testing.T, rotation json.RawMessage, spec, class, preset, race string, level int, family map[int]int, want int) {
+	t.Helper()
+	out, err := RewriteRotationRanks(rotation, spec, class, preset, race, level)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := string(out)
+	for rank, id := range family {
+		has := strings.Contains(got, `"spellId":`+strconv.Itoa(id)) || strings.Contains(got, `"spellId": `+strconv.Itoa(id))
+		if has != (rank == want) {
+			t.Errorf("%s level %d %s: rank %d (%d) cast %v, want only rank %d", spec, level, preset, rank, id, has, want)
+		}
+	}
+}
+
+// Round 14, at the 2.3 heal scale: the Restoration shaman's tank Healing
+// Wave is rank 2 (332) at raid 60 as it already was from 40 to 59 and at
+// bare 60: +0.7 to +0.8%, both factions, seeds 1 and 50001, and the fight
+// still runs dry (162 to 146 s). Below 40 the line keeps the highest rank
+// learned.
+func TestRestorationShamanHealingWaveRanksByBand(t *testing.T) {
+	raw, err := os.ReadFile("../../data/curated/apl/shaman-restoration.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(raw), `"spellId": 10396`) {
+		t.Fatal("the Restoration shaman list still authors Healing Wave rank 9 (10396)")
+	}
+	var rotation struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &rotation); err != nil {
+		t.Fatal(err)
+	}
+	wave := map[int]int{1: 331, 2: 332, 3: 547, 4: 913, 5: 939, 6: 959, 7: 8005, 8: 10395, 9: 10396}
+	for _, c := range []struct {
+		level  int
+		preset string
+		rank   int
+	}{{1, BarePreset, 1}, {6, BarePreset, 2}, {12, BarePreset, 3}, {18, BarePreset, 4}, {20, BarePreset, 4}, {24, BarePreset, 5}, {30, BarePreset, 5},
+		{32, BarePreset, 6}, {39, BarePreset, 6}, {40, BarePreset, 2}, {50, BarePreset, 2}, {60, BarePreset, 2}, {60, RaidPreset, 2}} {
+		assertOnlyRank(t, rotation.Rotation, "shaman-restoration", "shaman", c.preset, "tauren", c.level, wave, c.rank)
+	}
+}
+
+// Round 14, at the 2.3 heal scale: Holy Shock is rank 4 (20930) at bare 60,
+// +0.3% both factions, seeds 1 and 50001; the raid keeps rank 1.
+func TestHolyPaladinHolyShockAtBareSixty(t *testing.T) {
+	raw, err := os.ReadFile("../../data/curated/apl/paladin-holy.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var rotation struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &rotation); err != nil {
+		t.Fatal(err)
+	}
+	shock := map[int]int{1: 1311606, 2: 20473, 3: 20929, 4: 20930}
+	assertOnlyRank(t, rotation.Rotation, "paladin-holy", "paladin", BarePreset, "human", 60, shock, 4)
+	assertOnlyRank(t, rotation.Rotation, "paladin-holy", "paladin", RaidPreset, "human", 60, shock, 1)
 }
 
 // Round 13: at raid 60 the Restoration druid's mana outlasted the fight by

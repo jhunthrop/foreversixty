@@ -200,6 +200,18 @@
             "rank": 3
           }
         ]
+      },
+      {
+        "spell": "Holy Shock",
+        "authored": 1311606,
+        "bands": [
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 4,
+            "preset": "bare"
+          }
+        ]
       }
     ],
     "paladin-protection": [
@@ -315,6 +327,22 @@
             "from_level": 50,
             "to_level": 59,
             "rank": 1
+          }
+        ]
+      },
+      {
+        "spell": "Lesser Heal",
+        "authored": 2050,
+        "bands": [
+          {
+            "from_level": 4,
+            "to_level": 9,
+            "rank": 2
+          },
+          {
+            "from_level": 10,
+            "to_level": 59,
+            "rank": 3
           }
         ]
       }
@@ -601,23 +629,27 @@
     "shaman-restoration": [
       {
         "spell": "Healing Wave",
-        "authored": 10396,
+        "authored": 332,
         "bands": [
           {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 2
+            "from_level": 12,
+            "to_level": 17,
+            "rank": 3
           },
           {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 2
+            "from_level": 18,
+            "to_level": 23,
+            "rank": 4
           },
           {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 2,
-            "preset": "bare"
+            "from_level": 24,
+            "to_level": 31,
+            "rank": 5
+          },
+          {
+            "from_level": 32,
+            "to_level": 39,
+            "rank": 6
           }
         ]
       },
