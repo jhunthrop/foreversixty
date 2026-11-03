@@ -27,7 +27,7 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 		// (332) beats rank 3 (547) by 5.6% at bare 60, and the fight still runs dry.
 		{"Healing Wave at bare 60", "shaman-restoration", "shaman", BarePreset, 60, 332, 547},
 	} {
-		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset))
+		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, HordeFaction))
 		if !ids[c.want] || ids[c.not] {
 			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
 		}

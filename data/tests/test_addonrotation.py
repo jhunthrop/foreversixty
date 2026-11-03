@@ -533,6 +533,34 @@ def test_a_band_casts_the_rank_choice_the_curated_table_names(tmp_path):
     assert [line.spell_id for line in bands[60]] == [10929]
 
 
+def test_a_faction_rank_choice_below_sixty_fails_loudly(tmp_path):
+    """A rank-choice row may name a faction (round 12), but the addon carries
+    one rotation per band for both factions, so a faction row below 60 has no
+    place in it: the export refuses it rather than ship one faction's rank to
+    the other."""
+    _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
+    (tmp_path / "rank-choices.json").write_text(
+        json.dumps(
+            {
+                "specs": {
+                    "priest-holy": [
+                        {
+                            "spell": "Renew",
+                            "authored": 10929,
+                            "bands": [
+                                {"from_level": 50, "to_level": 59, "rank": 3, "faction": "horde"},
+                            ],
+                        }
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(AddonRotationError, match="faction"):
+        _healer_bands("priest-holy", tmp_path)
+
+
 def _healer_bands_at(spec: str, curated_dir: Path, level: int) -> list:
     from pipeline import addonrotation
 

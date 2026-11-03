@@ -116,7 +116,7 @@ func run(o options) error {
 	if err != nil {
 		return err
 	}
-	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, o.band)
+	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, o.faction, o.band)
 	if err != nil {
 		return err
 	}
@@ -139,10 +139,10 @@ func run(o options) error {
 // loadRotation reads the "rotation" object of a curated rotation file; an
 // empty path keeps the spec's own rotation. Its ranks are rewritten
 // exactly as the published rotation's are: the spec's rank choices under
-// preset for the ids it names, otherwise (below 60) the highest rank
+// preset for faction for the ids it names, otherwise (below 60) the highest rank
 // learned by level that is not above the authored one, so a probe that
 // names a lower rank keeps it. At 60 an id with no row stays as written.
-func loadRotation(path, spec, class, preset string, level int) (*proto.APLRotation, error) {
+func loadRotation(path, spec, class, preset, faction string, level int) (*proto.APLRotation, error) {
 	if path == "" {
 		return nil, nil
 	}
@@ -159,7 +159,7 @@ func loadRotation(path, spec, class, preset string, level int) (*proto.APLRotati
 	if len(file.Rotation) == 0 {
 		return nil, fmt.Errorf("%s has no \"rotation\" object", path)
 	}
-	if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, spec, class, preset, level); err != nil {
+	if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, spec, class, preset, faction, level); err != nil {
 		return nil, fmt.Errorf("rewriting %s to level %d: %w", path, level, err)
 	}
 	rotation := &proto.APLRotation{}

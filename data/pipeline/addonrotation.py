@@ -247,11 +247,17 @@ def _band_rank(choices: dict, spell_id: int, level: int) -> int | None:
     """The rank data/curated/rank-choices.json picks for the list's
     `spell_id` at `level` (one spec's rows), or None outside every row. A
     band below 60 is the bare preset's, so a row for the raid preset only
-    never applies here."""
+    never applies here. The addon carries one rotation per band for both
+    factions, so a faction row (round 12) holding such a band is refused."""
     for row in choices.get(spell_id, []):
         if row.get("preset", BARE_PRESET) != BARE_PRESET:
             continue
         if row["from_level"] <= level <= row["to_level"]:
+            if row.get("faction"):
+                raise AddonRotationError(
+                    f"rank choice for {spell_id} at {level} names faction {row['faction']!r}; "
+                    "the addon's rotation bands are shared by both factions"
+                )
             return row["rank"]
     return None
 
