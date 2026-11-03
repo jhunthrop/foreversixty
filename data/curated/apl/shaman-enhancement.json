@@ -203,6 +203,37 @@
         }
       },
       {
+        "notes": "Fire Nova on a Clearcasting proc: it is free then, and in melee your Searing Totem stands within its 10 yards of the boss. Clearcasting comes from Elemental Focus in the raid build.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 16246
+                    }
+                  }
+                },
+                {
+                  "auraIsActive": {
+                    "auraId": {
+                      "spellId": 16246
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 408345,
+              "rank": 5
+            }
+          }
+        }
+      },
+      {
         "notes": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready. Below half mana, stop shocking so you do not run dry without raid buffs.",
         "action": {
           "castSpell": {
@@ -227,5 +258,11 @@
         }
       }
     ]
-  }
+  },
+  "expected_idle": [
+    {
+      "id": 408345,
+      "reason": "Fire Nova fires on Clearcasting, which needs Elemental Focus; only the raid build takes it, so the leveling build never casts it."
+    }
+  ]
 }

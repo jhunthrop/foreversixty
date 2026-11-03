@@ -3,8 +3,8 @@ title: Enhancement Shaman in Forever
 classSlug: shaman
 spec: enhancement
 role: dps
-build: 'FS1:1.60.1.70753:shaman:dwarf:320033/255130030005102051/052:'
-raidBuild: 'FS1:1.60.1.70753:shaman:dwarf:0533001/253030031005102051/053:'
+build: 'FS1:1.60.1.70753:shaman:dwarf:320033/055032031005102051/052:'
+raidBuild: 'FS1:1.60.1.70753:shaman:dwarf:0533001/053032031005102051/053:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Strength, Attack power, Hit, Critical strike, Agility, Intellect, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and Windfury, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
@@ -49,7 +49,7 @@ Enhancement is the shaman's melee spec: one weapon with Windfury on it, Stormstr
 
 ## Talents and builds
 
-Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells, because Forever has one hit stat. The leveling build puts its Elemental points into Convection, Elemental Alacrity and Call of Flame for cheaper, faster Lightning Bolts and a stronger Searing Totem. The raid build moves them to Concussion, Reverberation, Elemental Devastation and Elemental Focus: Earth Shock hits harder and comes back sooner, its crits give your swings 9% crit for 10 seconds, and now and then a spell is free. It also takes Shamanistic Focus, which cuts the cost of your shocks by 45%, and pays for it with two points of Ancestral Knowledge.
+Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells, because Forever has one hit stat. The leveling build puts its Elemental points into Convection, Elemental Alacrity and Call of Flame for cheaper, faster Lightning Bolts and a stronger Searing Totem. The raid build moves them to Concussion, Reverberation, Elemental Devastation and Elemental Focus: Earth Shock hits harder and comes back sooner, its crits give your swings 9% crit for 10 seconds, and now and then a spell is free. Both builds take Shamanistic Focus, which cuts the cost of your shocks by 45%, and Improved Ghost Wolf, which makes Ghost Wolf instant and usable indoors: the fastest way across a raid room when the boss moves. The raid build pays for its Elemental points with two points of Ancestral Knowledge.
 
 - **Thundering Strikes** (5 points): 5% crit on every attack and spell, and crits are what start Flurry.
 - **Ancestral Knowledge** (5 points, 3 in the raid build): up to 10% more Intellect. With Mental Dexterity, Intellect is attack power.
@@ -73,11 +73,12 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 2. Stormstrike on cooldown.
 3. Lightning Bolt the moment Maelstrom Weapon shows five stacks. It is instant and free, so it costs you nothing. If Stormstrike is a second or two from ready, use it first and let the bolt take the 20%.
 4. Searing Totem when it is down, unless the boss is about to die.
-5. Earth Shock on cooldown while you are above half mana. It takes Stormstrike's 20% when no bolt is ready.
+5. Fire Nova when Clearcasting makes it free.
+6. Earth Shock on cooldown while you are above half mana. It takes Stormstrike's 20% when no bolt is ready.
 
 **Which Air totem.** Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so you never drop Windfury for yourself. In Forever Windfury Totem, Grace of Air and Strength of Earth reach every raid member within 30 yards, not just your party. One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and it is worth far more to them than Grace of Air is to you. If another shaman already has it down, take Grace of Air. There is nothing to twist: Windfury Totem in Forever is an aura around the totem, not a buff that lingers on the weapon, so it ends the moment you replace the totem.
 
-**Fire Nova and Flame Shock** stay on your bar for packs and runners. In a single-target fight, Fire Nova on its own cooldown costs more mana than its damage is worth, and so does Flame Shock.
+**Fire Nova on Clearcasting.** In the raid build, Elemental Focus sometimes makes your next damage spell free. Spend it on Fire Nova: in melee your Searing Totem stands within its 10 yards of the boss. Outside a proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target, and so does Flame Shock.
 
 **Packs.** Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it. On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning while your mana lasts, and keep spending five Maelstrom stacks on Lightning Bolt.
 
@@ -109,4 +110,4 @@ Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain a
 
 ## Leveling
 
-Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Take Stormstrike as soon as the tree opens it. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, and leather turns to mail at 40.
+Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Take Stormstrike as soon as the tree opens it. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.

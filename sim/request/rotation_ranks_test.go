@@ -374,11 +374,11 @@ func TestRewriteKeepsTheAuthoredDownranksBelowSixty(t *testing.T) {
 // A per-band rank choice is honoured over its levels, and only there:
 // outside every row the authored rank's rule stands.
 func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
-	raw, err := aplFS.ReadFile("apl/shaman-elemental.apl.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	const topBolt = 15207 // Lightning Bolt rank 9, as the rotation is authored
+	// One authored line, so the check reads the choice alone: the real
+	// Elemental list also carries a rank 10 line paced to the mana bar,
+	// which no choice row names.
+	raw := []byte(`{"type":"TypeAPL","priorityList":[{"action":{"castSpell":{"spellId":{"spellId":15207,"rank":9}}}}]}`)
+	const topBolt = 15207 // Lightning Bolt rank 9, as the line is authored
 	choices := rankChoices{topBolt: {{FromLevel: 40, ToLevel: 49, Rank: 6}, {FromLevel: 50, ToLevel: 55, Rank: 7}}}
 	for _, c := range []struct {
 		level      int
@@ -406,10 +406,15 @@ func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 }
 
 // The curated table reaches the published rotation: Elemental's band-50 row
-// casts Lightning Bolt rank 4 (915) where the default rule casts rank 9.
+// casts Lightning Bolt rank 4 (915) where the default rule casts rank 9. The
+// list's other Lightning Bolt line, the top rank while mana is ahead of the
+// fight, names no choice row and keeps the band's top rank (15207 at 50).
 func TestThePublishedRotationTakesTheCuratedRankChoices(t *testing.T) {
 	ids := rotationIDs(t, "shaman-elemental", "shaman", 50, specRankChoices("shaman-elemental", BarePreset))
-	if !ids[915] || ids[15207] {
-		t.Errorf("Elemental at 50 should cast Lightning Bolt rank 4 (915), not rank 9 (15207)")
+	if !ids[915] {
+		t.Errorf("Elemental at 50 should cast Lightning Bolt rank 4 (915) on its filler line")
+	}
+	if !ids[15207] {
+		t.Errorf("Elemental at 50 should keep rank 9 (15207) on its paced top-rank line")
 	}
 }

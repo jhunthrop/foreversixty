@@ -66,7 +66,7 @@ Elemental Warding and the single point of Elemental Devastation are there to ope
 
 ## Rotation and priority
 
-Before the pull, time a Lightning Bolt so it lands just after the tank's first hit; on a pull you do not trust, wait for the tank instead. Then Mana Spring Totem, your cooldowns, Flame Shock, Lava Burst, Searing Totem, and Lightning Bolt for the rest of the fight.
+Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt so it lands just after the tank's first hit; on a pull you do not trust, wait for the tank instead. Then your cooldowns, Flame Shock, Lava Burst, Searing Totem, and Lightning Bolt for the rest of the fight.
 
 **Flame Shock first, Lava Burst second.** Lava Burst only gets its 20% while your own Flame Shock is ticking, so never cast it into a target without one. With Call of Flame the shock lasts 21 seconds; reapply it when it falls off. Earth Shock stays on your bar for interrupts: it shares the shock cooldown, and that cooldown belongs to Flame Shock.
 
@@ -74,11 +74,11 @@ Before the pull, time a Lightning Bolt so it lands just after the tank's first h
 
 **Totems.** Searing Totem is your single-target Fire totem. Its bolts reach 20 yards, so drop it within 20 yards of the boss and stand there; refresh it when it expires, every 55 seconds. Mana Spring Totem returns 10 mana every 2 seconds to your party for 5 minutes and pays for itself many times over, but two Mana Springs do not stack: if a Restoration shaman already has one down for your group, skip yours. Strength of Earth, Grace of Air and Windfury reach the whole raid within 30 yards in Forever, so leave the Earth and Air slots to whichever shaman your raid leader assigns them to.
 
-**Fire Nova.** A Clearcasting proc makes your next damage spell free. Spend it on Fire Nova only if your Fire totem is out and the boss is within 10 yards of it, which from 20 yards it usually is not. Otherwise it goes to your next Lightning Bolt.
+**Fire Nova** is a pack spell for you. It only hits within 10 yards of your Fire totem, and on a boss your Searing Totem stands with you, up to 20 yards out. Let a Clearcasting proc go to your next Lightning Bolt instead.
 
-**Lightning Bolt ranks.** Rank 10 costs 220 mana and rank 9 costs 190 for about 9% less base damage, with the same spell power bonus. Even with raid buffs, a three minute fight of rank 10 runs you dry before the boss dies, and rank 9 bolts cast for the whole fight out-damage rank 10 bolts followed by standing around with no mana. Cast rank 9 as your filler.
+**Lightning Bolt ranks.** Rank 10 costs 220 mana and rank 9 costs 190 for about 9% less base damage, with the same spell power bonus. Even with raid buffs, a three minute fight of nothing but rank 10 runs you dry before the boss dies. So pace it: cast rank 10 while your mana bar is fuller than the share of the fight left (above half mana at the halfway point, for example), and drop to rank 9 the moment it is not. That spends every point of mana on the bigger bolt without ever standing around empty.
 
-**Packs.** On two or more targets drop Magma Totem in the pack (20 seconds) and cast Chain Lightning on its 6 second cooldown, with Lightning Bolt between. Under Elemental Mastery Chain Lightning has no cooldown at all; save Mastery for the pack if the pull is worth it.
+**Packs.** On two or more targets drop Magma Totem in the pack (20 seconds), cast Chain Lightning on its 6 second cooldown and Fire Nova on its 10 second cooldown while you stand close enough to place the totem, with Lightning Bolt between. Under Elemental Mastery Chain Lightning has no cooldown at all; save Mastery for the pack if the pull is worth it.
 
 **Moving.** Every shock and every totem is instant. If you have to run, refresh Flame Shock, drop a totem or use Earth Shock as an interrupt, and start casting again the moment you stop.
 

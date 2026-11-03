@@ -100,12 +100,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:5587 off_hand:3651 | 9.4 | 5 | spell:3606=67.0, other:attack/1=44.8, spell:529=30.9, spell:3599=6.1, spell:20572=2.0 | - |
-| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:4820 | 19.2 | 5 | spell:6350=68.4, other:attack/1=67.3, spell:915=24.2, spell:6363=5.4, spell:8052=2.0 | {SpellID: 16246} |
-| 30 | 5510331300000000-000000000000000000-0000000000000000 | main_hand:271931 off_hand:4066 | 31.1 | 7 | other:attack/1=75.8, spell:6351=59.4, spell:915=34.8, spell:6364=4.1, spell:8053=3.8 | {SpellID: 408490} |
-| 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:271930 off_hand:4652 | 39.3 | 8 | other:attack/1=64.4, spell:6351=52.1, spell:915=35.7, spell:8053=4.1, spell:408490=3.9 | - |
-| 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:271930 off_hand:4652 | 41.5 | 8 | other:attack/1=63.8, spell:915=35.5, spell:6352=31.4, spell:8050=9.3, spell:408490=5.7 | - |
-| 50 | 5510331300001350-030000000000000000-5030000000000000 | main_hand:271929 off_hand:10195 | 59.2 | 8 | spell:915=55.4, spell:10435=40.7, other:attack/1=28.9, spell:408490=7.8, spell:8052=6.9 | - |
-| 60 | 5510331300001350-030000000000000000-5033520000000000 | main_hand:23451 off_hand:22819 | 85.5 | 8 | spell:10436=68.4, other:attack/1=52.5, spell:15207=26.5, spell:10438=3.6, spell:29228=3.4 | - |
+| 20 | 5510000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:4820 | 19.2 | 5 | spell:6350=68.4, other:attack/1=67.3, spell:915=24.2, spell:6363=5.4, spell:8052=2.0 | - |
+| 30 | 5510331300000000-000000000000000000-0000000000000000 | main_hand:271931 off_hand:4066 | 31.1 | 7 | other:attack/1=73.8, spell:6351=59.1, spell:915=35.5, spell:6364=4.2, spell:8053=3.7 | {SpellID: 408490} |
+| 38 | 5510331300001340-000000000000000000-0000000000000000 | main_hand:271930 off_hand:4652 | 39.5 | 7 | other:attack/1=63.3, spell:6351=54.3, spell:915=36.9, spell:8053=4.2, spell:408490=4.1 | - |
+| 40 | 5510331300001350-010000000000000000-0000000000000000 | main_hand:271930 off_hand:4652 | 41.2 | 8 | other:attack/1=62.0, spell:915=37.1, spell:6352=31.9, spell:8050=9.4, spell:408490=5.9 | - |
+| 50 | 5510331300001350-030000000000000000-5030000000000000 | main_hand:271929 off_hand:10195 | 58.3 | 8 | spell:915=58.3, spell:10435=41.4, other:attack/1=25.2, spell:408490=8.1, spell:8052=7.0 | - |
+| 60 | 5510331300001350-030000000000000000-5033520000000000 | main_hand:23451 off_hand:22819 | 85.9 | 8 | spell:10436=68.5, other:attack/1=51.3, spell:15207=27.2, spell:10438=3.6, spell:29228=3.5 | - |
 
 ## Learned but unused (informational)
 
@@ -131,7 +131,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8037)
 - Lava Burst (spell 408490)
-- Lightning Bolt (spell 943)
 - Stormstrike (spell 410156)
 
 ### Level 38
@@ -153,7 +152,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
 - Lava Burst (spell 1238299)
-- Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
 ### Level 50
@@ -165,7 +163,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
 - Lava Burst (spell 1238300)
-- Lightning Bolt (spell 15207)
 - Stormstrike (spell 410156)
 
 ### Level 60
@@ -175,10 +172,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10473)
 - Frostbrand Attack (spell 16353)
-- Lightning Bolt (spell 15208)
 - Stormstrike (spell 410156)
 
 ## Violations found in this run
 
-- shaman-elemental level=20 kind=unresolved_id action={SpellID: 16246}
-- shaman-elemental level=20 kind=zero_casts spell="Fire Nova" id=408341 authored=408345
+- shaman-elemental level=38 kind=zero_casts spell="Lightning Bolt" id=10391 authored=15208
