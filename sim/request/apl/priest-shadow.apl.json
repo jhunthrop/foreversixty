@@ -23,7 +23,7 @@
       }
     },
     {
-      "notes": "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT.",
+      "notes": "Always up, but skip the refresh in the last 10 seconds of a fight, when it cannot tick out.",
       "action": {
         "condition": {
           "and": {
@@ -65,7 +65,7 @@
       }
     },
     {
-      "notes": "Devouring Plague is kept up: its 24-second cooldown lets it be reapplied when it expires, and its ticks crit.",
+      "notes": "Devouring Plague every time its 24 second cooldown is up: every priest has it in Forever, its ticks crit, and it heals you.",
       "action": {
         "condition": {
           "not": {
@@ -88,7 +88,7 @@
       }
     },
     {
-      "notes": "Inner Focus into Mind Blast: a free Mind Blast with extra crit chance whenever Inner Focus is ready.",
+      "notes": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
       "action": {
         "strictSequence": {
           "actions": [
@@ -112,7 +112,7 @@
       }
     },
     {
-      "notes": "Mind Blast on cooldown ahead of Mind Flay: it is the bigger hit per cast time, and Shadowform halves its cost and doubles its crit bonus.",
+      "notes": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -123,7 +123,7 @@
       }
     },
     {
-      "notes": "Shadow Word: Death on cooldown ahead of Mind Flay, as both Forever guides order it; below 20% target health Early Demise adds crit chance.",
+      "notes": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -134,7 +134,7 @@
       }
     },
     {
-      "notes": "Mind Flay fills every remaining global.",
+      "notes": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
       "action": {
         "castSpell": {
           "spellId": {

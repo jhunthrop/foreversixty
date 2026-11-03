@@ -267,6 +267,24 @@ interface TalentNameFile {
   trees: { talents: { name: string; icon: string; spell_id: number }[] }[];
 }
 
+interface ClassSpellLimitsFile {
+  raceLocked: Record<string, Record<string, string[]>>;
+  notLearnable: Record<string, Record<string, string>>;
+}
+
+/** The class trainer spells a guide's cooldown list leaves out: the race-locked ones (the
+ *  Races section covers those) and the ones no player of the class can learn
+ *  (`data/curated/class-spell-limits.json`). */
+export function limitedClassSpells(classSlug: string): ReadonlySet<string> {
+  const file = path.join(repoRoot(), 'data/curated/class-spell-limits.json');
+  if (!existsSync(file)) return new Set();
+  const limits = JSON.parse(readFileSync(file, 'utf8')) as ClassSpellLimitsFile;
+  return new Set([
+    ...Object.keys(limits.raceLocked[classSlug] ?? {}),
+    ...Object.keys(limits.notLearnable[classSlug] ?? {}),
+  ]);
+}
+
 /**
  * The cooldown spells a spec can use, from the client's own data: the class trainer's active
  * spells with a long cooldown (a baseline spell from three minutes up), and the talent spells
@@ -297,7 +315,7 @@ export function specCooldowns(
     }
   }
   const items: (RotationItem & { cooldownMs: number; lit: boolean })[] = [];
-  const seen = new Set<string>();
+  const seen = new Set<string>(limitedClassSpells(classSlug));
   for (const spell of trainables) {
     if (!spell.active || seen.has(spell.name) || (spell.cast_time_ms ?? 0) > MAX_COOLDOWN_CAST_MS) continue;
     const isTalent = talentNames.has(spell.name);

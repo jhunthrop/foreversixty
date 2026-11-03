@@ -45,7 +45,7 @@
     ],
     "priorityList": [
       {
-        "notes": "Lava Burst on cooldown while your Flame Shock is on the target: the talent's +20% applies only then, and Flame Shock is kept up by the line below the cooldowns, so the gate costs a cast only in the first global of the fight. 10 s cooldown, 2.0 s cast with Elemental Alacrity.",
+        "notes": "Lava Burst whenever your Flame Shock is on the target: the 20% bonus only counts then, and it is your hardest hit. 10 second cooldown, a 2.0 second cast with Elemental Alacrity.",
         "action": {
           "condition": {
             "dotIsActive": {
@@ -64,7 +64,7 @@
         }
       },
       {
-        "notes": "Mana Spring Totem restores 10 mana every 2 seconds for its five-minute life (client: the totem's duration index is 300 s, its pulse 10494 restores 10 every 2000 ms), so one 100-mana drop at the start returns about 900 mana over a 180 s fight.",
+        "notes": "Mana Spring Totem when your Water slot is empty: 10 mana every 2 seconds to your party for 5 minutes pays back its 100 mana many times over. Two Mana Springs do not stack, so skip yours if a Restoration shaman already has one down for your group.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -93,10 +93,10 @@
         "action": {
           "autocastOtherCooldowns": {}
         },
-        "notes": "Elemental Mastery and the trinkets go on cooldown here. Forever's Elemental Mastery takes 0.5 sec off Lightning Bolt and Lava Burst for 15 seconds (a 1.5 sec Lightning Bolt with Elemental Alacrity) and removes Chain Lightning's cooldown; the next-spell crit it gave in 1.12 is gone."
+        "notes": "Elemental Mastery, trinkets, racials and potions on cooldown: for Mastery's 15 seconds Lightning Bolt is a 1.5 second cast, so stack everything inside it."
       },
       {
-        "notes": "Keep Flame Shock on the target: its damage plus Lava Burst's +20% beats the Lightning Bolt it replaces, and Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen.",
+        "notes": "Flame Shock whenever it is not on the target: Lava Burst needs it, and with Call of Flame it lasts 21 seconds.",
         "action": {
           "condition": {
             "not": {
@@ -119,7 +119,7 @@
         }
       },
       {
-        "notes": "Single target: Searing Totem is the higher damage fire totem.",
+        "notes": "Searing Totem on a single target: it is your strongest Fire totem. Its bolts only reach 20 yards, so drop it within 20 yards of the boss.",
         "action": {
           "condition": {
             "and": {
@@ -161,7 +161,7 @@
         }
       },
       {
-        "notes": "2 or more targets: Magma Totem hits everyone standing in it instead.",
+        "notes": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
         "action": {
           "condition": {
             "and": {
@@ -203,7 +203,7 @@
         }
       },
       {
-        "notes": "2 or more targets: Chain Lightning hits all of them for close to single-target Lightning Bolt damage.",
+        "notes": "Chain Lightning on two or more targets: it hits each of them for close to a Lightning Bolt.",
         "action": {
           "condition": {
             "cmp": {
@@ -227,7 +227,7 @@
         }
       },
       {
-        "notes": "Fire Nova on a Clearcasting proc: free, instant, and it needs your fire totem down, which Searing Totem already is.",
+        "notes": "Fire Nova on a Clearcasting proc: it is free then. It only hits within 10 yards of your Fire totem, so it lands on a boss only when your Searing Totem stands next to it.",
         "action": {
           "condition": {
             "and": {
@@ -258,7 +258,7 @@
         }
       },
       {
-        "notes": "Lightning Bolt is the rest of the single-target rotation. It is cast at rank 9 (15207), not the top rank: over the raid fight rank 9 deals more in total, because the top rank runs the shaman out of mana. Below 60, and on an unbuffed level-60 fight, mana runs out long before the fight ends, so a lower rank of Lightning Bolt does more in total; that is a choice for a mana-bound fight, and a shaman who is not short of mana casts the top rank.",
+        "notes": "Lightning Bolt for everything else: the cheaper rank, because a full raid fight runs the top rank dry. Rank 9 costs 190 mana to rank 10's 220 for about 9% less base damage and the same spell power bonus. Below 60, and without raid buffs, a lower rank does more in total for the same reason; when you are not short of mana, cast the top rank.",
         "action": {
           "castSpell": {
             "spellId": {

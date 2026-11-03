@@ -1,8 +1,8 @@
 ---
 title: Shaman in Forever
 classSlug: shaman
-description: 'Shaman role identity, its three specs, new race options, and what changed from 1.12 talents and baseline kit in the BlizzCon demo.'
-updated: 2026-09-24
+description: 'Shaman in Forever: the three specs, the new Dwarf shaman, raid-wide totems, one weapon and no dual wield, and what changed from 1.12.'
+updated: 2026-11-02
 confidence: single-source
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -11,24 +11,26 @@ sources:
   - label: 'Icy Veins, Forever talent calculator'
     url: https://www.icy-veins.com/wow-forever/news/start-planning-your-wow-forever-character-with-our-new-talent-calculator/
     kind: community
-  - label: 'Power Up Gaming, Forever talent changes vs Classic'
-    url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/
-    kind: community
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Wowhead, Skyborne First Look'
     url: https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829
     kind: community
-  - label: 'But Why Tho, interview with Anna Resendez and Clayton Stone'
-    url: https://butwhytho.net/2026/09/wow-classic-devs-world-of-warcraft-forever/
-    kind: community
 ---
 
-Shaman covers two damage trees built on totems and elemental magic and one dedicated healing tree, all of them leaning on the totem system for group support regardless of spec. **Elemental** builds around Lightning Bolt, Chain Lightning, and Flame Shock, backed by Lava Burst, a high-damage nuke new to the tree. **Enhancement** builds around melee weapon attacks empowered by weapon imbues and Stormstrike, backed by Maelstrom Weapon, a new talent that lets melee hits stack a discount on the next Lightning Bolt. **Restoration** builds around Healing Wave and totem-based group sustain, backed by Water Shield, a new mana-return mechanic, and Riptide, a new instant heal-and-HoT capstone.
+Shaman is the totem class: a caster, a melee fighter and a healer who all bring four totems to the group whatever their spec. **Elemental** burns bosses with Flame Shock, Lava Burst and Lightning Bolt from range. **Enhancement** fights in melee with one Windfury weapon, Stormstrike and free Lightning Bolts from Maelstrom Weapon. **Restoration** heals with Riptide and Chain Heal and keeps its mana up with Water Shield and Mana Tide.
 
-Shaman's biggest structural change in Forever isn't a new talent — it's a new race. Dwarf Shaman is one of Blizzard's six confirmed new race and class pairings, and it's the first time the class has been available to the Alliance at all; every other Shaman race remains Horde-only. Shaman is also the one class where the Skyborne split by faction: this site's own combo data confirms Shaman is playable by the Windshaper Skyborne on the Horde, but not by the High Order Skyborne on the Alliance.
+**Both factions get shamans now.** The Dwarf shaman is one of Forever's six new race and class pairs, and Dwarf is the only Alliance race that can be one. On the Horde, Orc, Tauren and Troll shamans are joined by the Windshaper Skyborne. Alliance Skyborne cannot be shamans.
 
-What changed from 1.12 beyond the new pairing: talent trees still run seven rows deep with 51 total points, but Forever slots in an extra one-point capstone-style pick at the 16-point mark, joining the three that classic builds already had at 11, 21 and 31. Reading the same demo trees, one outlet counted 15 Shaman talents as brand new, 25 as reworked, and just 10 as untouched from 1.12 — the smallest unchanged count of any class besides Warlock. At the baseline level, both Lightning Bolt and Chain Lightning shave half a second off their cast times before a single talent point is spent, Ghost Wolf's base cast drops to 2 seconds, and Fire Nova turns into an instant-cast spell that detonates around wherever your active Fire totem is standing, rather than being a totem of its own. Two totem-management tools nobody had before, Totemic Projection and Call of the Elements, also join the baseline kit. Folding melee and spell hit and crit into one rating apiece counts as a sizeable indirect buff for Enhancement in particular, since it used to have to itemize for both kinds of hit chance at once.
+**One weapon, never two.** Forever's shamans do not dual wield. Enhancement fights with a two-hander, or a one-hander with a shield or a held off-hand item, and Windfury Weapon goes on that weapon. Shamans train fist weapons, and they wear leather until 40 and mail from 40.
 
-Everything above the beta's level-30 cap, including how any of this plays at 60 or in a raid, is a projection from demo-tree data and 1.12 knowledge rather than confirmed play — see each spec guide's Overview for what's confirmed versus projected. Spec-by-spec detail, including talent priority, rotation, and stat weights, is linked below.
+**Totems reach further.** Strength of Earth, Grace of Air and Windfury Totem now cover every raid member within 30 yards, not just your party, so one shaman can cover a whole melee group. Mana Spring, Healing Stream and Mana Tide still only reach your party, and two Mana Springs do not stack. Call of the Elements at 20 drops a set of totems you choose in one cast, and Totemic Projection at 22 picks up your totems and moves them where you point. Windfury Totem's bonus no longer lingers after the totem is replaced, so there is nothing to twist.
+
+**What else changed from 1.12:**
+
+- Lightning Bolt is a 2.5 second cast and Chain Lightning a 2.0 second cast before any talents.
+- Fire Nova is an instant spell that bursts from your active Fire totem, not a totem of its own.
+- Elemental Mastery speeds up Lightning Bolt and Lava Burst for 15 seconds instead of granting a crit.
+- Lava Burst, Maelstrom Weapon and Water Shield are new talents; Enhancement ends in Rage of the Farseer and Restoration in Riptide.
+- Melee and spell hit are one stat, and so are melee and spell crit, which Enhancement feels most.
