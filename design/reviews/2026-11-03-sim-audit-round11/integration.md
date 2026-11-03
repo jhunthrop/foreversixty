@@ -174,6 +174,10 @@ All exit 0 on the pinned state (int/r11 with engine 47df4a89d, client 70753):
 - **data:** pytest, deselecting only test_simbuffs_names_every_id_the_engine_lets_a_request_send (simbuffs.json is held output).
 - **web:** sync; vitest (8,066 tests); astro check; lint; format:check.
 
+**One gate fails as it does on main:** tools/coach/test_persona_starter.py fails the same 11 cases on main (0c088d587) and here. The launch-day guide rewrites changed every class's guide without regenerating the coach starters; the starters stay main's committed files, and a separate lane takes that fallout. Every other gate exits 0, the api coach suite included (last run on int/r11 merged with main through 83e9feff0).
+
+**Not pushed (owner ruling, 2026-11-02):** round 11 stays on the site branch int/r11; the fork pin 47df4a89d is on fork master. One integrator merges round 11 with the guide lanes' action branches, the Stormstrike fix and the shared guide fixes into one branch, with one pin, one gate run and one push.
+
 The first vitest run failed once in src/sim-island.test.ts: the min-h reservation test fails about one run in five under load (5 local reruns: 4 pass). It predates the round (1b932d73b) and passed on the rerun; it is listed below.
 
 The fork suite with `-tags=with_db` passes as arm64 and as amd64, and the wasm cross-compile builds.
