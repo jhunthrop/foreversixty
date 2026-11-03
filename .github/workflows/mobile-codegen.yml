@@ -38,7 +38,9 @@ concurrency:
 jobs:
   drift:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # 30, not 10-15: a cold checkout took 5-16 minutes when a land/** run started ~35 jobs at
+    # once (2026-11-03), and a timed-out checkout reads as a red landing.
+    timeout-minutes: 30
     defaults: { run: { working-directory: web } }
     steps:
       - uses: actions/checkout@v4
