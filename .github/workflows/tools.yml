@@ -7,7 +7,8 @@
 # branch, pinned build and ranking wait) and
 # tools/tests/test_release_apps.sh (the apps' release command),
 # tools/tests/test_remeasure.sh (bis.yml's dps-per-point re-measure and its manifest),
-# tools/tests/test_wasm_compress.sh (the deployed sim.wasm.gz and .br and their budget gates) and
+# tools/tests/test_wasm_compress.sh (the deployed sim.wasm.gz and .br and their budget gates),
+# tools/tests/test_apl_check.py (apl-check and apl-sync ignore the curated-only notes) and
 # tools/tests/play-upload.test.ts
 # (its Play upload, against a stub of the API), then
 # shellcheck over every script and actionlint over every workflow. Plain bash with stubs
@@ -43,6 +44,8 @@ jobs:
         run: bash tools/tests/test_remeasure.sh
       - name: the sim.wasm.gz and sim.wasm.br compression and budgets
         run: bash tools/tests/test_wasm_compress.sh
+      - name: apl-check and apl-sync, notes curated-only
+        run: python3 -m unittest discover -s tools/tests -p 'test_apl*.py'
       # 24 runs the TypeScript directly, with no packages.
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
