@@ -17,8 +17,8 @@ import (
 func TestHealerListsCastTheTopTrainerRankUnlessChosen(t *testing.T) {
 	const build = "../../data/builds/1.60.1.70707/spellranks.json"
 	chosen := map[string]map[int]bool{ // spec -> spell id the rank rule picked
-		"priest-holy":        {6075: true, 9472: true},
-		"priest-discipline":  {6075: true, 3747: true, 2053: true},
+		"priest-holy":        {139: true, 2054: true},
+		"priest-discipline":  {139: true, 3747: true, 2053: true},
 		"paladin-holy":       {19941: true, 1311606: true, 19750: true},
 		"druid-restoration":  {774: true},
 		"shaman-restoration": {},
@@ -339,6 +339,121 @@ func TestHolyHealAtFiftyCastsTheListsRankFour(t *testing.T) {
 			}
 			if !ids[healRank4] {
 				t.Errorf("level %d %s: no Heal rank 4 (%d)", level, race, healRank4)
+			}
+		}
+	}
+}
+
+// Round 14: the Holy priest's tank Flash Heal was rank 2 (9472) at raid 60,
+// round 9's pick for a list that then ran dry at 137 s. Later rounds raised
+// Holy's mana (Prayer of Mending ungated, Litany of Light), and the list
+// ended raid fights with mana to spare (lasts about 440 s at the 1.85 heal
+// scale, 530 s at 2.3) while the tank sat under 35%. Rank 7 (10917) heals
+// +10.3 to +10.9% at raid 60, both factions, seeds 1 and 50001. At every
+// published band below 60 the line casts what its rank-choice rows made it
+// cast before (rank 1 at 20, 2 at 30, 4 at 40, 6 at 50, 7 at bare 60), which
+// is now the highest rank learned, so the line needs no rows.
+func TestHolyTankFlashHealIsTheTopRankInARaid(t *testing.T) {
+	raw, err := os.ReadFile("../../data/curated/apl/priest-holy.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(raw), `"spellId": 9472`) {
+		t.Fatal("the Holy list still authors Flash Heal rank 2 (9472)")
+	}
+	var file struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		t.Fatal(err)
+	}
+	flash := map[int]int{1: 2061, 2: 9472, 3: 9473, 4: 9474, 5: 10915, 6: 10916, 7: 10917}
+	cases := []struct {
+		level  int
+		preset string
+		rank   int
+	}{
+		{20, BarePreset, 1}, {30, BarePreset, 2}, {40, BarePreset, 4}, {50, BarePreset, 6},
+		{60, BarePreset, 7}, {60, RaidPreset, 7},
+	}
+	for _, c := range cases {
+		for _, race := range []string{"gnome", "troll"} {
+			out, err := RewriteRotationRanks(file.Rotation, "priest-holy", "priest", c.preset, race, c.level)
+			if err != nil {
+				t.Fatal(err)
+			}
+			got := string(out)
+			for rank, id := range flash {
+				has := strings.Contains(got, `"spellId":`+strconv.Itoa(id)) || strings.Contains(got, `"spellId": `+strconv.Itoa(id))
+				if rank == c.rank && !has {
+					t.Errorf("level %d %s %s: no Flash Heal rank %d (%d)", c.level, c.preset, race, rank, id)
+				}
+				if rank != c.rank && rank != 7 && has {
+					t.Errorf("level %d %s %s: Flash Heal rank %d (%d) cast, want rank %d", c.level, c.preset, race, rank, id, c.rank)
+				}
+			}
+		}
+	}
+}
+
+// Round 14: both priests' Renew is rank 1 (139, level 8) at 60 as it already
+// was at every band below (the rank-choice rows of round 9): raid 60 +0.9 to
+// +1.2% for both, bare 60 +0.2 to +1.6% Holy and +4.3% Discipline, both
+// factions, seeds 1 and 50001. Heals learned below 20 keep their whole
+// coefficient in Forever (round 11 C1), so rank 1 heals the most per mana.
+func TestPriestsCastRenewRankOne(t *testing.T) {
+	const renewOne, renewThree = 139, 6075
+	for _, spec := range []string{"priest-holy", "priest-discipline"} {
+		raw, err := os.ReadFile("../../data/curated/apl/" + spec + ".json")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if strings.Contains(string(raw), `"spellId": `+strconv.Itoa(renewThree)) {
+			t.Errorf("%s still authors Renew rank 3 (%d)", spec, renewThree)
+		}
+		if !strings.Contains(string(raw), `"spellId": `+strconv.Itoa(renewOne)) {
+			t.Errorf("%s does not cast Renew rank 1 (%d)", spec, renewOne)
+		}
+	}
+}
+
+// Round 14: Holy's Heal is rank 1 (2054, level 16) in a raid, +2.0% at raid
+// 60 on top of Renew rank 1, both factions, seeds 1 and 50001. Bare it loses
+// (bare 30 -3.6%, bare 40 -1.5 to -2.6%, bare 60 -5.2 to -5.4%), so every
+// bare band casts what it cast before: the highest rank learned up to rank
+// 4 to 59 (rank 4 from 50 to 59 since regcast's 9dba07e78) and rank 4 at
+// bare 60.
+func TestHolyHealRanksByBand(t *testing.T) {
+	raw, err := os.ReadFile("../../data/curated/apl/priest-holy.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var file struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		t.Fatal(err)
+	}
+	heal := map[int]int{1: 2054, 2: 2055, 3: 6063, 4: 6064}
+	cases := []struct {
+		level  int
+		preset string
+		rank   int
+	}{
+		{20, BarePreset, 1}, {22, BarePreset, 2}, {27, BarePreset, 2}, {28, BarePreset, 3}, {30, BarePreset, 3},
+		{34, BarePreset, 4}, {40, BarePreset, 4}, {49, BarePreset, 4}, {50, BarePreset, 4}, {59, BarePreset, 4},
+		{60, BarePreset, 4}, {60, RaidPreset, 1},
+	}
+	for _, c := range cases {
+		out, err := RewriteRotationRanks(file.Rotation, "priest-holy", "priest", c.preset, "troll", c.level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got := string(out)
+		for rank, id := range heal {
+			has := strings.Contains(got, `"spellId":`+strconv.Itoa(id)) || strings.Contains(got, `"spellId": `+strconv.Itoa(id))
+			if has != (rank == c.rank) {
+				t.Errorf("level %d %s: Heal rank %d (%d) cast %v, want only rank %d", c.level, c.preset, rank, id, has, c.rank)
 			}
 		}
 	}
