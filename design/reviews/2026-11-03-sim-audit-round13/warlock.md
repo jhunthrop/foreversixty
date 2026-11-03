@@ -4,7 +4,7 @@ Specs: Affliction, Demonology, Destruction and their demons, bands 20 to 60, bar
 
 Method: the round-12 report first, then the owner's ruling 2, the round-12 holds, and a fresh pass over every spell the three APLs cast and every talent the published builds take. spec-breakdown at 10,000 iterations, seeds 1 and 50001, both factions (published races: Gnome and Troll).
 
-Totals: **0 CONFIRMED-BUGs.** One owner-ruled build change (ruling 2), made. One new build proposal under the same precedent (Demonology, below 1%), left for the coordinator. Nothing outside the warlock group moves.
+Totals: **0 CONFIRMED-BUGs.** One owner-ruled build change (ruling 2), made. A Demonology move under the same precedent was checked and is not possible: it breaks the tier gate (D4). Nothing outside the warlock group moves.
 
 ## Ruling 2: Improved Bane of Agony
 
@@ -38,7 +38,7 @@ Totals: **0 CONFIRMED-BUGs.** One owner-ruled build change (ruling 2), made. One
 | D1 | Decimation 440870: the per-rank values live in TraitDefinitionEffectPoints (trait 135428), not SpellEffect, whose effect 3 reads bp 0. CurvePoint: cooldown -45/-90% (curve 83196), cast -20/-40% (83197), damage at 35% +3/+6% (110390). Engine: `soul_fire.go:84`, `shadowbolt.go:75`, `searing_pain.go:71` use 90%, 40%, 6% at 2 points. Soul Fire 17924: 6.0 s, 335 mana, 60 s category cooldown, coefficient 1.0, speed 24 (`soul_fire.go`); 2.4 s with Bane and Decimation, 8.1 casts in the last 35%. | SpellEffect, TraitDefinitionEffectPoints, CurvePoint | Aligned | - | - |
 | D2 | Bane of Doom 603: 1742 after 60 s, coefficient 4.0, 300 mana, 60 s cooldown, PERIODIC_CAN_CRIT (Attributes_8 0x200); breakdown 300 a cast. Cast only with a minute left, Agony otherwise. | 603 | Aligned | - | - |
 | D3 | Demonic Sacrifice 18788 / Burning Shadow 18789 (aura 79 +15% Shadow, 2 h; effect 1 is the "any summon cancels it" script on the summon mask, which Demonic Pact 425464 lifts for the Succubus). Soul Link 19028 (20% base mana) and 25228 (aura 79 +3% every school, both units). Master Demonologist 23785: 2% a rank, Succubus +10% Shadow for both units (`talents.go:456-540`). Demonic Knowledge 412732: 100% of level. Summon Imp 80% and Succubus 100% base mana (SpellPower PowerCostPct), 10 s casts. | client rows; `talents.go` | Aligned | - | - |
-| D4 | **Proposal, not adopted: Improved Voidwalker 1 to Improved Life Tap 1 in the raid build.** The raid build never has a Voidwalker out, so Improved Voidwalker 18705 does nothing, the same test as R1. Improved Life Tap is an Affliction tier-0 talent; Life Tap is cast 15 times a fight. Demonology tiers 0 to 3 keep 20 points, so Soul Link and Demonic Knowledge stay legal. 05000000000000000-2035113011220001351 to 15000000000000000-2035103011220001351: horde 639.3 to 643.8 (+0.71%) and 639.8 to 644.3 (+0.69%), alliance 635.5 to 639.6 (+0.64%) and 634.7 to 639.5 (+0.75%), error ±0.38. Moving Improved Health Funnel 2 into Improved Sayaad as well adds about +0.16%, but the guide tells the raid warlock to Health Funnel the Succubus (demonology.md:95), so that point has a use. The coordinator decides whether ruling 2's precedent covers this; if yes, also change the line at demonology.md:65 ("Improved Health Funnel, Demonic Aegis and Improved Voidwalker add no damage...") and the raidBuild. | spec-breakdown -talents | OPEN (coordinator call) | - | - |
+| D4 | **Improved Voidwalker to Improved Life Tap: not possible; withdrawn.** The raid build never has a Voidwalker out, so the Improved Voidwalker point does nothing, the same test as R1. But no point can leave the Demonology tree. The planner's tier gate is 5 points a tier (`sim/leveling/talents.go:180`). The raid build has exactly 25 Demonology points above Master Demonologist (tier 5) and 30 above Demonic Pact (tier 6). Moving one point to Improved Life Tap (Affliction) breaks both gates. spec-breakdown accepted the string because it does not check tiers. That variant measured +0.64 to +0.75%, but it is not a legal build. My first draft of this row checked the gate only up to tier 4 and called it legal; that was wrong. The only legal move is inside the tree: Improved Voidwalker 1 to Improved Sayaad 2 (05000000000000000-2035103021220001351). It gives horde 639.3 to 639.8 and 639.8 to 640.3, alliance 635.5 to 636.0 and 634.7 to 635.2: +0.08% at every seed and faction, error ±0.37, which is within error. Not adopted. The build and demonology.md:65 are unchanged. | spec-breakdown -talents; tier gate | Aligned (no legal gain) | - | - |
 
 ## Destruction
 
@@ -87,10 +87,8 @@ Every other warlock band and preset is unchanged (no engine or APL change).
 ## For other lanes
 
 - **Trainables:** data/builds/1.60.1.70753/trainables/warlock.json still lists Haunt (1293693, 1293694), Unstable Affliction (1242971, 1242972) and Dispel Magic (19476) as active warlock trainables, while round 12 (trainables A2, guides A5) found no learn row for Haunt or UA. Worth checking whether the pipeline's class-family fallback still lets them in.
-- **Coordinator:** D4 (Demonology Improved Voidwalker to Improved Life Tap, +0.64 to +0.75%) is a ruling-2-style case waiting for a decision.
 
 ## Still open
 
 - Affliction's leveling build (bare 30 to 60) carries Soul Harvest 2 and Improved Drains 3, which the bare APL never casts. The guide's leveling play uses drains, so this is not a ruling-2 case unless the owner wants the bare bands to sim the raid-style play.
-- D4 (coordinator).
 - From earlier rounds, unchanged: demon crit and sheets at 60 (no level-60 log), additive versus multiplied percent modifiers, Ignition's rate, Siphon Life tick crit (owner), shadow wands (#419), Destruction's held Conflagrate-first line (H2).
