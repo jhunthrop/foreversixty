@@ -29,6 +29,19 @@ most abilities and a fresh unlinked id per rank for others (Frostfire Bolt).
 or a cooldown -- the abilities a rotation can press. Passives (weapon skills,
 proficiencies, auras) are listed with `active: false` and the engine report
 ignores them.
+
+**Talent or trainer.** The client's SkillLineAbility rows cannot tell a talent
+from a trainer spell: a talent's spell carries the same learn row (Penance,
+Holy Shock), and so does an Era talent Forever made a trainer spell (Aimed
+Shot, Blessing of Kings, Lightwell). The build's live tree (`talents/`, the
+hotfix-aware trees) decides: an ability a live talent teaches, by name or by
+any rank's spell, is `source: "talent"`; everything else keeps its learn row's
+source. A live talent with an active spell that neither source finds (Cold
+Snap, Adrenaline Rush: no learn row, no rank) is listed as a talent too, so
+every ability a player can press is in the file exactly once. A spell whose
+talent node a hotfix repointed (Voice of Truth, Binding Heal in 1.60.1.70707)
+keeps its learn row and is a trainer spell: Wowhead's live spellbook lists it
+at that level.
 """
 
 from __future__ import annotations
@@ -78,6 +91,8 @@ FAMILY_SKILL_LINE = ""
 
 SOURCE_SKILL_LINE = "skill_line_ability"
 SOURCE_CLASS_SPELL = "class_spell"
+#: An ability a talent of the build's live tree teaches.
+SOURCE_TALENT = "talent"
 
 #: Name markers for test, duplicate and placeholder spells that are never learned.
 _EXCLUDED_NAME_MARKERS = ("DNT", "Copy of ", "zzOLD", "UNUSED")
@@ -320,40 +335,106 @@ def _build_trainable(group: list[_Candidate], tables: _SpellTables) -> Trainable
     )
 
 
-def _trait_taught_spells(raw: Path) -> set[int]:
-    """Every spell a talent node teaches in the client's own trait tables (pre-hotfix)."""
-    path = raw / "TraitDefinition.csv"
-    if not path.exists():
-        return set()
-    return {int(row["SpellID"]) for row in read_csv(path) if int(row["SpellID"] or 0)}
+class _LiveTree(BaseModel):
+    """One class's live talents (`talents/<class>.json`): names, and each talent's spells."""
+
+    tree_by_talent: dict[str, str] = {}
+    spells_by_talent: dict[str, list[int]] = {}
+
+    @property
+    def spell_ids(self) -> set[int]:
+        return {spell for spells in self.spells_by_talent.values() for spell in spells}
+
+    def teaches(self, trainable: Trainable) -> bool:
+        return trainable.name in self.tree_by_talent or any(
+            rank.id in self.spell_ids for rank in trainable.ranks
+        )
 
 
-def _live_talent_names(talents_dir: Path | None, class_slug: str) -> set[str] | None:
-    """The talent names of `talents/<class>.json` (the hotfix-aware live tree), or None."""
-    if talents_dir is None or not (talents_dir / f"{class_slug}.json").exists():
-        return None
-    trees = json.loads((talents_dir / f"{class_slug}.json").read_text(encoding="utf-8"))["trees"]
-    return {talent["name"] for tree in trees for talent in tree["talents"]}
+def _live_tree(talents_dir: Path | None, class_slug: str) -> _LiveTree:
+    """The class's live tree, or an empty one when the build has no `talents/` for it."""
+    path = None if talents_dir is None else talents_dir / f"{class_slug}.json"
+    if path is None or not path.exists():
+        return _LiveTree()
+    trees = json.loads(path.read_text(encoding="utf-8"))["trees"]
+    talents = [(tree["name"], talent) for tree in trees for talent in tree["talents"]]
+    return _LiveTree(
+        tree_by_talent={talent["name"]: tree for tree, talent in talents},
+        spells_by_talent={
+            talent["name"]: sorted(
+                ({talent.get("spell_id") or 0} | {r.get("spell_id") or 0 for r in talent["ranks"]})
+                - {0}
+            )
+            for _, talent in talents
+        },
+    )
 
 
-def _removed_by_hotfix(
-    trainable: Trainable, trait_spells: set[int], live_names: set[str] | None
-) -> bool:
-    """A spell the client's trait tables teach through a talent that the live tree no longer
-    has (1.60.1.70707's Voice of Truth, Binding Heal): the pre-hotfix SkillLineAbility rows
-    still list it, but no player can learn it."""
-    if live_names is None or trainable.name in live_names:
-        return False
-    return any(rank.id in trait_spells for rank in trainable.ranks)
+def _unlisted_talents(
+    live: _LiveTree, listed: list[Trainable], tables: _SpellTables, class_slug: str
+) -> list[_Candidate]:
+    """Active spells of live talents that no listed trainable covers (by name or by spell)."""
+    names = {t.name for t in listed}
+    ids = {rank.id for t in listed for rank in t.ranks}
+    found: list[_Candidate] = []
+    for talent, spells in live.spells_by_talent.items():
+        if talent in names or ids.intersection(spells):
+            continue
+        if not any(spell in tables.names and tables.is_active(spell) for spell in spells):
+            continue
+        found.extend(
+            _Candidate(
+                spell_id=spell,
+                class_slug=class_slug,
+                skill_line=live.tree_by_talent[talent],
+                source=SOURCE_TALENT,
+                supersedes=0,
+            )
+            for spell in spells
+            if spell in tables.names
+        )
+    return found
+
+
+def _classified(trainable: Trainable, live: _LiveTree) -> Trainable:
+    if not live.teaches(trainable):
+        return trainable
+    return trainable.model_copy(update={"source": SOURCE_TALENT})
+
+
+def _unique_by_spell(candidates: list[_Candidate]) -> list[_Candidate]:
+    """One candidate per (class, spell): a spell on two learn rows of a line is one rank."""
+    seen: set[tuple[str, int]] = set()
+    unique: list[_Candidate] = []
+    for c in candidates:
+        if (c.class_slug, c.spell_id) not in seen:
+            seen.add((c.class_slug, c.spell_id))
+            unique.append(c)
+    return unique
+
+
+def _class_trainables(
+    candidates: list[_Candidate], tables: _SpellTables, live: _LiveTree, class_slug: str
+) -> list[Trainable]:
+    listed = [
+        _build_trainable(group, tables)
+        for group in _group_by_ability(candidates, tables.names).values()
+    ]
+    talents = _unlisted_talents(live, listed, tables, class_slug)
+    listed += [
+        _build_trainable(group, tables)
+        for group in _group_by_ability(talents, tables.names).values()
+    ]
+    return sorted((_classified(t, live) for t in listed), key=lambda t: (t.name, t.ranks[0].id))
 
 
 def build_trainables(
     build: str, raw: Path, talents_dir: Path | None = None
 ) -> list[ClassTrainables]:
     """Every class's trainables. With `talents_dir` (the build's committed, hotfix-aware
-    `talents/`), talents the live tree removed are dropped (`_removed_by_hotfix`)."""
+    `talents/`), each ability a live talent teaches is tagged `source: "talent"` and the
+    live talents no learn row lists are added (see the module notes)."""
     tables = _SpellTables(raw)
-    trait_spells = _trait_taught_spells(raw)
     family_by_spell = _family_by_spell(raw)
     abilities = [
         c
@@ -370,22 +451,18 @@ def build_trainables(
         if not is_excluded_name(tables.names.get(c.spell_id, ""))
     ]
     by_class: dict[str, list[_Candidate]] = defaultdict(list)
-    for c in [*abilities, *extras]:
+    for c in _unique_by_spell([*abilities, *extras]):
         by_class[c.class_slug].append(c)
-    records = []
-    for slug in sorted(SPELL_FAMILY_BY_CLASS_SLUG):
-        groups = _group_by_ability(by_class[slug], tables.names)
-        live_names = _live_talent_names(talents_dir, slug)
-        trainables = sorted(
-            (
-                trainable
-                for trainable in (_build_trainable(group, tables) for group in groups.values())
-                if not _removed_by_hotfix(trainable, trait_spells, live_names)
+    return [
+        ClassTrainables(
+            build=build,
+            class_slug=slug,
+            trainables=_class_trainables(
+                by_class[slug], tables, _live_tree(talents_dir, slug), slug
             ),
-            key=lambda t: (t.name, t.ranks[0].id),
         )
-        records.append(ClassTrainables(build=build, class_slug=slug, trainables=trainables))
-    return records
+        for slug in sorted(SPELL_FAMILY_BY_CLASS_SLUG)
+    ]
 
 
 def write_trainables(build: str, root: Path = Path("builds")) -> Path:
@@ -398,6 +475,8 @@ def write_trainables(build: str, root: Path = Path("builds")) -> Path:
     raw = build_dir / "raw"
     if not (raw / "SkillLineAbility.csv").exists():
         raise SystemExit(f"no {raw / 'SkillLineAbility.csv'}; run `python -m pipeline fetch` first")
+    if not (build_dir / "talents").is_dir():
+        raise SystemExit(f"no {build_dir / 'talents'}; run `python -m pipeline normalize` first")
     out = build_dir / TRAINABLES
     shutil.rmtree(out, ignore_errors=True)
     total = 0
