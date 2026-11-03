@@ -416,17 +416,6 @@
             "rank": 1
           }
         ]
-      },
-      {
-        "spell": "Heal",
-        "authored": 6064,
-        "bands": [
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 1
-          }
-        ]
       }
     ],
     "priest-shadow": [
