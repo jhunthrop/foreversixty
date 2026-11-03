@@ -35,6 +35,7 @@ export const ENFORCED_CLASSES: readonly string[] = [
   'priest',
   'rogue',
   'shaman',
+  'warrior',
 ];
 
 /** Everything a guide's prose must not contain, by rule. */
