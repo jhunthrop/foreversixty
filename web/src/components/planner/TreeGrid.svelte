@@ -45,7 +45,7 @@
 
   function focusCell(cell: GridCell): void {
     focusedId = cell.talent.id;
-    root.querySelector<HTMLButtonElement>(`[data-testid="talent-${cell.talent.id}"]`)?.focus();
+    root.querySelector<HTMLElement>(`[data-testid="talent-${cell.talent.id}"]`)?.focus();
   }
 
   const ARROWS: Record<string, [number, number]> = {
@@ -66,7 +66,7 @@
     // Enter and Space are deliberately not handled here: the focused cell is a real
     // <button>, so the browser turns them into a click, which already adds a point.
     // Handling them here too would spend two points per press.
-    if (event.key === 'Backspace' || event.key === 'Delete') {
+    if (!readOnly && (event.key === 'Backspace' || event.key === 'Delete')) {
       event.preventDefault();
       store.removePoint(focused.talent.id);
     }
@@ -148,7 +148,7 @@
     data-testid={`tree-${tree.id}`}
     class="relative grid gap-2"
     style={`grid-template-columns: repeat(${size.columns}, minmax(0, max-content));`}
-    onkeydown={readOnly ? undefined : onKeyDown}
+    onkeydown={onKeyDown}
   >
     {#each Array.from({ length: size.tiers }, (_, tier) => tier) as tier (tier)}
       <!-- `contents` generates no box, so the row satisfies grid's required children without

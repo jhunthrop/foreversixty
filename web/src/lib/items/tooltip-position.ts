@@ -112,7 +112,7 @@ export function positionTooltipPanel(host: HTMLElement, align: TooltipAlign = 's
   const anchor = host.getBoundingClientRect();
   const viewportWidth = document.documentElement.clientWidth;
   const viewportHeight = document.documentElement.clientHeight;
-  const panel = host.querySelector<HTMLElement>('[data-testid="item-tooltip"]');
+  const panel = host.querySelector<HTMLElement>('[data-testid="item-tooltip"], [data-testid="game-tooltip"]');
   const panelRect = panel?.getBoundingClientRect();
 
   host.style.setProperty(

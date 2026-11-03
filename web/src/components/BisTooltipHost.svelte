@@ -32,11 +32,13 @@
   import { mount, unmount, onMount, type Component } from 'svelte';
   import type { ItemTooltipModel } from '../lib/items/tooltip';
   import { positionTooltipPanel } from '../lib/items/tooltip-position';
+  import type { GameTipModel } from '../lib/tooltips/game-tip';
 
   let {
     build,
     modelsElementId = 'bis-tooltip-models',
     resolve = undefined,
+    resolveTip = undefined,
   }: {
     build: string;
     modelsElementId?: string;
@@ -45,18 +47,23 @@
      *  fetchItemTooltipModel) and kept; null when the build does not carry the id. /bis passes
      *  none and keeps its build-time-only rule. */
     resolve?: (itemId: number) => Promise<ItemTooltipModel | null>;
+    /** A page that also names spells and talents (a guide): the game tooltip for a
+     *  `data-game-tip` key, null when the page's data does not carry it. Without it those
+     *  names open nothing. */
+    resolveTip?: (key: string) => Promise<GameTipModel | null>;
   } = $props();
 
   // Fixed rather than per-row: exactly one panel is ever mounted, so every row's
   // aria-describedby (when it is the open one) can point at the same id.
   const TOOLTIP_ID = 'bis-item-tooltip';
 
-  type TooltipPanel = Component<{ model: ItemTooltipModel; build: string; id: string }>;
+  type ItemPanel = Component<{ model: ItemTooltipModel; build: string; id: string }>;
+  type GamePanel = Component<{ model: GameTipModel; build: string; id: string }>;
 
   let models = new Map<number, ItemTooltipModel>();
   let activeHost: HTMLElement | null = null;
-  let panelComponent: TooltipPanel | null = null;
-  let panelModuleLoad: Promise<TooltipPanel> | null = null;
+  let panelModuleLoad: Promise<ItemPanel> | null = null;
+  let gamePanelLoad: Promise<GamePanel> | null = null;
   let mountedInstance: object | null = null;
   // Bumped every time the panel closes (or is about to move to a different host), so a
   // dynamic import() that was already in flight for a now-stale open() never mounts after
@@ -100,7 +107,7 @@
 
   function hostFor(target: EventTarget | null): HTMLElement | null {
     if (!(target instanceof Element)) return null;
-    return target.closest<HTMLElement>('[data-bis-item]');
+    return target.closest<HTMLElement>('[data-bis-item], [data-game-tip]');
   }
 
   /** The row/pill the pointer or focus is moving TO, so a move between two elements still
@@ -122,24 +129,47 @@
    *  imperatively, never a static import -- the exact pattern ItemHover.svelte and
    *  GearPanel's own BisSlotPopover trigger already use, so its weight never rides on this
    *  island's own base bundle. */
-  function ensurePanelLoaded(): Promise<TooltipPanel> {
-    if (panelComponent !== null) return Promise.resolve(panelComponent);
-    panelModuleLoad ??= import('./ItemTooltip.svelte').then((imported) => {
-      panelComponent = imported.default;
-      return panelComponent;
-    });
+  function ensurePanelLoaded(): Promise<ItemPanel> {
+    panelModuleLoad ??= import('./ItemTooltip.svelte').then((imported) => imported.default);
     return panelModuleLoad;
   }
 
+  /** The spell and talent panel (GameTooltip.svelte), loaded the same lazy way. */
+  function ensureGamePanelLoaded(): Promise<GamePanel> {
+    gamePanelLoad ??= import('./GameTooltip.svelte').then((imported) => imported.default);
+    return gamePanelLoad;
+  }
+
+  /** Marks `host` as the one opening and returns the token a stale resolution checks. */
+  function beginOpen(host: HTMLElement): number {
+    unmountPanel();
+    activeHost = host;
+    host.setAttribute('aria-describedby', TOOLTIP_ID);
+    return ++openToken;
+  }
+
+  function openGameTip(host: HTMLElement, key: string): void {
+    if (resolveTip === undefined || activeHost === host) return;
+    const token = beginOpen(host);
+    const model = resolveTip(key).catch(() => null);
+    void Promise.all([ensureGamePanelLoaded(), model]).then(([component, resolved]) => {
+      if (token !== openToken || resolved === null) return;
+      mountedInstance = mount(component, { target: host, props: { model: resolved, build, id: TOOLTIP_ID } });
+      positionTooltipPanel(host);
+    });
+  }
+
   function openHost(host: HTMLElement): void {
+    const tipKey = host.dataset.gameTip;
+    if (tipKey !== undefined) {
+      openGameTip(host, tipKey);
+      return;
+    }
     const itemId = Number(host.dataset.bisItem);
     const known = models.get(itemId);
     if (known === undefined && resolve === undefined) return; // no build-time model for this id -- nothing to show
     if (activeHost === host) return; // already open, or already opening, this exact host
-    unmountPanel();
-    activeHost = host;
-    host.setAttribute('aria-describedby', TOOLTIP_ID);
-    const token = ++openToken;
+    const token = beginOpen(host);
     const model: Promise<ItemTooltipModel | null> =
       known !== undefined
         ? Promise.resolve(known)

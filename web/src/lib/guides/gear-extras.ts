@@ -24,6 +24,7 @@ import { buildFile, readBuildJson } from './build-files';
 import { factionForFirstRace, rankedBisFile } from './class-dps';
 import { guidesCopy } from './copy';
 import type { BisBand, BisStatWeight } from '../bis/types';
+import type { GuideBis } from './guide-bis';
 
 export interface EnchantRecord {
   id: number;
@@ -37,6 +38,8 @@ export interface EnchantRecord {
 }
 
 export interface EnchantRow {
+  /** The `enchants.json` id, the key of the enchant's spell tooltip. */
+  id: number;
   slot: string;
   slotLabel: string;
   name: string;
@@ -171,6 +174,7 @@ export function pickEnchants(
   return SLOT_ORDER.filter((slot) => best.has(slot)).map((slot) => {
     const { record } = best.get(slot)!;
     return {
+      id: record.id,
       slot,
       slotLabel: slot === 'main_hand' ? 'Weapon' : (SLOT_DISPLAY_LABELS[slot as Slot] ?? slot),
       name: record.name,
@@ -362,4 +366,23 @@ export function loadGearExtras(
       existsSync(buildFile(build, 'icons', `${icon}.webp`)),
     ),
   };
+}
+
+/** The guide's tables, for the hands its level 60 picks hold: a two-handed weapon takes a
+ *  two-hand enchant, a shield a shield enchant, an empty off hand none. */
+export function guideGearExtras(
+  build: string,
+  classSlug: string,
+  spec: string,
+  recommendedRaces: readonly string[],
+  bis: GuideBis | undefined,
+): GearExtras | undefined {
+  const top = bis?.panels.find((p) => p.faction === bis.defaultFaction && p.band === bis.defaultBand);
+  const mainHand = top?.rows.find((row) => row.slot === 'main_hand');
+  const offHand = top?.rows.find((row) => row.slot === 'off_hand');
+  return loadGearExtras(build, classSlug, spec, recommendedRaces, {
+    twoHanded: mainHand?.typeLabel === 'Two-Handed Weapon',
+    shield: offHand?.typeLabel === 'Shield',
+    hasOffHand: offHand !== undefined && !offHand.empty,
+  });
 }

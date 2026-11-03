@@ -130,7 +130,7 @@ const switchCss =
                 ) : (
                   <>
                     <td>
-                      <span class="gbis-item">
+                      <span class="gbis-item gtip" tabindex="0" data-bis-item={row.itemId}>
                         {row.icon !== undefined ? (
                           <img
                             src={dataUrl(build, `icons/${row.icon}.webp`)}
