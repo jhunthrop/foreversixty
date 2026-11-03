@@ -102,7 +102,8 @@ describe('guide content structure', () => {
   // (GuideStatusNote); the sections are written as a guide and do not hedge in every section.
   it.each(specGuides.map((g) => [g.id, g] as const))('%s carries no per-section hedge', (id, guide) => {
     const hedges = [
-      /\bprojection\b/i,
+      // Totemic Projection is a shaman spell, not a hedge.
+      /(?<!Totemic )\bprojection\b/i,
       /not tested/i,
       /inferred from 1\.12/i,
       /restated 1\.12/i,

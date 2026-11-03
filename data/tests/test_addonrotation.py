@@ -9,6 +9,7 @@ from pipeline.addonrotation import (
     LEVEL_BANDS,
     AddonRotationError,
     _one_line,
+    apl_cast_spell_ids,
     build_rotation,
     build_rotations,
     coach_persona_spell_ids,
@@ -69,10 +70,14 @@ def test_level_bands_match_the_ladders_own_rungs():
 
 
 def test_a_line_resolves_to_the_highest_rank_learned_at_each_band(tmp_path):
-    _write_apl(tmp_path, "warrior-fury", [
-        _cast(2687, notes="Bloodrage on cooldown."),
-        _cast(25289, rank=7, notes="Battle Shout up."),
-    ])
+    _write_apl(
+        tmp_path,
+        "warrior-fury",
+        [
+            _cast(2687, notes="Bloodrage on cooldown."),
+            _cast(25289, rank=7, notes="Battle Shout up."),
+        ],
+    )
     bands = _bands("warrior-fury", tmp_path)
     assert [line.spell_id for line in bands[10]] == [2687, 6673]
     assert [line.spell_id for line in bands[20]] == [2687, 5242]
@@ -149,15 +154,23 @@ def test_the_committed_rotations_never_show_an_ability_before_its_trainer_level(
 
 
 def test_a_strict_sequence_unfolds_into_one_line_per_step_sharing_the_notes(tmp_path):
-    _write_apl(tmp_path, "warrior-fury", [
-        {
-            "notes": "Opener.",
-            "action": {"strictSequence": {"actions": [
-                {"castSpell": {"spellId": {"spellId": 2687}}},
-                {"castSpell": {"spellId": {"spellId": 1680}}},
-            ]}},
-        },
-    ])
+    _write_apl(
+        tmp_path,
+        "warrior-fury",
+        [
+            {
+                "notes": "Opener.",
+                "action": {
+                    "strictSequence": {
+                        "actions": [
+                            {"castSpell": {"spellId": {"spellId": 2687}}},
+                            {"castSpell": {"spellId": {"spellId": 1680}}},
+                        ]
+                    }
+                },
+            },
+        ],
+    )
     bands = _bands("warrior-fury", tmp_path)
     assert [line.spell_id for line in bands[38]] == [2687, 1680]
     assert bands[38][1].condition == "Opener."
@@ -171,10 +184,14 @@ def test_an_id_spellranks_does_not_track_is_skipped_rather_than_erroring(tmp_pat
 
 
 def test_actions_with_no_spell_id_name_no_line(tmp_path):
-    _write_apl(tmp_path, "warrior-fury", [
-        {"action": {"autocastOtherCooldowns": {}}},
-        {"notes": "Seal.", "action": {"condition": {"cmp": {}}, "castPaladinPrimarySeal": {}}},
-    ])
+    _write_apl(
+        tmp_path,
+        "warrior-fury",
+        [
+            {"action": {"autocastOtherCooldowns": {}}},
+            {"notes": "Seal.", "action": {"condition": {"cmp": {}}, "castPaladinPrimarySeal": {}}},
+        ],
+    )
     bands = build_rotation("warrior-fury", tmp_path, SPELLRANKS)
     assert all(band.lines == [] for band in bands)
 
@@ -352,12 +369,16 @@ def _write_coach_rules(curated_dir: Path, spec: str, rules: dict) -> None:
 
 
 def test_coach_spell_ids_reads_every_rank_wherever_a_rule_file_holds_one(tmp_path):
-    _write_coach_rules(tmp_path, "priest-holy", {
-        "core": [{"family": "Greater Heal", "spell_ids": [2060, 10963, 10964, 10965]}],
-        "auras": [{"name": "Inner Fire", "spell_ids": [588, 7128]}],
-        "efficiency": {"downranks": [{"spell_id": 2054, "talent": False}]},
-        "note": "a spell id in prose is not one: 9999",
-    })
+    _write_coach_rules(
+        tmp_path,
+        "priest-holy",
+        {
+            "core": [{"family": "Greater Heal", "spell_ids": [2060, 10963, 10964, 10965]}],
+            "auras": [{"name": "Inner Fire", "spell_ids": [588, 7128]}],
+            "efficiency": {"downranks": [{"spell_id": 2054, "talent": False}]},
+            "note": "a spell id in prose is not one: 9999",
+        },
+    )
     _write_coach_rules(
         tmp_path, "warrior-fury", {"core": [{"family": "Bloodrage", "spell_ids": [2687]}]}
     )
@@ -449,10 +470,14 @@ def test_a_book_rank_is_never_the_rank_a_band_casts(tmp_path):
 
 
 def test_a_rank_shared_by_two_ids_keeps_the_one_the_list_names(tmp_path):
-    _write_apl(tmp_path, "shaman-restoration", [
-        _cast(10468, rank=6, notes="Lesser Healing Wave."),
-        _cast(408510, notes="Water Shield."),
-    ])
+    _write_apl(
+        tmp_path,
+        "shaman-restoration",
+        [
+            _cast(10468, rank=6, notes="Lesser Healing Wave."),
+            _cast(408510, notes="Water Shield."),
+        ],
+    )
     bands = _healer_bands("shaman-restoration", tmp_path)
     assert [line.spell_id for line in bands[60]] == [10468, 408510]
     assert [line.spell_id for line in bands[50]] == [10466, 408510]
@@ -483,10 +508,25 @@ def test_a_band_casts_the_rank_choice_the_curated_table_names(tmp_path):
     """data/curated/rank-choices.json picks a lower rank over a band below 60,
     as the sim's rewrite does (sim/request rankResolver)."""
     _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
-    (tmp_path / "rank-choices.json").write_text(json.dumps({"specs": {"priest-holy": [
-        {"spell": "Renew", "authored": 10929,
-         "bands": [{"from_level": 40, "to_level": 49, "rank": 2, "preset": "raid"},
-                   {"from_level": 50, "to_level": 59, "rank": 3}]}]}}), encoding="utf-8")
+    (tmp_path / "rank-choices.json").write_text(
+        json.dumps(
+            {
+                "specs": {
+                    "priest-holy": [
+                        {
+                            "spell": "Renew",
+                            "authored": 10929,
+                            "bands": [
+                                {"from_level": 40, "to_level": 49, "rank": 2, "preset": "raid"},
+                                {"from_level": 50, "to_level": 59, "rank": 3},
+                            ],
+                        }
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
     bands = _healer_bands("priest-holy", tmp_path)
     assert [line.spell_id for line in bands[40]] == [6075]
     assert [line.spell_id for line in bands[50]] == [6075]
@@ -495,9 +535,43 @@ def test_a_band_casts_the_rank_choice_the_curated_table_names(tmp_path):
 
 def _healer_bands_at(spec: str, curated_dir: Path, level: int) -> list:
     from pipeline import addonrotation
+
     original = addonrotation.LEVEL_BANDS
     addonrotation.LEVEL_BANDS = [level]
     try:
         return build_rotation(spec, curated_dir, _HEALER_RANKS)[0].lines
     finally:
         addonrotation.LEVEL_BANDS = original
+
+
+def test_apl_cast_spell_ids_reads_the_prepull_and_every_nested_cast():
+    prepull = {"castSpell": {"spellId": {"spellId": 688}}}
+    rotation = {
+        "prepullActions": [{"action": prepull, "doAtValue": {"const": {"val": "-3s"}}}],
+        "priorityList": [
+            {"action": {"castSpell": {"spellId": {"spellId": 11661, "rank": 9}}}},
+            {
+                "action": {
+                    "strictSequence": {"actions": [{"castSpell": {"spellId": {"spellId": 5019}}}]}
+                }
+            },
+            {"action": {"autocastOtherCooldowns": {}}},
+        ],
+    }
+    assert apl_cast_spell_ids(rotation) == {688, 11661, 5019}
+
+
+def test_compute_spell_icons_covers_the_prepull_casts_no_rank_family_resolves(tmp_path):
+    _write_apl(tmp_path, "warrior-fury", [_cast(23894, rank=4, notes="Bloodthirst on cooldown.")])
+    apl_path = tmp_path / "apl" / "warrior-fury.json"
+    apl = json.loads(apl_path.read_text(encoding="utf-8"))
+    prepull = {"castSpell": {"spellId": {"spellId": 688}}}
+    apl["rotation"]["prepullActions"] = [
+        {"action": prepull, "doAtValue": {"const": {"val": "-3s"}}}
+    ]
+    apl_path.write_text(json.dumps(apl), encoding="utf-8")
+    (tmp_path / BUILD).mkdir()
+    (tmp_path / BUILD / "spellranks.json").write_text(json.dumps(SPELLRANKS), encoding="utf-8")
+    icons = compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
+    assert 688 in icons
+    assert 23894 in icons
