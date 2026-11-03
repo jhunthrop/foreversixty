@@ -68,8 +68,13 @@ test.describe('desktop', () => {
 
   test('druid gives Feral and Feral Bear their own icons', async ({ page }) => {
     await page.goto('/guides/druid');
-    const cat = await page.getByTestId('guide-spec-card-feral').locator('img').getAttribute('src');
-    const bear = await page.getByTestId('guide-spec-card-feral-bear').locator('img').getAttribute('src');
+    // data-icon names the spec's icon whether its art is in this build or not (the fixture
+    // carries a subset, so a card can draw the neutral square instead of the image).
+    const iconOf = (spec: string) =>
+      page.getByTestId(`guide-spec-card-${spec}`).locator('.spec-card-icon').getAttribute('data-icon');
+    const cat = await iconOf('feral');
+    const bear = await iconOf('feral-bear');
+    expect(cat).toBe('ability_druid_catformattack');
     expect(cat).not.toBe(bear);
   });
 
@@ -193,7 +198,7 @@ test.describe('class landings', () => {
     test('/guides/druid sets its four spec cards in one row', async ({ page }) => {
       await page.goto('/guides/druid');
       const tops = await page
-        .locator('[data-testid="guide-class-spec-cards"] > div')
+        .locator('[data-testid="guide-class-spec-cards"] > a')
         .evaluateAll((cards) => cards.map((card) => Math.round(card.getBoundingClientRect().top)));
       expect(tops).toHaveLength(4);
       expect(new Set(tops).size).toBe(1);

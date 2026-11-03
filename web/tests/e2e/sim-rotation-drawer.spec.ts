@@ -143,7 +143,7 @@ test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, wit
   const panel = settings.getByTestId('sim-rotation-drawer-panel');
   await expect(panel).toBeVisible();
   await expect(panel.getByTestId('sim-rotation-drawer-steps')).toContainText(
-    'Bloodrage on cooldown: rage is the limiting resource, same as Fury.',
+    'Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.',
   );
 
   expect(page.url()).toBe(url);

@@ -43,9 +43,10 @@ const icon = publishedIcon(build, specIcon);
       loading="eager"
       decoding="async"
       class="spec-card-icon"
+      data-icon={specIcon}
     />
   ) : (
-    <span class="spec-card-icon" aria-hidden="true" />
+    <span class="spec-card-icon" aria-hidden="true" data-icon={specIcon} />
   )}
   <span class="spec-card-text">
     <span
