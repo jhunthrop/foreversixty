@@ -1,35 +1,29 @@
 name: api
 on:
   push:
-    branches: [main]
-    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'web/src/data/active-build.json', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', '.github/workflows/api.yml']
+    branches: [main, 'land/**']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'web/src/data/active-build.json', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', 'tools/go-test-shard.sh', '.github/workflows/api.yml']
   pull_request:
-    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'web/src/data/active-build.json', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'data/curated/**', 'web/src/content/guides/**', 'web/src/data/active-build.json', 'docs/contracts/**', 'docs/superpowers/specs/2026-10-27-log-coach-design.md', 'design/specs/2026-10-28-log-coach.md', 'tools/go-test-shard.sh', '.github/workflows/api.yml']
   workflow_dispatch:
 jobs:
-  test:
+  # The checks that need no database: the engine-free build, vet and the sim module's
+  # engine-free packages. The api's own go test runs in `test`, sharded.
+  check:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     # ci-minutes lane, 2026-10-15: two pushes in quick succession used to run
     # both test and image jobs to completion for each. Only the newest push's
     # result matters, so the check jobs cancel their superseded twin. The
     # group is per job, not per workflow, so a deploy already in flight is
     # never cancelled (web.yml lost a deploy that way on 2026-10-02).
     concurrency:
-      group: api-test-${{ github.ref }}
+      group: api-check-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
       # A newer push cancels a branch or pull request run; main's runs always finish, or a
       # quick second push leaves production undeployed (2026-11-02: two hours).
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      # A land/** run (tools/land.sh) is grouped by its sha and is never cancelled.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
     defaults: { run: { working-directory: api } }
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env: { POSTGRES_USER: forever, POSTGRES_PASSWORD: forever, POSTGRES_DB: forever_test }
-        ports: ['5433:5432']
-        options: >-
-          --health-cmd "pg_isready -U forever" --health-interval 5s --health-timeout 5s --health-retries 10
-    env:
-      TEST_DATABASE_URL: postgres://forever:forever@localhost:5433/forever_test?sslmode=disable
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -56,9 +50,6 @@ jobs:
           fi
       - uses: ./.github/actions/pin-engine
       - run: go vet ./...
-        # -p 1: the database-backed packages share one Postgres and each
-        # truncates the tables it uses, so they cannot run at once.
-      - run: go test -race -cover -p 1 ./...
         # sim/runner is this lane's package in the sim module. Only the
         # engine-free packages are run here: sim/adapter and sim/request
         # import the engine, which the engine lane's own workflow builds.
@@ -73,6 +64,48 @@ jobs:
         working-directory: sim
         env: { GOWORK: off }
         run: go test -race -cover ./runner/ ./talents/ ./api/
+  # The api's go test, in four shards run side by side (2026-11-03: one serial run took
+  # ~25 of the workflow's ~33 minutes). tools/go-test-shard.sh deals every package to
+  # exactly one shard, heaviest first, by api/test-weights.txt. Each shard keeps -race and
+  # -p 1 (the database-backed packages truncate the tables they use, so they cannot share a
+  # database at once) and has its own Postgres service, so the shards never share one.
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    concurrency:
+      group: api-test-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}-${{ matrix.shard }}
+      # As `check`'s: a land/** run is grouped by its sha and is never cancelled.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
+    defaults: { run: { working-directory: api } }
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: forever, POSTGRES_PASSWORD: forever, POSTGRES_DB: forever_test }
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U forever" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://forever:forever@localhost:5433/forever_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
+      - uses: ./.github/actions/pin-engine
+      - name: Test shard ${{ matrix.shard }} of ${{ strategy.job-total }}
+        env:
+          SHARD: ${{ matrix.shard }}
+          TOTAL: ${{ strategy.job-total }}
+        run: |
+          set -o pipefail
+          list=$(go list ./... | ../tools/go-test-shard.sh "$SHARD" "$TOTAL" test-weights.txt)
+          test -n "$list" || { echo "shard $SHARD of $TOTAL has no packages"; exit 1; }
+          mapfile -t packages <<<"$list"
+          printf 'shard %s of %s: %s packages\n' "$SHARD" "$TOTAL" "${#packages[@]}"
+          go test -race -cover -p 1 "${packages[@]}"
   # BuildKit reads api/Dockerfile.dockerignore in preference to the
   # repository root's .dockerignore - a per-Dockerfile ignore file
   # that excludes something the engine stage needs breaks only under
@@ -82,14 +115,15 @@ jobs:
   # change it, with the same --build-args the deploy job uses, so a
   # broken image is caught before it reaches deploy.
   image:
-    needs: test
+    # Beside the tests, not after them: deploy waits for all three.
     runs-on: ubuntu-latest
     timeout-minutes: 45
     concurrency:
-      group: api-image-${{ github.ref }}
+      group: api-image-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
       # A newer push cancels a branch or pull request run; main's runs always finish, or a
       # quick second push leaves production undeployed (2026-11-02: two hours).
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+      # A land/** run (tools/land.sh) is grouped by its sha and is never cancelled.
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -167,7 +201,7 @@ jobs:
         env: { GOWORK: off }
         run: go test ./internal/sims/ -run 'Image|Pin' -v
   deploy:
-    needs: [test, image]
+    needs: [check, test, image]
     # Deploys only once the Google Cloud variables from api/README.md "First-time setup" exist.
     # A dispatch deploys too: a push made with GITHUB_TOKEN (the data bot's build
     # commit, the client watcher's activation) triggers no workflow, so

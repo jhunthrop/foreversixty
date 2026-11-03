@@ -2,7 +2,7 @@
 name: data
 on:
   push:
-    branches: [main]
+    branches: [main, 'land/**']
     paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', '.github/workflows/data.yml']
   pull_request:
     paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', '.github/workflows/data.yml']

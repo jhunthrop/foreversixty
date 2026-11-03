@@ -36,7 +36,7 @@
 name: web
 on:
   push:
-    branches: [main]
+    branches: [main, 'land/**']
     paths:
       - web/**
       - sim/**
@@ -68,10 +68,11 @@ env:
 # 2026-10-02: the 07:15 UTC schedule fired while a push's deploy was mid-flight and the
 # deploy was cancelled, leaving main undeployed), so the group carries the event name.
 concurrency:
-  group: web-${{ github.event_name }}-${{ github.ref }}
+  group: web-${{ github.event_name }}-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
   # A newer push cancels a branch or pull request run; main's runs always finish, or a
   # quick second push leaves production undeployed (2026-11-02: two hours).
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  # A land/** run (tools/land.sh) is grouped by its sha and is never cancelled.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -228,11 +229,15 @@ jobs:
   real-engine-scope:
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    # A cold checkout of the repository can take minutes when many jobs start at once (a
+    # land/** smoke run, 2026-11-03: 5 minutes, which timed this job out at 5 and skipped
+    # real-engine). Push and dispatch need no checkout to answer `run=true`.
+    timeout-minutes: 20
     outputs:
       run: ${{ steps.scope.outputs.run }}
     steps:
-      - uses: actions/checkout@v4
+      - if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
       - id: scope
         env:
           EVENT: ${{ github.event_name }}

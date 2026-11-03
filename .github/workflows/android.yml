@@ -1,7 +1,7 @@
 name: android
 on:
   push:
-    branches: [main]
+    branches: [main, 'land/**']
     paths: ['apps/android/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
   pull_request:
     paths: ['apps/android/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
-  group: android-${{ github.ref }}
+  group: android-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 defaults:
   run:

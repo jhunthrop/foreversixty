@@ -11,7 +11,7 @@
 name: coach
 on:
   push:
-    branches: [main]
+    branches: [main, 'land/**']
     paths: &inputs
       - tools/coach/**
       - data/curated/coach/**
@@ -31,14 +31,17 @@ on:
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
-  group: coach-${{ github.ref }}
+  group: coach-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
   # A newer push cancels a branch or pull request run; main's runs always finish, or a
   # quick second push leaves production undeployed (2026-11-02: two hours).
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  # A land/** run (tools/land.sh) is grouped by its sha and is never cancelled.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
 jobs:
   starters:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # 30, not 10-15: a cold checkout took 5-16 minutes when a land/** run started ~35 jobs at
+    # once (2026-11-03), and a timed-out checkout reads as a red landing.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       # The data pipeline's locked environment, the same pytest data.yml runs.
