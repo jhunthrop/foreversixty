@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 25.9 | 3 | other:shoot=80.2, spell:3044=28.9, spell:1130=2.4, other:move=1.0, spell:13165=1.0 | {SpellID: 2643} |
-| 20 | 0000000000000000-0051500000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 47.1 | 5 | other:shoot=74.3, spell:2643=22.6, spell:14282=5.0, spell:1130=2.4, other:move=1.0 | - |
-| 30 | 0000000000000000-0051550001400000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 74.2 | 6 | other:shoot=75.5, spell:2643=19.0, spell:14283=4.8, spell:14323=2.4, other:move=1.0 | - |
-| 38 | 0000000000000000-0051550001503040-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 95.9 | 6 | other:shoot=78.2, spell:2643=16.8, spell:14284=5.0, spell:14323=2.4, other:move=1.0 | - |
-| 40 | 1000000000000000-0051550001503050-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 110.8 | 6 | other:shoot=81.1, spell:2643=16.4, spell:14284=5.0, spell:14324=2.4, other:move=1.0 | - |
-| 50 | 5320000100000000-0051550001503050-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 142.9 | 6 | other:shoot=155.5, spell:2643=15.4, spell:14285=5.0, spell:14324=2.4, other:move=1.0 | - |
-| 60 | 5320000501000000-0051550001503050-500000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 264.5 | 6 | other:shoot=83.6, spell:2643=14.4, spell:14287=5.0, spell:14325=2.5, other:move=1.0 | - |
+| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 27.7 | 4 | other:shoot=80.2, spell:3044=19.5, spell:13549=13.7, spell:1130=2.3, other:move=1.0 | {SpellID: 2643} |
+| 20 | 0000000000000000-0051500000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 49.7 | 6 | other:shoot=73.1, spell:2643=10.5, spell:19434=10.5, spell:14282=4.5, spell:13550=4.0 | - |
+| 30 | 0000000000000000-0051550001400000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 77.8 | 7 | other:shoot=72.4, spell:2643=9.1, spell:20900=8.9, spell:14283=4.3, spell:13551=3.8 | - |
+| 38 | 0000000000000000-0051550001503040-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 102.8 | 7 | other:shoot=77.0, spell:20901=8.0, spell:2643=7.4, spell:14284=4.1, spell:13552=3.3 | - |
+| 40 | 1000000000000000-0051550001503050-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 117.3 | 7 | other:shoot=80.7, spell:2643=10.6, spell:20901=5.2, spell:14284=3.8, spell:13552=3.2 | - |
+| 50 | 5320000100000000-0051550001503050-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 155.3 | 7 | other:shoot=156.8, spell:2643=14.0, spell:14285=3.7, spell:13554=3.1, spell:14324=2.4 | - |
+| 60 | 5320000501000000-0051550001503050-500000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 276.5 | 7 | other:shoot=82.8, spell:2643=9.9, spell:20904=3.6, spell:14287=3.1, spell:13555=3.1 | - |
 
 ## Learned but unused (informational)
 
@@ -118,7 +118,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Mine! (spell 1265054)
 - Raptor Strike (spell 14260)
 - Scorpid Poison (spell 24640)
-- Serpent Sting (spell 13549)
 - Widow Bite (spell 26226)
 - Wyvern Strike (spell 458482)
 
@@ -134,7 +133,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14261)
 - Savage Rend (spell 1265065)
 - Scorpid Poison (spell 24640)
-- Serpent Sting (spell 13550)
 - Sonic Blast (spell 1264478)
 - Swipe (spell 1264494)
 - Tendon Rip (spell 1265038)
@@ -157,7 +155,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14262)
 - Savage Rend (spell 1265066)
 - Scorpid Poison (spell 24583)
-- Serpent Sting (spell 13551)
 - Sonic Blast (spell 1264479)
 - Summon Hawk (spell 1293241)
 - Swipe (spell 1264497)
@@ -182,7 +179,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14263)
 - Savage Rend (spell 1265067)
 - Scorpid Poison (spell 24583)
-- Serpent Sting (spell 13552)
 - Sonic Blast (spell 1264480)
 - Summon Hawk (spell 1293525)
 - Swipe (spell 1264498)
@@ -207,7 +203,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14264)
 - Savage Rend (spell 1265067)
 - Scorpid Poison (spell 24586)
-- Serpent Sting (spell 13552)
 - Sniper Shot (spell 1310687)
 - Sonic Blast (spell 1264480)
 - Summon Hawk (spell 1293525)
@@ -235,7 +230,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14265)
 - Savage Rend (spell 1265068)
 - Scorpid Poison (spell 24586)
-- Serpent Sting (spell 13554)
 - Sniper Shot (spell 1310785)
 - Sonic Blast (spell 1264481)
 - Summon Hawk (spell 1293526)
@@ -264,7 +258,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14266)
 - Savage Rend (spell 1265069)
 - Scorpid Poison (spell 24587)
-- Serpent Sting (spell 13555)
 - Sniper Shot (spell 1310786)
 - Sonic Blast (spell 1264482)
 - Summon Hawk (spell 1293527)
