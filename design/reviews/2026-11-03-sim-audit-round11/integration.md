@@ -196,5 +196,6 @@ The fork suite with `-tags=with_db` passes as arm64 and as amd64, and the wasm c
   - Round 10's log-blocked list.
 - **Held under the adoption rule:** Marksmanship (+0.87 to +0.93%), Affliction's Improved Bane of Agony (+0.72%), Destruction's Immolate line, Fire's Improved Scorch line, Frost's search winner, Frost bare 20's Ice Shards, the druid, Holy and shaman band builds the reservation could not express.
 - **Refresh:** the "Measure at refresh" list in the ledger.
+- **Main's mage guide rewrite (e2b3a9a53, not this round)** landed after the before/after was measured. It changed Frost's leveling build (it now casts Arcane Missiles) and three mage APL notes. The merge regenerates the mage ladder goldens, addon-builds.json and the mage coach starters, and points rotations.test.ts at the new notes. Frost's bare-60 ladder rung moves +14%: round 12 should audit that build under the adoption rule.
 - **A flaky web test:** src/sim-island.test.ts's "removes the shell min-h reservation" fails about one run in five under CPU load; likely an earlier test's real-timer boot landing in the next test's document. Predates the round (1b932d73b).
 - **Healers lane coverage:** it hit the subagent limit and tested round 10's client-row conclusions against new evidence rather than re-reading every row; round 12 should give the healers a full row sweep.

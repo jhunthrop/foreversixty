@@ -14,17 +14,22 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Frost Mage as the site's guide describes it. Frost is the Mage control and survivability spec: Frostbolt keeps enemies slowed, with Frost Nova and Ice Block for emergencies and Ice Lance on a Fingers of Frost charge. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Frost Mage as the site's guide describes it. Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, fires free Missiles on Missile Barrage, and has Ice Block when things go wrong. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Put up Ice Barrier before the pull and recast it whenever its minute runs out, for its Frost damage bonus.
-- Frostbolt is the filler between Fingers of Frost charges.
-- Arcane Missiles on a Missile Barrage proc, raid build only.
-- Ice Lance on a Fingers of Frost charge. The charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.
-- Cone of Cold within ten yards on five Winter's Chill stacks, which every rank reaches.
+- Mage Armor, Arcane Brilliance and your food buff go up before the pull.
+- Ice Barrier whenever the shield is down.
+- Ice Lance while Fingers of Frost is up and its eight second cooldown is ready.
+- Save Cold Snap for a second Ice Block or for an Ice Barrier that broke early on a fight that hits you.
+- Evocation when you are nearly dry and more than thirty seconds of the fight remain.
+- Blizzard from range on packs the tank holds. It channels for eight seconds and costs one,four hundred mana, so it is for big pulls.
+- On a pack that comes to you, Frost Nova, then Cone of Cold and Arcane Explosion while they are rooted, then Blink out.
+- Cone of Cold on a boss.
+- Threat and Ice Block.
+- Fire Blast.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
