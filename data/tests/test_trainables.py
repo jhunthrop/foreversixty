@@ -16,6 +16,7 @@ PLAYER_CLASSES = {
 
 FROSTBOLT_1, FROSTBOLT_2, FIREBALL_NPC, FROSTFIRE_1, FROSTFIRE_2 = 116, 205, 9001, 401502, 1237312
 PASSIVE, DNT_SPELL, TEST_SPELL, UA, PET_GROWL = 9100, 9101, 9102, 427717, 9200
+COLD_SNAP, IGNITE = 9300, 9301
 MAGE_FAMILY, WARLOCK_FAMILY, HUNTER_FAMILY = 3, 5, 9
 FIRE_LINE, FROST_LINE, PET_LINE, WEAPON_LINE = 8, 6, 7, 5
 
@@ -41,6 +42,8 @@ def raw(tmp_path: Path) -> Path:
         UA: ("Unstable Affliction", "Rank 1", 40, 1500, 200, 0),
         PET_GROWL: ("Growl", "Rank 1", 1, 0, 15, 5000),
         FIREBALL_NPC: ("Fireball", "", 1, 0, 0, 0),
+        COLD_SNAP: ("Cold Snap", "", 0, 0, 0, 480_000),  # a talent: no learn row, no rank
+        IGNITE: ("Ignite", "", 0, 0, 0, 0),  # a passive talent
     }
     _write(tmp_path / "SpellName.csv", ["ID", "Name_lang"], [[i, s[0]] for i, s in spells.items()])
     _write(
@@ -72,7 +75,7 @@ def raw(tmp_path: Path) -> Path:
     families = {
         FROSTBOLT_1: MAGE_FAMILY, FROSTBOLT_2: MAGE_FAMILY, FROSTFIRE_1: MAGE_FAMILY,
         FROSTFIRE_2: MAGE_FAMILY, DNT_SPELL: MAGE_FAMILY, UA: WARLOCK_FAMILY,
-        PET_GROWL: HUNTER_FAMILY,
+        PET_GROWL: HUNTER_FAMILY, COLD_SNAP: MAGE_FAMILY, IGNITE: MAGE_FAMILY,
     }  # fmt: skip
     _write(
         tmp_path / "SpellClassOptions.csv",
@@ -269,35 +272,103 @@ def test_no_development_spell_is_trainable():
             assert not is_excluded_name(trainable["name"]), (slug, trainable["name"])
 
 
-def _write_live_tree(talents_dir: Path, talent_names: list[str]) -> Path:
+def _write_live_tree(talents_dir: Path, talents: list[dict], tree: str = "Fire") -> Path:
+    """A live tree of `talents`, each {"name"} plus optional "spell_id" (its every rank)."""
     talents_dir.mkdir(parents=True, exist_ok=True)
-    tree = {"name": "Fire", "position": 0, "talents": [{"name": n} for n in talent_names]}
-    (talents_dir / "mage.json").write_text(json.dumps({"trees": [tree]}), encoding="utf-8")
+    rows = [
+        {
+            "name": t["name"],
+            "spell_id": t.get("spell_id", 0),
+            "ranks": [{"spell_id": t.get("spell_id", 0)}],
+        }
+        for t in talents
+    ]
+    body = {"trees": [{"name": tree, "position": 0, "talents": rows}]}
+    (talents_dir / "mage.json").write_text(json.dumps(body), encoding="utf-8")
     return talents_dir
 
 
-def test_a_talent_spell_the_live_tree_removed_is_not_trainable(raw, tmp_path):
-    """1.60.1.70707's hotfix removed Voice of Truth and Binding Heal from the trees, but the
-    client's SkillLineAbility rows (pre-hotfix) still list them: a spell the client's trait
-    tables teach through a talent, with no talent of that name left in the live tree, is not
-    learnable."""
+def mage_with_tree(raw: Path, talents_dir: Path) -> dict:
+    records = {r.class_slug: r for r in build_trainables("9.9.9.9", raw, talents_dir)}
+    return {t.name: t for t in records["mage"].trainables}
+
+
+def test_a_talent_moved_off_the_live_tree_keeps_its_learn_row_as_a_baseline_spell(raw, tmp_path):
+    """The 70707 push repointed Voice of Truth's and Binding Heal's trait nodes (Oath of Light,
+    Holy Binding) and Wowhead's live spellbook lists the old spells at their trainer levels: a
+    spell with a learn row that no live talent teaches is a trainer spell, whatever an older
+    trait row taught."""
     _write(raw / "TraitDefinition.csv", ["ID", "SpellID"], [[1, FROSTFIRE_1]])
-    talents = _write_live_tree(tmp_path / "talents", ["Ignite"])
-    mage = names({r.class_slug: r for r in build_trainables("9.9.9.9", raw, talents)}["mage"])
-    assert "Frostfire Bolt" not in mage
+    mage = mage_with_tree(raw, _write_live_tree(tmp_path / "talents", [{"name": "Ignite"}]))
+    assert mage["Frostfire Bolt"].source == "skill_line_ability"
     assert "Frostbolt" in mage
 
 
-def test_a_talent_spell_the_live_tree_still_names_stays_trainable(raw, tmp_path):
-    _write(raw / "TraitDefinition.csv", ["ID", "SpellID"], [[1, FROSTFIRE_1]])
-    talents = _write_live_tree(tmp_path / "talents", ["Frostfire Bolt"])
-    mage = names({r.class_slug: r for r in build_trainables("9.9.9.9", raw, talents)}["mage"])
-    assert "Frostfire Bolt" in mage
+def test_an_ability_a_live_talent_teaches_is_a_talent_not_a_trainer_spell(raw, tmp_path):
+    mage = mage_with_tree(
+        raw,
+        _write_live_tree(
+            tmp_path / "talents", [{"name": "Frostfire Bolt", "spell_id": FROSTFIRE_1}]
+        ),
+    )
+    assert mage["Frostfire Bolt"].source == "talent"
+    # its trainer-taught higher rank stays with the ability, under the one tag
+    assert [r.id for r in mage["Frostfire Bolt"].ranks] == [FROSTFIRE_1, FROSTFIRE_2]
+    assert mage["Frostbolt"].source == "skill_line_ability"
 
 
-def test_without_live_trees_every_trainable_is_kept(raw, tmp_path):
-    _write(raw / "TraitDefinition.csv", ["ID", "SpellID"], [[1, FROSTFIRE_1]])
-    assert "Frostfire Bolt" in names(by_slug(raw)["mage"])
-    missing = tmp_path / "no-talents"
-    mage = names({r.class_slug: r for r in build_trainables("9.9.9.9", raw, missing)}["mage"])
-    assert "Frostfire Bolt" in mage
+def test_a_talent_is_matched_by_its_spell_when_the_names_differ(raw, tmp_path):
+    talents = _write_live_tree(
+        tmp_path / "talents", [{"name": "Frozen Core", "spell_id": FROSTFIRE_2}]
+    )
+    assert mage_with_tree(raw, talents)["Frostfire Bolt"].source == "talent"
+
+
+def test_an_active_live_talent_without_a_learn_row_is_listed_as_a_talent(raw, tmp_path):
+    """Cold Snap, Adrenaline Rush, Shadowform: no SkillLineAbility row and no rank subtext, so
+    neither source finds them; the live tree teaches them, so they are listed, as talents."""
+    talents = _write_live_tree(
+        tmp_path / "talents",
+        [{"name": "Cold Snap", "spell_id": COLD_SNAP}, {"name": "Ignite", "spell_id": IGNITE}],
+        tree="Frost",
+    )
+    mage = mage_with_tree(raw, talents)
+    cold_snap = mage["Cold Snap"]
+    assert (cold_snap.source, cold_snap.skill_line, cold_snap.active) == ("talent", "Frost", True)
+    assert cold_snap.cooldown_ms == 480_000
+    assert [(r.id, r.rank, r.level) for r in cold_snap.ranks] == [(COLD_SNAP, 0, 0)]
+    assert "Ignite" not in mage  # a passive talent stays in the talent file alone
+
+
+def test_a_spell_on_two_learn_rows_is_one_rank(raw):
+    rows = list(csv.DictReader((raw / "SkillLineAbility.csv").open()))
+    rows.append({**rows[1], "ID": "99"})  # Frostbolt rank 2 on a second row of the same line
+    with (raw / "SkillLineAbility.csv").open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    mage = {t.name: t for t in by_slug(raw)["mage"].trainables}
+    assert [r.id for r in mage["Frostbolt"].ranks] == [FROSTBOLT_1, FROSTBOLT_2]
+
+
+def test_without_live_trees_nothing_is_tagged_a_talent(raw, tmp_path):
+    for record in by_slug(raw).values():
+        assert all(t.source != "talent" for t in record.trainables)
+    mage = mage_with_tree(raw, tmp_path / "no-talents")
+    assert mage["Frostfire Bolt"].source == "skill_line_ability"
+
+
+@pytest.mark.parametrize(
+    ("slug", "name"),
+    [
+        # Era talents Forever's trees never teach; trainer spells at their client levels
+        # (Blizzard recap, Wowhead's live spellbook, beta casts; round 12 trainables report)
+        ("hunter", "Aimed Shot"), ("paladin", "Blessing of Kings"), ("paladin", "Consecration"),
+        ("priest", "Divine Spirit"), ("druid", "Omen of Clarity"), ("priest", "Lightwell"),
+        # talents whose nodes the 70707 push repointed; trainer spells since
+        ("paladin", "Voice of Truth"), ("priest", "Binding Heal"),
+    ],
+)  # fmt: skip
+def test_the_baseline_spells_round_12_settled_are_trainer_spells(slug, name):
+    sources = {t["source"] for t in committed()[slug]["trainables"] if t["name"] == name}
+    assert sources == {"skill_line_ability"}
