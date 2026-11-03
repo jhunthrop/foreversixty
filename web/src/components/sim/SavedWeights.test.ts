@@ -46,10 +46,16 @@ describe('SavedWeights: the greyed row and its label (D45)', () => {
     expect(() => rowFor(body, 'melee_haste')).toThrow();
   });
 
+  // The shared weight reading (lib/bis/weight-reading.ts) also greys a weight inside its own
+  // error, so a fully significant result is one with no flag and every weight beyond its error.
   it('a result with no insignificant rows greys nothing', () => {
     const allSignificant: WeightsResult = {
       ...result,
-      weights: result.weights.map((row) => ({ ...row, insignificant: false })),
+      weights: result.weights.map((row) => ({
+        ...row,
+        insignificant: false,
+        error: Math.abs(row.weight) / 10,
+      })),
     };
     const body = renderWeights(allSignificant);
     expect(body).not.toContain('opacity-50');
