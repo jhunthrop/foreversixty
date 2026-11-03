@@ -57,6 +57,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from pipeline.csvio import read_csv
+from pipeline.hotfix_push import SHIPPED_DIR
 from pipeline.normalize import write_model
 from pipeline.proficiency import CLASS_MASK_BIT, CLASS_SLUG_BY_ID
 from pipeline.simconst import SPELL_FAMILY_BY_CLASS_SLUG, _by_spell_id, _int, _rank
@@ -192,6 +193,14 @@ def _family_by_spell(raw: Path) -> dict[int, int]:
         int(row["SpellID"]): int(row["SpellClassSet"])
         for row in read_csv(raw / "SpellClassOptions.csv")
     }
+
+
+def _spells_with_learn_rows(raw: Path) -> set[int]:
+    """Every spell with a SkillLineAbility row (a rune's included), in the layered table or
+    in the shipped one under `raw/shipped/`: a row a hotfix push removed (status 2) still
+    says the spell was a learn-row spell, so the no-learn-row fallback never lists it."""
+    tables = [raw / "SkillLineAbility.csv", raw / SHIPPED_DIR / "SkillLineAbility.csv"]
+    return {int(row["Spell"]) for path in tables if path.exists() for row in read_csv(path)}
 
 
 class _SpellTables:
@@ -441,14 +450,19 @@ def build_trainables(
         for c in _ability_candidates(raw, family_by_spell, tables.level)
         if not is_excluded_name(tables.names.get(c.spell_id, ""))
     ]
-    # A spell with any SkillLineAbility row (a rune included) is never a no-learn-row extra.
-    known = {int(row["Spell"]) for row in read_csv(raw / "SkillLineAbility.csv")}
+    learned_names = {(c.class_slug, tables.names.get(c.spell_id, "")) for c in abilities}
     extras = [
         c
         for c in _family_candidates(
-            tables, family_by_spell, known, _pet_spell_names(raw, tables.names)
+            tables,
+            family_by_spell,
+            _spells_with_learn_rows(raw),
+            _pet_spell_names(raw, tables.names),
         )
         if not is_excluded_name(tables.names.get(c.spell_id, ""))
+        # A no-learn-row copy of a learn-row ability (Aimed Shot 27632, Primal Bite 1238073)
+        # is not one of its ranks: the learn rows are.
+        and (c.class_slug, tables.names.get(c.spell_id, "")) not in learned_names
     ]
     by_class: dict[str, list[_Candidate]] = defaultdict(list)
     for c in _unique_by_spell([*abilities, *extras]):
