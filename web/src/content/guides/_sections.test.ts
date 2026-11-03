@@ -98,8 +98,8 @@ describe('guide content structure', () => {
     },
   );
 
-  // The page says once, at the top, that the beta stops at level 30 and the rest is simulated
-  // (GuideStatusNote); the sections are written as a guide and do not hedge in every section.
+  // The sections are written as a guide and do not hedge in every section; the page's one
+  // data-source line sits in its footer.
   it.each(specGuides.map((g) => [g.id, g] as const))('%s carries no per-section hedge', (id, guide) => {
     const hedges = [
       // Totemic Projection is a shaman spell, not a hedge.

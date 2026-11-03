@@ -8,6 +8,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { canApplyBetween, knownAtFor } from './apl-level-gate';
 import { loadAplSteps, type AplStep } from './apl-steps';
 import { collapseRuns, type CollapsedLine, type StepLine } from './rotation-collapse';
 
@@ -62,6 +63,19 @@ export function loadRotations(build: string, spec: string): RotationEntry[] | un
 function loadSpellRanks(build: string): SpellRanksFile | undefined {
   const file = path.join(repoRoot(), 'data/builds', build, 'spellranks.json');
   return existsSync(file) ? readJson<SpellRanksFile>(file) : undefined;
+}
+
+interface TalentNamesFile {
+  trees: { talents: { name: string }[] }[];
+}
+
+/** The class's talent names: a spell only a talent teaches is not known by level alone. */
+function loadTalentNames(build: string, classSlug: string): Set<string> {
+  const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
+  if (!existsSync(file)) return new Set();
+  return new Set(
+    readJson<TalentNamesFile>(file).trees.flatMap((tree) => tree.talents.map((talent) => talent.name)),
+  );
 }
 
 /** Whether `build`'s own icon tree actually ships a file for `icon` -- checked the same
@@ -158,27 +172,40 @@ function stepsAlignedWith(
 /** Every row of `entry`, ready to render -- reads `spellranks.json` once per line rather
  *  than trusting a caller to have already joined it (this is the one place that join
  *  happens, the same discipline `source-cell.ts` applies to a pick's own source). Steps
- *  that cast the same spell at the same rank in a row are one row (rotation-collapse.ts). */
+ *  that cast the same spell at the same rank in a row are one row (rotation-collapse.ts).
+ *
+ *  The entry is shown from its own level through `shownThrough` (the band's top level). A
+ *  line whose curated step is gated on training that rules it out across that whole range
+ *  ("Below level 20, before Cat Form" at 60) is left out (apl-level-gate.ts). */
 export function rotationLinesFor(
   entry: RotationEntry,
   build: string,
   classSlug: string,
   spec: string,
+  shownThrough: number,
 ): RotationLineView[] {
   const spellRanks = loadSpellRanks(build);
   const steps = stepsAlignedWith(entry, spec, spellRanks, classSlug);
-  const stepLines: StepLine[] = entry.lines.map((line, index) => {
+  const knownAt = knownAtFor(spellRanks?.classes[classSlug] ?? {}, loadTalentNames(build, classSlug));
+  const stepLines: StepLine[] = [];
+  entry.lines.forEach((line, index) => {
+    const step = steps?.[index];
+    if (
+      step !== undefined &&
+      step !== null &&
+      !canApplyBetween(step.condition, entry.level, shownThrough, knownAt)
+    )
+      return;
     const rank = rankFor(spellRanks, classSlug, line.name, line.spell_id);
-    const condition = alignNoteRank(line.condition, line.name, rank);
-    return {
+    stepLines.push({
       spellId: line.spell_id,
       name: line.name,
       rank,
-      condition,
+      condition: alignNoteRank(line.condition, line.name, rank),
       icon: line.icon !== undefined && iconFileExists(build, line.icon) ? line.icon : undefined,
       truncatedAtSource: line.condition.endsWith('…'),
-      words: steps?.[index]?.words ?? null,
-    };
+      words: step?.words ?? null,
+    });
   });
   return collapseRuns(stepLines);
 }

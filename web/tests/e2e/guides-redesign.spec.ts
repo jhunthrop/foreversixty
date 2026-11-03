@@ -37,13 +37,14 @@ test.describe('desktop', () => {
     await expect(specLinks).toHaveCount(28);
   });
 
-  test('/guides/warrior shows three spec cards, DPS only on the ranked specs', async ({ page }) => {
+  test('/guides/warrior shows three spec cards, each with its own role metric', async ({ page }) => {
     await page.goto('/guides/warrior');
     const cards = page.locator('[data-testid="guide-class-spec-cards"] > div');
     await expect(cards).toHaveCount(3);
     const dpsLines = page.locator('[data-testid="guide-spec-card-dps"]');
-    // Arms and Fury both carry a ranked band-60 BiS file; Protection does not.
-    await expect(dpsLines).toHaveCount(2);
+    // Arms and Fury show DPS; Protection, a tank, shows its own metric, never DPS.
+    await expect(dpsLines).toHaveCount(3);
+    await expect(dpsLines.filter({ hasText: 'DPS' })).toHaveCount(2);
   });
 
   test('every spec card shows its guide’s full frontmatter description, never clipped', async ({ page }) => {
@@ -131,6 +132,56 @@ test.describe('phone', () => {
     await expect(rows).toHaveCount(5);
     await expect(page.getByTestId('guide-leveling-row-talents').first()).toBeVisible();
     await expect(page.getByTestId('guide-leveling-row-talents').first().locator('li').first()).toBeVisible();
+  });
+});
+
+const CLASS_SLUGS = ['druid', 'hunter', 'mage', 'paladin', 'priest', 'rogue', 'shaman', 'warlock', 'warrior'];
+/** The least room between the spec cards and the class notes below them. */
+const MIN_GAP_BELOW_CARDS = 16;
+
+test.describe('class landings', () => {
+  for (const [label, viewport] of [
+    ['390', PHONE],
+    ['1440', DESKTOP],
+  ] as const) {
+    test.describe(label, () => {
+      test.use({ viewport });
+
+      for (const classSlug of CLASS_SLUGS) {
+        test(`/guides/${classSlug} keeps every spec tab on screen and the notes clear of the cards`, async ({
+          page,
+        }) => {
+          await page.goto(`/guides/${classSlug}`);
+          const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+          for (const tab of await page.locator('[data-testid^="bis-spec-tab-"]').all()) {
+            const box = await tab.boundingBox();
+            expect(box).not.toBeNull();
+            expect(box!.x).toBeGreaterThanOrEqual(0);
+            expect(box!.x + box!.width).toBeLessThanOrEqual(clientWidth);
+          }
+          const gap = await page.getByTestId('guide-class-spec-cards').evaluate((cards) => {
+            const next = cards.nextElementSibling;
+            return next === null
+              ? null
+              : next.getBoundingClientRect().top - cards.getBoundingClientRect().bottom;
+          });
+          if (gap !== null) expect(gap).toBeGreaterThanOrEqual(MIN_GAP_BELOW_CARDS);
+        });
+      }
+    });
+  }
+
+  test.describe('1440 row', () => {
+    test.use({ viewport: DESKTOP });
+
+    test('/guides/druid sets its four spec cards in one row', async ({ page }) => {
+      await page.goto('/guides/druid');
+      const tops = await page
+        .locator('[data-testid="guide-class-spec-cards"] > div')
+        .evaluateAll((cards) => cards.map((card) => Math.round(card.getBoundingClientRect().top)));
+      expect(tops).toHaveLength(4);
+      expect(new Set(tops).size).toBe(1);
+    });
   });
 });
 

@@ -30,7 +30,6 @@ import GuideBuilds from '../../../components/guides/GuideBuilds.astro';
 import GuideGearExtras from '../../../components/guides/GuideGearExtras.astro';
 import GuideOverview from '../../../components/guides/GuideOverview.astro';
 import GuideStatTable from '../../../components/guides/GuideStatTable.astro';
-import GuideStatusNote from '../../../components/guides/GuideStatusNote.astro';
 import KeyTalentList from '../../../components/guides/KeyTalentList.astro';
 import LevelingBandStrip, { type LevelingBandRow } from '../../../components/guides/LevelingBandStrip.astro';
 import RacePillRow from '../../../components/guides/RacePillRow.astro';
@@ -51,7 +50,7 @@ import {
 } from '../../../lib/bis/rotation-view';
 import { specTabIcon } from '../../../lib/bis/spec-icon';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
-import { band60Weights, factionForFirstRace, rankedBisFile } from '../../../lib/guides/class-dps';
+import { band60Weights, rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { railStatRows } from '../../../lib/guides/rail-stats';
@@ -62,10 +61,12 @@ import { schoolHitTalent } from '../../../lib/guides/hit-cap-line';
 import { pageScript } from '../../../lib/guides/page-script';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
 import { loadGearExtras } from '../../../lib/guides/gear-extras';
+import { guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
 import { raceTableFor, racialCooldownsFor, specKindOf } from '../../../lib/guides/race-table';
 import {
+  litTalentsOf,
   loadApl,
   rotationListsFrom,
   specCooldowns,
@@ -153,13 +154,11 @@ const talentsProseHtml = await renderGuideMarkdown(withoutTalentBullets(proseOnl
 const rotationEntries = loadRotations(build, fullSpecId) ?? [];
 const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(60));
 const rotationLines =
-  rotationEntry === undefined ? [] : rotationLinesFor(rotationEntry, build, classSlug, fullSpecId);
+  rotationEntry === undefined
+    ? []
+    : rotationLinesFor(rotationEntry, build, classSlug, fullSpecId, bandTopLevel(60));
 const rotationBandLabel = String(bandTopLevel(60));
-const litTalentNames = new Set(
-  [...buildTrees, ...(raidTrees ?? [])].flatMap((tree) =>
-    tree.talents.filter((talent) => talent.rank > 0).map((talent) => talent.name),
-  ),
-);
+const litTalents = litTalentsOf([...buildTrees, ...(raidTrees ?? [])]);
 const spellFacts = spellLookupFor(build, classSlug);
 const rotationListsData =
   rotationEntry === undefined
@@ -168,8 +167,8 @@ const rotationListsData =
         rotationLines,
         loadApl(fullSpecId),
         spellFacts,
-        specCooldowns(build, classSlug, litTalentNames, spellFacts),
-        talentCooldownCuts(raidTrees ?? buildTrees),
+        specCooldowns(build, classSlug, fullSpecId, litTalents, spellFacts),
+        talentCooldownCuts(build, classSlug, litTalents),
         racialCooldownsFor(build, classSlug),
         role,
       );
@@ -177,13 +176,11 @@ const hitTalent = schoolHitTalent(raidTrees ?? buildTrees);
 const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');
 const rotationProseHtml = await renderGuideMarkdown(proseOnly('Rotation and priority'));
 
-// Rail: Stat priority card's real per-point numbers, and the Leveling band strip -- both
-// read the spec's own band-60/per-band BiS data, at the faction the guide's first
-// `recommendedRaces` entry resolves to (the same rule, stated once, `class-dps.ts` shares
-// with the class landing's own Set DPS line). `rankedBisFile` only ever reads the real
-// pipeline file, never the `/bis` dev fixture (see that module's own doc comment).
+// Rail: Stat priority card's real per-point numbers read the spec's own band-60 BiS data, at
+// the faction the guide's first `recommendedRaces` entry resolves to (the same rule, stated
+// once, `class-dps.ts` shares with the class landing's own Set DPS line). `rankedBisFile`
+// only ever reads the real pipeline file, never the `/bis` dev fixture.
 const ranked = rankedBisFile(build, fullSpecId);
-const faction = factionForFirstRace(classSlug, entry.data.recommendedRaces);
 // Same load path `GuideStatTable.astro` uses for the planted Stat priority table below --
 // `band60Weights` is the one place this band's weights get read, so the rail card and the
 // table can never disagree.
@@ -228,22 +225,20 @@ const racesHeadingHtml = await renderGuideMarkdown('## Races');
 const racesProseHtml = await renderGuideMarkdown(proseOnly('Races'));
 const professionsHtml = await renderGuideMarkdown(sections.get('Professions') ?? '');
 
+// The strip is the leveling journey: the guide's own level 60 build cut down to each range's
+// points, the same walk the sim's ladder uses (lib/guides/leveling-builds.ts), so it follows
+// the guide's build the moment it changes rather than the published ranker file.
+const treeIndex = catalogEntries.find((s) => s.spec_slug === specSlug)?.tree_index;
 const levelingRows: LevelingBandRow[] =
-  ranked === undefined || faction === undefined
+  buildCode === undefined || treeIndex === undefined
     ? []
-    : [...ranked.bands]
-        // The strip is the leveling journey: one row per band, the bare entry.
-        // Level 60 also carries a raid-ready entry whose talents are the raid
-        // build; it belongs to the Talents section, not the strip.
-        .filter((b) => b.faction === faction && (b.preset === undefined || b.preset === 'bare'))
-        .sort((a, b) => a.band - b.band)
-        .map((b) => ({
-          band: b.band,
-          bandLabel: guidesCopy.levelRangeLabel(b.band),
-          pointsLabel: guidesCopy.levelRangePoints(b.talent_points, b.band),
-          plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
-          talents: b.talents,
-        }));
+    : guideLevelingBuilds(build, classSlug, fullSpecId, treeIndex, buildCode).map((b) => ({
+        band: b.band,
+        bandLabel: guidesCopy.levelRangeLabel(b.band),
+        pointsLabel: guidesCopy.levelRangePoints(b.points, b.band),
+        plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
+        talents: b.talents,
+      }));
 const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
 const levelingProseHtml = await renderGuideMarkdown(proseOnly('Leveling'));
 
@@ -262,6 +257,8 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   hideHeader
   wideProse
   hideConfidenceNote
+  footnote={guidesCopy.dataSourceLine(build)}
+  hideSitePill
 >
   <Fragment slot="beforeMain">
     <ArtPanel classSlug={classSlug}>
@@ -299,7 +296,6 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   <SpecTableOfContents />
   <SpecTableOfContents slot="aside" placement="rail" />
   <Fragment set:html={overviewHeadingHtml} />
-  <GuideStatusNote />
   {hasOverviewBlocks ? (
     <GuideOverview strengthsHtml={strengthsHtml} weaknessesHtml={weaknessesHtml} raidHtml={raidHtml} />
   ) : (
@@ -342,7 +338,7 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
     classSlug={entry.data.classSlug}
     recommendedRaces={entry.data.recommendedRaces}
   />
-  <RaceTable rows={raceRows} />
+  <RaceTable build={build} rows={raceRows} />
   <Fragment set:html={racesProseHtml} />
   <Fragment set:html={professionsHtml} />
   <Fragment set:html={levelingHeadingHtml} />

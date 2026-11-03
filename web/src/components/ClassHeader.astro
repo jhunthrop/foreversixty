@@ -20,6 +20,7 @@ import ClassCrest from './ClassCrest.astro';
 import FactionMark from './FactionMark.astro';
 import Select from './ui/Select.astro';
 import { bisCopy } from '../lib/bis/copy';
+import { publishedIcon } from '../lib/bis/spec-icon';
 import { classColorVar } from '../lib/report/format';
 import type { Faction, RateUnit } from '../lib/bis/types';
 
@@ -108,6 +109,9 @@ const {
   asHeading = true,
 } = Astro.props;
 
+const tabs = specTabs.map((tab) => ({ ...tab, icon: publishedIcon(build, tab.icon) }));
+const shownMetaIcon = publishedIcon(build, metaIcon);
+
 const TitleTag = asHeading ? 'h1' : 'p';
 const headingRole: HTMLAttributes<'p'> = asHeading ? {} : { role: 'heading', 'aria-level': 1 };
 
@@ -159,9 +163,9 @@ const bandTextVariants = bands.map((band) => ({
       {minimal && summaryOverride !== undefined && <p class="class-header-summary">{summaryOverride}</p>}
       {minimal && metaLine !== undefined && (
         <p class="class-header-meta" data-testid="guide-header-meta">
-          {metaIcon !== undefined && (
+          {shownMetaIcon !== undefined && (
             <img
-              src={`/data/${build}/icons/${metaIcon}.webp`}
+              src={`/data/${build}/icons/${shownMetaIcon}.webp`}
               alt=""
               width="20"
               height="20"
@@ -176,7 +180,7 @@ const bandTextVariants = bands.map((band) => ({
   </div>
 
   <div class="class-header-spec-tabs" role="tablist" aria-label="Spec">
-    {specTabs.map((tab) => (
+    {tabs.map((tab) => (
       <a
         href={tab.href}
         role="tab"
@@ -487,6 +491,16 @@ const bandTextVariants = bands.map((band) => ({
   /* On a phone the five level bands sit in two rows (3 + 2), every target 44 px and none
      scrolled out of view -- the guide's band grid (GuideBisTable), the same rule. */
   @media (max-width: 559px) {
+    /* The spec tabs wrap instead of scrolling: a druid's four tabs (and a hunter's three long
+       names) ran past the phone's edge, the last tab cut through its icon. Each row's tabs
+       share its width, so a tab never sits half off screen. */
+    .class-header-spec-tabs {
+      flex-wrap: wrap;
+      overflow: visible;
+    }
+    .class-header-spec-tab {
+      flex: 1 1 auto;
+    }
     .class-header-band-tabs {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -9,7 +9,6 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { CollapsedLine } from '../bis/rotation-collapse';
 import { repoRoot, spellIcons } from '../data/build-files';
-import type { DecodedTreeView } from './build-tree';
 import type { RacialCooldown } from './race-table';
 
 export interface RotationItem {
@@ -141,31 +140,14 @@ function secondsText(seconds: number): string {
   return `${Number(seconds.toFixed(1))} s`;
 }
 
-const COOLDOWN_CUT = /Reduces the cooldown of your ([A-Z][A-Za-z' ]*?) spell by (\d+)%/g;
-
-/** Percent cooldown cuts the lit talents give named spells, read off each talent's own rank
- *  text ("Reduces the cooldown of your Soul Fire spell by 90%"): the client's spell constants
- *  carry the base cooldown only. */
-export function talentCooldownCuts(trees: readonly DecodedTreeView[]): Map<string, number> {
-  const cuts = new Map<string, number>();
-  for (const talent of trees.flatMap((tree) => tree.talents)) {
-    const text = talent.rank > 0 ? talent.ranks[talent.rank - 1]?.description : undefined;
-    for (const match of (text ?? '').matchAll(COOLDOWN_CUT)) {
-      const percent = Number(match[2]);
-      cuts.set(match[1]!, Math.max(cuts.get(match[1]!) ?? 0, percent));
-    }
-  }
-  return cuts;
-}
-
 export function rotationListsFrom(
   lines: readonly CollapsedLine[],
   apl: unknown,
   spellFacts: SpellLookup,
   /** Further cooldown spells of the spec (`specCooldowns`), after the ones its priority names. */
   extraCooldowns: readonly RotationItem[] = [],
-  /** Talent cooldown cuts by spell name (`talentCooldownCuts`), in percent. */
-  cooldownCuts: ReadonlyMap<string, number> = new Map(),
+  /** What the build's talents take off a spell's cooldown, by spell name (`talentCooldownCuts`). */
+  cooldownCuts: ReadonlyMap<string, CooldownCut> = new Map(),
   /** The racial cooldowns of the class's races (`racialCooldownsFor`), named on the trinket line. */
   racialCooldowns: readonly RacialCooldown[] = [],
   /** The guide's role; a healer's trinket line is worded by healing. */
@@ -198,7 +180,7 @@ export function rotationListsFrom(
   for (const item of candidates) {
     const facts = spellFacts(item.spellId!);
     if (facts === undefined) continue;
-    const cooldownMs = facts.cooldownMs * (1 - (cooldownCuts.get(facts.name) ?? 0) / 100);
+    const cooldownMs = cutCooldown(facts.cooldownMs, cooldownCuts.get(facts.name));
     if (cooldownMs < COOLDOWN_FLOOR_MS || seen.has(item.name)) continue;
     seen.add(item.name);
     const fromLine = priority.find((line) => line.name === item.name)?.clause;
@@ -324,7 +306,84 @@ interface TrainableFile {
 }
 
 interface TalentNameFile {
-  trees: { talents: { name: string; icon: string; spell_id: number }[] }[];
+  trees: {
+    talents: { name: string; icon: string; spell_id: number; ranks?: { description?: string }[] }[];
+  }[];
+}
+
+/** The talents a guide's builds take, by name, with the highest rank either build takes. */
+export type LitTalents = ReadonlyMap<string, number>;
+
+/** A talent's cut to one spell's cooldown: a flat amount ("by 2 min") and a share ("by 90%"). */
+export interface CooldownCut {
+  ms: number;
+  percent: number;
+}
+
+const COOLDOWN_CUT =
+  /Reduces the cooldown of your ([A-Z][A-Za-z' ]+?)(?: spell| ability)? by (\d+(?:\.\d+)?) ?(sec|min|%)/g;
+
+/** The talents any of `trees` spends points in, at the highest rank any of them takes. */
+export function litTalentsOf(
+  trees: readonly { talents: readonly { name: string; rank: number }[] }[],
+): LitTalents {
+  const lit = new Map<string, number>();
+  for (const talent of trees.flatMap((tree) => tree.talents)) {
+    if (talent.rank > 0) lit.set(talent.name, Math.max(lit.get(talent.name) ?? 0, talent.rank));
+  }
+  return lit;
+}
+
+/** A cooldown less a talent's cut, never below zero. */
+export function cutCooldown(ms: number, cut: CooldownCut | undefined): number {
+  if (cut === undefined) return ms;
+  return Math.max(0, (ms - cut.ms) * (1 - cut.percent / 100));
+}
+
+/**
+ * What the lit talents take off each spell's cooldown, read from the client's own talent rank
+ * text at the rank the build takes ("Reduces the cooldown of your Blessing of Protection by 2
+ * min": Guardian's Favor 2/2; "by 90%": Soul Fire), by spell name. The client's spell constants
+ * carry the base cooldown only.
+ */
+export function talentCooldownCuts(
+  build: string,
+  classSlug: string,
+  lit: LitTalents,
+): Map<string, CooldownCut> {
+  const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
+  const cuts = new Map<string, CooldownCut>();
+  if (!existsSync(file)) return cuts;
+  for (const tree of (JSON.parse(readFileSync(file, 'utf8')) as TalentNameFile).trees) {
+    for (const talent of tree.talents) {
+      const rank = lit.get(talent.name) ?? 0;
+      const text = rank > 0 ? talent.ranks?.[rank - 1]?.description : undefined;
+      if (text === undefined) continue;
+      for (const match of text.matchAll(COOLDOWN_CUT)) {
+        const amount = Number(match[2]);
+        const add: CooldownCut =
+          match[3] === '%'
+            ? { ms: 0, percent: amount }
+            : { ms: amount * (match[3] === 'min' ? 60_000 : 1000), percent: 0 };
+        for (const name of match[1]!.split(/,\s*|\s+and\s+/)) {
+          const held = cuts.get(name.trim()) ?? { ms: 0, percent: 0 };
+          cuts.set(name.trim(), { ms: held.ms + add.ms, percent: held.percent + add.percent });
+        }
+      }
+    }
+  }
+  return cuts;
+}
+
+interface GuideCooldownsFile {
+  specs: Record<string, string[]>;
+}
+
+/** The baseline trainer cooldowns a spec's guide lists (`data/curated/guide-cooldowns.json`). */
+export function guideBaselineCooldowns(spec: string): ReadonlySet<string> {
+  const file = path.join(repoRoot(), 'data/curated/guide-cooldowns.json');
+  if (!existsSync(file)) return new Set();
+  return new Set((JSON.parse(readFileSync(file, 'utf8')) as GuideCooldownsFile).specs[spec] ?? []);
 }
 
 interface ClassSpellLimitsFile {
@@ -346,17 +405,23 @@ export function limitedClassSpells(classSlug: string): ReadonlySet<string> {
 }
 
 /**
- * The cooldown spells a spec can use, from the client's own data: the class trainer's active
- * spells with a long cooldown (a baseline spell from three minutes up), and the talent spells
- * the spec's builds actually spend points in. A spell the APL already names is left to
- * `rotationListsFrom`. Rank is the highest learned by level 60.
+ * The cooldown spells a spec's guide lists beyond its rotation, from the client's own data:
+ * the talent spells the spec's builds actually spend points in, and the baseline trainer
+ * spells with a long cooldown (three minutes up) that the spec's curated list names
+ * (`guideBaselineCooldowns`), so a stun, a taunt or a spell another spec presses stays off.
+ * Each cooldown is shown less what the build's talents take off it (`talentCooldownCuts`).
+ * A spell the APL already names is left to `rotationListsFrom`. Rank is the highest learned
+ * by level 60.
  */
 export function specCooldowns(
   build: string,
   classSlug: string,
-  litTalents: ReadonlySet<string>,
+  spec: string,
+  litTalents: LitTalents,
   spellFacts: SpellLookup,
 ): RotationItem[] {
+  const baseline = guideBaselineCooldowns(spec);
+  const cuts = talentCooldownCuts(build, classSlug, litTalents);
   const root = repoRoot();
   const trainFile = path.join(root, 'data/builds', build, 'trainables', `${classSlug}.json`);
   const talentFile = path.join(root, 'data/builds', build, 'talents', `${classSlug}.json`);
@@ -379,7 +444,7 @@ export function specCooldowns(
   for (const spell of trainables) {
     if (!spell.active || seen.has(spell.name) || (spell.cast_time_ms ?? 0) > MAX_COOLDOWN_CAST_MS) continue;
     const isTalent = talentNames.has(spell.name);
-    if (isTalent && !litTalents.has(spell.name)) continue;
+    if (isTalent ? !litTalents.has(spell.name) : !baseline.has(spell.name)) continue;
     const learned = spell.ranks.filter((rank) => rank.level <= MAX_LEVEL);
     const top = learned.reduce<(typeof learned)[number] | undefined>(
       (best, rank) => (best === undefined || rank.rank >= best.rank ? rank : best),
@@ -387,7 +452,7 @@ export function specCooldowns(
     );
     if (top === undefined) continue;
     const facts = spellFacts(top.id);
-    const cooldownMs = Math.max(spell.cooldown_ms, facts?.cooldownMs ?? 0);
+    const cooldownMs = cutCooldown(Math.max(spell.cooldown_ms, facts?.cooldownMs ?? 0), cuts.get(spell.name));
     const floor = isTalent ? TALENT_COOLDOWN_FLOOR_MS : BASELINE_COOLDOWN_FLOOR_MS;
     if (cooldownMs < floor || cooldownMs > COOLDOWN_CEILING_MS) continue;
     seen.add(spell.name);
@@ -410,7 +475,7 @@ export function specCooldowns(
   for (const talent of talentSpells) {
     if (seen.has(talent.name) || !litTalents.has(talent.name)) continue;
     const facts = spellFacts(talent.spellId);
-    const cooldownMs = facts?.cooldownMs ?? 0;
+    const cooldownMs = cutCooldown(facts?.cooldownMs ?? 0, cuts.get(talent.name));
     if (cooldownMs < TALENT_COOLDOWN_FLOOR_MS || cooldownMs > COOLDOWN_CEILING_MS) continue;
     seen.add(talent.name);
     items.push({

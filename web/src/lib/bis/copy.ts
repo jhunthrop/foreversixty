@@ -203,6 +203,14 @@ export const bisCopy = {
    *  of-value error bar could not clear (`weight.insignificant`) -- greyed on the page
    *  (`weight-bar-row-faint`), but the row itself is never dropped (tenet 4). */
   weightsNotSignificant: 'Not significant',
+  /** A row below zero beyond its error: it adds nothing, never a negative number. */
+  weightsNoGain: 'No gain',
+  /** A per-1% stat (expertise) outside the per-point table: "Expertise: 0.42 per 1%". */
+  weightsPerPercentCaption: (label: string, scaleFactor: number): string =>
+    `${label}: ${scaleFactor.toFixed(2)} per 1%`,
+  /** A per-1% stat with no measurable value or none at all: "Haste: no gain at this level range." */
+  weightsPerPercentReading: (label: string, reading: 'no-gain' | 'not-significant'): string =>
+    reading === 'no-gain' ? `${label}: no gain at this level range` : `${label}: not significant`,
   /** The crit/hit rating-per-percent conversion, stated once as a standing caption rather
    *  than only in each row's own hover (`weightsRatingFactorLine`) -- this ruleset's own
    *  `gametables/combatratings.txt` conversion is fixed at level 60 regardless of the band a

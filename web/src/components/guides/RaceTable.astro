@@ -5,14 +5,16 @@
 // carry a tag, and a line under the table says which racials make them the pick. Rows and the
 // line come from lib/guides/race-table.ts, so the line can never contradict the table.
 import { guidesCopy } from '../../lib/guides/copy';
+import { dataUrl } from '../../lib/planner/load';
 import { factionColorVar } from '../../lib/guides/race-pills';
 import { recommendedRaceLines, type GuideRaceRow } from '../../lib/guides/race-table';
 import GuideTableBox from './GuideTableBox.astro';
 
 interface Props {
+  build: string;
   rows: GuideRaceRow[];
 }
-const { rows } = Astro.props;
+const { build, rows } = Astro.props;
 const factionName = (faction: string): string => (faction === 'alliance' ? 'Alliance' : 'Horde');
 const picks = recommendedRaceLines(rows);
 const nameOf = (slug: string): string => rows.find((row) => row.slug === slug)?.name ?? slug;
@@ -56,6 +58,18 @@ const sentences = picks.map((pick) => {
                   ? '—'
                   : row.racials.map((racial) => (
                       <span class="race-line">
+                        {racial.icon !== undefined && (
+                          <img
+                            src={dataUrl(build, `icons/${racial.icon}.webp`)}
+                            alt=""
+                            width="20"
+                            height="20"
+                            loading="lazy"
+                            decoding="async"
+                            class="race-icon"
+                            data-testid="guide-racial-icon"
+                          />
+                        )}
                         <span class="race-racial">{racial.name}</span>
                         {`: ${racial.effect}`}
                       </span>
@@ -110,6 +124,15 @@ const sentences = picks.map((pick) => {
   .race-racial {
     color: var(--color-strong);
     white-space: nowrap;
+  }
+  .race-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+    vertical-align: -5px;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px var(--color-line-card);
   }
   .race-effect {
     min-width: 240px;

@@ -286,11 +286,6 @@
                 "reason": "Agility and crit; client level 46."
               },
               {
-                "id": "juju_power",
-                "label": "Juju Power",
-                "reason": "Strength: 30 (spell 16323). Elixir of Giants is item 9206 in the Forever client, renamed Elixir of Greater Strength, at 25 Strength (spell 11405), so Juju Power is the stronger of the engine's two strength elixirs (round 10)."
-              },
-              {
                 "id": "ground_scorpok_assay",
                 "label": "Ground Scorpok Assay",
                 "reason": "Agility from the Blasted Lands (item 8412, spell 10669, 25 Agility, an hour). It shares R.O.I.D.S.'s one-hour category (103), so an agility user takes it in R.O.I.D.S.'s place: it measured about 2% ahead for Beast Mastery and Marksmanship and 0.7% for Survival (round 9)."
@@ -299,11 +294,6 @@
                 "id": "food_poached_sunscale_salmon",
                 "label": "Poached Sunscale Salmon",
                 "reason": "Agility user's food: 40 attack power and 40 ranged attack power while well fed (item 13932, Well Fed 1249519; Mightfish Steak 13934 is the same at 45); client level 35. It measured 0.2 to 0.8% ahead of Grilled Squid (1% critical strike in Forever) for the rogue and hunter specs (round 9)."
-              },
-              {
-                "id": "juju_might",
-                "label": "Juju Might",
-                "reason": "Attack power. It shares the engine's attack-power slot with Winterfall Firewater and is the stronger of the two."
               }
             ]
           },
@@ -428,6 +418,16 @@
               "id": "off_hand_imbue:dense_sharpening_stone",
               "label": "Dense Sharpening Stone",
               "reason": "Off-hand stone for the melee Survival hunter: 8 weapon damage (item 12404); client level 35."
+            },
+            {
+              "id": "juju_power",
+              "label": "Juju Power",
+              "reason": "Strength: 30 (spell 16323), for the melee Survival hunter only: Strength gives a hunter melee attack power and no ranged attack power, so a bow hunter (Beast Mastery, Marksmanship) gains nothing from it. Elixir of Giants is item 9206 in the Forever client, renamed Elixir of Greater Strength, at 25 Strength (spell 11405), so Juju Power is the stronger of the engine's two strength elixirs (round 10)."
+            },
+            {
+              "id": "juju_might",
+              "label": "Juju Might",
+              "reason": "Melee attack power, for the melee Survival hunter only: it does not raise ranged attack power, so a bow hunter gains nothing from it. It shares the engine's attack-power slot with Winterfall Firewater and is the stronger of the two."
             }
           ],
           "druid-restoration": [

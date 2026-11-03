@@ -38,11 +38,15 @@ interface Props {
   /** The spec guide: running text runs the full column width, the same as its tables and
    *  callouts, instead of the 68ch reading measure. */
   wideProse?: boolean;
-  /** The spec guides say what is simulated once, in the status note at the top, so the footer
-   *  confidence line ("Our inference from what has been said") is left off. */
+  /** The spec guides carry one data-source line (`footnote`) instead, so the footer confidence
+   *  line ("Our inference from what has been said") is left off. */
   hideConfidenceNote?: boolean;
   /** False for the legal pages: they state no fact about the world, so no Sources footer. */
   showSources?: boolean;
+  /** One muted line above the Sources footer (the spec guides' data-source line). */
+  footnote?: string;
+  /** The Sources footer leaves off the "This site" pill (the spec guides speak as a player). */
+  hideSitePill?: boolean;
   /** The page head's eyebrow (site alignment spec 2026-10-29 §5.15): ABOUT, or LEGAL on the legal pages. */
   eyebrow?: string;
 }
@@ -58,6 +62,8 @@ const {
   wide = false,
   wideProse = false,
   hideConfidenceNote = false,
+  footnote,
+  hideSitePill = false,
   showSources = true,
   eyebrow = 'About',
 } = Astro.props;
@@ -120,7 +126,12 @@ const confidenceCopy: Record<Confidence, string> = {
           {confidenceCopy[confidence]}
         </p>
       )}
-      {showSources && <SourcesList sources={sources} />}
+      {footnote !== undefined && (
+        <p class="text-muted text-[13px]" data-testid="content-footnote">
+          {footnote}
+        </p>
+      )}
+      {showSources && <SourcesList sources={sources} hideSitePill={hideSitePill} />}
     </div>
     {hasAside && (
       <aside class="hidden lg:sticky lg:top-6 lg:block lg:self-start" data-testid="content-aside">

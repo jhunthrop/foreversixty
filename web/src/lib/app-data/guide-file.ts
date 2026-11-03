@@ -25,6 +25,9 @@ import {
   spellLookupFor,
   type GuideRole,
   type RotationItem,
+  litTalentsOf,
+  talentCooldownCuts,
+  type LitTalents,
 } from '../guides/rotation-lists';
 import { splitSpecSections, type SpecSection } from '../guides/sections';
 import type { GuideSource } from './guide-content';
@@ -231,7 +234,7 @@ interface RotationContext {
   classSlug: string;
   spec: string;
   role: GuideRole;
-  litTalents: ReadonlySet<string>;
+  litTalents: LitTalents;
 }
 
 function rotationOf(ctx: RotationContext): AppGuideFile['rotation'] {
@@ -239,11 +242,11 @@ function rotationOf(ctx: RotationContext): AppGuideFile['rotation'] {
   if (entry === undefined) return null;
   const facts = spellLookupFor(ctx.build, ctx.classSlug);
   const lists = rotationListsFrom(
-    rotationLinesFor(entry, ctx.build, ctx.classSlug, ctx.spec),
+    rotationLinesFor(entry, ctx.build, ctx.classSlug, ctx.spec, bandTopLevel(GUIDE_LEVEL)),
     loadApl(ctx.spec),
     facts,
-    specCooldowns(ctx.build, ctx.classSlug, ctx.litTalents, facts),
-    new Map(),
+    specCooldowns(ctx.build, ctx.classSlug, ctx.spec, ctx.litTalents, facts),
+    talentCooldownCuts(ctx.build, ctx.classSlug, ctx.litTalents),
     racialCooldownsFor(ctx.build, ctx.classSlug),
     ctx.role,
   );
@@ -313,11 +316,7 @@ export function buildGuideFile(
       ? []
       : railStatRows(data.statPriority, weights.weights, spec, weights.hasteScaleFactor);
   const raceRows = raceTableFor(build, classSlug, data.recommendedRaces, specKindOf(classSlug, spec, role));
-  const litTalents = new Set(
-    [...levelingTrees, ...(raidTrees ?? [])].flatMap((tree) =>
-      tree.talents.filter((t) => t.rank > 0).map((t) => t.name),
-    ),
-  );
+  const litTalents = litTalentsOf([...levelingTrees, ...(raidTrees ?? [])]);
 
   const rotation = rotationOf({ build, classSlug, spec, role, litTalents });
 

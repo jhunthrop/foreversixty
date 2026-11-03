@@ -12,9 +12,6 @@ const ROLE_OUTPUT = { dps: 'damage', healer: 'healing', tank: 'survival or threa
 
 type GuideRole = keyof typeof ROLE_RATE_UNIT;
 
-const STATUS_NOTE_TAIL =
-  "is simulated on the client's own data, not measured in play. Class mechanics carry over from 1.12 where the demo showed no change.";
-
 export const guidesCopy = {
   loadThisBuild: 'Load this build',
   simThisBuild: 'Sim this build',
@@ -29,8 +26,8 @@ export const guidesCopy = {
   /** The /guides index line. Before launch it names the beta cap; at launch the cap is gone. */
   indexHonestyLine: (now: Date = new Date()): string =>
     betaOver(now)
-      ? "Level 60 picks are simulated on the client's own data."
-      : "The beta stops at level 30. Level 60 picks are simulated on the client's own data.",
+      ? 'Talents, rotation and gear for every spec at 60.'
+      : 'The beta stops at level 30. Talents, rotation and gear for every spec at 60.',
   roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
     role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank',
   readTheGuide: 'Read the guide',
@@ -60,13 +57,10 @@ export const guidesCopy = {
   loadRaidBuildAriaLabel: 'Load the raid build in the planner',
   simRaidBuildAriaLabel: 'Sim the raid build',
   // --- guides like Wowhead's (W.18, 2026-10-22) ---------------------------------------------
-  /** The one status note for the whole page; the sections are then written as a guide. */
-  statusNote: (now: Date = new Date()): string =>
-    betaOver(now)
-      ? `Everything on this page, the talents, rotation, stat weights and best in slot, ${STATUS_NOTE_TAIL}`
-      : `The beta stops at level 30. Everything above it on this page, the talents, rotation, stat weights and best in slot, ${STATUS_NOTE_TAIL}`,
-  statusNoteLabel: 'About this guide',
-  /** The muted tag beside `Updated` in the header: the guide is simulated, the beta is not over. */
+  /** The one data-source line, in the page's footer beside the Updated stamp, never in the reading flow. */
+  dataSourceLine: (build: string): string =>
+    `Numbers from client build ${build}, checked against launch logs as they come in.`,
+  /** The muted tag beside `Updated` in the header: the beta is not over. */
   betaTag: 'Beta',
   headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string): string =>
     `${role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank'} · Updated ${updated}`,
@@ -79,20 +73,18 @@ export const guidesCopy = {
   cooldowns: 'Cooldowns',
   bestInSlot: 'Best in slot',
   levelRange: 'Level range',
-  bisCaption: (race: string, faction: string): string =>
-    `Picks for a ${race} (${faction}), ranked in simulation with the full set equipped.`,
+  bisCaption: (race: string, faction: string): string => `Picks for a ${race} (${faction}).`,
   fullListLink: 'Full list and alternatives',
   preRaidNote:
     'These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.',
-  notSimChecked: 'Not sim-checked',
+  notSimChecked: 'Ranked by stats only',
   slotColumn: 'Slot',
   itemColumn: 'Item',
   sourceColumn: 'Source',
   enchants: 'Enchants',
   consumables: 'Consumables',
-  enchantsNote:
-    'Only enchants with a simulated value are listed. Crit, hit and haste enchants are not scored yet.',
-  consumablesNote: 'What this spec is simulated with in a raid.',
+  enchantsNote: 'Crit, hit and haste enchants are not listed yet.',
+  consumablesNote: 'What to bring to a raid.',
   enchantColumn: 'Enchant',
   givesColumn: 'Gives',
   consumableColumn: 'Consumable',

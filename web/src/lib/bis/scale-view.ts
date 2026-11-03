@@ -6,6 +6,7 @@
 // weights run), moved out of panel-view.ts so the tools island carries no BiS page code.
 import { statLabelForSpec } from '../sim/weights-display';
 import { bisCopy, tankCopy } from './copy';
+import { perPercentOf, readingOf, type WeightReading } from './weight-reading';
 import { rateUnitFor, type SlotScoreUnit } from './tank-view';
 import type { BisStatWeight } from './types';
 
@@ -88,9 +89,12 @@ export interface ScaleRow {
   /** The word after `dpsPerPoint`: "DPS", or "score" on a tank band (`dpsPerPoint` is then
    *  raw tank score per point). */
   perPointUnit: string;
-  /** `false` greys this row out on the page and shows `bisCopy.weightsNotSignificant`
-   *  instead of its own scale factor -- the row itself is never dropped (tenet 4). */
+  /** `false` greys this row out on the page and shows `bisCopy.weightsNotSignificant` (or
+   *  `weightsNoGain`) instead of its own scale factor -- the row itself is never dropped
+   *  (tenet 4). True only when `reading` is `'value'`. */
   significant: boolean;
+  /** The shared reading (`lib/bis/weight-reading.ts`): never a negative number on the page. */
+  reading: WeightReading;
   /** 4-100: `%` width for the row's horizontal bar (never 0), scaled against the loudest
    *  scale factor in THIS table (haste is never a table row, so that loudest value is
    *  always the anchor stat's own `1`). */
@@ -100,34 +104,72 @@ export interface ScaleRow {
   ratingFactorTitle?: string;
 }
 
-/** Every per-point row in `weights` (haste excluded -- `isHasteStat`), sorted strictly
- *  descending by `scaleFactor`, from the already-computed `byStat` (`computeScaleFactors`). */
+/** The per-point divisor that makes the top measurable per-point stat read exactly 1.00: the
+ *  published anchor can be a per-1% stat (a tank's expertise), which is no table row. */
+function perPointDivisor(weights: readonly BisStatWeight[], byStat: ReadonlyMap<string, ScaleFactors>): number {
+  const scales = weights
+    .filter((w) => perPercentOf(w.stat) === undefined && readingOf(w) === 'value')
+    .map((w) => byStat.get(w.stat)?.scaleFactor ?? 0)
+    .filter((scale) => scale > 0);
+  return scales.length > 0 ? Math.max(...scales) : 1;
+}
+
+const READING_ORDER: Readonly<Record<WeightReading, number>> = {
+  value: 0,
+  'no-gain': 1,
+  'not-significant': 2,
+};
+
+/** Every per-point row in `weights` (haste and expertise, the per-1% stats, excluded), the
+ *  measurable ones first by `scaleFactor` descending, then "No gain", then "Not significant",
+ *  from the already-computed `byStat` (`computeScaleFactors`) over `perPointDivisor`. */
 export function buildScaleRows(
   weights: readonly BisStatWeight[],
   spec: string,
   byStat: ReadonlyMap<string, ScaleFactors>,
   perPointUnit: string,
 ): ScaleRow[] {
-  const perPoint = weights.filter((w) => !isHasteStat(w.stat));
-  const maxScale = Math.max(...perPoint.map((w) => byStat.get(w.stat)?.scaleFactor ?? 0), 0.0001);
+  const perPoint = weights.filter((w) => perPercentOf(w.stat) === undefined);
+  const divisor = perPointDivisor(weights, byStat);
   return perPoint
     .map((w): ScaleRow => {
       const factors = byStat.get(w.stat) ?? { scaleFactor: 0, scaleError: 0 };
       const label = statLabelForSpec(w.stat, spec);
+      const reading = readingOf(w);
+      const scaleFactor = factors.scaleFactor / divisor;
       return {
         stat: w.stat,
         label: w.unit === 'rating' ? `${label} rating` : label,
-        scaleFactor: factors.scaleFactor,
+        scaleFactor,
         dpsPerPoint: factors.dpsPerPoint,
-        scaleError: factors.scaleError,
+        scaleError: factors.scaleError / divisor,
         perPointUnit,
-        significant: !(w.insignificant ?? false),
-        barPercent: Math.min(100, Math.max(4, (factors.scaleFactor / maxScale) * 100)),
+        significant: reading === 'value',
+        reading,
+        barPercent: reading === 'value' ? Math.min(100, Math.max(4, scaleFactor * 100)) : 4,
         ratingFactorTitle:
           w.rating_factor !== undefined ? bisCopy.weightsRatingFactorLine(label, w.rating_factor) : undefined,
       };
     })
-    .sort((a, b) => b.scaleFactor - a.scaleFactor);
+    .sort((a, b) => READING_ORDER[a.reading] - READING_ORDER[b.reading] || b.scaleFactor - a.scaleFactor);
+}
+
+/** The per-1% stats' one-line captions after the haste one: "Expertise: 0.42 per 1%", or
+ *  "Expertise: no gain" / "not significant", never a negative number. */
+function perPercentCaptionsFor(
+  weights: readonly BisStatWeight[],
+  byStat: ReadonlyMap<string, ScaleFactors>,
+  spec: string,
+): string[] {
+  const divisor = perPointDivisor(weights, byStat);
+  return weights
+    .filter((w) => perPercentOf(w.stat) === 'expertise')
+    .map((w) => {
+      const label = statLabelForSpec(w.stat, spec);
+      const reading = readingOf(w);
+      if (reading !== 'value') return bisCopy.weightsPerPercentReading(label, reading);
+      return bisCopy.weightsPerPercentCaption(label, (byStat.get(w.stat)?.scaleFactor ?? 0) / divisor);
+    });
 }
 
 /** Haste's own one-line caption (owner correction, 2026-09-30, after player review: "haste
@@ -152,9 +194,11 @@ export function hasteCaptionFor(
 ): string | undefined {
   const hasteRow = weights.find((w) => isHasteStat(w.stat));
   if (hasteRow === undefined) return undefined;
+  const reading = readingOf(hasteRow);
+  if (reading !== 'value') return bisCopy.weightsPerPercentReading('Haste', reading);
   const scaleFactor = publishedHasteScaleFactor ?? byStat.get(hasteRow.stat)?.scaleFactor;
   if (scaleFactor === undefined) return undefined;
-  return bisCopy.weightsHasteCaption(scaleFactor, !hasteOnItems);
+  return bisCopy.weightsHasteCaption(scaleFactor / perPointDivisor(weights, byStat), !hasteOnItems);
 }
 
 export function perPointUnitFor(unit: SlotScoreUnit): string {
@@ -203,12 +247,19 @@ export function scaleViewFor(input: ScaleViewInput): ScaleView {
     input.referenceDpsPerPoint,
     input.publishedAnchorStat,
   );
+  const rows = buildScaleRows(input.weights, input.spec, byStat, perPointUnitFor(input.unit));
+  // The note names the top per-point row the table normalizes to (never a per-1% stat).
+  const topRow = rows.find((row) => row.reading === 'value');
+  const captions = [
+    hasteCaptionFor(input.weights, input.publishedHasteScaleFactor, byStat, input.hasteOnItems),
+    ...perPercentCaptionsFor(input.weights, byStat, input.spec),
+  ].filter((line): line is string => line !== undefined);
   return {
-    rows: buildScaleRows(input.weights, input.spec, byStat, perPointUnitFor(input.unit)),
+    rows,
     noteLine:
-      anchorStat === ''
+      anchorStat === '' || topRow === undefined
         ? bisCopy.weightsUnmeasuredLine
-        : scaleNoteFor(statLabelForSpec(anchorStat, input.spec), input.unit),
-    hasteCaption: hasteCaptionFor(input.weights, input.publishedHasteScaleFactor, byStat, input.hasteOnItems),
+        : scaleNoteFor(statLabelForSpec(topRow.stat, input.spec), input.unit),
+    hasteCaption: captions.length === 0 ? undefined : captions.join('. '),
   };
 }

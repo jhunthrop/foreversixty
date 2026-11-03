@@ -7,7 +7,9 @@
 // here as a small table that a test holds to the race data, so a renamed racial fails a test
 // instead of the page.
 import type { RaceRow } from '../planner/types';
+import { buildIconExists } from '../data/build-files';
 import { buildRace, buildRacesForClass } from './build-races';
+import { readBuildJson } from './build-files';
 
 export type SpecKind = 'caster' | 'melee' | 'ranged' | 'healer' | 'tank';
 
@@ -200,6 +202,23 @@ export interface GuideRacial {
   name: string;
   /** What it does, sentence case, no final stop. */
   effect: string;
+  /** The racial's own client icon (`racialicons.json`), absent when the build ships none. */
+  icon?: string;
+}
+
+/** A racial name as the client and the race data both spell it ("Read Ley Line", "Read Leyline"). */
+function racialKey(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+/** The build's racial icons (`data/builds/<build>/racialicons.json`), by `racialKey`. */
+export function racialIconsFor(build: string): Map<string, string> {
+  const file = readBuildJson<Record<string, string>>(build, 'racialicons.json') ?? {};
+  return new Map(
+    Object.entries(file)
+      .filter(([, icon]) => buildIconExists(build, icon))
+      .map(([name, icon]) => [racialKey(name), icon]),
+  );
 }
 
 export interface GuideRaceRow {
@@ -221,6 +240,7 @@ export function raceTableFor(
   recommendedRaces: readonly string[],
   kind: SpecKind,
 ): GuideRaceRow[] {
+  const icons = racialIconsFor(build);
   return buildRacesForClass(build, classSlug).map((race): GuideRaceRow => {
     const wanted = picksFor(race.slug, classSlug, kind);
     const effects = racialEffects(race);
@@ -238,7 +258,8 @@ export function raceTableFor(
         const effect = effects.get(name);
         if (effect === undefined) return [];
         const forClass = RACIAL_EFFECTS_BY_CLASS[race.slug]?.[name]?.[classSlug];
-        return [{ name, effect: forClass ?? upperFirst(effect) }];
+        const icon = icons.get(racialKey(name));
+        return [{ name, effect: forClass ?? upperFirst(effect), ...(icon === undefined ? {} : { icon }) }];
       }),
     };
   });
