@@ -1,0 +1,42 @@
+name: data/builds from the cache
+description: >
+  Puts data/builds into a checkout that left it out (`!/data/builds/` in the job's
+  sparse-checkout). The tree is ~2 GB on disk and ~1.4 GB of blobs through git, the slowest
+  part of a cold checkout when a landing starts ~35 jobs at once; the same bytes are ~150 MB
+  in the Actions cache. The key is the tree's own git id, so a hit is byte-for-byte the
+  commit's data/builds, and the step proves it before the job goes on. A miss checks the tree
+  out from git; only main saves it, since a land/** branch can read main's caches and no
+  other branch's (docs/runbooks/landing.md, "Checkout").
+runs:
+  using: composite
+  steps:
+    - id: tree
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: |
+        test ! -e data/builds || { echo "data/builds is already checked out: add !/data/builds/ to this job's sparse-checkout"; exit 1; }
+        echo "id=$(git rev-parse HEAD:data/builds)" >> "$GITHUB_OUTPUT"
+    - id: cache
+      uses: actions/cache/restore@v4
+      with:
+        path: data/builds
+        key: data-builds-${{ steps.tree.outputs.id }}
+    # Into the sparse set either way, so git tracks the tree as in any full checkout. On a hit
+    # the files are already there and git takes them as they are (no blob is fetched); on a
+    # miss this is the checkout. Then the tree must be exactly the commit's: nothing modified,
+    # deleted or extra.
+    - shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        HIT: ${{ steps.cache.outputs.cache-hit }}
+        TREE: ${{ steps.tree.outputs.id }}
+      run: |
+        git sparse-checkout add '/data/builds/'
+        drift=$(git status --porcelain --untracked-files=all -- data/builds)
+        test -z "$drift" || { echo "data/builds does not match HEAD (cache hit: ${HIT:-false}):"; echo "$drift" | head -20; exit 1; }
+        echo "data/builds at tree $TREE (cache hit: ${HIT:-false})" | tee -a "$GITHUB_STEP_SUMMARY"
+    - if: steps.cache.outputs.cache-hit != 'true' && github.ref == 'refs/heads/main'
+      uses: actions/cache/save@v4
+      with:
+        path: data/builds
+        key: data-builds-${{ steps.tree.outputs.id }}
