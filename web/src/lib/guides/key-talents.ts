@@ -1,7 +1,8 @@
 // web/src/lib/guides/key-talents.ts
 // The "Key talents" list under a guide's builds: each entry is the talents' icons and names
 // with a one-line why. The why is the guide's own bullet (`- **Name** (n points) — why`) in
-// its Talents section; the icons, the ranks and the legal names come from the leveling
+// its Talents section (`- **Name** (n points): why` is the form a guide writes now; the older
+// em dash separator still parses); the icons, the ranks and the legal names come from the leveling
 // build's talent data. A spec whose Talents section has no such bullets gets its build's
 // own strongest talents with each talent's description as the why, so the list is never empty
 // for a spec with a build.
@@ -30,13 +31,13 @@ export interface ParsedBullet {
 }
 
 const DASH_SPLIT =
-  /^(.*?\*\*[^*]+\*\*(?:\s*\([^)]*\))?(?:,?\s*(?:and\s+)?\*\*[^*]+\*\*(?:\s*\([^)]*\))?)*)\s+—\s+(.+)$/;
+  /^(.*?\*\*[^*]+\*\*(?:\s*\([^)]*\))?(?:,?\s*(?:and\s+)?\*\*[^*]+\*\*(?:\s*\([^)]*\))?)*)(?:\s+—\s+|:\s+)(.+)$/;
 
 function upperFirst(text: string): string {
   return text === '' ? text : text[0]!.toUpperCase() + text.slice(1);
 }
 
-/** Every `- **Name** … — why` bullet in a Talents section, in order. */
+/** Every `- **Name** …: why` (or `— why`) bullet in a Talents section, in order. */
 export function parseTalentBullets(markdown: string): ParsedBullet[] {
   const bullets: ParsedBullet[] = [];
   for (const line of markdown.split(/\r?\n/)) {
