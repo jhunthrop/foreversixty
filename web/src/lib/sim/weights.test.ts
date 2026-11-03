@@ -93,8 +93,10 @@ describe('toolScaleView', () => {
   ];
   const view = toolScaleView(weights, 'warrior-fury', 'attack_power');
 
+  // The shared weight reading (lib/bis/weight-reading.ts): measurable rows first, descending,
+  // then the insignificant ones.
   it('normalizes to the top significant per-point stat and sorts descending', () => {
-    expect(view.rows.map((row) => row.stat)).toEqual(['strength', 'agility', 'attack_power', 'crit']);
+    expect(view.rows.map((row) => row.stat)).toEqual(['strength', 'attack_power', 'crit', 'agility']);
     expect(view.rows[0].scaleFactor).toBe(1);
     expect(view.rows.find((row) => row.stat === 'attack_power')?.scaleFactor).toBeCloseTo(0.5, 6);
     expect(view.rows.find((row) => row.stat === 'crit')?.scaleError).toBeCloseTo(0.01, 6);
