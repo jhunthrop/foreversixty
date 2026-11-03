@@ -1,6 +1,27 @@
 {
   "notes": "Per-spec leveling reservations (sim-accuracy round 10). Below 60 a band's talent build is the guide's level-60 build cut down by the top-row-down walk (sim/leveling LadderTalentString). A spec listed here takes these ranks of its own tree first, in order, each once the build can legally hold it and never past the guide's own rank for that talent, then walks as before; so the ladder only ever adds points and its level-60 build is the guide's. A row is adopted only where the band builds it makes beat the plain walk's beyond error at seeds 1 and 50001 (10,000 iterations, the band's own heal profile, both factions), keep every talent the engine models only by a probe as zero, drop nothing the rotation casts and lose at no band. The evidence is in design/reviews/2026-11-03-sim-audit-round10/healprofile.md and design/reviews/2026-11-03-sim-audit-round11/healprofile.md. sim/leveling embeds a copy (make ladder-first-sync); TestEmbeddedLadderFirstMatchesCurated holds it to this file.",
   "specs": {
+    "druid-feral-bear": {
+      "reason": "The rotation casts Lacerate (the 15-point row, rank 1 at 25, behind Savage Fury 2) and Primal Bite (the 30-point row, rank 1 at 40, behind Leader of the Pack). A level 30 druid's 21 points hold Lacerate and a level 40 druid's 31 hold Primal Bite, but the plain walk spends them on Shredding Attacks and Blood Frenzy. Taking each as soon as it fits raises threat on the tank fight beyond error at bands 20 (Savage Fury's first rank for Feral Swiftness's, about 5%), 30 (about 41%) and 40 (about 19%), both factions, seeds 1 and 50001 (sim-accuracy round 13, hybrids); damage taken rises about 1 to 2% without the dodge points. Bands 50 and 60 already carry both and do not change.",
+      "first": [
+        {
+          "talent": "Savage Fury",
+          "rank": 2
+        },
+        {
+          "talent": "Lacerate",
+          "rank": 1
+        },
+        {
+          "talent": "Leader of the Pack",
+          "rank": 1
+        },
+        {
+          "talent": "Primal Bite",
+          "rank": 1
+        }
+      ]
+    },
     "druid-restoration": {
       "reason": "On each band's own fight, Restoration levels better with Heart of the Wild, all three ranks of Reflection and Bloom ahead of the top rows' other points, and Nature's Swiftness held as soon as it can be: beyond error at band 20 (round 11's pull profile, both factions) and band 30 (round 10), and no band loses.",
       "first": [

@@ -12,6 +12,7 @@ var ladderFirstSpecs = map[string]struct {
 	class, slug string
 	tree        int
 }{
+	"druid-feral-bear":   {"druid", "feral-bear", 1},
 	"druid-restoration":  {"druid", "restoration", 2},
 	"paladin-holy":       {"paladin", "holy", 0},
 	"paladin-protection": {"paladin", "protection", 1},
