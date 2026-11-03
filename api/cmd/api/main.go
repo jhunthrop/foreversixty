@@ -662,9 +662,10 @@ func serve(log *slog.Logger) error {
 	deps.Rankings.ScoreGear = deps.Rating
 	deps.Coach = mountCoach(ctx, coachWiring{cfg: cfg, pool: pool, deps: &deps, rating: ratingStore, reports: reportStore, auth: authStore, entitle: entStore, sims: simStore, summaries: bucketOrNil(client), log: log})
 
+	layouts := talentLayouts(cfg.TreeDataDir, treeData, log)
 	deps.Sims = &sims.Service{
 		Store: simStore, Accounts: entStore, Planner: simEngine(log),
-		EngineVersion: enginever.Version, Log: log,
+		EngineVersion: enginever.Version, Talents: layouts, Log: log,
 	}
 	// The addon outbox's sim requests start the same server runs; the
 	// job runner is attached to deps.Sims below, when the job is reachable.
@@ -709,7 +710,7 @@ func serve(log *slog.Logger) error {
 		// the next line needs the ingest to be there.
 		scorer = sims.NewScorer(sims.ScoreDeps{
 			Store: simStore, Scores: rankStore, Engine: simEngine(log),
-			Build:         sims.CombatantBuilder{Talents: talentLayouts(cfg.TreeDataDir, treeData, log)},
+			Build:         sims.CombatantBuilder{Talents: layouts},
 			Summaries:     client,
 			EngineVersion: enginever.Version, Log: log,
 		})

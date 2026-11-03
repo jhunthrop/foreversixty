@@ -54,7 +54,7 @@ type manaRow struct {
 }
 
 func runHealReport(o options) (string, error) {
-	req, err := buildRequest(o)
+	req, err := legalRequest(o)
 	if err != nil {
 		return "", err
 	}

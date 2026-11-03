@@ -112,7 +112,7 @@ func run(o options) error {
 		fmt.Print(out)
 		return nil
 	}
-	req, err := buildRequest(o)
+	req, err := legalRequest(o)
 	if err != nil {
 		return err
 	}

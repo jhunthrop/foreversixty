@@ -116,6 +116,10 @@ func (s *Service) admit(w http.ResponseWriter, r *http.Request, req *simapi.SimR
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", err.Error(), nil)
 		return false
 	}
+	if err := talentsLegal(s.Talents, *req); err != nil {
+		httpx.WriteError(w, r, http.StatusBadRequest, "illegal_talents", err.Error(), nil)
+		return false
+	}
 	// Bulk only, not req.Kind() != KindRun: runner.Planner's own
 	// contract refuses a request with no Bulk block (ErrBadInput), and
 	// a weights request carries req.Weights instead - sending one

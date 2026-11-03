@@ -5178,7 +5178,9 @@ paths:
         '400':
           description: >-
             The request cannot be run. error.code is "invalid" for a
-            malformed envelope, "cap_exceeded" when the expansion is past
+            malformed envelope, "illegal_talents" when the character's
+            talents (or a talent loadout it compares) are a build the game
+            refuses, "cap_exceeded" when the expansion is past
             the server lane's cap (error.fields carries cap and
             combinations as decimal strings), or "too_large" when the
             planner estimates the run past the job's budget (error.fields
@@ -5342,7 +5344,7 @@ paths:
                   - $ref: '#/components/schemas/Envelope'
                   - { type: object, properties: { data: { $ref: '#/components/schemas/SimStarted' } } }
         '400':
-          description: "The stored request can no longer be run: invalid, cap_exceeded or too_large"
+          description: "The stored request can no longer be run: invalid, illegal_talents, cap_exceeded or too_large"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '401':
           description: "No session or device token, or a dead one"
