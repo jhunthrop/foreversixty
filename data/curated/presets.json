@@ -542,6 +542,11 @@
           ],
           "paladin-protection": [
             {
+              "id": "elixir_of_holy_power",
+              "label": "Elixir of Holy Power",
+              "reason": "40 Holy spell damage for 30 minutes (item 21546, spell 1310077, aura 13 on the Holy school): Forever's rework of the Elixir of Greater Firepower, client level 40. Recipe 21547 (Alchemy 250) drops from the Dark Iron Taskmasters and Slavers of Searing Gorge. No other elixir gives Holy damage, so it costs no other slot. A paladin tank's threat is Holy spell damage: it measured about 2.2% more threat (round 12)."
+            },
+            {
               "id": "major_spellblasting_potion",
               "label": "Major Spellblasting Potion",
               "reason": "47 spell damage for 30 seconds (item 250937, spell 1251932), in the potion category, so it shares the two-minute timer with a mana potion; client level 55 (recipe from the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens, Honored). A paladin tank's threat is Holy spell damage: it measured about 0.9% more threat than Major Mana Potion (round 10); below level 55 the mana potion holds the slot."
@@ -619,6 +624,11 @@
             }
           ],
           "paladin-retribution": [
+            {
+              "id": "elixir_of_holy_power",
+              "label": "Elixir of Holy Power",
+              "reason": "40 Holy spell damage for 30 minutes (item 21546, spell 1310077, aura 13 on the Holy school): Forever's rework of the Elixir of Greater Firepower, client level 40. Recipe 21547 (Alchemy 250) drops from the Dark Iron Taskmasters and Slavers of Searing Gorge. No other elixir gives Holy damage, so it costs no other slot. Seal of Command, its Judgement, Consecration and Hammer of Wrath are Holy: it measured about 1.6% more DPS (round 12)."
+            },
             {
               "id": "food_smoked_desert_dumpling",
               "label": "Smoked Desert Dumplings",
