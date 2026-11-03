@@ -109,8 +109,8 @@ export function addonCodeFor(input: BuildCodeInput): string {
  *
  * A sim build has no learning order of its own: the engine's talents string is a finished
  * tree, one rank digit per talent. The order written here is `orderFromRanks`' -- the one
- * the planner's addon import already reconstructs -- which spends each tree tier by tier,
- * left to right within a tier, the trees in their position order, one triple per rank,
+ * the planner's addon import already reconstructs -- the order a player levels with: the
+ * main tree first, each talent the moment its row opens, one triple per rank,
  * through the planner's own gates (a rank those gates refuse is left out rather than
  * written as an illegal point). That is the order the addon's talent window will follow.
  *

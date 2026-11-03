@@ -73,7 +73,7 @@ export const addonCopy = {
   importNoExport: "Don't have an export?",
   importGetAddon: 'Get the addon',
   importOrderApproximated:
-    'Nothing in the game records the order a build was spent in, so this order is our best reconstruction: lowest tier first, left to right. The finished tree is exact.',
+    'Nothing in the game records the order a build was spent in, so this order is our best reconstruction: the main tree first, each talent as soon as its row opens. The finished tree is exact.',
   importDropped: (names: string): string =>
     `Imported, but these could not be placed under the planner’s own rules: ${names}.`,
   importOlderBuild: (exported: string, active: string): string =>

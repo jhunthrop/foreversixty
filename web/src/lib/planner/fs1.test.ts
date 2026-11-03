@@ -1,6 +1,9 @@
 // web/src/lib/planner/fs1.test.ts
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import talents from '../../fixtures/planner/talents/warrior.json';
+import { repoRoot } from '../data/build-files';
 import { indexTalents } from './rules';
 import type { Talent, TalentFile } from './types';
 import {
@@ -132,7 +135,7 @@ describe('decodeFS1', () => {
 });
 
 describe('orderFromRanks', () => {
-  it('spends the points in a legal order, lowest tier first', () => {
+  it('spends the points in a legal order', () => {
     const first = index.trees[0].talents.find((talent) => talent.tier === 0)!;
     const ranks = index.trees.map((tree) => tree.talents.map((talent) => (talent.id === first.id ? 3 : 0)));
     const result = orderFromRanks(index, ranks);
@@ -146,6 +149,36 @@ describe('orderFromRanks', () => {
     const result = orderFromRanks(index, ranks);
     expect(result.order).toEqual([]);
     expect(result.dropped).toEqual([locked.id]);
+  });
+
+  describe('the order a player spends the points in', () => {
+    // The Shadow guide's leveling build, 34 points in Shadow and 17 in Discipline.
+    const SHADOW = 'FS1:1.60.1.70753:priest:gnome:02510503103/0/54342001201300051:';
+    const priestFile = JSON.parse(
+      readFileSync(join(repoRoot(), 'data/builds/1.60.1.70753/talents/priest.json'), 'utf8'),
+    ) as TalentFile;
+    const priest = indexTalents(priestFile);
+    const decoded = decodeFS1(SHADOW);
+    if (!decoded.ok) throw new Error('the Shadow build code does not decode');
+    const { order, dropped } = orderFromRanks(priest, decoded.build.treeRanks);
+    const named = (name: string): number =>
+      priest.trees.flatMap((tree) => tree.talents).find((t) => t.name === name)!.id;
+    const shadowTree = priest.trees.find((tree) => tree.name === 'Shadow')!;
+
+    it('spends the build’s main tree before any other', () => {
+      expect(dropped).toEqual([]);
+      const shadowPoints = order.filter((id) => priest.treeOf.get(id) === shadowTree).length;
+      expect(order.slice(0, shadowPoints).every((id) => priest.treeOf.get(id) === shadowTree)).toBe(true);
+    });
+
+    it('takes a deeper talent the moment its row opens: Mind Flay is the point at level 20', () => {
+      expect(order.indexOf(named('Mind Flay'))).toBe(10);
+      expect(order.indexOf(named('Mind Flay'))).toBeLessThan(order.indexOf(named('Shadow Focus')));
+    });
+
+    it('finishes a started talent before opening another in the same row, the cheapest first', () => {
+      expect(order.slice(0, 3)).toEqual(Array(3).fill(named('Spirit Tap')));
+    });
   });
 
   it('produces an order the planner’s own rules accept', () => {
