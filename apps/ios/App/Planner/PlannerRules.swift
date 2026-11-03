@@ -217,8 +217,11 @@ enum PlannerRules {
 
     // MARK: Building an order from ranks
 
-    /// `fs1.ts` `orderFromRanks`: one legal order reaching the ranks, lowest tier first, left to
-    /// right, in repeated passes. `dropped` names (sorted) every talent it could not fill.
+    /// `fs1.ts` `orderFromRanks`: the order a player levels into the ranks, one point at a time:
+    /// the tree with the most points first (a tie keeps tab order); within it the deepest row a
+    /// point can go in, so a talent is taken the moment its row opens; within a row the talent with
+    /// the fewest ranks still to go, then left to right. `dropped` names (sorted) every talent it
+    /// could not fill.
     static func orderFromRanks(_ index: PlannerIndex, treeRanks: [[Int]]) -> (order: [Int], dropped: [Int]) {
         var wanted: [Int: Int] = [:]
         for (treeIndex, tree) in index.trees.enumerated() {
@@ -228,25 +231,32 @@ enum PlannerRules {
                 if rank > 0 { wanted[talent.id] = rank }
             }
         }
+        let trees = index.trees.enumerated()
+            .map { (position: $0.offset, tree: $0.element, points: $0.element.talents.reduce(0) { $0 + (wanted[$1.id] ?? 0) }) }
+            .sorted { ($1.points, $0.position) < ($0.points, $1.position) }
+            .map(\.tree)
         var spent: [Int: Int] = [:]
         var order: [Int] = []
-        var progress = true
-        while progress {
-            progress = false
-            for tree in index.trees {
-                let byTier = tree.talents.sorted { ($0.tier, $0.column) < ($1.tier, $1.column) }
-                for talent in byTier {
-                    let target = wanted[talent.id] ?? 0
-                    while (spent[talent.id] ?? 0) < target, canAddPoint(index, order: order, talent: talent.id) == .allowed {
-                        order.append(talent.id)
-                        spent[talent.id, default: 0] += 1
-                        progress = true
-                    }
-                }
-            }
+        while let next = nextPoint(index, trees: trees, wanted: wanted, spent: spent, order: order) {
+            order.append(next)
+            spent[next, default: 0] += 1
         }
         let dropped = wanted.filter { (spent[$0.key] ?? 0) < $0.value }.map(\.key).sorted()
         return (order, dropped)
+    }
+
+    /// The next point by `orderFromRanks`' three rules, or nil when no wanted rank can be placed.
+    private static func nextPoint(
+        _ index: PlannerIndex, trees: [TalentTree], wanted: [Int: Int], spent: [Int: Int], order: [Int]
+    ) -> Int? {
+        let toGo = { (id: Int) in (wanted[id] ?? 0) - (spent[id] ?? 0) }
+        for tree in trees {
+            let open = tree.talents
+                .filter { toGo($0.id) > 0 && canAddPoint(index, order: order, talent: $0.id) == .allowed }
+                .min { (-$0.tier, toGo($0.id), $0.column) < (-$1.tier, toGo($1.id), $1.column) }
+            if let open { return open.id }
+        }
+        return nil
     }
 
     /// Ranks by talent id as tree rank lists in the index's layout (for `orderFromRanks`).

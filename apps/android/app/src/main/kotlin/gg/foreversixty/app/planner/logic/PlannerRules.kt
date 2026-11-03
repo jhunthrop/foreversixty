@@ -160,29 +160,41 @@ object PlannerRules {
     fun ranks(order: List<Int>): Map<Int, Int> = order.groupingBy { it }.eachCount()
 
     /**
-     * `fs1.ts` `orderFromRanks`: a legal order reaching [treeRanks], spending lowest tier first, left
-     * to right, in repeated passes over the trees, each point asked of [refuseAddIgnoringLevel].
+     * `fs1.ts` `orderFromRanks`: the order a player levels into [treeRanks], one point at a time:
+     * the tree with the most points first (a tie keeps tab order); within it the deepest row a point
+     * can go in, so a talent is taken the moment its row opens; within a row the talent with the
+     * fewest ranks still to go, then left to right. Each point is asked of [refuseAddIgnoringLevel].
      */
     fun orderFromRanks(index: TalentIndex, treeRanks: List<List<Int>>): OrderFromRanks {
         val wanted = wantedRanks(index, treeRanks)
+        val trees = index.trees.withIndex()
+            .sortedWith(compareByDescending<IndexedValue<TalentTree>> { (_, tree) -> tree.talents.sumOf { wanted[it.id] ?: 0 } }.thenBy { it.index })
+            .map { it.value }
         val spent = mutableMapOf<Int, Int>()
         var order = emptyList<Int>()
-        var progress = true
-        while (progress) {
-            progress = false
-            index.trees.forEach { tree ->
-                tree.talents.sortedWith(compareBy({ it.tier }, { it.column })).forEach { talent ->
-                    val target = wanted[talent.id] ?: 0
-                    while ((spent[talent.id] ?: 0) < target && refuseAddIgnoringLevel(index, order, talent.id) == null) {
-                        order = order + talent.id
-                        spent[talent.id] = (spent[talent.id] ?: 0) + 1
-                        progress = true
-                    }
-                }
-            }
+        while (true) {
+            val next = nextPoint(index, trees, wanted, spent, order) ?: break
+            order = order + next
+            spent[next] = (spent[next] ?: 0) + 1
         }
         val dropped = wanted.filter { (id, target) -> (spent[id] ?: 0) < target }.keys.sorted()
         return OrderFromRanks(order, dropped)
+    }
+
+    private fun nextPoint(
+        index: TalentIndex,
+        trees: List<TalentTree>,
+        wanted: Map<Int, Int>,
+        spent: Map<Int, Int>,
+        order: List<Int>,
+    ): Int? {
+        fun toGo(id: Int) = (wanted[id] ?: 0) - (spent[id] ?: 0)
+        return trees.firstNotNullOfOrNull { tree ->
+            tree.talents
+                .filter { toGo(it.id) > 0 && refuseAddIgnoringLevel(index, order, it.id) == null }
+                .minWithOrNull(compareByDescending<Talent> { it.tier }.thenBy { toGo(it.id) }.thenBy { it.column })
+                ?.id
+        }
     }
 
     private fun wantedRanks(index: TalentIndex, treeRanks: List<List<Int>>): Map<Int, Int> = buildMap {

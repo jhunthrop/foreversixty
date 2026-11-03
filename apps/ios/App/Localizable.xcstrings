@@ -8306,7 +8306,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Loaded the %1$@ build. The order shown is one legal way to reach it, lowest tier first; it is not a recommended leveling order."
+            "value": "Loaded the %1$@ build. The order shown is one way to level into it: the main tree first, each talent as soon as its row opens."
           }
         }
       }
