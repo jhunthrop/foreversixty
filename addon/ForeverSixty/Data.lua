@@ -1982,6 +1982,7 @@ ns.Data = {
 			} },
 			{ level = 40, lines = {
 				{ spellId = 8161, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; refreshing it needs no aura or spell id to check, since totem upkeep is tracked by slot, not by buff." },
+				{ spellId = 17364, name = "Stormstrike", condition = "Stormstrike on cooldown: it is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder." },
 				{ spellId = 10391, name = "Lightning Bolt", condition = "Lightning Bolt at five Maelstrom Weapon stacks, right after Stormstrike so its +20% on the next Lightning Bolt is up: each stack takes 4% a talent rank off the bolt's cast time and mana, so 5/5 makes it instant and free." },
 				{ spellId = 6365, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 1220749, name = "Earth Shock", condition = "Earth Shock on the shock cooldown while mana is above 50 percent." },
@@ -1989,6 +1990,7 @@ ns.Data = {
 			{ level = 50, lines = {
 				{ spellId = 8161, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; refreshing it needs no aura or spell id to check, since totem upkeep is tracked by slot, not by buff." },
 				{ spellId = 8835, name = "Grace of Air Totem", condition = "Keep Grace of Air Totem down for its Agility." },
+				{ spellId = 17364, name = "Stormstrike", condition = "Stormstrike on cooldown: it is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder." },
 				{ spellId = 15207, name = "Lightning Bolt", condition = "Lightning Bolt at five Maelstrom Weapon stacks, right after Stormstrike so its +20% on the next Lightning Bolt is up: each stack takes 4% a talent rank off the bolt's cast time and mana, so 5/5 makes it instant and free." },
 				{ spellId = 10437, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 1220750, name = "Earth Shock", condition = "Earth Shock on the shock cooldown while mana is above 50 percent." },
@@ -1996,6 +1998,7 @@ ns.Data = {
 			{ level = 60, lines = {
 				{ spellId = 10442, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; refreshing it needs no aura or spell id to check, since totem upkeep is tracked by slot, not by buff." },
 				{ spellId = 10627, name = "Grace of Air Totem", condition = "Keep Grace of Air Totem down for its Agility." },
+				{ spellId = 17364, name = "Stormstrike", condition = "Stormstrike on cooldown: it is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder." },
 				{ spellId = 15208, name = "Lightning Bolt", condition = "Lightning Bolt at five Maelstrom Weapon stacks, right after Stormstrike so its +20% on the next Lightning Bolt is up: each stack takes 4% a talent rank off the bolt's cast time and mana, so 5/5 makes it instant and free." },
 				{ spellId = 10438, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 10414, name = "Earth Shock", condition = "Earth Shock on the shock cooldown while mana is above 50 percent." },
@@ -2004,7 +2007,6 @@ ns.Data = {
 		["shaman-restoration"] = {
 			{ level = 10, lines = {
 				{ spellId = 16190, name = "Mana Tide Totem", condition = "Mana Tide Totem once mana is low; it replaces the water totem for 13 s and the Healing Stream below is dropped again after." },
-				{ spellId = 409941, name = "Water Shield", condition = "Water Shield (the Restoration talent) is kept up for its mana: a globe returns mana when you are hit and when your spells crit." },
 				{ spellId = 16188, name = "Nature's Swiftness", condition = "Nature's Swiftness turns the next Healing Wave into an instant heal when the tank is in danger." },
 				{ spellId = 332, name = "Healing Wave", condition = "The instant Healing Wave." },
 				{ spellId = 332, name = "Healing Wave", condition = "Healing Wave is the efficient tank heal." },
@@ -10996,6 +10998,7 @@ ns.Data = {
 		[17313] = 20,
 		[17354] = 1,
 		[17359] = 1,
+		[17364] = 40,
 		[17877] = 20,
 		[17924] = 48,
 		[17962] = 25,
@@ -11090,9 +11093,8 @@ ns.Data = {
 		[408344] = 12,
 		[408345] = 12,
 		[408490] = 30,
-		[408510] = 1,
+		[408510] = 20,
 		[408521] = 40,
-		[409941] = 1,
 		[412758] = 40,
 		[415068] = 20,
 		[415069] = 20,

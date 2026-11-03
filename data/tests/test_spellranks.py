@@ -84,6 +84,50 @@ def test_cost_less_gcd_less_copies_leave_a_ranked_chain():
     assert [r.id for r in ranks["Magma Totem"]] == [10585]
 
 
+def test_an_uncastable_ranked_copy_yields_to_the_castable_unranked_spell():
+    """Stormstrike: the 1.60 client carries 410156 at rank 1, level 1 with no
+    cost, cast time or GCD (a Season of Discovery copy) beside the player's
+    own 17364 at rank 0, level 40 with a GCD. Grounding Totem's totem 8178
+    sits at rank 1 beside the castable 8177 at rank 0. The chain is the
+    castable unranked id, so the APL's 17364 resolves and gates at 40."""
+    spells = {
+        "17364": _spell("Stormstrike", rank=0, level=40, gcd_ms=1500),
+        "410156": _spell("Stormstrike", rank=1, level=1),
+        "8177": _spell("Grounding Totem", rank=0, level=30, gcd_ms=1000),
+        "8178": _spell("Grounding Totem", rank=1, level=30),
+    }
+    ranks = _spell_ranks_for_class(spells)
+    assert [(r.id, r.rank, r.level) for r in ranks["Stormstrike"]] == [(17364, 0, 40)]
+    assert [(r.id, r.rank, r.level) for r in ranks["Grounding Totem"]] == [(8177, 0, 30)]
+
+
+def test_an_unranked_copy_learned_before_the_castable_spell_is_dropped():
+    """Water Shield: the player's 408510 (level 20, a GCD) sits beside its
+    proc 408511 (level 20) and a level-1 copy 409941, neither of which costs,
+    casts or triggers the GCD. Left in, the copy made the spell learned from
+    level 1 and the addon showed a level-10 Restoration shaman a Water Shield
+    line. The proc stays: it is learned with the spell, and the API's
+    adherence reads a combat log's proc id as Water Shield through it."""
+    spells = {
+        "408510": _spell("Water Shield", rank=0, level=20, gcd_ms=1500),
+        "408511": _spell("Water Shield", rank=0, level=20),
+        "409941": _spell("Water Shield", rank=0, level=1),
+    }
+    ranks = _spell_ranks_for_class(spells)
+    assert [(r.id, r.level) for r in ranks["Water Shield"]] == [(408510, 20), (408511, 20)]
+
+
+def test_an_unranked_effect_id_learned_with_the_spell_is_kept():
+    """Whirlwind's 462891 is learned at 36 with the castable 1680: it says
+    nothing earlier about when the spell is learned, and the API maps a log's
+    462891 hit to Whirlwind through it."""
+    spells = {
+        "1680": _spell("Whirlwind", rank=0, level=36, cost=250, gcd_ms=1500),
+        "462891": _spell("Whirlwind", rank=0, level=36),
+    }
+    assert [r.id for r in _spell_ranks_for_class(spells)["Whirlwind"]] == [1680, 462891]
+
+
 def test_a_ranked_chain_with_no_castable_id_keeps_every_id():
     spells = {
         "1": _spell("Odd Aura", rank=1, level=10),
