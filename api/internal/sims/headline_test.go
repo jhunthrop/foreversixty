@@ -167,25 +167,43 @@ func TestTheHeadlineSaysWhatEachKindFound(t *testing.T) {
 			"1 upgrade",
 		},
 		{
-			"weights are the top two, the reference first",
+			// The owner's weights ruling (SimulationCraft scale factors): the top
+			// measurable per-point stat reads 1.00, whatever the engine's reference was.
+			"weights read as scale factors: the top per-point stat is 1.00",
 			withKind(simapi.KindWeights, func(r *simapi.SimResult) {
 				r.Weights = []simapi.StatWeight{
-					{Stat: "agility", Weight: 0.874},
-					{Stat: "crit", Weight: 1},
-					{Stat: "attack_power", Weight: 0.5},
+					{Stat: "attack_power", Weight: 1, Error: 0.01},
+					{Stat: "agility", Weight: 2.4, Error: 0.05},
+					{Stat: "strength", Weight: 2, Error: 0.05},
 				}
 			}),
-			"Crit 1.00 · Agility 0.87",
+			"Agility 1.00 · Strength 0.83",
+		},
+		{
+			// Haste is per 1% and sits in a caption, never beside a per-point stat;
+			// expertise likewise. A weight inside its error is no reading at all.
+			"haste, expertise and a weight inside its error are never named",
+			withKind(simapi.KindWeights, func(r *simapi.SimResult) {
+				r.Weights = []simapi.StatWeight{
+					{Stat: "melee_haste", Weight: 30, Error: 1},
+					{Stat: "expertise", Weight: 9, Error: 1},
+					{Stat: "crit", Weight: 5, Error: 6},
+					{Stat: "hit", Weight: 4, Error: 0.1, Insignificant: true},
+					{Stat: "attack_power", Weight: 1, Error: 0.01},
+					{Stat: "agility", Weight: 2, Error: 0.05},
+				}
+			}),
+			"Agility 1.00 · Attack Power 0.50",
 		},
 		{
 			"a multi-word stat id reads as words",
 			withKind(simapi.KindWeights, func(r *simapi.SimResult) {
 				r.Weights = []simapi.StatWeight{
-					{Stat: "attack_power", Weight: 1},
-					{Stat: "spell_haste", Weight: 0.4},
+					{Stat: "spell_power", Weight: 1},
+					{Stat: "nature_power", Weight: 0.4},
 				}
 			}),
-			"Attack Power 1.00 · Spell Haste 0.40",
+			"Spell Power 1.00 · Nature Power 0.40",
 		},
 		{
 			"a weights run with nothing in it says so",

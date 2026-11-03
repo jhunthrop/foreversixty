@@ -15,7 +15,7 @@ import (
 const maxHeadline = 120
 
 // headlineWeights is how many stat weights the weights headline names:
-// the reference and its nearest rival, which is what makes the line mean
+// the top stat and its nearest rival, which is what makes the line mean
 // anything at a glance.
 const headlineWeights = 2
 
@@ -134,15 +134,24 @@ func sharedSource(combos []simapi.Combo) string {
 	return source
 }
 
-// weightsHeadline is the stat weights line: the two largest weights, each
-// to two decimals. The reference stat is exactly 1 (contract 2), so it
-// leads unless something beat it, which is itself worth seeing.
+// weightsHeadline is the stat weights line, in the owner's weights form
+// (SimulationCraft scale factors, 2026-09-30; web/src/lib/bis/scale-view.ts):
+// the two largest measurable per-point weights, each divided by the largest
+// so it leads at 1.00, to two decimals. The engine's own reference stat
+// reads 1 in the stored result; that is not the anchor a player is shown.
+// Haste and expertise are per 1% and never sit beside a per-point stat, and
+// a weight inside its error (or flagged insignificant) is no reading.
 func weightsHeadline(weights []simapi.StatWeight) string {
 	if len(weights) == 0 {
 		return "no weights"
 	}
-	sorted := slices.Clone(weights)
-	slices.SortFunc(sorted, func(a, b simapi.StatWeight) int {
+	measured := slices.DeleteFunc(slices.Clone(weights), func(w simapi.StatWeight) bool {
+		return perPercentStats[w.Stat] || w.Insignificant || w.Weight <= 0 || math.Abs(w.Weight) <= w.Error
+	})
+	if len(measured) == 0 {
+		return "no measurable weights"
+	}
+	slices.SortFunc(measured, func(a, b simapi.StatWeight) int {
 		switch {
 		case a.Weight > b.Weight:
 			return -1
@@ -154,15 +163,17 @@ func weightsHeadline(weights []simapi.StatWeight) string {
 			return strings.Compare(a.Stat, b.Stat)
 		}
 	})
-	if len(sorted) > headlineWeights {
-		sorted = sorted[:headlineWeights]
-	}
-	parts := make([]string, 0, len(sorted))
-	for _, w := range sorted {
-		parts = append(parts, statLabel(w.Stat)+" "+strconv.FormatFloat(w.Weight, 'f', 2, 64))
+	top := measured[0].Weight
+	parts := make([]string, 0, headlineWeights)
+	for _, w := range measured[:min(len(measured), headlineWeights)] {
+		parts = append(parts, statLabel(w.Stat)+" "+strconv.FormatFloat(w.Weight/top, 'f', 2, 64))
 	}
 	return strings.Join(parts, weightSeparator)
 }
+
+// perPercentStats are the weights read per 1% rather than per point
+// (web/src/lib/bis/weight-reading.ts PER_PERCENT_STATS).
+var perPercentStats = map[string]bool{"melee_haste": true, "spell_haste": true, "expertise": true}
 
 // statLabel turns a stat id into its display form: "attack_power" becomes
 // "Attack Power", "crit" becomes "Crit". The vocabulary is the fork's
