@@ -63,7 +63,7 @@
         }
       },
       {
-        "notes": "Stay in Defensive Stance: the 30 percent threat, Revenge and Shield Wall all need it. The engine starts a tank in it, so this fires only after a stance dance.",
+        "notes": "Live in it: the threat bonus, Revenge, Shield Block and Shield Wall all need it.",
         "action": {
           "condition": {
             "not": {
@@ -84,7 +84,7 @@
         }
       },
       {
-        "notes": "Last Stand below 35 percent health: 30 percent of maximum health for 20 seconds, lost afterwards. Never fires on a fight the healers hold.",
+        "notes": "Below 35% health: 30% of your maximum health for 20 seconds, lost again when it ends.",
         "action": {
           "condition": {
             "cmp": {
@@ -107,7 +107,7 @@
         }
       },
       {
-        "notes": "Shield Wall below 40 percent health: 60 percent less damage taken for 12 seconds. Fifteen minute cooldown, so once a fight.",
+        "notes": "Below 40% health: 60% less damage taken for 12 seconds, on a 15-minute cooldown.",
         "action": {
           "condition": {
             "cmp": {
@@ -130,7 +130,7 @@
         }
       },
       {
-        "notes": "Bloodrage on cooldown while rage is under 60: ten rage now and one a second for ten seconds.",
+        "notes": "Whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
         "action": {
           "condition": {
             "cmp": {
@@ -153,7 +153,7 @@
         }
       },
       {
-        "notes": "Shield Block whenever its buff is down: 75 percent more block for 7 seconds or two blocks. Recasting over a live buff wastes rage, and the measured damage taken is the same.",
+        "notes": "Whenever it is down: 75% more block chance for 7 seconds, off the global cooldown. Every block also lights Revenge.",
         "action": {
           "condition": {
             "not": {
@@ -174,7 +174,7 @@
         }
       },
       {
-        "notes": "Revenge the moment it is available: it only lights after a dodge, parry or block, costs 5 rage (2 with Focused Rage 3) and is the most threat per rage on the bar.",
+        "notes": "The moment it lights: a dodge, parry or block opens it, and it is the most threat per rage you have.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -185,7 +185,7 @@
         }
       },
       {
-        "notes": "Shield Slam on cooldown: the biggest hit on the bar, damage plus block value and a very high amount of threat.",
+        "notes": "On cooldown: your biggest hit, and it grows with your block value.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -196,7 +196,7 @@
         }
       },
       {
-        "notes": "Keep Thunder Clap on the boss: the 20 percent attack speed slow is the largest cut to damage taken after Shield Block, and it lasts 30 seconds, so refresh inside the last 3.",
+        "notes": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block. Refresh it in its last 3 seconds.",
         "action": {
           "condition": {
             "or": {
@@ -272,7 +272,7 @@
         }
       },
       {
-        "notes": "Sunder Armor is the global-cooldown filler: flat threat on every cast and the armor it strips raises the tank's own damage.",
+        "notes": "On every free global: five stacks for the raid, then flat threat on every cast.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -283,7 +283,7 @@
         }
       },
       {
-        "notes": "Heroic Strike with spare rage: the best threat per rage after Revenge, and it costs no global cooldown. Queued only above 40 rage so the cooldown buttons are never starved.",
+        "notes": "Only above 40 rage, queued on your next swing. It costs no global cooldown, so it never delays the buttons above.",
         "action": {
           "condition": {
             "cmp": {

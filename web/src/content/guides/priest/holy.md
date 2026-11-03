@@ -6,8 +6,8 @@ role: healer
 build: 'FS1:1.60.1.70753:priest:human:00500503103/33505003030121431/0:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
-description: 'Holy Priest overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-10-07
+description: 'How to heal as a Holy Priest in Forever: talents, downranking, Prayer of Mending, Prayer of Healing, Lightwell, mana over a long fight, assignments and races.'
+updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -16,74 +16,97 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'This site, stat weights'
+  - label: 'Forever Sixty stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'This site, character planner'
+  - label: 'Forever Sixty talent planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
 
 ## Overview
 
-Holy is the Priest throughput healing tree: efficient direct and periodic heals, with Prayer of Mending and Prayer of Healing carrying the group-wide healing.
+Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, downranked Heal as the filler, and Prayer of Healing for a hurt group.
 
 ### Strengths
 
-- Prayer of Mending jumps through the group once placed on the tank
-- Prayer of Healing answers several members being hurt together
-- Spiritual Healing multiplies every heal
-- Spiritual Guidance turns Spirit into bonus healing
+- Prayer of Mending is the cheapest healing in the game: five jumps for one cast
+- Prayer of Healing heals any five-player group at once, not only your own
+- Spiritual Guidance and Meditation turn Spirit into both healing and mana
+- Lightwell and Holy Binding heal while you are busy with something else
 
 ### Weaknesses
 
-- Mana is the limit, and it runs dry sooner than Discipline
-- No shield or other damage prevention
-- Spell damage on healing items is wasted, since it adds nothing to a heal
+- Mana is the limit on every long fight; you have no Shadowfiend at launch
+- No damage prevention: you heal what has already happened
+- Slow heals on a spiky tank need you to pre-cast and cancel
 
 ### In a raid
 
-- **Role:** Raid and group healer; carries the bulk of group-wide healing
-- **Brings:** Power Word: Fortitude for the group, with Prayer of Mending and Renew on the tank
+- **Role:** Raid and group healer, and a strong second tank healer
+- **Brings:** Power Word: Fortitude, Divine Spirit, Fear Ward, Lightwell and Shadow Protection
 
 ## Talents and builds
 
-The build spends its deep points in Holy and fills Discipline with the mana and spell-cost talents a healer wants. Chosen by simming candidate builds on the same gear against the same fight, not by recollection. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+Deep Holy for Prayer of Mending, with Discipline taken to Meditation and Inner Focus.
 
-- **Holy Specialization, Divine Fury and Improved Renew** open the tree: more critical heals, Heal and Greater Heal cast faster, and a stronger Renew.
-- **Improved Healing** makes the direct heals cheaper, and **Litany of Light** pays mana back when you switch heals instead of repeating one.
-- **Twilight Focus** takes all three ranks. Raid-wide damage reaches you while you cast, and every hit costs a Heal or Prayer of Healing part of its casting time; Twilight Focus keeps it 70% of the time (about +2.5% healing in our run, with the points taken from Wand Specialization and Improved Power Word: Shield, which a Holy priest does not cast).
-- **Holy Binding** heals you for half of every Flash Heal you cast on someone else. Raid-wide damage reaches you too, so that healing counts, and nothing else in the rows above Litany of Light measured more.
-- **Spiritual Guidance** turns Spirit into bonus healing, which is why Spirit outranks its raw look on the stat list below.
-- **Spiritual Healing** is a flat multiplier on every heal, and **Prayer of Mending** (with Spirit of Redemption as its prerequisite) is the capstone.
-- In Discipline, **Meditation** keeps part of your regeneration running while you cast and **Mental Strength** takes all five ranks for Intellect; **Twin Disciplines** and Mental Strength are the points that open the rows beneath them.
+- **Prayer of Mending** (1 point): the capstone. It heals its holder on the next hit or direct heal, then jumps. Keep it on the tank.
+- **Spiritual Healing** (3 points): 10% more healing on everything.
+- **Spiritual Guidance** (4 points): a share of your Spirit becomes healing power, so Spirit pays you twice.
+- **Holy Specialization** (5 points) and **Divine Fury** (5 points): 5% crit on Holy spells, and Heal and Greater Heal cast half a second faster.
+- **Improved Healing** (3 points): 15% off Lesser Heal, Heal, Greater Heal and Prayer of Mending.
+- **Improved Renew** (3 points): 15% more on the Renew you keep on the tank.
+- **Litany of Light** (2 points): mana back whenever your heal is a different spell from the last one. Weaving Heal, Flash Heal and Prayer of Mending earns it all fight.
+- **Holy Binding** (1 point): every Flash Heal you put on someone else heals you for half as much. Raid damage hits you too.
+- **Twilight Focus** (3 points): 70% of the hits you take no longer push back your casts. On raid-wide damage this is worth more than any throughput point.
+- **Meditation** (3 points), **Mental Strength** (5 points) and **Inner Focus** (1 point): regeneration while casting, a deeper bar, and a free spell every 3 minutes.
 
-On the same gear the build with Holy deepest scored ahead of the one with Discipline deepest. Open the planner at [/planner?class=priest](/planner?class=priest) to adjust it.
+Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/planner?class=priest) to adjust the build.
 
 ## Rotation and priority
 
-The curated rotation tops up from health, tank first. **Prayer of Mending** and **Renew** go on the tank and stay there. **Flash Heal** is for emergencies only: a tank or party member who is nearly dead. **Prayer of Healing** answers several party members being hurt at once, and **Heal** is the efficient filler for a tank or member with a real hole in their health bar.
+**Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Put Fear Ward on the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
 
-The filler and Prayer of Healing are paced against your mana: they only fire at their normal thresholds while your mana is keeping up with the share of the fight that is left, and wait for a more serious hole when it is not. Mana is the limit for this spec under the profile, so the pacing matters. The filler is Heal at its top rank.
+**On the tank.** Prayer of Mending every time it is ready. Renew always up, at a low rank: every rank of Renew carries the same healing power bonus, so rank 3 costs about a quarter of the top rank's mana and still heals well over half as much. Go up in rank only on a tank who is dropping through it.
+
+**The filler is Heal.** Heal rank 4 has the same spell power coefficient as Greater Heal and costs far less. With Divine Fury it is a 2.5 second cast. This is the classic downrank, and in Forever it is still right: Greater Heal comes out only when the tank needs one big number.
+
+**Flash Heal is for emergencies.** On the tank the low ranks are enough most of the time and keep your bar alive. Save the top rank for someone about to die. Holy Binding heals you off every one of them.
+
+**Prayer of Healing.** Cast it when three or more players in one group are missing a fair chunk. In Forever it heals the target and the target's party, so target a member of whichever group took the hit: you are not limited to your own party.
+
+**Overheal.** Start Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Heal; Prayer of Mending and Renew cover those.
+
+**Inner Focus.** Spend it on a Prayer of Healing, your most expensive spell, or on a Greater Heal you need to crit. Do not let it fall on a Renew.
+
+**Assignments.** In a raid you will be on a group or on a tank. On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. On a tank, Renew, Prayer of Mending and Heal, with Flash Heal for the spikes. Either way, never stand where the boss's cleave or the raid's AoE lands on you: Twilight Focus helps, it does not make you immune.
+
+**Mana.** Every heal you skip early is mana for the last minute. Sit out of casting for five seconds when you can and Spirit regeneration comes back in full. Drink a Major Mana Potion and use a Demonic Rune once you are down enough that neither wastes, an Undead uses Dark Sacrifice, and a Gnome's Eureka! goes on a string of Prayers of Healing.
 
 ## Stat priority
 
-In simulator-derived order, per point of stat, the mana stats outrank raw healing: **MP5** and **Spirit** buy more healing over the fight than a point of anything else, then **Intellect**, then **healing power**, with **critical strike** last. That order follows from the fight being mana-bound: a healer who runs dry stops healing, so a point of regeneration is worth more than a point of throughput. Items still trade many points of one for few of another, so read the list as "which stat is cheap to give up", not "which stat to hunt".
-
-Spell power, the damage side of a healing item, adds nothing to a heal. Forever puts a third of every healing bonus on an item as spell damage; it is the healing number that heals. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+On a long fight the mana stats win: Spirit and mp5 buy more healing over five minutes than a point of healing power, and Spiritual Guidance and Meditation make Spirit the best of them. Intellect deepens the bar. Healing power is still what makes each cast count. Critical strike is last for Holy, since Inspiration only adds armor. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
-Spirit stays the tree's core sustain stat.
+Forever puts a third of a healing item's bonus on it as spell damage. Only the healing number heals, so read healing gear by that number.
 
 ## Enchants and consumables
 
+Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric's Elixir and Elixir of Sages, Sage's Tea for food, Brilliant Mana Oil on the weapon, and Major Mana Potions with Demonic Runes in the fight. Forever's Mender's Potions add healing for 30 seconds, but they share the potion cooldown with your mana potion, and on a long fight the mana is worth more.
+
 ## Races
+
+**Human** is the Alliance pick. The Human Spirit adds 10% Spirit, which Spiritual Guidance turns into healing, and Divine Grace is a free instant heal on an ally under 50% every 10 minutes. Feedback is a PvP spell.
+
+**Undead** is the Horde pick for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. Will of the Forsaken breaks fears.
+
+**Gnome** brings Eureka!, three heals 10% stronger and 10% cheaper for 15 seconds every 2 minutes, and Expansive Mind's 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Troll** gets Berserking, 10% cast speed. **Night Elf** has Elune's Light, 10% crit for 15 seconds. **Dwarf** has Stoneform and Desperate Prayer, a free self heal.
 
 ## Professions
 
-Community convention for healing Priests favors **Tailoring** for caster cloth stats alongside **Enchanting** for weapon and gear enchants, since neither profession competes with anything Holy-specific.
+Tailoring makes healing cloth you will wear into the first raids. Enchanting saves you the enchanting bill. Alchemy makes the flask and the elixirs you burn every raid, and that is the profession that saves a healer the most gold.
 
 ## Leveling
 
-Shadow is the generally recommended leveling spec for Priest, not Holy — Holy's group-throughput kit doesn't translate to fast solo leveling the way Shadow's self-sufficient damage and healing does.
+Level as Shadow and respec at 60, or level in a group as Holy. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early: a level 30 priest who casts Heal rank 2 instead of rank 3 finishes the dungeon with mana to spare.

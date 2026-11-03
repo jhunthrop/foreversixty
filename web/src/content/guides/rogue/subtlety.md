@@ -6,72 +6,111 @@ role: dps
 build: 'FS1:1.60.1.70753:rogue:night-elf:005323101014/0/5320201310013211501:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
-description: 'Subtlety Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-10-31
+description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike on cooldown, Thousand Cuts and Quietus, and where the tree stands in a raid.'
+updated: 2026-11-02
 confidence: inferred
 sources:
+  - label: 'Blizzard, Rogue and Warlock class deep dive'
+    url: https://www.warcrafttavern.com/forever/news/poison-pets-rogue-warlock-deep-dive-for-wow-forever/
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
-    url: https://talentsforever.com/data.json
-    kind: community
-  - label: 'This site, stat weights'
+  - label: 'Forever Sixty stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'This site, character planner'
+  - label: 'Forever Sixty character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
 
 ## Overview
 
-Subtlety is the Rogue stealth-utility melee tree: Hemorrhage builds combo points cheaply and on the move, with Rupture and Ghostly Strike behind it.
+Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage to build, Rupture as the main finisher and Ghostly Strike every 20 seconds.
 
 ### Strengths
 
-- Cheap, mobile combo point generation
-- Premeditation and Ambush give a strong stealth opener
-- Hemorrhage debuff makes Rupture hit harder
-- Vanish and Preparation allow a fresh opener mid-fight
+- No facing requirement anywhere in the rotation: Hemorrhage, Ghostly Strike and Rupture all work from the front
+- A four-point opener from stealth with Premeditation and Initiative
+- Bleeds ignore armor, so Rupture is full value from the first second of the pull
+- The best rogue for PvP and world play: Preparation, a short Vanish and Blind with Elusiveness
 
 ### Weaknesses
 
-- Least competitive of the three Rogue trees in raid damage
-- Gives up Combat's weapon damage and Assassination's poison uptime
-- Opener depends on stealth
+- The lowest raid damage of the three trees
+- More moving parts than Combat: a debuff, a bleed and a cooldown to track
+- Its strongest tools (Vanish, Preparation, Blind) do little on a raid boss
 
 ### In a raid
 
-- **Role:** Melee damage dealer with stealth utility
-- **Brings:** Its own damage; no raid-wide buff or debuff
+- **Role:** Single-target melee damage, at its best on bosses that make you move
+- **Brings:** Kicks, Kidney Shots on trash and its own damage; no raid buff
 
 ## Talents and builds
 
-In rough priority order: **Opportunity** raises the damage of Backstab, Ambush, and Mutilate, which matters even for a Hemorrhage-based build since Ambush remains the spec's stealth opener. **Initiative** adds a chance at an extra combo point when opening with Cheap Shot or a similar ability, accelerating the path to a finisher. **Ghostly Strike** is a cheap, high-damage-relative-to-cost filler that also applies its own attack power debuff. **Premeditation** (1 point) is a required pick, not an optional one — missing from an earlier draft of this guide's talent section — since this build's rotation opens with it for two free combo points before the first Ambush. **Serrated Blades** adds armor penetration and boosts finisher damage, a flat multiplier once you're spending combo points regularly. **Hemorrhage**, the tree's signature ability, replaces Sinister Strike as the combo builder and needs its bleed reapplied once its charges run out. **Cutthroat**, new to the tree in Forever, only procs off Backstab, which a Hemorrhage build never casts, so the build skips it. **Quietus** (Hemorrhage and Ghostly Strike hit harder below 35% health) takes 5 points after two in Dirty Deeds, paid for by Cutthroat, Dirty Tricks and Setup (a defensive combo point on dodge or parry, idle against a raid boss), with one point in Improved Ambush for the opener; that spend measured about +1.3% in our level-60 raid run. **Thousand Cuts**, the tree's capstone, is the bottom-row talent this build reaches.
+One build does everything: 20 in Assassination for Malice, Ruthlessness, Murder, Improved Slice and Dice and Relentless Strikes, then 31 down Subtlety to Thousand Cuts.
 
-Point allocation now runs 31 points deep into Subtlety to reach Thousand Cuts at the bottom row, with the remaining 20 in Assassination. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
+- **Hemorrhage** (1 point): your builder. 145% weapon damage with a dagger, one combo point, and the target takes 15% more damage from your Rupture.
+- **Serrated Blades** (3 points): ignore 9% of the target's armor, and Rupture deals 30% more.
+- **Thousand Cuts** (1 point): every Rupture tick makes your next Hemorrhage cheaper, stacking five times. With Rupture always up, Hemorrhage costs a lot less than it says.
+- **Quietus** (5 points): Hemorrhage and Ghostly Strike hit 10% harder below 35% health.
+- **Ghostly Strike** (1 point): 180% weapon damage with a dagger and 15% dodge for 7 seconds, on a 20 second cooldown.
+- **Premeditation** (1 point): two combo points before you open, on a 2 minute cooldown.
+- **Initiative** (3 points): Garrote, Ambush and Cheap Shot add a combo point.
+
+Opportunity adds 10% to Garrote and Ambush. Dirty Deeds makes Garrote and Cheap Shot cheaper and lets Garrote go in from the front. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. Cutthroat only fires off Backstab, which this build never casts, so Quietus takes those points.
+
+[Open the planner](/planner?class=rogue) to change the build.
 
 ## Rotation and priority
 
-Open from stealth: Stealth, then Premeditation for two free combo points a couple of seconds before the pull, then Ambush on the pull itself; then play from Hemorrhage. Thistle Tea goes in whenever energy is near empty (100 Energy, 5 minute cooldown). Hemorrhage is the builder, hitting for 145% weapon damage with a dagger and awarding a combo point, and its debuff makes the target take 15% more damage from your Rupture for 15 seconds, so keep it going. Rupture is the main finisher: cast it at four or more combo points whenever it is not already running. Ghostly Strike goes on cooldown, hitting for 180% weapon damage with a dagger for a combo point. While Rupture is running, spend the combo points that build behind it: Eviscerate at three or more, and Slice and Dice when it is down or under 3 seconds from ending, so nothing idles at the cap. In this site's simulator, dropping Eviscerate and Slice and Dice entirely and putting every point into Rupture measured a few percent higher still; the priority above keeps all three finishers in play rather than adopting that. Poisons are your weapon imbues: this site's simulator carries Deadly Poison on the main hand and Instant Poison on the off hand once Deadly is learned at 30, which measured well ahead of two Instants; at level 60 the mirrored pair measured about 1% higher still.
+### The pull
+
+Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush is the opener for anything that will die fast, not for a boss. Then **Rupture** right away at four points.
+
+Every rogue learns **Poised** at 18: at full energy out of combat, your next ability costs less, so open from full energy.
+
+### The priority
+
+Ghostly Strike on cooldown. Rupture at four or more combo points whenever it is not ticking. While it ticks, spend three or more points on Eviscerate, or on Slice and Dice when that is down or about to fall off. Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
+
+Rupture first, always: Hemorrhage's debuff and Serrated Blades both feed it, and every tick makes your next Hemorrhage cheaper through Thousand Cuts. Points that build up while Rupture is still ticking go into Eviscerate or Slice and Dice, so nothing sits idle. Below 35% health Quietus makes Hemorrhage and Ghostly Strike hit harder; nothing else changes.
+
+### Energy
+
+Thousand Cuts is your energy talent: a Rupture that lapses also lapses the Hemorrhage discount, so a dropped Rupture costs you twice. Do not cap energy. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when empty.
+
+### Cooldowns
+
+You have no burst cooldown of your own on a boss: line your racial, trinket and potion up at the pull. **Preparation** resets your other rogue cooldowns on a 10 minute timer, which on a raid boss mostly means a second Vanish or a second Evasion.
+
+### Trash, threat and survival
+
+- **Kidney Shot** costs no energy in Forever and stuns longer per combo point. Use it on casters. Kick, Gouge and Blind handle the rest; Elusiveness puts Blind on a short leash.
+- **Redirect** (trained at level 1) lifts your combo points off a dying mob and hands them to the next enemy you hit within 15 seconds.
+- **Feint** on cooldown on bosses where you sit near the tank's threat. **Vanish** drops you from the threat table, but a bleed or DoT on you puts you back in combat.
+- **Evasion** and Ghostly Strike's dodge are for melee trash that turns on you. Neither helps against spells.
 
 ## Stat priority
 
+Hit first, so Hemorrhage, Ghostly Strike and the finishers land. Agility next, for attack power and crit together.
+
 ## Best in slot
 
-Since Hemorrhage and Rupture are both driven by weapon damage and attack power, those outweigh haste more than in a pure swing-speed spec. A new stat reducing target dodge and parry chance may show up on gear as itemization fills in.
+Daggers in both hands. Hemorrhage and Ghostly Strike both hit harder with a dagger in the main hand, and the main hand is the one that matters. A fast off-hand dagger carries your Instant Poison.
 
 ## Enchants and consumables
 
-A raid shaman's **Windfury Totem** is an aura on you, not a weapon enchant, so it stacks with your poisons; this site's raid-preset numbers include it.
+Deadly Poison and a stone on the main hand, Instant Poison and a stone on the off hand: Forever lets them sit together. A shaman's Windfury Totem stacks with both.
 
 ## Races
 
+Night Elf on Alliance and Troll on Horde: Elune's Light is 10% crit for 15 seconds and Berserking 10% attack speed for 15 seconds, both on 3 minute cooldowns, so press them at the pull. Orc's Blood Fury and Human's passive 1% crit are fine alternatives.
+
 ## Professions
 
-Community convention favors **Engineering** for combat utility alongside a gathering profession such as Herbalism or Mining, matching general Rogue practice across all three trees rather than anything Subtlety-specific.
+**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup pre-raid trinkets. **Engineering** is the PvP and trash pick: grenades, dynamite and gadgets. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
 
 ## Leveling
 
-Combat is the generally recommended leveling spec for Rogue over Subtlety, since Adrenaline Rush and consistent weapon damage clear trash faster than Subtlety's stealth-and-reposition playstyle, which pays off more in single-target or PvP scenarios.
+Level as Combat and respec at 60. Subtlety's leveling talents (Camouflage, Master of Deception, Elusiveness) make you safe, not fast, and Hemorrhage only arrives at 30. If you do level Subtlety, open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.

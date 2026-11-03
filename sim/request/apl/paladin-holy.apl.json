@@ -5,7 +5,7 @@
       "action": {
         "autocastOtherCooldowns": {}
       },
-      "notes": "Mana potions, runes and other consumables the preset brings: the Major Mana Potion and the Demonic Rune, each used whenever it is ready and the bar has room for it. Divine Favor is left to this rotation, not to the autocast, because it is only worth spending on the heal that must not fail."
+      "notes": "Mana potions and Demonic Runes, each used once it is ready and your bar has room for it. Divine Favor stays off this list: it is saved for the heal that must land."
     },
     {
       "action": {
@@ -49,7 +49,7 @@
           }
         }
       },
-      "notes": "Oath of Light stays sworn on the tank: it adds to every Holy Light, Flash of Light and Holy Shock the tank receives, which is most of this list's healing. It is sworn before the pull and lasts five minutes, so it is renewed only in a longer fight."
+      "notes": "Keep it sworn on the tank. It adds a flat amount to every Holy Light, Flash of Light and Holy Shock the tank gets from you, and it lasts 5 minutes, so renew it only in a long fight."
     },
     {
       "action": {
@@ -77,7 +77,7 @@
           }
         }
       },
-      "notes": "Divine Favor when the tank is in danger: the Holy Light that follows crits for certain, and the heal that spends it is the one the tank needs. A two minute cooldown, so it is not spent on anything smaller."
+      "notes": "When the tank drops below 40%. The Holy Light that follows is a sure crit, and on a 2 minute cooldown it is for the heal that must land."
     },
     {
       "action": {
@@ -110,7 +110,7 @@
           }
         }
       },
-      "notes": "Holy Light (rank 8, the top rank a trainer teaches: rank 9 is an Ahn'Qiraj book) is the big heal and the only one that outheals the tank by itself. It is kept for a tank below 40 percent, where its 2.5 second cast is worth the mana. Below 60, the rank each band casts is chosen on that band's own fight, sized to the dungeons a group of its level runs."
+      "notes": "On the tank below 40%, right behind Divine Favor. Rank 8 is the top rank a trainer teaches (rank 9 is an Ahn'Qiraj book), and Holy Light is the only heal that outheals a tank by itself."
     },
     {
       "action": {
@@ -170,7 +170,7 @@
           }
         }
       },
-      "notes": "Surplus mana buys throughput: Holy Light on a tank below 70 percent, but only while mana is no more than five points behind the fight clock. A healer short of mana rarely reaches this line."
+      "notes": "With mana to spare, on the tank below 70% as well: only while your mana is no more than five points behind the share of the fight left."
     },
     {
       "action": {
@@ -230,7 +230,7 @@
           }
         }
       },
-      "notes": "Holy Shock, instant, on whoever is below 70 percent, under the same mana pacing: it heals about what Flash of Light does for more than twice the mana at the top rank, so it is a use for spare mana, not a staple. Rank 1 is the rank this profile pays for: it costs about half of the top rank's mana and returned more guarded score."
+      "notes": "On anyone below 70%, with the same mana to spare. Rank 1 heals about two thirds as much as the top rank for half its mana, and on anyone but your Oath target Boundless Light adds 30% crit, which Illumination turns back into mana."
     },
     {
       "action": {
@@ -290,7 +290,7 @@
           }
         }
       },
-      "notes": "You are one of the five party members the raid pulses reach; you are healed like the other four."
+      "notes": "Yourself included: raid damage hits you like the rest of your party."
     },
     {
       "action": {
@@ -559,7 +559,7 @@
           }
         }
       },
-      "notes": "Flash of Light is the staple: about as much healing per cast as Holy Light gives per second of cast time at a quarter of the price, and a tank hit for 12 percent a swing is under 90 percent most of the time. The tank gets rank 1 (owner ruling 3, sim-accuracy round 9: more effective healing over the raid fight for its mana) and the four party members below get rank 4, the rank that came out ahead under the rank rule once the ranker had picked its gear."
+      "notes": "On the tank below 90%: your staple. Oath of Light adds the same flat amount to every rank, so the 35 mana rank 1 heals the tank for well over half of what the top rank does at a quarter of the cost."
     },
     {
       "action": {
@@ -592,7 +592,7 @@
           }
         }
       },
-      "notes": "You are one of the five party members the raid pulses reach; you are healed like the other four."
+      "notes": "On everyone else below 80%, yourself included. Without the Oath bonus, rank 4 is the best balance of heal size and mana."
     },
     {
       "action": {

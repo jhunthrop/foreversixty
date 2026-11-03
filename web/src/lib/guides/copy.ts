@@ -119,8 +119,6 @@ export const guidesCopy = {
   alliancePicksHeading: 'Alliance',
   hordePicksHeading: 'Horde',
   factionGroup: 'Faction',
-  withoutFlask: 'Without a flask',
-  replacesBothElixirs: 'replaces both elixirs',
   alsoUsed: 'Food, oil and potions',
   recommendedRacesLine: (name: string, faction: string, article: string, racials: string): string =>
     `${name} is ${article} ${faction} pick: ${racials}.`,

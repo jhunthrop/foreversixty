@@ -163,7 +163,7 @@ export function rotationListsFrom(
       name: facts.name,
       rank: facts.rank,
       icon: facts.icon ?? lineIcons.get(facts.name),
-      clause: `${secondsText(cast.secondsBefore)} before the pull`,
+      clause: cast.secondsBefore === 0 ? 'On the pull' : `${secondsText(cast.secondsBefore)} before the pull`,
     });
   }
 
@@ -267,6 +267,24 @@ interface TalentNameFile {
   trees: { talents: { name: string; icon: string; spell_id: number }[] }[];
 }
 
+interface ClassSpellLimitsFile {
+  raceLocked: Record<string, Record<string, string[]>>;
+  notLearnable: Record<string, Record<string, string>>;
+}
+
+/** The class trainer spells a guide's cooldown list leaves out: the race-locked ones (the
+ *  Races section covers those) and the ones no player of the class can learn
+ *  (`data/curated/class-spell-limits.json`). */
+export function limitedClassSpells(classSlug: string): ReadonlySet<string> {
+  const file = path.join(repoRoot(), 'data/curated/class-spell-limits.json');
+  if (!existsSync(file)) return new Set();
+  const limits = JSON.parse(readFileSync(file, 'utf8')) as ClassSpellLimitsFile;
+  return new Set([
+    ...Object.keys(limits.raceLocked[classSlug] ?? {}),
+    ...Object.keys(limits.notLearnable[classSlug] ?? {}),
+  ]);
+}
+
 /**
  * The cooldown spells a spec can use, from the client's own data: the class trainer's active
  * spells with a long cooldown (a baseline spell from three minutes up), and the talent spells
@@ -286,16 +304,18 @@ export function specCooldowns(
   const trainables = (JSON.parse(readFileSync(trainFile, 'utf8')) as TrainableFile).trainables;
   const talentIcons = new Map<string, string>();
   const talentNames = new Set<string>();
+  const talentSpells: { name: string; icon: string; spellId: number }[] = [];
   if (existsSync(talentFile)) {
     for (const tree of (JSON.parse(readFileSync(talentFile, 'utf8')) as TalentNameFile).trees) {
       for (const talent of tree.talents) {
         talentNames.add(talent.name);
         talentIcons.set(talent.name, talent.icon);
+        talentSpells.push({ name: talent.name, icon: talent.icon, spellId: talent.spell_id });
       }
     }
   }
   const items: (RotationItem & { cooldownMs: number; lit: boolean })[] = [];
-  const seen = new Set<string>();
+  const seen = new Set<string>(limitedClassSpells(classSlug));
   for (const spell of trainables) {
     if (!spell.active || seen.has(spell.name) || (spell.cast_time_ms ?? 0) > MAX_COOLDOWN_CAST_MS) continue;
     const isTalent = talentNames.has(spell.name);
@@ -315,10 +335,32 @@ export function specCooldowns(
       spellId: top.id,
       name: spell.name,
       rank: facts?.rank,
-      icon: facts?.icon ?? iconFor(build, talentIcons.get(spell.name)),
+      // A rank the sim's spell constants do not carry (Dash rank 3) still has the client's icon.
+      icon:
+        facts?.icon ??
+        iconFor(build, spellIcons(build)[String(top.id)]) ??
+        iconFor(build, talentIcons.get(spell.name)),
       clause: `${formatCooldown(cooldownMs)} cooldown`,
       cooldownMs,
       lit: isTalent,
+    });
+  }
+  // A talent spell the trainer data does not list (Adrenaline Rush, Cold Blood, Preparation)
+  // is read from the talent file's own spell.
+  for (const talent of talentSpells) {
+    if (seen.has(talent.name) || !litTalents.has(talent.name)) continue;
+    const facts = spellFacts(talent.spellId);
+    const cooldownMs = facts?.cooldownMs ?? 0;
+    if (cooldownMs < TALENT_COOLDOWN_FLOOR_MS || cooldownMs > COOLDOWN_CEILING_MS) continue;
+    seen.add(talent.name);
+    items.push({
+      spellId: talent.spellId,
+      name: talent.name,
+      rank: facts?.rank,
+      icon: facts?.icon ?? iconFor(build, talent.icon),
+      clause: `${formatCooldown(cooldownMs)} cooldown`,
+      cooldownMs,
+      lit: true,
     });
   }
   return items

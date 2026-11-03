@@ -80,7 +80,7 @@
             }
           }
         },
-        "notes": "Dark Sacrifice when the mana bar has room and you are not hurt. It trades your own health for mana over fifteen seconds and adds your Spirit to the mana, and its ten minute cooldown makes it a once-a-fight cast."
+        "notes": "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight."
       },
       {
         "action": {
@@ -116,7 +116,7 @@
             }
           }
         },
-        "notes": "Prayer of Mending goes on the tank every time it is ready and the mana pace allows it: a 10 second cooldown, five charges, and at the top rank it is the cheapest healing per mana the Holy kit has. Rank 1 (level 40) is not: it heals little for its price, so it waits for the same mana pace as the filler. It heals its holder the next time they take damage or receive a direct heal, so keep it on the tank, who is hit and healed most."
+        "notes": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you have. It heals whoever holds it on their next hit or direct heal, and the tank is hit and healed the most."
       },
       {
         "action": {
@@ -147,7 +147,7 @@
             }
           }
         },
-        "notes": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of. Below 60, the rank each band casts is chosen on that band's own fight, sized to the dungeons a group of its level runs."
+        "notes": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana."
       },
       {
         "action": {
@@ -180,7 +180,7 @@
             }
           }
         },
-        "notes": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low. The tank's Flash Heal is cast at rank 2 (9472): over the raid fight it returns more effective healing for far less mana."
+        "notes": "Flash Heal at a low rank on a tank who is really low: it lands in 1.5 seconds for a fraction of the top rank's mana. The top rank is for a party member about to die."
       },
       {
         "action": {
@@ -212,7 +212,8 @@
               }
             }
           }
-        }
+        },
+        "notes": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana."
       },
       {
         "action": {
@@ -596,7 +597,7 @@
             }
           }
         },
-        "notes": "Prayer of Healing on a party member once three of the four are under 85%. It heals the healer's whole party."
+        "notes": "Prayer of Healing once three of your four party members are under 85%: it heals the target and the target's whole party."
       },
       {
         "action": {
@@ -656,7 +657,7 @@
             }
           }
         },
-        "notes": "Heal is the mana-efficient filler at the band's rank: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank). Lower ranks of Heal were tried and did not beat it by the one percent the rule asks. Mana pacing: while the mana bar is at least as full as the share of the fight left, the filler fires at the normal thresholds."
+        "notes": "The filler, the classic downrank: rank 4 has Greater Heal's spell power coefficient for far less mana. Cast it at the normal thresholds while your mana is keeping pace with the fight."
       },
       {
         "action": {
@@ -925,7 +926,7 @@
             }
           }
         },
-        "notes": "Behind the mana pace, the filler waits for a lower tank and member health, so the bar is spent on the holes that matter."
+        "notes": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%."
       },
       {
         "action": {
