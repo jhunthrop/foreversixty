@@ -128,7 +128,7 @@ for (const [label, viewport] of [
       // baseline and the line carries a talent split only when some spells out-hit the rest.
       // The unit test in src/pages/guides/_spec.test.ts pins which talent a split names.
       await expect(page.getByTestId('guide-stat-table-hit-cap')).toHaveText(
-        /^Hit cap: \d+(\.\d)?%(?: · \d+(\.\d)?% from [^,]+, \d+(\.\d)?% from gear)?$/,
+        /^Hit cap: \d+(\.\d)?%(?: · (?:\d+(\.\d)?% (?:from [^,]+|built in), )?\d+(\.\d)?% from gear)?$/,
       );
       await expect(page.getByTestId('guide-stat-table')).toContainText('DPS per point');
       const pills = await page.locator('[data-testid^="stat-pill-"] span:last-child').allTextContents();

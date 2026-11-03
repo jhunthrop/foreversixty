@@ -37,13 +37,14 @@ test.describe('desktop', () => {
     await expect(specLinks).toHaveCount(28);
   });
 
-  test('/guides/warrior shows three spec cards, DPS only on the ranked specs', async ({ page }) => {
+  test('/guides/warrior shows three spec cards, each with its own role metric', async ({ page }) => {
     await page.goto('/guides/warrior');
     const cards = page.locator('[data-testid="guide-class-spec-cards"] > div');
     await expect(cards).toHaveCount(3);
     const dpsLines = page.locator('[data-testid="guide-spec-card-dps"]');
-    // Arms and Fury both carry a ranked band-60 BiS file; Protection does not.
-    await expect(dpsLines).toHaveCount(2);
+    // Arms and Fury show DPS; Protection, a tank, shows its own metric, never DPS.
+    await expect(dpsLines).toHaveCount(3);
+    await expect(dpsLines.filter({ hasText: 'DPS' })).toHaveCount(2);
   });
 
   test('every spec card shows its guide’s full frontmatter description, never clipped', async ({ page }) => {
