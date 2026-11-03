@@ -228,10 +228,14 @@ func TestAPremiumRunIsQueuedDispatchedAndPollable(t *testing.T) {
 	if stored.Request.EngineVersion != testEngine {
 		t.Fatalf("engine version %q, want the deployment's pin", stored.Request.EngineVersion)
 	}
-	// The encounter the page left empty is the design's default.
-	// EncounterSpec now carries TargetsOverTime ([]TargetCount), so it is
-	// no longer comparable with ==; DeepEqual is the correct successor.
-	if !reflect.DeepEqual(stored.Request.Encounter, simapi.DefaultEncounter()) {
+	// The encounter the page left empty gets the design's fight length and
+	// target count; variation and the execute ratio stay as sent, since zero
+	// is a real choice for both ("no variation", "execute phase off").
+	// EncounterSpec carries TargetsOverTime ([]TargetCount), so it is not
+	// comparable with ==; DeepEqual is the correct successor.
+	want := simapi.DefaultEncounter()
+	want.Variation, want.ExecuteRatio = 0, 0
+	if !reflect.DeepEqual(stored.Request.Encounter, want) {
 		t.Fatalf("encounter defaults were not applied: %+v", stored.Request.Encounter)
 	}
 	// And the whole character is in the row, which is what the job
