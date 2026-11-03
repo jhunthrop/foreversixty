@@ -224,7 +224,7 @@
       }
     },
     {
-      "notes": "Whenever it drops. At 60 a raid warrior's shout usually covers you.",
+      "notes": "Whenever it drops. Below 60 no raid warrior shouts for you; at 60 a raid warrior's shout is the same aura, so this line idles.",
       "action": {
         "condition": {
           "not": {
