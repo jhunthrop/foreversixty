@@ -100,12 +100,32 @@ func lowRankUses(in Input) []*lowRankUse {
 	return out
 }
 
-// sitesOwnRank is whether cast is a rank the site's own rotation casts at the player's
-// level: a per-band rank choice (data/curated/rank-choices.json), or the rank the shipped
-// rotation's band line names (a rank the rotation authors below the top one, such as
-// Elemental's raid-60 Lightning Bolt rank 9). A player casting it is following the advice.
+// sitesOwnRank is whether cast is at or above the lowest rank the site's own rotation casts
+// of family at the player's level: a per-band rank choice (data/curated/rank-choices.json,
+// every row whatever its preset or faction), or the rank the shipped rotation's band line
+// names (a rank the rotation authors below the top one, such as Elemental's raid-60
+// Lightning Bolt rank 9). F5 says "a lower rank where a higher one is trainable"; where the
+// site itself casts a lower rank, a cast at or above it is no such mistake. Rank rows are
+// advice, never rules (round 12): many are kept for a fraction of a percent, some only for
+// one faction, and a log does not say which preset the player raided under.
 func sitesOwnRank(in Input, family string, cast TrainableRank) bool {
-	return slices.Contains(in.Tables.RankChoices[family], cast.Rank) || in.Tables.Rotation.Names(cast.ID)
+	floor, ok := sitesLowestRank(in, family)
+	return ok && cast.Rank >= floor
+}
+
+// sitesLowestRank is the lowest rank of family the site's rotation casts at the player's
+// level, and false when it casts none below what the default rule picks.
+func sitesLowestRank(in Input, family string) (int, bool) {
+	ranks := slices.Clone(in.Tables.RankChoices[family])
+	for _, r := range in.Tables.Trainable[family] {
+		if in.Tables.Rotation.Names(r.ID) {
+			ranks = append(ranks, r.Rank)
+		}
+	}
+	if len(ranks) == 0 {
+		return 0, false
+	}
+	return slices.Min(ranks), true
 }
 
 func downrankListed(r SpecRules, family string) bool {
