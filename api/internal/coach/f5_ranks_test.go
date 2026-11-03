@@ -22,7 +22,7 @@ func TestRanks(t *testing.T) {
 		{name: "a rank below the site's choice still fires", in: withRankChoice(protSunderRank(t, 60, 3, 22), "Sunder Armor", 4),
 			wantTitle: "Sunder Armor: 22 casts of Rank 3", wantSev: SeverityMinor},
 		// Round 12: a rank row is advice, never a rule (the ranks lane keeps rows a fraction of
-		// a percent ahead, and keys some by faction). Where the site itself downranks, a rank at
+		// a percent ahead, and keys some by race). Where the site itself downranks, a rank at
 		// or above its pick is no "lower rank" mistake: the top rank, and any rank between.
 		{name: "the top rank is never flagged where the site's row downranks", in: withRankChoice(protSunderRank(t, 60, 5, 22), "Sunder Armor", 3), none: true},
 		{name: "a rank between the site's downrank and the top is never flagged", in: withRankChoice(protSunderRank(t, 60, 4, 22), "Sunder Armor", 3), none: true},

@@ -353,11 +353,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		// The ladder's request names no preset, so it follows the one its
 		// level is published under (rankPreset); at 60 an id with no row is
 		// cast as authored.
-		faction, err := FactionOfRace(race)
-		if err != nil {
-			t.Fatal(err)
-		}
-		castAt := rankResolver(class, level, specRankChoices(spec.Spec, PublishedPreset(level), faction))
+		castAt := rankResolver(class, level, specRankChoices(spec.Spec, PublishedPreset(level), race))
 		for authoredID := range authoredIDs {
 			learnedID32, learned := castAt(int32(authoredID))
 			if !learned {

@@ -102,12 +102,12 @@ func lowRankUses(in Input) []*lowRankUse {
 
 // sitesOwnRank is whether cast is at or above the lowest rank the site's own rotation casts
 // of family at the player's level: a per-band rank choice (data/curated/rank-choices.json,
-// every row whatever its preset or faction), or the rank the shipped rotation's band line
+// every row whatever its preset or races), or the rank the shipped rotation's band line
 // names (a rank the rotation authors below the top one, such as Elemental's raid-60
 // Lightning Bolt rank 9). F5 says "a lower rank where a higher one is trainable"; where the
 // site itself casts a lower rank, a cast at or above it is no such mistake. Rank rows are
 // advice, never rules (round 12): many are kept for a fraction of a percent, some only for
-// one faction, and a log does not say which preset the player raided under.
+// some races, and a log does not say which preset the player raided under.
 func sitesOwnRank(in Input, family string, cast TrainableRank) bool {
 	floor, ok := sitesLowestRank(in, family)
 	return ok && cast.Rank >= floor

@@ -113,14 +113,14 @@ func simRotation(s simSetup, r rotation, iterations int) (api.Estimate, *proto.U
 
 // engineRotation is r as the engine casts it under this search's preset: the
 // preset's rank choices (data/curated/rank-choices.json) for the band's
-// faction applied, as /sim and the ranker apply them, so a bare-60 search
+// race applied, as /sim and the ranker apply them, so a bare-60 search
 // fights the published bare-60 rotation. r itself keeps its authored ids for the report.
 func (s simSetup) engineRotation(r rotation) (*proto.APLRotation, error) {
 	b, err := r.marshalIndent()
 	if err != nil {
 		return nil, fmt.Errorf("encoding the rotation to sim: %w", err)
 	}
-	if b, err = request.RewriteRotationRanks(b, s.spec.Spec, s.spec.ClassSlug, s.presetName(), s.band.Faction, s.level); err != nil {
+	if b, err = request.RewriteRotationRanks(b, s.spec.Spec, s.spec.ClassSlug, s.presetName(), s.band.Race, s.level); err != nil {
 		return nil, fmt.Errorf("applying the preset's rank choices: %w", err)
 	}
 	apl := &proto.APLRotation{}
