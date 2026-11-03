@@ -60,6 +60,23 @@ def test_no_downrank_is_judged_against_an_ahnqiraj_book_rank():
                 assert top not in books, (spec, key, entry.get("family") or entry.get("name"), top)
 
 
+def test_no_rule_names_an_ahnqiraj_book_rank_a_trainer_rank_could_name():
+    """Every list's stamped top rank is the one the coach names in a reading (an aura's
+    uptime fact carries its rank; F1 falls back to the last id). A book rank is that top only
+    when the family has no trainer rank: the coach told hunters "Aspect of the Hawk (Rank
+    7)", the Ahn'Qiraj book, when a level-60 trainer teaches rank 6."""
+    book_ranks = json.loads((DATA / "curated" / "book-ranks.json").read_text())
+    books = {b["id"] for b in book_ranks["books"]}
+    for spec in SPECS:
+        doc = json.loads(render_spec(spec, ACTIVE, DATA))
+        for key in ("core", "auras", "defensives", "efficiency"):
+            for entry in doc.get(key) or []:
+                top = int(entry["verified"].rsplit("#", 1)[1])
+                name = entry.get("family") or entry.get("name")
+                if any(i not in books for i in entry["spell_ids"]):
+                    assert top not in books, (spec, key, name, top)
+
+
 def _apl_cast_ids(spec: str) -> set[int]:
     ids: set[int] = set()
 
