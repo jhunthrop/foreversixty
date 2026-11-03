@@ -674,3 +674,18 @@ def test_compute_spell_icons_covers_the_prepull_casts_no_rank_family_resolves(tm
     icons = compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
     assert 688 in icons
     assert 23894 in icons
+
+
+def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts():
+    """Sim-accuracy round 12 (healprofile): at band 40 the curated rows cast
+    Flash of Light rank 3 on the tank and rank 1 on the group. The addon's
+    list names those ranks' own ids, both learned by 40: rank 3 is 19940
+    (level 34), rank 1 is 19750 (level 20); Holy Light rank 1 is 635."""
+    spellranks = json.loads(Path("builds/1.60.1.70753/spellranks.json").read_text(encoding="utf-8"))
+    learned = {r["id"]: r["level"] for r in spellranks["classes"]["paladin"]["Flash of Light"]}
+    assert learned[19940] <= 40 and learned[19750] <= 40
+    band = next(b for b in build_rotation("paladin-holy", Path("curated"), spellranks) if b.level == 40)
+    flash = [line.spell_id for line in band.lines if line.name == "Flash of Light"]
+    assert flash[0] == 19940  # the tank's line comes first in the list
+    assert set(flash[1:]) == {19750}
+    assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {635}

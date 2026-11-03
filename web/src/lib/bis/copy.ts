@@ -23,6 +23,10 @@ function outcomeNoun(unit: RateUnit): string {
   return unit === 'HPS' ? 'healing' : 'damage';
 }
 
+/** The levels the beta's public logs cover (foreverlogs.gg, beta), which the heal profile's
+ *  tank-and-group split is taken from (sim-accuracy round 12). */
+const BETA_LOG_LEVELS = '13 to 30';
+
 export const bisCopy = {
   noDataYet: 'No leveling BiS list yet for this spec.',
   noDataYetBody:
@@ -488,8 +492,10 @@ export const bisCopy = {
   healerProfileSplitReason:
     "From beta logs: in each five-man fight, the share of the group's damage taken that lands on its tank.",
   healerProfileSplitLine: (share: number, fights: number, pooled: boolean): string =>
-    `The tank takes ${Math.round(share * 100)}% of the damage, the median of ${fights.toLocaleString('en-US')} ` +
-    (pooled ? 'logged beta dungeon fights (none at this band yet)' : 'logged beta fights in these dungeons'),
+    (pooled ? 'No fights are logged at this band yet. ' : '') +
+    `The tank takes ${Math.round(share * 100)}% of the damage: the median of ${fights.toLocaleString('en-US')} ` +
+    `logged beta fights (levels ${BETA_LOG_LEVELS}) ` +
+    (pooled ? 'across every dungeon' : 'in these dungeons'),
   healerProfileFightHeading: 'Fight',
   healerProfileFightLine: (duration: string): string => `${duration} long`,
 } as const;

@@ -290,13 +290,14 @@ describe('healerSetViewFor', () => {
     ]);
     expect(low.rows.find((r) => r.heading === 'Tank and group')).toEqual({
       heading: 'Tank and group',
-      figures: 'The tank takes 70% of the damage, the median of 412 logged beta fights in these dungeons',
+      figures:
+        'The tank takes 70% of the damage: the median of 412 logged beta fights (levels 13 to 30) in these dungeons',
       reason:
         "From beta logs: in each five-man fight, the share of the group's damage taken that lands on its tank.",
     });
     const pooled = healerSetViewFor(healerBand({ band: 40 }), banded)!.disclosure!;
     expect(pooled.rows.find((r) => r.heading === 'Tank and group')!.figures).toBe(
-      'The tank takes 69% of the damage, the median of 900 logged beta dungeon fights (none at this band yet)',
+      'No fights are logged at this band yet. The tank takes 69% of the damage: the median of 900 logged beta fights (levels 13 to 30) across every dungeon',
     );
     // A file published before the logged split has no split row.
     const older = healerSetViewFor(healerBand({ band: 30 }), banded)!.disclosure!;
