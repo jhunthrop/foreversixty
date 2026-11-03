@@ -78,7 +78,7 @@ The raid build moves Iron Will and one point of Deflection into **Improved Slam*
 
 ## Rotation and priority
 
-**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage, then Charge the boss as the tank engages it. You are still out of combat, so Charge works. You land with Charge's rage and Bloodrage still ticking, which is a Rend and a Mortal Strike in the first two globals.
+**The pull.** Charge first, as the tank engages. Charge only works out of combat, and Bloodrage puts you in combat, so a Bloodrage before the pull costs you the Charge. Spend the Charge's rage on Battle Shout on the way in, unless a raid warrior's shout is already on you; then press Bloodrage as your first swing lands. That is a Rend and a Mortal Strike in the first two globals.
 
 **Battle Stance.** Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target. Press Overpower the moment it lights up, even ahead of Mortal Strike: it is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later. Mortal Strike goes on cooldown otherwise. With Improved Slam, Slam fills the gap between Mortal Strikes.
 
