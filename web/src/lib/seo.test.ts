@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { articleLd, breadcrumbLd, toJsonLd, websiteLd } from './seo';
+import { HOME_TITLE, TITLE_MAX_LENGTH, articleLd, breadcrumbLd, pageTitle, toJsonLd, websiteLd } from './seo';
 
 describe('structured data', () => {
   it('describes the site by name and url, with no search action', () => {
@@ -41,5 +41,21 @@ describe('structured data', () => {
   it('serialises without a closing-script hazard', () => {
     expect(toJsonLd([{ a: '</script>' }])).toBe('{"a":"\\u003c/script>"}');
     expect(toJsonLd([{ a: 1 }, { b: 2 }])).toBe('[{"a":1},{"b":2}]');
+  });
+});
+
+describe('pageTitle', () => {
+  it('gives the home page its own line', () => {
+    expect(pageTitle('/', 'ignored')).toBe(HOME_TITLE);
+  });
+
+  it('brands a short title and tags the game', () => {
+    expect(pageTitle('/tiers', 'DPS tier list')).toBe('DPS tier list · Forever Sixty · WoW Forever');
+  });
+
+  it('drops the brand, never the game tag, when the title would run long', () => {
+    const title = pageTitle('/bis/hunter/beast-mastery', 'Hunter Beast Mastery leveling BiS');
+    expect(title).toBe('Hunter Beast Mastery leveling BiS · WoW Forever');
+    expect(title.length).toBeLessThanOrEqual(TITLE_MAX_LENGTH);
   });
 });

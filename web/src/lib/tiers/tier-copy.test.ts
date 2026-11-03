@@ -179,3 +179,18 @@ describe('tier bands', () => {
     expect(tiersCopy.tierCount(4)).toBe('4 specs');
   });
 });
+
+describe('tier page head', () => {
+  it('gives each role its own title and description', () => {
+    const roles = ['dps', 'tank', 'healer'] as const;
+    expect(new Set(roles.map(tiersCopy.pageTitle)).size).toBe(3);
+    expect(new Set(roles.map(tiersCopy.metaDescription)).size).toBe(3);
+    expect(tiersCopy.pageTitle('tank')).toBe('Tank tier list');
+  });
+
+  it('keeps every description inside a search snippet', () => {
+    for (const role of ['dps', 'tank', 'healer'] as const) {
+      expect(tiersCopy.metaDescription(role).length).toBeLessThanOrEqual(160);
+    }
+  });
+});

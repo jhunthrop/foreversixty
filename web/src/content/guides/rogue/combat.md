@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70753:rogue:night-elf:32531/32530300001515201/51:'
 raidBuild: 'FS1:1.60.1.70753:rogue:night-elf:005320105/31530300001515231/002:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
-description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents, races and professions that matter.'
+description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents that matter.'
 updated: 2026-11-02
 confidence: inferred
 sources:
