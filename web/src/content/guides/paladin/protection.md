@@ -127,7 +127,7 @@ Mining and Blacksmithing make plate, shields and the tanking weapons. Engineerin
 
 ## Leveling
 
-Level as Retribution and tank dungeons in it: you get Righteous Fury and Seal of Fury at level 10, which is enough to hold a dungeon group from Ragefire Chasm and the Deadmines on. Switch to Protection when you are tanking more than you are questing. Holy Shield comes at 30, with new ranks at 40, 50 and 60, and Hammer of the Righteous at 40.
+Level as Retribution and tank dungeons in it: you get Righteous Fury and Seal of Fury at level 10, which is enough to hold a dungeon group from Ragefire Chasm and the Deadmines on. Switch to Protection when you are tanking more than you are questing. Holy Shield comes at 30, with new ranks at 40, 50 and 60, and Hammer of the Righteous at 40. If you tank in Protection at 20, take Templar's Bulwark before a second point of Sacred Duty: a full health bar of absorb keeps a low-level tank alive far more often than a shorter cooldown on it.
 
 Common mistakes:
 
