@@ -27,36 +27,103 @@ export const RACIAL_NAMES: Readonly<Record<string, readonly string[]>> = {
 
 type Picks = { default: string[] } & Partial<Record<SpecKind, string[]>>;
 
-/** The racials that matter, by kind of spec: Gnome Escape Artist and Expansive Mind, Troll
- *  Berserking, Undead Will of the Forsaken, Human Perception and The Human Spirit, Orc Blood
- *  Fury, Alliance Skyborne Read Ley Line, Horde Skyborne Wind Blessed; the rest follow the same
- *  rule. Names are the race data's own. */
+/** The racials that matter, by kind of spec. The rule: the racial the sim credits with damage,
+ *  healing or threat for that kind leads (Gnome Eureka!, Orc Blood Fury, Troll Berserking,
+ *  Night Elf Elune's Light, Human Ruthless, Dwarf Artisan's Precision, Undead Touch of the Grave,
+ *  Skyborne Wind Blessed), then the one that carries the kind's resource or survival (Expansive
+ *  Mind, The Human Spirit, Read Ley Line, Stoneform); a utility racial (Escape Artist, Will of
+ *  the Forsaken, Shatter Curse, Quickness) shows only where nothing else helps that kind more.
+ *  Names are the race data's own. */
 export const RACIAL_PICKS: Readonly<Record<string, Picks>> = {
   human: {
-    default: ['Perception', 'The Human Spirit'],
+    default: ['Ruthless', 'The Human Spirit'],
     melee: ['Ruthless'],
     tank: ['Ruthless'],
-    ranged: ['Will to Survive'],
+    ranged: ['Ruthless'],
   },
-  orc: { default: ['Blood Fury'], tank: ['Shatter Curse'] },
+  orc: { default: ['Blood Fury'], tank: ['Blood Fury', 'Shatter Curse'] },
   dwarf: {
     default: ["Artisan's Precision"],
     healer: ['Stoneform'],
-    caster: ['Stoneform'],
-    tank: ['Stoneform'],
+    tank: ['Stoneform', "Artisan's Precision"],
   },
-  'night-elf': { default: ["Elune's Light"], tank: ['Quickness'] },
+  'night-elf': { default: ["Elune's Light"], tank: ["Elune's Light", 'Quickness'] },
   undead: {
     default: ['Will of the Forsaken'],
     melee: ['Touch of the Grave'],
     ranged: ['Touch of the Grave'],
+    caster: ['Touch of the Grave'],
+    tank: ['Touch of the Grave', 'Will of the Forsaken'],
   },
   tauren: { default: ['Endurance'] },
-  gnome: { default: ['Escape Artist', 'Expansive Mind'] },
-  troll: { default: ['Berserking'], tank: ['Rapid Regeneration'] },
-  'high-order-skyborne': { default: ['Read Ley Line'] },
+  gnome: { default: ['Eureka!', 'Expansive Mind'], tank: ['Eureka!', 'Escape Artist'] },
+  troll: { default: ['Berserking'] },
+  'high-order-skyborne': {
+    default: ['Wind Blessed'],
+    caster: ['Wind Blessed', 'Read Ley Line'],
+    healer: ['Wind Blessed', 'Read Ley Line'],
+  },
   'windshaper-skyborne': { default: ['Wind Blessed'] },
 };
+
+/** Picks for one class of a race, ahead of its kind's: Orc Command raises only Hunter and
+ *  Warlock pets' damage (the client's 20576 and 20575), so only those two classes show it. */
+export const RACIAL_PICKS_BY_CLASS: Readonly<Record<string, Readonly<Record<string, string[]>>>> = {
+  orc: { hunter: ['Blood Fury', 'Command'], warlock: ['Blood Fury', 'Command'] },
+};
+
+/** A racial whose client row differs by class, in that class's own tooltip words (the race data
+ *  carries one sentence for the race). Gnome's Eureka! is one row per class, 1259813 Warrior,
+ *  1259812 Rogue, 1259817 Mage, 1259821 Warlock and 1259823 Priest: the resource it discounts,
+ *  and whether periodic damage and healing count, follow the class. A test holds each wording
+ *  to the race data's own duration and cooldown. */
+export const RACIAL_EFFECTS_BY_CLASS: Readonly<
+  Record<string, Readonly<Record<string, Readonly<Record<string, string>>>>>
+> = {
+  gnome: {
+    'Eureka!': {
+      mage: 'Makes your damaging abilities cost 10% less Mana and deal 10% more damage for 8 seconds on a 2 minute cooldown',
+      priest:
+        'Makes your non-periodic damaging and healing abilities cost 10% less Mana and deal 10% more damage or healing for 8 seconds on a 2 minute cooldown',
+      rogue:
+        'Makes your non-periodic damaging abilities cost 10% less Energy and deal 10% more damage for 8 seconds on a 2 minute cooldown',
+      warlock:
+        'Makes your non-periodic damaging abilities cost 10% less Mana and deal 10% more damage for 8 seconds on a 2 minute cooldown',
+      warrior:
+        'Makes your non-periodic damaging abilities cost 10% less Rage and deal 10% more damage for 8 seconds on a 2 minute cooldown',
+    },
+  },
+};
+
+/** Each race's offensive racial cooldown, the one the sim casts on cooldown with the rest of the
+ *  cooldown pass (`autocastOtherCooldowns`). */
+export const RACIAL_COOLDOWNS: Readonly<Record<string, string>> = {
+  orc: 'Blood Fury',
+  'night-elf': "Elune's Light",
+  gnome: 'Eureka!',
+  troll: 'Berserking',
+};
+
+export interface RacialCooldown {
+  /** The race's display name. */
+  race: string;
+  racial: string;
+}
+
+/** The racial cooldowns of the races `classSlug` can be, in the build's race order. */
+export function racialCooldownsFor(build: string, classSlug: string): RacialCooldown[] {
+  return buildRacesForClass(build, classSlug).flatMap((race) => {
+    const racial = RACIAL_COOLDOWNS[race.slug];
+    return racial === undefined ? [] : [{ race: race.name, racial }];
+  });
+}
+
+function picksFor(slug: string, classSlug: string, kind: SpecKind): string[] {
+  const byClass = RACIAL_PICKS_BY_CLASS[slug]?.[classSlug];
+  if (byClass !== undefined) return byClass;
+  const picks = RACIAL_PICKS[slug];
+  return picks === undefined ? [] : (picks[kind] ?? picks.default);
+}
 
 const CASTER_CLASSES = new Set(['mage', 'warlock']);
 const CASTER_SPECS = new Set(['priest-shadow', 'shaman-elemental', 'druid-balance']);
@@ -83,7 +150,9 @@ function trimEffect(raw: string): string {
   }
   const stops = [text.indexOf('. '), text.indexOf(';')].filter((i) => i !== -1);
   if (stops.length > 0) text = text.slice(0, Math.min(...stops));
-  text = text.replace(/\s+but no longer.*$/i, '');
+  // The data's history of a racial ("but no longer ...", ", in place of Earth Fury's ...") is not
+  // what it does.
+  text = text.replace(/\s+but no longer.*$/i, '').replace(/,\s+in place of\s.*$/i, '');
   text = text.replace(/[,\s]+(and\s*)?$/i, '').replace(/[.\s]+$/, '');
   text = text
     .replace(/^,\s*/, '')
@@ -153,8 +222,7 @@ export function raceTableFor(
   kind: SpecKind,
 ): GuideRaceRow[] {
   return buildRacesForClass(build, classSlug).map((race): GuideRaceRow => {
-    const picks = RACIAL_PICKS[race.slug];
-    const wanted = picks === undefined ? [] : (picks[kind] ?? picks.default);
+    const wanted = picksFor(race.slug, classSlug, kind);
     const effects = racialEffects(race);
     // A racial the editorial table does not know (or the build's text does not describe) falls
     // back to the race's first racial the data does describe, with its own sentence; a race
@@ -168,14 +236,16 @@ export function raceTableFor(
       recommended: recommendedRaces.includes(race.slug),
       racials: names.flatMap((name) => {
         const effect = effects.get(name);
-        return effect === undefined ? [] : [{ name, effect: upperFirst(effect) }];
+        if (effect === undefined) return [];
+        const forClass = RACIAL_EFFECTS_BY_CLASS[race.slug]?.[name]?.[classSlug];
+        return [{ name, effect: forClass ?? upperFirst(effect) }];
       }),
     };
   });
 }
 
-/** The recommended races as the one line under the table: "Gnome is the Alliance pick: Escape
- *  Artist and Expansive Mind." ("a" when a faction has more than one). */
+/** The recommended races as the one line under the table: "Gnome is the Alliance pick: Eureka!
+ *  and Expansive Mind." ("a" when a faction has more than one). */
 export function recommendedRaceLines(
   rows: readonly GuideRaceRow[],
 ): { slug: string; faction: string; names: string[] }[] {

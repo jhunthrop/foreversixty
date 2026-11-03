@@ -9,6 +9,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { CollapsedLine } from '../bis/rotation-collapse';
 import { repoRoot, spellIcons } from '../data/build-files';
+import type { RacialCooldown } from './race-table';
 
 export interface RotationItem {
   /** Absent for a step that names no spell ("Then follow the priority list"). */
@@ -145,6 +146,10 @@ export function rotationListsFrom(
   spellFacts: SpellLookup,
   /** Further cooldown spells of the spec (`specCooldowns`), after the ones its priority names. */
   extraCooldowns: readonly RotationItem[] = [],
+  /** The racial cooldowns of the class's races (`racialCooldownsFor`), named on the trinket line. */
+  racialCooldowns: readonly RacialCooldown[] = [],
+  /** The guide's role; a healer's trinket line is worded by healing. */
+  role: GuideRole = 'dps',
 ): RotationLists {
   const priority = lines.map(lineItem);
 
@@ -185,12 +190,23 @@ export function rotationListsFrom(
     cooldowns.push(item);
   }
   if (usesCooldownPass(apl)) {
-    cooldowns.push({
-      name: 'Trinkets, racials and potions',
-      clause: 'On cooldown, with your biggest damage',
-    });
+    cooldowns.push({ name: COOLDOWN_PASS_NAME, clause: cooldownPassClause(racialCooldowns, role) });
   }
   return { opener, priority, cooldowns };
+}
+
+export type GuideRole = 'dps' | 'healer' | 'tank';
+
+const COOLDOWN_PASS_NAME = 'Trinkets, racials and potions';
+const COOLDOWN_PASS_CLAUSE = 'On cooldown, with your biggest damage';
+const HEALER_COOLDOWN_PASS_CLAUSE = 'On cooldown, when your healing matters most';
+
+/** "On cooldown, with your biggest damage: Eureka! (Gnome), Berserking (Troll)". */
+function cooldownPassClause(racials: readonly RacialCooldown[], role: GuideRole): string {
+  const lead = role === 'healer' ? HEALER_COOLDOWN_PASS_CLAUSE : COOLDOWN_PASS_CLAUSE;
+  if (racials.length === 0) return lead;
+  const named = racials.map((entry) => `${entry.racial} (${entry.race})`).join(', ');
+  return `${lead}: ${named}`;
 }
 
 // --- disk readers ---------------------------------------------------------------------------
