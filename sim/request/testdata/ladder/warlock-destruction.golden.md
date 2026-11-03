@@ -100,12 +100,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:284287 ranged:286750 | 15.8 | 5 | other:mana_gain=35.0, spell:1454=35.0, spell:695=28.5, spell:172=14.3, spell:707=13.3 | {SpellID: 412758}, {SpellID: 603} |
-| 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:6505 ranged:5243 | 35.4 | 6 | other:mana_gain=32.9, spell:1455=32.9, spell:1088=23.1, spell:1094=13.0, spell:6222=12.1 | {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
-| 30 | 00000000000000000-0000000000000000000-2053235100000000 | main_hand:249392 ranged:5213 | 57.0 | 6 | other:mana_gain=32.6, spell:1456=32.6, spell:1088=25.6, spell:2941=13.7, spell:6223=10.7 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 603} |
-| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:873 ranged:13064 | 87.0 | 7 | other:mana_gain=29.3, spell:11687=29.3, spell:2941=19.6, spell:1088=16.2, spell:1293818=15.1 | {SpellID: 412758}, {SpellID: 603} |
-| 40 | 00000000000000000-0000000000000000000-2053235103101311 | main_hand:873 ranged:5216 | 96.4 | 7 | other:mana_gain=38.6, spell:11687=38.6, spell:11665=18.4, spell:412758=15.0, spell:17962=14.4 | {SpellID: 603} |
-| 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:873 ranged:249232 | 153.8 | 7 | other:mana_gain=32.6, spell:11688=32.6, spell:1293812=23.0, spell:18930=14.4, spell:11667=13.4 | {SpellID: 603} |
-| 60 | 25522000000000000-0000000000000000000-2053235103101351 | main_hand:22630 ranged:22821 | 306.1 | 8 | other:mana_gain=32.7, spell:11689=32.7, spell:1293813=26.5, spell:18932=14.4, spell:11668=13.7 | - |
+| 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:6505 ranged:5243 | 36.1 | 7 | other:mana_gain=32.9, spell:1455=32.9, spell:1088=22.8, spell:1094=13.0, spell:6222=12.1 | {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
+| 30 | 00000000000000000-0000000000000000000-2053235100000000 | main_hand:249392 ranged:5213 | 58.7 | 7 | other:mana_gain=32.7, spell:1456=32.7, spell:1088=24.9, spell:2941=13.6, spell:6223=10.9 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 603} |
+| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:873 ranged:13064 | 91.0 | 8 | other:mana_gain=29.1, spell:11687=29.1, spell:2941=18.6, spell:1088=16.5, spell:1293818=14.7 | {SpellID: 412758}, {SpellID: 603} |
+| 40 | 00000000000000000-0000000000000000000-2053235103101311 | main_hand:873 ranged:5216 | 102.8 | 8 | other:mana_gain=38.5, spell:11687=38.5, spell:11665=17.5, spell:412758=15.2, spell:17962=14.1 | {SpellID: 603} |
+| 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:873 ranged:249232 | 165.3 | 8 | other:mana_gain=32.6, spell:11688=32.6, spell:1293812=22.3, spell:18930=14.1, spell:11667=13.3 | {SpellID: 603} |
+| 60 | 25522000000000000-0000000000000000000-2053235103101351 | main_hand:22630 ranged:22821 | 330.9 | 9 | other:mana_gain=32.6, spell:11689=32.6, spell:1293813=25.8, spell:18932=14.6, spell:11668=13.5 | - |
 
 ## Learned but unused (informational)
 

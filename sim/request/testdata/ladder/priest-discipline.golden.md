@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 001000000000000000-00000000000000000-00000000000000000 | main_hand:263937 | 6.9 | 2 | spell:139=21.0, spell:17=20.0 | - |
-| 20 | 005005000010000000-00000000000000000-00000000000000000 | main_hand:890 | 15.9 | 5 | spell:6075=16.1, spell:600=7.9, spell:2061=7.2, other:mana_gain=5.0, spell:1277324=1.0 | - |
-| 30 | 005005031330010000-00000000000000000-00000000000000000 | main_hand:249392 | 42.0 | 9 | spell:6075=19.4, spell:3747=15.0, other:mana_gain=5.0, spell:401937=3.5, spell:596=3.3 | {SpellID: 402174} |
-| 38 | 005005031330011430-00000000000000000-00000000000000000 | main_hand:873 | 48.7 | 8 | spell:402174=22.4, spell:6075=19.8, other:mana_gain=5.0, spell:3747=3.8, spell:596=3.3 | - |
-| 40 | 005005031330011430-20000000000000000-00000000000000000 | main_hand:873 | 54.7 | 9 | spell:1240720=20.6, spell:6075=19.5, other:mana_gain=5.0, spell:14751=2.0, spell:3747=1.5 | - |
-| 50 | 005005031330011430-33501000000000000-00000000000000000 | main_hand:812 | 113.2 | 11 | spell:6075=20.0, spell:401937=11.5, spell:1240721=11.1, other:mana_gain=5.0, spell:10899=2.6 | - |
-| 60 | 005005031330011430-33505003030000000-00000000000000000 | main_hand:19355 | 127.6 | 12 | spell:2054=28.3, spell:6075=17.9, other:mana_gain=5.0, spell:1316995=4.5, spell:10965=4.0 | - |
+| 10 | 001000000000000000-00000000000000000-00000000000000000 | main_hand:263937 | 12.1 | 3 | spell:139=19.9, spell:17=12.3, spell:2053=10.3 | - |
+| 20 | 005005000010000000-00000000000000000-00000000000000000 | main_hand:890 | 17.1 | 6 | spell:139=19.7, spell:2053=10.6, spell:2061=10.3, spell:592=3.8, other:mana_gain=1.6 | - |
+| 30 | 005005031330001000-00000000000000000-00000000000000000 | main_hand:249392 | 48.8 | 10 | spell:139=20.0, spell:2053=17.5, spell:402174=12.9, other:mana_gain=5.0, spell:401937=3.5 | - |
+| 38 | 005005031330011430-00000000000000000-00000000000000000 | main_hand:873 | 65.8 | 10 | spell:139=19.9, spell:402174=16.0, spell:2053=14.7, other:mana_gain=5.0, spell:6065=4.2 | - |
+| 40 | 005005031330011430-20000000000000000-00000000000000000 | main_hand:873 | 71.9 | 11 | spell:2053=24.6, spell:139=19.7, spell:402174=11.7, spell:2060=5.4, other:mana_gain=4.8 | - |
+| 50 | 005005031330011430-33501000000000000-00000000000000000 | main_hand:812 | 118.0 | 12 | spell:2053=40.1, spell:139=19.1, spell:1240721=7.1, spell:10963=5.5, other:mana_gain=4.9 | - |
+| 60 | 005005031330011430-33505003030000000-00000000000000000 | main_hand:19355 | 131.2 | 11 | spell:2053=62.4, other:mana_gain=5.0, spell:1316995=4.5, spell:6075=4.1, spell:10965=4.0 | - |
 
 ## Learned but unused (informational)
 
@@ -189,10 +189,5 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- priest-discipline level=20 kind=zero_casts spell="Heal" id=2054 authored=2054
-- priest-discipline level=38 kind=zero_casts spell="Binding Heal" id=1240771 authored=1240774
-- priest-discipline level=38 kind=zero_casts spell="Flash Heal" id=9474 authored=10917
-- priest-discipline level=40 kind=zero_casts spell="Binding Heal" id=1240771 authored=1240774
 - priest-discipline level=40 kind=zero_casts spell="Flash Heal" id=9474 authored=10917
-- priest-discipline level=40 kind=zero_casts spell="Greater Heal" id=2060 authored=10965
-- priest-discipline level=50 kind=zero_casts spell="Flash Heal" id=10916 authored=10917
+- priest-discipline level=60 kind=zero_casts spell="Power Word: Shield" id=3747 authored=3747
