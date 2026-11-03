@@ -26,6 +26,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/dataaddon"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/golinks"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
@@ -651,6 +652,7 @@ func serve(log *slog.Logger) error {
 			Store: ratingStore, Reports: reportStore, Accounts: authStore,
 			Owners: authStore, Entitlements: entStore, Log: log,
 		},
+		GoLinks:          &golinks.Service{Links: &golinks.Store{Pool: pool}, Log: log},
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 

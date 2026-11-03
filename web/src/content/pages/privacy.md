@@ -1,7 +1,7 @@
 ---
 title: Privacy policy
 description: What Forever Sixty collects, how it is used, and how long it is kept.
-updated: 2026-10-28
+updated: 2026-11-02
 sources:
   - label: This site
     url: https://foreversixty.gg/privacy
@@ -14,6 +14,9 @@ Your Battle.net sign-in identity; an email address if you sign in with an email 
 combat logs and addon exports you upload; and, if you subscribe, a Stripe Customer id. We
 never collect, see, or store your card number, its expiry, or your CVC — Stripe holds all of
 that directly.
+
+We count visits and clicks on our links without cookies or any personal data, and record
+which of our links, if any, an account first arrived from.
 
 ## How Battle.net data is used
 

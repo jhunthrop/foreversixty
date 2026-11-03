@@ -1,5 +1,5 @@
 // The only server code in web/. wrangler.jsonc's run_worker_first lists exactly the
-// prefixes this handler owns -- the shared build proxy, report files and the DuckDB
+// prefixes this handler owns -- the tracked /go/ links, the shared build proxy, report files and the DuckDB
 // runtime out of R2, the engine module's brotli negotiation, and the four shells -- and every other path is served straight from
 // the static assets with no Worker execution at all.
 //
@@ -17,6 +17,8 @@ import {
   parseGuildPath,
   parseGuildSettingsPath,
 } from './lib/characters';
+import { GO_PREFIX } from './lib/golinks/config';
+import { serveGoLink, type ExecutionContext } from './lib/golinks/redirect';
 import { DUCKDB_RUNTIME_PREFIX, duckdbRuntimeKey } from './lib/report/duckdb-runtime';
 import {
   characterShellMeta,
@@ -554,8 +556,10 @@ async function serveShell(env: Env, url: URL, asset: string): Promise<Response> 
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+    // The tracked short links (lib/golinks/redirect.ts): a 302 now, the count after.
+    if (url.pathname.startsWith(GO_PREFIX)) return serveGoLink(request, env, ctx);
     // The sample's old database id: the link lives in cached pages and old shares.
     const legacy = SAMPLE_LEGACY_IDS.find((id) => url.pathname === `/reports/${id}`);
     if (legacy !== undefined) return Response.redirect(new URL(SAMPLE_REPORT_PATH, url).toString(), 301);

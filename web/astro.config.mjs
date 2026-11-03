@@ -163,7 +163,8 @@ export default defineConfig({
         !page.endsWith('/report-shell') &&
         !page.endsWith('/reports') &&
         !page.endsWith('/design-sheet') &&
-        !page.endsWith('/app/auth'),
+        !page.endsWith('/app/auth') &&
+        !page.includes('/admin/'),
       // lastmod comes from each content file's `updated` field, so a page's sitemap entry
       // moves only when its facts do; pages without a content file carry no lastmod.
       serialize: (item) => {

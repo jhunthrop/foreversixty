@@ -14,6 +14,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/coach"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 	"github.com/jhunthrop/foreversixty/api/internal/events"
+	"github.com/jhunthrop/foreversixty/api/internal/golinks"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/livesurface"
@@ -80,6 +81,9 @@ type Deps struct {
 	// nil, unmounted, until APP_NOTIFICATIONS_ENABLED=1.
 	Notifications *events.Handler
 	PushTokens    *push.Handler
+	// GoLinks serves the tracked links: the Worker's resolve and count, the site's arrival and
+	// the owner's funnel; nil leaves them unmounted.
+	GoLinks *golinks.Service
 
 	TrustedProxyHops int
 }
@@ -169,12 +173,15 @@ func NewRouter(d Deps) http.Handler {
 	if d.PushTokens != nil {
 		push.Mount(mux, d.PushTokens)
 	}
+	if d.GoLinks != nil {
+		golinks.Mount(mux, d.GoLinks)
+	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)
 	})
 	mws := []func(http.Handler) http.Handler{
 		httpx.RequestID(), httpx.Recover(d.Log), httpx.Logger(d.Log), httpx.CORS(d.AllowedOrigin),
-		httpx.RateLimitByCredential(routerRequestsPerMinute, deviceRequestsPerMinute, deadTokenRequestsPerMinute, d.TrustedProxyHops, routerLimitSkip(d.DiscordBot != nil, d.Tiles != nil)),
+		httpx.RateLimitByCredential(routerRequestsPerMinute, deviceRequestsPerMinute, deadTokenRequestsPerMinute, d.TrustedProxyHops, routerLimitSkip(d.DiscordBot != nil, d.Tiles != nil, d.GoLinks != nil)),
 	}
 	if d.Auth != nil {
 		mws = append(mws, d.Auth.Middleware)
@@ -193,11 +200,16 @@ func NewRouter(d Deps) http.Handler {
 // squares. What bounds them instead: the route answers only a loaded build and a numeric id,
 // every item the build lacks shares one cached question-mark tile (so random ids cannot churn
 // the LRU or force renders), and the drawn tiles are immutable and cached by the proxy.
-func routerLimitSkip(botMounted, tilesMounted bool) func(*http.Request) bool {
+//
+// The tracked links' resolve and count skip it too, while mounted, for the same reason: every
+// /go/ click reaches here from the site Worker's egress addresses. The resolve is a cached
+// read of one row; the count is budgeted per link inside the golinks package.
+func routerLimitSkip(botMounted, tilesMounted, linksMounted bool) func(*http.Request) bool {
 	return func(r *http.Request) bool {
 		return sharedRead(r) ||
 			(botMounted && r.Method == http.MethodPost && r.URL.Path == discordbot.InteractionsPath) ||
-			(tilesMounted && (r.Method == http.MethodGet || r.Method == http.MethodHead) && strings.HasPrefix(r.URL.Path, sheet.TilePath))
+			(tilesMounted && (r.Method == http.MethodGet || r.Method == http.MethodHead) && strings.HasPrefix(r.URL.Path, sheet.TilePath)) ||
+			(linksMounted && strings.HasPrefix(r.URL.Path, golinks.PublicPrefix))
 	}
 }
 

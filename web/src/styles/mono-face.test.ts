@@ -38,6 +38,7 @@ const ALLOWED = new Map<string, number>([
   ['components/guild/RaidOfficerRow.svelte', 1], // the copy fallback box
   ['components/guild/GuildDiscordChannel.svelte', 1], // the channel id
   ['pages/setup.astro', 1], // the slash commands to type
+  ['components/admin/GoLinksAdmin.svelte', 2], // a link's /go/ path and the slug field
 ]);
 
 /** `var(--font-mono)`, or the `font-mono` class. */

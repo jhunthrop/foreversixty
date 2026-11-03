@@ -28,6 +28,16 @@ describe('Base layout', () => {
     expect(html).toContain('property="og:site_name" content="Forever Sixty"');
   });
 
+  it('inlines only the small ?golink= capture, loading no third-party script itself', async () => {
+    const container = await createPageContainer();
+    const html = await container.renderToString(Base, {
+      props: { title: 'Guides', description: 'x', path: '/guides' },
+    });
+    expect(html).toContain('localStorage.setItem("fs.arrival"');
+    // The beacon is added after paint by lib/golinks/later.ts on the production host, never as markup.
+    expect(html).not.toContain('cloudflareinsights');
+  });
+
   it('gives the homepage the game name and the WebSite node', async () => {
     const container = await createPageContainer();
     const html = await container.renderToString(Base, {

@@ -46,6 +46,7 @@ import { storageKey } from '../lib/data/query';
 import { HISTORY_MAX_RESERVE_PX, HISTORY_RESERVE_KEY } from '../lib/character/history-layout';
 import { ACCOUNT_RESERVE_KEY, ACCOUNT_RESERVE_MAX_PX } from '../lib/account/layout';
 import { API_BASE_URL } from '../lib/planner/config';
+import { ARRIVAL_CAPTURE_SCRIPT } from '../lib/golinks/arrival';
 import { SESSION_START_POINTER_KEY } from '../lib/character-selector/restored';
 import { HEADER_GEARED, HEADER_GEAR_HINT_KEY } from '../lib/character-header/gear-hint';
 import {
@@ -360,5 +361,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
         /* malformed pointer or cache: leave the link as rendered, hydration answers for real */
       }
     </script>
+    {/* A /go/ landing's ?golink= is kept and taken out of the address bar (lib/golinks/arrival.ts). */}
+    <script is:inline set:html={ARRIVAL_CAPTURE_SCRIPT}></script>
   </body>
 </html>

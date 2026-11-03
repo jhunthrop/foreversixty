@@ -21,8 +21,9 @@
     // API's JSON (see src/worker.ts). /sim itself is not listed: it is a plain static
     // shell with no request-time id, and the tightest LCP budget on this lane. Every other
     // path is served from the assets with no Worker invocation, so the static site keeps
-    // its zero-runtime cost.
+    // its zero-runtime cost. /go/* is the tracked short links (src/lib/golinks/redirect.ts).
     "run_worker_first": [
+      "/go/*",
       "/b/*",
       "/logs-data/*",
       "/duckdb-runtime/*",
