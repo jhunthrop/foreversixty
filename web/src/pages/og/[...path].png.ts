@@ -9,7 +9,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const pages = await getCollection('pages');
   const guides = await getCollection('guides');
   return [
-    ...Object.entries(STATIC_OG_PAGES).map(([path, card]) => ({ params: { path }, props: card })),
+    ...Object.entries(STATIC_OG_PAGES).map(([path, card]) => ({ params: { path }, props: { ...card } })),
     ...pages.map((p) => ({
       params: { path: p.id },
       props: { title: p.data.title, kicker: 'Forever Sixty' },
