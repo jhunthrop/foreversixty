@@ -77,28 +77,6 @@
             "preset": "bare"
           }
         ]
-      },
-      {
-        "spell": "Arcane Shot",
-        "authored": 14287,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 3
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 1
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 1,
-            "preset": "bare"
-          }
-        ]
       }
     ],
     "hunter-marksmanship": [

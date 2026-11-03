@@ -58,9 +58,6 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 		{"Gnome Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "gnome", 60, 19276, 19280},
 		{"Undead Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "undead", 60, 19280, 19276},
 		{"Gnome Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, "gnome", 60, 19280, 19276},
-		// Beast Mastery's Arcane Shot: rank 3 (14282) at 40, rank 1 (3044) at 50.
-		{"Arcane Shot at 40", "hunter-beast-mastery", "hunter", BarePreset, "orc", 40, 14282, 14284},
-		{"Arcane Shot at 50", "hunter-beast-mastery", "hunter", BarePreset, "dwarf", 50, 3044, 14285},
 		// Elemental's Flame Shock rank 1 (8050) at 30.
 		{"Flame Shock at 30", "shaman-elemental", "shaman", BarePreset, "orc", 30, 8050, 8053},
 		// The top-rank Lightning Bolt line (15208, cast while mana is ahead) casts rank 7 (10391) at 50 and bare 60.
@@ -138,6 +135,27 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		{"Troll Lightwell at bare 60", "priest-holy", "priest", BarePreset, "troll", 60, 27871, 724},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.race))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}
+
+// Rows removed at sim-accuracy round 14 (design/reviews/2026-11-04-sim-audit-round14/regmelee.md):
+// after the 3 November hotfix push (Arcane Shot 217 to 280 at rank 8) and the Aimed Shot line,
+// Beast Mastery's Arcane Shot downranks lose beyond error at 40 and bare 60 and tie at 50, so the
+// rotation casts the highest rank it has learned.
+func TestRound14BeastMasteryArcaneShotCastsTheTopLearnedRank(t *testing.T) {
+	for _, c := range []struct {
+		name, preset, race string
+		level              int
+		want, not          int32
+	}{
+		{"Arcane Shot at 40", BarePreset, "orc", 40, 14284, 14282},
+		{"Arcane Shot at 50", BarePreset, "dwarf", 50, 14285, 3044},
+		{"Arcane Shot at bare 60", BarePreset, "orc", 60, 14287, 3044},
+	} {
+		ids := rotationIDs(t, "hunter-beast-mastery", "hunter", c.level, specRankChoices("hunter-beast-mastery", c.preset, c.race))
 		if !ids[c.want] || ids[c.not] {
 			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
 		}
