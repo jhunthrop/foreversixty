@@ -42,6 +42,7 @@ Origin tags follow the brief. `new-data` is 70753.
 | H1 | **Every engine missile flew at 24 yards a second.** SpellMisc Speed says: Auto Shot (75, also Shoot Bow, Shoot Gun and Shoot Crossbow) 40; Aimed Shot, Arcane Shot and Serpent Sting 40; Multi-Shot 30; Sniper Shot 60; Summon Hawk 35; the three traps 0; wand Shoot (5019) 20, which reaches every wand user. Each now reads its own row (`sim/hunter/missile_speeds.go`, core's ranged auto and Shoot). The warlock lane found it. A shot lands sooner or later; the DPS moves by noise only (-0.2 to +0.2%, table below). Test `TestHunterShotsTravelAtTheClientsSpeed` and the Shoot check in `TestRegisterShootSpellUsesTheEquippedWand` failed first. | SpellMisc rows for 75, 2480, 7918, 7919, 2764, 19434, 20904, 3044, 14287, 1978, 25295, 2643, 1310687, 1310786, 1293241, 1293527, 1499, 13795, 13813, 5019 | CONFIRMED-BUG (client rows) | old (upstream's default; the wand from 3f5ea92c1, 2026-09-28) | E 8a54e923e |
 | H2 | Mana per cast: Efficiency is "Shots, Stings, and melee abilities by 15%". BM, with 4 points, pays 88% on Arcane Shot, Serpent Sting, Aimed Shot and Multi-Shot; MM, with 5 points, pays 85%. Survival takes none and pays Resourcefulness's 40% on Raptor Strike (40), Mongoose Bite (26), Lacerate (38), Wing Clip (32) and Immolation Trap (98). Strider Kick is 5.81% of base mana × 0.4 = 40. Multi-Shot is 13.9% base mana and Bestial Wrath 12%. Cooldowns: Arcane, Aimed and Multi 6 s, Mongoose Bite 5 s, Strider Kick 8 s, traps 30 s. | `bd/hunter-*.txt`; SpellPower; SpellCooldowns; talents/hunter.json | aligned | - | - |
 | H3 | Rapid Fire for melee Survival: 3045 carries aura 140 (ranged) and aura 319 (melee) at 40, and the tooltip reads "ranged and melee attack speed by 40%". The engine hastes both. Expose Prey ("enemies afflicted by Hunter's Mark"): any Hunter's Mark counts, so the raid's mark works. Survival casts no mark of its own. With one added before the pull, bare 30 and 60 do not gain (80.3 against 80.4; 293.8 against 295.0), so the rotation stays. | SpellEffect 679813, 1339717; tooltips 3045, 1310532; `sim/hunter/talents.go:776` | aligned | - | - |
+| H4 | **Arcane Shot, Serpent Sting and Volley took spell power the client does not give them.** The client's EffectBonusCoefficient is 0 on every trained rank of Arcane Shot (3044, 14281 to 14287), Serpent Sting (1978, 13549 to 13555, 25295) and Volley's damage rows (1279715, 1279719, 1279721). The same table carries the casters' coefficients (Frostbolt 25304 0.814, Shadow Bolt 25307 0.857), and the only Serpent Stings that state one are Season of Discovery's reissues (425728 to 425737, 0.08 to 0.2). The 70753 push is empty, so the shipped rows stand. Forever's tooltips (14287 "217 Arcane damage", 25295 "555 Nature damage over 15 sec") name no scaling. The engine had the Era cast-time convention: Arcane Shot 0.204 to 0.429, Serpent Sting 0.08 to 0.2 a tick, and Volley 0.056. All three are now 0. Round 6 B3 held this as single-source; the ranks lane raised it again. The other shots and stings were swept and are aligned: Aimed Shot, Multi-Shot and Sniper Shot are weapon strikes (effects 121 and 58, whose coefficient of 1 is the weapon's, not spell power), Summon Hawk takes 5% of ranged attack power from its tooltip, and the traps carry 0, matching the engine. The published Beast Mastery raid set carries spell power that reached both spells: Arcane Shot's average hit falls 308 to 279 and Serpent Sting's tick 137 to 121. Test `TestHunterShotsTakeNoSpellPower` failed first; the hunter conformance golden is regenerated. | SpellEffect rows above; https://nether.wowhead.com/forever/tooltip/spell/14287 and /25295 (2026-11-03) | CONFIRMED-BUG (client rows, one source plus the SoD contrast) | old (upstream convention; round 6 B3 held it open) | E 05b72a3b5 |
 
 ## Cross-cutting
 
@@ -51,7 +52,7 @@ Origin tags follow the brief. `new-data` is 70753.
 
 ## Before/after
 
-**Before:** `r12/sb-before` (2606bc05e, site c6bdc855c) and `r12/before.tsv`. **After:** `lane/r12-physical` 8a54e923e with `wt/r12-physical`. Each cell is seed 1 / seed 50001.
+**Before:** `r12/sb-before` (2606bc05e, site c6bdc855c) and `r12/before.tsv`. **After:** `lane/r12-physical` 8a54e923e with `wt/r12-physical`; the H4 rows compare 05b72a3b5 against 8a54e923e. Each cell is seed 1 / seed 50001.
 
 | Spec, band | alliance % | horde % | seed 1 alliance / horde | cause |
 |---|---|---|---|---|
@@ -61,6 +62,11 @@ Origin tags follow the brief. `new-data` is 70753.
 | Subtlety 60 raid | +0.22 / +0.18 | +0.22 / +0.18 | 549.6 → 550.8 / 549.0 → 550.2 | A1 |
 | Beast Mastery 60 raid | -0.06 / +0.05 | -0.05 / -0.03 | 623.0 → 622.6 / 626.9 → 626.6 | H1 (noise) |
 | Marksmanship 60 raid | +0.05 / -0.03 | +0.08 / -0.03 | 610.7 → 611.0 / 615.7 → 616.2 | H1 (noise) |
+| Beast Mastery 60 raid, H4 alone | -1.54 / -1.54 | -1.52 / -1.52 | 622.6 → 613.0 / 626.6 → 617.1 | H4 |
+| Marksmanship 60 raid, H4 alone | -0.13 / -0.13 | -0.13 / -0.13 | 611.0 → 610.2 / 616.2 → 615.4 | H4 |
+| Beast Mastery bare 60, H4 alone | -0.27 / -0.27 | -0.30 / -0.30 | 301.0 → 300.2 / 301.3 → 300.4 | H4 |
+| Marksmanship bare 60, H4 alone | -0.14 / -0.14 | -0.14 / -0.14 | 291.4 → 291.0 / 293.7 → 293.3 | H4 |
+| Survival 60 raid and bare 60, H4 alone | 0.00 / 0.00 | 0.00 / 0.00 | unchanged (casts neither spell) | - |
 | Survival 60 raid | 0.00 / 0.00 | 0.00 / 0.00 | 741.1 / 744.7 unchanged | - |
 | Frost mage, Affliction, Shadow priest, cat 60 raid (outside the group) | 0.00 / 0.00 | 0.00 / 0.00 | unchanged | - |
 
@@ -81,11 +87,13 @@ Bare bands, horde, seed 1 / seed 50001:
 
 - Fork goldens moved by E 9291833a7: `sim/paladin/protection/TestProtection.results` and `sim/druid/tank/TestFeralTank.results`. FullDebuffs carries the improved Thunder Clap debuff, which is now 30% (it was 15%), so DTPS and TPS fall. I regenerated only `sim/warrior/tank_warrior/TestP1TankWarrior.results`.
 - Fork golden moved by E 8a54e923e: `sim/mage/TestP1Mage.results`, by a hundredth of a DPS, from wand Shoot's flight time.
-- Site TestRotationLadder rows for the three rogue specs (Poised) and the hunters (missile speeds) move at the pin. Not regenerated.
+- Site TestRotationLadder rows for the three rogue specs (Poised) and the hunters (missile speeds; Beast Mastery and Marksmanship again for H4) move at the pin. Not regenerated.
+- E 05b72a3b5 regenerated `sim/core/testdata/conformance/hunter.golden.md` (Arcane Shot's and Serpent Sting's engine coefficient column goes to 0).
 
 ## Measure at refresh
 
 - Rogue gear and talent picks under Poised (+0.2 to +0.3%, uniform; no pick is expected to move).
+- Beast Mastery and Marksmanship gear at every band after H4: any spell power item the ranker picked for Arcane Shot or Serpent Sting now does nothing for them.
 
 ## For other lanes
 
@@ -101,6 +109,6 @@ Bare bands, horde, seed 1 / seed 50001:
 
 - Raptor Strike's queue and the off-hand penalty, normalized rage's off-hand factor and crit, Lacerating Strikes' refresh, and the one-a-minute proc rate (round 11 H2, A2 to A4). These are carried. No new logs exist.
 - Marksmanship's held +0.9% build (round 11 A1).
-- Carried: Eviscerate's and Rupture's attack power, Venom, Combat's Slice and Dice gate, the Hawk proc mask, Serpent Sting's and Arcane Shot's spell power, threat values, and weapon-proc rates.
+- Carried: Eviscerate's and Rupture's attack power, Venom, Combat's Slice and Dice gate, the Hawk proc mask, threat values, and weapon-proc rates. (Serpent Sting's and Arcane Shot's spell power is settled by H4.)
 
 Sources (read 2026-11-03): the wago.tools 1.60.1.70753 CSVs above; https://nether.wowhead.com/forever/tooltip/spell/{1328825,1328826,1328827,1328829,11581,3045,1310532,11300,1249110} and /item/249469.
