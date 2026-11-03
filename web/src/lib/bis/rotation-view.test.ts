@@ -47,7 +47,7 @@ describe('rotationLinesFor', () => {
     const entries = loadRotations(BUILD, 'hunter-beast-mastery');
     const entry = entries?.[0];
     expect(entry).toBeDefined();
-    const views = rotationLinesFor(entry!, BUILD, 'hunter', 'hunter-beast-mastery');
+    const views = rotationLinesFor(entry!, BUILD, 'hunter', 'hunter-beast-mastery', entry!.level);
     const serpentSting = views.find((view) => view.name === 'Serpent Sting');
     expect(serpentSting?.icon).toBe('ability_hunter_quickshot');
   });
@@ -57,7 +57,7 @@ describe('rotationLinesFor', () => {
       level: 10,
       lines: [{ spell_id: 999999, name: 'No Icon Line', condition: 'x' }],
     };
-    const views = rotationLinesFor(entry, BUILD, 'hunter', 'hunter-beast-mastery');
+    const views = rotationLinesFor(entry, BUILD, 'hunter', 'hunter-beast-mastery', entry.level);
     expect(views[0].icon).toBeUndefined();
   });
 
@@ -68,14 +68,14 @@ describe('rotationLinesFor', () => {
         { spell_id: 999999, name: 'Missing File Line', condition: 'x', icon: 'does_not_exist_anywhere' },
       ],
     };
-    const views = rotationLinesFor(entry, BUILD, 'hunter', 'hunter-beast-mastery');
+    const views = rotationLinesFor(entry, BUILD, 'hunter', 'hunter-beast-mastery', entry.level);
     expect(views[0].icon).toBeUndefined();
   });
 });
 
 describe('rotationLinesFor on the holy priest band 20 list', () => {
   const entry = rotationEntryFor(loadRotations(BUILD, 'priest-holy') ?? [], bandTopLevel(20));
-  const rows = () => rotationLinesFor(entry!, BUILD, 'priest', 'priest-holy');
+  const rows = () => rotationLinesFor(entry!, BUILD, 'priest', 'priest-holy', entry!.level);
   // Round 3 took Shadowfiend out of the curated list. The published addon-data.json
   // is nightly-owned and keeps the line until bis.yml regenerates it; a spell only one side
   // casts is set aside, so the other rows keep their words.
@@ -111,12 +111,13 @@ describe('rotationLinesFor when the published lines and the curated steps differ
   const holy = rotationEntryFor(loadRotations(BUILD, 'priest-holy') ?? [], bandTopLevel(20));
   const heal = holy?.lines.find((line) => line.name === 'Heal');
   const words = (entry: RotationEntry) =>
-    rotationLinesFor(entry, BUILD, 'priest', 'priest-holy').find((row) => row.name === 'Heal')?.condition;
+    rotationLinesFor(entry, BUILD, 'priest', 'priest-holy', entry.level).find((row) => row.name === 'Heal')
+      ?.condition;
 
   it('sets aside a spell the curated list does not cast and keeps the words for the rest', () => {
     const dropped = { spell_id: 999999, name: 'Dropped Ability', condition: 'note' };
     const withExtra: RotationEntry = { ...holy!, lines: [dropped, ...holy!.lines] };
-    const rows = rotationLinesFor(withExtra, BUILD, 'priest', 'priest-holy');
+    const rows = rotationLinesFor(withExtra, BUILD, 'priest', 'priest-holy', withExtra.level);
     expect(rows[0].condition).toBe('note');
     expect(words(withExtra)).toMatch(/Cast on the tank below \d+%/);
   });
@@ -146,7 +147,7 @@ describe('every published rotation entry lines up with its curated steps', () =>
   it.each(['priest-holy', 'hunter-beast-mastery', 'warrior-arms', 'mage-fire'])('%s', (spec) => {
     const [classSlug] = spec.split('-');
     for (const entry of loadRotations(BUILD, spec) ?? []) {
-      const views = rotationLinesFor(entry, BUILD, classSlug, spec);
+      const views = rotationLinesFor(entry, BUILD, classSlug, spec, entry.level);
       expect(views.reduce((sum, view) => sum + view.steps, 0)).toBe(entry.lines.length);
       views.slice(1).forEach((view, index) => {
         const previous = views[index];

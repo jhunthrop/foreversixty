@@ -29,3 +29,12 @@ export function specTabIcon(build: string, classSlug: string, treeIndex: number)
   const data = JSON.parse(readFileSync(file, 'utf8')) as TalentTreeFile;
   return data.trees[treeIndex]?.talents[0]?.icon;
 }
+
+/** `icon` when this site build publishes its file (`public/data/<build>/icons/`, which the
+ *  sync fills before every build), else `undefined`: a build with a partial icon set (the
+ *  fixture) renders the caller's neutral square instead of a broken image. */
+export function publishedIcon(build: string, icon: string | undefined): string | undefined {
+  if (icon === undefined) return undefined;
+  const file = path.join(repoRoot(), 'web/public/data', build, 'icons', `${icon}.webp`);
+  return existsSync(file) ? icon : undefined;
+}

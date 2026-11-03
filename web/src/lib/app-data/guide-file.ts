@@ -237,7 +237,7 @@ function rotationOf(ctx: RotationContext): AppGuideFile['rotation'] {
   if (entry === undefined) return null;
   const facts = spellLookupFor(ctx.build, ctx.classSlug);
   const lists = rotationListsFrom(
-    rotationLinesFor(entry, ctx.build, ctx.classSlug, ctx.spec),
+    rotationLinesFor(entry, ctx.build, ctx.classSlug, ctx.spec, bandTopLevel(GUIDE_LEVEL)),
     loadApl(ctx.spec),
     facts,
     specCooldowns(ctx.build, ctx.classSlug, ctx.litTalents, facts),

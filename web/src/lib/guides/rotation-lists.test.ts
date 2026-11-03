@@ -219,7 +219,7 @@ describe('the Frost Mage lists, from the real data', () => {
 
   it('reads the level 60 priority off the published lines', () => {
     if (entry === undefined) throw new Error('mage-frost has no level 60 rotation');
-    const lines = rotationLinesFor(entry, BUILD, 'mage', 'mage-frost');
+    const lines = rotationLinesFor(entry, BUILD, 'mage', 'mage-frost', 60);
     const lists = rotationListsFrom(lines, loadApl('mage-frost'), spellLookupFor(BUILD, 'mage'));
     // A floor, not the exact list: the published lines are the nightly's, and they gain the
     // rotation's newer lines (Ice Barrier, Cone of Cold) when it next republishes.
@@ -235,7 +235,7 @@ describe('the Frost Mage lists, from the real data', () => {
   it('names the pre-pull casts of a spec that has them, with their icons', () => {
     const hunter = rotationEntryFor(loadRotations(BUILD, 'hunter-beast-mastery') ?? [], 60);
     if (hunter === undefined) throw new Error('hunter-beast-mastery has no level 60 rotation');
-    const lines = rotationLinesFor(hunter, BUILD, 'hunter', 'hunter-beast-mastery');
+    const lines = rotationLinesFor(hunter, BUILD, 'hunter', 'hunter-beast-mastery', 60);
     const lists = rotationListsFrom(lines, loadApl('hunter-beast-mastery'), spellLookupFor(BUILD, 'hunter'));
     const names = lists.opener.map((item) => item.name);
     expect(names).toContain('Aspect of the Hawk');

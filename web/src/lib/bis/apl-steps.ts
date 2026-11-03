@@ -31,6 +31,8 @@ export interface AplStep {
   /** The id the published line casts at this level. */
   resolvedSpellId: number;
   words: StepWords | null;
+  /** The step's raw condition tree, for the level gate (`apl-level-gate.ts`). */
+  condition: unknown;
 }
 
 function isNode(value: unknown): value is Node {
@@ -65,7 +67,7 @@ function castSteps(apl: unknown): CastStep[] {
 
 /** A family's ranks by learn level; a level-0 alternate id is kept only when the family
  *  names no real level (addonrotation.py `_family_ranks`). */
-function levelledRanks(ranks: readonly RankRow[]): RankRow[] {
+export function levelledRanks(ranks: readonly RankRow[]): RankRow[] {
   const sorted = [...ranks].sort((a, b) => a.level - b.level || a.id - b.id);
   const levelled = sorted.filter((rank) => rank.level > 0);
   return levelled.length > 0 ? levelled : sorted;
@@ -90,7 +92,8 @@ export function loadAplSteps(spec: string, families: SpellRanksByName, level: nu
   const steps: AplStep[] = [];
   for (const cast of castSteps(JSON.parse(readFileSync(file, 'utf8')))) {
     const resolvedSpellId = resolveAt(families, cast.spellId, level);
-    if (resolvedSpellId !== null) steps.push({ resolvedSpellId, words: stepWords(cast) });
+    if (resolvedSpellId !== null)
+      steps.push({ resolvedSpellId, words: stepWords(cast), condition: cast.condition });
   }
   return steps;
 }

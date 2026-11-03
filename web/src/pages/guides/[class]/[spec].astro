@@ -153,7 +153,9 @@ const talentsProseHtml = await renderGuideMarkdown(withoutTalentBullets(proseOnl
 const rotationEntries = loadRotations(build, fullSpecId) ?? [];
 const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(60));
 const rotationLines =
-  rotationEntry === undefined ? [] : rotationLinesFor(rotationEntry, build, classSlug, fullSpecId);
+  rotationEntry === undefined
+    ? []
+    : rotationLinesFor(rotationEntry, build, classSlug, fullSpecId, bandTopLevel(60));
 const rotationBandLabel = String(bandTopLevel(60));
 const litTalentNames = new Set(
   [...buildTrees, ...(raidTrees ?? [])].flatMap((tree) =>
