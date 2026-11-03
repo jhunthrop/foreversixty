@@ -14544,15 +14544,6 @@
     ]
   },
   {
-    "id": 287961,
-    "name": "Portable Repair Bot",
-    "quality": 3,
-    "required_level": 1,
-    "spell_ids": [
-      1324661
-    ]
-  },
-  {
     "id": 287963,
     "name": "Roasted Quail",
     "quality": 1,

@@ -382,7 +382,7 @@
     "tab_name": "Enhancement",
     "class_id": 7,
     "tier": 1,
-    "column": 2,
+    "column": 3,
     "spell_ids": [
       16261,
       16261,
@@ -395,8 +395,8 @@
     "tab_id": 263,
     "tab_name": "Enhancement",
     "class_id": 7,
-    "tier": 3,
-    "column": 3,
+    "tier": 1,
+    "column": 2,
     "spell_ids": [
       16262,
       16262
@@ -509,7 +509,7 @@
     "tier": 4,
     "column": 1,
     "spell_ids": [
-      16120
+      408490
     ],
     "prereq_talent_id": null
   },
@@ -2601,12 +2601,12 @@
     "tab_id": 182,
     "tab_name": "Assassination",
     "class_id": 4,
-    "tier": 6,
+    "tier": 4,
     "column": 1,
     "spell_ids": [
-      399956
+      1310707
     ],
-    "prereq_talent_id": 105712
+    "prereq_talent_id": null
   },
   {
     "id": 105710,
@@ -2616,6 +2616,8 @@
     "tier": 5,
     "column": 2,
     "spell_ids": [
+      14186,
+      14186,
       14186,
       14186,
       14186
@@ -2640,12 +2642,12 @@
     "tab_id": 182,
     "tab_name": "Assassination",
     "class_id": 4,
-    "tier": 4,
+    "tier": 6,
     "column": 1,
     "spell_ids": [
-      1329328
+      1310703
     ],
-    "prereq_talent_id": null
+    "prereq_talent_id": 105709
   },
   {
     "id": 105713,
@@ -2700,6 +2702,9 @@
     "column": 2,
     "spell_ids": [
       14128,
+      14128,
+      14128,
+      14128,
       14128
     ],
     "prereq_talent_id": 105722
@@ -2709,7 +2714,7 @@
     "tab_id": 182,
     "tab_name": "Assassination",
     "class_id": 4,
-    "tier": 1,
+    "tier": 2,
     "column": 1,
     "spell_ids": [
       14168,
@@ -2722,10 +2727,11 @@
     "tab_id": 182,
     "tab_name": "Assassination",
     "class_id": 4,
-    "tier": 2,
-    "column": 1,
+    "tier": 4,
+    "column": 0,
     "spell_ids": [
-      1329256
+      14983,
+      14983
     ],
     "prereq_talent_id": null
   },
@@ -2748,11 +2754,11 @@
     "tab_id": 182,
     "tab_name": "Assassination",
     "class_id": 4,
-    "tier": 2,
-    "column": 0,
+    "tier": 1,
+    "column": 1,
     "spell_ids": [
-      14983,
-      14983
+      14158,
+      14158
     ],
     "prereq_talent_id": null
   },
@@ -2809,20 +2815,20 @@
     "spell_ids": [
       13750
     ],
-    "prereq_talent_id": 105728
+    "prereq_talent_id": null
   },
   {
     "id": 105726,
     "tab_id": 181,
     "tab_name": "Combat",
     "class_id": 4,
-    "tier": 3,
-    "column": 2,
+    "tier": 5,
+    "column": 1,
     "spell_ids": [
       30919,
       30919
     ],
-    "prereq_talent_id": 105737
+    "prereq_talent_id": 105728
   },
   {
     "id": 105727,
@@ -2857,8 +2863,8 @@
     "tab_id": 181,
     "tab_name": "Combat",
     "class_id": 4,
-    "tier": 3,
-    "column": 3,
+    "tier": 5,
+    "column": 2,
     "spell_ids": [
       18427,
       18427,
@@ -2871,7 +2877,7 @@
     "tab_id": 181,
     "tab_name": "Combat",
     "class_id": 4,
-    "tier": 1,
+    "tier": 2,
     "column": 3,
     "spell_ids": [
       13743,
@@ -2964,16 +2970,16 @@
     "tab_id": 181,
     "tab_name": "Combat",
     "class_id": 4,
-    "tier": 5,
+    "tier": 3,
     "column": 2,
     "spell_ids": [
-      1329284,
-      1329284,
-      1329284,
-      1329284,
-      1329284
+      13715,
+      13715,
+      13715,
+      13715,
+      13715
     ],
-    "prereq_talent_id": null
+    "prereq_talent_id": 105737
   },
   {
     "id": 105741,
@@ -3007,7 +3013,7 @@
     "tab_id": 183,
     "tab_name": "Subtlety",
     "class_id": 4,
-    "tier": 2,
+    "tier": 3,
     "column": 1,
     "spell_ids": [
       14183
@@ -3019,7 +3025,7 @@
     "tab_id": 183,
     "tab_name": "Subtlety",
     "class_id": 4,
-    "tier": 1,
+    "tier": 4,
     "column": 0,
     "spell_ids": [
       14082,
@@ -3044,7 +3050,7 @@
     "tab_id": 183,
     "tab_name": "Subtlety",
     "class_id": 4,
-    "tier": 4,
+    "tier": 3,
     "column": 0,
     "spell_ids": [
       30894,
@@ -3070,7 +3076,7 @@
     "tab_name": "Subtlety",
     "class_id": 4,
     "tier": 1,
-    "column": 2,
+    "column": 3,
     "spell_ids": [
       14079,
       14079,
@@ -3086,11 +3092,11 @@
     "tier": 5,
     "column": 2,
     "spell_ids": [
-      1329286,
-      1329286,
-      1329286,
-      1329286,
-      1329286
+      462708,
+      462708,
+      462708,
+      462708,
+      462708
     ],
     "prereq_talent_id": null
   },
@@ -3099,7 +3105,7 @@
     "tab_id": 183,
     "tab_name": "Subtlety",
     "class_id": 4,
-    "tier": 0,
+    "tier": 1,
     "column": 0,
     "spell_ids": [
       13983,
@@ -3113,7 +3119,7 @@
     "tab_id": 183,
     "tab_name": "Subtlety",
     "class_id": 4,
-    "tier": 2,
+    "tier": 3,
     "column": 2,
     "spell_ids": [
       14171,
@@ -3127,8 +3133,8 @@
     "tab_id": 183,
     "tab_name": "Subtlety",
     "class_id": 4,
-    "tier": 3,
-    "column": 0,
+    "tier": 1,
+    "column": 1,
     "spell_ids": [
       13981,
       13981
@@ -3140,7 +3146,7 @@
     "tab_id": 183,
     "tab_name": "Subtlety",
     "class_id": 4,
-    "tier": 3,
+    "tier": 2,
     "column": 1,
     "spell_ids": [
       14278
@@ -3166,9 +3172,11 @@
     "tab_id": 183,
     "tab_name": "Subtlety",
     "class_id": 4,
-    "tier": 1,
-    "column": 1,
+    "tier": 0,
+    "column": 0,
     "spell_ids": [
+      13975,
+      13975,
       13975,
       13975,
       13975
@@ -3181,7 +3189,7 @@
     "tab_name": "Subtlety",
     "class_id": 4,
     "tier": 1,
-    "column": 3,
+    "column": 2,
     "spell_ids": [
       1224782,
       1224782
@@ -3190,14 +3198,13 @@
   },
   {
     "id": 105759,
-    "tab_id": 181,
-    "tab_name": "Combat",
+    "tab_id": 182,
+    "tab_name": "Assassination",
     "class_id": 4,
     "tier": 2,
-    "column": 3,
+    "column": 0,
     "spell_ids": [
-      1329265,
-      1329265
+      14179
     ],
     "prereq_talent_id": null
   },
@@ -3209,9 +3216,6 @@
     "tier": 0,
     "column": 2,
     "spell_ids": [
-      14057,
-      14057,
-      14057,
       14057,
       14057
     ],
@@ -5319,13 +5323,15 @@
     "tab_name": "Fury",
     "class_id": 1,
     "tier": 5,
-    "column": 2,
+    "column": 1,
     "spell_ids": [
+      12319,
+      12319,
       12319,
       12319,
       12319
     ],
-    "prereq_talent_id": null
+    "prereq_talent_id": 105927
   },
   {
     "id": 105930,
@@ -5337,15 +5343,15 @@
     "spell_ids": [
       23881
     ],
-    "prereq_talent_id": 105927
+    "prereq_talent_id": null
   },
   {
     "id": 105931,
     "tab_id": 164,
     "tab_name": "Fury",
     "class_id": 1,
-    "tier": 2,
-    "column": 3,
+    "tier": 3,
+    "column": 2,
     "spell_ids": [
       12317,
       12317,
@@ -5612,6 +5618,8 @@
     "tier": 1,
     "column": 1,
     "spell_ids": [
+      12295,
+      12295,
       12295,
       12295,
       12295
@@ -5898,10 +5906,9 @@
     "tab_id": 164,
     "tab_name": "Fury",
     "class_id": 1,
-    "tier": 5,
-    "column": 0,
+    "tier": 3,
+    "column": 1,
     "spell_ids": [
-      1310315,
       1310315
     ],
     "prereq_talent_id": null
@@ -5939,6 +5946,9 @@
     "tier": 4,
     "column": 0,
     "spell_ids": [
+      1289682,
+      1289682,
+      1289682,
       1289682,
       1289682
     ],
@@ -6128,7 +6138,7 @@
     "tier": 6,
     "column": 1,
     "spell_ids": [
-      1316709
+      1310721
     ],
     "prereq_talent_id": 105746
   },
@@ -6137,13 +6147,29 @@
     "tab_id": 183,
     "tab_name": "Subtlety",
     "class_id": 4,
-    "tier": 3,
-    "column": 3,
+    "tier": 5,
+    "column": 0,
     "spell_ids": [
+      1310728,
+      1310728,
+      1310728,
       1310728,
       1310728
     ],
-    "prereq_talent_id": 105757
+    "prereq_talent_id": 105745
+  },
+  {
+    "id": 110868,
+    "tab_id": 183,
+    "tab_name": "Subtlety",
+    "class_id": 4,
+    "tier": 2,
+    "column": 2,
+    "spell_ids": [
+      14084,
+      14084
+    ],
+    "prereq_talent_id": null
   },
   {
     "id": 110870,
@@ -6314,13 +6340,13 @@
     "tab_id": 164,
     "tab_name": "Fury",
     "class_id": 1,
-    "tier": 4,
+    "tier": 5,
     "column": 2,
     "spell_ids": [
       1323967,
       1323967
     ],
-    "prereq_talent_id": 105934
+    "prereq_talent_id": 105931
   },
   {
     "id": 113570,
@@ -6391,46 +6417,5 @@
       1328550
     ],
     "prereq_talent_id": 105323
-  },
-  {
-    "id": 113633,
-    "tab_id": 182,
-    "tab_name": "Assassination",
-    "class_id": 4,
-    "tier": 4,
-    "column": 0,
-    "spell_ids": [
-      14179,
-      14179,
-      14179,
-      14179,
-      14179
-    ],
-    "prereq_talent_id": null
-  },
-  {
-    "id": 113635,
-    "tab_id": 181,
-    "tab_name": "Combat",
-    "class_id": 4,
-    "tier": 4,
-    "column": 0,
-    "spell_ids": [
-      13715,
-      13715
-    ],
-    "prereq_talent_id": null
-  },
-  {
-    "id": 113636,
-    "tab_id": 164,
-    "tab_name": "Fury",
-    "class_id": 1,
-    "tier": 3,
-    "column": 1,
-    "spell_ids": [
-      1329555
-    ],
-    "prereq_talent_id": null
   }
 ]
