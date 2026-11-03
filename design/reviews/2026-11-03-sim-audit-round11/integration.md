@@ -165,7 +165,18 @@ Verdicts on the lane reports, the screenshots and the follow-up evidence:
 
 ## Gates
 
-GATES_TABLE
+All exit 0 on the pinned state (int/r11 with engine 47df4a89d, client 70753):
+- **sim:** go vet; go test ./...
+- **logs:** go vet; go test ./...
+- **api:** go vet; the coach and sims packages.
+- **api on a clean checkout:** go vet and go build on a checkout with no `make simdb` copy, and no engine package linked.
+- **Repo checks:** make apl-check against the pin; make styles-check; tools/tests/test_wasm_compress.sh; tools/coach/test_persona_starter.py.
+- **data:** pytest, deselecting only test_simbuffs_names_every_id_the_engine_lets_a_request_send (simbuffs.json is held output).
+- **web:** sync; vitest (8,066 tests); astro check; lint; format:check.
+
+The first vitest run failed once in src/sim-island.test.ts: the min-h reservation test fails about one run in five under load (5 local reruns: 4 pass). It predates the round (1b932d73b) and passed on the rerun; it is listed below.
+
+The fork suite with `-tags=with_db` passes as arm64 and as amd64, and the wasm cross-compile builds.
 
 ## Still open
 
@@ -185,4 +196,5 @@ GATES_TABLE
   - Round 10's log-blocked list.
 - **Held under the adoption rule:** Marksmanship (+0.87 to +0.93%), Affliction's Improved Bane of Agony (+0.72%), Destruction's Immolate line, Fire's Improved Scorch line, Frost's search winner, Frost bare 20's Ice Shards, the druid, Holy and shaman band builds the reservation could not express.
 - **Refresh:** the "Measure at refresh" list in the ledger.
+- **A flaky web test:** src/sim-island.test.ts's "removes the shell min-h reservation" fails about one run in five under CPU load; likely an earlier test's real-timer boot landing in the next test's document. Predates the round (1b932d73b).
 - **Healers lane coverage:** it hit the subagent limit and tested round 10's client-row conclusions against new evidence rather than re-reading every row; round 12 should give the healers a full row sweep.
