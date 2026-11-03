@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/warrior/arms.md
   - data/curated/apl/warrior-arms.json
-  - data/builds/1.60.1.70707/spellconst/warrior.json
+  - data/builds/1.60.1.70753/spellconst/warrior.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28

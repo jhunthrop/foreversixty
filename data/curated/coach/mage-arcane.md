@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/mage/arcane.md
   - data/curated/apl/mage-arcane.json
-  - data/builds/1.60.1.70707/spellconst/mage.json
+  - data/builds/1.60.1.70753/spellconst/mage.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28

@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/mage/frost.md
   - data/curated/apl/mage-frost.json
-  - data/builds/1.60.1.70707/spellconst/mage.json
+  - data/builds/1.60.1.70753/spellconst/mage.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -20,7 +20,7 @@ This is the Frost Mage as the site's guide describes it. Frost is the Mage contr
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Keep Ice Barrier up. The talent adds fifteen percent Frost damage for a minute after a cast and another five percent while the shield holds.
+- Put up Ice Barrier before the pull and recast it whenever its minute runs out, for its Frost damage bonus.
 - Frostbolt is the filler between Fingers of Frost charges.
 - Arcane Missiles on a Missile Barrage proc, raid build only.
 - Ice Lance on a Fingers of Frost charge. The charge makes the target count as Frozen, so Ice Lance deals four times its damage and Shatter's crit bonus applies.

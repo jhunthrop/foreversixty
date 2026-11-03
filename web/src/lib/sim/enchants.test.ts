@@ -53,6 +53,7 @@ const ALL_ENCHANT_STAT_KEYS: Record<EnchantStatKey, true> = {
   melee_haste: true,
   nature_power: true,
   ranged_attack_power: true,
+  feral_attack_power: true,
   shadow_power: true,
   spell_damage: true,
 };

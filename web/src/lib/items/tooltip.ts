@@ -184,11 +184,24 @@ function equipShares(stats: Item['stats']): Partial<Record<StatKey, number>> {
   return { ...stats, healing: Math.max(0, (stats.healing ?? 0) - spellPower) };
 }
 
+/** Feral attack power is a druid's, in forms only: the client states it as one sentence and never
+ *  as a white "+N" line. Most items carry that sentence in their own effect text already, so the
+ *  tooltip adds it only when the effect text does not. */
+const FERAL_FORMS = 'in Cat, Bear, and Dire Bear forms only';
+const feralLine = (value: number): string => `Equip: +${value} Attack Power ${FERAL_FORMS}.`;
+
+function feralLineFor(item: Item): string[] {
+  const value = item.stats.feral_attack_power ?? 0;
+  return value > 0 && !(item.effect_text ?? '').includes(FERAL_FORMS) ? [feralLine(value)] : [];
+}
+
 /** "+10 Strength" / "-15 Parry" (the client's sign: never "+-15") for each white stat, then each
  *  percent stat and each Equip stat in the client's "Equip:" words, in STAT_KEYS order within
  *  each group. */
 function statLines(item: Item): string[] {
-  const keys = STAT_KEYS.filter((key) => key !== 'armor' && !!item.stats[key]);
+  const keys = STAT_KEYS.filter(
+    (key) => key !== 'armor' && key !== 'feral_attack_power' && !!item.stats[key],
+  );
   const flat = keys
     .filter((key) => percentLineFor(item, key) === null && EQUIP_STAT_LINES[key] === undefined)
     .map((key) => {
@@ -204,7 +217,7 @@ function statLines(item: Item): string[] {
     const line = EQUIP_STAT_LINES[key];
     return value > 0 && line ? [line(value)] : [];
   });
-  return [...flat, ...percent, ...equip];
+  return [...flat, ...percent, ...equip, ...feralLineFor(item)];
 }
 
 function effectTextFor(item: Item): string | null {

@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/combat.md
   - data/curated/apl/rogue-combat.json
-  - data/builds/1.60.1.70707/spellconst/rogue.json
+  - data/builds/1.60.1.70753/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28

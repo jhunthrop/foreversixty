@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/hunter/survival.md
   - data/curated/apl/hunter-survival.json
-  - data/builds/1.60.1.70707/spellconst/hunter.json
+  - data/builds/1.60.1.70753/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28

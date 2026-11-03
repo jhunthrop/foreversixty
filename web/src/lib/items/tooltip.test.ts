@@ -71,6 +71,27 @@ describe('itemTooltipModel', () => {
     ]);
   });
 
+  it('leaves feral attack power to the effect text that states it (Mace of Unending Life)', () => {
+    const model = itemTooltipModel(
+      item({
+        stats: { stamina: 15, feral_attack_power: 140 },
+        effect_text: '+140 Attack Power in Cat, Bear, and Dire Bear forms only.',
+      }),
+      NO_SOURCES,
+    );
+    expect(model.stats).toEqual(['+15 Stamina']);
+    expect(model.effectText).toBe('+140 Attack Power in Cat, Bear, and Dire Bear forms only.');
+  });
+
+  it("states feral attack power in the client's druid-forms sentence when the effect text does not", () => {
+    const model = itemTooltipModel(item({ stats: { stamina: 15, feral_attack_power: 140 } }), NO_SOURCES);
+    expect(model.stats).toEqual([
+      '+15 Stamina',
+      'Equip: +140 Attack Power in Cat, Bear, and Dire Bear forms only.',
+    ]);
+    expect(model.stats.join(' ')).not.toContain('Feral attack power');
+  });
+
   it('shows armor only when the row carries some', () => {
     expect(itemTooltipModel(item({ armor: 400 }), NO_SOURCES).armor).toBe(400);
     expect(itemTooltipModel(item({ armor: 0 }), NO_SOURCES).armor).toBeNull();
