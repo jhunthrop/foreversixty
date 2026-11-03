@@ -68,11 +68,12 @@ The 70753 BiS files carry the same 719 items, in the same bands, as 70707's (`bi
 | K2 | **The Lesser Mana Potion restored nothing.** Its item id 3385 had no row in the engine's roll table, so it gave 0 mana. The client's 438 is 320 with variance 0.25, so 280 to 360. In the same table, the Minor Recombobulator carried Era's 150 to 250 mana; the client's 18805 is 128 with variance 0.5, and the server text reads "96 to 160 Mana". The healthstones healed Era's 500, 800 and 1200; the client's 5720, 5723 and 11732 are flat 600, 960 and 1440 (server text "Instantly restores 1440 life"). No preset or kit carries any of them, so only /sim custom picks reach them. | `TestManaConsumablesRestoreTheClientsAmount` and `TestHealthstonesHealTheClientsAmount` failed first (Lesser 0 to 280, Recombobulator 150 to 250, stones 500/800/1200), then passed. The core package passes. | CONFIRMED-BUG (custom only) | old (upstream fdfff4571; no round checked these rows) | E d347b5094 |
 | K3 | Every other raid consumable matches the client's amount, duration and table: R.O.I.D.S., Scorpok, Cortex and Gizzard (25, 60 min); Mongoose; Sages; the flasks (1200 health, 2000 mana, 150 spell damage); Greater Arcane 35; Shadow 40; Frost 15; Fire Power 10; Greater Defense 450 bonus armor; Fortitude 200; Mageblood 12 and Greater 20 mp5; Greater Cleric's 40; the Forever foods (Nightfin 22, Baked Salmon 28 spell damage, Sage's Tea 44 healing, Salmon 40 AP and RAP, Dumplings 20 Strength, Squid 1% every table); the Brilliant oils; the stones; the potions (Major Mana 1350 to 2250, Mighty Rage 45 to 75 and 60 Strength for 20 s, the Frenzy and Spellblasting 30-second potions); and the Demonic Rune (900 to 1500, 800 health). | `cons.txt`; `core/consumes.go` | Aligned | - | - |
 | K4 | **Elixir of Holy Power (21546), a consumable the engine does not have.** Forever turned Era's Elixir of Greater Firepower into "Elixir of Holy Power": spell 1310077, +40 Holy spell damage for 30 min, level 40, made from recipe 21547. The engine has no Holy power consumable, so the preset cannot offer it. Retribution's spell power weight is 0.21 DPS a point at raid 60 (bis weights), so it is worth roughly 1% for Retribution and more threat for Protection. Adding it needs a new proto field (`Consumes`) in the fork, its vocabulary row on the site and a preset row. protoc-gen-go is not installed here. | ItemSparse 21546; SpellEffect 1339308 (aura 13, 40, misc 2); tooltips item/21546 and spell/1310077 (2026-11-03) | OPEN (feature; routed) | - | - |
+| K6 | **An item's haste counted twice** (found by the casters lane, X2, and routed here). `applyEquipment` added an item's and its enchant's MeleeHaste and SpellHaste to the unit's stats, which the swing and cast speeds read. It then also multiplied the speed multipliers by the same amounts. So a 15% item (Shard of the Defiler 17142, "attack speed and casting speed by 15%") swung and cast 32.25% faster. Now it counts once. No published band carries haste (`haste_on_items` false; no published item has a haste stat in simdb), so no published number moves. On custom gear, Combat with Shard of the Defiler in the main hand goes 799.1 -> 735.4 at raid 60 (-8.0%, Horde, seed 1, 3,000 iterations). The fork's Enhancement Phase 3 and Phase 5 gear (Enchant Gloves - Minor Haste 931, Arcanum of Rapidity 2543) moves 2 to 3%, and its golden is regenerated. | `TestAnItemsHasteCountsOnce` failed first (swing and cast speed 1.3225, want 1.15), then passed. The core, shaman (with_db) and feral suites pass; only `sim/shaman/enhancement/TestEnhancement.results` moves (its Phase 3 and 5 rows). | CONFIRMED-BUG (custom only) | old (upstream bda658a24) | E 0a879f7f6 |
 | K5 | The landing's other preset rows (the Dense stone from 35, the improved Mana Spring, the bear's notes) match the client: Dense Sharpening Stone 12404 and Weightstone 12643 need level 35; enchant 1643 is Sharpened +8. | ItemSparse; SpellItemEnchantment 1643 | Aligned | - | - |
 
 ## Per spec
 
-Crit tables (section 1) are aligned for all 28 specs at raid and bare 60. Item effects (section 2) are aligned for all. Beast Mastery and Marksmanship have one confirmed bug each, K1. K2 is engine-wide and reaches no published spec.
+Crit tables (section 1) are aligned for all 28 specs at raid and bare 60. Item effects (section 2) are aligned for all. Beast Mastery and Marksmanship have one confirmed bug each, K1. K2 and K6 are engine-wide and reach no published spec.
 
 ## Before/after
 
@@ -88,6 +89,8 @@ These are the round-11 pin's numbers again: the landing's -1.0% and -1.2% came o
 
 ## Files to regenerate
 
+- Fork golden regenerated in E 0a879f7f6: `sim/shaman/enhancement/TestEnhancement.results` (only its Phase 3 and 5 rows, the haste-enchanted gear).
+
 - `sim/request/testdata/ladder/hunter-beast-mastery.golden.md` and `hunter-marksmanship.golden.md` (the raid rung moves about +1%).
 - `sim/request/raid-consumes.json` is already regenerated in S 0206582a6 (`go run ./internal/genraidconsumes`). Its committed-copy test requires it. `published-presets.json` did not change.
 - The web copy (`web/scripts/sync-raid-preset.mjs`) syncs at build.
@@ -98,7 +101,7 @@ These are the round-11 pin's numbers again: the landing's -1.0% and -1.2% came o
 
 ## For other lanes
 
-- **Integrator:** S 0206582a6 moves BM and MM at raid 60 (table above). E d347b5094 moves nothing published.
+- **Integrator:** S 0206582a6 moves BM and MM at raid 60 (table above). E d347b5094 and E 0a879f7f6 move nothing published. E 0a879f7f6 moves the fork's TestEnhancement golden, which is already regenerated.
 - **Fork maintainers / platform:** K4, Elixir of Holy Power for Retribution and Protection paladins. It needs a new `Consumes` proto field (fork), a vocabulary id and a preset row (site). Measure it once it exists.
 - **Auras:** none from this lane. The warlock lane's Orc Command note went to auras directly.
 
