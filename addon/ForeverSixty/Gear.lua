@@ -497,7 +497,7 @@ end
 --- counted in DPS (x `dps`) prices a weapon-DPS delta at exactly weaponDps.
 --- `dps` is the DPS per point the gain is counted in (a sim's own wins); with none
 --- (a gain in score) the figure's own. nil when the figure's weaponDps is 0 or
---- missing (feral druids, casters, healers) or there is no DPS per point to divide by.
+--- missing (casters, healers) or there is no DPS per point to divide by.
 function Gear.weaponTerm(figure, dps)
 	local weaponDps = type(figure) == "table" and tonumber(figure.weaponDps) or nil
 	if weaponDps == nil or weaponDps <= 0 then
