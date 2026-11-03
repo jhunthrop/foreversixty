@@ -26,7 +26,7 @@ This is the Affliction Warlock as the site's guide describes it. Affliction keep
 - Corruption whenever it has fallen off.
 - Siphon Life whenever it has fallen off.
 - If your raid leader gives you Curse of Weakness, put Agony down before it: Amplify Curse goes to whichever of the two you cast first.
-- If you hold the raid's Curse of the Elements, it goes on first and lasts five minutes.
+- Curse of the Elements when no warlock's is on the target.
 - Curse of Recklessness: Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid, Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard.
 - Immolate is the fifth DoT, recast when under three seconds remain.
 - Bane of Agony whenever it has fallen off.

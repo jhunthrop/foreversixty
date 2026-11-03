@@ -28,9 +28,10 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 - Stormstrike on cooldown. It is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder.
 - Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.
 - Searing Totem when it is down, unless the boss is about to die.
+- Fire Nova on a Clearcasting proc. It is free then, and in melee your Searing Totem stands within its ten yards of the boss.
 - Earth Shock last, and only while mana is above half.
 - In Forever Windfury Totem, Grace of Air and Strength of Earth reach every raid member within thirty yards, not just your party.
-- Fire Nova and Flame Shock stay on your bar for packs and runners.
+- Flame Shock.
 - Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it.
 - Lightning Shield only fires when something hits you, which behind a boss is never.
 

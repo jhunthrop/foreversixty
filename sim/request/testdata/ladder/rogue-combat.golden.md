@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:1926 off_hand:1287 | 12.9 | 3 | other:attack/2=132.1, other:attack/1=84.3, spell:1757=40.6, spell:6760/5=7.0, spell:5171/3=1.0 | {SpellID: 13750} |
-| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:2194 off_hand:2236 | 27.5 | 3 | other:attack/2=123.3, other:attack/1=74.2, spell:1758=44.7, spell:6761/5=7.7, spell:5171/3=1.0 | {SpellID: 13750} |
-| 30 | 00000000000000000-32530300001400000-0000000000000000000 | main_hand:7687 off_hand:23168 | 46.5 | 3 | other:attack/2=132.1, other:attack/1=77.3, spell:1760=45.7, spell:6762/5=8.2, spell:5171/3=1.0 | {SpellID: 13750} |
-| 38 | 00000000000000000-32530300001515100-0000000000000000000 | main_hand:868 off_hand:6829 | 65.7 | 4 | other:attack/1=91.3, other:attack/2=87.1, spell:8621=44.2, spell:8623/5=7.8, other:attack/3=3.1 | {SpellID: 13750} |
-| 40 | 00000000000000000-32530300001515201-0000000000000000000 | main_hand:868 off_hand:2164 | 77.2 | 5 | other:attack/2=106.4, other:attack/1=91.3, spell:8621=47.3, spell:8624/5=8.4, spell:13877=2.0 | - |
-| 50 | 32500000000000000-32530300001515201-0000000000000000000 | main_hand:810 off_hand:2163 | 113.4 | 5 | other:attack/2=137.9, other:attack/1=92.1, spell:11293=47.5, spell:11299/5=8.3, spell:13877=2.0 | - |
-| 60 | 32531000000000000-32530300001515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 225.1 | 5 | other:attack/2=71.7, other:attack/1=67.9, spell:11294=46.6, spell:11300/5=9.4, other:attack/3=7.2 | - |
+| 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:1926 off_hand:1287 | 12.3 | 5 | other:attack/2=154.0, other:attack/1=98.2, spell:1757=37.3, spell:5171/2=12.4, spell:5171/1=2.7 | {SpellID: 13750} |
+| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:2194 off_hand:2236 | 26.9 | 6 | other:attack/2=139.6, other:attack/1=84.0, spell:1758=39.4, spell:5171/2=7.3, spell:5171/1=5.9 | {SpellID: 13750} |
+| 30 | 00000000000000000-32530300001400000-0000000000000000000 | main_hand:7687 off_hand:23168 | 45.2 | 6 | other:attack/2=149.9, other:attack/1=87.7, spell:1760=39.3, spell:5171/2=7.3, spell:5171/1=6.1 | {SpellID: 13750} |
+| 38 | 00000000000000000-32530300001515100-0000000000000000000 | main_hand:868 off_hand:6829 | 63.6 | 7 | other:attack/1=103.9, other:attack/2=99.2, spell:8621=37.5, spell:5171/2=7.5, spell:5171/1=6.4 | {SpellID: 13750} |
+| 40 | 00000000000000000-32530300001515201-0000000000000000000 | main_hand:868 off_hand:2164 | 73.6 | 8 | other:attack/2=120.6, other:attack/1=103.5, spell:8621=40.8, spell:5171/1=7.0, spell:5171/2=6.7 | - |
+| 50 | 32500000000000000-32530300001515201-0000000000000000000 | main_hand:810 off_hand:2163 | 109.4 | 8 | other:attack/2=165.1, other:attack/1=110.3, spell:11293=40.8, spell:6774/1=6.9, spell:6774/2=6.7 | - |
+| 60 | 32531000000000000-32530300001515201-5100000000000000000 | main_hand:22736 off_hand:23054 | 224.6 | 8 | other:attack/2=84.4, other:attack/1=80.4, spell:11294=39.4, spell:6774/1=8.5, other:attack/3=7.8 | - |
 
 ## Learned but unused (informational)
 
@@ -120,7 +120,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 8676)
 - Backstab (spell 2590)
-- Garrote (spell 703)
 - Gouge (spell 1777)
 - Kick (spell 1766)
 - Rupture (spell 1943)
@@ -130,7 +129,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 8724)
 - Backstab (spell 2591)
-- Garrote (spell 8632)
 - Gouge (spell 1777)
 - Kick (spell 1767)
 - Rupture (spell 8639)
@@ -140,7 +138,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 8725)
 - Backstab (spell 8721)
-- Garrote (spell 8633)
 - Gouge (spell 8629)
 - Kick (spell 1767)
 - Rupture (spell 8640)
@@ -151,7 +148,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Ambush (spell 8725)
 - Backstab (spell 8721)
 - Death Mark (spell 1316709)
-- Garrote (spell 8633)
 - Gouge (spell 8629)
 - Kick (spell 1767)
 - Rupture (spell 8640)
@@ -162,7 +158,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Ambush (spell 11268)
 - Backstab (spell 11279)
 - Death Mark (spell 1325756)
-- Garrote (spell 11289)
 - Gouge (spell 11285)
 - Kick (spell 1768)
 - Rupture (spell 11273)
@@ -173,7 +168,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Ambush (spell 11269)
 - Backstab (spell 11281)
 - Death Mark (spell 1325758)
-- Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)
 - Rupture (spell 11275)

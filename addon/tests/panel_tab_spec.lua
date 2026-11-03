@@ -1702,7 +1702,7 @@ describe("PanelTab", function()
 
 		-- Item 2: the rotation conditions never lose the rule.
 		describe("the rotation rows", function()
-			it("cuts the hunter's Arcane Shot at a clause on the real width, never mid-figure", function()
+			it("shows the hunter's Arcane Shot whole on the real width, its figure intact", function()
 				start()
 				local data = require("Data")
 				local Rotation = require("Rotation")
@@ -1714,16 +1714,14 @@ describe("PanelTab", function()
 					end
 				end
 				assert.are.equal(280, PanelTab.textRoom())
-				assert.are.equal(2, arcane.conditionLines)
-				-- The cut keeps a leading clause of the full condition and ends on the
-				-- pending mark; the shipped wording is the curated note's, so it is not pinned.
+				-- The launch-day note fits its two lines, so nothing is cut: no pending mark,
+				-- and the 25% mana floor reads whole. The wording is the curated note's, so it
+				-- is not pinned beyond its figure.
+				assert.is_true(arcane.conditionLines <= 2)
 				local pending = L.tooltipNamePending
-				assert.are.equal(pending, arcane.condition:sub(-#pending))
-				local kept = arcane.condition:sub(1, -#pending - 1)
-				assert.is_true(#kept > 0)
-				assert.are.equal(kept, arcane.fullCondition:sub(1, #kept))
-				assert.is_truthy(arcane.fullCondition:sub(#kept + 1):match("^[%s,;:]"))
-				assert.is_nil(arcane.condition:find("25%", 1, true))
+				assert.are_not.equal(pending, arcane.condition:sub(-#pending))
+				assert.are.equal(arcane.fullCondition, arcane.condition)
+				assert.is_truthy(arcane.condition:find("25%", 1, true))
 				-- The full plain condition is kept for the hover.
 				local raw
 				for _, entry in ipairs(Rotation.model(data, HUNTER, HUNTER_RANKS, 24, true).lines) do
@@ -1732,7 +1730,6 @@ describe("PanelTab", function()
 					end
 				end
 				assert.are.equal(Rotation.plainCondition(raw), arcane.fullCondition)
-				assert.is_truthy(arcane.fullCondition:find("mana is above a 25% reserve", 1, true))
 			end)
 
 			it("shows the ability name and the full plain condition on a row's hover, over the hover ground", function()

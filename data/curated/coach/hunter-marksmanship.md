@@ -23,7 +23,7 @@ This is the Marksmanship Hunter as the site's guide describes it. Marksmanship p
 - Aspect of the Hawk goes up before the pull.
 - Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.
 - Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin.
-- Mark the boss with Hunter's Mark, then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight.
+- Hunter's Mark whenever the target is not marked.
 - Rapid Fire on the pull, as an auto shot leaves and Multi-Shot is about to come back.
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - On a movement phase, fire Arcane Shot and Multi-Shot on the run and plant your feet the moment you can.

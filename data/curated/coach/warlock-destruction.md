@@ -29,7 +29,7 @@ This is the Destruction Warlock as the site's guide describes it. Destruction ke
 - Conflagrate on cooldown while Immolate is up.
 - Shadowburn on cooldown, at any boss health.
 - Incinerate for every other cast.
-- Curse of the Elements: Curses and banes have their own slots in Forever, so Curse of the Elements and Bane of Doom sit on the boss together.
+- Curse of the Elements when no warlock's is on the target.
 - Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 - Searing Pain is a threat spell, not a damage spell, and Incinerate does more.
 - Life Tap below ten percent mana.

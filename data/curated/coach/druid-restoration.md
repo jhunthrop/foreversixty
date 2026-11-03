@@ -23,7 +23,7 @@ This is the Restoration Druid as the site's guide describes it. Restoration heal
 - Rejuvenation on the tank a few seconds before he pulls.
 - Keep Mark of the Wild up on the raid.
 - Regrowth and Rejuvenation stay up on the tank for the whole fight.
-- Swiftmend goes on the tank whenever he is under seventy-five percent.
+- Swiftmend on the tank whenever he is under three quarters health and your mana is keeping pace.
 - Healing Touch fills the real holes: a tank under about half, while your mana is ahead of the fight.
 - Nature's Swiftness into Healing Touch is the save for a tank who is nearly dead.
 - Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.

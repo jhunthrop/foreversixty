@@ -3,7 +3,7 @@
   "product": "wowf",
   "fetched_at": "2026-11-02T23:00:19.249987Z",
   "files": {
-    "addon-data.json": "37145255e8d687c53650ae8f8d5a26a288c8d1154e6611d9480392fec70343ef",
+    "addon-data.json": "d24a27883f7eadfdac1c8f8db88756e5284d9ad33fb8049990c695fedfdad468",
     "classes.json": "b154118d07e977509fde4e8450b64e8804d4c77f8706aadfebe15fee711e5ff7",
     "combos.json": "a8de5ed9500af546f9954b5f6e1635986f0719c5b31295976517fafc47a0a938",
     "dungeons.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
@@ -1767,7 +1767,7 @@
     "spellconst/shaman.json": "115637ab38ba71b1e43c3cbc4e5d294db0b68cc332c623aa673d0debeaa48818",
     "spellconst/warlock.json": "181040b58b7ddb86fce708da97c38d2f0d8cbb661dafd869b60ce3e2c2ae6090",
     "spellconst/warrior.json": "751d32f7f5ce44efa4ee81d2bb6c870e4930c82d67f741cce3c4fb869386d7e3",
-    "spellicons.json": "fee2206817184ea6cb2bdd54b15334a8b1f88c9d642410ec4e930609ddfe4bb9",
+    "spellicons.json": "bc43acb33a1909d84d6bcf3f36bed1822aea01b7f5f452c9778b5b34258d171b",
     "spellranks.json": "cf29a18b4263570da761cab7e463909ab502430445059e1bc1eb6b9eb0001f8d",
     "spells.json": "53b35d8f6f40a5356b7a1985f991bbb3de145ae5226c736671ef6aa28b334467",
     "stat-weights.json": "a17e38892dfdbb9da7071b9de02bf60e53ded7347a93c73c4065d012f494b1eb",

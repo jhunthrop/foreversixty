@@ -21,7 +21,7 @@ This is the Arcane Mage as the site's guide describes it. Arcane stacks Arcane B
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Mage Armor, Arcane Brilliance and your food buff go up before the pull.
-- Frostbolt fills the rest of the eighteen seconds once you stop blasting.
+- Frostbolt the moment Presence of Mind is up, so the two and a half second cast goes out instant.
 - Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
 - Arcane Explosion is instant and hits everything within ten yards, so you stand in the pack with the tank and spam it.

@@ -28,7 +28,7 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Serpent Sting when it is about to drop.
 - When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Multi-Shot going.
 - Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin.
-- Mark the boss with Hunter's Mark, then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight.
+- Hunter's Mark whenever the target is not marked.
 - A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage.
 - Growl.
 - Mend Pet.

@@ -24,7 +24,7 @@ This is the Combat Rogue as the site's guide describes it. Combat is the steadie
 - Backstab with a dagger in the main hand: Puncturing Wounds, Aggression and Lethality all land on it, and Puncturing Wounds can give it a second combo point.
 - Ambush is the weakest one for Combat, because none of Puncturing Wounds, Lethality or Aggression touch it.
 - Cheap Shot is for trash: bosses are immune to stuns.
-- Slice and Dice in the first fifteen seconds, at three or more combo points, when it is not up.
+- Slice and Dice whenever it drops, at one or two combo points.
 - Eviscerate at five combo points.
 - Sinister Strike only when Backstab cannot be cast, held to sixty energy so a dagger rogue never spends Backstab's energy here.
 - Adrenaline Rush on cooldown, with your racial, a trinket and a potion.

@@ -21,7 +21,7 @@ This is the Demonology Warlock as the site's guide describes it. Demonology sacr
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Put on Demon Armor, make a Healthstone and Life Tap back to full.
-- On the pull: Curse of the Elements first if you hold it, then Corruption and Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight.
+- Curse of the Elements when no warlock's is on the target.
 - Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 - Bane of Doom the moment the last one fires, with a minute or more of the fight left.
 - Bane of Agony in the last minute, once Doom has fired.
