@@ -130,6 +130,10 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		{"Orc Corruption at 40", "warlock-destruction", "warlock", BarePreset, "orc", 40, 6223, 7648},
 		{"Undead Binding Heal at bare 60", "priest-discipline", "priest", BarePreset, "undead", 60, 401937, 1240774},
 		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 596, 10961},
+		// Protection's Holy Strike rank 1 (679) at 40: the mana it saves buys more Judgements
+		// and Hammers of the Righteous (+0.6% to +0.9% threat for every paladin race).
+		{"Dwarf Holy Strike at 40", "paladin-protection", "paladin", BarePreset, "dwarf", 40, 679, 2495},
+		{"Holy Strike at 50 keeps the top rank", "paladin-protection", "paladin", BarePreset, "dwarf", 50, 5569, 679},
 		// Lightwell rank 1 now loses or ties for every race at bare 60: the row is gone.
 		{"Troll Lightwell at bare 60", "priest-holy", "priest", BarePreset, "troll", 60, 27871, 724},
 	} {
