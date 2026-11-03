@@ -14,9 +14,10 @@ rank >= 1, sorted by rank then id; a rank-0 duplicate never joins that chain.
 A name whose entries are *all* rank 0 has no chain at all -- it is a spell
 without ranks, most often carrying a single id, occasionally more when the
 client duplicates an unranked ability under NPC or spec-variant ids -- and
-keeps every one of its own entries, sorted by id, rather than being collapsed
-or dropped: `sim/request` still needs the id(s) and the learn level to gate
-the action, even though there is no rank to rewrite to.
+keeps its entries, sorted by id, rather than being collapsed or dropped:
+`sim/request` still needs the id(s) and the learn level to gate the action,
+even though there is no rank to rewrite to. Castable ids win over the copies
+beside them in both cases (`_rank_chain`).
 
 A name is included at all only when its resulting list carries more than one
 id or a nonzero level -- the vast majority of spells, unranked and learned at
@@ -105,20 +106,49 @@ def count_copy_names(records: list[ClassSpellConstants]) -> int:
     )
 
 
+def _without_early_copies(unranked: list[_Entry]) -> list[_Entry]:
+    """`unranked` less every non-castable id learned (level > 0) before the
+    earliest castable one: a copy that would make the spell look learned
+    before the player can have it (Water Shield's level-1 409941 beside the
+    player's 408510 at 20). An id learned with the spell or later, or with no
+    level at all, stays: a proc or effect id (Water Shield's 408511,
+    Whirlwind's 462891) is how the API's adherence reads a combat log's hit
+    as its ability."""
+    castable_levels = [entry[2] for entry in unranked if entry[3]]
+    if not castable_levels:
+        return unranked
+    floor = min(castable_levels)
+    return [entry for entry in unranked if entry[3] or not 0 < entry[2] < floor]
+
+
 def _rank_chain(entries: list[_Entry]) -> list[_Entry]:
-    """The player chain for one spell name: see the module docstring's caveat."""
+    """The player chain for one spell name: see the module docstring's caveat.
+
+    The 1.60 client keeps cost-less, cast-less, GCD-less copies beside the
+    player's own ids (Lightning Bolt 403 beside 408439, Magma Totem's totem
+    10585 beside its pulse 10579); a rewrite that landed on one would name a
+    spell the engine never registers, or registers without the periodic
+    effect the rotation asks about. So:
+
+    - a ranked chain keeps its castable ranks when it has any;
+    - a ranked chain with no castable rank yields to the name's castable
+      unranked ids when there are some, because then the ranks are the copies
+      (Stormstrike's Season of Discovery 410156 at rank 1 and level 1 beside
+      the player's 17364 at rank 0 and level 40; Grounding Totem's totem
+      8178 beside the castable 8177);
+    - an unranked name drops the copies learned before its castable ids.
+    """
     ranked = [entry for entry in entries if entry[1] >= 1]
+    castable_ranked = [entry for entry in ranked if entry[3]]
+    if castable_ranked:
+        return sorted(castable_ranked, key=lambda entry: (entry[1], entry[0]))
+    unranked = [entry for entry in entries if entry[1] < 1]
+    unranked_castable = [entry for entry in unranked if entry[3]]
+    if ranked and unranked_castable:
+        return sorted(unranked_castable, key=lambda entry: entry[0])
     if ranked:
-        # The 1.60 client keeps cost-less, cast-less, GCD-less copies of a ranked spell
-        # beside the player's own ids at the same ranks (Lightning Bolt 403 beside
-        # 408439, Magma Totem's totem 10585 beside its pulse 10579); a rewrite that
-        # landed on one of those would name a spell the engine never registers, or
-        # registers without the periodic effect the rotation asks about. Keep the
-        # castable ids when the chain has any.
-        castable = [entry for entry in ranked if entry[3]]
-        chain = castable or ranked
-        return sorted(chain, key=lambda entry: (entry[1], entry[0]))
-    return sorted(entries, key=lambda entry: entry[0])
+        return sorted(ranked, key=lambda entry: (entry[1], entry[0]))
+    return sorted(_without_early_copies(unranked), key=lambda entry: entry[0])
 
 
 def load_book_ids(curated: Path) -> frozenset[int]:

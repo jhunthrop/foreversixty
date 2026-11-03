@@ -117,7 +117,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flame Shock (spell 8050)
 - Flametongue Attack (spell 10444)
 - Lightning Bolt (spell 529)
-- Stormstrike (spell 410156)
 
 ### Level 20
 
@@ -128,7 +127,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8034)
 - Lightning Bolt (spell 915)
-- Stormstrike (spell 410156)
 
 ### Level 30
 
@@ -140,7 +138,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbrand Attack (spell 8037)
 - Lava Burst (spell 408490)
 - Lightning Bolt (spell 943)
-- Stormstrike (spell 410156)
 
 ### Level 38
 
@@ -153,7 +150,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbrand Attack (spell 10458)
 - Lava Burst (spell 408490)
 - Lightning Bolt (spell 10391)
-- Stormstrike (spell 410156)
 
 ### Level 40
 
@@ -166,7 +162,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbrand Attack (spell 10458)
 - Lava Burst (spell 1238299)
 - Lightning Bolt (spell 10391)
-- Stormstrike (spell 410156)
 
 ### Level 50
 
@@ -179,7 +174,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbrand Attack (spell 16352)
 - Lava Burst (spell 1238300)
 - Lightning Bolt (spell 15207)
-- Stormstrike (spell 410156)
 
 ### Level 60
 
@@ -192,7 +186,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frostbrand Attack (spell 16353)
 - Lava Burst (spell 1326047)
 - Lightning Bolt (spell 15208)
-- Stormstrike (spell 410156)
 
 ## Violations found in this run
 
