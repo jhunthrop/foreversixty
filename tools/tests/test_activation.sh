@@ -603,6 +603,57 @@ stub_gh "$d"
 alert "$d" cleared "$NEW_BUILD"
 assert "alert cleared, nothing open: closes nothing" lacks "$CALLS" "issue close"
 
+# The hotfix-push alert: under the refresh hold the data workflow that re-layers a new
+# server push is disabled, so the watcher opens "Hotfix push for <build> is not layered".
+# push_alert <dir> <args...>: client-alert.sh with the stub gh, the data workflow disabled.
+push_alert() {
+	local dir=$1
+	shift
+	STATUS=0
+	OUT=$(GH_BIN="$dir/gh" PRODUCT=wowf DATA_STATE=disabled_manually RUN_URL=https://github.com/o/r/actions/runs/9 \
+		bash "$ALERT" "$@" 2>&1) || STATUS=$?
+	CALLS=$(cat "$dir/calls" 2>/dev/null)
+	BODY=$(cat "$dir/body" 2>/dev/null)
+}
+
+# No issue yet: its own label, the titled issue, the hand commands and the run.
+d=$SCRATCH/push-new
+stub_gh "$d"
+push_alert "$d" push "$OLD_BUILD"
+assert "push new: exits 0" equal "$STATUS" 0
+assert "push new: makes its own label" contains "$CALLS" "gh label create hotfix-push-unlayered --color D93F0B"
+assert "push new: opens the titled, labelled issue" contains "$CALLS" "gh issue create --title Hotfix push for $OLD_BUILD is not layered --label hotfix-push-unlayered"
+assert "push new: says why nothing layers it" contains "$BODY" "The data workflow, which re-layers a push, is disabled_manually"
+assert "push new: the hand fetch names the product and build" contains "$BODY" "pipeline fetch --product wowf --build $OLD_BUILD"
+assert "push new: the after-hold dispatch" contains "$BODY" "gh workflow run data.yml -f product=wowf -f build=$OLD_BUILD"
+assert "push new: links the run" contains "$BODY" "Run: https://github.com/o/r/actions/runs/9"
+assert "push new: no comment" lacks "$CALLS" "issue comment"
+
+# The build's issue is open: a later run comments (refreshes) instead of opening another;
+# a blocked-build issue in the same list is not taken for it.
+d=$SCRATCH/push-again
+stub_gh "$d"
+printf '30\tClient build %s is blocked\n31\tHotfix push for %s is not layered\n' "$NEW_BUILD" "$OLD_BUILD" >"$d/label-list"
+push_alert "$d" push "$OLD_BUILD"
+assert "push again: comments on the build's issue" contains "$CALLS" "gh issue comment 31 --body-file"
+assert "push again: searches its own label" contains "$CALLS" "--label hotfix-push-unlayered"
+assert "push again: opens nothing" lacks "$CALLS" "issue create"
+
+# Another build's push issue: this build gets its own.
+d=$SCRATCH/push-other
+stub_gh "$d"
+printf '31\tHotfix push for %s is not layered\n' "$NEW_BUILD" >"$d/label-list"
+push_alert "$d" push "$OLD_BUILD"
+assert "push other build: opens a new issue" contains "$CALLS" "gh issue create --title Hotfix push for $OLD_BUILD is not layered"
+
+# The record is current again: every open push issue closes, and only those.
+d=$SCRATCH/push-layered
+stub_gh "$d"
+printf '31\n' >"$d/label-list"
+push_alert "$d" push-layered "$OLD_BUILD"
+assert "push layered: closes the push issue" contains "$CALLS" "gh issue close 31 --comment The committed hotfix-push.json for $OLD_BUILD matches"
+assert "push layered: lists only its own label" lacks "$CALLS" "--label client-build-blocked"
+
 # The workflows and activate-build.sh run these directly, and this repository has
 # core.fileMode off, so a script committed without its executable bit fails only on the
 # runner ("Permission denied", which the engine check would read as an unreadable stamp).

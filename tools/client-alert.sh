@@ -8,6 +8,13 @@
 #                                               or comment on the open one
 #   tools/client-alert.sh cleared <build>       a move landed: close every open
 #                                               client-build-blocked issue, naming <build>
+#   tools/client-alert.sh push <build>          wago lists a server hotfix push for the
+#                                               active <build> that nothing will layer (the
+#                                               data workflow is disabled): open "Hotfix
+#                                               push for <build> is not layered" (label
+#                                               hotfix-push-unlayered), or comment on it
+#   tools/client-alert.sh push-layered <build>  the committed push record is current: close
+#                                               every open hotfix-push-unlayered issue
 #
 # <report.md> is the "Client move to <build> stopped" report (step, reason, hand command).
 # The alert adds how far behind the site is and the run link. Environment:
@@ -17,16 +24,21 @@
 #   BEHIND_SINCE  when wago first listed a Forever build newer than ACTIVE (UTC)
 #   BEHIND_DAYS   whole days since then (blank when unknown)
 #   RUN_URL       this run's page
+#   PRODUCT       push: the build's wago.tools product key (for the hand commands)
+#   DATA_STATE    push: the data workflow's state (disabled_manually under a hold)
 #   GH_BIN        the gh to call (tests stub it); gh reads GH_TOKEN, which is never printed
 set -euo pipefail
 
 readonly LABEL=client-build-blocked
 readonly LABEL_COLOR=B60205
 readonly LABEL_DESCRIPTION="The client watcher (client.yml) could not move the site to a new client build"
+readonly PUSH_LABEL=hotfix-push-unlayered
+readonly PUSH_LABEL_COLOR=D93F0B
+readonly PUSH_LABEL_DESCRIPTION="wago.tools lists a server hotfix push for the active build that data/builds/<build>/hotfix-push.json was not layered from"
 readonly ACTIVE_BUILD_FILE=web/src/data/active-build.json
 GH=${GH_BIN:-gh}
 
-usage() { echo "usage: $0 blocked <report.md> | cleared <build>" >&2; exit 2; }
+usage() { echo "usage: $0 blocked <report.md> | cleared <build> | push <build> | push-layered <build>" >&2; exit 2; }
 
 issue_title() { echo "Client build ${1:-unknown} is blocked"; }
 
@@ -61,12 +73,12 @@ alert_body() {
 	fi
 }
 
-# open_issue <title>: the number of the open issue for that title, found by label then
-# by title (an issue whose label was removed); blank when none. A blank build's title
-# takes any open labelled issue, since the watch did not say which build it stopped on.
+# open_issue <title> <any> [label]: the number of the open issue for that title, found by
+# label then by title (an issue whose label was removed); blank when none. A blank build's
+# title takes any open labelled issue, since the watch did not say which build it stopped on.
 open_issue() {
-	local title=$1 any=$2 found
-	found=$("$GH" issue list --state open --label "$LABEL" --limit 100 --json number,title \
+	local title=$1 any=$2 label=${3:-$LABEL} found
+	found=$("$GH" issue list --state open --label "$label" --limit 100 --json number,title \
 		--jq '.[] | "\(.number)\t\(.title)"' | first_match "$title" "$any")
 	if [ -z "$found" ]; then
 		found=$("$GH" issue list --state open --search "\"$title\" in:title" --limit 20 --json number,title \
@@ -104,18 +116,61 @@ blocked() {
 	rm -f "$body"
 }
 
-cleared() {
-	local build=$1 number note
-	note="Client build $build is active: the client watcher moved the site to it${RUN_URL:+ ($RUN_URL)}. Closing."
-	for number in $("$GH" issue list --state open --label "$LABEL" --limit 100 --json number --jq '.[].number'); do
+# close_labelled <label> <note>: close every open issue carrying <label>.
+close_labelled() {
+	local label=$1 note=$2 number
+	for number in $("$GH" issue list --state open --label "$label" --limit 100 --json number --jq '.[].number'); do
 		"$GH" issue close "$number" --comment "$note" >/dev/null
 		echo "client-alert: closed #$number"
 	done
+}
+
+cleared() {
+	close_labelled "$LABEL" "Client build $1 is active: the client watcher moved the site to it${RUN_URL:+ ($RUN_URL)}. Closing."
+}
+
+# push_body <build>: what moved, why nothing layers it, and the hand commands.
+push_body() {
+	local build=$1 product=${PRODUCT:-<wago product key>}
+	echo "## Hotfix push for $build is not layered"
+	echo
+	echo "wago.tools lists a server hotfix push for the active build $build that data/builds/$build/hotfix-push.json was not layered from (pipeline push-check). The data workflow, which re-layers a push, is ${DATA_STATE:-not active}, so the site, the sim and the addon still read the values from before the push."
+	echo
+	echo "**To layer it by hand** (deterministic, no ranking): in data/, \`uv run python -m pipeline fetch --product $product --build $build\` (it layers the push), then \`simconst\`, \`levels\` and \`trainables\` with \`--build $build\`, \`make simdb\` and the outputs that read them; commit the new hotfix-push.json with them."
+	echo
+	echo "**Once the data workflow is enabled again:** gh workflow run data.yml -f product=$product -f build=$build"
+	if [ -n "${RUN_URL:-}" ]; then
+		echo
+		echo "Run: $RUN_URL"
+	fi
+}
+
+push() {
+	local build=$1 title number body
+	title="Hotfix push for $build is not layered"
+	body=$(mktemp)
+	push_body "$build" >"$body"
+	number=$(open_issue "$title" false "$PUSH_LABEL")
+	if [ -n "$number" ]; then
+		"$GH" issue comment "$number" --body-file "$body" >/dev/null
+		echo "client-alert: commented on #$number ($title)"
+	else
+		"$GH" label create "$PUSH_LABEL" --color "$PUSH_LABEL_COLOR" --description "$PUSH_LABEL_DESCRIPTION" --force >/dev/null
+		"$GH" issue create --title "$title" --label "$PUSH_LABEL" --body-file "$body"
+		echo "client-alert: opened \"$title\""
+	fi
+	rm -f "$body"
+}
+
+push_layered() {
+	close_labelled "$PUSH_LABEL" "The committed hotfix-push.json for $1 matches what wago.tools lists${RUN_URL:+ ($RUN_URL)}. Closing."
 }
 
 [ $# -eq 2 ] || usage
 case $1 in
 blocked) blocked "$2" ;;
 cleared) cleared "$2" ;;
+push) push "$2" ;;
+push-layered) push_layered "$2" ;;
 *) usage ;;
 esac
