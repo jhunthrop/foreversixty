@@ -22,6 +22,26 @@ WRITTEN = "written"
 
 SITE_APL_DIR = pathlib.Path("sim/request/apl")
 
+#: Keys inside a rotation that are display text, never behaviour. The
+#: curated file is their only owner: the site renders them, the engine
+#: ignores them, so a wording change must never need a fork commit or an
+#: engine pin. apl-check compares rotations with these stripped, and
+#: apl-sync leaves a copy alone when only these differ.
+DISPLAY_KEYS = frozenset({"notes"})
+
+
+def semantics(value):
+    """The rotation with every display field removed, at any depth.
+
+    What is left is what the engine runs: the actions, their conditions,
+    the ranks and the order of the lists.
+    """
+    if isinstance(value, dict):
+        return {k: semantics(v) for k, v in value.items() if k not in DISPLAY_KEYS}
+    if isinstance(value, list):
+        return [semantics(v) for v in value]
+    return value
+
 
 def written_specs(curated_dir: pathlib.Path, specs_json: pathlib.Path):
     """Yield (spec, spec_slug, curated_path), canonical order.

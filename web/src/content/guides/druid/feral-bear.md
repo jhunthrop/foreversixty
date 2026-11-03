@@ -3,14 +3,17 @@ title: Feral Bear Druid in Forever
 classSlug: druid
 spec: feral-bear
 role: tank
-build: 'FS1:1.60.1.70707:druid:night-elf:0/5523033202310212551/051:'
+build: 'FS1:1.60.1.70753:druid:night-elf:0/5523033202310212551/051:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Stamina, Armor, Defense, Dodge, Strength, Agility, Attack power, Hit, Critical strike, Expertise]
-description: 'Talents, rotation, stats, and gear for the Feral Druid tank in Forever, Bear Form from the same tree as Cat Form.'
-updated: 2026-10-07
+description: 'Bear tanking in Forever: the build, the threat opener, Lacerate and Primal Bite, cooldowns, and the potions a bear can drink in form.'
+updated: 2026-11-02
 confidence: inferred
 sources:
+  - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
@@ -27,72 +30,84 @@ sources:
 
 ## Overview
 
-Feral Bear is the Bear Form tank: a large health pool, form-multiplied Armor and Dodge, and Maul, Swipe, Lacerate and Primal Bite to hold a boss.
+The bear tanks on health and armor, with Dodge as its only avoidance and Lacerate, Primal Bite and Maul for threat. Cat DPS has [its own guide](/guides/druid/feral).
 
 ### Strengths
 
-- Bear Form multiplies Stamina and Armor, and Thick Hide adds more Armor
-- Primal Bite is a high-threat attack on its own cooldown
-- Lacerate stacks a bleed that Rend and Tear reads, and its hit grows with every stack
+- Dire Bear Form multiplies your Stamina and Armor, and Heart of the Wild adds 20% Stamina on top
+- Primal Bite and Lacerate both carry high threat, so a bear holds a boss on very little rage
+- Defense on gear now works for a bear as it does for other tanks, and Thick Hide adds armor for every point
+- Potions, weapon stones and racials all work in Bear Form now, so you never shift to drink
 
 ### Weaknesses
 
-- No shield, Parry or Block: Dodge is its only avoidance
-- Armor lowers physical hits by a share that shrinks as you stack it
-- Maul and Swipe spend Rage, so threat follows Rage income
+- No Parry and no Block: Dodge is your only avoidance, so damage comes in spikes
+- No Shield Wall or Last Stand style button: Barkskin and Frenzied Regeneration are your cooldowns
+- Threat follows rage, so a bear that is never hit (or dodges a streak) starves
 
 ### In a raid
 
-- **Role:** Main tank in Bear Form; for cat DPS see [Feral Druid](/guides/druid/feral)
-- **Brings:** Leader of the Pack, a critical strike aura for the group
+- **Role:** Main tank or off-tank in Dire Bear Form
+- **Brings:** Leader of the Pack, 3% critical strike chance for everyone in range, and a battle rez
 
 ## Talents and builds
 
-This build is the Feral tree almost whole (45 points) plus 6 in Restoration, and it is the build this site's tank simulator runs, taken from the client's own talent text.
+The build is 45 points of Feral and 6 of Restoration. It tanks from level 10 to 60 with no respec.
 
-- **Ferocity** — Maul, Swipe, Primal Bite, Claw and Rake cost less Rage or Energy.
-- **Furor** — Rage on shifting into Bear Form (it moved from Restoration to Feral's top row in client 1.60.1.70707).
-- **Feral Swiftness** and **Natural Reaction** — Dodge, and Natural Reaction also pays Rage whenever you dodge.
-- **Thick Hide** — extra base Armor while shapeshifted, growing with Defense Skill beyond five times your level.
-- **Feral Instinct**, **Savage Fury** and **Rend and Tear** — more damage from Swipe, from your melee abilities, and from every ability against a bleeding target, which Lacerate keeps on the boss.
-- **Lacerate** (1 point) — a talent since client 1.60.1.70707, and the bear's bleed: it stacks five times, and each cast hits for 10% of weapon damage for every stack already up.
-- **Shredding Attacks** — cheaper Lacerate.
-- **Sharpened Claws**, **Predatory Strikes**, **Natural Instinct** and **Blood Frenzy** — crit, Attack Power, crit damage, and Rage on a critical strike.
-- **Leader of the Pack** — 3% more critical strike chance for the party and raid, on attacks and spells alike.
-- **Primal Bite** — the capstone since 1.60.1.70707: a high-threat bite on its own cooldown, the best single button the tree gives a bear.
+- **Thick Hide** (3 points): more base armor for your level and for every point of Defense over five times your level, all multiplied by the form.
+- **Natural Reaction** and **Feral Swiftness**: 9% Dodge, and 5 rage every time you dodge, which keeps your threat going on a dodge streak.
+- **Furor** (5 points): 10 rage every time you shift into Bear Form. A shift out to battle rez or Innervate comes back with rage.
+- **Lacerate** (1 point): your bleed. It stacks five times, each cast hits for more per stack already up, and it carries high threat.
+- **Primal Bite** (1 point): the capstone. Weapon damage plus a bonus and very high threat, on a 6 second cooldown for 15 rage.
+- **Ferocity** (5 points): Maul, Swipe and Primal Bite 5 rage cheaper.
+- **Shredding Attacks** (3 points): Lacerate 3 rage cheaper.
+- **Savage Fury**, **Feral Instinct** and **Rend and Tear**: more damage, so more threat, from Maul and Swipe, and 10% more from your melee abilities while Lacerate bleeds the target.
+- **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and 5 rage on every crit.
+- **Leader of the Pack** (1 point): the raid's crit aura.
+- **Heart of the Wild** (5 points): 20% more Stamina in Bear Form.
 
-The Restoration points are Heart of the Wild, more Stamina in Bear Form (it moved from Feral to Restoration's top row), and one point of Naturalist. Berserk, which took the cooldown off Primal Bite, left the tree in 1.60.1.70707; its point went to Lacerate. Left out: Brutal Impact, Feral Charge, Predatory Discipline and Shifting Power, which are for the cat or for a fight with movement.
-
-Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge (a charge and interrupt, take it if your raid needs a bear to close on casters), and the cat's Predatory Discipline and Shifting Power.
 
 ## Rotation and priority
 
-This is the rotation the simulator runs, measured in the simulator's tank fight (a level 63 boss that swings at you every two seconds, healers assumed). Everything is in Bear Form, which Dire Bear Form replaces at level 40.
+**Before the pull.** Be in Dire Bear Form. Enrage a second before you pull: it gives you rage up front and 2 a second for 10 seconds. It also costs armor for those 10 seconds, so the dip is over 9 seconds into the fight.
 
-1. **Primal Bite** on its cooldown.
-2. **Lacerate** built to five stacks and kept ticking: Rend and Tear reads it, and a cast on a full stack hits hardest.
-3. **Maul**, queued on your next swing with spare Rage.
-4. **Swipe** as the Rage dump.
-5. **Barkskin** on its cooldown, a small cut in damage taken for a smaller cut in threat; **Frenzied Regeneration** as the heal when you are under half health.
+**Pull.** Faerie Fire from range. In Bear Form it is free, on a 6 second cooldown, and it carries threat, so it is your pull and your threat on the run in. Then Lacerate, Primal Bite, and Maul queued on your swing.
 
-Left out on purpose: Demoralizing Roar, because the simulated boss has no attack power for it to lower (a boss that has some changes this), and Enrage, which buys a little threat for a little more damage taken because it costs armor while it lasts. Growl, Challenging Roar, Bash and Feral Charge do nothing in a fight with one stationary enemy.
+**Priority.**
+
+1. **Primal Bite** on cooldown, every 6 seconds. It is your biggest threat hit.
+2. **Lacerate** until it has five stacks, then again when it has under 3 seconds left. The stacks make each cast hit harder, and the bleed turns on Rend and Tear.
+3. **Faerie Fire** whenever the boss does not have it.
+4. **Maul** queued on your next swing whenever you have 15 rage spare.
+5. **Swipe** as the rage dump above 40 rage. It hits up to three targets.
+
+**Adds.** Swipe moves to the top on a pack, with Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.
+
+**Cooldowns.** Barkskin is 20% less damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns rage into health and in Forever can heal you for your whole health bar given the rage; use it under half health with rage to spare, not at the pull. Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
+
+**There is no Savage Defense in Forever.** Your mitigation is armor, Dodge, Barkskin and your healers.
 
 ## Stat priority
 
-A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
-
-Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and a bear's Stamina is multiplied in Bear Form. Armor is multiplied by the form and lowers every physical hit by a fraction that shrinks as you stack it. Dodge is the only avoidance a bear has, because it cannot Parry or Block, and Defense Skill both lowers the chance to be critically hit and feeds Thick Hide. Agility is Dodge, Armor and crit at once. Strength and Attack Power are threat, and so is your weapon: in Bear Form your paw has your weapon's damage per second, swung every 2.5 seconds, so a low-DPS caster staff costs you threat. Expertise lowers the boss's chance to dodge you, which is threat, not survival, and no item carries it yet.
+Stamina is health, and Dire Bear Form and Heart of the Wild multiply it. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Dodge is the only avoidance you have. Defense lowers your chance to be crit and feeds Thick Hide, so it counts twice. Agility is Dodge, armor and crit at once. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Hit and expertise keep your Lacerate and Maul landing, which is threat, not survival.
 
 ## Best in slot
 
+Wolfshead Helm is druid-only in Forever and gives 5 more rage from Enrage (and 5 more energy from Shifting Power). Leatherworkers make it. It is a level 40 blue: a small bonus while leveling, outgrown on stats by 60.
+
 ## Enchants and consumables
+
+Forever lets a druid drink in form. Mighty Rage Potion is the bear's threat potion and goes down in Dire Bear Form without breaking it. Swap to a Greater Stoneshield Potion on a fight where you die before you lose threat. An Elemental Sharpening Stone or a weightstone counts on your paw in form, so sharpen your weapon. Engineering bombs are the one thing that still knocks you out of form.
 
 ## Races
 
+Tauren is the tank pick: Endurance is 5% more health, and War Stomp stuns five enemies around you, in form, which is a great trash pull. Night Elf brings Quickness for a little Dodge and Elune's Light for a crit burst, which is threat.
+
 ## Professions
 
-Skinning and Leatherworking, as for the cat: leather is the armor a druid wears, and Leatherworking turns Skinning's leather into it.
+Skinning and Leatherworking, as for the cat: leather is your armor, and Leatherworking makes it. Alchemy keeps you in Stoneshield and Mighty Rage Potions.
 
 ## Leveling
 
-Bear Form is available from level 10, and a bear is a safe way to pull and survive as a leveling druid at the cost of killing speed. This site's tank simulation covers bands from level 20, and its low-level bands are the least reliable part of it; treat them as a direction, not a verdict.
+Bear Form comes at 10 and Dire Bear Form at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate and Primal Bite come with the talents, so the build tanks every dungeon on the way up.

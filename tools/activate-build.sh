@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# tools/activate-build.sh <build> [--no-commit [--no-gate] | --no-publish]
+# tools/activate-build.sh <build> [--no-commit [--no-gate] | --no-publish] [--no-ranking]
 #
 # Moves the site, the addon and the guides to a client build that data.yml's fetch job
 # has already landed under data/builds/<build>/. This is the scripted form of the
@@ -20,7 +20,8 @@
 #      generated data": Data.lua tracks the ACTIVE build).
 #   4. Every guide's FS1 build code is re-stamped (web/scripts/reencode-guide-builds.mjs,
 #      which proves each code legal against the new trees first) and the guides' data
-#      links follow.
+#      links follow. The planner vectors both mobile apps replay
+#      (apps/shared/fixtures/planner-rules.json) are regenerated over the new trees.
 #   5. The three addon TOCs take the Interface number the client version implies, the
 #      addon's patch version is bumped with a changelog line, and the tag the push
 #      makes releases it to CurseForge and Wago, so players get a Data.lua and an
@@ -37,6 +38,10 @@
 # --no-commit leaves the working tree changed and stops (inspect with git diff).
 # --no-publish commits and stops (no push, no tag, no ranking dispatch).
 # --no-gate skips step 7; only with --no-commit, for a quick local look at a move.
+# --no-ranking publishes the move but dispatches no ranking: neither bis.yml nor
+#   engine.yml (whose green pin dispatches bis.yml with force). For a refresh hold
+#   (the bis, data and engine workflows disabled while the sim audit loop runs): the
+#   carried picks stay live and the engine is followed and pinned by hand.
 #
 # On a failure the script names the step, the reason (the step's output, or the failing
 # tests) and the exact hand command that finishes or redoes the move: on stderr,
@@ -44,16 +49,18 @@
 # PRODUCT (the wago.tools key) so the hand commands name it.
 set -euo pipefail
 
-usage() { echo "usage: $0 <build> [--no-commit [--no-gate] | --no-publish]" >&2; exit 2; }
+usage() { echo "usage: $0 <build> [--no-commit [--no-gate] | --no-publish] [--no-ranking]" >&2; exit 2; }
 [ $# -ge 1 ] || usage
 NEW="$1"; shift
 MODE=publish
 GATE=on
+RANKING=on
 for arg in "$@"; do
   case "$arg" in
     --no-commit) MODE=inspect ;;
     --no-publish) MODE=commit ;;
     --no-gate) GATE=off ;;
+    --no-ranking) RANKING=off ;;
     *) usage ;;
   esac
 done
@@ -174,8 +181,14 @@ finish_move() {
     dispatch api.yml --ref main
     dispatch sim.yml --ref main
     dispatch addon-release.yml --ref "$TAG" -f dry_run=false -f publish=true
-    [ "$RANK_NOW" != true ] || dispatch bis.yml --ref main -f force=true
-    dispatch engine.yml --ref main -f force=true
+    if [ "$RANKING" = off ]; then
+      HOLD_LINE="--no-ranking: neither bis.yml nor engine.yml was dispatched; the picks and dps-per-point carried from $PREV stay live until a ranking is run by hand."
+      echo "$HOLD_LINE"
+      [ -z "${GITHUB_STEP_SUMMARY:-}" ] || printf '%s\n\n' "- $HOLD_LINE" >> "$GITHUB_STEP_SUMMARY"
+    else
+      [ "$RANK_NOW" != true ] || dispatch bis.yml --ref main -f force=true
+      dispatch engine.yml --ref main -f force=true
+    fi
     [ ${#missed[@]} -eq 0 ] || die "$(printf 'the move is on main and tagged, but these dispatches failed:\n%s' "$(printf '%s\n' "${missed[@]}")")"
   fi
 }
@@ -245,7 +258,7 @@ NEW_IFACE=$((10#$MAJOR * 10000 + 10#$MINOR * 100 + 10#$PATCH))
 OLD_IFACE="$(sed -n 's/^## Interface: *\([0-9]*\).*/\1/p' addon/ForeverSixty/ForeverSixty.toc)"
 
 echo "activating $NEW (was $ACTIVE); Interface $OLD_IFACE -> $NEW_IFACE"
-MOVED_PATHS=("$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides api/internal/bnetbuild/testdata/era-kiloz.fs1)
+MOVED_PATHS=("$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides apps/shared/fixtures/planner-rules.json api/internal/bnetbuild/testdata/era-kiloz.fs1)
 UNDO="git restore --staged --worktree -- ${MOVED_PATHS[*]} && git clean -fd -- $NEW_DIR"
 FIX_THEN_REDO="fix what the reason names on main, then $REDO"
 
@@ -282,6 +295,11 @@ run node web/scripts/reencode-guide-builds.mjs
 { grep -rl "foreversixty.gg/data/$ACTIVE/" web/src/content/guides || true; } | while read -r f; do
   sed -i.bak "s#foreversixty.gg/data/$ACTIVE/#foreversixty.gg/data/$NEW/#g" "$f" && rm -f "$f.bak"
 done
+
+# 3b. The planner vectors the iOS and Android apps replay, over the new trees (web's
+#     planner-rules-codegen test fails on a vector file stamped with another build).
+step "the apps' planner vectors (web/scripts/gen-planner-rules.mjs)" "$FIX_THEN_REDO"
+run node web/scripts/gen-planner-rules.mjs
 
 # 4. The addon's default builds, from the guides just moved, then the build's
 #    weights copy, addon-data.json and the addon's Data.lua.

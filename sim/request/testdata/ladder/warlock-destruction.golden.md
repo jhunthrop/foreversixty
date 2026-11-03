@@ -99,12 +99,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:263937 ranged:286750 | 15.9 | 5 | other:mana_gain=33.7, spell:1454=33.7, spell:695=29.1, spell:172=14.4, spell:707=13.5 | {SpellID: 412758}, {SpellID: 603} |
-| 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:890 ranged:5243 | 29.1 | 6 | other:mana_gain=33.8, spell:1455=33.8, spell:1088=24.3, spell:1094=13.1, spell:6222=12.2 | {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
+| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:284287 ranged:286750 | 15.8 | 5 | other:mana_gain=35.0, spell:1454=35.0, spell:695=28.5, spell:172=14.3, spell:707=13.3 | {SpellID: 412758}, {SpellID: 603} |
+| 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:6505 ranged:5243 | 35.4 | 6 | other:mana_gain=32.9, spell:1455=32.9, spell:1088=23.1, spell:1094=13.0, spell:6222=12.1 | {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
 | 30 | 00000000000000000-0000000000000000000-2053235100000000 | main_hand:249392 ranged:5213 | 57.0 | 6 | other:mana_gain=32.6, spell:1456=32.6, spell:1088=25.6, spell:2941=13.7, spell:6223=10.7 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 603} |
-| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:1664 ranged:13064 | 72.9 | 7 | other:mana_gain=31.0, spell:11687=31.0, spell:2941=19.9, spell:1088=15.1, spell:1293818=14.7 | {SpellID: 412758}, {SpellID: 603} |
-| 40 | 00000000000000000-0000000000000000000-2053235103101311 | main_hand:1664 ranged:5216 | 80.0 | 8 | other:mana_gain=36.9, spell:11687=36.9, spell:11665=17.7, spell:17962=14.2, spell:412758=11.4 | {SpellID: 603} |
-| 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:9527 ranged:249232 | 147.6 | 7 | other:mana_gain=33.1, spell:11688=33.1, spell:1293812=22.3, spell:18930=14.3, spell:11667=13.6 | {SpellID: 603} |
+| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:873 ranged:13064 | 87.0 | 7 | other:mana_gain=29.3, spell:11687=29.3, spell:2941=19.6, spell:1088=16.2, spell:1293818=15.1 | {SpellID: 412758}, {SpellID: 603} |
+| 40 | 00000000000000000-0000000000000000000-2053235103101311 | main_hand:873 ranged:5216 | 96.4 | 7 | other:mana_gain=38.6, spell:11687=38.6, spell:11665=18.4, spell:412758=15.0, spell:17962=14.4 | {SpellID: 603} |
+| 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:873 ranged:249232 | 153.8 | 7 | other:mana_gain=32.6, spell:11688=32.6, spell:1293812=23.0, spell:18930=14.4, spell:11667=13.4 | {SpellID: 603} |
 | 60 | 25522000000000000-0000000000000000000-2053235103101351 | main_hand:22630 ranged:22821 | 306.1 | 8 | other:mana_gain=32.7, spell:11689=32.7, spell:1293813=26.5, spell:18932=14.4, spell:11668=13.7 | - |
 
 ## Learned but unused (informational)
@@ -210,5 +210,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - warlock-destruction level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=30 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=38 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-destruction level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=60 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)

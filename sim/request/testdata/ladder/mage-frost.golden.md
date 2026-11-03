@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-100000000000000000 | main_hand:263937 ranged:286750 | 10.1 | 3 | spell:5019=54.6, spell:205=44.4, spell:12051=1.0 | {SpellID: 400589} |
-| 20 | 000000000000000000-00000000000000000-253100000000000000 | main_hand:890 ranged:5243 | 24.1 | 3 | spell:5019=49.8, spell:7322=41.9, spell:12051=1.0 | {SpellID: 1312002}, {SpellID: 400589}, {SpellID: 400669} |
+| 10 | 000000000000000000-00000000000000000-100000000000000000 | main_hand:284287 ranged:286750 | 10.2 | 3 | spell:5019=54.4, spell:205=44.6, spell:12051=1.0 | {SpellID: 400589} |
+| 20 | 000000000000000000-00000000000000000-253100000000000000 | main_hand:6505 ranged:5243 | 27.8 | 3 | spell:5019=50.9, spell:7322=41.0, spell:12051=1.0 | {SpellID: 1312002}, {SpellID: 400589}, {SpellID: 400669} |
 | 30 | 000000000000000000-00000000000000000-253510130100000000 | main_hand:249392 ranged:5213 | 40.6 | 3 | spell:8406=47.3, spell:5019=42.0, item:5514=1.0, other:mana_gain=1.0, spell:12051=1.0 | {SpellID: 12579}, {SpellID: 400589}, {SpellID: 400669} |
-| 38 | 000000000000000000-00000000000000000-253510130100301220 | main_hand:1664 ranged:13064 | 67.8 | 6 | spell:8408=43.8, spell:5019=33.5, spell:1240044=5.6, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 400589} |
-| 40 | 000000000000000000-00000000000000000-253510130100301231 | main_hand:1664 ranged:5216 | 74.3 | 7 | spell:5019=42.4, spell:8408=38.4, spell:1240044=5.4, spell:11426=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
-| 50 | 230005000000000000-00000000000000000-253510130100301231 | main_hand:9527 ranged:249232 | 136.4 | 7 | spell:10180=38.6, spell:5019=31.6, spell:1240046=5.1, spell:13031=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
-| 60 | 230005000000000000-23023000000000000-253510130100301231 | main_hand:22589 ranged:22821 | 253.9 | 7 | spell:10181=42.5, spell:5019=35.3, spell:1240047=5.4, spell:13033=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
+| 38 | 000000000000000000-00000000000000000-253510130101301210 | main_hand:873 ranged:13064 | 84.8 | 6 | spell:8408=49.4, spell:5019=25.0, spell:1240044=5.9, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 400589} |
+| 40 | 000000000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:5216 | 93.5 | 7 | spell:8408=43.3, spell:5019=34.5, spell:1240044=5.6, spell:11426=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
+| 50 | 230005000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:249232 | 144.6 | 7 | spell:10180=41.7, spell:5019=28.1, spell:1240046=5.3, spell:13031=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
+| 60 | 230005200000000000-51020000000000000-253510130101301221 | main_hand:22589 ranged:22821 | 290.1 | 8 | spell:10181=45.4, spell:5019=15.5, spell:10212=9.1, spell:1240047=5.8, spell:13033=3.0 | - |
 
 ## Learned but unused (informational)
 
@@ -236,5 +236,3 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - mage-frost level=40 kind=zero_casts spell="Arcane Missiles" id=8417 authored=10212
 - mage-frost level=50 kind=unresolved_id action={SpellID: 400589}
 - mage-frost level=50 kind=zero_casts spell="Arcane Missiles" id=10211 authored=10212
-- mage-frost level=60 kind=unresolved_id action={SpellID: 400589}
-- mage-frost level=60 kind=zero_casts spell="Arcane Missiles" id=10212 authored=10212

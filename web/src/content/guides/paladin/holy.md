@@ -3,18 +3,18 @@ title: Holy Paladin in Forever
 classSlug: paladin
 spec: holy
 role: healer
-build: 'FS1:1.60.1.70707:paladin:human:50320215012101251/50322/0503:'
+build: 'FS1:1.60.1.70753:paladin:human:50320215012101251/50322/0503:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
-description: 'Talents, rotation, stats, gear, races, and professions for Holy Paladin healing in Forever.'
-updated: 2026-10-31
+description: 'Tank healing with Oath of Light, rank 1 Flash of Light and Divine Favor, and how to make your mana last.'
+updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/talents/paladin.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/talents/paladin.json
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/talents/paladin.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/talents/paladin.json
     kind: datamined
   - label: 'Forever Sixty stat weights, data/curated/specs.json'
     url: https://foreversixty.gg/data/curated/specs.json
@@ -22,58 +22,78 @@ sources:
   - label: 'Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json'
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/races.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/races.json
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/races.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/races.json
     kind: datamined
 ---
 
 ## Overview
 
-Holy is the Paladin healing tree: reactive single-target healing built on Flash of Light, Holy Shock and Divine Favor, with mana sustained by Reverence and Illumination.
+Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Divine Favor into Holy Light when they are in trouble.
 
 ### Strengths
 
-- Holy Shock and Divine Favor give instant and guaranteed-critical burst heals
-- Flash of Light is the most efficient heal per mana for tank and party
-- Illumination and Reverence sustain mana while casting
-- Spiritual Focus protects heals from damage pushback
+- Oath of Light makes your cheapest Flash of Light a real heal on the tank, for a quarter of the top rank's mana
+- Holy Shock is an instant heal for movement and emergencies, and Divine Favor guarantees a crit when it counts
+- Illumination refunds half the cost of every critical heal
+- Spiritual Focus and Concentration Aura keep your casts going while you take damage
 
 ### Weaknesses
 
-- Mana runs short in a long fight, so Flash of Light carries most of the healing
-- Healing is single-target, with no group heal to match Prayer of Healing
-- Heals are reactive, without the periodic healing Priest and Druid lean on
+- No heal over time and only one party heal, Light's Vigil, which costs as much as ten Flash of Lights
+- Long fights test your mana: you heal off pace, not off the health bars
+- Oath of Light is one target, so most of your strength goes to one player
 
 ### In a raid
 
-- **Role:** Tank and raid healer, reactive single-target healing
-- **Brings:** Greater Blessings and an aura for the group
+- **Role:** Tank healer first, then your own party
+- **Brings:** Greater Blessings (Wisdom, Kings or Might), an aura for your group, Blessing of Protection every 3 minutes and Lay on Hands
 
 ## Talents and builds
 
-The build is 31 points in Holy, 12 in Protection and 8 in Retribution. Chosen by simming candidate builds on the same gear against the same fight. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+The build is 31 Holy, 12 Protection and 8 Retribution.
 
-- **Spiritual Focus** opens the tree and protects your casts from damage pushback; **Reverence** keeps part of your regeneration running while you cast.
-- **Healing Light** strengthens Holy Light, Flash of Light and Holy Shock.
-- **Illumination** returns mana on a critical heal, **Infusion of Light** makes the next Holy Light faster after a Flash of Light or Holy Shock crit, and **Divine Favor** guarantees a critical heal on demand.
-- **Holy Shock** is the instant heal, and **Boundless Light** makes it crit far more often on anyone you have not sworn **Oath of Light** to.
-- **Holy Power** now makes your heals' critical strikes heal for more, rather than crit more often; **Light's Vigil** is the capstone.
-- **Divine Intellect** moved to Protection's first row and still lifts your mana pool.
-- In Retribution, **Benediction** makes Holy Shock and your other instants cheaper, and **Conviction** now adds critical strike to every spell, heals included, which feeds Illumination and Holy Power. Taking those eight points instead of twenty in Protection measured about +5% healing in our simulator.
+- **Spiritual Focus** (5 points): Flash of Light, Holy Light and Light's Vigil keep 70% of their casts from being pushed back.
+- **Healing Light** (3 points): 12% more healing on Holy Light, Flash of Light and Holy Shock.
+- **Reverence** (2 points): 30% of your regeneration keeps running while you cast.
+- **Illumination** (5 points): every critical heal gives back half the spell's base cost. It is the reason crit is a mana stat for you.
+- **Divine Favor** (1 point): your next Flash of Light, Holy Light or Holy Shock is a sure crit, on a 2 minute cooldown.
+- **Infusion of Light** (2 points): a Flash of Light or Holy Shock crit makes your next Holy Light within 15 seconds a second faster.
+- **Oath of Light** (1 point): sworn on one ally for 5 minutes, it adds a flat amount to every Holy Light, Flash of Light and Holy Shock you put on them. It took Blessing of Light's place, and it is the biggest point in the tree.
+- **Holy Shock** (1 point): an instant heal on a 10 second cooldown.
+- **Boundless Light** (2 points): 30% more crit on Holy Shock on anyone without your Oath.
+- **Holy Power** (5 points): your critical heals land for 175% instead of 150%. It no longer adds crit chance.
+- **Light's Vigil** (1 point): the capstone. The next Holy Shock on its target has no cooldown and heals that target's whole party.
+- **Benediction** (5 points) and **Conviction** (3 points): Holy Shock and every instant 10% cheaper, and 6% crit on your heals while you hold a melee weapon.
+- **Divine Intellect** (5 points): 10% Intellect, in Protection's first row now.
 
-**Oath of Light** is sworn on the tank before the pull: for five minutes your Holy Light, Flash of Light and Holy Shock heal that one ally for more (the old Blessing of Light amounts, with Holy Shock added), and since most of your healing lands on the tank it is the biggest single gain in the tree. Open the planner at [/planner?class=paladin](/planner?class=paladin) to adjust it.
+The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protection and adds 6 seconds to Blessing of Freedom, **Sacred Duty** brings Divine Shield back a minute sooner, **Purifying Power** makes Cleanse cheaper, and **Precision** and one point of **Divine Precision** are filler on the way. Open the planner at [/planner?class=paladin](/planner?class=paladin) to change it.
 
 ## Rotation and priority
 
-The curated rotation swears **Oath of Light** on the tank before the pull and leans on **Flash of Light** as the staple (Blessing of Light is gone in Forever): it is the most efficient heal per mana for both the tank and the party. **Divine Favor** into **Holy Light** answers a tank who is nearly dead. **Holy Shock** and a second Holy Light line only fire while your mana is keeping up with the share of the fight that is left; a healer who is short on mana, which is the usual case, heals as a Flash of Light healer. You are one of the five your group's raid damage reaches, so you heal yourself like any other party member.
+**Before the pull.** Greater Blessings are an hour long in Forever, so they go out before the first pull and after a wipe, not between trash packs. Swear Oath of Light on the tank a second or two before the pull. Concentration Aura if nobody else in your group runs it.
 
-**Light's Vigil** is taken because it is the capstone point, but it is left out of the rotation: its party heal costs about as much mana as ten Flash of Lights, and against the profile's small raid pulses most of it would go to waste. The rotation does not downrank.
+**Your heals, in the order you reach for them:**
+
+1. **Oath of Light** kept on the tank. It lasts 5 minutes: renew it in a long fight, and move it when the tank changes.
+2. **Divine Favor**, then **Holy Light** (rank 8), when the tank drops below 40%. It is the only heal that outheals a tank by itself, and the crit is guaranteed.
+3. **Holy Light** on the tank below 70%, and **Holy Shock** on anyone below 70%, but only with mana to spare: your mana bar no more than five points behind the share of the fight left.
+4. **Flash of Light rank 1** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank, so the 35 mana rank 1 heals the tank for well over half of what the top rank does at a quarter of the cost.
+5. **Flash of Light rank 4** on everyone else below 80%, yourself included. Without the Oath bonus, rank 4 is the best balance of heal size and mana.
+
+**Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches; rank 9 is an Ahn'Qiraj book. Holy Shock rank 1 costs half the top rank and, with healing gear, still heals about two thirds as much.
+
+**Mana.** You heal off pace, not off health bars: if your bar is ahead of the fight, spend it on Holy Light and Holy Shock; if it is behind, heal with Flash of Light alone. Every crit refunds half its base cost through Illumination, which is why Holy Shock on the party (where Boundless Light's crit applies) pays for itself. Major Mana Potion and Demonic Rune go on cooldown as soon as your bar has room for them.
+
+**Light's Vigil.** It costs 1,340 mana at 60. Keep it for a fight where your whole party takes big damage at once. On an ordinary boss it is mana you need for the tank.
+
+**Movement.** Holy Shock is your only instant heal, and Flash of Light is a 1.5 second cast. Stand where you reach the tank and your party, so you never have to move to heal.
+
+**Emergencies.** Divine Favor into Holy Light first. Lay on Hands is a full heal on a 20 minute cooldown. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
 
 ## Stat priority
 
-In simulator-derived order, per point of stat: **MP5** first, then **Intellect**, with **healing power** and **Spirit** close together behind and **critical strike** after them. Intellect feeds both your pool and Illumination's mana return. Items trade several points of one for few of another, so read the list as "which stat is cheap to give up".
-
-Spell power adds nothing to a heal. Every figure behind this ranking comes from one stated incoming-damage profile (the scaled Phase 1 tank hits and raid pulses described on the [BiS page](/bis)): it ranks gear and builds for this spec, and says nothing about which healer class is stronger.
+Mana per 5 seconds and Intellect come first because you run out of mana long before you run out of heals. Intellect is also your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank, which is what makes your low ranks strong. Spirit only works outside the five second rule, apart from Reverence's 30%. Spell damage does nothing for a heal.
 
 ## Best in slot
 
@@ -81,10 +101,20 @@ Spell power adds nothing to a heal. Every figure behind this ranking comes from 
 
 ## Races
 
+**Human** brings The Human Spirit, 10% Spirit, and Perception. **Dwarf** has Stoneform for a hit you cannot heal through. **Undead** is new to paladins in Forever and the Horde's only paladin healer: Will of the Forsaken breaks a fear and gets you casting again (it no longer makes you immune, so press it after the fear), and Cannibalize restores mana as well as health between pulls.
+
 ## Professions
 
-Alchemy pairs naturally with Holy's reliance on mana consumables, since it lets a healer supply their own mana potions and elixirs rather than buying them out. Enchanting or Tailoring both give access to caster-stat enchants and crafted cloth or leather pieces that carry healing power directly.
+Herbalism and Alchemy keep you in mana potions, Flasks of Distilled Wisdom and elixirs, which is most of what a healer spends gold on. Enchanting gives you the healing enchants yourself.
 
 ## Leveling
 
-Retribution is the stronger leveling spec for Paladin — it kills things faster solo, where Holy's strengths barely apply outside a group. If leveling Holy anyway, expect a slower solo pace than Retribution offers.
+Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Respec Holy for raids. Holy Shock comes at 30 and Oath of Light at 25 if you level as Holy, but questing as Holy is slow.
+
+Common mistakes:
+
+- Healing the tank with top rank Flash of Light. Rank 1 under Oath of Light does most of the work for a quarter of the mana.
+- Letting Oath of Light lapse after 5 minutes, or leaving it on the old tank after a swap.
+- Holy Shock on the Oath target when the tank is fine. On anyone else it crits far more often and refunds mana.
+- Casting Light's Vigil on an ordinary boss.
+- Topping players to full with Holy Light. Let Flash of Light handle anything that is not an emergency.

@@ -3,95 +3,134 @@ title: Marksmanship Hunter in Forever
 classSlug: hunter
 spec: marksmanship
 role: dps
-build: 'FS1:1.60.1.70707:hunter:dwarf:5320000501/005155000150305/5:'
+build: 'FS1:1.60.1.70753:hunter:dwarf:5320000501/005155000150305/5:'
 recommendedRaces: [dwarf, troll]
-statPriority: [Agility, Critical strike, Ranged attack power, Hit, Attack speed]
-description: 'Marksmanship Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-10-31
+statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
+description: 'How to play a Marksmanship Hunter in Forever: talents for leveling and raids, the shot priority, auto shot discipline, stats, consumables and race picks.'
+updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
-    url: https://talentsforever.com/data.json
+  - label: 'Warcraft Tavern, Hunter and Druid Deep Dive for WoW Forever'
+    url: https://www.warcrafttavern.com/forever/news/powershifting-is-back-sort-of-hunter-druid-deep-dive-for-wow-forever/
     kind: community
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/talents/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/talents/hunter.json
+  - label: 'Warcraft Tavern, Forever Hunter Guide'
+    url: https://warcrafttavern.com/forever/guides/hunter/
+    kind: community
+  - label: 'Forever Sixty build data, talents/hunter.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/talents/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/combos.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/combos.json
+  - label: 'Forever Sixty build data, spellconst/hunter.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/spellconst/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/races.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/races.json
+  - label: 'Forever Sixty build data, races.json'
+    url: https://foreversixty.gg/data/1.60.1.70753/races.json
     kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/enchants.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/enchants.json
-    kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.69893/simconsumes.json'
-    url: https://foreversixty.gg/data/1.60.1.69893/simconsumes.json
-    kind: datamined
-  - label: 'This site, stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'This site, default rotation'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
-  - label: 'This site, character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
-  - label: 'wowsims-forever default hunter priority list'
-    url: https://github.com/wowsims/classic/blob/master/ui/hunter/apls/p1.apl.json
-    kind: community
-  - label: 'Warcraft Tavern, Marksmanship Hunter rotation guide'
-    url: https://www.warcrafttavern.com/wow-classic/guides/pve-marksmanship-hunter-rotations-cooldowns/
-    kind: community
 ---
 
 ## Overview
 
-Marksmanship is the Hunter ranged spec built on the shots themselves: Multi-Shot on its cooldown, an Aimed Shot opener, boosted by Careful Aim and Mortal Shots.
+Marksmanship puts the damage in your own shots: Multi-Shot on cooldown, Arcane Shot in the gaps, and an auto shot you never let slip.
 
 ### Strengths
 
-- Barrage and Mortal Shots both raise Multi-Shot, the shot this rotation casts most
-- Careful Aim adds melee and ranged attack power from Intellect
-- Mortal Shots adds critical damage to ranged abilities
-- Lethal Attacks and Ranged Weapon Specialization add flat crit chance and damage
+- Barrage, Mortal Shots and Ranged Weapon Specialization all boost Multi-Shot, your biggest shot
+- Less of your damage sits in the pet, so a pet death costs you less than it costs Beast Mastery
+- Improved Tracking adds 5% damage on any boss whose creature type you track
+- Careful Aim turns Intellect into attack power
 
 ### Weaknesses
 
-- Stationary: the whole rotation is cast at range from one spot
-- Multi-Shot and Aimed Shot share one cooldown, so Aimed Shot only opens the fight
-- Arcane Shot is its least mana-efficient filler
+- One big cooldown, Rapid Fire, and it comes once in a normal boss fight
+- Your output is mostly auto shot, so movement hurts you more than anyone
 
 ### In a raid
 
-- **Role:** Stationary ranged DPS with high uptime
-- **Brings:** Trueshot Aura, ranged attack power for the party
+- **Role:** Ranged physical DPS
+- **Brings:** Heart of the Lion (10% stats and attack power for everyone near you), Trueshot Aura (50 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
 
 ## Talents and builds
 
-Reading the Marksmanship tree in priority order for a single-target shot build: **Careful Aim** (adds melee and ranged attack power equal to a percentage of Intellect) and **Mortal Shots** (bonus critical strike damage on ranged abilities) come first, since both are flat multipliers on every shot that follows. **Trueshot Aura** is next: in Forever it grants ranged attack power only to the party, a narrower version than 1.12's melee-and-ranged buff per the demo notes. **Barrage** adds a damage bonus specifically to Multi-Shot, Aimed Shot, and Volley — all abilities this spec's rotation already leans on. **Efficiency** helps sustain the mana cost of a shot-heavy rotation. **Improved Stings** (1/3) is there only to open the tier that holds **Ranged Weapon Specialization**: this rotation casts no Serpent Sting, so the point buys nothing else.
+Thirty points in Marksmanship take every talent that raises your shots, sixteen in Beast Mastery take the pet talents and Deadly Aspects, and five in Survival take Improved Tracking.
 
-On top of that spread, this build reaches further into Beast Mastery and down to the bottom of its own tree for three more measured damage gains. **Unleashed Fury** (5/5) adds 15% more pet and hawk damage and **Ferocity** (1/5) adds 2% pet and hawk critical strike chance. **Lethal Attacks** (5/5) adds a flat 5% critical strike chance with all attacks, and **Ranged Weapon Specialization** (5/5) adds a flat 5% more damage with ranged weapons — both are the kind of unconditional multiplier that's hard to pass up once the points are available.
+- **Mortal Shots** (5 points): 30% more crit damage on your shots
+- **Barrage** (3 points): 10% more damage on Multi-Shot, Aimed Shot and Volley
+- **Ranged Weapon Specialization** (5 points): 5% more damage on everything your bow or gun does, auto shot included
+- **Careful Aim** (5 points): attack power equal to your Intellect
+- **Lethal Attacks** (5 points): 5% crit on every attack
+- **Efficiency** (5 points): 15% off every shot, so you reach the end of a long fight still shooting
+- **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
+- **Improved Tracking** (5 points): 5% more damage against the creature type you are tracking
+
+Improved Tracking only works if you track the boss's type. Every raid boss has a type you can track: Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids or Undead. Set it before the pull, and swap on trash with mixed types.
+
+The pet stays. Lone Wolf (20% damage with no pet out) is one point away, but with Unleashed Fury and Focused Fire behind it the cat still does more than the 20%. Sniper Shot, the capstone, is out of reach with this split, and its 4 second cast would cost you auto shots anyway. Improved Stings (1 point) is the way to the lower rows. The same build works for leveling and raiding.
 
 ## Rotation and priority
 
-This site's own simulator plays Marksmanship as the most direct read of the shared Hunter shot rotation, with no Serpent Sting: the rotation search measured the sting as a loss in the raid-ready run, about +1.2% for dropping it, because the global and the mana are worth more to the shots (the engine's Serpent Sting damage is held to the client's numbers, so this is the sim's honest verdict, and the bare character comes out about level). In Forever, Multi-Shot and Aimed Shot share one 6-second cooldown. Aimed Shot's 2-second cast pauses the auto shot while instant Multi-Shot does not, so on the shared cooldown Multi-Shot does more over a fight, and Aimed Shot is the opener only: before the pull, Aspect of the Hawk goes up and the opening Aimed Shot begins casting so it lands close to the start of the fight. In combat, Rapid Fire is timed to land together with an incoming auto shot right as Multi-Shot is about to come off cooldown, so both benefit from the same window. Multi-Shot is then cast every time the shared cooldown comes up, and Arcane Shot, which has its own cooldown, is the last filler whenever Multi-Shot is more than 1.5 seconds from ready and mana is above a 25% reserve. Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, hence the reserve floor. There's no melee or pet-management component to this priority list — the spec stays at range for the whole fight.
+Before the pull, put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin. Track the boss's creature type for Improved Tracking. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight.
+
+On the pull, press Rapid Fire with your trinkets and Berserking or Blood Fury, just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
+
+Then it is Multi-Shot every six seconds and Arcane Shot in the gaps while you are above a quarter of your mana. Do not cast Aimed Shot after the opener. It shares Multi-Shot's cooldown and its 2 second cast holds your auto shot, so it loses to Multi-Shot every time. Serpent Sting is not worth a global in this build either: the shots do more with the mana.
+
+Auto Shot does more damage than any button you press, so protect it:
+
+- Stand still. Moving while an auto shot winds up cancels it.
+- Fire your instants right after an auto shot leaves, so they never push the next one back.
+- Stay outside 8 yards. Inside it you cannot shoot at all.
+- On a movement phase, fire Arcane Shot and Multi-Shot on the run and plant your feet the moment you can.
+
+When mana gets low, stop Arcane Shot and keep Multi-Shot going. Drink a Major Mana Potion before you need it.
+
+**The pet.** Bring a cat and train it the top ranks of Claw, Bite and Growl as you level. Turn off Growl in raids (right-click it on the pet bar) and send it to the boss's back. Pets in Forever get no buffs from your raid; the cat copies 10% of your attack power and all your crit, so your own gear is what makes it hit.
+
+**Threat.** Feign Death when you get close to the tank's threat, not after the boss turns. It can be resisted: if it says Resisted, you still have all your threat.
+
+**Trash.** Multi-Shot hits three targets. Volley is a mana-heavy channel, worth it only on a big pack that lives through it. Freezing Trap is your crowd control, laid before the pull. Explosive Trap under a pack the tank is holding is good damage for its mana.
+
+There is no execute phase for a hunter: the priority holds to the end.
+
+**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up, and Scatter Shot (trained at 30) buys a few seconds against something loose in the back line.
 
 ## Stat priority
 
+Hit first until the hit cap shown above: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots and is copied by the pet. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
+
 ## Best in slot
+
+Hunters wear leather until 40 and mail from 40. Your ranged weapon is your real weapon, the melee weapon is there for its stats. The full lists by level are on the [Marksmanship best in slot page](/bis/hunter/marksmanship).
 
 ## Enchants and consumables
 
+Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 247x128 Accurascope once your raid's engineer can make it. Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers, where Careful Aim makes it count as attack power.
+
+**Ammo and quiver.** Carry the best ammo your level can use and plenty of it: arrows for a bow, bullets for a gun. Jagged Arrows from 40, Ice Threaded and Thorium Headed Arrows from the early 50s, or Thorium Shells from an engineer. The quiver or ammo pouch is a free 10 to 15% ranged attack speed, so upgrade it every time you can: Quickdraw Quiver from 40 and a 15% bag near 60. Run out of ammo in a raid and you do almost nothing.
+
+Forever's damage potions share the two-minute potion cooldown with mana potions, so a Marksmanship hunter drinks Major Mana Potions. Keep Elixir of the Mongoose up, with the food above and Ground Scorpok Assay alongside it.
+
 ## Races
+
+Dwarf for the Alliance: Artisan's Precision is 1% hit, and Big Game Hunter adds damage against beasts. Night Elf's Elune's Light (10% crit for 15 seconds) lines up with Rapid Fire on the pull, and Human's Ruthless is 1% crit. Humans can be Hunters for the first time in Forever.
+
+Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire. Orc's Blood Fury is the other good pull cooldown.
 
 ## Professions
 
-Community convention for Hunter favors **Skinning** for the cheap, plentiful leather this class already collects while killing beasts to level, often paired with **Leatherworking** for self-crafted agility gear, or **Engineering** for ranged-weapon scopes and trap-adjacent gadgets.
+Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash, and the explosives that save a bad pull. Skinning and Leatherworking pay for your leveling, and Leatherworking makes strong leather and mail pieces before raid gear.
 
 ## Leveling
 
-Beast Mastery is generally regarded as the stronger leveling spec for Hunter overall; Marksmanship's single-target focus doesn't clear trash as quickly without a pet built up the same way.
+Marksmanship levels well, a little slower than Beast Mastery because more of the work is yours. Keep a pet out all the way: it holds what you pull while you shoot.
+
+Open every pull with Hunter's Mark and Serpent Sting, send the pet, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out of the 8 yard dead zone. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+
+Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get.

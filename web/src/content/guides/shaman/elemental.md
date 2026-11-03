@@ -3,12 +3,12 @@ title: Elemental Shaman in Forever
 classSlug: shaman
 spec: elemental
 role: dps
-build: 'FS1:1.60.1.70707:shaman:dwarf:551033130000135/03/503352:'
-raidBuild: 'FS1:1.60.1.70707:shaman:dwarf:5510331300001351/055/053002:'
+build: 'FS1:1.60.1.70753:shaman:dwarf:551033130000135/03/503352:'
+raidBuild: 'FS1:1.60.1.70753:shaman:dwarf:5510331300001351/055/053002:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Intellect, Spell power, Hit, Nature power, Critical strike, Spell haste, Spell penetration]
-description: 'Elemental Shaman overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
-updated: 2026-10-31
+description: 'Elemental Shaman in Forever: the raid build, the Flame Shock and Lava Burst rotation, Lightning Bolt ranks for mana, totems, stats, races and leveling.'
+updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -17,56 +17,93 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'This site, stat weights'
+  - label: 'Forever Sixty stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'This site, character planner'
+  - label: 'Forever Sixty character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
 
 ## Overview
 
-Elemental is Shaman's ranged spellcasting spec, dealing damage with Lightning Bolt, Chain Lightning, Flame Shock and Lava Burst, backed by fire totems.
+Elemental is the shaman's caster spec: Flame Shock and Lava Burst for the big hits, Lightning Bolt in between, and Chain Lightning when there is more than one target.
 
 ### Strengths
 
-- Forever's baseline cast-time cut to Lightning Bolt and Chain Lightning
-- Lava Burst hits harder when Flame Shock is already on the target
-- Chain Lightning hits every target for close to single-target Lightning Bolt damage
-- Searing Totem for one target and Magma Totem for several add steady damage
+- Lava Burst into a burning Flame Shock is the hardest hit in the kit
+- Forever's Lightning Bolt is a 2.0 second cast with Elemental Alacrity, 1.5 under Elemental Mastery
+- Chain Lightning and Magma Totem handle packs without a separate setup
+- Shocks and totems are instant, so you keep doing damage on the move
 
 ### Weaknesses
 
-- Slower leveling than Enhancement, because its damage depends on cast times
-- Hard casts leave it idle while moving
-- Raid build spends points in Restoration to reach spell hit
+- Mana decides which Lightning Bolt rank you can afford
+- Searing Totem only reaches 20 yards, so you stand closer than other casters
+- The raid build needs Restoration points for spell hit
 
 ### In a raid
 
 - **Role:** Ranged spell damage
-- **Brings:** Party totems alongside its own damage; no raid-wide buff or debuff
+- **Brings:** A second set of totems for your party, and a Mana Spring for the casters in it
 
 ## Talents and builds
 
-In rough priority order: **Concussion** raises the damage of Lightning Bolt, Chain Lightning, and Earth Shock, a broad multiplier across the entire single-target and AoE kit. **Call of Flame**, reworked in Forever, now boosts Lava Burst and Fire Nova alongside Flame Shock within a single talent instead of touching only the Fire Totems it used to buff, effectively unifying the tree's fire-damage kit under one pick. **Elemental Fury** raises critical strike damage on the totems and elements the spec relies on, moved earlier in the tree with a lower first-rank value than 1.12's single large-rank version. **Lightning Overload** gives Lightning Bolt and Chain Lightning a chance to cast a second, weaker bolt for free, a straight damage-per-cast increase. **Elemental Alacrity** cuts the cast time of Lightning Bolt, Chain Lightning, and Lava Burst further on top of the baseline speed-up Forever already gave those spells — maxed, it brings deep Elemental's effective cast speed roughly back to where 1.12 Elemental topped out, since the starting point is already faster. **Lava Burst**, the tree's new capstone nuke, hits harder against a target already carrying Flame Shock. **Elemental Mastery** is reworked too: instead of 1.12's free critical next spell it takes 0.5 seconds off Lightning Bolt and Lava Burst for 15 seconds, which with Elemental Alacrity puts Lightning Bolt on the global cooldown, and removes Chain Lightning's cooldown for the same window. The raid build takes it with the 31st Elemental point, and moves Totemic Focus's five points into Thundering Strikes and Ancestral Knowledge; together that gained about 4% in our level-60 raid search run. Natural Grace only lowers threat, so the raid build moves its three points into Ancestral Knowledge for the Intellect, about 1% more in a later search.
+The leveling build goes deep Elemental and spends the rest in Restoration for Improved Healing Wave, Totemic Focus and Natural Grace: cheaper totems, faster self-heals and less threat while you quest. The raid build takes Elemental Mastery as the 31st point, then trades the leveling comforts for Tidal Focus (5% hit), Thundering Strikes and Ancestral Knowledge (10% more Intellect). Tidal Focus is the reason the raid build goes into Restoration at all.
+
+Elemental Mastery is reworked in Forever: for 15 seconds Lightning Bolt and Lava Burst cast half a second faster and Chain Lightning has no cooldown. With Elemental Alacrity that makes Lightning Bolt a 1.5 second cast. It no longer guarantees a crit.
+
+- **Convection** (5 points): 10% cheaper shocks, Lightning Bolt, Chain Lightning and Lava Burst. This is your mana talent.
+- **Concussion** (5 points): more damage on Lightning Bolt, Chain Lightning and Earth Shock, which is most of what you cast.
+- **Elemental Alacrity** (3 points): half a second off Lightning Bolt, Chain Lightning and Lava Burst. Lightning Bolt goes from 2.5 to 2.0 seconds.
+- **Call of Flame** (3 points): Flame Shock lasts 21 seconds instead of 12, and Flame Shock, Lava Burst, Fire Nova and your fire totems hit 15% harder. One shock now covers three and a half shock cooldowns.
+- **Elemental Focus** (1 point): any Fire, Frost or Nature damage spell has a 10% chance to make your next damage spell free.
+- **Lava Burst** (1 point): a 2.0 second fire nuke on a 10 second cooldown that hits 20% harder while your Flame Shock is on the target.
+- **Lightning Overload** (3 points): a 10% chance for Lightning Bolt and Chain Lightning to fire a free half-damage copy with no threat.
+- **Elemental Fury** (5 points): doubles the crit bonus of your spells and your Searing and Magma Totems.
+
+Elemental Warding and the single point of Elemental Devastation are there to open the next row. Mindfulness keeps half your regeneration running while you cast. Improved Reincarnation (2 points) cuts Reincarnation to a 40 minute cooldown and brings you back with more health and mana.
 
 ## Rotation and priority
 
-The loop this site's simulator plays: against a single target, drop Searing Totem for the higher fire damage; against two or more targets, drop Magma Totem instead so everyone standing in it takes damage. Against two or more targets, Chain Lightning is used since it hits every target for close to single-target Lightning Bolt damage. Lightning Bolt fills the rest of the single-target rotation, on every free global. Keep **Flame Shock** on the target: Call of Flame stretches it to 21 seconds, so it costs about one global in fourteen, and its damage plus Lava Burst's 20% bonus beats the Lightning Bolt it replaces. **Elemental Mastery** goes on cooldown with your trinkets; for its 15 seconds every Lightning Bolt is a 1.5 second cast. **Lava Burst** is the first line when you have the talent, cast on every cooldown while your Flame Shock is on the target, so every cast carries the bonus. An earlier search left Flame Shock out to save mana, but that run's character was running dry; with raid buffs and consumables, Flame Shock upkeep with Lava Burst waiting for it gained about 9% in our level-60 raid run. Chain Lightning on cooldown against a single target is also worse than plain Lightning Bolt casts, because it costs more than twice the mana for less damage per cast. Earth Shock is not in the loop: it shares the shock cooldown with Flame Shock, which earns that cooldown. Mana Spring Totem goes down first: it lasts five minutes, returns 10 mana every 2 seconds at its top rank, so the 100 mana it costs comes back many times over; adding it was worth roughly 4% in our level-60 run, and starting it one global before the cooldowns was worth about 1.5% more. Fire Nova is a real spell in Forever (learned from level 12, instant, on a 10-second cooldown, and it needs a Fire totem standing), but it is not in the loop: it deals about a third of Lightning Bolt's damage per point of mana, and at no mana threshold we tried did adding it beat plain Lightning Bolt casts. We re-checked these numbers against the client's own spell data, and every one of them got smaller; the order of the loop did not change.
+Before the pull, time a Lightning Bolt so it lands just after the tank's first hit; on a pull you do not trust, wait for the tank instead. Then Mana Spring Totem, your cooldowns, Flame Shock, Lava Burst, Searing Totem, and Lightning Bolt for the rest of the fight.
+
+**Flame Shock first, Lava Burst second.** Lava Burst only gets its 20% while your own Flame Shock is ticking, so never cast it into a target without one. With Call of Flame the shock lasts 21 seconds; reapply it when it falls off. Earth Shock stays on your bar for interrupts: it shares the shock cooldown, and that cooldown belongs to Flame Shock.
+
+**Elemental Mastery goes with everything else.** Press it on the pull with your trinkets, Blood Fury or Berserking and your potion, and press it again every 3 minutes. For its 15 seconds every Lightning Bolt is a 1.5 second cast, so you fit more bolts into the same window your trinkets are up.
+
+**Totems.** Searing Totem is your single-target Fire totem. Its bolts reach 20 yards, so drop it within 20 yards of the boss and stand there; refresh it when it expires, every 55 seconds. Mana Spring Totem returns 10 mana every 2 seconds to your party for 5 minutes and pays for itself many times over, but two Mana Springs do not stack: if a Restoration shaman already has one down for your group, skip yours. Strength of Earth, Grace of Air and Windfury reach the whole raid within 30 yards in Forever, so leave the Earth and Air slots to whichever shaman your raid leader assigns them to.
+
+**Fire Nova.** A Clearcasting proc makes your next damage spell free. Spend it on Fire Nova only if your Fire totem is out and the boss is within 10 yards of it, which from 20 yards it usually is not. Otherwise it goes to your next Lightning Bolt.
+
+**Lightning Bolt ranks.** Rank 10 costs 220 mana and rank 9 costs 190 for about 9% less base damage, with the same spell power bonus. Even with raid buffs, a three minute fight of rank 10 runs you dry before the boss dies, and rank 9 bolts cast for the whole fight out-damage rank 10 bolts followed by standing around with no mana. Cast rank 9 as your filler.
+
+**Packs.** On two or more targets drop Magma Totem in the pack (20 seconds) and cast Chain Lightning on its 6 second cooldown, with Lightning Bolt between. Under Elemental Mastery Chain Lightning has no cooldown at all; save Mastery for the pack if the pull is worth it.
+
+**Moving.** Every shock and every totem is instant. If you have to run, refresh Flame Shock, drop a totem or use Earth Shock as an interrupt, and start casting again the moment you stop.
 
 ## Stat priority
 
+Spell hit caps at 16% against a raid boss. The raid build's Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, which leaves the 10% your gear has to find. Nature power only adds to Lightning Bolt, Chain Lightning and Earth Shock; Flame Shock, Lava Burst and Searing Totem are fire, so it ranks below plain spell power. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. Crit feeds Elemental Fury's doubled bonus. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
+
 ## Best in slot
+
+Your raid set leans on Leatherworking and Tailoring crafts that bind when equipped, so you can buy them, plus the Elements pieces from Stratholme and Blackrock Spire. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
 
 ## Enchants and consumables
 
+Your weapon imbues only proc on melee swings, so an Elemental's weapon carries Brilliant Wizard Oil instead. The flask replaces both elixirs; without one, run Greater Arcane Elixir. Drink your Major Mana Potion and use your Demonic Rune as soon as each fits under your mana cap. They are on separate cooldowns, and using them early is what lets you use each one twice in a long fight. Demonic Rune costs you health, so never use it while you are taking damage.
+
 ## Races
+
+The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit is the racial that matters for Elemental, since hit is your second stat. Stoneform's physical damage cut is a nice extra on trash and in PvP.
+
+On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% for 15 seconds every 2 minutes, and you press it with Elemental Mastery. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes in the same window. Windshaper Skyborne's Wind Blessed is 2% haste that is always on. Tauren's racials do nothing for your damage.
 
 ## Professions
 
-Community convention for caster Shaman favors **Enchanting** alongside **Tailoring** or a gathering profession for spell-power gear and enchant materials, though Shaman's totem and weapon-imbue kit doesn't lean as hard on any one profession as a pure caster class does.
+Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Your Leatherworking pieces bind when equipped and can be bought, so your second profession is free: Alchemy for your own flasks and mana potions, or a gathering profession to pay for them.
 
 ## Leveling
 
-Enhancement is generally the stronger leveling spec for Shaman, since its melee durability and weapon-imbue burst clear trash faster than Elemental's cast-time-dependent damage.
+Enhancement levels faster: it fights in melee, lives through bad pulls and spends less time drinking. If you want to level as Elemental anyway, Lightning Bolt and Flame Shock carry you until Lava Burst around 30, Searing Totem adds damage to every pull, and Chain Lightning from 32 handles pairs. Cast the top rank of Lightning Bolt when you drink after every pull. Drop a rank or two on a long fight where your mana, not the mob, runs out first. Learn Ghost Wolf at 20: its 3 second cast is slow, but the 40% speed is how a shaman travels until a mount. Shamans wear leather until 40 and mail from 40, and Chain Heal comes at 40 as well.

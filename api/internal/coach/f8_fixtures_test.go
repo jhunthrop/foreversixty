@@ -13,9 +13,9 @@ const (
 	adherenceRotationID = 23894 // Bloodthirst rank 4, listed by the Fury rotation
 	adherenceHamstring  = 7373
 	adherenceRend       = 11574
-	adherenceOverpower  = 11585
-	adherenceFirstShare = 0.5 // of the off-rotation casts: the first spell, then
-	adherenceNextShare  = 0.3 // the second; the third takes the rest
+	adherenceCleave     = 20569 // Cleave rank 5: neither the Fury nor the Protection rotation lists it
+	adherenceFirstShare = 0.5   // of the off-rotation casts: the first spell, then
+	adherenceNextShare  = 0.3   // the second; the third takes the rest
 )
 
 type offSpell struct {
@@ -26,7 +26,7 @@ type offSpell struct {
 var offSpells = []offSpell{
 	{adherenceHamstring, "Hamstring"},
 	{adherenceRend, "Rend"},
-	{adherenceOverpower, "Overpower"},
+	{adherenceCleave, "Cleave"},
 }
 
 // adherenceOf is in's player casting adherenceCasts abilities, share of them spellID.

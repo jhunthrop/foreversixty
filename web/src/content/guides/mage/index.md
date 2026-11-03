@@ -1,9 +1,9 @@
 ---
 title: Mage in Forever
 classSlug: mage
-description: 'What the Mage class does in Forever, its three specs, new race options, and what changed from 1.12.'
-updated: 2026-09-24
-confidence: single-source
+description: 'How the Forever Mage plays: the three specs, what each brings to a raid, the race picks, and what changed from 1.12.'
+updated: 2026-11-02
+confidence: confirmed
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
@@ -19,16 +19,22 @@ sources:
     kind: community
 ---
 
-Mage is a pure spellcaster with no tank or healer tree, so every build is judged on damage and on the control it hands a group: Polymorph, Frost Nova, Counterspell, and mana returned through Arcane Intellect. Nothing about that identity has changed for Forever; what has changed is how each of the three trees gets there.
+Mage is pure ranged damage with the best toolkit in the game around it: Polymorph, Counterspell, Frost Nova, Blink, Remove Lesser Curse, food and water for the group, teleports and portals to the capitals, and Arcane Brilliance for every caster in the raid. Forever keeps all of that and rebuilds the three trees underneath, so a 1.12 mage will recognise the spells and still have to relearn the rotation.
 
 The three specs:
 
-- **Arcane** channels toward burst windows built around Arcane Power, a flat damage cooldown, and Presence of Mind, which makes the next cast free and instant.
-- **Fire** stacks a debuff off repeated Scorch casts and cashes it in with Combustion for a run of guaranteed critical strikes.
-- **Frost** is built around Frostbolt spam backed by control tools like Ice Block and Cold Snap, trading some raw damage for survivability and crowd control.
+- **Arcane** is a burst spec built on Arcane Blast. Each Blast stacks spell damage from your Intellect and makes the next one dearer, so you blast to three or four stacks, fill with Frostbolt until the stacks expire, and fire free Arcane Missiles every time Missile Barrage procs. Arcane Power and Presence of Mind sit on top for burst.
+- **Fire** spams Scorch. Improved Scorch stacks a 15% Fire vulnerability, Fire Blast and Scorch crits stack Heating Up until Pyroblast is a 1.5 second cast, and Combustion turns the window into a run of crits that Ignite rolls into a burn.
+- **Frost** casts Frostbolt behind Ice Barrier, which is now a damage talent: 15% more Frost damage for a minute, more while the shield holds. Fingers of Frost lets Ice Lance and Frostbolt hit a boss as if it were frozen, and Ice Block and Cold Snap keep you alive.
 
-**Orc Mage** is one of Blizzard's six confirmed new race and class pairs, giving the Horde a Mage option it never had in 1.12. Mage is also open to Skyborne, but only on the Alliance side, where those characters work with the Kirin Tor; Horde players who want to play a Skyborne cannot pick Mage.
+What changed from 1.12, in short:
 
-Talent trees keep the familiar seven rows and 51 points, but Forever adds a fourth one-point "gold medal" talent at the 16-point mark alongside the existing ones at 11, 21, and 31. Several talents that used to exist only to unlock a group buff are baseline abilities now, freeing tree space for talents that change how you play. One outlet's count of the demo trees found the fewest brand-new Mage talents of any class, but the most changed, so the overall shape stays recognizable while individual ranks and effects move. The clearest new addition is Frostfire Bolt, a single spell that deals damage under both the Fire and Frost schools at once, and several talents across both trees reference it. Arcane gets Arcane Blast, a build-up spell meant to enable stronger follow-up casts, and Fire gets Hot Streak, which stacks non-periodic critical strikes to shorten Pyroblast's cast time. Improved Counterspell also changed: rank 1 now silences for certain instead of only sometimes landing a longer one. Separately, the itemization pass affects every Mage build: hit chance is now a single stat instead of split by school, and caster weapons carry spell damage and healing the way melee weapons have always carried attack power.
+- **Personal debuffs.** Improved Scorch and Winter's Chill now only boost your own spells. Every Fire mage keeps their own Scorch stacks, and nobody else's Scorches help you.
+- **Ice Block is a talent.** It sits in the Frost tree at 15 points, so Arcane and Fire mages have no Ice Block at all.
+- **No Molten Armor and no Invisibility.** Mage Armor is the raid armor (half your mana regeneration keeps running while you cast) and Ice Armor is for when things hit you. Threat is handled with the 30% threat talents in each tree and by not out-casting your tank.
+- **One hit stat.** Hit is a single stat for every school, and Precision in the Frost tree adds 6% hit to every spell, which is why every build dips three points there.
+- **New spells.** Arcane Blast, Arcane Wrath, Frostfire Bolt (trained at 40, 50 and 60), Ice Lance with an 8 second cooldown, Heating Up, Fingers of Frost and Missile Barrage are all in the client.
 
-The beta only runs to level 30, so none of this has been tested at the level and raid content Mages will actually play at launch — see each spec guide's Overview for what's confirmed versus projected. The Arcane, Fire, and Frost guides below cover talent priorities, rotation, stats, and gear for each tree.
+**Orc Mage** is new for Forever and gives the Horde a third mage race, with Blood Fury's spell power on a 2 minute cooldown. **Skyborne** can be mages too, but only the Alliance High Order Skyborne; the Horde Windshapers cannot. **Gnome** is still the strongest Alliance pick: Eureka! makes your next spells 10% stronger and 10% cheaper for 8 seconds, and lines up with Arcane Power or Combustion every 2 minutes.
+
+All three are raid specs. Fire wants long fights and a healthy mana bar, Arcane puts the most damage into its Arcane Power windows, and Frost is the easiest to level and the safest in a bad pull. Pick the spec guide below for talents, the opener, the full priority, stats, gear and leveling notes.
