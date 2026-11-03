@@ -67,7 +67,7 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 **Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Put Fear Ward on the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
 
-**On the tank.** Prayer of Mending every time it is ready. Renew always up, at a low rank: every rank of Renew from level 20 up carries the same healing power bonus, so rank 3 costs about a quarter of the top rank's mana and still heals well over half as much. Go up in rank only on a tank who is dropping through it.
+**On the tank.** Prayer of Mending every time it is ready. Renew always up, at a low rank: every rank of Renew carries the same healing power bonus, so rank 3 costs about a quarter of the top rank's mana and still heals well over half as much. Go up in rank only on a tank who is dropping through it.
 
 **The filler is Heal.** Heal rank 4 has the same spell power coefficient as Greater Heal and costs far less. With Divine Fury it is a 2.5 second cast. This is the classic downrank, and in Forever it is still right: Greater Heal comes out only when the tank needs one big number.
 

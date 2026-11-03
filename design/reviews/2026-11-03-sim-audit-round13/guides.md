@@ -4,7 +4,7 @@ Lane `guides`, site branch wt/r13-guides from int/r13 (93c5d2510). No engine bra
 
 Every fix is prose or landing copy. No DPS or HPS moves. Tests: `npx vitest run src/content/guides/` (`_prose`, `_sections`, `builds`) passes, 518 of 518, after each commit. data/tests/test_curated.py::test_the_committed_build_matches_the_curated_facts already failed at 93c5d2510, because round 12's classes.json edit is waiting on the regen. It still fails until the copy is regenerated (see "Files to regenerate").
 
-Commits: S aae1e50a5, S 0b2004a0f, S 3a155b380, S 13497f823.
+Commits: S aae1e50a5, S 0b2004a0f (its P1-P3 lines reverted later), S 3a155b380, S 13497f823, and the revert.
 
 ## 1. Regression over round 12's guide fixes
 
@@ -43,9 +43,7 @@ Method: every page read in full. Builds decoded against talents/<class>.json. Ea
 
 | # | finding | evidence and source | confirmed? | origin | fix sha |
 |---|---|---|---|---|---|
-| P1 | index:29 "a heal learned below level 20 keeps its full healing power bonus" | No Forever source says so, and it is no change from 1.12. The engine applies the sub-20 penalty, 1-(20-lvl)×0.0375 (sim/core/spell.go:777-803, round 8 X2), so the claim contradicts every published number. | CONFIRMED. Bullet removed. | landing adcaad714 | S 0b2004a0f |
-| P2 | discipline:76, the same claim for the filler | The APL's filler is Lesser Heal rank 3 (2053), learned at 10, 75 mana. | CONFIRMED. New: "Lesser Heal rank 3 is learned below level 20, so it loses part of its healing bonus, but at 75 mana it is still the right top-up." | landing adcaad714 | S 0b2004a0f |
-| P3 | discipline:74 and holy:70 "every rank (of Renew) carries the same healing power bonus" | Renew rank 1 is learned at 8 and rank 2 at 14, so both take the penalty. Rank 3 (6075, level 20) is the rank the APLs cast. | CONFIRMED. New: "every rank from level 20 up". | landing adcaad714 | S 0b2004a0f |
+| P1-P3 | index:29 "a heal learned below level 20 keeps its full healing power bonus"; discipline:76 the same for the filler; discipline:74 and holy:70 "every rank (of Renew) carries the same healing power bonus" | The engine exempts heals from the sub-20 penalty (sim/core/spell.go levelPenalty, ProcMaskSpellHealing returns 1). The round-11 healers fit beta logs: low-rank Rejuvenation, Healing Touch, Healing Wave and Holy Light match only the whole coefficient (E 074edfadf). A fork first marked these CONFIRMED and S 0b2004a0f changed them; the coordinator caught it, and the original wording is restored. | Aligned (not a bug) | - | reverted in the follow-up commit |
 | P4 | holy:88 "Spirit and mp5 ... Spirit the best of them" | The published Holy raid-60 order is mp5, then healing power, then Spirit, then Intellect, then crit. | CONFIRMED. The paragraph now follows that order, with no numbers. | landing adcaad714 | S 0b2004a0f |
 | P5 | discipline:62 Twilight Focus "no longer pushes back" | Talent 14913 is a 70% chance. | CONFIRMED (minor). New: "rarely pushes back". | landing adcaad714 | S 0b2004a0f |
 
@@ -134,7 +132,7 @@ No sim number moves. Every change is prose or landing copy.
 ## Files to regenerate
 
 - data/builds/1.60.1.70753/classes.json (the copy of data/curated/classes.json: round 12's paladin edit plus this lane's ten landing rows). test_curated.py::test_the_committed_build_matches_the_curated_facts fails until then, as it did at 93c5d2510.
-- Coach starters (data/curated/coach/*.md, generated from guide prose): the priest Renew line (priest-discipline.md:25), Scatter Shot in hunter-beast-mastery.md:40 and hunter-marksmanship.md:37, and the changed shaman, mage, Survival and warrior lines.
+- Coach starters (data/curated/coach/*.md, generated from guide prose): Scatter Shot in hunter-beast-mastery.md:40 and hunter-marksmanship.md:37, and the changed shaman, mage, Survival and warrior lines.
 
 ## Measure at refresh
 
@@ -142,7 +140,6 @@ None.
 
 ## For other lanes
 
-- **healers:** three APL notes repeat P1 and P3. `data/curated/apl/priest-discipline.json:1394` has "keeps its full healing power bonus". `priest-discipline.json:351` and `priest-holy.json:150` have "every rank carries the same healing power bonus". Proposed: "every rank from level 20 up carries the same healing power bonus".
 - **casters:** the arcane APL note says "rank 8 [Arcane Missiles] is a book from Ahn'Qiraj", but 25345 is a trainer row at 56. The fire APL note's "Fireball's 395" is rank 11, while rank 12 (25306) costs 410. Shadow keeps Vampiric Embrace up per the guide, but the APL never casts it, so the published number leaves out a global every 30 s.
 - **ranks:** the warlock APLs cast Immolate 11668 (rank 7), but 25309 (rank 8) is also level 60. The warrior APLs cast Heroic Strike 11567, but 25286 is level 60.
 - **auras:** the client shares one 2 minute category (1153) between mana gems and Demonic Rune. The engine gives each its own cooldown, and mage gems have none.
