@@ -71,11 +71,15 @@
       ]
     },
     "shaman-restoration": {
-      "reason": "On band 20's own fight, Mindfulness's second rank ahead of Tidal Focus's last rank beats the plain walk beyond error, both factions; no other band changes.",
+      "reason": "On band 20's own fight, Mindfulness's second rank ahead of Tidal Focus's last rank beats the plain walk beyond error, both factions (round 11); Water Shield, which the rotation casts, taken as soon as it can be held (ahead of Tidal Focus's fourth rank) beats that beyond error at band 20 too, both factions (round 12); no other band changes.",
       "first": [
         {
           "talent": "Mindfulness",
           "rank": 2
+        },
+        {
+          "talent": "Water Shield",
+          "rank": 1
         }
       ]
     }

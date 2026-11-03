@@ -241,6 +241,68 @@ describe('healerSetViewFor', () => {
     expect(older.rows.map((r) => r.heading)).not.toContain('Hard pull');
   });
 
+  it('names the logged tank share a sub-60 band splits its damage by', () => {
+    const banded: BisHealProfile = {
+      ...PROFILE,
+      bands: {
+        rule: 'Band rule.',
+        reference_level: 60,
+        rows: [
+          {
+            level: 20,
+            content: [{ name: 'Wailing Caverns', last_boss: 'Mutanus the Devourer', boss_level: 22 }],
+            tank_share: 0.704,
+            split: { fights: 412, pooled: false, dungeons: ['The Deadmines', 'Wailing Caverns'] },
+            tank_health: 1836,
+            member_health: 966,
+            tank_hit_damage: 150,
+            pulse_damage: 33,
+          },
+          {
+            level: 40,
+            content: [{ name: 'Razorfen Downs', last_boss: 'Amnennar the Coldbringer', boss_level: 41 }],
+            tank_share: 0.69,
+            split: { fights: 900, pooled: true, dungeons: ['Shadowfang Keep'] },
+            tank_health: 4938,
+            member_health: 2599,
+            tank_hit_damage: 470,
+            pulse_damage: 123,
+          },
+          {
+            level: 30,
+            content: [{ name: 'Gnomeregan', last_boss: 'Mekgineer Thermaplugg', boss_level: 34 }],
+            tank_health: 3204,
+            member_health: 1687,
+            tank_hit_damage: 128,
+            pulse_damage: 33,
+          },
+        ],
+      },
+    };
+    const low = healerSetViewFor(healerBand({ band: 20 }), banded)!.disclosure!;
+    expect(low.rows.map((r) => r.heading)).toEqual([
+      'Fight',
+      'Content',
+      'Tank and group',
+      'Tank',
+      'Raid members',
+      'Raid pulses',
+    ]);
+    expect(low.rows.find((r) => r.heading === 'Tank and group')).toEqual({
+      heading: 'Tank and group',
+      figures: 'The tank takes 70% of the damage, the median of 412 logged beta fights in these dungeons',
+      reason:
+        "From beta logs: in each five-man fight, the share of the group's damage taken that lands on its tank.",
+    });
+    const pooled = healerSetViewFor(healerBand({ band: 40 }), banded)!.disclosure!;
+    expect(pooled.rows.find((r) => r.heading === 'Tank and group')!.figures).toBe(
+      'The tank takes 69% of the damage, the median of 900 logged beta dungeon fights (none at this band yet)',
+    );
+    // A file published before the logged split has no split row.
+    const older = healerSetViewFor(healerBand({ band: 30 }), banded)!.disclosure!;
+    expect(older.rows.map((r) => r.heading)).not.toContain('Tank and group');
+  });
+
   it('falls back to set_dps and no metric cells when the band publishes no metrics', () => {
     const view = healerSetViewFor(healerBand({ metrics: undefined, set_dps: 250.04 }), PROFILE)!;
     expect(view.figure).toBe('250.0');

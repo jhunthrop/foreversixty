@@ -88,3 +88,32 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 12 (healprofile): Restoration shaman holds Water Shield, which the
+// rotation casts, at band 20, ahead of Tidal Focus's fourth rank; the other bands walk as
+// before (design/reviews/2026-11-03-sim-audit-round12/healprofile.md).
+func TestRestorationShamanHoldsWaterShieldAtTwenty(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	active, err := ReadActiveBuild(repoRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	trees, err := LoadTalentTrees(repoRoot, active, "shaman")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, digits, err := GuideBuildTalents(repoRoot, "shaman", "restoration")
+	if err != nil {
+		t.Fatal(err)
+	}
+	targets := GuideTalentTargets(trees, digits)
+	for level, want := range map[int]string{
+		20: "0000000000000000-000000000000000000-5320000010000000",
+		30: "0000000000000000-000000000000000000-5530003311000000",
+		40: "0000000000000000-000000000000000000-5530003315510000",
+	} {
+		if got := LadderTalentString(trees, targets, 2, level, ForSpec("shaman-restoration")); got != want {
+			t.Errorf("level %d: %s, want %s", level, got, want)
+		}
+	}
+}
