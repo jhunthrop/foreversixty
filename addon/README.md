@@ -49,7 +49,7 @@ change the named constant if it differs from the default.
 | 13 | Region | `/dump GetCurrentRegion()` | `Export.REGION_NAMES` |
 | 14 | Professions | `/dump GetProfessions()` then `/dump GetProfessionInfo(1)` | `Export.professions()` |
 | 15 | Talent frame name for the highlight | `/dump TalentFrame ~= nil`, `/dump PlayerTalentFrame ~= nil` | `TalentGlow.TALENT_FRAMES` |
-| 16 | Race token for Forever's two new races | `/dump select(2, UnitRace("player"))` on a High Order Skyborne and a Windshaper Skyborne character | `Export.RACE_SLUGS` |
+| 16 | Race token for Forever's two new races | `/dump select(2, UnitRace("player"))` on a High Order Skyborne and a Windshaper Skyborne character | `Compat.RACE_SLUGS` |
 | 17 | Modern templates | `/dump CreateFrame("Frame", nil, UIParent, "BackdropTemplate") ~= nil`, same for `"PanelTabButtonTemplate"`, `"UIPanelButtonTemplate"`, `"InputBoxTemplate"`, `"UIPanelScrollFrameTemplate"` | `Theme.TEMPLATES`; a missing one is only a plainer look, and `/fs diag` names it. The scroll template is recorded for information only — `Widgets.list` deliberately uses none |
 | 18 | Settings API | `/dump Settings and Settings.RegisterCanvasLayoutCategory ~= nil` | `Theme.registerSettingsPanel` takes the modern category first, then `InterfaceOptions_AddCategory` |
 | 19 | Class colours | `/dump RAID_CLASS_COLORS.WARRIOR` | `Theme.classColor`, which falls back to gold |

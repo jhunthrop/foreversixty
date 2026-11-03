@@ -53,13 +53,14 @@ def _class_lua(slug: str, tabs: list) -> str:
     return "\n".join(lines)
 
 
-def _faction_ids_lua(ids: dict[str, int]) -> str:
-    """`, factionSpellId = { alliance = .., horde = .. }` for a line whose
-    rank a faction's row changes (round 12), else nothing."""
+def _race_ids_lua(ids: dict[str, int]) -> str:
+    """`, raceSpellId = { ["undead"] = .., .. }` for a line whose rank a race's
+    row changes (round 13), else nothing. Keys are the site's race slugs,
+    quoted because `night-elf` is no bare Lua name."""
     if not ids:
         return ""
-    pairs = ", ".join(f"{faction} = {ids[faction]}" for faction in sorted(ids))
-    return f", factionSpellId = {{ {pairs} }}"
+    pairs = ", ".join(f"[{_quote(race)}] = {ids[race]}" for race in sorted(ids))
+    return f", raceSpellId = {{ {pairs} }}"
 
 
 def _rotations_lua(rotations: dict) -> list[str]:
@@ -69,10 +70,10 @@ def _rotations_lua(rotations: dict) -> list[str]:
         for band in rotations[spec]:
             lines.append(f"\t\t\t{{ level = {band.level}, lines = {{")
             for line in band.lines:
-                factions = _faction_ids_lua(line.faction_spell_ids)
+                races = _race_ids_lua(line.race_spell_ids)
                 lines.append(
                     f"\t\t\t\t{{ spellId = {line.spell_id}, name = {_quote(line.name)}, "
-                    f"condition = {_quote(line.condition)}{factions} }},"
+                    f"condition = {_quote(line.condition)}{races} }},"
                 )
             lines.append("\t\t\t} },")
         lines.append("\t\t},")

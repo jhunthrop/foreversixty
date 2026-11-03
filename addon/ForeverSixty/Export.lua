@@ -51,24 +51,6 @@ Export.REGION_NAMES = { [1] = "US", [2] = "KR", [3] = "EU", [4] = "TW", [5] = "C
 --- How ForeverSixtyDB.savedAt reads. The Export tab shows it verbatim.
 Export.SAVED_AT_FORMAT = "%Y-%m-%d %H:%M"
 
---- Client race token -> the site's race slug, for the eight base races. A
---- rule cannot produce this map: `Scourge` is the client's token for what
---- the site calls `undead` -- no amount of casing or hyphenation gets there
---- -- and the multi-word tokens (`NightElf`) carry no separator a rule could
---- split on either. Spike check 16 is what would confirm these against the
---- beta client; data/builds/1.60.1.69893/races.json is what confirms them
---- against the site today.
-Export.RACE_SLUGS = {
-	Human = "human",
-	Orc = "orc",
-	Dwarf = "dwarf",
-	NightElf = "night-elf",
-	Scourge = "undead",
-	Tauren = "tauren",
-	Gnome = "gnome",
-	Troll = "troll",
-}
-
 --- The container API moved into C_Container; Classic Era still carries the
 --- flat function on some builds. Spike check 9 says which the beta has; this
 --- takes whichever exists rather than betting on one.
@@ -145,40 +127,6 @@ function Export.slugify(name)
 		return nil
 	end
 	return (name:lower():gsub("[^%w]+", "-"):gsub("^%-+", ""):gsub("%-+$", ""))
-end
-
---- A fallback for a race token `Export.RACE_SLUGS` does not carry -- Forever's
---- two new races, whose client tokens are not yet known (spike check 16).
---- PascalCase gets a hyphen inserted at each internal word boundary, so
---- something like `HighOrderSkyborne` degrades to a plausible slug instead
---- of to nothing; it is not run against the eight base races, which have
---- their real slugs in the map above.
-local function pascalCaseSlugify(token)
-	return (token:gsub("(%l)(%u)", "%1-%2"):gsub("(%d)(%u)", "%1-%2"):lower())
-end
-
---- The site's race slug for the client's own race. The map first; the
---- fallback only for a token the map does not carry.
---- The beta client reports both Skyborne peoples under one token, "Skyborne"; the
---- site's race table has a row per faction (high-order-skyborne for the Alliance,
---- windshaper-skyborne for the Horde), so the faction picks the row.
-Export.SKYBORNE_BY_FACTION = {
-	Alliance = "high-order-skyborne",
-	Horde = "windshaper-skyborne",
-}
-
-local function raceSlugOf()
-	local raceToken = select(2, UnitRace("player"))
-	if raceToken == nil then
-		return nil
-	end
-	if raceToken == "Skyborne" and type(UnitFactionGroup) == "function" then
-		local faction = UnitFactionGroup("player")
-		if Export.SKYBORNE_BY_FACTION[faction] ~= nil then
-			return Export.SKYBORNE_BY_FACTION[faction]
-		end
-	end
-	return Export.RACE_SLUGS[raceToken] or pascalCaseSlugify(raceToken)
 end
 
 --- `table.pack` does not exist on the client's Lua 5.1; this is its shape
@@ -388,7 +336,7 @@ function Export.string(data, fallbackGuild)
 	-- The class slug comes from the locale-neutral class token (see
 	-- Talents.playerClassSlug); slugifying the display name on a non-English
 	-- client would produce a slug data.classes does not carry. Race gets the
-	-- same treatment via raceSlugOf.
+	-- same treatment via Compat.playerRaceSlug.
 	local classSlug = Talents.playerClassSlug()
 	local treeRanks = Talents.treeRanks(data, classSlug)
 	if treeRanks == nil then
@@ -397,7 +345,7 @@ function Export.string(data, fallbackGuild)
 	return Codec.encodeFS1({
 		dataBuild = data.build,
 		classSlug = classSlug,
-		raceSlug = raceSlugOf(),
+		raceSlug = Compat.playerRaceSlug(),
 		-- The level-aware sim design (2026-09-27): the site no longer has to guess this
 		-- from talent points. UnitLevel always answers in the real client; wow_mock's own
 		-- default (state.level or 60) keeps every existing test double answering too.

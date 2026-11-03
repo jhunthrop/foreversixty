@@ -1,5 +1,5 @@
 {
-  "notes": "Per-band rank choices (owner ruling 3, sim-accuracy round 9). Below level 60 the site rewrites a rotation's ranked spells: by default each casts the highest rank learned that is not above the rank the curated rotation names, so a deliberate lower rank there is kept. A row here overrides that for one spec's authored spell id from from_level through to_level: the rotation casts that rank instead, higher or lower. A row may name a preset (bare or raid) and then applies only to a request simmed under it; one with none applies to both. A row may also name a faction (alliance or horde) and then applies only to a character of that faction; a faction is named only where the two factions' best ranks differ beyond error (owner ruling, sim-accuracy round 12), and the addon, whose rotation bands are shared by both factions, refuses one below 60. Level 60 runs the curated rotation as written, which carries the raid choice; a row at 60 names its preset. A row is adopted where the fight is mana-bound and the rank raises the band's published number beyond the error at seeds 1 and 50001, 10000 iterations, with no further bar (owner ruling, round 12: the 1% bar is for talent builds); a healer row never turns a fight that runs dry into one that ends with mana unspent, and every healer row below 60 is measured on its own band's heal profile (data/curated/heal-profile.json bands). A mana gate is not evidence on its own (owner ruling 2, round 10): a row behind a gated line also wins with the gate taken away, where the spec then runs dry. The evidence is in design/reviews/2026-11-02-sim-audit-round9/ranks.md, the round-10 ranks.md and healprofile.md beside it, and design/reviews/2026-11-03-sim-audit-round11/healprofile.md (the healer rows below 60, on the bands' pull profile), design/reviews/2026-11-03-sim-audit-round12/healprofile.md (those rows re-measured on the bands' logged tank-and-group split), and design/reviews/2026-11-03-sim-audit-round12/ranks.md (the round-12 re-judgement and the faction rows). Defensive cooldowns (Divine Protection, Divine Shield, Ice Barrier and the like) are never rank choices. sim/request embeds a copy (make rank-choices-sync); TestEmbeddedRankChoicesMatchCurated holds it to this file.",
+  "notes": "Per-band rank choices (owner ruling 3, sim-accuracy round 9). Below level 60 the site rewrites a rotation's ranked spells: by default each casts the highest rank learned that is not above the rank the curated rotation names, so a deliberate lower rank there is kept. A row here overrides that for one spec's authored spell id from from_level through to_level: the rotation casts that rank instead, higher or lower. A row may name a preset (bare or raid) and then applies only to a request simmed under it; one with none applies to both. A row may also name races (a list of race slugs) and then applies only to a character of one of them; races are named only where the races' best ranks differ beyond error (owner ruling 3, sim-accuracy round 13, which replaced round 12's faction key), and a race no row of a band names casts the default rule there. The addon carries each keyed race's id on the line (raceSpellId) and shows the player's own. Level 60 runs the curated rotation as written, which carries the raid choice; a row at 60 names its preset. A row is adopted where the fight is mana-bound and the rank raises the band's published number beyond the error at seeds 1 and 50001, 10000 iterations, with no further bar (owner ruling, round 12: the 1% bar is for talent builds); a healer row never turns a fight that runs dry into one that ends with mana unspent, and every healer row below 60 is measured on its own band's heal profile (data/curated/heal-profile.json bands). A mana gate is not evidence on its own (owner ruling 2, round 10): a row behind a gated line also wins with the gate taken away, where the spec then runs dry. The evidence is in design/reviews/2026-11-02-sim-audit-round9/ranks.md, the round-10 ranks.md and healprofile.md beside it, and design/reviews/2026-11-03-sim-audit-round11/healprofile.md (the healer rows below 60, on the bands' pull profile), design/reviews/2026-11-03-sim-audit-round12/healprofile.md (those rows re-measured on the bands' logged tank-and-group split), and design/reviews/2026-11-03-sim-audit-round12/ranks.md (the round-12 re-judgement and the faction rows), and design/reviews/2026-11-03-sim-audit-round13/ranks.md (the race rows). Defensive cooldowns (Divine Protection, Divine Shield, Ice Barrier and the like) are never rank choices. sim/request embeds a copy (make rank-choices-sync); TestEmbeddedRankChoicesMatchCurated holds it to this file.",
   "specs": {
     "druid-balance": [
       {
@@ -126,8 +126,7 @@
             "from_level": 30,
             "to_level": 39,
             "rank": 3,
-            "faction": "horde",
-            "note": "Measured on the band's published Orc: +1.70%/+1.69% with Scorch rank 1; Undead +1.6%, Troll +1.0%. Among Alliance a Human gains +1.7% too and only the Gnome (published) ties, so the split is the Gnome, not the faction (round-12 ranks.md R12)."
+            "note": "Rank 3 gains +0.5% to +0.8% for every mage race at round 13 (Gnome +0.6%, which tied in round 12) (round-13 ranks.md)."
           },
           {
             "from_level": 40,
@@ -236,6 +235,18 @@
             "preset": "bare"
           }
         ]
+      },
+      {
+        "spell": "Holy Strike",
+        "authored": 10333,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 1,
+            "note": "Threat per second at 40, bare: rank 1 +0.73%/+0.78% Human, +0.79%/+0.63% Dwarf, +0.63%/+0.89% Undead over the default (rank 5), above the 0.2% bar at seeds 1 and 50001; rank 2 ties and rank 3 loses. The 5-mana rank 1 leaves the mana for more Judgements, Seals and Hammers of the Righteous; at 30, 50 and 60 rank 1 loses 3% to 5% (round-13 ranks.md)."
+          }
+        ]
       }
     ],
     "paladin-retribution": [
@@ -298,8 +309,7 @@
             "to_level": 60,
             "rank": 1,
             "preset": "bare",
-            "faction": "alliance",
-            "note": "Measured on the band's published Human: +0.51%/+0.48% effective HPS; Gnome +0.2%, Dwarf +0.2%. Among Horde only the Undead (published) loses (-0.03%/-0.13%); a Troll gains +0.2%. Undead-driven (round-12 ranks.md R12)."
+            "note": "Rank 1 at bare 60: Human +0.5% effective HPS; every other race within the 0.2% healer bar either way (Undead -0.1%), so no race loses and the row needs no race key (round-13 ranks.md; healers lane to recheck on the new level-60 split)."
           }
         ]
       },
@@ -388,22 +398,7 @@
             "to_level": 60,
             "rank": 1,
             "preset": "bare",
-            "faction": "horde",
-            "note": "Measured on the band's published Troll: +0.29%/+0.29% effective HPS; Undead +0.3%. Among Alliance a Human gains +0.2% and only the Gnome (published) ties, so the split is the Gnome (round-12 ranks.md R12)."
-          }
-        ]
-      },
-      {
-        "spell": "Lightwell",
-        "authored": 27871,
-        "bands": [
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 1,
-            "preset": "bare",
-            "faction": "horde",
-            "note": "Measured on the band's published Troll: +1.30%/+1.33% effective HPS; Undead +1.2%. Among Alliance a Human gains +0.8% and only the Gnome (published) ties (+0.09%), so the split is the Gnome (round-12 ranks.md R12)."
+            "note": "Rank 1 at bare 60: Dwarf +0.2%; every other race within the 0.2% healer bar (Gnome -0.2%, Troll +0.2%/+0.16%), so no race key (round-13 ranks.md; healers lane to recheck on the new level-60 split)."
           }
         ]
       },
@@ -464,21 +459,46 @@
           {
             "from_level": 40,
             "to_level": 49,
-            "rank": 4
+            "rank": 3,
+            "races": [
+              "dwarf",
+              "night-elf"
+            ],
+            "note": "Dwarf +1.0%, Night Elf +1.4% over the default, beyond rank 4 by more than error at seeds 1 and 50001 (round-13 ranks.md)."
+          },
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 4,
+            "races": [
+              "human",
+              "undead",
+              "gnome",
+              "troll"
+            ],
+            "note": "Rank 4 for Human +1.8%, Undead +1.4%, Gnome +1.4%, Troll +1.0% over the default; a Dwarf and a Night Elf gain more with rank 3 (+1.0% and +1.4% against +0.4% and +0.8% at rank 4), so they have their own row (round-13 ranks.md)."
           },
           {
             "from_level": 50,
             "to_level": 59,
             "rank": 2,
-            "faction": "alliance",
-            "note": "Measured on the band's published Gnome: rank 2 +2.43%/+2.49%. Dwarf agrees (rank 2 +2.5%); a Human prefers rank 3 (+2.0% against +1.3%). Race-driven (round-12 ranks.md R12)."
+            "races": [
+              "dwarf",
+              "night-elf",
+              "gnome",
+              "troll"
+            ],
+            "note": "Rank 2: Dwarf +2.5%, Night Elf +2.6%, Gnome +2.4%, Troll +2.3% over the default, each beyond rank 3 (round-13 ranks.md)."
           },
           {
             "from_level": 50,
             "to_level": 59,
             "rank": 3,
-            "faction": "horde",
-            "note": "Measured on the band's published Undead: rank 3 +0.41%/+0.36% over the default, rank 2 ties it. Race-driven, not faction-driven (round-12 ranks.md R12): a Troll prefers rank 2 (+2.3%), and among Alliance a Human prefers rank 3 (+2.0%)."
+            "races": [
+              "human",
+              "undead"
+            ],
+            "note": "Rank 3: Human +2.0% (rank 2 +1.3%), Undead +0.4% (rank 2 ties: Dark Sacrifice leaves the Undead the mana for the bigger rank) (round-13 ranks.md)."
           }
         ]
       },
@@ -499,15 +519,38 @@
           {
             "from_level": 50,
             "to_level": 59,
-            "rank": 1
+            "rank": 1,
+            "races": [
+              "human",
+              "dwarf",
+              "undead",
+              "gnome",
+              "troll"
+            ],
+            "note": "Rank 1: +2.9% to +4.2% for these races; a Night Elf gains more with rank 2 (+1.4% against +0.5%) (round-13 ranks.md)."
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 2,
+            "races": [
+              "night-elf"
+            ],
+            "note": "Night Elf: rank 2 +1.4%/+1.3% against rank 1 +0.5% (round-13 ranks.md)."
           },
           {
             "from_level": 60,
             "to_level": 60,
             "rank": 2,
             "preset": "bare",
-            "faction": "alliance",
-            "note": "Measured on the band's published Gnome: rank 2 +0.77%/+0.72%; Human +0.6%, Dwarf +1.7%. The split is the Undead racial (Dark Sacrifice): an Undead loses 4.6% at rank 2 while a Troll gains 1.8%, so Horde Trolls miss this row (round-12 ranks.md R12)."
+            "races": [
+              "human",
+              "dwarf",
+              "night-elf",
+              "gnome",
+              "troll"
+            ],
+            "note": "Rank 2 at bare 60: Human +0.6%, Dwarf +1.7%, Night Elf +1.7%, Gnome +0.8%, Troll +1.8%. An Undead loses 4.6% with it (Dark Sacrifice pays for the top rank) and casts the default (round-13 ranks.md)."
           }
         ]
       },
@@ -518,7 +561,15 @@
           {
             "from_level": 50,
             "to_level": 59,
-            "rank": 2
+            "rank": 2,
+            "races": [
+              "dwarf",
+              "night-elf",
+              "undead",
+              "gnome",
+              "troll"
+            ],
+            "note": "Rank 2: Dwarf +1.0%, Night Elf +0.2%, Undead +0.4%, Gnome +1.3%, Troll +0.9%; a Human loses 0.4% with it and casts the default (round-13 ranks.md)."
           },
           {
             "from_level": 60,
@@ -674,8 +725,7 @@
             "from_level": 40,
             "to_level": 49,
             "rank": 3,
-            "faction": "horde",
-            "note": "Measured on the band's published Troll: +0.17%/+0.17%, error 0.13. Orc and Undead are within error (-0.08 to +0.09%), and a Human gains +0.14%/+0.15%: a Troll-driven gain at the edge of error (round-12 ranks.md R12)."
+            "note": "Rank 3: Troll +0.16%, Human +0.14% (error 0.13); Orc, Undead and Gnome are within error either way, so no race loses and the row needs no race key (round-13 ranks.md)."
           }
         ]
       }

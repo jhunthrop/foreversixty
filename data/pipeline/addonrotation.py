@@ -244,22 +244,19 @@ def _rank_choice_id(
 BARE_PRESET = "bare"
 
 
-#: The factions a rank-choice row may name (sim/request AllianceFaction, HordeFaction).
-FACTIONS = ("alliance", "horde")
-
-
 def _band_ranks(choices: dict, spell_id: int, level: int) -> dict[str | None, int]:
     """The ranks data/curated/rank-choices.json picks for the list's
-    `spell_id` at `level` (one spec's rows), keyed by the faction a row
-    names (None for a row of both factions); empty outside every row. A
-    band below 60 is the bare preset's, so a row for the raid preset only
-    never applies here."""
+    `spell_id` at `level` (one spec's rows), keyed by each race slug a row
+    names (None for a row of every race); empty outside every row. A band
+    below 60 is the bare preset's, so a row for the raid preset only never
+    applies here. sim/request refuses two rows that meet one race."""
     ranks: dict[str | None, int] = {}
     for row in choices.get(spell_id, []):
         if row.get("preset", BARE_PRESET) != BARE_PRESET:
             continue
         if row["from_level"] <= level <= row["to_level"]:
-            ranks[row.get("faction")] = row["rank"]
+            for race in row.get("races") or [None]:
+                ranks[race] = row["rank"]
     return ranks
 
 
@@ -283,11 +280,12 @@ class _RankPick:
         return chosen if chosen is not None else fallback
 
 
-def _faction_ids(pick: _RankPick, ranks: dict[str | None, int], resolved_id: int) -> dict[str, int]:
-    """Each faction's id where a faction row casts other than `resolved_id`,
-    else empty (AddonRotationLine.faction_spell_ids)."""
-    ids = {f: pick.id_of(ranks.get(f), resolved_id) for f in FACTIONS}
-    return ids if any(i != resolved_id for i in ids.values()) else {}
+def _race_ids(pick: _RankPick, ranks: dict[str | None, int], resolved_id: int) -> dict[str, int]:
+    """Each keyed race's id where its row casts other than `resolved_id`
+    (AddonRotationLine.race_spell_ids); a race whose row resolves to
+    `resolved_id` is left out."""
+    ids = {race: pick.id_of(rank, resolved_id) for race, rank in ranks.items() if race is not None}
+    return {race: i for race, i in sorted(ids.items()) if i != resolved_id}
 
 
 def load_rank_choices(curated_dir: Path, spec: str) -> dict[int, list[dict]]:
@@ -402,11 +400,11 @@ def build_rotation(
                 continue
             name, resolved_id = resolved
             # A per-band rank choice (sim/request rankResolver) wins below 60;
-            # a faction's own row wins for that faction.
+            # a race's own row wins for that race.
             ranks = _band_ranks(choices, cast["spell_id"], level) if level < MAX_LEVEL else {}
             pick = _RankPick(spellranks, _class_slug(spec), name, cast["spell_id"], level)
             resolved_id = pick.id_of(ranks.get(None), resolved_id)
-            faction_ids = _faction_ids(pick, ranks, resolved_id)
+            race_ids = _race_ids(pick, ranks, resolved_id)
             condition = _one_line(cast["notes"])
             icon = _resolve_icon(resolved_id, icon_of)
             lines.append(
@@ -415,7 +413,7 @@ def build_rotation(
                     name=name,
                     condition=condition,
                     icon=icon,
-                    faction_spell_ids=faction_ids,
+                    race_spell_ids=race_ids,
                 )
             )
         bands.append(AddonRotationBand(level=level, lines=lines))

@@ -35,7 +35,7 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 		// (332) beats rank 3 (547) by 5.6% at bare 60, and the fight still runs dry.
 		{"Healing Wave at bare 60", "shaman-restoration", "shaman", BarePreset, 60, 332, 547},
 	} {
-		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, HordeFaction))
+		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, "undead"))
 		if !ids[c.want] || ids[c.not] {
 			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
 		}
@@ -44,51 +44,40 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 
 // Rows re-measured at sim-accuracy round 12 (design/reviews/2026-11-03-sim-audit-round12/ranks.md)
 // on the landing's rotations: rows are adopted beyond error at seeds 1 and 50001, and keyed by
-// faction where Alliance and Horde differ beyond error.
+// faction where Alliance and Horde differ beyond error (race since round 13).
 func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 	for _, c := range []struct {
-		name, spec, class, preset, faction string
+		name, spec, class, preset, race string
 		level                              int
 		want, not                          int32
 	}{
 		// Mind Blast at 50: rank 3 (8103) for Horde (Undead with Dark Sacrifice), rank 2 (8102) for Alliance.
-		{"Horde Mind Blast at 50", "priest-shadow", "priest", BarePreset, HordeFaction, 50, 8103, 8102},
-		{"Alliance Mind Blast at 50", "priest-shadow", "priest", BarePreset, AllianceFaction, 50, 8102, 8103},
+		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 8103, 8102},
+		{"Gnome Mind Blast at 50", "priest-shadow", "priest", BarePreset, "gnome", 50, 8102, 8103},
 		// Devouring Plague at bare 60: Alliance gains with rank 2 (19276); Horde casts the top rank.
-		{"Alliance Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, AllianceFaction, 60, 19276, 19280},
-		{"Horde Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, HordeFaction, 60, 19280, 19276},
-		{"Alliance Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, AllianceFaction, 60, 19280, 19276},
+		{"Gnome Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "gnome", 60, 19276, 19280},
+		{"Undead Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "undead", 60, 19280, 19276},
+		{"Gnome Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, "gnome", 60, 19280, 19276},
 		// Beast Mastery's Arcane Shot: rank 3 (14282) at 40, rank 1 (3044) at 50.
-		{"Arcane Shot at 40", "hunter-beast-mastery", "hunter", BarePreset, HordeFaction, 40, 14282, 14284},
-		{"Arcane Shot at 50", "hunter-beast-mastery", "hunter", BarePreset, AllianceFaction, 50, 3044, 14285},
-		// Fire's Fire Blast rank 3 (2138) at 30 for Horde only; Pyroblast keeps its rank there.
-		{"Horde Fire Blast at 30", "mage-fire", "mage", BarePreset, HordeFaction, 30, 2138, 8412},
-		{"Alliance Fire Blast at 30", "mage-fire", "mage", BarePreset, AllianceFaction, 30, 8412, 2138},
+		{"Arcane Shot at 40", "hunter-beast-mastery", "hunter", BarePreset, "orc", 40, 14282, 14284},
+		{"Arcane Shot at 50", "hunter-beast-mastery", "hunter", BarePreset, "dwarf", 50, 3044, 14285},
 		// Elemental's Flame Shock rank 1 (8050) at 30.
-		{"Flame Shock at 30", "shaman-elemental", "shaman", BarePreset, HordeFaction, 30, 8050, 8053},
+		{"Flame Shock at 30", "shaman-elemental", "shaman", BarePreset, "orc", 30, 8050, 8053},
 		// The top-rank Lightning Bolt line (15208, cast while mana is ahead) casts rank 7 (10391) at 50 and bare 60.
-		{"Lightning Bolt pacing line at 50", "shaman-elemental", "shaman", BarePreset, HordeFaction, 50, 10391, 15207},
-		{"Lightning Bolt pacing line at bare 60", "shaman-elemental", "shaman", BarePreset, AllianceFaction, 60, 10391, 15208},
-		// Bare-60 healer rows the factions split: Binding Heal rank 1 only for Alliance,
-		// Prayer of Healing and Lightwell rank 1 only for Horde.
-		{"Alliance Binding Heal at bare 60", "priest-discipline", "priest", BarePreset, AllianceFaction, 60, 401937, 1240774},
-		{"Horde Binding Heal at bare 60", "priest-discipline", "priest", BarePreset, HordeFaction, 60, 1240774, 401937},
-		{"Horde Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, HordeFaction, 60, 596, 10961},
-		{"Alliance Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, AllianceFaction, 60, 10961, 596},
-		{"Horde Lightwell at bare 60", "priest-holy", "priest", BarePreset, HordeFaction, 60, 724, 27871},
-		{"Alliance Lightwell at bare 60", "priest-holy", "priest", BarePreset, AllianceFaction, 60, 27871, 724},
+		{"Lightning Bolt pacing line at 50", "shaman-elemental", "shaman", BarePreset, "orc", 50, 10391, 15207},
+		{"Lightning Bolt pacing line at bare 60", "shaman-elemental", "shaman", BarePreset, "dwarf", 60, 10391, 15208},
 	} {
-		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.faction))
+		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.race))
 		if !ids[c.want] || ids[c.not] {
 			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
 		}
 	}
 }
 
-// A request's rank choices follow its character's faction: the same Shadow priest at 50 casts
-// Mind Blast rank 3 as an Undead and rank 2 as a Human.
-func TestBuildCastsTheFactionsRankChoice(t *testing.T) {
-	for race, want := range map[string]string{"undead": `"spellId":8103`, "human": `"spellId":8102`} {
+// A request's rank choices follow its character's race: the same Shadow priest at 50 casts
+// Mind Blast rank 3 as an Undead and rank 2 as a Troll, both Horde.
+func TestBuildCastsTheRacesRankChoice(t *testing.T) {
+	for race, want := range map[string]string{"undead": `"spellId":8103`, "troll": `"spellId":8102`} {
 		req := api.SimRequest{
 			EngineVersion: enginever.Version, Spec: "priest-shadow",
 			Source:    api.CharacterSource{Kind: api.SourceManual},
@@ -106,6 +95,51 @@ func TestBuildCastsTheFactionsRankChoice(t *testing.T) {
 		}
 		if got := strings.ReplaceAll(string(rot), " ", ""); !strings.Contains(got, want) {
 			t.Errorf("%s at 50 does not cast %s", race, want)
+		}
+	}
+}
+
+// Rows re-judged per race at sim-accuracy round 13 (design/reviews/2026-11-03-sim-audit-round13/ranks.md):
+// every row measured on every race of its class; a row names races only where a race loses
+// with it, or another rank beats it, beyond error at seeds 1 and 50001.
+func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
+	for _, c := range []struct {
+		name, spec, class, preset, race string
+		level                           int
+		want, not                       int32
+	}{
+		// Mind Blast at 40: rank 4 (8104), but rank 3 (8103) for a Dwarf or a Night Elf.
+		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8104, 8103},
+		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8103, 8104},
+		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8103, 8104},
+		// Mind Blast at 50: rank 2 (8102), rank 3 (8103) for a Human or an Undead.
+		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 8102, 8103},
+		{"Human Mind Blast at 50", "priest-shadow", "priest", BarePreset, "human", 50, 8103, 8102},
+		// Devouring Plague at 50: rank 1 (2944), rank 2 (19276) for a Night Elf.
+		{"Undead Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 2944, 19276},
+		{"Night Elf Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 19276, 2944},
+		// Devouring Plague at bare 60: rank 2 for every race but the Undead.
+		{"Troll Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "troll", 60, 19276, 19280},
+		{"Night Elf Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "night-elf", 60, 19276, 19280},
+		// Shadow Word: Death at 50: rank 2 for every race but the Human, who casts rank 3.
+		{"Human Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "human", 50, 1309635, 1309633},
+		{"Troll Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "troll", 50, 1309633, 1309635},
+		// Rows no race loses with lose their race key: Fire Blast rank 3 (2138) at 30, Corruption
+		// rank 3 (6223) at 40, Binding Heal and Prayer of Healing rank 1 at bare 60.
+		{"Gnome Fire Blast at 30", "mage-fire", "mage", BarePreset, "gnome", 30, 2138, 8412},
+		{"Orc Corruption at 40", "warlock-destruction", "warlock", BarePreset, "orc", 40, 6223, 7648},
+		{"Undead Binding Heal at bare 60", "priest-discipline", "priest", BarePreset, "undead", 60, 401937, 1240774},
+		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 596, 10961},
+		// Protection's Holy Strike rank 1 (679) at 40: the mana it saves buys more Judgements
+		// and Hammers of the Righteous (+0.6% to +0.9% threat for every paladin race).
+		{"Dwarf Holy Strike at 40", "paladin-protection", "paladin", BarePreset, "dwarf", 40, 679, 2495},
+		{"Holy Strike at 50 keeps the top rank", "paladin-protection", "paladin", BarePreset, "dwarf", 50, 5569, 679},
+		// Lightwell rank 1 now loses or ties for every race at bare 60: the row is gone.
+		{"Troll Lightwell at bare 60", "priest-holy", "priest", BarePreset, "troll", 60, 27871, 724},
+	} {
+		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.race))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
 		}
 	}
 }
