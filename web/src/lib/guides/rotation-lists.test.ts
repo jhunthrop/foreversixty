@@ -119,6 +119,38 @@ describe('the APL readers', () => {
     ]);
   });
 
+  it('reads a pre-pull cast gated on a known aura, either way round', () => {
+    const known = { auraIsKnown: { auraId: { spellId: 9 } } };
+    const gated = {
+      rotation: {
+        prepullActions: [
+          {
+            action: { condition: known, castSpell: { spellId: { spellId: 3 } } },
+            doAtValue: { const: { val: '-1.5s' } },
+          },
+          {
+            action: { condition: { not: { val: known } }, castSpell: { spellId: { spellId: 4 } } },
+            doAtValue: { const: { val: '-1.5s' } },
+          },
+        ],
+      },
+    };
+    expect(prepullCasts(gated)).toEqual([
+      { spellId: 3, secondsBefore: 1.5, gate: { auraId: 9, known: true } },
+      { spellId: 4, secondsBefore: 1.5, gate: { auraId: 9, known: false } },
+    ]);
+    const names: Record<number, SpellFacts> = {
+      3: { name: 'Seal of Command', cooldownMs: 0 },
+      4: { name: 'Seal of Righteousness', cooldownMs: 0 },
+      9: { name: 'Unsealed Wrath', cooldownMs: 0 },
+    };
+    const { opener } = rotationListsFrom([], gated, (id) => names[id]);
+    expect(opener.map((item) => item.clause)).toEqual([
+      '1.5 s before the pull, with Unsealed Wrath',
+      '1.5 s before the pull, without Unsealed Wrath',
+    ]);
+  });
+
   it('knows when the cooldown pass is on', () => {
     expect(usesCooldownPass(apl)).toBe(true);
     expect(usesCooldownPass({ rotation: { priorityList: [] } })).toBe(false);

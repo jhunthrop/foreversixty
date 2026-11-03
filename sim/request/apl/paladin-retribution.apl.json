@@ -3,7 +3,45 @@
   "prepullActions": [
     {
       "action": {
-        "castPaladinPrimarySeal": {}
+        "condition": {
+          "auraIsKnown": {
+            "auraId": {
+              "spellId": 1310735
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 20920,
+            "rank": 5
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-1.5s"
+        }
+      }
+    },
+    {
+      "action": {
+        "condition": {
+          "not": {
+            "val": {
+              "auraIsKnown": {
+                "auraId": {
+                  "spellId": 1310735
+                }
+              }
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 20293,
+            "rank": 8
+          }
+        }
       },
       "doAtValue": {
         "const": {

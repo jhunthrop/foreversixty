@@ -20,8 +20,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 20928,
-            "rank": 3
+            "spellId": 1239570,
+            "rank": 4
           }
         }
       },
@@ -156,8 +156,8 @@
                   "rhs": {
                     "spellCurrentCost": {
                       "spellId": {
-                        "spellId": 20928,
-                        "rank": 3
+                        "spellId": 1239570,
+                        "rank": 4
                       }
                     }
                   }
@@ -173,8 +173,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 20928,
-            "rank": 3
+            "spellId": 1239570,
+            "rank": 4
           }
         }
       },
@@ -219,8 +219,8 @@
             "rhs": {
               "spellCurrentCost": {
                 "spellId": {
-                  "spellId": 20928,
-                  "rank": 3
+                  "spellId": 1239570,
+                  "rank": 4
                 }
               }
             }
@@ -267,8 +267,8 @@
             "rhs": {
               "spellCurrentCost": {
                 "spellId": {
-                  "spellId": 20928,
-                  "rank": 3
+                  "spellId": 1239570,
+                  "rank": 4
                 }
               }
             }
@@ -318,8 +318,8 @@
                   "rhs": {
                     "spellCurrentCost": {
                       "spellId": {
-                        "spellId": 20928,
-                        "rank": 3
+                        "spellId": 1239570,
+                        "rank": 4
                       }
                     }
                   }
@@ -377,8 +377,8 @@
                   "rhs": {
                     "spellCurrentCost": {
                       "spellId": {
-                        "spellId": 20928,
-                        "rank": 3
+                        "spellId": 1239570,
+                        "rank": 4
                       }
                     }
                   }

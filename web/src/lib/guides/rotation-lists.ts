@@ -109,11 +109,38 @@ function lineItem(line: CollapsedLine): RotationItem {
   };
 }
 
-/** Pre-pull casts in the APL, in time order: `{ spellId, secondsBefore }`. */
-export function prepullCasts(apl: unknown): { spellId: number; secondsBefore: number }[] {
+/** A pre-pull cast's talent gate: the cast happens only when the aura `auraId` is (or is not)
+ *  known, the shape a list uses to open differently with and without a talent. */
+export interface PrepullGate {
+  auraId: number;
+  known: boolean;
+}
+
+export interface PrepullCast {
+  spellId: number;
+  secondsBefore: number;
+  gate?: PrepullGate;
+}
+
+function knownAuraId(node: unknown): number | undefined {
+  if (!isNode(node) || !isNode(node.auraIsKnown) || !isNode(node.auraIsKnown.auraId)) return undefined;
+  const id = node.auraIsKnown.auraId.spellId;
+  return typeof id === 'number' ? id : undefined;
+}
+
+/** The talent gate of a pre-pull condition: `auraIsKnown` or `not auraIsKnown`, nothing else. */
+function gateOf(condition: unknown): PrepullGate | undefined {
+  const known = knownAuraId(condition);
+  if (known !== undefined) return { auraId: known, known: true };
+  const negated = isNode(condition) && isNode(condition.not) ? knownAuraId(condition.not.val) : undefined;
+  return negated === undefined ? undefined : { auraId: negated, known: false };
+}
+
+/** Pre-pull casts in the APL, in time order, each with its talent gate when it has one. */
+export function prepullCasts(apl: unknown): PrepullCast[] {
   const list = isNode(apl) && isNode(apl.rotation) ? apl.rotation.prepullActions : undefined;
   if (!Array.isArray(list)) return [];
-  const casts: { spellId: number; secondsBefore: number }[] = [];
+  const casts: PrepullCast[] = [];
   for (const entry of list) {
     if (!isNode(entry) || !isNode(entry.action) || !isNode(entry.action.castSpell)) continue;
     const spell = entry.action.castSpell.spellId;
@@ -121,7 +148,13 @@ export function prepullCasts(apl: unknown): { spellId: number; secondsBefore: nu
       isNode(entry.doAtValue) && isNode(entry.doAtValue.const) ? entry.doAtValue.const.val : undefined;
     if (!isNode(spell) || typeof spell.spellId !== 'number' || typeof at !== 'string') continue;
     const seconds = Number.parseFloat(at);
-    if (Number.isFinite(seconds)) casts.push({ spellId: spell.spellId, secondsBefore: Math.abs(seconds) });
+    if (!Number.isFinite(seconds)) continue;
+    const gate = gateOf(entry.action.condition);
+    casts.push({
+      spellId: spell.spellId,
+      secondsBefore: Math.abs(seconds),
+      ...(gate === undefined ? {} : { gate }),
+    });
   }
   return casts.sort((a, b) => b.secondsBefore - a.secondsBefore);
 }
@@ -138,6 +171,19 @@ export function usesCooldownPass(apl: unknown): boolean {
 
 function secondsText(seconds: number): string {
   return `${Number(seconds.toFixed(1))} s`;
+}
+
+/** "On the pull" for a cast at the pull itself, else "1.5 s before the pull". */
+function whenText(secondsBefore: number): string {
+  return secondsBefore === 0 ? 'On the pull' : `${secondsText(secondsBefore)} before the pull`;
+}
+
+/** ", with Unsealed Wrath" for a gated pre-pull cast; empty when ungated or the aura is unnamed. */
+function gateText(gate: PrepullGate | undefined, spellFacts: SpellLookup): string {
+  if (gate === undefined) return '';
+  const name = spellFacts(gate.auraId)?.name;
+  if (name === undefined) return '';
+  return `, ${gate.known ? 'with' : 'without'} ${name}`;
 }
 
 export function rotationListsFrom(
@@ -170,7 +216,7 @@ export function rotationListsFrom(
       name: facts.name,
       rank: facts.rank,
       icon: facts.icon ?? lineIcons.get(facts.name),
-      clause: cast.secondsBefore === 0 ? 'On the pull' : `${secondsText(cast.secondsBefore)} before the pull`,
+      clause: `${whenText(cast.secondsBefore)}${gateText(cast.gate, spellFacts)}`,
     });
   }
 
