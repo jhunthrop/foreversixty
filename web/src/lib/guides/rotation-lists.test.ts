@@ -407,13 +407,7 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
       new Map(),
       spellLookupFor(BUILD, 'priest'),
     ).map((item) => item.name);
-    for (const name of [
-      'Shadowfiend',
-      'Feedback',
-      'Divine Grace',
-      'Dark Sacrifice',
-      "Elune's Grace",
-    ]) {
+    for (const name of ['Shadowfiend', 'Feedback', 'Divine Grace', 'Dark Sacrifice', "Elune's Grace"]) {
       expect(priest).not.toContain(name);
     }
     expect(priest).toContain('Fear Ward');

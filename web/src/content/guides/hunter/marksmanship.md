@@ -39,7 +39,7 @@ sources:
 
 ## Overview
 
-Marksmanship puts the damage in your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Serpent Sting kept rolling, Arcane Shot in the gaps, and an auto shot you never let slip. In a raid you play it with no pet, through Lone Wolf.
+Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Serpent Sting rolling, Arcane Shot in the gaps. In a raid, no pet: Lone Wolf.
 
 ### Strengths
 
@@ -107,7 +107,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-Hit first until the hit cap shown above: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. Surefooted's 3% counts toward the hit cap. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
+Hit first until the hit cap shown above: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. Surefooted's 3% adds to your gear's hit, so you need 3% less from gear. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
