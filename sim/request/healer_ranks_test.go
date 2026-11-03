@@ -299,3 +299,47 @@ func TestRestorationDruidPartyRejuvenationIsNotPaced(t *testing.T) {
 		t.Errorf("%d party Rejuvenation rank 1 lines, want 5 (players 0 to 4)", party)
 	}
 }
+
+// Round 14 (regcast): Holy's Heal rank 1 row at 50 to 59 (round 11) was
+// adopted while Prayer of Mending waited on the mana pace. Once Prayer of
+// Mending runs whenever it is ready (round 13), the list's own rank 4 heals
+// more at band 50 on the published build and on the ladder build: effective
+// HPS +12% horde and alliance, seeds 1 and 50001, and the fight still runs
+// dry. So Heal at 50 to 59 casts the highest rank learned up to the list's
+// rank 4 (6064), as its note says, for every race.
+func TestHolyHealAtFiftyCastsTheListsRankFour(t *testing.T) {
+	const (
+		healRank1 = 2054
+		healRank4 = 6064
+	)
+	raw, err := os.ReadFile("../../data/curated/apl/priest-holy.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var file struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		t.Fatal(err)
+	}
+	cast := regexp.MustCompile(`"spellId":\s*(\d+)`)
+	for _, level := range []int{50, 55, 59} {
+		for _, race := range []string{"human", "dwarf", "night-elf", "gnome", "undead", "troll"} {
+			out, err := RewriteRotationRanks(file.Rotation, "priest-holy", "priest", BarePreset, race, level)
+			if err != nil {
+				t.Fatal(err)
+			}
+			ids := map[int]bool{}
+			for _, m := range cast.FindAllStringSubmatch(string(out), -1) {
+				id, _ := strconv.Atoi(m[1])
+				ids[id] = true
+			}
+			if ids[healRank1] {
+				t.Errorf("level %d %s: Heal casts rank 1 (%d)", level, race, healRank1)
+			}
+			if !ids[healRank4] {
+				t.Errorf("level %d %s: no Heal rank 4 (%d)", level, race, healRank4)
+			}
+		}
+	}
+}
