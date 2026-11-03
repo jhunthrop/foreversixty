@@ -3,7 +3,7 @@ title: Fury Warrior in Forever
 classSlug: warrior
 spec: fury
 role: dps
-build: 'FS1:1.60.1.70753:warrior:human:30305013002/05153105022011501/2:'
+build: 'FS1:1.60.1.70753:warrior:human:30305013002/05153105122010501/2:'
 recommendedRaces: [human, troll]
 statPriority: [Strength, Critical strike, Attack power, Hit, Melee haste, Agility]
 description: 'Dual wield in Berserker Stance: Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, Death Wish and Recklessness for the Executes.'
@@ -67,13 +67,14 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 - **Cruelty** and **Unbridled Wrath** (10 points): 5% crit, and a 60% chance at an extra rage point on every weapon hit. These are the first points you spend.
 - **Furious Precision** (3 points): 10% more hit with the off hand, which cuts the off-hand misses that cost you rage.
 - **Improved Execute** (2 points): Execute costs 10 rage instead of 15, so the rage you hold goes into damage.
+- **Raging Blows** (1 point): Whirlwind costs 3 less rage. You press it every time it comes off cooldown.
 - **Enrage** (2 points): a 30% chance at 4% more physical damage for 12 seconds after you get hit. Two points fill out the row.
 - **Improved Heroic Strike** (3 points): Heroic Strike costs 3 less. It is your rage dump, and you press it a lot.
 - **Improved Rend**, **Deep Wounds** and **Impale** (8 points in Arms): every crit leaves a bleed for 60% of your weapon's average damage and your ability crits hit 20% harder. Fury crits a lot, so this is the best use of the Arms points.
 - **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
 - **Anger Management** (1 point, behind 5 in **Improved Tactical Mastery**): a point of rage every 3 seconds in combat, 10 rage every half minute. Tactical Mastery itself does little for a warrior who never leaves Berserker Stance; it is the way in.
 
-The build also spends a point each in **Piercing Howl**, **Lingering Rage** and **Improved Intercept** on the way down the tree. It skips Improved Charge and Deflection: you walk into a raid boss instead of Charging it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
+The build also spends a point each in **Piercing Howl** and **Lingering Rage** on the way down the tree. It skips Improved Charge, Deflection and Improved Intercept: you walk into a raid boss instead of Charging or Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
 
 ## Rotation and priority
 
