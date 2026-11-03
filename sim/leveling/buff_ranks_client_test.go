@@ -18,10 +18,12 @@ import (
 const clientSpellconstDir = "../../data/builds/1.60.1.70009/spellconst/"
 
 // trueshotAuraSpellconstDir is the build Trueshot Aura's ranks are pinned
-// against: client 1.60.1.70707 cut them to 15/22/30/40/50 (from
-// 30/40/50/75/50), which the engine follows. The other buffs stay on
-// 70009, whose armor rows this reader still decodes.
-const trueshotAuraSpellconstDir = "../../data/builds/1.60.1.70707/spellconst/"
+// against: client 1.60.1.70707 cut them to 15/22/30/40/50, and the
+// server's 70753 hotfix push (2026-11-03) raised them to 20/35/50/75/100,
+// which the engine follows. The 70753 spellconst carries the push once
+// simconst runs over the layered raw/ (pipeline.hotfix_push). The other
+// buffs stay on 70009, whose armor rows this reader still decodes.
+const trueshotAuraSpellconstDir = "../../data/builds/1.60.1.70753/spellconst/"
 
 // SpellEffect aura codes and misc values the buffs use.
 const (
