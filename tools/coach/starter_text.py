@@ -39,6 +39,9 @@ PARENTHETICAL = re.compile(r"\s*\([^)]*\)")
 MARKDOWN_EMPHASIS = re.compile(r"\*+")
 SECONDS_SUFFIX = re.compile(r"(?<![\w.])(\d{1,3})\s?s\b(?!\w)")
 NUMBER = re.compile(r"(?<![\w.])(\d{1,3})(%?)(?!\w|\.\d|\d)")
+# A whole number written with a thousands comma, such as "1,400".
+THOUSANDS = re.compile(r"(?<![\w.,])(\d{1,3}),(\d{3})(?![\w,]|\.\d)")
+THOUSAND = 1000
 # Words about the site's own tooling that a player would not say, and their plain replacements.
 TOOL_SPEAK = {"The curated rotation": "The rotation", ", hence the reserve floor": ", so keep a mana reserve"}
 PERCENT_WORD = " percent"
@@ -56,6 +59,9 @@ STANDALONE_OPENERS = frozenset({"it", "its", "the", "once", "then", "recast", "h
 
 
 def number_words(n: int) -> str:
+    if n >= THOUSAND:
+        rest = f" {number_words(n % THOUSAND)}" if n % THOUSAND else ""
+        return f"{number_words(n // THOUSAND)} thousand{rest}"
     if n < 20:
         return SMALL[n]
     if n < 100:
@@ -65,7 +71,8 @@ def number_words(n: int) -> str:
 
 
 def spell_out_numbers(text: str) -> str:
-    """Replace whole integers up to 999 and halves (a percent sign, a bare 's' for seconds) with words."""
+    """Replace whole integers (a thousands comma allowed) and halves (a percent sign, a bare 's' for seconds) with words."""
+    text = THOUSANDS.sub(lambda m: number_words(int(m[1] + m[2])), text)
     text = SECONDS_SUFFIX.sub(lambda m: f"{m[1]} seconds", text)
     text = HALF.sub(lambda m: f"{number_words(int(m[1]))} and a half", text)
     words = NUMBER.sub(lambda m: number_words(int(m[1])) + (PERCENT_WORD if m[2] else ""), text)

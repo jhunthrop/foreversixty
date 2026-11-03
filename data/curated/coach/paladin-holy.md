@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/paladin/holy.md
   - data/curated/apl/paladin-holy.json
-  - data/builds/1.60.1.70707/spellconst/paladin.json
+  - data/builds/1.60.1.70753/spellconst/paladin.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,15 +14,21 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Holy Paladin as the site's guide describes it. Holy is the Paladin healing tree: reactive single-target healing built on Flash of Light, Holy Shock and Divine Favor, with mana sustained by Reverence and Illumination. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Holy Paladin as the site's guide describes it. Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Divine Favor into Holy Light when they are in trouble. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Flash of Light.
-- Divine Favor when the tank is in danger. The Holy Light that follows crits for certain, and the heal that spends it is the one the tank needs.
+- Swear Oath of Light on the tank a second or two before the pull.
+- Concentration Aura if nobody else in your group runs it.
+- Divine Favor, then Holy Light, when the tank drops below forty percent.
+- Holy Light on the tank below seventy percent, and Holy Shock on anyone below seventy percent, but only with mana to spare.
+- Flash of Light rank one on the tank below ninety percent.
 - Holy Shock only while your mana is keeping pace with the fight.
+- Light's Vigil.
+- Lay on Hands is a full heal on a twenty minute cooldown.
+- Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank. They drop the boss.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

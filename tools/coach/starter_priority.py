@@ -21,12 +21,21 @@ from starter_guide import (
     name_pattern,
     negated_terms,
 )
-from starter_text import digit_tokens, figures, plain_sentence, sentences, usable_sentence
+from starter_text import (
+    digit_tokens,
+    figures,
+    plain_sentence,
+    sentences,
+    usable_sentence,
+)
 
 NAME_NEAR_FRONT_CHARS = 40
 MIN_ABILITY_CHARS = 3
 ARTICLES = frozenset({"The", "A", "An"})
 SEMICOLON = "; "
+# Pronouns that, early in a sentence, refer to the sentence before it.
+BACK_POINTERS = frozenset({"it", "its", "they", "them", "this", "that", "these"})
+LEAD_WORDS = 2
 
 # Claims the rotation data makes that the guides do not, so a starter does not repeat them.
 CLAIMS_THE_GUIDE_DOES_NOT_MAKE = re.compile(
@@ -82,6 +91,11 @@ def is_orphan(name: str, sentence: str) -> bool:
     return sentence.split()[0] in ARTICLES and sentence.rstrip(".").endswith(name)
 
 
+def leans_on_the_last(sentence: str) -> bool:
+    """A pronoun in the first two words ("It is your cheapest heal", "Cast it on cooldown") points back."""
+    return any(word.strip(",:").lower() in BACK_POINTERS for word in sentence.split()[:LEAD_WORDS])
+
+
 def sentence_parts(sentence: str, pattern: re.Pattern[str]) -> list[list[str]]:
     """Semicolon parts that each lead with an ability stand alone; else the sentence, then its first clause."""
     parts = [p for p in sentence.split(SEMICOLON) if (m := pattern.search(p)) and leads_with(m[1], p)]
@@ -95,6 +109,8 @@ def guide_candidates(prose: str, names: set[str], negated: frozenset[str]) -> li
     pattern = name_pattern(names)
     found: list[tuple[str, str]] = []
     for sentence in guide_sentences(prose, names):
+        if leans_on_the_last(sentence):
+            continue
         for texts in sentence_parts(sentence, pattern):
             usable = (p for p in map(plain_sentence, texts) if p and not cites_negated(p, negated))
             plain = next(usable, None)
@@ -108,6 +124,12 @@ def with_name(name: str, sentence: str) -> str:
     return sentence if leads_with(name, sentence) else f"{name}: {sentence}"
 
 
+def candidate_names(items: list[dict[str, Any]], names: dict[int, str], castable: set[str]) -> set[str]:
+    """Every button a priority line may name: the class's pressed spells and the rotation's casts."""
+    cast_in_rotation = {names[i] for i in map(cast_spell_id, items) if i is not None and i in names}
+    return {n for n in castable | cast_in_rotation if len(n) >= MIN_ABILITY_CHARS}
+
+
 def priority_entries(
     items: list[dict[str, Any]],
     names: dict[int, str],
@@ -116,8 +138,7 @@ def priority_entries(
     guide: str,
 ) -> list[Entry]:
     """Guide-named buttons in the guide's order, each with a note or guide reason or bare (P1, P3, P4)."""
-    cast_in_rotation = {names[i] for i in map(cast_spell_id, items) if i is not None and i in names}
-    candidates_names = {n for n in castable | cast_in_rotation if len(n) >= MIN_ABILITY_CHARS}
+    candidates_names = candidate_names(items, names, castable)
     negated = frozenset(negated_terms(guide) | excluded_abilities(prose, candidates_names))
     notes = note_reasons(items, names, guide, negated)
     guide_reasons = guide_candidates(prose, candidates_names, negated)

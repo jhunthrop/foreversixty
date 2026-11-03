@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/mage/arcane.md
   - data/curated/apl/mage-arcane.json
-  - data/builds/1.60.1.70707/spellconst/mage.json
+  - data/builds/1.60.1.70753/spellconst/mage.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,17 +14,23 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Arcane Mage as the site's guide describes it. Arcane is the Mage burst spec: Arcane Power and Presence of Mind concentrate damage into short windows on the Arcane Blast loop. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Arcane Mage as the site's guide describes it. Arcane stacks Arcane Blast for spell damage, fills with Frostbolt, fires free Missiles on every Missile Barrage and saves its burst for Arcane Power. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Arcane Power on cooldown: a flat thirty percent damage cooldown with no cast time of its own.
-- Presence of Mind on cooldown: free and makes the next cast instant.
+- Mage Armor, Arcane Brilliance and your food buff go up before the pull.
+- Frostbolt fills the rest of the eighteen seconds once you stop blasting.
+- Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.
+- Evocation when you are nearly dry and more than thirty seconds of the fight remain.
+- Arcane Explosion is instant and hits everything within ten yards, so you stand in the pack with the tank and spam it.
+- Frost Nova.
+- Blink.
+- Blizzard: On spread packs or anything that hits hard, stand back and Blizzard instead.
 - Arcane Blast until its buff carries three stacks. Past three, keep blasting while your mana is ahead of the fight.
-- Arcane Missiles: Whenever Missile Barrage's proc is active, fire an empowered Arcane Missiles at top rank to cash in the proc.
-- Frostbolt is the filler once the Blast line stops.
+- Presence of Mind on cooldown, with Arcane Power.
+- Fire Blast.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

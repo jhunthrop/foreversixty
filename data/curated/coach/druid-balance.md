@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/druid/balance.md
   - data/curated/apl/druid-balance.json
-  - data/builds/1.60.1.70707/spellconst/druid.json
+  - data/builds/1.60.1.70753/spellconst/druid.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,17 +14,20 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Balance Druid as the site's guide describes it. Balance is the Druid ranged caster tree: Starfire, Moonfire and Insect Swarm damage from Moonkin Form, which gives the party a critical strike aura. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Balance Druid as the site's guide describes it. Balance is the Moonkin: two DoTs on the boss, Wrath to bank Eclipse charges, and fast Starfires to spend them, all from a form that gives your group crit. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Be in Moonkin Form before the pull and stay in it. The form gives you three percent more critical strike chance, and every spell in this loop can be cast from it.
-- Keep Moonfire ticking: with Improved Moonfire and Nature's Splendor one cast does more damage per second of casting than Starfire, and the raid character has the mana for it.
-- Keep Insect Swarm ticking; each refresh costs one global.
-- Starfire is the rest of the rotation once Moonfire and Insect Swarm are ticking, spending the Eclipse charges Wrath banked.
-- Eclipse: with no Eclipse charge banked, Wrath.
+- Shift into Moonkin Form and stay there.
+- When Moonfire is not ticking on the target.
+- When Insect Swarm is not ticking on the target.
+- With no Eclipse charge banked, cast Wrath.
+- Starfire everything else, spending the charges.
+- Innervate goes on you when you will otherwise run dry before the boss dies.
+- Faerie Fire.
+- Hurricane has no cooldown in Forever.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

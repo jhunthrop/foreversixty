@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/druid/feral.md
   - data/curated/apl/druid-feral.json
-  - data/builds/1.60.1.70707/spellconst/druid.json
+  - data/builds/1.60.1.70753/spellconst/druid.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,15 +14,21 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Feral Druid as the site's guide describes it. Feral Combat is one tree for two jobs: Cat Form melee DPS built on Rip and Ferocious Bite, and Bear Form tanking. This guide covers both. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Feral Druid as the site's guide describes it. The cat opens with Ravage, keeps Rip on the boss, Shreds from behind and turns mana into energy with Shifting Power. Bear tanking has [its own guide](/guides/druid/feral-bear). The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Shifting Power every time it comes off cooldown, but only at sixty energy or lower. Then the whole forty energy fits under the cap.
-- At five combo points, cast Rip if it isn't already running. Once Rip is up, spend five combo points on Ferocious Bite instead of letting them cap out uselessly.
+- At five combo points when Rip has under six seconds left.
 - Shred fills every other global, building combo points.
+- Prowl, walk behind the boss and Ravage as the tank pulls.
+- Pounce is the opener only when you cannot get behind.
+- Ferocious Bite is only for five points you would otherwise sit on while Rip still has time.
+- When the target has no Faerie Fire on it.
+- Claw: When the boss turns to you, or you cannot get behind, Claw in place of Shred until you can.
+- Cower.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
