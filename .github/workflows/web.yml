@@ -79,7 +79,20 @@ jobs:
     timeout-minutes: 45
     defaults: { run: { working-directory: web } }
     steps:
+      # The trees no job here reads stay out of the checkout, and data/builds comes from the
+      # cache (docs/runbooks/landing.md, "Checkout"). The unit tests hold the mobile codegen's
+      # drift checks, so this job keeps apps/ios and apps/android.
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-node@v4
         with:
           {
@@ -160,7 +173,20 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4]
     steps:
+      # As `build`'s checkout, less the two native apps, which nothing past the unit tests reads.
       - uses: actions/checkout@v4
+        with: &checkout
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+            !/apps/ios/
+            !/apps/android/
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-node@v4
         with:
           {
@@ -260,6 +286,8 @@ jobs:
     defaults: { run: { working-directory: web } }
     steps:
       - uses: actions/checkout@v4
+        with: *checkout
+      - uses: ./.github/actions/data-builds
       # The wasm's inputs, exactly: the engine pin, the sim/ and logs/ trees (sim/go.mod's
       # `go` line picks the toolchain, so it is in the sim tree), the Makefile and
       # tools/wasm-compress.sh (which writes the cached sim.wasm.gz and .br), and the active build's
@@ -383,6 +411,8 @@ jobs:
         shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v4
+        with: *checkout
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-node@v4
         with:
           {

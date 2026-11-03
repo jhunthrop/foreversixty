@@ -35,9 +35,38 @@ What runs where:
   its own Postgres and `-race -p 1`; weights in `api/test-weights.txt`. Refresh the weights
   from a recent log when one shard runs much longer than the others.
 
-- The slowest step under load is `actions/checkout`: the tree is ~2 GB (data/builds) and a
-  cold checkout took 5 to 16 minutes when a landing started ~35 jobs at once (2026-11-03).
-  No check job has a timeout under 20 minutes for that reason.
+- The slowest step under load was `actions/checkout`: the tree is ~3.5 GB and a cold checkout
+  took 5 to 16 minutes when a landing started ~35 jobs at once (2026-11-03). No check job has
+  a timeout under 20 minutes for that reason. See "Checkout" below.
+
+## Checkout
+
+Every check job that runs on a `land/**` push checks out only what it reads:
+
+- A non-cone sparse checkout (`/*` and then `!/<tree>/` lines) leaves out the heavy trees no
+  check reads: `data/diffs`, `design/reviews` (~0.9 GB of review captures; tests only ever
+  write there), `design/mocks` (the api keeps `design/mocks/2026-10-29-discord-gear-panel/`,
+  which a test reads), `docs/superpowers/reviews`, and `apps/ios` and `apps/android` in every
+  job but the apps' own, `mobile-codegen` and web `build` (its unit suite holds the codegen
+  drift checks). Everything else, small trees included, stays. A sparse checkout is also a
+  `blob:none` partial clone, so the left-out trees cost nothing to fetch.
+- `data/builds` (~2 GB on disk, every build, since several suites walk all of them) is left
+  out of the checkout too and put back by `.github/actions/data-builds`: a restore from the
+  Actions cache keyed by the tree's git id (`git rev-parse HEAD:data/builds`, ~150 MB
+  compressed), then `git sparse-checkout add` and a `git status` that fails the job unless
+  the tree is exactly the commit's. A miss checks it out from git. Only main saves the
+  cache: a `land/**` branch reads main's caches and no other branch's, so a batch whose
+  data/builds matches main's last pushed tree restores it, and one that moved it pays the git
+  checkout once.
+- Jobs that never read data/builds (addon, companion test, tools, logs bench) skip it.
+- ios keeps the full checkout: its tests read android's test resources, and on the macOS
+  runner the sparse partial clone measured slower than the full one (386 s against 78 s).
+- companion's `changes` needs the history for its merge base and no file: `fetch-depth: 0`
+  with `filter: blob:none`.
+
+A job that starts reading one of the left-out trees adds it back in its own checkout (a
+`/<tree>/` line after the `!` lines re-includes it). data.yml is held, and deploy and release
+jobs, which no landing runs, keep the full checkout.
 
 `tools/land.sh` needs `gh` (signed in) and `jq`. Tunables: `LAND_POLL_SECONDS` (30),
 `LAND_SETTLE_SECONDS` (90), `LAND_TIMEOUT_SECONDS` (5400). Tests: `bash tools/tests/test_land.sh`.

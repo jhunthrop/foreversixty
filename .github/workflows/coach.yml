@@ -43,7 +43,21 @@ jobs:
     # once (2026-11-03), and a timed-out checkout reads as a red landing.
     timeout-minutes: 30
     steps:
+      # The trees no job here reads stay out of the checkout, and data/builds comes from the
+      # cache (docs/runbooks/landing.md, "Checkout").
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+            !/apps/ios/
+            !/apps/android/
+      - uses: ./.github/actions/data-builds
       # The data pipeline's locked environment, the same pytest data.yml runs.
       - uses: astral-sh/setup-uv@v3
       - name: the data pipeline's environment

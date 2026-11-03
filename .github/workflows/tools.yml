@@ -39,7 +39,20 @@ jobs:
     # once (2026-11-03), and a timed-out checkout reads as a red landing.
     timeout-minutes: 30
     steps:
+      # The tests build their own scratch repositories and read only tools/, the Makefile and
+      # .github/: the heavy trees stay out (docs/runbooks/landing.md, "Checkout").
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+            !/apps/ios/
+            !/apps/android/
       - run: git config --global user.name tools-ci && git config --global user.email ci@foreversixty.gg
       - name: the activation scripts
         run: bash tools/tests/test_activation.sh

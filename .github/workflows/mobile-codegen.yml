@@ -43,7 +43,19 @@ jobs:
     timeout-minutes: 30
     defaults: { run: { working-directory: web } }
     steps:
+      # The generators' sources and both apps' outputs; the planner golden reads the active
+      # build's talents, so data/builds comes from the cache (docs/runbooks/landing.md, "Checkout").
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-node@v4
         with:
           node-version-file: web/.node-version

@@ -25,7 +25,23 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
     defaults: { run: { working-directory: api } }
     steps:
+      # The trees no job here reads stay out of the checkout, and data/builds comes from the
+      # cache (docs/runbooks/landing.md, "Checkout"). internal/discordbot's gear panel test
+      # reads the one mock it keeps.
       - uses: actions/checkout@v4
+        with: &checkout
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            /design/mocks/2026-10-29-discord-gear-panel/
+            !/docs/superpowers/reviews/
+            !/apps/ios/
+            !/apps/android/
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-go@v5
         with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
       # The workspace lists ./sim, whose development replace points at a
@@ -92,6 +108,8 @@ jobs:
       TEST_DATABASE_URL: postgres://forever:forever@localhost:5433/forever_test?sslmode=disable
     steps:
       - uses: actions/checkout@v4
+        with: *checkout
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-go@v5
         with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
       - uses: ./.github/actions/pin-engine
@@ -125,7 +143,10 @@ jobs:
       # A land/** run (tools/land.sh) is grouped by its sha and is never cancelled.
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
     steps:
+      # The image's build context is the checkout: every tree the Dockerfile copies is in it.
       - uses: actions/checkout@v4
+        with: *checkout
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-go@v5
         with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
       # ci-minutes lane, 2026-10-15: the image is built through buildx with
