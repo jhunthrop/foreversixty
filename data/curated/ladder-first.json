@@ -31,6 +31,19 @@
         }
       ]
     },
+    "paladin-protection": {
+      "reason": "Holy Shield, which the rotation casts from rank 1 at 30, sits on the 21-point row; a level 30 paladin's 21 points hold it, but the plain walk spends the 21st on Improved Righteous Fury. Taking Holy Shield as soon as it fits (and Shieldsworn as soon as it fits, the capstone the spine already gave band 40) raises band 30's threat beyond error on the tank fight, both factions, seeds 1 and 50001 (sim-accuracy round 12, hybrids); damage taken rises about 2% with the Improved Righteous Fury point gone. No other band changes.",
+      "first": [
+        {
+          "talent": "Holy Shield",
+          "rank": 1
+        },
+        {
+          "talent": "Shieldsworn",
+          "rank": 1
+        }
+      ]
+    },
     "priest-discipline": {
       "reason": "On band 20's own fight, Meditation ahead of Mental Agility's first rank beats the plain walk beyond error, both factions; on band 30's, Penance (which the rotation casts) ahead of Soul Warding does too; no other band changes.",
       "first": [
