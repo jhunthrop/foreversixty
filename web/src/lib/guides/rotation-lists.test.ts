@@ -177,6 +177,18 @@ describe('rotationListsFrom', () => {
     expect(opener[0]).toMatchObject({ rank: 5, icon: 'icon_hawk', clause: '10 s before the pull' });
   });
 
+  it('says "On the pull" for a cast at the pull itself', () => {
+    const atPull = {
+      rotation: {
+        prepullActions: [
+          { action: { castSpell: { spellId: { spellId: 11 } } }, doAtValue: { const: { val: '0s' } } },
+        ],
+      },
+    };
+    const { opener } = rotationListsFrom(lines, atPull, (id) => facts[id]);
+    expect(opener.map((item) => item.clause)).toEqual(['On the pull']);
+  });
+
   it('lists as cooldowns the lines whose spell has a cooldown of half a minute or more', () => {
     const { cooldowns } = rotationListsFrom(lines, apl, (id) => facts[id]);
     expect(cooldowns.map((item) => item.name)).toEqual(['Bestial Wrath', 'Trinkets, racials and potions']);
@@ -351,6 +363,18 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
 
   it('gives Evocation its icon from the spell icon data', () => {
     expect(items.find((item) => item.name === 'Evocation')?.icon).toBe('spell_nature_purge');
+  });
+
+  it('reads a lit talent the trainer data does not list from the talent file', () => {
+    const rogue = specCooldowns(
+      BUILD,
+      'rogue',
+      new Set(['Adrenaline Rush', 'Cold Blood']),
+      spellLookupFor(BUILD, 'rogue'),
+    );
+    expect(rogue.find((item) => item.name === 'Adrenaline Rush')?.clause).toBe('5 min cooldown');
+    expect(rogue.find((item) => item.name === 'Cold Blood')?.clause).toBe('3 min cooldown');
+    expect(rogue.map((item) => item.name)).not.toContain('Preparation');
   });
 
   it('takes a lit talent’s icon from the talent file', () => {

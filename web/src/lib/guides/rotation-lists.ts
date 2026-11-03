@@ -183,7 +183,7 @@ export function rotationListsFrom(
       name: facts.name,
       rank: facts.rank,
       icon: facts.icon ?? lineIcons.get(facts.name),
-      clause: `${secondsText(cast.secondsBefore)} before the pull`,
+      clause: cast.secondsBefore === 0 ? 'On the pull' : `${secondsText(cast.secondsBefore)} before the pull`,
     });
   }
 
@@ -348,11 +348,13 @@ export function specCooldowns(
   const trainables = (JSON.parse(readFileSync(trainFile, 'utf8')) as TrainableFile).trainables;
   const talentIcons = new Map<string, string>();
   const talentNames = new Set<string>();
+  const talentSpells: { name: string; icon: string; spellId: number }[] = [];
   if (existsSync(talentFile)) {
     for (const tree of (JSON.parse(readFileSync(talentFile, 'utf8')) as TalentNameFile).trees) {
       for (const talent of tree.talents) {
         talentNames.add(talent.name);
         talentIcons.set(talent.name, talent.icon);
+        talentSpells.push({ name: talent.name, icon: talent.icon, spellId: talent.spell_id });
       }
     }
   }
@@ -385,6 +387,24 @@ export function specCooldowns(
       clause: `${formatCooldown(cooldownMs)} cooldown`,
       cooldownMs,
       lit: isTalent,
+    });
+  }
+  // A talent spell the trainer data does not list (Adrenaline Rush, Cold Blood, Preparation)
+  // is read from the talent file's own spell.
+  for (const talent of talentSpells) {
+    if (seen.has(talent.name) || !litTalents.has(talent.name)) continue;
+    const facts = spellFacts(talent.spellId);
+    const cooldownMs = facts?.cooldownMs ?? 0;
+    if (cooldownMs < TALENT_COOLDOWN_FLOOR_MS || cooldownMs > COOLDOWN_CEILING_MS) continue;
+    seen.add(talent.name);
+    items.push({
+      spellId: talent.spellId,
+      name: talent.name,
+      rank: facts?.rank,
+      icon: facts?.icon ?? iconFor(build, talent.icon),
+      clause: `${formatCooldown(cooldownMs)} cooldown`,
+      cooldownMs,
+      lit: true,
     });
   }
   return items
