@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70753:warrior:human:03325213032515001/0505/005:'
 raidBuild: 'FS1:1.60.1.70753:warrior:human:02325213032515201/0505002/2:'
 recommendedRaces: [human, orc]
 statPriority: [Strength, Attack power, Critical strike, Hit, Melee haste, Agility]
-description: 'Arms warrior for Forever: talents with the why, the pull as it is played, the Battle Stance priority, the execute swap and two-target play.'
+description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'
 updated: 2026-11-02
 confidence: inferred
 sources:
@@ -43,10 +43,10 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 
 ### Strengths
 
-- Mortal Strike is the hardest hit per rage in the warrior kit
+- Mortal Strike is a big hit every 6 seconds that halves the healing on the target
 - Bloodthrill turns plain swings into extra Overpowers on a bleeding target
 - Rage held going into the execute phase becomes one huge Execute
-- Sweeping Strikes and Whirlwind cleave two packs of trash at once
+- Sweeping Strikes and Whirlwind hit up to four targets on trash
 
 ### Weaknesses
 
@@ -72,15 +72,15 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 - **Sweeping Strikes** and **Mortal Strike** (1 point each): Sweeping Strikes is the stepping stone to Mortal Strike and your two-target button. Mortal Strike is the spec.
 - **Cruelty** and **Unbridled Wrath** (10 points in Fury): 5% crit and a 60% chance at an extra rage point on every weapon hit.
 
-The leveling build parks the last five points in **Iron Will** (shorter stuns and fears) and three in **Deflection**, which matter while you level and in PvP.
+The level 60 build parks five points in **Iron Will** (shorter stuns and fears) and three in **Deflection**, which matter while you level and in PvP.
 
-The raid build moves those points into **Improved Slam** (2 points), which takes Slam's cast to one second, keeps your swing timer running through it and brings its cooldown down to 15 seconds. That puts a Slam between Mortal Strikes. **Improved Bloodrage** (2 points) makes every Bloodrage half again as strong, and two points of **Blood Craze** give back a little health after big hits. Open the [planner](/planner?class=warrior) to see both builds point by point.
+The raid build moves Iron Will and one point of Deflection into **Improved Slam** (2 points), which takes Slam's cast to one second, keeps your swing timer running through it and brings its cooldown down to 15 seconds. That puts a Slam between Mortal Strikes. **Improved Bloodrage** (2 points) makes every Bloodrage half again as strong, and two points of **Blood Craze** give back a little health after big hits. Open the [planner](/planner?class=warrior) to see both builds point by point.
 
 ## Rotation and priority
 
-**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage, then Charge in as the boss turns. You land with Charge's rage and Bloodrage still ticking, which is a Rend and a Mortal Strike in the first two globals.
+**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage, then Charge the boss as the tank engages it. You are still out of combat, so Charge works. You land with Charge's rage and Bloodrage still ticking, which is a Rend and a Mortal Strike in the first two globals.
 
-**Battle Stance.** Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target. Press Overpower the moment it lights up, even ahead of Mortal Strike, because the Overpower window closes and Mortal Strike will still be there a second later. Mortal Strike goes on cooldown otherwise. With Improved Slam, Slam fills the gap between Mortal Strikes.
+**Battle Stance.** Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target. Press Overpower the moment it lights up, even ahead of Mortal Strike: it is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later. Mortal Strike goes on cooldown otherwise. With Improved Slam, Slam fills the gap between Mortal Strikes.
 
 **Rage.** Bloodrage on cooldown whenever you are under 80 rage. Heroic Strike only when you are about to cap at 90 or more: below that, every point is worth more in Mortal Strike, Overpower and Execute. If a shaman drops Windfury Totem in your group, Hamstring on any free global: it is a cheap main-hand hit that can trigger the totem's extra attack. Without Windfury, never Hamstring for damage.
 
@@ -106,8 +106,8 @@ Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes: press it wi
 
 ## Professions
 
-Blacksmithing and Mining. Blacksmithing makes Arcanite Reaper, and Mining feeds it. Engineering is the PvP choice for its grenades.
+Blacksmithing and Mining. Blacksmithing makes Arcanite Champion, and Mining feeds it. Engineering is the PvP choice for its grenades.
 
 ## Leveling
 
-Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, Victory Rush after every kill, and Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Take Improved Overpower as soon as the second row opens and Bloodthrill at 30: together they turn every pull into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.
+Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, Victory Rush after every kill, and Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Take Improved Overpower and Bloodthrill as soon as the build reaches them: together they turn every pull into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.

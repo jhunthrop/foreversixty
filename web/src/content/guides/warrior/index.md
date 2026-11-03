@@ -3,7 +3,7 @@ title: Warrior in Forever
 classSlug: warrior
 description: 'Warrior in Forever: the three specs, how rage shapes all of them, and what changed from 1.12.'
 updated: 2026-11-02
-confidence: single-source
+confidence: confirmed
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
@@ -19,12 +19,12 @@ sources:
     kind: community
 ---
 
-Warrior is the pure melee class: plate, a weapon and a rage bar that fills from the hits you land and the hits you take. Nothing in the kit is free at the pull, so every warrior plays around rage: Bloodrage before the fight, Charge into it, and nothing spent that a bigger button needs.
+Warrior is the pure melee class: plate, a weapon and a rage bar that fills from the hits you land and the hits you take. Nothing in the kit is free at the pull, so every warrior plays around rage: Bloodrage before the fight, and nothing spent that a bigger button needs.
 
 The three specs:
 
 - **Arms** swings a two-hander from Battle Stance. Rend opens Overpower through Bloodthrill, Mortal Strike cuts the boss's healing in half, and the execute phase swaps to Berserker Stance for Recklessness.
-- **Fury** dual-wields in Berserker Stance. Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, and Death Wish with Recklessness held for the Executes.
+- **Fury** dual-wields in Berserker Stance. Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, and Death Wish and Recklessness for the execute phase.
 - **Protection** carries a shield in Defensive Stance. Shield Slam and Revenge for threat, Shield Block and Thunder Clap for the damage you take, Sunder Armor on every spare global.
 
 Every one of the original eight races can be a warrior, and so can the Skyborne, on either faction.

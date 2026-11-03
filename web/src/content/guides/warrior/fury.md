@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70753:warrior:human:34320003002/05153105022011501/2:'
 recommendedRaces: [human, troll]
 statPriority: [Strength, Critical strike, Attack power, Hit, Melee haste, Agility]
-description: 'Fury warrior for Forever: talents with the why, the pull, Bloodthirst and Whirlwind, Heroic Strike thresholds and the Death Wish execute.'
+description: 'Dual wield in Berserker Stance: Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, Death Wish and Recklessness for the Executes.'
 updated: 2026-11-02
 confidence: inferred
 sources:
@@ -61,13 +61,13 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 ## Talents and builds
 
 - **Flurry** (5 points): 25% more attack speed for your next three swings after any melee crit. With two weapons and Cruelty it is up most of the fight, and every extra swing is extra rage.
-- **Bloodthirst** (1 point): an instant hit for 45% of your attack power plus 30, every 6 seconds. Your best hit per rage.
+- **Bloodthirst** (1 point): an instant hit that scales with 45% of your attack power, every 6 seconds. Your best hit per rage.
 - **Death Wish** (1 point): 20% more physical damage and Fear immunity for 30 seconds, at the cost of 5% more damage taken.
-- **Dual Wield Specialization** (5 points): 25% more off-hand damage and 50% more rage from off-hand swings. Take all five before anything else past row three.
-- **Cruelty** and **Unbridled Wrath** (10 points): 5% crit, and a 60% chance at an extra rage point on every weapon hit. Both are the first ten points you spend.
-- **Furious Precision** (3 points): 10% more hit with the off hand, so your off-hand swings stop missing.
+- **Dual Wield Specialization** (5 points): 25% more off-hand damage and 50% more rage from off-hand swings. The core talent of a two-weapon build.
+- **Cruelty** and **Unbridled Wrath** (10 points): 5% crit, and a 60% chance at an extra rage point on every weapon hit. These are the first points you spend.
+- **Furious Precision** (3 points): 10% more hit with the off hand, which cuts the off-hand misses that cost you rage.
 - **Improved Execute** (2 points): Execute costs 10 rage instead of 15, so the rage you hold goes into damage.
-- **Enrage** (2 points): a chance at 10% more physical damage for 12 seconds after you get hit. Two points fill out the row.
+- **Enrage** (2 points): a 30% chance at 4% more physical damage for 12 seconds after you get hit. Two points fill out the row.
 - **Improved Heroic Strike** (3 points): Heroic Strike costs 3 less. It is your rage dump, and you press it a lot.
 - **Improved Rend**, **Deep Wounds** and **Impale** (8 points in Arms): every crit leaves a bleed for 60% of your weapon's average damage and your ability crits hit 20% harder. Fury crits a lot, so this is the best use of the Arms points.
 - **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
@@ -112,4 +112,4 @@ Blacksmithing and Mining. Blacksmithing makes melee weapons and armor, and Minin
 
 ## Leveling
 
-Fury levels fastest once Bloodthirst and Whirlwind are in, but it needs two good one-handers to get there. Before 36 you fight in Battle Stance, so Overpower is still in your bar: press it whenever it lights. Charge every pull, Victory Rush after every kill, and Bloodrage on cooldown. From 36 you live in Berserker Stance, and Whirlwind makes pulls of two or three quick.
+Fury levels fastest once Bloodthirst and Whirlwind are in, but it needs two good one-handers to get there. Until Whirlwind arrives at 36 you fight in Battle Stance, so Overpower is still in your bar: press it whenever it lights. Charge every pull, Victory Rush after every kill, and Bloodrage on cooldown. Berserker Stance trains at 30, and from 36 Whirlwind makes it your home stance and pulls of two or three quick.

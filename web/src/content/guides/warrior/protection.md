@@ -20,7 +20,7 @@ statPriority:
     Critical strike,
     Expertise,
   ]
-description: 'Protection warrior for Forever: talents with the why, the pull, Shield Block and Revenge, Thunder Clap and the emergency buttons.'
+description: 'Shield tank in Defensive Stance: Shield Slam and Revenge for threat, Shield Block and Thunder Clap for the hits, Sunder Armor in between.'
 updated: 2026-11-02
 confidence: inferred
 sources:
@@ -53,7 +53,7 @@ Protection is the shield tank: Defensive Stance all fight, Shield Slam and Reven
 
 ### Strengths
 
-- Shield Slam and Revenge are huge threat for very little rage
+- Revenge is huge threat for almost no rage, and Shield Slam carries a very high amount of threat
 - Shield Block is off the global cooldown and up most of the fight
 - Every block, dodge and parry pays rage back through Shield Specialization and Master of Defense
 - Last Stand and Shield Wall give the healers time when a fight goes wrong
@@ -83,21 +83,21 @@ Protection is the shield tank: Defensive Stance all fight, Shield Slam and Reven
 - **Improved Bloodrage** (2 points): half again as much rage from every Bloodrage.
 - **Concussion Blow** (1 point): a 5 second stun, and the point that unlocks Shield Slam.
 
-In Arms the build takes **Deflection** for 5% parry, **Improved Heroic Strike** for a cheaper rage dump, and **Improved Rend** into **Deep Wounds**. Improved Tactical Mastery and Anger Management are left out: a tank who stays in Defensive Stance gets more from Bastion's last ranks and Improved Bloodrage.
+The Arms points go to **Deflection** for 5% parry, **Improved Heroic Strike** for a cheaper rage dump, and **Improved Rend** into **Deep Wounds**. Improved Tactical Mastery and Anger Management are left out: a tank who stays in Defensive Stance gets more from Bastion's last ranks and Improved Bloodrage.
 
 Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you pull with Charge, **Improved Shield Bash** for a boss with a cast you must silence, and **Iron Will** for a fight full of stuns and fears. Open the [planner](/planner?class=warrior) to see the build point by point.
 
 ## Rotation and priority
 
-**The pull.** Bloodrage before you pull so your first Sunder Armor or Shield Slam is paid for, then open with whichever is ready. On a boss that turns toward the raid, get a Sunder and a Revenge in before the damage dealers start. Taunt only to take a target back; it does nothing for you on a boss you already hold.
+**The pull.** Bloodrage before you pull so your first Sunder Armor or Shield Slam is paid for, then open with Shield Slam or Sunder. Revenge lights the first time you block, dodge or parry; press it then. Let the damage dealers start after your first two or three globals. Taunt only to take a target back; it does nothing for you on a boss you already hold.
 
-**The priority.** Shield Block whenever it is down: it is off the global cooldown, it lasts 7 seconds on a 5 second cooldown, and every block it gives you also lights Revenge. Revenge the moment it lights. Shield Slam on cooldown. Keep Thunder Clap on the boss and refresh it in its last 3 seconds; the attack speed slow is the biggest cut to the damage you take after Shield Block. Sunder Armor on every free global: five stacks for the raid, then flat threat on every cast. Heroic Strike with spare rage above 40.
+**The priority.** Shield Block whenever it is down: it is off the global cooldown, it lasts 7 seconds on a 5 second cooldown, and every block it gives you also lights Revenge. Revenge the moment it lights. Shield Slam on cooldown. Keep Thunder Clap on the boss and refresh it in its last 3 seconds: its attack speed slow is a straight cut to the damage you take. Sunder Armor on every free global: five stacks for the raid, then flat threat on every cast. Heroic Strike with spare rage above 40.
 
-**Demoralizing Shout.** Keep it on any boss that hits you with attack power, unless a druid or another warrior already holds it. It is a straight cut to every hit you take.
+**Demoralizing Shout.** Keep it on any boss whose melee hits scale with attack power, unless a druid or another warrior already holds it, and refresh it on a free global.
 
 **Shield Block timing.** It is your mitigation and your rage engine at once, so it never waits for a big hit: keep it up. On a boss that crushes, it is also what pushes crushing blows off the table.
 
-**Emergencies.** Last Stand below 35% health. Shield Wall below 40% for 60% less damage taken over 12 seconds, on a 15 minute cooldown. Call them on the fight you know, before the health bar says so.
+**Emergencies.** Last Stand below 35% health. Shield Wall below 40% for 60% less damage taken over 12 seconds, on a 15 minute cooldown. On a fight you know, press Shield Wall before the big hit lands rather than after.
 
 **Adds.** Thunder Clap hits up to four targets and slows all of them. Sunder and Revenge the add the healers can least afford, and Taunt anything that peels off.
 
@@ -113,7 +113,7 @@ Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for Stamina an
 
 ## Races
 
-Dwarf and Tauren are the tank picks; Tauren's Endurance is 5% more health. Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes: press it at the pull for threat. Night Elf's Quickness adds dodge.
+Dwarf and Tauren are the tank picks; Tauren's Endurance is 5% more health. Night Elf's Quickness adds dodge.
 
 ## Professions
 
@@ -121,4 +121,4 @@ Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feed
 
 ## Leveling
 
-Level as Arms or Fury and keep a shield in your bags for dungeons: Protection is slow solo. Learn Defensive Stance at 10 and Shield Block at 16, and you can tank every dungeon on the way up in damage talents with a shield on. Switch to Protection at 60, or as soon as you are the group's main tank.
+Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, the Protection tables above show the build for each level range.
