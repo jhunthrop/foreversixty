@@ -42,7 +42,6 @@ export const RACIAL_PICKS: Readonly<Record<string, Picks>> = {
   dwarf: {
     default: ["Artisan's Precision"],
     healer: ['Stoneform'],
-    caster: ['Stoneform'],
     tank: ['Stoneform'],
   },
   'night-elf': { default: ["Elune's Light"], tank: ['Quickness'] },
