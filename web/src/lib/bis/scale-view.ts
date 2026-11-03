@@ -106,7 +106,10 @@ export interface ScaleRow {
 
 /** The per-point divisor that makes the top measurable per-point stat read exactly 1.00: the
  *  published anchor can be a per-1% stat (a tank's expertise), which is no table row. */
-function perPointDivisor(weights: readonly BisStatWeight[], byStat: ReadonlyMap<string, ScaleFactors>): number {
+function perPointDivisor(
+  weights: readonly BisStatWeight[],
+  byStat: ReadonlyMap<string, ScaleFactors>,
+): number {
   const scales = weights
     .filter((w) => perPercentOf(w.stat) === undefined && readingOf(w) === 'value')
     .map((w) => byStat.get(w.stat)?.scaleFactor ?? 0)
