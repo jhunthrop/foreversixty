@@ -72,7 +72,7 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 **Before the pull.** Be in Dire Bear Form. Enrage a second before you pull: it gives you rage up front and 2 a second for 10 seconds. It also costs armor for those 10 seconds, so the dip is over 9 seconds into the fight.
 
-**Pull.** Faerie Fire from range. In Bear Form it is free, on a 6 second cooldown, and it carries threat, so it is your pull and your threat on the run in. Then Lacerate, Primal Bite, and Maul queued on your swing.
+**Pull.** Faerie Fire from range. In Bear Form it is free, on a 6 second cooldown, and it carries threat, so it is your pull and your threat on the run in. Then Primal Bite, Lacerate, and Maul queued on your swing.
 
 **Priority.**
 
@@ -84,7 +84,7 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 **Adds.** Swipe moves to the top on a pack, with Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.
 
-**Cooldowns.** Barkskin is 20% less damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns rage into health and in Forever can heal you for your whole health bar given the rage; use it under half health with rage to spare, not at the pull. Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
+**Cooldowns.** Barkskin takes 20% off physical damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns rage into health and in Forever can heal you for your whole health bar given the rage; use it under half health with rage to spare, not at the pull. Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
 
 **There is no Savage Defense in Forever.** Your mitigation is armor, Dodge, Barkskin and your healers.
 

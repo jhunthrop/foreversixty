@@ -13,6 +13,7 @@ statPriority:
     Dodge,
     Parry,
     Block,
+    Block value,
     Strength,
     Agility,
     Attack power,
@@ -79,7 +80,7 @@ The build is 10 Holy, 33 Protection and 8 Retribution.
 - **Iron Creed** (3 points): 30% more threat on Holy Strike, and while Righteous Fury is on each Holy Strike cuts your damage taken by 6% for 6 seconds.
 - **Shieldsworn** (1 point): the capstone. Holy Strike comes back every 6 seconds, which keeps Iron Creed up, and each strike fires Holy Shield's damage and Shield Specialization's mana without spending a charge. For 6 seconds after a strike you can block spells too.
 
-**Toughness** (10% armor from items) and a point of **Divine Intellect** fill the tree. In Retribution, **Deflection** is 5% parry, the only parry talent a paladin has, and **Conviction** is 6% crit while you hold a melee weapon. In Holy, **Divine Strength** is 10% Strength and **Improved Seals** adds 15% to Seal of Fury and its Judgement.
+**Toughness** (10% armor from items) and a point of **Divine Intellect** fill the tree. In Retribution, **Deflection** is 5% parry, the only parry talent a paladin has, and **Conviction** is 6% crit on everything you do. In Holy, **Divine Strength** is 10% Strength and **Improved Seals** adds 15% to Seal of Fury and its Judgement.
 
 Left out: Reckoning (extra attacks after a block or a crit, worth less than Conviction), Stoicism, Guardian's Favor and Improved Hammer of Justice. Pick those up for PvP or utility. There is no Blessing of Sanctuary in Forever, so the tree gives you no blessing of your own. Open the planner at [/planner?class=paladin](/planner?class=paladin) to change it.
 
@@ -110,7 +111,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 ## Stat priority
 
-The table weighs every stat by how much it lowers the damage you take and how spiky it is, then by threat. Defense, Block, Dodge and Parry sit at the top because they take hits away or blunt them: Defense also lowers the boss's chance to crit you, and Block feeds Holy Shield's damage, Redoubt and Shield Specialization's mana. Expertise heads the table because a boss that dodges or parries your Holy Strike and Judgement is threat you never made. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
+Expertise and Defense come first. A boss that dodges or parries your Holy Strike and Judgement is threat you never made, and Defense takes hits away and lowers the boss's chance to crit you. Block, Dodge and Parry come next because they take hits away or blunt them, and Block also feeds Holy Shield's damage, Redoubt and Shield Specialization's mana. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
 
 ## Best in slot
 

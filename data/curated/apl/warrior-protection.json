@@ -275,7 +275,7 @@
         }
       },
       {
-        "notes": "Whenever it drops. Below 60 no raid warrior shouts for you; at 60 a raid warrior's shout is the same aura, so this line idles.",
+        "notes": "Whenever it drops. In a raid at 60 another warrior's Battle Shout is the same aura, so you only shout when nobody else has.",
         "action": {
           "condition": {
             "not": {

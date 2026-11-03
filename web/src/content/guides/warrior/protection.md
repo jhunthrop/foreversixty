@@ -13,6 +13,7 @@ statPriority:
     Dodge,
     Parry,
     Block,
+    Block value,
     Strength,
     Agility,
     Attack power,

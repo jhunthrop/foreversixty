@@ -49,7 +49,7 @@ Elemental is the shaman's caster spec: Flame Shock and Lava Burst for the big hi
 
 ## Talents and builds
 
-The leveling build spends every point in Elemental until 50. From 50 the rest go to Restoration: Tidal Focus for 5% spell hit and all three points of Mindfulness, so half your mana regeneration keeps running while you cast. At 60 it adds Natural Grace, Totemic Focus and Improved Reincarnation: less threat, cheaper totems and a shorter Reincarnation cooldown. Tidal Focus comes first because a Lightning Bolt that misses is the most expensive cast you make; Improved Healing Wave only speeds up a heal your damage rotation never casts. The raid build takes Elemental Mastery as the 31st point, then trades the leveling comforts for Thundering Strikes and Ancestral Knowledge (10% more Intellect), and keeps Tidal Focus.
+The leveling build fills Elemental to 30 points by 40 and puts three points into Thundering Strikes for 3% crit. From 50 the rest go to Restoration: Tidal Focus for 5% spell hit and all three points of Mindfulness, so half your mana regeneration keeps running while you cast. At 60 it adds Natural Grace, Totemic Focus and Improved Reincarnation: less threat, cheaper totems and a shorter Reincarnation cooldown. Tidal Focus comes first because a Lightning Bolt that misses is the most expensive cast you make; Improved Healing Wave only speeds up a heal your damage rotation never casts. The raid build takes Elemental Mastery as the 31st point, then trades the leveling comforts for the last two points of Thundering Strikes and Ancestral Knowledge (10% more Intellect), and keeps Tidal Focus.
 
 Elemental Mastery is reworked in Forever: for 15 seconds Lightning Bolt and Lava Burst cast half a second faster and Chain Lightning has no cooldown. With Elemental Alacrity that makes Lightning Bolt a 1.5 second cast. It no longer guarantees a crit.
 
@@ -88,7 +88,7 @@ Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf'
 
 ## Best in slot
 
-Your raid set leans on Leatherworking and Tailoring crafts that bind when equipped, so you can buy them. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
+Your raid set leans on Leatherworking and Tailoring crafts. Most bind when equipped and can be bought, but check each one: a piece that binds on pickup needs the profession yourself. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
 
 ## Enchants and consumables
 
@@ -102,7 +102,7 @@ On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% 
 
 ## Professions
 
-Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Your Leatherworking pieces bind when equipped and can be bought, so your second profession is free: Alchemy for your own flasks and mana potions, or a gathering profession to pay for them.
+Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Most Leatherworking pieces bind when equipped and can be bought, so unless your list carries one that binds on pickup, your second profession is free: Alchemy for your own flasks and mana potions, or a gathering profession to pay for them.
 
 ## Leveling
 

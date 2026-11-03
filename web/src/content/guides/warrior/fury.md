@@ -78,7 +78,7 @@ The build also spends a point each in **Piercing Howl** and **Lingering Rage** o
 
 ## Rotation and priority
 
-**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: Charging in Battle Stance and swapping back loses everything above 10 rage on the swap, which cancels out what the Charge gave you. On trash and while leveling, Charge or Intercept in freely.
+**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: the Bloodrage you pressed before the pull has already put you in combat, so Charge is gone, and a stance dance only costs you globals. On trash and while leveling, Charge or Intercept in freely.
 
 **The priority.** Bloodthirst on cooldown. Whirlwind on cooldown right behind it, every time it is ready, even on a single target. Bloodrage on cooldown whenever you are under 80 rage.
 

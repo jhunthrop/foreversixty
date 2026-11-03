@@ -58,7 +58,7 @@
         }
       },
       {
-        "notes": "Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within 30 yards.",
+        "notes": "Strength of Earth Totem whenever it is down: it is Strength for every melee player near you, and in Forever the totem reaches the whole raid within 30 yards.",
         "action": {
           "condition": {
             "cmp": {

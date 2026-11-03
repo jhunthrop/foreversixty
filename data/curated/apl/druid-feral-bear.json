@@ -40,7 +40,7 @@
         }
       },
       {
-        "notes": "On cooldown: 20% less damage taken for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
+        "notes": "On cooldown: 20% less physical damage for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
         "action": {
           "castSpell": {
             "spellId": {
