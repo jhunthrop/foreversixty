@@ -143,8 +143,9 @@ const huntersMarkLevel = 6
 //     Mongoose Bite's window only against a marked target, and a
 //     Survival hunter marks his target before anything else.
 //
-// Priest Power Word: Fortitude is stamina and Divine Spirit a
-// Discipline talent, so priests carry nothing; Inner Fire (armor only)
+// Priest Power Word: Fortitude is stamina and Divine Spirit spirit (a
+// trainer spell from 30 in Forever, not a talent), so priests carry
+// nothing of their own; Inner Fire (armor only)
 // and Lightning Shield (reactive) are not modelled as buffs.
 func KitBuffs(spec string, level int) []string {
 	switch {
