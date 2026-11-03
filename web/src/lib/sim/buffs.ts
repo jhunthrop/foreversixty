@@ -81,6 +81,7 @@ const BY_CONSUMES_FIELD: Record<string, BuffGroupId> = {
   fire_power_buff: 'battle-elixir',
   frost_power_buff: 'battle-elixir',
   shadow_power_buff: 'battle-elixir',
+  holy_power_buff: 'battle-elixir',
   hit_consumable: 'battle-elixir',
   bogling_root: 'battle-elixir',
   dragon_breath_chili: 'battle-elixir',
@@ -154,14 +155,16 @@ export const CATALOGUE: readonly BuffRow[] = buildCatalogue(file);
  * (aura 270/271, damage taken from the caster), so the raid flags give the raid nothing and
  * each class keeps its own from its talents. Curse of Shadow (casters lane, engine 35fa13a5a,
  * round 9): Forever deleted it from the client (no SpellName or SpellEffect row for 17862 or
- * 17937 in 70707); Curse of the Elements covers every school. Winter's Chill (auras lane, engine d1dc542c7,
+ * 17937 in 70707); Curse of the Elements covers every school. Elixir of Greater Firepower (holypower lane, engine 46be83bcd, round 12): Forever made its item, 21546, the Elixir of Holy Power, so the fire id gives nothing; Lesser Arcane Elixir is likewise deprecated in the engine. Winter's Chill (auras lane, engine d1dc542c7,
  * round 9): 12579 is aura 271, the applying mage's own, so the raid flag applies nothing. They stay in the catalogue and the request
  * vocabulary, so a saved sim that named one still runs.
  */
 export const INERT_BUFFS: readonly string[] = [
   'curse_of_shadow',
+  'elixir_of_greater_firepower',
   'improved_scorch',
   'improved_shadow_bolt',
+  'lesser_arcane_elixir',
   'shadow_weaving',
   'stormstrike',
   'winters_chill',
