@@ -55,7 +55,7 @@ One build does everything: 20 in Assassination for Malice, Ruthlessness, Murder,
 - **Thousand Cuts** (1 point): every Rupture tick makes your next Hemorrhage cheaper, stacking five times. With Rupture always up, Hemorrhage costs a lot less than it says.
 - **Quietus** (5 points): Hemorrhage and Ghostly Strike hit 10% harder below 35% health.
 - **Ghostly Strike** (1 point): 180% weapon damage with a dagger and 15% dodge for 7 seconds, on a 20 second cooldown.
-- **Premeditation** (1 point): two combo points before you open, on a 2 minute cooldown.
+- **Premeditation** (1 point): two combo points on a 2 minute cooldown. In Forever it needs no Stealth, so it opens the fight and comes back in it.
 - **Initiative** (3 points): Garrote, Ambush and Cheap Shot add a combo point.
 
 Opportunity adds 10% to Garrote and Ambush. Dirty Deeds makes Garrote and Cheap Shot cheaper and lets Garrote go in from the front. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. Cutthroat only fires off Backstab, which this build never casts, so Quietus takes those points.
@@ -66,7 +66,7 @@ Opportunity adds 10% to Garrote and Ambush. Dirty Deeds makes Garrote and Cheap 
 
 ### The pull
 
-Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush is the opener for anything that will die fast, not for a boss. Then **Rupture** right away at four points.
+Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. It needs no Stealth in Forever, so press it again every 2 minutes in the fight whenever you have three combo points or fewer, and spend them inside the 20 seconds. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush is the opener for anything that will die fast, not for a boss. Then **Rupture** right away at four points.
 
 Every rogue learns **Poised** at 18: at full energy out of combat, your next ability costs less, so open from full energy.
 
