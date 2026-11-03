@@ -120,6 +120,6 @@ Tailoring makes a lot of the cloth you wear before raids, so it pays for itself.
 
 Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap after every kill lets you chain pulls without drinking.
 
-The strips below take Shadow Focus and Blackout first, which is right for dungeon bosses. For questing, take Spirit Tap first at level 10, then Improved Shadow Word: Pain and Improved Mind Blast, so Mind Flay is your point at 20. Improved Mind Flay, Vampiric Embrace and Shadow Weaving come next, and every point in Shadow gets you to Shadowform at 40. Shadow Focus can wait until dungeons: mobs at your level rarely resist.
+The strips below take Shadow Focus and Blackout first, which is right for dungeon bosses. For questing, take Spirit Tap first at level 10, then Improved Shadow Word: Pain and Improved Mind Blast, so Mind Flay is your point at 20. Improved Mind Flay, Vampiric Embrace and Shadow Weaving come next, and every point in Shadow gets you to Shadowform at 40.
 
 In Shadowform you cannot cast Renew or a heal. Power Word: Shield still works, so shield before the pull and let Vampiric Embrace and Devouring Plague top you up. Leave the form only for a heal you really need. Solo, cast Shadow Word: Death only when it will kill or you are well above half health: the backlash is real.

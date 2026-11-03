@@ -77,7 +77,7 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 **Overheal.** Start Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Heal; Prayer of Mending and Renew cover those.
 
-**Inner Focus.** Spend it on a Prayer of Healing, your most expensive spell, or on a Greater Heal you need to crit. Do not let it fall on a Renew.
+**Inner Focus.** Spend it on a Prayer of Healing, your most expensive spell, or on a Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
 
 **Assignments.** In a raid you will be on a group or on a tank. On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. On a tank, Renew, Prayer of Mending and Heal, with Flash Heal for the spikes. Either way, never stand where the boss's cleave or the raid's AoE lands on you: Twilight Focus helps, it does not make you immune.
 

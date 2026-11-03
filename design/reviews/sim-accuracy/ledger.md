@@ -15,6 +15,10 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 9 | 2026-11-02 | design/reviews/2026-11-02-sim-audit-round9/ (warlock, casters, physical, hybrids, healers, auras, items, crit, ranks, ranker, platform, integration) | 67 fixed (warlock 1, casters 4, physical 10, hybrids 6, healers 6, auras 11, items 5, crit 8, ranks 3, ranker 6, platform 3, integrator 4) | 4d3129cae | no |
 | 10 | 2026-11-02 | design/reviews/2026-11-03-sim-audit-round10/ (warlock, casters, physical, hybrids, healers, healprofile, ranks, crit, auras, items, ranker, platform, integration) | 88 fixed (warlock 3, casters 5, physical 6, hybrids 5, healers 11, healprofile 3, ranks 3, crit 5, auras 3, items 30, ranker 4, platform 9, integrator 1) | cfcb76e80 | no |
 
+## Launch-day guide lanes (2026-11-02)
+
+- **Priest, Shadow builds.** Both Shadow builds move the Discipline points that do nothing for a Shadow priest (Power in Light and Holy Precision touch only Smite, Penance and Holy spells; the raid build's Improved Power Word: Shield and Wand Specialization are never used) into Mental Strength 5 and Silent Resolve 1. Leveling build +2.5% / +2.9% at bare 60, raid build +0.5% at raid 60 (alliance / horde, 10,000 iterations, seeds 1 and 50001). Coordinator ruling: the raid build is accepted below the 1% adoption threshold, because moving points out of talents with no effect for the spec fixes a build defect; it is not an optimization the rule gates.
+
 ## Round 10 at a glance
 
 The owner's rulings this round:
