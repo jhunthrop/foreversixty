@@ -8,7 +8,7 @@
 // (contract 10.4), owned by the data lane; until a build publishes one, every row falls
 // back.
 import { dataUrl, fetchJson } from '../planner/load';
-import { IMPROVED_SUFFIX } from './buffs';
+import { IMPROVED_SUFFIX } from './buff-id';
 import { simCopy } from './copy';
 import { humanise } from './humanise';
 

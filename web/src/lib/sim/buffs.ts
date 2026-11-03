@@ -11,8 +11,9 @@
 // because "Battle Shout" and "Battle Shout (improved)" both ticked is not a state the
 // engine has.
 import generated from '../../data/generated/sim-ids.json';
+import { IMPROVED_SUFFIX } from './buff-id';
 
-export const IMPROVED_SUFFIX = ':improved';
+export { IMPROVED_SUFFIX };
 
 export type BuffGroupId =
   | 'raid-buffs'
