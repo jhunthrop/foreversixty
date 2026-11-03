@@ -13,7 +13,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 50000.0,
-      "description": "Summons an Eye of Kilrogg and binds your vision to it.  The eye moves quickly but is very fragile."
+      "description": "Summons an Eye of Kilrogg and binds your vision to it.  The eye moves quickly but is very fragile.",
+      "icon": "spell_shadow_evileye"
     },
     "132": {
       "name": "Detect Invisibility",
@@ -26,7 +27,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Allows the friendly target to detect lesser invisibility for 10 min."
+      "description": "Allows the friendly target to detect lesser invisibility for 10 min.",
+      "icon": "spell_shadow_detectinvisibility"
     },
     "172": {
       "name": "Corruption",
@@ -39,7 +41,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Corrupts the target, causing 40 Shadow damage over 12 sec."
+      "description": "Corrupts the target, causing 40 Shadow damage over 12 sec.",
+      "icon": "spell_shadow_abominationexplosion"
     },
     "348": {
       "name": "Immolate",
@@ -52,7 +55,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${8*$<mult>} Fire damage and then an additional 15 Fire damage over 15 sec."
+      "description": "Burns the enemy for ${8*$<mult>} Fire damage and then an additional 15 Fire damage over 15 sec.",
+      "icon": "spell_fire_immolation"
     },
     "603": {
       "name": "Bane of Doom",
@@ -65,7 +69,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 30.0,
-      "description": "Afflicts the target with impending doom, causing 1742 Shadow damage after 1 min.  If the target dies from this damage, there is a chance that a Doomguard will be summoned.  Cannot be cast on players. Only one Bane per Warlock can be active on any one target."
+      "description": "Afflicts the target with impending doom, causing 1742 Shadow damage after 1 min.  If the target dies from this damage, there is a chance that a Doomguard will be summoned.  Cannot be cast on players. Only one Bane per Warlock can be active on any one target.",
+      "icon": "spell_shadow_auraofdarkness"
     },
     "686": {
       "name": "Shadow Bolt",
@@ -78,7 +83,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 13 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 13 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "687": {
       "name": "Demon Skin",
@@ -91,7 +97,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Protects the caster, increasing armor by 40 and increases health regeneration by 3 health per 5 sec. for 30 min."
+      "description": "Protects the caster, increasing armor by 40 and increases health regeneration by 3 health per 5 sec. for 30 min.",
+      "icon": "spell_shadow_ragingscream"
     },
     "688": {
       "name": "Summon Imp",
@@ -104,7 +111,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons an Imp under the command of the Warlock."
+      "description": "Summons an Imp under the command of the Warlock.",
+      "icon": "spell_shadow_summonimp"
     },
     "689": {
       "name": "Drain Life",
@@ -117,7 +125,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 10 health every 1 second from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 10 health every 1 second from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_lifedrain02"
     },
     "691": {
       "name": "Summon Felhunter",
@@ -130,7 +139,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Felhunter under the command of the Warlock."
+      "description": "Summons a Felhunter under the command of the Warlock.",
+      "icon": "spell_shadow_summonfelhunter"
     },
     "693": {
       "name": "Create Soulstone",
@@ -143,7 +153,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Minor Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 400 health and $3026q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Minor Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 400 health and $3026q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "spell_shadow_soulgem"
     },
     "695": {
       "name": "Shadow Bolt",
@@ -156,7 +167,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 23 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 23 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "696": {
       "name": "Demon Skin",
@@ -169,7 +181,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Protects the caster, increasing armor by 120 and increases health regeneration by 5 health per 5 sec. for 30 min."
+      "description": "Protects the caster, increasing armor by 120 and increases health regeneration by 5 health per 5 sec. for 30 min.",
+      "icon": "spell_shadow_ragingscream"
     },
     "697": {
       "name": "Summon Voidwalker",
@@ -182,7 +195,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Voidwalker under the command of the Warlock."
+      "description": "Summons a Voidwalker under the command of the Warlock.",
+      "icon": "spell_shadow_summonvoidwalker"
     },
     "698": {
       "name": "Ritual of Summoning",
@@ -195,7 +209,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Begins a ritual that summons the targeted group member.  Requires the caster and 2 additional party members to complete the ritual.  In order to participate, all players must be out of combat and right-click the portal and not move until the ritual is complete."
+      "description": "Begins a ritual that summons the targeted group member.  Requires the caster and 2 additional party members to complete the ritual.  In order to participate, all players must be out of combat and right-click the portal and not move until the ritual is complete.",
+      "icon": "spell_shadow_twilight"
     },
     "699": {
       "name": "Drain Life",
@@ -208,7 +223,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 14 health every 1 second from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 14 health every 1 second from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_lifedrain02"
     },
     "702": {
       "name": "Curse of Weakness",
@@ -221,7 +237,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Physical damage caused by the target is reduced by 4 for 2 min. Only one Curse per Warlock can be active on any one target."
+      "description": "Physical damage caused by the target is reduced by 4 for 2 min. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofmannoroth"
     },
     "704": {
       "name": "Curse of Recklessness",
@@ -234,7 +251,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Curses the target with recklessness, reducing the target's armor by 175 for 2 min. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target."
+      "description": "Curses the target with recklessness, reducing the target's armor by 175 for 2 min. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_unholystrength"
     },
     "705": {
       "name": "Shadow Bolt",
@@ -247,7 +265,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 40 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 40 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "706": {
       "name": "Demon Armor",
@@ -260,7 +279,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Protects the caster, increasing armor by 210, Shadow resistance by 3 and increases health regeneration by 7 health per 5 sec. for 30 min."
+      "description": "Protects the caster, increasing armor by 210, Shadow resistance by 3 and increases health regeneration by 7 health per 5 sec. for 30 min.",
+      "icon": "spell_shadow_ragingscream"
     },
     "707": {
       "name": "Immolate",
@@ -273,7 +293,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${17*$<mult>} Fire damage and then an additional 30 Fire damage over 15 sec."
+      "description": "Burns the enemy for ${17*$<mult>} Fire damage and then an additional 30 Fire damage over 15 sec.",
+      "icon": "spell_fire_immolation"
     },
     "709": {
       "name": "Drain Life",
@@ -286,7 +307,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 22 health every 1 second from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 22 health every 1 second from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_lifedrain02"
     },
     "710": {
       "name": "Banish",
@@ -299,7 +321,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Banishes the enemy target, preventing all action but making it invulnerable for up to 20 sec.  Only one target can be banished at a time.  Only works on Demons and Elementals."
+      "description": "Banishes the enemy target, preventing all action but making it invulnerable for up to 20 sec.  Only one target can be banished at a time.  Only works on Demons and Elementals.",
+      "icon": "spell_shadow_cripple"
     },
     "712": {
       "name": "Summon Succubus",
@@ -312,7 +335,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons a Succubus under the command of the Warlock."
+      "description": "Summons a Succubus under the command of the Warlock.",
+      "icon": "spell_shadow_summonsuccubus"
     },
     "713": {
       "name": "Summon Incubus",
@@ -325,7 +349,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons an Incubus under the command of the Warlock."
+      "description": "Summons an Incubus under the command of the Warlock.",
+      "icon": "ability_warlock_incubus"
     },
     "755": {
       "name": "Health Funnel",
@@ -338,7 +363,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Gives 12 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat."
+      "description": "Gives 12 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat.",
+      "icon": "spell_shadow_lifedrain"
     },
     "980": {
       "name": "Bane of Agony",
@@ -351,7 +377,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Afflicts the target with agony, causing 72 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target."
+      "description": "Afflicts the target with agony, causing 72 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofsargeras"
     },
     "1014": {
       "name": "Bane of Agony",
@@ -364,7 +391,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Afflicts the target with agony, causing 120 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target."
+      "description": "Afflicts the target with agony, causing 120 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofsargeras"
     },
     "1086": {
       "name": "Demon Armor",
@@ -377,7 +405,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Protects the caster, increasing armor by 300, Shadow resistance by 6 and increases health regeneration by 9 health per 5 sec. for 30 min."
+      "description": "Protects the caster, increasing armor by 300, Shadow resistance by 6 and increases health regeneration by 9 health per 5 sec. for 30 min.",
+      "icon": "spell_shadow_ragingscream"
     },
     "1088": {
       "name": "Shadow Bolt",
@@ -390,7 +419,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 58 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 58 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "1094": {
       "name": "Immolate",
@@ -403,7 +433,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${32*$<mult>} Fire damage and then an additional 60 Fire damage over 15 sec."
+      "description": "Burns the enemy for ${32*$<mult>} Fire damage and then an additional 60 Fire damage over 15 sec.",
+      "icon": "spell_fire_immolation"
     },
     "1098": {
       "name": "Subjugate Demon",
@@ -416,7 +447,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Subjugates the target demon, up to level 32, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt."
+      "description": "Subjugates the target demon, up to level 32, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt.",
+      "icon": "spell_shadow_enslavedemon"
     },
     "1106": {
       "name": "Shadow Bolt",
@@ -429,7 +461,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 78 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 78 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "1108": {
       "name": "Curse of Weakness",
@@ -442,7 +475,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Physical damage caused by the target is reduced by 7 for 2 min. Only one Curse per Warlock can be active on any one target."
+      "description": "Physical damage caused by the target is reduced by 7 for 2 min. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofmannoroth"
     },
     "1120": {
       "name": "Drain Soul",
@@ -455,7 +489,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Drains the soul of the target, causing 85 Shadow damage over 15 sec. Non-trivial targets damaged by Drain Soul have a chance to grant you a Soul Shard. Non-trivial targets killed by Drain Soul will always grant you a Soul shard. Soul Shards are required for other spells."
+      "description": "Drains the soul of the target, causing 85 Shadow damage over 15 sec. Non-trivial targets damaged by Drain Soul have a chance to grant you a Soul Shard. Non-trivial targets killed by Drain Soul will always grant you a Soul shard. Soul Shards are required for other spells.",
+      "icon": "spell_shadow_haunting"
     },
     "1122": {
       "name": "Inferno",
@@ -468,7 +503,8 @@
       "passive": false,
       "cooldown_ms": 3600000,
       "range_yd": 30.0,
-      "description": "Summons a meteor from the Twisting Nether, causing 200 Fire damage and stunning all enemy targets in the area for 2 sec.  An Infernal rises from the crater, under the command of the caster for 5 min.  Once control is lost, the Infernal must be Subjugated to maintain control.  Can only be used outdoors."
+      "description": "Summons a meteor from the Twisting Nether, causing 200 Fire damage and stunning all enemy targets in the area for 2 sec.  An Infernal rises from the crater, under the command of the caster for 5 min.  Once control is lost, the Infernal must be Subjugated to maintain control.  Can only be used outdoors.",
+      "icon": "spell_shadow_summoninfernal"
     },
     "1454": {
       "name": "Life Tap",
@@ -481,7 +517,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(20+$SPI*1)*(1+0/100)} Health into ${(20+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted."
+      "description": "Converts ${(20+$SPI*1)*(1+0/100)} Health into ${(20+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "icon": "spell_shadow_burningspirit"
     },
     "1455": {
       "name": "Life Tap",
@@ -494,7 +531,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(65+$SPI*1)*(1+0/100)} Health into ${(65+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted."
+      "description": "Converts ${(65+$SPI*1)*(1+0/100)} Health into ${(65+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "icon": "spell_shadow_burningspirit"
     },
     "1456": {
       "name": "Life Tap",
@@ -507,7 +545,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(130+$SPI*1)*(1+0/100)} Health into ${(130+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted."
+      "description": "Converts ${(130+$SPI*1)*(1+0/100)} Health into ${(130+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "icon": "spell_shadow_burningspirit"
     },
     "1714": {
       "name": "Curse of Tongues",
@@ -520,7 +559,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Forces the target to speak in Demonic, increasing the casting time of all spells by 50%. Only one Curse per Warlock can be active on any one target. Lasts 30 sec."
+      "description": "Forces the target to speak in Demonic, increasing the casting time of all spells by 50%. Only one Curse per Warlock can be active on any one target. Lasts 30 sec.",
+      "icon": "spell_shadow_curseoftounges"
     },
     "1949": {
       "name": "Hellfire",
@@ -533,7 +573,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Ignites the area surrounding the caster, causing 82 Fire damage to himself or herself and 82 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec."
+      "description": "Ignites the area surrounding the caster, causing 82 Fire damage to himself or herself and 82 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec.",
+      "icon": "spell_fire_incinerate"
     },
     "2362": {
       "name": "Create Spellstone",
@@ -546,7 +587,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Spellstone which can be used to enchant your weapon with Shadow, increasing your spell haste by 1% and the damage done by your Shadow spells by up to 14.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Spellstone which can be used to enchant your weapon with Shadow, increasing your spell haste by 1% and the damage done by your Shadow spells by up to 14.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_misc_gem_sapphire_01"
     },
     "2941": {
       "name": "Immolate",
@@ -559,7 +601,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${56*$<mult>} Fire damage and then an additional 95 Fire damage over 15 sec."
+      "description": "Burns the enemy for ${56*$<mult>} Fire damage and then an additional 95 Fire damage over 15 sec.",
+      "icon": "spell_fire_immolation"
     },
     "2970": {
       "name": "Detect Invisibility",
@@ -572,7 +615,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Allows the friendly target to detect invisibility for 10 min."
+      "description": "Allows the friendly target to detect invisibility for 10 min.",
+      "icon": "spell_shadow_detectinvisibility"
     },
     "3698": {
       "name": "Health Funnel",
@@ -585,7 +629,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Gives 24 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat."
+      "description": "Gives 24 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat.",
+      "icon": "spell_shadow_lifedrain"
     },
     "3699": {
       "name": "Health Funnel",
@@ -598,7 +643,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Gives 43 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat."
+      "description": "Gives 43 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat.",
+      "icon": "spell_shadow_lifedrain"
     },
     "3700": {
       "name": "Health Funnel",
@@ -611,7 +657,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Gives 64 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat."
+      "description": "Gives 64 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat.",
+      "icon": "spell_shadow_lifedrain"
     },
     "5138": {
       "name": "Drain Mana",
@@ -624,7 +671,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 42 Mana every 1 sec from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 42 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_siphonmana"
     },
     "5484": {
       "name": "Howl of Terror",
@@ -637,7 +685,8 @@
       "passive": false,
       "cooldown_ms": 40000,
       "range_yd": 0.0,
-      "description": "Howl, causing $i enemies within 10 yds to flee in terror for 10 sec.  Damage caused may interrupt the effect."
+      "description": "Howl, causing 5 enemies within 10 yds to flee in terror for 10 sec.  Damage caused may interrupt the effect.",
+      "icon": "spell_shadow_deathscream"
     },
     "5500": {
       "name": "Sense Demons",
@@ -650,7 +699,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shows the location of all nearby demons on the minimap until cancelled.  Only one type of tracking can be used at a time."
+      "description": "Shows the location of all nearby demons on the minimap until cancelled.  Only one type of tracking can be used at a time.",
+      "icon": "spell_shadow_metamorphosis"
     },
     "5676": {
       "name": "Searing Pain",
@@ -663,7 +713,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 23 Fire damage.  Causes a high amount of threat."
+      "description": "Inflict searing pain on the enemy target, causing 23 Fire damage.  Causes a high amount of threat.",
+      "icon": "spell_fire_soulburn"
     },
     "5697": {
       "name": "Unending Breath",
@@ -676,7 +727,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Allows the target to breathe underwater for 10 min."
+      "description": "Allows the target to breathe underwater for 10 min.",
+      "icon": "spell_shadow_demonbreath"
     },
     "5699": {
       "name": "Create Healthstone",
@@ -689,7 +741,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Healthstone that can be used to instantly restore 600 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Healthstone that can be used to instantly restore 600 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_stone_04"
     },
     "5740": {
       "name": "Rain of Fire",
@@ -702,7 +755,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a fiery rain to burn enemies in the area of effect for 160 Fire damage over 8 sec."
+      "description": "Calls down a fiery rain to burn enemies in the area of effect for 160 Fire damage over 8 sec.",
+      "icon": "spell_shadow_rainoffire"
     },
     "5782": {
       "name": "Fear",
@@ -715,7 +769,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Strikes fear in the enemy, causing it to run in fear for up to 10 sec.  Damage caused may interrupt the effect.  Only 1 target can be feared at a time."
+      "description": "Strikes fear in the enemy, causing it to run in fear for up to 10 sec.  Damage caused may interrupt the effect.  Only 1 target can be feared at a time.",
+      "icon": "spell_shadow_possession"
     },
     "6201": {
       "name": "Create Healthstone",
@@ -728,7 +783,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Minor Healthstone that can be used to instantly restore 120 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Minor Healthstone that can be used to instantly restore 120 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_stone_04"
     },
     "6202": {
       "name": "Create Healthstone",
@@ -741,7 +797,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Lesser Healthstone that can be used to instantly restore 300 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Lesser Healthstone that can be used to instantly restore 300 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_stone_04"
     },
     "6205": {
       "name": "Curse of Weakness",
@@ -754,7 +811,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Physical damage caused by the target is reduced by 12 for 2 min. Only one Curse per Warlock can be active on any one target."
+      "description": "Physical damage caused by the target is reduced by 12 for 2 min. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofmannoroth"
     },
     "6213": {
       "name": "Fear",
@@ -767,7 +825,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Strikes fear in the enemy, causing it to run in fear for up to 15 sec.  Damage caused may interrupt the effect.  Only 1 target can be feared at a time."
+      "description": "Strikes fear in the enemy, causing it to run in fear for up to 15 sec.  Damage caused may interrupt the effect.  Only 1 target can be feared at a time.",
+      "icon": "spell_shadow_possession"
     },
     "6215": {
       "name": "Fear",
@@ -780,7 +839,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Strikes fear in the enemy, causing it to run in fear for up to 20 sec.  Damage caused may interrupt the effect.  Only 1 target can be feared at a time."
+      "description": "Strikes fear in the enemy, causing it to run in fear for up to 20 sec.  Damage caused may interrupt the effect.  Only 1 target can be feared at a time.",
+      "icon": "spell_shadow_possession"
     },
     "6217": {
       "name": "Bane of Agony",
@@ -793,7 +853,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Afflicts the target with agony, causing 168 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target."
+      "description": "Afflicts the target with agony, causing 168 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofsargeras"
     },
     "6219": {
       "name": "Rain of Fire",
@@ -806,7 +867,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a fiery rain to burn enemies in the area of effect for 364 Fire damage over 8 sec."
+      "description": "Calls down a fiery rain to burn enemies in the area of effect for 364 Fire damage over 8 sec.",
+      "icon": "spell_shadow_rainoffire"
     },
     "6222": {
       "name": "Corruption",
@@ -819,7 +881,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Corrupts the target, causing 65 Shadow damage over 15 sec."
+      "description": "Corrupts the target, causing 65 Shadow damage over 15 sec.",
+      "icon": "spell_shadow_abominationexplosion"
     },
     "6223": {
       "name": "Corruption",
@@ -832,7 +895,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Corrupts the target, causing 132 Shadow damage over 18 sec."
+      "description": "Corrupts the target, causing 132 Shadow damage over 18 sec.",
+      "icon": "spell_shadow_abominationexplosion"
     },
     "6226": {
       "name": "Drain Mana",
@@ -845,7 +909,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 68 Mana every 1 sec from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 68 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_siphonmana"
     },
     "6229": {
       "name": "Shadow Ward",
@@ -858,7 +923,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs 290 shadow damage.  Lasts 30 sec."
+      "description": "Absorbs 290 shadow damage.  Lasts 30 sec.",
+      "icon": "spell_shadow_antishadow"
     },
     "6353": {
       "name": "Soul Fire",
@@ -871,7 +937,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 30.0,
-      "description": "Burn the enemy's soul, causing 377 Fire damage."
+      "description": "Burn the enemy's soul, causing 377 Fire damage.",
+      "icon": "spell_fire_fireball02"
     },
     "6366": {
       "name": "Create Firestone",
@@ -884,7 +951,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Lesser Firestone which can be used to enchant your weapon with Fire, increasing your spell critical strike chance by 1% and the damage done by your Fire spells by up to 10.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Lesser Firestone which can be used to enchant your weapon with Fire, increasing your spell critical strike chance by 1% and the damage done by your Fire spells by up to 10.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_misc_gem_bloodstone_02"
     },
     "6789": {
       "name": "Death Coil",
@@ -897,7 +965,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 30.0,
-      "description": "Causes the enemy target to run in horror for 3 sec and causes 272 Shadow damage.  The caster gains 100% of the damage caused in health."
+      "description": "Causes the enemy target to run in horror for 3 sec and causes 272 Shadow damage.  The caster gains 100% of the damage caused in health.",
+      "icon": "spell_shadow_deathcoil"
     },
     "7641": {
       "name": "Shadow Bolt",
@@ -910,7 +979,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 101 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 101 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "7646": {
       "name": "Curse of Weakness",
@@ -923,7 +993,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Physical damage caused by the target is reduced by 18 for 2 min. Only one Curse per Warlock can be active on any one target."
+      "description": "Physical damage caused by the target is reduced by 18 for 2 min. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofmannoroth"
     },
     "7648": {
       "name": "Corruption",
@@ -936,7 +1007,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Corrupts the target, causing 168 Shadow damage over 18 sec."
+      "description": "Corrupts the target, causing 168 Shadow damage over 18 sec.",
+      "icon": "spell_shadow_abominationexplosion"
     },
     "7651": {
       "name": "Drain Life",
@@ -949,7 +1021,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 28 health every 1 second from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 28 health every 1 second from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_lifedrain02"
     },
     "7658": {
       "name": "Curse of Recklessness",
@@ -962,7 +1035,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Curses the target with recklessness, reducing the target's armor by 285 for 2 min. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target."
+      "description": "Curses the target with recklessness, reducing the target's armor by 285 for 2 min. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_unholystrength"
     },
     "7659": {
       "name": "Curse of Recklessness",
@@ -975,7 +1049,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Curses the target with recklessness, reducing the target's armor by 395 for 2 min. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target."
+      "description": "Curses the target with recklessness, reducing the target's armor by 395 for 2 min. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_unholystrength"
     },
     "8288": {
       "name": "Drain Soul",
@@ -988,7 +1063,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Drains the soul of the target, causing 170 Shadow damage over 15 sec. Non-trivial targets damaged by Drain Soul have a chance to grant you a Soul Shard. Non-trivial targets killed by Drain Soul will always grant you a Soul shard. Soul Shards are required for other spells."
+      "description": "Drains the soul of the target, causing 170 Shadow damage over 15 sec. Non-trivial targets damaged by Drain Soul have a chance to grant you a Soul Shard. Non-trivial targets killed by Drain Soul will always grant you a Soul shard. Soul Shards are required for other spells.",
+      "icon": "spell_shadow_haunting"
     },
     "8289": {
       "name": "Drain Soul",
@@ -1001,7 +1077,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Drains the soul of the target, causing 270 Shadow damage over 15 sec. Non-trivial targets damaged by Drain Soul have a chance to grant you a Soul Shard. Non-trivial targets killed by Drain Soul will always grant you a Soul shard. Soul Shards are required for other spells."
+      "description": "Drains the soul of the target, causing 270 Shadow damage over 15 sec. Non-trivial targets damaged by Drain Soul have a chance to grant you a Soul Shard. Non-trivial targets killed by Drain Soul will always grant you a Soul shard. Soul Shards are required for other spells.",
+      "icon": "spell_shadow_haunting"
     },
     "11659": {
       "name": "Shadow Bolt",
@@ -1014,7 +1091,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 141 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 141 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "11660": {
       "name": "Shadow Bolt",
@@ -1027,7 +1105,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 191 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 191 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "11661": {
       "name": "Shadow Bolt",
@@ -1040,7 +1119,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 251 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 251 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "11665": {
       "name": "Immolate",
@@ -1053,7 +1133,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${72*$<mult>} Fire damage and then an additional 125 Fire damage over 15 sec."
+      "description": "Burns the enemy for ${72*$<mult>} Fire damage and then an additional 125 Fire damage over 15 sec.",
+      "icon": "spell_fire_immolation"
     },
     "11667": {
       "name": "Immolate",
@@ -1066,7 +1147,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${106*$<mult>} Fire damage and then an additional 190 Fire damage over 15 sec."
+      "description": "Burns the enemy for ${106*$<mult>} Fire damage and then an additional 190 Fire damage over 15 sec.",
+      "icon": "spell_fire_immolation"
     },
     "11668": {
       "name": "Immolate",
@@ -1079,7 +1161,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${146*$<mult>} Fire damage and then an additional 260 Fire damage over 15 sec."
+      "description": "Burns the enemy for ${146*$<mult>} Fire damage and then an additional 260 Fire damage over 15 sec.",
+      "icon": "spell_fire_immolation"
     },
     "11671": {
       "name": "Corruption",
@@ -1092,7 +1175,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Corrupts the target, causing 240 Shadow damage over 18 sec."
+      "description": "Corrupts the target, causing 240 Shadow damage over 18 sec.",
+      "icon": "spell_shadow_abominationexplosion"
     },
     "11672": {
       "name": "Corruption",
@@ -1105,7 +1189,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Corrupts the target, causing 342 Shadow damage over 18 sec."
+      "description": "Corrupts the target, causing 342 Shadow damage over 18 sec.",
+      "icon": "spell_shadow_abominationexplosion"
     },
     "11675": {
       "name": "Drain Soul",
@@ -1118,7 +1203,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Drains the soul of the target, causing 420 Shadow damage over 15 sec. Non-trivial targets damaged by Drain Soul have a chance to grant you a Soul Shard. Non-trivial targets killed by Drain Soul will always grant you a Soul shard. Soul Shards are required for other spells."
+      "description": "Drains the soul of the target, causing 420 Shadow damage over 15 sec. Non-trivial targets damaged by Drain Soul have a chance to grant you a Soul Shard. Non-trivial targets killed by Drain Soul will always grant you a Soul shard. Soul Shards are required for other spells.",
+      "icon": "spell_shadow_haunting"
     },
     "11677": {
       "name": "Rain of Fire",
@@ -1131,7 +1217,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a fiery rain to burn enemies in the area of effect for 596 Fire damage over 8 sec."
+      "description": "Calls down a fiery rain to burn enemies in the area of effect for 596 Fire damage over 8 sec.",
+      "icon": "spell_shadow_rainoffire"
     },
     "11678": {
       "name": "Rain of Fire",
@@ -1144,7 +1231,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Calls down a fiery rain to burn enemies in the area of effect for 880 Fire damage over 8 sec."
+      "description": "Calls down a fiery rain to burn enemies in the area of effect for 880 Fire damage over 8 sec.",
+      "icon": "spell_shadow_rainoffire"
     },
     "11683": {
       "name": "Hellfire",
@@ -1157,7 +1245,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Ignites the area surrounding the caster, causing 137 Fire damage to himself or herself and 137 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec."
+      "description": "Ignites the area surrounding the caster, causing 137 Fire damage to himself or herself and 137 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec.",
+      "icon": "spell_fire_incinerate"
     },
     "11684": {
       "name": "Hellfire",
@@ -1170,7 +1259,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Ignites the area surrounding the caster, causing 206 Fire damage to himself or herself and 206 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec."
+      "description": "Ignites the area surrounding the caster, causing 206 Fire damage to himself or herself and 206 Fire damage to all nearby enemies every 1 sec.  Lasts 15 sec.",
+      "icon": "spell_fire_incinerate"
     },
     "11687": {
       "name": "Life Tap",
@@ -1183,7 +1273,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(210+$SPI*1)*(1+0/100)} Health into ${(210+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted."
+      "description": "Converts ${(210+$SPI*1)*(1+0/100)} Health into ${(210+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "icon": "spell_shadow_burningspirit"
     },
     "11688": {
       "name": "Life Tap",
@@ -1196,7 +1287,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(300+$SPI*1)*(1+0/100)} Health into ${(300+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted."
+      "description": "Converts ${(300+$SPI*1)*(1+0/100)} Health into ${(300+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "icon": "spell_shadow_burningspirit"
     },
     "11689": {
       "name": "Life Tap",
@@ -1209,7 +1301,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Converts ${(420+$SPI*1)*(1+0/100)} Health into ${(420+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted."
+      "description": "Converts ${(420+$SPI*1)*(1+0/100)} Health into ${(420+$SPI*1)*(1+0/100)} Mana for you. Spirit increases the amount converted.",
+      "icon": "spell_shadow_burningspirit"
     },
     "11693": {
       "name": "Health Funnel",
@@ -1222,7 +1315,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Gives 89 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat."
+      "description": "Gives 89 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat.",
+      "icon": "spell_shadow_lifedrain"
     },
     "11694": {
       "name": "Health Funnel",
@@ -1235,7 +1329,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Gives 119 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat."
+      "description": "Gives 119 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat.",
+      "icon": "spell_shadow_lifedrain"
     },
     "11695": {
       "name": "Health Funnel",
@@ -1248,7 +1343,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Gives 153 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat."
+      "description": "Gives 153 health to the caster's pet every second for 10 sec as long as the caster channels. Generates reduced threat.",
+      "icon": "spell_shadow_lifedrain"
     },
     "11699": {
       "name": "Drain Life",
@@ -1261,7 +1357,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 39 health every 1 second from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 39 health every 1 second from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_lifedrain02"
     },
     "11700": {
       "name": "Drain Life",
@@ -1274,7 +1371,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 51 health every 1 second from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 51 health every 1 second from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_lifedrain02"
     },
     "11703": {
       "name": "Drain Mana",
@@ -1287,7 +1385,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 99 Mana every 1 sec from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 99 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_siphonmana"
     },
     "11704": {
       "name": "Drain Mana",
@@ -1300,7 +1399,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Transfers 136 Mana every 1 sec from the target to the caster. Lasts 5 sec."
+      "description": "Transfers 136 Mana every 1 sec from the target to the caster. Lasts 5 sec.",
+      "icon": "spell_shadow_siphonmana"
     },
     "11707": {
       "name": "Curse of Weakness",
@@ -1313,7 +1413,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Physical damage caused by the target is reduced by 26 for 2 min. Only one Curse per Warlock can be active on any one target."
+      "description": "Physical damage caused by the target is reduced by 26 for 2 min. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofmannoroth"
     },
     "11708": {
       "name": "Curse of Weakness",
@@ -1326,7 +1427,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Physical damage caused by the target is reduced by 37 for 2 min. Only one Curse per Warlock can be active on any one target."
+      "description": "Physical damage caused by the target is reduced by 37 for 2 min. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofmannoroth"
     },
     "11711": {
       "name": "Bane of Agony",
@@ -1339,7 +1441,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Afflicts the target with agony, causing 252 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target."
+      "description": "Afflicts the target with agony, causing 252 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofsargeras"
     },
     "11712": {
       "name": "Bane of Agony",
@@ -1352,7 +1455,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Afflicts the target with agony, causing 396 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target."
+      "description": "Afflicts the target with agony, causing 396 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofsargeras"
     },
     "11713": {
       "name": "Bane of Agony",
@@ -1365,7 +1469,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Afflicts the target with agony, causing 552 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target."
+      "description": "Afflicts the target with agony, causing 552 Shadow damage over 24 sec. This damage is dealt slowly at first, and builds up as the Bane reaches its full duration. Only one Bane per Warlock can be active on any one target.",
+      "icon": "spell_shadow_curseofsargeras"
     },
     "11717": {
       "name": "Curse of Recklessness",
@@ -1378,7 +1483,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Curses the target with recklessness, reducing the target's armor by 505 for 2 min. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target."
+      "description": "Curses the target with recklessness, reducing the target's armor by 505 for 2 min. Cursed enemies will not flee and will ignore Fear and Horror effects. Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_unholystrength"
     },
     "11719": {
       "name": "Curse of Tongues",
@@ -1391,7 +1497,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Forces the target to speak in Demonic, increasing the casting time of all spells by 60%. Only one Curse per Warlock can be active on any one target. Lasts 30 sec."
+      "description": "Forces the target to speak in Demonic, increasing the casting time of all spells by 60%. Only one Curse per Warlock can be active on any one target. Lasts 30 sec.",
+      "icon": "spell_shadow_curseoftounges"
     },
     "11725": {
       "name": "Subjugate Demon",
@@ -1404,7 +1511,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Subjugates the target demon, up to level 47, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt."
+      "description": "Subjugates the target demon, up to level 47, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt.",
+      "icon": "spell_shadow_enslavedemon"
     },
     "11726": {
       "name": "Subjugate Demon",
@@ -1417,7 +1525,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Subjugates the target demon, up to level 62, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt."
+      "description": "Subjugates the target demon, up to level 62, forcing it to do your bidding.  While subjugated, the time between the demon's attacks is increased by 40% and its casting speed is slowed by 30%.  Lasts up to 5 min.  If you repeatedly subjugate the same demon, it will become more difficult to control with each attempt.",
+      "icon": "spell_shadow_enslavedemon"
     },
     "11729": {
       "name": "Create Healthstone",
@@ -1430,7 +1539,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Greater Healthstone that can be used to instantly restore 960 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Greater Healthstone that can be used to instantly restore 960 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_stone_04"
     },
     "11730": {
       "name": "Create Healthstone",
@@ -1443,7 +1553,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Major Healthstone that can be used to instantly restore 1440 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Major Healthstone that can be used to instantly restore 1440 health.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_stone_04"
     },
     "11733": {
       "name": "Demon Armor",
@@ -1456,7 +1567,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Protects the caster, increasing armor by 390, Shadow resistance by 9 and increases health regeneration by 11 health per 5 sec. for 30 min."
+      "description": "Protects the caster, increasing armor by 390, Shadow resistance by 9 and increases health regeneration by 11 health per 5 sec. for 30 min.",
+      "icon": "spell_shadow_ragingscream"
     },
     "11734": {
       "name": "Demon Armor",
@@ -1469,7 +1581,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Protects the caster, increasing armor by 480, Shadow resistance by 12 and increases health regeneration by 13 health per 5 sec. for 30 min."
+      "description": "Protects the caster, increasing armor by 480, Shadow resistance by 12 and increases health regeneration by 13 health per 5 sec. for 30 min.",
+      "icon": "spell_shadow_ragingscream"
     },
     "11735": {
       "name": "Demon Armor",
@@ -1482,7 +1595,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Protects the caster, increasing armor by 570, Shadow resistance by 15 and increases health regeneration by 15 health per 5 sec. for 30 min."
+      "description": "Protects the caster, increasing armor by 570, Shadow resistance by 15 and increases health regeneration by 15 health per 5 sec. for 30 min.",
+      "icon": "spell_shadow_ragingscream"
     },
     "11739": {
       "name": "Shadow Ward",
@@ -1495,7 +1609,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs 470 shadow damage.  Lasts 30 sec."
+      "description": "Absorbs 470 shadow damage.  Lasts 30 sec.",
+      "icon": "spell_shadow_antishadow"
     },
     "11740": {
       "name": "Shadow Ward",
@@ -1508,7 +1623,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs 675 shadow damage.  Lasts 30 sec."
+      "description": "Absorbs 675 shadow damage.  Lasts 30 sec.",
+      "icon": "spell_shadow_antishadow"
     },
     "11743": {
       "name": "Detect Invisibility",
@@ -1521,7 +1637,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Allows the friendly target to detect greater invisibility for 10 min."
+      "description": "Allows the friendly target to detect greater invisibility for 10 min.",
+      "icon": "spell_shadow_detectinvisibility"
     },
     "17727": {
       "name": "Create Spellstone",
@@ -1534,7 +1651,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Greater Spellstone which can be used to enchant your weapon with Shadow, increasing your spell haste by 2% and the damage done by your Shadow spells by up to 17.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Greater Spellstone which can be used to enchant your weapon with Shadow, increasing your spell haste by 2% and the damage done by your Shadow spells by up to 17.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_misc_gem_sapphire_01"
     },
     "17728": {
       "name": "Create Spellstone",
@@ -1547,7 +1665,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Major Spellstone which can be used to enchant your weapon with Shadow, increasing your spell haste by 2% and the damage done by your Shadow spells by up to 21.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Major Spellstone which can be used to enchant your weapon with Shadow, increasing your spell haste by 2% and the damage done by your Shadow spells by up to 21.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_misc_gem_sapphire_01"
     },
     "17877": {
       "name": "Shadowburn",
@@ -1560,7 +1679,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 66 Shadow damage.  If a non-trivial target dies within 8 sec of being hit with Shadowburn, the caster gains a Soul Shard."
+      "description": "Instantly blasts the target for 66 Shadow damage.  If a non-trivial target dies within 8 sec of being hit with Shadowburn, the caster gains a Soul Shard.",
+      "icon": "spell_shadow_scourgebuild"
     },
     "17919": {
       "name": "Searing Pain",
@@ -1573,7 +1693,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 33 Fire damage.  Causes a high amount of threat."
+      "description": "Inflict searing pain on the enemy target, causing 33 Fire damage.  Causes a high amount of threat.",
+      "icon": "spell_fire_soulburn"
     },
     "17920": {
       "name": "Searing Pain",
@@ -1586,7 +1707,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 44 Fire damage.  Causes a high amount of threat."
+      "description": "Inflict searing pain on the enemy target, causing 44 Fire damage.  Causes a high amount of threat.",
+      "icon": "spell_fire_soulburn"
     },
     "17921": {
       "name": "Searing Pain",
@@ -1599,7 +1721,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 62 Fire damage.  Causes a high amount of threat."
+      "description": "Inflict searing pain on the enemy target, causing 62 Fire damage.  Causes a high amount of threat.",
+      "icon": "spell_fire_soulburn"
     },
     "17922": {
       "name": "Searing Pain",
@@ -1612,7 +1735,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 85 Fire damage.  Causes a high amount of threat."
+      "description": "Inflict searing pain on the enemy target, causing 85 Fire damage.  Causes a high amount of threat.",
+      "icon": "spell_fire_soulburn"
     },
     "17923": {
       "name": "Searing Pain",
@@ -1625,7 +1749,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Inflict searing pain on the enemy target, causing 114 Fire damage.  Causes a high amount of threat."
+      "description": "Inflict searing pain on the enemy target, causing 114 Fire damage.  Causes a high amount of threat.",
+      "icon": "spell_fire_soulburn"
     },
     "17924": {
       "name": "Soul Fire",
@@ -1638,7 +1763,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 30.0,
-      "description": "Burn the enemy's soul, causing 431 Fire damage."
+      "description": "Burn the enemy's soul, causing 431 Fire damage.",
+      "icon": "spell_fire_fireball02"
     },
     "17925": {
       "name": "Death Coil",
@@ -1651,7 +1777,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 30.0,
-      "description": "Causes the enemy target to run in horror for 3 sec and causes 359 Shadow damage.  The caster gains 100% of the damage caused in health."
+      "description": "Causes the enemy target to run in horror for 3 sec and causes 359 Shadow damage.  The caster gains 100% of the damage caused in health.",
+      "icon": "spell_shadow_deathcoil"
     },
     "17926": {
       "name": "Death Coil",
@@ -1664,7 +1791,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 30.0,
-      "description": "Causes the enemy target to run in horror for 3 sec and causes 454 Shadow damage.  The caster gains 100% of the damage caused in health."
+      "description": "Causes the enemy target to run in horror for 3 sec and causes 454 Shadow damage.  The caster gains 100% of the damage caused in health.",
+      "icon": "spell_shadow_deathcoil"
     },
     "17928": {
       "name": "Howl of Terror",
@@ -1677,7 +1805,8 @@
       "passive": false,
       "cooldown_ms": 40000,
       "range_yd": 0.0,
-      "description": "Howl, causing $i enemies within 10 yds to flee in terror for 15 sec.  Damage caused may interrupt the effect."
+      "description": "Howl, causing 5 enemies within 10 yds to flee in terror for 15 sec.  Damage caused may interrupt the effect.",
+      "icon": "spell_shadow_deathscream"
     },
     "17951": {
       "name": "Create Firestone",
@@ -1690,7 +1819,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Firestone which can be used to enchant your weapon with Fire, increasing your spell critical strike chance by 1% and the damage done by your Fire spells by up to 14.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Firestone which can be used to enchant your weapon with Fire, increasing your spell critical strike chance by 1% and the damage done by your Fire spells by up to 14.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_misc_gem_bloodstone_02"
     },
     "17952": {
       "name": "Create Firestone",
@@ -1703,7 +1833,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Greater Firestone which can be used to enchant your weapon with Fire, increasing your spell critical strike chance by 2% and the damage done by your Fire spells by up to 17.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Greater Firestone which can be used to enchant your weapon with Fire, increasing your spell critical strike chance by 2% and the damage done by your Fire spells by up to 17.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_misc_gem_bloodstone_02"
     },
     "17953": {
       "name": "Create Firestone",
@@ -1716,7 +1847,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Major Firestone which can be used to enchant your weapon with Fire, increasing your spell critical strike chance by 2% and the damage done by your Fire spells by up to 21.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Major Firestone which can be used to enchant your weapon with Fire, increasing your spell critical strike chance by 2% and the damage done by your Fire spells by up to 21.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "inv_misc_gem_bloodstone_02"
     },
     "17962": {
       "name": "Conflagrate",
@@ -1729,7 +1861,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 146 Fire damage and consuming your Immolate effect."
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 146 Fire damage and consuming your Immolate effect.",
+      "icon": "spell_fire_fireball"
     },
     "18094": {
       "name": "Nightfall",
@@ -1742,7 +1875,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives your Corruption, Drain Soul, Drain Life, and Wrack spells a 4% chance to cause you to enter a Shadow Trance after damaging the opponent. The Shadow Trance reduces the casting time of your next Shadow Bolt spell by 100%."
+      "description": "Gives your Corruption, Drain Soul, Drain Life, and Wrack spells a 4% chance to cause you to enter a Shadow Trance after damaging the opponent. The Shadow Trance reduces the casting time of your next Shadow Bolt spell by 100%.",
+      "icon": "spell_shadow_twilight"
     },
     "18223": {
       "name": "Curse of Exhaustion",
@@ -1755,7 +1889,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Reduces the target's movement speed by 30% for 12 sec.  Only one Curse per Warlock can be active on any one target."
+      "description": "Reduces the target's movement speed by 30% for 12 sec.  Only one Curse per Warlock can be active on any one target.",
+      "icon": "spell_shadow_grimward"
     },
     "18265": {
       "name": "Siphon Life",
@@ -1768,7 +1903,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Transfers 11 health from the target to the caster every 3 sec.  Lasts 30 sec."
+      "description": "Transfers 11 health from the target to the caster every 3 sec.  Lasts 30 sec.",
+      "icon": "spell_shadow_requiem"
     },
     "18288": {
       "name": "Amplify Curse",
@@ -1781,7 +1917,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Increases the effect of your next Curse of Weakness or Bane of Agony by 50%, or your next Curse of Exhaustion by 20%.  Lasts 30 sec."
+      "description": "Increases the effect of your next Curse of Weakness or Bane of Agony by 50%, or your next Curse of Exhaustion by 20%.  Lasts 30 sec.",
+      "icon": "spell_shadow_contagion"
     },
     "18540": {
       "name": "Ritual of Doom",
@@ -1794,7 +1931,8 @@
       "passive": false,
       "cooldown_ms": 3600000,
       "range_yd": 30.0,
-      "description": "Begins a ritual that sacrifices a random participant to summon a doomguard.  The doomguard must be immediately subjugated or it will attack the ritual participants.  Requires the caster and 4 additional party members to complete the ritual.  In order to participate, all players must right-click the portal and not move until the ritual is complete."
+      "description": "Begins a ritual that sacrifices a random participant to summon a doomguard.  The doomguard must be immediately subjugated or it will attack the ritual participants.  Requires the caster and 4 additional party members to complete the ritual.  In order to participate, all players must right-click the portal and not move until the ritual is complete.",
+      "icon": "spell_shadow_antimagicshell"
     },
     "18647": {
       "name": "Banish",
@@ -1807,7 +1945,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Banishes the enemy target, preventing all action but making it invulnerable for up to 30 sec.  Only one target can be banished at a time.  Only works on Demons and Elementals."
+      "description": "Banishes the enemy target, preventing all action but making it invulnerable for up to 30 sec.  Only one target can be banished at a time.  Only works on Demons and Elementals.",
+      "icon": "spell_shadow_cripple"
     },
     "18662": {
       "name": "Bane of Doom Effect",
@@ -1820,7 +1959,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 50000.0,
-      "description": ""
+      "description": "",
+      "icon": "spell_shadow_auraofdarkness"
     },
     "18708": {
       "name": "Fel Domination",
@@ -1833,7 +1973,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Your next Imp, Voidwalker, Succubus, Incubus, or Felhunter Summon spell has its casting time reduced by 5.5 sec and its Mana cost reduced by 50%."
+      "description": "Your next Imp, Voidwalker, Succubus, Incubus, or Felhunter Summon spell has its casting time reduced by 5.5 sec and its Mana cost reduced by 50%.",
+      "icon": "spell_nature_removecurse"
     },
     "18867": {
       "name": "Shadowburn",
@@ -1846,7 +1987,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 80 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard."
+      "description": "Instantly blasts the target for 80 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "icon": "spell_shadow_scourgebuild"
     },
     "18868": {
       "name": "Shadowburn",
@@ -1859,7 +2001,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 118 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard."
+      "description": "Instantly blasts the target for 118 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "icon": "spell_shadow_scourgebuild"
     },
     "18869": {
       "name": "Shadowburn",
@@ -1872,7 +2015,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 148 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard."
+      "description": "Instantly blasts the target for 148 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "icon": "spell_shadow_scourgebuild"
     },
     "18870": {
       "name": "Shadowburn",
@@ -1885,7 +2029,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 203 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard."
+      "description": "Instantly blasts the target for 203 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "icon": "spell_shadow_scourgebuild"
     },
     "18871": {
       "name": "Shadowburn",
@@ -1898,7 +2043,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Instantly blasts the target for 266 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard."
+      "description": "Instantly blasts the target for 266 Shadow damage.  If the target dies within 8 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard.",
+      "icon": "spell_shadow_scourgebuild"
     },
     "18879": {
       "name": "Siphon Life",
@@ -1911,7 +2057,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Transfers 19 health from the target to the caster every 3 sec.  Lasts 30 sec."
+      "description": "Transfers 19 health from the target to the caster every 3 sec.  Lasts 30 sec.",
+      "icon": "spell_shadow_requiem"
     },
     "18880": {
       "name": "Siphon Life",
@@ -1924,7 +2071,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Transfers 29 health from the target to the caster every 3 sec.  Lasts 30 sec."
+      "description": "Transfers 29 health from the target to the caster every 3 sec.  Lasts 30 sec.",
+      "icon": "spell_shadow_requiem"
     },
     "18881": {
       "name": "Siphon Life",
@@ -1937,7 +2085,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Transfers 41 health from the target to the caster every 3 sec.  Lasts 30 sec."
+      "description": "Transfers 41 health from the target to the caster every 3 sec.  Lasts 30 sec.",
+      "icon": "spell_shadow_requiem"
     },
     "18930": {
       "name": "Conflagrate",
@@ -1950,7 +2099,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 194 Fire damage and consuming your Immolate effect."
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 194 Fire damage and consuming your Immolate effect.",
+      "icon": "spell_fire_fireball"
     },
     "18931": {
       "name": "Conflagrate",
@@ -1963,7 +2113,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 239 Fire damage and consuming your Immolate effect."
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 239 Fire damage and consuming your Immolate effect.",
+      "icon": "spell_fire_fireball"
     },
     "18932": {
       "name": "Conflagrate",
@@ -1976,7 +2127,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 282 Fire damage and consuming your Immolate effect."
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 282 Fire damage and consuming your Immolate effect.",
+      "icon": "spell_fire_fireball"
     },
     "19028": {
       "name": "Soul Link",
@@ -1989,7 +2141,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 100.0,
-      "description": "When active, 30% of all damage taken by the caster is taken by your Imp, Voidwalker, Succubus, Incubus, or Felhunter Demon instead. In addition, both the Demon and the master will inflict 3% more damage. Lasts as long as the Demon is active."
+      "description": "When active, 30% of all damage taken by the caster is taken by your Imp, Voidwalker, Succubus, Incubus, or Felhunter Demon instead. In addition, both the Demon and the master will inflict 3% more damage. Lasts as long as the Demon is active.",
+      "icon": "spell_shadow_gathershadows"
     },
     "19476": {
       "name": "Dispel Magic",
@@ -2002,7 +2155,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Dispels magic on the target, removing 1 harmful spell from a friend or 1 beneficial spell from an enemy."
+      "description": "Dispels magic on the target, removing 1 harmful spell from a friend or 1 beneficial spell from an enemy.",
+      "icon": "spell_holy_dispelmagic"
     },
     "20752": {
       "name": "Create Soulstone",
@@ -2015,7 +2169,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Lesser Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 750 health and $20758q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Lesser Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 750 health and $20758q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "spell_shadow_soulgem"
     },
     "20755": {
       "name": "Create Soulstone",
@@ -2028,7 +2183,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 1100 health and $20759q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 1100 health and $20759q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "spell_shadow_soulgem"
     },
     "20756": {
       "name": "Create Soulstone",
@@ -2041,7 +2197,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Greater Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 1600 health and $20760q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Greater Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 1600 health and $20760q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "spell_shadow_soulgem"
     },
     "20757": {
       "name": "Create Soulstone",
@@ -2054,7 +2211,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Creates a Major Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 2200 health and $20761q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes."
+      "description": "Creates a Major Soulstone.  The Soulstone can be used to store one target's soul.  If the target dies while their soul is stored, they will be able to resurrect with 2200 health and $20761q1 mana.\r\n\r\nConjured items disappear if logged out for more than 15 minutes.",
+      "icon": "spell_shadow_soulgem"
     },
     "25307": {
       "name": "Shadow Bolt",
@@ -2067,7 +2225,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Sends a shadowy bolt at the enemy, causing 268 Shadow damage."
+      "description": "Sends a shadowy bolt at the enemy, causing 268 Shadow damage.",
+      "icon": "spell_shadow_shadowbolt"
     },
     "25309": {
       "name": "Immolate",
@@ -2080,7 +2239,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Burns the enemy for ${158*$<mult>} Fire damage and then an additional 275 Fire damage over 15 sec."
+      "description": "Burns the enemy for ${158*$<mult>} Fire damage and then an additional 275 Fire damage over 15 sec.",
+      "icon": "spell_fire_immolation"
     },
     "25311": {
       "name": "Corruption",
@@ -2093,7 +2253,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Corrupts the target, causing 438 Shadow damage over 18 sec."
+      "description": "Corrupts the target, causing 438 Shadow damage over 18 sec.",
+      "icon": "spell_shadow_abominationexplosion"
     },
     "28610": {
       "name": "Shadow Ward",
@@ -2106,7 +2267,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Absorbs 920 shadow damage.  Lasts 30 sec."
+      "description": "Absorbs 920 shadow damage.  Lasts 30 sec.",
+      "icon": "spell_shadow_antishadow"
     },
     "403501": {
       "name": "Haunt",
@@ -2119,7 +2281,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Send a ghostly soul to assault your current target, dealing 125 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target."
+      "description": "Send a ghostly soul to assault your current target, dealing 125 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target.",
+      "icon": "ability_warlock_haunt"
     },
     "412758": {
       "name": "Incinerate",
@@ -2132,7 +2295,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Deals 97 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate."
+      "description": "Deals 97 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate.",
+      "icon": "spell_fire_burnout"
     },
     "427717": {
       "name": "Unstable Affliction",
@@ -2145,7 +2309,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Shadow energy slowly destroys the target, causing 516 damage over 18 sec. In addition, if the Unstable Affliction is dispelled it will cause 172 damage to the dispeller and silence them for 5 sec. Only one Unstable Affliction or Immolate per Warlock can be active on any one target."
+      "description": "Shadow energy slowly destroys the target, causing 516 damage over 18 sec. In addition, if the Unstable Affliction is dispelled it will cause 172 damage to the dispeller and silence them for 5 sec. Only one Unstable Affliction or Immolate per Warlock can be active on any one target.",
+      "icon": "spell_shadow_unstableaffliction_3"
     },
     "437169": {
       "name": "Portal of Summoning",
@@ -2158,7 +2323,8 @@
       "passive": false,
       "cooldown_ms": 3600000,
       "range_yd": 30.0,
-      "description": "Begins a ritual that creates a summoning portal.  The summoning portal can be used by 2 party or raid members to summon a targeted party or raid member.  The ritual portal requires the caster and 2 additional party or raid members to complete.  In order to participate, all players must be out of combat and right-click the portal and not move until the ritual is complete."
+      "description": "Begins a ritual that creates a summoning portal.  The summoning portal can be used by 2 party or raid members to summon a targeted party or raid member.  The ritual portal requires the caster and 2 additional party or raid members to complete.  In order to participate, all players must be out of combat and right-click the portal and not move until the ritual is complete.",
+      "icon": "inv_misc_rune_10"
     },
     "440892": {
       "name": "Curse of the Elements",
@@ -2171,7 +2337,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Curses the target for 5 min, reducing Magic resistances by 30 and increases Magic damage taken by 4%. Only one Curse per Warlock can be active on any one target."
+      "description": "Curses the target for 5 min, reducing Magic resistances by 30 and increases Magic damage taken by 4%. Only one Curse per Warlock can be active on any one target.",
+      "icon": "warlock_curse_shadow"
     },
     "1225228": {
       "name": "Bane of Havoc",
@@ -2184,7 +2351,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Afflicts the target for 5 min, causing 15% of all damage done by the Warlock to other targets to also be dealt to the cursed target. Bane of Havoc is limited to 1 target, and only one Bane per Warlock can be active on any one target."
+      "description": "Afflicts the target for 5 min, causing 15% of all damage done by the Warlock to other targets to also be dealt to the cursed target. Bane of Havoc is limited to 1 target, and only one Bane per Warlock can be active on any one target.",
+      "icon": "ability_warlock_baneofhavoc"
     },
     "1242971": {
       "name": "Unstable Affliction",
@@ -2197,7 +2365,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Shadow energy slowly destroys the target, causing 738 damage over 18 sec. In addition, if the Unstable Affliction is dispelled it will cause 246 damage to the dispeller and silence them for 5 sec. Only one Unstable Affliction or Immolate per Warlock can be active on any one target."
+      "description": "Shadow energy slowly destroys the target, causing 738 damage over 18 sec. In addition, if the Unstable Affliction is dispelled it will cause 246 damage to the dispeller and silence them for 5 sec. Only one Unstable Affliction or Immolate per Warlock can be active on any one target.",
+      "icon": "spell_shadow_unstableaffliction_3"
     },
     "1242972": {
       "name": "Unstable Affliction",
@@ -2210,7 +2379,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Shadow energy slowly destroys the target, causing 1044 damage over 18 sec. In addition, if the Unstable Affliction is dispelled it will cause 348 damage to the dispeller and silence them for 5 sec. Only one Unstable Affliction or Immolate per Warlock can be active on any one target."
+      "description": "Shadow energy slowly destroys the target, causing 1044 damage over 18 sec. In addition, if the Unstable Affliction is dispelled it will cause 348 damage to the dispeller and silence them for 5 sec. Only one Unstable Affliction or Immolate per Warlock can be active on any one target.",
+      "icon": "spell_shadow_unstableaffliction_3"
     },
     "1293693": {
       "name": "Haunt",
@@ -2223,7 +2393,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Send a ghostly soul to assault your current target, dealing 163 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target."
+      "description": "Send a ghostly soul to assault your current target, dealing 163 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target.",
+      "icon": "ability_warlock_haunt"
     },
     "1293694": {
       "name": "Haunt",
@@ -2236,7 +2407,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Send a ghostly soul to assault your current target, dealing 212 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target."
+      "description": "Send a ghostly soul to assault your current target, dealing 212 damage, and increasing all Shadow damage over time you deal to that target by 10% for 12 sec. When Haunt expires for any reason you will be healed for 100% of the damage it dealt to your target.",
+      "icon": "ability_warlock_haunt"
     },
     "1293812": {
       "name": "Incinerate",
@@ -2249,7 +2421,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Deals 145 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate."
+      "description": "Deals 145 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate.",
+      "icon": "spell_fire_burnout"
     },
     "1293813": {
       "name": "Incinerate",
@@ -2262,7 +2435,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Deals 217 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate."
+      "description": "Deals 217 Fire damage to your target and an additional 25% damage if the target is afflicted by Immolate.",
+      "icon": "spell_fire_burnout"
     },
     "1293817": {
       "name": "Conflagrate",
@@ -2275,7 +2449,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 95 Fire damage and consuming your Immolate effect."
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 95 Fire damage and consuming your Immolate effect.",
+      "icon": "spell_fire_fireball"
     },
     "1293818": {
       "name": "Conflagrate",
@@ -2288,7 +2463,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 30.0,
-      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 122 Fire damage and consuming your Immolate effect."
+      "description": "Ignites a target that is already afflicted by your Immolate spell, dealing 122 Fire damage and consuming your Immolate effect.",
+      "icon": "spell_fire_fireball"
     },
     "1311676": {
       "name": "Curse of the Elements",
@@ -2301,7 +2477,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Curses the target for 5 min, reducing Magic resistances by 45 and increasing Magic damage taken by 6%. Only one Curse per Warlock can be active on any one target."
+      "description": "Curses the target for 5 min, reducing Magic resistances by 45 and increasing Magic damage taken by 6%. Only one Curse per Warlock can be active on any one target.",
+      "icon": "warlock_curse_shadow"
     },
     "1311677": {
       "name": "Curse of the Elements",
@@ -2314,7 +2491,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Curses the target for 5 min, reducing Magic resistances by 60 and increasing Magic damage taken by 8%. Only one Curse per Warlock can be active on any one target."
+      "description": "Curses the target for 5 min, reducing Magic resistances by 60 and increasing Magic damage taken by 8%. Only one Curse per Warlock can be active on any one target.",
+      "icon": "warlock_curse_shadow"
     },
     "1311680": {
       "name": "Curse of the Elements",
@@ -2327,7 +2505,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Curses the target for 5 min, reducing Magic resistances by 75 and increasing Magic damage taken by 10%. Only one Curse per Warlock can be active on any one target."
+      "description": "Curses the target for 5 min, reducing Magic resistances by 75 and increasing Magic damage taken by 10%. Only one Curse per Warlock can be active on any one target.",
+      "icon": "warlock_curse_shadow"
     },
     "1316697": {
       "name": "Wrack",
@@ -2340,7 +2519,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Tears the target apart from within, inflicting 36 Shadow damage every 1 sec and increasing the damage they take from your other Shadow damage over time effects by 10% for 6 sec."
+      "description": "Tears the target apart from within, inflicting 36 Shadow damage every 1 sec and increasing the damage they take from your other Shadow damage over time effects by 10% for 6 sec.",
+      "icon": "ability_deathknight_hemorrhagicfever"
     }
   }
 }

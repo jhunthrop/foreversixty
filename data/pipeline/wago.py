@@ -35,6 +35,8 @@ TABLES = [
     # Bear forms) is feral attack power, not generic (pipeline/simdb/equip.py).
     "SpellShapeshift",
     "SpellItemEnchantment",
+    # A spell's target cap, the "$i" in "up to $i enemies" (pipeline/spelltext.py).
+    "SpellTargetRestrictions",
     # A spell's weapon restriction: a scope's equip spell reaches ranged
     # weapons only (pipeline/simdb/enchants.py's ranged_weapon_only_spells).
     "SpellEquippedItems",

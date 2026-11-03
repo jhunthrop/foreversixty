@@ -83,6 +83,30 @@ describe('displayDescription', () => {
   });
 });
 
+describe('the launch-review fixes', () => {
+  it('names the pool a percent cost is paid from: health for Bloodrage, mana for Shadowform', () => {
+    expect(costText({ cost: 0, cost_type: -2, cost_pct: 20 })).toBe('20% of base health');
+    expect(costText({ cost: 0, cost_type: 0, cost_pct: 40 })).toBe('40% of base mana');
+    expect(costText({ cost: 0, cost_type: 1, cost_pct: 10 })).toBeUndefined();
+  });
+
+  it('drops only the sentences the client finishes from character stats', () => {
+    expect(displayDescription('Burns the enemy for ${8*$<mult>} Fire damage. Lasts 15 sec.')).toBe(
+      'Lasts 15 sec.',
+    );
+    expect(displayDescription('Charge an enemy for 4 sec.\r\n\r\n$@spelltooltip414924')).toBe(
+      'Charge an enemy for 4 sec.',
+    );
+    expect(displayDescription('Converts ${(20+$SPI*1)} Health into Mana.')).toBe('');
+  });
+
+  it('keeps the words of a colour escape and drops its codes', () => {
+    expect(displayDescription('|CFFFF2020Requires Bear Form|R\r\nCharge an enemy.')).toBe(
+      'Requires Bear Form\nCharge an enemy.',
+    );
+  });
+});
+
 describe('talentTipModel', () => {
   const entry = {
     name: 'Cruelty',

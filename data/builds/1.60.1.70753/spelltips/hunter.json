@@ -13,7 +13,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Automatically shoots the target until cancelled."
+      "description": "Automatically shoots the target until cancelled.",
+      "icon": "ability_whirlwind"
     },
     "136": {
       "name": "Mend Pet",
@@ -26,7 +27,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Heals your pet 20 health every second while you focus.  Lasts 5 sec."
+      "description": "Heals your pet 20 health every second while you focus.  Lasts 5 sec.",
+      "icon": "ability_hunter_mendpet"
     },
     "781": {
       "name": "Disengage",
@@ -39,7 +41,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Attempts to disengage from the target by reducing threat. Disables auto-attack."
+      "description": "Attempts to disengage from the target by reducing threat. Disables auto-attack.",
+      "icon": "ability_rogue_feint"
     },
     "883": {
       "name": "Call Pet",
@@ -52,7 +55,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Summons your pet to you."
+      "description": "Summons your pet to you.",
+      "icon": "ability_hunter_beastcall"
     },
     "982": {
       "name": "Revive Pet",
@@ -65,7 +69,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Revive your pet, returning it to life with 15% of its health."
+      "description": "Revive your pet, returning it to life with 15% of its health.",
+      "icon": "ability_hunter_beastsoothe"
     },
     "1002": {
       "name": "Eyes of the Beast",
@@ -78,7 +83,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 50000.0,
-      "description": "Take direct control of your pet and see through its eyes for 2 min."
+      "description": "Take direct control of your pet and see through its eyes for 2 min.",
+      "icon": "ability_eyeoftheowl"
     },
     "1130": {
       "name": "Hunter's Mark",
@@ -91,7 +97,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 100.0,
-      "description": "Places the Hunter's Mark on the target, increasing the Ranged Attack Power of all attackers against that target by 26.  In addition, the target of this ability can always be seen by the hunter whether it stealths or turns invisible.  The target also appears on the mini-map.  Lasts for 2 min."
+      "description": "Places the Hunter's Mark on the target, increasing the Ranged Attack Power of all attackers against that target by 26.  In addition, the target of this ability can always be seen by the hunter whether it stealths or turns invisible.  The target also appears on the mini-map.  Lasts for 2 min.",
+      "icon": "ability_hunter_snipershot"
     },
     "1462": {
       "name": "Beast Lore",
@@ -104,7 +111,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Gather information about the target beast.  The tooltip will display damage, health, armor, any special resistances, and diet."
+      "description": "Gather information about the target beast.  The tooltip will display damage, health, armor, any special resistances, and diet.",
+      "icon": "ability_physical_taunt"
     },
     "1494": {
       "name": "Track Beasts",
@@ -117,7 +125,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shows the location of all nearby beasts on the minimap.  Only one form of tracking can be active at a time."
+      "description": "Shows the location of all nearby beasts on the minimap.  Only one form of tracking can be active at a time.",
+      "icon": "ability_tracking"
     },
     "1495": {
       "name": "Mongoose Bite",
@@ -130,7 +139,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Counterattack the enemy for melee weapon damage plus 15. Can only be performed after you dodge."
+      "description": "Counterattack the enemy for melee weapon damage plus 15. Can only be performed after you dodge.",
+      "icon": "ability_hunter_swiftstrike"
     },
     "1499": {
       "name": "Freezing Trap",
@@ -143,7 +153,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Frost trap that freezes the first enemy that approaches, preventing all action for up to 10 sec.  Any damage caused will break the ice. Trap will exist for 1 min. Only one Frost trap can be active at a time."
+      "description": "Place a Frost trap that freezes the first enemy that approaches, preventing all action for up to 10 sec.  Any damage caused will break the ice. Trap will exist for 1 min. Only one Frost trap can be active at a time.",
+      "icon": "spell_frost_chainsofice"
     },
     "1510": {
       "name": "Volley",
@@ -156,7 +167,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Continuously fires a volley of ammo at the target area, causing 70 Arcane damage to enemy targets within 8 yards every 1 sec for 6 sec."
+      "description": "Continuously fires a volley of ammo at the target area, causing 70 Arcane damage to enemy targets within 8 yards every 1 sec for 6 sec.",
+      "icon": "ability_marksmanship"
     },
     "1513": {
       "name": "Scare Beast",
@@ -169,7 +181,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 10.0,
-      "description": "Scares a beast, causing it to run in fear for up to 10 sec.  Damage caused may interrupt the effect.  Only one beast can be feared at a time."
+      "description": "Scares a beast, causing it to run in fear for up to 10 sec.  Damage caused may interrupt the effect.  Only one beast can be feared at a time.",
+      "icon": "ability_druid_cower"
     },
     "1515": {
       "name": "Tame Beast",
@@ -182,7 +195,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Begins taming a beast to be your companion.  Your armor is reduced by 100% while you focus on taming the beast for 20 sec.  If you lose the beast's attention for any reason, the taming process will fail.  Once tamed, the beast will be very unhappy and disloyal.  Try feeding the pet immediately to make it happy."
+      "description": "Begins taming a beast to be your companion.  Your armor is reduced by 100% while you focus on taming the beast for 20 sec.  If you lose the beast's attention for any reason, the taming process will fail.  Once tamed, the beast will be very unhappy and disloyal.  Try feeding the pet immediately to make it happy.",
+      "icon": "ability_hunter_beasttaming"
     },
     "1543": {
       "name": "Flare",
@@ -195,7 +209,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Exposes all hidden and invisible enemies within 10 yards of the targeted area for 30 sec."
+      "description": "Exposes all hidden and invisible enemies within 10 yards of the targeted area for 30 sec.",
+      "icon": "spell_fire_flare"
     },
     "1978": {
       "name": "Serpent Sting",
@@ -208,7 +223,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 15 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, causing 15 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_quickshot"
     },
     "2641": {
       "name": "Dismiss Pet",
@@ -221,7 +237,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 10.0,
-      "description": "Dismiss your pet.  Dismissing your pet will reduce its happiness by 50."
+      "description": "Dismiss your pet.  Dismissing your pet will reduce its happiness by 50.",
+      "icon": "spell_nature_spiritwolf"
     },
     "2643": {
       "name": "Multi-Shot",
@@ -234,7 +251,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Fires several missiles, hitting 3 targets. Multi-Shot shares its cooldown with Aimed Shot."
+      "description": "Fires several missiles, hitting 3 targets. Multi-Shot shares its cooldown with Aimed Shot.",
+      "icon": "ability_upgrademoonglaive"
     },
     "2973": {
       "name": "Raptor Strike",
@@ -247,7 +265,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "A strong attack that deals melee weapon damage plus 5."
+      "description": "A strong attack that deals melee weapon damage plus 5.",
+      "icon": "ability_meleedamage"
     },
     "2974": {
       "name": "Wing Clip",
@@ -260,7 +279,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Inflicts 5 damage and reduces the enemy target's movement speed by 50% for 10 sec."
+      "description": "Inflicts 5 damage and reduces the enemy target's movement speed by 50% for 10 sec.",
+      "icon": "ability_rogue_trip"
     },
     "3034": {
       "name": "Viper Sting",
@@ -273,7 +293,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 35.0,
-      "description": "Stings the target, draining 616 mana over 8 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, draining 616 mana over 8 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_aimedshot"
     },
     "3043": {
       "name": "Scorpid Sting",
@@ -286,7 +307,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, reducing the target's chance to hit with attacks by 2% for 20 sec. Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, reducing the target's chance to hit with attacks by 2% for 20 sec. Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_criticalshot"
     },
     "3044": {
       "name": "Arcane Shot",
@@ -299,7 +321,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 25 Arcane damage."
+      "description": "An instant shot that causes 25 Arcane damage.",
+      "icon": "ability_impalingbolt"
     },
     "3045": {
       "name": "Rapid Fire",
@@ -312,7 +335,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Increases ranged and melee attack speed by 40% for 15 sec."
+      "description": "Increases ranged and melee attack speed by 40% for 15 sec.",
+      "icon": "ability_hunter_runningshot"
     },
     "3111": {
       "name": "Mend Pet",
@@ -325,7 +349,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Heals your pet 38 health every second while you focus.  Lasts 5 sec."
+      "description": "Heals your pet 38 health every second while you focus.  Lasts 5 sec.",
+      "icon": "ability_hunter_mendpet"
     },
     "3661": {
       "name": "Mend Pet",
@@ -338,7 +363,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Heals your pet 68 health every second while you focus.  Lasts 5 sec."
+      "description": "Heals your pet 68 health every second while you focus.  Lasts 5 sec.",
+      "icon": "ability_hunter_mendpet"
     },
     "3662": {
       "name": "Mend Pet",
@@ -351,7 +377,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Heals your pet 103 health every second while you focus.  Lasts 5 sec."
+      "description": "Heals your pet 103 health every second while you focus.  Lasts 5 sec.",
+      "icon": "ability_hunter_mendpet"
     },
     "3674": {
       "name": "Black Arrow",
@@ -364,7 +391,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Fires a Black Arrow into the target, slowing the target's movement speed by 70%, causing 150 Shadow damage and draining 150 mana over 30 sec."
+      "description": "Fires a Black Arrow into the target, slowing the target's movement speed by 70%, causing 150 Shadow damage and draining 150 mana over 30 sec.",
+      "icon": "ability_theblackarrow"
     },
     "5116": {
       "name": "Concussive Shot",
@@ -377,7 +405,8 @@
       "passive": false,
       "cooldown_ms": 12000,
       "range_yd": 35.0,
-      "description": "Dazes the target, slowing movement speed by 50% for 4 sec."
+      "description": "Dazes the target, slowing movement speed by 50% for 4 sec.",
+      "icon": "spell_frost_stun"
     },
     "5118": {
       "name": "Aspect of the Cheetah",
@@ -390,7 +419,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a cheetah, increasing movement speed by 30%.  If the hunter takes damage, he or she will be dazed for 4 sec.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a cheetah, increasing movement speed by 30%.  If the hunter takes damage, he or she will be dazed for 4 sec.  Only one Aspect can be active at a time.",
+      "icon": "ability_mount_jungletiger"
     },
     "5384": {
       "name": "Feign Death",
@@ -403,7 +433,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Feign death which may trick enemies into ignoring you. Lasts 6 min. If not cancelled, after 6 min you will actually die."
+      "description": "Feign death which may trick enemies into ignoring you. Lasts 6 min. If not cancelled, after 6 min you will actually die.",
+      "icon": "ability_rogue_feigndeath"
     },
     "6197": {
       "name": "Eagle Eye",
@@ -416,7 +447,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 50000.0,
-      "description": "Zooms in the hunter's vision.  Only usable outdoors.  Lasts 1 min."
+      "description": "Zooms in the hunter's vision.  Only usable outdoors.  Lasts 1 min.",
+      "icon": "ability_hunter_eagleeye"
     },
     "6991": {
       "name": "Feed Pet",
@@ -429,7 +461,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 10.0,
-      "description": "Feed your pet the selected item.  Feeding your pet increases happiness.  Using food close to the pet's level will have a better result."
+      "description": "Feed your pet the selected item.  Feeding your pet increases happiness.  Using food close to the pet's level will have a better result.",
+      "icon": "ability_hunter_beasttraining"
     },
     "13159": {
       "name": "Aspect of the Pack",
@@ -442,7 +475,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter and group members within 30 yards take on the aspects of a pack of cheetahs, increasing movement speed by 30%.  If a pack member takes damage, they will be dazed for 4 sec.  Only one Aspect can be active at a time."
+      "description": "The hunter and group members within 30 yards take on the aspects of a pack of cheetahs, increasing movement speed by 30%.  If a pack member takes damage, they will be dazed for 4 sec.  Only one Aspect can be active at a time.",
+      "icon": "ability_mount_whitetiger"
     },
     "13161": {
       "name": "Aspect of the Beast",
@@ -455,7 +489,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a beast, becoming untrackable and increasing Melee Attack Power by 50. Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a beast, becoming untrackable and increasing Melee Attack Power by 50. Only one Aspect can be active at a time.",
+      "icon": "ability_mount_pinktiger"
     },
     "13163": {
       "name": "Aspect of the Monkey",
@@ -468,7 +503,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 100.0,
-      "description": "The hunter takes on the aspects of a monkey, increasing chance to dodge by 8%.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a monkey, increasing chance to dodge by 8%.  Only one Aspect can be active at a time.",
+      "icon": "ability_hunter_aspectofthemonkey"
     },
     "13165": {
       "name": "Aspect of the Hawk",
@@ -481,7 +517,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 20.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 20.  Only one Aspect can be active at a time.",
+      "icon": "spell_nature_ravenform"
     },
     "13542": {
       "name": "Mend Pet",
@@ -494,7 +531,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Heals your pet 142 health every second while you focus.  Lasts 5 sec."
+      "description": "Heals your pet 142 health every second while you focus.  Lasts 5 sec.",
+      "icon": "ability_hunter_mendpet"
     },
     "13543": {
       "name": "Mend Pet",
@@ -507,7 +545,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Heals your pet 189 health every second while you focus.  Lasts 5 sec."
+      "description": "Heals your pet 189 health every second while you focus.  Lasts 5 sec.",
+      "icon": "ability_hunter_mendpet"
     },
     "13544": {
       "name": "Mend Pet",
@@ -520,7 +559,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 20.0,
-      "description": "Heals your pet 245 health every second while you focus.  Lasts 5 sec."
+      "description": "Heals your pet 245 health every second while you focus.  Lasts 5 sec.",
+      "icon": "ability_hunter_mendpet"
     },
     "13549": {
       "name": "Serpent Sting",
@@ -533,7 +573,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 35 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, causing 35 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_quickshot"
     },
     "13550": {
       "name": "Serpent Sting",
@@ -546,7 +587,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 70 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, causing 70 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_quickshot"
     },
     "13551": {
       "name": "Serpent Sting",
@@ -559,7 +601,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 130 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, causing 130 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_quickshot"
     },
     "13552": {
       "name": "Serpent Sting",
@@ -572,7 +615,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 200 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, causing 200 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_quickshot"
     },
     "13553": {
       "name": "Serpent Sting",
@@ -585,7 +629,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 290 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, causing 290 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_quickshot"
     },
     "13554": {
       "name": "Serpent Sting",
@@ -598,7 +643,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 375 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, causing 375 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_quickshot"
     },
     "13555": {
       "name": "Serpent Sting",
@@ -611,7 +657,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 500 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, causing 500 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_quickshot"
     },
     "13795": {
       "name": "Immolation Trap",
@@ -624,7 +671,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that will burn the first enemy to approach for 105 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time."
+      "description": "Place a Fire trap that will burn the first enemy to approach for 105 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "icon": "spell_fire_flameshock"
     },
     "13809": {
       "name": "Frost Trap",
@@ -637,7 +685,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Frost trap that creates an ice slick around itself for 30 sec when the first enemy approaches it. All enemies within 10 yards will be slowed by 60% while in the area of effect. Trap will exist for 1 min. Only one Frost trap can be active at a time."
+      "description": "Place a Frost trap that creates an ice slick around itself for 30 sec when the first enemy approaches it. All enemies within 10 yards will be slowed by 60% while in the area of effect. Trap will exist for 1 min. Only one Frost trap can be active at a time.",
+      "icon": "spell_frost_freezingbreath"
     },
     "13813": {
       "name": "Explosive Trap",
@@ -650,7 +699,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that explodes when an enemy approaches, causing 115 Fire damage and 150 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time."
+      "description": "Place a Fire trap that explodes when an enemy approaches, causing 115 Fire damage and 150 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "icon": "spell_fire_selfdestruct"
     },
     "14260": {
       "name": "Raptor Strike",
@@ -663,7 +713,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "A strong attack that deals melee weapon damage plus 11."
+      "description": "A strong attack that deals melee weapon damage plus 11.",
+      "icon": "ability_meleedamage"
     },
     "14261": {
       "name": "Raptor Strike",
@@ -676,7 +727,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "A strong attack that deals melee weapon damage plus 21."
+      "description": "A strong attack that deals melee weapon damage plus 21.",
+      "icon": "ability_meleedamage"
     },
     "14262": {
       "name": "Raptor Strike",
@@ -689,7 +741,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "A strong attack that deals melee weapon damage plus 30."
+      "description": "A strong attack that deals melee weapon damage plus 30.",
+      "icon": "ability_meleedamage"
     },
     "14263": {
       "name": "Raptor Strike",
@@ -702,7 +755,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "A strong attack that deals melee weapon damage plus 35."
+      "description": "A strong attack that deals melee weapon damage plus 35.",
+      "icon": "ability_meleedamage"
     },
     "14264": {
       "name": "Raptor Strike",
@@ -715,7 +769,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "A strong attack that deals melee weapon damage plus 40."
+      "description": "A strong attack that deals melee weapon damage plus 40.",
+      "icon": "ability_meleedamage"
     },
     "14265": {
       "name": "Raptor Strike",
@@ -728,7 +783,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "A strong attack that deals melee weapon damage plus 55."
+      "description": "A strong attack that deals melee weapon damage plus 55.",
+      "icon": "ability_meleedamage"
     },
     "14266": {
       "name": "Raptor Strike",
@@ -741,7 +797,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "A strong attack that deals melee weapon damage plus 70."
+      "description": "A strong attack that deals melee weapon damage plus 70.",
+      "icon": "ability_meleedamage"
     },
     "14267": {
       "name": "Wing Clip",
@@ -754,7 +811,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Inflicts 25 damage and reduces the enemy target's movement speed by 55% for 10 sec."
+      "description": "Inflicts 25 damage and reduces the enemy target's movement speed by 55% for 10 sec.",
+      "icon": "ability_rogue_trip"
     },
     "14268": {
       "name": "Wing Clip",
@@ -767,7 +825,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Inflicts 50 damage and reduces the enemy target's movement speed by 60% for 10 sec."
+      "description": "Inflicts 50 damage and reduces the enemy target's movement speed by 60% for 10 sec.",
+      "icon": "ability_rogue_trip"
     },
     "14269": {
       "name": "Mongoose Bite",
@@ -780,7 +839,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Counterattack the enemy for melee weapon damage plus 22. Can only be performed after you dodge."
+      "description": "Counterattack the enemy for melee weapon damage plus 22. Can only be performed after you dodge.",
+      "icon": "ability_hunter_swiftstrike"
     },
     "14270": {
       "name": "Mongoose Bite",
@@ -793,7 +853,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Counterattack the enemy for melee weapon damage plus 37. Can only be performed after you dodge."
+      "description": "Counterattack the enemy for melee weapon damage plus 37. Can only be performed after you dodge.",
+      "icon": "ability_hunter_swiftstrike"
     },
     "14271": {
       "name": "Mongoose Bite",
@@ -806,7 +867,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Counterattack the enemy for melee weapon damage plus 57. Can only be performed after you dodge."
+      "description": "Counterattack the enemy for melee weapon damage plus 57. Can only be performed after you dodge.",
+      "icon": "ability_hunter_swiftstrike"
     },
     "14272": {
       "name": "Disengage",
@@ -819,7 +881,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Attempts to disengage from the target by reducing threat. More effective than Disengage (Rank 1). Disables auto-attack."
+      "description": "Attempts to disengage from the target by reducing threat. More effective than Disengage (Rank 1). Disables auto-attack.",
+      "icon": "ability_rogue_feint"
     },
     "14273": {
       "name": "Disengage",
@@ -832,7 +895,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "Attempts to disengage from the target by reducing threat. More effective than Disengage (Rank 2). Disables auto-attack."
+      "description": "Attempts to disengage from the target by reducing threat. More effective than Disengage (Rank 2). Disables auto-attack.",
+      "icon": "ability_rogue_feint"
     },
     "14274": {
       "name": "Distracting Shot",
@@ -845,7 +909,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 35.0,
-      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 1)."
+      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 1).",
+      "icon": "spell_arcane_blink"
     },
     "14279": {
       "name": "Viper Sting",
@@ -858,7 +923,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 35.0,
-      "description": "Stings the target, draining 848 mana over 8 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, draining 848 mana over 8 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_aimedshot"
     },
     "14280": {
       "name": "Viper Sting",
@@ -871,7 +937,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 35.0,
-      "description": "Stings the target, draining 1108 mana over 8 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, draining 1108 mana over 8 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_aimedshot"
     },
     "14281": {
       "name": "Arcane Shot",
@@ -884,7 +951,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 35 Arcane damage."
+      "description": "An instant shot that causes 35 Arcane damage.",
+      "icon": "ability_impalingbolt"
     },
     "14282": {
       "name": "Arcane Shot",
@@ -897,7 +965,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 50 Arcane damage."
+      "description": "An instant shot that causes 50 Arcane damage.",
+      "icon": "ability_impalingbolt"
     },
     "14283": {
       "name": "Arcane Shot",
@@ -910,7 +979,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 85 Arcane damage."
+      "description": "An instant shot that causes 85 Arcane damage.",
+      "icon": "ability_impalingbolt"
     },
     "14284": {
       "name": "Arcane Shot",
@@ -923,7 +993,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 120 Arcane damage."
+      "description": "An instant shot that causes 120 Arcane damage.",
+      "icon": "ability_impalingbolt"
     },
     "14285": {
       "name": "Arcane Shot",
@@ -936,7 +1007,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 175 Arcane damage."
+      "description": "An instant shot that causes 175 Arcane damage.",
+      "icon": "ability_impalingbolt"
     },
     "14286": {
       "name": "Arcane Shot",
@@ -949,7 +1021,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 220 Arcane damage."
+      "description": "An instant shot that causes 220 Arcane damage.",
+      "icon": "ability_impalingbolt"
     },
     "14287": {
       "name": "Arcane Shot",
@@ -962,7 +1035,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 280 Arcane damage."
+      "description": "An instant shot that causes 280 Arcane damage.",
+      "icon": "ability_impalingbolt"
     },
     "14294": {
       "name": "Volley",
@@ -975,7 +1049,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Continuously fires a volley of ammo at the target area, causing 91 Arcane damage to enemy targets within 8 yards every 1 sec for 6 sec."
+      "description": "Continuously fires a volley of ammo at the target area, causing 91 Arcane damage to enemy targets within 8 yards every 1 sec for 6 sec.",
+      "icon": "ability_marksmanship"
     },
     "14295": {
       "name": "Volley",
@@ -988,7 +1063,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Continuously fires a volley of ammo at the target area, causing 112 Arcane damage to enemy targets within 8 yards every 1 sec for 6 sec."
+      "description": "Continuously fires a volley of ammo at the target area, causing 112 Arcane damage to enemy targets within 8 yards every 1 sec for 6 sec.",
+      "icon": "ability_marksmanship"
     },
     "14296": {
       "name": "Black Arrow",
@@ -1001,7 +1077,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Fires a Black Arrow into the target, slowing the target's movement speed by 70%, causing 150 Shadow damage and draining 150 mana over 30 sec."
+      "description": "Fires a Black Arrow into the target, slowing the target's movement speed by 70%, causing 150 Shadow damage and draining 150 mana over 30 sec.",
+      "icon": "ability_theblackarrow"
     },
     "14302": {
       "name": "Immolation Trap",
@@ -1014,7 +1091,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that will burn the first enemy to approach for 215 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time."
+      "description": "Place a Fire trap that will burn the first enemy to approach for 215 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "icon": "spell_fire_flameshock"
     },
     "14303": {
       "name": "Immolation Trap",
@@ -1027,7 +1105,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that will burn the first enemy to approach for 340 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time."
+      "description": "Place a Fire trap that will burn the first enemy to approach for 340 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "icon": "spell_fire_flameshock"
     },
     "14304": {
       "name": "Immolation Trap",
@@ -1040,7 +1119,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that will burn the first enemy to approach for 510 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time."
+      "description": "Place a Fire trap that will burn the first enemy to approach for 510 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "icon": "spell_fire_flameshock"
     },
     "14305": {
       "name": "Immolation Trap",
@@ -1053,7 +1133,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that will burn the first enemy to approach for 690 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time."
+      "description": "Place a Fire trap that will burn the first enemy to approach for 690 Fire damage over 15 sec. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "icon": "spell_fire_flameshock"
     },
     "14310": {
       "name": "Freezing Trap",
@@ -1066,7 +1147,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Frost trap that freezes the first enemy that approaches, preventing all action for up to 15 sec. Any damage caused will break the ice. Trap will exist for 1 min. Only one Frost trap can be active at a time."
+      "description": "Place a Frost trap that freezes the first enemy that approaches, preventing all action for up to 15 sec. Any damage caused will break the ice. Trap will exist for 1 min. Only one Frost trap can be active at a time.",
+      "icon": "spell_frost_chainsofice"
     },
     "14311": {
       "name": "Freezing Trap",
@@ -1079,7 +1161,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Frost trap that freezes the first enemy that approaches, preventing all action for up to 20 sec. Any damage caused will break the ice. Trap will exist for 1 min. Only one Frost trap can be active at a time."
+      "description": "Place a Frost trap that freezes the first enemy that approaches, preventing all action for up to 20 sec. Any damage caused will break the ice. Trap will exist for 1 min. Only one Frost trap can be active at a time.",
+      "icon": "spell_frost_chainsofice"
     },
     "14316": {
       "name": "Explosive Trap",
@@ -1092,7 +1175,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that explodes when an enemy approaches, causing 163 Fire damage and 240 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time."
+      "description": "Place a Fire trap that explodes when an enemy approaches, causing 163 Fire damage and 240 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "icon": "spell_fire_selfdestruct"
     },
     "14317": {
       "name": "Explosive Trap",
@@ -1105,7 +1189,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 0.0,
-      "description": "Place a Fire trap that explodes when an enemy approaches, causing 229 Fire damage and 330 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time."
+      "description": "Place a Fire trap that explodes when an enemy approaches, causing 229 Fire damage and 330 additional Fire damage over 20 sec to all within 10 yards. Trap will exist for 1 min. Only one Fire trap can be active at a time.",
+      "icon": "spell_fire_selfdestruct"
     },
     "14318": {
       "name": "Aspect of the Hawk",
@@ -1118,7 +1203,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 35.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 35.  Only one Aspect can be active at a time.",
+      "icon": "spell_nature_ravenform"
     },
     "14319": {
       "name": "Aspect of the Hawk",
@@ -1131,7 +1217,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 50.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 50.  Only one Aspect can be active at a time.",
+      "icon": "spell_nature_ravenform"
     },
     "14320": {
       "name": "Aspect of the Hawk",
@@ -1144,7 +1231,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 70.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 70.  Only one Aspect can be active at a time.",
+      "icon": "spell_nature_ravenform"
     },
     "14321": {
       "name": "Aspect of the Hawk",
@@ -1157,7 +1245,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 90.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 90.  Only one Aspect can be active at a time.",
+      "icon": "spell_nature_ravenform"
     },
     "14322": {
       "name": "Aspect of the Hawk",
@@ -1170,7 +1259,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 110.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 110.  Only one Aspect can be active at a time.",
+      "icon": "spell_nature_ravenform"
     },
     "14323": {
       "name": "Hunter's Mark",
@@ -1183,7 +1273,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 100.0,
-      "description": "Places the Hunter's Mark on the target, increasing the Ranged Attack Power of all attackers against that target by 59.  In addition, the target of this ability can always be seen by the hunter whether it stealths or turns invisible.  The target also appears on the mini-map.  Lasts for 2 min."
+      "description": "Places the Hunter's Mark on the target, increasing the Ranged Attack Power of all attackers against that target by 59.  In addition, the target of this ability can always be seen by the hunter whether it stealths or turns invisible.  The target also appears on the mini-map.  Lasts for 2 min.",
+      "icon": "ability_hunter_snipershot"
     },
     "14324": {
       "name": "Hunter's Mark",
@@ -1196,7 +1287,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 100.0,
-      "description": "Places the Hunter's Mark on the target, increasing the Ranged Attack Power of all attackers against that target by 98.  In addition, the target of this ability can always be seen by the hunter whether it stealths or turns invisible.  The target also appears on the mini-map.  Lasts for 2 min."
+      "description": "Places the Hunter's Mark on the target, increasing the Ranged Attack Power of all attackers against that target by 98.  In addition, the target of this ability can always be seen by the hunter whether it stealths or turns invisible.  The target also appears on the mini-map.  Lasts for 2 min.",
+      "icon": "ability_hunter_snipershot"
     },
     "14325": {
       "name": "Hunter's Mark",
@@ -1209,7 +1301,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 100.0,
-      "description": "Places the Hunter's Mark on the target, increasing the Ranged Attack Power of all attackers against that target by 143.  In addition, the target of this ability can always be seen by the hunter whether it stealths or turns invisible.  The target also appears on the mini-map.  Lasts for 2 min."
+      "description": "Places the Hunter's Mark on the target, increasing the Ranged Attack Power of all attackers against that target by 143.  In addition, the target of this ability can always be seen by the hunter whether it stealths or turns invisible.  The target also appears on the mini-map.  Lasts for 2 min.",
+      "icon": "ability_hunter_snipershot"
     },
     "14326": {
       "name": "Scare Beast",
@@ -1222,7 +1315,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 10.0,
-      "description": "Scares a beast, causing it to run in fear for up to 15 sec.  Damage caused may interrupt the effect.  Only one beast can be feared at a time."
+      "description": "Scares a beast, causing it to run in fear for up to 15 sec.  Damage caused may interrupt the effect.  Only one beast can be feared at a time.",
+      "icon": "ability_druid_cower"
     },
     "14327": {
       "name": "Scare Beast",
@@ -1235,7 +1329,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 10.0,
-      "description": "Scares a beast, causing it to run in fear for up to 20 sec.  Damage caused may interrupt the effect.  Only one beast can be feared at a time."
+      "description": "Scares a beast, causing it to run in fear for up to 20 sec.  Damage caused may interrupt the effect.  Only one beast can be feared at a time.",
+      "icon": "ability_druid_cower"
     },
     "15629": {
       "name": "Distracting Shot",
@@ -1248,7 +1343,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 35.0,
-      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 2)."
+      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 2).",
+      "icon": "spell_arcane_blink"
     },
     "15630": {
       "name": "Distracting Shot",
@@ -1261,7 +1357,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 35.0,
-      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 3)."
+      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 3).",
+      "icon": "spell_arcane_blink"
     },
     "15631": {
       "name": "Distracting Shot",
@@ -1274,7 +1371,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 35.0,
-      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 4)."
+      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 4).",
+      "icon": "spell_arcane_blink"
     },
     "15632": {
       "name": "Distracting Shot",
@@ -1287,7 +1385,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 35.0,
-      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 5)."
+      "description": "Distract the target, causing threat.  More effective than Distracting Shot (Rank 5).",
+      "icon": "spell_arcane_blink"
     },
     "19263": {
       "name": "Deterrence",
@@ -1300,7 +1399,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "When activated, increases your Dodge and Parry chance by 25% for 10 sec."
+      "description": "When activated, increases your Dodge and Parry chance by 25% for 10 sec.",
+      "icon": "ability_whirlwind"
     },
     "19306": {
       "name": "Counterattack",
@@ -1313,7 +1413,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "A strike that becomes active after parrying an opponent's attack. This attack deals 50% weapon damage plus 26 and immobilizes the target for 5 sec. Counterattack cannot be blocked, dodged, or parried."
+      "description": "A strike that becomes active after parrying an opponent's attack. This attack deals 50% weapon damage plus 26 and immobilizes the target for 5 sec. Counterattack cannot be blocked, dodged, or parried.",
+      "icon": "ability_warrior_challange"
     },
     "19434": {
       "name": "Aimed Shot",
@@ -1326,7 +1427,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 40. Aimed Shot shares its cooldown with Multi-Shot."
+      "description": "An aimed shot that increases ranged damage by 40. Aimed Shot shares its cooldown with Multi-Shot.",
+      "icon": "inv_spear_07"
     },
     "19503": {
       "name": "Scatter Shot",
@@ -1339,7 +1441,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 15.0,
-      "description": "A short-range shot that deals 50% weapon damage and disorients the target for 4 sec.  Any damage caused will remove the effect.  Turns off your attack when used."
+      "description": "A short-range shot that deals 50% weapon damage and disorients the target for 4 sec.  Any damage caused will remove the effect.  Turns off your attack when used.",
+      "icon": "ability_golemstormbolt"
     },
     "19506": {
       "name": "Trueshot Aura",
@@ -1352,7 +1455,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 50. Lasts 30 min."
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 50. Lasts 30 min.",
+      "icon": "ability_trueshot"
     },
     "19574": {
       "name": "Bestial Wrath",
@@ -1365,7 +1469,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 100.0,
-      "description": "Send your pet into a rage causing 50% additional damage for 18 sec.  While enraged, the beast does not feel pity or remorse or fear and it cannot be stopped unless killed."
+      "description": "Send your pet into a rage causing 50% additional damage for 18 sec.  While enraged, the beast does not feel pity or remorse or fear and it cannot be stopped unless killed.",
+      "icon": "ability_druid_ferociousbite"
     },
     "19577": {
       "name": "Intimidation",
@@ -1378,7 +1483,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 100.0,
-      "description": "Command your pet to Stun the target for 3 sec on its next successful attack, which also gains 100% increased critical strike chance. Generates high threat."
+      "description": "Command your pet to Stun the target for 3 sec on its next successful attack, which also gains 100% increased critical strike chance. Generates high threat.",
+      "icon": "ability_devour"
     },
     "19801": {
       "name": "Tranquilizing Shot",
@@ -1391,7 +1497,8 @@
       "passive": false,
       "cooldown_ms": 20000,
       "range_yd": 35.0,
-      "description": "Attempts to remove 1 Frenzy effect from an enemy creature."
+      "description": "Attempts to remove 1 Frenzy effect from an enemy creature.",
+      "icon": "spell_nature_drowsy"
     },
     "19878": {
       "name": "Track Demons",
@@ -1404,7 +1511,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shows the location of all nearby demons on the minimap.  Only one form of tracking can be active at a time."
+      "description": "Shows the location of all nearby demons on the minimap.  Only one form of tracking can be active at a time.",
+      "icon": "spell_shadow_summonfelhunter"
     },
     "19879": {
       "name": "Track Dragonkin",
@@ -1417,7 +1525,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shows the location of all nearby dragonkin on the minimap.  Only one form of tracking can be active at a time."
+      "description": "Shows the location of all nearby dragonkin on the minimap.  Only one form of tracking can be active at a time.",
+      "icon": "inv_misc_head_dragon_01"
     },
     "19880": {
       "name": "Track Elementals",
@@ -1430,7 +1539,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shows the location of all nearby elementals on the minimap.  Only one form of tracking can be active at a time."
+      "description": "Shows the location of all nearby elementals on the minimap.  Only one form of tracking can be active at a time.",
+      "icon": "spell_frost_summonwaterelemental"
     },
     "19882": {
       "name": "Track Giants",
@@ -1443,7 +1553,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shows the location of all nearby giants on the minimap.  Only one form of tracking can be active at a time."
+      "description": "Shows the location of all nearby giants on the minimap.  Only one form of tracking can be active at a time.",
+      "icon": "ability_racial_avatar"
     },
     "19883": {
       "name": "Track Humanoids",
@@ -1456,7 +1567,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shows the location of all nearby humanoids on the minimap.  Only one form of tracking can be active at a time."
+      "description": "Shows the location of all nearby humanoids on the minimap.  Only one form of tracking can be active at a time.",
+      "icon": "spell_holy_prayerofhealing"
     },
     "19884": {
       "name": "Track Undead",
@@ -1469,7 +1581,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shows the location of all nearby undead on the minimap.  Only one form of tracking can be active at a time."
+      "description": "Shows the location of all nearby undead on the minimap.  Only one form of tracking can be active at a time.",
+      "icon": "spell_shadow_darksummoning"
     },
     "19885": {
       "name": "Track Hidden",
@@ -1482,7 +1595,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases stealth detection and shows hidden units within detection range on the minimap.  Only one form of tracking can be active at a time."
+      "description": "Increases stealth detection and shows hidden units within detection range on the minimap.  Only one form of tracking can be active at a time.",
+      "icon": "ability_stealth"
     },
     "20043": {
       "name": "Aspect of the Wild",
@@ -1495,7 +1609,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter and all party and raid members within 30 yards take on the aspect of the wild, increasing Nature resistance by 45.  Only one Aspect can be active at a time."
+      "description": "The hunter and all party and raid members within 30 yards take on the aspect of the wild, increasing Nature resistance by 45.  Only one Aspect can be active at a time.",
+      "icon": "spell_nature_protectionformnature"
     },
     "20190": {
       "name": "Aspect of the Wild",
@@ -1508,7 +1623,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter and all party and raid members within 30 yards take on the aspect of the wild, increasing Nature resistance by 60.  Only one Aspect can be active at a time."
+      "description": "The hunter and all party and raid members within 30 yards take on the aspect of the wild, increasing Nature resistance by 60.  Only one Aspect can be active at a time.",
+      "icon": "spell_nature_protectionformnature"
     },
     "20736": {
       "name": "Distracting Shot",
@@ -1521,7 +1637,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 35.0,
-      "description": "Distract the target, causing threat."
+      "description": "Distract the target, causing threat.",
+      "icon": "spell_arcane_blink"
     },
     "20900": {
       "name": "Aimed Shot",
@@ -1534,7 +1651,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 70. Aimed Shot shares its cooldown with Multi-Shot."
+      "description": "An aimed shot that increases ranged damage by 70. Aimed Shot shares its cooldown with Multi-Shot.",
+      "icon": "inv_spear_07"
     },
     "20901": {
       "name": "Aimed Shot",
@@ -1547,7 +1665,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 115. Aimed Shot shares its cooldown with Multi-Shot."
+      "description": "An aimed shot that increases ranged damage by 115. Aimed Shot shares its cooldown with Multi-Shot.",
+      "icon": "inv_spear_07"
     },
     "20902": {
       "name": "Aimed Shot",
@@ -1560,7 +1679,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 185. Aimed Shot shares its cooldown with Multi-Shot."
+      "description": "An aimed shot that increases ranged damage by 185. Aimed Shot shares its cooldown with Multi-Shot.",
+      "icon": "inv_spear_07"
     },
     "20903": {
       "name": "Aimed Shot",
@@ -1573,7 +1693,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 260. Aimed Shot shares its cooldown with Multi-Shot."
+      "description": "An aimed shot that increases ranged damage by 260. Aimed Shot shares its cooldown with Multi-Shot.",
+      "icon": "inv_spear_07"
     },
     "20904": {
       "name": "Aimed Shot",
@@ -1586,7 +1707,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 350. Aimed Shot shares its cooldown with Multi-Shot."
+      "description": "An aimed shot that increases ranged damage by 350. Aimed Shot shares its cooldown with Multi-Shot.",
+      "icon": "inv_spear_07"
     },
     "20905": {
       "name": "Trueshot Aura",
@@ -1599,7 +1721,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 75. Lasts 30 min."
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 75. Lasts 30 min.",
+      "icon": "ability_trueshot"
     },
     "20906": {
       "name": "Trueshot Aura",
@@ -1612,7 +1735,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 100. Lasts 30 min."
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 100. Lasts 30 min.",
+      "icon": "ability_trueshot"
     },
     "20909": {
       "name": "Counterattack",
@@ -1625,7 +1749,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "A strike that becomes active after parrying an opponent's attack. This attack deals 50% weapon damage plus 70 and immobilizes the target for 5 sec. Counterattack cannot be blocked, dodged, or parried."
+      "description": "A strike that becomes active after parrying an opponent's attack. This attack deals 50% weapon damage plus 70 and immobilizes the target for 5 sec. Counterattack cannot be blocked, dodged, or parried.",
+      "icon": "ability_warrior_challange"
     },
     "20910": {
       "name": "Counterattack",
@@ -1638,7 +1763,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "A strike that becomes active after parrying an opponent's attack. This attack deals 50% weapon damage plus 110 and immobilizes the target for 5 sec. Counterattack cannot be blocked, dodged, or parried."
+      "description": "A strike that becomes active after parrying an opponent's attack. This attack deals 50% weapon damage plus 110 and immobilizes the target for 5 sec. Counterattack cannot be blocked, dodged, or parried.",
+      "icon": "ability_warrior_challange"
     },
     "24118": {
       "name": "Lacerate",
@@ -1651,7 +1777,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Wounds the target causing them to bleed for 119 damage over 21 sec."
+      "description": "Wounds the target causing them to bleed for 119 damage over 21 sec.",
+      "icon": "ability_gouge"
     },
     "24119": {
       "name": "Lacerate",
@@ -1664,7 +1791,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Wounds the target causing them to bleed for 196 damage over 21 sec."
+      "description": "Wounds the target causing them to bleed for 196 damage over 21 sec.",
+      "icon": "ability_gouge"
     },
     "24120": {
       "name": "Lacerate",
@@ -1677,7 +1805,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Wounds the target causing them to bleed for 280 damage over 21 sec."
+      "description": "Wounds the target causing them to bleed for 280 damage over 21 sec.",
+      "icon": "ability_gouge"
     },
     "24406": {
       "name": "Improved Mend Pet",
@@ -1690,7 +1819,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 100.0,
-      "description": ""
+      "description": "",
+      "icon": "ability_hunter_mendpet"
     },
     "25295": {
       "name": "Serpent Sting",
@@ -1703,7 +1833,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 675 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target."
+      "description": "Stings the target, causing 675 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "icon": "ability_hunter_quickshot"
     },
     "25296": {
       "name": "Aspect of the Hawk",
@@ -1716,7 +1847,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 120.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 120.  Only one Aspect can be active at a time.",
+      "icon": "spell_nature_ravenform"
     },
     "26226": {
       "name": "Widow Bite",
@@ -1729,7 +1861,8 @@
       "passive": false,
       "cooldown_ms": 4000,
       "range_yd": 0.0,
-      "description": ""
+      "description": "",
+      "icon": "ability_hunter_pet_spider"
     },
     "409580": {
       "name": "Heart of the Lion",
@@ -1742,7 +1875,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter invokes the heart of a lion, increasing total stats by 10% and Attack Power by 40 for all nearby allies, and increasing total stats for the Hunter by an additional 10%."
+      "description": "The hunter invokes the heart of a lion, increasing total stats by 10% and Attack Power by 40 for all nearby allies, and increasing total stats for the Hunter by an additional 10%.",
+      "icon": "ability_hunter_pet_cat"
     },
     "415423": {
       "name": "Aspect of the Viper",
@@ -1755,7 +1889,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspect of the viper, causing your ranged and melee auto attacks to regenerate mana but reducing your total damage done by 10%.  In addition, you gain 10% of maximum mana every 3 sec.  Mana gained is based on the speed of your weapon. Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspect of the viper, causing your ranged and melee auto attacks to regenerate mana but reducing your total damage done by 10%.  In addition, you gain 10% of maximum mana every 3 sec.  Mana gained is based on the speed of your weapon. Only one Aspect can be active at a time.",
+      "icon": "ability_hunter_aspectoftheviper"
     },
     "458436": {
       "name": "Wyvern Strike",
@@ -1768,7 +1903,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 5.0,
-      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for ${6/100*8*$AP} Physical damage over 8 sec."
+      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for ${6/100*8*$AP} Physical damage over 8 sec.",
+      "icon": "inv_spear_02"
     },
     "458481": {
       "name": "Wyvern Strike",
@@ -1781,7 +1917,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 5.0,
-      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for ${8/100*8*$AP} Physical damage over 8 sec."
+      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for ${8/100*8*$AP} Physical damage over 8 sec.",
+      "icon": "inv_spear_02"
     },
     "458482": {
       "name": "Wyvern Strike",
@@ -1794,7 +1931,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 5.0,
-      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for ${10/100*8*$AP} Physical damage over 8 sec."
+      "description": "A vicious strike that deals 140% weapon damage and causes the target to Bleed for ${10/100*8*$AP} Physical damage over 8 sec.",
+      "icon": "inv_spear_02"
     },
     "469145": {
       "name": "Aspect of the Falcon",
@@ -1807,7 +1945,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a Falcon, increasing melee and ranged Attack Power by the same amount as their highest rank of Aspect of the Hawk.\r\n\r\nWhile Aspect of the Falcon is active, the Improved Aspect of the Hawk talent can now proc from and benefit melee attacks.  Only one Aspect can be active at a time."
+      "description": "The hunter takes on the aspects of a Falcon, increasing melee and ranged Attack Power by the same amount as their highest rank of Aspect of the Hawk.\r\n\r\nWhile Aspect of the Falcon is active, the Improved Aspect of the Hawk talent can now proc from and benefit melee attacks.  Only one Aspect can be active at a time.",
+      "icon": "ability_hunter_pet_dragonhawk"
     },
     "1221404": {
       "name": "Enchanted Flare",
@@ -1820,7 +1959,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 30.0,
-      "description": "Exposes all hidden and invisible enemies within 10 yards of the targeted area, and staves off magical darkness for 30 sec."
+      "description": "Exposes all hidden and invisible enemies within 10 yards of the targeted area, and staves off magical darkness for 30 sec.",
+      "icon": "ability_mage_arcanebarrage"
     },
     "1242634": {
       "name": "Counterattack",
@@ -1833,7 +1973,8 @@
       "passive": false,
       "cooldown_ms": 5000,
       "range_yd": 5.0,
-      "description": "A strike that becomes active after parrying an opponent's attack. This attack deals 50% weapon damage plus 40 and immobilizes the target for 5 sec. Counterattack cannot be blocked, dodged, or parried."
+      "description": "A strike that becomes active after parrying an opponent's attack. This attack deals 50% weapon damage plus 40 and immobilizes the target for 5 sec. Counterattack cannot be blocked, dodged, or parried.",
+      "icon": "ability_warrior_challange"
     },
     "1293020": {
       "name": "Hydra Shot",
@@ -1846,7 +1987,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Fires an instant Shot that divides multiple times to strike up to 5 targets. Your initial target takes weapon damage plus 260 and each subsequent target takes 35% less damage. Hydra Shot shares its cooldown with Arcane Shot."
+      "description": "Fires an instant Shot that divides multiple times to strike up to 5 targets. Your initial target takes weapon damage plus 260 and each subsequent target takes 35% less damage. Hydra Shot shares its cooldown with Arcane Shot.",
+      "icon": "inv_hydrasbite"
     },
     "1293241": {
       "name": "Summon Hawk",
@@ -1859,7 +2001,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${32+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot."
+      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${32+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
+      "icon": "ability_hunter_animalhandler"
     },
     "1293525": {
       "name": "Summon Hawk",
@@ -1872,7 +2015,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${47+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot."
+      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${47+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
+      "icon": "ability_hunter_animalhandler"
     },
     "1293526": {
       "name": "Summon Hawk",
@@ -1885,7 +2029,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${85+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot."
+      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${85+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
+      "icon": "ability_hunter_animalhandler"
     },
     "1293527": {
       "name": "Summon Hawk",
@@ -1898,7 +2043,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${108+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot."
+      "description": "Command a hawk to dive-bomb your targeted enemy, dealing ${108+($rap*(5/100))} Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot.",
+      "icon": "ability_hunter_animalhandler"
     },
     "1299332": {
       "name": "Lacerate",
@@ -1911,7 +2057,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Wounds the target causing them to bleed for 406 damage over 21 sec."
+      "description": "Wounds the target causing them to bleed for 406 damage over 21 sec.",
+      "icon": "ability_gouge"
     },
     "1299346": {
       "name": "Trueshot Aura",
@@ -1924,7 +2071,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yds by 20."
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yds by 20.",
+      "icon": "ability_trueshot"
     },
     "1299348": {
       "name": "Trueshot Aura",
@@ -1937,7 +2085,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yds by 35."
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yds by 35.",
+      "icon": "ability_trueshot"
     },
     "1299445": {
       "name": "Aspect of the Beast",
@@ -1950,7 +2099,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "You take on the aspects of a beast, becoming untrackable and increasing Melee Attack Power by 70. Only one Aspect can be active at a time."
+      "description": "You take on the aspects of a beast, becoming untrackable and increasing Melee Attack Power by 70. Only one Aspect can be active at a time.",
+      "icon": "ability_mount_pinktiger"
     },
     "1299446": {
       "name": "Aspect of the Beast",
@@ -1963,7 +2113,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "You take on the aspects of a beast, becoming untrackable and increasing Melee Attack Power by 90. Only one Aspect can be active at a time."
+      "description": "You take on the aspects of a beast, becoming untrackable and increasing Melee Attack Power by 90. Only one Aspect can be active at a time.",
+      "icon": "ability_mount_pinktiger"
     },
     "1299447": {
       "name": "Aspect of the Beast",
@@ -1976,7 +2127,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "You take on the aspects of a beast, becoming untrackable and increasing Melee Attack Power by 110. Only one Aspect can be active at a time."
+      "description": "You take on the aspects of a beast, becoming untrackable and increasing Melee Attack Power by 110. Only one Aspect can be active at a time.",
+      "icon": "ability_mount_pinktiger"
     },
     "1310687": {
       "name": "Sniper Shot",
@@ -1989,7 +2141,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 45.0,
-      "description": "A long-range shot that deals ranged damage plus 320 and increases the range of your next 3 Shots by 10 yards for 10 sec."
+      "description": "A long-range shot that deals ranged damage plus 320 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
+      "icon": "hunter_pvp_snipershot"
     },
     "1310785": {
       "name": "Sniper Shot",
@@ -2002,7 +2155,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 45.0,
-      "description": "A long-range shot that deals ranged damage plus 450 and increases the range of your next 3 Shots by 10 yards for 10 sec."
+      "description": "A long-range shot that deals ranged damage plus 450 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
+      "icon": "hunter_pvp_snipershot"
     },
     "1310786": {
       "name": "Sniper Shot",
@@ -2015,7 +2169,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 45.0,
-      "description": "A long-range shot that deals ranged damage plus 590 and increases the range of your next 3 Shots by 10 yards for 10 sec."
+      "description": "A long-range shot that deals ranged damage plus 590 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
+      "icon": "hunter_pvp_snipershot"
     },
     "1317257": {
       "name": "Strider Kick",
@@ -2028,7 +2183,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 5.0,
-      "description": "A powerful kick that deals 100% melee weapon damage and increases movement speed by 30% for 3 sec."
+      "description": "A powerful kick that deals 100% melee weapon damage and increases movement speed by 30% for 3 sec.",
+      "icon": "ability_hunter_pet_tallstrider"
     }
   }
 }

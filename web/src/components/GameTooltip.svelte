@@ -19,6 +19,7 @@
   role="tooltip"
   data-testid="game-tooltip"
   class="border-line bg-raised rounded-panel absolute z-30 flex w-[clamp(260px,calc(100vw_-_32px),340px)] flex-col gap-1.5 border p-3 text-left text-[13px] font-normal whitespace-normal normal-case shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+  style:position="var(--item-tooltip-position, absolute)"
   style:left="var(--item-tooltip-shift, 0px)"
   style:top="var(--item-tooltip-top, 100%)"
   style:bottom="var(--item-tooltip-bottom, auto)"

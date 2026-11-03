@@ -12,7 +12,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases your chance to hit with all spells and attacks by 1%."
+      "description": "Increases your chance to hit with all spells and attacks by 1%.",
+      "icon": "inv_hammer_09"
     },
     "Beast Slaying": {
       "name": "Beast Slaying",
@@ -25,7 +26,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Damage dealt versus Beasts increased by 5%."
+      "description": "Damage dealt versus Beasts increased by 5%.",
+      "icon": "inv_misc_pelt_bear_ruin_02"
     },
     "Berserking": {
       "name": "Berserking",
@@ -38,7 +40,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Increases your spellcasting and attack speed by 10% for $26635d."
+      "description": "Increases your spellcasting and attack speed by 10% for $26635d.",
+      "icon": "racial_troll_berserk"
     },
     "Big Game Hunter": {
       "name": "Big Game Hunter",
@@ -51,7 +54,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Damage dealt versus Beasts increased by 5%."
+      "description": "Damage dealt versus Beasts increased by 5%.",
+      "icon": "inv_weapon_rifle_05"
     },
     "Blood Fury": {
       "name": "Blood Fury",
@@ -64,7 +68,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 0.0,
-      "description": "Increases Attack Power and Spell Power by 10% for 15 sec."
+      "description": "Increases Attack Power and Spell Power by 10% for 15 sec.",
+      "icon": "racial_orc_berserkerstrength"
     },
     "Cannibalize": {
       "name": "Cannibalize",
@@ -77,7 +82,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 5.0,
-      "description": "When activated, regenerates 7% of total Health and 7% of total Mana every 2 sec for 10 sec. Only works on Humanoid or Undead corpses within 5 yds. Any movement, action, or damage taken while Cannibalizing will cancel the effect."
+      "description": "When activated, regenerates 7% of total Health and 7% of total Mana every 2 sec for 10 sec. Only works on Humanoid or Undead corpses within 5 yds. Any movement, action, or damage taken while Cannibalizing will cancel the effect.",
+      "icon": "ability_racial_cannibalize"
     },
     "Command": {
       "name": "Command",
@@ -90,7 +96,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Damage dealt by Hunter and Warlock pets increased by 5%."
+      "description": "Damage dealt by Hunter and Warlock pets increased by 5%.",
+      "icon": "ability_warrior_warcry"
     },
     "Cultivation": {
       "name": "Cultivation",
@@ -103,7 +110,8 @@
       "passive": false,
       "cooldown_ms": 900000,
       "range_yd": 0.0,
-      "description": "Cultivate a nearby herb, growing a duplicate you can harvest without requiring Herbalism skill. Each herb may only be cultivated once."
+      "description": "Cultivate a nearby herb, growing a duplicate you can harvest without requiring Herbalism skill. Each herb may only be cultivated once.",
+      "icon": "inv_misc_flower_01"
     },
     "Elemental Insight": {
       "name": "Elemental Insight",
@@ -116,7 +124,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Damage dealt versus Elementals increased by 5%."
+      "description": "Damage dealt versus Elementals increased by 5%.",
+      "icon": "achievement_raidprimalist_windelemental"
     },
     "Elune's Light": {
       "name": "Elune's Light",
@@ -129,7 +138,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Increases your critical strike chance with all spells and attacks by 10% for 15 sec."
+      "description": "Increases your critical strike chance with all spells and attacks by 10% for 15 sec.",
+      "icon": "spell_nature_moonglow"
     },
     "Endurance": {
       "name": "Endurance",
@@ -142,7 +152,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Total Health increased by 5%."
+      "description": "Total Health increased by 5%.",
+      "icon": "spell_nature_unyeildingstamina"
     },
     "Engineering Specialization": {
       "name": "Engineering Specialization",
@@ -155,7 +166,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Your gnomish ingenuity reduces the rate of engineering devices failing or backfiring when you use them by 20%."
+      "description": "Your gnomish ingenuity reduces the rate of engineering devices failing or backfiring when you use them by 20%.",
+      "icon": "inv_misc_gear_01"
     },
     "Escape Artist": {
       "name": "Escape Artist",
@@ -168,7 +180,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 0.0,
-      "description": "Instantly escape the effects of any movement impairing effect and gain immunity to those effects for 3 sec."
+      "description": "Instantly escape the effects of any movement impairing effect and gain immunity to those effects for 3 sec.",
+      "icon": "ability_rogue_trip"
     },
     "Eureka!": {
       "name": "Eureka!",
@@ -181,7 +194,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 0.0,
-      "description": "Your non-periodic damaging abilities have their Energy cost reduced by 10% and deal 10% more damage for 8 sec."
+      "description": "Your non-periodic damaging abilities have their Energy cost reduced by 10% and deal 10% more damage for 8 sec.",
+      "icon": "inv_gnometoy"
     },
     "Expansive Mind": {
       "name": "Expansive Mind",
@@ -194,7 +208,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Maximum Mana increased by 5%."
+      "description": "Maximum Mana increased by 5%.",
+      "icon": "inv_enchant_essenceeternallarge"
     },
     "Find Treasure": {
       "name": "Find Treasure",
@@ -207,7 +222,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Allows the dwarf to sense nearby treasure, making it appear on the minimap and sometimes increase treasure found. Lasts $d."
+      "description": "Allows the dwarf to sense nearby treasure, making it appear on the minimap and sometimes increase treasure found. Lasts $d.",
+      "icon": "racial_dwarf_findtreasure"
     },
     "Hardiness": {
       "name": "Hardiness",
@@ -220,7 +236,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Duration of Stun effects on you reduced by 20%."
+      "description": "Duration of Stun effects on you reduced by 20%.",
+      "icon": "inv_helmet_23"
     },
     "Perception": {
       "name": "Perception",
@@ -233,7 +250,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Dramatically increases stealth detection for 20 sec."
+      "description": "Dramatically increases stealth detection for 20 sec.",
+      "icon": "spell_nature_sleep"
     },
     "Plainsrunning": {
       "name": "Plainsrunning",
@@ -246,7 +264,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gain 2% increased movement speed every 5 sec spent moving, up to a maximum of 60% increase. Taking damage or standing still will reduce this effect."
+      "description": "Gain 2% increased movement speed every 5 sec spent moving, up to a maximum of 60% increase. Taking damage or standing still will reduce this effect.",
+      "icon": "achievement_zone_barrens_01"
     },
     "Quickness": {
       "name": "Quickness",
@@ -259,7 +278,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Dodge chance increased by 1% and movement speed increased by 2%. Night Elf Rogues and Druids are harder to detect in Stealth as if they were 1 level higher."
+      "description": "Dodge chance increased by 1% and movement speed increased by 2%. Night Elf Rogues and Druids are harder to detect in Stealth as if they were 1 level higher.",
+      "icon": "ability_racial_shadowmeld"
     },
     "Quickness Passive": {
       "name": "Quickness Passive",
@@ -272,7 +292,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": ""
+      "description": "",
+      "icon": "ability_ambush"
     },
     "Rapid Regeneration": {
       "name": "Rapid Regeneration",
@@ -285,7 +306,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Regenerate 50% of your maximum Health over 6 sec. Any movement, action, or damage taken will cancel the effect."
+      "description": "Regenerate 50% of your maximum Health over 6 sec. Any movement, action, or damage taken will cancel the effect.",
+      "icon": "ability_racial_regeneratin"
     },
     "Read Leyline": {
       "name": "Read Leyline",
@@ -298,7 +320,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 0.0,
-      "description": "Attempt to tap into the power of a nearby leyline, increasing your Health and Mana regeneration by 50% for 15 sec. If a leyline is nearby, you will become Attuned for the next 60 min and the effect of this ability will be increased by 100%."
+      "description": "Attempt to tap into the power of a nearby leyline, increasing your Health and Mana regeneration by 50% for 15 sec. If a leyline is nearby, you will become Attuned for the next 60 min and the effect of this ability will be increased by 100%.",
+      "icon": "ability_mage_incantersabsorbtion"
     },
     "Regeneration": {
       "name": "Regeneration",
@@ -311,7 +334,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Health regeneration rate increased by 20%. In addition, 20% of total Health regeneration will continue during combat."
+      "description": "Health regeneration rate increased by 20%. In addition, 20% of total Health regeneration will continue during combat.",
+      "icon": "spell_nature_regenerate"
     },
     "Ruthless": {
       "name": "Ruthless",
@@ -324,7 +348,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases your critical strike chance with all spells and attacks by 1%."
+      "description": "Increases your critical strike chance with all spells and attacks by 1%.",
+      "icon": "ability_rogue_eviscerate"
     },
     "Shadowmeld": {
       "name": "Shadowmeld",
@@ -337,7 +362,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Activate to slip into the shadows, reducing the chance for enemies to detect your presence. Lasts until cancelled or upon moving. Using this ability in combat discourages enemies from attacking you, but increases the cooldown to 2 min."
+      "description": "Activate to slip into the shadows, reducing the chance for enemies to detect your presence. Lasts until cancelled or upon moving. Using this ability in combat discourages enemies from attacking you, but increases the cooldown to 2 min.",
+      "icon": "ability_ambush"
     },
     "Shatter Curse": {
       "name": "Shatter Curse",
@@ -350,7 +376,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Instantly removes all Curses and Banes, and reduces all Magical damage taken by 5% for 8 sec."
+      "description": "Instantly removes all Curses and Banes, and reduces all Magical damage taken by 5% for 8 sec.",
+      "icon": "spell_nature_removecurse"
     },
     "Skysight": {
       "name": "Skysight",
@@ -363,7 +390,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 0.0,
-      "description": "Attempt to draw power from a convergence of elements and receive its blessing, increasing your movement and mounted movement speeds by 15% for 30 sec. If an elemental convergence is nearby, you will become Charged for the next 60 min and the effect of this ability will be increased by 100%."
+      "description": "Attempt to draw power from a convergence of elements and receive its blessing, increasing your movement and mounted movement speeds by 15% for 30 sec. If an elemental convergence is nearby, you will become Charged for the next 60 min and the effect of this ability will be increased by 100%.",
+      "icon": "ability_skyreach_lens_flare"
     },
     "Stoneform": {
       "name": "Stoneform",
@@ -376,7 +404,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Instantly removes and grants immunity to all Bleed, Poison, and Disease effects, and reduces all Physical damage taken by 10% for 8 sec."
+      "description": "Instantly removes and grants immunity to all Bleed, Poison, and Disease effects, and reduces all Physical damage taken by 10% for 8 sec.",
+      "icon": "spell_shadow_unholystrength"
     },
     "The Human Spirit": {
       "name": "The Human Spirit",
@@ -389,7 +418,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Spirit increased by 10%."
+      "description": "Spirit increased by 10%.",
+      "icon": "inv_enchant_shardbrilliantsmall"
     },
     "Touch of the Grave": {
       "name": "Touch of the Grave",
@@ -402,7 +432,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Your spells and attacks have a 20% chance to drain Health from the target, up to 5% of your maximum Health."
+      "description": "Your spells and attacks have a 20% chance to drain Health from the target, up to 5% of your maximum Health.",
+      "icon": "spell_shadow_fingerofdeath"
     },
     "Underwater Breathing": {
       "name": "Underwater Breathing",
@@ -415,7 +446,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Underwater breath lasts 300% longer than normal."
+      "description": "Underwater breath lasts 300% longer than normal.",
+      "icon": "spell_shadow_demonbreath"
     },
     "Walk on Air": {
       "name": "Walk on Air",
@@ -428,7 +460,8 @@
       "passive": false,
       "cooldown_ms": 90000,
       "range_yd": 0.0,
-      "description": "Glide downward through the air for 10 sec while controlling your direction of travel."
+      "description": "Glide downward through the air for 10 sec while controlling your direction of travel.",
+      "icon": "inv_elemental_primal_air"
     },
     "War Stomp": {
       "name": "War Stomp",
@@ -441,7 +474,8 @@
       "passive": false,
       "cooldown_ms": 90000,
       "range_yd": 0.0,
-      "description": "Stuns up to $i enemies within 8 yds for 2 sec."
+      "description": "Stuns up to 5 enemies within 8 yds for 2 sec.",
+      "icon": "ability_warstomp"
     },
     "Will of the Forsaken": {
       "name": "Will of the Forsaken",
@@ -454,7 +488,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 0.0,
-      "description": "Instantly removes all Charm, Fear and Sleep effects."
+      "description": "Instantly removes all Charm, Fear and Sleep effects.",
+      "icon": "spell_shadow_raisedead"
     },
     "Will to Survive": {
       "name": "Will to Survive",
@@ -467,7 +502,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Instantly removes all Stun effects."
+      "description": "Instantly removes all Stun effects.",
+      "icon": "spell_shadow_charm"
     },
     "Wind Blessed": {
       "name": "Wind Blessed",
@@ -480,7 +516,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases your spellcasting, melee, and ranged Haste by 2%."
+      "description": "Increases your spellcasting, melee, and ranged Haste by 2%.",
+      "icon": "inv_misc_volatileair"
     },
     "Wisp Spirit": {
       "name": "Wisp Spirit",
@@ -493,7 +530,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Transform into a wisp upon death, increasing movement speed by 75%."
+      "description": "Transform into a wisp upon death, increasing movement speed by 75%.",
+      "icon": "spell_nature_wispsplode"
     }
   },
   "enchants": {
@@ -508,7 +546,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak so that it increases the resistance to all schools of magic by 2."
+      "description": "Permanently enchant a cloak so that it increases the resistance to all schools of magic by 2.",
+      "icon": "spell_holy_greaterheal"
     },
     "15": {
       "name": "Armor +8, Stamina +1",
@@ -521,7 +560,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by 1 and the Armor value by 8 of an item worn on the chest, legs, hands or feet."
+      "description": "Permanently increase the Stamina value by 1 and the Armor value by 8 of an item worn on the chest, legs, hands or feet.",
+      "icon": "temp"
     },
     "16": {
       "name": "Armor +16, Stamina +2",
@@ -534,7 +574,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by 2 and the armor value by 16 of an item worn on the chest, legs, hands or feet."
+      "description": "Permanently increase the Stamina value by 2 and the armor value by 16 of an item worn on the chest, legs, hands or feet.",
+      "icon": "temp"
     },
     "17": {
       "name": "Heavy Armor Kit",
@@ -547,7 +588,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above."
+      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
+      "icon": "temp"
     },
     "18": {
       "name": "Thick Armor Kit",
@@ -560,7 +602,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above."
+      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
+      "icon": "temp"
     },
     "24": {
       "name": "Enchant Chest - Minor Intellect",
@@ -573,7 +616,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor so that it increases the Intellect of the wearer by 2."
+      "description": "Permanently enchant a piece of chest armor so that it increases the Intellect of the wearer by 2.",
+      "icon": "spell_holy_greaterheal"
     },
     "30": {
       "name": "Crude Scope",
@@ -586,7 +630,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 1."
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 1.",
+      "icon": "temp"
     },
     "32": {
       "name": "Standard Scope",
@@ -599,7 +644,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 2."
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 2.",
+      "icon": "temp"
     },
     "33": {
       "name": "Accurate Scope",
@@ -612,7 +658,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 3."
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 3.",
+      "icon": "temp"
     },
     "34": {
       "name": "Weapon Counterweight",
@@ -625,7 +672,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Attaches a counterweight to a two-handed sword, mace, axe or polearm making it 3% faster."
+      "description": "Attaches a counterweight to a two-handed sword, mace, axe or polearm making it 3% faster.",
+      "icon": "temp"
     },
     "36": {
       "name": "Enchant: Fiery Blaze",
@@ -638,7 +686,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Enchants a weapon to have a 15% chance to inflict 11 Fire damage to all enemies within 3 yards."
+      "description": "Enchants a weapon to have a 15% chance to inflict 11 Fire damage to all enemies within 3 yards.",
+      "icon": "inv_jewelry_talisman_01"
     },
     "41": {
       "name": "Enchant Chest - Inferior Stamina",
@@ -651,7 +700,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor so that it increases the Stamina of the wearer by 2."
+      "description": "Permanently enchant a piece of chest armor so that it increases the Stamina of the wearer by 2.",
+      "icon": "spell_holy_greaterheal"
     },
     "44": {
       "name": "Enchant Chest - Minor Absorption",
@@ -664,7 +714,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Enchant a piece of chest armor so it has a 2% chance per hit of giving you 10 points of damage absorption. Cannot occur more often than once every 5 sec."
+      "description": "Enchant a piece of chest armor so it has a 2% chance per hit of giving you 10 points of damage absorption. Cannot occur more often than once every 5 sec.",
+      "icon": "spell_holy_greaterheal"
     },
     "63": {
       "name": "Enchant Chest - Lesser Absorption",
@@ -677,7 +728,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Enchant a piece of chest armor so it has a 5% chance per hit of giving you 25 points of damage absorption. Cannot occur more often than once every 5 sec."
+      "description": "Enchant a piece of chest armor so it has a 5% chance per hit of giving you 25 points of damage absorption. Cannot occur more often than once every 5 sec.",
+      "icon": "spell_holy_greaterheal"
     },
     "66": {
       "name": "Enchant Boots - Minor Stamina",
@@ -690,7 +742,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a pair of boots so they increase the wearer's Stamina by 3."
+      "description": "Permanently enchant a pair of boots so they increase the wearer's Stamina by 3.",
+      "icon": "spell_holy_greaterheal"
     },
     "241": {
       "name": "Enchant Weapon - Lesser Striking",
@@ -703,7 +756,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to do 2 additional points of damage."
+      "description": "Permanently enchant a Melee Weapon to do 2 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
     },
     "242": {
       "name": "Enchant Chest - Lesser Stamina",
@@ -716,7 +770,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor so that it increases the Stamina of the wearer by 3."
+      "description": "Permanently enchant a piece of chest armor so that it increases the Stamina of the wearer by 3.",
+      "icon": "spell_holy_greaterheal"
     },
     "243": {
       "name": "Enchant Bracer - Minor Spirit",
@@ -729,7 +784,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers so they increase the wearer's Spirit by 3."
+      "description": "Permanently enchant bracers so they increase the wearer's Spirit by 3.",
+      "icon": "spell_holy_greaterheal"
     },
     "246": {
       "name": "Enchant Chest - Lesser Intellect",
@@ -742,7 +798,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor so that it increases the Intellect of the wearer by 3."
+      "description": "Permanently enchant a piece of chest armor so that it increases the Intellect of the wearer by 3.",
+      "icon": "spell_holy_greaterheal"
     },
     "247": {
       "name": "Enchant Cloak - Minor Agility",
@@ -755,7 +812,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to grant +3 Agility."
+      "description": "Permanently enchant a cloak to grant +3 Agility.",
+      "icon": "spell_holy_greaterheal"
     },
     "248": {
       "name": "Enchant Bracer - Minor Strength",
@@ -768,7 +826,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers so they increase the wearer's Strength by 3."
+      "description": "Permanently enchant bracers so they increase the wearer's Strength by 3.",
+      "icon": "spell_holy_greaterheal"
     },
     "249": {
       "name": "Enchant Weapon - Minor Beastslayer",
@@ -781,7 +840,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to do 2 additional points of damage to Beasts."
+      "description": "Permanently enchant a Melee Weapon to do 2 additional points of damage to Beasts.",
+      "icon": "spell_holy_greaterheal"
     },
     "250": {
       "name": "Enchant Weapon - Minor Striking",
@@ -794,7 +854,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to do 1 additional point of damage."
+      "description": "Permanently enchant a Melee Weapon to do 1 additional point of damage.",
+      "icon": "spell_holy_greaterheal"
     },
     "254": {
       "name": "Enchant Chest - Stamina",
@@ -807,7 +868,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to increase the Stamina of the wearer by 4."
+      "description": "Permanently enchant a piece of chest armor to increase the Stamina of the wearer by 4.",
+      "icon": "spell_holy_greaterheal"
     },
     "255": {
       "name": "Enchant Boots - Lesser Spirit",
@@ -820,7 +882,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +4 Spirit."
+      "description": "Permanently enchant boots to give +4 Spirit.",
+      "icon": "spell_holy_greaterheal"
     },
     "256": {
       "name": "Enchant Cloak - Lesser Fire Resistance",
@@ -833,7 +896,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak so that it increases resistance to fire by 10."
+      "description": "Permanently enchant a cloak so that it increases resistance to fire by 10.",
+      "icon": "spell_holy_greaterheal"
     },
     "663": {
       "name": "Deadly Scope",
@@ -846,7 +910,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 5."
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 5.",
+      "icon": "temp"
     },
     "664": {
       "name": "Sniper Scope",
@@ -859,7 +924,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 7."
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 7.",
+      "icon": "temp"
     },
     "723": {
       "name": "Enchant Bracer - Lesser Intellect",
@@ -872,7 +938,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a bracer so it increases the wearer's Intellect by $ec1."
+      "description": "Permanently enchant a bracer so it increases the wearer's Intellect by $ec1.",
+      "icon": "spell_holy_greaterheal"
     },
     "724": {
       "name": "Enchant Boots - Lesser Stamina",
@@ -885,7 +952,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +4 Stamina."
+      "description": "Permanently enchant boots to give +4 Stamina.",
+      "icon": "spell_holy_greaterheal"
     },
     "744": {
       "name": "Enchant Cloak - Lesser Protection",
@@ -898,7 +966,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to increase armor by $ec1."
+      "description": "Permanently enchant a cloak to increase armor by $ec1.",
+      "icon": "spell_holy_greaterheal"
     },
     "783": {
       "name": "Enchant Cloak - Minor Protection",
@@ -911,7 +980,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to increase armor by $ec1."
+      "description": "Permanently enchant a cloak to increase armor by $ec1.",
+      "icon": "spell_holy_greaterheal"
     },
     "803": {
       "name": "Enchant Weapon - Fiery Weapon",
@@ -924,7 +994,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon to often strike for 40 additional fire damage."
+      "description": "Permanently enchant a melee weapon to often strike for 40 additional fire damage.",
+      "icon": "spell_holy_greaterheal"
     },
     "804": {
       "name": "Enchant Cloak - Lesser Shadow Resistance",
@@ -937,7 +1008,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak so that it increases resistance to shadow by 10."
+      "description": "Permanently enchant a cloak so that it increases resistance to shadow by 10.",
+      "icon": "spell_holy_greaterheal"
     },
     "805": {
       "name": "Enchant Weapon - Greater Striking",
@@ -950,7 +1022,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to do 4 additional points of damage."
+      "description": "Permanently enchant a Melee Weapon to do 4 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
     },
     "823": {
       "name": "Enchant Bracer - Lesser Strength",
@@ -963,7 +1036,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a bracer so it increases the wearer's Strength by 4."
+      "description": "Permanently enchant a bracer so it increases the wearer's Strength by 4.",
+      "icon": "spell_holy_greaterheal"
     },
     "843": {
       "name": "Enchant Chest - Intellect",
@@ -976,7 +1050,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to increase the Intellect of the wearer by 4."
+      "description": "Permanently enchant a piece of chest armor to increase the Intellect of the wearer by 4.",
+      "icon": "spell_holy_greaterheal"
     },
     "844": {
       "name": "Enchant Gloves - Mining",
@@ -989,7 +1064,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +2 mining skill."
+      "description": "Permanently enchant gloves to grant +2 mining skill.",
+      "icon": "spell_holy_greaterheal"
     },
     "845": {
       "name": "Enchant Gloves - Herbalism",
@@ -1002,7 +1078,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +2 herbalism skill."
+      "description": "Permanently enchant gloves to grant +2 herbalism skill.",
+      "icon": "spell_holy_greaterheal"
     },
     "846": {
       "name": "Enchant Gloves - Fishing",
@@ -1015,7 +1092,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +2 fishing skill."
+      "description": "Permanently enchant gloves to grant +2 fishing skill.",
+      "icon": "spell_holy_greaterheal"
     },
     "847": {
       "name": "Enchant Chest - Minor Stats",
@@ -1028,7 +1106,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to grant +1 to all stats."
+      "description": "Permanently enchant a piece of chest armor to grant +1 to all stats.",
+      "icon": "spell_holy_greaterheal"
     },
     "848": {
       "name": "Enchant Cloak - Defense",
@@ -1041,7 +1120,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give $ec1 additional armor."
+      "description": "Permanently enchant a cloak to give $ec1 additional armor.",
+      "icon": "spell_holy_greaterheal"
     },
     "849": {
       "name": "Enchant Cloak - Lesser Agility",
@@ -1054,7 +1134,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give 3 Agility."
+      "description": "Permanently enchant a cloak to give 3 Agility.",
+      "icon": "spell_holy_greaterheal"
     },
     "850": {
       "name": "Enchant Chest - Greater Stamina",
@@ -1067,7 +1148,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to give +6 Stamina."
+      "description": "Permanently enchant a piece of chest armor to give +6 Stamina.",
+      "icon": "spell_holy_greaterheal"
     },
     "851": {
       "name": "Enchant Boots - Spirit",
@@ -1080,7 +1162,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +5 Spirit."
+      "description": "Permanently enchant boots to give +5 Spirit.",
+      "icon": "spell_holy_greaterheal"
     },
     "852": {
       "name": "Enchant Boots - Stamina",
@@ -1093,7 +1176,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +5 Stamina."
+      "description": "Permanently enchant boots to give +5 Stamina.",
+      "icon": "spell_holy_greaterheal"
     },
     "853": {
       "name": "Enchant Weapon - Lesser Beastslayer",
@@ -1106,7 +1190,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to do 6 additional points of damage to Beasts."
+      "description": "Permanently enchant a Melee Weapon to do 6 additional points of damage to Beasts.",
+      "icon": "spell_holy_greaterheal"
     },
     "854": {
       "name": "Enchant Weapon - Lesser Elemental Slayer",
@@ -1119,7 +1204,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to do 6 additional damage against Elementals."
+      "description": "Permanently enchant a Melee Weapon to do 6 additional damage against Elementals.",
+      "icon": "spell_holy_greaterheal"
     },
     "856": {
       "name": "Enchant Gloves - Strength",
@@ -1132,7 +1218,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +7 Strength."
+      "description": "Permanently enchant gloves to grant +7 Strength.",
+      "icon": "spell_holy_greaterheal"
     },
     "857": {
       "name": "Enchant Chest - Greater Intellect",
@@ -1145,7 +1232,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to give +6 Intellect."
+      "description": "Permanently enchant a piece of chest armor to give +6 Intellect.",
+      "icon": "spell_holy_greaterheal"
     },
     "863": {
       "name": "Enchant Shield - Lesser Block",
@@ -1158,7 +1246,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a shield to give +2% chance to block."
+      "description": "Permanently enchant a shield to give +2% chance to block.",
+      "icon": "spell_holy_greaterheal"
     },
     "865": {
       "name": "Enchant Gloves - Skinning",
@@ -1171,7 +1260,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +5 skinning skill."
+      "description": "Permanently enchant gloves to grant +5 skinning skill.",
+      "icon": "spell_holy_greaterheal"
     },
     "866": {
       "name": "Enchant Chest - Lesser Stats",
@@ -1184,7 +1274,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to grant +2 to all stats."
+      "description": "Permanently enchant a piece of chest armor to grant +2 to all stats.",
+      "icon": "spell_holy_greaterheal"
     },
     "884": {
       "name": "Enchant Cloak - Greater Defense",
@@ -1197,7 +1288,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give $ec1 additional armor."
+      "description": "Permanently enchant a cloak to give $ec1 additional armor.",
+      "icon": "spell_holy_greaterheal"
     },
     "903": {
       "name": "Enchant Cloak - Resistance",
@@ -1210,7 +1302,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give 3 to all resistances."
+      "description": "Permanently enchant a cloak to give 3 to all resistances.",
+      "icon": "spell_holy_greaterheal"
     },
     "904": {
       "name": "Enchant Boots - Agility",
@@ -1223,7 +1316,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +5 Agility."
+      "description": "Permanently enchant boots to give +5 Agility.",
+      "icon": "spell_holy_greaterheal"
     },
     "905": {
       "name": "Enchant Bracer - Intellect",
@@ -1236,7 +1330,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to give +5 Intellect."
+      "description": "Permanently enchant bracers to give +5 Intellect.",
+      "icon": "spell_holy_greaterheal"
     },
     "906": {
       "name": "Enchant Gloves - Advanced Mining",
@@ -1249,7 +1344,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +5 mining skill."
+      "description": "Permanently enchant gloves to grant +5 mining skill.",
+      "icon": "spell_holy_greaterheal"
     },
     "907": {
       "name": "Enchant Bracer - Greater Spirit",
@@ -1262,7 +1358,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to give +7 Spirit."
+      "description": "Permanently enchant bracers to give +7 Spirit.",
+      "icon": "spell_holy_greaterheal"
     },
     "908": {
       "name": "Enchant Chest - Superior Stamina",
@@ -1275,7 +1372,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to grant +8 Stamina."
+      "description": "Permanently enchant a piece of chest armor to grant +8 Stamina.",
+      "icon": "spell_holy_greaterheal"
     },
     "909": {
       "name": "Enchant Gloves - Advanced Herbalism",
@@ -1288,7 +1386,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +5 herbalism skill."
+      "description": "Permanently enchant gloves to grant +5 herbalism skill.",
+      "icon": "spell_holy_greaterheal"
     },
     "910": {
       "name": "Enchant Cloak - Stealth",
@@ -1301,7 +1400,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give an increase to your stealth as if you were 1 level higher."
+      "description": "Permanently enchant a cloak to give an increase to your stealth as if you were 1 level higher.",
+      "icon": "spell_holy_greaterheal"
     },
     "911": {
       "name": "Enchant Boots - Minor Speed",
@@ -1314,7 +1414,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant boots to increase movement speed by 4%."
+      "description": "Permanently enchant boots to increase movement speed by 4%.",
+      "icon": "spell_holy_greaterheal"
     },
     "912": {
       "name": "Enchant Weapon - Demonslaying",
@@ -1327,7 +1428,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon to have a chance of stunning and doing heavy damage to demons."
+      "description": "Permanently enchant a melee weapon to have a chance of stunning and doing heavy damage to demons.",
+      "icon": "spell_holy_greaterheal"
     },
     "913": {
       "name": "Enchant Chest - Superior Intellect",
@@ -1340,7 +1442,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to give +8 Intellect."
+      "description": "Permanently enchant a piece of chest armor to give +8 Intellect.",
+      "icon": "spell_holy_greaterheal"
     },
     "923": {
       "name": "Enchant Bracer - Deflection",
@@ -1353,7 +1456,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to give +7 Defense."
+      "description": "Permanently enchant bracers to give +7 Defense.",
+      "icon": "spell_holy_greaterheal"
     },
     "924": {
       "name": "Enchant Bracer - Minor Deflect",
@@ -1366,7 +1470,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers so that the defense skill of the wearer is increased by 3."
+      "description": "Permanently enchant bracers so that the defense skill of the wearer is increased by 3.",
+      "icon": "spell_holy_greaterheal"
     },
     "925": {
       "name": "Enchant Bracer - Lesser Deflection",
@@ -1379,7 +1484,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to give +5 Defense."
+      "description": "Permanently enchant bracers to give +5 Defense.",
+      "icon": "spell_holy_greaterheal"
     },
     "926": {
       "name": "Enchant Shield - Frost Resistance",
@@ -1392,7 +1498,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a shield to give +8 Frost Resistance."
+      "description": "Permanently enchant a shield to give +8 Frost Resistance.",
+      "icon": "spell_holy_greaterheal"
     },
     "927": {
       "name": "Enchant Gloves - Greater Strength",
@@ -1405,7 +1512,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +10 Strength."
+      "description": "Permanently enchant gloves to grant +10 Strength.",
+      "icon": "spell_holy_greaterheal"
     },
     "928": {
       "name": "Enchant Chest - Stats",
@@ -1418,7 +1526,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to grant +3 to all stats."
+      "description": "Permanently enchant a piece of chest armor to grant +3 to all stats.",
+      "icon": "spell_holy_greaterheal"
     },
     "929": {
       "name": "Enchant Boots - Greater Stamina",
@@ -1431,7 +1540,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +7 Stamina."
+      "description": "Permanently enchant boots to give +7 Stamina.",
+      "icon": "spell_holy_greaterheal"
     },
     "930": {
       "name": "Enchant Gloves - Riding Skill",
@@ -1444,7 +1554,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant a minor movement bonus while mounted."
+      "description": "Permanently enchant gloves to grant a minor movement bonus while mounted.",
+      "icon": "spell_holy_greaterheal"
     },
     "931": {
       "name": "Enchant Gloves - Minor Haste",
@@ -1457,7 +1568,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant a +1% attack and casting speed bonus."
+      "description": "Permanently enchant gloves to grant a +1% attack and casting speed bonus.",
+      "icon": "spell_holy_greaterheal"
     },
     "943": {
       "name": "Enchant Weapon - Striking",
@@ -1470,7 +1582,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to do 3 additional points of damage."
+      "description": "Permanently enchant a Melee Weapon to do 3 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
     },
     "963": {
       "name": "Enchant 2H Weapon - Greater Impact",
@@ -1483,7 +1596,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a two-handed melee weapon to do +7 damage."
+      "description": "Permanently enchant a two-handed melee weapon to do +7 damage.",
+      "icon": "spell_holy_greaterheal"
     },
     "1483": {
       "name": "Lesser Arcane Amalgamation",
@@ -1496,7 +1610,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 150 mana to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 150 mana to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "1503": {
       "name": "Lesser Arcane Amalgamation",
@@ -1509,7 +1624,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 100 hit points to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 100 hit points to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "1504": {
       "name": "Lesser Arcane Amalgamation",
@@ -1522,7 +1638,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 125 armor to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 125 armor to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "1505": {
       "name": "Lesser Arcane Amalgamation",
@@ -1535,7 +1652,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 20 fire resistance to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 20 fire resistance to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "1506": {
       "name": "Lesser Arcane Amalgamation",
@@ -1548,7 +1666,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 8 strength to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 8 strength to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "1507": {
       "name": "Lesser Arcane Amalgamation",
@@ -1561,7 +1680,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 8 stamina to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 8 stamina to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "1508": {
       "name": "Lesser Arcane Amalgamation",
@@ -1574,7 +1694,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 8 agility to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 8 agility to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "1509": {
       "name": "Lesser Arcane Amalgamation",
@@ -1587,7 +1708,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 8 intellect to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 8 intellect to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "1510": {
       "name": "Lesser Arcane Amalgamation",
@@ -1600,7 +1722,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 8 spirit to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 8 spirit to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "1843": {
       "name": "Rugged Armor Kit",
@@ -1613,7 +1736,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above."
+      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
+      "icon": "temp"
     },
     "1883": {
       "name": "Enchant Bracer - Greater Intellect",
@@ -1626,7 +1750,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to give +7 Intellect."
+      "description": "Permanently enchant bracers to give +7 Intellect.",
+      "icon": "spell_holy_greaterheal"
     },
     "1884": {
       "name": "Enchant Bracer - Superior Spirit",
@@ -1639,7 +1764,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to give +9 Spirit."
+      "description": "Permanently enchant bracers to give +9 Spirit.",
+      "icon": "spell_holy_greaterheal"
     },
     "1885": {
       "name": "Enchant Bracer - Superior Strength",
@@ -1652,7 +1778,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to give +9 Strength."
+      "description": "Permanently enchant bracers to give +9 Strength.",
+      "icon": "spell_holy_greaterheal"
     },
     "1886": {
       "name": "Enchant Bracer - Superior Stamina",
@@ -1665,7 +1792,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to give +9 Stamina."
+      "description": "Permanently enchant bracers to give +9 Stamina.",
+      "icon": "spell_holy_greaterheal"
     },
     "1887": {
       "name": "Enchant Boots - Greater Agility",
@@ -1678,7 +1806,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +7 Agility."
+      "description": "Permanently enchant boots to give +7 Agility.",
+      "icon": "spell_holy_greaterheal"
     },
     "1888": {
       "name": "Enchant Cloak - Greater Resistance",
@@ -1691,7 +1820,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give 5 to all resistances."
+      "description": "Permanently enchant a cloak to give 5 to all resistances.",
+      "icon": "spell_holy_greaterheal"
     },
     "1889": {
       "name": "Enchant Cloak - Superior Defense",
@@ -1704,7 +1834,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give $ec1 additional armor."
+      "description": "Permanently enchant a cloak to give $ec1 additional armor.",
+      "icon": "spell_holy_greaterheal"
     },
     "1890": {
       "name": "Enchant Shield - Superior Spirit",
@@ -1717,7 +1848,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a shield to give +9 Spirit."
+      "description": "Permanently enchant a shield to give +9 Spirit.",
+      "icon": "spell_holy_greaterheal"
     },
     "1891": {
       "name": "Enchant Chest - Greater Stats",
@@ -1730,7 +1862,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to grant +4 to all stats."
+      "description": "Permanently enchant a piece of chest armor to grant +4 to all stats.",
+      "icon": "spell_holy_greaterheal"
     },
     "1892": {
       "name": "Enchant Chest - Major Stamina",
@@ -1743,7 +1876,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to grant +10 Stamina."
+      "description": "Permanently enchant a piece of chest armor to grant +10 Stamina.",
+      "icon": "spell_holy_greaterheal"
     },
     "1893": {
       "name": "Enchant Chest - Major Intellect",
@@ -1756,7 +1890,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to give +10 Intellect."
+      "description": "Permanently enchant a piece of chest armor to give +10 Intellect.",
+      "icon": "spell_holy_greaterheal"
     },
     "1894": {
       "name": "Enchant Weapon - Icy Chill",
@@ -1769,7 +1904,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon to often chill the target reducing their movement and attack speed."
+      "description": "Permanently enchant a melee weapon to often chill the target reducing their movement and attack speed.",
+      "icon": "spell_holy_greaterheal"
     },
     "1896": {
       "name": "Enchant 2H Weapon - Superior Impact",
@@ -1782,7 +1918,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a two-handed melee weapon to do +9 damage."
+      "description": "Permanently enchant a two-handed melee weapon to do +9 damage.",
+      "icon": "spell_holy_greaterheal"
     },
     "1897": {
       "name": "Enchant Weapon - Superior Striking",
@@ -1795,7 +1932,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to do 5 additional points of damage."
+      "description": "Permanently enchant a Melee Weapon to do 5 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
     },
     "1898": {
       "name": "Enchant Weapon - Lifestealing",
@@ -1808,7 +1946,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon to often steal life from the enemy and give it to the wielder."
+      "description": "Permanently enchant a melee weapon to often steal life from the enemy and give it to the wielder.",
+      "icon": "spell_holy_greaterheal"
     },
     "1899": {
       "name": "Enchant Weapon - Unholy Weapon",
@@ -1821,7 +1960,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon to often inflict a curse on the target reducing their melee damage."
+      "description": "Permanently enchant a melee weapon to often inflict a curse on the target reducing their melee damage.",
+      "icon": "spell_holy_greaterheal"
     },
     "1900": {
       "name": "Enchant Weapon - Crusader",
@@ -1834,7 +1974,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon so that often when attacking in melee it heals for 100 and increases Strength by 100 for 15 sec."
+      "description": "Permanently enchant a melee weapon so that often when attacking in melee it heals for 100 and increases Strength by 100 for 15 sec.",
+      "icon": "spell_holy_greaterheal"
     },
     "1903": {
       "name": "Enchant 2H Weapon - Major Spirit",
@@ -1847,7 +1988,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Two-Handed Melee Weapon to add 9 to Spirit."
+      "description": "Permanently enchant a Two-Handed Melee Weapon to add 9 to Spirit.",
+      "icon": "spell_holy_greaterheal"
     },
     "1904": {
       "name": "Enchant 2H Weapon - Major Intellect",
@@ -1860,7 +2002,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Two-Handed Melee Weapon to add 9 to intellect."
+      "description": "Permanently enchant a Two-Handed Melee Weapon to add 9 to intellect.",
+      "icon": "spell_holy_greaterheal"
     },
     "2443": {
       "name": "Enchant Weapon - Winter's Might",
@@ -1873,7 +2016,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a weapon to grant up to 15 additional frost damage when casting frost spells."
+      "description": "Permanently enchant a weapon to grant up to 15 additional frost damage when casting frost spells.",
+      "icon": "spell_holy_greaterheal"
     },
     "2463": {
       "name": "Enchant Cloak - Fire Resistance",
@@ -1886,7 +2030,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give 12 Fire Resistance."
+      "description": "Permanently enchant a cloak to give 12 Fire Resistance.",
+      "icon": "spell_holy_greaterheal"
     },
     "2503": {
       "name": "Core Armor Kit",
@@ -1899,7 +2044,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently increase the defense value of an item worn on the chest, legs, hands or feet by $ec1. Only usable on items level $ecim and above."
+      "description": "Permanently increase the defense value of an item worn on the chest, legs, hands or feet by $ec1. Only usable on items level $ecim and above.",
+      "icon": "temp"
     },
     "2504": {
       "name": "Enchant Weapon - Spell Power",
@@ -1912,7 +2058,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to add up to 30 damage to spells."
+      "description": "Permanently enchant a Melee Weapon to add up to 30 damage to spells.",
+      "icon": "spell_holy_greaterheal"
     },
     "2505": {
       "name": "Enchant Weapon - Healing Power",
@@ -1925,7 +2072,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Melee Weapon to add up to 55 points of healing to healing spells and up to 19 points of damage to damage spells."
+      "description": "Permanently enchant a Melee Weapon to add up to 55 points of healing to healing spells and up to 19 points of damage to damage spells.",
+      "icon": "spell_holy_greaterheal"
     },
     "2523": {
       "name": "Biznicks 247x128 Accurascope",
@@ -1938,7 +2086,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Attaches a permanent scope to a bow or gun that increases its chance to hit by 3%."
+      "description": "Attaches a permanent scope to a bow or gun that increases its chance to hit by 3%.",
+      "icon": "temp"
     },
     "2543": {
       "name": "Arcanum of Rapidity",
@@ -1951,7 +2100,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 1% haste to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 1% haste to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2544": {
       "name": "Arcanum of Focus",
@@ -1964,7 +2114,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds +8 to your Healing and Damage from spells to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds +8 to your Healing and Damage from spells to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2545": {
       "name": "Arcanum of Protection",
@@ -1977,7 +2128,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 1% dodge to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 1% dodge to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2563": {
       "name": "Enchant Weapon - Strength",
@@ -1990,7 +2142,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon to grant +15 strength."
+      "description": "Permanently enchant a melee weapon to grant +15 strength.",
+      "icon": "spell_holy_greaterheal"
     },
     "2564": {
       "name": "Enchant Gloves - Superior Agility",
@@ -2003,7 +2156,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to increase agility by 15."
+      "description": "Permanently enchant gloves to increase agility by 15.",
+      "icon": "spell_holy_greaterheal"
     },
     "2565": {
       "name": "Enchant Bracer - Mana Regeneration",
@@ -2016,7 +2170,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to restore 4 mana every 5 seconds."
+      "description": "Permanently enchant bracers to restore 4 mana every 5 seconds.",
+      "icon": "spell_holy_greaterheal"
     },
     "2566": {
       "name": "Enchant Bracer - Healing Power",
@@ -2029,7 +2184,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to increase the effects of your healing spells by up to 24 and the effects of your damage spells by up to 8."
+      "description": "Permanently enchant bracers to increase the effects of your healing spells by up to 24 and the effects of your damage spells by up to 8.",
+      "icon": "spell_holy_greaterheal"
     },
     "2567": {
       "name": "Enchant Weapon - Mighty Spirit",
@@ -2042,7 +2198,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon to grant +22 Spirit."
+      "description": "Permanently enchant a melee weapon to grant +22 Spirit.",
+      "icon": "spell_holy_greaterheal"
     },
     "2568": {
       "name": "Enchant Weapon - Mighty Intellect",
@@ -2055,7 +2212,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon to grant +22 Intellect."
+      "description": "Permanently enchant a melee weapon to grant +22 Intellect.",
+      "icon": "spell_holy_greaterheal"
     },
     "2583": {
       "name": "Presence of Might",
@@ -2068,7 +2226,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 10 Stamina, 7 Defense, and 15 Shield Block value to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 10 Stamina, 7 Defense, and 15 Shield Block value to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2584": {
       "name": "Syncretist's Sigil",
@@ -2081,7 +2240,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 10 Stamina, 7 Defense, and increases healing by up to 24 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 10 Stamina, 7 Defense, and increases healing by up to 24 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2585": {
       "name": "Death's Embrace",
@@ -2094,7 +2254,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 28 Attack Power and 1% Dodge to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 28 Attack Power and 1% Dodge to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2586": {
       "name": "Falcon's Call",
@@ -2107,7 +2268,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 24 Ranged Attack Power, 10 Stamina, and 1% Chance to Hit to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 24 Ranged Attack Power, 10 Stamina, and 1% Chance to Hit to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2587": {
       "name": "Vodouisant's Vigilant Embrace",
@@ -2120,7 +2282,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 15 Intellect and increases all healing and spell damage by up to 13 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 15 Intellect and increases all healing and spell damage by up to 13 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2588": {
       "name": "Presence of Sight",
@@ -2133,7 +2296,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 18 to all healing and damage spells and 1% chance to hit with spells to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 18 to all healing and damage spells and 1% chance to hit with spells to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2589": {
       "name": "Hoodoo Hex",
@@ -2146,7 +2310,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 10 Stamina and increases spell damage and healing by up to 18 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 10 Stamina and increases spell damage and healing by up to 18 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2590": {
       "name": "Prophetic Aura",
@@ -2159,7 +2324,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 10 Stamina, 4 mana per 5 sec., and increases healing by up to 24 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 10 Stamina, 4 mana per 5 sec., and increases healing by up to 24 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2591": {
       "name": "Animist's Caress",
@@ -2172,7 +2338,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 10 Stamina, 10 Intellect, and increases healing by up to 24 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 10 Stamina, 10 Intellect, and increases healing by up to 24 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2604": {
       "name": "Zandalar Signet of Serenity",
@@ -2185,7 +2352,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds to a shoulder slot item increased healing done by spells and effects up to 33."
+      "description": "Permanently adds to a shoulder slot item increased healing done by spells and effects up to 33.",
+      "icon": "temp"
     },
     "2605": {
       "name": "Zandalar Signet of Mojo",
@@ -2198,7 +2366,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds to a shoulder slot item increased damage and healing done by magical spells and effects up to 18."
+      "description": "Permanently adds to a shoulder slot item increased damage and healing done by magical spells and effects up to 18.",
+      "icon": "temp"
     },
     "2606": {
       "name": "Zandalar Signet of Might",
@@ -2211,7 +2380,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 30 attack power to a shoulder slot item."
+      "description": "Permanently adds 30 attack power to a shoulder slot item.",
+      "icon": "temp"
     },
     "2613": {
       "name": "Enchant Gloves - Threat",
@@ -2224,7 +2394,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to increase threat from all attacks and spells by 2%."
+      "description": "Permanently enchant gloves to increase threat from all attacks and spells by 2%.",
+      "icon": "spell_holy_greaterheal"
     },
     "2614": {
       "name": "Enchant Gloves - Shadow Power",
@@ -2237,7 +2408,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to increase shadow damage by up to 20."
+      "description": "Permanently enchant gloves to increase shadow damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
     },
     "2615": {
       "name": "Enchant Gloves - Frost Power",
@@ -2250,7 +2422,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to increase frost damage by up to 20."
+      "description": "Permanently enchant gloves to increase frost damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
     },
     "2616": {
       "name": "Enchant Gloves - Fire Power",
@@ -2263,7 +2436,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to increase fire damage by up to 20."
+      "description": "Permanently enchant gloves to increase fire damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
     },
     "2617": {
       "name": "Enchant Gloves - Healing Power",
@@ -2276,7 +2450,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to increase the caster's healing spells by up to 35 and damage spells by up to 12."
+      "description": "Permanently enchant gloves to increase the caster's healing spells by up to 35 and damage spells by up to 12.",
+      "icon": "spell_holy_greaterheal"
     },
     "2619": {
       "name": "Enchant Cloak - Greater Fire Resistance",
@@ -2289,7 +2464,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give 15 fire resistance."
+      "description": "Permanently enchant a cloak to give 15 fire resistance.",
+      "icon": "spell_holy_greaterheal"
     },
     "2620": {
       "name": "Enchant Cloak - Greater Nature Resistance",
@@ -2302,7 +2478,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give 15 nature resistance."
+      "description": "Permanently enchant a cloak to give 15 nature resistance.",
+      "icon": "spell_holy_greaterheal"
     },
     "2621": {
       "name": "Enchant Cloak - Subtlety",
@@ -2315,7 +2492,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to decrease threat caused by the wearer by 2%."
+      "description": "Permanently enchant a cloak to decrease threat caused by the wearer by 2%.",
+      "icon": "spell_holy_greaterheal"
     },
     "2622": {
       "name": "Enchant Cloak - Dodge",
@@ -2328,7 +2506,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a cloak to give a 1% chance to dodge."
+      "description": "Permanently enchant a cloak to give a 1% chance to dodge.",
+      "icon": "spell_holy_greaterheal"
     },
     "2646": {
       "name": "Enchant 2H Weapon - Agility",
@@ -2341,7 +2520,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a two-handed melee weapon to grant +25 Agility."
+      "description": "Permanently enchant a two-handed melee weapon to grant +25 Agility.",
+      "icon": "spell_holy_greaterheal"
     },
     "2681": {
       "name": "Savage Guard",
@@ -2354,7 +2534,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds 10 nature resistance to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot."
+      "description": "Permanently adds 10 nature resistance to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
     },
     "2715": {
       "name": "Resilience of the Scourge",
@@ -2367,7 +2548,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds to a shoulder slot item increased healing done by magical spells and effects up to 31 and also increases your mana regen by 5 mana per 5 sec."
+      "description": "Permanently adds to a shoulder slot item increased healing done by magical spells and effects up to 31 and also increases your mana regen by 5 mana per 5 sec.",
+      "icon": "temp"
     },
     "2716": {
       "name": "Fortitude of the Scourge",
@@ -2380,7 +2562,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds to a shoulder slot item increased Stamina by 16 and also grants 100 armor."
+      "description": "Permanently adds to a shoulder slot item increased Stamina by 16 and also grants 100 armor.",
+      "icon": "temp"
     },
     "2717": {
       "name": "Might of the Scourge",
@@ -2393,7 +2576,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds to a shoulder slot item increased Attack Power by 26 and also increases your chance to land a critical strike by 1%."
+      "description": "Permanently adds to a shoulder slot item increased Attack Power by 26 and also increases your chance to land a critical strike by 1%.",
+      "icon": "temp"
     },
     "2721": {
       "name": "Power of the Scourge",
@@ -2406,7 +2590,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently adds to a shoulder slot item increased damage and healing done by magical spells and effects up to 15 and also increases your chance to land a critical strike with spells by 1%."
+      "description": "Permanently adds to a shoulder slot item increased damage and healing done by magical spells and effects up to 15 and also increases your chance to land a critical strike with spells by 1%.",
+      "icon": "temp"
     },
     "7210": {
       "name": "Enchant Weapon - Dismantle",
@@ -2419,7 +2604,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Weapon to cause all spells and attacks to sometimes deal 75 additional damage to mechanical creatures."
+      "description": "Permanently enchant a Weapon to cause all spells and attacks to sometimes deal 75 additional damage to mechanical creatures.",
+      "icon": "spell_holy_greaterheal"
     },
     "7223": {
       "name": "Enchant Chest - Retricutioner",
@@ -2432,7 +2618,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Teaches you how to permanently enchant a piece of chest armor to reflect 9 damage back to the attacker when the bearer is struck in Melee."
+      "description": "Teaches you how to permanently enchant a piece of chest armor to reflect 9 damage back to the attacker when the bearer is struck in Melee.",
+      "icon": "spell_holy_greaterheal"
     },
     "7603": {
       "name": "Enchant Shield - Law of Nature",
@@ -2445,7 +2632,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a Shield to add up to 30 damage to spells and up to 55 points of healing to healing spells."
+      "description": "Permanently enchant a Shield to add up to 30 damage to spells and up to 55 points of healing to healing spells.",
+      "icon": "spell_holy_greaterheal"
     }
   },
   "consumables": {

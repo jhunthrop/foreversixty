@@ -18,6 +18,7 @@ from pipeline.icons import (
     resolve_icon_name,
     rotation_icon_names,
     simbuff_icon_names,
+    spelltip_icon_names,
     wanted_icons,
 )
 
@@ -481,6 +482,28 @@ def test_a_buff_icon_the_client_lacks_falls_back_to_wowheads_copy():
     by_name = {"inv_misc_fish_13": 133901}
     names = {"inv_misc_fish_13", "classic_ability_druid_demoralizingroar"}
     assert not_in_client(names, by_name) == {"classic_ability_druid_demoralizingroar"}
+
+
+def test_spelltip_icon_names_reads_every_spell_racial_and_enchant_icon(tmp_path: Path):
+    (tmp_path / "spelltips").mkdir()
+    (tmp_path / "spelltips" / "warrior.json").write_text(
+        json.dumps({"spells": {"12323": {"icon": "spell_shadow_deathscream"}}}), encoding="utf-8"
+    )
+    (tmp_path / "spelltips" / "shared.json").write_text(
+        json.dumps(
+            {
+                "racials": {"Blood Fury": {"icon": "racial_orc_berserkerstrength"}},
+                "enchants": {"1": {"icon": ""}},
+                "consumables": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert spelltip_icon_names(tmp_path) == {
+        "spell_shadow_deathscream",
+        "racial_orc_berserkerstrength",
+    }
+    assert spelltip_icon_names(tmp_path / "none") == set()
 
 
 def test_simbuff_icon_names_is_empty_before_the_first_loot_build(tmp_path: Path):

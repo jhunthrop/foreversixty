@@ -33,7 +33,7 @@ def _raw(raw: Path) -> None:
         "ID,Attributes_0,Attributes_1,DifficultyID,CastingTimeIndex,DurationIndex,RangeIndex,"
         "SpellIconFileDataID,SpellID",
         [
-            "1,0,0,0,1,1,2,0,21553",
+            "1,0,0,0,1,1,2,132355,21553",
             "2,0,64,0,1,2,3,0,10",
             "3,0,0,0,1,3,1,0,20572",
             "4,0,0,0,1,4,1,0,17626",
@@ -50,6 +50,11 @@ def _raw(raw: Path) -> None:
             "3,0,20572,0,24,1,0,0,0,0",
             "4,0,17626,0,1199,1,0,0,0,0",
         ],
+    )
+    _csv(
+        raw / "ManifestInterfaceData.csv",
+        "ID,FilePath,FileName",
+        ["132355,Interface/Icons/,Ability_Warrior_SavageBlow.blp"],
     )
     _csv(raw / "SpellRadius.csv", "ID,Radius,RadiusPerLevel,RadiusMin,RadiusMax", ["13,10,0,0,10"])
     _csv(
@@ -106,6 +111,7 @@ def test_a_class_spell_reads_as_the_client_tooltip(tmp_path):
         "range_yd": 5.0,
         "description": "A vicious strike that deals weapon damage plus 160 and wounds the "
         "target for 10 sec.",
+        "icon": "ability_warrior_savageblow",
     }
 
 
@@ -117,6 +123,8 @@ def test_a_channel_is_marked_and_its_index_1_radius_resolves(tmp_path):
     assert tip.channeled is True
     assert tip.range_yd == 30.0
     assert tip.description == "Ice shards pelt the target area within 10 yards."
+    # No icon file in the client: its placeholder art, never an empty name.
+    assert tip.icon != ""
 
 
 def test_racials_come_only_from_the_racial_skill_lines(tmp_path):

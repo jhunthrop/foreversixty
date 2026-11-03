@@ -2,7 +2,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import activeBuild from '../../data/active-build.json';
-import { tipFromBundle } from '../tooltips/game-tip';
+import { talentTipModel, tipFromBundle } from '../tooltips/game-tip';
 import { buildFile, repoRoot } from './build-files';
 import { decodeBuildTrees } from './build-tree';
 import { lineTipKey, proseNames, racialKeyFor, specGuideData } from './guide-tips';
@@ -69,6 +69,28 @@ describe.skipIf(!hasData)('the guide tooltip bundle, on the active build', () =>
       for (const [name, target] of proseNames(build, guide.classSlug, trees, bundle)) {
         if ('key' in target) expect(tipFromBundle(bundle, target.key), name).not.toBeNull();
         else expect(bundle.items[String(target.itemId)], name).toBeDefined();
+      }
+    },
+  );
+
+  it.each(guides.map((guide) => [`${guide.classSlug}-${guide.spec}`, guide] as const))(
+    '%s: no tooltip prints a raw client token, and every one has its icon',
+    (_label, guide) => {
+      const spec = `${guide.classSlug}-${guide.spec}`;
+      const { bundle } = specGuideData(build, guide.classSlug, spec, guide.races);
+      const models = [
+        ...Object.values(bundle.tips),
+        ...Object.values(bundle.talents).flatMap((entry) =>
+          Array.from({ length: entry.maxRank + 1 }, (_, rank) => talentTipModel(entry, rank)),
+        ),
+      ];
+      for (const model of models) {
+        expect(JSON.stringify(model), model.name).not.toMatch(/\$/);
+        expect(model.icon, model.name).toBeDefined();
+      }
+      for (const item of Object.values(bundle.items)) {
+        expect(JSON.stringify(item), item.name).not.toMatch(/\$/);
+        expect(item.icon, item.name).not.toBe('');
       }
     },
   );

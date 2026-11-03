@@ -11,6 +11,7 @@
 import { readItemTooltipModel } from '../items/lookup-node';
 import type { ItemTooltipModel } from '../items/tooltip';
 import {
+  displayDescription,
   enchantTipKey,
   racialTipKey,
   spellTipKey,
@@ -109,7 +110,7 @@ function spellTips(build: string, classSlug: string): Record<string, GameTipMode
   return Object.fromEntries(
     Object.entries(classSpellTips(build, classSlug)).map(([id, row]) => [
       spellTipKey(Number(id)),
-      spellTipModel(row, shownIcon(build, icons[id])),
+      spellTipModel(row, shownIcon(build, row.icon ?? icons[id])),
     ]),
   );
 }
@@ -132,7 +133,7 @@ export function enchantTip(
   icon: string | undefined,
 ): GameTipModel | undefined {
   const row = sharedSpellTips(build).enchants[String(enchantId)];
-  return row === undefined ? undefined : spellTipModel(row, icon);
+  return row === undefined ? undefined : spellTipModel(row, icon ?? shownIcon(build, row.icon));
 }
 
 /** A consumable's item, as the shared item tooltip shows it: its name in its quality, the
@@ -159,7 +160,7 @@ export function consumableItemModel(
     armor: null,
     weapon: null,
     stats: [],
-    effectText: `Use: ${tip.use}`,
+    effectText: `Use: ${displayDescription(tip.use)}`,
     setName: null,
     sourceLines: [],
     unique: false,

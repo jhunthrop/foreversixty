@@ -30,6 +30,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from pipeline.csvio import read_csv
+from pipeline.icons import icon_names, resolve_icon
 from pipeline.normalize import write_model
 from pipeline.racialicons import RACIAL_LINE_WORD, RACIAL_SKILL_CATEGORY
 from pipeline.simconst import _by_spell_id, _int, _rank
@@ -66,6 +67,9 @@ class SpellTip(BaseModel):
     #: Maximum range in yards, 0 for self.
     range_yd: float
     description: str
+    #: The spell's own icon (SpellMisc.SpellIconFileDataID through ManifestInterfaceData), the
+    #: client's placeholder when it has none. Appended last: key order is the file's contract.
+    icon: str = ""
 
 
 class ClassSpellTips(BaseModel):
@@ -101,6 +105,7 @@ class _Tables:
         self.names = {int(r["ID"]): r["Name_lang"] for r in name_rows}
         self.subtexts = {int(r["ID"]): r["NameSubtext_lang"] for r in spell_rows}
         self.misc = _by_spell_id(misc_rows)
+        self.icons = icon_names(read_csv(raw / "ManifestInterfaceData.csv"))
         self.cast_times = {int(r["ID"]): r for r in read_csv(raw / "SpellCastTimes.csv")}
         self.cooldowns = _by_spell_id(read_csv(raw / "SpellCooldowns.csv"))
         self.powers = _by_spell_id(read_csv(raw / "SpellPower.csv"))
@@ -116,6 +121,7 @@ class _Tables:
                 radius=_optional(raw / "SpellRadius.csv"),
                 range=range_rows,
                 names=name_rows,
+                target_restrictions=_optional(raw / "SpellTargetRestrictions.csv"),
             ),
         )
 
@@ -141,6 +147,7 @@ class _Tables:
             ),
             range_yd=self.ranges.get(_int(misc, "RangeIndex"), 0.0),
             description=self.text.describe(spell_id).strip(),
+            icon=resolve_icon(self.text.icon_file_id(spell_id), self.icons, f"spell {spell_id}"),
         )
 
 

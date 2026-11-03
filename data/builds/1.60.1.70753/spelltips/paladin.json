@@ -13,7 +13,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 55 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 55 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_devotionaura"
     },
     "498": {
       "name": "Divine Protection",
@@ -26,7 +27,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "You are protected from all physical attacks and spells for 6 sec, but during that time you cannot attack or use physical abilities yourself.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active."
+      "description": "You are protected from all physical attacks and spells for 6 sec, but during that time you cannot attack or use physical abilities yourself.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active.",
+      "icon": "spell_holy_restoration"
     },
     "633": {
       "name": "Lay on Hands",
@@ -39,7 +41,8 @@
       "passive": false,
       "cooldown_ms": 1200000,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for an amount equal to the Paladin's maximum health.  Drains all of the Paladin's remaining Mana when used, but does not interrupt Mana regeneration."
+      "description": "Heals a friendly target for an amount equal to the Paladin's maximum health.  Drains all of the Paladin's remaining Mana when used, but does not interrupt Mana regeneration.",
+      "icon": "spell_holy_layonhands"
     },
     "635": {
       "name": "Holy Light",
@@ -52,7 +55,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 43."
+      "description": "Heals a friendly target for 43.",
+      "icon": "spell_holy_holybolt"
     },
     "639": {
       "name": "Holy Light",
@@ -65,7 +69,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 83."
+      "description": "Heals a friendly target for 83.",
+      "icon": "spell_holy_holybolt"
     },
     "642": {
       "name": "Divine Shield",
@@ -78,7 +83,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Protects the paladin from all damage and spells for 10 sec, but reduces all damage you deal by 50%.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active."
+      "description": "Protects the paladin from all damage and spells for 10 sec, but reduces all damage you deal by 50%.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active.",
+      "icon": "spell_holy_divineintervention"
     },
     "643": {
       "name": "Devotion Aura",
@@ -91,7 +97,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 275 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 275 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_devotionaura"
     },
     "647": {
       "name": "Holy Light",
@@ -104,7 +111,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 155."
+      "description": "Heals a friendly target for 155.",
+      "icon": "spell_holy_holybolt"
     },
     "678": {
       "name": "Holy Strike",
@@ -117,7 +125,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 29% weapon damage plus an additional 17 as Holy damage."
+      "description": "An instant strike that causes 29% weapon damage plus an additional 17 as Holy damage.",
+      "icon": "classicon_paladin"
     },
     "679": {
       "name": "Holy Strike",
@@ -130,7 +139,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 25% weapon damage plus an additional 12 as Holy damage."
+      "description": "An instant strike that causes 25% weapon damage plus an additional 12 as Holy damage.",
+      "icon": "classicon_paladin"
     },
     "680": {
       "name": "Holy Strike",
@@ -143,7 +153,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 36% weapon damage plus an additional 24 as Holy damage."
+      "description": "An instant strike that causes 36% weapon damage plus an additional 24 as Holy damage.",
+      "icon": "classicon_paladin"
     },
     "853": {
       "name": "Hammer of Justice",
@@ -156,7 +167,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 10.0,
-      "description": "Stuns the target for 3 sec."
+      "description": "Stuns the target for 3 sec.",
+      "icon": "spell_holy_sealofmight"
     },
     "879": {
       "name": "Exorcism",
@@ -169,7 +181,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 79 Holy damage to an Undead or Demon target."
+      "description": "Causes 79 Holy damage to an Undead or Demon target.",
+      "icon": "spell_holy_excorcism_02"
     },
     "1020": {
       "name": "Divine Shield",
@@ -182,7 +195,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "Protects the paladin from all damage and spells for 12 sec, but reduces all damage you deal by 50%.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active."
+      "description": "Protects the paladin from all damage and spells for 12 sec, but reduces all damage you deal by 50%.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active.",
+      "icon": "spell_holy_divineintervention"
     },
     "1022": {
       "name": "Blessing of Protection",
@@ -195,7 +209,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 30.0,
-      "description": "A targeted party member is protected from all physical attacks for 6 sec, but during that time they cannot attack or use physical abilities.  Players may only have one Blessing on them per Paladin at any one time.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active."
+      "description": "A targeted party member is protected from all physical attacks for 6 sec, but during that time they cannot attack or use physical abilities.  Players may only have one Blessing on them per Paladin at any one time.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active.",
+      "icon": "spell_holy_sealofprotection"
     },
     "1026": {
       "name": "Holy Light",
@@ -208,7 +223,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 287."
+      "description": "Heals a friendly target for 287.",
+      "icon": "spell_holy_holybolt"
     },
     "1032": {
       "name": "Devotion Aura",
@@ -221,7 +237,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 505 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 505 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_devotionaura"
     },
     "1042": {
       "name": "Holy Light",
@@ -234,7 +251,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 452."
+      "description": "Heals a friendly target for 452.",
+      "icon": "spell_holy_holybolt"
     },
     "1044": {
       "name": "Blessing of Freedom",
@@ -247,7 +265,8 @@
       "passive": false,
       "cooldown_ms": 20000,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, granting immunity to movement impairing effects for 10 sec.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, granting immunity to movement impairing effects for 10 sec.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_sealofvalor"
     },
     "1152": {
       "name": "Purify",
@@ -260,7 +279,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Purifies the friendly target, removing 1 disease effect and 1 poison effect."
+      "description": "Purifies the friendly target, removing 1 disease effect and 1 poison effect.",
+      "icon": "spell_holy_purify"
     },
     "1866": {
       "name": "Holy Strike",
@@ -273,7 +293,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 32% weapon damage plus an additional 19 as Holy damage."
+      "description": "An instant strike that causes 32% weapon damage plus an additional 19 as Holy damage.",
+      "icon": "classicon_paladin"
     },
     "2495": {
       "name": "Holy Strike",
@@ -286,7 +307,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 39% weapon damage plus an additional 31 as Holy damage."
+      "description": "An instant strike that causes 39% weapon damage plus an additional 31 as Holy damage.",
+      "icon": "classicon_paladin"
     },
     "2800": {
       "name": "Lay on Hands",
@@ -299,7 +321,8 @@
       "passive": false,
       "cooldown_ms": 1200000,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for an amount equal to the Paladin's maximum health and restores 250 of their mana.  Drains all of the Paladin's remaining Mana when used, but does not interrupt Mana regeneration."
+      "description": "Heals a friendly target for an amount equal to the Paladin's maximum health and restores 250 of their mana.  Drains all of the Paladin's remaining Mana when used, but does not interrupt Mana regeneration.",
+      "icon": "spell_holy_layonhands"
     },
     "2812": {
       "name": "Holy Wrath",
@@ -312,7 +335,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "Sends bolts of holy power in all directions, causing 395 Holy damage to all Undead and Demon targets within 20 yds and stunning them for 2 sec."
+      "description": "Sends bolts of holy power in all directions, causing 395 Holy damage to all Undead and Demon targets within 20 yds and stunning them for 2 sec.",
+      "icon": "spell_holy_excorcism"
     },
     "2878": {
       "name": "Turn Undead",
@@ -325,7 +349,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 20.0,
-      "description": "The targeted undead enemy will be compelled to flee for up to 10 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time."
+      "description": "The targeted undead enemy will be compelled to flee for up to 10 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time.",
+      "icon": "spell_holy_turnundead"
     },
     "3472": {
       "name": "Holy Light",
@@ -338,7 +363,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 646."
+      "description": "Heals a friendly target for 646.",
+      "icon": "spell_holy_holybolt"
     },
     "4987": {
       "name": "Cleanse",
@@ -351,7 +377,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Cleanses a friendly target, removing 1 poison effect, 1 disease effect, and 1 magic effect."
+      "description": "Cleanses a friendly target, removing 1 poison effect, 1 disease effect, and 1 magic effect.",
+      "icon": "spell_holy_renew"
     },
     "5569": {
       "name": "Holy Strike",
@@ -364,7 +391,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 43% weapon damage plus an additional 53 as Holy damage."
+      "description": "An instant strike that causes 43% weapon damage plus an additional 53 as Holy damage.",
+      "icon": "classicon_paladin"
     },
     "5573": {
       "name": "Divine Protection",
@@ -377,7 +405,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "You are protected from all physical attacks and spells for 8 sec, but during that time you cannot attack or use physical abilities yourself.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active."
+      "description": "You are protected from all physical attacks and spells for 8 sec, but during that time you cannot attack or use physical abilities yourself.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active.",
+      "icon": "spell_holy_restoration"
     },
     "5588": {
       "name": "Hammer of Justice",
@@ -390,7 +419,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 10.0,
-      "description": "Stuns the target for 4 sec."
+      "description": "Stuns the target for 4 sec.",
+      "icon": "spell_holy_sealofmight"
     },
     "5589": {
       "name": "Hammer of Justice",
@@ -403,7 +433,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 10.0,
-      "description": "Stuns the target for 5 sec."
+      "description": "Stuns the target for 5 sec.",
+      "icon": "spell_holy_sealofmight"
     },
     "5599": {
       "name": "Blessing of Protection",
@@ -416,7 +447,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 30.0,
-      "description": "A targeted party member is protected from all physical attacks for 8 sec, but during that time they cannot attack or use physical abilities.  Players may only have one Blessing on them per Paladin at any one time.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active."
+      "description": "A targeted party member is protected from all physical attacks for 8 sec, but during that time they cannot attack or use physical abilities.  Players may only have one Blessing on them per Paladin at any one time.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active.",
+      "icon": "spell_holy_sealofprotection"
     },
     "5614": {
       "name": "Exorcism",
@@ -429,7 +461,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 141 Holy damage to an Undead or Demon target."
+      "description": "Causes 141 Holy damage to an Undead or Demon target.",
+      "icon": "spell_holy_excorcism_02"
     },
     "5615": {
       "name": "Exorcism",
@@ -442,7 +475,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 202 Holy damage to an Undead or Demon target."
+      "description": "Causes 202 Holy damage to an Undead or Demon target.",
+      "icon": "spell_holy_excorcism_02"
     },
     "5627": {
       "name": "Turn Undead",
@@ -455,7 +489,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 20.0,
-      "description": "The targeted undead enemy will be compelled to flee for up to 15 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time."
+      "description": "The targeted undead enemy will be compelled to flee for up to 15 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time.",
+      "icon": "spell_holy_turnundead"
     },
     "6940": {
       "name": "Blessing of Sacrifice",
@@ -468,7 +503,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the party member, transfering 45 damage taken per hit to the caster.  Lasts 30 sec.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the party member, transfering 45 damage taken per hit to the caster.  Lasts 30 sec.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_sealofsacrifice"
     },
     "7294": {
       "name": "Retribution Aura",
@@ -481,7 +517,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes 5 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Causes 5 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_auraoflight"
     },
     "7328": {
       "name": "Redemption",
@@ -494,7 +531,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 65 health and $q1 mana.  Cannot be cast when in combat."
+      "description": "Brings a dead player back to life with 65 health and $q1 mana.  Cannot be cast when in combat.",
+      "icon": "spell_holy_resurrection"
     },
     "10278": {
       "name": "Blessing of Protection",
@@ -507,7 +545,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 30.0,
-      "description": "A targeted party member is protected from all physical attacks for 10 sec, but during that time they cannot attack or use physical abilities.  Players may only have one Blessing on them per Paladin at any one time.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active."
+      "description": "A targeted party member is protected from all physical attacks for 10 sec, but during that time they cannot attack or use physical abilities.  Players may only have one Blessing on them per Paladin at any one time.  Applies Forbearance for 1 min. Cannot be cast while Forbearance is active.",
+      "icon": "spell_holy_sealofprotection"
     },
     "10290": {
       "name": "Devotion Aura",
@@ -520,7 +559,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 160 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 160 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_devotionaura"
     },
     "10291": {
       "name": "Devotion Aura",
@@ -533,7 +573,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 390 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 390 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_devotionaura"
     },
     "10292": {
       "name": "Devotion Aura",
@@ -546,7 +587,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 620 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 620 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_devotionaura"
     },
     "10293": {
       "name": "Devotion Aura",
@@ -559,7 +601,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 735 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 735 additional armor to party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_devotionaura"
     },
     "10298": {
       "name": "Retribution Aura",
@@ -572,7 +615,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes 8 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Causes 8 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_auraoflight"
     },
     "10299": {
       "name": "Retribution Aura",
@@ -585,7 +629,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes 12 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Causes 12 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_auraoflight"
     },
     "10300": {
       "name": "Retribution Aura",
@@ -598,7 +643,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes 16 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Causes 16 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_auraoflight"
     },
     "10301": {
       "name": "Retribution Aura",
@@ -611,7 +657,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Causes 20 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Causes 20 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_auraoflight"
     },
     "10308": {
       "name": "Hammer of Justice",
@@ -624,7 +671,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 10.0,
-      "description": "Stuns the target for 6 sec."
+      "description": "Stuns the target for 6 sec.",
+      "icon": "spell_holy_sealofmight"
     },
     "10310": {
       "name": "Lay on Hands",
@@ -637,7 +685,8 @@
       "passive": false,
       "cooldown_ms": 1200000,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for an amount equal to the Paladin's maximum health and restores 550 of their mana.  Drains all of the Paladin's remaining Mana when used, but does not interrupt Mana regeneration."
+      "description": "Heals a friendly target for an amount equal to the Paladin's maximum health and restores 550 of their mana.  Drains all of the Paladin's remaining Mana when used, but does not interrupt Mana regeneration.",
+      "icon": "spell_holy_layonhands"
     },
     "10312": {
       "name": "Exorcism",
@@ -650,7 +699,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 291 Holy damage to an Undead or Demon target."
+      "description": "Causes 291 Holy damage to an Undead or Demon target.",
+      "icon": "spell_holy_excorcism_02"
     },
     "10313": {
       "name": "Exorcism",
@@ -663,7 +713,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 384 Holy damage to an Undead or Demon target."
+      "description": "Causes 384 Holy damage to an Undead or Demon target.",
+      "icon": "spell_holy_excorcism_02"
     },
     "10314": {
       "name": "Exorcism",
@@ -676,7 +727,8 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 30.0,
-      "description": "Causes 502 Holy damage to an Undead or Demon target."
+      "description": "Causes 502 Holy damage to an Undead or Demon target.",
+      "icon": "spell_holy_excorcism_02"
     },
     "10318": {
       "name": "Holy Wrath",
@@ -689,7 +741,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 0.0,
-      "description": "Sends bolts of holy power in all directions, causing 533 Holy damage to all Undead and Demon targets within 20 yds and stunning them for 2 sec."
+      "description": "Sends bolts of holy power in all directions, causing 533 Holy damage to all Undead and Demon targets within 20 yds and stunning them for 2 sec.",
+      "icon": "spell_holy_excorcism"
     },
     "10322": {
       "name": "Redemption",
@@ -702,7 +755,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 150 health and $q1 mana.  Cannot be cast when in combat."
+      "description": "Brings a dead player back to life with 150 health and $q1 mana.  Cannot be cast when in combat.",
+      "icon": "spell_holy_resurrection"
     },
     "10324": {
       "name": "Redemption",
@@ -715,7 +769,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 250 health and $q1 mana.  Cannot be cast when in combat."
+      "description": "Brings a dead player back to life with 250 health and $q1 mana.  Cannot be cast when in combat.",
+      "icon": "spell_holy_resurrection"
     },
     "10326": {
       "name": "Turn Undead",
@@ -728,7 +783,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 20.0,
-      "description": "The targeted undead enemy will be compelled to flee for up to 20 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time."
+      "description": "The targeted undead enemy will be compelled to flee for up to 20 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time.",
+      "icon": "spell_holy_turnundead"
     },
     "10328": {
       "name": "Holy Light",
@@ -741,7 +797,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 899."
+      "description": "Heals a friendly target for 899.",
+      "icon": "spell_holy_holybolt"
     },
     "10329": {
       "name": "Holy Light",
@@ -754,7 +811,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1217."
+      "description": "Heals a friendly target for 1217.",
+      "icon": "spell_holy_holybolt"
     },
     "10332": {
       "name": "Holy Strike",
@@ -767,7 +825,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 46% weapon damage plus an additional 68 as Holy damage."
+      "description": "An instant strike that causes 46% weapon damage plus an additional 68 as Holy damage.",
+      "icon": "classicon_paladin"
     },
     "10333": {
       "name": "Holy Strike",
@@ -780,7 +839,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 5.0,
-      "description": "An instant strike that causes 50% weapon damage plus an additional 93 as Holy damage."
+      "description": "An instant strike that causes 50% weapon damage plus an additional 93 as Holy damage.",
+      "icon": "classicon_paladin"
     },
     "19740": {
       "name": "Blessing of Might",
@@ -793,7 +853,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, increasing melee attack power by 14 for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, increasing melee attack power by 14 for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_fistofjustice"
     },
     "19742": {
       "name": "Blessing of Wisdom",
@@ -806,7 +867,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, restoring 12 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, restoring 12 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_sealofwisdom"
     },
     "19746": {
       "name": "Concentration Aura",
@@ -819,7 +881,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives a 35% chance of ignoring spell interruption when damaged to all party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives a 35% chance of ignoring spell interruption when damaged to all party members within 30 yards.  Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_holy_mindsooth"
     },
     "19750": {
       "name": "Flash of Light",
@@ -832,7 +895,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 46."
+      "description": "Heals a friendly target for 46.",
+      "icon": "spell_holy_flashheal"
     },
     "19752": {
       "name": "Divine Intervention",
@@ -845,7 +909,8 @@
       "passive": false,
       "cooldown_ms": 3600000,
       "range_yd": 40.0,
-      "description": "The paladin sacrifices himself or herself to remove the targeted party member from harms way.  Enemies will stop attacking the protected party member, who will be immune to all harmful attacks but cannot take any action for 3 min."
+      "description": "The paladin sacrifices himself or herself to remove the targeted party member from harms way.  Enemies will stop attacking the protected party member, who will be immune to all harmful attacks but cannot take any action for 3 min.",
+      "icon": "spell_nature_timestop"
     },
     "19834": {
       "name": "Blessing of Might",
@@ -858,7 +923,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, increasing melee attack power by 25 for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, increasing melee attack power by 25 for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_fistofjustice"
     },
     "19835": {
       "name": "Blessing of Might",
@@ -871,7 +937,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, increasing melee attack power by 40 for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, increasing melee attack power by 40 for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_fistofjustice"
     },
     "19836": {
       "name": "Blessing of Might",
@@ -884,7 +951,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, increasing melee attack power by 61 for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, increasing melee attack power by 61 for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_fistofjustice"
     },
     "19837": {
       "name": "Blessing of Might",
@@ -897,7 +965,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, increasing melee attack power by 83 for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, increasing melee attack power by 83 for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_fistofjustice"
     },
     "19838": {
       "name": "Blessing of Might",
@@ -910,7 +979,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, increasing melee attack power by 112 for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, increasing melee attack power by 112 for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_fistofjustice"
     },
     "19850": {
       "name": "Blessing of Wisdom",
@@ -923,7 +993,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, restoring 18 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, restoring 18 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_sealofwisdom"
     },
     "19852": {
       "name": "Blessing of Wisdom",
@@ -936,7 +1007,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, restoring 24 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, restoring 24 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_sealofwisdom"
     },
     "19853": {
       "name": "Blessing of Wisdom",
@@ -949,7 +1021,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, restoring 30 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, restoring 30 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_sealofwisdom"
     },
     "19854": {
       "name": "Blessing of Wisdom",
@@ -962,7 +1035,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, restoring 36 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, restoring 36 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_sealofwisdom"
     },
     "19876": {
       "name": "Shadow Resistance Aura",
@@ -975,7 +1049,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 30 additional Shadow resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 30 additional Shadow resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_shadow_sealofkings"
     },
     "19888": {
       "name": "Frost Resistance Aura",
@@ -988,7 +1063,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 30 additional Frost resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 30 additional Frost resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_frost_wizardmark"
     },
     "19891": {
       "name": "Fire Resistance Aura",
@@ -1001,7 +1077,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 30 additional Fire resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 30 additional Fire resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_fire_sealoffire"
     },
     "19895": {
       "name": "Shadow Resistance Aura",
@@ -1014,7 +1091,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 45 additional Shadow resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 45 additional Shadow resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_shadow_sealofkings"
     },
     "19896": {
       "name": "Shadow Resistance Aura",
@@ -1027,7 +1105,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 60 additional Shadow resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 60 additional Shadow resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_shadow_sealofkings"
     },
     "19897": {
       "name": "Frost Resistance Aura",
@@ -1040,7 +1119,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 45 additional Frost resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 45 additional Frost resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_frost_wizardmark"
     },
     "19898": {
       "name": "Frost Resistance Aura",
@@ -1053,7 +1133,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 60 additional Frost resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 60 additional Frost resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_frost_wizardmark"
     },
     "19899": {
       "name": "Fire Resistance Aura",
@@ -1066,7 +1147,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 45 additional Fire resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 45 additional Fire resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_fire_sealoffire"
     },
     "19900": {
       "name": "Fire Resistance Aura",
@@ -1079,7 +1161,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives 60 additional Fire resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+      "description": "Gives 60 additional Fire resistance to all party and raid members within 30 yards. Players may only have one Aura on them per Paladin at any one time.",
+      "icon": "spell_fire_sealoffire"
     },
     "19939": {
       "name": "Flash of Light",
@@ -1092,7 +1175,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 66."
+      "description": "Heals a friendly target for 66.",
+      "icon": "spell_holy_flashheal"
     },
     "19940": {
       "name": "Flash of Light",
@@ -1105,7 +1189,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 101."
+      "description": "Heals a friendly target for 101.",
+      "icon": "spell_holy_flashheal"
     },
     "19941": {
       "name": "Flash of Light",
@@ -1118,7 +1203,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 151."
+      "description": "Heals a friendly target for 151.",
+      "icon": "spell_holy_flashheal"
     },
     "19942": {
       "name": "Flash of Light",
@@ -1131,7 +1217,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 223."
+      "description": "Heals a friendly target for 223.",
+      "icon": "spell_holy_flashheal"
     },
     "19943": {
       "name": "Flash of Light",
@@ -1144,7 +1231,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 303."
+      "description": "Heals a friendly target for 303.",
+      "icon": "spell_holy_flashheal"
     },
     "20066": {
       "name": "Repentance",
@@ -1157,7 +1245,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 20.0,
-      "description": "Puts the enemy target in a state of meditation, incapacitating them for up to 6 sec. Any damage caused will awaken the target. Only works against Humanoids."
+      "description": "Puts the enemy target in a state of meditation, incapacitating them for up to 6 sec. Any damage caused will awaken the target. Only works against Humanoids.",
+      "icon": "spell_holy_prayerofhealing"
     },
     "20096": {
       "name": "Anticipation",
@@ -1170,7 +1259,8 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases your Defense Skill by 20."
+      "description": "Increases your Defense Skill by 20.",
+      "icon": "spell_magic_lesserinvisibilty"
     },
     "20116": {
       "name": "Consecration",
@@ -1183,7 +1273,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 0.0,
-      "description": "Consecrates the land beneath the Paladin, doing 24 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 56 damage over 8 sec."
+      "description": "Consecrates the land beneath the Paladin, doing 24 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 56 damage over 8 sec.",
+      "icon": "spell_holy_innerfire"
     },
     "20154": {
       "name": "Seal of Righteousness",
@@ -1196,7 +1287,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(108/87+$<1h>)*$<mult>} to ${(108/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time."
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(108/87+$<1h>)*$<mult>} to ${(108/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.",
+      "icon": "ability_thunderbolt"
     },
     "20162": {
       "name": "Seal of the Crusader",
@@ -1209,7 +1301,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 51 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 35.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 51 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 35.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_holysmite"
     },
     "20163": {
       "name": "Seal of Fury",
@@ -1222,7 +1315,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 14 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 54 Holy damage to an enemy and taunts the target to attack you for 3 sec."
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 14 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 54 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "icon": "spell_holy_retributionaura"
     },
     "20164": {
       "name": "Seal of Justice",
@@ -1235,7 +1329,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of justice for 30 sec, giving each melee attack a chance to stun for 2 sec.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 10 sec, preventing them from fleeing.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with the spirit of justice for 30 sec, giving each melee attack a chance to stun for 2 sec.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 10 sec, preventing them from fleeing.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_sealofwrath"
     },
     "20165": {
       "name": "Seal of Light",
@@ -1248,7 +1343,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine light for 30 sec, giving each melee attack a chance to heal the Paladin for 39.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting melee attacks made against the judged enemy a chance of healing the attacker for 25.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with divine light for 30 sec, giving each melee attack a chance to heal the Paladin for 39.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting melee attacks made against the judged enemy a chance of healing the attacker for 25.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_healingaura"
     },
     "20166": {
       "name": "Seal of Wisdom",
@@ -1261,7 +1357,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine wisdom for 30 sec, giving each melee attack a chance to restore 50 of the Paladin's mana.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting attacks and spells used against the judged enemy a chance to restore 33 mana to the attacker.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with divine wisdom for 30 sec, giving each melee attack a chance to restore 50 of the Paladin's mana.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting attacks and spells used against the judged enemy a chance to restore 33 mana to the attacker.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_righteousnessaura"
     },
     "20216": {
       "name": "Divine Favor",
@@ -1274,7 +1371,8 @@
       "passive": false,
       "cooldown_ms": 120000,
       "range_yd": 0.0,
-      "description": "When activated, gives your next Flash of Light, Holy Light, or Holy Shock spell a 100% critical effect chance."
+      "description": "When activated, gives your next Flash of Light, Holy Light, or Holy Shock spell a 100% critical effect chance.",
+      "icon": "spell_holy_heal"
     },
     "20217": {
       "name": "Blessing of Kings",
@@ -1287,7 +1385,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, increasing total stats by 10% for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, increasing total stats by 10% for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_magic_magearmor"
     },
     "20271": {
       "name": "Judgement",
@@ -1300,7 +1399,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 10.0,
-      "description": "Unleash the energy of a Seal spell upon an enemy. Does not consume the Seal. Refer to individual Seals for Judgement effect."
+      "description": "Unleash the energy of a Seal spell upon an enemy. Does not consume the Seal. Refer to individual Seals for Judgement effect.",
+      "icon": "spell_holy_righteousfury"
     },
     "20287": {
       "name": "Seal of Righteousness",
@@ -1313,7 +1413,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(216/87+$<1h>)*$<mult>} to ${(216/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 26 Holy damage to an enemy."
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(216/87+$<1h>)*$<mult>} to ${(216/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 26 Holy damage to an enemy.",
+      "icon": "ability_thunderbolt"
     },
     "20288": {
       "name": "Seal of Righteousness",
@@ -1326,7 +1427,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(352/87+$<1h>)*$<mult>} to ${(352/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 41 Holy damage to an enemy."
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(352/87+$<1h>)*$<mult>} to ${(352/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 41 Holy damage to an enemy.",
+      "icon": "ability_thunderbolt"
     },
     "20289": {
       "name": "Seal of Righteousness",
@@ -1339,7 +1441,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(541/87+$<1h>)*$<mult>} to ${(541/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 60 Holy damage to an enemy."
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(541/87+$<1h>)*$<mult>} to ${(541/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 60 Holy damage to an enemy.",
+      "icon": "ability_thunderbolt"
     },
     "20290": {
       "name": "Seal of Righteousness",
@@ -1352,7 +1455,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(785/87+$<1h>)*$<mult>} to ${(785/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 82 Holy damage to an enemy."
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(785/87+$<1h>)*$<mult>} to ${(785/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 82 Holy damage to an enemy.",
+      "icon": "ability_thunderbolt"
     },
     "20291": {
       "name": "Seal of Righteousness",
@@ -1365,7 +1469,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(1082/87+$<1h>)*$<mult>} to ${(1082/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 107 Holy damage to an enemy."
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(1082/87+$<1h>)*$<mult>} to ${(1082/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 107 Holy damage to an enemy.",
+      "icon": "ability_thunderbolt"
     },
     "20292": {
       "name": "Seal of Righteousness",
@@ -1378,7 +1483,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(1407/87+$<1h>)*$<mult>} to ${(1407/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 137 Holy damage to an enemy."
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(1407/87+$<1h>)*$<mult>} to ${(1407/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 137 Holy damage to an enemy.",
+      "icon": "ability_thunderbolt"
     },
     "20293": {
       "name": "Seal of Righteousness",
@@ -1391,7 +1497,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(1786/87+$<1h>)*$<mult>} to ${(1786/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 170 Holy damage to an enemy."
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(1786/87+$<1h>)*$<mult>} to ${(1786/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 170 Holy damage to an enemy.",
+      "icon": "ability_thunderbolt"
     },
     "20305": {
       "name": "Seal of the Crusader",
@@ -1404,7 +1511,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 94 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 58.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 94 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 58.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_holysmite"
     },
     "20306": {
       "name": "Seal of the Crusader",
@@ -1417,7 +1525,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 145 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 92.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 145 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 92.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_holysmite"
     },
     "20307": {
       "name": "Seal of the Crusader",
@@ -1430,7 +1539,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 221 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 127.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 221 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 127.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_holysmite"
     },
     "20308": {
       "name": "Seal of the Crusader",
@@ -1443,7 +1553,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 306 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 161.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 306 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 161.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_holysmite"
     },
     "20347": {
       "name": "Seal of Light",
@@ -1456,7 +1567,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine light for 30 sec, giving each melee attack a chance to heal the Paladin for 53.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting melee attacks made against the judged enemy a chance of healing the attacker for 34.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with divine light for 30 sec, giving each melee attack a chance to heal the Paladin for 53.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting melee attacks made against the judged enemy a chance of healing the attacker for 34.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_healingaura"
     },
     "20348": {
       "name": "Seal of Light",
@@ -1469,7 +1581,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine light for 30 sec, giving each melee attack a chance to heal the Paladin for 76.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting melee attacks made against the judged enemy a chance of healing the attacker for 49.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with divine light for 30 sec, giving each melee attack a chance to heal the Paladin for 76.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting melee attacks made against the judged enemy a chance of healing the attacker for 49.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_healingaura"
     },
     "20349": {
       "name": "Seal of Light",
@@ -1482,7 +1595,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine light for 30 sec, giving each melee attack a chance to heal the Paladin for 94.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting melee attacks made against the judged enemy a chance of healing the attacker for 61.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with divine light for 30 sec, giving each melee attack a chance to heal the Paladin for 94.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting melee attacks made against the judged enemy a chance of healing the attacker for 61.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_healingaura"
     },
     "20356": {
       "name": "Seal of Wisdom",
@@ -1495,7 +1609,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine wisdom for 30 sec, giving each melee attack a chance to restore 71 of the Paladin's mana.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting attacks and spells used against the judged enemy a chance to restore 46 mana to the attacker.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with divine wisdom for 30 sec, giving each melee attack a chance to restore 71 of the Paladin's mana.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting attacks and spells used against the judged enemy a chance to restore 46 mana to the attacker.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_righteousnessaura"
     },
     "20357": {
       "name": "Seal of Wisdom",
@@ -1508,7 +1623,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine wisdom for 30 sec, giving each melee attack a chance to restore 90 of the Paladin's mana.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting attacks and spells used against the judged enemy a chance to restore 59 mana to the attacker.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with divine wisdom for 30 sec, giving each melee attack a chance to restore 90 of the Paladin's mana.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, granting attacks and spells used against the judged enemy a chance to restore 59 mana to the attacker.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_righteousnessaura"
     },
     "20375": {
       "name": "Seal of Command",
@@ -1521,7 +1637,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 48.5 Holy damage, 97 if the target is stunned or incapacitated."
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 48.5 Holy damage, 97 if the target is stunned or incapacitated.",
+      "icon": "ability_warrior_innerrage"
     },
     "20419": {
       "name": "Seal of Fury",
@@ -1534,7 +1651,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 19 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 74 Holy damage to an enemy and taunts the target to attack you for 3 sec."
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 19 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 74 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "icon": "spell_holy_retributionaura"
     },
     "20421": {
       "name": "Seal of Fury",
@@ -1547,7 +1665,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 25 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 96 Holy damage to an enemy and taunts the target to attack you for 3 sec."
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 25 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 96 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "icon": "spell_holy_retributionaura"
     },
     "20422": {
       "name": "Seal of Fury",
@@ -1560,7 +1679,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 32 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 123 Holy damage to an enemy and taunts the target to attack you for 3 sec."
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 32 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 123 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "icon": "spell_holy_retributionaura"
     },
     "20423": {
       "name": "Seal of Fury",
@@ -1573,7 +1693,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 153 Holy damage to an enemy and taunts the target to attack you for 3 sec."
+      "description": "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 153 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "icon": "spell_holy_retributionaura"
     },
     "20473": {
       "name": "Holy Shock",
@@ -1586,7 +1707,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 20.0,
-      "description": "Blasts the target with Holy energy, causing 182 Holy damage to an enemy, or 156 healing to an ally."
+      "description": "Blasts the target with Holy energy, causing 182 Holy damage to an enemy, or 156 healing to an ally.",
+      "icon": "spell_holy_searinglight"
     },
     "20729": {
       "name": "Blessing of Sacrifice",
@@ -1599,7 +1721,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the party member, transfering 55 damage taken per hit to the caster.  Lasts 30 sec.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the party member, transfering 55 damage taken per hit to the caster.  Lasts 30 sec.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_sealofsacrifice"
     },
     "20772": {
       "name": "Redemption",
@@ -1612,7 +1735,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 400 health and $q1 mana.  Cannot be cast when in combat."
+      "description": "Brings a dead player back to life with 400 health and $q1 mana.  Cannot be cast when in combat.",
+      "icon": "spell_holy_resurrection"
     },
     "20773": {
       "name": "Redemption",
@@ -1625,7 +1749,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 600 health and $q1 mana.  Cannot be cast when in combat."
+      "description": "Brings a dead player back to life with 600 health and $q1 mana.  Cannot be cast when in combat.",
+      "icon": "spell_holy_resurrection"
     },
     "20915": {
       "name": "Seal of Command",
@@ -1638,7 +1763,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 76.5 Holy damage, 153 if the target is stunned or incapacitated."
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 76.5 Holy damage, 153 if the target is stunned or incapacitated.",
+      "icon": "ability_warrior_innerrage"
     },
     "20918": {
       "name": "Seal of Command",
@@ -1651,7 +1777,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 107 Holy damage, 214 if the target is stunned or incapacitated."
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 107 Holy damage, 214 if the target is stunned or incapacitated.",
+      "icon": "ability_warrior_innerrage"
     },
     "20919": {
       "name": "Seal of Command",
@@ -1664,7 +1791,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 137 Holy damage, 274 if the target is stunned or incapacitated."
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 137 Holy damage, 274 if the target is stunned or incapacitated.",
+      "icon": "ability_warrior_innerrage"
     },
     "20920": {
       "name": "Seal of Command",
@@ -1677,7 +1805,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 178 Holy damage, 356 if the target is stunned or incapacitated."
+      "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 178 Holy damage, 356 if the target is stunned or incapacitated.",
+      "icon": "ability_warrior_innerrage"
     },
     "20922": {
       "name": "Consecration",
@@ -1690,7 +1819,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 0.0,
-      "description": "Consecrates the land beneath the Paladin, doing 48 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 88 damage over 8 sec."
+      "description": "Consecrates the land beneath the Paladin, doing 48 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 88 damage over 8 sec.",
+      "icon": "spell_holy_innerfire"
     },
     "20923": {
       "name": "Consecration",
@@ -1703,7 +1833,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 0.0,
-      "description": "Consecrates the land beneath the Paladin, doing 64 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 160 damage over 8 sec."
+      "description": "Consecrates the land beneath the Paladin, doing 64 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 160 damage over 8 sec.",
+      "icon": "spell_holy_innerfire"
     },
     "20924": {
       "name": "Consecration",
@@ -1716,7 +1847,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 0.0,
-      "description": "Consecrates the land beneath the Paladin, doing 96 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 216 damage over 8 sec."
+      "description": "Consecrates the land beneath the Paladin, doing 96 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 216 damage over 8 sec.",
+      "icon": "spell_holy_innerfire"
     },
     "20925": {
       "name": "Holy Shield",
@@ -1729,7 +1861,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Increases chance to block by 30% for 10 sec, and deals 75 Holy damage for each attack blocked while active.  Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges."
+      "description": "Increases chance to block by 30% for 10 sec, and deals 75 Holy damage for each attack blocked while active.  Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges.",
+      "icon": "spell_holy_blessingofprotection"
     },
     "20927": {
       "name": "Holy Shield",
@@ -1742,7 +1875,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Increases chance to block by 30% for 10 sec, and deals 110 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat."
+      "description": "Increases chance to block by 30% for 10 sec, and deals 110 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat.",
+      "icon": "spell_holy_blessingofprotection"
     },
     "20928": {
       "name": "Holy Shield",
@@ -1755,7 +1889,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Increases chance to block by 30% for 10 sec, and deals 153 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat."
+      "description": "Increases chance to block by 30% for 10 sec, and deals 153 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat.",
+      "icon": "spell_holy_blessingofprotection"
     },
     "20929": {
       "name": "Holy Shock",
@@ -1768,7 +1903,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 20.0,
-      "description": "Blasts the target with Holy energy, causing 258 Holy damage to an enemy, or 230 healing to an ally."
+      "description": "Blasts the target with Holy energy, causing 258 Holy damage to an enemy, or 230 healing to an ally.",
+      "icon": "spell_holy_searinglight"
     },
     "20930": {
       "name": "Holy Shock",
@@ -1781,7 +1917,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 20.0,
-      "description": "Blasts the target with Holy energy, causing 348 Holy damage to an enemy, or 320 healing to an ally."
+      "description": "Blasts the target with Holy energy, causing 348 Holy damage to an enemy, or 320 healing to an ally.",
+      "icon": "spell_holy_searinglight"
     },
     "21082": {
       "name": "Seal of the Crusader",
@@ -1794,7 +1931,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 31 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 23.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time."
+      "description": "Fills the Paladin with the spirit of a crusader for 30 sec, granting 31 melee attack power.  The Paladin also attacks 40% faster, but deals less damage with each attack.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will judge an enemy for 40 sec, increasing Holy damage taken by up to 23.  Your melee strikes will refresh the spell's duration.  Only one Judgement per Paladin can be active at any one time.",
+      "icon": "spell_holy_holysmite"
     },
     "21084": {
       "name": "Seal of Righteousness",
@@ -1807,7 +1945,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(108/87+$<1h>)*$<mult>} to ${(108/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 15 Holy damage to an enemy."
+      "description": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional ${(108/87+$<1h>)*$<mult>} to ${(108/25+$<2h>)*$<mult>} Holy damage.  Slower weapons cause more Holy damage per swing.  Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy will cause 15 Holy damage to an enemy.",
+      "icon": "ability_thunderbolt"
     },
     "24239": {
       "name": "Hammer of Wrath",
@@ -1820,7 +1959,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a hammer that strikes an enemy for 498 Holy damage.  Only usable on enemies that have 20% or less health."
+      "description": "Hurls a hammer that strikes an enemy for 498 Holy damage.  Only usable on enemies that have 20% or less health.",
+      "icon": "ability_thunderclap"
     },
     "24274": {
       "name": "Hammer of Wrath",
@@ -1833,7 +1973,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a hammer that strikes an enemy for 388 Holy damage.  Only usable on enemies that have 20% or less health."
+      "description": "Hurls a hammer that strikes an enemy for 388 Holy damage.  Only usable on enemies that have 20% or less health.",
+      "icon": "ability_thunderclap"
     },
     "24275": {
       "name": "Hammer of Wrath",
@@ -1846,7 +1987,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a hammer that strikes an enemy for 288 Holy damage.  Only usable on enemies that have 20% or less health."
+      "description": "Hurls a hammer that strikes an enemy for 288 Holy damage.  Only usable on enemies that have 20% or less health.",
+      "icon": "ability_thunderclap"
     },
     "25290": {
       "name": "Blessing of Wisdom",
@@ -1859,7 +2001,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, restoring 40 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, restoring 40 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_sealofwisdom"
     },
     "25291": {
       "name": "Blessing of Might",
@@ -1872,7 +2015,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Places a Blessing on the friendly target, increasing melee attack power by 133 for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Places a Blessing on the friendly target, increasing melee attack power by 133 for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_fistofjustice"
     },
     "25292": {
       "name": "Holy Light",
@@ -1885,7 +2029,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 1580."
+      "description": "Heals a friendly target for 1580.",
+      "icon": "spell_holy_holybolt"
     },
     "25780": {
       "name": "Righteous Fury",
@@ -1898,7 +2043,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases all threat generated by 33%, and all threat generated by your Holy attacks by an additional 90%.  Lasts 30 min."
+      "description": "Increases all threat generated by 33%, and all threat generated by your Holy attacks by an additional 90%.  Lasts 30 min.",
+      "icon": "spell_holy_sealoffury"
     },
     "25782": {
       "name": "Greater Blessing of Might",
@@ -1911,7 +2057,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Might, increasing melee attack power by 112 for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Might, increasing melee attack power by 112 for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_greaterblessingofkings"
     },
     "25894": {
       "name": "Greater Blessing of Wisdom",
@@ -1924,7 +2071,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Wisdom, restoring 36 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Wisdom, restoring 36 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_greaterblessingofwisdom"
     },
     "25898": {
       "name": "Greater Blessing of Kings",
@@ -1937,7 +2085,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Kings, increasing total stats by 10% for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Kings, increasing total stats by 10% for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_magic_greaterblessingofkings"
     },
     "25916": {
       "name": "Greater Blessing of Might",
@@ -1950,7 +2099,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Might, increasing melee attack power by 133 for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Might, increasing melee attack power by 133 for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_greaterblessingofkings"
     },
     "25918": {
       "name": "Greater Blessing of Wisdom",
@@ -1963,7 +2113,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Wisdom, restoring 40 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time."
+      "description": "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Wisdom, restoring 40 mana every 5 seconds for 60 min.  Players may only have one Blessing on them per Paladin at any one time.",
+      "icon": "spell_holy_greaterblessingofwisdom"
     },
     "26573": {
       "name": "Consecration",
@@ -1976,7 +2127,8 @@
       "passive": false,
       "cooldown_ms": 8000,
       "range_yd": 0.0,
-      "description": "Consecrates the land beneath the Paladin, doing 16 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 32 damage over 8 sec."
+      "description": "Consecrates the land beneath the Paladin, doing 16 Holy damage over 8 sec to enemies who enter the area. The first 4 enemies who enter the area will take an additional 32 damage over 8 sec.",
+      "icon": "spell_holy_innerfire"
     },
     "53601": {
       "name": "Sacred Shield",
@@ -1989,7 +2141,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Each time the target takes damage they gain a Sacred Shield, absorbing 500 damage and increasing the paladin's chance to critically hit with Flash of Light by 50% for up to 6 sec.  They cannot gain this effect more than once every 6 sec.  Lasts 30 sec.  This spell cannot be on more than one target at any one time."
+      "description": "Each time the target takes damage they gain a Sacred Shield, absorbing 500 damage and increasing the paladin's chance to critically hit with Flash of Light by 50% for up to 6 sec.  They cannot gain this effect more than once every 6 sec.  Lasts 30 sec.  This spell cannot be on more than one target at any one time.",
+      "icon": "ability_paladin_blessedmending"
     },
     "407632": {
       "name": "Hammer of the Righteous",
@@ -2002,7 +2155,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "Hammer the current target and up to 3 additional nearby targets, causing Holy damage to each equal to 3 times the damage per second of your main hand weapon. Cooldown shared with Crusader Strike."
+      "description": "Hammer the current target and up to 3 additional nearby targets, causing Holy damage to each equal to 3 times the damage per second of your main hand weapon. Cooldown shared with Crusader Strike.",
+      "icon": "ability_paladin_hammeroftherighteous"
     },
     "1239570": {
       "name": "Holy Shield",
@@ -2015,7 +2169,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 0.0,
-      "description": "Increases chance to block by 30% for 10 sec, and deals 221 Holy damage for each attack blocked while active.  Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges."
+      "description": "Increases chance to block by 30% for 10 sec, and deals 221 Holy damage for each attack blocked while active.  Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges.",
+      "icon": "spell_holy_blessingofprotection"
     },
     "1310897": {
       "name": "Voice of Truth",
@@ -2028,7 +2183,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Grants you immunity to Silence and Interrupt effects for 6 sec."
+      "description": "Grants you immunity to Silence and Interrupt effects for 6 sec.",
+      "icon": "inv_misc_horn_03"
     },
     "1310911": {
       "name": "Light's Vigil",
@@ -2041,7 +2197,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 40.0,
-      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 324. Only one Vigil per Paladin may be active in each party."
+      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 324. Only one Vigil per Paladin may be active in each party.",
+      "icon": "ability_paladin_judgementofthepure"
     },
     "1310994": {
       "name": "Swift Judgement",
@@ -2054,7 +2211,8 @@
       "passive": false,
       "cooldown_ms": 60000,
       "range_yd": 10.0,
-      "description": "Unleash the energy of a Seal spell upon an enemy. Does not consume the Seal. Refer to individual Seals for Judgement effect. Does not share a cooldown with your Judgement ability."
+      "description": "Unleash the energy of a Seal spell upon an enemy. Does not consume the Seal. Refer to individual Seals for Judgement effect. Does not share a cooldown with your Judgement ability.",
+      "icon": "ability_paladin_judgementred"
     },
     "1311015": {
       "name": "Templar's Bulwark",
@@ -2067,7 +2225,8 @@
       "passive": false,
       "cooldown_ms": 300000,
       "range_yd": 0.0,
-      "description": "When activated, this ability grants you an absorb shield equal to 100% of your maximum health for 8 sec. Applies Forbearance for 1 min. Cannot be cast while Forbearance is active."
+      "description": "When activated, this ability grants you an absorb shield equal to 100% of your maximum health for 8 sec. Applies Forbearance for 1 min. Cannot be cast while Forbearance is active.",
+      "icon": "ability_paladin_shieldofthetemplar"
     },
     "1311590": {
       "name": "Light's Vigil",
@@ -2080,7 +2239,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 40.0,
-      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 487. Only one Vigil per Paladin may be active in each party."
+      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 487. Only one Vigil per Paladin may be active in each party.",
+      "icon": "ability_paladin_judgementofthepure"
     },
     "1311595": {
       "name": "Light's Vigil",
@@ -2093,7 +2253,8 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 40.0,
-      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 704. Only one Vigil per Paladin may be active in each party."
+      "description": "Applies Light's Vigil to a friendly target for 30 sec. The caster's next Holy Shock on the target incurs no cooldown and heals the target and their party for 704. Only one Vigil per Paladin may be active in each party.",
+      "icon": "ability_paladin_judgementofthepure"
     },
     "1311606": {
       "name": "Holy Shock",
@@ -2106,7 +2267,8 @@
       "passive": false,
       "cooldown_ms": 10000,
       "range_yd": 20.0,
-      "description": "Blasts the target with Holy energy, causing 134 Holy damage to an enemy, or 114 healing to an ally."
+      "description": "Blasts the target with Holy energy, causing 134 Holy damage to an enemy, or 114 healing to an ally.",
+      "icon": "spell_holy_searinglight"
     },
     "1311649": {
       "name": "Seal of Fury",
@@ -2119,7 +2281,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills you with divine fury for 30 sec, causing melee attacks to deal an additional 6 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 23 Holy damage to an enemy and taunts the target to attack you for 3 sec."
+      "description": "Fills you with divine fury for 30 sec, causing melee attacks to deal an additional 6 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 23 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "icon": "spell_holy_retributionaura"
     },
     "1311656": {
       "name": "Seal of Fury",
@@ -2132,7 +2295,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Fills you with divine fury for 30 sec, causing melee attacks to inflict an additional 9 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 37 Holy damage to an enemy and taunts the target to attack you for 3 sec."
+      "description": "Fills you with divine fury for 30 sec, causing melee attacks to inflict an additional 9 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\r\n\r\nUnleashing this Seal's energy inflicts 37 Holy damage to an enemy and taunts the target to attack you for 3 sec.",
+      "icon": "spell_holy_retributionaura"
     },
     "1328372": {
       "name": "Turn Evil",
@@ -2145,7 +2309,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 20.0,
-      "description": "The targeted Undead or Demon enemy will be compelled to flee for up to 20 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time."
+      "description": "The targeted Undead or Demon enemy will be compelled to flee for up to 20 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time.",
+      "icon": "spell_holy_turnundead"
     },
     "1328373": {
       "name": "Turn Evil",
@@ -2158,7 +2323,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 20.0,
-      "description": "The targeted Undead or Demon enemy will be compelled to flee for up to 15 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time."
+      "description": "The targeted Undead or Demon enemy will be compelled to flee for up to 15 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time.",
+      "icon": "spell_holy_turnundead"
     },
     "1328374": {
       "name": "Turn Evil",
@@ -2171,7 +2337,8 @@
       "passive": false,
       "cooldown_ms": 30000,
       "range_yd": 20.0,
-      "description": "The targeted Undead or Demon enemy will be compelled to flee for up to 10 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time."
+      "description": "The targeted Undead or Demon enemy will be compelled to flee for up to 10 sec.  Damage caused may interrupt the effect.  Only one target can be turned at a time.",
+      "icon": "spell_holy_turnundead"
     },
     "1328548": {
       "name": "Oath of Light",
@@ -2184,7 +2351,8 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 40.0,
-      "description": "Swear an Oath to protect target ally for 5 min, increasing the healing of your Holy Light on them by up to 0, your Flash of Light by up to 0, and your Holy Shock by up to 0. Only one Oath of Light may be sworn by the Paladin at any one time."
+      "description": "Swear an Oath to protect target ally for 5 min, increasing the healing of your Holy Light on them by up to 0, your Flash of Light by up to 0, and your Holy Shock by up to 0. Only one Oath of Light may be sworn by the Paladin at any one time.",
+      "icon": "spell_holy_greaterblessingoflight"
     }
   }
 }

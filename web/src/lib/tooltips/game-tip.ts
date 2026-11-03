@@ -23,6 +23,8 @@ export interface SpellTipRow {
   /** Maximum range in yards; 0 for self. */
   range_yd: number;
   description: string;
+  /** The spell's own client icon; absent on a file written before it carried one. */
+  icon?: string;
 }
 
 /** A tooltip line pair: the left text and, when the client prints one, the right. */
@@ -91,9 +93,18 @@ function seconds(ms: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, '');
 }
 
-/** "30 Rage", "250 Mana", "12% of base mana"; undefined for a free spell. */
+/** `SpellPower.PowerType` for a cost paid in health (Bloodrage, Life Tap). */
+const HEALTH_POWER = -2;
+/** The pools a percent cost can name: "of base mana", "of base health". */
+const PERCENT_POOLS: Readonly<Record<number, string>> = { 0: 'mana', [HEALTH_POWER]: 'health' };
+
+/** "30 Rage", "250 Mana", "12% of base mana", "20% of base health"; undefined for a free spell
+ *  or a cost in a pool the client names no other way. */
 export function costText(row: Pick<SpellTipRow, 'cost' | 'cost_type' | 'cost_pct'>): string | undefined {
-  if (row.cost_pct > 0) return `${seconds(row.cost_pct * 1000)}% of base mana`;
+  if (row.cost_pct > 0) {
+    const pool = PERCENT_POOLS[row.cost_type];
+    return pool === undefined ? undefined : `${seconds(row.cost_pct * 1000)}% of base ${pool}`;
+  }
   if (row.cost <= 0) return undefined;
   const power = POWER_NAMES[row.cost_type];
   if (power === undefined) return undefined;
@@ -125,8 +136,8 @@ export function cooldownText(cooldownMs: number): string | undefined {
  * The client's description as its tooltip prints it for a character with no talents or
  * auras: `$?s123[with][without]` takes the second branch, `$gmale:female;` both words, and
  * `$Lone:many;` agrees with the number before it. Double spaces after a stop are one space.
- * Anything the client resolves from the character's own stats (`${$b1*$<mult>}`) stays as
- * the client stores it.
+ * A sentence the client finishes from the character's own stats (`${$b1*$<mult>}`) is left
+ * out (`withoutUnresolved`): a page never prints a raw token.
  */
 export function displayDescription(text: string): string {
   let out = text;
@@ -144,9 +155,29 @@ export function displayDescription(text: string): string {
     (_match, num: string, between: string, one: string, many: string) =>
       `${num}${between}${Number(num) === 1 ? one : many}`,
   );
-  return out
-    .replace(/\r\n/g, '\n')
-    .replace(/([.!?]) {2,}/g, '$1 ')
+  return withoutUnresolved(
+    out
+      .replace(COLOUR_CODE, '')
+      .replace(/\r\n/g, '\n')
+      .replace(/([.!?]) {2,}/g, '$1 ')
+      .trim(),
+  );
+}
+
+/** A client token left in the text: `$s1`, `${...}`, `$<mult>`, `$ec1`, `$@spelltooltip1`. */
+const UNRESOLVED = /\$[{<@a-zA-Z0-9*/]/;
+/** The client's colour escapes, `|cFFFF2020Requires Bear Form|r`: the words stay, the codes go. */
+const COLOUR_CODE = /\|c[0-9a-f]{8}|\|r/gi;
+/** Where a description's sentences and lines end. */
+const SENTENCE_END = /(?<=[.!?])\s+|\n+/;
+
+/** The description with every sentence or line that still holds a client token dropped. */
+export function withoutUnresolved(text: string): string {
+  if (!UNRESOLVED.test(text)) return text;
+  return text
+    .split(SENTENCE_END)
+    .filter((sentence) => sentence.trim() !== '' && !UNRESOLVED.test(sentence))
+    .join(' ')
     .trim();
 }
 

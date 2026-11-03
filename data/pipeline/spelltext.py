@@ -63,7 +63,7 @@ TOKEN = re.compile(
     r"\$"
     r"(?:/(?P<divisor>\d+);)?"
     r"(?P<ref>\d+)?"
-    r"(?P<kind>proccooldown|[sSoOtTdDmMaAxXrRhHnNuU])"
+    r"(?P<kind>proccooldown|[sSoOtTdDmMaAxXrRhHnNuUiI])"
     r"(?P<index>[1-9])?"
     # "$rap" is ranged attack power and "$hp" is health: a longer word is never a short
     # token with letters after it.
@@ -131,6 +131,8 @@ class SpellRow:
     proc_cooldown_ms: int = 0
     #: Yards, from SpellRange through SpellMisc.RangeIndex.
     range_max: float | None = None
+    #: SpellTargetRestrictions.MaxTargets, the `$i` "up to N enemies"; 0 without a cap.
+    max_targets: int = 0
 
 
 def _format_number(value: float) -> str:
@@ -215,6 +217,7 @@ _SPELL_FACTS: dict[str, Callable[[SpellRow], float | None]] = {
     "h": lambda row: None if row.proc_chance is None else min(row.proc_chance, _CERTAIN),
     "n": lambda row: row.proc_charges,
     "u": lambda row: row.max_stacks,
+    "i": lambda row: row.max_targets,
     "r": lambda row: row.range_max,
     "proccooldown": lambda row: row.proc_cooldown_ms / _MS_PER_SECOND,
 }
@@ -454,6 +457,8 @@ class ExtraRows:
     range: list[dict[str, str]] = field(default_factory=list)
     #: `SpellName.csv`'s own `ID, Name_lang` rows, for `$@spellname<id>`.
     names: list[dict[str, str]] = field(default_factory=list)
+    #: `SpellTargetRestrictions.csv`, for `$i`.
+    target_restrictions: list[dict[str, str]] = field(default_factory=list)
 
 
 def _base_difficulty(rows: list[dict[str, str]]) -> list[dict[str, str]]:
@@ -483,6 +488,10 @@ def load_spell_text(
     radii = {int(r["ID"]): float(r["Radius"]) for r in extra.radius}
     ranges = {int(r["ID"]): float(r["RangeMax_0"]) for r in extra.range}
     aura_options = _aura_options(extra.aura_options)
+    max_targets = {
+        int(row["SpellID"]): int(row["MaxTargets"])
+        for row in _base_difficulty(extra.target_restrictions)
+    }
     durations = {int(r["ID"]): int(r["Duration"]) for r in duration_rows}
     effects: dict[int, dict[int, Effect]] = {}
     for row in effect_rows:
@@ -520,6 +529,7 @@ def load_spell_text(
             icon_file_id=icon_file_id,
             effects=effects.get(spell_id, {}),
             range_max=range_max,
+            max_targets=max_targets.get(spell_id, 0),
             **aura_options.get(spell_id, {}),
         )
     names = {int(r["ID"]): r["Name_lang"] for r in extra.names}

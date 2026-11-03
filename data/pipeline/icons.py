@@ -358,6 +358,19 @@ def rotation_icon_names(build_dir: Path, curated_dir: Path = Path("curated")) ->
     return set(icons.values())
 
 
+def spelltip_icon_names(build_dir: Path) -> set[str]:
+    """Every icon `spelltips/` names: a guide's tooltip draws each spell's, racial's and
+    enchant's own icon, and most trainable ranks are in no talent or rotation file. Empty before
+    the build's first `spelltips` run; `icons` runs before it on a night, so a new spell's icon
+    follows a night later."""
+    names: set[str] = set()
+    for path in sorted((build_dir / "spelltips").glob("*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        groups = [payload.get(key, {}) for key in ("spells", "racials", "enchants")]
+        names |= {tip["icon"] for group in groups for tip in group.values() if tip.get("icon")}
+    return names
+
+
 def raid_buff_icon_names(curated_dir: Path = Path("curated")) -> set[str]:
     """Every icon `curated/raid-buffs.json` names: the raid view's composition
     buff row (docs/contracts/app-v1.md). Nothing in the emitted talents or
@@ -453,6 +466,7 @@ def icons_for_build(
         rotation_icon_names(build_dir, curated_dir)
         | raid_buff_icon_names(curated_dir)
         | simbuff_icon_names(build_dir)
+        | spelltip_icon_names(build_dir)
     )
     wanted = wanted_icons(build_dir, names, frozenset(extra))
 

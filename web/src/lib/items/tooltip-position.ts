@@ -12,6 +12,9 @@
 // below is `tooltipShiftPx`'s pure-function default/test fixture only; `positionTooltipPanel`
 // measures the panel's own real rendered width instead of assuming a constant.
 const TOOLTIP_PANEL_WIDTH_PX = 288;
+// The site's own 16 px side gutter: a panel never sits closer to a screen edge than the page text does.
+const SIDE_MARGIN_PX = 16;
+// Above and below the anchor, the panel may come this close to the top or bottom edge.
 const VIEWPORT_MARGIN_PX = 8;
 // The visual gap between the anchor and the panel (ItemTooltip.svelte's own `mt-2`/`mb-2`,
 // 0.5rem) -- named separately from VIEWPORT_MARGIN_PX even though both are 8px today, since
@@ -32,7 +35,7 @@ export function tooltipShiftPx(
   anchorLeft: number,
   viewportWidth: number,
   panelWidth: number = TOOLTIP_PANEL_WIDTH_PX,
-  margin: number = VIEWPORT_MARGIN_PX,
+  margin: number = SIDE_MARGIN_PX,
 ): number {
   const maxLeft = viewportWidth - margin - panelWidth - anchorLeft;
   return Math.min(0, maxLeft);
@@ -54,7 +57,7 @@ export function tooltipLeftPx(
   anchorWidth: number,
   viewportWidth: number,
   panelWidth: number = TOOLTIP_PANEL_WIDTH_PX,
-  margin: number = VIEWPORT_MARGIN_PX,
+  margin: number = SIDE_MARGIN_PX,
 ): number {
   // On a phone the panel is the viewport minus two gutters: it spans exactly those gutters,
   // whichever cell or column was tapped (paperdoll spec §4.2 rule 5).
@@ -100,6 +103,16 @@ export function tooltipVerticalPlacementFor(
   return { side, maxHeightPx: Math.max(0, Math.max(spaceAbove, spaceBelow)) };
 }
 
+/** Whether a box between `host` and the page body cuts off what overflows it (a table that
+ *  scrolls sideways on a phone). The body's own sideways clip is the page's, not a box's. */
+export function hasClippingAncestor(host: HTMLElement): boolean {
+  for (let node = host.parentElement; node !== null && node !== document.body; node = node.parentElement) {
+    const style = getComputedStyle(node);
+    if (style.overflowX !== 'visible' || style.overflowY !== 'visible') return true;
+  }
+  return false;
+}
+
 /**
  * DOM wrapper: measures `host` (the element the tooltip panel is mounted into) and the panel
  * itself (already mounted as `host`'s child, at its natural, unclamped size -- the caller
@@ -115,11 +128,13 @@ export function positionTooltipPanel(host: HTMLElement, align: TooltipAlign = 's
   const panel = host.querySelector<HTMLElement>('[data-testid="item-tooltip"], [data-testid="game-tooltip"]');
   const panelRect = panel?.getBoundingClientRect();
 
-  host.style.setProperty(
-    '--item-tooltip-shift',
-    `${tooltipLeftPx(align, anchor.left, anchor.width, viewportWidth, panelRect?.width ?? TOOLTIP_PANEL_WIDTH_PX)}px`,
+  const shift = tooltipLeftPx(
+    align,
+    anchor.left,
+    anchor.width,
+    viewportWidth,
+    panelRect?.width ?? TOOLTIP_PANEL_WIDTH_PX,
   );
-
   const { side, maxHeightPx } = tooltipVerticalPlacementFor(
     anchor.top,
     anchor.bottom,
@@ -127,8 +142,15 @@ export function positionTooltipPanel(host: HTMLElement, align: TooltipAlign = 's
     viewportHeight,
   );
   const below = side === 'below';
-  host.style.setProperty('--item-tooltip-top', below ? '100%' : 'auto');
-  host.style.setProperty('--item-tooltip-bottom', below ? 'auto' : '100%');
+  // Inside a scrolling box (a guide's table) an absolute panel is cut off at the box's edge,
+  // so it is placed on the viewport instead, at the same spot beside its anchor.
+  const fixed = hasClippingAncestor(host);
+  host.style.setProperty('--item-tooltip-position', fixed ? 'fixed' : 'absolute');
+  host.style.setProperty('--item-tooltip-shift', `${fixed ? anchor.left + shift : shift}px`);
+  const top = fixed ? `${anchor.bottom}px` : '100%';
+  const bottom = fixed ? `${viewportHeight - anchor.top}px` : '100%';
+  host.style.setProperty('--item-tooltip-top', below ? top : 'auto');
+  host.style.setProperty('--item-tooltip-bottom', below ? 'auto' : bottom);
   host.style.setProperty('--item-tooltip-mt', below ? `${TOOLTIP_ANCHOR_GAP_PX}px` : '0px');
   host.style.setProperty('--item-tooltip-mb', below ? '0px' : `${TOOLTIP_ANCHOR_GAP_PX}px`);
   host.style.setProperty('--item-tooltip-max-h', maxHeightPx === null ? 'none' : `${maxHeightPx}px`);
