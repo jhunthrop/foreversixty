@@ -241,7 +241,7 @@ describe('raceTableFor', () => {
       expect(racialNames('mage', 'caster', 'orc')).toEqual(['Blood Fury']);
     }
     if (described('high-order-skyborne', 'Wind Blessed')) {
-      expect(racialNames('mage', 'caster', 'high-order-skyborne')).toEqual(['Wind Blessed', 'Read Ley Line']);
+      expect(racialNames('mage', 'caster', 'high-order-skyborne')).toEqual(['Wind Blessed', 'Read Leyline']);
       expect(racialNames('warrior', 'melee', 'high-order-skyborne')).toEqual(['Wind Blessed']);
     }
   });
@@ -308,13 +308,10 @@ describe('the race text against the client’s spell rows', () => {
     expect(effect('dwarf', 'Big Game Hunter')).toMatch(/Beasts by 5%/);
   });
 
-  it('says in the race data which racials the client is silent on, and keeps that out of the table', () => {
-    const skyborne = raceBy('high-order-skyborne');
-    if (skyborne === undefined || effect('high-order-skyborne', 'Read Ley Line') === undefined) return;
-    const text = skyborne.forever_changes.map((change) => change.text).join(' ');
-    expect(text).toMatch(/no row named Read Ley Line: its numbers are Blizzard's 26 October notes'/);
-    expect(effect('high-order-skyborne', 'Read Ley Line')).toBe(
-      '50% health and mana regeneration for 15 seconds',
+  it('reads Read Leyline as the client spells it, whichever spacing the race data uses', () => {
+    if (raceBy('high-order-skyborne') === undefined) return;
+    expect(effect('high-order-skyborne', 'Read Leyline')).toMatch(
+      /^50% health and mana regeneration for 15 seconds/,
     );
   });
 });

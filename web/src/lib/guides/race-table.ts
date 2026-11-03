@@ -23,7 +23,7 @@ export const RACIAL_NAMES: Readonly<Record<string, readonly string[]>> = {
   tauren: ['War Stomp', 'Cultivation', 'Plainsrunning', 'Endurance'],
   gnome: ['Escape Artist', 'Eureka!', 'Expansive Mind', 'Engineering Specialization'],
   troll: ['Berserking', 'Rapid Regeneration', 'Beast Slaying', 'Regeneration'],
-  'high-order-skyborne': ['Walk on Air', 'Read Ley Line', 'Wind Blessed', 'Elemental Insight'],
+  'high-order-skyborne': ['Walk on Air', 'Read Leyline', 'Wind Blessed', 'Elemental Insight'],
   'windshaper-skyborne': ['Walk on Air', 'Skysight', 'Wind Blessed', 'Elemental Insight'],
 };
 
@@ -33,7 +33,7 @@ type Picks = { default: string[] } & Partial<Record<SpecKind, string[]>>;
  *  healing or threat for that kind leads (Gnome Eureka!, Orc Blood Fury, Troll Berserking,
  *  Night Elf Elune's Light, Human Ruthless, Dwarf Artisan's Precision, Undead Touch of the Grave,
  *  Skyborne Wind Blessed), then the one that carries the kind's resource or survival (Expansive
- *  Mind, The Human Spirit, Read Ley Line, Stoneform); a utility racial (Escape Artist, Will of
+ *  Mind, The Human Spirit, Read Leyline, Stoneform); a utility racial (Escape Artist, Will of
  *  the Forsaken, Shatter Curse, Quickness) shows only where nothing else helps that kind more.
  *  Names are the race data's own. */
 export const RACIAL_PICKS: Readonly<Record<string, Picks>> = {
@@ -62,8 +62,8 @@ export const RACIAL_PICKS: Readonly<Record<string, Picks>> = {
   troll: { default: ['Berserking'] },
   'high-order-skyborne': {
     default: ['Wind Blessed'],
-    caster: ['Wind Blessed', 'Read Ley Line'],
-    healer: ['Wind Blessed', 'Read Ley Line'],
+    caster: ['Wind Blessed', 'Read Leyline'],
+    healer: ['Wind Blessed', 'Read Leyline'],
   },
   'windshaper-skyborne': { default: ['Wind Blessed'] },
 };
@@ -163,6 +163,28 @@ function trimEffect(raw: string): string {
   return text.trim();
 }
 
+/** Where `name` first appears in `text` at or after `from`, read the way `racialKey` reads a
+ *  name: past its first letter, a space may stand between two letters and the case may differ
+ *  ("Read Leyline" finds "Read Ley Line"). The first letter keeps its case, so a racial named
+ *  "Regeneration" never matches the word "regeneration" in another racial's effect. */
+function findRacialName(
+  text: string,
+  name: string,
+  from: number,
+): { at: number; length: number } | undefined {
+  const escape = (ch: string) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const [first = '', ...rest] = [...name.replace(/\s+/g, '')];
+  const tail = rest.map((ch) =>
+    ch.toLowerCase() === ch.toUpperCase()
+      ? `\\s?${escape(ch)}`
+      : `\\s?[${ch.toLowerCase()}${ch.toUpperCase()}]`,
+  );
+  const match = new RegExp(escape(first) + tail.join(''), 'g');
+  match.lastIndex = from;
+  const hit = match.exec(text);
+  return hit === null ? undefined : { at: hit.index, length: hit[0].length };
+}
+
 /** What each racial of `race` does, in the data's own words, by racial name. A racial the
  *  data does not describe is absent. */
 export function racialEffects(race: RaceRow): Map<string, string> {
@@ -171,26 +193,27 @@ export function racialEffects(race: RaceRow): Map<string, string> {
   // A racial whose name sits inside a longer one ("Regeneration" in "Rapid Regeneration") is
   // looked for outside the longer name's span.
   const spans = names.flatMap((name) => {
-    const at = text.indexOf(name);
-    return at === -1 ? [] : [{ name, start: at, end: at + name.length }];
+    const hit = findRacialName(text, name, 0);
+    return hit === undefined ? [] : [{ name, start: hit.at, end: hit.at + hit.length }];
   });
   const found = names
     .map((name) => {
-      let at = text.indexOf(name);
-      while (at !== -1) {
+      let hit = findRacialName(text, name, 0);
+      while (hit !== undefined) {
+        const at = hit.at;
         const covered = spans.some(
           (span) => span.name !== name && span.name.includes(name) && at >= span.start && at < span.end,
         );
         if (!covered) break;
-        at = text.indexOf(name, at + 1);
+        hit = findRacialName(text, name, at + 1);
       }
-      return { name, at };
+      return { name, hit };
     })
-    .filter((entry) => entry.at !== -1)
+    .flatMap(({ name, hit }) => (hit === undefined ? [] : [{ name, at: hit.at, length: hit.length }]))
     .sort((a, b) => a.at - b.at);
   const effects = new Map<string, string>();
   found.forEach((entry, index) => {
-    const start = entry.at + entry.name.length;
+    const start = entry.at + entry.length;
     const end = found[index + 1]?.at ?? text.length;
     const effect = trimEffect(text.slice(start, end));
     if (effect !== '') effects.set(entry.name, effect);
