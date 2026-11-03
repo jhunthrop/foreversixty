@@ -206,3 +206,50 @@ func TestRestorationDruidRejuvenationRanksByBand(t *testing.T) {
 		}
 	}
 }
+
+// Round 13: Prayer of Mending is Holy's cheapest healing (its line says so:
+// "every time it is ready"), so its line is not held back by the mana pace
+// the costlier heals follow. Gated, it sat out whole stretches of a fight
+// the mana could not keep pace with: raid 60 +1.4 to +1.5% ungated, bare 60
+// +22 to +23%, bare 40 and 50 +10 to +11%.
+func TestHolyCastsPrayerOfMendingWheneverReady(t *testing.T) {
+	const prayerOfMending = 1240827
+	raw, err := os.ReadFile("../../data/curated/apl/priest-holy.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var file struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		t.Fatal(err)
+	}
+	found := false
+	for _, item := range file.Rotation.PriorityList {
+		var line struct {
+			Action struct {
+				CastSpell *struct {
+					SpellID struct {
+						SpellID int `json:"spellId"`
+					} `json:"spellId"`
+				} `json:"castSpell"`
+				Condition json.RawMessage `json:"condition"`
+			} `json:"action"`
+		}
+		if err := json.Unmarshal(item, &line); err != nil {
+			t.Fatal(err)
+		}
+		if line.Action.CastSpell == nil || line.Action.CastSpell.SpellID.SpellID != prayerOfMending {
+			continue
+		}
+		found = true
+		if strings.Contains(string(line.Action.Condition), "currentManaPercent") {
+			t.Errorf("Prayer of Mending waits on the mana pace: %s", line.Action.Condition)
+		}
+	}
+	if !found {
+		t.Fatal("the Holy list does not cast Prayer of Mending (1240827)")
+	}
+}
