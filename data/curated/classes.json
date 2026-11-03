@@ -593,11 +593,16 @@
         ]
       },
       {
-        "text": "Omen of Clarity and Nature's Grasp are trainable rather than talents; Revive is a new 10 second out-of-combat resurrection, Lacerate is in as a baseline Bear bleed learned after level 30.",
+        "text": "Omen of Clarity and Nature's Grasp are trainable rather than talents; Revive is a new 10 second out-of-combat resurrection, Lacerate is a Bear bleed on the Feral tree's 15-point row, learned at 25.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
             "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          },
+          {
+            "label": "Wowhead Forever, Lacerate rank 1 (talent, requires level 25)",
+            "url": "https://www.wowhead.com/forever/spell=1328617/lacerate",
             "kind": "community"
           }
         ]
