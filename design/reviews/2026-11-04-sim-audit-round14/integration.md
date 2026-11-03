@@ -297,3 +297,5 @@ Heads at the end of round 14 are on the last line of this section.
 - **Guides:** Swiftmend consuming the HoT, Faerie Fire free in forms, form swing timers, Portal of Summoning's shards.
 - **70755:** every build.md row, pending the activation lane's pin.
 - **The round was not zero:** round 15 follows, on 70755 once it is pinned.
+
+Heads at the end of round 14: fork `int/r14` b852f9127; site `int/r14` e33b3a4c9 (this report), plus the one commit that records this line.
