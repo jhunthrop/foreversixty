@@ -254,13 +254,13 @@ def _all_ranks(ids, top, sc):
     return [*ordered, top]
 
 
-def _entries(names, ctx, books=frozenset()):
+def _entries(names, ctx):
     if names is None:
         return None
     out = []
     for name in names:
         ids = _family_ids(name, ctx.sc, ctx.tr, ctx.apl_ids)
-        top = _top_id(ids, ctx.sc, ctx.apl_ids, books)
+        top = _top_id(ids, ctx.sc, ctx.apl_ids, ctx.books)
         out.append(
             {
                 "family": name,
@@ -278,7 +278,7 @@ def _auras(pairs, ctx):
     out = []
     for name, kind in pairs:
         ids = _family_ids(name, ctx.sc, ctx.tr, ctx.apl_ids)
-        top = _top_id(ids, ctx.sc, ctx.apl_ids)
+        top = _top_id(ids, ctx.sc, ctx.apl_ids, ctx.books)
         aura = {
             "spell_id": top,
             "spell_ids": _all_ranks(ids, top, ctx.sc),
@@ -317,9 +317,10 @@ def render_spec(spec: str, build: str, data_root: Path = Path()) -> str:
     for key, value in (
         ("core", _entries(lists.get("core"), ctx)),
         ("auras", _auras(lists.get("auras"), ctx)),
-        # A downrank is judged against the top rank a trainer teaches: a book rank is
-        # not learnable in Phase 1 (round 6 healers: Renew 25315, Prayer of Healing 25316).
-        ("downranks", _entries(lists.get("downranks"), ctx, ctx.books)),
+        # Every list names the top rank a trainer teaches: a book rank is not learnable in
+        # Phase 1 (round 6 healers: Renew 25315, Prayer of Healing 25316; round 14: the
+        # auras' Aspect of the Hawk 25296 and Serpent Sting 25295).
+        ("downranks", _entries(lists.get("downranks"), ctx)),
         ("defensives", _entries(lists.get("defensives"), ctx)),
         ("efficiency", _entries(lists.get("efficiency", []), ctx)),
     ):
