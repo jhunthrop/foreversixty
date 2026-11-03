@@ -11,7 +11,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { decodeFS1 } from '../planner/fs1';
+import { decodeFS1, orderFromRanks } from '../planner/fs1';
+import { indexTalents } from '../planner/rules';
 import type { Talent, TalentFile } from '../planner/types';
 
 function repoRoot(): string {
@@ -111,4 +112,19 @@ export function decodeBandTalents(
       points: ranked.reduce((sum, talent) => sum + talent.rank, 0),
     };
   });
+}
+
+/** The order a player spends a band talent string's points in, one talent id per point: the
+ *  planner's own `orderFromRanks` (main tree first, each talent the moment its row opens), so
+ *  the guide's strip, the planner's Point order and the addon's talent window agree. */
+export function bandSpendOrder(build: string, classSlug: string, talents: string): number[] | undefined {
+  const trees = decodeBandTalents(build, classSlug, talents);
+  const talentFile = loadTalentFile(build, classSlug);
+  if (trees === undefined || talentFile === undefined) return undefined;
+  const index = indexTalents(talentFile);
+  const rankOf = new Map(
+    trees.flatMap((tree) => tree.talents.map((talent) => [talent.id, talent.rank] as const)),
+  );
+  const treeRanks = index.trees.map((tree) => tree.talents.map((talent) => rankOf.get(talent.id) ?? 0));
+  return orderFromRanks(index, treeRanks).order;
 }

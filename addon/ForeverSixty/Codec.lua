@@ -675,9 +675,11 @@ end
 Codec.compareBuilds = compareBuilds
 
 --- An order reconstructed from a final tree, lowest tier first, left to
---- right. The same rule the site's `orderFromRanks` uses, and the reason the
---- site's import box says the order is approximated: nothing in the game
---- records the order a build was actually spent in.
+--- right: the fallback for an FS1 code only. The site's FSB1 codes carry the
+--- site's own `orderFromRanks` order (main tree first, each talent the moment
+--- its row opens), which needs the prerequisite links this table does not
+--- ship. The order is approximated because nothing in the game records the
+--- order a build was actually spent in.
 local function approximateOrder(tabs, treeRanks)
 	local order = {}
 	for tabIndex, tab in ipairs(tabs) do

@@ -3,7 +3,7 @@
 //
 // The export carries a finished tree and no order, because nothing in the game records
 // the order a build was spent in. `orderFromRanks` reconstructs a legal one with the
-// planner's own gates -- lowest tier first, left to right -- so an imported build is one
+// planner's own gates -- main tree first, each talent the moment its row opens -- so an imported build is one
 // the planner and the API both accept by construction, and the box says the order is
 // approximated rather than implying the addon knew it.
 import { addonCopy } from './copy';

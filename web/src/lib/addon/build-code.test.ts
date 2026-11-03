@@ -214,8 +214,9 @@ describe('buildCodeFor: a sim result', () => {
       items,
     }) as const;
 
-  it('turns the engine’s rank string into triples, tier then column, trees in position order', () => {
+  it('turns the engine’s rank string into triples in the order a player spends them', () => {
     // Holy's digits follow file order: C (tier 2) = 1, A = 2, B = 5. Protection: D = 2.
+    // The main tree first; A (fewest to go) before B; C the moment its row opens at 5 points.
     const code = buildCodeFor(simInput('125-2-', [], new Map()));
     const result = decodeFSB1(code);
     expect(result.ok).toBe(true);
@@ -224,7 +225,7 @@ describe('buildCodeFor: a sim result', () => {
     const b = { tab: 1, tier: 1, column: 2 };
     const c = { tab: 1, tier: 2, column: 1 };
     const d = { tab: 2, tier: 1, column: 2 };
-    expect(result.build.order).toEqual([a, a, b, b, b, b, b, c, d, d]);
+    expect(result.build.order).toEqual([a, a, b, b, b, c, b, b, d, d]);
     expect(result.build.classSlug).toBe('paladin');
     expect(result.build.dataBuild).toBe('1.60.1.69893');
   });
