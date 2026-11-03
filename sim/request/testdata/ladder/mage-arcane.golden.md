@@ -99,9 +99,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 100000000000000000-00000000000000000-000000000000000000 | main_hand:284287 ranged:286750 | 10.7 | 3 | spell:5019=55.5, spell:205=44.5, spell:12051=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589} |
-| 20 | 141005000000000000-00000000000000000-000000000000000000 | main_hand:6505 ranged:5243 | 25.1 | 3 | spell:7322=42.8, spell:5019=37.6, spell:12051=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400573}, {SpellID: 400574}, {SpellID: 400589} |
-| 30 | 141005213100300000-00000000000000000-000000000000000000 | main_hand:249392 ranged:5213 | 30.7 | 4 | spell:7322=67.1, item:5514=1.0, other:mana_gain=1.0, spell:12051=0.9, spell:5019=0.8 | {SpellID: 12042}, {SpellID: 12043} |
+| 10 | 100000000000000000-00000000000000000-000000000000000000 | main_hand:284287 ranged:286750 | 11.5 | 4 | spell:5019=61.6, spell:205=20.4, spell:5143=11.0, spell:12051=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589} |
+| 20 | 141005000000000000-00000000000000000-000000000000000000 | main_hand:6505 ranged:5243 | 28.0 | 4 | spell:5019=33.5, spell:5144=22.7, spell:7322=10.6, spell:12051=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400573}, {SpellID: 400574}, {SpellID: 400589} |
+| 30 | 141005213100300000-00000000000000000-000000000000000000 | main_hand:249392 ranged:5213 | 51.1 | 5 | spell:7322=29.2, spell:1239696=22.7, spell:5019=21.2, spell:5145=15.2, item:5514=1.0 | {SpellID: 12042}, {SpellID: 12043} |
 | 38 | 141005213100301520-00000000000000000-000000000000000000 | main_hand:873 ranged:13064 | 84.6 | 6 | spell:7322=33.0, spell:1239696=29.7, spell:8416=18.4, other:mana_gain=2.0, spell:12043=1.5 | {SpellID: 12042} |
 | 40 | 141005213100301531-00000000000000000-000000000000000000 | main_hand:873 ranged:5216 | 102.0 | 7 | spell:8408=24.8, spell:1239697=23.9, spell:5019=20.3, spell:8417=14.5, other:mana_gain=2.0 | - |
 | 50 | 141005213100301531-40000000000000000-051000000000000000 | main_hand:873 ranged:249232 | 149.2 | 7 | spell:5019=24.4, spell:10180=23.6, spell:1239699=22.8, spell:10211=13.8, other:mana_gain=2.0 | - |
@@ -133,7 +133,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
-- Arcane Blast (spell 1239696)
 - Arcane Explosion (spell 8438)
 - Arcane Missile (spell 7268)
 - Arcane Wrath (spell 1326079)
@@ -231,6 +230,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- mage-arcane level=10 kind=zero_casts spell="Arcane Missiles" id=5143 authored=10212
-- mage-arcane level=20 kind=zero_casts spell="Arcane Missiles" id=5144 authored=10212
-- mage-arcane level=30 kind=zero_casts spell="Arcane Blast" id=1239696 authored=1239700
+None.
