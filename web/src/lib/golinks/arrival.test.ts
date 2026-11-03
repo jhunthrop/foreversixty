@@ -1,21 +1,15 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ARRIVAL_SCRIPT, arrivalScriptData } from './arrival';
+import { ARRIVAL_CAPTURE_SCRIPT } from './arrival';
 import { ARRIVAL_KEY, ARRIVAL_TTL_MS, BEACON_SRC, BEACON_TOKEN } from './config';
+import { loadBeacon, sendArrival } from './later';
 
 const API = 'https://api.foreversixty.test';
 type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
 
-/** Runs the inline script the way the browser does: as the current script, with its data. */
-function run(overrides: Record<string, string> = {}): void {
-  const el = document.createElement('script');
-  for (const [name, value] of Object.entries({ ...arrivalScriptData(API), ...overrides })) {
-    el.setAttribute(name, value);
-  }
-  document.body.append(el);
-  Object.defineProperty(document, 'currentScript', { value: el, configurable: true });
-  new Function(ARRIVAL_SCRIPT)();
-  Object.defineProperty(document, 'currentScript', { value: null, configurable: true });
+/** Runs the inline capture the way the page does. */
+function capture(): void {
+  new Function(ARRIVAL_CAPTURE_SCRIPT)();
 }
 
 function signIn(): void {
@@ -27,58 +21,61 @@ function stored(): { slug: string; at: number } | null {
   return raw === null ? null : (JSON.parse(raw) as { slug: string; at: number });
 }
 
+function keep(slug: string, at = Date.now()): void {
+  localStorage.setItem(ARRIVAL_KEY, JSON.stringify({ slug, at }));
+}
+
 beforeEach(() => {
-  vi.useFakeTimers();
   localStorage.clear();
   document.cookie = 'fs_csrf=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-  document.head.querySelectorAll('script').forEach((s) => s.remove());
+  document.querySelectorAll('script').forEach((s) => s.remove());
   history.replaceState(null, '', '/');
 });
 
-afterEach(() => {
-  vi.useRealTimers();
-  vi.unstubAllGlobals();
-});
+afterEach(() => vi.unstubAllGlobals());
 
-describe('the landing', () => {
+describe('the inline capture', () => {
   it('keeps a valid slug and takes it out of the address bar', () => {
     history.replaceState(null, '', '/sim?spec=fury&golink=reddit-sim#top');
-    run();
+    capture();
     expect(stored()?.slug).toBe('reddit-sim');
     expect(location.pathname + location.search + location.hash).toBe('/sim?spec=fury#top');
   });
 
   it('drops a malformed slug but still cleans the address bar', () => {
     history.replaceState(null, '', '/?golink=%3Cscript%3E');
-    run();
+    capture();
     expect(stored()).toBeNull();
     expect(location.search).toBe('');
   });
 
   it('never touches the simulator’s own ?ref= (a character or a fight)', () => {
     history.replaceState(null, '', '/sim?source=armory&ref=us%2Fnormal%2Fobnoxious&mode=compare');
-    run();
+    capture();
     expect(stored()).toBeNull();
     expect(location.search).toBe('?source=armory&ref=us%2Fnormal%2Fobnoxious&mode=compare');
   });
 
   it('leaves a page with no golink alone', () => {
     history.replaceState(null, '', '/guides?class=rogue');
-    run();
+    capture();
     expect(stored()).toBeNull();
     expect(location.search).toBe('?class=rogue');
   });
+
+  it('stays small: every page’s HTML carries it', () => {
+    expect(ARRIVAL_CAPTURE_SCRIPT.length).toBeLessThan(400);
+    expect(ARRIVAL_CAPTURE_SCRIPT).not.toContain('cloudflareinsights');
+  });
 });
 
-describe('the first signed-in page', () => {
-  it('sends the slug after load with the CSRF token, then forgets it', async () => {
+describe('the arrival, after paint', () => {
+  it('sends the kept slug with the CSRF token, then forgets it', async () => {
     const upstream = vi.fn<GlobalFetch>(async () => new Response('{}', { status: 200 }));
     vi.stubGlobal('fetch', upstream);
-    history.replaceState(null, '', '/?golink=reddit');
+    keep('reddit');
     signIn();
-    run();
-    expect(upstream).not.toHaveBeenCalled();
-    await vi.runAllTimersAsync();
+    await sendArrival(API);
     expect(upstream).toHaveBeenCalledTimes(1);
     const [url, init] = upstream.mock.calls[0];
     expect(url).toBe(`${API}/v1/me/arrival`);
@@ -92,9 +89,8 @@ describe('the first signed-in page', () => {
   it('keeps the slug for later while signed out', async () => {
     const upstream = vi.fn<GlobalFetch>();
     vi.stubGlobal('fetch', upstream);
-    history.replaceState(null, '', '/?golink=discord');
-    run();
-    await vi.runAllTimersAsync();
+    keep('discord');
+    await sendArrival(API);
     expect(upstream).not.toHaveBeenCalled();
     expect(stored()?.slug).toBe('discord');
   });
@@ -104,20 +100,28 @@ describe('the first signed-in page', () => {
       'fetch',
       vi.fn<GlobalFetch>(async () => new Response('{}', { status: 401 })),
     );
-    localStorage.setItem(ARRIVAL_KEY, JSON.stringify({ slug: 'wago', at: Date.now() }));
+    keep('wago');
     signIn();
-    run();
-    await vi.runAllTimersAsync();
+    await sendArrival(API);
     expect(stored()?.slug).toBe('wago');
   });
 
   it('drops an arrival older than the API would take, unsent', async () => {
     const upstream = vi.fn<GlobalFetch>();
     vi.stubGlobal('fetch', upstream);
-    localStorage.setItem(ARRIVAL_KEY, JSON.stringify({ slug: 'wago', at: Date.now() - ARRIVAL_TTL_MS - 1 }));
+    keep('wago', Date.now() - ARRIVAL_TTL_MS - 1);
     signIn();
-    run();
-    await vi.runAllTimersAsync();
+    await sendArrival(API);
+    expect(upstream).not.toHaveBeenCalled();
+    expect(stored()).toBeNull();
+  });
+
+  it('drops a malformed one, unsent', async () => {
+    const upstream = vi.fn<GlobalFetch>();
+    vi.stubGlobal('fetch', upstream);
+    localStorage.setItem(ARRIVAL_KEY, '{"slug":"Not A Slug","at":1}');
+    signIn();
+    await sendArrival(API);
     expect(upstream).not.toHaveBeenCalled();
     expect(stored()).toBeNull();
   });
@@ -126,10 +130,9 @@ describe('the first signed-in page', () => {
 describe('the visit beacon', () => {
   const beacons = () => [...document.head.querySelectorAll<HTMLScriptElement>(`script[src="${BEACON_SRC}"]`)];
 
-  it('loads after load on the production host, cookieless, SPA tracking off', async () => {
-    run({ 'data-beacon-host': location.hostname });
-    expect(beacons()).toHaveLength(0);
-    await vi.runAllTimersAsync();
+  it('loads once on the production host, cookieless, SPA tracking off', () => {
+    loadBeacon(location.hostname);
+    loadBeacon(location.hostname);
     expect(beacons()).toHaveLength(1);
     expect(JSON.parse(beacons()[0].getAttribute('data-cf-beacon') ?? '')).toEqual({
       token: BEACON_TOKEN,
@@ -137,16 +140,14 @@ describe('the visit beacon', () => {
     });
   });
 
-  it('never loads anywhere else', async () => {
-    run();
-    await vi.runAllTimersAsync();
+  it('never loads anywhere else', () => {
+    loadBeacon();
     expect(beacons()).toHaveLength(0);
   });
 
-  it('never loads on the apps’ sign-in hand-off page', async () => {
+  it('never loads on the apps’ sign-in hand-off page', () => {
     history.replaceState(null, '', '/app/auth');
-    run({ 'data-beacon-host': location.hostname });
-    await vi.runAllTimersAsync();
+    loadBeacon(location.hostname);
     expect(beacons()).toHaveLength(0);
   });
 });

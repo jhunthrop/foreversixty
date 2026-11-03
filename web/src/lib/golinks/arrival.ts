@@ -1,43 +1,24 @@
 // web/src/lib/golinks/arrival.ts
-// The base layout's arrival script and the data it reads. The script itself is plain browser
-// JavaScript in arrival.inline.js, inlined into every page (Base.astro) rather than shipped as
-// a module: it has to take ?golink= out of the address bar before any island reads the URL, and
-// an inline script costs no request ahead of the largest paint. Its constants come from
-// config.ts through these data attributes, so the two can never disagree.
-import ARRIVAL_SOURCE from './arrival.inline.js?raw';
-import {
-  ARRIVAL_KEY,
-  ARRIVAL_PATH,
-  ARRIVAL_TTL_MS,
-  BEACON_HOST,
-  BEACON_SKIP_PREFIXES,
-  BEACON_SRC,
-  BEACON_TOKEN,
-  LINK_PARAM,
-  SLUG_PATTERN,
-} from './config';
+// The one part of the tracked links that has to run before anything else: a /go/ landing carries
+// ?golink=<slug>, which is kept (localStorage, an hour at most) and taken out of the address bar
+// before any island reads or rewrites the URL. Base.astro inlines it at the end of every page.
+//
+// It is a few hundred bytes, written from config.ts's constants here, because every page's HTML
+// carries it: Lighthouse's simulated load adds a whole round trip to the BiS pages' largest paint
+// once their HTML grows past the next congestion-window step, and 1.4 KB more did exactly that.
+// Everything that can wait (the arrival send and the visit beacon) is lib/golinks/later.ts,
+// imported after paint by the header's loader. Nothing here sets a cookie.
+import { ARRIVAL_KEY, LINK_PARAM, SLUG_PATTERN } from './config';
 
-export const ARRIVAL_SCRIPT: string = ARRIVAL_SOURCE;
+const param = JSON.stringify(LINK_PARAM);
 
-/**
- * The beat after `load` before the beacon and the arrival go out: the same 800 ms
- * lib/after-paint.ts gives the page's own deferred work, so neither competes with first paint.
- */
-export const ARRIVAL_BEAT_MS = 800;
-
-/** The script tag's data attributes, by attribute name. */
-export function arrivalScriptData(apiBase: string): Record<string, string> {
-  return {
-    'data-param': LINK_PARAM,
-    'data-pattern': SLUG_PATTERN,
-    'data-key': ARRIVAL_KEY,
-    'data-ttl': String(ARRIVAL_TTL_MS),
-    'data-api': apiBase,
-    'data-path': ARRIVAL_PATH,
-    'data-beat': String(ARRIVAL_BEAT_MS),
-    'data-beacon-src': BEACON_SRC,
-    'data-beacon-token': BEACON_TOKEN,
-    'data-beacon-host': BEACON_HOST,
-    'data-beacon-skip': BEACON_SKIP_PREFIXES.join(','),
-  };
-}
+export const ARRIVAL_CAPTURE_SCRIPT =
+  '(function(){try{var u=new URL(location.href),s=u.searchParams.get(' +
+  param +
+  ');if(s===null)return;if(new RegExp(' +
+  JSON.stringify(SLUG_PATTERN) +
+  ').test(s))localStorage.setItem(' +
+  JSON.stringify(ARRIVAL_KEY) +
+  ',JSON.stringify({slug:s,at:Date.now()}));u.searchParams.delete(' +
+  param +
+  ');history.replaceState(history.state,"",u.pathname+u.search+u.hash)}catch(e){}})()';

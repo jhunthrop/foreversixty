@@ -196,12 +196,15 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
     const releases = [
       ...document.querySelectorAll<HTMLFormElement>('[data-site-header] form[data-character-search]'),
     ].map((form) => holdSubmitUntilWired(form));
-    afterPaint(
-      () =>
-        void import('../lib/header-wiring').then((m) => {
-          m.wireHeader();
-          for (const release of releases) release();
-        }),
-    );
+    afterPaint(() => {
+      void import('../lib/header-wiring').then((m) => {
+        m.wireHeader();
+        for (const release of releases) release();
+      });
+      // Every page's after-paint work that is not the header's: the tracked links' arrival and
+      // the cookieless visit beacon (src/lib/golinks/later.ts). Riding this loader adds no
+      // request ahead of the largest paint.
+      void import('../lib/golinks/later').then((m) => m.runLater());
+    });
   </script>
 </header>
