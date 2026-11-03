@@ -3,7 +3,7 @@ title: Demonology Warlock in Forever
 classSlug: warlock
 spec: demonology
 role: dps
-build: 'FS1:1.60.1.70753:warlock:gnome:25522/233211310122000135/005:'
+build: 'FS1:1.60.1.70753:warlock:gnome:25522/203511310122000135/005:'
 raidBuild: 'FS1:1.60.1.70753:warlock:gnome:05/2035113011220001351/0550005:'
 recommendedRaces: [gnome, troll]
 statPriority:
@@ -50,7 +50,7 @@ Demonology sacrifices the Imp for 15% Shadow damage, keeps a Succubus out for 10
 
 ## Talents and builds
 
-The leveling build stops at 30 Demonology points, before Demonic Pact, and keeps Improved Corruption and Improved Imp. The raid build goes to Pact and spends its Destruction points on Shadow Bolt.
+The leveling build stops at 30 Demonology points, before Demonic Pact, keeps Improved Corruption, and puts all 5 points in Unholy Power rather than Improved Imp, since you level with the Voidwalker or the Succubus. The raid build goes to Pact and spends its Destruction points on Shadow Bolt.
 
 - **Demonic Sacrifice** (1 point): in Forever the Imp's sacrifice gives 15% more Shadow damage, and the Succubus' gives 15% more Fire. Without Demonic Pact any summon cancels it, so the leveling build takes it as the path to Soul Link.
 - **Master Demonologist** (5 points): a buff on you and your demon while it is out. The Succubus or Incubus gives 10% more Shadow damage, which is why the raid build keeps one out.
