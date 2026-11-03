@@ -101,6 +101,13 @@
                   }
                 },
                 {
+                  "spellIsKnown": {
+                    "spellId": {
+                      "spellId": 1719
+                    }
+                  }
+                },
+                {
                   "spellIsReady": {
                     "spellId": {
                       "spellId": 1719
