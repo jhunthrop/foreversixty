@@ -573,7 +573,7 @@
         ]
       },
       {
-        "text": "Racials in the beta client's spell data: Walk on Air (glide downward for 10 seconds on a 90 second cooldown), Read Ley Line (50% health and mana regeneration for 15 seconds), Wind Blessed (2% haste), Elemental Insight (5% damage to Elementals). Skyborne choose Horde or Alliance at creation. The client carries no row named Read Ley Line: its numbers are Blizzard's 26 October notes'.",
+        "text": "Racials in the beta client's spell data: Walk on Air (glide downward for 10 seconds on a 90 second cooldown), Read Leyline (50% health and mana regeneration for 15 seconds on a 2 minute cooldown), Wind Blessed (2% haste), Elemental Insight (5% damage to Elementals). Skyborne choose Horde or Alliance at creation. Read Leyline is spell 1259705, which casts Energized 1270842.",
         "sources": [
           {
             "label": "Icy Veins, racial rework",
@@ -613,7 +613,7 @@
         ]
       },
       {
-        "text": "Each faction has its own second active: Alliance Skyborne get Read Ley Line, Horde Skyborne get Skysight, which raises movement and mounted speed by 15% for 30 seconds; at an elemental convergence it also grants Charged for 1 hour, which doubles it.",
+        "text": "Each faction has its own second active: Alliance Skyborne get Read Leyline, Horde Skyborne get Skysight, which raises movement and mounted speed by 15% for 30 seconds; at an elemental convergence it also grants Charged for 1 hour, which doubles it.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
@@ -743,7 +743,7 @@
         ]
       },
       {
-        "text": "Each faction has its own second active: Alliance Skyborne get Read Ley Line, Horde Skyborne get Skysight, which raises movement and mounted speed by 15% for 30 seconds; at an elemental convergence it also grants Charged for 1 hour, which doubles it.",
+        "text": "Each faction has its own second active: Alliance Skyborne get Read Leyline, Horde Skyborne get Skysight, which raises movement and mounted speed by 15% for 30 seconds; at an elemental convergence it also grants Charged for 1 hour, which doubles it.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
