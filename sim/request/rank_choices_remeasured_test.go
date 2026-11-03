@@ -48,8 +48,8 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 	for _, c := range []struct {
 		name, spec, class, preset, race string
-		level                              int
-		want, not                          int32
+		level                           int
+		want, not                       int32
 	}{
 		// Mind Blast at 50: rank 3 (8103) for Horde (Undead with Dark Sacrifice), rank 2 (8102) for Alliance.
 		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 8103, 8102},
