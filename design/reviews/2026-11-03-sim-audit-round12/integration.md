@@ -213,8 +213,8 @@ Moves over 1% below 60 and on builds (lane reports have every band):
 ## For the integrator
 
 **Branches.**
-- Site `int/r12` (head in the ledger) merges all 15 site lane branches plus the coordinator commits.
-- Fork `int/r12` merges 11 lane branches plus the goldens commit.
+- Site `int/r12` merges all 15 site lane branches plus the coordinator commits (head f0eddb375 before this line; the next commit records it).
+- Fork `int/r12` merges 11 lane branches plus the goldens commit, head 076a5a517.
 - The fork has no master fast-forward.
 
 **Pin first.** The site must pin the fork's int/r12 head:
