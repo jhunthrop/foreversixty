@@ -159,7 +159,7 @@
             }
           }
         },
-        "notes": "Flash Heal at the top rank on a tank who is really low: in a raid your mana outlasts the fight, so a big fast heal is worth its cost."
+        "notes": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters."
       },
       {
         "action": {
@@ -636,7 +636,7 @@
             }
           }
         },
-        "notes": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without raid buffs and while leveling, rank 4. Cast it at the normal thresholds while your mana is keeping pace with the fight."
+        "notes": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4. Cast it at the normal thresholds while your mana is keeping pace with the fight."
       },
       {
         "action": {

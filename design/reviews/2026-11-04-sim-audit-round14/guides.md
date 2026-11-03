@@ -127,6 +127,20 @@ Aligned, checked spell by spell. The helpers' full lists are condensed here.
 
 The tanks lane's rewritten top-level APL `notes` are developer prose that no page renders, so they are left as written. Their measurement figures are fine there.
 
+## 6. Casters and healers wow-player review fixes (review-casters.md G1-G3)
+
+These are review wording fixes. They are not counted as bugs, because no client fact was wrong.
+
+| # | finding | evidence | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| V1 (G1) | The Holy Flash Heal note and holy.md said "your mana outlasts the fight". After the healers lane's rank change, the fight runs dry at about 115 s. | review-casters.md G1 | Review fix. The review's wording: "it is your dearest heal, so spend it where the size matters". | F1 (this lane) | S (this commit) |
+| V2 (G2) | The Restoration shaman Healing Wave note named a top rank while the row casts rank 2 (332). The Nature's Swiftness note said "full-size". The guide never named the rank. | The curated APL casts 332, rank 2. The trainer top is rank 9 (10396, level 56) and rank 10 (25357) is the book (book-ranks.json:208). The note's "rank 9 is the top rank you can learn at launch" was right, and the review's "trainer top 8" is not. | Review fix. The review's notes are used, and restoration.md's "Tank first" item 3 names rank 2. | healers lane round-14 row | S (this commit) |
+| V3 (G3) | Holy filler: "without raid buffs and while leveling, rank 4" | review-casters.md G3 | Review fix. Now "without a raid's mana (bare gear, a dungeon group) and while leveling". | F1 (this lane) | S (this commit) |
+
+The review's two queries, checked against the 70753 client:
+- **Chain Heal 251 / 490:** both are client rows. SpellEffect EffectBasePointsF is 251 for 1064 (rank 1, 260 mana) and 490 for 10623 (rank 3, 405 mana). The Variance column is 0.14 and 0.13, so each number is the middle of the base range (about 216-286 and 425-555), before healing power. The guide's "base heal" holds. Aligned. These are Forever values, below Era's.
+- **Fear Ward:** baseline for every priest. Spell 6346 is a trainer row: SkillLineAbility skill 56, class mask 16, AcquireMethod 0, level 20, and it appears in trainables/priest.json at 20. Aligned.
+
 ## Before/after
 
 No sim number moves. Every change is prose, a rotation note, a reason string or a guide stat set.

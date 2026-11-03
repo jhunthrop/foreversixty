@@ -201,7 +201,7 @@
             }
           }
         },
-        "notes": "Healing Wave right after Nature's Swiftness: the instant, full-size save."
+        "notes": "Healing Wave right after Nature's Swiftness: the instant save. Rank 2 is cheap, and it still carries your whole healing bonus."
       },
       {
         "action": {
@@ -932,7 +932,7 @@
             }
           }
         },
-        "notes": "Healing Wave when the tank drops below 60%: your biggest efficient heal. Rank 9 is the top rank you can learn at launch; while leveling, cast the highest rank you have."
+        "notes": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana. While leveling, cast the highest rank you have."
       }
     ]
   }

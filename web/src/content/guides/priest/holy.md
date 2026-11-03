@@ -69,9 +69,9 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 **On the tank.** Prayer of Mending every time it is ready. Renew always up, at rank 1: Forever keeps a low rank's whole healing bonus, so rank 1 heals the most per mana you spend. Go up in rank only on a tank who is dropping through it.
 
-**The filler is Heal.** In a raid, cast rank 1: it is learned at 16, so it keeps its whole healing bonus and is the cheapest healing per mana you have. Without raid buffs and while leveling, rank 4 is the classic downrank, with Greater Heal's spell power coefficient for far less mana. With Divine Fury every rank is a 2.5 second cast. Greater Heal comes out only when the tank needs one big number.
+**The filler is Heal.** In a raid, cast rank 1: it is learned at 16, so it keeps its whole healing bonus and is the cheapest healing per mana you have. Without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4 is the classic downrank, with Greater Heal's spell power coefficient for far less mana. With Divine Fury every rank is a 2.5 second cast. Greater Heal comes out only when the tank needs one big number.
 
-**Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: your mana outlasts the fight, so a big fast heal is worth its cost. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
+**Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
 
 **Prayer of Healing.** Cast it when three or more players in one group are missing a fair chunk. In Forever it heals the target and the target's party, so target a member of whichever group took the hit: you are not limited to your own party.
 
