@@ -1,0 +1,94 @@
+# Sim audit round 12: regression lane, melee and physical side (regmelee)
+
+Scope: everything the combined landing (site 8d0f78ea0..c6bdc855c, fork 47df4a89d..2606bc05e) and round 11 changed for warriors, rogues, hunters, the cat and the bear, then a fresh check of every pre-pull and opener line in those APLs against client 1.60.1.70753.
+
+- **Branches:** fork `lane/r12-regmelee` from 2606bc05e (E), site `wt/r12-regmelee` from c6bdc855c (S).
+- **Before:** `r12/sb-before` with `r12/site-before`, and `r12/before.tsv` for raid 60. **After:** this lane's engine and site branch.
+- **Measurements:** spec-breakdown, 10,000 iterations, seeds 1 and 50001 unless a row says otherwise.
+- **Client rows:** the layered 70753 tables in `scratchpad/r11/c70753/builds/1.60.1.70753/raw/`. Wowhead Forever tooltips were read 2026-11-03; a tooltip and its client row count as one source.
+- **No logs.** foreverlogs.gg's events endpoint now returns no events for any report, including encounters cached in round 10 (checked 2026-11-03). No question here can be settled by a log.
+
+**Result: 5 confirmed bugs, all fixed. 2 came from the landing and 3 are old.**
+
+## Landing changes
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| L1 | **Beast Mastery and Marksmanship lost Juju Might.** The landing moved Juju Power and Juju Might to Survival only, on the grounds that "it does not raise ranged attack power". In Forever it does. Juju Might (16329) has two effects: Era's aura 99, +40 melee attack power, and Forever's own row SpellEffect 870621, aura 124, +40 ranged attack power. The engine already applied both (`core/consumes.go`, JujuMight gives AttackPower 40 and RangedAttackPower 40). Juju Power is Strength, which gives a hunter no ranged attack power, so it rightly stays Survival's only. This one change is the whole of the hunters' landing loss (-1.0 to -1.2%). BM comes back to the round-11 numbers exactly. MM ends 0.1% below them, which is the Aimed Shot change (L3). | SpellEffect 693538 (aura 99, 40) and 870621 (aura 124, 40) for 16329; `presets.json` ranged group. `TestEveryHunterCarriesJujuMightAndOnlySurvivalJujuPower` failed first: BM and MM carried no juju_might. | CONFIRMED-BUG (client row) | landing S 252455d15 | S 384fef7a9 (and the vitest S e5a7e3fe6) |
+| L2 | **All three warriors re-cast the raid's Battle Shout before the pull.** The landing added Bloodrage at -2.5 s, which for the first time gave the old -1.5 s shout the rage to go off. (Before, the shout sat at -1 s with 0 rage and never cast.) The raid preset already carries a raid warrior's Battle Shout, which is the same aura and in Forever reaches the whole raid (15 October). So each warrior spent 10 of its opening rage refreshing a buff that was already up. The upkeep line was already gated on the aura being down; the pre-pull cast is now gated the same way. The bare bands have no raid shout, so they still shout (1.5 casts a fight at 20, 40 and 60). In Forever the shout makes no threat (round 11 W2), so the tank loses nothing by skipping it. | Breakdown: with the raid's shout up, Battle Shout cast 1.00 times for -10 rage, and the aura shows 2 procs. `TestWarriorPrepullShoutSkipsAnAuraAlreadyUp` failed first for all three warriors. | CONFIRMED-BUG (small: Fury +0.04 to +0.20%, Arms and Protection within error) | landing S e6329d6c1 / E ce6ddd8ff | S 4d3e24015, E c77b604e0 |
+| L3 | Hunter's Mark 6 s before the pull, and a re-mark line. Client 14325: +143 ranged attack power only (aura 127; no melee part, so Survival rightly has none), 60 mana, 1.5 s global cooldown, 2 minutes (DurationIndex 4). The raid preset's mark is the same aura, so at raid 60 neither the pre-pull cast nor the re-mark line fires. At bare bands they do. The Aimed Shot moved from -3.5 s to -2 s, so with its 2 s cast (CastingTimeIndex 5) it now lands at the pull. At 3,000 iterations, seed 1, that is BM -0.1% and MM +0.0%, which is the guide lane's own figure. A shot that lands before the tank has engaged is not how a raid hunter plays, so this is a realism change, not a bug. | SpellEffect 690990/690991, SpellPower 179455, SpellCooldowns 54823; Wowhead Forever tooltip 14325; variants in `r12/regmelee/rot/` | Aligned | - | - |
+| L4 | Survival's display-only Hunter's Mark (it cost 0.3%) is gone from all three copies: `data/curated/apl/hunter-survival.json`, `sim/request/apl/hunter-survival.apl.json` and the fork's `forever_survival.apl.json`. Survival's raid 60 number did not move in the landing. | grep 14325 | Aligned | - | - |
+| L5 | **The fork's level-25 suite: Fury multi-target +34 to +42% and Protection -2 to -19%.** These moves are not real behaviour. They are an artifact of the test harness. The suite's Settings rows run with `DistanceFromTarget: 30` (`core/test_generators.go:184`). Melee auto-attacks only swing within 5 yards (`core/attack.go:652`), so those rows have no white hits at all. The Settings player is also never marked as a tank, so the boss never hits it. Bloodrage is therefore almost the only rage source. With that tiny budget, Fury's ungated Whirlwind (up to four targets) beats Bloodthirst on 20 targets. And Protection's new pre-pull shout takes 10 of the 20 rage a 60 s fight has. The rows that stand at 5 yards (Average-Default, AllItems) moved by -0.2 to -1.5%. At raid 60, Fury moved +0.3 to +0.7% and Protection -0.2 to -0.3%. | `TestP1DPSWarrior.results` / `TestP1TankWarrior.results` diff at ce6ddd8ff | Aligned (harness artifact; the Settings rows say nothing about melee DPS) | - | - |
+| L6 | **Arms opens Bloodrage, then Battle Shout, then Charge. Is a Charge after Bloodrage legal?** Charge says "Cannot be used in combat" (Forever tooltips 100, 6178, 11578). Era's Bloodrage said "The warrior is considered in combat for the duration", and cmangos-classic carries that out: aura 94 on 29131 calls `SetInDummyCombatState`, which sets the in-combat flag (SpellAuras.cpp `HandleInterruptRegen`; Unit.cpp:7898). Forever's client still ships aura 94 on 29131 (SpellEffect 704871), but its Bloodrage text dropped the sentence in 70170, as TBC's did. wowfdb lists the point as disputed ("Test Charge after Bloodrage"). If Bloodrage does still put you in combat, Arms loses Charge's 15 rage. Measured without the Charge, Arms raid 60 moves 0.0 to -0.1%. | Wowhead Forever 2687 vs Classic 2687 tooltips; https://wowfdb.com/classes/warrior/changes/ (read 2026-11-03); cmangos-classic master | OPEN: a launch log (or a player test) of Charge within 10 s after a pre-pull Bloodrage settles it | - | - |
+| L7 | The rogue openers. Stealth at -3 s: out of combat, 10 s category cooldown. Premeditation at -2 s (Subtlety): off the global cooldown, +2 combo points for 20 s (DurationIndex 18), and stealth is required. Garrote at 0 s: rank 6 is 92 a tick for 6 ticks (552, matching the tooltip), 50 energy, a 1 s global cooldown, 18 s, and 1 combo point. It needs stealth and to be behind the target (the engine checks both). It refunds 80% on a miss. Its ticks crit as a bleed, per the ruling (35% at raid). Energy is full at the pull. Combat's Slice and Dice: 9 to 21 s by combo point, +20% (rank 1) and +30% (rank 2) haste, aura 319. All match the client. | SpellEffect 689794/689795, SpellPower 178462, SpellCooldowns 54679/54909/53255; Spell 5171/6774/14183 texts | Aligned | - | - |
+| L8 | **The bear's Enrage 1 s before the pull: the armor penalty was Bear Form's in Dire Bear Form.** Enrage's client text: "reduces base armor by 27% in Bear Form and 16% in Dire Bear Form". cmangos-classic casts 25503 (aura 101, base armor percent) at -27, or at -16 while 9634 Dire Bear Form is up (SpellEffects.cpp, case 5229). The engine took 27% at every level, so from level 40 (Dire Bear Form) the pre-pull Enrage cost 27% of base armor for its 10 s instead of 16%. The rage is right: 10 at once, then 2 a second for 10 s, a 60 s cooldown, off the global cooldown, bear forms only. The fix moves the bear only slightly: raid 60 threat -0.0 to -0.1%, bare 40 and 60 within error, and damage taken during Enrage is lower (TestFeralTank DTPS -0.14%). | Spell 5229 Description_lang; Wowhead Forever tooltip 5229; SpellEffect 701744 (25503: aura 101, -26 plus a die of 1); `sim/druid/enrage.go`. `TestEnrageArmorReductionFollowsTheForm` failed first (build failure, then 0.27 at 40 and 60). TestFeralTank golden regenerated. | CONFIRMED-BUG (client text plus cmangos) | old E 86dc10877 (2026-10-07; its comment cited the text and kept Era's 27%) | E f12c00b70 |
+| L9 | The warrior opener timing. Bloodrage is off the global cooldown (SpellCooldowns 53188: no start recovery), and its 10 rage plus 10 over 10 s are the client's tenths (100 and 10). Battle Shout at -1.5 s has a 1.5 s global cooldown, which ends at the pull. Charge is off the global cooldown, so -0.5 s inside the shout's GCD is legal. It needs Battle Stance, which Arms starts in, and gives 9, 12 and 15 rage at 4, 26 and 46. Each band casts the rank it has learned (bare 20 Charge 100, bare 30 and 40 Charge 6178, 50 and up 11578). Rage held out of combat does not decay: aura 94 (interrupt power decay) is on Bloodrage. | SpellCooldowns 53188, 54637, 54530; SpellEffect 679777/704870; breakdowns at bare 20 to 60 | Aligned | - | - |
+
+## Round-11 changes: side effects
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| R1 | Physical W1 (Execute's rage per rank). The rank rewrite turns every spell id, conditions included, into the band's learned rank (`rotation_ranks.go` rankResolver). So Execute's conversion follows the rank cast, and Fury's "no Heroic Strike from 25%" gate (`spellIsKnown` Execute) holds from 24, where Execute is trained. | rotation_ranks.go:146-200; Fury breakdowns at bare 20, 40 and 60 | Aligned | - | - |
+| R2 | Physical F1 (Whirlwind's off hand as an off-hand special, 462891) and P1 (rage from damage taken at the receiver's level). The off-hand strike shows at every band from 36 (raid 60: 12.5 hits a fight). P1 moves the bear and the warrior tank only, as round 11 said. | breakdowns | Aligned | - | - |
+| R3 | Items S1 (melee set procs only on auto-attacks where the client says 0x4). `ProcMaskMeleeWhiteHit` is main-hand and off-hand auto. Windfury's and the sword's extra attacks swing as main-hand autos (tag 3), so they still roll. Heroic Strike, Maul and Raptor Strike are melee specials (0x10), as in cmangos. | `core/flags.go:62`; `core/attack.go:239-291` | Aligned | - | - |
+| R4 | Auras: the Dense stone in the main hand from 35 to 49. `TestMeleeMainHandsCarryTheDenseStoneUntilTheElementalStone` passes. Rogues get it beside the poison, Enhancement keeps Windfury Weapon, and the hunter bows get none (the ranged group). | sim/request test | Aligned | - | - |
+| R5 | Auras: the warrior tank's Battle Shout. At bare bands it shouts (1.5 casts at 20, 40 and 60). At raid 60 it now skips the raid's aura (L2). | breakdowns | Aligned after L2 | - | - |
+| R6 | presets.json, checked for every spec against Juju Power and Juju Might. Melee group (warriors, rogues, cat, Retribution, Enhancement): both. Tank group (warrior, bear, paladin tank): both. Hunters: Juju Might for all three (after L1), Juju Power for Survival only. Casters and healers: neither. | spec-breakdown consume lists | Aligned after L1 | - | - |
+
+## Fresh re-audit (openers and their conditions)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| F1 | **Arms left Battle Stance in the execute phase at 30 to 49 with nothing to press.** The swap line is `and(isExecutePhase, spellIsReady(Recklessness), not Berserker, rage <= 25)`. Recklessness is trained at 50. Below 50, `spellIsReady` of an unlearned spell builds to nil, and the engine drops a nil operand from an AND (`core/apl_values_operators.go` newValueAnd). So the line fired on the other three alone: Arms went into Berserker Stance, lost Overpower and Rend, and took 10% more damage, all for a Recklessness it does not have. `spellIsKnown` is false, not nil, for an unlearned spell, so the line now asks it first. A scan of every condition in the 11 melee APLs for spell references that can be unlearned at some band found no other line like this. | trainables/warrior.json (Recklessness level 50); Berserker Stance 1.00 cast at bare 30 and 40 before, 0 after. `TestArmsBerserkerSwapNeedsRecklessnessTrained` failed first. | CONFIRMED-BUG | old S 99afd1a6b (round 1, 2026-10-31; no round looked at the swap below 50) | S 0c28e1fdb, E ef4b989bb |
+| F2 | **Improved Charge gave its rage to warriors who never Charge.** "Increases the Rage generated by your Charge ability by 3/6" was paid once at Reset. That stand-in dates from before Charge was a spell (charge.go since c0a452753, 2026-10-08), and its comment still said "this package registers no Charge spell". Fury's published builds take Improved Charge 2 (Arms tree, position 3) and never Charge, so Fury got 6 free rage at every pull, and any Fury or Protection search could read value into the talent. The rage now comes with the Charge. Arms Charges at every band and does not move. Fury bare 60 -0.07 to -0.14%, Fury raid 60 within error. No golden moves. | talents/warrior.json Improved Charge text; `sim/warrior/talents.go`; bis/warrior-fury.json band 60 `34320003002000000-...`. The rewritten `TestImprovedChargeRageComesWithTheCharge` failed first (53 and 56 rage at the pull without a Charge, want 50). | CONFIRMED-BUG | old E c0a452753 (the Reset stand-in outlived the Charge spell) | E 5bf0f783d |
+| F3 | Cat: Prowl at -2 s (10 s category), then Ravage. Bear: Enrage at -1 s in form. Hunters: move to 30 yd at -15 s, then Aspect of the Hawk at -10 s (1.5 s GCD). Survival: its aspect at -10 s. Every pre-pull time leaves the global cooldown clear by the next action. Every pre-pull action is legal out of combat, except the open L6 question. | SpellCooldowns 54168, 54939; APL dumps | Aligned | - | - |
+
+## Before/after
+
+Raid 60. Before is `r12/before.tsv`; after is this lane (`lane/r12-regmelee` 5bf0f783d with `wt/r12-regmelee`). Each cell is seed 1 / seed 50001. Protection warrior and the bear are threat per second.
+
+| Spec | alliance % | horde % | seed 1 alliance / horde | cause |
+|---|---|---|---|---|
+| Beast Mastery | +1.01 / +1.01 | +1.02 / +1.02 | 623.0 → 629.3 / 626.9 → 633.3 | L1 |
+| Marksmanship | +1.15 / +1.15 | +1.15 / +1.14 | 610.7 → 617.7 / 615.7 → 622.8 | L1 |
+| Fury | +0.05 / +0.17 | +0.13 / +0.07 | 754.9 → 755.3 / 757.2 → 758.2 | L2, F2 |
+| Arms | -0.06 / +0.03 | -0.05 / +0.03 | 719.5 → 719.1 / 731.7 → 731.3 | L2 (within error) |
+| Protection warrior | +0.11 / +0.06 | -0.04 / +0.05 | 1080.0 → 1081.2 / 1069.2 → 1068.8 | L2 (within error) |
+| Bear | -0.02 / -0.02 | -0.08 / -0.02 | 1020.3 → 1020.1 / 1011.5 → 1010.7 | L8 |
+| Survival, cat, the three rogues | 0.00 | 0.00 | identical to the decimal | - |
+
+Bare bands, horde unless said, seeds 1 / 50001:
+- Arms bare 30: +2.6 / +2.4% (58.3 → 59.8; alliance +2.4 / +2.4%, 58.4 → 59.8). Arms bare 40: +3.6 / +3.6% (102.1 → 105.8; alliance +3.6 / +3.5%, 103.1 → 106.8). Arms bare 20, 50 and 60 identical. (F1)
+- Fury bare 60: -0.07 / -0.14% (281.1 → 280.9). (F2)
+- Bear bare 40: -0.06 / -0.06% (175.9 → 175.8). Bear bare 60: +0.05 / -0.05% (443.5 → 443.7). (L8)
+- Protection warrior bare 60: identical.
+
+## Files to regenerate
+
+- `sim/request/raid-consumes.json` (`go run ./internal/genraidconsumes`), for L1. Until it is regenerated, `TestRaidConsumesJSONIsCommitted` and the web vitest `gear-extras.test.ts` (updated in S e5a7e3fe6) fail. The web copy follows through `web/scripts/sync-raid-preset.mjs`.
+- `sim/request` TestRotationLadder goldens: warrior-arms (bands 30 and 40, F1), warrior-fury (F2), druid-feral-bear (bands 40 and up, L8).
+- addon-data.json rotation tables for the three warriors (L2, F1), at the refresh.
+- BiS json files that embed preset notes (the hunters' Juju Might reason), at the refresh.
+
+The APL copies were synced by hand, not with the generator: `sim/request/apl/warrior-*.apl.json` and the fork's `ui/warrior/apls/forever_{arms,fury}.apl.json` and `ui/tank_warrior/apls/forever_protection.apl.json`. `make apl-check` passes. Fork goldens regenerated for this lane's changes: TestFeralTank (L8), TestP1DPSWarrior and TestP1TankWarrior (L2).
+
+## Measure at refresh
+
+- Hunter picks with Juju Might back (BM and MM, every slot at 60): ranged attack power is worth a little less relative to other stats.
+- Arms bare 30 and 40 picks: the rotation now stays in Battle Stance through the execute phase.
+
+## For other lanes
+
+- **Talent builds (coordinator; adoption ruling as for Shadow):** Fury's published builds (bare 50, bare 60 and raid 60, `34320003002000000-...`) spend 2 points in Improved Charge. Fury never Charges, so after F2 those points do nothing; before F2 they were worth only the free 6 rage at the pull. Moving them is a build-defect fix, not an optimisation. A talent search with Improved Charge marked inert would pick where they go.
+- **Platform (fork test harness):** the Settings rows of every melee suite stand at 30 yards with no auto-attacks (L5). They cannot catch a melee regression. A melee Settings distance of 5 would make them meaningful; this lane did not change the harness.
+
+## Still open
+
+- L6: whether Forever's Bloodrage still puts you in combat (and so blocks Charge). Worth 0.0 to 0.1% for Arms.
+- Carried from round 11: Raptor Strike's off-hand penalty, normalized rage's off-hand factor, Lacerating Strikes' refresh, the one-a-minute proc rate.
+
+## Origin totals
+
+5 confirmed bugs. **Landing 2** (L1 S 252455d15; L2 S e6329d6c1 / E ce6ddd8ff). **Old 3** (F1 S 99afd1a6b; F2 E c0a452753; L8 E 86dc10877). R11 0, R9 0, R10 0, new-data 0.
+
+Sources (read 2026-11-03): the 70753 layered raw tables (SpellEffect, SpellMisc, SpellCooldowns, SpellPower, SpellDuration, SpellCastTimes, Spell, SpellName); https://nether.wowhead.com/forever/tooltip/spell/{2687,100,6178,11578,11290,14325,5229}; https://nether.wowhead.com/classic/tooltip/spell/2687 and /tbc/; https://www.wowhead.com/classic/spell=29131 and /tbc/; https://wowfdb.com/classes/warrior/changes/; cmangos-classic master `src/game/Spells/SpellAuras.cpp`, `SpellEffects.cpp` and `src/game/Entities/Unit.cpp`.
