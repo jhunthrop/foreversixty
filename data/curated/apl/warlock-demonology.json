@@ -116,10 +116,10 @@
             }
           }
         },
-        "notes": "Soul Fire only while Decimation's buff is up. Decimation (440870) cuts Soul Fire's cooldown by 90 percent, and a Shadow Bolt on a target below 35 percent health grants the 10 second buff (440873): 40 percent off the cast time after Bane's 2 seconds, so 2.4 seconds, and no Soul Shard (aura 256, no reagent use). Outside it Soul Fire is a 4 second cast that costs a shard and deals less per second of casting than Shadow Bolt."
+        "notes": "Soul Fire every 6 seconds while Decimation is up. Below 35% each Shadow Bolt gives you 10 seconds of 2.4 second Soul Fires that cost no shard; outside Decimation it is never worth its shard."
       },
       {
-        "notes": "Life Tap to keep casting once mana runs low.",
+        "notes": "Life Tap below 10% mana. Each tap turns health, plus a point for every point of Spirit, into mana; a Healthstone or a healer covers the health.",
         "action": {
           "condition": {
             "cmp": {
@@ -143,7 +143,7 @@
         }
       },
       {
-        "notes": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.",
+        "notes": "Corruption whenever it has fallen off. A 2 second cast without Improved Corruption, and still worth it.",
         "action": {
           "condition": {
             "not": {
@@ -166,7 +166,7 @@
         }
       },
       {
-        "notes": "Bane of Doom is the one curse kept up: it deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains. Bane of Agony and Curse of the Elements both measured lower in the search.",
+        "notes": "Bane of Doom the moment the last one fires, with a minute or more of the fight left. It hits once, hard, when its minute runs out, so a Doom cast in the last minute never lands.",
         "action": {
           "condition": {
             "and": {
@@ -206,7 +206,7 @@
         }
       },
       {
-        "notes": "Bane of Agony in the last minute, when a Doom would not fire before the fight ends.",
+        "notes": "Bane of Agony in the last minute, once Doom has fired. A new Doom would not land before the boss dies.",
         "action": {
           "condition": {
             "and": {
@@ -246,7 +246,7 @@
         }
       },
       {
-        "notes": "Immolate follows Corruption and Bane of Doom and is recast when under 3 seconds remain: its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.",
+        "notes": "Immolate with 3 seconds or less left on it. The cast lands as the old one runs out, and the fresh hit is worth the last tick.",
         "action": {
           "condition": {
             "cmp": {
@@ -275,7 +275,7 @@
         }
       },
       {
-        "notes": "Shadow Bolt is the filler between DoT refreshes: with the Imp's sacrifice and the Succubus' Master Demonologist both raising Shadow damage, it beats Searing Pain.",
+        "notes": "Shadow Bolt for every other cast. The Imp's sacrifice and Master Demonologist both raise Shadow damage, so it beats Searing Pain, which also carries far too much threat.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -286,7 +286,7 @@
         }
       },
       {
-        "notes": "Shoot only when nothing else can be cast, which in practice means out of mana: a wand shot cannot start during the global cooldown and holds you for the wand's full speed, so it never fits between spells. Life Tap below 10 percent mana keeps the rotation going first.",
+        "notes": "Shoot only when you are out of mana and cannot Life Tap. A wand shot cannot start during a global cooldown, so it never fits between spells.",
         "action": {
           "castSpell": {
             "spellId": {

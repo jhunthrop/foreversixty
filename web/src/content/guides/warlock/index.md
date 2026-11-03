@@ -1,34 +1,42 @@
 ---
 title: Warlock in Forever
 classSlug: warlock
-description: 'What the Warlock class does in Forever, its three specs, new race options, and what changed from 1.12.'
-updated: 2026-09-24
+description: 'The Forever warlock: three specs, banes and curses in separate slots, DoTs that crit, the new talents, the races, and what a raid asks of you.'
+updated: 2026-11-02
 confidence: single-source
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Power Up Gaming, Forever talent changes vs Classic'
-    url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/
-    kind: community
-  - label: 'Talents Forever (demo transcription)'
-    url: https://talentsforever.com/data.json
-    kind: community
+  - label: 'Forever client spell and talent data'
+    url: https://wago.tools/db2/SpellEffect
+    kind: datamined
   - label: 'But Why Tho, interview with Anna Resendez and Clayton Stone'
     url: https://butwhytho.net/2026/09/wow-classic-devs-world-of-warcraft-forever/
     kind: community
 ---
 
-Warlock is a pure spellcaster built around damage-over-time effects, life-draining spells, and a summoned pet, with no tank or healer tree. Every build spends a mana pool that it can also refill from its own health through Life Tap, and every build leans on at least one demon summon for utility or extra damage. That identity carries over to Forever unchanged; what's changed is how deep the rework goes underneath it.
+Warlock is a ranged caster that pays for mana with health through Life Tap, keeps a demon at its side, and stacks Shadow and Fire damage on the boss. Every spec plays out of the same kit: Corruption, a bane, Immolate and Shadow Bolt, with your talents deciding what fills the gaps.
 
 The three specs:
 
-- **Affliction** layers Corruption, Bane of Agony, Wrack and Siphon Life onto a target and lets them run, filling any spare globals with Shadow Bolt.
-- **Demonology** casts Corruption and Soul Fire around its pet, with talents that shape which demon you summon and what it does for you.
-- **Destruction** keeps Immolate up so Conflagrate and Incinerate have something to consume, finishing low-health targets with Shadowburn.
+- **Affliction** keeps Corruption, Bane of Agony, Siphon Life and Immolate on the boss and casts Shadow Bolt between them. Every tick can crit, and Pandemic and Malevolence make those crits count. The easiest spec to level.
+- **Demonology** sacrifices the Imp for 15% Shadow damage, keeps a Succubus out through Demonic Pact for Master Demonologist and Soul Link, and burns the last 35% of every boss with Decimation's free Soul Fires.
+- **Destruction** keeps Immolate up and fires Conflagrate and Shadowburn on cooldown to hold both halves of Shadow and Flame, with Incinerate as its filler from 40.
 
-**Troll Warlock** is one of Blizzard's six confirmed new race and class pairs, giving the Horde a Warlock option it never had in 1.12. Warlock is not open to Skyborne at all — the race isn't paired with this class on either faction.
+What changed from 1.12:
 
-Warlock got the deepest talent rework of any class shown at BlizzCon: one outlet's tally of the demo trees counted 23 new talents, 26 changed, and only 3 left untouched, the largest overhaul by a wide margin. Trees still keep the familiar seven rows and 51 points, with a fourth one-point "gold medal" talent added at the 16-point mark alongside the existing ones at 11, 21, and 31. The headline structural change splits Curses and Banes into two separate spell slots instead of one shared category, which lets a single target carry both debuffs at once instead of forcing a choice — Curse of Agony is renamed to Bane of Agony, and the old Curse of Doom is now called Bane of Doom. Enslave Demon picked up a new name, Subjugate Demon, and the Succubus gets a companion pet: Incubus is its own summon with a dedicated spell rather than just a cosmetic reskin, and four talents in the Demonology tree call it out by name. Pandemic, in Affliction, gives a big damage boost to critical hits from Corruption, both Banes, and the drain spells, while a new channelled spell called Drain Hope strengthens whatever other Shadow damage-over-time spells are already ticking on that same target. Malevolence is the bigger shift underneath all of it: damage-over-time spells simply could not crit before, and now they can.
+- **Banes and curses are two slots.** Curse of Agony is now Bane of Agony and Curse of Doom is Bane of Doom, with Bane of Havoc added. Each warlock keeps one bane and one curse on a target, so your own bane always goes up even when you hold the raid's curse.
+- **Curse of the Elements covers every magic school.** It raises Shadow, Fire, Frost, Arcane, Nature and Holy damage taken by 10% and lowers those resistances by 75. There is no Curse of Shadow. One warlock in the raid keeps it up; a second copy does not stack.
+- **DoTs crit.** Corruption, the banes and Immolate's burn can all crit, and Pandemic doubles the bonus on Affliction's.
+- **New talents.** Malevolence (Shadow crit), Pandemic, Wrack (a 6 second channel), Decimation (Soul Fire below 35%), Demonic Pact (keep the Imp's sacrifice with another demon out), Shadow and Flame, Incinerate and Bane of Havoc.
+- **The sacrifices swapped schools.** The Imp's sacrifice now raises Shadow damage and the Succubus' raises Fire.
+- **Improved Shadow Bolt is your own.** Its 20% applies to your Shadow damage only, not the raid's.
+- **Your demon scales from you** and does not take raid buffs. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.
+- **Portal of Summoning** is new at 60: you and two others open it, and then two people at the portal can summon any party or raid member. It costs five Soul Shards and has a one hour cooldown.
 
-The beta only runs to level 30, so none of this has been tested at the level and raid content Warlocks will actually play at launch — see each spec guide's Overview for what's confirmed versus projected. The Affliction, Demonology, and Destruction guides below cover talent priorities, rotation, stats, and gear for each tree.
+Unstable Affliction and Haunt are in the client files, but no trainer teaches either one.
+
+Troll warlocks are new for the Horde, alongside Orc and Undead. Alliance warlocks are Human or Gnome. Skyborne cannot be warlocks.
+
+In a raid you bring a curse when assigned (Curse of the Elements, or Recklessness, Tongues or Weakness for a second warlock), Healthstones for everyone, a Soulstone on a healer, and summons. Every spec guide below covers talents, the opener, the rotation, stats, races and leveling.
