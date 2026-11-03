@@ -33,7 +33,7 @@ Enhancement is the shaman's melee spec: one weapon with Windfury on it, Stormstr
 
 - Windfury Weapon's extra swings are free attacks with bonus attack power
 - Maelstrom Weapon turns melee swings into free, instant Lightning Bolts
-- One hit stat covers your swings and your spells
+- Hit on gear covers your swings and your spells
 - Strength of Earth and Grace of Air reach the whole raid in Forever
 
 ### Weaknesses
@@ -49,7 +49,7 @@ Enhancement is the shaman's melee spec: one weapon with Windfury on it, Stormstr
 
 ## Talents and builds
 
-Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells, because Forever has one hit stat. The leveling build puts its Elemental points into Convection, Elemental Alacrity and Call of Flame for cheaper, faster Lightning Bolts and a stronger Searing Totem. The raid build moves them to Concussion, Reverberation, Elemental Devastation and Elemental Focus: Earth Shock hits harder and comes back sooner, its crits give your swings 9% crit for 10 seconds, and now and then a spell is free. Both builds take Shamanistic Focus, which cuts the cost of your shocks by 45%, and Improved Ghost Wolf, which makes Ghost Wolf instant and usable indoors: the fastest way across a raid room when the boss moves. The raid build pays for its Elemental points with two points of Ancestral Knowledge.
+Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells. The leveling build puts its Elemental points into Convection, Concussion, Elemental Alacrity and Call of Flame for cheaper, faster, harder Lightning Bolts and a stronger Searing Totem. The raid build moves them to Concussion, Reverberation, Elemental Devastation and Elemental Focus: Earth Shock hits harder and comes back sooner, its crits give your swings 9% crit for 10 seconds, and now and then a spell is free. Both builds take Shamanistic Focus, which cuts the cost of your shocks by 45%, and Improved Ghost Wolf, which makes Ghost Wolf instant and usable indoors: the fastest way across a raid room when the boss moves. The raid build pays for its twelfth Elemental point and the third point of Mindfulness with two points of Ancestral Knowledge.
 
 - **Thundering Strikes** (5 points): 5% crit on every attack and spell, and crits are what start Flurry.
 - **Ancestral Knowledge** (5 points, 3 in the raid build): up to 10% more Intellect. With Mental Dexterity, Intellect is attack power.
@@ -88,7 +88,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Stat priority
 
-Strength is attack power twice over. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Hit covers your swings, your Stormstrike and your shocks at once in Forever, so it is never wasted on half your kit. Agility gives crit and armor, and crit keeps Flurry up.
+Hit covers your swings, your Stormstrike and your shocks at once in Forever, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Agility gives crit and armor, and crit keeps Flurry up. Strength is attack power twice over.
 
 ## Best in slot
 

@@ -408,7 +408,7 @@
         ]
       },
       {
-        "text": "Lightning Bolt and Chain Lightning cast half a second faster than Classic before any talent, and Ghost Wolf's base cast is 2 seconds with Improved Ghost Wolf making it instant and usable indoors at 2 of 2.",
+        "text": "Lightning Bolt and Chain Lightning cast half a second faster than Classic before any talent, and Ghost Wolf's base cast is 3 seconds with Improved Ghost Wolf making it instant and usable indoors at 2 of 2.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
@@ -428,7 +428,7 @@
         ]
       },
       {
-        "text": "New talents include Lava Burst in Elemental, Maelstrom Weapon and Spirit Weapons in Enhancement and Water Shield in Restoration; Stormstrike now increases the Nature damage you deal rather than amplifying the next two Nature sources on the target.",
+        "text": "New talents include Lava Burst in Elemental, Maelstrom Weapon and Spirit Weapons in Enhancement and Water Shield in Restoration; Stormstrike now makes your own next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder, rather than the next two Nature hits from anyone.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",
@@ -538,7 +538,7 @@
         ]
       },
       {
-        "text": "Banes and Curses are separate categories, so one of each can run on a target: Curse of Agony is Bane of Agony and Curse of Doom is Bane of Doom. Enslave Demon is renamed Subjugate Demon, and a new Incubus summon is named by four Demonology talents.",
+        "text": "Banes and Curses are separate categories, so one of each can run on a target: Curse of Agony is Bane of Agony and Curse of Doom is Bane of Doom. Enslave Demon is renamed Subjugate Demon, and a new Incubus summon stands beside the Succubus in eight Demonology talents.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
@@ -548,7 +548,7 @@
         ]
       },
       {
-        "text": "New talents include Pandemic, Drain Hope and Malevolence, which lets damage-over-time effects critically strike; Warlock has the largest tree rework of any class in one tally of the demo trees.",
+        "text": "New talents include Malevolence (5% Shadow crit), Pandemic, Wrack, Decimation, Demonic Pact, Shadow and Flame, Incinerate and Bane of Havoc; Warlock has the largest tree rework of any class in one tally of the demo trees.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",
