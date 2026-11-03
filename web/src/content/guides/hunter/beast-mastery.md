@@ -82,7 +82,7 @@ Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of 
 
 As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and Berserking or Blood Fury together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
-From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. When it comes up and an auto shot has just left, so the next one is more than a second away, cast Aimed Shot: since the November hotfix it hits about twice as hard as before and beats Multi-Shot when the cast fits. If an auto shot is about to fire, take Multi-Shot instead, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot while you have mana.
+From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. When it comes up and an auto shot has just left, so the next one is more than about a second away, cast Aimed Shot: since the November hotfix it hits about twice as hard as before and beats Multi-Shot when the cast fits. If an auto shot is about to fire, take Multi-Shot instead, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot while you have mana.
 
 Auto Shot does more damage than any button you press, so protect it:
 
