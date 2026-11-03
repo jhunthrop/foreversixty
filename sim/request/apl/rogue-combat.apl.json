@@ -1,5 +1,37 @@
 {
   "type": "TypeAPL",
+  "prepullActions": [
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 1787,
+            "rank": 4
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-3s"
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 11290,
+            "rank": 6
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "0s"
+        }
+      }
+    }
+  ],
   "priorityList": [
     {
       "action": {
@@ -28,7 +60,7 @@
           }
         }
       },
-      "notes": "Eviscerate at five combo points. It sits above Slice and Dice, so a full set of points never goes into a refresh."
+      "notes": "Eviscerate at five combo points."
     },
     {
       "action": {
@@ -61,20 +93,20 @@
                   },
                   "rhs": {
                     "const": {
-                      "val": "3"
+                      "val": "1"
                     }
                   }
                 }
               },
               {
                 "cmp": {
-                  "op": "OpLt",
+                  "op": "OpLe",
                   "lhs": {
-                    "currentTime": {}
+                    "currentComboPoints": {}
                   },
                   "rhs": {
                     "const": {
-                      "val": "15s"
+                      "val": "2"
                     }
                   }
                 }
@@ -83,7 +115,7 @@
           }
         }
       },
-      "notes": "Slice and Dice in the first 15 seconds, at three or more combo points, when it is not up."
+      "notes": "Slice and Dice whenever it drops, at one or two combo points. Five points always go to Eviscerate; a short Slice and Dice keeps the attack speed up for far fewer points."
     },
     {
       "action": {

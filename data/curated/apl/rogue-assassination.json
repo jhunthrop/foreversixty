@@ -1,7 +1,7 @@
 {
   "spec": "rogue-assassination",
   "state": "written",
-  "notes": "Assassination at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md) and re-searched at the raid build (design/reviews/2026-10-07-raid-builds.md). Mutilate builds, and combo points are spent from three: Cold Blood and Eviscerate, with Slice and Dice ahead of it whenever it has lapsed. Venom is not cast: the engine models it to the client's numbers, over-credits it against Vile Poisons (the client adds the two bonuses, the engine multiplies them), and still measures dropping the line as a gain, so it stays a talent the rotation does not use. Without the Mutilate talent the Mutilate line falls through to Sinister Strike. Every rank named here is checked against this build's own spellconst.",
+  "notes": "Assassination at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md) and re-searched at the raid build (design/reviews/2026-10-07-raid-builds.md). Mutilate builds, and combo points are spent from three: Cold Blood and Eviscerate, with Slice and Dice ahead of it whenever it has lapsed. Venom is not cast: the engine models it to the client's numbers, over-credits it against Vile Poisons (the client adds the two bonuses, the engine multiplies them), and still measures dropping the line as a gain, so it stays a talent the rotation does not use. Without the Mutilate talent the Mutilate line falls through to Sinister Strike. Every rank named here is checked against this build's own spellconst. 2026-11-02 guide rewrite: Stealth and Garrote on the pull, +0.55% raid 60 (Ambush -0.1%).",
   "expected_idle": [
     {
       "id": 11294,
@@ -35,6 +35,38 @@
   ],
   "rotation": {
     "type": "TypeAPL",
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1787,
+              "rank": 4
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-3s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 11290,
+              "rank": 6
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "0s"
+          }
+        }
+      }
+    ],
     "priorityList": [
       {
         "action": {

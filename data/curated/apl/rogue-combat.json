@@ -1,7 +1,7 @@
 {
   "spec": "rogue-combat",
   "state": "written",
-  "notes": "Combat at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md): Eviscerate spends five combo points, Slice and Dice is opened at three early on and refreshed at five, Adrenaline Rush goes on cooldown (Blade Flurry is picked up by autocastOtherCooldowns), and Backstab builds with a dagger, Sinister Strike without one. Every rank named here is checked against this build's own spellconst.",
+  "notes": "Combat at 60. Stealth and Garrote on the pull (a bleed ignores the boss's unsundered armor; Ambush gets none of Puncturing Wounds, Lethality or Aggression). Eviscerate at five combo points, Slice and Dice whenever it drops at one or two, Adrenaline Rush on cooldown (Blade Flurry is picked up by autocastOtherCooldowns), Backstab with a dagger and Sinister Strike without one. 2026-11-02 guide rewrite: replaces the 15 s Slice and Dice gate; raid 60 616.75 to 625.5 (+1.4%), bare 60 within 0.1%, bare 20 to 50 down 0.7 to 3.1% (energy-starved, no Relentless Strikes). Every rank named here is checked against this build's own spellconst.",
   "engineering_notes": {
     "1": "Previously starved entirely: Slice and Dice used to sit here instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points."
   },
@@ -24,6 +24,38 @@
   ],
   "rotation": {
     "type": "TypeAPL",
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1787,
+              "rank": 4
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-3s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 11290,
+              "rank": 6
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "0s"
+          }
+        }
+      }
+    ],
     "priorityList": [
       {
         "action": {
@@ -52,7 +84,7 @@
             }
           }
         },
-        "notes": "Eviscerate at five combo points. It sits above Slice and Dice, so a full set of points never goes into a refresh."
+        "notes": "Eviscerate at five combo points."
       },
       {
         "action": {
@@ -85,20 +117,20 @@
                     },
                     "rhs": {
                       "const": {
-                        "val": "3"
+                        "val": "1"
                       }
                     }
                   }
                 },
                 {
                   "cmp": {
-                    "op": "OpLt",
+                    "op": "OpLe",
                     "lhs": {
-                      "currentTime": {}
+                      "currentComboPoints": {}
                     },
                     "rhs": {
                       "const": {
-                        "val": "15s"
+                        "val": "2"
                       }
                     }
                   }
@@ -107,7 +139,7 @@
             }
           }
         },
-        "notes": "Slice and Dice in the first 15 seconds, at three or more combo points, when it is not up."
+        "notes": "Slice and Dice whenever it drops, at one or two combo points. Five points always go to Eviscerate; a short Slice and Dice keeps the attack speed up for far fewer points."
       },
       {
         "action": {
