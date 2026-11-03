@@ -236,3 +236,19 @@ func TestFactionOfRaceCoversEveryRace(t *testing.T) {
 		t.Error("an unknown race has no faction")
 	}
 }
+
+// A faction row is measured on its band's published race, not on every race of
+// the faction (round 12 review), so each one says which race it was measured on.
+func TestFactionRankChoicesNameTheRaceMeasured(t *testing.T) {
+	var file rankChoicesFile
+	readJSON(t, curatedRankChoices, &file)
+	for spec, spells := range file.Specs {
+		for _, sp := range spells {
+			for _, row := range sp.Bands {
+				if row.Faction != "" && !strings.Contains(strings.ToLower(row.Note), "measured on") {
+					t.Errorf("%s %s from %d (%s): a faction row's note names the race it was measured on", spec, sp.Spell, row.FromLevel, row.Faction)
+				}
+			}
+		}
+	}
+}
