@@ -118,7 +118,7 @@ const lines: ConsumableLine[] = [
                         consumableIcons && <span class="extras-icon" aria-hidden="true" />
                       )}
                       <span class="extras-strong">{line.row.name}</span>
-                      {line.suffix !== undefined && <span class="extras-suffix">{`— ${line.suffix}`}</span>}
+                      {line.suffix !== undefined && <span class="extras-suffix">{`(${line.suffix})`}</span>}
                     </span>
                   </td>
                   <td class="extras-gives">{line.row.gives}</td>

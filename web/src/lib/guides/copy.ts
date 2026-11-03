@@ -4,7 +4,7 @@
 import { betaOver } from './beta';
 
 const STATUS_NOTE_TAIL =
-  "comes from this site's simulator running on the client's own data, not from play. Class mechanics carry over from 1.12 where the demo showed no change.";
+  "is simulated on the client's own data, not measured in play. Class mechanics carry over from 1.12 where the demo showed no change.";
 
 export const guidesCopy = {
   loadThisBuild: 'Load this build',
@@ -20,8 +20,8 @@ export const guidesCopy = {
   /** The /guides index line. Before launch it names the beta cap; at launch the cap is gone. */
   indexHonestyLine: (now: Date = new Date()): string =>
     betaOver(now)
-      ? "Level 60 picks come from this site's simulator."
-      : "The beta stops at level 30. Level 60 picks come from this site's simulator.",
+      ? "Level 60 picks are simulated on the client's own data."
+      : "The beta stops at level 30. Level 60 picks are simulated on the client's own data.",
   roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
     role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank',
   readTheGuide: 'Read the guide',
@@ -69,7 +69,7 @@ export const guidesCopy = {
   bestInSlot: 'Best in slot',
   levelRange: 'Level range',
   bisCaption: (race: string, faction: string): string =>
-    `Picks for a ${race} (${faction}), ranked by this site's simulator with every item equipped.`,
+    `Picks for a ${race} (${faction}), ranked in simulation with the full set equipped.`,
   fullListLink: 'Full list and alternatives',
   preRaidNote:
     'These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.',
@@ -80,8 +80,8 @@ export const guidesCopy = {
   enchants: 'Enchants',
   consumables: 'Consumables',
   enchantsNote:
-    'Only enchants the simulator can score are listed. Crit, hit and haste enchants are not scored yet.',
-  consumablesNote: 'What the simulator gives this spec in its raid-ready run.',
+    'Only enchants with a simulated value are listed. Crit, hit and haste enchants are not scored yet.',
+  consumablesNote: 'What this spec is simulated with in a raid.',
   enchantColumn: 'Enchant',
   givesColumn: 'Gives',
   consumableColumn: 'Consumable',
@@ -104,7 +104,7 @@ export const guidesCopy = {
   expertiseCap: (dodge: string, parry: string | undefined): string =>
     `Expertise cap: ${dodge}% (dodge)${parry === undefined ? '' : `, ${parry}% (parry)`}`,
   notSignificantNote: (labels: string, plural: boolean): string =>
-    `${labels} shows as "Not significant": the simulator cannot tell ${plural ? 'them' : 'it'} from zero.`,
+    `${labels} ${plural ? 'show' : 'shows'} as "Not significant": too small to tell from zero in simulation.`,
   weightColumn: (anchor: string): string => `Weight (${anchor} = 1.00)`,
   dpsPerPointColumn: 'DPS per point',
   unitLine: (stat: string, dps: string): string => `1 point of ${stat} = ${dps} DPS at level 60`,
