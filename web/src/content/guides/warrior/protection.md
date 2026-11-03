@@ -92,9 +92,9 @@ Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you 
 
 **The pull.** Bloodrage before you pull so your first Sunder Armor or Shield Slam is paid for, and Battle Shout with it unless a raid warrior's shout is already up. Then open with Shield Slam or Sunder. Revenge lights the first time you block, dodge or parry; press it then. Let the damage dealers start after your first two or three globals. Taunt only to take a target back; it does nothing for you on a boss you already hold.
 
-**The priority.** Shield Block whenever it is down: it is off the global cooldown, it lasts 7 seconds on a 5 second cooldown, and every block it gives you also lights Revenge. Revenge the moment it lights. Shield Slam on cooldown. Keep Thunder Clap on the boss and refresh it in its last 3 seconds: its attack speed slow is a straight cut to the damage you take. Sunder Armor on every free global: five stacks for the raid, then flat threat on every cast. Heroic Strike with spare rage above 40.
+**The priority.** Shield Block whenever it is down: it is off the global cooldown, it lasts 7 seconds on a 5 second cooldown, and every block it gives you also lights Revenge. Revenge the moment it lights. Shield Slam on cooldown. Keep Thunder Clap on the boss and refresh it in its last 3 seconds: its attack speed slow is a straight cut to the damage you take. Demoralizing Shout comes next, refreshed the same way. Sunder Armor on every free global: five stacks for the raid, then flat threat on every cast. Heroic Strike with spare rage above 40.
 
-**Demoralizing Shout.** Keep it on any boss whose melee hits scale with attack power, unless a druid or another warrior already holds it, and refresh it on a free global.
+**Demoralizing Shout.** 204 less melee attack power at 60 takes a real slice off every swing, so keep it on the boss and refresh it in its last 3 seconds, unless a druid or another warrior already holds it: two do not stack.
 
 **Shield Block timing.** It is your mitigation and your rage engine at once, so it never waits for a big hit: keep it up. On a boss that crushes, it is also what pushes crushing blows off the table.
 

@@ -117,6 +117,16 @@ Aligned, checked spell by spell. The helpers' full lists are condensed here.
 | Holy Power "175% instead of 150%" is open | A 50% larger crit bonus on a 50% bonus is 175%. Aligned. |
 | Holy Light and Healing Wave rank 9 might be trainer rows | They are books in book-ranks.json. Aligned. |
 
+## 5. Follow-up after the healers and tanks lanes merged (int/r14 c2cd3dc5b)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| F1 | Priest guides and notes against the healers lane's new ranks. holy.md said Renew "at a low rank ... rank 3", Heal "rank 4" as the raid filler, and the tank's Flash Heal "the low ranks". discipline.md and both Renew notes said "a low rank". | The curated APLs now cast Renew 139 (rank 1), Heal 2054 (rank 1, learned at 16, 3.0 s, 2.5 with Divine Fury) in a raid with rank 4 on the bare 60 and leveling rows (rank-choices.json priest-holy), and Flash Heal 10917 (rank 7, top trainer rank) on the tank. Wording from healers.md "For other lanes". | CONFIRMED (prose behind the rotation) | the healers lane's round-14 rank change | S (this commit) |
+| F2 | The new Demoralizing Shout and Demoralizing Roar rotation notes said "204 attack power off it at 60 takes about a fifth of its melee damage away" | 204 is the client value: 11556 bp -196 and 9898 bp -193, both -1.4 a level, so 204 at 60 for each. "About a fifth" rests on the modeled boss attack power (268, ruling 4), so the note no longer states it. | CONFIRMED (minor). New: "204 less melee attack power at 60 takes a real slice off every swing. One is enough, since it does not stack with a druid's Demoralizing Roar" (or a warrior's Shout). | the tanks lane's round-14 lines | S (this commit) |
+| F3 | The bear guide's priority list had no Demoralizing Roar, and the Protection warrior priority paragraph had no Demoralizing Shout. The warrior's own paragraph said "refresh it on a free global". | The tanks lane's APLs keep the roar after Faerie Fire and the shout after Thunder Clap, each refreshed in its last 3 seconds (Shout lasts 45 s, Roar 30 s) | CONFIRMED. The roar is item 4 of the bear priority; the shout follows Thunder Clap; both refresh in their last 3 seconds. | the tanks lane's round-14 lines | S (this commit) |
+
+The tanks lane's rewritten top-level APL `notes` are developer prose that no page renders, so they are left as written. Their measurement figures are fine there.
+
 ## Before/after
 
 No sim number moves. Every change is prose, a rotation note, a reason string or a guide stat set.

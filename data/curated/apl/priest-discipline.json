@@ -348,7 +348,7 @@
             }
           }
         },
-        "notes": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana."
+        "notes": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana."
       },
       {
         "action": {
