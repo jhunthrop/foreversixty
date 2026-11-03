@@ -1,167 +1,216 @@
 ---
 // web/src/components/guides/SpecCard.astro
-// The class landing's own spec card (rebuild spec §4.B): icon, role, one summary line, the
-// set figure in its role's own unit (DPS, HPS, or damage taken per second for a tank; only
-// when the spec's own band-60 BiS file resolves one -- `classLandingSetMetric`, never a zero
-// or dash standing in for missing data), and a "Read the guide" button. A small
-// "Your spec" pill sits beside the role label when this card matches the signed-in visitor's
-// own character (server-rendered: the page already knows this at build time via the request's
-// own session read -- see the class landing page's own header comment for why this stays a
-// build-time prop rather than a client fetch).
+// The class landing's spec card (spec design/specs/2026-11-02-class-landing.md §5): the whole
+// card is the link to the spec guide. The spec's icon, its role, its name in the class colour,
+// one line on how it plays (the guide's own Overview summary) and one call to action. No
+// figure: the sim owns numbers. The page's own script adds the "Your spec" pill to the role
+// row for a signed-in visitor of this class; the row reserves the pill's height, so nothing
+// moves when it lands.
 import { guidesCopy } from '../../lib/guides/copy';
 import { publishedIcon } from '../../lib/bis/spec-icon';
 import { dataUrl } from '../../lib/planner/load';
-import { setMetricLine, type SetMetric } from '../../lib/guides/role-metric';
 
 interface Props {
-  classSlug: string;
   className: string;
   classColor: string;
   specSlug: string;
   specName: string;
   role: 'dps' | 'healer' | 'tank';
-  description: string;
-  icon?: string;
-  setMetric?: SetMetric;
+  /** How the spec plays, plain text. */
+  line: string;
+  icon: string;
   href: string;
   build: string;
-  isYourSpec?: boolean;
 }
 
-const {
-  specSlug,
-  className,
-  classColor,
-  specName,
-  role,
-  description,
-  icon: specIcon,
-  setMetric,
-  href,
-  build,
-  isYourSpec = false,
-} = Astro.props;
+const { className, classColor, specSlug, specName, role, line, icon: specIcon, href, build } = Astro.props;
+// A build with a partial icon set (the fixture) shows the neutral square, never a broken image.
 const icon = publishedIcon(build, specIcon);
 ---
 
-<div class="spec-card panel" data-testid={`guide-spec-card-${specName.toLowerCase().replace(/\s+/g, '-')}`}>
-  <div class="spec-card-head">
-    {icon !== undefined ? (
-      <img
-        src={dataUrl(build, `icons/${icon}.webp`)}
-        alt=""
-        width="40"
-        height="40"
-        loading="eager"
-        decoding="async"
-        class="spec-card-icon"
-      />
-    ) : (
-      <span class="spec-card-icon spec-card-icon-placeholder" aria-hidden="true" />
-    )}
-    <div class="spec-card-titles">
-      <span
-        class="label spec-card-role"
-        data-spec-slug={specSlug}
-        data-testid={`guide-spec-card-role-${specSlug}`}
-      >
-        {guidesCopy.roleLabel(role)}
-        {isYourSpec && <span class="pill pill-site spec-card-your-spec">{guidesCopy.yourSpecPill}</span>}
-      </span>
-      <span class="spec-card-name" style={`color:${classColor}`}>
-        {specName} {className}
-      </span>
-    </div>
-  </div>
-  <p class="spec-card-description">{description}</p>
-  {setMetric !== undefined && (
-    <span class="numeric spec-card-dps" data-testid="guide-spec-card-dps" data-role={setMetric.role}>
-      {setMetricLine(setMetric)} <span class="spec-card-dps-suffix">{guidesCopy.setDpsLineSuffix}</span>
-    </span>
+<a
+  href={href}
+  class="spec-card card-surface-quiet"
+  aria-label={guidesCopy.readTheGuideAriaLabel(specName, className)}
+  data-testid={`guide-spec-card-${specSlug}`}
+>
+  {icon !== undefined ? (
+    <img
+      src={dataUrl(build, `icons/${icon}.webp`)}
+      alt=""
+      width="44"
+      height="44"
+      loading="eager"
+      decoding="async"
+      class="spec-card-icon"
+    />
+  ) : (
+    <span class="spec-card-icon" aria-hidden="true" />
   )}
-  <a
-    href={href}
-    class="rounded-control border-line-warm spec-card-button"
-    aria-label={guidesCopy.readTheGuideAriaLabel(specName, className)}
-  >
+  <span class="spec-card-text">
+    <span
+      class="label spec-card-role"
+      data-spec-slug={specSlug}
+      data-testid={`guide-spec-card-role-${specSlug}`}
+    >
+      {guidesCopy.roleLabel(role)}
+    </span>
+    <span class="heading-name spec-card-name" style={`color:${classColor}`}>
+      {specName}
+    </span>
+    <span class="spec-card-line" data-testid="guide-spec-card-line">
+      {line}
+    </span>
+  </span>
+  <span class="spec-card-cta" aria-hidden="true">
     {guidesCopy.readTheGuide}
-  </a>
-</div>
+    <span class="spec-card-arrow">→</span>
+  </span>
+</a>
 
 <style>
-  .panel {
-    background: var(--surface-card);
-    border: 1px solid var(--color-line-card);
-    border-radius: var(--radius-panel);
-    box-shadow: var(--shadow-card);
-  }
+  /* Stacked (below 640 and from 1024): the icon beside the role and name, the line and the
+     call to action under them, the call to action pinned to the card's foot. */
   .spec-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-rows: 22px auto auto 1fr;
+    grid-template-areas:
+      'icon role'
+      'icon name'
+      'line line'
+      'cta cta';
+    column-gap: 12px;
+    padding: 16px 18px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition:
+      transform 140ms ease-out,
+      border-color 140ms ease-out,
+      background 140ms ease-out;
   }
-  .spec-card-head {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  .spec-card,
+  .spec-card :global(*) {
+    text-decoration: none;
   }
   .spec-card-icon {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
+    grid-area: icon;
+    align-self: start;
+    width: 44px;
+    height: 44px;
     border-radius: var(--radius-control);
     border: 1px solid var(--color-line);
+    background: var(--color-bg);
     object-fit: cover;
   }
-  .spec-card-icon-placeholder {
-    background: var(--color-bg);
-  }
-  .spec-card-titles {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
+  .spec-card-text {
+    display: contents;
   }
   .spec-card-role {
+    grid-area: role;
     display: flex;
     align-items: center;
     gap: 8px;
+    min-height: 22px;
+    color: var(--color-muted);
   }
-  .spec-card-your-spec {
+  .spec-card-role :global(.your-spec-pill) {
     text-transform: uppercase;
     font-size: 11px;
   }
   .spec-card-name {
-    font-family: var(--font-heading);
-    font-size: 16px;
-    font-weight: 800;
+    grid-area: name;
+    margin-top: 2px;
+    font-size: 20px;
+    line-height: 1.1;
   }
-  .spec-card-description {
-    margin: 0;
-    font-size: 13px;
+  .spec-card-line {
+    grid-area: line;
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 22px;
     color: var(--color-text);
   }
-  .spec-card-dps {
-    font-size: 13px;
-    color: var(--color-strong);
-  }
-  .spec-card-dps-suffix {
-    color: var(--color-muted);
-    font-weight: 400;
-    font-family: var(--font-body);
-  }
-  .spec-card-button {
-    margin-top: auto;
+  .spec-card-cta {
+    grid-area: cta;
+    align-self: end;
+    margin-top: 4px;
     display: inline-flex;
-    min-height: 44px;
     align-items: center;
-    justify-content: center;
-    padding: 0 16px;
+    gap: 6px;
+    min-height: 44px;
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--tracking-button);
     text-transform: uppercase;
     color: var(--color-gold);
+  }
+  .spec-card-arrow {
+    transition: transform 140ms ease-out;
+  }
+
+  @media (hover: hover) {
+    .spec-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-gold-deep);
+      background: linear-gradient(var(--row-hover), var(--row-hover)), var(--surface-card);
+    }
+    .spec-card:hover .spec-card-cta {
+      color: var(--color-gold-hover);
+    }
+    .spec-card:hover .spec-card-arrow {
+      transform: translateX(3px);
+    }
+  }
+  .spec-card:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-color: var(--color-gold-deep);
+    background: linear-gradient(var(--row-hover), var(--row-hover)), var(--surface-card);
+  }
+  .spec-card:active {
+    transform: translateY(0);
     border-color: var(--color-gold);
+    background:
+      linear-gradient(var(--row-hover), var(--row-hover)),
+      linear-gradient(var(--row-hover), var(--row-hover)), var(--surface-card);
+  }
+
+  /* 640 to 1023: a full-width row, icon | text | call to action. */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .spec-card {
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      grid-template-rows: 22px auto auto;
+      grid-template-areas:
+        'icon role cta'
+        'icon name cta'
+        'icon line cta';
+      column-gap: 16px;
+      padding: 16px 20px;
+    }
+    .spec-card-line {
+      margin-top: 6px;
+    }
+    .spec-card-cta {
+      align-self: center;
+      margin-top: 0;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .spec-card {
+      padding: 20px 22px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spec-card,
+    .spec-card-arrow {
+      transition: none;
+    }
+    .spec-card:hover,
+    .spec-card:hover .spec-card-arrow {
+      transform: none;
+    }
   }
 </style>

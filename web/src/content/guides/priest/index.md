@@ -19,16 +19,28 @@ sources:
     kind: community
 ---
 
-Two healing specs and one shadow caster, as always. What changed is how much every priest now carries.
+Two healing specs and one shadow caster, as always. Shadow is also how a priest levels. What changed is how much every priest now carries.
 
-**Discipline** is the tank healer: Penance on cooldown, a cheap shield to open Renewed Hope, and Divine Aegis shields from every crit. It is also the priest who can take Power Infusion for the raid's best caster. **Holy** heals everything else: Prayer of Mending bouncing off the tank, downranked Heal as the filler, and Prayer of Healing on any group that takes damage. **Shadow** keeps Shadow Word: Pain and Devouring Plague ticking, hits Mind Blast and Shadow Word: Death on cooldown, and heals its own group through Vampiric Embrace. Shadow is also how a priest levels.
+## What changed from 1.12
 
-**Every priest now has** Fear Ward, Devouring Plague, Shadow Word: Death, Divine Spirit, Binding Heal and Lightwell from the trainer. Mind Flay is a Shadow talent instead of a trainer spell, Penance and Prayer of Mending are the deep Discipline and Holy talents, and the trainer teaches their higher ranks once you have them. Shadowfiend is not learnable at launch. In Forever a heal learned below level 20 keeps its full healing power bonus, so low ranks of Renew and Lesser Heal are real mana savers at 60.
+- **Every priest now has** Fear Ward, Devouring Plague, Shadow Word: Death, Divine Spirit, Binding Heal and Lightwell from the trainer.
+- **Mind Flay** is a Shadow talent instead of a trainer spell, Penance and Prayer of Mending are the deep Discipline and Holy talents, and the trainer teaches their higher ranks once you have them.
+- **Shadowfiend** is not learnable at launch.
+- In Forever **a heal learned below level 20** keeps its full healing power bonus, so low ranks of Renew and Lesser Heal are real mana savers at 60.
 
-**The Gnome priest** is new. Gnomes bring Eureka! (three spells 10% cheaper and 10% stronger for 15 seconds, every 2 minutes), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. Gnome is a strong Alliance pick for any spec.
+## Races
 
-**Each race has its own two priest spells.** Human: Divine Grace (a free instant heal that clears Weakened Soul) and Feedback. Dwarf: Desperate Prayer and Chastise; Fear Ward is no longer theirs alone. Night Elf: Elune's Grace and Starshards. Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness. Troll: Hex of Weakness and Shadowguard. Each spec guide says which ones matter to it.
+**Race picks.**
 
-**Race picks.** Healers: Human on Alliance for The Human Spirit and Divine Grace, Undead on Horde for Dark Sacrifice. Shadow: Gnome on Alliance for Eureka!, Undead on Horde. Dwarf's 1% hit, Night Elf's Elune's Light and Troll's Berserking are all close enough to play what you like.
+- Healers: Human on Alliance for The Human Spirit and Divine Grace, Undead on Horde for Dark Sacrifice.
+- Shadow: Gnome on Alliance for Eureka!, Undead on Horde.
+- Dwarf's 1% hit, Night Elf's Elune's Light and Troll's Berserking are all close enough to play what you like.
+- **The Gnome priest** is new. Gnomes bring Eureka! (three spells 10% cheaper and 10% stronger for 15 seconds, every 2 minutes), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. Gnome is a strong Alliance pick for any spec.
 
-The beta stops at level 30. Everything above it, the level 60 talents, rotations and gear, is worked out from the client's own data rather than played, and the spec guides below say where that matters.
+**Each race has its own two priest spells.**
+
+- Human: Divine Grace (a free instant heal that clears Weakened Soul) and Feedback.
+- Dwarf: Desperate Prayer and Chastise; Fear Ward is no longer theirs alone.
+- Night Elf: Elune's Grace and Starshards.
+- Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness.
+- Troll: Hex of Weakness and Shadowguard.

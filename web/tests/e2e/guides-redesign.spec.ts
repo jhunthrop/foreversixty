@@ -1,29 +1,25 @@
 // web/tests/e2e/guides-redesign.spec.ts
 // Acceptance sweep for the guides rebuild (design/specs/2026-10-04-guides.md, §11): the
-// nine-crest index, the class landing's spec cards (DPS only for a ranked spec), the spec
+// nine-crest index, the class landing's spec cards (spec 2026-11-02), the spec
 // guide's 3-up action rail, and the Leveling band strip's own planner links -- at desktop
 // and phone, with the site's own "nothing scrolls sideways" sweep every page-level spec
 // runs (layout.spec.ts's own convention).
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { parse as parseYaml } from 'yaml';
+import { cardLineFor } from '../../src/lib/guides/class-landing';
 import { expect, test } from './support/test';
 
 const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };
 
-/** A guide's own `description` frontmatter, read straight off disk -- round-1 fix (must
- *  fix, tenet 4): the class landing's spec cards used to clip this to ~90 characters at a
- *  clause break; they now show it in full, so this reads the same source of truth the page
- *  itself renders rather than hardcoding a copy of the sentence here. */
-function guideDescription(classSlug: string, specSlug: string): string {
+/** The card line the class landing shows: the spec guide's own Overview summary, read through
+ *  the same helper the page uses, so the test and the page share one source of truth. */
+function cardLine(classSlug: string, specSlug: string): string {
   const path = fileURLToPath(
     new URL(`../../src/content/guides/${classSlug}/${specSlug}.md`, import.meta.url),
   );
-  const raw = readFileSync(path, 'utf8');
-  const [, frontmatterBlock] = raw.split('---');
-  const data = parseYaml(frontmatterBlock ?? '') as { description: string };
-  return data.description;
+  const body = readFileSync(path, 'utf8').split(/^---$/m).slice(2).join('---');
+  return cardLineFor(body, path);
 }
 
 test.describe('desktop', () => {
@@ -37,24 +33,44 @@ test.describe('desktop', () => {
     await expect(specLinks).toHaveCount(28);
   });
 
-  test('/guides/warrior shows three spec cards, each with its own role metric', async ({ page }) => {
+  test('/guides/warrior leads with three spec cards that are each the link to their guide, with no figure', async ({
+    page,
+  }) => {
     await page.goto('/guides/warrior');
-    const cards = page.locator('[data-testid="guide-class-spec-cards"] > div');
+    await expect(page.locator('h1')).toHaveText('Warrior');
+    await expect(page.getByRole('tablist', { name: 'Spec' })).toHaveCount(0);
+    const cards = page.locator('[data-testid="guide-class-spec-cards"] > a');
     await expect(cards).toHaveCount(3);
-    const dpsLines = page.locator('[data-testid="guide-spec-card-dps"]');
-    // Arms and Fury show DPS; Protection, a tank, shows its own metric, never DPS.
-    await expect(dpsLines).toHaveCount(3);
-    await expect(dpsLines.filter({ hasText: 'DPS' })).toHaveCount(2);
+    await expect(cards.nth(1)).toHaveAttribute('href', '/guides/warrior/fury');
+    await expect(cards.nth(1)).toHaveAccessibleName('Read the Fury Warrior guide');
+    await expect(page.locator('[data-testid="guide-class-spec-cards"]')).not.toContainText(
+      /DPS at 60|per second/,
+    );
   });
 
-  test('every spec card shows its guide’s full frontmatter description, never clipped', async ({ page }) => {
+  test('every spec card says how the spec plays, from its guide’s Overview', async ({ page }) => {
     await page.goto('/guides/warrior');
     for (const specSlug of ['arms', 'fury', 'protection']) {
-      const card = page
-        .locator('[data-testid="guide-class-spec-cards"] > div')
-        .filter({ has: page.getByTestId(`guide-spec-card-role-${specSlug}`) });
-      await expect(card.locator('.spec-card-description')).toHaveText(guideDescription('warrior', specSlug));
+      await expect(
+        page.getByTestId(`guide-spec-card-${specSlug}`).getByTestId('guide-spec-card-line'),
+      ).toHaveText(cardLine('warrior', specSlug));
     }
+  });
+
+  test('the class facts follow the cards under their own headings, with no sourcing caveat', async ({
+    page,
+  }) => {
+    await page.goto('/guides/warrior');
+    await expect(page.locator('.class-landing-body h2')).toHaveText(['What changed from 1.12', 'Races']);
+    await expect(page.getByTestId('class-landing-what-changed-from-1-12').locator('li')).toHaveCount(8);
+    await expect(page.getByTestId('confidence-footer-note')).toHaveCount(0);
+  });
+
+  test('druid gives Feral and Feral Bear their own icons', async ({ page }) => {
+    await page.goto('/guides/druid');
+    const cat = await page.getByTestId('guide-spec-card-feral').locator('img').getAttribute('src');
+    const bear = await page.getByTestId('guide-spec-card-feral-bear').locator('img').getAttribute('src');
+    expect(cat).not.toBe(bear);
   });
 
   test('/guides/warrior/fury rail shows four rotation lines with icons, Load/Sim buttons and stat priority lines', async ({
@@ -193,7 +209,7 @@ test.describe('no horizontal overflow', () => {
     test.describe(label, () => {
       test.use({ viewport });
 
-      for (const path of ['/guides', '/guides/warrior', '/guides/warrior/fury']) {
+      for (const path of ['/guides', '/guides/warrior', '/guides/druid', '/guides/warrior/fury']) {
         test(`${path} fits the viewport without scrolling sideways`, async ({ page }) => {
           await page.goto(path);
           const { scrollWidth, clientWidth } = await page.evaluate(() => ({

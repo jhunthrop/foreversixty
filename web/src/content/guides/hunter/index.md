@@ -24,11 +24,7 @@ sources:
 
 Hunter is Forever's physical damage class with a pet and a bow. All three specs deal damage, and in Forever they no longer play the same way: two shoot, one fights in melee.
 
-- **Beast Mastery** puts a big share of your damage in the pet. Bestial Wrath is the burst, and your shots fill the gaps.
-- **Marksmanship** puts the damage in your own shots: Multi-Shot on cooldown, Arcane Shot in the gaps, and an auto shot you never let slip.
-- **Survival** is a melee spec. Two weapons, Raptor Strike, Mongoose Bite and Lacerate, and Lone Wolf instead of a pet.
-
-What changed from Classic:
+## What changed from 1.12
 
 - **Pets are reworked.** A pet copies 10% of your attack power and all of your crit, and it gets no buffs from your raid. Your gear is what makes it hit.
 - **Aimed Shot is a trained spell** with a 2 second cast, and it shares one 6 second cooldown with Multi-Shot. Instant Multi-Shot wins that cooldown, so Aimed Shot is an opener.
@@ -37,6 +33,6 @@ What changed from Classic:
 - **Trueshot Aura** is ranged attack power only, for your party and raid.
 - **Mail from 40.** Hunters wear leather until 40.
 
-**Human Hunter** is one of the six new race and class pairs, so the Alliance has a Human Hunter for the first time. Skyborne can be Hunters on either faction.
+## Races
 
-The Beast Mastery, Marksmanship and Survival guides below cover talents, the rotation, stats, gear and races for each spec.
+**Human Hunter** is one of the six new race and class pairs, so the Alliance has a Human Hunter for the first time. Skyborne can be Hunters on either faction.

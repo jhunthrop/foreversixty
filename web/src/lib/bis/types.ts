@@ -457,6 +457,8 @@ export interface SpecCatalogEntry {
   tree_index: number;
   reference_stat: string;
   weight_stats: string[];
+  /** The spec's talent-frame icon, the icon file's base name. */
+  icon: string;
 }
 
 /** `data/builds/<build>/items/<class>.json`'s own per-item shape, the fields this lane's

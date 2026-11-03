@@ -11,6 +11,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { SpecCatalogEntry } from './types';
 
 function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -37,4 +38,16 @@ export function publishedIcon(build: string, icon: string | undefined): string |
   if (icon === undefined) return undefined;
   const file = path.join(repoRoot(), 'web/public/data', build, 'icons', `${icon}.webp`);
   return existsSync(file) ? icon : undefined;
+}
+
+/** Specs drawn from another icon than their specs.json row: Feral (cat) shares
+ *  ability_racial_bearform with Feral Bear there, so it takes the cat form's own icon, the
+ *  same override the raid roster's emoji uses (api/internal/raidspec, owner ruling 2026-10-28). */
+const SPEC_ICON_OVERRIDES: Readonly<Record<string, string>> = {
+  'druid-feral': 'ability_druid_catformattack',
+};
+
+/** The spec's own talent-frame icon (specs.json's `icon`), for the class landing's spec cards. */
+export function specCardIcon(entry: Pick<SpecCatalogEntry, 'spec' | 'icon'>): string {
+  return SPEC_ICON_OVERRIDES[entry.spec] ?? entry.icon;
 }

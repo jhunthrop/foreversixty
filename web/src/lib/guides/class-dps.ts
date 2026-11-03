@@ -1,6 +1,6 @@
 // web/src/lib/guides/class-dps.ts
-// The class landing's spec-card set figure (rebuild spec §4.B) and the Leveling band strip's
-// own faction pick (§4.D) share one rule, stated once here rather than twice: the guide's
+// The spec guide's band-60 numbers and the Leveling band strip's own faction pick (§4.D)
+// share one rule, stated once here rather than twice: the guide's
 // own first `recommendedRaces` entry decides which faction's band data to read. Never a
 // literal DPS number or a hardcoded race/faction table in this module (round-1 mock review
 // finding 1's own defect, closed by reading real reference data instead).
@@ -9,18 +9,18 @@ import { bandEntry, loadBisFile, realBisPath } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
 import { classRows, racesForClass } from '../planner/reference';
 import type { BisFile, BisExpertiseToCap, BisHitToCap, BisRole, BisStatWeight, Faction } from '../bis/types';
-import { roleOf, setMetricOf, type SetMetric } from './role-metric';
+import { roleOf } from './role-metric';
 
 /**
  * Whether the real pipeline has published a BiS file for this spec -- `loadBisFile` (used
  * below for the actual numbers once this is true) also falls back to a committed test
  * fixture (`src/data/fixtures/bis/<spec>.json`, `load.ts`'s own header comment: "until [the
  * real file] lands") when the pipeline has not published one yet. That fallback exists so
- * `/bis` always has something to render during development; a class landing card showing a
- * fixture's own placeholder DPS figure next to two specs' real, sim-ranked numbers would be
- * exactly the fabricated-precision the design review's "never a zero or dash standing in
- * for missing data" rule exists to prevent, so this card's own eligibility check reads the
- * real file's existence directly, never through the fixture-falling-back loader.
+ * `/bis` always has something to render during development; a guide showing a fixture's own
+ * placeholder figure next to real, sim-ranked numbers would be exactly the fabricated
+ * precision the "never a zero or dash standing in for missing data" rule exists to prevent,
+ * so the eligibility check reads the real file's existence directly, never through the
+ * fixture-falling-back loader.
  */
 export function hasRealBisFile(build: string, spec: string): boolean {
   return existsSync(realBisPath(build, spec));
@@ -29,9 +29,8 @@ export function hasRealBisFile(build: string, spec: string): boolean {
 /**
  * `loadBisFile`, but `undefined` whenever the pipeline has not published a real file yet
  * (see `hasRealBisFile`'s own doc comment) -- the spec guide rail's Stat priority card and
- * the Leveling band strip (§4.C.3/§4.D) share this same "real data only" rule with the
- * class landing's DPS line, so none of this rebuild's three new numeric surfaces ever reads
- * a committed test fixture as if it were a shipped ranking.
+ * the Leveling band strip (§4.C.3/§4.D) share this same "real data only" rule, so no
+ * numeric surface ever reads a committed test fixture as if it were a shipped ranking.
  */
 export function rankedBisFile(build: string, spec: string): BisFile | undefined {
   if (!hasRealBisFile(build, spec)) return undefined;
@@ -56,29 +55,6 @@ export function factionForFirstRace(
   return race.faction === 'alliance' || race.faction === 'horde' ? race.faction : undefined;
 }
 
-/**
- * The class landing card's set figure (spec §4.B): this spec's band-60 set, at the faction
- * `factionForFirstRace` resolves, in its role's own unit (`setMetricOf`: damage, healing, or
- * damage taken for a tank). `undefined` for a spec with no ranked BiS file, no band-60 row at
- * that faction, or a tank band with no metrics, never a zero or a dash standing in for
- * missing data (tenet 8).
- */
-export function classLandingSetMetric(
-  build: string,
-  /** The spec's full id (`specs.json`'s own `spec` field, e.g. `"warrior-fury"`) -- the
-   *  BiS file's own name on disk, not the bare spec slug (`"fury"`). */
-  spec: string,
-  classSlug: string,
-  recommendedRaces: readonly string[],
-): SetMetric | undefined {
-  const file = rankedBisFile(build, spec);
-  if (file === undefined) return undefined;
-  const faction = factionForFirstRace(classSlug, recommendedRaces);
-  if (faction === undefined) return undefined;
-  const band = bandEntry(file, 60, faction);
-  return band === undefined ? undefined : setMetricOf(band);
-}
-
 /** This spec's band-60 stat weights, plus the file-level timestamp they were published
  *  with -- everything `railStatRows` (rail-stats.ts) and its own "Updated" caption need. */
 export interface Band60Weights {
@@ -98,7 +74,7 @@ export interface Band60Weights {
  * -- the one load path the Stat priority rail card and `GuideStatTable.astro` (live-numbers
  * lane, 2026-10-06) share, so a guide's own numbers never diverge by reading the band
  * through two different call sequences. `undefined` for a spec with no ranked BiS file or
- * no band-60 row at that faction, same as `classLandingSetMetric`'s own "real data only" rule.
+ * no band-60 row at that faction, never a zero standing in for missing data.
  */
 export function band60Weights(
   build: string,

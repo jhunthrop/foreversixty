@@ -14,7 +14,7 @@ sources:
   - label: 'Wowhead, Undead Paladins coming to Forever'
     url: https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823
     kind: community
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/combos.json'
+  - label: 'Forever Sixty build data, combos.json'
     url: https://foreversixty.gg/data/1.60.1.70753/combos.json
     kind: datamined
   - label: 'Power Up Gaming, Forever talent changes vs Classic'
@@ -24,9 +24,7 @@ sources:
 
 Paladin is the plate hybrid: one tree heals, one tanks with a shield, and one swings a two-hander. All three run on the same kit of Seals, Judgements and Blessings, and Forever reworked that kit from the ground up.
 
-**Undead Paladin** is new in Forever: the Horde has paladins for the first time, so Horde raids get Blessings and paladin tanks too. A paladin can be Human, Dwarf or Undead.
-
-What changed from 1.12, for every paladin:
+## What changed from 1.12
 
 - **Judgement no longer consumes your Seal.** You put a Seal up once every 30 seconds and Judge on cooldown. Old Seal twisting is dead: a new Seal just replaces the old one. Retribution's Unsealed Wrath brings a new kind of swap back at 60.
 - **Holy Strike** is a trainer spell from level 6, on a 10 second cooldown, and both melee specs press it.
@@ -36,4 +34,6 @@ What changed from 1.12, for every paladin:
 - **Blessing of Light, Blessing of Salvation and Blessing of Sanctuary are gone.** Holy's Oath of Light takes Light's place on one target. With no Salvation, your raid's damage dealers have no threat drop, which puts more on the tank.
 - **Talent trees** keep seven rows and 51 points, with a one-point milestone talent at 11, 16, 21 and 31 points in each tree. Holy Shield moved to Protection's 21 point row.
 
-Each spec guide above covers the talents, the rotation as you actually play it, stats, races and leveling.
+## Races
+
+**Undead Paladin** is new in Forever: the Horde has paladins for the first time, so Horde raids get Blessings and paladin tanks too. A paladin can be Human, Dwarf or Undead.
