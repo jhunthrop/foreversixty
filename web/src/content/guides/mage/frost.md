@@ -63,7 +63,7 @@ Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, 
 - **Missile Barrage** (2 points, Arcane): Frostbolt procs it 20% of the time, and the proc makes your next Arcane Missiles free and halves its channel.
 - **Precision** (3 points): 6% hit on every school. Every mage build takes it.
 
-One build does it all at 60, in a raid or out. Frost takes 31 points to Ice Barrier, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, which you only need for the 30 points Ice Barrier asks for. Twelve go into Arcane for **Arcane Concentration** (a free spell 10% of the time) and Missile Barrage. The last eight go into Fire for five ranks of **Incineration**, which adds 10% crit to Ice Lance, and Flame Throwing. Accelerant only speeds up Fireball and Frostfire Bolt, which Frost does not cast.
+One build does it all at 60, in a raid or out. Frost takes 31 points to Ice Barrier, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, which you only need for the 30 points Ice Barrier asks for. Twelve go into Arcane for **Arcane Concentration** (a free spell 10% of the time) and Missile Barrage. The last eight go into Fire for five ranks of **Incineration**, which adds 10% crit to Ice Lance, two of Flame Throwing and a spare point in Accelerant, which only speeds up Fireball, Frostfire Bolt and Arcane Wrath and does nothing for Frost.
 
 If a boss lets you stand within 10 yards, more points in Winter's Chill and Improved Cone of Cold turn Cone of Cold into a real nuke. Most bosses cleave, breathe or stomp at that range, so the build stays at range. Build it in the [talent planner](/planner?class=mage).
 

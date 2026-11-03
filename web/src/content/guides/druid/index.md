@@ -28,7 +28,7 @@ The druid is the class that fills any role from one character: a caster in Moonk
 - **Racials and Barkskin work in forms.** So does Faerie Fire, which is free in Cat and Bear Form on a 6 second cooldown.
 - **Omen of Clarity and Nature's Grasp are baseline**, at 20 and 10, so they cost no talent points.
 - **Tiger's Fury is gone.** Shifting Power, the Feral capstone, gives a cat 40 energy for mana instead. Furor now keeps your energy when you leave Cat Form instead of handing you energy on a shift, so classic powershifting is gone too.
-- **New buttons.** Lacerate and Primal Bite for the bear, Wild Growth and Bloom for Restoration, Poised for a cat's opener from 32, and Revive, a cheap out-of-combat resurrection from level 12.
+- **New buttons.** Lacerate and Primal Bite for the bear, Wild Growth and Bloom for Restoration, Poised for a cat's opener from 32, and Revive, an out-of-combat resurrection from level 12.
 - **Swiftmend keeps the HoT** it reads, so it is a heal of its own rather than a trade.
 
 ## Races

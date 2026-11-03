@@ -101,7 +101,7 @@ Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric
 
 **Undead** is the Horde pick for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. Will of the Forsaken breaks fears.
 
-**Gnome** brings Eureka!, three heals 10% stronger and 10% cheaper for 15 seconds every 2 minutes, and Expansive Mind's 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Troll** gets Berserking, 10% cast speed. **Night Elf** has Elune's Light, 10% crit for 15 seconds. **Dwarf** has Stoneform and Desperate Prayer, a free self heal.
+**Gnome** brings Eureka!, 8 seconds of 10% stronger and 10% cheaper heals every 2 minutes, and Expansive Mind's 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Troll** gets Berserking, 10% cast speed. **Night Elf** has Elune's Light, 10% crit for 15 seconds. **Dwarf** has Stoneform and Desperate Prayer, a free self heal.
 
 ## Professions
 

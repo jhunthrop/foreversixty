@@ -28,7 +28,7 @@ Warlock is a ranged caster that pays for mana with health through Life Tap, keep
 - **Improved Shadow Bolt is your own.** Its 20% applies to your Shadow damage only, not the raid's.
 - **Your demon scales from you** and does not take raid buffs. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.
 - **Portal of Summoning** is new at 60: you and two others open it, and then two people at the portal can summon any party or raid member. It costs five Soul Shards and has a one hour cooldown.
-- Unstable Affliction and Haunt are in the client files, but no trainer teaches either one.
+- **No Unstable Affliction and no Haunt.** No trainer or talent teaches either one, so your DoTs are Corruption, Immolate, your bane and, for Affliction, Siphon Life.
 
 ## Races
 

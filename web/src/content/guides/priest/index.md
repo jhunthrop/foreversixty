@@ -35,7 +35,7 @@ Two healing specs and one shadow caster, as always. Shadow is also how a priest 
 - Healers: Human on Alliance for The Human Spirit and Divine Grace, Undead on Horde for Dark Sacrifice.
 - Shadow: Gnome on Alliance for Eureka!, Undead on Horde.
 - Dwarf's 1% hit, Night Elf's Elune's Light and Troll's Berserking are all close enough to play what you like.
-- **The Gnome priest** is new. Gnomes bring Eureka! (three spells 10% cheaper and 10% stronger for 15 seconds, every 2 minutes), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. Gnome is a strong Alliance pick for any spec.
+- **The Gnome priest** is new. Gnomes bring Eureka! (8 seconds of 10% cheaper and 10% stronger spells, every 2 minutes), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. Gnome is a strong Alliance pick for any spec.
 
 **Each race has its own two priest spells.**
 

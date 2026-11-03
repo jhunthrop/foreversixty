@@ -86,7 +86,7 @@ You have no burst cooldown of your own on a boss: line your racial, trinket and 
 
 ### Trash, threat and survival
 
-- **Kidney Shot** costs no energy in Forever and stuns longer per combo point. Use it on casters. Kick, Gouge and Blind handle the rest; Elusiveness puts Blind on a short leash.
+- **Kidney Shot** costs 25 energy, sits on a 20 second cooldown and stuns longer per combo point, up to 6 seconds at five. Use it on casters. Kick, Gouge and Blind handle the rest; Elusiveness puts Blind on a short leash.
 - **Redirect** (trained at level 1) lifts your combo points off a dying mob and hands them to the next enemy you hit within 15 seconds.
 - **Feint** on cooldown on bosses where you sit near the tank's threat. **Vanish** drops you from the threat table, but a bleed or DoT on you puts you back in combat.
 - **Evasion** and Ghostly Strike's dodge are for melee trash that turns on you. Neither helps against spells.

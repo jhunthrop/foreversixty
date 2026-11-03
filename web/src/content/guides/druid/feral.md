@@ -60,7 +60,7 @@ The leveling build takes the points a questing cat wants first: Feral Charge to 
 - **Shredding Attacks** (3 points): Shred drops to 42 energy, and Shred is most of your globals.
 - **Savage Fury** (2 points): 10% more damage on Shred, Claw and Rake.
 - **Rend and Tear**: 2% more melee damage a point against a bleeding target, 10% at 5. Rip keeps the boss bleeding, so it is on for the whole fight after your first finisher.
-- **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and a bonus combo point on every builder crit. Crit is what makes your 5 points come quickly.
+- **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and a bonus combo point on builder crits (every time with both points while leveling, a 50% chance with the raid build's single point). Crit is what makes your 5 points come quickly.
 - **Predatory Strikes** (3 points): 150% of your level as attack power in Cat Form.
 - **Predatory Discipline** (1 point): Ferocious Bite keeps the bonus damage from your extra energy but no longer spends it. It also opens Shifting Power.
 - **Shifting Power** (1 point): the capstone, 40 energy for mana on an 8 second cooldown. It replaces Tiger's Fury, and without it the cat runs out of things to press.
@@ -109,4 +109,4 @@ Skinning and Leatherworking is the classic cat pair: leather is your armor, and 
 
 ## Leveling
 
-Cat Form arrives at 20. Before that, play as a caster: Moonfire, then Wrath, and Bear Form from 10 when a pull gets heavy. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. Open from Prowl with Ravage from behind once you learn it at 32, or Pounce from 36 when you cannot get behind. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Take Feral Charge early. Respec into the raid build at 60.
+Cat Form arrives at 20. Before that, play as a caster: Moonfire, then Wrath, and Bear Form from 10 when a pull gets heavy. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind once Shredding Attacks has it at 42 energy; before that, Claw's 45 energy buys more damage than Shred's 60. Open from Prowl with Ravage from behind once you learn it at 32, or Pounce from 36 when you cannot get behind. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Take Feral Charge early. Respec into the raid build at 60.
