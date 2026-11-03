@@ -239,8 +239,10 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toContain('data-testid="guide-enchants"');
     expect(html).toContain('data-testid="guide-consumables"');
     expect(html).toContain('Elixir of Frost Power');
-    expect(html).toContain('replaces both elixirs');
-    expect(html).toContain('Without a flask');
+    // A Classic flask stacks with the elixirs: listed beside them, never instead of them.
+    expect(html).toContain('Flask of Supreme Power');
+    expect(html).not.toContain('replaces both elixirs');
+    expect(html).not.toContain('Without a flask');
     expect(html).not.toContain('The caster meal');
     expect(html).toContain('data-testid="guide-race-table"');
     expect(html).toContain('data-testid="guide-race-row-gnome"');

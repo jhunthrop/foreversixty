@@ -335,7 +335,11 @@ export function specCooldowns(
       spellId: top.id,
       name: spell.name,
       rank: facts?.rank,
-      icon: facts?.icon ?? iconFor(build, talentIcons.get(spell.name)),
+      // A rank the sim's spell constants do not carry (Dash rank 3) still has the client's icon.
+      icon:
+        facts?.icon ??
+        iconFor(build, spellIcons(build)[String(top.id)]) ??
+        iconFor(build, talentIcons.get(spell.name)),
       clause: `${formatCooldown(cooldownMs)} cooldown`,
       cooldownMs,
       lit: isTalent,

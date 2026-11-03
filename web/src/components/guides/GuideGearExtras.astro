@@ -3,10 +3,11 @@
 // The two small tables under "Enchants and consumables": slot -> enchant, and consumable ->
 // what it gives. Both come from the build's data (lib/guides/gear-extras.ts); a table with no
 // rows is left out rather than shown empty. The consumables are shown the way the sim applies
-// them: a flask takes both elixir slots, so the elixirs sit under "Without a flask".
+// them: the flask and the elixirs together (a Classic flask stacks with both elixir kinds), then
+// food, oil and potions.
 import { dataUrl } from '../../lib/planner/load';
 import { guidesCopy } from '../../lib/guides/copy';
-import type { ConsumableRow, GearExtras } from '../../lib/guides/gear-extras';
+import { consumableLines, type ConsumableLine, type GearExtras } from '../../lib/guides/gear-extras';
 import GuideTableBox from './GuideTableBox.astro';
 
 interface Props {
@@ -18,22 +19,7 @@ const { build, extras } = Astro.props;
 // the column of empty frames is left out rather than drawn.
 const consumableIcons = extras.consumables.some((row) => row.icon !== undefined);
 
-type ConsumableLine = { header: string } | { row: ConsumableRow; suffix?: string };
-const flasks = extras.consumables.filter((row) => row.kind === 'flask');
-const elixirs = extras.consumables.filter((row) => row.kind === 'elixir');
-const others = extras.consumables.filter((row) => row.kind === 'other');
-const lines: ConsumableLine[] = [
-  ...flasks.map((row): ConsumableLine => ({
-    row,
-    suffix: elixirs.length > 0 ? guidesCopy.replacesBothElixirs : undefined,
-  })),
-  ...(flasks.length > 0 && elixirs.length > 0 ? [{ header: guidesCopy.withoutFlask }] : []),
-  ...elixirs.map((row): ConsumableLine => ({ row })),
-  ...(others.length > 0 && extras.consumables.length > others.length
-    ? [{ header: guidesCopy.alsoUsed }]
-    : []),
-  ...others.map((row): ConsumableLine => ({ row })),
-];
+const lines: ConsumableLine[] = consumableLines(extras.consumables);
 ---
 
 <div data-testid="guide-gear-extras">
@@ -118,7 +104,6 @@ const lines: ConsumableLine[] = [
                         consumableIcons && <span class="extras-icon" aria-hidden="true" />
                       )}
                       <span class="extras-strong">{line.row.name}</span>
-                      {line.suffix !== undefined && <span class="extras-suffix">{`(${line.suffix})`}</span>}
                     </span>
                   </td>
                   <td class="extras-gives">{line.row.gives}</td>
@@ -162,10 +147,6 @@ const lines: ConsumableLine[] = [
   .extras-strong {
     font-weight: 700;
     color: var(--color-strong);
-  }
-  .extras-suffix {
-    font-size: 13px;
-    color: var(--color-nav);
   }
   .extras-gives {
     font-size: 14px;

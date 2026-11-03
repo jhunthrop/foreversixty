@@ -4,13 +4,16 @@ classSlug: druid
 spec: feral
 role: dps
 build: 'FS1:1.60.1.70753:druid:night-elf:0/50212032123012123001/555023:'
-raidBuild: 'FS1:1.60.1.70753:druid:night-elf:05002/50230032023011125001/505003:'
+raidBuild: 'FS1:1.60.1.70753:druid:night-elf:05002/50230032023011125001/05503:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Strength, Agility, Critical strike, Attack power, Feral attack power, Hit, Melee haste]
-description: 'Talents, rotation, stats, and gear for Feral Druid in Forever, covering both Cat Form DPS and Bear Form tanking from the one tree.'
-updated: 2026-10-31
+description: 'Cat Form DPS in Forever: the raid build, the Ravage opener, Rip and Shred from behind, Shifting Power for energy, and what to drink in form.'
+updated: 2026-11-02
 confidence: inferred
 sources:
+  - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
@@ -30,69 +33,80 @@ sources:
 
 ## Overview
 
-Feral Combat is one tree for two jobs: Cat Form melee DPS built on Rip and Ferocious Bite, and Bear Form tanking. This guide covers both.
+The cat opens with Ravage, keeps Rip on the boss, Shreds from behind and turns mana into energy with Shifting Power. Bear tanking has [its own guide](/guides/druid/feral-bear).
 
 ### Strengths
 
-- Cat DPS spends combo points on Rip and Ferocious Bite
-- Shifting Power refills 40 energy for mana every 8 seconds
-- Omen of Clarity is baseline, so Clearcasting hands out free attacks
-- The same tree tanks in Bear Form, so one Druid can fill either role
+- Rip at 5 combo points is the hardest-hitting finisher you have, and it keeps the boss bleeding for Rend and Tear
+- Shifting Power turns mana into 40 energy every 8 seconds
+- Potions, Thistle Tea, weapon stones and Windfury Totem all work in Cat Form now
+- Your paw hits with your weapon's damage, so a real two-hander is a real upgrade
 
 ### Weaknesses
 
-- The cat and bear builds split the 51 points differently, so switching roles means a respec
-- A cat gains nothing from Thick Hide's Armor
-- A bear has no shield, Parry or Block
+- Shred and Ravage need you behind the target, so you lose damage on a boss that turns or moves
+- No Tiger's Fury: Forever removed it, and Shifting Power is the only energy button
+- Leaving Cat Form in combat costs you your energy bar unless you take Furor
 
 ### In a raid
 
-- **Role:** Melee DPS in Cat Form, or main tank in Bear Form
-- **Brings:** Leader of the Pack, a critical strike aura for the group
+- **Role:** Melee DPS in Cat Form
+- **Brings:** Leader of the Pack, 3% critical strike chance for everyone in range, on spells and attacks alike; Innervate and a battle rez in an emergency
 
 ## Talents and builds
 
-Client 1.60.1.70707 reworked this tree: Berserk and Improved Shifting Power are gone, Shifting Power and Primal Bite are the two 31-point talents, Lacerate and Predatory Discipline are new, and Furor and Heart of the Wild swapped trees (Furor is now on Feral's top row, Heart of the Wild on Restoration's).
+The leveling build takes the points a questing cat wants first: Feral Charge to close on runners, Brutal Impact for a longer Pounce stun. At 60, respec into the raid build. It beats the leveling build even without raid buffs, because it finishes Rend and Tear and moves the filler points into Genesis and Nature's Majesty.
 
-- **Ferocity** — up to 5 less Rage or Energy on Maul, Primal Bite, Swipe, Claw and Rake at rank 5.
-- **Shredding Attacks** — up to 18 less energy on Shred at rank 3, the filler you press most.
-- **Savage Fury** — up to 10% more damage at rank 2 on Claw, Rake, Shred, Maul and Swipe.
-- **Sharpened Claws** and **Natural Instinct** — 6% more critical strike chance in Cat Form and 20% more critical damage on your melee abilities.
-- **Predatory Strikes** — up to 150% of your level added to melee attack power in Cat or Bear Form at rank 3.
-- **Blood Frenzy** — up to a 100% chance at rank 2 for bonus Rage on a Bear crit, and a 100% chance for a bonus combo point on a Cat crit.
-- **Predatory Discipline** (1 point) — new in 1.60.1.70707: Ferocious Bite still deals its extra damage for the energy you have left after its cost, but no longer spends that energy. It is also the prerequisite for Shifting Power.
-- **Leader of the Pack** — 3% more critical strike chance for the party and raid, on attacks and spells alike since 1.60.1.70707.
-- **Rend and Tear** — up to 10% more damage from your melee abilities on a bleeding target. Your own Rip, Rake, Pounce or Lacerate counts, so once Rip is up the boss stays bleeding; the hits before your first Rip get no bonus. The raid build takes all five; the leveling build takes three, two of them from Feral Instinct, which only helps Swipe (about +1% in our level-60 search on the 1.60.1.70707 trees).
-- **Shifting Power** — a 31-point talent behind Predatory Discipline since 1.60.1.70707; see below.
+- **Shredding Attacks** (3 points): Shred drops to 42 energy, and Shred is most of your globals.
+- **Savage Fury** (2 points): 10% more damage on Shred, Claw and Rake.
+- **Rend and Tear**: 2% more melee damage a point against a bleeding target, 10% at 5. Rip keeps the boss bleeding, so it is on for the whole fight after your first finisher.
+- **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and a bonus combo point on every builder crit. Crit is what makes your 5 points come quickly.
+- **Predatory Strikes** (3 points): 150% of your level as attack power in Cat Form.
+- **Predatory Discipline** (1 point): Ferocious Bite keeps the bonus damage from your extra energy but no longer spends it. It also opens Shifting Power.
+- **Shifting Power** (1 point): the capstone, 40 energy for mana on an 8 second cooldown. It replaces Tiger's Fury, and without it the cat runs out of things to press.
+- **Leader of the Pack** (1 point): the raid's crit aura. Take it in every build.
+- **Heart of the Wild** and **Naturalist**: 10% more Strength in Cat Form and 10% more damage of every kind. These are why a cat goes into Restoration at all.
 
-The Restoration points reach **Naturalist**, 2% more damage a rank (10% at 5/5). The leveling build also takes **Heart of the Wild** (10% more Strength in Cat Form) and two ranks of **Natural Shapeshifter**, which make Shifting Power cheaper. The raid build spends its Balance points on **Genesis** (10% more periodic damage, so a bigger Rip) and **Nature's Majesty** (4% critical strike chance) instead of Heart of the Wild. Primal Bite and Lacerate are bear abilities and are left out.
+The raid build skips Furor. In Forever it no longer hands you energy on a shift; it only keeps your bar when you leave Cat Form. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. The raid build's Balance points are Genesis, 10% more periodic damage (a bigger Rip), and Nature's Majesty, 4% crit. Natural Shapeshifter (2 points leveling, 3 in the raid build) makes Shifting Power cheaper, which is mana you spend every 8 seconds. Primal Bite and Lacerate are bear buttons, and Brutal Impact and Feral Charge are for questing.
 
 ## Rotation and priority
 
-**Cat DPS**: Tiger's Fury is gone: Forever druids cannot learn it. Omen of Clarity is a trainer spell now, so every druid has it from level 20, and a Clearcasting proc makes whichever ability you press next cost nothing. Most of the time that is Shred, the filler, so it needs no button of its own; a free Rip or Ferocious Bite saves less. Leave Rake out: it costs 40 energy for a small bleed and one combo point, and in this site's simulator that energy is worth more spent on Shred and Rip. Rip alone keeps the boss bleeding for Rend and Tear, and keeping Rake up as well still measured about 4% worse in the raid-ready run. At 5 combo points, cast Rip if it isn't already running; once Rip is up, spend 5 combo points on Ferocious Bite instead of letting them cap out uselessly. Shred fills every other global, building combo points the rest of the time.
+**Open.** Prowl, walk behind the boss and Ravage as the tank pulls. Poised, a passive you learn at 32, makes your first ability cheaper when you start at full energy out of combat, so open from a full bar. Pounce is the opener only when you cannot get behind (or on trash you want stunned); Ravage hits much harder.
 
-**Shifting Power**: the tree's energy tool. It is instant, turns a slice of your base mana into 40 energy, and has an 8 second cooldown since client 1.60.1.70707 (Improved Shifting Power, which took 8 seconds off its old 16, is gone and its reduction is now the spell's own). Press it every time it comes off cooldown, but only when your energy is 60 or lower, so the whole 40 fits under the 100 cap; if you are above that, spend a few energy on Shred first and press it on the next global. It sits ahead of every finisher and builder in the order. The mana is otherwise unused in cat form, and Natural Shapeshifter makes it cheaper. Blizzard has not published whether it shares the global cooldown; our simulator treats it as an ordinary global, so if the real spell turns out to be off the global, you will do slightly better than this advice.
+**Finishers.** At 5 combo points, Rip if it has under 6 seconds left. Rip at 5 points does far more over its duration than a Bite, so it always wins. Ferocious Bite is only for 5 points you would otherwise sit on while Rip still has time. With Predatory Discipline the Bite keeps the damage from your spare energy without spending it, so do not pool energy for it. Never finish on fewer than 5 points against a boss.
 
-**Ferocious Bite with Predatory Discipline**: the bite no longer drains your energy, so there is no reason to hold it back; bite at 5 combo points whenever Rip has time left, as above. Waiting for a full bar before biting measured worse in our raid-ready run.
+**Shred** is everything else. Stand behind the target, every global. Rake is not worth its energy here: Rip alone keeps the boss bleeding, and the 35 energy buys more as Shred.
 
-**Bear tank**: Bear Form tanking has its own guide, [Feral Bear Druid](/guides/druid/feral-bear), with its own simulated rotation, build and stat table.
+**Energy.** Energy ticks 20 every 2 seconds. Press Shifting Power whenever it is ready and you are at 60 energy or less, so all 40 fits under the cap. If you are above 60, Shred first and press it on the next global. Clearcasting from Omen of Clarity makes your next ability free; it nearly always lands on a Shred, which needs no button of its own.
+
+**Faerie Fire.** In Cat Form it is free on a 6 second cooldown. If no one else has it on the boss, keep yours up.
+
+**Mana.** Shifting Power costs 55% of your base mana, and mana decides how many you get. With a paladin's Judgement of Wisdom on the boss, your hits refill most of it over a fight. Without one, or if you run dry, drink a mana potion in Cat Form; Forever lets you drink without shifting.
+
+**Adds and movement.** You have no cleave. On a pack, Rip the target that will live longest and Shred down the kill order. When the boss turns to you, or you cannot get behind, Claw in place of Shred until you can. Keep Rip rolling through movement; it ticks while you run.
+
+**Pull aggro.** Your threat is high with Leader of the Pack crits and Rend and Tear. Let the tank get three or four globals before your first Shred, and if you pull, Cower.
 
 ## Stat priority
 
-Weapon damage per second matters in Forever. In Cat Form your auto attack has your weapon's DPS at one swing a second, and Shred deals 155% of that hit, so a high-DPS two-hander beats a caster staff that carries more Strength and Agility.
+Weapon damage per second matters in Forever. Your Cat Form auto attack has your weapon's DPS at one swing a second, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. Agility is crit and attack power at once, which is why it leads. Strength is attack power, and Heart of the Wild adds 10% to it. A missed or dodged Shred costs you 42 energy and a combo point, which is why hit matters to a cat.
 
 ## Best in slot
 
-For Bear tanking, look for armor, stamina, and defense skill first.
+Wolfshead Helm is druid-only in Forever and now gives 5 more energy on every Shifting Power (and 5 more rage on Enrage). Leatherworkers make it. It is a level 40 blue with little on it besides the bonus, so it is a small upgrade while leveling; at 60 the BiS list weighs it against helms with real stats.
 
 ## Enchants and consumables
 
+Forever changed the old cat rules: almost every potion works in Cat Form without breaking it, rage potions and Thistle Tea work for druids, and stones, weightstones and weapon enchants count on your paw. So the cat drinks and sharpens like a rogue. Thistle Tea is a free bar of energy: drink it when you are nearly empty, never on top of a full bar. The one exception is Engineering bombs, which still knock you out of form.
+
 ## Races
+
+Night Elf brings Elune's Light, a burst of crit on a 3 minute cooldown that works in Cat Form. Racials are usable while shapeshifted in Forever, so line it up with your potion and trinkets. Tauren gets more health and War Stomp for trash.
 
 ## Professions
 
-Skinning and Leatherworking is the standard Feral pairing in Classic-era play: Skinning is free crafting material from every kill, and Leatherworking turns it into armor a melee Druid can actually wear.
+Skinning and Leatherworking is the classic cat pair: leather is your armor, and Leatherworking turns it into gear. Engineering is weaker for a cat than for a rogue, because its bombs cancel your form.
 
 ## Leveling
 
-Feral is generally considered the strongest leveling spec for Druid: Cat Form gives questing speed and burst damage, and Bear Form gives the durability to solo tougher pulls or tank early dungeons.
+Cat Form arrives at 20. Before that, play as a caster: Moonfire, then Wrath, and Bear Form from 10 when a pull gets heavy. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. Open from Prowl with Ravage from behind once you learn it at 32, or Pounce from 36 when you cannot get behind. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Take Feral Charge early. Respec into the raid build at 60.

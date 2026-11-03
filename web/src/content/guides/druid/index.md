@@ -1,34 +1,39 @@
 ---
 title: Druid in Forever
 classSlug: druid
-description: 'What the Druid class does in Forever, its three specs, new race options, and what changed from 1.12.'
-updated: 2026-09-24
+description: 'The Forever druid: four roles from three trees, what changed from 1.12, and which guide to read.'
+updated: 2026-11-02
 confidence: single-source
 sources:
+  - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
   - label: 'Wowhead, Skyborne First Look'
     url: https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829
     kind: community
-  - label: 'Power Up Gaming, Forever talent changes vs Classic'
-    url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/
-    kind: community
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
 ---
 
-Druid is the class built around shapeshifting: the same character can cast from range, fight in melee, or heal a group, depending on which form and tree it's built around. That flexibility carries a tradeoff other classes don't have — a Druid built for one role generally isn't ready to fill another mid-raid without a respec.
+The druid is the class that fills any role from one character: a caster in Moonkin Form, a cat in melee, a bear on the boss, or a healer.
 
-The three specs:
+- **[Balance](/guides/druid/balance)** is the Moonkin: Moonfire and Insect Swarm on the boss, Wrath to bank Eclipse charges, fast Starfires to spend them, and a 3% crit aura for the group.
+- **[Feral](/guides/druid/feral)** is the cat: Ravage from Prowl, Rip at 5 combo points, Shred from behind, and Shifting Power to turn mana into energy.
+- **[Feral Bear](/guides/druid/feral-bear)** is the tank, from the same Feral tree: Lacerate stacks, Primal Bite, Maul, and a huge health pool.
+- **[Restoration](/guides/druid/restoration)** is the HoT healer: Rejuvenation and Regrowth on the tank, Swiftmend that keeps the HoT, and Bloom when the HoTs run out.
 
-- **Balance** is the ranged caster tree, built around Moonfire and Starfire and, at the capstone, a Moonkin Form that boosts the whole group's critical strike chance.
-- **Feral** covers both melee roles from a single tree: Cat Form for combo-point DPS built on Rake, Rip, and Shred, and Bear Form for tanking, built on threat generation and mitigation talents in the same tree.
-- **Restoration** is the healer tree, centered on Rejuvenation and Regrowth with mana-efficiency talents that let it out-sustain other healers over a long fight.
+What changed for every druid:
 
-None of Blizzard's six confirmed new race and class pairs is a Druid, so Druid's race list is unchanged from 1.12 on both factions. Druid is open to Skyborne on both sides — the Alliance's High Order Skyborne and the Horde's Windshaper Skyborne can both play Druid, with sky-blue shapeshift forms made specifically for the race.
+- **Forms keep your consumables.** Almost every potion works in a form without breaking it, rage potions and Thistle Tea work for druids, and weapon stones, enchants and Windfury Totem reach your paw. Engineering bombs still knock you out of form.
+- **Your paw is your weapon.** Cat and bear auto attacks hit with your weapon's DPS, at a 1.0 second swing in Cat Form and 2.5 in Bear Form, so a feral wants a real weapon.
+- **Racials and Barkskin work in forms.** So does Faerie Fire, which is free in Cat and Bear Form on a 6 second cooldown.
+- **Omen of Clarity and Nature's Grasp are baseline**, at 20 and 10, so they cost no talent points.
+- **Tiger's Fury is gone.** Shifting Power, the Feral capstone, gives a cat 40 energy for mana instead. Furor now keeps your energy when you leave Cat Form instead of handing you energy on a shift, so classic powershifting is gone too.
+- **New buttons.** Lacerate and Primal Bite for the bear, Wild Growth and Bloom for Restoration, Poised for a cat's opener from 32, and Revive, a cheap out-of-combat resurrection from level 12.
+- **Swiftmend keeps the HoT** it reads, so it is a heal of its own rather than a trade.
 
-Talent trees keep the familiar seven rows and 51 points, with a fourth one-point "gold medal" talent added at the 16-point mark alongside the existing ones at 11, 21, and 31. A handful of baseline changes matter across every Druid build: Omen of Clarity and Nature's Grasp moved off the tree and onto the trainer, opening up two points; Revive is a new short out-of-combat resurrection with only a 10-second cooldown, which takes the pressure off Rebirth's half-hour one; Lacerate, the Bear bleed familiar from later expansions, is a Feral talent since client 1.60.1.70707; and Cure Poison was cut, leaving Abolish Poison to cover both jobs. Improved Mark of the Wild became a baseline passive too, and gear's bonus healing now also grants roughly a third of that value as bonus damage starting at level 10 — small, but enough for a leveling Restoration Druid to contribute some damage without carrying a second spec. Feral got its own structural change on top of those: Feral Charge splits into a Cat version, a gap-closing leap that dazes on landing, sitting alongside the older Bear version that interrupts; and Blood Frenzy now grants its bonus combo point off Cat critical hits too, not only Rage off Bear ones, so the same talent supports either form.
-
-The beta only runs to level 30, so none of this has been tested at the level and raid content Druids will actually play at launch — see each spec guide's Overview for what's confirmed versus projected. The Balance, Feral, and Restoration guides below cover talent priorities, rotation, stats, and gear for each tree.
+Druids are Night Elf or Tauren as before, and Skyborne can be druids on both factions, with their own sky-blue forms. None of Forever's six new race and class pairs is a druid.

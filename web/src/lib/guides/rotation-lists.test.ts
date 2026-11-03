@@ -1,5 +1,8 @@
 // web/src/lib/guides/rotation-lists.test.ts
 import activeBuild from '../../data/active-build.json';
+import { readdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { loadRotations, rotationEntryFor, rotationLinesFor } from '../bis/rotation-view';
 import type { CollapsedLine } from '../bis/rotation-collapse';
@@ -16,6 +19,8 @@ import {
 } from './rotation-lists';
 
 const BUILD = activeBuild.build;
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
+const GUIDES_DIR = path.join(REPO, 'web/src/content/guides');
 
 describe('clauseOf', () => {
   it('takes the phrase before the colon and drops the spell’s own name', () => {
@@ -297,5 +302,61 @@ describe('specCooldowns for Frost Mage, from the client data', () => {
 
   it('takes a lit talent’s icon from the talent file', () => {
     expect(items.find((item) => item.name === 'Cold Snap')?.icon).toBe('spell_frost_wizardmark');
+  });
+});
+
+/** Every spell id a rotation casts, pre-pull included, at any depth. */
+function castIds(node: unknown, into: Set<number> = new Set()): Set<number> {
+  if (Array.isArray(node)) {
+    for (const item of node) castIds(item, into);
+  } else if (typeof node === 'object' && node !== null) {
+    const record = node as Record<string, unknown>;
+    const cast = record.castSpell as { spellId?: { spellId?: unknown } } | undefined;
+    if (typeof cast?.spellId?.spellId === 'number') into.add(cast.spellId.spellId);
+    for (const value of Object.values(record)) castIds(value, into);
+  }
+  return into;
+}
+
+const GUIDE_SPECS = readdirSync(GUIDES_DIR, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .flatMap((entry) =>
+    readdirSync(path.join(GUIDES_DIR, entry.name))
+      .filter((file) => file.endsWith('.md') && file !== 'index.md')
+      .map((file) => ({ classSlug: entry.name, spec: `${entry.name}-${file.slice(0, -'.md'.length)}` })),
+  )
+  .filter(({ spec }) => loadApl(spec) !== undefined);
+
+describe('every spell a guide renders has the client’s icon', () => {
+  it.each(GUIDE_SPECS.map(({ classSlug, spec }) => [spec, classSlug] as const))(
+    '%s: every cast its rotation names, pre-pull included',
+    (spec, classSlug) => {
+      const lookup = spellLookupFor(BUILD, classSlug);
+      const blank = [...castIds((loadApl(spec) as { rotation?: unknown }).rotation)]
+        .map((id) => ({ id, facts: lookup(id) }))
+        .filter(({ facts }) => facts !== undefined && facts.icon === undefined)
+        .map(({ id, facts }) => `${facts!.name} (${id})`);
+      expect(blank).toEqual([]);
+    },
+  );
+
+  it.each([...new Set(GUIDE_SPECS.map(({ classSlug }) => classSlug))])(
+    '%s: every cooldown the guide can list, every talent lit',
+    (classSlug) => {
+      const talents = JSON.parse(
+        readFileSync(path.join(REPO, 'data/builds', BUILD, 'talents', `${classSlug}.json`), 'utf8'),
+      ) as { trees: { talents: { name: string }[] }[] };
+      const lit = new Set(talents.trees.flatMap((tree) => tree.talents.map((talent) => talent.name)));
+      const blank = specCooldowns(BUILD, classSlug, lit, spellLookupFor(BUILD, classSlug))
+        .filter((item) => item.icon === undefined)
+        .map((item) => item.name);
+      expect(blank).toEqual([]);
+    },
+  );
+
+  it('gives the warlock pet summons their own icons', () => {
+    const lookup = spellLookupFor(BUILD, 'warlock');
+    expect(lookup(688)?.icon).toBe('spell_shadow_summonimp');
+    expect(lookup(712)?.icon).toBe('spell_shadow_summonsuccubus');
   });
 });

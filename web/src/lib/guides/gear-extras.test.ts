@@ -1,17 +1,22 @@
 // web/src/lib/guides/gear-extras.test.ts
 import activeBuild from '../../data/active-build.json';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   CONSUMABLE_GIVES,
+  KIT_IMBUES,
   consumableKind,
+  consumableLines,
   consumableRows,
+  raidConsumeIds,
+  simRaidConsumes,
   enchantGives,
   enchantScore,
   loadGearExtras,
   pickEnchants,
+  type ConsumableRow,
   type EnchantRecord,
 } from './gear-extras';
 import type { BisStatWeight } from '../bis/types';
@@ -204,18 +209,18 @@ describe('consumableRows with a repeated consumable', () => {
   });
 });
 
-describe('the consumable lines against the published presets', () => {
-  it('has a line for every consumable any spec’s raid-ready preset uses', () => {
-    const dir = path.join(REPO, 'data/builds', BUILD, 'bis');
-    const missing = new Set<string>();
-    for (const name of readdirSync(dir).filter((file) => file.endsWith('.json'))) {
-      const file = JSON.parse(readFileSync(path.join(dir, name), 'utf8')) as {
-        presets?: { raid?: { consumes: { id: string }[] } };
-      };
-      for (const consume of file.presets?.raid?.consumes ?? []) {
-        if (CONSUMABLE_GIVES[consume.id] === undefined) missing.add(consume.id);
-      }
-    }
+const RAID_CONSUMES = JSON.parse(readFileSync(path.join(REPO, 'sim/request/raid-consumes.json'), 'utf8')) as {
+  specs: Record<string, { from_level: number; consumes: string[] }[]>;
+};
+const SPECS = Object.keys(RAID_CONSUMES.specs).sort();
+
+describe('the consumable lines against the sim’s raid preset', () => {
+  it('has a line for every consumable any spec’s level 60 raid preset carries', () => {
+    const missing = new Set(
+      SPECS.flatMap((spec) => raidConsumeIds(RAID_CONSUMES, spec, 60)).filter(
+        (id) => !KIT_IMBUES.has(id) && CONSUMABLE_GIVES[id] === undefined,
+      ),
+    );
     expect([...missing]).toEqual([]);
   });
 
@@ -241,6 +246,75 @@ describe('the consumable lines against the published presets', () => {
       entries.map((entry) => entry.id).filter((id) => CONSUMABLE_GIVES[id] === undefined),
     );
     expect([...missing]).toEqual([]);
+  });
+});
+
+describe('the guide’s consumables are the sim’s', () => {
+  it.each(SPECS)('%s lists exactly what the sim’s level 60 raid preset carries', (spec) => {
+    const want = raidConsumeIds(RAID_CONSUMES, spec, 60).filter((id) => !KIT_IMBUES.has(id));
+    const shown = consumableRows(simRaidConsumes(spec, {}), {}, () => false).map((row) => row.id);
+    expect(shown).toEqual([...new Set(want)]);
+  });
+
+  it('reads the current preset, not the held BiS file: Destruction carries every caster elixir', () => {
+    const names = simRaidConsumes('warlock-destruction', {}).map((row) => row.label);
+    expect(names).toEqual(
+      expect.arrayContaining([
+        'Flask of Supreme Power',
+        'Greater Arcane Elixir',
+        'Elixir of Shadow Power',
+        'Elixir of Fire Power',
+        'Baked Salmon',
+      ]),
+    );
+    expect(names).not.toContain('Runn Tum Tuber Surprise');
+  });
+
+  it('takes the level 60 row, not an earlier one', () => {
+    const file = {
+      specs: {
+        x: [
+          { from_level: 1, consumes: ['a'] },
+          { from_level: 50, consumes: ['b'] },
+        ],
+      },
+    };
+    expect(raidConsumeIds(file, 'x', 60)).toEqual(['b']);
+    expect(raidConsumeIds(file, 'x', 20)).toEqual(['a']);
+    expect(raidConsumeIds(file, 'missing', 60)).toEqual([]);
+  });
+});
+
+function row(id: string): ConsumableRow {
+  return { id, kind: consumableKind(id), name: id, icon: undefined, gives: 'x' };
+}
+
+describe('consumableLines', () => {
+  it('lists the flask beside the elixirs, never instead of them, then the rest under a heading', () => {
+    const lines = consumableLines(
+      ['food_baked_salmon', 'elixir_of_shadow_power', 'flask_of_supreme_power', 'greater_arcane_elixir'].map(
+        row,
+      ),
+    );
+    expect(lines.map((line) => ('header' in line ? `# ${line.header}` : line.row.id))).toEqual([
+      'flask_of_supreme_power',
+      'elixir_of_shadow_power',
+      'greater_arcane_elixir',
+      '# Food, oil and potions',
+      'food_baked_salmon',
+    ]);
+  });
+
+  it('adds no heading when every row is of one group', () => {
+    expect(consumableLines([row('food_baked_salmon')]).every((line) => !('header' in line))).toBe(true);
+  });
+
+  it.each(SPECS)('%s: no flask is ever shown as replacing an elixir', (spec) => {
+    const rows = consumableRows(simRaidConsumes(spec, {}), {}, () => false);
+    const lines = consumableLines(rows);
+    const text = JSON.stringify(lines);
+    expect(text).not.toMatch(/without a flask|replaces both elixirs/i);
+    expect(lines.filter((line) => 'row' in line)).toHaveLength(rows.length);
   });
 });
 
