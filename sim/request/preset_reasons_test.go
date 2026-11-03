@@ -34,7 +34,9 @@ func raidBuffReasons(t *testing.T) map[string]string {
 // 12 auras A1, A5, A7, B2; a later merge had put the older text back):
 // Divine Spirit is a trainer spell, Trueshot Aura is ranged attack power
 // only, Heart of the Lion is 280 attack power at 60 (40 + 4 a level), and
-// Windfury Totem's bonus ends with the totem.
+// Windfury Totem's bonus ends with the totem. The 2026-11-03 hotfix push
+// raised Trueshot Aura rank 5 (20906) from 50 to 100 ranged attack power
+// (SpellEffect 697683; sim-accuracy round 14, data lane).
 func TestRaidPresetReasonsMatchTheClient(t *testing.T) {
 	reasons := raidBuffReasons(t)
 	cases := []struct {
@@ -42,6 +44,7 @@ func TestRaidPresetReasonsMatchTheClient(t *testing.T) {
 	}{
 		{"divine_spirit", "trainer spell", "Discipline talent"},
 		{"trueshot_aura", "Ranged attack power only", ""},
+		{"trueshot_aura", "100 at 60", "50 at 60"},
 		{"heart_of_the_lion", "280 at 60", "276"},
 		{"windfury_totem", "ends with the totem", ""},
 	}
