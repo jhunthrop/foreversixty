@@ -88,7 +88,7 @@ Spell hit caps at 16% against a raid boss. The raid build's Tidal Focus gives yo
 
 ## Best in slot
 
-Your raid set leans on Leatherworking and Tailoring crafts that bind when equipped, so you can buy them, plus the Elements pieces from Stratholme and Blackrock Spire. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
+Your raid set leans on Leatherworking and Tailoring crafts that bind when equipped, so you can buy them. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
 
 ## Enchants and consumables
 

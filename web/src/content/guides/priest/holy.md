@@ -85,7 +85,7 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 ## Stat priority
 
-On a long fight the mana stats win: Spirit and mp5 buy more healing over five minutes than a point of healing power, and Spiritual Guidance and Meditation make Spirit the best of them. Intellect deepens the bar. Healing power is still what makes each cast count. Critical strike is last for Holy, since Inspiration only adds armor. Spell power with no healing on it does nothing for a heal.
+On a long fight mp5 wins: a point of it buys more healing over five minutes than a point of healing power. Healing power comes next, then Spirit, which Spiritual Guidance and Meditation turn into both healing and mana. Intellect deepens the bar. Critical strike is last for Holy, since Inspiration only adds armor. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
