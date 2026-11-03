@@ -173,6 +173,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 15473}": "Shadowform is a talent (sim/priest/talents.go); this build takes none.",
 		"{SpellID: 14751}": "Inner Focus is a talent (sim/priest/talents.go); this build takes none.",
 		"{SpellID: 18807}": "Mind Flay is gated on its talent (sim/priest/mind_flay.go); this build takes none.",
+		"{SpellID: 15286}": "Vampiric Embrace is a talent (sim/priest/vampiric_embrace.go's registerVampiricEmbraceSpell); this build takes none.",
 	},
 	"rogue-assassination": {
 		"{SpellID: 1241584}": "Mutilate is a talent (sim/rogue/mutilate.go, Forever's tree); this build takes none.",
