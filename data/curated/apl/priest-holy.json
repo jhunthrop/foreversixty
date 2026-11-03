@@ -93,30 +93,9 @@
               "type": "Player",
               "index": 5
             }
-          },
-          "condition": {
-            "cmp": {
-              "op": "OpGe",
-              "lhs": {
-                "currentManaPercent": {}
-              },
-              "rhs": {
-                "math": {
-                  "op": "OpMul",
-                  "lhs": {
-                    "remainingTimePercent": {}
-                  },
-                  "rhs": {
-                    "const": {
-                      "val": "0.9"
-                    }
-                  }
-                }
-              }
-            }
           }
         },
-        "notes": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you have. It heals whoever holds it on their next hit or direct heal, and the tank is hit and healed the most."
+        "notes": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you have. It heals whoever holds it on their next hit or direct heal, and the tank is hit and healed the most. It is not held back by the mana pace the costlier heals follow: the cheapest healing you have is the last thing to give up when mana runs short."
       },
       {
         "action": {

@@ -220,3 +220,16 @@ func TestBalanceOpensWithAPrePullWrath(t *testing.T) {
 		t.Errorf("Balance prepull Wrath at %q, want -1.5s (its cast ends on the pull)", got)
 	}
 }
+
+// Round 13: the Shadow guide keeps Vampiric Embrace up on the boss ("On the
+// boss, keep it up: it costs a global every 30 seconds"), so the list casts
+// it, above Mind Flay, its filler.
+func TestShadowKeepsVampiricEmbraceUp(t *testing.T) {
+	const (
+		vampiricEmbrace = 15286
+		mindFlay        = 18807
+		shadowSpecKey   = "priest-shadow"
+	)
+	ids := castOrder(t, shadowSpecKey)
+	requireBefore(t, shadowSpecKey, ids, vampiricEmbrace, mindFlay)
+}

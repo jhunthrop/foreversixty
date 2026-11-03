@@ -39,12 +39,23 @@
     "druid-restoration": [
       {
         "spell": "Rejuvenation",
-        "authored": 2090,
+        "authored": 9841,
         "bands": [
+          {
+            "from_level": 28,
+            "to_level": 49,
+            "rank": 4
+          },
           {
             "from_level": 50,
             "to_level": 59,
             "rank": 1
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 4,
+            "preset": "bare"
           }
         ]
       }
