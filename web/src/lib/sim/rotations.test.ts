@@ -12,9 +12,10 @@ beforeAll(async () => {
   notes = await loadRotationNotes();
 });
 
-const FROSTBOLT_NOTE = 'Frostbolt is the filler between Fingers of Frost charges.';
+const FROSTBOLT_NOTE =
+  'Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage. Never stop casting to wait for a proc.';
 const WAND_NOTE =
-  "Shoot only when nothing else can be cast, which in practice means out of mana: a wand shot cannot start during the global cooldown and holds you for the wand's full speed, so it never fits between spells.";
+  "Shoot only when you are out of mana and waiting on a gem, a rune or Evocation. A wand shot holds you for the wand's full speed, so never weave it between spells.";
 
 describe('rotationNotesFor', () => {
   // Pins the two notes the brief names and their order, not the whole list: the curated
