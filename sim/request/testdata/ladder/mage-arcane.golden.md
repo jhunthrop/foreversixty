@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 100000000000000000-00000000000000000-000000000000000000 | main_hand:284287 ranged:286750 | 7.4 | 4 | spell:5019=61.5, spell:205=17.8, spell:5143=12.0, spell:12051=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589} |
-| 20 | 141005000000000000-00000000000000000-000000000000000000 | main_hand:6505 ranged:5243 | 27.9 | 4 | spell:5019=31.8, spell:5144=23.7, spell:7322=9.1, spell:12051=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400573}, {SpellID: 400574}, {SpellID: 400589} |
-| 30 | 141005213100300000-00000000000000000-000000000000000000 | main_hand:249392 ranged:5213 | 48.6 | 5 | spell:7322=28.7, spell:5019=25.6, spell:1239696=20.0, spell:5145=13.9, item:5514=1.0 | {SpellID: 12042}, {SpellID: 12043} |
-| 38 | 141005213100301520-00000000000000000-000000000000000000 | main_hand:873 ranged:13064 | 81.2 | 6 | spell:7322=32.6, spell:1239696=28.0, spell:8416=17.6, other:mana_gain=2.0, spell:5019=1.8 | {SpellID: 12042} |
-| 40 | 141005213100301531-00000000000000000-000000000000000000 | main_hand:873 ranged:5216 | 96.8 | 7 | spell:5019=24.0, spell:8408=23.1, spell:1239697=22.5, spell:8417=13.6, other:mana_gain=2.0 | - |
-| 50 | 141005213100301531-40000000000000000-051000000000000000 | main_hand:873 ranged:249232 | 141.8 | 7 | spell:5019=26.4, spell:10180=22.4, spell:1239699=21.3, spell:10211=12.9, other:mana_gain=2.0 | - |
-| 60 | 141005213100301531-40000000000000000-053500030000000000 | main_hand:22589 ranged:22821 | 265.7 | 7 | spell:10181=26.5, spell:5019=23.4, spell:1239700=23.3, spell:10212=14.6, other:mana_gain=2.0 | - |
+| 10 | 100000000000000000-00000000000000000-000000000000000000 | main_hand:284287 ranged:286750 | 10.7 | 3 | spell:5019=55.5, spell:205=44.5, spell:12051=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589} |
+| 20 | 141005000000000000-00000000000000000-000000000000000000 | main_hand:6505 ranged:5243 | 25.1 | 3 | spell:7322=42.8, spell:5019=37.6, spell:12051=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400573}, {SpellID: 400574}, {SpellID: 400589} |
+| 30 | 141005213100300000-00000000000000000-000000000000000000 | main_hand:249392 ranged:5213 | 30.7 | 4 | spell:7322=67.1, item:5514=1.0, other:mana_gain=1.0, spell:12051=0.9, spell:5019=0.8 | {SpellID: 12042}, {SpellID: 12043} |
+| 38 | 141005213100301520-00000000000000000-000000000000000000 | main_hand:873 ranged:13064 | 82.4 | 6 | spell:7322=34.2, spell:1239696=27.6, spell:8416=17.9, other:mana_gain=2.0, spell:12043=1.5 | {SpellID: 12042} |
+| 40 | 141005213100301531-00000000000000000-000000000000000000 | main_hand:873 ranged:5216 | 98.6 | 7 | spell:8408=24.8, spell:5019=23.7, spell:1239697=21.6, spell:8417=13.8, other:mana_gain=2.0 | - |
+| 50 | 141005213100301531-40000000000000000-051000000000000000 | main_hand:873 ranged:249232 | 142.7 | 7 | spell:5019=27.5, spell:10180=23.4, spell:1239699=20.6, spell:10211=12.8, other:mana_gain=2.0 | - |
+| 60 | 141005213100301531-40000000000000000-053500030000000000 | main_hand:22589 ranged:22821 | 270.4 | 7 | spell:10181=28.1, spell:5019=23.5, spell:1239700=22.7, spell:10212=14.7, other:mana_gain=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -133,6 +133,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
+- Arcane Blast (spell 1239696)
 - Arcane Explosion (spell 8438)
 - Arcane Missile (spell 7268)
 - Arcane Wrath (spell 1326079)
@@ -230,4 +231,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- mage-arcane level=10 kind=zero_casts spell="Arcane Missiles" id=5143 authored=10212
+- mage-arcane level=20 kind=zero_casts spell="Arcane Missiles" id=5144 authored=10212
+- mage-arcane level=30 kind=zero_casts spell="Arcane Blast" id=1239696 authored=1239700
