@@ -38,6 +38,8 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/land/') }}
 jobs:
   starters:
+    # Skipped in launch mode (docs/runbooks/landing.md, "Launch mode").
+    if: vars.LAUNCH_MODE != 'true'
     runs-on: ubuntu-latest
     # 30, not 10-15: a cold checkout took 5-16 minutes when a land/** run started ~35 jobs at
     # once (2026-11-03), and a timed-out checkout reads as a red landing.

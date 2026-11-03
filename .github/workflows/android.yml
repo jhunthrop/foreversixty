@@ -16,6 +16,8 @@ defaults:
     working-directory: apps/android
 jobs:
   build:
+    # Skipped in launch mode (docs/runbooks/landing.md, "Launch mode").
+    if: vars.LAUNCH_MODE != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:

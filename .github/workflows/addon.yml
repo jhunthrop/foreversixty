@@ -49,7 +49,10 @@ jobs:
       - uses: leafo/gh-actions-lua@v10
         with: { luaVersion: '5.4' }
       - uses: leafo/gh-actions-luarocks@v4
-      - run: luarocks install busted
+      # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode"): luacheck and the parse
+      # checks; busted is skipped.
+      - if: vars.LAUNCH_MODE != 'true'
+        run: luarocks install busted
       - run: luarocks install luacheck
       - run: luarocks install dkjson
       # luacheck first: a syntax error reads better as a lint finding than
@@ -58,7 +61,8 @@ jobs:
       # job's Lua 5.4 -- so a 5.4-only stdlib call (table.unpack, utf8.*,
       # ...) is a lint finding here, not a crash on someone's client.
       - run: luacheck ForeverSixty tests
-      - run: busted --output=TAP
+      - if: vars.LAUNCH_MODE != 'true'
+        run: busted --output=TAP
       # The fixture vectors exist twice, once per lane's tree. vectors_spec
       # already compares them; this is the same check stated where a reviewer
       # reading the workflow can see it.

@@ -73,10 +73,14 @@ jobs:
         # points at a local clone) out of it - verified: with GOWORK=off
         # an engine-free package of the module builds, vets and tests
         # with no engine checkout at all.
+      # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode"): the builds and vets above are
+      # the gate; no Go test runs.
       - name: Embed the active build's item and enchant tables
+        if: vars.LAUNCH_MODE != 'true'
         working-directory: .
         run: make simdb
       - name: Test the sim module's engine-free packages
+        if: vars.LAUNCH_MODE != 'true'
         working-directory: sim
         env: { GOWORK: off }
         run: go test -race -cover ./runner/ ./talents/ ./api/
@@ -86,6 +90,8 @@ jobs:
   # -p 1 (the database-backed packages truncate the tables they use, so they cannot share a
   # database at once) and has its own Postgres service, so the shards never share one.
   test:
+    # Skipped in launch mode (docs/runbooks/landing.md, "Launch mode").
+    if: vars.LAUNCH_MODE != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -133,7 +139,9 @@ jobs:
   # change it, with the same --build-args the deploy job uses, so a
   # broken image is caught before it reaches deploy.
   image:
-    # Beside the tests, not after them: deploy waits for all three.
+    # Beside the tests, not after them: deploy waits for all three. In launch mode it runs
+    # on main only, where deploy reads its layer cache (docs/runbooks/landing.md).
+    if: vars.LAUNCH_MODE != 'true' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     concurrency:
@@ -202,6 +210,7 @@ jobs:
         # extracted binary at that exact path is what turns the skip
         # into a real assertion against the image's own binary.
       - name: Extract the engine binary to where the runner looks for it
+        if: vars.LAUNCH_MODE != 'true'
         run: |
           sudo mkdir -p /engine
           cid=$(docker create --entrypoint /engine/forever-sim forever-api-image-check)
@@ -218,6 +227,7 @@ jobs:
         # needs without it - verified: the import boundary (Step 3 of
         # the lane's final review) never reaches wowsims/classic.
       - name: The image tests, against the real engine
+        if: vars.LAUNCH_MODE != 'true'
         working-directory: api
         env: { GOWORK: off }
         run: go test ./internal/sims/ -run 'Image|Pin' -v
@@ -228,7 +238,12 @@ jobs:
     # commit, the client watcher's activation) triggers no workflow, so
     # tools/activate-build.sh dispatches this one to carry the new build's
     # simdb into the service image.
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.GCP_WIF_PROVIDER != ''
+    # In launch mode `test` is skipped, and a skipped need would skip deploy with it: always()
+    # and the explicit results put every other gate back.
+    if: >-
+      always() && !cancelled() && needs.check.result == 'success' && needs.image.result == 'success' &&
+      (needs.test.result == 'success' || (needs.test.result == 'skipped' && vars.LAUNCH_MODE == 'true')) &&
+      github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.GCP_WIF_PROVIDER != ''
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions: { contents: read, id-token: write }
