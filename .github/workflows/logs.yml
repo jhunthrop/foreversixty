@@ -24,7 +24,21 @@ jobs:
     # the engine). The logs module stands alone with its own go.sum.
     env: { GOWORK: off }
     steps:
+      # The trees no job here reads stay out of the checkout (docs/runbooks/landing.md,
+      # "Checkout"). The consumables tests read data/builds, which comes from the cache.
       - uses: actions/checkout@v4
+        with: &checkout
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+            !/apps/ios/
+            !/apps/android/
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-go@v5
         with: { go-version-file: logs/go.mod, cache-dependency-path: logs/go.sum }
       - name: gofmt
@@ -72,7 +86,9 @@ jobs:
     # the engine). The logs module stands alone with its own go.sum.
     env: { GOWORK: off }
     steps:
+      # The benchmark reads logs/ alone: test's checkout, data/builds left out.
       - uses: actions/checkout@v4
+        with: *checkout
       - uses: actions/setup-go@v5
         with: { go-version-file: logs/go.mod, cache-dependency-path: logs/go.sum }
       - uses: actions/cache@v4

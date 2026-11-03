@@ -43,8 +43,11 @@ jobs:
     outputs:
       companion: ${{ steps.filter.outputs.companion }}
     steps:
+      # The whole history, for the merge base, but no file contents: a name-only diff reads
+      # commits and trees alone, so no blob is fetched and nothing past the repository root
+      # is checked out (docs/runbooks/landing.md, "Checkout").
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with: { fetch-depth: 0, filter: 'blob:none', sparse-checkout: .github }
       # The same diff the version job decides a release by, so the two can
       # never disagree about what "touches the companion" means.
       # A new branch (a land/** batch, tools/land.sh) has no `before`: it is diffed against
@@ -75,7 +78,20 @@ jobs:
     timeout-minutes: 45
     defaults: { run: { working-directory: companion } }
     steps:
+      # The module reads companion/, logs/ and docs/contracts: the heavy trees stay out
+      # (docs/runbooks/landing.md, "Checkout").
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+            !/apps/ios/
+            !/apps/android/
       - uses: actions/setup-go@v5
         with: { go-version-file: companion/go.mod, cache-dependency-path: companion/go.sum }
       - name: gofmt

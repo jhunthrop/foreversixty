@@ -32,7 +32,20 @@ jobs:
     timeout-minutes: 30
     defaults: { run: { working-directory: addon } }
     steps:
+      # The specs read addon/, docs/contracts and web/src/fixtures/addon: the heavy trees stay
+      # out (docs/runbooks/landing.md, "Checkout").
       - uses: actions/checkout@v4
+        with: &checkout
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+            !/apps/ios/
+            !/apps/android/
       - uses: leafo/gh-actions-lua@v10
         with: { luaVersion: '5.4' }
       - uses: leafo/gh-actions-luarocks@v4
@@ -69,6 +82,7 @@ jobs:
     defaults: { run: { working-directory: addon } }
     steps:
       - uses: actions/checkout@v4
+        with: *checkout
       - uses: leafo/gh-actions-lua@v10
         with: { luaVersion: '5.1.5' }
       # Every shipped Lua file: the surfaces/ subfolder and the inbox addon too.
