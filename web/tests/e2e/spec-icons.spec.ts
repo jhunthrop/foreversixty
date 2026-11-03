@@ -13,9 +13,11 @@ function iconOfSrc(src: string | null): string | undefined {
 
 async function expectTabs(page: Page, classSlug: string): Promise<void> {
   const specs = SPECS.filter((s) => s.class_slug === classSlug);
-  await expect(page.locator('.class-header-spec-tab')).toHaveCount(specs.length);
+  // A BiS page renders one header per faction view and hides the other: read the shown one.
+  const tabs = page.locator('.class-header-spec-tabs:visible').first();
+  await expect(tabs.locator('.class-header-spec-tab')).toHaveCount(specs.length);
   for (const spec of specs) {
-    const icon = page.getByTestId(`bis-spec-tab-${spec.spec_slug}`).locator('[data-icon]');
+    const icon = tabs.getByTestId(`bis-spec-tab-${spec.spec_slug}`).locator('[data-icon]');
     await expect(icon, spec.spec).toHaveAttribute('data-icon', spec.icon);
   }
 }
