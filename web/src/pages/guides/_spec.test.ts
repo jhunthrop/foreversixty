@@ -169,6 +169,10 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toContain('8 min cooldown');
     // Evocation has its icon from the spell icon data, so every spell row shares the left edge.
     expect(html).toMatch(/guide-rotation-cooldowns-\d+"[^>]*>(?:(?!<\/li>)[\s\S])*?spell_nature_purge/);
+    // The trinket line names the racial cooldowns the sim casts for the mage's races.
+    expect(html).toMatch(
+      /data-testid="guide-rotation-cooldowns-\d+"(?:(?!<\/li>)[\s\S])*?Trinkets, racials and potions(?:(?!<\/li>)[\s\S])*?Eureka! \(Gnome\)/,
+    );
   });
 
   it('gives the stat block pills, a weights table and the hit line as its headline, in one order', async () => {
@@ -188,7 +192,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     const talent = escapeRegExp(named);
     expect(html).toMatch(
       new RegExp(
-        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?%(?: · \\d+(\\.\\d)?% from ${talent}, \\d+(\\.\\d)?% from gear)?<`,
+        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?%(?: · (?:\\d+(\\.\\d)?% built in(?:, )?)?(?:\\d+(\\.\\d)?% from ${talent}(?:, )?)?(?:\\d+(\\.\\d)?% from gear)?)?<`,
       ),
     );
     expect(html).toContain('DPS per point');
@@ -250,10 +254,14 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     // The racials and the recommendation line come from the race data of the sync that ran: the
     // real build's sentences, or none under the unit-test fixture.
     const gnome = raceRows.find((race) => race.slug === 'gnome');
-    if (gnome !== undefined && racialEffects(gnome).has('Escape Artist')) {
-      expect(html).toContain('Gnome is the Alliance pick: Escape Artist and Expansive Mind.');
+    if (gnome !== undefined && racialEffects(gnome).has('Eureka!')) {
+      expect(html).toContain('Gnome is the Alliance pick: Eureka! and Expansive Mind.');
+      expect(html).toContain(
+        'Makes your damaging abilities cost 10% less Mana and deal 10% more damage for 8 seconds',
+      );
+      expect(html).not.toContain('next 3 abilities');
       // The prose names Eureka! as the client has it (8 s, 10% damage, 10% cheaper), never the
-      // BlizzCon demo's reading that the race data still carries.
+      // BlizzCon demo's reading.
       expect(html).not.toMatch(/Eureka![^.<]*50%/);
     }
     expect(html).toContain('data-testid="guide-leveling-row-talents"');

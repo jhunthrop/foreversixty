@@ -221,11 +221,12 @@ for (const [label, viewport] of [
       const table = page.getByTestId('guide-race-table');
       await expect(table.locator('tbody tr')).toHaveCount(6);
       await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Recommended');
-      await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Escape Artist');
+      await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Eureka!');
       await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Expansive Mind');
       await expect(page.getByTestId('guide-race-picks')).toContainText(
-        'Gnome is the Alliance pick: Escape Artist and Expansive Mind.',
+        'Gnome is the Alliance pick: Eureka! and Expansive Mind.',
       );
+      await expect(page.getByTestId('guide-rotation-cooldowns')).toContainText('Eureka! (Gnome)');
       await expect(page.getByTestId('guide-race-row-troll')).toContainText('Berserking');
       await expect(page.getByTestId('guide-race-row-human')).not.toContainText('Recommended');
     });

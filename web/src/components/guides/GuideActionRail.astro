@@ -14,7 +14,7 @@ import Card from '../ui/Card.astro';
 import { guidesCopy } from '../../lib/guides/copy';
 import { dataUrl } from '../../lib/planner/load';
 import type { DecodedTreeView } from '../../lib/guides/build-tree';
-import type { RailStatRow } from '../../lib/guides/rail-stats';
+import { railStatValueText, type RailStatRow } from '../../lib/guides/rail-stats';
 import type { RotationLineView } from '../../lib/bis/rotation-view';
 
 interface Props {
@@ -137,11 +137,9 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
                 {row.label}
               </span>
               {row.value === undefined ? (
-                <span class="text-muted guide-rail-stat-value">Not significant</span>
+                <span class="text-muted guide-rail-stat-value">{railStatValueText(row)}</span>
               ) : (
-                <span class="numeric guide-rail-stat-value">
-                  {row.perPercent ? `${row.value.toFixed(1)} per 1% haste` : row.value.toFixed(2)}
-                </span>
+                <span class="numeric guide-rail-stat-value">{railStatValueText(row)}</span>
               )}
             </div>
           ))}

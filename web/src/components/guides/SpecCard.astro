@@ -1,14 +1,16 @@
 ---
 // web/src/components/guides/SpecCard.astro
 // The class landing's own spec card (rebuild spec §4.B): icon, role, one summary line, the
-// Set DPS line (only when the spec's own band-60 BiS file resolves one -- `classLandingSetDps`,
-// never a zero or dash standing in for missing data), and a "Read the guide" button. A small
+// set figure in its role's own unit (DPS, HPS, or damage taken per second for a tank; only
+// when the spec's own band-60 BiS file resolves one -- `classLandingSetMetric`, never a zero
+// or dash standing in for missing data), and a "Read the guide" button. A small
 // "Your spec" pill sits beside the role label when this card matches the signed-in visitor's
 // own character (server-rendered: the page already knows this at build time via the request's
 // own session read -- see the class landing page's own header comment for why this stays a
 // build-time prop rather than a client fetch).
 import { guidesCopy } from '../../lib/guides/copy';
 import { dataUrl } from '../../lib/planner/load';
+import { setMetricLine, type SetMetric } from '../../lib/guides/role-metric';
 
 interface Props {
   classSlug: string;
@@ -19,7 +21,7 @@ interface Props {
   role: 'dps' | 'healer' | 'tank';
   description: string;
   icon?: string;
-  dps?: number;
+  setMetric?: SetMetric;
   href: string;
   build: string;
   isYourSpec?: boolean;
@@ -33,7 +35,7 @@ const {
   role,
   description,
   icon,
-  dps,
+  setMetric,
   href,
   build,
   isYourSpec = false,
@@ -70,9 +72,9 @@ const {
     </div>
   </div>
   <p class="spec-card-description">{description}</p>
-  {dps !== undefined && (
-    <span class="numeric spec-card-dps" data-testid="guide-spec-card-dps">
-      {guidesCopy.setDpsLine(dps)} <span class="spec-card-dps-suffix">{guidesCopy.setDpsLineSuffix}</span>
+  {setMetric !== undefined && (
+    <span class="numeric spec-card-dps" data-testid="guide-spec-card-dps" data-role={setMetric.role}>
+      {setMetricLine(setMetric)} <span class="spec-card-dps-suffix">{guidesCopy.setDpsLineSuffix}</span>
     </span>
   )}
   <a

@@ -7,13 +7,14 @@
 // Stat priority card uses, so the two can never disagree.
 //
 // Two columns of numbers: the weight, normalised so the strongest per-point stat reads 1.00
-// (with a bar, so the order can be read at a glance), and the DPS one point of the stat adds
-// (per 1% for haste, which has no rating in this client). A stat the sweep cannot tell from zero
-// reads "Not significant" here and in the hero.
+// (with a bar, so the order can be read at a glance), and what one point of the stat adds in
+// the band's own unit (DPS, HPS for a healer, tank score for a tank; per 1% for haste and
+// expertise, which have no rating in this client). A stat inside its error reads "Not
+// significant" and one below zero beyond its error "No gain", here and in the hero.
 import { band60Weights } from '../../lib/guides/class-dps';
 import { guideExpertiseCapLine, guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { guidesCopy } from '../../lib/guides/copy';
-import { railStatRows } from '../../lib/guides/rail-stats';
+import { railStatRows, railStatValueText } from '../../lib/guides/rail-stats';
 import GuideTableBox from './GuideTableBox.astro';
 
 interface Props {
@@ -34,19 +35,21 @@ const { build, spec, classSlug, recommendedRaces, statPriority, hitTalent } = As
 const band60 = band60Weights(build, spec, classSlug, recommendedRaces);
 const rows =
   band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.hasteScaleFactor);
-const anchor = rows.find((row) => row.value !== undefined && !row.perPercent)?.label;
+const anchor = rows.find((row) => row.value !== undefined && row.perPercent === undefined)?.label;
 const hitCap = guideHitCapLine(band60?.hitToCap, hitTalent);
 const expertiseCap = guideExpertiseCapLine(band60?.expertiseToCap);
+const role = band60?.role ?? 'dps';
 const unitRow = rows.find(
-  (row) => row.value !== undefined && !row.perPercent && row.dpsPerPoint !== undefined,
+  (row) => row.value !== undefined && row.perPercent === undefined && row.perPoint !== undefined,
 );
-const insignificant = rows.filter((row) => row.value === undefined).map((row) => row.label);
+const insignificant = rows.filter((row) => row.reading === 'not-significant').map((row) => row.label);
+const noGain = rows.filter((row) => row.reading === 'no-gain').map((row) => row.label);
 
-function barWidth(value: number | undefined, perPercent: boolean | undefined): number {
-  if (value === undefined || perPercent) return 0;
+function barWidth(value: number | undefined, perPercent: string | undefined): number {
+  if (value === undefined || perPercent !== undefined) return 0;
   return Math.max(2, Math.min(100, Math.round(value * 100)));
 }
-function dpsText(value: number | undefined): string {
+function perPointText(value: number | undefined): string {
   if (value === undefined) return '';
   return value >= 10 ? value.toFixed(1) : value.toFixed(2);
 }
@@ -68,7 +71,7 @@ function dpsText(value: number | undefined): string {
               {guidesCopy.weightColumn(anchor ?? rows[0]!.label)}
             </th>
             <th scope="col" class="stat-num-head">
-              {guidesCopy.dpsPerPointColumn}
+              {guidesCopy.perPointColumn[role]}
             </th>
           </tr>
         </thead>
@@ -78,22 +81,20 @@ function dpsText(value: number | undefined): string {
               <td class="stat-name">{row.label}</td>
               <td data-testid={`guide-stat-table-value-${index}`} class="stat-num-cell">
                 {row.value === undefined ? (
-                  <span class="stat-muted">{guidesCopy.notSignificant}</span>
+                  <span class="stat-muted">{railStatValueText(row)}</span>
                 ) : (
                   <span class="stat-weight">
-                    {!row.perPercent && (
+                    {row.perPercent === undefined && (
                       <span class="stat-bar" aria-hidden="true">
                         <span class="stat-bar-fill" style={`width:${barWidth(row.value, row.perPercent)}%`} />
                       </span>
                     )}
-                    <span class="numeric stat-num">
-                      {row.perPercent ? `${row.value.toFixed(1)} per 1% haste` : row.value.toFixed(2)}
-                    </span>
+                    <span class="numeric stat-num">{railStatValueText(row)}</span>
                   </span>
                 )}
               </td>
               <td class="stat-num-cell">
-                <span class="numeric stat-num">{dpsText(row.dpsPerPoint)}</span>
+                <span class="numeric stat-num">{perPointText(row.perPoint)}</span>
               </td>
             </tr>
           ))}
@@ -102,12 +103,17 @@ function dpsText(value: number | undefined): string {
     </GuideTableBox>
     {unitRow !== undefined && (
       <p class="stat-note" data-testid="guide-stat-table-unit">
-        {guidesCopy.unitLine(unitRow.label.toLowerCase(), dpsText(unitRow.dpsPerPoint))}
+        {guidesCopy.unitLine(unitRow.label.toLowerCase(), perPointText(unitRow.perPoint), role)}
       </p>
     )}
     {insignificant.length > 0 && (
       <p class="stat-note" data-testid="guide-stat-table-not-significant">
         {guidesCopy.notSignificantNote(insignificant.join(' and '), insignificant.length > 1)}
+      </p>
+    )}
+    {noGain.length > 0 && (
+      <p class="stat-note" data-testid="guide-stat-table-no-gain">
+        {guidesCopy.noGainNote(noGain.join(' and '), noGain.length > 1, role)}
       </p>
     )}
     {expertiseCap !== undefined && (
