@@ -29,7 +29,7 @@ This is the Combat Rogue as the site's guide describes it. Combat is the steadie
 - Sinister Strike only when Backstab cannot be cast, held to sixty energy so a dagger rogue never spends Backstab's energy here.
 - Adrenaline Rush on cooldown, with your racial, a trinket and a potion.
 - Blade Flurry costs twenty-five and can go at any energy.
-- Kidney Shot costs no energy in Forever and stuns longer per combo point.
+- Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five.
 - Kick stops a cast for twenty-five energy.
 - Gouge buys a few seconds on a loose add.
 - Redirect lifts your combo points off a target and hands them to the next enemy you hit within fifteen seconds.

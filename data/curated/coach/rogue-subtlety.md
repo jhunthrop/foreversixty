@@ -29,7 +29,7 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the ble
 - Slice and Dice.
 - Hemorrhage is the builder: one combo point, and its debuff makes your Rupture hit fifteen percent harder.
 - Preparation resets your other rogue cooldowns on a ten minute timer, which on a raid boss mostly means a second Vanish or a second Evasion.
-- Kidney Shot costs no energy in Forever and stuns longer per combo point.
+- Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five.
 - Kick, Gouge and Blind handle the rest.
 - Elusiveness puts Blind on a short leash.
 - Redirect lifts your combo points off a dying mob and hands them to the next enemy you hit within fifteen seconds.

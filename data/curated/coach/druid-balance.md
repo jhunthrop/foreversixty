@@ -21,9 +21,9 @@ This is the Balance Druid as the site's guide describes it. Balance is the Moonk
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Shift into Moonkin Form and stay there.
-- When Moonfire is not ticking on the target.
+- Start a Wrath so it finishes as the tank pulls; it lands after the tank's first hit.
 - When Insect Swarm is not ticking on the target.
-- With no Eclipse charge banked, cast Wrath.
+- When Moonfire is not ticking on the target.
 - Starfire everything else, spending the charges.
 - Innervate goes on you when you will otherwise run dry before the boss dies.
 - Faerie Fire.

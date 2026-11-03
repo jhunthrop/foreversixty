@@ -21,7 +21,7 @@ This is the Arms Warrior as the site's guide describes it. Arms is the two-hande
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Bloodrage whenever Rage drops below eighty, since Rage limits everything else here.
-- Battle Shout.
+- Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you. Then press Bloodrage as your first swing lands.
 - Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target.
 - Press Overpower the moment it lights up, even ahead of Mortal Strike. It is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later.
 - Mortal Strike goes on cooldown otherwise.
