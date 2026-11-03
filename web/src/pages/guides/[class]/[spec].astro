@@ -70,6 +70,7 @@ import {
   rotationListsFrom,
   specCooldowns,
   spellLookupFor,
+  talentCooldownCuts,
 } from '../../../lib/guides/rotation-lists';
 
 export async function getStaticPaths() {
@@ -168,6 +169,7 @@ const rotationListsData =
         loadApl(fullSpecId),
         spellFacts,
         specCooldowns(build, classSlug, litTalentNames, spellFacts),
+        talentCooldownCuts(raidTrees ?? buildTrees),
         racialCooldownsFor(build, classSlug),
         role,
       );

@@ -243,6 +243,7 @@ function rotationOf(ctx: RotationContext): AppGuideFile['rotation'] {
     loadApl(ctx.spec),
     facts,
     specCooldowns(ctx.build, ctx.classSlug, ctx.litTalents, facts),
+    new Map(),
     racialCooldownsFor(ctx.build, ctx.classSlug),
     ctx.role,
   );

@@ -12,10 +12,12 @@ import {
   loadApl,
   specCooldowns,
   prepullCasts,
+  talentCooldownCuts,
   rotationListsFrom,
   spellLookupFor,
   usesCooldownPass,
   type SpellFacts,
+  type SpellLookup,
 } from './rotation-lists';
 
 const BUILD = activeBuild.build;
@@ -212,16 +214,10 @@ describe('rotationListsFrom', () => {
   });
 
   it('names the racial cooldowns of the class’s races on the trinket line', () => {
-    const { cooldowns } = rotationListsFrom(
-      lines,
-      apl,
-      (id) => facts[id],
-      [],
-      [
-        { race: 'Gnome', racial: 'Eureka!' },
-        { race: 'Troll', racial: 'Berserking' },
-      ],
-    );
+    const { cooldowns } = rotationListsFrom(lines, apl, (id) => facts[id], [], new Map(), [
+      { race: 'Gnome', racial: 'Eureka!' },
+      { race: 'Troll', racial: 'Berserking' },
+    ]);
     expect(cooldowns.at(-1)).toEqual({
       name: 'Trinkets, racials and potions',
       clause: 'On cooldown, with your biggest damage: Eureka! (Gnome), Berserking (Troll)',
@@ -229,7 +225,7 @@ describe('rotationListsFrom', () => {
   });
 
   it('keeps the trinket line plain when no race of the class has a racial cooldown', () => {
-    const { cooldowns } = rotationListsFrom(lines, apl, (id) => facts[id], [], []);
+    const { cooldowns } = rotationListsFrom(lines, apl, (id) => facts[id], [], new Map(), []);
     expect(cooldowns.at(-1)!.clause).toBe('On cooldown, with your biggest damage');
   });
 
@@ -239,6 +235,7 @@ describe('rotationListsFrom', () => {
       apl,
       (id) => facts[id],
       [],
+      new Map(),
       [{ race: 'Gnome', racial: 'Eureka!' }],
       'healer',
     );
@@ -274,6 +271,81 @@ describe('the Frost Mage lists, from the real data', () => {
     expect(names).toContain('Aimed Shot');
     expect(lists.opener.find((item) => item.name === 'Aimed Shot')?.icon).toBeDefined();
     expect(lists.cooldowns.map((item) => item.name)).toContain('Bestial Wrath');
+  });
+});
+
+describe('the Demonology opener, from the real data', () => {
+  it('names every pre-pull cast, talent spells included', () => {
+    const lists = rotationListsFrom([], loadApl('warlock-demonology'), spellLookupFor(BUILD, 'warlock'));
+    // Demonic Sacrifice and Soul Link are talent spells with no spell-constant row; the
+    // opener must still name them, in time order, with their talent icons.
+    expect(lists.opener.map((item) => item.name)).toEqual([
+      'Summon Imp',
+      'Demonic Sacrifice',
+      'Summon Succubus',
+      'Soul Link',
+    ]);
+    const soulLink = lists.opener.find((item) => item.name === 'Soul Link');
+    expect(soulLink?.icon).toBeDefined();
+    expect(soulLink?.clause).toBe('2 s before the pull');
+  });
+});
+
+describe('talentCooldownCuts', () => {
+  const tree = (name: string, rank: number, descriptions: string[]) => ({
+    name: 'Demonology',
+    position: 1,
+    points: rank,
+    talents: [
+      {
+        id: 1,
+        name,
+        icon: 'x',
+        max_rank: descriptions.length,
+        tier: 3,
+        column: 0,
+        prereq_talent_id: null,
+        prereq_rank: null,
+        spell_id: 1,
+        ranks: descriptions.map((description) => ({ spell_id: 1, description })),
+        rank,
+      },
+    ],
+  });
+
+  it('reads a lit talent’s cooldown cut off its own rank text', () => {
+    const cuts = talentCooldownCuts([
+      tree('Decimation', 2, [
+        'Reduces the cooldown of your Soul Fire spell by 45%. When you cast…',
+        'Reduces the cooldown of your Soul Fire spell by 90%. When you cast…',
+      ]),
+    ] as never);
+    expect(cuts.get('Soul Fire')).toBe(90);
+  });
+
+  it('ignores a talent with no points', () => {
+    const cuts = talentCooldownCuts([
+      tree('Decimation', 0, ['Reduces the cooldown of your Soul Fire spell by 90%.']),
+    ] as never);
+    expect(cuts.size).toBe(0);
+  });
+
+  it('drops a spell whose cut cooldown falls under the floor from the Cooldowns list', () => {
+    const facts: SpellLookup = (id) =>
+      id === 17924 ? { name: 'Soul Fire', rank: 2, cooldownMs: 60_000 } : undefined;
+    const line = {
+      spellId: 17924,
+      name: 'Soul Fire',
+      rank: 2,
+      condition: 'Soul Fire while Decimation is up.',
+    };
+    const apl = { rotation: { priorityList: [] } };
+    expect(rotationListsFrom([line] as never, apl, facts).cooldowns.map((c) => c.name)).toEqual([
+      'Soul Fire',
+    ]);
+    expect(
+      rotationListsFrom([line] as never, apl, facts, [], new Map([['Soul Fire', 90]])).cooldowns,
+    ).toEqual([]);
   });
 });
 

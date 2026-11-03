@@ -35,6 +35,7 @@ export const ENFORCED_CLASSES: readonly string[] = [
   'priest',
   'rogue',
   'shaman',
+  'warlock',
   'warrior',
 ];
 
