@@ -7,8 +7,8 @@ build: 'FS1:1.60.1.70753:warrior:human:03325213032515001/0505/005:'
 raidBuild: 'FS1:1.60.1.70753:warrior:human:02325213032515201/0505002/2:'
 recommendedRaces: [human, orc]
 statPriority: [Strength, Attack power, Critical strike, Hit, Melee haste, Agility]
-description: 'Talents, rotation, stat priority, and race picks for Arms Warrior in Forever, with beta-versus-projection called out.'
-updated: 2026-10-31
+description: 'Arms warrior for Forever: talents with the why, the pull as it is played, the Battle Stance priority, the execute swap and two-target play.'
+updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -23,73 +23,91 @@ sources:
   - label: 'Icy Veins, the racial rework'
     url: https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/
     kind: community
-  - label: 'Forever Sixty stat weights, data/curated/specs.json'
+  - label: 'Forever Sixty stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty rotation data, data/curated/apl/warrior-arms.json'
+  - label: 'Forever Sixty Arms rotation'
     url: https://foreversixty.gg/sim/specs
     kind: site
-  - label: 'Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json'
+  - label: 'Forever Sixty raid loot'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'This site, character planner'
+  - label: 'Forever Sixty character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
 
 ## Overview
 
-Arms is Forever's two-handed warrior spec, built around Mortal Strike, a hard-hitting attack that also cuts the target's incoming healing.
+Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stance, a stance swap for Recklessness, and the biggest Executes in the game.
 
 ### Strengths
 
-- Mortal Strike is the highest damage-per-Rage button in the kit
-- Steady single-target damage
-- Rend's bleed is amplified by Improved Rend and Deep Wounds
-- Overpower is a free follow-up after the target dodges
+- Mortal Strike is the hardest hit per rage in the warrior kit
+- Bloodthrill turns plain swings into extra Overpowers on a bleeding target
+- Rage held going into the execute phase becomes one huge Execute
+- Sweeping Strikes and Whirlwind cleave two packs of trash at once
 
 ### Weaknesses
 
-- Rage limits the whole rotation and needs Bloodrage to top up
-- Little area damage next to Fury's Whirlwind
-- Its main hit depends on a six-second cooldown
+- Rage starved without a raid around you, so every point has a job
+- Lives in Battle Stance, so Whirlwind and Recklessness cost a stance swap
+- One slow two-hander means fewer swings and lumpier rage than a dual-wielder
 
 ### In a raid
 
 - **Role:** Two-handed melee damage
-- **Brings:** Mortal Strike's healing debuff on the target and Battle Shout for the group
+- **Brings:** Mortal Strike's 50% healing cut for the bosses that heal, and Battle Shout for your group
 
 ## Talents and builds
 
-- **Improved Rend** — up to 35% more Bleed damage from Rend at max rank; take it early since it costs nothing to maintain once the bleed is applied.
-- **Deep Wounds** (requires 3 points in Improved Rend) — your own critical strikes add a second bleed dealing 60% of your weapon's average damage over 12 seconds, stacking with Rend's.
-- **Two-Handed Weapon Specialization** — up to 3% more damage with the two-handed weapon Arms is built around.
-- **Impale** — up to 20% more critical strike damage on your abilities, multiplying whatever crit chance you already have.
-- **Improved Overpower** — up to 50% more critical strike chance on Overpower, the free attack that becomes available after the target dodges you.
-- **Sweeping Strikes**, then **Mortal Strike** — Sweeping Strikes is a one-point prerequisite for Mortal Strike at the bottom of the tree in this build's data, and it also cleaves your next 5 swings onto a second target, so it isn't a wasted point even outside its role as a stepping stone. Mortal Strike itself deals weapon damage plus 85 and reduces healing the target receives by 50% for 10 seconds.
-- **Bloodthrill**, taken to 5/5 — while Rend is ticking on the target, each Main Hand hit has a 20% chance (at max rank) to let you use Overpower for the next 5 seconds, outside its usual dodge-only window. Overpower already comes free on every dodge in this rotation; Bloodthrill is what makes it come up on plain hits too, and it was the single largest gain this build's level-60 search found for any point in the Arms tree.
-- **Weaponmaster**, taken to 5/5 — a weapon-dependent bonus; with the sword in this build's gear set it gives successful melee attacks a 5% chance to trigger an extra attack, and the sim measured it as the next-largest Arms gain after Bloodthrill.
+- **Bloodthrill** (5 points): while your Rend is on the target, every main-hand hit has a 20% chance to open Overpower. This is the talent the whole spec is built around, so Rend is never optional.
+- **Improved Overpower** (2 points): 50% more crit chance on Overpower. With Bloodthrill feeding you Overpowers, this is where your crits come from.
+- **Weaponmaster** (5 points): a bonus that depends on your two-hander. Swords give a 5% chance at an extra attack, axes and polearms 5% crit, maces and staves ignore 15% of armor. Take all five whatever you swing.
+- **Improved Rend** and **Deep Wounds** (3 points each): Rend hits 35% harder and every crit adds a bleed for 60% of your weapon's average damage. Deep Wounds needs the Improved Rend points anyway.
+- **Impale** (2 points): 20% more crit damage on your abilities. Overpower crits most of the time, so this pays every few seconds.
+- **Two-Handed Weapon Specialization** (3 points): 3% more damage with the weapon you always carry.
+- **Improved Tactical Mastery** (5 points): you keep 25 rage through a stance change instead of 10. This is what makes the swap to Berserker Stance for Recklessness and Whirlwind free.
+- **Anger Management** and **Improved Charge** (3 points): a point of rage every 3 seconds in combat, and 21 rage from Charge instead of 15. Rage is the limit for Arms, and both pay from the first second of the pull.
+- **Sweeping Strikes** and **Mortal Strike** (1 point each): Sweeping Strikes is the stepping stone to Mortal Strike and your two-target button. Mortal Strike is the spec.
+- **Cruelty** and **Unbridled Wrath** (10 points in Fury): 5% crit and a 60% chance at an extra rage point on every weapon hit.
 
-A build reaching Mortal Strike spends 36 points in Arms, with the rest as Cruelty and Unbridled Wrath in Fury (crit and extra Rage) and the five points of Iron Will in Protection, the defensive filler that replaced Toughness in the live tree. Exact splits vary by preference and aren't fixed by anything confirmed for Forever. The extra Bloodthrill and Weaponmaster ranks come from points the previous build spent where the engine measures no damage at all: two of the five Deflection points and all five of Shield Specialization, a defensive talent with no effect on a damage rotation. Nothing the rotation casts was given up, and every talent the sim does not model (Deflection, Improved Tactical Mastery, Sweeping Strikes, Iron Will) is still taken. This build measures about +10.5% over the previous spend in our level-60 search run.
+The leveling build parks the last five points in **Iron Will** (shorter stuns and fears) and three in **Deflection**, which matter while you level and in PvP.
 
-The raid build adds **Improved Slam** (2/2): Slam no longer stops your swing, its cast and global cooldown are half a second shorter, and its cooldown drops from 18 to 15 seconds, which puts Slam into the rotation between Mortal Strikes. The points come from **Booming Voice** and a point of **Improved Execute**, with **Improved Charge** for the rage of the opening Charge and two spare points in **Blood Craze**, a health-regeneration filler the simulator does not model: about +4% in our level-60 search run. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
+The raid build moves those points into **Improved Slam** (2 points), which takes Slam's cast to one second, keeps your swing timer running through it and brings its cooldown down to 15 seconds. That puts a Slam between Mortal Strikes. **Improved Bloodrage** (2 points) makes every Bloodrage half again as strong, and two points of **Blood Craze** give back a little health after big hits. Open the [planner](/planner?class=warrior) to see both builds point by point.
 
 ## Rotation and priority
 
-This site's own Arms priority list opens by topping up Rage with Bloodrage whenever it drops below 80, since Rage is the resource limiting everything else in the rotation. Keep Battle Shout active for the group buff, and keep Rend applied to the target — its bleed is what Improved Rend and Deep Wounds both amplify. Mortal Strike is the priority hit whenever its six-second cooldown is up, since it's the highest damage-per-Rage button in the kit. Overpower is a free follow-up whenever the target dodges you, so it's cast on sight rather than held for later. Below 20% target health, Execute replaces the rest of the priority. Slam goes out on its cooldown whenever nothing above it is ready, once Improved Slam is talented. With a Windfury Totem in the group, spend any global that is still free on Hamstring: 10 rage for a small hit that also rolls the totem's extra attack and your weapon procs, worth about 7% in the raid-ready run and a loss without the totem, so this site's simulator only casts it when a totem reaches the warrior. There is no Heroic Strike rage dump any more: the search found that every point of Rage spent on it was Rage Mortal Strike, Overpower and Execute would have used better, and dropping it was worth about +1% in our level-60 search run. Recklessness is the one burst cooldown, and it is Berserker Stance only: when the target drops below 20%, spend your rage, swap to Berserker Stance (Tactical Mastery keeps only 10 rage through the swap) and press Recklessness, then Execute out the fight. Execute and Mortal Strike both work in Berserker Stance; Overpower and Rend do not, so neither is used after the swap.
+**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage, then Charge in as the boss turns. You land with Charge's rage and Bloodrage still ticking, which is a Rend and a Mortal Strike in the first two globals.
+
+**Battle Stance.** Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target. Press Overpower the moment it lights up, even ahead of Mortal Strike, because the Overpower window closes and Mortal Strike will still be there a second later. Mortal Strike goes on cooldown otherwise. With Improved Slam, Slam fills the gap between Mortal Strikes.
+
+**Rage.** Bloodrage on cooldown whenever you are under 80 rage. Heroic Strike only when you are about to cap at 90 or more: below that, every point is worth more in Mortal Strike, Overpower and Execute. If a shaman drops Windfury Totem in your group, Hamstring on any free global: it is a cheap main-hand hit that can trigger the totem's extra attack. Without Windfury, never Hamstring for damage.
+
+**Execute.** From 25% stop Hamstring and let the rage build. At 20%, Execute in Battle Stance first: it spends your whole bar, so that first Execute is your biggest hit of the fight. Then swap to Berserker Stance (Improved Tactical Mastery keeps 25 rage) and press Recklessness, and Execute every global until the boss dies. Mortal Strike still works in Berserker Stance and goes before Execute with raid buffs; in a dungeon without them, Execute beats it. Overpower and Rend do not work there, so stay put.
+
+**Two or more targets.** Sweeping Strikes in Battle Stance, swap to Berserker Stance, Whirlwind. Whirlwind hits up to four targets and every Sweeping Strikes charge copies a hit onto a second one. Swap back for Overpower and Rend once Whirlwind is on cooldown. Use Cleave instead of Heroic Strike when two mobs are in front of you.
+
+**Moving.** Rend first on anything new, because it is what lights your Overpowers. Charge is out of combat only, so on a boss that moves you walk back in; that is a lost swing, not a reason to leave Battle Stance.
 
 ## Stat priority
+
+Hit is worth the most until the cap above: a missed Mortal Strike or Overpower is a lost global and lost rage. Crit feeds Deep Wounds, Impale and Overpower. Every point of Strength is two attack power for a warrior, so Strength beats attack power point for point. Haste adds swings, and swings are rage.
 
 ## Best in slot
 
 ## Enchants and consumables
 
+Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, eat and drink everything on the list: a two-hand warrior's damage is mostly Strength and attack power, and both stack with the raid's buffs.
+
 ## Races
+
+Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes: press it with Recklessness at 20%. Human's Ruthless is a flat 1% crit. Troll's Berserking is 10% attack speed for 15 seconds every 3 minutes, which means more swings and more rage in the execute phase.
 
 ## Professions
 
-Blacksmithing paired with Mining is the standard Classic-era convention for a plate melee DPS class: Blacksmithing crafts weapons and armor and adds extra sockets to gear, and Mining supplies the ore to use it without buying materials.
+Blacksmithing and Mining. Blacksmithing makes Arcanite Reaper, and Mining feeds it. Engineering is the PvP choice for its grenades.
 
 ## Leveling
 
-Fury is generally the stronger leveling choice for Warrior, since dual-wielding and Bloodthirst clear trash faster than Arms's slower two-handed swing timer. Arms levels fine on its own, particularly once Mortal Strike is trained.
+Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, Victory Rush after every kill, and Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Take Improved Overpower as soon as the second row opens and Bloodthrill at 30: together they turn every pull into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.

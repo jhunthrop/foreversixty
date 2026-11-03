@@ -20,8 +20,8 @@ statPriority:
     Critical strike,
     Expertise,
   ]
-description: 'Talents, tanking priority, stat priority, and race picks for Protection Warrior in Forever, with beta-versus-projection called out.'
-updated: 2026-10-31
+description: 'Protection warrior for Forever: talents with the why, the pull, Shield Block and Revenge, Thunder Clap and the emergency buttons.'
+updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -33,97 +33,92 @@ sources:
   - label: 'Icy Veins, the racial rework'
     url: https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/
     kind: community
-  - label: 'Forever Sixty stat weights, data/curated/specs.json'
+  - label: 'Forever Sixty stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty rotation data, data/curated/apl/warrior-protection.json'
+  - label: 'Forever Sixty Protection rotation'
     url: https://foreversixty.gg/sim/specs
     kind: site
-  - label: 'Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json'
+  - label: 'Forever Sixty raid loot'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'This site, character planner'
+  - label: 'Forever Sixty character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
 
 ## Overview
 
-Protection is Forever's tanking spec, using a one-handed weapon and shield to hold enemy attention and survive heavy hits.
+Protection is the shield tank: Defensive Stance all fight, Shield Slam and Revenge for threat, Shield Block and Thunder Clap against every hit, Sunder Armor in between.
 
 ### Strengths
 
-- Shield Slam is its highest-threat button and grows with Block Value
-- Sunder Armor stacks add threat on every spare global
-- Defensive talents keep mitigation and Rage generation high
-- Revenge comes up more often the better its avoidance
+- Shield Slam and Revenge are huge threat for very little rage
+- Shield Block is off the global cooldown and up most of the fight
+- Every block, dodge and parry pays rage back through Shield Specialization and Master of Defense
+- Last Stand and Shield Wall give the healers time when a fight goes wrong
 
 ### Weaknesses
 
-- Gives up the damage of the two-handed and dual-wield specs
-- Needs healers to outlast sustained damage
-- Threat leans on Sunder Armor filling every other global
+- Very little damage of its own; solo play is slow
+- Several targets at once means tabbing Sunder and Revenge around, not one button
+- Rage is thin in the first seconds of a pull, before the boss has hit you
 
 ### In a raid
 
 - **Role:** Main tank
-- **Brings:** Sunder Armor on the target, Thunder Clap's attack-speed slow and Demoralizing Shout
+- **Brings:** Sunder Armor stacks, Thunder Clap's attack speed slow and Demoralizing Shout
 
 ## Talents and builds
 
-This build spends 14 points in Arms and 37 in Protection: Shield Slam, with Bastion at its full five ranks. It is the build this site's tank simulator is run on, so everything below is what the simulator models, taken from the client's own talent text.
+- **Shield Slam** (1 point): a shield hit that adds your block value to its damage, with a very high amount of threat. Your biggest button.
+- **Bastion** (5 points): 10% more damage while a shield is equipped, which is 10% more threat from everything that hits.
+- **Defiance** (3 points): 15% more threat in Defensive Stance while a shield is equipped, on top of the stance's own bonus.
+- **Shield Specialization** (5 points): 5% more block chance, and every block gives you 5 rage.
+- **Master of Defense** (2 points): 5 rage on every dodge and parry with a shield on. With Shield Specialization, a tank that is being hit is never short of rage.
+- **Anticipation** (5 points): 20 Defense Skill, so fewer hits land and fewer crit.
+- **Improved Revenge**, **Improved Thunder Clap** and **Improved Sunder Armor** (9 points): Revenge hits 60% harder, Thunder Clap costs 6 less and Sunder Armor 3 less. These are the three buttons you press most after Shield Slam.
+- **Focused Rage** (3 points): every offensive ability costs 3 less, which makes Revenge nearly free.
+- **Last Stand** (1 point): 30% of your maximum health for 20 seconds, lost again when it ends. Your emergency button.
+- **Improved Bloodrage** (2 points): half again as much rage from every Bloodrage.
+- **Concussion Blow** (1 point): a 5 second stun, and the point that unlocks Shield Slam.
 
-- **Shield Specialization** — more Block chance, and every Block pays Rage. A block is no longer only mitigation: it feeds the Rage that Shield Slam, Revenge and Heroic Strike spend.
-- **Anticipation** — Defense Skill, which raises avoidance and lowers the chance to be critically hit.
-- **Improved Revenge**, **Improved Thunder Clap** and **Improved Sunder Armor** — cheaper or harder-hitting versions of the three abilities that make most of a tank's threat.
-- **Last Stand** — a short burst of health, then it is lost again. An emergency button, not a damage-taken talent.
-- **Master of Defense** — Rage whenever you Dodge or Parry with a shield equipped, the avoidance counterpart of Shield Specialization.
-- **Defiance** — more threat in Defensive Stance while a shield is equipped, added on top of the stance's own threat bonus.
-- **Focused Rage** — cheaper offensive abilities, so the Rage the talents above produce goes further.
-- **Bastion** (5/5) — 10% more damage from everything you do while a shield is equipped, and so 10% more threat from your damage (the flat threat on Shield Slam, Sunder Armor and Heroic Strike does not scale with it).
-- **Improved Bloodrage** (2/2) — half again as much Rage from Bloodrage.
-- **Concussion Blow** — one point, because Shield Slam requires it.
-- **Shield Slam** — the capstone: a shield hit that adds your Block Value, with very high threat.
+In Arms the build takes **Deflection** for 5% parry, **Improved Heroic Strike** for a cheaper rage dump, and **Improved Rend** into **Deep Wounds**. Improved Tactical Mastery and Anger Management are left out: a tank who stays in Defensive Stance gets more from Bastion's last ranks and Improved Bloodrage.
 
-**Arms**, fourteen points: Deflection for Parry, Improved Heroic Strike for cheaper Heroic Strikes, and Improved Rend into Deep Wounds. Improved Tactical Mastery and Anger Management are gone: six points for one Rage every three seconds bought less than four more ranks of Bastion and Improved Bloodrage. The change measured about +5% threat and +8% damage in our level-60 tank run, with damage taken unchanged.
-
-What is left out, and why. Iron Will, Improved Disarm, Vanguard and Improved Shield Bash change nothing against a boss that stays in front of you and neither stuns, fears, silences nor disarms, which is the fight this site simulates. Improved Shield Wall shortens a cooldown the simulated fight never needs to use. Devastate exists in the client's spell list but is not a learnable ability in this build, so no rotation and no talent here depends on it.
-
-Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
+Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you pull with Charge, **Improved Shield Bash** for a boss with a cast you must silence, and **Iron Will** for a fight full of stuns and fears. Open the [planner](/planner?class=warrior) to see the build point by point.
 
 ## Rotation and priority
 
-This is the rotation the simulator runs, and each line in it was kept because taking it out made the tank worse in the simulator's tank fight (a level 63 boss that swings at you every two seconds, with healers assumed). You stand in Defensive Stance with a shield for the whole fight.
+**The pull.** Bloodrage before you pull so your first Sunder Armor or Shield Slam is paid for, then open with whichever is ready. On a boss that turns toward the raid, get a Sunder and a Revenge in before the damage dealers start. Taunt only to take a target back; it does nothing for you on a boss you already hold.
 
-1. **Shield Slam** on cooldown. It is your highest-threat button and the one whose damage grows with Block Value.
-2. **Revenge** whenever it is available. It becomes castable after you dodge, parry or block, so the better your avoidance, the more often it is up.
-3. **Shield Block** whenever its buff is down. Of everything you press, it is the one whose removal costs the most damage taken.
-4. **Thunder Clap** held on the boss. Its attack-speed slow is worth the Rage for the damage it removes, at a small cost in threat.
-5. **Sunder Armor** as the filler for every other global cooldown. Stacking it is the biggest single source of threat outside Shield Slam and Revenge.
-6. **Heroic Strike** with spare Rage. At this gear a Forever tank is limited by cooldowns rather than Rage, so the exact threshold you queue it at barely matters.
+**The priority.** Shield Block whenever it is down: it is off the global cooldown, it lasts 7 seconds on a 5 second cooldown, and every block it gives you also lights Revenge. Revenge the moment it lights. Shield Slam on cooldown. Keep Thunder Clap on the boss and refresh it in its last 3 seconds; the attack speed slow is the biggest cut to the damage you take after Shield Block. Sunder Armor on every free global: five stacks for the raid, then flat threat on every cast. Heroic Strike with spare rage above 40.
 
-Last Stand and Shield Wall are for a fight the healers are losing; the simulator fires them on low health and they cut the chance of death on a harder boss, but they never fire on the standard fight. Demoralizing Shout is not in the list because it lowers the boss's attack power and the simulated boss has none to lower; against a real boss with attack power it earns its place. Taunt, Disarm and Concussion Blow do nothing in a fight with one stationary enemy and are left out.
+**Demoralizing Shout.** Keep it on any boss that hits you with attack power, unless a druid or another warrior already holds it. It is a straight cut to every hit you take.
 
-Rage comes from your swings (a fixed amount per landed swing from the weapon's speed, more on a critical strike), from the damage you take, and from Shield Specialization and Master of Defense, so a tank that is being hit and is avoiding well is never short of it.
+**Shield Block timing.** It is your mitigation and your rage engine at once, so it never waits for a big hit: keep it up. On a boss that crushes, it is also what pushes crushing blows off the table.
+
+**Emergencies.** Last Stand below 35% health. Shield Wall below 40% for 60% less damage taken over 12 seconds, on a 15 minute cooldown. Call them on the fight you know, before the health bar says so.
+
+**Adds.** Thunder Clap hits up to four targets and slows all of them. Sunder and Revenge the add the healers can least afford, and Taunt anything that peels off.
 
 ## Stat priority
 
-A tank is scored on one number that rewards, in this order, effective health (how much of the boss's damage your health pool can take once armor and avoidance have done their work), then a risk index that punishes spiky incoming damage, then threat. Each stat in the table is how much one point of it moves that score, shown in the same convention as every other spec: against the stat the table is anchored to.
-
-Why the stats land where they do is mechanical, and stays true when the numbers move. Stamina is health, and health is a straight multiplier on effective health. Armor lowers every physical hit by a fraction that shrinks as you stack it. Defense Skill, Dodge and Parry take hits out entirely, and Defense also lowers the chance to be critically hit and crushed. Block takes a flat amount off the hits it catches, so it depends on your Block Value. Expertise lowers the boss's chance to dodge or parry you, which is threat and Rage, not survival; no item carries it yet, so it is a stat for the day one does. Strength and Attack Power add threat and, for Strength, Block Value.
-
-Two things the table cannot tell you. The item tables used here fold a shield's Block Value into its Block line, so a shield's Block Value is not weighed apart from its Block chance.
+Stamina is health, and health is the one thing a healer cannot give you back mid-pull. Armor cuts every physical hit, though each point is worth a little less the more you stack. Defense, dodge and parry take hits out entirely, and Defense also lowers the chance to be crit and crushed. Block takes a flat amount off the hits it catches, so it grows with your block value. Strength and attack power are threat, and Strength also adds block value. Expertise stops the boss dodging and parrying you, which is threat and rage, not survival.
 
 ## Best in slot
 
 ## Enchants and consumables
 
+Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for Stamina and armor first; a tank that dies holds no threat.
+
 ## Races
+
+Dwarf and Tauren are the tank picks; Tauren's Endurance is 5% more health. Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes: press it at the pull for threat. Night Elf's Quickness adds dodge.
 
 ## Professions
 
-Blacksmithing and Mining is also the standard convention for a tanking Warrior, with an extra reason beyond the DPS specs: Blacksmithing's socket-adding recipes let a tank add Stamina or Defense gems to gear that doesn't already have a socket.
+Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feeds it. Engineering adds grenades for add pickups.
 
 ## Leveling
 
-Protection is not generally the leveling spec of choice for Warrior — Fury, or Arms to a lesser extent, clears trash faster while leveling solo, and Protection's strengths show up in a group or raid tanking role instead.
+Level as Arms or Fury and keep a shield in your bags for dungeons: Protection is slow solo. Learn Defensive Stance at 10 and Shield Block at 16, and you can tank every dungeon on the way up in damage talents with a shield on. Switch to Protection at 60, or as soon as you are the group's main tank.
