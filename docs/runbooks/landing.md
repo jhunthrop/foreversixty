@@ -59,10 +59,8 @@ Every check job that runs on a `land/**` push checks out only what it reads:
   data/builds matches main's last pushed tree restores it, and one that moved it pays the git
   checkout once.
 - Jobs that never read data/builds (addon, companion test, tools, logs bench) skip it.
-- ios and android keep the full checkout. ios's tests read android's test resources, and on
-  the macOS runner the sparse partial clone measured slower than the full one (386 s against
-  78 s). android's sparse checkout measured 62 s against 330 s and waits on its red planner
-  golden (`PlannerScreenshotTest` F13_2, red on main since round 13).
+- ios keeps the full checkout: its tests read android's test resources, and on the macOS
+  runner the sparse partial clone measured slower than the full one (386 s against 78 s).
 - companion's `changes` needs the history for its merge base and no file: `fetch-depth: 0`
   with `filter: blob:none`.
 

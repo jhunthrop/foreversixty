@@ -19,7 +19,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
+      # The app, apps/shared, docs/contracts and the active build's data (data/builds, from the
+      # cache); the screenshot tests only write under design/reviews (docs/runbooks/landing.md,
+      # "Checkout").
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+            !/apps/ios/
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '21' }
       - uses: gradle/actions/setup-gradle@v4
