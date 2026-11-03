@@ -27,7 +27,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 /** Class slugs whose guides must pass. Each class lane adds its own when it lands. */
-export const ENFORCED_CLASSES: readonly string[] = ['warrior'];
+export const ENFORCED_CLASSES: readonly string[] = ['mage', 'paladin', 'priest', 'shaman', 'warrior'];
 
 /** Everything a guide's prose must not contain, by rule. */
 export const BANNED_PROSE = {
