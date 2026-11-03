@@ -1,7 +1,7 @@
 {
   "spec": "druid-feral-bear",
   "state": "written",
-  "notes": "Bear Form tank at 60. Primal Bite on its 6 s cooldown, Lacerate kept ticking (Rend and Tear reads it), Maul queued on the next swing, Swipe as the rage dump, Barkskin on cooldown and Frenzied Regeneration as the heal under half health. Measured in the sim's tank fight (level 63 boss, 2.0 s swing, 2400 to 3192, 180 s, healer 600 HPS) in the engine's own level 60 bear set: this order gave about 1005 threat per second against 806 for Primal Bite and Maul alone (Berserk, then in the rotation, added 4 percent; client 1.60.1.70707 removed it from the tree), Barkskin cost 1.6 percent threat for 5 percent less damage taken. Left out on purpose: Demoralizing Roar, because the fight's boss has no attack power for it to reduce (measured 1.8 percent less threat for no change in damage taken, and the raid debuff already supplies it when it is on), and Enrage, which bought 2.7 percent threat for 1.8 percent more damage taken (it takes 27 percent of base armor for 10 s), a trade a tank rotation should not make by default. Client 1.60.1.70707 made Lacerate a Feral talent (the guide build takes it) and Primal Bite the Feral capstone. The Lacerate bleed stacking, its direct hit (10% weapon damage per stack already up, live tooltip), Frenzied Regeneration's conversion and Enrage's armor penalty are not in the client tables and are the engine's stated assumptions (sim/druid/lacerate.go, enrage.go, frenzied_regeneration.go).",
+  "notes": "Bear Form tank at 60. Primal Bite on its 6 s cooldown, Lacerate kept ticking (Rend and Tear reads it), Maul queued on the next swing, Swipe as the rage dump, Barkskin on cooldown and Frenzied Regeneration as the heal under half health. Measured in the sim's tank fight (level 63 boss, 2.0 s swing, 2400 to 3192, 180 s, healer 600 HPS) in the engine's own level 60 bear set: this order gave about 1005 threat per second against 806 for Primal Bite and Maul alone (Berserk, then in the rotation, added 4 percent; client 1.60.1.70707 removed it from the tree), Barkskin cost 1.6 percent threat for 5 percent less damage taken. Left out on purpose: Demoralizing Roar, because the fight's boss has no attack power for it to reduce (measured 1.8 percent less threat for no change in damage taken, and the raid debuff already supplies it when it is on), and Enrage, which bought 2.7 percent threat for 1.8 percent more damage taken (it takes 27 percent of base armor for 10 s), a trade a tank rotation should not make by default. Client 1.60.1.70707 made Lacerate a Feral talent (the guide build takes it) and Primal Bite the Feral capstone. The Lacerate bleed stacking, its direct hit (10% weapon damage per stack already up, live tooltip), Frenzied Regeneration's conversion and Enrage's armor penalty are not in the client tables and are the engine's stated assumptions (sim/druid/lacerate.go, enrage.go, frenzied_regeneration.go). Guide rewrite (2026-11-02): the bear Enrages 1 s before the pull, as real bears open: 10 rage up front and 2 a second for 10 seconds, with the armor it costs gone 9 s into the fight. Raid 60, 10,000 iterations, seeds 1 and 50001: threat 1001.0 to 1009.2 a second (+0.8%), damage taken 581.4 to 584.0 (+0.45%), TMI 48.7 to 48.8.",
   "sources": [
     {
       "label": "Forever Sixty bear harness measurements (sim/druid/tank, tank fight)",
@@ -16,6 +16,22 @@
   ],
   "rotation": {
     "type": "TypeAPL",
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 5229
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-1s"
+          }
+        }
+      }
+    ],
     "priorityList": [
       {
         "notes": "Potions, trinkets and racials as they come up. Mighty Rage Potion goes down in Bear Form without breaking it.",
