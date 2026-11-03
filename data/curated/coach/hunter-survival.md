@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/hunter/survival.md
   - data/curated/apl/hunter-survival.json
-  - data/builds/1.60.1.70753/spellconst/hunter.json
+  - data/builds/1.60.1.70707/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,25 +14,21 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Survival Hunter as the site's guide describes it. Survival is a melee spec in Forever: two weapons, Raptor Strike on every swing, Mongoose Bite whenever it lights up, and no pet. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Survival Hunter as the site's guide describes it. Survival is a melee spec in Forever: the Hunter stands in weapon range for the whole fight and uses Raptor Strike, Mongoose Bite and bleeds instead of shots. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Put up Aspect of the Beast and leave it up.
-- Mark the boss with Hunter's Mark.
-- On the pull, press Rapid Fire, your trinkets and Berserking or Blood Fury together: Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you.
-- Raptor Strike queued on every swing it is ready.
-- Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.
+- Before the pull, Aspect of the Beast goes up: in Forever it is the melee aspect, raising melee attack power by one hundred ten at rank four.
+- Hunter's Mark stays on the target for Expose Prey.
+- Rapid Fire goes out with the other cooldowns, because in Forever it speeds up melee swings as well as shots.
+- Raptor Strike is queued on the swing timer with no mana gate at all.
 - Counterattack only after you parry: it is free and cannot be blocked, dodged or parried.
-- Wing Clip only with a Windfury Totem in the group, on a global with nothing else ready. Without the totem it loses damage.
-- Disengage trims some threat on a five second cooldown, and Feign Death drops all of it if it lands; check the message, because both can fail.
-- Deterrence is your emergency button when something turns on you.
-- Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest.
-- Freezing Trap is your crowd control, laid before the pull.
+- Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.
 - Lacerate whenever its bleed has fallen off.
 - Strider Kick on its own short cooldown, ahead of Immolation Trap.
+- Wing Clip only with a Windfury Totem in the group, on a global with nothing else ready. Without the totem it loses damage.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

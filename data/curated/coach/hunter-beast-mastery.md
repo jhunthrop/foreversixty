@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/hunter/beast-mastery.md
   - data/curated/apl/hunter-beast-mastery.json
-  - data/builds/1.60.1.70753/spellconst/hunter.json
+  - data/builds/1.60.1.70707/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial Wrath is the burst, and your shots fill every gap. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery is the pet-focused ranged Hunter spec: the pet, drawing its stats from the Hunter's gear, deals much of the damage, and Bestial Wrath is its burst. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
@@ -22,21 +22,11 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 
 - Aspect of the Hawk goes up before the pull.
 - Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.
-- Bestial Wrath on the pull with Rapid Fire and your trinkets, then again every two minutes.
-- Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.
+- Bestial Wrath on cooldown: with Rapid Fire below, this is the one burst window a Classic-length fight allows.
+- Rapid Fire timed to land with an incoming auto shot just as Multi-Shot is about to come off cooldown, so both benefit.
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
-- When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Multi-Shot going.
-- Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin.
-- Mark the boss with Hunter's Mark, then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight.
-- A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage.
-- Growl.
-- If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
-- Watch your threat and Feign Death before you reach the tank, not after the boss turns.
-- Volley is a channel, costs a lot of mana, and is worth it only on a big pack that will live through the whole channel.
-- Freezing Trap is the hunter's crowd control: lay it before the pull, and remember any damage breaks it.
-- Explosive Trap under a pack the tank is holding is good damage for its mana.
-- Tranquilizing Shot removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage.
-- Distracting Shot pulls an add onto you so the pet can pick it up, and Scatter Shot buys a few seconds against something loose in the back line.
+- Serpent Sting.
+- Arcane Shot is instant, so it never clips an auto shot, but it's the least mana-efficient shot the spec has, so keep a mana reserve.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/warrior/arms.md
   - data/curated/apl/warrior-arms.json
-  - data/builds/1.60.1.70753/spellconst/warrior.json
+  - data/builds/1.60.1.70707/spellconst/warrior.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,25 +14,21 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Arms Warrior as the site's guide describes it. Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stance, a stance swap for Recklessness, and the biggest Executes in the game. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Arms Warrior as the site's guide describes it. Arms is Forever's two-handed warrior spec, built around Mortal Strike, a hard-hitting attack that also cuts the target's incoming healing. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Bloodrage whenever Rage drops below eighty, since Rage limits everything else here.
-- Battle Shout.
-- Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target.
-- Press Overpower the moment it lights up, even ahead of Mortal Strike. It is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later.
-- Mortal Strike goes on cooldown otherwise.
-- With Improved Slam, Slam fills the gap between Mortal Strikes.
-- Heroic Strike only when you are about to cap at ninety or more: below that, every point is worth more in Mortal Strike, Overpower and Execute.
+- Keep Battle Shout up.
+- Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking.
+- Mortal Strike is the highest damage per rage button and comes off a six second cooldown.
+- Overpower is a free follow-up whenever the target dodges you, so it's cast on sight rather than held for later.
+- Execute below twenty percent.
+- Slam.
+- Recklessness is the one burst cooldown, and it is Berserker Stance only: when the target drops below twenty percent, spend your rage, swap to Berserker Stance and press Recklessness, then Execute out the fight.
 - Hamstring only with a Windfury Totem in the group, on a free global for ten rage. Without the totem it loses damage.
-- At twenty percent, Execute in Battle Stance first. It spends your whole bar, so that first Execute is your biggest hit of the fight.
-- Then swap to Berserker Stance and press Recklessness, and Execute every global until the boss dies.
-- Sweeping Strikes in Battle Stance, swap to Berserker Stance, Whirlwind.
-- Whirlwind hits up to four targets and every Sweeping Strikes charge copies a hit onto a second one.
-- Use Cleave instead of Heroic Strike when two mobs are in front of you.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

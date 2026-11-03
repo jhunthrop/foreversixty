@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/subtlety.md
   - data/curated/apl/rogue-subtlety.json
-  - data/builds/1.60.1.70753/spellconst/rogue.json
+  - data/builds/1.60.1.70707/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,28 +14,18 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Subtlety Rogue as the site's guide describes it. Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage to build, Rupture as the main finisher and Ghostly Strike every twenty seconds. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Subtlety Rogue as the site's guide describes it. Subtlety is the Rogue stealth-utility melee tree: Hemorrhage builds combo points cheaply and on the move, with Rupture and Ghostly Strike behind it. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Premeditation: A couple of seconds before the pull, press Premeditation for two combo points. They last twenty seconds, so do not press it early.
-- Open with Garrote once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet.
-- Ambush is the opener for anything that will die fast, not for a boss.
-- Rupture at four or more combo points whenever it is not ticking.
-- Ghostly Strike on cooldown: it hits harder than Hemorrhage for five more energy and gives a combo point.
-- Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle.
-- Slice and Dice.
-- Hemorrhage is the builder: one combo point, and its debuff makes your Rupture hit fifteen percent harder.
-- Preparation resets your other rogue cooldowns on a ten minute timer, which on a raid boss mostly means a second Vanish or a second Evasion.
-- Kidney Shot: ### Trash, threat and survival
-
-- Kidney Shot costs no energy in Forever and stuns longer per combo point.
-- Kick, Gouge and Blind handle the rest.
-- Elusiveness puts Blind on a short leash.
-- Redirect: - Redirect lifts your combo points off a dying mob and hands them to the next enemy you hit within fifteen seconds.
-- Feint: - Feint on cooldown on bosses where you sit near the tank's threat.
+- Open from stealth: Stealth, then Premeditation for two free combo points a couple of seconds before the pull, then Ambush on the pull itself. Then play from Hemorrhage.
+- Hemorrhage is the builder, hitting for one hundred forty-five percent weapon damage with a dagger and awarding a combo point, and its debuff makes the target take fifteen percent more damage from your Rupture for fifteen seconds, so keep it going.
+- Rupture at four or more combo points whenever it is not running.
+- Ghostly Strike on cooldown: cheaper than Backstab, hits for one hundred eighty percent weapon damage with a dagger, and builds a combo point.
+- Eviscerate at three or more combo points while Rupture is running, so combo points built during a Rupture are spent instead of idling.
+- Slice and Dice while Rupture is running: opened when it is down, refreshed under three seconds remaining, at three or more combo points.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

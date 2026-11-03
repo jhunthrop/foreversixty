@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/priest/shadow.md
   - data/curated/apl/priest-shadow.json
-  - data/builds/1.60.1.70753/spellconst/priest.json
+  - data/builds/1.60.1.70707/spellconst/priest.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Shadow Priest as the site's guide describes it. Shadow keeps two DoTs ticking, hits Mind Blast and Shadow Word: Death on cooldown, and fills with Mind Flay, all from Shadowform. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Shadow Priest as the site's guide describes it. Shadow is the Priest damage-over-time caster: keep Shadow Word: Pain up, then Mind Blast and Mind Flay, with Vampiric Embrace healing as sustain. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
@@ -26,12 +26,8 @@ This is the Shadow Priest as the site's guide describes it. Shadow keeps two DoT
 - Mind Blast only when Mind Flay cannot be cast.
 - Shadow Word: Death first below twenty percent target health. While it is on its fifteen-second cooldown, Mind Blast, then Mind Flay.
 - Shoot with your wand on any global where nothing else is ready.
-- Buff the raid, then shift into Shadowform and drink back to full. The form costs mana, so never shift on the pull.
-- Devouring Plague every time its twenty-four second cooldown is up: every priest has it in Forever, its ticks crit, and it heals you.
-- Cast it on cooldown anyway, and keep Vampiric Embrace up so your own damage heals it back.
-- Fade sheds threat for a few seconds on a thirty second cooldown; use it the moment you climb past the tank, not after the boss turns.
-- Dark Sacrifice when mana is below a fifth and running behind the fight. It trades your own health for mana over fifteen seconds and adds your Spirit to it, and its ten minute cooldown makes it a once-a-fight cast.
-- Shadowfiend cannot be learned at launch.
+- Devouring Plague is kept up: its twenty-four-second cooldown lets it be reapplied when it expires, and its ticks crit.
+- Shadowform.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

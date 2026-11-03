@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/priest/discipline.md
   - data/curated/apl/priest-discipline.json
-  - data/builds/1.60.1.70753/spellconst/priest.json
+  - data/builds/1.60.1.70707/spellconst/priest.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,23 +14,17 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Discipline Priest as the site's guide describes it. Discipline heals the tank with Penance on cooldown, a cheap shield to open Renewed Hope, and crits that leave Divine Aegis shields behind. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Discipline Priest as the site's guide describes it. Discipline is the Priest shield-and-mitigation healing tree: Power Word: Shield uptime, Penance and Divine Aegis prevent damage, and cost-reduction talents stretch its mana. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Drop Lightwell and tell the raid it is up.
-- Fear Ward the tank if the boss fears.
-- Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.
-- Penance on cooldown, on whoever is hurt: three heals one second apart for one cast every twelve seconds, your best heal per mana.
-- Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.
-- Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.
-- Binding Heal in Flash Heal's place while you are hurt yourself. It heals you as much as the target for the same mana.
-- Prayer of Healing when three or more in a group are hurt.
-- Inner Focus on a Greater Heal or a Prayer of Healing. It makes the spell free and adds twenty-five percent crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
-- Dark Sacrifice: Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead.
-- Shadowfiend cannot be learned at launch.
+- The rotation leads with Penance whenever it is ready, and keeps Power Word: Shield on a tank who is taking damage and is not under Weakened Soul.
+- Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low.
+- Binding Heal.
+- Prayer of Healing answers several party members being hurt together.
+- Greater Heal is the tank's filler: the tank takes the big hits, and the bigger heal lands where they are.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

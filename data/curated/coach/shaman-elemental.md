@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/shaman/elemental.md
   - data/curated/apl/shaman-elemental.json
-  - data/builds/1.60.1.70753/spellconst/shaman.json
+  - data/builds/1.60.1.70707/spellconst/shaman.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Elemental Shaman as the site's guide describes it. Elemental is the shaman's caster spec: Flame Shock and Lava Burst for the big hits, Lightning Bolt in between, and Chain Lightning when there is more than one target. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Elemental Shaman as the site's guide describes it. Elemental is Shaman's ranged spellcasting spec, dealing damage with Lightning Bolt, Chain Lightning, Flame Shock and Lava Burst, backed by fire totems. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
@@ -26,10 +26,8 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is the 
 - Lightning Bolt on every free global.
 - Chain Lightning only against two or more targets. It hits every target for close to single-target Lightning Bolt damage.
 - Magma Totem in place of Searing Totem against two or more targets.
-- Flame Shock whenever it is not on the target: Lava Burst needs it, and with Call of Flame it lasts twenty-one seconds.
-- Earth Shock stays on your bar for interrupts: it shares the shock cooldown, and that cooldown belongs to Flame Shock.
-- Elemental Mastery goes with everything else.
-- Fire Nova on a Clearcasting proc: it is free then.
+- Keep Flame Shock on the target. Its damage plus Lava Burst's +twenty percent beats the Lightning Bolt it replaces, and Call of Flame stretches it to twenty-one seconds, so it costs about one global in fourteen.
+- Elemental Mastery goes on cooldown with your trinkets; for its fifteen seconds every Lightning Bolt is a one and a half second cast.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

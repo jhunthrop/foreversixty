@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/warlock/affliction.md
   - data/curated/apl/warlock-affliction.json
-  - data/builds/1.60.1.70753/spellconst/warlock.json
+  - data/builds/1.60.1.70707/spellconst/warlock.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,28 +14,18 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Affliction Warlock as the site's guide describes it. Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps with Shadow Bolt, and every one of those ticks can crit in Forever. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Affliction Warlock as the site's guide describes it. Affliction is Warlock's damage-over-time spec: it stacks several DoTs on a target and keeps casting with Life Tap and drain spells. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Before the pull, get set up: Demon Armor on, Succubus out, a Healthstone in your bag, and Life Tap to full mana while the healers top you off.
-- Lash of Pain: The Succubus costs a shard where the Imp is free, but her melee and Lash of Pain do more damage than the Imp's Firebolt, and Unholy Power makes her hit harder still.
-- Press Amplify Curse a few seconds before the pull.
-- Corruption whenever it has fallen off.
-- Siphon Life whenever it has fallen off.
-- If your raid leader gives you Curse of Weakness, put Agony down before it: Amplify Curse goes to whichever of the two you cast first.
-- Curse of the Elements when no warlock's is on the target.
-- Curse of Recklessness: Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid, Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard.
+- Corruption is the cheapest DoT per damage and goes down first, then is kept up throughout.
+- Bane of Agony goes up right behind it as your one curse.
+- Siphon Life comes next: the build takes it, and its ticks crit and heal you.
 - Immolate is the fifth DoT, recast when under three seconds remain.
-- Bane of Agony whenever it has fallen off.
-- Wrack stays off your raid bars.
-- Shadow Bolt with every DoT up.
+- Shadow Bolt fills every remaining global while the DoTs run their course.
 - Life Tap keeps you casting once mana runs low.
-- Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
-- In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
-- Rain of Fire for trash packs that stay put.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

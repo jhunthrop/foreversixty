@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/warlock/demonology.md
   - data/curated/apl/warlock-demonology.json
-  - data/builds/1.60.1.70753/spellconst/warlock.json
+  - data/builds/1.60.1.70707/spellconst/warlock.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,27 +14,19 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Demonology Warlock as the site's guide describes it. Demonology sacrifices the Imp for fifteen percent Shadow damage, keeps a Succubus out for ten percent more, and casts Shadow Bolt, with free Soul Fires below thirty-five percent. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Demonology Warlock as the site's guide describes it. Demonology is Warlock's pet spec: its talents empower a summoned demon, and Demonic Sacrifice trades the pet for a standing buff. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Put on Demon Armor, make a Healthstone and Life Tap back to full.
-- Curse of the Elements when no warlock's is on the target.
-- Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
-- Bane of Doom the moment the last one fires, with a minute or more of the fight left.
-- Bane of Agony in the last minute, once Doom has fired.
-- Corruption whenever it has fallen off.
-- Immolate with three seconds or less left on it.
-- Shadow Bolt for every other cast.
-- Soul Fire every six seconds while Decimation is up.
-- Searing Pain also triggers Decimation, but it carries a lot of extra threat and Shadow Bolt hits harder with your Shadow bonuses.
-- Life Tap below ten percent mana.
-- Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
-- In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
-- Health Funnel: On fights with heavy raid damage, park her behind the boss and Health Funnel her before she drops.
-- Rain of Fire for trash packs that stay put.
+- Bane of Doom is the one curse kept up. It deals its whole damage when the minute is out, so recast it the moment it fires, while a minute or more of the fight remains.
+- Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.
+- Bane of Agony in the last minute, when a Doom would not fire before the fight ends.
+- Immolate follows Corruption and Bane of Doom and is recast when under three seconds remain. Its damage over time is worth more than the Soul Fire and Shadow Bolt globals it displaces.
+- Soul Fire only while Decimation's buff is up.
+- Shadow Bolt is the filler between DoT refreshes: with the Imp's sacrifice and the Succubus' Master Demonologist both raising Shadow damage, it beats Searing Pain.
+- Life Tap to keep casting once mana runs low.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
