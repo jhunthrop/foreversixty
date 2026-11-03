@@ -37,10 +37,13 @@ export const guidesCopy = {
   readTheGuideAriaLabel: (specName: string, className: string): string =>
     `Read the ${specName} ${className} guide`,
   yourSpecPill: 'Your spec',
+  /** The class landing card's accessible name once it carries the "Your spec" pill. */
+  yourSpecAriaLabel: (cardLabel: string): string => `${cardLabel}, your spec`,
+  /** The class landing's visually hidden heading over the spec cards. */
+  classLandingSpecsHeading: 'Specs',
   /** The spec card's figure, in its role's own unit (`role-metric.ts`); `figure` arrives formatted. */
   setMetricLine: (figure: string, role: 'dps' | 'healer' | 'tank'): string =>
     `${figure} ${role === 'tank' ? 'damage taken per second' : ROLE_RATE_UNIT[role]}`,
-  setDpsLineSuffix: 'at 60, this set',
   buildRailLabel: 'Build',
   /** The rail's Rotation card title; its band label is the head's meta (site alignment §5.4). */
   rotationRailTitle: 'Rotation',

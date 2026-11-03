@@ -1,25 +1,23 @@
 ---
 // web/src/pages/guides/[class]/index.astro
-// Rebuild (spec 2026-10-04, §4.B): crest + identity paragraph + three illustrated spec
-// cards, replacing the old bare two-link paragraph plus a plain `<ul>` of spec names
-// (spec §3's own "Replaced" list). `Content.astro`'s own article/aside-less grid, Sources
-// footer and footer-placed confidence line are kept (`hideHeader`+`wide`: the new
-// `ArtPanel`+`ClassHeader` region replaces this layout's own plain `<h1>` block, and the
-// identity paragraph + spec-card row read at the header's own 1344px width).
+// The class landing (spec design/specs/2026-11-02-class-landing.md): the class's head (crest,
+// class name, one identity line), then a card per spec that is the way into its guide, then
+// the class-wide facts: what changed from 1.12 as a ruled list, and races (plus a raid or
+// leveling note for the classes that carry one) as panels. The index.md file is split by its
+// fixed heading vocabulary (class-landing.ts), so each part lands in its own region.
 import { getCollection } from 'astro:content';
 import ArtPanel from '../../../components/ArtPanel.astro';
-import ClassHeader, { type SpecTabEntry } from '../../../components/ClassHeader.astro';
+import ClassHeader from '../../../components/ClassHeader.astro';
 import SpecCard from '../../../components/guides/SpecCard.astro';
 import Content from '../../../layouts/Content.astro';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
-import { classLandingSetMetric } from '../../../lib/guides/class-dps';
-import type { SetMetric } from '../../../lib/guides/role-metric';
 import { guidesCopy } from '../../../lib/guides/copy';
-import { splitFirstParagraph } from '../../../lib/guides/first-paragraph';
+import { CLASS_LANDING_PANELS, cardLineFor, splitClassLanding } from '../../../lib/guides/class-landing';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
+import { slugify } from '../../../lib/guides/sections';
 import { readSpecCatalog } from '../../../lib/bis/load';
-import { specTabIcon } from '../../../lib/bis/spec-icon';
+import { specCardIcon } from '../../../lib/bis/spec-icon';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
@@ -35,38 +33,37 @@ export async function getStaticPaths() {
 const { entry, specGuides } = Astro.props;
 const build = activeBuild.build;
 const classSlug = entry.data.classSlug;
-const className = classes.find((c) => c.slug === classSlug)?.name ?? classSlug;
+const classEntry = classes.find((c) => c.slug === classSlug);
+if (classEntry === undefined) throw new Error(`guides/${classSlug}: not in classes.json`);
+const className = classEntry.name;
 
-const { first, rest } = splitFirstParagraph(entry.body ?? '');
-const identityHtml = await renderGuideMarkdown(first);
-const restHtml = await renderGuideMarkdown(rest);
+const landing = splitClassLanding(entry.body ?? '', `guides/${classSlug}/index.md`);
+const sections = await Promise.all(
+  landing.sections.map(async (section) => ({
+    ...section,
+    id: slugify(section.heading),
+    html: labelGroups(await renderGuideMarkdown(section.markdown)),
+  })),
+);
 
-// Tree order (`tree_index` ascending) -- the same order `SpecTabs` already uses.
+/** A paragraph that is only bold text ("**Race picks.**") labels the list under it. */
+function labelGroups(html: string): string {
+  return html.replace(/<p><strong>([^<]+)<\/strong><\/p>/g, '<p class="class-landing-group-label">$1</p>');
+}
+const factSections = sections.filter((s) => !CLASS_LANDING_PANELS.includes(s.heading));
+/** A lone panel holding several items flows them into two columns from 1024. */
+const COLUMN_ITEMS = 3;
+const panels = sections
+  .filter((s) => CLASS_LANDING_PANELS.includes(s.heading))
+  .map((s) => ({ ...s, columns: (s.html.match(/<(li|p)\b/g) ?? []).length >= COLUMN_ITEMS }));
+
+// Tree order (`tree_index` ascending), the order the talent frame shows.
 const catalogEntries = readSpecCatalog()
   .filter((s) => s.class_slug === classSlug)
   .sort((a, b) => a.tree_index - b.tree_index);
-
-const specTabs: SpecTabEntry[] = catalogEntries.map((s) => ({
-  specSlug: s.spec_slug,
-  name: s.name,
-  icon: specTabIcon(build, classSlug, s.tree_index),
-  href: `/guides/${classSlug}/${s.spec_slug}`,
-  active: false,
-}));
-
 const specGuideBySlug = new Map(specGuides.map((g) => [g.data.spec, g]));
 
-interface SpecCardView {
-  specSlug: string;
-  specName: string;
-  role: 'dps' | 'healer' | 'tank';
-  description: string;
-  icon?: string;
-  setMetric?: SetMetric;
-  href: string;
-}
-
-const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => {
+const specCards = catalogEntries.flatMap((s) => {
   const guide = specGuideBySlug.get(s.spec_slug);
   if (guide === undefined || guide.data.role === undefined) return [];
   return [
@@ -74,18 +71,13 @@ const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => 
       specSlug: s.spec_slug,
       specName: s.name,
       role: guide.data.role,
-      description: guide.data.description ?? '',
-      icon: specTabIcon(build, classSlug, s.tree_index),
-      setMetric: classLandingSetMetric(
-        build,
-        `${classSlug}-${s.spec_slug}`,
-        classSlug,
-        guide.data.recommendedRaces,
-      ),
+      line: cardLineFor(guide.body ?? '', `guides/${guide.id}.md`),
+      icon: specCardIcon(s),
       href: `/guides/${classSlug}/${s.spec_slug}`,
     },
   ];
 });
+if (specCards.length === 0) throw new Error(`guides/${classSlug}: no spec guide to link`);
 ---
 
 <Content
@@ -96,6 +88,7 @@ const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => 
   confidence={entry.data.confidence}
   sources={entry.data.sources}
   confidencePlacement="footer"
+  hideConfidenceNote
   hideHeader
   wide
 >
@@ -105,43 +98,86 @@ const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => 
         classSlug={classSlug}
         className={className}
         specName=""
-        specTabs={specTabs}
+        specTabs={[]}
         bands={[]}
         build={build}
         minimal
         eyebrow={guidesCopy.eyebrow}
-        titleOverride={entry.data.title}
+        titleOverride={className}
+        titleInk="strong"
+        summaryOverride={landing.identity}
       />
     </ArtPanel>
   </Fragment>
-  <div class="class-landing-identity" set:html={identityHtml} />
-  <div class="class-landing-cards" data-testid="guide-class-spec-cards">
-    {specCards.map((card) => (
-      <SpecCard
-        classSlug={classSlug}
-        className={className}
-        classColor={classes.find((c) => c.slug === classSlug)?.color ?? '#ffffff'}
-        specSlug={card.specSlug}
-        specName={card.specName}
-        role={card.role}
-        description={card.description}
-        icon={card.icon}
-        setMetric={card.setMetric}
-        href={card.href}
-        build={build}
-      />
+  <section class="class-landing-specs" aria-labelledby="class-landing-specs-heading">
+    <h2 id="class-landing-specs-heading" class="sr-only">
+      {guidesCopy.classLandingSpecsHeading}
+    </h2>
+    <div
+      class:list={['class-landing-cards', specCards.length === 4 && 'is-four']}
+      data-testid="guide-class-spec-cards"
+    >
+      {specCards.map((card) => (
+        <SpecCard
+          className={className}
+          classColor={classEntry.color}
+          specSlug={card.specSlug}
+          specName={card.specName}
+          role={card.role}
+          line={card.line}
+          icon={card.icon}
+          href={card.href}
+          build={build}
+        />
+      ))}
+    </div>
+  </section>
+  <div class="class-landing-body">
+    {factSections.map((section) => (
+      <section
+        class="class-landing-facts"
+        aria-labelledby={section.id}
+        data-testid={`class-landing-${section.id}`}
+      >
+        <h2 id={section.id} class="section-title class-landing-heading">
+          {section.heading}
+        </h2>
+        <div class="class-landing-facts-body" set:html={section.html} />
+      </section>
     ))}
+    {panels.length > 0 && (
+      <div class:list={['class-landing-panels', panels.length > 1 && 'is-pair']}>
+        {panels.map((section) => (
+          <section
+            class="class-landing-panel card-surface-quiet"
+            aria-labelledby={section.id}
+            data-testid={`class-landing-${section.id}`}
+          >
+            <h2 id={section.id} class="section-title class-landing-heading">
+              {section.heading}
+            </h2>
+            <div
+              class:list={[
+                'class-landing-panel-body',
+                panels.length === 1 && section.columns && 'is-columns',
+              ]}
+              set:html={section.html}
+            />
+          </section>
+        ))}
+      </div>
+    )}
   </div>
-  <Fragment set:html={restHtml} />
 </Content>
 
 <script type="application/json" id="guide-class-slug" set:html={JSON.stringify(classSlug)}></script>
 <script>
-  // The class landing's own "Your spec" match (spec §4.B): no new client island -- a plain
-  // module script reads the shared, cached `/v1/me` session read (the same mechanism the
-  // `/guides` index's own signed-in callout uses) and, only when the visitor's own
-  // character is on THIS class, tags the matching spec card's role label with the pill.
+  // "Your spec" (spec §8): no client island. A plain module script reads the shared, cached
+  // `/v1/me` session read and, only when the visitor's own character is on THIS class, adds the
+  // pill to the matching card's role row (which reserves its height) and names it in the
+  // card's accessible name.
   import { fetchMeOnce } from '../../../lib/account/api';
+  import { guidesCopy } from '../../../lib/guides/copy';
   import { classSlugFromName } from '../../../lib/report/tree-sizes';
 
   async function mount(): Promise<void> {
@@ -160,30 +196,178 @@ const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => 
     if (label === null || label.querySelector('.your-spec-pill') !== null) return;
     const pill = document.createElement('span');
     pill.className = 'pill pill-site your-spec-pill';
-    pill.textContent = 'Your spec';
+    pill.textContent = guidesCopy.yourSpecPill;
     label.appendChild(pill);
+    const card = label.closest('a');
+    const name = card?.getAttribute('aria-label');
+    if (card !== null && card !== undefined && name !== null && name !== undefined) {
+      card.setAttribute('aria-label', guidesCopy.yourSpecAriaLabel(name));
+    }
   }
 
   void mount();
 </script>
 
 <style>
-  .class-landing-identity {
-    margin: 0;
-  }
-  .class-landing-identity :global(p) {
-    font-size: 16px;
-    line-height: 1.6;
+  /* Content's main opens 40px under the head; the cards sit 24px under it (spec §4.2). */
+  .class-landing-specs {
+    margin-top: -16px;
   }
   .class-landing-cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .class-landing-body {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  .class-landing-heading {
+    margin: 0 0 12px;
+    font-size: var(--text-card-title);
   }
 
-  @media (max-width: 1023px) {
+  /* What changed from 1.12: a ruled fact list with a gold marker, never bare text. */
+  .class-landing-facts-body :global(> p) {
+    margin: 0 0 12px;
+    max-width: 68ch;
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--color-nav);
+  }
+  .class-landing-body :global(ul) {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: none;
+  }
+  .class-landing-facts-body :global(li) {
+    position: relative;
+    padding: 12px 0 12px 20px;
+    border-top: 1px solid var(--color-line-soft);
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--color-text);
+    break-inside: avoid;
+  }
+  .class-landing-facts-body :global(li:last-child) {
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .class-landing-body :global(li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-gold);
+  }
+  .class-landing-body :global(strong) {
+    color: var(--color-strong);
+    font-weight: 700;
+  }
+
+  /* Races, In a raid, Raids and leveling: panels under the list. */
+  .class-landing-panels {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .class-landing-panel {
+    padding: 18px 20px;
+  }
+  .class-landing-panel-body :global(p) {
+    margin: 0 0 12px;
+    max-width: 68ch;
+    font-size: 15px;
+    line-height: 22px;
+  }
+  .class-landing-panel-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .class-landing-panel-body :global(ul) {
+    margin: 0 0 12px;
+  }
+  .class-landing-panel-body :global(ul:last-child) {
+    margin-bottom: 0;
+  }
+  .class-landing-panel-body :global(li) {
+    position: relative;
+    padding: 8px 0 8px 20px;
+    font-size: 15px;
+    line-height: 22px;
+    break-inside: avoid;
+  }
+  .class-landing-panel-body :global(li::before) {
+    top: 16px;
+  }
+  .class-landing-panel-body :global(li + li) {
+    border-top: 1px solid var(--color-line-soft);
+  }
+
+  /* A group's label inside a panel (priest's "Race picks."), set apart from its items. */
+  .class-landing-panel-body :global(.class-landing-group-label) {
+    margin: 0 0 4px;
+    font-size: 11px;
+    line-height: 22px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    break-after: avoid;
+  }
+  .class-landing-panel-body :global(ul + .class-landing-group-label) {
+    margin-top: 16px;
+  }
+
+  @media (min-width: 640px) {
     .class-landing-cards {
-      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .class-landing-body {
+      margin-top: 40px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .class-landing-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .class-landing-cards.is-four {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .class-landing-facts-body :global(ul) {
+      column-count: 2;
+      column-gap: 48px;
+      column-rule: 1px solid var(--color-line-soft);
+    }
+    /* In two columns, every row closes with its own rule so both columns end ruled. */
+    .class-landing-facts-body :global(li) {
+      border-bottom: 1px solid var(--color-line-soft);
+      border-top: 0;
+    }
+    .class-landing-panels.is-pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+    .class-landing-panel {
+      padding: 20px 22px;
+    }
+    .class-landing-panel-body.is-columns {
+      column-count: 2;
+      column-gap: 48px;
+    }
+    .class-landing-panel-body.is-columns :global(p) {
+      break-inside: avoid;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .class-landing-cards.is-four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 </style>

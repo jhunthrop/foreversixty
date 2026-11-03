@@ -1,0 +1,377 @@
+<!doctype html>
+<!-- design/mocks/2026-11-02-class-landing/mock.html
+     The class landing mock (spec design/specs/2026-11-02-class-landing.md sections 4 to 7), Hunter,
+     drawn with the site's tokens and the copy the page renders. The nav and footer are grey
+     blocks: they are unchanged and out of scope. Rendered by render.mjs beside this file. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Class landing mock</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&family=Barlow+Condensed:wght@800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #07090d;
+        --line: #262e40;
+        --line-soft: #1c2230;
+        --text: #e9e4d8;
+        --strong: #f2eee4;
+        --muted: #9a9484;
+        --nav: #b9b3a4;
+        --gold: #e5b955;
+        --card:
+          linear-gradient(
+            180deg,
+            rgba(229, 185, 85, 0.075),
+            rgba(229, 185, 85, 0.012) 45%
+          ),
+          #0d0f15;
+        --card-line: rgba(229, 185, 85, 0.17);
+        --shadow: 0 16px 38px rgba(0, 0, 0, 0.55);
+        --hunter: #aad372;
+        --head: "Barlow Condensed", "Arial Narrow", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          15px/22px Barlow,
+          Arial,
+          sans-serif;
+      }
+      .chrome {
+        height: 80px;
+        border-bottom: 1px solid var(--line-soft);
+        background: #0b0d12;
+      }
+      .footer {
+        height: 360px;
+        margin-top: 56px;
+        background: #0b0d12;
+      }
+      .col {
+        max-width: 1344px;
+        margin: 0 auto;
+        padding: 0 48px;
+      }
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 28px 0 16px;
+        color: var(--gold);
+        font: 700 11px/1 Barlow;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .eyebrow i {
+        width: 28px;
+        height: 1px;
+        background: var(--gold);
+      }
+      .identity {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .crest {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: 2px solid var(--hunter);
+        background: radial-gradient(#3a2a18, #120d08);
+        flex: none;
+      }
+      h1 {
+        margin: 0;
+        font: 800 44px/1 var(--head);
+        text-transform: uppercase;
+        color: var(--strong);
+        letter-spacing: 0.01em;
+      }
+      .summary {
+        margin: 6px 0 0;
+        max-width: 62ch;
+        font-size: 14px;
+        line-height: 20px;
+        color: var(--nav);
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+      }
+      .card {
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        grid-template-rows: 22px auto auto 1fr;
+        grid-template-areas: "icon role" "icon name" "line line" "cta cta";
+        column-gap: 12px;
+        padding: 20px 22px;
+        background: var(--card);
+        border: 1px solid var(--card-line);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+      }
+      .card.hover {
+        transform: translateY(-2px);
+        border-color: #b8913a;
+      }
+      .icon {
+        grid-area: icon;
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: #1d2a1a;
+      }
+      .role {
+        grid-area: role;
+        align-self: center;
+        color: var(--muted);
+        font: 700 11px/1 Barlow;
+        letter-spacing: 0.14em;
+      }
+      .name {
+        grid-area: name;
+        margin-top: 2px;
+        font: 800 20px/1.1 var(--head);
+        color: var(--hunter);
+      }
+      .line {
+        grid-area: line;
+        margin-top: 12px;
+      }
+      .cta {
+        grid-area: cta;
+        align-self: end;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--gold);
+        font: 700 12px/1 Barlow;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+      h2 {
+        margin: 0 0 12px;
+        font: 800 18px/1.1 var(--head);
+        text-transform: uppercase;
+        color: var(--strong);
+      }
+      .body {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .facts ul {
+        column-count: 2;
+        column-gap: 48px;
+        column-rule: 1px solid var(--line-soft);
+      }
+      .facts li {
+        position: relative;
+        padding: 12px 0 12px 20px;
+        border-bottom: 1px solid var(--line-soft);
+        break-inside: avoid;
+      }
+      li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 20px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--gold);
+      }
+      b {
+        color: var(--strong);
+      }
+      .panel {
+        padding: 20px 22px;
+        background: var(--card);
+        border: 1px solid var(--card-line);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+      }
+      .panel p {
+        margin: 0;
+        max-width: 68ch;
+      }
+      .sources {
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line-soft);
+      }
+      .sources div {
+        height: 20px;
+        width: 360px;
+        margin-top: 10px;
+        background: #11141b;
+        border-radius: 4px;
+      }
+      @media (max-width: 1023px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+        .facts ul {
+          column-count: 1;
+        }
+        .facts li {
+          border-bottom: 0;
+          border-top: 1px solid var(--line-soft);
+        }
+      }
+      @media (min-width: 640px) and (max-width: 1023px) {
+        .card {
+          grid-template-columns: 44px 1fr auto;
+          grid-template-rows: 22px auto auto;
+          grid-template-areas: "icon role cta" "icon name cta" "icon line cta";
+          column-gap: 16px;
+          padding: 16px 20px;
+        }
+        .line {
+          margin-top: 6px;
+        }
+        .cta {
+          align-self: center;
+        }
+      }
+      @media (max-width: 639px) {
+        .col {
+          padding: 0 18px;
+        }
+        .eyebrow {
+          margin-top: 22px;
+        }
+        .identity {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        h1 {
+          font-size: 34px;
+        }
+        .cards {
+          gap: 12px;
+        }
+        .card {
+          padding: 16px 18px;
+        }
+        .body {
+          margin-top: 32px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chrome"></div>
+    <div class="col">
+      <p class="eyebrow"><i></i>Guides</p>
+      <div class="identity">
+        <div class="crest"></div>
+        <div>
+          <h1>Hunter</h1>
+          <p class="summary">
+            Hunter is Forever's physical damage class with a pet and a bow. All
+            three specs deal damage, and in Forever they no longer play the same
+            way: two shoot, one fights in melee.
+          </p>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <span class="icon"></span><span class="role">DPS</span
+          ><span class="name">Beast Mastery</span>
+          <span class="line"
+            >Beast Mastery is the pet spec: your cat does a big share of the
+            damage, Bestial Wrath is the burst, and your shots fill every
+            gap.</span
+          >
+          <span class="cta">Read the guide →</span>
+        </div>
+        <div class="card hover">
+          <span class="icon"></span><span class="role">DPS</span
+          ><span class="name">Marksmanship</span>
+          <span class="line"
+            >Marksmanship puts the damage in your own shots: Multi-Shot on
+            cooldown, Arcane Shot in the gaps, and an auto shot you never let
+            slip.</span
+          >
+          <span class="cta">Read the guide →</span>
+        </div>
+        <div class="card">
+          <span class="icon"></span><span class="role">DPS</span
+          ><span class="name">Survival</span>
+          <span class="line"
+            >Survival is a melee spec in Forever: two weapons, Raptor Strike on
+            every swing, Mongoose Bite whenever it lights up, and no pet.</span
+          >
+          <span class="cta">Read the guide →</span>
+        </div>
+      </div>
+      <div class="body">
+        <section class="facts">
+          <h2>What changed from 1.12</h2>
+          <ul>
+            <li>
+              <b>Pets are reworked.</b> A pet copies 10% of your attack power
+              and all of your crit, and it gets no buffs from your raid. Your
+              gear is what makes it hit.
+            </li>
+            <li>
+              <b>Aimed Shot is a trained spell</b> with a 2 second cast, and it
+              shares one 6 second cooldown with Multi-Shot. Instant Multi-Shot
+              wins that cooldown, so Aimed Shot is an opener.
+            </li>
+            <li>
+              <b>Heart of the Lion</b> is a hunter spell from level 1: 10% more
+              stats and extra attack power for everyone near you, and another
+              10% stats for you.
+            </li>
+            <li>
+              <b>Aspect of the Beast</b> gives melee attack power, which makes
+              it the Survival aspect. Aspect of the Hawk stays the ranged one.
+            </li>
+            <li>
+              <b>Trueshot Aura</b> is ranged attack power only, for your party
+              and raid.
+            </li>
+            <li><b>Mail from 40.</b> Hunters wear leather until 40.</li>
+          </ul>
+        </section>
+        <section class="panel">
+          <h2>Races</h2>
+          <p>
+            <b>Human Hunter</b> is one of the six new race and class pairs, so
+            the Alliance has a Human Hunter for the first time. Skyborne can be
+            Hunters on either faction.
+          </p>
+        </section>
+      </div>
+      <div class="sources">
+        <h2>Sources</h2>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+    <div class="footer"></div>
+  </body>
+</html>

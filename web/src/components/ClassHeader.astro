@@ -86,6 +86,9 @@ interface Props {
    *  h1 tag, and this copy is a level-1 heading by role, visible to assistive tech only while its
    *  faction is the shown one. */
   asHeading?: boolean;
+  /** The h1's ink: the class colour (default), or the strong ink on the class landing, where
+   *  the crest ring and the spec card names carry the class colour instead (spec 2026-11-02). */
+  titleInk?: 'class' | 'strong';
 }
 
 const {
@@ -106,6 +109,7 @@ const {
   metaLine,
   metaIcon,
   asHeading = true,
+  titleInk = 'class',
 } = Astro.props;
 
 const TitleTag = asHeading ? 'h1' : 'p';
@@ -136,7 +140,11 @@ const bandTextVariants = bands.map((band) => ({
   <div class="class-header-identity">
     <ClassCrest slug={classSlug} size={64} />
     <div class="class-header-titles">
-      <TitleTag class="class-header-h1 heading-page" style={`color:${color}`} {...headingRole}>
+      <TitleTag
+        class="class-header-h1 heading-page"
+        style={`color:${titleInk === 'class' ? color : 'var(--color-strong)'}`}
+        {...headingRole}
+      >
         {minimal && titleOverride !== undefined ? titleOverride : `${specName} ${className}`}{' '}
         {!minimal && (
           <span class="class-header-suffix">
@@ -175,36 +183,38 @@ const bandTextVariants = bands.map((band) => ({
     </div>
   </div>
 
-  <div class="class-header-spec-tabs" role="tablist" aria-label="Spec">
-    {specTabs.map((tab) => (
-      <a
-        href={tab.href}
-        role="tab"
-        aria-selected={tab.active}
-        class:list={['class-header-spec-tab', tab.active && 'is-active']}
-        style={tab.active ? `border-color:${color}` : undefined}
-        data-testid={`bis-spec-tab-${tab.specSlug}`}
-      >
-        {tab.icon !== undefined ? (
-          <img
-            src={`/data/${build}/icons/${tab.icon}.webp`}
-            alt=""
-            width="28"
-            height="28"
-            loading="lazy"
-            fetchpriority="low"
-            decoding="async"
-            class="class-header-spec-icon"
-          />
-        ) : (
-          <span class="class-header-spec-icon class-header-spec-icon-placeholder" aria-hidden="true" />
-        )}
-        <span class="display class-header-spec-name" style={tab.active ? `color:${color}` : undefined}>
-          {tab.name}
-        </span>
-      </a>
-    ))}
-  </div>
+  {specTabs.length > 0 && (
+    <div class="class-header-spec-tabs" role="tablist" aria-label="Spec">
+      {specTabs.map((tab) => (
+        <a
+          href={tab.href}
+          role="tab"
+          aria-selected={tab.active}
+          class:list={['class-header-spec-tab', tab.active && 'is-active']}
+          style={tab.active ? `border-color:${color}` : undefined}
+          data-testid={`bis-spec-tab-${tab.specSlug}`}
+        >
+          {tab.icon !== undefined ? (
+            <img
+              src={`/data/${build}/icons/${tab.icon}.webp`}
+              alt=""
+              width="28"
+              height="28"
+              loading="lazy"
+              fetchpriority="low"
+              decoding="async"
+              class="class-header-spec-icon"
+            />
+          ) : (
+            <span class="class-header-spec-icon class-header-spec-icon-placeholder" aria-hidden="true" />
+          )}
+          <span class="display class-header-spec-name" style={tab.active ? `color:${color}` : undefined}>
+            {tab.name}
+          </span>
+        </a>
+      ))}
+    </div>
+  )}
 
   {!minimal && (
     <div class="class-header-controls">

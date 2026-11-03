@@ -16,6 +16,7 @@ function catalog(specKey: string, classSlug: string, name: string): SpecCatalogE
     tree_index: 0,
     reference_stat: 'x',
     weight_stats: [],
+    icon: 'inv_misc_questionmark',
   };
 }
 

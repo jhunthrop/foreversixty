@@ -18,6 +18,7 @@ export function catalogEntry(
     tree_index: 0,
     reference_stat: 'attack_power',
     weight_stats: [],
+    icon: 'inv_misc_questionmark',
   };
 }
 

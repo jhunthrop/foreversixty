@@ -19,11 +19,9 @@ sources:
     kind: site
 ---
 
-Rogue is still energy, combo points and stealth, but Forever moves all three trees onto daggers at 60 and gives each one a clear job. **Combat** is the raid default: Backstab, Slice and Dice, Eviscerate and two big cooldowns, with the best cleave a rogue has. **Assassination** is the Mutilate tree: two daggers, Seal Fate and Cold Blood, close to Combat on a boss and free of any facing requirement. **Subtlety** is the bleed and PvP tree: Hemorrhage, Rupture and a Premeditation opener, the lowest raid damage of the three.
+Rogue is still energy, combo points and stealth, but Forever moves all three trees onto daggers at 60 and gives each one a clear job. If you want one character for launch, level Combat and pick your raid tree at 60.
 
-If you want one character for launch, level Combat and pick your raid tree at 60.
-
-What changes for every rogue in Forever:
+## What changed from 1.12
 
 - **Daggers win.** Backstab, Ambush, Mutilate and both Subtlety builders want a dagger in the main hand, and Hack and Slash gives daggers crit. Swords, axes, maces and fists are leveling weapons; one-handed axes are new for rogues.
 - **Poisons and stones stack.** A sharpening stone sits on a weapon beside a poison. Deadly Poison on the main hand and Instant Poison on the off hand is right for all three trees.
@@ -32,4 +30,6 @@ What changes for every rogue in Forever:
 - **Kidney Shot costs no energy.** Use it freely on trash.
 - **No weapon-skill racials.** Night Elf's Elune's Light and Troll's Berserking are the burst racials; Human gets 1% crit instead of sword skill.
 
-Skyborne can be rogues on both factions. Each spec guide below has the talents, the opener as you actually play it, the priority, and what to do with adds, threat and trash.
+## Races
+
+Skyborne can be rogues on both factions.

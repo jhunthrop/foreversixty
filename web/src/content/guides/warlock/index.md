@@ -18,13 +18,7 @@ sources:
 
 Warlock is a ranged caster that pays for mana with health through Life Tap, keeps a demon at its side, and stacks Shadow and Fire damage on the boss. Every spec plays out of the same kit: Corruption, a bane, Immolate and Shadow Bolt, with your talents deciding what fills the gaps.
 
-The three specs:
-
-- **Affliction** keeps Corruption, Bane of Agony, Siphon Life and Immolate on the boss and casts Shadow Bolt between them. Every tick can crit, and Pandemic and Malevolence make those crits count. The easiest spec to level.
-- **Demonology** sacrifices the Imp for 15% Shadow damage, keeps a Succubus out through Demonic Pact for Master Demonologist and Soul Link, and burns the last 35% of every boss with Decimation's free Soul Fires.
-- **Destruction** keeps Immolate up and fires Conflagrate and Shadowburn on cooldown to hold both halves of Shadow and Flame, with Incinerate as its filler from 40.
-
-What changed from 1.12:
+## What changed from 1.12
 
 - **Banes and curses are two slots.** Curse of Agony is now Bane of Agony and Curse of Doom is Bane of Doom, with Bane of Havoc added. Each warlock keeps one bane and one curse on a target, so your own bane always goes up even when you hold the raid's curse.
 - **Curse of the Elements covers every magic school.** It raises Shadow, Fire, Frost, Arcane, Nature and Holy damage taken by 10% and lowers those resistances by 75. There is no Curse of Shadow. One warlock in the raid keeps it up; a second copy does not stack.
@@ -34,9 +28,12 @@ What changed from 1.12:
 - **Improved Shadow Bolt is your own.** Its 20% applies to your Shadow damage only, not the raid's.
 - **Your demon scales from you** and does not take raid buffs. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.
 - **Portal of Summoning** is new at 60: you and two others open it, and then two people at the portal can summon any party or raid member. It costs five Soul Shards and has a one hour cooldown.
+- Unstable Affliction and Haunt are in the client files, but no trainer teaches either one.
 
-Unstable Affliction and Haunt are in the client files, but no trainer teaches either one.
+## Races
 
 Troll warlocks are new for the Horde, alongside Orc and Undead. Alliance warlocks are Human or Gnome. Skyborne cannot be warlocks.
 
-In a raid you bring a curse when assigned (Curse of the Elements, or Recklessness, Tongues or Weakness for a second warlock), Healthstones for everyone, a Soulstone on a healer, and summons. Every spec guide below covers talents, the opener, the rotation, stats, races and leveling.
+## In a raid
+
+In a raid you bring a curse when assigned (Curse of the Elements, or Recklessness, Tongues or Weakness for a second warlock), Healthstones for everyone, a Soulstone on a healer, and summons.
