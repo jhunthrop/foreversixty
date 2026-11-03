@@ -39,6 +39,8 @@ func TestItemLevelsReadTheClientsRequiredLevel(t *testing.T) {
 		{"main_hand_imbue:deadly_poison", 30, true},
 		{"conjured_rogue_thistle_tea", 5, true},
 		{"elixir_of_firepower", 18, true},
+		// Item 21546, Era's Elixir of Greater Firepower, is "Elixir of Holy Power".
+		{"elixir_of_holy_power", 40, true},
 		{"juju_power", 0, true},
 		// The engine's enum is singular, the client's item plural.
 		{"food_smoked_desert_dumpling", 45, true},

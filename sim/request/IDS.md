@@ -167,6 +167,7 @@ lets the two share a weapon, and the engine refuses anything else there.
 | `elixir_of_greater_agility` | Consumes.agility_elixir |
 | `elixir_of_greater_defense` | Consumes.armor_elixir |
 | `elixir_of_greater_firepower` | Consumes.fire_power_buff |
+| `elixir_of_holy_power` | Consumes.holy_power_buff |
 | `elixir_of_lesser_agility` | Consumes.agility_elixir |
 | `elixir_of_minor_defense` | Consumes.armor_elixir |
 | `elixir_of_minor_fortitude` | Consumes.health_elixir |

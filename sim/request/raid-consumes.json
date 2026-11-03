@@ -2489,6 +2489,42 @@
         ]
       },
       {
+        "from_level": 40,
+        "buffs": [
+          "blessing_of_might",
+          "devotion_aura",
+          "arcane_brilliance",
+          "gift_of_the_wild",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem:improved",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "elixir_of_holy_power",
+          "food_nightfin_soup",
+          "alcohol_rumsey_rum_black_label",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might"
+        ]
+      },
+      {
         "from_level": 43,
         "buffs": [
           "blessing_of_might",
@@ -2516,6 +2552,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "elixir_of_holy_power",
           "food_nightfin_soup",
           "elixir_of_greater_defense",
           "alcohol_rumsey_rum_black_label",
@@ -2552,6 +2589,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "elixir_of_holy_power",
           "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "elixir_of_greater_defense",
@@ -2590,6 +2628,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "elixir_of_holy_power",
           "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
@@ -2629,6 +2668,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "elixir_of_holy_power",
           "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
           "major_mana_potion",
@@ -2669,6 +2709,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "elixir_of_holy_power",
           "major_spellblasting_potion",
           "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
@@ -2782,6 +2823,41 @@
         ]
       },
       {
+        "from_level": 40,
+        "buffs": [
+          "blessing_of_might",
+          "arcane_brilliance",
+          "gift_of_the_wild",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem:improved",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "elixir_of_holy_power",
+          "food_poached_sunscale_salmon",
+          "juju_power",
+          "r_o_i_d_s",
+          "juju_might",
+          "main_hand_imbue:dense_sharpening_stone"
+        ]
+      },
+      {
         "from_level": 45,
         "buffs": [
           "blessing_of_might",
@@ -2808,6 +2884,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "elixir_of_holy_power",
           "food_smoked_desert_dumpling",
           "juju_power",
           "r_o_i_d_s",
@@ -2842,6 +2919,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "elixir_of_holy_power",
           "food_smoked_desert_dumpling",
           "elixir_of_the_mongoose",
           "juju_power",
@@ -2877,6 +2955,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "elixir_of_holy_power",
           "food_smoked_desert_dumpling",
           "major_mana_potion",
           "elixir_of_the_mongoose",
@@ -2913,6 +2992,7 @@
           "curse_of_recklessness"
         ],
         "consumes": [
+          "elixir_of_holy_power",
           "food_smoked_desert_dumpling",
           "major_mana_potion",
           "elixir_of_the_mongoose",
