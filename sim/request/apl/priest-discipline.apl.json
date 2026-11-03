@@ -420,6 +420,7 @@
       "notes": "Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one."
     },
     {
+      "notes": "Binding Heal instead of Flash Heal while you are under 90% yourself: same mana and cast time, and it heals you as much as your target.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -495,68 +496,7 @@
             ]
           }
         }
-      },
-      "notes": "Binding Heal instead of Flash Heal while you are under 90% yourself: same mana and cast time, and it heals you as much as your target."
-    },
-    {
-      "action": {
-        "castSpell": {
-          "spellId": {
-            "spellId": 10917,
-            "rank": 7
-          },
-          "target": {
-            "type": "Player",
-            "index": 1
-          }
-        },
-        "condition": {
-          "and": {
-            "vals": [
-              {
-                "cmp": {
-                  "op": "OpLt",
-                  "lhs": {
-                    "currentHealthPercent": {
-                      "sourceUnit": {
-                        "type": "Player",
-                        "index": 1
-                      }
-                    }
-                  },
-                  "rhs": {
-                    "const": {
-                      "val": "0.3"
-                    }
-                  }
-                }
-              },
-              {
-                "cmp": {
-                  "op": "OpGe",
-                  "lhs": {
-                    "currentManaPercent": {}
-                  },
-                  "rhs": {
-                    "math": {
-                      "op": "OpMul",
-                      "lhs": {
-                        "remainingTimePercent": {}
-                      },
-                      "rhs": {
-                        "const": {
-                          "val": "0.7"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        }
-      },
-      "notes": "Flash Heal on a party member about to die, as long as your mana is not far behind the fight."
+      }
     },
     {
       "action": {
@@ -634,68 +574,7 @@
             ]
           }
         }
-      },
-      "notes": "Binding Heal instead of Flash Heal while you are under 90% yourself: same mana and cast time, and it heals you as much as your target."
-    },
-    {
-      "action": {
-        "castSpell": {
-          "spellId": {
-            "spellId": 10917,
-            "rank": 7
-          },
-          "target": {
-            "type": "Player",
-            "index": 2
-          }
-        },
-        "condition": {
-          "and": {
-            "vals": [
-              {
-                "cmp": {
-                  "op": "OpLt",
-                  "lhs": {
-                    "currentHealthPercent": {
-                      "sourceUnit": {
-                        "type": "Player",
-                        "index": 2
-                      }
-                    }
-                  },
-                  "rhs": {
-                    "const": {
-                      "val": "0.3"
-                    }
-                  }
-                }
-              },
-              {
-                "cmp": {
-                  "op": "OpGe",
-                  "lhs": {
-                    "currentManaPercent": {}
-                  },
-                  "rhs": {
-                    "math": {
-                      "op": "OpMul",
-                      "lhs": {
-                        "remainingTimePercent": {}
-                      },
-                      "rhs": {
-                        "const": {
-                          "val": "0.7"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        }
-      },
-      "notes": "Flash Heal on a party member about to die, as long as your mana is not far behind the fight."
+      }
     },
     {
       "action": {
@@ -773,68 +652,7 @@
             ]
           }
         }
-      },
-      "notes": "Binding Heal instead of Flash Heal while you are under 90% yourself: same mana and cast time, and it heals you as much as your target."
-    },
-    {
-      "action": {
-        "castSpell": {
-          "spellId": {
-            "spellId": 10917,
-            "rank": 7
-          },
-          "target": {
-            "type": "Player",
-            "index": 3
-          }
-        },
-        "condition": {
-          "and": {
-            "vals": [
-              {
-                "cmp": {
-                  "op": "OpLt",
-                  "lhs": {
-                    "currentHealthPercent": {
-                      "sourceUnit": {
-                        "type": "Player",
-                        "index": 3
-                      }
-                    }
-                  },
-                  "rhs": {
-                    "const": {
-                      "val": "0.3"
-                    }
-                  }
-                }
-              },
-              {
-                "cmp": {
-                  "op": "OpGe",
-                  "lhs": {
-                    "currentManaPercent": {}
-                  },
-                  "rhs": {
-                    "math": {
-                      "op": "OpMul",
-                      "lhs": {
-                        "remainingTimePercent": {}
-                      },
-                      "rhs": {
-                        "const": {
-                          "val": "0.7"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        }
-      },
-      "notes": "Flash Heal on a party member about to die, as long as your mana is not far behind the fight."
+      }
     },
     {
       "action": {
@@ -912,8 +730,185 @@
             ]
           }
         }
-      },
-      "notes": "Binding Heal instead of Flash Heal while you are under 90% yourself: same mana and cast time, and it heals you as much as your target."
+      }
+    },
+    {
+      "notes": "Flash Heal on a party member about to die, as long as your mana is not far behind the fight.",
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 10917,
+            "rank": 7
+          },
+          "target": {
+            "type": "Player",
+            "index": 1
+          }
+        },
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "cmp": {
+                  "op": "OpLt",
+                  "lhs": {
+                    "currentHealthPercent": {
+                      "sourceUnit": {
+                        "type": "Player",
+                        "index": 1
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "0.3"
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "currentManaPercent": {}
+                  },
+                  "rhs": {
+                    "math": {
+                      "op": "OpMul",
+                      "lhs": {
+                        "remainingTimePercent": {}
+                      },
+                      "rhs": {
+                        "const": {
+                          "val": "0.7"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 10917,
+            "rank": 7
+          },
+          "target": {
+            "type": "Player",
+            "index": 2
+          }
+        },
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "cmp": {
+                  "op": "OpLt",
+                  "lhs": {
+                    "currentHealthPercent": {
+                      "sourceUnit": {
+                        "type": "Player",
+                        "index": 2
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "0.3"
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "currentManaPercent": {}
+                  },
+                  "rhs": {
+                    "math": {
+                      "op": "OpMul",
+                      "lhs": {
+                        "remainingTimePercent": {}
+                      },
+                      "rhs": {
+                        "const": {
+                          "val": "0.7"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 10917,
+            "rank": 7
+          },
+          "target": {
+            "type": "Player",
+            "index": 3
+          }
+        },
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "cmp": {
+                  "op": "OpLt",
+                  "lhs": {
+                    "currentHealthPercent": {
+                      "sourceUnit": {
+                        "type": "Player",
+                        "index": 3
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "0.3"
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "currentManaPercent": {}
+                  },
+                  "rhs": {
+                    "math": {
+                      "op": "OpMul",
+                      "lhs": {
+                        "remainingTimePercent": {}
+                      },
+                      "rhs": {
+                        "const": {
+                          "val": "0.7"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "action": {
@@ -972,8 +967,7 @@
             ]
           }
         }
-      },
-      "notes": "Flash Heal on a party member about to die, as long as your mana is not far behind the fight."
+      }
     },
     {
       "action": {
