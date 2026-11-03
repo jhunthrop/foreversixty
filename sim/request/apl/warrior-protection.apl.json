@@ -5,6 +5,20 @@
       "action": {
         "castSpell": {
           "spellId": {
+            "spellId": 2687
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-2.5s"
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
             "spellId": 11551,
             "rank": 6
           }
@@ -12,7 +26,7 @@
       },
       "doAtValue": {
         "const": {
-          "val": "-1s"
+          "val": "-1.5s"
         }
       }
     }
@@ -91,7 +105,7 @@
       }
     },
     {
-      "notes": "Whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+      "notes": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
       "action": {
         "condition": {
           "cmp": {
@@ -210,7 +224,7 @@
       }
     },
     {
-      "notes": "Keep Battle Shout up: attack power for the tank's white swings and weapon strikes. Below 60 no raid warrior shouts for it; at 60 the raid's shout is the same aura, so this line idles.",
+      "notes": "Whenever it drops. At 60 a raid warrior's shout usually covers you.",
       "action": {
         "condition": {
           "not": {

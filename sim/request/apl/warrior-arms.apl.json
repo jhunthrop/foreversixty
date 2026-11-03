@@ -5,6 +5,20 @@
       "action": {
         "castSpell": {
           "spellId": {
+            "spellId": 2687
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-2.5s"
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
             "spellId": 11551,
             "rank": 6
           }
@@ -12,7 +26,22 @@
       },
       "doAtValue": {
         "const": {
-          "val": "-1s"
+          "val": "-1.5s"
+        }
+      }
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 11578,
+            "rank": 3
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-0.5s"
         }
       }
     }
@@ -24,7 +53,7 @@
       }
     },
     {
-      "notes": "Below 20% while Recklessness is ready: swap to Berserker Stance and press it. Improved Tactical Mastery keeps 25 rage through the swap. Mortal Strike and Execute still work there, Overpower and Rend do not.",
+      "notes": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness. Improved Tactical Mastery keeps 25 rage through the swap. Mortal Strike and Execute still work there, Overpower and Rend do not.",
       "action": {
         "condition": {
           "and": {
@@ -48,6 +77,19 @@
                       "auraId": {
                         "spellId": 2458
                       }
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpLe",
+                  "lhs": {
+                    "currentRage": {}
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "25"
                     }
                   }
                 }
@@ -132,22 +174,22 @@
       }
     },
     {
-      "notes": "On cooldown: your hardest hit per rage, and it cuts the healing the target takes in half.",
+      "notes": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits.",
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 21553,
+            "spellId": 11585,
             "rank": 4
           }
         }
       }
     },
     {
-      "notes": "The moment it lights up: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits.",
+      "notes": "On cooldown: your hardest hit per rage, and it cuts the healing the target takes in half.",
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 11585,
+            "spellId": 21553,
             "rank": 4
           }
         }
@@ -207,14 +249,54 @@
           }
         },
         "condition": {
-          "auraIsKnown": {
-            "auraId": {
-              "spellId": 10610
-            }
+          "and": {
+            "vals": [
+              {
+                "auraIsKnown": {
+                  "auraId": {
+                    "spellId": 10610
+                  }
+                }
+              },
+              {
+                "not": {
+                  "val": {
+                    "isExecutePhase": {
+                      "threshold": "E25"
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       },
-      "notes": "Only with a Windfury Totem on you, on a free global: 10 rage for a main-hand hit that can trigger the totem's extra attack. Without the totem it is rage Mortal Strike and Overpower need."
+      "notes": "Only with a Windfury Totem on you, on a free global, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's extra attack. Without the totem it is rage Mortal Strike and Overpower need."
+    },
+    {
+      "notes": "Only above 90 rage, so a full bar does not waste what your swings make. Below that, every point is worth more in Mortal Strike, Overpower and Execute.",
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 11567,
+            "rank": 8,
+            "tag": 1
+          }
+        },
+        "condition": {
+          "cmp": {
+            "op": "OpGe",
+            "lhs": {
+              "currentRage": {}
+            },
+            "rhs": {
+              "const": {
+                "val": "90"
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "spec": "warrior-fury",
   "state": "written",
-  "notes": "Vanilla Fury at 60: Bloodthirst on cooldown, Whirlwind while it is down, Execute below 20 percent, Heroic Strike as the rage dump. Rage, not the global cooldown, is the limiting resource, so Bloodrage is used on cooldown; Death Wish and Recklessness are held for the execute phase unless that costs a use. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last); a later Forever patch may renumber them and tests/test_apl.py will say so. Nothing here is Forever-specific yet: the validation job (design section 6) is the evidence for changing it.",
+  "notes": "Vanilla Fury at 60: Bloodthirst on cooldown, Whirlwind while it is down, Execute below 20 percent, Heroic Strike as the rage dump. Rage, not the global cooldown, is the limiting resource, so Bloodrage is used on cooldown; Death Wish and Recklessness are held for the execute phase unless that costs a use. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last); a later Forever patch may renumber them and tests/test_apl.py will say so. Nothing here is Forever-specific yet: the validation job (design section 6) is the evidence for changing it. 2026-11-02 (launch guide rewrite, round-11 engine, 10000 iterations, seeds 1 and 50001, raid / bare): Bloodrage then Battle Shout before the pull, no Charge (Charge in Battle Stance and the swap back loses everything above 10 rage: -0.2% raid, +0.3% bare, a wash), Whirlwind on cooldown behind Bloodthirst instead of only while Bloodthirst is down, Heroic Strike from 60 rage and none from 25% once Execute is trained (pooling with no Execute to spend it on lost 7% at 20). 750.0 to 755.1 raid (+0.7%), 272.0 to 277.0 bare (+1.8%); bare by level 34.5 to 34.3 at 20, 59.9 to 59.5 at 30, 125.0 to 126.2 at 40, 190.3 to 193.2 at 50. Hamstring under a Windfury Totem lost at every rage threshold tried (0, 40, 60), so Fury has no Hamstring line.",
   "sources": [
     {
       "label": "wowsims/classic default Fury priority list",
@@ -26,6 +26,20 @@
         "action": {
           "castSpell": {
             "spellId": {
+              "spellId": 2687
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-2.5s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
               "spellId": 11551,
               "rank": 6
             }
@@ -33,7 +47,7 @@
         },
         "doAtValue": {
           "const": {
-            "val": "-1s"
+            "val": "-1.5s"
           }
         }
       }
@@ -73,9 +87,37 @@
           "condition": {
             "or": {
               "vals": [
-                {"cmp": {"op": "OpGe", "lhs": {"remainingTime": {}}, "rhs": {"const": {"val": "210s"}}}},
-                {"isExecutePhase": {"threshold": "E20"}},
-                {"cmp": {"op": "OpLe", "lhs": {"remainingTime": {}}, "rhs": {"const": {"val": "30s"}}}}
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "remainingTime": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "210s"
+                      }
+                    }
+                  }
+                },
+                {
+                  "isExecutePhase": {
+                    "threshold": "E20"
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLe",
+                    "lhs": {
+                      "remainingTime": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "30s"
+                      }
+                    }
+                  }
+                }
               ]
             }
           },
@@ -92,8 +134,24 @@
           "condition": {
             "or": {
               "vals": [
-                {"isExecutePhase": {"threshold": "E20"}},
-                {"cmp": {"op": "OpLe", "lhs": {"remainingTime": {}}, "rhs": {"const": {"val": "15s"}}}}
+                {
+                  "isExecutePhase": {
+                    "threshold": "E20"
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLe",
+                    "lhs": {
+                      "remainingTime": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "15s"
+                      }
+                    }
+                  }
+                }
               ]
             }
           },
@@ -155,26 +213,8 @@
         }
       },
       {
-        "notes": "While Bloodthirst is on cooldown: it hits up to four targets with both weapons.",
+        "notes": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
         "action": {
-          "condition": {
-            "cmp": {
-              "op": "OpGt",
-              "lhs": {
-                "spellTimeToReady": {
-                  "spellId": {
-                    "spellId": 23894,
-                    "rank": 4
-                  }
-                }
-              },
-              "rhs": {
-                "const": {
-                  "val": "1.5s"
-                }
-              }
-            }
-          },
           "castSpell": {
             "spellId": {
               "spellId": 1680
@@ -194,19 +234,52 @@
         }
       },
       {
-        "notes": "Only above 40 rage, queued on your next swing. It costs no global cooldown, so it never delays Bloodthirst or Whirlwind.",
+        "notes": "Only above 60 rage, and never from 25% down: hold that rage for Execute. It is queued on your next swing and costs no global cooldown.",
         "action": {
           "condition": {
-            "cmp": {
-              "op": "OpGe",
-              "lhs": {
-                "currentRage": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "40"
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentRage": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "60"
+                      }
+                    }
+                  }
+                },
+                {
+                  "or": {
+                    "vals": [
+                      {
+                        "not": {
+                          "val": {
+                            "isExecutePhase": {
+                              "threshold": "E25"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "not": {
+                          "val": {
+                            "spellIsKnown": {
+                              "spellId": {
+                                "spellId": 20662,
+                                "rank": 5
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
                 }
-              }
+              ]
             }
           },
           "castSpell": {
