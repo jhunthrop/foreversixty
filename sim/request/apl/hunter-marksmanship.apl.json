@@ -70,7 +70,7 @@
       }
     },
     {
-      "notes": "Hunter's Mark whenever the target is not marked. One mark per target is enough: if another hunter's mark is already up, leave it.",
+      "notes": "In a raid, dismiss your pet before the pull: Lone Wolf works only with no pet out. Hunter's Mark whenever the target is not marked. One mark per target is enough: if another hunter's mark is already up, leave it.",
       "action": {
         "condition": {
           "not": {
@@ -145,7 +145,33 @@
       }
     },
     {
-      "notes": "Multi-Shot on cooldown. It shares one 6 second cooldown with Aimed Shot, and the instant shot wins that cooldown every time: Aimed Shot's 2 second cast holds your auto shot, Multi-Shot never does.",
+      "notes": "Aimed Shot when the shared cooldown comes up right after an auto shot fires. Since the 3 November hotfix it hits about twice as hard as before, a small gain over Multi-Shot whenever the cast fits. If you are partway to your next auto shot, take Multi-Shot instead and keep the auto rolling.",
+      "action": {
+        "condition": {
+          "cmp": {
+            "op": "OpGt",
+            "lhs": {
+              "autoTimeToNext": {
+                "autoType": "Ranged"
+              }
+            },
+            "rhs": {
+              "const": {
+                "val": "1.2s"
+              }
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 20904,
+            "rank": 6
+          }
+        }
+      }
+    },
+    {
+      "notes": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot. It is instant, so it never delays your next shot.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -156,7 +182,60 @@
       }
     },
     {
-      "notes": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana. It is instant and never holds an auto shot, but it costs the most mana for its damage, so it is the shot you drop first when the mana runs low. Serpent Sting is not worth the global in this build: the shots do more with that mana.",
+      "notes": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back. Refreshing any earlier throws away a tick. It is the best damage for its mana you have between the big shots, so keep it rolling for the whole fight.",
+      "action": {
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "cmp": {
+                  "op": "OpLt",
+                  "lhs": {
+                    "dotRemainingTime": {
+                      "spellId": {
+                        "spellId": 13555,
+                        "rank": 8
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "1.5s"
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "spellTimeToReady": {
+                      "spellId": {
+                        "spellId": 2643,
+                        "rank": 0
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "0.5"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 13555,
+            "rank": 8
+          }
+        }
+      }
+    },
+    {
+      "notes": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana. It is instant and never holds an auto shot, but it costs the most mana for its damage, so it is the shot you drop first when the mana runs low.",
       "action": {
         "condition": {
           "and": {
