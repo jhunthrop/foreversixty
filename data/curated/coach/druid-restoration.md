@@ -14,16 +14,20 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Restoration Druid as the site's guide describes it. Restoration is the Druid healer tree: Rejuvenation and Regrowth on many targets, Healing Touch for real damage, and mana efficiency to last a long fight. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Restoration Druid as the site's guide describes it. Restoration heals with time: Regrowth and Rejuvenation on the tank all fight, Swiftmend as a free extra heal, Bloom when the HoTs run out, and Healing Touch for the holes. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- The tank keeps Regrowth and Rejuvenation up for the whole fight, and the heals over time carry most of the work.
-- A hurt party member gets Rejuvenation, you included, and Tranquility goes out when two of the five are well down.
+- Rejuvenation on the tank a few seconds before he pulls.
+- Keep Mark of the Wild up on the raid.
+- Regrowth and Rejuvenation stay up on the tank for the whole fight.
 - Swiftmend on the tank whenever he is under three quarters health and your mana is keeping pace.
-- Nature's Swiftness into an instant Healing Touch is the emergency answer for a tank who is nearly dead, and Innervate goes on you when you are low.
+- Healing Touch fills the real holes: a tank under about half, while your mana is ahead of the fight.
+- Nature's Swiftness into Healing Touch is the save for a tank who is nearly dead.
+- Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
+- Innervate is yours from level forty.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.

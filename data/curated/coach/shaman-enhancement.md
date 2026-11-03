@@ -14,20 +14,25 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Enhancement Shaman as the site's guide describes it. Enhancement is Shaman's melee spec, fighting with a weapon imbue, Stormstrike and group totems such as Strength of Earth and Windfury. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Enhancement Shaman as the site's guide describes it. Enhancement is the shaman's melee spec: one weapon with Windfury on it, Stormstrike on cooldown, and a free instant Lightning Bolt every time Maelstrom Weapon reaches five stacks. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Windfury Weapon on your one weapon before the pull, and again whenever it falls off. Before level thirty, Rockbiter Weapon goes on it instead.
-- The loop: keep Strength of Earth Totem down for the whole fight, and Grace of Air Totem in the Air slot for its Agility.
-- Keep Grace of Air Totem down for its Agility.
-- Windfury Totem.
-- Stormstrike on cooldown: it is the highest damage per global Enhancement has, on an eight second cooldown.
-- Lightning Bolt: When Maelstrom Weapon reaches five stacks, cast Lightning Bolt right after Stormstrike, so Stormstrike's bonus to your next Lightning Bolt, Chain Lightning or Earth Shock lands on the free, instant bolt.
-- Keep Searing Totem down for extra fire damage, but don't drop a new one when the fight is about to end.
+- Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within thirty yards.
+- If your party has no other shaman, put Mana Spring Totem in your Water slot as well.
+- Totemic Projection: If the boss moves more than thirty yards from them, Totemic Projection moves them for you.
+- Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown.
+- Stormstrike on cooldown. It is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder.
+- Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.
+- Searing Totem when it is down, unless the boss is about to die.
 - Earth Shock last, and only while mana is above half.
+- In Forever Windfury Totem, Grace of Air and Strength of Earth reach every raid member within thirty yards, not just your party.
+- Fire Nova and Flame Shock stay on your bar for packs and runners.
+- Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it.
+- Lightning Shield only fires when something hits you, which behind a boss is never.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
