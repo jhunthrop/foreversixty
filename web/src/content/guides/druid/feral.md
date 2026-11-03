@@ -55,7 +55,7 @@ The cat opens with Ravage, keeps Rip on the boss, Shreds from behind and turns m
 
 ## Talents and builds
 
-The leveling build takes the points a questing cat wants first: Feral Charge to close on runners, Brutal Impact for a longer Pounce stun. From 50, its Restoration points go to Genesis, three points of Heart of the Wild and the third point of Natural Shapeshifter, which out-damage the last two points of Heart of the Wild. At 60, respec into the raid build. It beats the leveling build even without raid buffs, because it finishes Rend and Tear and moves the filler points into Genesis and Nature's Majesty.
+The leveling build takes the points a questing cat wants first: Feral Charge to close on runners, Brutal Impact for a longer Pounce stun. From 50, the leveling build puts one point in Balance for Genesis and, in Restoration, takes three points of Heart of the Wild plus the third point of Natural Shapeshifter. Together they out-damage the last two points of Heart of the Wild. At 60, respec into the raid build. It beats the leveling build even without raid buffs, because it finishes Rend and Tear and moves the filler points into Genesis and Nature's Majesty.
 
 - **Shredding Attacks** (3 points): Shred drops to 42 energy, and Shred is most of your globals.
 - **Savage Fury** (2 points): 10% more damage on Shred, Claw and Rake.
@@ -67,7 +67,7 @@ The leveling build takes the points a questing cat wants first: Feral Charge to 
 - **Leader of the Pack** (1 point): the raid's crit aura. Take it in every build.
 - **Heart of the Wild** and **Naturalist**: 10% more Strength in Cat Form and 10% more damage of every kind. These are why a cat goes into Restoration at all.
 
-The raid build skips Furor. In Forever it no longer hands you energy on a shift; it only keeps your bar when you leave Cat Form. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. The raid build's Balance points are Genesis, 10% more periodic damage (a bigger Rip), and Nature's Majesty, 4% crit. Natural Shapeshifter (2 points leveling, 3 in the raid build) makes Shifting Power cheaper, which is mana you spend every 8 seconds. Primal Bite and Lacerate are bear buttons, and Brutal Impact and Feral Charge are for questing.
+The raid build skips Furor. In Forever it no longer hands you energy on a shift; it only keeps your bar when you leave Cat Form. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. The raid build's Balance points are Genesis, 10% more periodic damage (a bigger Rip), and Nature's Majesty, 4% crit. Natural Shapeshifter (3 points in both builds) makes Shifting Power cheaper, which is mana you spend every 8 seconds. Primal Bite and Lacerate are bear buttons, and Brutal Impact and Feral Charge are for questing.
 
 ## Rotation and priority
 

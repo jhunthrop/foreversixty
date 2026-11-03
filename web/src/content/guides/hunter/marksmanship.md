@@ -99,7 +99,7 @@ When mana gets low, stop Arcane Shot and keep Multi-Shot going. Drink a Major Ma
 
 There is no execute phase for a hunter: the priority holds to the end.
 
-**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up. Scatter Shot is a Marksmanship talent, and this build does not take it.
+**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up. Freezing Trap takes care of anything loose in the back line.
 
 ## Stat priority
 
