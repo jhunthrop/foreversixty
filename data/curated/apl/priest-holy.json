@@ -126,7 +126,7 @@
             }
           }
         },
-        "notes": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana."
+        "notes": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana."
       },
       {
         "action": {
@@ -159,7 +159,7 @@
             }
           }
         },
-        "notes": "Flash Heal at a low rank on a tank who is really low: it lands in 1.5 seconds for a fraction of the top rank's mana. The top rank is for a party member about to die."
+        "notes": "Flash Heal at the top rank on a tank who is really low: in a raid your mana outlasts the fight, so a big fast heal is worth its cost."
       },
       {
         "action": {
@@ -636,7 +636,7 @@
             }
           }
         },
-        "notes": "The filler, the classic downrank: rank 4 has Greater Heal's spell power coefficient for far less mana. Cast it at the normal thresholds while your mana is keeping pace with the fight."
+        "notes": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without raid buffs and while leveling, rank 4. Cast it at the normal thresholds while your mana is keeping pace with the fight."
       },
       {
         "action": {

@@ -67,11 +67,11 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 **Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Put Fear Ward on the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
 
-**On the tank.** Prayer of Mending every time it is ready. Renew always up, at a low rank: every rank of Renew carries the same healing power bonus, so rank 3 costs about a quarter of the top rank's mana and still heals well over half as much. Go up in rank only on a tank who is dropping through it.
+**On the tank.** Prayer of Mending every time it is ready. Renew always up, at rank 1: Forever keeps a low rank's whole healing bonus, so rank 1 heals the most per mana you spend. Go up in rank only on a tank who is dropping through it.
 
-**The filler is Heal.** Heal rank 4 has the same spell power coefficient as Greater Heal and costs far less. With Divine Fury it is a 2.5 second cast. This is the classic downrank, and in Forever it is still right: Greater Heal comes out only when the tank needs one big number.
+**The filler is Heal.** In a raid, cast rank 1: it is learned at 16, so it keeps its whole healing bonus and is the cheapest healing per mana you have. Without raid buffs and while leveling, rank 4 is the classic downrank, with Greater Heal's spell power coefficient for far less mana. With Divine Fury every rank is a 2.5 second cast. Greater Heal comes out only when the tank needs one big number.
 
-**Flash Heal is for emergencies.** On the tank the low ranks are enough most of the time and keep your bar alive. Save the top rank for someone about to die. Holy Binding heals you off every one of them.
+**Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: your mana outlasts the fight, so a big fast heal is worth its cost. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
 
 **Prayer of Healing.** Cast it when three or more players in one group are missing a fair chunk. In Forever it heals the target and the target's party, so target a member of whichever group took the hit: you are not limited to your own party.
 
