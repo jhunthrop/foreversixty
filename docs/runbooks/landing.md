@@ -35,5 +35,9 @@ What runs where:
   its own Postgres and `-race -p 1`; weights in `api/test-weights.txt`. Refresh the weights
   from a recent log when one shard runs much longer than the others.
 
+- The slowest step under load is `actions/checkout`: the tree is ~2 GB (data/builds) and a
+  cold checkout took 5 to 16 minutes when a landing started ~35 jobs at once (2026-11-03).
+  No check job has a timeout under 20 minutes for that reason.
+
 `tools/land.sh` needs `gh` (signed in) and `jq`. Tunables: `LAND_POLL_SECONDS` (30),
 `LAND_SETTLE_SECONDS` (90), `LAND_TIMEOUT_SECONDS` (5400). Tests: `bash tools/tests/test_land.sh`.
