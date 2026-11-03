@@ -96,7 +96,7 @@ Potions and runes work in any form in Forever, though you heal in caster form an
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren gets more health, which keeps you alive through raid damage. Alliance Skyborne get Read Leyline, a burst of mana regeneration a druid healer can press every fight. The sim does not cast it on its own; add it to a custom rotation to see it.
+Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren gets more health, which keeps you alive through raid damage. Alliance Skyborne get Read Leyline, a burst of mana regeneration a druid healer can press every fight.
 
 ## Professions
 

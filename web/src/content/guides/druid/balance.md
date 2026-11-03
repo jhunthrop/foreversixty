@@ -104,7 +104,7 @@ Potions work in Moonkin Form in Forever, so you never shift out to drink. On a l
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren gets more health and War Stomp. Alliance Skyborne get Read Leyline, a burst of mana regeneration. The sim does not cast it on its own; a custom rotation can.
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren gets more health and War Stomp. Alliance Skyborne get Read Leyline, a burst of mana regeneration. Press it when your mana runs low on a long fight.
 
 ## Professions
 
