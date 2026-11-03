@@ -280,9 +280,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="path to the wowsims-forever checkout, e.g. $FOREVER_ENGINE_PATH",
     )
 
-    sp = sub.add_parser("specs", help="generate the Go and TypeScript spec lists")
+    sp = sub.add_parser(
+        "specs", help="generate the Go, TypeScript and JSON spec lists and their icon map"
+    )
     sp.add_argument("--go", default="../sim/specs/specs.go")
     sp.add_argument("--ts", default="../web/src/lib/sim/specs.ts")
+    sp.add_argument("--json", default="../web/src/data/specs.json")
+    sp.add_argument(
+        "--build",
+        help="the build whose client data the icons come from (default: web's active build)",
+    )
     sp.add_argument(
         "--check",
         action="store_true",
@@ -645,16 +652,21 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "specs":
         from pathlib import Path
 
-        from pipeline.specs import check_specs, write_specs
+        from pipeline.specs import active_build_dir, check_specs, write_specs
 
+        build_dir = Path("builds") / args.build if args.build else active_build_dir()
+        outputs = (Path(args.go), Path(args.ts), Path(args.json))
         if args.check:
-            stale = check_specs(Path("curated"), Path(args.go), Path(args.ts))
+            stale = check_specs(Path("curated"), build_dir, *outputs)
             for path in stale:
                 logging.getLogger("pipeline").error(
-                    "%s does not match curated/specs.json; run `python -m pipeline specs`", path
+                    "%s does not match curated/specs.json and %s's icons; "
+                    "run `python -m pipeline specs`",
+                    path,
+                    build_dir,
                 )
             return 1 if stale else 0
-        for path in write_specs(Path("curated"), Path(args.go), Path(args.ts)):
+        for path in write_specs(Path("curated"), build_dir, *outputs):
             print(path)
     elif args.command == "phases":
         from pathlib import Path

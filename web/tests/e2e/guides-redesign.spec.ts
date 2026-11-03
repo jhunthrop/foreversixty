@@ -7,6 +7,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { cardLineFor } from '../../src/lib/guides/class-landing';
+import { SPEC_BY_KEY } from '../../src/lib/sim/specs';
 import { expect, test } from './support/test';
 
 const DESKTOP = { width: 1440, height: 900 };
@@ -66,7 +67,7 @@ test.describe('desktop', () => {
     await expect(page.getByTestId('confidence-footer-note')).toHaveCount(0);
   });
 
-  test('druid gives Feral and Feral Bear their own icons', async ({ page }) => {
+  test('druid gives Feral and Feral Bear their own form icons from the spec-icon map', async ({ page }) => {
     await page.goto('/guides/druid');
     // data-icon names the spec's icon whether its art is in this build or not (the fixture
     // carries a subset, so a card can draw the neutral square instead of the image).
@@ -74,7 +75,8 @@ test.describe('desktop', () => {
       page.getByTestId(`guide-spec-card-${spec}`).locator('.spec-card-icon').getAttribute('data-icon');
     const cat = await iconOf('feral');
     const bear = await iconOf('feral-bear');
-    expect(cat).toBe('ability_druid_catformattack');
+    expect(cat).toBe(SPEC_BY_KEY['druid-feral'].icon);
+    expect(bear).toBe(SPEC_BY_KEY['druid-feral-bear'].icon);
     expect(cat).not.toBe(bear);
   });
 

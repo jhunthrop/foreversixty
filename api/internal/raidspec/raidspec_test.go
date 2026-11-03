@@ -34,7 +34,7 @@ func TestTheEmojiAreTheTwentyEightSpecsJSONKeys(t *testing.T) {
 func TestFeralAndFeralBearHaveTheirOwnIcons(t *testing.T) {
 	cat, _ := ByKey("druid-feral")
 	bear, _ := ByKey("druid-feral-bear")
-	if cat.Icon == bear.Icon || cat.Icon != "ability_druid_catformattack" {
+	if cat.Icon == bear.Icon || cat.Icon != "ability_druid_catform" {
 		t.Fatalf("cat %q bear %q", cat.Icon, bear.Icon)
 	}
 }

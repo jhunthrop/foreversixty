@@ -4,7 +4,6 @@
 // with (`loadTierData`, `rankRole`, `tierSpecViews`, `tierNotes`, `gapText`), so neither app
 // sorts, gaps or letters anything (spec F9.4).
 import type { BisRole, Faction } from '../bis/types';
-import { specTabIcon } from '../bis/spec-icon';
 import { readSpecCatalog } from '../bis/load';
 import { tierSpecViews, specViewKey } from '../tiers/tier-callout';
 import { formatMetric, gapText, tierNotes, tiersCopy } from '../tiers/tier-copy';
@@ -55,14 +54,13 @@ export interface AppTiersFile {
 
 const FACTIONS: readonly Faction[] = ['alliance', 'horde'];
 
-function treeIndexOf(spec: string): number | undefined {
-  return readSpecCatalog().find((entry) => entry.spec === spec)?.tree_index;
+function iconOf(spec: string): string | null {
+  return readSpecCatalog().find((entry) => entry.spec === spec)?.icon ?? null;
 }
 
-function rowOf(build: string, row: TierRow, views: ReturnType<typeof tierSpecViews>): AppTierRow {
+function rowOf(row: TierRow, views: ReturnType<typeof tierSpecViews>): AppTierRow {
   const view = views[specViewKey(row.classSlug, row.specSlug)];
   if (view === undefined) throw new Error(`tiers file: no callout for ${row.spec}`);
-  const treeIndex = treeIndexOf(row.spec);
   return {
     rank: row.rank,
     spec: row.spec,
@@ -70,7 +68,7 @@ function rowOf(build: string, row: TierRow, views: ReturnType<typeof tierSpecVie
     spec_slug: row.specSlug,
     name: view.fullName,
     race: row.race,
-    icon: treeIndex === undefined ? null : (specTabIcon(build, row.classSlug, treeIndex) ?? null),
+    icon: iconOf(row.spec),
     metric: row.metric,
     metric_text: formatMetric(row.role, row.metric),
     unit: tiersCopy.rowUnit[row.role],
@@ -104,7 +102,7 @@ function listsOf(
               healSeconds: data.healSeconds,
               bossSwingSeconds: data.bossSwingSeconds,
             }).map((segments) => segments.map((segment) => segment.text).join(''));
-      return [role, { notes, rows: lists[role].map((row) => rowOf(build, row, views)) }];
+      return [role, { notes, rows: lists[role].map((row) => rowOf(row, views)) }];
     }),
   ) as Record<BisRole, AppTierList>;
 }

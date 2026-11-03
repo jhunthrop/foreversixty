@@ -542,6 +542,13 @@ def compute_spell_icons(
     coach_ids = coach_spell_ids(curated_dir) | coach_persona_spell_ids(curated_dir, spellranks)
     for spell_id in sorted(coach_ids):
         icons.setdefault(spell_id, _resolve_icon(spell_id, icon_of))
+    # The form spells that draw a spec the client gives no tree of its own (Cat Form for Feral,
+    # Dire Bear Form for Feral Bear): pipeline.specs reads their icons from this file.
+    from pipeline.specs import load_specs
+
+    specs = load_specs(curated_dir) if (curated_dir / "specs.json").exists() else []
+    for form_spell in sorted(s.form_spell for s in specs if s.form_spell is not None):
+        icons.setdefault(form_spell, _resolve_icon(form_spell, icon_of))
     return dict(sorted(icons.items()))
 
 

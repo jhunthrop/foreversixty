@@ -2,9 +2,9 @@ name: android
 on:
   push:
     branches: [main, 'land/**']
-    paths: ['apps/android/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
+    paths: ['apps/android/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
   pull_request:
-    paths: ['apps/android/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
+    paths: ['apps/android/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
   # Releases go through apps-release.yml (tools/release-apps.sh), the one release path.
   workflow_dispatch:
 permissions: { contents: read }

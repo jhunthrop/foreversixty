@@ -726,18 +726,12 @@ class SpecRecord(BaseModel):
     #: which is what actually documents which stats belong to which
     #: kind of spec.
     weight_stats: list[str]
-    #: The spec's own talent-tab icon (tenet 3, day3 data-followups-11
-    #: lane): a lowercase file name with no extension, hand-curated here
-    #: from the client's `TalentTab.SpellIconID` for this build
-    #: (resolved through `ManifestInterfaceData` the same way a talent's
-    #: icon is -- `pipeline.icons.resolve_icon`), the same value this
-    #: spec's own tree carries at `builds/<build>/talents/<class_slug>
-    #: .json`'s `trees[tree_index].icon`. Curated rather than read off a
-    #: build at `specs` command time because this list is build-
-    #: agnostic (the generated Go/TS files carry no build), unlike that
-    #: per-build file -- see this file's own module doc for why the
-    #: pipeline never joins the two at generation time.
-    icon: str
+    #: The spell whose own icon stands for this spec, for the specs the
+    #: client does not give a tree of their own (Feral is Cat Form, Feral
+    #: Bear is Dire Bear Form). None for every other spec, whose icon is
+    #: its tree's `TalentTab` icon. The icon itself is never curated:
+    #: `pipeline.specs.spec_icons` reads it off the active build.
+    form_spell: int | None = None
 
 
 class StatWeights(BaseModel):

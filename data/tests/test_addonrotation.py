@@ -402,6 +402,19 @@ def test_compute_spell_icons_adds_the_coach_spells_no_rotation_line_names(tmp_pa
     assert 23894 in icons
 
 
+def test_compute_spell_icons_adds_the_spec_form_spells(tmp_path):
+    """Cat Form and Dire Bear Form draw Feral and Feral Bear (pipeline.specs), so their
+    icons are written to spellicons.json beside the rotation spells."""
+    import shutil
+
+    _write_apl(tmp_path, "warrior-fury", [_cast(23894, rank=4, notes="Bloodthirst on cooldown.")])
+    shutil.copy(Path("curated") / "specs.json", tmp_path / "specs.json")
+    (tmp_path / BUILD).mkdir()
+    (tmp_path / BUILD / "spellranks.json").write_text(json.dumps(SPELLRANKS), encoding="utf-8")
+    icons = compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
+    assert {768, 9634} <= set(icons)
+
+
 def test_the_committed_coach_rule_files_name_the_reviews_spells():
     ids = coach_spell_ids(Path("curated"))
     for spell_id in (2687, 10952):  # Bloodrage; Inner Fire, top rank

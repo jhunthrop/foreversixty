@@ -48,7 +48,6 @@ import {
   rotationEntryFor,
   rotationLinesFor,
 } from '../../../lib/bis/rotation-view';
-import { specTabIcon } from '../../../lib/bis/spec-icon';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { band60Weights, rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
@@ -125,7 +124,7 @@ const catalogEntries = readSpecCatalog()
 const specTabs: SpecTabEntry[] = catalogEntries.map((s) => ({
   specSlug: s.spec_slug,
   name: s.name,
-  icon: specTabIcon(build, classSlug, s.tree_index),
+  icon: s.icon,
   href: `/guides/${classSlug}/${s.spec_slug}`,
   active: s.spec_slug === specSlug,
 }));

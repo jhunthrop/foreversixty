@@ -16,6 +16,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SLOTS, type Slot } from '../planner/types';
 import { LOOT_KINDS, SOURCE_KIND_LABELS, type LootFile, type LootKind } from '../sim/loot';
+import { SPECS } from '../sim/specs';
 import { bisSourceBuild } from '../../../scripts/bis-source-build.mjs';
 import { bisCopy } from './copy';
 import { selectBand } from './presets';
@@ -41,11 +42,12 @@ function readJson<T>(file: string): T {
   return JSON.parse(readFileSync(file, 'utf8')) as T;
 }
 
-/** The master list of written specs (data/curated/specs.json) -- the route list for /bis
+/** The master list of written specs (the generated `lib/sim/specs.ts`, from data/curated/specs.json
+ *  with each spec's icon read off the active client) -- the route list for /bis
  *  comes from here, not from which specs happen to have a BiS file, so a spec with nothing
  *  ranked yet still gets a page with the "no list yet" empty state instead of a 404. */
 export function readSpecCatalog(): SpecCatalogEntry[] {
-  return readJson<SpecCatalogEntry[]>(path.join(REPO_ROOT, 'data/curated/specs.json'));
+  return SPECS.map((spec) => ({ ...spec, weight_stats: [...spec.weight_stats] }));
 }
 
 export interface ClassSpecs {

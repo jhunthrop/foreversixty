@@ -469,7 +469,7 @@ export interface SpecCatalogEntry {
   tree_index: number;
   reference_stat: string;
   weight_stats: string[];
-  /** The spec's talent-frame icon, the icon file's base name. */
+  /** The spec's icon from the generated spec-icon map (`lib/sim/specs.ts`), the file's base name. */
   icon: string;
 }
 

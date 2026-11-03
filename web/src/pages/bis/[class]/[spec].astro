@@ -49,7 +49,6 @@ import {
   rotationEntryFor,
   rotationLinesFor,
 } from '../../../lib/bis/rotation-view';
-import { specTabIcon } from '../../../lib/bis/spec-icon';
 import { classRows, racesForClass } from '../../../lib/planner/reference';
 import { bandPresets, BARE_PRESET, presetMeta, RAID_PRESET } from '../../../lib/bis/presets';
 import type { BandView } from '../../../lib/bis/band-view';
@@ -120,7 +119,7 @@ const specTabs = readSpecCatalog()
   .map((s) => ({
     specSlug: s.spec_slug,
     name: s.name,
-    icon: specTabIcon(build, s.class_slug, s.tree_index),
+    icon: s.icon,
     href: `/bis/${s.class_slug}/${s.spec_slug}`,
     active: s.spec_slug === specEntry.spec_slug,
   }));
