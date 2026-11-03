@@ -5,7 +5,7 @@ spec: affliction
 role: dps
 build: 'FS1:1.60.1.70753:warlock:gnome:25522300130201351/200522/005:'
 raidBuild: 'FS1:1.60.1.70753:warlock:gnome:2552001013500105/00052/0550004:'
-recommendedRaces: [gnome, troll]
+recommendedRaces: [gnome, orc]
 statPriority: [Spell power, Shadow power, Intellect, Hit, Critical strike, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'
 updated: 2026-11-02
@@ -97,7 +97,7 @@ The table above is what the raid numbers assume. Flask and elixirs stack as they
 
 ## Races
 
-Gnome and Troll are the picks. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Your DoTs get nothing from it, so press it as you start a run of Shadow Bolts. Expansive Mind's 5% more mana is real for a spec that taps. Berserking is 10% cast speed on a three minute cooldown: press it with your trinkets once the DoTs are up. Orc Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder. Undead's Touch of the Grave drains health from your target now and then, which helps a spec that pays for mana in health. Human's Ruthless is 1% crit and The Human Spirit raises Spirit, which feeds Life Tap.
+Gnome and Orc are the picks. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Your DoTs get nothing from it, so press it as you start a run of Shadow Bolts. Expansive Mind's 5% more mana is real for a spec that taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder for the whole fight: press Blood Fury with your trinkets once the DoTs are up. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then, which helps a spec that pays for mana in health. Human's Ruthless is 1% crit and The Human Spirit raises Spirit, which feeds Life Tap.
 
 ## Professions
 
