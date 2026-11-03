@@ -10,23 +10,19 @@
 // factor descending, then the per-1% stats, then "No gain", then "Not significant". A
 // guide's written order can disagree with the sim; the card always follows the sim.
 //
-// Per-percent stats (2026-11-02 launch defect): haste and expertise have no rating in this
-// client. The engine's expertise point takes one percent off the boss's dodge and parry
-// (`sim/cmd/leveling-bis/expertisecap.go`), so its weight is per 1%, not per point; read
-// against the per-point stats it topped every tank's table ("Expertise 1547.3 per point").
-// Both sit outside the normalization and print "per 1%".
-//
-// Sign (same defect): a weight inside its own error reads "Not significant", and a weight
-// below zero beyond its error reads "No gain", never a negative number.
+// Per-percent stats and sign follow the rule the BiS weights panel shares
+// (`lib/bis/weight-reading.ts`): haste and expertise read per 1% outside the normalization,
+// a weight inside its error reads "Not significant", and one below zero beyond its error
+// reads "No gain", never a negative number.
 import { statLabelForSpec } from '../sim/weights-display';
 import type { BisStatWeight } from '../bis/types';
+import { perPercentOf, readingOf, type PerPercentStat, type WeightReading } from '../bis/weight-reading';
 import { guidesCopy } from './copy';
 
-/** The stats the rail prints per 1% rather than per point. */
-export type PerPercentStat = 'haste' | 'expertise';
+export { readingOf, type PerPercentStat };
 
 /** How a row reads: its number, "Not significant", or "No gain". */
-export type RailStatReading = 'value' | 'not-significant' | 'no-gain';
+export type RailStatReading = WeightReading;
 
 export interface RailStatRow {
   label: string;
@@ -40,30 +36,12 @@ export interface RailStatRow {
   perPoint?: number;
 }
 
-const PER_PERCENT_STATS: Readonly<Record<string, PerPercentStat>> = {
-  melee_haste: 'haste',
-  spell_haste: 'haste',
-  expertise: 'expertise',
-};
-
-function perPercentOf(stat: string): PerPercentStat | undefined {
-  return PER_PERCENT_STATS[stat];
-}
-
 /**
  * Every guide's own `statPriority` frontmatter says "Critical strike"; `statLabelForSpec`'s
  * engine vocabulary says "Crit" (`sim/copy.ts`'s pinned `statLabel.crit`) -- the one place
  * these two, otherwise identical, vocabularies diverge.
  */
 const GUIDE_LABEL_ALIASES: Readonly<Record<string, string>> = { 'Critical strike': 'Crit' };
-
-/** How `weight` reads: inside its error (or flagged insignificant) it has no measurable
- *  value; below zero beyond its error it adds nothing. */
-export function readingOf(weight: BisStatWeight | undefined): RailStatReading {
-  if (weight === undefined || (weight.insignificant ?? false)) return 'not-significant';
-  if (Math.abs(weight.weight) <= (weight.error ?? 0)) return 'not-significant';
-  return weight.weight < 0 ? 'no-gain' : 'value';
-}
 
 /** Sort tier: 0 = per-point stat with a value (by scale factor, descending), 1 = per-1% stat
  *  with a value (same), 2 = "No gain", 3 = "Not significant" or unmatched. */

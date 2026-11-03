@@ -71,7 +71,11 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
         <div
           class:list={['stat-weights-row', !row.significant && 'stat-weights-row-faint']}
           role="row"
-          title={row.significant ? row.ratingFactorTitle : `${row.label} not significant`}
+          title={
+            row.significant
+              ? row.ratingFactorTitle
+              : `${row.label} ${row.reading === 'no-gain' ? 'adds nothing' : 'not significant'}`
+          }
           data-testid={`bis-weight-row-${row.stat}`}
         >
           <span class="stat-weights-stat" role="cell">
@@ -94,7 +98,7 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
             </>
           ) : (
             <span class="stat-weights-num stat-weights-not-significant" role="cell" aria-colspan="3">
-              {bisCopy.weightsNotSignificant}
+              {row.reading === 'no-gain' ? bisCopy.weightsNoGain : bisCopy.weightsNotSignificant}
             </span>
           )}
         </div>

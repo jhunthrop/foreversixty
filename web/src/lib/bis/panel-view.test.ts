@@ -312,28 +312,62 @@ describe('bandInfosFor: scale rail', () => {
     expect(infos[0].scaleRows.some((row) => row.stat === 'melee_haste')).toBe(false);
   });
 
-  it('gives haste a plain caption by default (haste_on_items absent defaults to true), even though band()’s own melee_haste row is insignificant', () => {
-    // Owner fix, 2026-09-30, found on screenshot review: a haste row's own `insignificant`
-    // flag is a STATISTICAL question (did the sweep's sample clear its own noise bar), never
-    // the plain inventory question `haste_on_items` answers -- conflating the two is exactly
-    // what produced the previous, doubled "Haste: 1.58 per 1%, per 1%" caption. band()'s own
-    // default fixture marks melee_haste insignificant but never sets haste_on_items, so the
-    // caption must still read plain (default true, no clause) here.
+  it('reads an insignificant haste row as "not significant", never its noisy number (2026-11-02 rule)', () => {
+    // band()'s own default fixture marks melee_haste insignificant (weight 10, error 8): the
+    // shared weight reading (lib/bis/weight-reading.ts) never prints a number inside its error.
     const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null })]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
-    // melee_haste weight 10 / agility's own anchor weight 2 = 5.00.
-    expect(infos[0].hasteCaptionLine).toBe(bisCopy.weightsHasteCaption(5, false));
-    expect(infos[0].hasteCaptionLine).toBe('Haste: 5.00 per 1%');
-    expect(infos[0].hasteCaptionLine).not.toContain('not in the table');
+    expect(infos[0].hasteCaptionLine).toBe('Haste: not significant');
   });
 
   it('adds the "not in the table" clause only when the band’s own haste_on_items is explicitly false', () => {
-    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: null, haste_on_items: false })]);
+    const weights = [
+      { stat: 'ranged_attack_power', weight: 1, error: 0 },
+      { stat: 'agility', weight: 2, error: 0.1 },
+      { stat: 'melee_haste', weight: 10, error: 0.5 },
+    ];
+    const file = fileWith([
+      band({ weights, slots: [slot()], reference_dps_per_point: null, haste_on_items: false }),
+    ]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    // melee_haste weight 10 / agility's own anchor weight 2 = 5.00.
     expect(infos[0].hasteCaptionLine).toBe(bisCopy.weightsHasteCaption(5, true));
     expect(infos[0].hasteCaptionLine).toBe(
       'Haste: 5.00 per 1%, not in the table because no item at this level range has it',
     );
+  });
+
+  it('never prints a negative weight: "No gain" rows and captions (shared weight reading)', () => {
+    const weights = [
+      { stat: 'spell_power', weight: 2, error: 0.1 },
+      { stat: 'intellect', weight: -0.5, error: 0.1 },
+      { stat: 'spirit', weight: -0.05, error: 0.1 },
+      { stat: 'spell_haste', weight: -3, error: 0.5 },
+    ];
+    const file = fileWith([band({ weights, slots: [slot()], reference_dps_per_point: null })]);
+    const info = bandInfosFor(file, [20], 'alliance', depsWith())[0]!;
+    expect(info.scaleRows.map((row) => [row.stat, row.reading])).toEqual([
+      ['spell_power', 'value'],
+      ['intellect', 'no-gain'],
+      ['spirit', 'not-significant'],
+    ]);
+    expect(info.scaleRows.filter((row) => row.significant).every((row) => row.scaleFactor >= 0)).toBe(true);
+    expect(info.hasteCaptionLine).toBe('Haste: no gain at this level range');
+  });
+
+  it('reads expertise per 1% outside the per-point table, which normalizes to its own top stat', () => {
+    // A tank band whose published anchor would be expertise: per point it topped every tank.
+    const weights = [
+      { stat: 'stamina', weight: 1, error: 0.05 },
+      { stat: 'strength', weight: 0.5, error: 0.05 },
+      { stat: 'expertise', weight: 9.79, error: 0.73 },
+    ];
+    const file = fileWith([band({ weights, slots: [slot()], reference_dps_per_point: null })]);
+    const info = bandInfosFor(file, [20], 'alliance', depsWith())[0]!;
+    expect(info.scaleRows.map((row) => row.stat)).toEqual(['stamina', 'strength']);
+    expect(info.scaleRows[0]!.scaleFactor).toBeCloseTo(1, 6);
+    expect(info.scaleRows[1]!.scaleFactor).toBeCloseTo(0.5, 6);
+    expect(info.hasteCaptionLine).toBe('Expertise: 9.79 per 1%');
   });
 
   it('gives haste the plain caption when its own row is significant and haste_on_items is true', () => {
