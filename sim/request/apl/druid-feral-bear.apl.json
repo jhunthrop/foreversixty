@@ -1,5 +1,21 @@
 {
   "type": "TypeAPL",
+  "prepullActions": [
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 5229
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-1s"
+        }
+      }
+    }
+  ],
   "priorityList": [
     {
       "notes": "Potions, trinkets and racials as they come up. Mighty Rage Potion goes down in Bear Form without breaking it.",
