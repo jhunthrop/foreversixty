@@ -103,6 +103,10 @@ Open going into round 12:
 - **Held under the adoption rule:** Marksmanship, Improved Bane of Agony, Destruction's Immolate line, Fire's Improved Scorch line, Frost's search winner, Frost bare 20's Ice Shards, the band builds the reservation cannot express.
 - **Healers:** round 12 gives them a full client-row sweep (this round's lane could not).
 
+## Launch-day guide lanes (2026-11-02)
+
+- **Priest, Shadow builds.** Both Shadow builds move the Discipline points that do nothing for a Shadow priest (Power in Light and Holy Precision touch only Smite, Penance and Holy spells; the raid build's Improved Power Word: Shield and Wand Specialization are never used) into Mental Strength 5 and Silent Resolve 1. Leveling build +2.5% / +2.9% at bare 60, raid build +0.5% at raid 60 (alliance / horde, 10,000 iterations, seeds 1 and 50001). Coordinator ruling: the raid build is accepted below the 1% adoption threshold, because moving points out of talents with no effect for the spec fixes a build defect; it is not an optimization the rule gates.
+
 ## Round 10 at a glance
 
 The owner's rulings this round:
