@@ -20,7 +20,21 @@ jobs:
     timeout-minutes: 60
     defaults: { run: { working-directory: sim } }
     steps:
+      # The trees no job here reads stay out of the checkout, and data/builds comes from the
+      # cache (docs/runbooks/landing.md, "Checkout").
       - uses: actions/checkout@v4
+        with: &checkout
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            !/docs/superpowers/reviews/
+            !/apps/ios/
+            !/apps/android/
+      - uses: ./.github/actions/data-builds
       # setup-go before the pin, so `go mod tidy` runs on the version
       # sim/go.mod declares rather than on whatever the runner image
       # happens to ship.
@@ -75,6 +89,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with: *checkout
+      - uses: ./.github/actions/data-builds
       # styles-check runs `go run ./internal/genstyles`, which imports
       # sim/request. styles.go itself imports sim/api only, but the
       # PACKAGE also has buffs.go, cooldowns.go, request.go,
@@ -119,6 +135,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with: *checkout
+      - uses: ./.github/actions/data-builds
       - uses: actions/setup-go@v5
         with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
       # The artifact build is a fresh checkout, so it carries the same
