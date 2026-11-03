@@ -74,6 +74,40 @@ describe('GuideStatTable', () => {
     expect(html).not.toContain('guide-stat-table-updated');
   });
 
+  it('gives a tank its tank-score unit and expertise per 1%, never DPS', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(GuideStatTable, {
+      props: {
+        build: BUILD,
+        spec: 'warrior-protection',
+        classSlug: 'warrior',
+        recommendedRaces: ['human'],
+        statPriority: ['Expertise', 'Stamina', 'Defense', 'Dodge', 'Parry', 'Agility'],
+      },
+    });
+    expect(html).toContain('Tank score per point');
+    expect(html).not.toContain('DPS');
+    expect(html).toMatch(/per 1% expertise/);
+    expect(html).not.toMatch(/Weight \(Expertise = 1\.00\)/);
+    expect(html).not.toContain('Expertise cap: 0%');
+  });
+
+  it('gives a healer HPS, and prints no negative weight', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(GuideStatTable, {
+      props: {
+        build: BUILD,
+        spec: 'priest-holy',
+        classSlug: 'priest',
+        recommendedRaces: ['human'],
+        statPriority: ['Healing power', 'Intellect', 'Spirit', 'MP5', 'Crit', 'Spell haste'],
+      },
+    });
+    expect(html).toContain('HPS per point');
+    expect(html).not.toContain('DPS');
+    expect(html).not.toMatch(/>\s*-\d/);
+  });
+
   it('prints the hit-to-cap line exactly when the band publishes the key', async () => {
     const file = loadBisFile('warrior-fury', BUILD);
     if (file === null) throw new Error('warrior-fury BiS file missing');

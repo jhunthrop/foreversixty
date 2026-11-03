@@ -53,6 +53,28 @@ describe('guideHitCapLine', () => {
     expect(guideHitCapLine({ baseline: 0, specials: 6.5 })?.text).toBe('Hit cap: 6.5%');
   });
 
+  it('names the cap, not the distance to it, when the character starts with some hit', () => {
+    expect(guideHitCapLine({ kind: 'spell', baseline: 6, spell: 10 })?.text).toBe(
+      'Hit cap: 16% · 6% built in, 10% from gear',
+    );
+    expect(guideHitCapLine({ baseline: 3, specials: 6 })?.text).toBe(
+      'Hit cap: 9% · 3% built in, 6% from gear',
+    );
+    expect(guideHitCapLine({ baseline: 3, specials: 6, white: 25 })?.text).toBe(
+      'Hit cap: 9% (special attacks), 28% (white swings) · 3% built in, 6% from gear',
+    );
+    expect(
+      guideHitCapLine(
+        { kind: 'spell', baseline: 2, spell: 14, school: { names: ['Frost'], hit: 5, to_cap: 11 } },
+        'Precision',
+      )?.text,
+    ).toBe('Hit cap: 16% · 2% built in, 3% from Precision, 11% from gear');
+  });
+
+  it('reads "reached" for a cap the character is already past', () => {
+    expect(guideHitCapLine({ baseline: 10, specials: 0 })?.text).toBe('Hit cap: reached · 10% built in');
+  });
+
   it('is undefined when the band publishes no cap', () => {
     expect(guideHitCapLine(null)).toBeUndefined();
     expect(guideHitCapLine(undefined)).toBeUndefined();
@@ -77,5 +99,15 @@ describe('guideExpertiseCapLine', () => {
       'Expertise cap: 5.5% (dodge), 14% (parry)',
     );
     expect(guideExpertiseCapLine(null)).toBeUndefined();
+  });
+
+  it('names the caps for a tank who starts with expertise, never a 0% cap', () => {
+    // The real tank shape: 8% expertise, dodge already gone, parry 6% away (boss parry 14%).
+    expect(guideExpertiseCapLine({ baseline: 8, dodge: 0, parry: 6.000000000000002 })?.text).toBe(
+      'Expertise cap: reached (dodge), 14% (parry) · 8% built in',
+    );
+    expect(guideExpertiseCapLine({ baseline: 2, dodge: 4.5 })?.text).toBe(
+      'Expertise cap: 6.5% (dodge) · 2% built in',
+    );
   });
 });

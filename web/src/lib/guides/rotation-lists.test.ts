@@ -212,6 +212,35 @@ describe('rotationListsFrom', () => {
       'Trinkets, racials and potions',
     ]);
   });
+
+  it('names the racial cooldowns of the class’s races on the trinket line', () => {
+    const { cooldowns } = rotationListsFrom(lines, apl, (id) => facts[id], [], new Map(), [
+      { race: 'Gnome', racial: 'Eureka!' },
+      { race: 'Troll', racial: 'Berserking' },
+    ]);
+    expect(cooldowns.at(-1)).toEqual({
+      name: 'Trinkets, racials and potions',
+      clause: 'On cooldown, with your biggest damage: Eureka! (Gnome), Berserking (Troll)',
+    });
+  });
+
+  it('keeps the trinket line plain when no race of the class has a racial cooldown', () => {
+    const { cooldowns } = rotationListsFrom(lines, apl, (id) => facts[id], [], new Map(), []);
+    expect(cooldowns.at(-1)!.clause).toBe('On cooldown, with your biggest damage');
+  });
+
+  it('words the trinket line for a healer by healing, not damage', () => {
+    const { cooldowns } = rotationListsFrom(
+      lines,
+      apl,
+      (id) => facts[id],
+      [],
+      new Map(),
+      [{ race: 'Gnome', racial: 'Eureka!' }],
+      'healer',
+    );
+    expect(cooldowns.at(-1)!.clause).toBe('On cooldown, when your healing matters most: Eureka! (Gnome)');
+  });
 });
 
 describe('the Frost Mage lists, from the real data', () => {
