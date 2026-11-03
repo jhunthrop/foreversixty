@@ -3,8 +3,8 @@ title: Feral Druid in Forever
 classSlug: druid
 spec: feral
 role: dps
-build: 'FS1:1.60.1.70707:druid:night-elf:0/50212032123012123001/555023:'
-raidBuild: 'FS1:1.60.1.70707:druid:night-elf:05002/50230032023011125001/505003:'
+build: 'FS1:1.60.1.70753:druid:night-elf:0/50212032123012123001/555023:'
+raidBuild: 'FS1:1.60.1.70753:druid:night-elf:05002/50230032023011125001/505003:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Strength, Agility, Critical strike, Attack power, Feral attack power, Hit, Melee haste]
 description: 'Talents, rotation, stats, and gear for Feral Druid in Forever, covering both Cat Form DPS and Bear Form tanking from the one tree.'

@@ -99,12 +99,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-1000000000000000000-0000000000000000 | main_hand:263937 ranged:286750 | 15.8 | 6 | other:mana_gain=33.5, spell:1454=33.5, spell:695=28.6, spell:172=14.4, spell:707=13.5 | {SpellID: 18788}, {SpellID: 19028}, {SpellID: 425464}, {SpellID: 603} |
-| 20 | 00000000000000000-2332100000000000000-0000000000000000 | main_hand:890 ranged:5243 | 28.0 | 7 | other:mana_gain=29.6, spell:1455=29.6, spell:1088=19.7, spell:1094=12.7, spell:6222=11.7 | {SpellID: 18788}, {SpellID: 19028}, {SpellID: 425464}, {SpellID: 603} |
+| 10 | 00000000000000000-1000000000000000000-0000000000000000 | main_hand:284287 ranged:286750 | 15.8 | 6 | other:mana_gain=34.7, spell:1454=34.7, spell:695=28.0, spell:172=14.3, spell:707=13.3 | {SpellID: 18788}, {SpellID: 19028}, {SpellID: 425464}, {SpellID: 603} |
+| 20 | 00000000000000000-2332100000000000000-0000000000000000 | main_hand:6505 ranged:5243 | 33.8 | 7 | other:mana_gain=28.8, spell:1455=28.8, spell:1088=18.9, spell:1094=12.5, spell:5019=11.7 | {SpellID: 18788}, {SpellID: 19028}, {SpellID: 425464}, {SpellID: 603} |
 | 30 | 00000000000000000-2332113101220000000-0000000000000000 | main_hand:249392 ranged:5213 | 51.6 | 7 | other:mana_gain=31.9, spell:1456=31.9, spell:1106=24.2, spell:2941=13.0, spell:6223=10.3 | {SpellID: 19028}, {SpellID: 425464}, {SpellID: 603} |
-| 38 | 00000000000000000-2332113101220001340-0000000000000000 | main_hand:1664 ranged:13064 | 76.2 | 8 | other:mana_gain=28.6, spell:11687=28.6, spell:7641=24.6, spell:2941=12.9, spell:7648=10.1 | {SpellID: 425464}, {SpellID: 603} |
-| 40 | 10000000000000000-2332113101220001350-0000000000000000 | main_hand:1664 ranged:5216 | 80.9 | 8 | other:mana_gain=28.5, spell:11687=28.5, spell:7641=24.9, spell:11665=12.3, spell:7648=10.3 | {SpellID: 425464}, {SpellID: 603} |
-| 50 | 25400000000000000-2332113101220001350-0000000000000000 | main_hand:9527 ranged:249232 | 134.0 | 8 | other:mana_gain=26.6, spell:11688=26.6, spell:11659=23.7, spell:11667=11.8, spell:11671=10.7 | {SpellID: 425464}, {SpellID: 603} |
+| 38 | 00000000000000000-2332113101220001340-0000000000000000 | main_hand:873 ranged:13064 | 89.8 | 7 | other:mana_gain=28.0, spell:11687=28.0, spell:7641=27.2, spell:2941=12.5, spell:7648=9.9 | {SpellID: 425464}, {SpellID: 603} |
+| 40 | 10000000000000000-2332113101220001350-0000000000000000 | main_hand:873 ranged:5216 | 95.0 | 7 | other:mana_gain=27.9, spell:11687=27.9, spell:7641=27.2, spell:11665=12.6, spell:7648=9.9 | {SpellID: 425464}, {SpellID: 603} |
+| 50 | 25400000000000000-2332113101220001350-0000000000000000 | main_hand:873 ranged:249232 | 138.3 | 8 | other:mana_gain=26.0, spell:11688=26.0, spell:11659=24.0, spell:11667=11.8, spell:11671=10.6 | {SpellID: 425464}, {SpellID: 603} |
 | 60 | 25522000000000000-2332113101220001350-0050000000000000 | main_hand:22630 ranged:22821 | 281.6 | 10 | spell:11661=30.4, other:mana_gain=30.0, spell:11689=30.0, spell:11668=12.2, spell:11672=10.7 | {SpellID: 425464} |
 
 ## Learned but unused (informational)
@@ -218,8 +218,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - warlock-demonology level=30 kind=zero_casts id=18788 authored=18788 (untracked ability; not in spellranks.json's rank chains)
 - warlock-demonology level=30 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
 - warlock-demonology level=38 kind=zero_casts id=18788 authored=18788 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=38 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-demonology level=38 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
 - warlock-demonology level=40 kind=zero_casts id=18788 authored=18788 (untracked ability; not in spellranks.json's rank chains)
+- warlock-demonology level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-demonology level=40 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
 - warlock-demonology level=50 kind=zero_casts id=18788 authored=18788 (untracked ability; not in spellranks.json's rank chains)
 - warlock-demonology level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)

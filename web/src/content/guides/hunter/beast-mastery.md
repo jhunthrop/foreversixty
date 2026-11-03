@@ -3,8 +3,8 @@ title: Beast Mastery Hunter in Forever
 classSlug: hunter
 spec: beast-mastery
 role: dps
-build: 'FS1:1.60.1.70707:hunter:dwarf:5420001505001251/00524510012/0:'
-raidBuild: 'FS1:1.60.1.70707:hunter:dwarf:5420001505001251/00523500014/0:'
+build: 'FS1:1.60.1.70753:hunter:dwarf:5420001505001251/00524510012/0:'
+raidBuild: 'FS1:1.60.1.70753:hunter:dwarf:5420001505001251/00523500014/0:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Agility, Critical strike, Ranged attack power, Hit, Attack speed]
 description: 'Beast Mastery Hunter overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
