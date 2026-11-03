@@ -128,7 +128,7 @@
         ]
       },
       {
-        "text": "Holy Strike is on a 12 second cooldown and had reached rank 5 by level 38 in the demo; Seal of Fury's absorb is worth about half the Holy damage it adds, and Judging it taunts for 4 seconds at 10 yards where every other taunt is 5.",
+        "text": "Holy Strike is on a 10 second cooldown and reaches rank 5 at level 36; Seal of Fury's absorb is worth about half the Holy damage it adds, and Judging it taunts for 3 seconds at 10 yards.",
         "sources": [
           {
             "label": "Blizzard, Deep Dive panel recap",
@@ -143,7 +143,7 @@
         ]
       },
       {
-        "text": "Holy gains Reverence, Infusion of Light and Light's Vigil; Protection gains Shield Specialization, Swift Judgement, Templar's Bulwark and Iron Creed; Retribution gains Vindication, Sacred Arbiter and Champion of the Light.",
+        "text": "Holy gains Reverence, Infusion of Light and Light's Vigil; Protection gains Shield Specialization, Swift Judgement, Templar's Bulwark and Iron Creed; Retribution gains Sacred Arbiter and Champion of the Light.",
         "sources": [
           {
             "label": "Blizzard, Deep Dive panel recap",
@@ -278,7 +278,7 @@
         ]
       },
       {
-        "text": "New talents include Mutilate and Venom in Assassination, Restless Blades in Combat and Cutthroat in Subtlety; Weapon Expertise now reduces enemy dodge and parry chance instead of granting weapon skill.",
+        "text": "New talents include Mutilate and Venom in Assassination and Cutthroat in Subtlety; Weapon Expertise now reduces enemy dodge and parry chance instead of granting weapon skill.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",

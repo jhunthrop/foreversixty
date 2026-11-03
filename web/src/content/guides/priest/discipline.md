@@ -59,7 +59,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 - **Inner Focus** (1 point): a free spell with 25% more crit every 3 minutes.
 - **Meditation** (3 points) and **Mental Strength** (5 points): regeneration while casting, and a deeper bar.
 - **Holy Specialization** (5 points), **Divine Fury** (5 points) and **Improved Healing** (3 points): more crits for Divine Aegis, faster Heal and Greater Heal, and cheaper direct heals.
-- **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and casts that raid damage no longer pushes back.
+- **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and casts that raid damage rarely pushes back.
 
 **Power Infusion** is not in the build because it adds nothing to your own healing. In a raid with a mage or warlock worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to your best caster on their burst. Open the [planner](/planner?class=priest) to make the swap.
 
@@ -71,9 +71,9 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **The shield is a switch.** Shield the tank at a low rank whenever Weakened Soul is off him. A small shield costs little and soaks one hit, and the Weakened Soul it leaves is what Renewed Hope needs: your next heals on him crit far more often, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner. A full-rank shield on a warrior tank eats the rage he needs at the start of a pull; save the big one for a hit he cannot take.
 
-**Renew** stays on the tank at a low rank. Every rank carries the same healing power bonus, so the cheap rank is the efficient one.
+**Renew** stays on the tank at a low rank. Every rank from level 20 up carries the same healing power bonus, so the cheap rank is the efficient one.
 
-**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. A cheap low-rank heal on everyone else: in Forever a heal learned below level 20 keeps all of its spell power bonus, so those ranks heal far more than their tooltip suggests for very little mana.
+**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. A cheap low-rank heal on everyone else: Lesser Heal rank 3 is learned below level 20, so it loses part of its healing bonus, but at 75 mana it is still the right top-up.
 
 **Emergencies.** Flash Heal at the top rank on anyone about to die. If raid damage has you under 90% too, cast Binding Heal instead: the same mana and cast time, and it heals you as much as your target.
 
