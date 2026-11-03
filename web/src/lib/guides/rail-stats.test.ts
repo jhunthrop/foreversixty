@@ -1,7 +1,9 @@
 // web/src/lib/guides/rail-stats.test.ts
 import { describe, expect, it } from 'vitest';
-import { railStatRows } from './rail-stats';
+import { railStatRows, railStatValueText } from './rail-stats';
 import { bandEntry, loadBisFile } from '../bis/load';
+import type { BisStatWeight } from '../bis/types';
+import { statLabelForSpec } from '../sim/weights-display';
 
 const BUILD = '1.60.1.70374';
 const STAT_PRIORITY = ['Attack power', 'Strength', 'Agility', 'Critical strike', 'Hit', 'Melee haste'];
@@ -19,7 +21,7 @@ describe('railStatRows', () => {
       .map((row) => row.value!);
     expect(Math.max(...nonHaste)).toBeCloseTo(1.0, 5);
     const haste = rows.find((row) => row.label === 'Melee haste')!;
-    expect(haste.perPercent).toBe(true);
+    expect(haste.perPercent).toBe('haste');
     if (band.haste_scale_factor != null) expect(haste.value).toBeCloseTo(band.haste_scale_factor, 5);
   });
 
@@ -43,6 +45,63 @@ describe('railStatRows', () => {
     // Haste after every per-point row, and insignificant rows after haste.
     expect(hasteIndex).toBeGreaterThanOrEqual(perPoint.length);
     if (firstInsignificant !== -1) expect(firstInsignificant).toBeGreaterThan(hasteIndex);
+  });
+
+  it('reads expertise per 1%, outside the normalization, so it never tops a tank table', () => {
+    const weights: BisStatWeight[] = [
+      { stat: 'stamina', weight: 1, error: 0.001, scale_factor: 6, dps_per_point: 158 },
+      { stat: 'defense', weight: 1.9, error: 0.25, unit: 'rating', scale_factor: 11.4, dps_per_point: 298 },
+      { stat: 'expertise', weight: 9.8, error: 0.7, scale_factor: 59.4, dps_per_point: 1547 },
+    ];
+    const rows = railStatRows(['Expertise', 'Stamina', 'Defense'], weights, 'warrior-protection');
+    expect(rows.map((row) => row.label)).toEqual(['Defense', 'Stamina', 'Expertise']);
+    expect(rows[0]!.value).toBeCloseTo(1, 5);
+    expect(rows[2]!.perPercent).toBe('expertise');
+    expect(rows[2]!.value).toBeCloseTo(59.4 / 11.4, 5);
+    expect(railStatValueText(rows[2]!)).toBe(`${(59.4 / 11.4).toFixed(1)} per 1% expertise`);
+  });
+
+  it('reads a weight inside its error as Not significant and one below zero beyond it as No gain', () => {
+    const weights: BisStatWeight[] = [
+      { stat: 'spell_power', weight: 1, error: 0.01, scale_factor: 1, dps_per_point: 0.6 },
+      { stat: 'spirit', weight: -0.07, error: 0.28, scale_factor: -0.11 },
+      { stat: 'mp5', weight: 0.05, error: 0.3, insignificant: false, scale_factor: 0.05 },
+      { stat: 'spell_haste', weight: -3.5, error: 0.64, insignificant: false, scale_factor: -6.4 },
+    ];
+    const rows = railStatRows(['Spell haste', 'Spirit', 'MP5', 'Spell power'], weights, 'mage-fire', -6.4);
+    const byLabel = new Map(rows.map((row) => [row.label, row]));
+    expect(byLabel.get('Spirit')!.reading).toBe('not-significant');
+    expect(byLabel.get('MP5')!.reading).toBe('not-significant');
+    expect(byLabel.get('Spell haste')!.reading).toBe('no-gain');
+    for (const row of rows.filter((r) => r.reading !== 'value')) {
+      expect(row.value).toBeUndefined();
+      expect(row.perPoint).toBeUndefined();
+    }
+    expect(railStatValueText(byLabel.get('Spell haste')!)).toBe('No gain');
+    expect(railStatValueText(byLabel.get('Spirit')!)).toBe('Not significant');
+    // Value first, then No gain, then Not significant.
+    expect(rows.map((row) => row.label)).toEqual(['Spell power', 'Spell haste', 'Spirit', 'MP5']);
+  });
+
+  it('never prints a negative number for any spec on the real files', () => {
+    for (const spec of [
+      'mage-fire',
+      'priest-holy',
+      'priest-discipline',
+      'shaman-elemental',
+      'druid-restoration',
+    ]) {
+      const file = loadBisFile(spec, BUILD);
+      if (file === null) continue;
+      for (const band of file.bands.filter((entry) => entry.band === 60)) {
+        const labels = band.weights.map((w) => statLabelForSpec(w.stat, spec));
+        const rows = railStatRows(labels, band.weights, spec, band.haste_scale_factor ?? null);
+        for (const row of rows) {
+          if (row.value !== undefined) expect(row.value).toBeGreaterThanOrEqual(0);
+          expect(railStatValueText(row)).not.toMatch(/^-/);
+        }
+      }
+    }
   });
 
   it('keeps the guide written order as a stable tiebreak within a tier', () => {

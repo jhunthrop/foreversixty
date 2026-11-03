@@ -3,6 +3,15 @@
 // (design/DESIGN-SYSTEM.md: state the thing and stop).
 import { betaOver } from './beta';
 
+/** The unit a role's per-point and set figures are in: a tank's per-point figures are
+ *  tank-score points (mitigation, risk and threat combined), never damage. */
+const ROLE_RATE_UNIT = { dps: 'DPS', healer: 'HPS', tank: 'tank score' } as const;
+
+/** What a stat that adds nothing would have raised, by role. */
+const ROLE_OUTPUT = { dps: 'damage', healer: 'healing', tank: 'survival or threat' } as const;
+
+type GuideRole = keyof typeof ROLE_RATE_UNIT;
+
 const STATUS_NOTE_TAIL =
   "is simulated on the client's own data, not measured in play. Class mechanics carry over from 1.12 where the demo showed no change.";
 
@@ -28,7 +37,9 @@ export const guidesCopy = {
   readTheGuideAriaLabel: (specName: string, className: string): string =>
     `Read the ${specName} ${className} guide`,
   yourSpecPill: 'Your spec',
-  setDpsLine: (dps: number): string => `${dps.toFixed(1)} DPS`,
+  /** The spec card's figure, in its role's own unit (`role-metric.ts`); `figure` arrives formatted. */
+  setMetricLine: (figure: string, role: 'dps' | 'healer' | 'tank'): string =>
+    `${figure} ${role === 'tank' ? 'damage taken per second' : ROLE_RATE_UNIT[role]}`,
   setDpsLineSuffix: 'at 60, this set',
   buildRailLabel: 'Build',
   /** The rail's Rotation card title; its band label is the head's meta (site alignment §5.4). */
@@ -90,25 +101,38 @@ export const guidesCopy = {
   racialsColumn: 'Racials',
 
   recommendedTag: 'Recommended',
-  /** The Stat priority headline: "Hit cap: 16% · 3% from Precision, 13% from gear". */
-  hitToCap: (
-    percent: string,
-    split?: { talentPercent: string; talent: string; gearPercent: string },
-  ): string =>
-    split === undefined
-      ? `Hit cap: ${percent}%`
-      : `Hit cap: ${percent}% · ${split.talentPercent}% from ${split.talent}, ${split.gearPercent}% from gear`,
-  hitToCapWhite: (percent: string, white: string): string =>
-    `Hit cap: ${percent}% (special attacks), ${white}% (white swings)`,
-  /** The Stat priority note under the table: "Expertise cap: 6.5% (dodge)", parry added for a tank. */
-  expertiseCap: (dodge: string, parry: string | undefined): string =>
-    `Expertise cap: ${dodge}% (dodge)${parry === undefined ? '' : `, ${parry}% (parry)`}`,
+  /** The Stat priority headline: "Hit cap: 16% · 3% from Precision, 13% from gear". Caps
+   *  arrive formatted with their own "%" (or as `capReached`); `split` arrives joined. */
+  hitToCap: (cap: string, split?: string): string =>
+    `Hit cap: ${cap}${split === undefined ? '' : ` · ${split}`}`,
+  hitToCapWhite: (cap: string, white: string, split?: string): string =>
+    `Hit cap: ${cap} (special attacks), ${white} (white swings)${split === undefined ? '' : ` · ${split}`}`,
+  /** The Stat priority note under the table: "Expertise cap: 6.5% (dodge)", parry added for a
+   *  tank, "reached" for a cap the character is already past. */
+  expertiseCap: (dodge: string, parry: string | undefined, split?: string): string =>
+    `Expertise cap: ${dodge} (dodge)${parry === undefined ? '' : `, ${parry} (parry)`}${split === undefined ? '' : ` · ${split}`}`,
+  capReached: 'reached',
+  /** What the character starts with toward a cap, before gear: "8% built in". */
+  capBuiltIn: (percent: string): string => `${percent}% built in`,
+  capFrom: (percent: string, source: string): string => `${percent}% from ${source}`,
   notSignificantNote: (labels: string, plural: boolean): string =>
-    `${labels} ${plural ? 'show' : 'shows'} as "Not significant": too small to tell from zero in simulation.`,
+    `${labels} ${plural ? 'show' : 'shows'} as "Not significant": no measurable value at level 60.`,
+  /** A stat whose weight is below zero beyond its error: no number is printed for it. */
+  noGainNote: (labels: string, plural: boolean, role: GuideRole): string =>
+    `${labels} ${plural ? 'show' : 'shows'} as "No gain": more of it does not raise your ${ROLE_OUTPUT[role]} at level 60.`,
   weightColumn: (anchor: string): string => `Weight (${anchor} = 1.00)`,
-  dpsPerPointColumn: 'DPS per point',
-  unitLine: (stat: string, dps: string): string => `1 point of ${stat} = ${dps} DPS at level 60`,
+  /** "DPS per point", "HPS per point", "Tank score per point". */
+  perPointColumn: {
+    dps: 'DPS per point',
+    healer: 'HPS per point',
+    tank: 'Tank score per point',
+  } as const satisfies Record<GuideRole, string>,
+  unitLine: (stat: string, figure: string, role: GuideRole): string =>
+    `1 point of ${stat} = ${figure} ${ROLE_RATE_UNIT[role]} at level 60`,
+  /** A haste or expertise weight, which is per 1% rather than per point: "2.5 per 1% haste". */
+  perPercentValue: (figure: string, stat: 'haste' | 'expertise'): string => `${figure} per 1% ${stat}`,
   notSignificant: 'Not significant',
+  noGain: 'No gain',
   levelingNewTitle: 'More points here than the range before',
   levelingLegend: 'Outlined: points added in this level range.',
   levelRangeLabel: (band: number): string => (band === 60 ? 'Level 60' : `Level ${band} to ${band + 9}`),

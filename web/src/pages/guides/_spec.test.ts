@@ -188,7 +188,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     const talent = escapeRegExp(named);
     expect(html).toMatch(
       new RegExp(
-        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?%(?: · \\d+(\\.\\d)?% from ${talent}, \\d+(\\.\\d)?% from gear)?<`,
+        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?%(?: · (?:\\d+(\\.\\d)?% built in(?:, )?)?(?:\\d+(\\.\\d)?% from ${talent}(?:, )?)?(?:\\d+(\\.\\d)?% from gear)?)?<`,
       ),
     );
     expect(html).toContain('DPS per point');
