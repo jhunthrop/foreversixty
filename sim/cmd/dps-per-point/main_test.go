@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/request"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core/proto"
 )
@@ -58,6 +59,22 @@ func TestTheWeightsRequestWeighsOnlyTheReferenceStatAtSixty(t *testing.T) {
 	}
 	if mage.Character.DistanceFromTarget == 0 {
 		t.Fatal("a caster stands out of melee range")
+	}
+}
+
+// A band's character is the bare band's (its gear, the class kit, no
+// preset buffs), so its request must say bare: a level-60 request with no
+// preset takes the raid preset's rank choices (request.PublishedPreset),
+// and band 60 then ran the raid rotation's ranks on bare gear (Elemental
+// went dry and measured about half its bare spell power figure).
+func TestABandIsMeasuredUnderTheBarePresetAndTheRaidUnderTheRaids(t *testing.T) {
+	spec := specs.ByKey["shaman-elemental"]
+	ch := api.CharacterSpec{Class: "shaman", Level: 60}
+	if got := weightsRequest(spec, ch, nil, 250, 7).Preset; got != request.BarePreset {
+		t.Errorf("band request preset = %q, want %q", got, request.BarePreset)
+	}
+	if got := weightsRequest(spec, ch, &request.ResolvedPreset{}, 250, 7).Preset; got != request.RaidPreset {
+		t.Errorf("raid request preset = %q, want %q", got, request.RaidPreset)
 	}
 }
 
