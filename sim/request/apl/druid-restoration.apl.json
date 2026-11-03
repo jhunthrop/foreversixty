@@ -675,12 +675,12 @@
       }
     },
     {
-      "notes": "On the tank whenever it is not ticking, cast at rank 4. Let it run out before you recast it, so Bloom heals him when it does.",
+      "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it, so Bloom heals him when it does. On a raid fight your mana outlasts the fight with rank 4 on everyone, so the tank gets the rank that heals most; below 60 and without raid buffs it stays rank 4, the rank-choice rows.",
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 2090,
-            "rank": 4
+            "spellId": 9841,
+            "rank": 10
           },
           "target": {
             "type": "Player",
@@ -695,8 +695,8 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 2090,
-                        "rank": 4
+                        "spellId": 9841,
+                        "rank": 10
                       },
                       "targetUnit": {
                         "type": "Player",
@@ -785,12 +785,12 @@
       }
     },
     {
-      "notes": "On a hurt party member under 70%, you included, while your mana keeps pace. Rank 4 costs under a third of the top rank's mana and, with your healing power on it, still heals for half or more.",
+      "notes": "On a hurt party member under 70%, you included, while your mana keeps pace, at rank 7 in a raid. It costs about two thirds of the top rank's mana, and with it your mana lasts a raid fight to the end. Below 60 and without raid buffs it is rank 4, the rank-choice rows.",
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 2090,
-            "rank": 4
+            "spellId": 8910,
+            "rank": 7
           },
           "target": {
             "type": "Player",
@@ -823,8 +823,8 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 2090,
-                        "rank": 4
+                        "spellId": 8910,
+                        "rank": 7
                       },
                       "targetUnit": {
                         "type": "Player",
@@ -864,8 +864,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 2090,
-            "rank": 4
+            "spellId": 8910,
+            "rank": 7
           },
           "target": {
             "type": "Player",
@@ -898,8 +898,8 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 2090,
-                        "rank": 4
+                        "spellId": 8910,
+                        "rank": 7
                       },
                       "targetUnit": {
                         "type": "Player",
@@ -939,8 +939,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 2090,
-            "rank": 4
+            "spellId": 8910,
+            "rank": 7
           },
           "target": {
             "type": "Player",
@@ -973,8 +973,8 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 2090,
-                        "rank": 4
+                        "spellId": 8910,
+                        "rank": 7
                       },
                       "targetUnit": {
                         "type": "Player",
@@ -1014,8 +1014,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 2090,
-            "rank": 4
+            "spellId": 8910,
+            "rank": 7
           },
           "target": {
             "type": "Player",
@@ -1048,8 +1048,8 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 2090,
-                        "rank": 4
+                        "spellId": 8910,
+                        "rank": 7
                       },
                       "targetUnit": {
                         "type": "Player",
@@ -1089,8 +1089,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 2090,
-            "rank": 4
+            "spellId": 8910,
+            "rank": 7
           },
           "target": {
             "type": "Player",
@@ -1123,8 +1123,8 @@
                   "val": {
                     "dotIsActive": {
                       "spellId": {
-                        "spellId": 2090,
-                        "rank": 4
+                        "spellId": 8910,
+                        "rank": 7
                       },
                       "targetUnit": {
                         "type": "Player",

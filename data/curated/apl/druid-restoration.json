@@ -1,7 +1,7 @@
 {
   "spec": "druid-restoration",
   "state": "written",
-  "notes": "Restoration druid healer rotation (stage 2 of the healer build), written against the fork's fake raid: the healer is raid player 0, the four fake party members are players 1 to 4 and the tank is player 5. The tank carries Regrowth and Rejuvenation for the whole fight (Nature's Splendor makes them 27 and 15 seconds), Healing Touch fires only on a real hole in his health bar and only while the mana bar is above the share of the fight left, so the mana lasts instead of running out at the first long fight. Party members get Rejuvenation when one is hurt and Tranquility when two are well down. Nature's Swiftness is cast by hand and always with an instant Healing Touch under 35% tank health, the major-cooldown pass is told to leave it alone for a healer. Rejuvenation is cast at rank 4 on purpose (its own line says why); every other heal casts the top rank. Healing Touch rank 11 and Rejuvenation rank 11 are Ahn'Qiraj book ranks (core.IncludeAQ is false), so the top ranks are 10; the client's second Regrowth and Rejuvenation ids (436937-436946, 417057-417068) are not taught by the trainer and are not used. Client 1.60.1.70707 (2026-10-31): the Wild Growth line is gone. The guide build does not take the talent (heal-builds measured it about 5% less healing for any point it would take, with Wild Growth's new 3 s cast), so the line could never fire for it and a player reading the rotation cannot cast it. Round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md): the heal profile's raid-wide pulses now land on the healer as well, three of the five members of the group a pulse. You are a party member like the other four: Rejuvenation covers you and Tranquility counts you (about +0.8% effective healing against the same list without you). Wild Growth was measured again on this fight, with the point from Swiftmend and 36 Wild Growth lines: the best was level with this list, within error, so the build and the list stand.",
+  "notes": "Restoration druid healer rotation (stage 2 of the healer build), written against the fork's fake raid: the healer is raid player 0, the four fake party members are players 1 to 4 and the tank is player 5. The tank carries Regrowth and Rejuvenation for the whole fight (Nature's Splendor makes them 27 and 15 seconds), Healing Touch fires only on a real hole in his health bar and only while the mana bar is above the share of the fight left, so the mana lasts instead of running out at the first long fight. Party members get Rejuvenation when one is hurt and Tranquility when two are well down. Nature's Swiftness is cast by hand and always with an instant Healing Touch under 35% tank health, the major-cooldown pass is told to leave it alone for a healer. Rejuvenation is cast below the top rank on purpose in a raid (rank 10 on the tank, rank 7 on the party; their lines say why), and at rank 4 below 60 and without raid buffs (the rank-choice rows); every other heal casts the top rank. Healing Touch rank 11 and Rejuvenation rank 11 are Ahn'Qiraj book ranks (core.IncludeAQ is false), so the top ranks are 10; the client's second Regrowth and Rejuvenation ids (436937-436946, 417057-417068) are not taught by the trainer and are not used. Client 1.60.1.70707 (2026-10-31): the Wild Growth line is gone. The guide build does not take the talent (heal-builds measured it about 5% less healing for any point it would take, with Wild Growth's new 3 s cast), so the line could never fire for it and a player reading the rotation cannot cast it. Round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md): the heal profile's raid-wide pulses now land on the healer as well, three of the five members of the group a pulse. You are a party member like the other four: Rejuvenation covers you and Tranquility counts you (about +0.8% effective healing against the same list without you). Wild Growth was measured again on this fight, with the point from Swiftmend and 36 Wild Growth lines: the best was level with this list, within error, so the build and the list stand.",
   "expected_idle": [],
   "sources": [
     {
@@ -692,12 +692,12 @@
         }
       },
       {
-        "notes": "On the tank whenever it is not ticking, cast at rank 4. Let it run out before you recast it, so Bloom heals him when it does.",
+        "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it, so Bloom heals him when it does. On a raid fight your mana outlasts the fight with rank 4 on everyone, so the tank gets the rank that heals most; below 60 and without raid buffs it stays rank 4, the rank-choice rows.",
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2090,
-              "rank": 4
+              "spellId": 9841,
+              "rank": 10
             },
             "target": {
               "type": "Player",
@@ -712,8 +712,8 @@
                     "val": {
                       "dotIsActive": {
                         "spellId": {
-                          "spellId": 2090,
-                          "rank": 4
+                          "spellId": 9841,
+                          "rank": 10
                         },
                         "targetUnit": {
                           "type": "Player",
@@ -802,12 +802,12 @@
         }
       },
       {
-        "notes": "On a hurt party member under 70%, you included, while your mana keeps pace. Rank 4 costs under a third of the top rank's mana and, with your healing power on it, still heals for half or more.",
+        "notes": "On a hurt party member under 70%, you included, while your mana keeps pace, at rank 7 in a raid. It costs about two thirds of the top rank's mana, and with it your mana lasts a raid fight to the end. Below 60 and without raid buffs it is rank 4, the rank-choice rows.",
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2090,
-              "rank": 4
+              "spellId": 8910,
+              "rank": 7
             },
             "target": {
               "type": "Player",
@@ -840,8 +840,8 @@
                     "val": {
                       "dotIsActive": {
                         "spellId": {
-                          "spellId": 2090,
-                          "rank": 4
+                          "spellId": 8910,
+                          "rank": 7
                         },
                         "targetUnit": {
                           "type": "Player",
@@ -881,8 +881,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2090,
-              "rank": 4
+              "spellId": 8910,
+              "rank": 7
             },
             "target": {
               "type": "Player",
@@ -915,8 +915,8 @@
                     "val": {
                       "dotIsActive": {
                         "spellId": {
-                          "spellId": 2090,
-                          "rank": 4
+                          "spellId": 8910,
+                          "rank": 7
                         },
                         "targetUnit": {
                           "type": "Player",
@@ -956,8 +956,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2090,
-              "rank": 4
+              "spellId": 8910,
+              "rank": 7
             },
             "target": {
               "type": "Player",
@@ -990,8 +990,8 @@
                     "val": {
                       "dotIsActive": {
                         "spellId": {
-                          "spellId": 2090,
-                          "rank": 4
+                          "spellId": 8910,
+                          "rank": 7
                         },
                         "targetUnit": {
                           "type": "Player",
@@ -1031,8 +1031,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2090,
-              "rank": 4
+              "spellId": 8910,
+              "rank": 7
             },
             "target": {
               "type": "Player",
@@ -1065,8 +1065,8 @@
                     "val": {
                       "dotIsActive": {
                         "spellId": {
-                          "spellId": 2090,
-                          "rank": 4
+                          "spellId": 8910,
+                          "rank": 7
                         },
                         "targetUnit": {
                           "type": "Player",
@@ -1106,8 +1106,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2090,
-              "rank": 4
+              "spellId": 8910,
+              "rank": 7
             },
             "target": {
               "type": "Player",
@@ -1140,8 +1140,8 @@
                     "val": {
                       "dotIsActive": {
                         "spellId": {
-                          "spellId": 2090,
-                          "rank": 4
+                          "spellId": 8910,
+                          "rank": 7
                         },
                         "targetUnit": {
                           "type": "Player",
