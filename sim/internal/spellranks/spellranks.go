@@ -412,9 +412,11 @@ var rankLevelOverrides = map[string]map[int32]int{
 		// Primal Bite: client 1.60.1.70707's hotfix made it the Feral
 		// capstone (learned at 40) and moved its ranks; spellranks.json still
 		// carries the pre-hotfix 25/36/48/60, and sim/druid/primal_bite.go's
-		// primalBiteRanks registers 407995 at 40, 1238069 at 50 and 1238073
-		// at 60 (1238070 is stated at 60 too, so it is never the rank a druid
-		// knows).
+		// primalBiteRanks registers 407995 at 40, 1238069 at 50 and 1238070
+		// at 60. 1238073 (rank 4, also stated at 60) has no SkillLineAbility
+		// row, so no trainer teaches it and the engine does not register it;
+		// the rewrite never reaches it, since it only steps down from the
+		// authored 1238070.
 		407995:  40,
 		1238069: 50,
 		1238070: 60,

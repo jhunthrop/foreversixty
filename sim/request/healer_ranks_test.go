@@ -300,6 +300,50 @@ func TestRestorationDruidPartyRejuvenationIsNotPaced(t *testing.T) {
 	}
 }
 
+// Round 14 (regcast): Holy's Heal rank 1 row at 50 to 59 (round 11) was
+// adopted while Prayer of Mending waited on the mana pace. Once Prayer of
+// Mending runs whenever it is ready (round 13), the list's own rank 4 heals
+// more at band 50 on the published build and on the ladder build: effective
+// HPS +12% horde and alliance, seeds 1 and 50001, and the fight still runs
+// dry. So Heal at 50 to 59 casts the highest rank learned up to the list's
+// rank 4 (6064), as its note says, for every race.
+func TestHolyHealAtFiftyCastsTheListsRankFour(t *testing.T) {
+	const (
+		healRank1 = 2054
+		healRank4 = 6064
+	)
+	raw, err := os.ReadFile("../../data/curated/apl/priest-holy.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var file struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		t.Fatal(err)
+	}
+	cast := regexp.MustCompile(`"spellId":\s*(\d+)`)
+	for _, level := range []int{50, 55, 59} {
+		for _, race := range []string{"human", "dwarf", "night-elf", "gnome", "undead", "troll"} {
+			out, err := RewriteRotationRanks(file.Rotation, "priest-holy", "priest", BarePreset, race, level)
+			if err != nil {
+				t.Fatal(err)
+			}
+			ids := map[int]bool{}
+			for _, m := range cast.FindAllStringSubmatch(string(out), -1) {
+				id, _ := strconv.Atoi(m[1])
+				ids[id] = true
+			}
+			if ids[healRank1] {
+				t.Errorf("level %d %s: Heal casts rank 1 (%d)", level, race, healRank1)
+			}
+			if !ids[healRank4] {
+				t.Errorf("level %d %s: no Heal rank 4 (%d)", level, race, healRank4)
+			}
+		}
+	}
+}
+
 // Round 14: the Holy priest's tank Flash Heal was rank 2 (9472) at raid 60,
 // round 9's pick for a list that then ran dry at 137 s. Later rounds raised
 // Holy's mana (Prayer of Mending ungated, Litany of Light), and the list
@@ -376,8 +420,9 @@ func TestPriestsCastRenewRankOne(t *testing.T) {
 // Round 14: Holy's Heal is rank 1 (2054, level 16) in a raid, +2.0% at raid
 // 60 on top of Renew rank 1, both factions, seeds 1 and 50001. Bare it loses
 // (bare 30 -3.6%, bare 40 -1.5 to -2.6%, bare 60 -5.2 to -5.4%), so every
-// bare band casts what it cast before: the highest rank learned to 49, rank
-// 1 from 50 to 59 (round 9) and rank 4 at bare 60.
+// bare band casts what it cast before: the highest rank learned up to rank
+// 4 to 59 (rank 4 from 50 to 59 since regcast's 9dba07e78) and rank 4 at
+// bare 60.
 func TestHolyHealRanksByBand(t *testing.T) {
 	raw, err := os.ReadFile("../../data/curated/apl/priest-holy.json")
 	if err != nil {
@@ -396,7 +441,7 @@ func TestHolyHealRanksByBand(t *testing.T) {
 		rank   int
 	}{
 		{20, BarePreset, 1}, {22, BarePreset, 2}, {27, BarePreset, 2}, {28, BarePreset, 3}, {30, BarePreset, 3},
-		{34, BarePreset, 4}, {40, BarePreset, 4}, {49, BarePreset, 4}, {50, BarePreset, 1}, {59, BarePreset, 1},
+		{34, BarePreset, 4}, {40, BarePreset, 4}, {49, BarePreset, 4}, {50, BarePreset, 4}, {59, BarePreset, 4},
 		{60, BarePreset, 4}, {60, RaidPreset, 1},
 	}
 	for _, c := range cases {

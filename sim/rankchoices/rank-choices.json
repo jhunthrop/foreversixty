@@ -1,5 +1,5 @@
 {
-  "notes": "Per-band rank choices (owner ruling 3, sim-accuracy round 9). Below level 60 the site rewrites a rotation's ranked spells: by default each casts the highest rank learned that is not above the rank the curated rotation names, so a deliberate lower rank there is kept. A row here overrides that for one spec's authored spell id from from_level through to_level: the rotation casts that rank instead, higher or lower. A row may name a preset (bare or raid) and then applies only to a request simmed under it; one with none applies to both. A row may also name races (a list of race slugs) and then applies only to a character of one of them; races are named only where the races' best ranks differ beyond error (owner ruling 3, sim-accuracy round 13, which replaced round 12's faction key), and a race no row of a band names casts the default rule there. The addon carries each keyed race's id on the line (raceSpellId) and shows the player's own. Level 60 runs the curated rotation as written, which carries the raid choice; a row at 60 names its preset. A row is adopted where the fight is mana-bound and the rank raises the band's published number beyond the error at seeds 1 and 50001, 10000 iterations, with no further bar (owner ruling, round 12: the 1% bar is for talent builds); a healer row never turns a fight that runs dry into one that ends with mana unspent, and every healer row below 60 is measured on its own band's heal profile (data/curated/heal-profile.json bands). A mana gate is not evidence on its own (owner ruling 2, round 10): a row behind a gated line also wins with the gate taken away, where the spec then runs dry. The evidence is in design/reviews/2026-11-02-sim-audit-round9/ranks.md, the round-10 ranks.md and healprofile.md beside it, and design/reviews/2026-11-03-sim-audit-round11/healprofile.md (the healer rows below 60, on the bands' pull profile), design/reviews/2026-11-03-sim-audit-round12/healprofile.md (those rows re-measured on the bands' logged tank-and-group split), and design/reviews/2026-11-03-sim-audit-round12/ranks.md (the round-12 re-judgement and the faction rows), and design/reviews/2026-11-03-sim-audit-round13/ranks.md (the race rows). Defensive cooldowns (Divine Protection, Divine Shield, Ice Barrier and the like) are never rank choices. sim/request embeds a copy (make rank-choices-sync); TestEmbeddedRankChoicesMatchCurated holds it to this file.",
+  "notes": "Per-band rank choices (owner ruling 3, sim-accuracy round 9). Below level 60 the site rewrites a rotation's ranked spells: by default each casts the highest rank learned that is not above the rank the curated rotation names, so a deliberate lower rank there is kept. A row here overrides that for one spec's authored spell id from from_level through to_level: the rotation casts that rank instead, higher or lower. A row may name a preset (bare or raid) and then applies only to a request simmed under it; one with none applies to both. A row may also name races (a list of race slugs) and then applies only to a character of one of them; races are named only where the races' best ranks differ beyond error (owner ruling 3, sim-accuracy round 13, which replaced round 12's faction key), and a race no row of a band names casts the default rule there. The addon carries each keyed race's id on the line (raceSpellId) and shows the player's own. Level 60 runs the curated rotation as written, which carries the raid choice; a row at 60 names its preset. A row is adopted where the fight is mana-bound and the rank raises the band's published number beyond the error at seeds 1 and 50001, 10000 iterations, with no further bar (owner ruling, round 12: the 1% bar is for talent builds); a healer row never turns a fight that runs dry into one that ends with mana unspent, and every healer row below 60 is measured on its own band's heal profile (data/curated/heal-profile.json bands). A mana gate is not evidence on its own (owner ruling 2, round 10): a row behind a gated line also wins with the gate taken away, where the spec then runs dry. The evidence is in design/reviews/2026-11-02-sim-audit-round9/ranks.md, the round-10 ranks.md and healprofile.md beside it, and design/reviews/2026-11-03-sim-audit-round11/healprofile.md (the healer rows below 60, on the bands' pull profile), design/reviews/2026-11-03-sim-audit-round12/healprofile.md (those rows re-measured on the bands' logged tank-and-group split), and design/reviews/2026-11-03-sim-audit-round12/ranks.md (the round-12 re-judgement and the faction rows), design/reviews/2026-11-03-sim-audit-round13/ranks.md (the race rows), and design/reviews/2026-11-04-sim-audit-round14/data.md (every non-healer row re-judged on its own after the 3 November hotfix push and round 13's rotations). Defensive cooldowns (Divine Protection, Divine Shield, Ice Barrier and the like) are never rank choices. sim/request embeds a copy (make rank-choices-sync); TestEmbeddedRankChoicesMatchCurated holds it to this file.",
   "specs": {
     "druid-balance": [
       {
@@ -68,28 +68,6 @@
           {
             "from_level": 40,
             "to_level": 49,
-            "rank": 1
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 1,
-            "preset": "bare"
-          }
-        ]
-      },
-      {
-        "spell": "Arcane Shot",
-        "authored": 14287,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 3
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
             "rank": 1
           },
           {
@@ -381,7 +359,7 @@
           },
           {
             "from_level": 34,
-            "to_level": 49,
+            "to_level": 59,
             "rank": 4
           },
           {
@@ -497,13 +475,11 @@
             "rank": 2,
             "preset": "bare",
             "races": [
-              "human",
               "dwarf",
               "night-elf",
-              "gnome",
               "troll"
             ],
-            "note": "Rank 2 at bare 60: Human +0.6%, Dwarf +1.7%, Night Elf +1.7%, Gnome +0.8%, Troll +1.8%. An Undead loses 4.6% with it (Dark Sacrifice pays for the top rank) and casts the default (round-13 ranks.md)."
+            "note": "Rank 2 at bare 60: Dwarf +1.0%, Night Elf +1.0%, Troll +1.1% at seeds 1 and 50001 (round-14 data.md). A Human (-0.3%) and a Gnome (-0.2%) lose with it since Shadow keeps Vampiric Embrace up, and an Undead loses 4.6% (Dark Sacrifice pays for the top rank); they cast the default (round-13 ranks.md, round-14 data.md)."
           }
         ]
       },
@@ -667,18 +643,6 @@
             "from_level": 30,
             "to_level": 39,
             "rank": 4
-          }
-        ]
-      },
-      {
-        "spell": "Corruption",
-        "authored": 11672,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 3,
-            "note": "Rank 3: Troll +0.16%, Human +0.14% (error 0.13); Orc, Undead and Gnome are within error either way, so no race loses and the row needs no race key (round-13 ranks.md)."
           }
         ]
       }
