@@ -22,7 +22,7 @@ sources:
     kind: datamined
 ---
 
-Hunter is Forever's physical damage class with a pet and a bow. All three specs deal damage, and in Forever they no longer play the same way: two shoot, one fights in melee.
+Hunter is Forever's physical damage class. All three specs deal damage, and in Forever they no longer play the same way: Beast Mastery and Marksmanship shoot with a pet at their side, and Survival fights in melee with no pet.
 
 ## What changed from 1.12
 

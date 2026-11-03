@@ -36,4 +36,4 @@ Paladin is the plate hybrid: one tree heals, one tanks with a shield, and one sw
 
 ## Races
 
-**Undead Paladin** is new in Forever: the Horde has paladins for the first time, so Horde raids get Blessings and paladin tanks too. A paladin can be Human, Dwarf or Undead.
+**Undead Paladin** is new in Forever: the Horde has paladins for the first time, so Horde raids get Blessings and paladin tanks too. A paladin can be Human, Dwarf or Undead. Skyborne cannot be paladins.

@@ -44,3 +44,5 @@ Two healing specs and one shadow caster, as always. Shadow is also how a priest 
 - Night Elf: Elune's Grace and Starshards.
 - Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness.
 - Troll: Hex of Weakness and Shadowguard.
+
+Skyborne cannot be priests.
