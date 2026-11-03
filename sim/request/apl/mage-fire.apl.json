@@ -249,5 +249,22 @@
         }
       }
     }
+  ],
+  "prepullActions": [
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 18809,
+            "rank": 8
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-6s"
+        }
+      }
+    }
   ]
 }
