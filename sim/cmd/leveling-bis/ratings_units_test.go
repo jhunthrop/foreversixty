@@ -33,9 +33,12 @@ func TestConvertRatingStatsSplitsAMixedStat(t *testing.T) {
 }
 
 func TestConvertRatingStatsConvertsEveryRatingFamilyStat(t *testing.T) {
-	stats := map[string]float64{"hit": 10, "crit": 14, "dodge": 12, "parry": 15, "block": 5, "defense": 4}
+	// expertise: Waywatcher Gauntlets 240081's 20 rating is the 2% the
+	// engine and Wowhead Forever give it, and the weights sweep measures
+	// expertise per 1% (sim audit round 16).
+	stats := map[string]float64{"hit": 10, "crit": 14, "dodge": 12, "parry": 15, "block": 5, "defense": 4, "expertise": 20}
 	got := convertRatingStats(stats, nil, wantRatingFactors)
-	for stat, want := range map[string]float64{"hit": 1, "crit": 1, "dodge": 1, "parry": 1, "block": 1, "defense": 4} {
+	for stat, want := range map[string]float64{"hit": 1, "crit": 1, "dodge": 1, "parry": 1, "block": 1, "defense": 4, "expertise": 2} {
 		if got[stat] != want {
 			t.Errorf("%s = %v, want %v", stat, got[stat], want)
 		}

@@ -1556,7 +1556,7 @@ func publishWeightRatingUnits(rows []weightRow, factors ratingFactors) []weightR
 	out := make([]weightRow, len(rows))
 	for i, row := range rows {
 		row.WeightPerPercent = row.Weight
-		if factor, ok := factors[row.Stat]; ok {
+		if factor, ok := factors[row.Stat]; ok && !perPercentWeightStats[row.Stat] {
 			row.Unit = "rating"
 			row.RatingFactor = factor
 			row.Weight = row.Weight / factor

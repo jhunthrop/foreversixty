@@ -1363,6 +1363,19 @@ def test_percent_stats_is_empty_for_an_itemsparse_rating():
     assert item.percent_stats == {}
 
 
+def test_an_itemsparse_expertise_rating_reaches_the_items_json():
+    """ITEM_MOD_EXPERTISE_RATING (37): Waywatcher Gauntlets 240081 carry 20, "Reduces
+    chance to be Dodged or Parried by 2.0%" on Wowhead Forever. The planner's row keeps
+    it as rating points, like hit and crit, so the tooltip, filters and the BiS ranker
+    see the stat simdb.bin already gives the engine (sim audit round 16)."""
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    rows[0]["StatModifier_bonusStat_0"] = "37"
+    rows[0]["StatModifier_bonusAmount_0"] = "20"
+    item = _first_fixture_item(rows, None)
+    assert item.stats["expertise"] == 20
+    assert item.percent_stats == {}
+
+
 def test_percent_stats_names_an_on_equip_aura_hit_as_a_literal_percent():
     rows = read_csv(HERE / "fixtures/ItemSparse.csv")
     item_id = int(rows[0]["ID"])

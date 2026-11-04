@@ -1314,9 +1314,9 @@ func TestAnItemWithNoRequiredLevelIsGatedByItsItemLevel(t *testing.T) {
 // data/tests/fixtures/sim/combatratings.txt, itself the real client's
 // 1.60.1.70009 level 60 row (data/builds/1.60.1.70009/gametables/
 // combatratings.txt): 10 hit rating = 1% hit, 14 crit = 1% crit,
-// defense 1, dodge 12, parry 15, block 5.
+// defense 1, dodge 12, parry 15, block 5, expertise 10.
 var wantRatingFactors = ratingFactors{
-	"hit": 10, "crit": 14, "dodge": 12, "parry": 15, "block": 5, "defense": 1,
+	"hit": 10, "crit": 14, "dodge": 12, "parry": 15, "block": 5, "defense": 1, "expertise": 10,
 }
 
 func TestLoadRatingFactorsReadsTheBuildsLevel60Row(t *testing.T) {
@@ -1339,7 +1339,7 @@ func TestLoadRatingFactorsMissingFile(t *testing.T) {
 
 func TestLoadRatingFactorsMissingColumn(t *testing.T) {
 	dir := t.TempDir()
-	writeGameTable(t, dir, "Level\tDodge\tParry\tBlock\tHit - Melee\tHit - Ranged\tHit - Spell\tCrit - Melee\tCrit - Ranged\tCrit - Spell\n60\t12\t15\t5\t10\t10\t10\t14\t14\t14\n")
+	writeGameTable(t, dir, "Level\tDodge\tParry\tBlock\tHit - Melee\tHit - Ranged\tHit - Spell\tCrit - Melee\tCrit - Ranged\tCrit - Spell\tExpertise\n60\t12\t15\t5\t10\t10\t10\t14\t14\t14\t10\n")
 	if _, err := loadRatingFactors(dir); err == nil {
 		t.Fatal("loadRatingFactors with no Defense Skill column: want an error, got nil")
 	}
@@ -1347,7 +1347,7 @@ func TestLoadRatingFactorsMissingColumn(t *testing.T) {
 
 func TestLoadRatingFactorsNoLevel60Row(t *testing.T) {
 	dir := t.TempDir()
-	writeGameTable(t, dir, "Level\tDefense Skill\tDodge\tParry\tBlock\tHit - Melee\tHit - Ranged\tHit - Spell\tCrit - Melee\tCrit - Ranged\tCrit - Spell\n59\t1\t12\t15\t5\t10\t10\t10\t14\t14\t14\n")
+	writeGameTable(t, dir, "Level\tDefense Skill\tDodge\tParry\tBlock\tHit - Melee\tHit - Ranged\tHit - Spell\tCrit - Melee\tCrit - Ranged\tCrit - Spell\tExpertise\n59\t1\t12\t15\t5\t10\t10\t10\t14\t14\t14\t10\n")
 	if _, err := loadRatingFactors(dir); err == nil {
 		t.Fatal("loadRatingFactors with no level 60 row: want an error, got nil")
 	}
@@ -1358,7 +1358,7 @@ func TestLoadRatingFactorsDisagreeingColumnsErrors(t *testing.T) {
 	// must fail loudly rather than silently pick one, mirroring
 	// data/pipeline/simdb/ratings.py's own load_rating_factors.
 	dir := t.TempDir()
-	writeGameTable(t, dir, "Level\tDefense Skill\tDodge\tParry\tBlock\tHit - Melee\tHit - Ranged\tHit - Spell\tCrit - Melee\tCrit - Ranged\tCrit - Spell\n60\t1\t12\t15\t5\t10\t11\t10\t14\t14\t14\n")
+	writeGameTable(t, dir, "Level\tDefense Skill\tDodge\tParry\tBlock\tHit - Melee\tHit - Ranged\tHit - Spell\tCrit - Melee\tCrit - Ranged\tCrit - Spell\tExpertise\n60\t1\t12\t15\t5\t10\t11\t10\t14\t14\t14\t10\n")
 	if _, err := loadRatingFactors(dir); err == nil {
 		t.Fatal("loadRatingFactors with disagreeing hit columns: want an error, got nil")
 	}
