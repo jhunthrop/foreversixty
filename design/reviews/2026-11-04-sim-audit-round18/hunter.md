@@ -4,7 +4,7 @@ Client 1.60.1.70755 with the late re-layer. Site wt/r18-hunter from int/r18 4600
 Method: spec-breakdown through `$R/sim.sh`, guide builds (`$R/rt`), `-bis-dir $R/bis-frozen`. 3000 iterations to explore; 10000 at seeds 1 and 50001, both factions, for every reported number.
 Log tool: `hunter-tools/hawktiming.py` next to this file (round 16's `hunter-tools/` fetch and analyses are reused).
 
-**Result: 1 CONFIRMED model gap, closed in the engine (E 8c24d6202). It moves no published number.** Summon Hawk's 18-second hawks are now in the sim. With them, the Summon Hawk build gains +0.6 to +0.7% at raid 60 on the floor projection. That is short of the 1% the adoption rule needs, so no build, rotation or guide text changes. Heart of the Lion on the pet: still no log. Fresh re-audit: aligned.
+**Result: 2 CONFIRMED, both fixed.** (1) A model gap closed in the engine (E 8c24d6202); it moves no published number. (2) Marksmanship's Aimed Shot rank 1 row now covers 52-59, with its guide text (wave 2, guide round 15 seeds). Summon Hawk's 18-second hawks are now in the sim. With them, the Summon Hawk build gains +0.6 to +0.7% at raid 60 on the floor projection. That is short of the 1% the adoption rule needs, so no build, rotation or guide text changes. Heart of the Lion on the pet: still no log. Fresh re-audit: aligned.
 
 ## Seed items
 
@@ -28,6 +28,7 @@ Log tool: `hunter-tools/hawktiming.py` next to this file (round 16's `hunter-too
 
 | # | finding | evidence and source | confirmed? | origin | fix sha |
 |---|---|---|---|---|---|
+| M2 | **Aimed Shot rank 1 at 52-59 (guide round 15 HUNTER-R15-3).** The row stopped at 49 because level 50 tied. Swept level by level (bare band 50, `-level`, 10000 iterations, seeds 1 and 50001, Horde and Alliance, error 0.1 DPS): rank 1 beats rank 4 by only 0.0 to +0.1 at 50, a tie. Against rank 5 (from 52) it wins at every level: 52 +0.31 to +0.35%, 53 +0.27 to +0.31%, 56 +0.15 to +0.22%, 59 +0.36 to +0.40% (0.4 to 1.1 DPS on about 260, against 0.1 error; Horde seed 1 at 53: 260.0 to 260.8). Rank 3 (sb-mm3) sits between the two. New row: 52-59 rank 1. Guide text marksmanship.md:163: "At 50 and 51, rank 4 and rank 1 come out even, so either serves. When rank 5 arrives at 52, rank 1 pulls ahead again for the same reason: drag it back over the rank 5 button and keep it through 59." Test first: `TestRound18MarksmanshipAimedShotRankOneFrom52` (red at 52/56/59, green after). | spec-breakdown (`$R/hunter/mm-aimed-53-59.txt`; probes `sb-mm1`/`sb-mm3` built from a temporary rank-choices copy, not committed) | CONFIRMED-BUG | old (round 17 M1 swept only to the 50 tie), guides-handoff | S d8a891dcc |
 | M1 | Raid build talents re-read against the 70755 text: Lethal Attacks 1%/rank, Careful Aim 20% of Intellect/rank, Lone Wolf 20%, Surefooted 1% hit/rank, Improved Tracking 1%/rank, Survivalist 5 (health) as the gate that opens Surefooted. Barrage, Sniper Shot, Trueshot Aura, Mortal Shots and Ranged Weapon Specialization were checked in rounds 15 to 17 (M2, B3) and are untouched since. No pet in the raid (Lone Wolf), so the hawk change cannot reach it. | talents/hunter.json; talents.go:132, 485-540, 662-690 | Aligned | - | - |
 
 ## Survival (melee)
@@ -35,6 +36,7 @@ Log tool: `hunter-tools/hawktiming.py` next to this file (round 16's `hunter-too
 | # | finding | evidence and source | confirmed? | origin | fix sha |
 |---|---|---|---|---|---|
 | S1 | Every Survival talent in the build, re-read against the 70755 text: Savage Strikes 2%/rank (4% at 2), Predator's Edge crit damage 6%/rank and off hand 10%/rank (30%/50% at 5), Clever Traps 15%/rank on Immolation and Explosive Trap (30% at 2), Survivalist's Discipline 40% trap cooldown (9.7 traps in 180 s on an 18 s cooldown), Resourcefulness 30%/rank cost and 50%/rank regen, Lightning Reflexes 3%/rank, Surefooted 1%/rank, Improved Tracking 1%/rank. **Survival Tactics** (no earlier round named it) is trap and Feign Death hit only, and the build takes no points in it. | talents/hunter.json; talents.go:39-46, 66, 132, 164-191, 226, 325-380, 662-740 | Aligned | - | - |
+| S3 | **Lone Wolf against the pet (guide round 15 sim request 2).** Pet build: the Lone Wolf point moved to Rapid Killing (`5-0050051-500230231051222151`), so the cat comes out. 10000 iterations, frozen BiS. **Raid 60:** Lone Wolf leads at all four runs: Horde 860.5/861.7 against 838.5/838.1, Alliance 860.2/858.8 against 839.2/838.3 (-2.4 to -2.7% with the pet). **Bare 60:** the pet leads at all four: Horde 368.7/368.7 against 375.5/375.2, Alliance 370.0/369.7 against 377.1/376.9 (+1.8 to +1.9%). Under the owner's one-build-at-60 ruling the raid result decides, so nothing changes. The bare result is recorded for the guide lane (SV:140, out in the world). | spec-breakdown (`$R/hunter/sv-lw-pet.txt`) | Aligned (owner ruling) | - | - |
 | S2 | Raid 60 rotation behaviour, both factions: Mongoose Bite 20.3 casts (the Expose Prey window opens 5302, so the APL's `auraIsActive 5302` covers both windows), Strider Kick 19.1 casts on its 8 s cooldown, Lacerate kept up (9.5 casts, 58 ticks), Immolation Trap 9.7, Wing Clip only under Windfury (61.8). Immolation Trap rolls the boss's spell hit without the hunter's hit (about 21% of ticks lost, matching 17% plus the level gap), as traps do. 0 s out of mana. | spec-breakdown 3000 it | Aligned | - | - |
 
 ## Cross-cutting
@@ -61,7 +63,7 @@ No commit moves a spec outside the hunter class: the change is in `sim/hunter` o
 
 ## Files to regenerate
 
-- None. No build, APL, rank row or published number changed. The fork golden `sim/hunter/TestP1Hunter.results` passes as is (`-tags=with_db`).
+- addon-data / Data.lua and the coach starter for hunter-marksmanship (the new 52-59 Aimed Shot row); ladder goldens (`sim/request TestRotationLadder`) for hunter-marksmanship bare bands 50-59 if they cover those levels. The fork golden `sim/hunter/TestP1Hunter.results` passes as is (`-tags=with_db`).
 
 ## Measure at refresh
 
@@ -73,11 +75,17 @@ No commit moves a spec outside the hunter class: the change is in `sim/hunter` o
 
 ## For the guide lane
 
-- None from this lane. If the owner's check clears the bar (H4), the BM raid build gains Summon Hawk for the fourth Endurance Training point. beast-mastery.md:81 (talent paragraph) and the rotation section would then need a line on keeping two hawks out in Arcane Shot's place.
+- marksmanship.md:163 was rewritten in this lane (M2), starting from land/guides-r15's version of the same paragraph (HUNTER-R15-2/3). When guides-r15 lands, take this lane's line; it keeps guides-r15's wording up to "a fraction of the mana".
+- survival.md:140 (guide round 15 sim request 2): the pet measures about 2% ahead of Lone Wolf out in the world at 60 (S3), and Lone Wolf leads by about 2.5% in a raid. Under one build at 60, the line can say: in a raid, dismiss the pet; out in the world, it is a wash, so keep it out for safety if you like. That is the guide lane's call.
+- If the owner's check clears the bar (H4), the BM raid build gains Summon Hawk. If the owner's check clears the bar (H4), the BM raid build gains Summon Hawk for the fourth Endurance Training point. beast-mastery.md:81 (talent paragraph) and the rotation section would then need a line on keeping two hawks out in Arcane Shot's place.
+
+## Guide text
+
+Done in this lane: marksmanship.md:163 (M2). `_prose.test.ts` passes. wow-player reviewed the rendered page (astro dev on this branch, 1440; `$R/hunter/shots/mm-aimed-52*.png`). First pass: SHIP WITH FIXES, no MUSTs. Applied SHOULDs 1-3: split the long sentence, named rank 4, and "for the same reason ... over the rank 5 button". SHOULD 4 is about the untouched 60 sentence. Second pass: **SHIP**.
 
 ## Guide text not done
 
-None (no guide-affecting change).
+None.
 
 ## Still open
 

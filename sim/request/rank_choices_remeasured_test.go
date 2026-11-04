@@ -230,3 +230,26 @@ func TestRound17HunterAimedShotRankRowsFollowTheLevel(t *testing.T) {
 		}
 	}
 }
+
+// Round 18 (hunter lane, per-level sweep, guide round 15 HUNTER-R15-3): Marksmanship at 52-59,
+// once rank 5 (20903, 52) is the newest, casts rank 1 again. Rank 1 gains +0.24 to +0.40% at 52,
+// 53, 56 and 59, seeds 1 and 50001, Horde and Alliance, 10000 iterations (error 0.1 DPS on about
+// 260). At 50 and 51, against rank 4, it still ties (0.0 to +0.1), so those levels keep the default.
+func TestRound18MarksmanshipAimedShotRankOneFrom52(t *testing.T) {
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not int32
+	}{
+		{"Marksmanship Aimed Shot at 50", 50, 20902, 19434},
+		{"Marksmanship Aimed Shot at 51", 51, 20902, 19434},
+		{"Marksmanship Aimed Shot at 52", 52, 19434, 20903},
+		{"Marksmanship Aimed Shot at 56", 56, 19434, 20903},
+		{"Marksmanship Aimed Shot at 59", 59, 19434, 20903},
+	} {
+		ids := rotationIDs(t, "hunter-marksmanship", "hunter", c.level, specRankChoices("hunter-marksmanship", BarePreset, "orc"))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}
