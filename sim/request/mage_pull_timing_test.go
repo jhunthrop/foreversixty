@@ -79,3 +79,50 @@ func TestArcaneRaidPlaysItsFireSecondTree(t *testing.T) {
 		t.Errorf("the Fireball filler must sit above the Frostbolt filler: %v", ids)
 	}
 }
+
+// Round 16 mage: the Arcane raid build has no Improved Frostbolt, so its Frostbolt is a 3 s cast
+// and a pre-pull Frostbolt at -2.5 s lands half a second into the fight. With Heating Up known
+// (the raid build's Fire tree) the opener is a Pyroblast 6 s out, its whole cast, as Fire opens;
+// without it (the leveling build, Improved Frostbolt 5/5) it stays a 2.5 s Frostbolt. Each pre-pull
+// line carries the Heating Up gate. +0.4 to +0.6% at raid 60, bare bands unchanged.
+func TestArcaneOpensWithPyroblastOnTheRaidBuildAndFrostboltLeveling(t *testing.T) {
+	const (
+		heatingUp = 400625
+		pyroblast = 18809
+		frostbolt = 10181
+	)
+	curated, err := loadLadderCurated(repoRoot, "mage-arcane")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	want := map[int32]struct {
+		at    string
+		known bool
+	}{pyroblast: {"-6s", true}, frostbolt: {"-2.5s", false}}
+	if len(rot.PrepullActions) != len(want) {
+		t.Fatalf("Arcane prepull has %d lines, want %d (Pyroblast with Heating Up, Frostbolt without)", len(rot.PrepullActions), len(want))
+	}
+	for _, p := range rot.PrepullActions {
+		id := p.GetAction().GetCastSpell().GetSpellId().GetSpellId()
+		w, ok := want[id]
+		if !ok {
+			t.Errorf("unexpected pre-pull cast %d", id)
+			continue
+		}
+		if got := p.GetDoAtValue().GetConst().GetVal(); got != w.at {
+			t.Errorf("pre-pull %d at %q, want %q", id, got, w.at)
+		}
+		cond := p.GetAction().GetCondition()
+		known := cond.GetAuraIsKnown()
+		if !w.known {
+			known = cond.GetNot().GetVal().GetAuraIsKnown()
+		}
+		if known.GetAuraId().GetSpellId() != heatingUp {
+			t.Errorf("pre-pull %d: want gate %s Heating Up (%d) known, got %v", id, map[bool]string{true: "", false: "not"}[w.known], heatingUp, cond)
+		}
+	}
+}
