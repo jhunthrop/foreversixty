@@ -169,3 +169,32 @@ Merged int/r15 ef3195852 (site) and 6a4695cc0 (fork) first. Read `round3/warlock
 | E3 | **Destruction weapon enchant (round 3 R1).** Measured on Human, the adopted raid build and the published gear (a staff, so a stone fits). I used a scratch binary that sets the warlock imbue option; it was reverted, not committed, and the site never sets the option. Results: Brilliant Wizard Oil 696.5 / 696.0; Firestone 687.2 / 686.6 (-1.3 / -1.4%); Spellstone 674.4 / 673.9 (-3.2%); nothing 667.8 / 667.4. The order is oil, then Firestone, then Spellstone, as the guide's round 3 line says ("Brilliant Wizard Oil is the weapon pick; a Firestone ... is the fallback"). The engine's Firestone is 21 Fire power plus 2% spell crit, matching client 23483 (aura 13 misc 4 = 21; aura 57 = 2); the Spellstone is 21 Shadow power plus 2% cast speed (1237165). The push changes neither. | runs; SpellEffect 23480 to 23483, 1237162 to 1237165 | Aligned | guides-handoff | - |
 
 Wave 6 changed no code. The Eureka question stays open on the client-versus-description split above. For the guide lane: destruction.md:113 (round 3) says Eureka! covers Incinerate. The client mask says it does not. Until a log settles it, a sentence that holds either way would be: "press it as Conflagrate and Shadowburn come off cooldown".
+
+## Wave 9: Skyborne racials (shared sim/core)
+
+Merged site int/r15 3c9cddc1d and fork int/r15 fbc5dbddf into both branches first. Wave 9 changed no code.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| K1 | **Wind Blessed (1259710) haste is already 2% in the engine.** Fork int/r15 `sim/core/racials.go:184-187` has `windBlessedHasteMultiplier = 1.02`, applied to melee, ranged and cast speed (`skyborneShared`, :129-138), and its note reads "2% ... aura 342 and aura 65 at 2". `TestWindBlessedHastesCastingMeleeAndRanged` (`racials_test.go:409`) asserts 1.02 on all three and passes. The client agrees: the shipped 70755 SpellEffect rows 1268898 (aura 342) and 1354094 (aura 65) both have base points 2; the live push re-sends both at 2 (push 113276, newest per record); data commit 43dc0f074's spelltips read "Increases your spellcasting, melee, and ranged Haste by 2%"; races.json says 2%. The "1%" in the brief is not in the code at any fork ref I checked (int/r15, d1d9f2775). | wago SpellEffect 70755 plus live push; fork int/r15; spelltips | Aligned (no bug) | - | - |
+| K2 | **Skyborne base stats.** 70755 ChrRaces has no stat columns, and the client has no base-stat GameTable or stat-mod table for any race. Base stats are server-side, and the mined GameTables (combatratings, basemp, hppersta) carry none. `base_stats_provisional.go` keeps its clones (High Order from Human, Windshaper from Orc) and lists them as provisional, which is the honest state. Possible future source: a level-60 Skyborne character's naked stats from the Blizzard profile-forever import, or an in-game /dump. | wago ChrRaces header 70755 | OPEN (no client data; the provisional clone stays) | - | - |
+| K3 | **Read Leyline is already modelled** (`racial_read_leyline.go`, fork int/r15). The client 1259705 casts Energized 1270842: aura 110 (mana regen percent) 50 and aura 88 (health regen) 50, for 15 s, on a 120 s cooldown with the global cooldown. The engine raises SpiritRegenMultiplier by 0.5 for 15 s on that cooldown, and `racial_read_leyline_test.go` covers it. It is APL-only: `ShouldActivate` returns false, and no curated APL casts it. I measured a test line (cast when mana is under 70%, at the top of the list) on Alliance Skyborne, raid 60. Restoration druid: 922.3 to 928.6 and 922.0 to 928.2 effective HPS (+0.7%). Fire mage: 655.7 to 652.5 and 656.0 to 652.5 (-0.5%); the global costs a caster more than the regen gives. No published spec is Skyborne and those APLs belong to the druid and mage lanes, so I added no line. | runs (scratch rotations) | Aligned engine; APL line for other lanes | - | - |
+
+**Skyborne measurements.** Every published guide race is non-Skyborne: there is no `skyborne` in any build string or recommendedRaces on int/r15 or origin/main. Each row is published race then Skyborne (High Order for Alliance, Windshaper for Horde), 10,000 iterations, seeds 1 / 50001.
+
+| spec | faction | raid 60 | bare 60 |
+|---|---|---|---|
+| Arms (guide raid build) | Alliance | 790.6 / 790.3 to 795.2 / 795.2 (+0.6%) | 292.4 / 292.4 to 294.5 / 294.7 (+0.7%) |
+| Arms | Horde | 803.5 / 803.1 to 806.3 / 806.6 (+0.4%) | 290.9 / 290.7 to 293.7 / 293.4 (+1.0%) |
+| Fury (guide raid build) | Alliance | 832.6 / 833.0 to 834.0 / 834.8 (+0.2%) | 310.0 / 310.6 to 310.9 / 310.9 (+0.2%) |
+| Fury | Horde | 833.6 / 833.5 to 836.8 / 837.2 (+0.4%) | 314.3 / 314.9 to 316.2 / 316.3 (+0.5%) |
+| Fire mage | Alliance | 666.4 / 667.1 to 655.7 / 656.0 (-1.6%) | 342.5 / 343.0 to 332.7 / 333.5 (-2.8%) |
+| Fire mage | Horde | 673.0 / 673.5 to 668.0 / 668.6 (-0.7%) | 335.1 / 335.7 to 333.3 / 334.0 (-0.5%) |
+| Restoration druid (eff. HPS) | Alliance | 925.8 / 925.8 to 922.3 / 922.0 (-0.4%) | 463.0 / 463.0 to 461.2 / 461.6 (-0.4%) |
+| Restoration druid | Horde | 923.3 / 923.8 to 924.9 / 925.1 (+0.2%) | 459.1 / 458.9 to 460.5 / 460.7 (+0.3%) |
+
+Skyborne Arms leads the published race by +0.4 to +1.0%. Horde bare 60 is the only cell at 1.0%, and raid is under 1%, so under the race rule the published Arms and Fury picks stay. These numbers rest on the provisional cloned base stats (K2).
+
+For other lanes:
+- druid / healers: a Read Leyline line for Skyborne Restoration druids measures +0.7% (K3). Worth it if a Skyborne druid is ever published.
+- warrior: Skyborne is within 1% of the published race for Arms and Fury on the current (cloned) base stats.
