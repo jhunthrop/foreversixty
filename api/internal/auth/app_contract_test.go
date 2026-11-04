@@ -44,8 +44,8 @@ func (h *harness) seedRaider(t *testing.T, email string) int64 {
 		t.Fatal(err)
 	}
 	if _, err := pool.Exec(t.Context(),
-		`insert into characters (key, region, ruleset, name, class, user_id, realm_name, level, faction, source, imported_at, refreshed_at)
-		 values ('us/pvp/obnoxious-yell', 'us', 'pvp', 'Obnoxious Yell', 'warrior', $1, 'Whitemane', 58, 'horde', 'bnet', now(), now())`,
+		`insert into characters (key, region, ruleset, name, class, user_id, level, faction, source, imported_at, refreshed_at)
+		 values ('us/pvp/obnoxious-yell', 'us', 'pvp', 'Obnoxious Yell', 'warrior', $1, 58, 'horde', 'bnet', now(), now())`,
 		uid); err != nil {
 		t.Fatal(err)
 	}

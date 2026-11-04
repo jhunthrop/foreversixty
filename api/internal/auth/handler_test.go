@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -1308,6 +1309,56 @@ func TestBattleNetImportFailureNeverFailsTheLogin(t *testing.T) {
 	h.decode(t, res, &me)
 	if me.User.Battletag == nil || *me.User.Battletag != "Baelgrim#1234" {
 		t.Fatalf("the session did not start: me = %+v", me)
+	}
+}
+
+// budgetImporter's first run lists the characters but runs out of budget
+// before enriching them; every later run reports on a channel.
+type budgetImporter struct {
+	calls     atomic.Int32
+	continued chan string
+}
+
+func (b *budgetImporter) ImportAccount(ctx context.Context, _ int64, token string) (ImportSummary, error) {
+	if b.calls.Add(1) == 1 {
+		return ImportSummary{Characters: 3, Pending: 2}, errors.New("budget")
+	}
+	_, hasDeadline := ctx.Deadline()
+	if !hasDeadline {
+		b.continued <- "no deadline"
+		return ImportSummary{}, nil
+	}
+	b.continued <- token
+	return ImportSummary{Characters: 3}, nil
+}
+
+// TestBattleNetImportContinuesInTheBackgroundWhenTheBudgetRunsOut: the sign-in
+// redirects on time, and the characters the first run could not enrich are
+// finished by a second, bounded run after it, with the same token.
+func TestBattleNetImportContinuesInTheBackgroundWhenTheBudgetRunsOut(t *testing.T) {
+	h := newHarness(t)
+	h.withBattleNet(t, "12346", "Elyra#1234")
+	importer := &budgetImporter{continued: make(chan string, 1)}
+	h.svc.Importer = importer
+
+	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/start?next=/account", "")
+	res.Body.Close()
+	target, err := url.Parse(res.Header.Get("Location"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?code=the-code&state="+target.Query().Get("state"), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusFound {
+		t.Fatalf("callback = %d, want a redirect", res.StatusCode)
+	}
+	select {
+	case token := <-importer.continued:
+		if token == "no deadline" || token == "" {
+			t.Fatalf("continuation ran with %q, want the sign-in's token under a deadline", token)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("the import was never continued")
 	}
 }
 

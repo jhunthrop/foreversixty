@@ -6,16 +6,27 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
 // AccountCharacter is one character from GET /profile/user/wow — the
 // account's own roster, readable only with the user's OAuth token.
 type AccountCharacter struct {
-	ID        int64
-	Name      string
+	ID int64
+	// Name is the character's full display name. A Forever character answers
+	// a first name and a separate surname, joined here as "Name Surname" (the
+	// form the addon export and the combat log already carry); a character
+	// from a realmed game has no surname and Name is the bare name.
+	Name string
+	// RealmSlug and RealmName are empty for a Forever character: Forever's
+	// account profile names no realm. RealmID is the realm the protected-
+	// character link carries (".../protected-character/{realmId}-{characterId}"),
+	// or realm.id when Blizzard sends one; it is what resolves the ruleset.
 	RealmSlug string
 	RealmName string
+	RealmID   int64
 	ClassSlug string
 	// RaceName and GenderType are the account-profile entry's own
 	// playable_race.name and lowercased gender.type (spec §B); the
@@ -41,12 +52,17 @@ type accountCharactersResponse struct {
 // profile entry's raw bytes (spec §0's "name, id, realm, playable_class,
 // playable_race, gender, faction, level").
 type accountCharacterFields struct {
-	Name  string `json:"name"`
-	ID    int64  `json:"id"`
-	Realm struct {
+	Name    string `json:"name"`
+	Surname string `json:"surname"`
+	ID      int64  `json:"id"`
+	Realm   struct {
+		ID   int64  `json:"id"`
 		Slug string `json:"slug"`
 		Name string `json:"name"`
 	} `json:"realm"`
+	ProtectedCharacter struct {
+		Href string `json:"href"`
+	} `json:"protected_character"`
 	PlayableClass struct {
 		Name string `json:"name"`
 	} `json:"playable_class"`
@@ -79,9 +95,13 @@ func (c *Client) AccountCharacters(ctx context.Context, region, userToken string
 			if err := json.Unmarshal(raw, &fields); err != nil {
 				return nil, fmt.Errorf("bnetapi: account_characters: decode character: %w", err)
 			}
+			realmID := fields.Realm.ID
+			if realmID == 0 {
+				realmID = protectedRealmID(fields.ProtectedCharacter.Href)
+			}
 			out = append(out, AccountCharacter{
-				ID: fields.ID, Name: fields.Name,
-				RealmSlug: fields.Realm.Slug, RealmName: fields.Realm.Name,
+				ID: fields.ID, Name: FullName(fields.Name, fields.Surname),
+				RealmSlug: fields.Realm.Slug, RealmName: fields.Realm.Name, RealmID: realmID,
 				ClassSlug:  classSlug(fields.PlayableClass.Name),
 				RaceName:   fields.PlayableRace.Name,
 				GenderType: strings.ToLower(fields.Gender.Type),
@@ -104,10 +124,13 @@ type CharacterProfile struct {
 	// RaceName is Blizzard's race.name, verbatim (title case, e.g. "Night Elf") — the same
 	// string data/builds/<build>/races.json keys its own race rows by (spec
 	// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.2).
-	RaceName           string
-	RealmSlug          string
-	RealmName          string
-	GuildName          string
+	RaceName  string
+	RealmSlug string
+	RealmName string
+	GuildName string
+	// GuildRealmSlug is the guild's own realm, empty when Blizzard names
+	// none (a Forever guild, like a Forever character, may be realmless).
+	GuildRealmSlug     string
 	HasGuild           bool
 	LastLoginTimestamp int64
 	// AverageItemLevel and EquippedItemLevel are pointers because the
@@ -120,6 +143,7 @@ type CharacterProfile struct {
 
 type characterProfileResponse struct {
 	Name    string `json:"name"`
+	Surname string `json:"surname"`
 	Level   int    `json:"level"`
 	Faction struct {
 		Type string `json:"type"`
@@ -135,7 +159,10 @@ type characterProfileResponse struct {
 		Name string `json:"name"`
 	} `json:"realm"`
 	Guild *struct {
-		Name string `json:"name"`
+		Name  string `json:"name"`
+		Realm struct {
+			Slug string `json:"slug"`
+		} `json:"realm"`
 	} `json:"guild"`
 	LastLoginTimestamp int64 `json:"last_login_timestamp"`
 	AverageItemLevel   *int  `json:"average_item_level"`
@@ -152,8 +179,7 @@ func (c *Client) Character(ctx context.Context, region, realmSlug, name string) 
 	if err != nil {
 		return CharacterProfile{}, nil, fmt.Errorf("bnetapi: character: %w", err)
 	}
-	u := c.APIHost(region) + "/profile/wow/character/" + url.PathEscape(realmSlug) + "/" +
-		url.PathEscape(strings.ToLower(name)) + "?namespace=" + c.ProfileNamespace(region)
+	u := c.characterURL(region, realmSlug, name, "")
 	body, err := c.getBytes(ctx, "character", u, token)
 	if err != nil {
 		return CharacterProfile{}, nil, err
@@ -163,7 +189,7 @@ func (c *Client) Character(ctx context.Context, region, realmSlug, name string) 
 		return CharacterProfile{}, nil, fmt.Errorf("bnetapi: character: decode: %w", err)
 	}
 	p := CharacterProfile{
-		Name: res.Name, Level: res.Level, Faction: strings.ToLower(res.Faction.Type),
+		Name: FullName(res.Name, res.Surname), Level: res.Level, Faction: strings.ToLower(res.Faction.Type),
 		ClassSlug: classSlug(res.CharacterClass.Name), RaceName: res.Race.Name,
 		RealmSlug: res.Realm.Slug, RealmName: res.Realm.Name,
 		LastLoginTimestamp: res.LastLoginTimestamp,
@@ -171,6 +197,7 @@ func (c *Client) Character(ctx context.Context, region, realmSlug, name string) 
 	}
 	if res.Guild != nil {
 		p.GuildName = res.Guild.Name
+		p.GuildRealmSlug = res.Guild.Realm.Slug
 		p.HasGuild = true
 	}
 	return p, json.RawMessage(body), nil
@@ -184,8 +211,7 @@ func (c *Client) Equipment(ctx context.Context, region, realmSlug, name string) 
 	if err != nil {
 		return nil, fmt.Errorf("bnetapi: equipment: %w", err)
 	}
-	u := c.APIHost(region) + "/profile/wow/character/" + url.PathEscape(realmSlug) + "/" +
-		url.PathEscape(strings.ToLower(name)) + "/equipment?namespace=" + c.ProfileNamespace(region)
+	u := c.characterURL(region, realmSlug, name, "/equipment")
 	body, err := c.getBytes(ctx, "equipment", u, token)
 	if err != nil {
 		return nil, err
@@ -202,11 +228,59 @@ func (c *Client) Specializations(ctx context.Context, region, realmSlug, name st
 	if err != nil {
 		return nil, fmt.Errorf("bnetapi: specializations: %w", err)
 	}
-	u := c.APIHost(region) + "/profile/wow/character/" + url.PathEscape(realmSlug) + "/" +
-		url.PathEscape(strings.ToLower(name)) + "/specializations?namespace=" + c.ProfileNamespace(region)
+	u := c.characterURL(region, realmSlug, name, "/specializations")
 	body, err := c.getBytes(ctx, "specializations", u, token)
 	if err != nil {
 		return nil, err
 	}
 	return json.RawMessage(body), nil
+}
+
+// FullName joins a Forever character's first name and surname into the one
+// display name the site uses everywhere ("Bow Jackzon"). A character with no
+// surname keeps its bare name.
+func FullName(name, surname string) string {
+	name, surname = strings.TrimSpace(name), strings.TrimSpace(surname)
+	if surname == "" {
+		return name
+	}
+	return name + " " + surname
+}
+
+// CharacterSlug is the profile path's character segment: the full name
+// lowercased with its words joined by hyphens, so "Bow Jackzon" reads
+// "bow-jackzon", the {name}-{surname} form Forever's profile links use.
+func CharacterSlug(name string) string {
+	return strings.Join(strings.Fields(strings.ToLower(name)), "-")
+}
+
+// characterURL is one character's profile resource: a realmed game answers
+// /profile/wow/character/{realm}/{name}, Forever (no realm) answers
+// /profile/wow/character/{name}-{surname}. sub is "" for the summary or a
+// sub-resource such as "/equipment".
+func (c *Client) characterURL(region, realmSlug, name, sub string) string {
+	path := "/profile/wow/character/"
+	if realmSlug != "" {
+		path += url.PathEscape(realmSlug) + "/"
+	}
+	return c.APIHost(region) + path + url.PathEscape(CharacterSlug(name)) + sub +
+		"?namespace=" + c.ProfileNamespace(region)
+}
+
+// protectedCharacterRe reads the realm id out of an account profile's
+// protected-character link, ".../protected-character/{realmId}-{characterId}".
+var protectedCharacterRe = regexp.MustCompile(`/protected-character/(\d+)-\d+`)
+
+// protectedRealmID is the realm id a protected-character link carries, 0
+// when the link is absent or unreadable.
+func protectedRealmID(href string) int64 {
+	m := protectedCharacterRe.FindStringSubmatch(href)
+	if m == nil {
+		return 0
+	}
+	id, err := strconv.ParseInt(m[1], 10, 64)
+	if err != nil {
+		return 0
+	}
+	return id
 }

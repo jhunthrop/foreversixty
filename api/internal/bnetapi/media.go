@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/url"
 	"strings"
 )
 
@@ -43,8 +42,7 @@ func (c *Client) CharacterMedia(ctx context.Context, region, realmSlug, name str
 	if err != nil {
 		return Media{}, nil, fmt.Errorf("bnetapi: character_media: %w", err)
 	}
-	u := c.APIHost(region) + "/profile/wow/character/" + url.PathEscape(realmSlug) + "/" +
-		url.PathEscape(strings.ToLower(name)) + "/character-media?namespace=" + c.ProfileNamespace(region)
+	u := c.characterURL(region, realmSlug, name, "/character-media")
 	body, err := c.getBytes(ctx, "character_media", u, token)
 	if err != nil {
 		return Media{}, nil, err

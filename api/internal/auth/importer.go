@@ -26,6 +26,10 @@ type ImportSummary struct {
 	// classic1x namespace). The characters row is still written; only
 	// its guild membership and profile capture are unavailable.
 	Unavailable int
+	// Pending is how many written characters the run did not get to enrich
+	// (profile, guild, gear, talents) before its budget ran out. Their rows
+	// are already listed; runImport continues them in the background.
+	Pending int
 }
 
 // Importer runs the Battle.net character/guild import after a successful
@@ -39,3 +43,10 @@ type Importer interface {
 // importBudget bounds how long bnetCallback waits for the import before
 // redirecting anyway (spec §4.1: "with a 5 second budget").
 const importBudget = 5 * time.Second
+
+// importContinueBudget bounds the background run that finishes an import
+// the sign-in budget cut short. Every character row is written inside the
+// sign-in budget; this only enriches the rest (gear, talents, guild), and
+// the nightly refresh picks up anything it still misses. The service runs
+// with CPU always allocated, so the work proceeds after the redirect.
+const importContinueBudget = 2 * time.Minute

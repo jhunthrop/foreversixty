@@ -27,7 +27,10 @@
     currentKey = undefined,
     onSetMain = undefined,
     logCoach = false,
+    viaBattlenet = true,
   }: {
+    /** Signed in with Battle.net: an empty list means Battle.net has no Forever character yet. */
+    viaBattlenet?: boolean;
     /** `me.entitlements.log_coach`: picks the Premium or the free form of the last-raid line. */
     logCoach?: boolean;
     characters: MeCharacter[];
@@ -74,7 +77,7 @@
   {#if characters.length === 0}
     <div class="border-line-soft border-t px-5 py-4">
       <EmptyState
-        message={characterListCopy.empty}
+        message={viaBattlenet ? characterListCopy.empty : characterListCopy.emptyByEmail}
         action={{ label: characterListCopy.getSetUp, href: characterListCopy.getSetUpHref }}
         secondary={{ label: characterListCopy.pasteAnExport, href: characterListCopy.pasteHref }}
         testid="account-characters-empty"

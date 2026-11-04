@@ -140,7 +140,7 @@ export const addonCopy = {
   setupStep1Title: 'Sign in',
   setupStep2Title: 'The addon',
   setupStep3Title: 'The companion',
-  setupSignInBody: 'Saves your builds, sims and logs to your account.',
+  setupSignInBody: 'Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.',
   /** Same wording as `home-panel-copy.ts`'s `signInButton`; kept as its own key here so
    *  every visible string on this page comes from `addonCopy`, matching this page's own
    *  copy-module convention rather than reaching into the home page's module. */
@@ -148,11 +148,10 @@ export const addonCopy = {
   /** The truth of how a character reaches the site, said once and the way the addon's welcome says
    *  it (addon/ForeverSixty/Locale.lua): the addon saves, the companion sends. */
   setupHowItArrives:
-    'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (see Try an export below).',
+    'Your characters come in from Battle.net when you sign in. The addon adds bags and bank when you log out, and the companion sends them. No companion? Paste an export instead (see Try an export below).',
   /** Under the step 3 title: which of the three steps can be skipped. */
-  setupCompanionNote:
-    'Sends your character automatically and logs live. Without it, paste an export after each change.',
-  setupSubline: 'Three steps. The first two take two minutes.',
+  setupCompanionNote: 'Optional. Sends bags, bank and live logs after every session.',
+  setupSubline: 'Signing in with Battle.net brings your characters. The addon and companion are optional.',
   setupCompanionBody:
     'The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once, then restart the game. Type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.',
   /** The page as a checklist (design loop, setup round): its own title, a status row
@@ -168,6 +167,8 @@ export const addonCopy = {
   /** The state tag in each step card's head. */
   setupTagDone: 'Done',
   setupTagTodo: 'To do',
+  /** Steps 2 and 3 once Battle.net brings the characters: worth doing, never required. */
+  setupTagOptional: 'Optional',
   setupChips: [
     { step: 1, href: '#signin', label: 'Sign in', labelDone: 'Signed in' },
     { step: 2, href: '#addon', label: 'Addon' },
@@ -179,8 +180,9 @@ export const addonCopy = {
   setupSignedInAs: (name: string): string => `Signed in as ${name}`,
   setupAddonArrived: (character: string, when: string): string =>
     `${character} arrived from the addon ${when}`,
-  setupAddonWaiting:
-    'No character yet. Log out once with the addon on and the companion running, or paste an export.',
+  setupAddonWaiting: 'No character yet. Refresh from Battle.net, or install the addon and paste an export.',
+  /** Step 2 for an account whose characters came from Battle.net and none from the addon. */
+  setupAddonOptional: 'Your characters are in from Battle.net. The addon adds bags, bank and live sync.',
   setupCompanionLine: (device: string, seen: string): string =>
     `Companion signed in on ${device} · last seen ${seen}`,
   setupCompanionWaiting: 'No companion signed in yet',

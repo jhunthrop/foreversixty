@@ -1,5 +1,6 @@
 <!-- web/src/components/SetupStepTag.svelte -->
-<!-- The state tag in a /setup step card's head: "Done" (success) or "To do" (muted). It reads
+<!-- The state tag in a /setup step card's head: "Done" (success), else "To do" for signing in and
+     "Optional" for the addon and the companion, since Battle.net brings the characters. It reads
      the same session and device answers as the progress chips and, until they answer, the same
      <html> hints (global.css, .setup-step-tag), so a signed-in visitor never sees step 1 flip. -->
 <script lang="ts">
@@ -32,5 +33,7 @@
   data-done={done === null ? undefined : String(done)}
 >
   <span class="chip-done"><Tag tone="success">{addonCopy.setupTagDone}</Tag></span>
-  <span class="chip-todo"><Tag tone="muted">{addonCopy.setupTagTodo}</Tag></span>
+  <span class="chip-todo"
+    ><Tag tone="muted">{step === 1 ? addonCopy.setupTagTodo : addonCopy.setupTagOptional}</Tag></span
+  >
 </span>

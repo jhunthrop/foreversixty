@@ -295,11 +295,30 @@ func (s *Service) runImport(r *http.Request, userID int64, accessToken string) {
 	defer cancel()
 	summary, err := s.Importer.ImportAccount(ctx, userID, accessToken)
 	id := httpx.RequestIDFrom(r.Context())
+	s.logImport(id, "battlenet_import", userID, summary, err)
+	if summary.Pending > 0 {
+		s.continueImport(id, userID, accessToken)
+	}
+}
+
+// continueImport finishes, in the background, an import the sign-in budget
+// cut short (importContinueBudget). The access token lives only in this
+// goroutine's memory until it returns, and is never persisted or logged.
+func (s *Service) continueImport(id string, userID int64, accessToken string) {
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), importContinueBudget)
+		defer cancel()
+		summary, err := s.Importer.ImportAccount(ctx, userID, accessToken)
+		s.logImport(id, "battlenet_import_continued", userID, summary, err)
+	}()
+}
+
+func (s *Service) logImport(id, op string, userID int64, summary ImportSummary, err error) {
 	if err != nil {
-		s.logger().Warn("auth", "id", id, "op", "battlenet_import", "user_id", userID, "err", err)
+		s.logger().Warn("auth", "id", id, "op", op, "user_id", userID, "pending", summary.Pending, "err", err)
 		return
 	}
-	s.logger().Info("auth", "id", id, "op", "battlenet_import", "user_id", userID,
+	s.logger().Info("auth", "id", id, "op", op, "user_id", userID,
 		"regions", summary.Regions, "characters", summary.Characters,
 		"guilds", summary.Guilds, "skipped", summary.Skipped, "unavailable", summary.Unavailable)
 }

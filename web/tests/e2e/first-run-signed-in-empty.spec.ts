@@ -34,7 +34,9 @@ test.describe('the header of a signed-in account with no characters', () => {
     await page.goto('/guides');
     await page.getByTestId('character-selector').click();
     const panel = page.getByTestId('selector-panel');
-    await expect(panel).toContainText('Your characters appear here once the addon has seen them.');
+    await expect(panel).toContainText(
+      'Your Forever characters arrive when you sign in with Battle.net, or once the addon has seen them.',
+    );
     await expect(panel.getByRole('link', { name: 'Get set up' })).toHaveAttribute('href', '/setup');
     await expect(panel.getByRole('link', { name: 'Your account' })).toHaveAttribute('href', '/account');
   });
@@ -49,7 +51,7 @@ test.describe('/account with no characters', () => {
   test('leads the Characters empty state with Get set up, then Paste an export', async ({ page }) => {
     await page.goto('/account');
     const empty = page.getByTestId('account-characters-empty');
-    await expect(empty).toContainText('Install the addon and the companion, then log out once in game');
+    await expect(empty).toContainText('No Forever characters on this Battle.net account yet');
     await expect(empty.getByRole('link', { name: 'Get set up' })).toHaveAttribute('href', '/setup');
     await expect(empty.getByRole('link', { name: 'Paste an export' })).toBeVisible();
   });
@@ -69,7 +71,7 @@ test.describe('/account with no characters', () => {
   test('greets the arrival by battletag instead of naming a character', async ({ page }) => {
     await page.goto('/account?signed_in=1');
     await expect(page.getByTestId('account-signed-in-banner')).toHaveText(
-      'Signed in as Fixture#1. Install the addon and the companion to bring your characters here.',
+      'Signed in as Fixture#1. Battle.net lists no Forever character on this account yet; make one in game, then refresh from Battle.net.',
     );
   });
 });

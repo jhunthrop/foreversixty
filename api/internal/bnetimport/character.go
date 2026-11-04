@@ -17,78 +17,133 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/synclog"
 )
 
-// importOneCharacter writes one character's characters row and syncs its
-// guild membership, in one transaction (spec §4.2 step 6: "so a failure
-// on the 7th leaves the first six written"). wrote is false when key
-// already belongs to a different account — a collision (spec §2's key-
-// format RULING): the existing row is left exactly as it was. unavailable
-// is true when the character's public profile answered 404 (spec A2 —
-// e.g. a Season of Discovery character under the classic1x namespace).
-func (s *Service) importOneCharacter(ctx context.Context, userID int64, region, ruleset, key string,
-	ch bnetapi.AccountCharacter, rosterCache map[string]bnetapi.Roster) (wrote, guildWritten, unavailable bool, err error) {
+// characterRef is one imported character as every enrichment step reads
+// it: whose it is, its key, and what its Blizzard profile is addressed by.
+// RealmSlug is empty for a Forever character, whose profile is addressed
+// by {name}-{surname} alone.
+type characterRef struct {
+	UserID    int64
+	Region    string
+	Ruleset   string
+	Key       string
+	RealmSlug string
+	Name      string
+	BnetID    int64
+}
+
+// writeCharacterRow is the first import pass for one character (spec §4.2
+// step 3): the characters row, straight from the account profile, in its
+// own transaction. wrote is false when key already belongs to a different
+// account, a collision (spec §2's key-format RULING): the existing row is
+// left exactly as it was. A new row's refreshed_at starts a day back, so
+// the nightly refresh enriches it if no sign-in run gets to it first.
+func (s *Service) writeCharacterRow(ctx context.Context, ref characterRef, ch bnetapi.AccountCharacter) (bool, error) {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
-		return false, false, false, fmt.Errorf("bnetimport: begin %s: %w", key, err)
+		return false, fmt.Errorf("bnetimport: begin %s: %w", ref.Key, err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	if err := s.rekeyIfNeeded(ctx, tx, userID, key, ch.ID); err != nil {
-		return false, false, false, err
+	if err := s.rekeyIfNeeded(ctx, tx, ref.UserID, ref.Region, ref.Key, ch.ID); err != nil {
+		return false, err
 	}
-
 	faction := ch.Faction
 	if faction != "alliance" && faction != "horde" {
 		faction = ""
 	}
-	accountRaw := s.capCapture("bnet_account", key, ch.Raw)
+	accountRaw := s.capCapture("bnet_account", ref.Key, ch.Raw)
 	tag, err := tx.Exec(ctx,
 		`insert into characters (key, region, ruleset, name, class, user_id, realm_slug, realm_name,
 		    level, faction, bnet_character_id, source, imported_at, refreshed_at,
 		    race, gender, bnet_account, bnet_captured_at)
-		 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, nullif($10, ''), $11, 'bnet', now(), now(),
-		    nullif($12, ''), nullif($13, ''), $14, now())
+		 values ($1, $2, $3, $4, $5, $6, nullif($7, ''), nullif($8, ''), $9, nullif($10, ''), $11, 'bnet', now(),
+		    now() - interval '1 day', nullif($12, ''), nullif($13, ''), $14, now())
 		 on conflict (key) do update set
 		   name = excluded.name, class = excluded.class, user_id = excluded.user_id,
 		   realm_slug = excluded.realm_slug, realm_name = excluded.realm_name,
 		   level = excluded.level, faction = excluded.faction, bnet_character_id = excluded.bnet_character_id,
-		   source = 'bnet', imported_at = now(), refreshed_at = now(),
+		   source = 'bnet', imported_at = now(),
 		   race = excluded.race, gender = excluded.gender,
 		   bnet_account = coalesce(excluded.bnet_account, characters.bnet_account), bnet_captured_at = now()
 		 where characters.user_id is null or characters.user_id = excluded.user_id`,
-		key, region, ruleset, ch.Name, ch.ClassSlug, userID, ch.RealmSlug, ch.RealmName,
+		ref.Key, ref.Region, ref.Ruleset, ch.Name, ch.ClassSlug, ref.UserID, ch.RealmSlug, ch.RealmName,
 		ch.Level, faction, ch.ID, ch.RaceName, ch.GenderType, rawOrNil(accountRaw))
 	if err != nil {
-		return false, false, false, fmt.Errorf("bnetimport: write character %s: %w", key, err)
+		return false, fmt.Errorf("bnetimport: write character %s: %w", ref.Key, err)
 	}
 	if tag.RowsAffected() == 0 {
-		return false, false, false, nil
-	}
-
-	profile, guildWritten, unavailable, err := s.syncCharacterGuild(ctx, tx, userID, region, ruleset, key, ch.RealmSlug, ch.Name, rosterCache)
-	if err != nil {
-		return false, false, false, err
-	}
-	rawEquipment, err := s.captureEquipment(ctx, tx, key, region, ch.RealmSlug, ch.Name)
-	if err != nil {
-		return false, false, false, err
-	}
-	rawSpecializations, err := s.captureSpecializations(ctx, tx, key, region, ch.RealmSlug, ch.Name)
-	if err != nil {
-		return false, false, false, err
-	}
-	if err := s.captureMedia(ctx, tx, key, region, ch.RealmSlug, ch.Name); err != nil {
-		return false, false, false, err
-	}
-	if err := s.buildAndWriteExport(ctx, tx, userID, key, region, ruleset, profile, rawEquipment, rawSpecializations); err != nil {
-		return false, false, false, err
-	}
-	if err := synclog.Record(ctx, tx, key, synclog.SourceBlizzard, synclog.OutcomeOK); err != nil {
-		return false, false, false, err
+		return false, nil
 	}
 	if err := tx.Commit(ctx); err != nil {
-		return false, false, false, fmt.Errorf("bnetimport: commit %s: %w", key, err)
+		return false, fmt.Errorf("bnetimport: commit %s: %w", ref.Key, err)
 	}
-	return true, guildWritten, unavailable, nil
+	return true, nil
+}
+
+// recentlyEnriched reports whether key was enriched within enrichFreshness.
+func (s *Service) recentlyEnriched(ctx context.Context, key string) (bool, error) {
+	var fresh bool
+	err := s.Pool.QueryRow(ctx,
+		`select refreshed_at > now() - $2::interval from characters where key = $1`,
+		key, fmt.Sprintf("%d seconds", int(enrichFreshness.Seconds()))).Scan(&fresh)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, fmt.Errorf("bnetimport: freshness %s: %w", key, err)
+	}
+	return fresh, nil
+}
+
+// enrichCharacter is the second import pass for one character, and the
+// whole of the nightly refresh's per-character work: the public profile and
+// guild membership, gear, talents and media, then the Blizzard-sourced
+// build, in one transaction (spec §4.2 steps 4-6). unavailable is true when
+// the public profile answered 404 (spec A2).
+func (s *Service) enrichCharacter(ctx context.Context, ref characterRef, rosterCache map[string]bnetapi.Roster) (guildWritten, unavailable bool, err error) {
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		return false, false, fmt.Errorf("bnetimport: begin enrich %s: %w", ref.Key, err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	if err := s.enrichInTx(ctx, tx, ref, rosterCache, &guildWritten, &unavailable); err != nil {
+		return false, false, err
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return false, false, fmt.Errorf("bnetimport: commit enrich %s: %w", ref.Key, err)
+	}
+	return guildWritten, unavailable, nil
+}
+
+// enrichInTx runs the enrichment steps inside tx, which the caller owns;
+// the nightly refresh calls it inside the transaction that also re-resolved
+// the row's key.
+func (s *Service) enrichInTx(ctx context.Context, tx pgx.Tx, ref characterRef, rosterCache map[string]bnetapi.Roster,
+	guildWritten, unavailable *bool) error {
+	if _, err := tx.Exec(ctx, `update characters set refreshed_at = now() where key = $1`, ref.Key); err != nil {
+		return fmt.Errorf("bnetimport: stamp %s: %w", ref.Key, err)
+	}
+	profile, wroteGuild, gone, err := s.syncCharacterGuild(ctx, tx, ref, rosterCache)
+	if err != nil {
+		return err
+	}
+	*guildWritten, *unavailable = wroteGuild, gone
+	rawEquipment, err := s.captureEquipment(ctx, tx, ref.Key, ref.Region, ref.RealmSlug, ref.Name)
+	if err != nil {
+		return err
+	}
+	rawSpecializations, err := s.captureSpecializations(ctx, tx, ref.Key, ref.Region, ref.RealmSlug, ref.Name)
+	if err != nil {
+		return err
+	}
+	if err := s.captureMedia(ctx, tx, ref.Key, ref.Region, ref.RealmSlug, ref.Name); err != nil {
+		return err
+	}
+	if err := s.buildAndWriteExport(ctx, tx, ref.UserID, ref.Key, ref.Region, ref.Ruleset, profile, rawEquipment, rawSpecializations); err != nil {
+		return err
+	}
+	return synclog.Record(ctx, tx, ref.Key, synclog.SourceBlizzard, synclog.OutcomeOK)
 }
 
 // rekeyIfNeeded implements spec A3: a character whose Blizzard id already
@@ -98,11 +153,11 @@ func (s *Service) importOneCharacter(ctx context.Context, userID int64, region, 
 // AfterGuildChange for its guild and user) and the old characters row is
 // deleted, inside the same transaction the caller commits after writing
 // the new row.
-func (s *Service) rekeyIfNeeded(ctx context.Context, tx pgx.Tx, userID int64, newKey string, bnetCharacterID int64) error {
+func (s *Service) rekeyIfNeeded(ctx context.Context, tx pgx.Tx, userID int64, region, newKey string, bnetCharacterID int64) error {
 	var oldKey string
 	err := tx.QueryRow(ctx,
-		`select key from characters where bnet_character_id = $1 and user_id = $2 and key != $3`,
-		bnetCharacterID, userID, newKey).Scan(&oldKey)
+		`select key from characters where bnet_character_id = $1 and user_id = $2 and key != $3 and region = $4`,
+		bnetCharacterID, userID, newKey, region).Scan(&oldKey)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil
 	}
@@ -145,8 +200,9 @@ func (s *Service) rekeyIfNeeded(ctx context.Context, tx pgx.Tx, userID int64, ne
 // error. A profile that answers 404 (spec A2 — a classic1x/Season of
 // Discovery character) is logged and reported via unavailable, and 403
 // (a private profile) is left silent, as before.
-func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int64, region, ruleset, key, realmSlug, name string,
+func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, ref characterRef,
 	rosterCache map[string]bnetapi.Roster) (profile bnetapi.CharacterProfile, guildWritten, unavailable bool, err error) {
+	userID, region, ruleset, key, realmSlug, name := ref.UserID, ref.Region, ref.Ruleset, ref.Key, ref.RealmSlug, ref.Name
 	var prevGuildID *int64
 	var prevUserID int64
 	var prevSource string
@@ -171,6 +227,7 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int6
 	if err := s.captureProfile(ctx, tx, key, profile, rawProfile); err != nil {
 		return profile, false, false, err
 	}
+	s.noteStaticNamespace(region, rawProfile)
 
 	if !profile.HasGuild {
 		if prevGuildID != nil && prevSource == "bnet" {
@@ -182,10 +239,14 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int6
 		return profile, false, false, nil
 	}
 
-	cacheKey := strings.ToLower(region + "/" + realmSlug + "/" + profile.GuildName)
+	guildRealm := profile.GuildRealmSlug
+	if guildRealm == "" {
+		guildRealm = realmSlug
+	}
+	cacheKey := strings.ToLower(region + "/" + guildRealm + "/" + profile.GuildName)
 	roster, ok := rosterCache[cacheKey]
 	if !ok {
-		roster, err = s.Client.GuildRoster(ctx, region, realmSlug, profile.GuildName)
+		roster, err = s.Client.GuildRoster(ctx, region, guildRealm, profile.GuildName)
 		if err != nil {
 			if errors.Is(err, bnetapi.ErrNotFound) || errors.Is(err, bnetapi.ErrForbidden) {
 				return profile, false, false, nil
@@ -194,7 +255,7 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int6
 		}
 		rosterCache[cacheKey] = roster
 	}
-	rankIndex, found := findRank(roster.Members, name, realmSlug)
+	rankIndex, found := findRank(roster.Members, ref.BnetID, name, realmSlug)
 	if !found {
 		s.logger().Warn("bnetimport", "op", "roster_rank_not_found", "key", key, "guild", profile.GuildName)
 		return profile, false, false, nil
@@ -204,7 +265,7 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int6
 	if err != nil {
 		return profile, false, false, err
 	}
-	if err := guilds.StampBnetRoster(ctx, tx, guildID, roster.GuildID, realmSlug); err != nil {
+	if err := guilds.StampBnetRoster(ctx, tx, guildID, roster.GuildID, guildRealm); err != nil {
 		return profile, false, false, err
 	}
 	rank := guilds.DeriveRank(rankIndex, officerMax)
@@ -242,10 +303,18 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int6
 	return profile, true, false, nil
 }
 
-// findRank locates name's own roster rank by name and realm (case-
-// insensitive), since a guild roster can — rarely, on Era — carry two
-// same-named characters on different realms.
-func findRank(members []bnetapi.RosterMember, name, realmSlug string) (int, bool) {
+// findRank locates the character's own roster rank: by Blizzard character
+// id when both sides carry one (a realmless Forever roster), otherwise by
+// name and realm (case-insensitive), since a guild roster can, rarely, on
+// Era, carry two same-named characters on different realms.
+func findRank(members []bnetapi.RosterMember, bnetID int64, name, realmSlug string) (int, bool) {
+	if bnetID != 0 {
+		for _, m := range members {
+			if m.ID == bnetID {
+				return m.Rank, true
+			}
+		}
+	}
 	for _, m := range members {
 		if strings.EqualFold(m.Name, name) && strings.EqualFold(m.RealmSlug, realmSlug) {
 			return m.Rank, true
@@ -265,4 +334,54 @@ func rulesetForRealm(realms []bnetapi.Realm, slug string) string {
 		}
 	}
 	return character.RulesetNormal
+}
+
+// rulesetFor resolves an account character's ruleset, the middle segment
+// of its key. Forever's account profile names no realm, so in order:
+//
+//  1. the realm slug, for a realmed game;
+//  2. the realm id from the protected-character link, whose realm type
+//     (PvE, PvP, RP, RP PvP) is the ruleset;
+//  3. the ruleset this character was already keyed under: by its Blizzard
+//     id, then by this account's addon row of the same region and name;
+//  4. normal, RulesetOf's own default.
+func (s *Service) rulesetFor(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
+	ch bnetapi.AccountCharacter) (string, error) {
+	if ch.RealmSlug != "" {
+		return rulesetForRealm(realms, ch.RealmSlug), nil
+	}
+	if ch.RealmID != 0 {
+		for _, r := range realms {
+			if r.ID == ch.RealmID {
+				return bnetapi.RulesetOf(r), nil
+			}
+		}
+	}
+	var ruleset string
+	err := s.Pool.QueryRow(ctx,
+		`select ruleset from characters
+		 where region = $1 and ((bnet_character_id = $2 and $2 <> 0)
+		    or (user_id = $3 and split_part(key, '/', 3) = $4))
+		 order by (bnet_character_id = $2) desc nulls last, key limit 1`,
+		region, ch.ID, userID, character.Slug(ch.Name)).Scan(&ruleset)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return character.RulesetNormal, nil
+	}
+	if err != nil {
+		return "", fmt.Errorf("bnetimport: ruleset lookup for %s: %w", ch.Name, err)
+	}
+	return ruleset, nil
+}
+
+// noteStaticNamespace logs the versioned static namespace a profile links
+// to, once per region per process: the signal for when Blizzard's static
+// data moves to a new client build (bnetapi.StaticNamespace).
+func (s *Service) noteStaticNamespace(region string, raw []byte) {
+	ns := bnetapi.StaticNamespace(raw)
+	if ns == "" {
+		return
+	}
+	if _, seen := s.staticSeen.LoadOrStore(region+"|"+ns, true); !seen {
+		s.logger().Info("bnetimport", "op", "static_namespace", "region", region, "namespace", ns)
+	}
 }

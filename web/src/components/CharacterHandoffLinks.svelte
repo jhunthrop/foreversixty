@@ -14,7 +14,11 @@
     apiBase = undefined,
     showNeedsExport = true,
     buttons = false,
+    fromBattlenet = false,
   }: {
+    /** The character came from the Battle.net import: with no export yet, its gear and talents
+     *  are on their way from Blizzard, and the paste is only the shortcut. */
+    fromBattlenet?: boolean;
     path: CharacterPath;
     apiBase?: string;
     /** False on a profile the viewer does not own (fix round 2 item 1): "No export yet · paste
@@ -60,6 +64,13 @@
     <a class={LINK} href={plannerCodeHref(code)} data-testid="character-open-planner"
       >{handoffCopy.openInPlanner}</a
     >
+  {:else if showNeedsExport && fromBattlenet}
+    <span class="text-muted text-[13px]" data-testid="character-bnet-pending">
+      {handoffCopy.battlenetPendingLead}
+      <a class="text-text inline-flex min-h-11 items-center underline md:min-h-0" href={handoffCopy.pasteHref}
+        >{handoffCopy.battlenetPendingPasteLink}</a
+      >
+    </span>
   {:else if showNeedsExport}
     <span class="text-muted text-[13px]" data-testid="character-needs-addon">
       {handoffCopy.needsExportLead}

@@ -34,7 +34,8 @@ export const selectorCopy = {
   /** The closed control of a signed-in account with no character yet. */
   accountSub: 'No characters yet',
   accountAria: (who: string): string => `${who}. No characters yet. Open your account.`,
-  accountPanelBody: 'Your characters appear here once the addon has seen them.',
+  accountPanelBody:
+    'Your Forever characters arrive when you sign in with Battle.net, or once the addon has seen them.',
   accountSetUp: 'Get set up',
   accountSetUpHref: '/setup',
   accountLink: 'Your account',
