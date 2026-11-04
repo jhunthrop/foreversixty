@@ -1,7 +1,7 @@
 ---
 title: Rogue in Forever
 classSlug: rogue
-description: 'Rogue in Forever: which of the three trees to play, the daggers they all want at 60, poisons and stones together, and the new baseline tools every rogue gets, Shank among them.'
+description: 'Rogue in Forever: which tree to play, the daggers all three want at 60, poisons and stones together, and the new baseline tools, Shank among them.'
 updated: 2026-11-02
 confidence: inferred
 sources:
