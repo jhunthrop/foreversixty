@@ -228,10 +228,12 @@ interface RotationContext {
   role: GuideRole;
   /** The build the rotation describes (`describedBuildTrees`). */
   trees: readonly DecodedTreeView[];
+  /** The guide's other build (the level 60 build beside a raid build), if any. */
+  otherTrees: readonly DecodedTreeView[] | undefined;
 }
 
 function rotationOf(ctx: RotationContext): AppGuideFile['rotation'] {
-  const lists = guideRotation(ctx.build, ctx.classSlug, ctx.spec, ctx.role, ctx.trees);
+  const lists = guideRotation(ctx.build, ctx.classSlug, ctx.spec, ctx.role, ctx.trees, ctx.otherTrees);
   if (lists === undefined) return null;
   return {
     opener: lists.opener.map(spellOf),
@@ -299,7 +301,14 @@ export function buildGuideFile(
   const raceRows = raceTableFor(build, classSlug, data.recommendedRaces, specKindOf(classSlug, spec, role));
   const describedTrees = describedBuildTrees(levelingTrees, raidTrees);
 
-  const rotation = rotationOf({ build, classSlug, spec, role, trees: describedTrees });
+  const rotation = rotationOf({
+    build,
+    classSlug,
+    spec,
+    role,
+    trees: describedTrees,
+    otherTrees: raidTrees === undefined ? undefined : levelingTrees,
+  });
 
   const guide: Omit<AppGuideFile, 'sections'> = {
     build,

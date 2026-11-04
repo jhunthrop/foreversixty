@@ -180,7 +180,14 @@ const describedCode = raidTrees === undefined ? buildCode : raidCode;
 // entirely when no rotation entry applies yet (spec §5's own state table), never a card
 // with zero lines standing in for "no data". The Rotation section's lists read the same lines.
 const rotationBandLabel = String(bandTopLevel(60));
-const rotationListsUnkeyed = guideRotation(build, classSlug, fullSpecId, role, describedTrees);
+const rotationListsUnkeyed = guideRotation(
+  build,
+  classSlug,
+  fullSpecId,
+  role,
+  describedTrees,
+  raidTrees === undefined ? undefined : buildTrees,
+);
 // The lists follow the raid build's level 60 priority; a talent only the raid build takes is
 // marked in them, so a player on the level 60 build knows to skip that row.
 const raidOnlyTalents =

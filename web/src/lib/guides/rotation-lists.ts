@@ -166,10 +166,10 @@ function canGoOutBeforePull(cast: PrepullCast, earlier: readonly PrepullCast[]):
 }
 
 /** When a pre-pull cast starts. One the APL times to land on the pull (no earlier than its
- *  base cast takes) starts its cast time before the pull, at the cast time the build's own
- *  talents give it (Arcane's Frostbolt: 3 s with no Improved Frostbolt, where the APL's 2.5 s is
- *  Frost's). Any other cast keeps the APL's own time (a summon a minute out, a Lightwell placed
- *  early). */
+ *  base cast takes) starts its cast time before the pull, at the cast time the talents of the
+ *  build that casts it give it (Arcane's Frostbolt, cast only without Heating Up: the level 60
+ *  build's Improved Frostbolt makes it 2.5 s). Any other cast keeps the APL's own time (a
+ *  summon a minute out, a Lightwell placed early). */
 function prepullSeconds(
   cast: PrepullCast,
   facts: SpellFacts,
@@ -237,8 +237,10 @@ export function rotationListsFrom(
   racialCooldowns: readonly RacialCooldown[] = [],
   /** The guide's role; a healer's trinket line is worded by healing. */
   role: GuideRole = 'dps',
-  /** What the build's talents take off a spell's cast time, by spell name (`talentCastTimeCuts`). */
-  castTimeCuts: ReadonlyMap<string, number> = new Map(),
+  /** What the talents of the build that runs a pre-pull cast take off a spell's cast time, by
+   *  spell name (`talentCastTimeCuts`), for that cast's gates: a cast gated on a talent the
+   *  described build lacks (or takes, under `not`) is the other build's. */
+  castTimeCutsFor: (gates: readonly AplGate[]) => ReadonlyMap<string, number> = () => new Map(),
 ): RotationLists {
   const priority = lines.map((line) => {
     const item = lineItem(line);
@@ -261,7 +263,7 @@ export function rotationListsFrom(
       name: facts.name,
       rank: facts.rank,
       icon: facts.icon ?? lineIcons.get(facts.name),
-      clause: `${whenText(prepullSeconds(cast, facts, castTimeCuts))}${gateText(cast.gates, spellFacts)}`,
+      clause: `${whenText(prepullSeconds(cast, facts, castTimeCutsFor(cast.gates)))}${gateText(cast.gates, spellFacts)}`,
     });
   }
 
