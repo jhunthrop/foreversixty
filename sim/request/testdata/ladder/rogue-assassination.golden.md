@@ -99,10 +99,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-000000000000000000 | main_hand:1287 off_hand:2088 | 11.0 | 3 | other:attack/1=151.0, other:attack/2=132.2, spell:1757=42.3, spell:5171/4=8.6, spell:1784=1.0 | {SpellID: 1241584}, {SpellID: 14177} |
-| 20 | 32510000000000000-0000000000000000000-000000000000000000 | main_hand:2236 off_hand:1935 | 25.5 | 4 | other:attack/1=141.6, other:attack/2=111.8, spell:1758=41.1, spell:5171/4=9.0, spell:1785=1.0 | {SpellID: 1241584}, {SpellID: 1329256}, {SpellID: 14177} |
-| 30 | 32530200230001000-0000000000000000000-000000000000000000 | main_hand:23168 off_hand:19545 | 51.0 | 6 | other:attack/1=148.3, other:attack/2=122.2, spell:1760=42.6, spell:1329283=18.4, spell:5171/4=5.9 | {SpellID: 1241584}, {SpellID: 1329256}, {SpellID: 14177} |
-| 38 | 32530200251501000-0000000000000000000-000000000000000000 | main_hand:6831 off_hand:19544 | 75.3 | 7 | other:attack/1=138.4, other:attack/2=122.1, spell:8621=42.6, spell:1329283=18.4, spell:5171/4=5.9 | {SpellID: 1241584}, {SpellID: 1329256} |
+| 10 | 10000000000000000-0000000000000000000-000000000000000000 | main_hand:1287 off_hand:2088 | 11.8 | 3 | other:attack/1=146.0, other:attack/2=127.8, spell:53=32.5, spell:5171/4=6.5, spell:1784=1.0 | {SpellID: 1241584}, {SpellID: 14177} |
+| 20 | 32510000000000000-0000000000000000000-000000000000000000 | main_hand:2236 off_hand:1935 | 29.3 | 4 | other:attack/1=137.1, other:attack/2=108.3, spell:2590=31.6, spell:5171/4=6.9, spell:1785=1.0 | {SpellID: 1241584}, {SpellID: 1329256}, {SpellID: 14177} |
+| 30 | 32530200230001000-0000000000000000000-000000000000000000 | main_hand:23168 off_hand:19545 | 54.8 | 6 | other:attack/1=148.6, other:attack/2=122.5, spell:2591=33.9, spell:1329283=18.4, spell:5171/4=6.1 | {SpellID: 1241584}, {SpellID: 1329256}, {SpellID: 14177} |
+| 38 | 32530200251501000-0000000000000000000-000000000000000000 | main_hand:6831 off_hand:19544 | 79.6 | 7 | other:attack/1=138.7, other:attack/2=122.4, spell:8721=33.8, spell:1329283=18.4, spell:5171/4=6.1 | {SpellID: 1241584}, {SpellID: 1329256} |
 | 40 | 32530200251511001-0000000000000000000-000000000000000000 | main_hand:2164 off_hand:274753 | 93.0 | 9 | other:attack/1=119.5, other:attack/2=113.2, spell:399956=28.0, spell:1329283=18.4, spell:5171/5=4.6 | {SpellID: 1329256} |
 | 50 | 32530200251551031-3000000000000000000-000000000000000000 | main_hand:2163 off_hand:6660 | 149.7 | 9 | other:attack/2=177.1, other:attack/1=164.5, spell:1241582=34.2, spell:1329549=18.5, spell:11299/5=6.9 | {SpellID: 1329256} |
 | 60 | 32530200251551031-3023030000000000000-011000000000000000 | main_hand:22802 off_hand:21126 | 244.8 | 9 | other:attack/1=128.5, other:attack/2=128.4, spell:1241584=33.7, spell:1329549=18.5, spell:11300/5=7.5 | {SpellID: 1329256} |
@@ -112,38 +112,38 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 10
 
-- Backstab (spell 53)
 - Eviscerate (spell 6760)
 - Gouge (spell 1776)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 1757)
 
 ### Level 20
 
 - Ambush (spell 8676)
-- Backstab (spell 2590)
 - Eviscerate (spell 6761)
 - Gouge (spell 1777)
 - Kick (spell 1766)
 - Rupture (spell 1943)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 1758)
 
 ### Level 30
 
 - Ambush (spell 8724)
-- Backstab (spell 2591)
 - Gouge (spell 1777)
 - Kick (spell 1767)
 - Rupture (spell 8639)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 1760)
 
 ### Level 38
 
 - Ambush (spell 8725)
-- Backstab (spell 8721)
 - Gouge (spell 8629)
 - Kick (spell 1767)
 - Rupture (spell 8640)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 8621)
 
 ### Level 40
 
@@ -185,6 +185,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - rogue-assassination level=20 kind=zero_casts spell="Rupture" id=1943 authored=11275
 - rogue-assassination level=30 kind=zero_casts spell="Rupture" id=8639 authored=11275
 - rogue-assassination level=38 kind=zero_casts spell="Rupture" id=8640 authored=11275
+- rogue-assassination level=40 kind=zero_casts spell="Backstab" id=8721 authored=11281
 - rogue-assassination level=40 kind=zero_casts spell="Rupture" id=8640 authored=11275
+- rogue-assassination level=50 kind=zero_casts spell="Backstab" id=11279 authored=11281
 - rogue-assassination level=50 kind=zero_casts spell="Rupture" id=11273 authored=11275
+- rogue-assassination level=60 kind=zero_casts spell="Backstab" id=11281 authored=11281
 - rogue-assassination level=60 kind=zero_casts spell="Rupture" id=11275 authored=11275

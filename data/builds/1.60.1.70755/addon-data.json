@@ -9220,7 +9220,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20900,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -9267,7 +9267,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20900,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -9314,7 +9314,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20900,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -9361,7 +9361,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20901,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -9408,7 +9408,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20901,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -9624,7 +9624,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20902,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -9678,7 +9678,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20903,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -9732,7 +9732,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20903,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10047,7 +10047,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20900,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10094,7 +10094,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20900,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10141,7 +10141,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20900,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10188,7 +10188,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20901,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10235,7 +10235,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20901,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10282,7 +10282,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20901,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10336,7 +10336,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20901,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10390,7 +10390,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20902,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10444,7 +10444,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20902,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -11639,7 +11639,7 @@
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -11647,6 +11647,13 @@
             "spell_id": 5143,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5143,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11693,7 +11700,7 @@
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -11701,6 +11708,13 @@
             "spell_id": 5143,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5143,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11747,7 +11761,7 @@
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -11755,6 +11769,13 @@
             "spell_id": 5143,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5143,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11801,7 +11822,7 @@
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -11809,6 +11830,13 @@
             "spell_id": 5144,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5144,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11855,7 +11883,7 @@
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -11863,6 +11891,13 @@
             "spell_id": 5144,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5144,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11923,7 +11958,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -11931,6 +11966,13 @@
             "spell_id": 5144,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5144,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12005,7 +12047,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12013,6 +12055,13 @@
             "spell_id": 5144,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5144,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12087,7 +12136,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12095,6 +12144,13 @@
             "spell_id": 5145,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5145,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12169,7 +12225,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12177,6 +12233,13 @@
             "spell_id": 5145,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5145,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12258,7 +12321,7 @@
           {
             "spell_id": 8406,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12266,6 +12329,13 @@
             "spell_id": 5145,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5145,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12347,7 +12417,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12355,6 +12425,13 @@
             "spell_id": 5145,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5145,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12436,7 +12513,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12444,6 +12521,13 @@
             "spell_id": 8416,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8416,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12525,7 +12609,7 @@
           {
             "spell_id": 8407,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12533,6 +12617,13 @@
             "spell_id": 8416,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8416,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12614,7 +12705,7 @@
           {
             "spell_id": 8407,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12622,6 +12713,13 @@
             "spell_id": 8416,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8416,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12703,7 +12801,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12711,6 +12809,13 @@
             "spell_id": 8416,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8416,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12792,7 +12897,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12800,6 +12905,13 @@
             "spell_id": 8417,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8417,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12881,7 +12993,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12889,6 +13001,13 @@
             "spell_id": 8417,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8417,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12970,7 +13089,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12978,6 +13097,13 @@
             "spell_id": 8417,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8417,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13059,7 +13185,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13067,6 +13193,13 @@
             "spell_id": 8417,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8417,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13148,7 +13281,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13156,6 +13289,13 @@
             "spell_id": 10211,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10211,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13237,7 +13377,7 @@
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13245,6 +13385,13 @@
             "spell_id": 10211,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10211,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13326,7 +13473,7 @@
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13334,6 +13481,13 @@
             "spell_id": 10211,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10211,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13415,7 +13569,7 @@
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13423,6 +13577,13 @@
             "spell_id": 10212,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10212,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13504,7 +13665,7 @@
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13512,6 +13673,13 @@
             "spell_id": 10212,
             "name": "Arcane Missiles",
             "condition": "Arcane Missiles the moment Missile Barrage lights up.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10212,
+            "name": "Arcane Missiles",
+            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -27101,9 +27269,49 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 53,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1757,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
+            "icon": "spell_shadow_ritualofsacrifice",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 12,
+        "lines": [
+          {
+            "spell_id": 5171,
+            "name": "Slice and Dice",
+            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left.",
+            "icon": "ability_rogue_slicedice",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6760,
+            "name": "Eviscerate",
+            "condition": "Eviscerate at four or more combo points.",
+            "icon": "ability_rogue_eviscerate",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2589,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1757,
+            "name": "Sinister Strike",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27127,9 +27335,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2589,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1758,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27153,9 +27368,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2589,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1758,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27186,9 +27408,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2590,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1758,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27219,9 +27448,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2590,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1759,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27259,9 +27495,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2590,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1759,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27306,9 +27549,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2590,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1759,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27353,9 +27603,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2591,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1759,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27400,9 +27657,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2591,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1760,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27447,9 +27711,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2591,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1760,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27494,9 +27765,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 8721,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1760,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27541,9 +27819,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 8721,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8621,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27595,9 +27880,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 8721,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8621,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27649,9 +27941,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 8721,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8621,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27703,9 +28002,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11279,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8621,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27757,9 +28063,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11279,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11293,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27811,9 +28124,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11279,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11293,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27865,9 +28185,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11279,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11293,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27919,9 +28246,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11280,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11293,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -27973,9 +28307,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11280,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11294,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -28027,9 +28368,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11280,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11294,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -28081,9 +28429,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11281,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11294,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Mutilate.",
+            "condition": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29026,9 +29381,56 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 53,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1757,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
+            "icon": "spell_shadow_ritualofsacrifice",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 12,
+        "lines": [
+          {
+            "spell_id": 14278,
+            "name": "Ghostly Strike",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "icon": "spell_shadow_curse",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6760,
+            "name": "Eviscerate",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking, only before you have Death Mark: from 40, five points go into Death Mark while Rupture ticks.",
+            "icon": "ability_rogue_eviscerate",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5171,
+            "name": "Slice and Dice",
+            "condition": "Slice and Dice at three or more combo points while Rupture is ticking, when it is down or has under 3 seconds left.",
+            "icon": "ability_rogue_slicedice",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2589,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1757,
+            "name": "Sinister Strike",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29066,9 +29468,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2589,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1758,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29106,9 +29515,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2589,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1758,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29153,9 +29569,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2590,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1758,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29200,9 +29623,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2590,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1759,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29254,9 +29684,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2590,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1759,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29308,9 +29745,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2591,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1759,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29369,9 +29813,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2591,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1760,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29430,9 +29881,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2591,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1760,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29491,9 +29949,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 8721,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1760,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29552,9 +30017,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 8721,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8621,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29620,9 +30092,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 8721,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8621,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29688,9 +30167,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 8721,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8621,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29756,9 +30242,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11279,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8621,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29824,9 +30317,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11279,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11293,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29892,9 +30392,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11279,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11293,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -29960,9 +30467,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11279,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11293,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -30028,9 +30542,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11280,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11293,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -30096,9 +30617,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11280,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11294,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -30164,9 +30692,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11280,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11294,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -30232,9 +30767,16 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11281,
+            "name": "Backstab",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "icon": "ability_backstab",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11294,
             "name": "Sinister Strike",
-            "condition": "Sinister Strike only before you have Hemorrhage.",
+            "condition": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you.",
             "icon": "spell_shadow_ritualofsacrifice",
             "race_spell_ids": {}
           }
@@ -33365,7 +33907,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 939,
+            "spell_id": 913,
             "name": "Healing Wave",
             "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
@@ -33375,6 +33917,130 @@
       },
       {
         "level": 40,
+        "lines": [
+          {
+            "spell_id": 17354,
+            "name": "Mana Tide Totem",
+            "condition": "Mana Tide Totem when you drop below 25% mana: it restores mana to your whole party for 12 seconds.",
+            "icon": "spell_frost_summonwaterelemental",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408510,
+            "name": "Water Shield",
+            "condition": "Water Shield whenever it is down: each of its three globes returns 2% of your maximum mana when you are hit or when one of your heals crits.",
+            "icon": "ability_shaman_watershield",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6377,
+            "name": "Healing Stream Totem",
+            "condition": "Healing Stream Totem whenever your Water slot is empty: it heals your party every 2 seconds for 5 minutes.",
+            "icon": "inv_spear_04",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 16188,
+            "name": "Nature's Swiftness",
+            "condition": "Nature's Swiftness when the tank drops below 25%: your next Healing Wave becomes instant.",
+            "icon": "spell_nature_ravenform",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8005,
+            "name": "Healing Wave",
+            "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
+            "icon": "spell_nature_magicimmunity",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8010,
+            "name": "Lesser Healing Wave",
+            "condition": "Lesser Healing Wave when the tank drops below 30%: a 1.5 second heal for a tank that is falling fast.",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8010,
+            "name": "Lesser Healing Wave",
+            "condition": "",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8010,
+            "name": "Lesser Healing Wave",
+            "condition": "",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8010,
+            "name": "Lesser Healing Wave",
+            "condition": "",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8010,
+            "name": "Lesser Healing Wave",
+            "condition": "",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1064,
+            "name": "Chain Heal",
+            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
+            "icon": "spell_nature_healingwavegreater",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 913,
+            "name": "Healing Wave",
+            "condition": "Healing Wave when the tank drops below 60%.",
+            "icon": "spell_nature_magicimmunity",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 42,
         "lines": [
           {
             "spell_id": 17354,
@@ -33613,7 +34279,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 959,
+            "spell_id": 939,
             "name": "Healing Wave",
             "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
@@ -33623,6 +34289,130 @@
       },
       {
         "level": 46,
+        "lines": [
+          {
+            "spell_id": 17354,
+            "name": "Mana Tide Totem",
+            "condition": "Mana Tide Totem when you drop below 25% mana: it restores mana to your whole party for 12 seconds.",
+            "icon": "spell_frost_summonwaterelemental",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408510,
+            "name": "Water Shield",
+            "condition": "Water Shield whenever it is down: each of its three globes returns 2% of your maximum mana when you are hit or when one of your heals crits.",
+            "icon": "ability_shaman_watershield",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6377,
+            "name": "Healing Stream Totem",
+            "condition": "Healing Stream Totem whenever your Water slot is empty: it heals your party every 2 seconds for 5 minutes.",
+            "icon": "inv_spear_04",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 16188,
+            "name": "Nature's Swiftness",
+            "condition": "Nature's Swiftness when the tank drops below 25%: your next Healing Wave becomes instant.",
+            "icon": "spell_nature_ravenform",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8005,
+            "name": "Healing Wave",
+            "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
+            "icon": "spell_nature_magicimmunity",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10466,
+            "name": "Lesser Healing Wave",
+            "condition": "Lesser Healing Wave when the tank drops below 30%: a 1.5 second heal for a tank that is falling fast.",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10466,
+            "name": "Lesser Healing Wave",
+            "condition": "",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10466,
+            "name": "Lesser Healing Wave",
+            "condition": "",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10466,
+            "name": "Lesser Healing Wave",
+            "condition": "",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10466,
+            "name": "Lesser Healing Wave",
+            "condition": "",
+            "icon": "spell_nature_healingwavelesser",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "",
+            "icon": "spell_nature_riptide",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10622,
+            "name": "Chain Heal",
+            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
+            "icon": "spell_nature_healingwavegreater",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 939,
+            "name": "Healing Wave",
+            "condition": "Healing Wave when the tank drops below 60%.",
+            "icon": "spell_nature_magicimmunity",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 47,
         "lines": [
           {
             "spell_id": 17354,
@@ -135690,7 +136480,7 @@
           [
             3,
             2,
-            2
+            1
           ],
           [
             3,
@@ -135735,7 +136525,7 @@
           [
             3,
             2,
-            3
+            2
           ],
           [
             3,
@@ -135950,7 +136740,7 @@
           [
             3,
             2,
-            2
+            1
           ],
           [
             3,
@@ -135995,7 +136785,7 @@
           [
             3,
             2,
-            3
+            2
           ],
           [
             3,
@@ -137853,12 +138643,12 @@
           [
             1,
             4,
-            2
+            1
           ],
           [
             1,
             4,
-            2
+            1
           ],
           [
             1,
@@ -140972,8 +141762,8 @@
         },
         "30": {
           "reference": "ranged_attack_power",
-          "dps": 0.0763,
-          "weapon_dps": 0.9569
+          "dps": 0.0773,
+          "weapon_dps": 0.9698
         },
         "40": {
           "reference": "ranged_attack_power",
@@ -140982,8 +141772,8 @@
         },
         "50": {
           "reference": "ranged_attack_power",
-          "dps": 0.0898,
-          "weapon_dps": 1.0351
+          "dps": 0.0899,
+          "weapon_dps": 1.0362
         },
         "60": {
           "reference": "ranged_attack_power",
@@ -141006,12 +141796,12 @@
         "30": {
           "reference": "ranged_attack_power",
           "dps": 0.0692,
-          "weapon_dps": 0.9016
+          "weapon_dps": 0.902
         },
         "40": {
           "reference": "ranged_attack_power",
-          "dps": 0.083,
-          "weapon_dps": 1.0853
+          "dps": 0.0859,
+          "weapon_dps": 1.1236
         },
         "50": {
           "reference": "ranged_attack_power",
@@ -141225,33 +142015,33 @@
     },
     "priest-discipline": {
       "reference": "healing_power",
-      "dps": 0.2489,
+      "dps": 0.2267,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.1116,
+          "dps": 0.1193,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.1489,
+          "dps": 0.1373,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.1012,
+          "dps": 0.0967,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.0599,
+          "dps": 0.0549,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.078,
+          "dps": 0.0732,
           "weapon_dps": 0.0
         }
       }
@@ -141533,22 +142323,22 @@
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.3161,
+          "dps": 0.317,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.4471,
+          "dps": 0.4547,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.4614,
+          "dps": 0.4691,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.5062,
+          "dps": 0.5145,
           "weapon_dps": 0.0
         }
       }
@@ -142528,8 +143318,6 @@
     "20660": 24,
     "20661": 24,
     "20662": 24,
-    "20900": 20,
-    "20901": 20,
     "20902": 20,
     "20903": 20,
     "20904": 20,
