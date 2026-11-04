@@ -43,7 +43,7 @@ export const accountPageCopy = {
       : `Signed in as ${who}. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.`,
   /** Shown in the hero band instead of the handoff links when no character on the account
    *  has a build at all (spec 2026-09-22 §3.1). */
-  noBattlenetDataForRealm: 'Blizzard serves no data for this realm type yet.',
+  noBattlenetDataForRealm: 'Battle.net sends gear and talents after you next log out of the game.',
   /** "Your ratings" panel heading (spec §3.1). */
   yourRatingsLabel: 'Your ratings',
 } as const;

@@ -183,7 +183,7 @@ for (const size of SIZES) {
     }) => {
       await signedOut(page);
       await page.goto('/reports/sample');
-      await expect(page.getByTestId('report-title')).toHaveText('Beta night, 17 Sept 2026');
+      await expect(page.getByTestId('report-title')).toHaveText('Sample raid night, 17 Sept 2026');
       await expect(page.getByTestId('report-sample-note')).toHaveText(
         'A real beta night with the names changed. Level 10 to 30 players, so the numbers are small. Your own reports look like this.',
       );
