@@ -6,7 +6,7 @@ role: tank
 build: 'FS1:1.60.1.70755:druid:night-elf:0/5523033202310212551/051:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
-  [Stamina, Armor, Defense, Dodge, Strength, Agility, Attack power, Hit, Critical strike, Expertise]
+  [Defense, Stamina, Dodge, Agility, Armor, Hit, Critical strike, Strength, Attack power]
 description: 'Bear tanking in Forever: the build, the threat opener, Lacerate and Primal Bite, cooldowns, and the potions a bear can drink in form.'
 updated: 2026-11-02
 confidence: inferred
@@ -34,7 +34,7 @@ The bear tanks on health and armor, with Dodge as its only avoidance and Lacerat
 
 ### Strengths
 
-- Dire Bear Form multiplies your Stamina and Armor, and Heart of the Wild adds 20% Stamina on top
+- Dire Bear Form adds a flat block of health and multiplies the armor on your gear, and Heart of the Wild adds 20% Stamina on top
 - Primal Bite and Lacerate both carry high threat, so a bear holds a boss on very little rage
 - Defense on gear now works for a bear as it does for other tanks, and Thick Hide adds armor for every point
 - Potions, weapon stones and racials all work in Bear Form now, so you never shift to drink
@@ -61,7 +61,7 @@ The build is 45 points of Feral and 6 of Restoration. It tanks from level 10 to 
 - **Primal Bite** (1 point): the capstone. Weapon damage plus a bonus and very high threat, on a 6 second cooldown for 15 rage.
 - **Ferocity** (5 points): Maul, Swipe and Primal Bite 5 rage cheaper.
 - **Shredding Attacks** (3 points): Lacerate 3 rage cheaper.
-- **Savage Fury**, **Feral Instinct** and **Rend and Tear**: more damage, so more threat, from Maul and Swipe, and 10% more from your melee abilities while Lacerate bleeds the target.
+- **Savage Fury**, **Feral Instinct** and **Rend and Tear**: more damage, so more threat, from Maul and Swipe, and 15% more from your melee abilities while Lacerate bleeds the target.
 - **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and 5 rage on every crit.
 - **Leader of the Pack** (1 point): the raid's crit aura.
 - **Heart of the Wild** (5 points): 20% more Stamina in Bear Form.
@@ -85,13 +85,13 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 **Adds.** Swipe moves to the top on a pack, with Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.
 
-**Cooldowns.** Barkskin takes 20% off physical damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns rage into health and in Forever can heal you for your whole health bar given the rage; use it under half health with rage to spare, not at the pull. Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
+**Cooldowns.** Barkskin takes 20% off physical damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns rage into health over 10 seconds; use it under half health with rage to spare, not at the pull. Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
 
 **There is no Savage Defense in Forever.** Your mitigation is armor, Dodge, Barkskin and your healers.
 
 ## Stat priority
 
-Stamina is health, and Dire Bear Form and Heart of the Wild multiply it. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Dodge is the only avoidance you have. Defense lowers your chance to be crit and feeds Thick Hide, so it counts twice. Agility is Dodge, armor and crit at once. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Hit and expertise keep your Lacerate and Maul landing, which is threat, not survival.
+Stamina is health, and Heart of the Wild adds 20% to it in form. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Dodge is the only avoidance you have. Defense lowers your chance to be crit and feeds Thick Hide, so it counts twice. Agility is Dodge, armor and crit at once. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Hit keeps your Lacerate and Maul landing, which is threat, not survival.
 
 ## Best in slot
 
@@ -111,4 +111,4 @@ Skinning and Leatherworking, as for the cat: leather is your armor, and Leatherw
 
 ## Leveling
 
-Bear Form comes at 10 and Dire Bear Form at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate and Primal Bite come with the talents, so the build tanks every dungeon on the way up.
+Bear Form comes at 10 and Dire Bear Form at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate arrives at 25 and Primal Bite at 40, and until then Maul, Swipe and Demoralizing Roar hold a dungeon pack.

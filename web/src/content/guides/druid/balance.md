@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:druid:night-elf:5232220115101151/0/555301:'
 raidBuild: 'FS1:1.60.1.70755:druid:night-elf:5232220115501351/0/505003:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
-  [Intellect, Spell power, Nature power, Hit, Arcane power, Critical strike, Spell haste, Spell penetration]
+  [Spell power, Arcane power, Hit, Nature power, Critical strike, MP5, Intellect, Spirit, Spell haste, Spell penetration]
 description: 'Moonkin in Forever: the build, Eclipse with Wrath into Starfire, Moonfire and Insect Swarm upkeep, Innervate and mana.'
 updated: 2026-11-02
 confidence: inferred
@@ -94,7 +94,7 @@ From Restoration, Nature's Focus saves your Starfire from pushback 70% of the ti
 
 ## Stat priority
 
-Spell power is damage on every cast. Hit is worth more to you than to most casters: a resisted Starfire is a 3 second cast for nothing, and a resisted Wrath is two lost Eclipse charges. Crit pays twice, through Vengeance and Nature's Grace. Intellect is your mana pool and a little crit.
+Spell power is damage on every cast. Hit is worth more to you than to most casters: a resisted Starfire is a 3 second cast for nothing. Arcane damage is nearly as good as spell power, because Starfire and Moonfire are Arcane; Nature damage only feeds Wrath and Insect Swarm. Crit pays twice, through Vengeance and Nature's Grace. Intellect is your mana pool and a little crit.
 
 ## Best in slot
 
