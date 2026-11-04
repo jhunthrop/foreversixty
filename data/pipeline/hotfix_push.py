@@ -365,6 +365,28 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def require_layered(raw: Path, tables: Iterable[str]) -> dict[str, str]:
+    """The layered sha256 of each of `tables` the push covers, read from the layer record.
+
+    Fails when `raw/` was never layered, or when a pushed table is not the file the layer
+    wrote: on 2026-11-03 spelltips ran while `fetch` was still reading 1.60.1.70755's push
+    and published shipped-only tooltips (Slam's 18 s cooldown against the pushed 15 s)."""
+    record_path = raw / PUSH_DIR / LAYER_RECORD
+    if not record_path.exists():
+        raise SystemExit(f"no {record_path}: {raw} has not had its hotfix push layered yet")
+    layered = json.loads(record_path.read_text(encoding="utf-8")).get("tables", {})
+    shas: dict[str, str] = {}
+    for table in tables:
+        path = raw / f"{table}.csv"
+        if table not in PUSH_TABLES or not path.exists():
+            continue
+        sha = layered.get(table, {}).get("sha256")
+        if sha is None or _sha256(path) != sha:
+            raise SystemExit(f"{path} is not the table the hotfix layer wrote; re-run the layer")
+        shas[table] = sha
+    return shas
+
+
 def _header(path: Path) -> list[str]:
     with path.open(newline="", encoding="utf-8") as f:
         return next(csv.reader(f), [])
