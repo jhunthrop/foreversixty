@@ -67,15 +67,15 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **On the tank.** Prayer of Mending every time it is ready. Renew always up at rank 7 or higher. Go up to the top rank on a tank who is dropping through it.
 
-**The filler is Greater Heal** at your top rank. Rank 2 and 3 were learned late enough to keep your whole healing bonus and cost less, so step down to rank 3 or 2 when the top rank would overheal. Rank 1 already loses part of its bonus at 60. In a dungeon group or on bare gear, where your bonus is small, Heal rank 4 is the cheaper cast. With Divine Fury both are 2.5 second casts.
+**The filler is Greater Heal** at your top rank. When it would overheal or your mana runs short, step down to rank 1: it costs far less, and though it has lost a little of your healing bonus by 60, it heals more for its mana than rank 2 or 3, so leave those two off your bars. Heal rank 4 is cheaper still, but it keeps only about half your bonus, so it is the last step down. With Divine Fury every one of them is a 2.5 second cast.
 
-**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on.
+**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on: Greater Heal rank 1 is the one to keep.
 
 **Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Greater Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
 
 **Prayer of Healing.** Cast it when three or more players in one group are missing a fair chunk. In Forever it heals the target and the target's party, so target a member of whichever group took the hit: you are not limited to your own party.
 
-**Overheal.** Start Greater Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Greater Heal; Prayer of Mending and Renew cover those.
+**Overheal.** Start Greater Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with the top rank; step down to rank 1, or let Prayer of Mending and Renew cover them.
 
 **Inner Focus.** Spend it on a Prayer of Healing, your most expensive heal, or on a Greater Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
 
@@ -119,4 +119,4 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early: a level 30 priest who casts Heal rank 2 instead of rank 3 finishes the dungeon with mana to spare.
+From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early: a level 30 priest who casts Heal rank 2 instead of rank 3 finishes the dungeon with mana to spare. Renew on the tank works the same way: rank 4 from 40, rank 5 from 45 and rank 6 from 52 heal nearly as much for far less mana, and rank 7 or higher takes over at 60. Greater Heal is the same story: keep rank 1 as the filler until you learn rank 4 at 58, because ranks 2 and 3 cost a lot more mana for little extra healing.

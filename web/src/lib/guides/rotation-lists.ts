@@ -239,11 +239,16 @@ export function rotationListsFrom(
   role: GuideRole = 'dps',
   /** What the build's talents take off a spell's cast time, by spell name (`talentCastTimeCuts`). */
   castTimeCuts: ReadonlyMap<string, number> = new Map(),
+  /** Whether the described build makes a cast with these gates (`buildRunsGates`); a cast it
+   *  does not make is left off its card. */
+  buildRuns: (gates: readonly AplGate[]) => boolean = () => true,
 ): RotationLists {
-  const priority = lines.map((line) => {
-    const item = lineItem(line);
-    return { ...item, clause: withTalentGates(item.clause, line.gates ?? [], spellFacts) };
-  });
+  const priority = lines
+    .filter((line) => buildRuns(line.gates ?? []))
+    .map((line) => {
+      const item = lineItem(line);
+      return { ...item, clause: withTalentGates(item.clause, line.gates ?? [], spellFacts) };
+    });
 
   // The opener is the APL's pre-pull casts and nothing else: with none, there is no opener to
   // print (a row that is not a spell is not an opener step).
@@ -252,7 +257,7 @@ export function rotationListsFrom(
     priority.filter((item) => item.icon !== undefined).map((item) => [item.name, item.icon]),
   );
   const opener: RotationItem[] = [];
-  const casts = prepullCasts(apl);
+  const casts = prepullCasts(apl).filter((cast) => buildRuns(cast.gates));
   for (const [index, cast] of casts.entries()) {
     const facts = spellFacts(cast.spellId);
     if (facts === undefined || !canGoOutBeforePull(cast, casts.slice(0, index))) continue;

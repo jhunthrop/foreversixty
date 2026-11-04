@@ -79,7 +79,7 @@ The build is 10 Holy, 33 Protection and 8 Retribution.
 
 **Toughness** (10% armor from items) and a point of **Divine Intellect** fill the tree. In Retribution, **Deflection** is 5% parry, the only parry talent a paladin has, and **Conviction** is 6% crit on everything you do. In Holy, **Divine Strength** is 10% Strength and **Improved Seals** adds 15% to Seal of Fury and its Judgement.
 
-Left out: Reckoning (extra attacks after a block or a crit, worth less than Conviction), Stoicism, Guardian's Favor and Improved Hammer of Justice. Pick those up for PvP or utility. There is no Blessing of Sanctuary in Forever, so the tree gives you no blessing of your own.
+Left out: Reckoning (extra attacks after a block or a crit; it adds a little threat, but paying for it with Anticipation's Defense gets you killed on hard pulls), Stoicism, Guardian's Favor and Improved Hammer of Justice. Pick those up for PvP or utility. There is no Blessing of Sanctuary in Forever, so the tree gives you no blessing of your own.
 
 ## Rotation and priority
 
@@ -120,7 +120,7 @@ Defense takes hits away and lowers the boss's chance to crit you. Stamina is you
 
 ## Professions
 
-Mining and Blacksmithing make plate, shields and the tanking weapons. Engineering gives you explosives for trash threat. With Alchemy, Elixir of Holy Power adds to every Holy threat button you have. First Aid is free, and you will use bandages between pulls while leveling.
+Mining and Blacksmithing make plate, shields and the tanking weapons. Engineering gives you explosives for trash threat. With Alchemy, Elixir of Holy Power adds to Holy Shield, Holy Strike, Seal of Fury, your Judgements and Consecration. Hammer of the Righteous hits off your weapon, so the elixir does nothing for it. First Aid is free, and you will use bandages between pulls while leveling.
 
 ## Leveling
 

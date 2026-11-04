@@ -2,7 +2,7 @@
 title: Warlock in Forever
 classSlug: warlock
 description: 'The Forever warlock: three specs, banes and curses in separate slots, DoTs that crit, the new talents, the races, and what a raid asks of you.'
-updated: 2026-11-03
+updated: 2026-11-04
 confidence: single-source
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -26,7 +26,7 @@ Warlock is a ranged caster that pays for mana with health through Life Tap, keep
 - **New talents.** Malevolence (Shadow crit), Pandemic, Wrack (a 6 second channel), Decimation (Soul Fire below 35%), Demonic Pact (keep the Imp's sacrifice with another demon out), Shadow and Flame, Incinerate and Bane of Havoc. Smaller new picks fill the trees: Demonic Knowledge (spell damage equal to your level with a demon out), Soul Harvest, Improved Drains, Demonic Aegis, Demonic Energies, Molten Skin and Fire and Brimstone.
 - **The sacrifices swapped schools.** The Imp's sacrifice now raises Shadow damage and the Succubus' raises Fire.
 - **Improved Shadow Bolt is your own.** Its 20% applies to your Shadow damage only, not the raid's.
-- **Your demon scales from you** and takes no raid buffs except Heart of the Lion, the hunter aura, which reaches everyone near the hunter, your demon included. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.
+- **Your demon scales from you.** The raid's group buffs skip it: Prayer of Fortitude, Gift of the Wild, Arcane Brilliance, the Greater Blessings, Battle Shout, and the Strength of Earth, Grace of Air and Windfury totems. Heart of the Lion, the hunter aura, is the exception: it reaches everyone near the hunter, your demon included. Blood Pact and a shaman's resistance totems still reach it too, but a paladin's Devotion and resistance auras do not. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.
 - **Portal of Summoning** is new at 60: you and two others open it, and then two people at the portal can summon any party or raid member. It costs five Soul Shards and has a one hour cooldown.
 - **No Unstable Affliction and no Haunt.** No trainer or talent teaches either one, so your DoTs are Corruption, Immolate, your bane and, for Affliction, Siphon Life.
 

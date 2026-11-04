@@ -104,7 +104,7 @@ Your faction picks your race: Night Elf on the Alliance, Tauren on the Horde, an
 
 ## Professions
 
-Skinning and Leatherworking, as for the cat: leather is your armor, and Leatherworking makes it. Alchemy keeps you in Stoneshield and Mighty Rage Potions.
+Nothing in your raid set binds on pickup, so no profession is needed for it: the Leatherworking and Tailoring pieces bind when equipped and can be bought. Much of the 20 to 50 leather in your table, the Defender's, Brawler's and Warden's pieces, binds when picked up, so a leveling bear needs Leatherworking for it. Skinning and Leatherworking pay for themselves, and Alchemy keeps you in Stoneshield and Mighty Rage Potions.
 
 ## Leveling
 

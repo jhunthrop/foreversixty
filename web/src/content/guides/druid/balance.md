@@ -112,7 +112,7 @@ Potions work in Moonkin Form in Forever, so you never shift out to drink. On a l
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren is the free Horde pick: Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, so its racials bring survival and a stun, not damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are. Press it when your mana starts to run low.
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren is the free Horde pick: Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, so its racials bring survival and a stun, not damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour: Attuned doubles Read Leyline's regeneration wherever you are, but entering a raid removes it for good. Press it when your mana starts to run low. Innervate replaces it, so press it between Innervates.
 
 ## Professions
 

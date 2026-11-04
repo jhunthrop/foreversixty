@@ -5,6 +5,7 @@ import gg.foreversixty.app.bis.BisRange
 import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemTooltipModel
+import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.model.ItemUseSource
 import gg.foreversixty.app.model.ItemUseSpec
 import gg.foreversixty.app.network.ApiError
@@ -90,6 +91,17 @@ class ItemPageTest {
         val tooltip = load(sash, raid).loaded().tooltip
         assertEquals(listOf("+7 Stamina", "+10 Intellect", "+10 Shadow Resistance"), tooltip.stats)
         assertEquals(listOf("Equip: Increases damage and healing done by magical spells and effects by up to 14."), tooltip.equipLines)
+    }
+
+    // Expertise rating (ItemSparse stat 37; Waywatcher Gauntlets 240081 carry 20) reaches the items
+    // JSON since sim round 16, and the site's tooltip prints it since round 17; the apps dropped it.
+    @Test fun `expertise rating prints as a white line after hit, as the site's tooltip does`() = runTest {
+        val request = ItemTooltipRequest(cape, ItemLook(cape), SearchTestData.BUILD, "shaman", null, null, null, null, null, null)
+        val sources = requireNotNull(SearchTestSource().tooltip(request))
+        val item = requireNotNull(sources.items[cape])
+        val withExpertise = item.copy(stats = item.stats + mapOf("hit" to 10, "expertise" to 20))
+        val tooltip = ItemTooltipModel.build(request, sources.copy(items = sources.items + (cape to withExpertise)), res)
+        assertEquals(listOf("+10 Hit", "+20 Expertise"), tooltip.stats.takeLast(2))
     }
 
     @Test fun `one spell stating equal spell power and healing is one sentence`() {

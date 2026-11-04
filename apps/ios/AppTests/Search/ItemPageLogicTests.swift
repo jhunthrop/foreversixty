@@ -135,6 +135,28 @@ struct ItemPageLogicTests {
         #expect(pauldrons.setName != nil)
     }
 
+    // Expertise rating (ItemSparse stat 37; Waywatcher Gauntlets 240081 carry 20) reaches the items
+    // JSON since sim round 16, and the site's tooltip prints it since round 17; the apps dropped it.
+    @Test("expertise rating prints as a white line after hit, as the site's tooltip does")
+    func expertise() throws {
+        let file = BisTestData.repo.appending(path: "data/builds/\(SearchTestData.build)/items/shaman.json")
+        let root = try #require(JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any])
+        let rows = try #require(root["items"] as? [[String: Any]])
+        var cape = try #require(rows.first { ($0["id"] as? Int) == SearchTestData.cape })
+        var stats = cape["stats"] as? [String: Int] ?? [:]
+        stats["hit"] = 10
+        stats["expertise"] = 20
+        cape["stats"] = stats
+        let item = try WireFormat.decoder().decode(Item.self, from: JSONSerialization.data(withJSONObject: cape))
+        let request = ItemTooltipRequest(
+            itemID: item.id, fallback: HomeItemLook(id: item.id, name: nil, quality: nil, icon: nil, itemLevel: nil),
+            build: "b", classSlug: "shaman", spec: nil, specName: nil, band: nil, bandLabel: nil, preset: nil,
+            faction: nil, sourceLine: nil, wornID: nil
+        )
+        let model = ItemTooltipModel.build(request, sources: ItemTooltipSources(items: [item.id: item], sets: [], bis: nil))
+        #expect(Array(model.stats.suffix(2)) == ["+10 Hit", "+20 Expertise"])
+    }
+
     @Test("a rating stat is an Equip sentence only when percent_stats states the same figure")
     func percentStats() {
         #expect(ItemVocabulary.percentLine("crit", value: 1) == "Equip: Improves your chance to get a critical strike by 1%.")

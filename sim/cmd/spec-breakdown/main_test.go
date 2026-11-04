@@ -327,19 +327,19 @@ func TestBuildRequestTakesTheRace(t *testing.T) {
 	}
 }
 
-// A -rotation file casts the race's rank choices: Shadow at 45 casts Mind Blast
-// rank 4 (8104) as an Undead and rank 3 (8103) as a Dwarf (race-keyed 40-49 rows;
-// round 15 dropped the 50-59 row under the level-gap rule).
+// A -rotation file casts the race's rank choices: Shadow at 40 casts Mind Blast
+// rank 4 (8104) as an Undead and the top rank, 6 (8106), as a Gnome (race-keyed
+// rows re-judged at sim-accuracy round 18).
 func TestLoadRotationFollowsTheRace(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "rot.json")
 	writeFile(t, path, `{"rotation":{"priorityList":[{"action":{"castSpell":{"spellId":{"spellId":10947}}}}]}}`)
-	for race, want := range map[string]int32{"undead": 8104, "dwarf": 8103} {
-		rot, err := loadRotation(path, "priest-shadow", "priest", "bare", race, 45)
+	for race, want := range map[string]int32{"undead": 8104, "gnome": 8106} {
+		rot, err := loadRotation(path, "priest-shadow", "priest", "bare", race, 40)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if got := rot.GetPriorityList()[0].GetAction().GetCastSpell().GetSpellId().GetSpellId(); got != want {
-			t.Errorf("a %s at 45 casts Mind Blast %d, want %d", race, got, want)
+			t.Errorf("a %s at 40 casts Mind Blast %d, want %d", race, got, want)
 		}
 	}
 	if _, err := loadRotation(path, "priest-shadow", "priest", "bare", "horde", 50); err == nil {

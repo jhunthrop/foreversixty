@@ -370,3 +370,38 @@ For the data lane:
 
 Verdict: NOT zero, so round 15 is needed.
 Rendered review: wow-player SHIP for all eight changed classes after one druid MUST (Feral leather binding) was fixed.
+
+## Round 15 (client 1.60.1.70755, 2026-11-04, launch state)
+
+Built on main 4600b7d82 (round 14 plus sim round 17), engine pin b2c4a2d05. The audits were relaunched after an API rate limit and run five at a time on the shared quota.
+
+Audit CONFIRMED by class: rogue 2, priest 1, shaman 1, warlock 1, hunter 1, druid 1, paladin 1, warrior 0, mage 0. Total 8. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1, 18, 8.
+
+Almost every finding is new text from sim round 17 or a round 14 fix:
+
+- Aimed Shot rank 1: the reason is now damage per mana across a chain of pulls, not "almost as hard" or "a quarter of the mana".
+- Demon raid buffs: protective party auras do reach the demon.
+- Backstab card notes no longer credit Opportunity or Puncturing Wounds before the build takes them.
+- Shadow healing-gear rule: Spirit is now in it.
+- Enhancement hit: the two caps (9% melee, 16% spells) are named.
+- Bear Professions: no longer points at the cat line.
+- Protection paladin Elixir of Holy Power: it does nothing for Hammer of the Righteous.
+- Reckoning: the reason it is left out is now the measured one.
+
+Open, with the sim lane:
+
+- Marksmanship Aimed Shot ranks at 53 to 59.
+- Survival Lone Wolf against the pet at 10,000 iterations and two seeds.
+- Affliction races with Heart of the Lion on the demon.
+- Arcane "from 22" Missiles.
+- Reckoning against Conviction plus Deflection.
+- Seal of Righteousness rank 8 has a 0.0 spell-power coefficient in the client.
+
+Open, with the data lane:
+
+- Subtlety level 20 mace.
+- Frost level 60 BiS on the old build.
+- Enhancement hit weight.
+
+Verdict: NOT zero, so round 16 is needed.
+Rendered review: wow-player SHIP for all seven changed classes after four page-text MUSTs were fixed (Combat dagger from 20, demon auras by name, bear professions scoped to the raid set, Reckoning trade).

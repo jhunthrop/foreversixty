@@ -4,12 +4,22 @@
      to try another name, and the way to get a character onto the site. The browser title says
      the same, so a tab or a bookmark never claims the character exists. -->
 <script lang="ts">
+  import { battlenetStartUrl } from '../lib/account/api';
   import { wireSearchForm } from '../lib/character-search-dom';
-  import { REGIONS, RULESETS, type CharacterPath } from '../lib/characters';
+  import {
+    characterHref,
+    characterKey,
+    REGIONS,
+    rulesetLabel,
+    RULESETS,
+    type CharacterPath,
+  } from '../lib/characters';
+  import { hasSessionHint } from '../lib/page-load';
+  import type { CharacterSuggestion } from '../lib/character-search-api';
   import { characterHeaderCopy } from '../lib/character-profile';
   import { homeCharacterSearchCopy as lookup } from '../lib/home-landing-copy';
   import { scoreCopy } from '../lib/score/copy';
-  import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import Select from './ui/Select.svelte';
 
   /** `known`: the site holds this character but has nothing on it, and the viewer does not hold it
@@ -21,6 +31,27 @@
 
   $effect(() => {
     document.title = known ? `${name} · Forever Sixty` : scoreCopy.notFoundTitle;
+  });
+
+  /** The same name the site holds on another ruleset or region (a lookup that kept the wrong
+   *  default): read once, on the client, never for a character the site already holds here. */
+  let elsewhere = $state<CharacterSuggestion[]>([]);
+  /** The search has answered (a match list, or none). */
+  let searched = $state(false);
+  const signedIn = typeof document !== 'undefined' && hasSessionHint();
+  const here = characterKey(path.region, path.ruleset, path.slug);
+  $effect(() => {
+    if (known || name.trim() === '') return;
+    const controller = new AbortController();
+    void import('../lib/character-search-api')
+      .then(({ searchCharacters }) => searchCharacters(name, { limit: 5, signal: controller.signal }))
+      .then((rows) => {
+        const want = name.trim().toLowerCase();
+        elsewhere = rows.filter((row) => row.key !== here && row.name.toLowerCase().startsWith(want));
+        searched = true;
+      })
+      .catch(() => {});
+    return () => controller.abort();
   });
 
   /** Routes the form's submit to the profile it names, as the home page's lookup does. */
@@ -40,6 +71,52 @@
         : scoreCopy.notFoundLine(name, characterHeaderCopy.chip(path.ruleset, path.region))}
     </p>
   </header>
+  {#if !known && searched && elsewhere.length === 0}
+    <p class="text-muted -mt-3 text-[14px]" data-testid="character-not-found-nowhere">
+      {scoreCopy.notFoundNowhere}
+    </p>
+  {/if}
+  {#if elsewhere.length > 0}
+    <div class="flex flex-col gap-2" data-testid="character-not-found-elsewhere">
+      <p class="quiet-label">{scoreCopy.notFoundElsewhere}</p>
+      <ul class="flex flex-col gap-2">
+        {#each elsewhere as row (row.key)}
+          <li>
+            <a
+              class="{PRIMARY_BUTTON_FIXED} w-full justify-between px-4 md:w-auto"
+              href={characterHref(row.region, row.ruleset, row.name)}
+            >
+              <span>{row.name}</span>
+              <span class="text-[13px] font-semibold tracking-normal normal-case opacity-75"
+                >{rulesetLabel(row.ruleset)} {row.region.toUpperCase()}</span
+              >
+            </a>
+          </li>
+        {/each}
+      </ul>
+    </div>
+  {/if}
+  {#if !known || !signedIn}
+    <div
+      class="border-line-warm bg-raised rounded-card flex flex-col items-start gap-3 border p-4"
+      data-testid="character-not-found-signin"
+    >
+      {#if signedIn}
+        <p class="text-[14px]">{scoreCopy.notFoundSignedIn}</p>
+      {:else}
+        <p class="text-[14px]">{known ? scoreCopy.knownYours : scoreCopy.notFoundNewCharacter}</p>
+        <a
+          class="{elsewhere.length > 0
+            ? SECONDARY_BUTTON_FIXED
+            : PRIMARY_BUTTON_FIXED} w-full justify-center px-6 md:w-auto"
+          href={battlenetStartUrl('/account')}
+          data-testid="character-not-found-signin-button"
+        >
+          {scoreCopy.notFoundSignIn}
+        </a>
+      {/if}
+    </div>
+  {/if}
   <form
     use:wire
     class="grid grid-cols-2 gap-3 md:grid-cols-[minmax(0,1fr)_112px_160px_auto] md:items-end"

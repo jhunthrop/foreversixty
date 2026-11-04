@@ -145,6 +145,7 @@
     <string name="items_stat_spirit">Spirit</string>
     <string name="items_stat_crit">Crit</string>
     <string name="items_stat_hit">Hit</string>
+    <string name="items_stat_expertise">Expertise</string>
     <string name="items_stat_spellPower">Spell power</string>
     <string name="items_stat_healing">Healing</string>
     <string name="items_stat_attackPower">Attack power</string>
