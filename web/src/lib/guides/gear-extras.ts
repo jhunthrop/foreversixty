@@ -5,7 +5,10 @@
 // stats this spec's own level 60 weights value (stat-weighted, flat stats only; an enchant that
 // grants crit, hit or haste is not scored because those weights are per rating point and the
 // enchant data does not say which unit it is in). Enchants of a later phase and class-locked
-// ones are left out.
+// ones are left out, and an enchant is offered only for the level 60 pick it can go on, by the
+// client's own rule (`enchantFits`: its spell's SpellEquippedItems class, subclass and
+// inventory-type masks): no weapon enchant on a held-in-off-hand item, no two-hand enchant on a
+// one-hander, a shield enchant only on a shield.
 //
 // Consumables: the ones the sim's raid preset gives this spec at level 60, read from the source
 // of truth the sim itself runs (sim/request/raid-consumes.json, data/curated/presets.json
@@ -20,7 +23,7 @@ import { repoRoot } from '../data/build-files';
 import { bandEntry } from '../bis/load';
 import { SLOT_DISPLAY_LABELS } from '../bis/slot-display-labels';
 import type { Slot } from '../planner/types';
-import { buildFile, readBuildJson } from './build-files';
+import { buildFile, buildItemCatalog, readBuildJson, type CatalogItem } from './build-files';
 import { factionForFirstRace, rankedBisFile } from './class-dps';
 import { guidesCopy } from './copy';
 import type { BisBand, BisStatWeight } from '../bis/types';
@@ -35,6 +38,32 @@ export interface EnchantRecord {
   classes: string[];
   stats: Record<string, number>;
   phase: number;
+  /** The client's rule for what the enchant goes on (`enchantFits`): ItemClass, -1 for any. */
+  equipped_item_class: number;
+  /** ItemSubClass bits; 0 for any. */
+  equipped_item_subclass_mask: number;
+  /** InventoryType bits; 0 for any. */
+  equipped_inventory_type_mask: number;
+}
+
+/** What the client checks an item by when an enchant is applied to it. */
+export type EnchantTarget = Pick<CatalogItem, 'class_id' | 'subclass_id' | 'inventory_type'>;
+
+/** SpellEquippedItems' "any item class". */
+const ANY_ITEM_CLASS = -1;
+
+function maskAllows(mask: number, bit: number): boolean {
+  return mask === 0 || (mask & (1 << bit)) !== 0;
+}
+
+/** The client's rule: the item's class is the enchant's, and its subclass and inventory type
+ *  are among the ones the enchant's masks name (an empty mask names every one). */
+export function enchantFits(record: EnchantRecord, item: EnchantTarget): boolean {
+  return (
+    (record.equipped_item_class === ANY_ITEM_CLASS || record.equipped_item_class === item.class_id) &&
+    maskAllows(record.equipped_item_subclass_mask, item.subclass_id) &&
+    maskAllows(record.equipped_inventory_type_mask, item.inventory_type)
+  );
 }
 
 export interface EnchantRow {
@@ -122,12 +151,8 @@ export function enchantScore(
 
 export interface EnchantContext {
   classSlug: string;
-  /** The level 60 main hand is two-handed. */
-  twoHanded: boolean;
-  /** The level 60 off hand is a shield. */
-  shield: boolean;
-  /** The level 60 off hand holds an item. */
-  hasOffHand: boolean;
+  /** The level 60 pick in each slot; a slot with none gets no enchant row. */
+  items: Readonly<Partial<Record<string, EnchantTarget>>>;
 }
 
 /** The order the table lists slots in. */
@@ -156,17 +181,11 @@ export function pickEnchants(
   for (const record of records) {
     if (record.phase > LATEST_PHASE || record.item_types.includes('kit')) continue;
     if (record.classes.length > 0 && !record.classes.includes(context.classSlug)) continue;
-    const types = record.item_types;
-    const forWeapon = types.includes('normal') || (types.includes('two_hand') && context.twoHanded);
-    const forShield = types.includes('shield') && context.shield;
     const score = enchantScore(record.stats, byStat);
     if (score <= 0) continue;
     for (const slot of record.slots) {
-      if (slot === 'main_hand' && !forWeapon) continue;
-      if (slot === 'off_hand') {
-        if (!context.hasOffHand || !(forShield || (types.includes('normal') && !context.shield))) continue;
-      }
-      if (slot !== 'main_hand' && slot !== 'off_hand' && !types.includes('normal')) continue;
+      const item = context.items[slot];
+      if (item === undefined || !enchantFits(record, item)) continue;
       const current = best.get(slot);
       if (current === undefined || score > current.score) best.set(slot, { score, record });
     }
@@ -345,7 +364,7 @@ export function loadGearExtras(
   classSlug: string,
   spec: string,
   recommendedRaces: readonly string[],
-  hands: { twoHanded?: boolean; shield?: boolean; hasOffHand?: boolean },
+  items: EnchantContext['items'],
 ): GearExtras | undefined {
   const file = rankedBisFile(build, spec);
   const faction = factionForFirstRace(classSlug, recommendedRaces);
@@ -356,20 +375,16 @@ export function loadGearExtras(
   const simBuffs =
     readBuildJson<{ entries: Record<string, SimBuffEntry> }>(build, 'simbuffs.json')?.entries ?? {};
   return {
-    enchants: pickEnchants(records, band.weights, {
-      classSlug,
-      twoHanded: hands.twoHanded ?? false,
-      shield: hands.shield ?? false,
-      hasOffHand: hands.hasOffHand ?? false,
-    }),
+    enchants: pickEnchants(records, band.weights, { classSlug, items }),
     consumables: consumableRows(simRaidConsumes(spec, simBuffs), simBuffs, (icon) =>
       existsSync(buildFile(build, 'icons', `${icon}.webp`)),
     ),
   };
 }
 
-/** The guide's tables, for the hands its level 60 picks hold: a two-handed weapon takes a
- *  two-hand enchant, a shield a shield enchant, an empty off hand none. */
+/** The guide's tables, for the items its level 60 picks are: each slot's enchant is one the
+ *  client lets go on that item (a two-hander takes a two-hand enchant, a shield a shield
+ *  enchant, a held-in-off-hand item no weapon enchant, an empty slot none). */
 export function guideGearExtras(
   build: string,
   classSlug: string,
@@ -378,11 +393,12 @@ export function guideGearExtras(
   bis: GuideBis | undefined,
 ): GearExtras | undefined {
   const top = bis?.panels.find((p) => p.faction === bis.defaultFaction && p.band === bis.defaultBand);
-  const mainHand = top?.rows.find((row) => row.slot === 'main_hand');
-  const offHand = top?.rows.find((row) => row.slot === 'off_hand');
-  return loadGearExtras(build, classSlug, spec, recommendedRaces, {
-    twoHanded: mainHand?.typeLabel === 'Two-Handed Weapon',
-    shield: offHand?.typeLabel === 'Shield',
-    hasOffHand: offHand !== undefined && !offHand.empty,
-  });
+  const catalog = buildItemCatalog(build);
+  const items = Object.fromEntries(
+    (top?.rows ?? []).flatMap((row) => {
+      const item = row.empty || row.itemId === undefined ? undefined : catalog.get(row.itemId);
+      return item === undefined ? [] : [[row.slot, item] as const];
+    }),
+  );
+  return loadGearExtras(build, classSlug, spec, recommendedRaces, items);
 }

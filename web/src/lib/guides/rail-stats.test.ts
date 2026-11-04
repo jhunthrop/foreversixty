@@ -1,6 +1,6 @@
 // web/src/lib/guides/rail-stats.test.ts
 import { describe, expect, it } from 'vitest';
-import { railStatRows, railStatValueText } from './rail-stats';
+import { railStatRows, railStatValueText, rankedStatLabels } from './rail-stats';
 import { bandEntry, loadBisFile } from '../bis/load';
 import type { BisStatWeight } from '../bis/types';
 import { statLabelForSpec } from '../sim/weights-display';
@@ -15,7 +15,10 @@ describe('railStatRows', () => {
     const band = bandEntry(file, 60, 'alliance');
     if (band === undefined) throw new Error('band 60 alliance missing');
 
-    const rows = railStatRows(STAT_PRIORITY, band.weights, 'warrior-fury', band.haste_scale_factor ?? null);
+    const rows = railStatRows(STAT_PRIORITY, band.weights, 'warrior-fury', {
+      scaleFactor: band.haste_scale_factor ?? null,
+      onItems: true,
+    });
     const nonHaste = rows
       .filter((row) => !row.perPercent && row.value !== undefined)
       .map((row) => row.value!);
@@ -31,7 +34,10 @@ describe('railStatRows', () => {
     const band = bandEntry(file, 60, 'alliance');
     if (band === undefined) throw new Error('band 60 alliance missing');
 
-    const rows = railStatRows(STAT_PRIORITY, band.weights, 'warrior-fury', band.haste_scale_factor ?? null);
+    const rows = railStatRows(STAT_PRIORITY, band.weights, 'warrior-fury', {
+      scaleFactor: band.haste_scale_factor ?? null,
+      onItems: true,
+    });
     // Every written stat is kept; the order is a property of the data, never pinned.
     expect(rows.map((row) => row.label).sort()).toEqual([...STAT_PRIORITY].sort());
     const perPoint = rows.filter((row) => !row.perPercent && row.value !== undefined);
@@ -68,7 +74,10 @@ describe('railStatRows', () => {
       { stat: 'mp5', weight: 0.05, error: 0.3, insignificant: false, scale_factor: 0.05 },
       { stat: 'spell_haste', weight: -3.5, error: 0.64, insignificant: false, scale_factor: -6.4 },
     ];
-    const rows = railStatRows(['Spell haste', 'Spirit', 'MP5', 'Spell power'], weights, 'mage-fire', -6.4);
+    const rows = railStatRows(['Spell haste', 'Spirit', 'MP5', 'Spell power'], weights, 'mage-fire', {
+      scaleFactor: -6.4,
+      onItems: true,
+    });
     const byLabel = new Map(rows.map((row) => [row.label, row]));
     expect(byLabel.get('Spirit')!.reading).toBe('not-significant');
     expect(byLabel.get('MP5')!.reading).toBe('not-significant');
@@ -95,7 +104,10 @@ describe('railStatRows', () => {
       if (file === null) continue;
       for (const band of file.bands.filter((entry) => entry.band === 60)) {
         const labels = band.weights.map((w) => statLabelForSpec(w.stat, spec));
-        const rows = railStatRows(labels, band.weights, spec, band.haste_scale_factor ?? null);
+        const rows = railStatRows(labels, band.weights, spec, {
+          scaleFactor: band.haste_scale_factor ?? null,
+          onItems: band.haste_on_items ?? true,
+        });
         for (const row of rows) {
           if (row.value !== undefined) expect(row.value).toBeGreaterThanOrEqual(0);
           expect(railStatValueText(row)).not.toMatch(/^-/);
@@ -113,5 +125,57 @@ describe('railStatRows', () => {
     const rows = railStatRows(['Not a real stat'], [], 'warrior-fury');
     expect(rows).toHaveLength(1);
     expect(rows[0]!.value).toBeUndefined();
+  });
+
+  it('reads haste no item of the band carries as Not on any item, after the ranked stats', () => {
+    const weights: BisStatWeight[] = [
+      { stat: 'spell_power', weight: 1, error: 0.01, scale_factor: 1, dps_per_point: 0.5 },
+      { stat: 'spell_haste', weight: 4.9, error: 0.4, scale_factor: 16 },
+      { stat: 'spirit', weight: 0.5, error: 0.9 },
+    ];
+    const rows = railStatRows(['Spell haste', 'Spirit', 'Spell power'], weights, 'priest-shadow', {
+      scaleFactor: 8.1,
+      onItems: false,
+    });
+    expect(rows.map((row) => [row.label, row.reading])).toEqual([
+      ['Spell power', 'value'],
+      ['Spell haste', 'not-on-items'],
+      ['Spirit', 'not-significant'],
+    ]);
+    expect(rows[1]!.value).toBeCloseTo(8.1, 5);
+    expect(railStatValueText(rows[1]!)).toBe('Not on any item');
+  });
+});
+
+describe('rankedStatLabels', () => {
+  it('ranks only the rows that read as a value, so the pills match the table', () => {
+    const weights: BisStatWeight[] = [
+      { stat: 'hit', weight: 1.2, error: 0.06, scale_factor: 1.2 },
+      { stat: 'spell_power', weight: 1, error: 0.002, scale_factor: 1 },
+      { stat: 'spell_haste', weight: 0.9, error: 0.94, insignificant: true },
+      { stat: 'spell_penetration', weight: 0, error: 0, insignificant: true },
+    ];
+    const rows = railStatRows(
+      ['Hit', 'Spell power', 'Spell haste', 'Spell penetration'],
+      weights,
+      'mage-arcane',
+    );
+    expect(rankedStatLabels(rows, [])).toEqual(['Hit', 'Spell power']);
+  });
+
+  it('drops haste no item carries from the pills', () => {
+    const weights: BisStatWeight[] = [
+      { stat: 'strength', weight: 2, error: 0.01, scale_factor: 2 },
+      { stat: 'melee_haste', weight: 16.6, error: 2 },
+    ];
+    const rows = railStatRows(['Strength', 'Melee haste'], weights, 'warrior-fury', {
+      scaleFactor: 8.3,
+      onItems: false,
+    });
+    expect(rankedStatLabels(rows, [])).toEqual(['Strength']);
+  });
+
+  it('falls back to the guide’s own list for a spec with no weights yet', () => {
+    expect(rankedStatLabels([], ['Hit', 'Spell power'])).toEqual(['Hit', 'Spell power']);
   });
 });

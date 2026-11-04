@@ -32,3 +32,29 @@ export function requireBuildJson<T>(build: string, file: string): T {
   }
   return value;
 }
+
+/** One row of a build's `items.json`: what the client says an item is. */
+export interface CatalogItem {
+  id: number;
+  name: string;
+  quality: number;
+  item_level: number;
+  required_level: number;
+  /** ItemClass: 2 weapon, 4 armor. */
+  class_id: number;
+  subclass_id: number;
+  /** InventoryType: 13 one-hand, 14 shield, 17 two-hand, 23 held in off hand. */
+  inventory_type: number;
+}
+
+const catalogCache = new Map<string, Map<number, CatalogItem>>();
+
+/** `build`'s `items.json`, by item id, read once per build. */
+export function buildItemCatalog(build: string): ReadonlyMap<number, CatalogItem> {
+  const cached = catalogCache.get(build);
+  if (cached !== undefined) return cached;
+  const rows = readBuildJson<CatalogItem[]>(build, 'items.json') ?? [];
+  const indexed = new Map(rows.map((row) => [row.id, row]));
+  catalogCache.set(build, indexed);
+  return indexed;
+}

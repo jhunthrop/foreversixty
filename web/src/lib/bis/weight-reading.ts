@@ -9,6 +9,12 @@
 //   Both sit outside the per-point normalization and read "per 1%".
 // - Sign. A weight inside its own error (or flagged insignificant) reads "Not significant";
 //   a weight below zero beyond its error reads "No gain". Neither prints a negative number.
+// - Inventory. Haste no item of the band carries (`haste_on_items` false, the ranker's own
+//   inventory check) is not something a player can gear for, so it reads "Not on any item"
+//   rather than ranking beside the stats the set is built from (2026-11-04: priests' pills
+//   listed spell haste although no priest item has it).
+//
+// A stat a priority ranks (the guide's numbered pills) is one that reads as a value.
 import type { BisStatWeight } from './types';
 
 /** The stats that read per 1% rather than per point. */
@@ -34,4 +40,21 @@ export function readingOf(weight: BisStatWeight | undefined): WeightReading {
   if (weight === undefined || (weight.insignificant ?? false)) return 'not-significant';
   if (Math.abs(weight.weight) <= (weight.error ?? 0)) return 'not-significant';
   return weight.weight < 0 ? 'no-gain' : 'value';
+}
+
+/** How a weight reads on a band: `readingOf`, or "Not on any item" for haste the band's
+ *  items never carry. */
+export type BandWeightReading = WeightReading | 'not-on-items';
+
+/** `readingOf`, with the band's inventory counted: a haste weight that would read as a value
+ *  reads 'not-on-items' when `hasteOnItems` is false. */
+export function bandReadingOf(weight: BisStatWeight | undefined, hasteOnItems: boolean): BandWeightReading {
+  const reading = readingOf(weight);
+  if (reading !== 'value' || hasteOnItems) return reading;
+  return perPercentOf(weight!.stat) === 'haste' ? 'not-on-items' : reading;
+}
+
+/** Whether a stat reading this way belongs in a ranked priority: only a value does. */
+export function isRanked(reading: BandWeightReading): boolean {
+  return reading === 'value';
 }

@@ -2,11 +2,13 @@ import json
 import shutil
 from pathlib import Path
 
+from pipeline.csvio import read_csv
 from pipeline.forkdb import load_fork_database
 from pipeline.loot.gear import (
     apply_fork_columns,
     build_enchants,
     build_suffixes,
+    equip_restrictions,
     faction_restrictions,
     suffix_options,
 )
@@ -17,6 +19,10 @@ ENGINE = HERE / "fixtures/loot"
 
 def fork():
     return load_fork_database(ENGINE)
+
+
+def restrictions():
+    return equip_restrictions(read_csv(ENGINE / "SpellEquippedItems.csv"))
 
 
 def test_every_suffix_is_emitted_with_its_stats_named():
@@ -88,14 +94,14 @@ def test_apply_fork_columns_is_idempotent(tmp_path):
 
 
 def enchant(effect_id: int, spell_id: int):
-    for record in build_enchants(fork()):
+    for record in build_enchants(fork(), restrictions()):
         if record.id == effect_id and record.spell_id == spell_id:
             return record
     raise AssertionError(f"no enchant {effect_id}/{spell_id}")
 
 
 def test_every_fork_enchant_row_is_emitted_even_when_it_shares_an_effect_id():
-    records = build_enchants(fork())
+    records = build_enchants(fork(), restrictions())
     assert len(records) == 4
     assert [r.id for r in records] == [15, 41, 41, 241]
     assert [r.spell_id for r in records if r.id == 41] == [7418, 7420]
@@ -133,3 +139,21 @@ def test_stats_and_phase_are_read_off_the_row():
     assert enchant(241, 7745).stats == {"attack_power": 12.0}
     assert enchant(241, 7745).phase == 2
     assert enchant(41, 7418).phase == 0
+
+
+def test_an_enchant_carries_its_spells_client_item_restriction():
+    # 2H Weapon - Minor Impact (7745): weapons (class 2) of the two-handed subclasses only.
+    two_hand = enchant(241, 7745)
+    assert two_hand.equipped_item_class == 2
+    assert two_hand.equipped_item_subclass_mask == 1378
+    assert two_hand.equipped_inventory_type_mask == 0
+    # Bracer - Minor Health (7418): armor (class 4), the wrist inventory type (bit 9).
+    bracer = enchant(41, 7418)
+    assert (bracer.equipped_item_class, bracer.equipped_inventory_type_mask) == (4, 1 << 9)
+
+
+def test_an_enchant_whose_spell_has_no_restriction_row_takes_any_item():
+    record = build_enchants(fork(), {})[0]
+    assert record.equipped_item_class == -1
+    assert record.equipped_item_subclass_mask == 0
+    assert record.equipped_inventory_type_mask == 0

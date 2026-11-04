@@ -11,6 +11,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { bandTreeRanksFrom } from '../planner/band-compare';
 import { decodeFS1, orderFromRanks } from '../planner/fs1';
 import { indexTalents } from '../planner/rules';
 import type { Talent, TalentFile } from '../planner/types';
@@ -51,9 +52,29 @@ export function decodeBuildTrees(build: string, code: string): DecodedTreeView[]
   if (!decoded.ok) return undefined;
   const talentFile = loadTalentFile(build, decoded.build.classSlug);
   if (talentFile === undefined) return undefined;
+  return treesWithRanks(talentFile, decoded.build.treeRanks);
+}
+
+/** A BiS band's own talents (`BisBand.talents`, "1410...-...-0535...") decoded the same way,
+ *  for `classSlug`; `undefined` when this build carries no talent file for the class. */
+export function decodeBandTrees(
+  build: string,
+  classSlug: string,
+  bandTalents: string,
+): DecodedTreeView[] | undefined {
+  const talentFile = loadTalentFile(build, classSlug);
+  if (talentFile === undefined) return undefined;
+  return treesWithRanks(talentFile, bandTreeRanksFrom(bandTalents));
+}
+
+/** Every tree of `talentFile` with `treeRanks` (one rank per talent, tier then column) attached. */
+function treesWithRanks(
+  talentFile: TalentFile,
+  treeRanks: readonly (readonly number[])[],
+): DecodedTreeView[] {
   return talentFile.trees.map((tree, index): DecodedTreeView => {
     const sorted = [...tree.talents].sort((a, b) => a.tier - b.tier || a.column - b.column);
-    const ranks = decoded.build.treeRanks[index] ?? [];
+    const ranks = treeRanks[index] ?? [];
     const talents = sorted.map((talent, talentIndex) => ({ ...talent, rank: ranks[talentIndex] ?? 0 }));
     return {
       name: tree.name,
