@@ -667,13 +667,13 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
   display: none;
 }
 html[data-discord-link='unlinked'] {
-  --account-link-floor: 175px;
+  --account-link-floor: 366px;
 }
 html[data-discord-link='suggested'] {
-  --account-link-floor: 155px;
+  --account-link-floor: 346px;
 }
 html[data-discord-link='linked'] {
-  --account-link-floor: 135px;
+  --account-link-floor: 326px;
 }
 html[data-session='1'] .account-header-reserve {
   min-height: 110px;
@@ -737,13 +737,13 @@ html[data-discord='lapsed'] .account-discord-skeleton {
 }
 @media (min-width: 1024px) {
   html[data-discord-link='unlinked'] {
-    --account-link-floor: 155px;
+    --account-link-floor: 327px;
   }
   html[data-discord-link='suggested'] {
-    --account-link-floor: 155px;
+    --account-link-floor: 327px;
   }
   html[data-discord-link='linked'] {
-    --account-link-floor: 135px;
+    --account-link-floor: 307px;
   }
   html[data-session='1'] .account-header-reserve {
     min-height: 60px;

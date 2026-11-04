@@ -104,12 +104,31 @@ export const DISCORD_FLOORS: Readonly<Record<HintState, BucketPx>> = {
 /** What `data-discord-link` on `<html>` says the You panel's Discord link row will be. */
 export type LinkHintState = 'none' | 'unlinked' | 'suggested' | 'linked';
 
-/** The link row's height in the You panel, its gap included (experience spec 2026-10-27-discord-bot 3.2). */
-export const ACCOUNT_DISCORD_LINK_RESERVE: Readonly<Record<LinkHintState, BucketPx>> = {
+/** The link row's own height in the You panel, its gap included (experience spec 2026-10-27-discord-bot 3.2). */
+export const ACCOUNT_DISCORD_LINK_ROW_RESERVE: Readonly<Record<LinkHintState, BucketPx>> = {
   none: { lg: 0, stack: 0 },
   unlinked: { lg: 155, stack: 175 },
   suggested: { lg: 155, stack: 155 },
   linked: { lg: 135, stack: 135 },
+};
+
+/** The Discord Premium role row under the link row; it shows whenever the link row does. */
+export const ACCOUNT_DISCORD_ROLE_ROW_RESERVE: Readonly<BucketPx> = { lg: 172, stack: 191 };
+
+const withRoleRow = (row: BucketPx): BucketPx =>
+  row.lg === 0
+    ? row
+    : {
+        lg: row.lg + ACCOUNT_DISCORD_ROLE_ROW_RESERVE.lg,
+        stack: row.stack + ACCOUNT_DISCORD_ROLE_ROW_RESERVE.stack,
+      };
+
+/** Both Discord rows' height in the You panel by the link row's state. */
+export const ACCOUNT_DISCORD_LINK_RESERVE: Readonly<Record<LinkHintState, BucketPx>> = {
+  none: withRoleRow(ACCOUNT_DISCORD_LINK_ROW_RESERVE.none),
+  unlinked: withRoleRow(ACCOUNT_DISCORD_LINK_ROW_RESERVE.unlinked),
+  suggested: withRoleRow(ACCOUNT_DISCORD_LINK_ROW_RESERVE.suggested),
+  linked: withRoleRow(ACCOUNT_DISCORD_LINK_ROW_RESERVE.linked),
 };
 
 /** Read back by the pre-paint script in Base.astro. */

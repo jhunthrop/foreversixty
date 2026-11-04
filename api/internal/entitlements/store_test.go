@@ -461,7 +461,8 @@ func TestSetCanceledSetsGraceUntilFromTheLastKnownPeriodEnd(t *testing.T) {
 
 func TestGrantAndRevokeRoundTrip(t *testing.T) {
 	pool := testPool(t)
-	s := &Store{Pool: pool}
+	var changed []int64
+	s := &Store{Pool: pool, OnChange: func(_ context.Context, subj Subject) { changed = append(changed, *subj.UserID) }}
 	uid := seedUser(t, pool)
 	grantedBy := seedUser(t, pool)
 	if err := s.Grant(context.Background(), Subject{UserID: i64(uid)}, PlanPremium, nil,
@@ -480,6 +481,10 @@ func TestGrantAndRevokeRoundTrip(t *testing.T) {
 	}
 	if err := s.Revoke(context.Background(), Subject{UserID: i64(999999)}, PlanPremium, "cli_revoke:x"); err != ErrNotFound {
 		t.Fatalf("revoke unknown subject: %v, want ErrNotFound", err)
+	}
+	// OnChange ran after the grant and the revoke, and not for the failed revoke.
+	if len(changed) != 2 || changed[0] != uid || changed[1] != uid {
+		t.Fatalf("OnChange ran for %v, want [%d %d]", changed, uid, uid)
 	}
 }
 

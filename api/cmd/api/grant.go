@@ -221,7 +221,7 @@ func runGrant(ctx context.Context, log *slog.Logger, args []string) error {
 	if err != nil {
 		return err
 	}
-	_, pool, err := start(ctx)
+	cfg, pool, err := start(ctx)
 	if err != nil {
 		return err
 	}
@@ -233,7 +233,7 @@ func runGrant(ctx context.Context, log *slog.Logger, args []string) error {
 	operator := operatorTag()
 	note := fmt.Sprintf("%s: %s", operator, f.note)
 	actor := fmt.Sprintf("cli_grant:%s %s", operator, f.note)
-	if err := (&entitlements.Store{Pool: pool}).Grant(ctx, subj, f.plan, until, nil, note, actor, f.grantFeatures()); err != nil {
+	if err := entitlementsStore(pool, linkedRoleSyncer(cfg, pool, log)).Grant(ctx, subj, f.plan, until, nil, note, actor, f.grantFeatures()); err != nil {
 		return fmt.Errorf("grant: %w", err)
 	}
 	log.Info("grant", "plan", f.plan, "operator", operator)
@@ -245,7 +245,7 @@ func runRevoke(ctx context.Context, log *slog.Logger, args []string) error {
 	if err != nil {
 		return fmt.Errorf("%w\n%s", err, grantRevokeUsage)
 	}
-	_, pool, err := start(ctx)
+	cfg, pool, err := start(ctx)
 	if err != nil {
 		return err
 	}
@@ -256,7 +256,7 @@ func runRevoke(ctx context.Context, log *slog.Logger, args []string) error {
 	}
 	operator := operatorTag()
 	actor := fmt.Sprintf("cli_revoke:%s %s", operator, f.note)
-	if err := (&entitlements.Store{Pool: pool}).Revoke(ctx, subj, f.plan, actor); err != nil {
+	if err := entitlementsStore(pool, linkedRoleSyncer(cfg, pool, log)).Revoke(ctx, subj, f.plan, actor); err != nil {
 		return fmt.Errorf("revoke: %w", err)
 	}
 	log.Info("revoke", "plan", f.plan, "operator", operator)
