@@ -76,7 +76,7 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 
 The level 60 build puts one point in **Improved Heroic Strike**, three in **Deflection** and five in **Iron Will**, which takes 15% off every stun and fear on you.
 
-The raid build drops Iron Will, Deflection and Improved Charge. Two more points of **Improved Heroic Strike** take your rage dump to 3 less. **Spearing Strike** is a second weapon strike, 15 rage on a 20 second cooldown in Battle Stance, that hits twice as hard on dragons and giants. Fifteen points in Fury reach **Reckless Swings**: for 8 seconds your swings bring 5 more rage each, which is two or three swings with a slow two-hander, at a quarter of your base health. The same points reach **Improved Execute**, which takes Execute down to 10 rage. **Enrage** is the way there, and it pays whenever raid damage lands on you. One point of **Improved Bloodrage** stays.
+The raid build drops Iron Will, Deflection and Improved Charge. Two more points of **Improved Heroic Strike** make Heroic Strike, your rage dump, cost 3 less. **Spearing Strike** is a second weapon strike, 15 rage on a 20 second cooldown in Battle Stance, that hits twice as hard on dragons and giants. Fifteen points in Fury reach **Reckless Swings**: for 8 seconds your swings bring 5 more rage each, which is two or three swings with a slow two-hander, at a quarter of your base health. The same points reach **Improved Execute**, which takes Execute down to 10 rage. **Enrage** is the way there, and it pays whenever raid damage lands on you. One point of **Improved Bloodrage** stays.
 
 [Open the planner](/planner?class=warrior) to change the build.
 

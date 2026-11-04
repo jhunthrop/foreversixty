@@ -405,3 +405,24 @@ Open, with the data lane:
 
 Verdict: NOT zero, so round 16 is needed.
 Rendered review: wow-player SHIP for all seven changed classes after four page-text MUSTs were fixed (Combat dagger from 20, demon auras by name, bear professions scoped to the raid set, Reckoning trade).
+
+## Round 16 (client 1.60.1.70755, 2026-11-04, launch state)
+
+Built on land/guides-r15 (2c3135a2e), engine pin b2c4a2d05, five auditors at a time.
+
+Audit CONFIRMED by class: rogue 2, warlock 1, hunter 1 (plus 3 likely). The other six classes were 0. Total 4. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1, 18, 8, 4.
+
+Fixes:
+
+- **Rogue:** the Subtlety Ghostly Strike and Garrote card notes are now true at every level they show.
+- **Warlock:** Retribution Aura reaches the demon.
+- **Hunter:** low-mana order now keeps Serpent Sting over Multi-Shot (better damage per mana). "Mail from 40" lines now say leather stays in the best gear.
+
+Folded in from the racials audit:
+
+- **Eureka! now follows each class's client row, not the tooltip.** The warlock and priest rows add 10% periodic damage to Wrack, the drains, Mind Flay and Penance. Prose that sits next to the "non-periodic" racial tooltip says so. Incinerate is not covered.
+- **Attuned** is removed on entering a raid.
+- **Arms Dwarf edge** is put down to Artisan's Precision; Night Elf stays the pick.
+
+Verdict: NOT zero, so round 17 is needed. Six classes audit at zero this round.
+Rendered review: wow-player SHIP for all seven changed classes after three page-text MUSTs were fixed (Incinerate under Eureka!, tooltip wording beside the periodic claims, the Arms Heroic Strike sentence).
