@@ -620,7 +620,7 @@
           }
         }
       },
-      "notes": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4. Cast it at the normal thresholds while your mana is keeping pace with the fight."
+      "notes": "Greater Heal is the filler, at the top rank a trainer teaches: its low ranks lose part of your healing bonus and no longer heal more for their mana. Cast it at the normal thresholds while your mana is keeping pace with the fight."
     },
     {
       "action": {
@@ -889,7 +889,7 @@
           }
         }
       },
-      "notes": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%."
+      "notes": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%."
     },
     {
       "action": {
@@ -1077,7 +1077,7 @@
           }
         }
       },
-      "notes": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4. Cast it at the normal thresholds while your mana is keeping pace with the fight."
+      "notes": "Heal at its top rank is the filler before you learn Greater Heal at 40, and the cheaper cast when your mana is too low for a Greater Heal. Cast it at the normal thresholds while your mana is keeping pace with the fight."
     },
     {
       "action": {

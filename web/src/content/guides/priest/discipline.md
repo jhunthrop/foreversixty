@@ -6,7 +6,7 @@ role: healer
 build: 'FS1:1.60.1.70755:priest:gnome:00500503133001143/3350500303/0:'
 recommendedRaces: [gnome, undead]
 statPriority: [MP5, Spirit, Healing power, Intellect, Critical strike]
-description: 'How to heal as a Discipline Priest in Forever: Penance, shield ranks and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
+description: 'How to heal as a Discipline Priest in Forever: Penance, the shield and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
 updated: 2026-11-04
 confidence: inferred
 sources:
@@ -65,7 +65,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Penance on cooldown.** On the tank whenever he is missing health, on a party member who drops low when the tank is fine. It is the heal you never let sit.
 
-**The shield is a switch.** Shield the tank at a low rank whenever Weakened Soul is off him. A small shield costs little and soaks one hit, and the Weakened Soul it leaves is what Renewed Hope needs: your next heals on him gain 8% crit chance, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner. A full-rank shield on a warrior tank eats the rage he needs at the start of a pull; save the big one for a hit he cannot take.
+**The shield is a switch.** Shield the tank at the top rank whenever Weakened Soul is off him and your mana is keeping pace with the fight. In Forever a shield no longer cuts a warrior's rage gain, so there is no reason to hold it back. The Weakened Soul it leaves is what Renewed Hope needs: your next heals on him gain 8% crit chance, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner.
 
 **Renew** stays on the tank at rank 7 or higher.
 
@@ -81,7 +81,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Inner Focus** on a Greater Heal or a Prayer of Healing: it makes the spell free and adds 25% crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
 
-**Mana.** Shields and Penance are cheap; the fillers are what drain you. When your bar falls behind the fight, stop topping off the party and heal only real holes. Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead.
+**Mana.** Penance is cheap. The top-rank shield, Flash Heal and the fillers are what drain you. When your bar falls behind the fight, stop topping off the party and heal only real holes. Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead.
 
 ## Stat priority
 
