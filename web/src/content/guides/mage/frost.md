@@ -39,7 +39,7 @@ Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, 
 ### Weaknesses
 
 - Little burst: there is no Icy Veins in Forever, and your only window is a Fingers of Frost proc
-- Cone of Cold and Winter's Chill want you in melee range, where most bosses punish you
+- Cone of Cold wants you within 10 yards of the boss, where most bosses punish you
 - Frostbolt is a long cast, so movement fights cost Frost more than Fire
 
 ### In a raid
@@ -60,7 +60,7 @@ Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, 
 - **Missile Barrage** (2 points, Arcane): Frostbolt procs it 20% of the time, and the proc makes your next Arcane Missiles free and halves its channel.
 - **Precision** (3 points): 6% hit on every school. Every mage build takes it.
 
-One build does it all at 60, in a raid or out. Frost takes 31 points to Ice Barrier, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, the toll to reach the 30 points Ice Barrier asks for; each Frostbolt then has a 40% chance to add a stack for your next Cone of Cold. Twelve go into Arcane for **Arcane Concentration** (a free spell 10% of the time) and Missile Barrage. The last eight go into Fire: five ranks of **Incineration**, which adds 10% crit to Ice Lance, two of Flame Throwing for 6 more yards on Fire Blast, and one in Accelerant.
+One build does it all at 60, in a raid or out. Frost takes 31 points to Ice Barrier, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, the toll to reach the 30 points Ice Barrier asks for; each Frostbolt then has a 40% chance to add a stack for your next Cone of Cold. Fifteen go into Arcane: **Arcane Concentration** (a free spell 10% of the time), Missile Barrage, and three ranks of **Arcane Impact**, 6% more crit on your Arcane spells, which here means the free Missiles Missile Barrage fires, with Wand Specialization and Improved Channeling as the toll to get there. The last five go into Fire for five ranks of **Incineration**, which adds 10% crit to Ice Lance.
 
 If a boss lets you stand within 10 yards, more points in Winter's Chill and Improved Cone of Cold turn Cone of Cold into a real nuke. Most bosses cleave, breathe or stomp at that range, so the build stays at range. [Open the planner](/planner?class=mage) to change the build.
 
@@ -82,7 +82,7 @@ If a boss lets you stand within 10 yards, more points in Winter's Chill and Impr
 
 **Movement.** Frostbolt needs you standing still. Spend a Fingers of Frost charge on Ice Lance on the run, Blink through what you need to cross and use Fire Blast. Frost Nova and Cone of Cold are instant too, when the boss is close.
 
-Frostfire Bolt is not a Frost filler: it hits for less than Frostbolt, costs more, and Improved Frostbolt does not shorten it, so it is still close to a 3 second cast.
+Frostfire Bolt is not a Frost filler: it hits for less than Frostbolt, costs more, and Improved Frostbolt does not shorten it, so it stays a 3 second cast.
 
 ## Stat priority
 
@@ -108,7 +108,7 @@ Tailoring and Enchanting are the standard pair: Tailoring makes the early cloth 
 
 Frostbolt at 4 is your spell from the moment you have it, with new ranks at 8, 14 and 20. Train Conjure Water with it, Fire Blast at 6 as the instant finisher and Frost Nova at 10.
 
-At 10 and 11 the points go into Frost Warding, 30% more armor from Frost Armor, then Improved Frostbolt from 12 to 16 for a Frostbolt 0.5 sec faster, and Precision from 17 to 19 for 6% hit.
+From 10 to 14 the points go into Improved Frostbolt for a Frostbolt 0.5 sec faster, then Frost Warding at 15 and 16 for 30% more armor from Frost Armor, and Precision from 17 to 19 for 6% hit.
 
 Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Alliance, Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
 
