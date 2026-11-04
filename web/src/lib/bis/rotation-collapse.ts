@@ -80,5 +80,40 @@ export function collapseRuns(
     if (current !== undefined && sameSpell(current[0], line)) current.push(line);
     else runs.push([line]);
   }
-  return runs.map(collapseRun);
+  return foldVariants(runs.map(collapseRun));
+}
+
+/** Whether `later` is only another target or pacing of `first`: the same spell and rank, with
+ *  no note of its own or the same note. */
+function isVariantOf(later: CollapsedLine, first: CollapsedLine): boolean {
+  return (
+    later.name === first.name &&
+    later.rank === first.rank &&
+    (later.condition === '' || first.condition === '' || later.condition === first.condition)
+  );
+}
+
+function mergeVariant(first: CollapsedLine, later: CollapsedLine): CollapsedLine {
+  return {
+    ...first,
+    condition: first.condition !== '' ? first.condition : later.condition,
+    icon: first.icon ?? later.icon,
+    truncatedAtSource: first.truncatedAtSource || later.truncatedAtSource,
+    steps: first.steps + later.steps,
+    gates: sharedGates(first.gates ?? [], later.gates ?? []),
+  };
+}
+
+/** One row per spell and rank where the curated list repeats it only for another target or
+ *  pacing (round 19: Discipline's per-party-member Greater Heal rank 1 / Lesser Heal rank 3
+ *  pairs and its paced tank filler printed 15 bare rows). The row keeps the first one's
+ *  place and the first note written; a later row with a note of its own stays. */
+function foldVariants(rows: readonly CollapsedLine[]): CollapsedLine[] {
+  const out: CollapsedLine[] = [];
+  for (const row of rows) {
+    const index = out.findIndex((first) => isVariantOf(row, first));
+    if (index < 0) out.push(row);
+    else out[index] = mergeVariant(out[index]!, row);
+  }
+  return out;
 }
