@@ -5,7 +5,7 @@ spec: frost
 role: dps
 build: 'FS1:1.60.1.70755:mage:gnome:2300052/5102/253510130101301221:'
 raidBuild: 'FS1:1.60.1.70755:mage:gnome:2300052/5102/253510130101301221:'
-recommendedRaces: [gnome, troll]
+recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Frost power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Frost Mage in Forever: Ice Barrier as a damage buff, the pre-pull Frostbolt, Fingers of Frost into Ice Lance, threat and mana on a boss, talents and leveling.'
 updated: 2026-11-02
@@ -85,7 +85,7 @@ If a boss lets you stand within 10 yards, more points in Winter's Chill and Impr
 
 **Movement.** Frostbolt needs you standing still. Spend a Fingers of Frost charge on Ice Lance on the run, Blink through what you need to cross and use Fire Blast. Frost Nova and Cone of Cold are instant too, when the boss is close.
 
-Frostfire Bolt is not a Frost filler: it hits for less than Frostbolt, costs more, and stays a 3 second cast because Improved Frostbolt does not touch it.
+Frostfire Bolt is not a Frost filler: it hits for less than Frostbolt, costs more, and Improved Frostbolt does not shorten it, so it is still close to a 3 second cast.
 
 ## Stat priority
 
@@ -99,7 +99,7 @@ Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell po
 
 ## Races
 
-**Gnome** is the best Alliance Frost mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit. **Skyborne** mages are Alliance and bring 2% haste from Wind Blessed and Read Leyline, 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. On the Horde, **Troll** Berserking gives 10% cast speed for 15 seconds every 3 minutes, which is the best Horde cooldown for a spec that has none of its own. **Orc** Blood Fury adds 10% spell power for 15 seconds every 2 minutes. **Undead** gets a small Shadow drain from Touch of the Grave and Will of the Forsaken for fear fights.
+**Gnome** is the best Alliance Frost mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit and is just behind. **Skyborne** edges a Gnome by a hair in a raid with Wind Blessed, 2% haste that never turns off, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Troll** and **Orc** are close behind: Berserking adds 10% cast speed for 15 seconds every 3 minutes and Blood Fury 10% spell power for 15 seconds every 2 minutes, so press either on the pull and on cooldown after that.
 
 ## Professions
 

@@ -71,7 +71,7 @@ Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt
 
 **Flame Shock stays up.** Forever's Flame Shock hits hard up front and ticks hard after, and with Call of Flame one global keeps it burning for 21 seconds. Reapply it the moment it falls off, ahead of everything but your cooldowns. Earth Shock stays on your bar for interrupts: it shares the shock cooldown, and that cooldown belongs to Flame Shock.
 
-**Lightning Mastery goes with everything else.** Press it on the pull with your trinkets, Blood Fury or Berserking and your potion, and press it again every 3 minutes. For its 15 seconds every Lightning Bolt is a 1.5 second cast, so you fit more bolts into the same window your trinkets are up.
+**Lightning Mastery goes with everything else.** Press it on the pull with your trinkets and Blood Fury or Berserking, and again every 3 minutes. For its 15 seconds every Lightning Bolt is a 1.5 second cast, so you fit more bolts into the same window your trinkets are up.
 
 **Totems.** Searing Totem is your single-target Fire totem. Its bolts reach 20 yards, so drop it within 20 yards of the boss and stand there; refresh it when it expires, every 55 seconds. Mana Spring Totem returns 10 mana every 2 seconds to your party for 5 minutes and pays for itself many times over, but two Mana Springs do not stack: if a Restoration shaman already has one down for your group, skip yours. Strength of Earth, Grace of Air and Windfury reach the whole raid within 30 yards in Forever, so leave the Earth and Air slots to whichever shaman your raid leader assigns them to.
 
@@ -99,7 +99,7 @@ Your weapon imbues only proc on melee swings, so an Elemental's weapon carries B
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit is the racial that matters for Elemental, since hit is your second stat. Stoneform's physical damage cut is a nice extra on trash and in PvP.
 
-On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% for 15 seconds every 2 minutes, and you press it with Lightning Mastery. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes in the same window. Windshaper Skyborne's Wind Blessed is 2% haste that is always on. Tauren's racials do nothing for your damage.
+On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% for 15 seconds every 2 minutes, and you press it with Lightning Mastery. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes in the same window. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
 
 ## Professions
 

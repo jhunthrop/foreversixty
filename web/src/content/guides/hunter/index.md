@@ -35,4 +35,4 @@ Hunter is Forever's physical damage class. All three specs deal damage, and in F
 
 ## Races
 
-**Human Hunter** is one of the six new race and class pairs, so the Alliance has a Human Hunter for the first time. Skyborne can be Hunters on either faction.
+**Human Hunter** is one of the six new race and class pairs, so the Alliance has a Human Hunter for the first time. Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction.

@@ -62,13 +62,13 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
 - **Improved Tranquility** (2 points): Tranquility with no threat and its cooldown cut from 5 minutes to 2.
 - **Heart of the Wild** (5 points): 10% more Intellect.
-- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) and Improved Moonfire (1 point) are the price of Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
+- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) is the price of reaching Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
 
 **Wild Growth.** The capstone heals a whole party over 7 seconds, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility, put one point in Wild Growth and the other in Improved Regrowth.
 
 ## Rotation and priority
 
-**Before the pull.** Rejuvenation on the tank a few seconds before he pulls. Keep Mark of the Wild up on the raid.
+**Before the pull.** Rejuvenation on the tank a few seconds before he pulls. Keep Gift of the Wild up on the raid.
 
 **The tank.** Regrowth and Rejuvenation stay up on the tank for the whole fight. Let each one run out before you recast it: a HoT that runs its full duration triggers Bloom, and a refresh on top of it throws that heal away.
 
@@ -96,7 +96,7 @@ Potions and runes work in any form in Forever, though you heal in caster form an
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren gets more health, which keeps you alive through raid damage. Alliance Skyborne get Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are. Press it every time it is ready on a long fight.
+Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren is the free Horde pick: Endurance is 5% more health, which keeps you alive through raid damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, which is faster casts, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are. Press it every time it is ready on a long fight.
 
 ## Professions
 

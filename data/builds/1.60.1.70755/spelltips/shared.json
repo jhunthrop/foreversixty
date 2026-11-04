@@ -3447,5 +3447,24 @@
       "spell_id": 17038,
       "use": "Increases your melee attack power by 35 and size for 20 min."
     }
+  },
+  "hotfix_layer": {
+    "ItemEffect": "6a43a8b1d3f7ee6a201109908d54c569423f6a68433533e19ad12aa4a6adad13",
+    "ItemXItemEffect": "a4a3ca2962977126a8bf27a706f2cec0436ad7f41491c64d85d7028cae76dcf4",
+    "ManifestInterfaceData": "71b82f75741b87ad38c82bb73cba99b3e3bdeb6c0c00e09dde1298dafce31441",
+    "SkillLine": "2fd5c69780850ecd1f4c46e8c0816c8282c4f0e857511c7341e777189b8d3e86",
+    "SkillLineAbility": "b0129012bbae75380d579db6681b86e5f4486b1db1ec64fea21c6a3a5b874518",
+    "Spell": "3ce2a17fe2e529de05829c2fed15bc686a733c5122c2d8988666e9784173c2e0",
+    "SpellAuraOptions": "b9c089fa2d39bf36a0c69e7db0ec2bb94648badadf4e2370b2d5e9c8bb54eb53",
+    "SpellCastTimes": "f94e1e3a3495d11af875fd7b007124fdd660a19ba626bc1de00a609da81f25d8",
+    "SpellCooldowns": "ec6df554e54f4b516494b34416798e49a6be05809ba4f4e43ddab58f7ea337bb",
+    "SpellDuration": "4787f303fe8487cd67e5f9e8574fdc6fa2a03516dcfaabba23d9944f937223f5",
+    "SpellEffect": "e676f00fa4b575e09c2c4ee79b48f26f8df14a443fd0ff8afa6aff86e16fe561",
+    "SpellMisc": "4adcf7651c50466bacc1218da9a2ea5b0245e3fff45f4a7464edca2f23af45c8",
+    "SpellName": "d2b4885234fc588a0a4a8e2ffa91864daad358d3a90152a8d2139235d315774d",
+    "SpellPower": "69ffaf1f61de72a78ce3438d62584c5688ebed9e42fbd1e5757a381605662f29",
+    "SpellRadius": "ae97b1f91868aa7b4414c3e26c5d15f6981921b2f6aa1694adc7a0c3e821826b",
+    "SpellRange": "30734ead3acfb44c57737ed7c9f8ff2feafda2fbffa291711d4c4afef989b1b3",
+    "SpellTargetRestrictions": "18541629c03fddfdd566fc5fcd8498c15322ff038419f3d3ce22976d4b0d5550"
   }
 }

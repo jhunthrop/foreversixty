@@ -85,7 +85,7 @@
         }
       },
       {
-        "notes": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial. Every Fire hit then adds 10% crit until three non-periodic crits land, and each crit is an Ignite and a Heating Up stack. Give a fresh tank a few seconds of threat first.",
+        "notes": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial. Every Fire hit then adds 10% crit until three non-periodic crits land, and each Scorch or Fire Blast crit is an Ignite and a Heating Up stack. Give a fresh tank a few seconds of threat first.",
         "action": {
           "condition": {
             "cmp": {

@@ -102,7 +102,7 @@ Windfury Weapon is your weapon's temporary enchant, so there is no room for a sh
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit with spells and attacks is your racial. Stoneform's physical damage cut is a free cooldown for cleaves and add phases.
 
-On the Horde, Orc is the pick: Blood Fury is 10% attack power for 15 seconds every 2 minutes, and you press it with Rage of the Farseer. Troll's Berserking adds 10% attack speed for 15 seconds every 3 minutes and lines up with Rage of the Farseer just as well. Windshaper Skyborne's 2% haste is always on. Tauren's racials do nothing for your damage.
+On the Horde, Orc is the pick: Blood Fury is 10% attack power for 15 seconds every 2 minutes, and you press it with Rage of the Farseer. Troll's Berserking adds 10% attack speed for 15 seconds every 3 minutes and lines up with Rage of the Farseer just as well. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
 
 ## Professions
 

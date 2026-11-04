@@ -106,7 +106,7 @@ Brilliant Mana Oil on your weapon: mp5 and healing in one. Use your Major Mana P
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Stoneform's physical damage cut keeps you alive through a cleave or a stray add, which is all a healer asks of a racial.
 
-On the Horde, Tauren's Endurance is 5% more health, the safest pick. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, is the pick for burst healing in a hard phase. Windshaper Skyborne's 2% haste is always on. Orc's Blood Fury raises attack power and spell power, which is a damage dealer's racial.
+On the Horde, Tauren's Endurance is 5% more health, the safest pick. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, is the pick for burst healing in a hard phase. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on. Orc's Blood Fury raises attack power and spell power, which is a damage dealer's racial.
 
 ## Professions
 
@@ -114,4 +114,4 @@ Herbalism and Alchemy keep you in Major Mana Potions and flasks, which is most o
 
 ## Leveling
 
-Put your points into Restoration from the first one. Improved Healing Wave makes Healing Wave faster and Tidal Focus makes every heal cheaper; Water Shield is in at 20, Mindfulness is full by 23, and Mana Tide Totem comes at 25, the first level the fourth row opens. Ancestral Healing and Healing Focus fill out the rest by 30. You quest with Lightning Bolt, your shocks and your weapon, and you can heal any dungeon the day you walk in. Lesser Healing Wave and Healing Stream Totem come at 20 and Chain Heal at 40. Riptide, the bottom of the tree, is in by 50. Train its second rank the same day and its third at 60; the talent only teaches the first. Your last ten points, from 51, go to Thundering Strikes and Ancestral Knowledge.
+Put your points into Restoration from the first one. Improved Healing Wave makes Healing Wave faster and Tidal Focus makes every heal cheaper; Water Shield is in at 20, Mindfulness is full by 23, and Mana Tide Totem comes at 25, the first level the fourth row opens. The talent teaches its first rank; train the others at 38, 48 and 58, each one a big step up. Ancestral Healing and Healing Focus fill out the rest by 30. You quest with Lightning Bolt, your shocks and your weapon, and you can heal any dungeon the day you walk in. Lesser Healing Wave and Healing Stream Totem come at 20 and Chain Heal at 40. Riptide, the bottom of the tree, is in by 50. Train its second rank the same day and its third at 60; the talent only teaches the first. Your last ten points, from 51, go to Thundering Strikes and Ancestral Knowledge.

@@ -242,6 +242,12 @@ step "the fetched tables for $NEW" \
 for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json spelltips/shared.json; do
   [ -e "$NEW_DIR/$f" ] || die "$NEW_DIR/$f is missing: data.yml's fetch has not landed $NEW"
 done
+# The tooltips must read the hotfix-layered tables (2026-11-03: 70755's were written before
+# its push was layered, and showed Slam at 18 s against the server's 15 s). spelltips stamps
+# each layered input's sha256; tips without the stamp predate the guard.
+python3 -c 'import json, sys; sys.exit(not json.load(open(sys.argv[1])).get("hotfix_layer"))' \
+  "$NEW_DIR/spelltips/shared.json" ||
+  die "$NEW_DIR/spelltips/shared.json carries no hotfix_layer stamp: re-run pipeline spelltips --build $NEW over a fetched, layered raw/"
 
 # The new build's committed items may not fall below the active build's floors (item
 # count, and how many items take their stats from wowhead's feed), checked before

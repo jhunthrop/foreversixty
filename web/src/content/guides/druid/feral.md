@@ -71,7 +71,7 @@ The raid build skips Furor. In Forever it no longer hands you 40 energy on a shi
 
 ## Rotation and priority
 
-**Open.** Prowl, walk behind the boss and Ravage once the tank has two or three globals on it. Poised, a passive you learn at 32, makes your first ability cheaper when you start at full energy out of combat, so open from a full bar. Pounce is the opener only when you cannot get behind (or on trash you want stunned); Ravage hits much harder.
+**Open.** Prowl, walk behind the boss and Ravage once the tank has two or three globals on it. Poised, a passive you learn at 32, makes your first ability cheaper when you start at full energy out of combat, so open from a full bar. Pounce needs Prowl and your position behind the target, exactly like Ravage, so it is never the fallback for a boss you cannot get behind. Use it on trash you want stunned. On a boss, Ravage hits much harder.
 
 **Finishers.** At 5 combo points, Rip if it has under 6 seconds left. Rip at 5 points does far more over its duration than a Bite, so it always wins. Ferocious Bite is only for 5 points you would otherwise sit on while Rip still has time. With Predatory Discipline the Bite keeps the damage from your spare energy without spending it, so do not pool energy for it. Never finish on fewer than 5 points against a boss.
 
@@ -89,7 +89,7 @@ The raid build skips Furor. In Forever it no longer hands you 40 energy on a shi
 
 ## Stat priority
 
-Weapon damage per second matters in Forever. Your Cat Form auto attack has your weapon's DPS at one swing a second, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. Agility is crit and attack power at once, which is why it leads. Strength is attack power, and Heart of the Wild adds 6% to it (10% with the raid build's five points). A missed or dodged Shred costs you 42 energy and a combo point, which is why hit matters to a cat.
+Weapon damage per second matters in Forever. Your Cat Form auto attack has your weapon's DPS at one swing a second, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. Agility is crit and attack power at once, which is why it leads. Strength is attack power, and Heart of the Wild adds 6% to it (10% with the raid build's five points). A missed or dodged Shred hands back most of its energy, but you still lose the global and the combo point, and that is why hit matters to a cat.
 
 ## Best in slot
 
@@ -101,7 +101,7 @@ Forever changed the old cat rules: almost every potion works in Cat Form without
 
 ## Races
 
-Night Elf brings Elune's Light, a burst of crit on a 3 minute cooldown that works in Cat Form. Racials are usable while shapeshifted in Forever, so line it up with your potion and trinkets. Tauren gets more health and War Stomp for trash.
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and it works in Cat Form. Racials are usable while shapeshifted in Forever, so line it up with your potion and trinkets. Tauren is the free Horde pick: Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, which is for trash, not damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed on either faction: 2% haste that never turns off, which in Cat Form is faster swings.
 
 ## Professions
 
@@ -109,4 +109,4 @@ Skinning and Leatherworking is the classic cat pair: leather is your armor, and 
 
 ## Leveling
 
-Cat Form arrives at 20. Before that, play as a caster: Moonfire, then Wrath, and Bear Form from 10 when a pull gets heavy. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind once Shredding Attacks has it at 42 energy; before that, Claw buys more damage for its energy. Open from Prowl with Ravage from behind once you learn it at 32, or Pounce from 36 when you cannot get behind. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Feral Charge's Cat Form leap lands you behind a mob for a Shred or a Ravage, and in Bear Form it is the charge you pull dungeon packs with. Respec into the raid build at 60.
+Cat Form arrives at 20. Before that, play as a caster: Moonfire, then Wrath, and Bear Form from 10 when a pull gets heavy. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind once Shredding Attacks has it at 42 energy; before that, Claw buys more damage for its energy. Open from Prowl behind the mob: Ravage once you learn it at 32, or Pounce from 36 when you want the stun. Both need you behind the target in Forever. When you cannot get there, open with Claw. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Feral Charge's Cat Form leap lands you behind a mob for a Shred, and in Bear Form it is the charge you pull dungeon packs with. Respec into the raid build at 60.

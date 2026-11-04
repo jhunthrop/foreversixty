@@ -38,7 +38,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 ### Weaknesses
 
 - Mana is the limit on every long fight
-- No damage prevention: you heal what has already happened
+- Your shield is untalented and Weakened Soul limits it, so most of your healing answers damage that has already landed
 - Slow heals on a spiky tank need you to pre-cast and cancel
 
 ### In a raid
@@ -101,9 +101,9 @@ Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric
 
 **Human** is the Alliance pick. The Human Spirit adds 10% Spirit, which Spiritual Guidance turns into healing, and Divine Grace is a free instant heal on an ally under 50% every 10 minutes. Feedback is a PvP spell.
 
-**Undead** is the Horde pick for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. Will of the Forsaken breaks fears.
+**Undead** is the Horde pick, and the best Holy priest of all, for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. Will of the Forsaken breaks fears.
 
-**Gnome** brings Eureka!, 8 seconds of 10% stronger and 10% cheaper heals every 2 minutes, and Expansive Mind's 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Troll** gets Berserking, 10% cast speed. **Night Elf** has Elune's Light, 10% crit for 15 seconds. **Dwarf** has Stoneform and Desperate Prayer, a free self heal.
+**Gnome** is close behind Human. Eureka! makes your heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes, and Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Night Elf** has Elune's Light, 10% crit for 15 seconds, **Troll** Berserking, 10% cast speed, and **Dwarf** Stoneform and Desperate Prayer, a free self heal. Those three heal clearly less.
 
 ## Professions
 

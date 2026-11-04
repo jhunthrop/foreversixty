@@ -75,7 +75,7 @@ Priority after that:
 
 1. Corruption whenever it has fallen off. It is instant and cheap.
 2. Bane of Doom the moment the last one fires. In the last minute of the fight a new Doom would never land, so use Bane of Agony instead.
-3. Immolate when about 3 seconds are left on it. The cast lands as the old one runs out.
+3. Immolate when about 3 seconds are left on it. It lands a moment before the old one ends, so it never drops.
 4. Conflagrate on cooldown while Immolate is up.
 5. Shadowburn on cooldown, at any boss health.
 6. Incinerate.
@@ -88,7 +88,7 @@ Searing Pain is a threat spell, not a damage spell, and Incinerate does more. Ke
 
 Life Tap below about 10% mana and whenever you have to move. Each tap converts its base amount plus your Spirit, and Improved Life Tap adds 20%. Major Mana Potion and Demonic Rune have separate cooldowns, so use both once you are low enough that none of it is wasted.
 
-Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill. Shadowburn needs one in your bag to cast, even though Shadow and Flame hands it straight back.
+Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Firestone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill. Shadowburn needs one in your bag to cast, even though Shadow and Flame hands it straight back.
 
 Threat: you crit big and often, and Conflagrate and Shadowburn come early in the fight. If you climb to the top of the threat meter, stop casting Incinerate and let Corruption and your DoTs tick until the tank pulls ahead.
 
@@ -106,11 +106,11 @@ The pre-raid set leans on Tailoring and Enchanting crafts, with an Engineering h
 
 ## Enchants and consumables
 
-Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Firestone costs a shard and is the fallback, since its crit and Fire damage feed your main spells and a Spellstone's only feed your Shadow ones.
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, and with Ruin every Destruction crit lands for double the usual bonus; The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind. Eureka! gives 8 seconds of 10% more damage and 10% lower cost every two minutes, but only on direct damage: Immolate's first hit, Conflagrate, Shadowburn, Soul Fire and Shadow Bolt among them. It only touches direct damage, never the DoT ticks, so press it when Conflagrate and Shadowburn are both coming up. Expansive Mind's 5% more mana means fewer Life Taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder: press Blood Fury at the pull with your trinkets. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, and with Ruin every Destruction crit lands for double the usual bonus; The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on everything that is not a DoT tick, every two minutes: press it as Conflagrate and Shadowburn come off cooldown and fill the rest of it with Incinerate. Expansive Mind's 5% more mana means fewer Life Taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder: press Blood Fury at the pull with your trinkets. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then.
 
 ## Professions
 
@@ -118,4 +118,4 @@ Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting a
 
 ## Leveling
 
-Destruction kills single mobs fast but has little sustain: no Siphon Life and no talented drains, so Drain Life and Death Coil are your only heals. Pull one at a time. Before 40, Shadow Bolt is your filler: Immolate, Corruption and Bane of Agony on the mob, Shadow Bolt it down, and finish with Shadowburn. A mob that dies within 8 seconds of Shadowburn gives the shard back, so as a finisher it is free. Until Shadow and Flame reaches 5 points, Conflagrate can eat your Immolate, so cast it once the DoT has done most of its work. Drain Soul the last few percent of a mob when you need shards for stones and summons. Put every point into Destruction until Incinerate at 40, and only then go back for Suppression and Improved Corruption. From 40, Incinerate replaces Shadow Bolt. Keep the Voidwalker out when pulls get messy, and Life Tap between pulls instead of drinking.
+Destruction kills single mobs fast but has little sustain: no Siphon Life and no talented drains, so Drain Life and Death Coil are your only heals. Pull one at a time. Before 40, Shadow Bolt is your filler: Immolate, Corruption and Bane of Agony on the mob, Shadow Bolt it down, and finish with Shadowburn. A mob that dies within 8 seconds of Shadowburn gives the shard back, so as a finisher it is free. Until Shadow and Flame reaches 5 points, Conflagrate can eat your Immolate, so cast it once the DoT has done most of its work. Drain Soul the last few percent of a mob when you need shards for stones and summons. Put every point into Destruction until Shadow and Flame is full at 44, with Incinerate at 40 on the way, and only then go back for Improved Life Tap, Suppression and Improved Corruption. From 40, Incinerate replaces Shadow Bolt. Keep the Voidwalker out when pulls get messy, and Life Tap between pulls instead of drinking.

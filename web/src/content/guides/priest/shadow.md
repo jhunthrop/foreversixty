@@ -3,9 +3,9 @@ title: Shadow Priest in Forever
 classSlug: priest
 spec: shadow
 role: dps
-build: 'FS1:1.60.1.70755:priest:gnome:02510503103/0/54342001201300051:'
-raidBuild: 'FS1:1.60.1.70755:priest:gnome:00510503103/0/52352101201300251:'
-recommendedRaces: [gnome, undead]
+build: 'FS1:1.60.1.70755:priest:human:02510503103/0/54342001201300051:'
+raidBuild: 'FS1:1.60.1.70755:priest:human:00510503103/0/52352101201300251:'
+recommendedRaces: [human, undead]
 statPriority: [Spell power, Shadow power, Hit, Spell haste, Critical strike, Intellect, Spell penetration]
 description: 'How to play Shadow Priest in Forever: talents for leveling and raids, the opener and priority, Vampiric Embrace, threat, mana, races and consumables.'
 updated: 2026-11-02
@@ -66,7 +66,7 @@ You go deep Shadow for Shadowform and spend the rest in Discipline for mana and 
 - **Meditation** (3 points) and **Mental Strength** (5 points): half your regeneration keeps running while you cast, and 10% more Intellect for a deeper bar.
 - **Silent Resolve** (1 point): 10% less threat. Take more of it if you keep pulling aggro.
 
-The leveling build finishes with two points of Wand Specialization, for the wand you lean on between casts. The raid build trades them, and two points of Blackout, for Early Demise, Shadow Reach and the last point of Improved Mind Blast. [Open the planner](/planner?class=priest) to change either build.
+Right after Shadowform the leveling build puts two points into Wand Specialization, for the wand that finishes your mobs, and the rest goes to Discipline. The raid build trades them, and two points of Blackout, for Early Demise, Shadow Reach and the last point of Improved Mind Blast. [Open the planner](/planner?class=priest) to change either build.
 
 ## Rotation and priority
 
@@ -92,11 +92,11 @@ The leveling build finishes with two points of Wand Specialization, for the wand
 
 **Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice.
 
-**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Gnome Eureka! on a Mind Blast, a Shadow Word: Death and the Mind Flay after them (it skips Shadow Word: Pain and Devouring Plague, so never spend it on a refresh), Troll Berserking and Night Elf Elune's Light whenever they are up.
+**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Troll Berserking and Night Elf Elune's Light whenever they are up, Gnome Eureka! on a Mind Blast and a Shadow Word: Death (it skips every periodic tick, Mind Flay's included, so never spend it on a refresh).
 
 ## Stat priority
 
-Spell power and Shadow power are the same stat to you. Hit is next until you reach the 16% spell hit cap against a raid boss: Shadow Focus gives 5%, the other 11% comes from gear, and every miss is a lost Mind Blast. Critical strike is worth more than it looks: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles every crit. Intellect matters only as mana, and with raid buffs you rarely run dry. Spell penetration does nothing against raid bosses.
+Spell power and Shadow power are the same stat to you. Hit is next until you reach the 16% spell hit cap against a raid boss: Shadow Focus gives 5%, the other 11% comes from gear, and every miss is a lost Mind Blast. Critical strike is worth more than it looks: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles every crit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
 
 ## Best in slot
 
@@ -108,11 +108,11 @@ Flask of Supreme Power, Elixir of Shadow Power and Greater Arcane Elixir all sta
 
 ## Races
 
-**Gnome** is the Alliance pick. Eureka! makes your spells 10% cheaper and 10% stronger for 8 seconds on a 2 minute cooldown: line it up with Mind Blast and Shadow Word: Death. Expansive Mind adds 5% mana. The Gnome priest spells are Contingency Plan, a ward that shields and heals an ally who drops below 35%, and Confounding Flash, which confuses nearby enemies for a few seconds.
+**Human** is the Alliance pick. Ruthless adds 1% critical strike chance to all your spells, and Shadowform doubles every crit's bonus. The Human Spirit adds 10% Spirit, which is more drinking saved while Spirit Tap is up. The Human priest spells are Divine Grace, a free instant heal on an ally under 50%, and Feedback, which is for PvP.
 
-**Undead** is the Horde pick. Touch of the Grave drains a little health from your target every so often, which helps against Shadow Word: Death's backlash, Will of the Forsaken breaks fears, and Dark Sacrifice trades your health for mana once a fight.
+**Undead** is the Horde pick, and the strongest Shadow priest of all. Touch of the Grave gives your spells a chance to drain health from the target, up to 5% of your maximum health, at most once every 15 seconds, which takes the edge off Shadow Word: Death's backlash. Dark Sacrifice trades your health for mana once a fight, and Will of the Forsaken breaks fears and charms.
 
-**Night Elf** has Elune's Light, 10% crit for 15 seconds every 3 minutes, and **Troll** has Berserking, 10% cast speed. Both are close. **Dwarf** gets Artisan's Precision, 1% hit, which a Shadow priest always wants, plus Stoneform and Desperate Prayer. **Human** gets Ruthless, 1% crit.
+**Night Elf** is as good as Human: Elune's Light is 10% crit for 15 seconds every 3 minutes. **Dwarf** is close behind with Artisan's Precision, 1% hit, plus Stoneform and Desperate Prayer. **Gnome** trails them a little: Eureka! makes your spells 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Expansive Mind adds 5% mana. **Troll** has Berserking, 10% cast speed for 15 seconds every 3 minutes, and falls clearly behind Undead.
 
 ## Professions
 

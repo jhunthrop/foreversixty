@@ -86,7 +86,7 @@
         }
       },
       {
-        "notes": "Mongoose Bite the moment it lights up. A dodge opens it for 5 seconds, and Expose Prey opens it for 10 seconds off your hits on a target with your Hunter's Mark, which is how it lights up on a boss that never swings at you. One press spends the window.",
+        "notes": "Mongoose Bite the moment it lights up. A dodge opens it for 5 seconds, and Expose Prey opens it for 10 seconds off your hits on a target with Hunter's Mark, any hunter's, which is how it lights up on a boss that never swings at you. One press spends the window.",
         "action": {
           "castSpell": {
             "spellId": {

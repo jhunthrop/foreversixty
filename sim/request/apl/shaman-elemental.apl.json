@@ -63,7 +63,7 @@
       "action": {
         "autocastOtherCooldowns": {}
       },
-      "notes": "Lightning Mastery, trinkets, racials and potions on cooldown: for its 15 seconds Lightning Bolt is half a second faster and Chain Lightning has no cooldown, so stack everything inside it."
+      "notes": "Lightning Mastery, trinkets and racials together: for its 15 seconds Lightning Bolt is half a second faster and Chain Lightning has no cooldown, so stack everything inside it."
     },
     {
       "notes": "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown.",

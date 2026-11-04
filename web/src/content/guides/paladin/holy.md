@@ -67,7 +67,7 @@ The build is 31 Holy, 12 Protection and 8 Retribution.
 - **Benediction** (5 points) and **Conviction** (3 points): Holy Shock and every instant 10% cheaper, and 6% crit on your heals and everything else you do.
 - **Divine Intellect** (5 points): 10% Intellect, in Protection's first row now.
 
-The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protection and adds 6 seconds to Blessing of Freedom, **Sacred Duty** brings Divine Shield back a minute sooner, **Purifying Power** makes Cleanse cheaper, and **Precision** and one point of **Divine Precision** are filler on the way.
+The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protection and adds 6 seconds to Blessing of Freedom, **Sacred Duty** brings Divine Shield back a minute sooner, **Purifying Power** makes Cleanse cheaper, **Divine Precision** is the point that opens Holy Power's row, and **Precision** fills out the Protection points, since nothing else in those rows heals.
 
 ## Rotation and priority
 
@@ -83,7 +83,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 **Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches; rank 9 is an Ahn'Qiraj book. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but you learned it at 30, so at 60 it keeps only part of your healing power.
 
-**Mana.** You heal off pace, not off health bars: if your bar is ahead of the fight, spend it on Holy Light and Holy Shock; if it is behind, heal with Flash of Light alone. Every crit refunds half its base cost through Illumination, which is why Holy Shock on the party (where Boundless Light's crit applies) pays for itself. Major Mana Potion and Demonic Rune go on cooldown as soon as your bar has room for them.
+**Mana.** You heal off pace, not off health bars: if your bar is ahead of the fight, spend it on Holy Light and Holy Shock; if it is behind, heal with Flash of Light alone. Every crit refunds half its base cost through Illumination, which is why Holy Shock on the party, where Boundless Light adds 30% crit, gets a large part of its cost back. Major Mana Potion and Demonic Rune go on cooldown as soon as your bar has room for them.
 
 **Light's Vigil.** It costs 1,340 mana at 60. Keep it for a fight where your whole party takes big damage at once. On an ordinary boss it is mana you need for the tank.
 

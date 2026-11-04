@@ -3,9 +3,9 @@ title: Combat Rogue in Forever
 classSlug: rogue
 spec: combat
 role: dps
-build: 'FS1:1.60.1.70755:rogue:night-elf:325301/3153030000012321541/03:'
-raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:005203002/3243030000012321451/005:'
-recommendedRaces: [night-elf, troll]
+build: 'FS1:1.60.1.70755:rogue:gnome:325301/3153030000012321541/03:'
+raidBuild: 'FS1:1.60.1.70755:rogue:gnome:005203002/3243030000012321451/005:'
+recommendedRaces: [gnome, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents that matter.'
 updated: 2026-11-02
@@ -60,7 +60,7 @@ The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of F
 - **Puncturing Wounds** (3 points): 30% more crit on Backstab and a 45% chance at a second combo point. This is what makes daggers the Combat weapon in Forever.
 - **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
-In the raid build, Lethality makes Backstab crits hit 20% harder, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes energy off Sinister Strike, 3 at one point and 5 at two: your builder's discount in the level 60 build. In the raid build its two points and four of Lightning Reflexes are the toll to reach Flawless Execution, Weapon Expertise and Aggression.
+In the raid build, Lethality takes Backstab crits from 200% to 220%, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes energy off Sinister Strike, 3 at one point and 5 at two: your builder's discount in the level 60 build. In the raid build its two points and four of Lightning Reflexes are the toll to reach Flawless Execution, Weapon Expertise and Aggression.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -80,7 +80,7 @@ Every rogue picks up **Poised** at 18: at full energy out of combat, your next a
 
 Backstab costs 60 and you are energy-limited all fight, so you spend the moment you can and wait on energy rather than clip anything. Never sit at full energy: anything over the cap is lost. Press **Adrenaline Rush** low on energy, never at the cap: on the pull, Garrote and one Backstab first, then Adrenaline Rush. Blade Flurry costs 25 and can go at any energy. Shank is energy too: never let it sit ready, and press it before Backstab when both are up. Before an add you know is coming, let energy climb a little so the first cleaved swings have Backstabs behind them.
 
-**Thistle Tea** gives 100 energy on a 5 minute cooldown. Drink it when you are near empty, never during Adrenaline Rush.
+**Thistle Tea** gives 100 energy on a 5 minute cooldown. Drink it when you are near empty, so none of the 100 is lost to the cap.
 
 ### Cooldowns and adds
 
@@ -109,7 +109,7 @@ Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **
 
 ## Races
 
-Night Elf on Alliance and Troll on Horde. **Elune's Light** is 10% crit for 15 seconds and **Berserking** 10% attack speed for 15 seconds, both on 3 minute cooldowns: line either up with Adrenaline Rush. Orc's **Blood Fury** is close behind for Horde, and Human's passive 1% crit is the Alliance fallback; Elune's Light beats it for raiding. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
+Gnome on Alliance and Undead on Horde. **Eureka!** makes your abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** gives you 5% more energy. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc and Night Elf are next; Troll trails. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
 
 ## Professions
 

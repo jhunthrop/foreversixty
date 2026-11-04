@@ -77,7 +77,7 @@ The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk
 
 ## Rotation and priority
 
-Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. At 60, Aspect of the Falcon gives the same melee attack power as Beast (10 more once you own Hawk's Ahn'Qiraj rank), and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade. Before 60 Beast is the only melee aspect you have. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
+Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. At 60, Aspect of the Falcon gives the same melee attack power as Beast (10 more once you own Hawk's Ahn'Qiraj rank), and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
 
 Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and Berserking or Blood Fury together: Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
 
@@ -85,7 +85,7 @@ Then work through your melee priority: Raptor Strike, Counterattack, Mongoose Bi
 
 You fire no shots in this spec. Your bow or gun is there for its stats.
 
-**Threat.** You sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, and Feign Death drops all of it if it lands; check the message, because either can miss or be resisted. Deterrence is your emergency button when something turns on you.
+**Threat.** You sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. Feign Death drops all of your threat if it lands; check the message, because either can miss or be resisted. Deterrence is your emergency button when something turns on you.
 
 **Trash.** Survival has little cleave of its own. Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest. Freezing Trap is your crowd control, laid before the pull.
 
@@ -111,7 +111,7 @@ Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, and Predat
 
 Orc and Troll are level for the Horde. Blood Fury is 10% attack power for 15 seconds every two minutes, so it goes on the pull with Rapid Fire and again at two and four minutes. Berserking is 10% attack speed for 15 seconds every three minutes and stacks with Rapid Fire on your swings.
 
-Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds both of your weapons.
+Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: Wind Blessed's 2% haste speeds both of your weapons, and it lands in the middle of the pack, so it is the paid option, never the pick.
 
 ## Professions
 
@@ -121,6 +121,6 @@ Engineering gives Survival the AoE it lacks: grenades and explosives on trash. S
 
 Survival levels in melee. Keep a pet out while you level: Lone Wolf is one of the last points this build takes, and until then the pet holds aggro and adds damage. Dismiss it the moment you take Lone Wolf.
 
-Open with Hunter's Mark, send the pet, then walk in and queue Raptor Strike. Press Mongoose Bite whenever it lights up and keep Lacerate on anything that will live long enough to bleed. Wing Clip a runner. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+Open with Hunter's Mark, send the pet, then walk in and queue Raptor Strike. Press Mongoose Bite whenever it lights up and keep Lacerate on anything that will live long enough to bleed. Wing Clip a runner. Wear Aspect of the Monkey until 30: its dodges open Mongoose Bite. At 30 switch to Aspect of the Beast and keep it up. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
 Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.
