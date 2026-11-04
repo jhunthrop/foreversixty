@@ -648,6 +648,12 @@
         ],
         "bands": [
           {
+            "from_level": 26,
+            "to_level": 27,
+            "rank": 3,
+            "note": "Sim-accuracy round 19 (guide round 15 Sims requested 1): judged level by level 20 to 29 (10,000 iterations, seeds 1 and 50001, both factions). At 26 and 27 rank 3 beats the just-learned rank 5 by 3.7% to 4.9% (rank 4 ties or trails rank 3); at 20 to 25 rank 3 ties the top rank, and from 28 the top rank wins."
+          },
+          {
             "from_level": 30,
             "to_level": 33,
             "rank": 3
@@ -716,18 +722,41 @@
           },
           {
             "from_level": 47,
-            "to_level": 56,
+            "to_level": 55,
             "rank": 6
           },
           {
-            "from_level": 57,
+            "from_level": 56,
             "to_level": 58,
-            "rank": 7
+            "rank": 7,
+            "note": "Sim-accuracy round 19: with Chain Heal rank 1 through 59, rank 7 also beats rank 6 at 56 (+0.4% to +0.7%, 10,000 iterations, seeds 1 and 50001, both factions); rank 6 still wins at 54 and 55."
           },
           {
             "from_level": 59,
             "to_level": 59,
             "rank": 8
+          }
+        ]
+      },
+      {
+        "spell": "Chain Heal",
+        "authored": 10623,
+        "lines": [
+          16
+        ],
+        "bands": [
+          {
+            "from_level": 46,
+            "to_level": 59,
+            "rank": 1,
+            "note": "Sim-accuracy round 19: judged level by level (spec-breakdown -level 46, 49, 50, 53, 54, 56, 59, 10,000 iterations, seeds 1 and 50001, both factions). Rank 1 (260 mana) beats rank 2 (315) and rank 3 (405) by 0.3% at 46 to 1.2% at 59: a leveling healer runs out of mana, so the cheaper Chain Heal heals more over the fight."
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 2,
+            "preset": "bare",
+            "note": "Sim-accuracy round 19: without raid buffs rank 2 beats rank 3 by about 1% and rank 1 by 0.2% (10,000 iterations, seeds 1 and 50001, both factions). In a raid rank 3 wins by 3.5% and the default stands."
           }
         ]
       }

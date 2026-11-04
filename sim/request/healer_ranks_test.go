@@ -170,6 +170,8 @@ func TestRestorationShamanSwiftnessHealingWaveIsTheTopRank(t *testing.T) {
 // rank 5 to 46 (+3.9% over rank 6 at 44). The rows are scoped to the
 // filler's line, so the Nature's Swiftness save on the same id keeps its top
 // rank (TestRestorationShamanSwiftnessHealingWaveIsTheTopRank).
+// Round 19: with Chain Heal rank 1 through 59, rank 7 starts at 56 (+0.4% to
+// +0.7% over rank 6).
 func TestRestorationShamanFillerHealingWaveByBand(t *testing.T) {
 	filler, _ := restorationHealingWaveLines(t)
 	for _, c := range []struct {
@@ -179,7 +181,7 @@ func TestRestorationShamanFillerHealingWaveByBand(t *testing.T) {
 	}{
 		{20, BarePreset, 2}, {25, BarePreset, 2}, {26, BarePreset, 3}, {30, BarePreset, 3}, {36, BarePreset, 3},
 		{37, BarePreset, 4}, {38, BarePreset, 4}, {41, BarePreset, 4}, {42, BarePreset, 5}, {44, BarePreset, 5},
-		{46, BarePreset, 5}, {47, BarePreset, 6}, {50, BarePreset, 6}, {56, BarePreset, 6}, {57, BarePreset, 7}, {58, BarePreset, 7}, {59, BarePreset, 8},
+		{46, BarePreset, 5}, {47, BarePreset, 6}, {50, BarePreset, 6}, {55, BarePreset, 6}, {56, BarePreset, 7}, {57, BarePreset, 7}, {58, BarePreset, 7}, {59, BarePreset, 8},
 		{60, BarePreset, 9}, {60, RaidPreset, 9},
 	} {
 		assertOnlyRank(t, filler, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)
