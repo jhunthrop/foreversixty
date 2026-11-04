@@ -93,9 +93,36 @@ All in web/src/content/guides/hunter/marksmanship.md (text as on land/guides-r1)
 - Rotation paragraph ("Then work the shared six second cooldown..."), after the Multi-Shot sentence, add: "Sniper Shot has its own 15 second cooldown: cast it whenever it is ready right after an auto shot fires, the same rule as Aimed Shot."
 - data/curated/apl/hunter-marksmanship.json: the new Sniper Shot line (after Multi-Shot) has an empty `notes`. Proposed: "Sniper Shot whenever it is ready and an auto shot has just left. Its long cast holds the next auto, so it only pays right after one fires."
 
+## Wave 2: Aspect of the Falcon (closes H4)
+
+Lead: guide-accuracy round 1 (land/guides-r1, Q1/HUNTER-9/S1). Under Falcon, Deadly Aspects never procs from auto shots. The lead also flagged Falcon's own 5% for a sim check.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W1 | **Under Falcon, no ranged proc.** Falcon's proc types are melee only. Deadly Aspects' Auto Shot mod reaches Aspect of the Hawk's mask only. The engine already rolls the ranged haste only under Hawk. A new test pins it. | wago 1.60.1.70755 SpellAuraOptions 239200 (469145): ProcTypeMask 20 = 0x4 melee auto + 0x10 melee-class spell, no ranged bit. SpellEffect 19552 effect 0: aura 107 misc 18, mask word0 1048576. SpellClassOptions: 1048576 is carried by Hawk 13165-14322 and 25296. | Aligned (closes H4; no DPS change) | guides-handoff | E b86fa7d39 (test) |
+| W2 | **Falcon's own proc was modelled as Deadly Aspects.** The client gives Falcon a flat 5% (ProcChance 5) on landed melee autos and melee strikes, triggering Quick Strikes (469144, +30% melee speed, 12 s). It needs no talent, and Deadly Aspects cannot raise it: Falcon's class mask is 0, while the talent's two chance mods reach Hawk (word0 1048576) and Beast (word2 16, spells 13161 and 1299445-1299447). The engine instead rolled Deadly Aspects' 2% a rank on white hits only, and nothing without the talent. Beast (1299447: ProcChance 0, ProcTypeMask 4, melee autos only, plus the talent's 10%) was already right. | wago 70755 SpellAuraOptions 239200 and 246416, SpellEffect 469145 effect 2 (aura 42, trigger 469144), 19552 effects 0 and 1, SpellClassOptions 78076 (469145 mask 0) and 83855 (1299447 word2 16). Fix: aspect_of_the_falcon.go gets its own proc; talents.go drops the Falcon case. The round-1 test that encoded the old reading (TestDeadlyAspectsProcsMeleeHasteUnderAspectOfTheFalcon) is replaced by aspect_of_the_falcon_test.go (5% without the talent, 5% with Deadly Aspects 5, autos and strikes, 0 on ranged). | CONFIRMED | old, guides-handoff | E b86fa7d39 |
+
+Measured (10000 iterations, horde, guide build; before = sb-before, after = lane head):
+
+| Survival | seed 1 | seed 50001 |
+|---|---|---|
+| raid 60, Beast (published rotation) | 818.6 to 818.6 | 819.0 to 819.0 |
+| raid 60, Falcon in place of Beast | 818.6 to 817.2 (-0.17%) | 819.0 to 816.1 (-0.35%) |
+| bare 60, Beast | 321.4 to 321.4 | 321.4 to 321.4 |
+| bare 60, Falcon in place of Beast | 321.4 to 317.1 (-1.34%) | 321.4 to 317.0 (-1.37%) |
+
+Before the fix, Falcon and Beast simmed identical: the same 110 melee attack power and the same proc. After it, Beast leads, so Survival keeps Beast. No rotation casts Falcon: Beast Mastery and Marksmanship stand on Hawk and Survival on Beast. So no published number moves, for hunters or anyone else.
+
+For the guide lane (wave 2):
+- survival.md:80 (land/guides-r1): "and Deadly Aspects procs from your swings under either one, so Falcon is no upgrade for you" -> "and Deadly Aspects only works under Beast: Falcon has its own smaller chance to speed your swings instead, so Beast is the better aspect for you".
+- beast-mastery.md:81 and marksmanship.md:83 (land/guides-r1): "under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect" -> "under Falcon Deadly Aspects does nothing, and Falcon's own proc speeds only melee swings, so Hawk is the ranged aspect".
+
+Noted, not changed: Hawk's own proc types are 320 (0x40 ranged auto + 0x100 ranged-class spell), while the talent text says "Auto Shot". The engine follows the text (Auto Shot only), as wowsims classic does. A log of Quick Shots procs off Multi-Shot or Arcane Shot would settle it (OPEN).
+
 ## Still open
 
-- H4: Deadly Aspects' ranged proc under Falcon (owner).
+- H4: closed in wave 2.
+- Hawk's proc types (320) against the talent's "Auto Shot" text (see wave 2).
 - B2: Summon Hawk's 18 s assault (needs the hawk's attack data).
 - B4: cat vs raptor (owner question 4; the request has no pet-family field).
 - Carried from round 14: Ranged Weapon Specialization on Serpent Sting (H4), Lacerating Strikes on refresh (H7), the queued Raptor Strike lifting the off-hand miss penalty (H10).
