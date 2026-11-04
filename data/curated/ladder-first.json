@@ -114,8 +114,12 @@
       ]
     },
     "rogue-assassination": {
-      "reason": "The rotation casts Mutilate (the 20-point row, learned at 30). A level 30 rogue's 21 points hold it, but the plain walk spends them on Vile Poisons' second rank. Taking Mutilate as soon as it fits gains about 8% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Cold Blood alongside it measured under 1% more and is not reserved. Between 36 and 39 Mutilate takes the point the walk's spine gave Seal Fate; holding Seal Fate as well cost about 0.5% at band 40, so it is not reserved.",
+      "reason": "The rotation casts Mutilate (the 30-point row since client 1.60.1.70755, behind Venom, learned at 40). The plain walk never reaches Venom on the way down, so Venom and then Mutilate are taken as soon as each fits: Venom at 29, where it also makes every Shank raise your poisons, and Mutilate at 40. Before 70755 Mutilate sat on the 20-point row and was taken at 30 for about 8% at band 30 (sim-accuracy round 13, walk lane).",
       "first": [
+        {
+          "talent": "Venom",
+          "rank": 1
+        },
         {
           "talent": "Mutilate",
           "rank": 1
@@ -123,16 +127,8 @@
       ]
     },
     "rogue-subtlety": {
-      "reason": "The rotation casts Ghostly Strike (the 10-point row), Premeditation (the 15-point row) and Hemorrhage (the 20-point row, learned at 30, behind Serrated Blades 3). The plain walk reaches Ghostly Strike only at 21 and Hemorrhage only at 31. Elusiveness's first rank is held ahead of them because the engine does not model it (Vanish is never cast), so Ghostly Strike's point at 20 comes from Opportunity and Hemorrhage's at 30 from Initiative, and Premeditation, which the opener casts, is kept. About 2.6% at band 20 and 6.7% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane).",
+      "reason": "The rotation casts Premeditation (the 10-point row since client 1.60.1.70755), Ghostly Strike (the 15-point row) and Hemorrhage (the 20-point row, behind Serrated Blades 3). They are reserved in tier order, Elusiveness's first rank ahead of Ghostly Strike because the engine does not model it (Vanish is never cast), so every level only adds points. On the 70753 trees the reservation gained about 2.6% at band 20 and 6.7% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane).",
       "first": [
-        {
-          "talent": "Elusiveness",
-          "rank": 1
-        },
-        {
-          "talent": "Ghostly Strike",
-          "rank": 1
-        },
         {
           "talent": "Premeditation",
           "rank": 1
@@ -140,6 +136,14 @@
         {
           "talent": "Serrated Blades",
           "rank": 3
+        },
+        {
+          "talent": "Elusiveness",
+          "rank": 1
+        },
+        {
+          "talent": "Ghostly Strike",
+          "rank": 1
         },
         {
           "talent": "Hemorrhage",

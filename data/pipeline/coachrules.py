@@ -93,7 +93,9 @@ SPECS = {
         downranks=[],
         defensives=["Evasion", "Vanish"],
     ),
-    "shaman-elemental": dict(core=["Lava Burst"], auras=[], downranks=[], defensives=[]),
+    "shaman-elemental": dict(
+        core=["Lightning Mastery"], auras=[("Flame Shock", DOT)], downranks=[], defensives=[]
+    ),
     "shaman-enhancement": dict(core=["Stormstrike"], auras=[], downranks=[], defensives=[]),
     # The rotation keeps Bane of Agony (DoTs crit in Forever) and Siphon Life up and never
     # channels Wrack; it has no cooldown of its own to judge (Amplify Curse is prepull).
