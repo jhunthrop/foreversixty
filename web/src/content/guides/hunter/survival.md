@@ -93,7 +93,7 @@ You fire no shots in this spec. Your bow or gun is there for its stats.
 
 ## Stat priority
 
-Hit first until you reach 9% hit, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Then crit, which Predator's Edge and Savage Strikes make strong, and Agility, which Lightning Reflexes raises by 15%. Intellect is attack power through Careful Aim. Strength and plain attack power are the weakest per point. Haste is rare on gear but strong when you find it.
+Hit first until you reach 9% hit, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it and 1% is built in, so you need 5% from gear. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Then crit, which Predator's Edge and Savage Strikes make strong, and Agility, which Lightning Reflexes raises by 15%. Intellect is attack power through Careful Aim. Strength and plain attack power are the weakest per point. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 

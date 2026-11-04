@@ -71,7 +71,7 @@
           }
         }
       },
-      "notes": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 5 more energy and gives a combo point."
+      "notes": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point."
     },
     {
       "action": {
@@ -189,7 +189,7 @@
           }
         }
       },
-      "notes": "Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle."
+      "notes": "Eviscerate at three or more combo points while Rupture is ticking."
     },
     {
       "action": {

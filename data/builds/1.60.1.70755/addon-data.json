@@ -4132,7 +4132,7 @@
           {
             "spell_id": 5221,
             "name": "Shred",
-            "condition": "Your builder from level 24, always from behind the target.",
+            "condition": "Your builder from level 20, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -4193,7 +4193,7 @@
           {
             "spell_id": 6800,
             "name": "Shred",
-            "condition": "Your builder from level 24, always from behind the target.",
+            "condition": "Your builder from level 20, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -4261,7 +4261,7 @@
           {
             "spell_id": 8992,
             "name": "Shred",
-            "condition": "Your builder from level 24, always from behind the target.",
+            "condition": "Your builder from level 20, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -4329,7 +4329,7 @@
           {
             "spell_id": 8992,
             "name": "Shred",
-            "condition": "Your builder from level 24, always from behind the target.",
+            "condition": "Your builder from level 20, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -4397,7 +4397,7 @@
           {
             "spell_id": 9829,
             "name": "Shred",
-            "condition": "Your builder from level 24, always from behind the target.",
+            "condition": "Your builder from level 20, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -4465,7 +4465,7 @@
           {
             "spell_id": 9830,
             "name": "Shred",
-            "condition": "Your builder from level 24, always from behind the target.",
+            "condition": "Your builder from level 20, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5752,7 +5752,7 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "In a raid, dismiss your pet before the pull: Lone Wolf works only with no pet out.",
+            "condition": "Hunter's Mark whenever the target is not marked.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -5778,7 +5778,7 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "In a raid, dismiss your pet before the pull: Lone Wolf works only with no pet out.",
+            "condition": "Hunter's Mark whenever the target is not marked.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -5818,7 +5818,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "In a raid, dismiss your pet before the pull: Lone Wolf works only with no pet out.",
+            "condition": "Hunter's Mark whenever the target is not marked.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -5865,7 +5865,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "In a raid, dismiss your pet before the pull: Lone Wolf works only with no pet out.",
+            "condition": "Hunter's Mark whenever the target is not marked.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -5912,7 +5912,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "In a raid, dismiss your pet before the pull: Lone Wolf works only with no pet out.",
+            "condition": "Hunter's Mark whenever the target is not marked.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -5959,7 +5959,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "In a raid, dismiss your pet before the pull: Lone Wolf works only with no pet out.",
+            "condition": "Hunter's Mark whenever the target is not marked.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -6006,7 +6006,7 @@
           {
             "spell_id": 14325,
             "name": "Hunter's Mark",
-            "condition": "In a raid, dismiss your pet before the pull: Lone Wolf works only with no pet out.",
+            "condition": "Hunter's Mark whenever the target is not marked.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -6447,7 +6447,7 @@
           {
             "spell_id": 400574,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks, then a 4th while you are above 20% mana and ahead of the fight.",
+            "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
             "race_spell_ids": {}
           },
@@ -6501,7 +6501,7 @@
           {
             "spell_id": 1239696,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks, then a 4th while you are above 20% mana and ahead of the fight.",
+            "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
             "race_spell_ids": {}
           },
@@ -6555,7 +6555,7 @@
           {
             "spell_id": 1239696,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks, then a 4th while you are above 20% mana and ahead of the fight.",
+            "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
             "race_spell_ids": {}
           },
@@ -6609,7 +6609,7 @@
           {
             "spell_id": 1239697,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks, then a 4th while you are above 20% mana and ahead of the fight.",
+            "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
             "race_spell_ids": {}
           },
@@ -6663,7 +6663,7 @@
           {
             "spell_id": 1239699,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks, then a 4th while you are above 20% mana and ahead of the fight.",
+            "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
             "race_spell_ids": {}
           },
@@ -6717,7 +6717,7 @@
           {
             "spell_id": 1239700,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast to 3 stacks, then a 4th while you are above 20% mana and ahead of the fight.",
+            "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
             "race_spell_ids": {}
           },
@@ -7330,7 +7330,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "With mana to spare, on the tank below 70% as well: only while your mana is no more than five points behind the share of the fight left.",
+            "condition": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           }
@@ -7356,7 +7356,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "With mana to spare, on the tank below 70% as well: only while your mana is no more than five points behind the share of the fight left.",
+            "condition": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -7431,7 +7431,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "With mana to spare, on the tank below 70% as well: only while your mana is no more than five points behind the share of the fight left.",
+            "condition": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -7548,7 +7548,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "With mana to spare, on the tank below 70% as well: only while your mana is no more than five points behind the share of the fight left.",
+            "condition": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -7665,7 +7665,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "With mana to spare, on the tank below 70% as well: only while your mana is no more than five points behind the share of the fight left.",
+            "condition": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -7782,7 +7782,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "With mana to spare, on the tank below 70% as well: only while your mana is no more than five points behind the share of the fight left.",
+            "condition": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -7899,7 +7899,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "With mana to spare, on the tank below 70% as well: only while your mana is no more than five points behind the share of the fight left.",
+            "condition": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -8557,7 +8557,7 @@
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana is at least 80% of the share of the fight left.",
+            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more).",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -8611,7 +8611,7 @@
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana is at least 80% of the share of the fight left.",
+            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more).",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -8665,7 +8665,7 @@
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana is at least 80% of the share of the fight left.",
+            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more).",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -8719,7 +8719,7 @@
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana is at least 80% of the share of the fight left.",
+            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more).",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -8780,7 +8780,7 @@
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana is at least 80% of the share of the fight left.",
+            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more).",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -8841,7 +8841,7 @@
           {
             "spell_id": 20924,
             "name": "Consecration",
-            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana is at least 80% of the share of the fight left.",
+            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more).",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -8862,14 +8862,14 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -8944,7 +8944,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -8986,7 +8986,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9096,7 +9096,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9145,7 +9145,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9255,7 +9255,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9304,7 +9304,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9414,7 +9414,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9470,7 +9470,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9587,7 +9587,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9643,7 +9643,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9760,7 +9760,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9816,7 +9816,7 @@
           {
             "spell_id": 2050,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
             "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
@@ -9886,7 +9886,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           }
@@ -9905,7 +9905,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9947,7 +9947,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -10029,7 +10029,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10078,7 +10078,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10160,7 +10160,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10209,7 +10209,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10298,7 +10298,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10347,7 +10347,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10436,7 +10436,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10485,7 +10485,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10574,7 +10574,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
+            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10623,7 +10623,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -10700,7 +10700,7 @@
           {
             "spell_id": 594,
             "name": "Shadow Word: Pain",
-            "condition": "Always up, but skip the refresh in the last 10 seconds of a fight, when it cannot tick out.",
+            "condition": "Always up; stop refreshing it in the closing seconds of a fight.",
             "icon": "spell_shadow_shadowwordpain",
             "race_spell_ids": {}
           },
@@ -10733,7 +10733,7 @@
           {
             "spell_id": 970,
             "name": "Shadow Word: Pain",
-            "condition": "Always up, but skip the refresh in the last 10 seconds of a fight, when it cannot tick out.",
+            "condition": "Always up; stop refreshing it in the closing seconds of a fight.",
             "icon": "spell_shadow_shadowwordpain",
             "race_spell_ids": {}
           },
@@ -10787,7 +10787,7 @@
           {
             "spell_id": 970,
             "name": "Shadow Word: Pain",
-            "condition": "Always up, but skip the refresh in the last 10 seconds of a fight, when it cannot tick out.",
+            "condition": "Always up; stop refreshing it in the closing seconds of a fight.",
             "icon": "spell_shadow_shadowwordpain",
             "race_spell_ids": {}
           },
@@ -10848,7 +10848,7 @@
           {
             "spell_id": 970,
             "name": "Shadow Word: Pain",
-            "condition": "Always up, but skip the refresh in the last 10 seconds of a fight, when it cannot tick out.",
+            "condition": "Always up; stop refreshing it in the closing seconds of a fight.",
             "icon": "spell_shadow_shadowwordpain",
             "race_spell_ids": {}
           },
@@ -10916,7 +10916,7 @@
           {
             "spell_id": 2767,
             "name": "Shadow Word: Pain",
-            "condition": "Always up, but skip the refresh in the last 10 seconds of a fight, when it cannot tick out.",
+            "condition": "Always up; stop refreshing it in the closing seconds of a fight.",
             "icon": "spell_shadow_shadowwordpain",
             "race_spell_ids": {}
           },
@@ -10998,7 +10998,7 @@
           {
             "spell_id": 10893,
             "name": "Shadow Word: Pain",
-            "condition": "Always up, but skip the refresh in the last 10 seconds of a fight, when it cannot tick out.",
+            "condition": "Always up; stop refreshing it in the closing seconds of a fight.",
             "icon": "spell_shadow_shadowwordpain",
             "race_spell_ids": {}
           },
@@ -11093,7 +11093,7 @@
           {
             "spell_id": 10894,
             "name": "Shadow Word: Pain",
-            "condition": "Always up, but skip the refresh in the last 10 seconds of a fight, when it cannot tick out.",
+            "condition": "Always up; stop refreshing it in the closing seconds of a fight.",
             "icon": "spell_shadow_shadowwordpain",
             "race_spell_ids": {}
           },
@@ -11720,14 +11720,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 5 more energy and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6760,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -11753,7 +11753,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 5 more energy and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -11767,7 +11767,7 @@
           {
             "spell_id": 6761,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -11800,7 +11800,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 5 more energy and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -11814,7 +11814,7 @@
           {
             "spell_id": 6762,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -11854,7 +11854,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 5 more energy and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -11868,7 +11868,7 @@
           {
             "spell_id": 8623,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -11908,7 +11908,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 5 more energy and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -11929,7 +11929,7 @@
           {
             "spell_id": 8624,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -11969,7 +11969,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 5 more energy and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -11990,7 +11990,7 @@
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -12030,7 +12030,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 5 more energy and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -12051,7 +12051,7 @@
           {
             "spell_id": 11300,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -12666,7 +12666,7 @@
           {
             "spell_id": 8835,
             "name": "Grace of Air Totem",
-            "condition": "Grace of Air Totem whenever it is down: Agility for the whole raid in range.",
+            "condition": "Grace of Air Totem whenever your Air slot is empty: Agility for every raid member within 30 yards, you included.",
             "icon": "spell_nature_invisibilitytotem",
             "race_spell_ids": {}
           },
@@ -12720,7 +12720,7 @@
           {
             "spell_id": 10627,
             "name": "Grace of Air Totem",
-            "condition": "Grace of Air Totem whenever it is down: Agility for the whole raid in range.",
+            "condition": "Grace of Air Totem whenever your Air slot is empty: Agility for every raid member within 30 yards, you included.",
             "icon": "spell_nature_invisibilitytotem",
             "race_spell_ids": {}
           },
@@ -12783,14 +12783,14 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
+            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
+            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -12830,7 +12830,7 @@
           {
             "spell_id": 913,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
+            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -12872,7 +12872,7 @@
           {
             "spell_id": 913,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
+            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -12912,7 +12912,7 @@
           {
             "spell_id": 939,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
+            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -12954,7 +12954,7 @@
           {
             "spell_id": 939,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
+            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -12994,7 +12994,7 @@
           {
             "spell_id": 959,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
+            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13036,7 +13036,7 @@
           {
             "spell_id": 959,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
+            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -13076,7 +13076,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
+            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13153,14 +13153,14 @@
           {
             "spell_id": 1064,
             "name": "Chain Heal",
-            "condition": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and cast on a party member it only jumps to your party.",
+            "condition": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
             "icon": "spell_nature_healingwavegreater",
             "race_spell_ids": {}
           },
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
+            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -13200,7 +13200,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
+            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13277,14 +13277,14 @@
           {
             "spell_id": 10622,
             "name": "Chain Heal",
-            "condition": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and cast on a party member it only jumps to your party.",
+            "condition": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
             "icon": "spell_nature_healingwavegreater",
             "race_spell_ids": {}
           },
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
+            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -13324,7 +13324,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
+            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13401,14 +13401,14 @@
           {
             "spell_id": 10623,
             "name": "Chain Heal",
-            "condition": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and cast on a party member it only jumps to your party.",
+            "condition": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
             "icon": "spell_nature_healingwavegreater",
             "race_spell_ids": {}
           },
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
+            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }

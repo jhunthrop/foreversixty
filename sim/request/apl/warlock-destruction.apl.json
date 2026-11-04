@@ -191,7 +191,7 @@
       }
     },
     {
-      "notes": "Conflagrate on cooldown while Immolate is up. Each hit gives you 20 seconds of 10% more Shadow damage, and with 5 points in Shadow and Flame it never eats your Immolate.",
+      "notes": "Conflagrate on cooldown while Immolate is up. Each hit gives you 20 seconds of 20% more Shadow damage, and with 5 points in Shadow and Flame it never eats your Immolate.",
       "action": {
         "condition": {
           "dotIsActive": {
@@ -210,7 +210,7 @@
       }
     },
     {
-      "notes": "Shadowburn on cooldown, at any boss health. Each hit gives you 20 seconds of 10% more Fire damage, and with 5 points in Shadow and Flame the Soul Shard comes straight back.",
+      "notes": "Shadowburn on cooldown, at any boss health. Each hit gives you 20 seconds of 20% more Fire damage, and with 5 points in Shadow and Flame the Soul Shard comes straight back.",
       "action": {
         "castSpell": {
           "spellId": {

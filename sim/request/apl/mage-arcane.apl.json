@@ -118,7 +118,7 @@
       }
     },
     {
-      "notes": "Arcane Blast to 3 stacks, then a 4th while you are above 20% mana and ahead of the fight. Ahead of the fight means more of your mana bar left than of the fight: half the fight left with more than half your mana, keep blasting. Each stack adds 12% of your Intellect as spell damage and raises the next Blast's cost by 100%. The buff lasts 18 seconds from the first Blast and does not refresh. A Clearcasting proc makes even a stacked Blast free.",
+      "notes": "Arcane Blast to 3 stacks. Past 3, keep blasting only while your mana bar is fuller than the share of the fight still to go, which you read off the boss's health bar, and you are above 20% mana. Each stack adds 12% of your Intellect as spell damage and raises the next Blast's cost by 100%. The buff lasts 18 seconds from the first Blast and does not refresh. A Clearcasting proc makes even a stacked Blast free.",
       "action": {
         "condition": {
           "or": {

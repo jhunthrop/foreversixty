@@ -100,7 +100,7 @@ When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed S
 
 There is no execute phase for a hunter: the priority holds to the end.
 
-**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up. Freezing Trap takes care of anything loose in the back line.
+**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls a loose add onto you for a few seconds so your tank can grab it before it reaches the healers. Freezing Trap takes care of anything loose in the back line.
 
 ## Stat priority
 

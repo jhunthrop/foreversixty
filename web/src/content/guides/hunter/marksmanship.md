@@ -107,7 +107,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-Hit first until you reach 9% hit, the cap against a raid boss: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. In the raid build Surefooted gives you 3% of that cap, so you need 6% from gear. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
+Hit first until you reach 9% hit, the cap against a raid boss: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. In the raid build Surefooted gives you 3% of that cap and 1% is built in, so you need 5% from gear. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 

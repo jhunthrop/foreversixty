@@ -92,7 +92,7 @@ Ancestral Healing takes the last three points: 25% more armor on your target for
 
 ## Stat priority
 
-Healing from any source counts, including items that add damage and healing; damage-only spell power and Nature power do nothing for a heal. Intellect is your mana pool, and Water Shield returns a share of that pool with every globe. Spirit and mp5 keep you casting: Mindfulness keeps half your Spirit regeneration running while you heal. Crit fires Water Shield on top of the bigger heal.
+Healing from any source counts, including items that add damage and healing; damage-only spell power and Nature power do nothing for a heal. Intellect is your mana pool, and Water Shield returns a share of that pool with every globe. Spirit and mp5 keep you casting: Mindfulness keeps half your mana regeneration running while you heal. Crit fires Water Shield on top of the bigger heal.
 
 ## Best in slot
 
