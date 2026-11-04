@@ -17,13 +17,13 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights, data/curated/stat-weights.json'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty rotation data, data/curated/apl/mage-arcane.json'
+  - label: 'Forever Sixty, rotation'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json'
+  - label: 'Forever Sixty, raid loot tables'
     url: https://foreversixty.gg/sources
     kind: site
 ---
@@ -66,7 +66,7 @@ Both builds spend 31 or more points in Arcane for Arcane Power, then go to Frost
 
 The raid build trades a rank of Improved Channeling and the fourth Incineration for both ranks of **Arcane Subtlety**. Its 15 points of resistance reduction is worth less than the crit, but its 30% less threat on Arcane spells is what lets you press Arcane Power in the first ten seconds of a pull. Bosses do not push back your casts the way packs of mobs do, so the lost rank of Improved Channeling costs nothing.
 
-Skip Flame Throwing and Impact, since you never cast a Fire spell, and skip Arcane Wrath: its 3.5 second cast on a 6 second cooldown does no more than the Frostbolt it would replace. Build it in the [talent planner](/planner?class=mage).
+Skip Flame Throwing and Impact: Fire Blast on the move is the only Fire spell you cast. [Open the planner](/planner?class=mage) to change the build.
 
 ## Rotation and priority
 

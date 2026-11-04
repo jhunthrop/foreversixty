@@ -17,10 +17,10 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -59,7 +59,7 @@ Lightning Mastery is the 31st point, and Call of Thunder above it is the point t
 - **Call of Flame** (3 points): Flame Shock lasts 21 seconds instead of 12, and Flame Shock, Fire Nova and your fire totems hit 15% harder. One shock now covers three and a half shock cooldowns.
 - **Elemental Focus** (1 point): any Fire, Frost or Nature damage spell has a 10% chance to make your next damage spell free.
 - **Call of Thunder** (1 point): 5% more crit on Lightning Bolt and Chain Lightning, and the way to Lightning Mastery.
-- **Lightning Overload** (3 points): a 30% chance for Lightning Bolt and Chain Lightning to fire a free, smaller second bolt with no threat.
+- **Lightning Overload** (3 points): a 30% chance for Lightning Bolt and Chain Lightning to fire a free, smaller copy of the spell with no threat.
 - **Elemental Fury** (5 points): doubles the crit bonus of your spells and your Searing and Magma Totems.
 - **Lightning Mastery** (1 point): 15 seconds of faster Lightning Bolts and Chain Lightning with no cooldown, every 3 minutes.
 
@@ -103,7 +103,7 @@ On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% 
 
 ## Professions
 
-Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Your Leatherworking helm, chest, legs and gloves bind when equipped and can be bought, but the Skycaller's belt binds on pickup: take Leatherworking for it, or wear Satyrmane Sash from Lord Vyletongue in Maraudon and keep your second profession for Alchemy or gathering.
+Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Your Leatherworking helm, gloves and legs bind when equipped and can be bought, but the Skycaller's belt binds on pickup: take Leatherworking for it, or wear Satyrmane Sash from Lord Vyletongue in Maraudon and keep your second profession for Alchemy or gathering.
 
 ## Leveling
 

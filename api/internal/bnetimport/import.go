@@ -58,10 +58,42 @@ type Service struct {
 	// no build data is available and buildAndWriteExport (build.go) is a no-op — never a
 	// crash.
 	Tables bnetbuild.Tables
+	// MaxConcurrentEnrichments caps how many characters this process enriches at
+	// once. Each enrichment holds one pool connection inside a transaction while it
+	// waits on several Battle.net calls, so a sign-in burst without a cap would pin
+	// every connection and stall every other request on the instance. Zero means no
+	// cap (the nightly refresh, which enriches one character at a time). The API sets
+	// it with EnrichmentSlotsFor.
+	MaxConcurrentEnrichments int
 
 	// staticSeen remembers which static namespaces noteStaticNamespace has
 	// already logged.
 	staticSeen sync.Map
+
+	enrichSlotsOnce sync.Once
+	enrichSlots     chan struct{}
+}
+
+// EnrichmentSlotsFor is the sign-in enrichment cap for a process whose pool is
+// pool: half its connections, at least one, so the request path always keeps the
+// other half.
+func EnrichmentSlotsFor(pool *pgxpool.Pool) int {
+	return max(1, int(pool.Config().MaxConns)/2)
+}
+
+// acquireEnrichSlot waits for one of MaxConcurrentEnrichments slots, or for ctx to
+// end. The returned release gives the slot back.
+func (s *Service) acquireEnrichSlot(ctx context.Context) (release func(), err error) {
+	if s.MaxConcurrentEnrichments <= 0 {
+		return func() {}, nil
+	}
+	s.enrichSlotsOnce.Do(func() { s.enrichSlots = make(chan struct{}, s.MaxConcurrentEnrichments) })
+	select {
+	case s.enrichSlots <- struct{}{}:
+		return func() { <-s.enrichSlots }, nil
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	}
 }
 
 func (s *Service) logger() *slog.Logger {
@@ -221,11 +253,25 @@ func (s *Service) enrichAll(ctx context.Context, refs []characterRef, summary *a
 		if fresh {
 			continue
 		}
+		release, err := s.acquireEnrichSlot(ctx)
+		if err != nil {
+			summary.Pending += len(refs) - i
+			return ErrBudget
+		}
 		guildWritten, unavailable, err := s.enrichCharacter(ctx, ref, rosterCache)
+		release()
 		if err != nil {
 			if errors.Is(err, context.DeadlineExceeded) || ctx.Err() != nil {
 				summary.Pending += len(refs) - i
 				return ErrBudget
+			}
+			// A 429 stops the batch (bnetapi.ErrRateLimited): every further call
+			// would spend the shared client quota for another refusal. The rows stay
+			// listed and the nightly refresh enriches them.
+			if errors.Is(err, bnetapi.ErrRateLimited) {
+				summary.Pending += len(refs) - i
+				summary.RateLimited = true
+				return err
 			}
 			s.logger().Warn("bnetimport", "op", "enrich_character", "key", ref.Key, "user_id", ref.UserID, "err", err)
 			continue
