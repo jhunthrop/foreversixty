@@ -73,9 +73,9 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 }
 
 // A request's rank choices follow its character's race: the same Shadow priest at 40 casts
-// Mind Blast rank 4 as an Undead and rank 3 as a Dwarf.
+// Mind Blast rank 4 as an Undead and the top rank (6) as a Gnome (round 18).
 func TestBuildCastsTheRacesRankChoice(t *testing.T) {
-	for race, want := range map[string]string{"undead": `"spellId":8104`, "dwarf": `"spellId":8103`} {
+	for race, want := range map[string]string{"undead": `"spellId":8104`, "gnome": `"spellId":8106`} {
 		req := api.SimRequest{
 			EngineVersion: enginever.Version, Spec: "priest-shadow",
 			Source:    api.CharacterSource{Kind: api.SourceManual},
@@ -106,10 +106,12 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		level                           int
 		want, not                       int32
 	}{
-		// Mind Blast at 40: rank 4 (8104), but rank 3 (8103) for a Dwarf or a Night Elf.
-		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8104, 8103},
-		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8103, 8104},
-		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8103, 8104},
+		// Mind Blast at 40: rank 4 (8104) for a Dwarf or a Night Elf too, whom rank 3 (8103)
+		// never beats; a Gnome casts the top rank, 6 (8106). Re-judged level by level at
+		// sim-accuracy round 18.
+		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8106, 8104},
+		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8104, 8103},
+		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8104, 8103},
 		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned for every race.
 		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 10945, 8102},
 		{"Human Mind Blast at 50", "priest-shadow", "priest", BarePreset, "human", 50, 10945, 8103},

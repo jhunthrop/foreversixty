@@ -22,7 +22,7 @@ func TestChosenRanksReadsTheCuratedRowsAtALevel(t *testing.T) {
 		{"shaman-elemental", "Lightning Bolt", 60, []int{8}},
 		// A race's row counts for any race (round 13): a log's rank is no mistake
 		// where the site casts it for one race.
-		{"priest-shadow", "Mind Blast", 45, []int{3, 4}},
+		{"priest-shadow", "Mind Blast", 42, []int{4}},
 		{"warrior-fury", "Bloodthirst", 60, nil},
 		{"paladin-retribution", "Seal of Righteousness", 40, nil},
 	} {
@@ -102,6 +102,36 @@ func TestShadowDevouringPlagueMovesToRankTwoAtFiftyTwo(t *testing.T) {
 		}
 		if !slices.Equal(got, want) {
 			t.Errorf("Devouring Plague at %d: %v, want %v", level, got, want)
+		}
+	}
+}
+
+// Sim-accuracy round 18: judged level by level under the MaxLevel + 12 rule,
+// Mind Blast rank 4 beats the top rank only to 43, and rank 3 never beats
+// rank 4 for a Dwarf or a Night Elf. From 44 every race casts the top Mind
+// Blast with Devouring Plague rank 2 (rank 1, learned at 20, has lost too
+// much spell power by then).
+func TestShadowRowsSwitchAtFortyFour(t *testing.T) {
+	for _, c := range []struct {
+		spell string
+		level int
+		want  []int
+	}{
+		{"Mind Blast", 40, []int{4}},
+		{"Mind Blast", 43, []int{4}},
+		{"Mind Blast", 44, nil},
+		{"Mind Blast", 49, nil},
+		{"Devouring Plague", 40, []int{1}},
+		{"Devouring Plague", 43, []int{1}},
+		{"Devouring Plague", 44, []int{2}},
+		{"Devouring Plague", 49, []int{2}},
+	} {
+		got, err := ChosenRanks("priest-shadow", c.spell, c.level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(got, c.want) {
+			t.Errorf("%s at %d: %v, want %v", c.spell, c.level, got, c.want)
 		}
 	}
 }
