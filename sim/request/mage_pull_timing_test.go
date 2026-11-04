@@ -190,10 +190,11 @@ func TestMageTalentAuraLinesCheckTheTalent(t *testing.T) {
 	}
 }
 
-// Before Missile Barrage (levels 20 and 21 on the leveling order, and band 20's
-// whole build) Arcane Missiles is the Arcane mage's best spell on a long fight,
-// ahead of Arcane Blast. That stays an explicit line now that the Barrage line
-// checks its talent.
+// Until Missile Barrage has both ranks (levels 20 to 22 on the leveling order,
+// and band 20's whole build) Arcane Missiles is the Arcane mage's best spell on
+// a long fight, ahead of Arcane Blast. At 22, with one rank, Missiles first is
+// 49.0 DPS against 41.4 for Blast first (round 18); at 23 Blast first wins. The
+// talent's aura (400588) carries the rank as its tag.
 func TestArcaneCastsMissilesBeforeMissileBarrage(t *testing.T) {
 	curated, err := loadLadderCurated(repoRoot, "mage-arcane")
 	if err != nil {
@@ -212,12 +213,46 @@ func TestArcaneCastsMissilesBeforeMissileBarrage(t *testing.T) {
 			blast = i
 		}
 		cond := compact(protojson.Format(a.GetCondition()))
-		if id == 10212 && cond == `{"not":{"val":{"auraIsKnown":{"auraId":{"spellId":400589}}}}}` {
+		if id == 10212 && cond == `{"not":{"val":{"auraIsKnown":{"auraId":{"spellId":400588,"tag":2}}}}}` {
 			missiles = i
 		}
 	}
 	if missiles < 0 || blast < 0 || missiles > blast {
-		t.Fatalf("want an Arcane Missiles line gated on not knowing Missile Barrage ahead of Arcane Blast; missiles %d, blast %d", missiles, blast)
+		t.Fatalf("want an Arcane Missiles line gated on not having Missile Barrage 2/2 ahead of Arcane Blast; missiles %d, blast %d", missiles, blast)
+	}
+}
+
+// Round 18: the Presence of Mind Frostbolt belongs to the leveling build. The
+// raid build takes Heating Up and the leveling build never does, so the line
+// checks that Heating Up is not known and the raid card drops it. The plain
+// Frostbolt filler stays ungated: the raid build casts it when it is too low
+// on mana for Fireball, and gating it cost 0.1% at raid 60.
+func TestArcanePresenceOfMindFrostboltExcludesTheRaidBuild(t *testing.T) {
+	const frostbolt, heatingUp, presenceOfMind = 10181, 400625, 12043
+	curated, err := loadLadderCurated(repoRoot, "mage-arcane")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	gate := fmt.Sprintf(`{"not":{"val":{"auraIsKnown":{"auraId":{"spellId":%d}}}}}`, heatingUp)
+	lines := 0
+	for i, item := range rot.PriorityList {
+		a := item.GetAction()
+		cond := compact(protojson.Format(a.GetCondition()))
+		if a.GetCastSpell().GetSpellId().GetSpellId() != frostbolt ||
+			!strings.Contains(cond, fmt.Sprintf(`"auraIsActive":{"auraId":{"spellId":%d`, presenceOfMind)) {
+			continue
+		}
+		lines++
+		if !strings.Contains(cond, gate) {
+			t.Errorf("line %d casts the Presence of Mind Frostbolt without not auraIsKnown(%d)", i, heatingUp)
+		}
+	}
+	if lines != 1 {
+		t.Fatalf("want 1 Presence of Mind Frostbolt line, got %d", lines)
 	}
 }
 
