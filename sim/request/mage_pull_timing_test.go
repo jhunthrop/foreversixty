@@ -1,6 +1,7 @@
 package request
 
 import (
+	"encoding/json"
 	"fmt"
 	"slices"
 	"strings"
@@ -258,4 +259,54 @@ func TestArcanePresenceOfMindFrostboltExcludesTheRaidBuild(t *testing.T) {
 
 func compact(s string) string {
 	return strings.Join(strings.Fields(s), "")
+}
+
+// Round 19: the Frostbolt filler is two lines, one per build, so each guide
+// card reads its own build's note (the raid card's single shared row talked
+// about the way to 60 under "For the raid build"). The raid build (Heating Up
+// known) casts it only when too low on mana for Fireball; the leveling build
+// fills with it. Every build still has exactly one Frostbolt filler, as when
+// the line was ungated.
+func TestArcaneFrostboltFillerIsOneLinePerBuild(t *testing.T) {
+	const frostbolt, heatingUp, presenceOfMind = 10181, 400625, 12043
+	curated, err := loadLadderCurated(repoRoot, "mage-arcane")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var doc struct {
+		PriorityList []struct {
+			Notes string `json:"notes"`
+		} `json:"priorityList"`
+	}
+	if err := json.Unmarshal(curated.Rotation, &doc); err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	known := fmt.Sprintf(`{"auraIsKnown":{"auraId":{"spellId":%d}}}`, heatingUp)
+	unknown := fmt.Sprintf(`{"not":{"val":%s}}`, known)
+	var fillers []string
+	var at []int
+	for i, item := range rot.PriorityList {
+		a := item.GetAction()
+		cond := compact(protojson.Format(a.GetCondition()))
+		if a.GetCastSpell().GetSpellId().GetSpellId() != frostbolt ||
+			strings.Contains(cond, fmt.Sprintf(`"spellId":%d`, presenceOfMind)) {
+			continue
+		}
+		fillers = append(fillers, cond)
+		at = append(at, i)
+		if doc.PriorityList[i].Notes == "" {
+			t.Errorf("Frostbolt filler line %d has no note", i)
+		}
+	}
+	if len(fillers) != 2 || fillers[0] != known || fillers[1] != unknown || at[1] != at[0]+1 {
+		t.Fatalf("want the raid Frostbolt (Heating Up known) then the leveling one (not known), adjacent; got %q at %v", fillers, at)
+	}
+	if !strings.Contains(doc.PriorityList[at[0]].Notes, "Fireball") ||
+		strings.Contains(doc.PriorityList[at[0]].Notes, "on the way to 60") {
+		t.Errorf("the raid Frostbolt note should speak to the raid build only: %q", doc.PriorityList[at[0]].Notes)
+	}
 }

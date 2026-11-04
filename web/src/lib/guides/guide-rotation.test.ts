@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { decodeBuildTrees, type DecodedTreeView } from './build-tree';
 import { describedBuildTrees, guideRotation } from './guide-rotation';
-import type { AplGate } from '../bis/apl-gates';
+import { gateWords, type AplGate } from '../bis/apl-gates';
 import { bandTopLevel, loadRotations, rotationEntryFor, rotationLinesFor } from '../bis/rotation-view';
 import {
   litTalentsOf,
@@ -118,8 +118,47 @@ describe('every guide card', () => {
       guideRotation(BUILD, 'mage', 'mage-arcane', 'dps', trees)?.opener.map(
         (item) => `${item.name}: ${item.clause}`,
       );
-    expect(opener(raid!)).toEqual(['Pyroblast: 6 s before the pull, with Heating Up']);
-    expect(opener(leveling)).toEqual(['Frostbolt: 2.5 s before the pull, without Heating Up']);
+    expect(opener(raid!)).toEqual(['Pyroblast: 6 s before the pull']);
+    expect(opener(leveling)).toEqual(['Frostbolt: 2.5 s before the pull']);
+  });
+
+  // Round 19: the card's rows are already the described build's own, so a talent it takes or
+  // leaves is not worded as a condition ("Fireball: ..., with Heating Up" read as if Fireball
+  // waited on the stacks it builds).
+  it('words no talent gate the build it describes settles', () => {
+    for (const card of everyGuideBuild()) {
+      const lists = guideRotation(BUILD, card.classSlug, card.spec, card.role, card.trees);
+      if (lists === undefined) continue;
+      const facts = spellLookupFor(BUILD, card.classSlug);
+      const talents = talentNamesOf(BUILD, card.classSlug);
+      const worded = (gates: readonly AplGate[]): string[] =>
+        gates.flatMap((gate) => {
+          const name = gate.kind === 'known' ? facts(gate.spellId)?.name : undefined;
+          return name !== undefined && talents.has(name) ? [gateWords(gate, name)] : [];
+        });
+      const casts = prepullCasts(loadApl(card.spec));
+      const top = bandTopLevel(60);
+      const entry = rotationEntryFor(loadRotations(BUILD, card.spec) ?? [], top)!;
+      const lines = rotationLinesFor(entry, BUILD, card.classSlug, card.spec, top);
+      const rows = [
+        ...lists.opener.map((item) => ({
+          item,
+          words: casts.filter((cast) => cast.spellId === item.spellId).flatMap((cast) => worded(cast.gates)),
+        })),
+        ...lists.priority.map((item) => ({
+          item,
+          words: lines.filter((line) => line.spellId === item.spellId).flatMap((line) => worded(line.gates ?? [])),
+        })),
+      ];
+      for (const { item, words } of rows) {
+        for (const word of words) {
+          expect(
+            item.clause.toLowerCase().endsWith(word.toLowerCase()),
+            `${card.label} ${item.name}: ${item.clause}`,
+          ).toBe(false);
+        }
+      }
+    }
   });
 });
 
