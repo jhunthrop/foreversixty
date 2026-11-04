@@ -67,15 +67,15 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **On the tank.** Prayer of Mending every time it is ready. Renew always up at rank 7 or higher. Go up to the top rank on a tank who is dropping through it.
 
-**The filler is Greater Heal** at your top rank. When it would overheal or your mana runs short, step down to rank 1: it costs far less, and though it has lost a little of your healing bonus by 60, it heals more for its mana than rank 2 or 3. Heal rank 4 is cheaper still, but it keeps only about half your bonus, so it is the last step down. With Divine Fury every one of them is a 2.5 second cast.
+**The filler is Greater Heal** at your top rank. When it would overheal or your mana runs short, step down to rank 1: it costs far less, and though it has lost a little of your healing bonus by 60, it heals more for its mana than rank 2 or 3, so leave those two off your bars. Heal rank 4 is cheaper still, but it keeps only about half your bonus, so it is the last step down. With Divine Fury every one of them is a 2.5 second cast.
 
-**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on.
+**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on: Greater Heal rank 1 is the one to keep.
 
 **Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Greater Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
 
 **Prayer of Healing.** Cast it when three or more players in one group are missing a fair chunk. In Forever it heals the target and the target's party, so target a member of whichever group took the hit: you are not limited to your own party.
 
-**Overheal.** Start Greater Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Greater Heal; Prayer of Mending and Renew cover those.
+**Overheal.** Start Greater Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with the top rank; step down to rank 1, or let Prayer of Mending and Renew cover them.
 
 **Inner Focus.** Spend it on a Prayer of Healing, your most expensive heal, or on a Greater Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
 
