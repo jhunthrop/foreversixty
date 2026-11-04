@@ -239,15 +239,30 @@ function Gear.equippedFrom(items)
 	return equipped
 end
 
---- The weighted sum of an item's stats. A weapon's own DPS (`weapon_dps`) is never
+--- A stat's weight: rating haste counts at melee and spell haste both.
+local function weightOf(weights, name)
+	if name ~= "haste" then
+		return weights[name] or 0
+	end
+	local total = 0
+	for _, hasteWeight in ipairs(Rules.HASTE_WEIGHTS) do
+		total = total + (weights[hasteWeight] or 0)
+	end
+	return total
+end
+
+--- The weighted sum of an item's stats. Every weight is per 1% of a rating stat, while
+--- GetItemStats gives rating points, so a rating stat is read as percent first
+--- (Rules.RATING_PER_PERCENT). A weapon's own DPS (`weapon_dps`) is never
 --- summed here, whatever the weights carry: Progress.itemScore alone counts it, at
 --- the band's measured weapon term (Gear.weaponTerm) and only on the slot it was
 --- measured on.
 function Gear.score(stats, weights)
 	local total = 0
+	weights = weights or {}
 	for name, value in pairs(stats or {}) do
 		if name ~= "weapon_dps" then
-			total = total + value * ((weights or {})[name] or 0)
+			total = total + value / (Rules.RATING_PER_PERCENT[name] or 1) * weightOf(weights, name)
 		end
 	end
 	return total

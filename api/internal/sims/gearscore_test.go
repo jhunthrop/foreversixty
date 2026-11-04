@@ -176,8 +176,9 @@ func TestGearScoreWithNoDataWiredSaysSo(t *testing.T) {
 }
 
 // The full-gear mark is the spec's own best band-60 set scored with the same build's
-// weights: 5344 for warrior-arms on 1.60.1.70291 (the horde bare set) with the data lane's
-// final ranker output; it was 4767 (the horde raid set) after b388b399 rewrote the band-60
+// weights: 995 for warrior-arms on 1.60.1.70291 since sim audit round 17 read hit and crit
+// rating as percent before their per-1% weights (5344 before, rating points times a per-1%
+// weight). 5344 was the horde bare set with the data lane's final ranker output; it was 4767 (the horde raid set) after b388b399 rewrote the band-60
 // picks, and 4838, the hand-derived table's figure, before that.
 func TestFullGearScoreIsTheSpecsBestBand60Set(t *testing.T) {
 	useRepoGearData(t)
@@ -185,8 +186,8 @@ func TestFullGearScoreIsTheSpecsBestBand60Set(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if math.Round(got) != 5344 {
-		t.Fatalf("FullGearScore(warrior-arms) = %v, want 5344 once rounded", got)
+	if math.Round(got) != 995 {
+		t.Fatalf("FullGearScore(warrior-arms) = %v, want 995 once rounded", got)
 	}
 	again, err := FullGearScore(t.Context(), "1.60.1.70291", "warrior-arms", FullGearBand)
 	if err != nil || again != got {

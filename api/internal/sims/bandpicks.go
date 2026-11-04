@@ -315,7 +315,7 @@ func ItemGearScore(ctx context.Context, build, spec string, itemID int) (float64
 	if !ok {
 		return 0, false, nil
 	}
-	return statScore(item.Stats, weights), true, nil
+	return statScore(item, weights), true, nil
 }
 
 // specTables is the build, the spec's class id in it and the spec's weights: what scoring

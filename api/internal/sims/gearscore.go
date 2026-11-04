@@ -134,7 +134,7 @@ func GearScore(ctx context.Context, gearCode string, spec string) (float64, erro
 		if !ok {
 			continue
 		}
-		total += statScore(item.Stats, weights)
+		total += statScore(item, weights)
 	}
 	return total, nil
 }
@@ -232,7 +232,7 @@ func FullGearScore(ctx context.Context, build, spec string, band int) (float64, 
 		total := 0.0
 		for _, itemID := range items {
 			if item, ok := b.Item(classID, itemID); ok {
-				total += statScore(item.Stats, weights)
+				total += statScore(item, weights)
 			}
 		}
 		if !found || total > best {
@@ -307,13 +307,31 @@ func loadBestInSlot(dir, build, spec string) (map[int][][]int, error) {
 	return sets, nil
 }
 
-// statScore is Gear.score for one stat line.
-func statScore(stats map[string]int, weights map[string]float64) float64 {
+// ratingPerPercent is rating points per 1% of each rating stat, the client's
+// combatratings.txt (flat over every level): docs/contracts/fixtures/rating-per-percent.json,
+// which the site pins to the client table and this package's test pins this map to.
+var ratingPerPercent = map[string]float64{
+	"hit": 10, "crit": 14, "expertise": 10, "dodge": 12, "parry": 15, "block": 5, "defense": 1,
+}
+
+// statScore is Gear.score for one item's stat line. Every weight is per 1% of a rating
+// stat (stat-weights.json, the engine's sweep), while the line carries rating points, so
+// a rating stat is read as percent first; an on-equip literal percent stays as it is.
+func statScore(item trees.Item, weights map[string]float64) float64 {
 	total := 0.0
-	for name, value := range stats {
-		total += float64(value) * weights[name]
+	for name, value := range item.Stats {
+		total += weighedAmount(name, float64(value), item.PercentStats[name]) * weights[name]
 	}
 	return total
+}
+
+// weighedAmount is a stat line amount in its weight's unit: percent for a rating stat.
+func weighedAmount(name string, value, literalPercent float64) float64 {
+	factor, ok := ratingPerPercent[name]
+	if !ok {
+		return value
+	}
+	return (value-literalPercent)/factor + literalPercent
 }
 
 // classIDBySlug finds the build's class id for an FS1 class slug.

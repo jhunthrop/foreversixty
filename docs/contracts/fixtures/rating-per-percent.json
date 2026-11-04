@@ -1,0 +1,18 @@
+{
+  "comment": [
+    "Rating points per 1% of each rating stat, the client's gametables/combatratings.txt (the same columns sim/cmd/leveling-bis ratingStatColumns and data/pipeline/simdb/ratings.py divide by). The table is flat from level 1 to the cap in 1.60.1.70755, so one row serves every level.",
+    "Every gear score weight is per 1% (stat-weights.json, the engine's sweep, a BiS band's weight_per_percent), while an item's stat line carries rating points (Waywatcher Gauntlets 240081: 20 expertise = 2%). The site (web/src/lib/addon/score.ts), the API (api/internal/sims/gearscore.go) and the addon (Gear.lua via Rules.RATING_PER_PERCENT) divide by these before weighting; each pins its own table to this file.",
+    "haste is the addon's: rating haste (ITEM_MOD_HASTE_RATING_SHORT) speeds attacks and casts alike, so it feeds melee_haste and spell_haste, both at this factor."
+  ],
+  "build": "1.60.1.70755",
+  "rating_per_percent": {
+    "hit": 10,
+    "crit": 14,
+    "expertise": 10,
+    "dodge": 12,
+    "parry": 15,
+    "block": 5,
+    "defense": 1,
+    "haste": 10
+  }
+}
