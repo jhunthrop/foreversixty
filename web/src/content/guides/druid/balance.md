@@ -102,7 +102,7 @@ From Restoration, Nature's Focus saves your Starfire from pushback 70% of the ti
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Spell power is damage on every cast. Hit matters a lot to a moonkin: a resisted Starfire is 3 seconds of casting for nothing, and a resisted Wrath banks no Eclipse charges. It counts up to the spell hit cap and adds nothing past it. Arcane damage is spell power for Starfire and Moonfire, your Arcane spells. Nature damage feeds only Wrath and Insect Swarm. Crit pays twice, through Vengeance and Nature's Grace. Intellect is your mana pool and a little crit.
+The table above gives the order for your gear; here is why each stat counts. Spell power is damage on every cast. Hit matters a lot to a moonkin: a resisted Starfire is 3 seconds of casting for nothing, and a resisted Wrath banks no Eclipse charges. It counts up to the spell hit cap and adds nothing past it. Arcane damage is spell power for Starfire and Moonfire, your Arcane spells. Nature damage feeds Wrath, Insect Swarm and Hurricane, never Starfire or Moonfire. Crit pays twice, through Vengeance and Nature's Grace. Intellect is your mana pool and a little crit.
 
 ## Best in slot
 

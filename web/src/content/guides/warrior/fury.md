@@ -56,7 +56,7 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 ### In a raid
 
 - **Role:** Dual-wield melee damage
-- **Brings:** Battle Shout for your group
+- **Brings:** Battle Shout, which reaches every party and raid member within 20 yards
 
 ## Talents and builds
 
@@ -111,7 +111,7 @@ Mighty Rage Potion goes on the pull and again when it comes back. Enchant and sh
 
 Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes, which Flurry turns into extra swings: press it on the pull and every time it comes back, with Death Wish when they line up, and never inside Recklessness, which already makes every hit crit. On the Alliance, Skyborne's Wind Blessed, 2% haste that never turns off, edges Night Elf by a hair, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it. On the Horde, Undead stays ahead of it. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds; with two weapons hitting, it comes back almost as soon as it can.
 
-The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, are next, and Dwarf's Artisan's Precision, 1% hit, comes in behind them. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes. Troll's Berserking is 10% attack speed for only 15 seconds in every 3 minutes, so it trails Undead and Orc. Whatever you pick, press its active racial on cooldown and line it up with Death Wish when the timers allow. Blood Fury and Berserking also stack with Recklessness; a crit racial does not.
+The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage and 10% less rage on your non-periodic damaging abilities for 8 seconds every 2 minutes, are next, and Dwarf's Artisan's Precision, 1% hit, comes in behind them. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes. Troll's Berserking is 10% attack speed for only 15 seconds in every 3 minutes, so it trails Undead and Orc. Whatever you pick, press its active racial on cooldown and line it up with Death Wish when the timers allow. Blood Fury and Berserking also stack with Recklessness; a crit racial does not.
 
 ## Professions
 

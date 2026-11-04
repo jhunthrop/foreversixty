@@ -154,7 +154,7 @@
       }
     },
     {
-      "notes": "Whenever it drops. It is 10 rage for the whole group's attack power.",
+      "notes": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
       "action": {
         "condition": {
           "not": {

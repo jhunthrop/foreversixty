@@ -9,6 +9,7 @@
 // documents for the rest of this page's data.
 import { bossName, itemsOfSource, type LootFile, type LootSource } from '../sim/loot';
 import { bisCopy } from './copy';
+import { questMinLevelShown } from '../items/source-labels';
 import type { BisSlot, Faction, LootQuestOption, LootQuestsFile } from './types';
 
 /**
@@ -298,7 +299,7 @@ export function resolveSourceCell(
 export function describeSourceCell(cell: SourceCell): string {
   switch (cell.kind) {
     case 'quest':
-      return cell.minLevel > 0
+      return questMinLevelShown(cell.minLevel)
         ? `${bisCopy.questSourceLabel(cell.questName)} · ${bisCopy.questLevelLabel(cell.minLevel)}`
         : bisCopy.questSourceLabel(cell.questName);
     case 'dungeon':

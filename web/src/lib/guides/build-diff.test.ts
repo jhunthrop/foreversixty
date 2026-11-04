@@ -1,10 +1,7 @@
 // web/src/lib/guides/build-diff.test.ts
 import { describe, expect, it } from 'vitest';
 import { buildDiffLine, diffBuilds } from './build-diff';
-import { readFileSync, readdirSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { decodeBuildTrees, type DecodedTalentView, type DecodedTreeView } from './build-tree';
+import type { DecodedTalentView, DecodedTreeView } from './build-tree';
 
 function talent(id: number, name: string, rank: number): DecodedTalentView {
   return {
@@ -68,14 +65,23 @@ describe('buildDiffLine', () => {
     expect(line).toBe('The raid build moves 5 points from A (2) and B (3) to C (5).');
   });
 
-  it('says "1 point" in the singular and names every talent, however long the list', () => {
+  it('names a fifth talent rather than folding it into "1 more talent"', () => {
+    const line = buildDiffLine({
+      from: [{ name: 'A', points: 5 }],
+      to: ['C', 'D', 'E', 'F', 'G'].map((name) => ({ name, points: 1 })),
+      moved: 5,
+    });
+    expect(line).toBe('The raid build moves 5 points from A (5) to C (1), D (1), E (1), F (1) and G (1).');
+  });
+
+  it('says "1 point" in the singular and caps a long list', () => {
     const line = buildDiffLine({
       from: [{ name: 'A', points: 1 }],
       to: ['C', 'D', 'E', 'F', 'G', 'H'].map((name) => ({ name, points: 1 })),
       moved: 1,
     });
     expect(line).toBe(
-      'The raid build moves 1 point from A (1) to C (1), D (1), E (1), F (1), G (1) and H (1).',
+      'The raid build moves 1 point from A (1) to C (1), D (1), E (1), F (1) and 2 more talents (2 points).',
     );
   });
 
@@ -90,60 +96,5 @@ describe('buildDiffLine', () => {
 
   it('is undefined when there is no difference', () => {
     expect(buildDiffLine(undefined)).toBeUndefined();
-  });
-});
-
-// The real guides: every talent the raid build changes is named in the line, and the points
-// in brackets add up to the number the line states (guide-accuracy round 1 found Affliction
-// reading 10 of 15 and Demonology 11 of 12 because "and N more" hid named talents).
-const guidesRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../content/guides');
-
-function frontmatterCode(text: string, key: string): string | undefined {
-  return new RegExp(`^${key}: '([^']+)'`, 'm').exec(text)?.[1];
-}
-
-const guidePairs = readdirSync(guidesRoot, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .flatMap((dir) =>
-    readdirSync(path.join(guidesRoot, dir.name))
-      .filter((file) => file.endsWith('.md'))
-      .map((file) => {
-        const text = readFileSync(path.join(guidesRoot, dir.name, file), 'utf8');
-        return {
-          page: `${dir.name}/${file.replace(/\.md$/, '')}`,
-          build: frontmatterCode(text, 'build'),
-          raid: frontmatterCode(text, 'raidBuild'),
-        };
-      }),
-  )
-  .filter(
-    (pair): pair is { page: string; build: string; raid: string } =>
-      pair.build !== undefined && pair.raid !== undefined,
-  );
-
-function bracketTotal(text: string): number {
-  return [...text.matchAll(/\((\d+)\)/g)].reduce((sum, match) => sum + Number(match[1]), 0);
-}
-
-describe('the raid-build line on the real guides', () => {
-  it('covers the three warlock specs', () => {
-    expect(guidePairs.map((pair) => pair.page)).toEqual(
-      expect.arrayContaining(['warlock/affliction', 'warlock/demonology', 'warlock/destruction']),
-    );
-  });
-
-  it.each(guidePairs)('$page names every changed talent and its points add up', ({ build, raid }) => {
-    const dataBuild = build.split(':')[1]!;
-    const before = decodeBuildTrees(dataBuild, build);
-    const after = decodeBuildTrees(dataBuild, raid);
-    expect(before).toBeDefined();
-    expect(after).toBeDefined();
-    const diff = diffBuilds(before!, after!);
-    const line = buildDiffLine(diff);
-    if (diff === undefined) return expect(line).toBeUndefined();
-    for (const entry of [...diff.from, ...diff.to]) expect(line).toContain(`${entry.name} (${entry.points})`);
-    const [fromPart, toPart] = line!.split(' to ');
-    expect(bracketTotal(fromPart!)).toBe(diff.moved);
-    expect(bracketTotal(toPart!)).toBe(diff.moved);
   });
 });

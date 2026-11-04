@@ -61,7 +61,7 @@ The build is 31 Holy, 12 Protection and 8 Retribution.
 - **Boundless Light** (2 points): 30% more crit on Holy Shock on anyone without your Oath.
 - **Holy Power** (5 points): your critical heals land for 175% instead of 150%. It no longer adds crit chance.
 - **Light's Vigil** (1 point): the capstone. The next Holy Shock on its target has no cooldown and heals that target's whole party.
-- **Benediction** (5 points) and **Conviction** (3 points): Holy Shock and every instant 10% cheaper, and 6% crit on your heals and everything else you do.
+- **Benediction** (5 points) and **Conviction** (3 points): Holy Shock, Cleanse, your Blessings and your Seals and Judgement cost 10% less, and you get 6% crit on your heals and everything else you do.
 - **Divine Intellect** (5 points): 10% Intellect, in Protection's first row now.
 
 The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protection and adds 6 seconds to Blessing of Freedom, **Sacred Duty** brings Divine Shield back a minute sooner, **Purifying Power** makes Cleanse cheaper, **Divine Precision** is the point that opens Holy Power's row, and **Precision** fills out the Protection points, since nothing else in those rows heals.

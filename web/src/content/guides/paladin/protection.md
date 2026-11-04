@@ -15,6 +15,7 @@ statPriority:
     Block value,
     Stamina,
     Hit,
+    Expertise,
     Strength,
     Critical strike,
     Armor,
@@ -107,7 +108,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 ## Stat priority
 
-Defense takes hits away and lowers the boss's chance to crit you. Stamina is your health bar, and health is what gives every other stat on this list time to work. Dodge and Parry take hits away, Agility is dodge and armor at once, and block value makes every block take more off the hit. More block chance adds nothing you can measure at 60, but keep the shield: your blocks still power Holy Shield's damage and Shield Specialization's mana. Armor takes a slice off every physical hit. Hit matters up to the cap and nothing past it, and Precision already gives you 3% of it. The table above has the order.
+Defense takes hits away and lowers the boss's chance to crit you. Stamina is your health bar, and health is what gives every other stat on this list time to work. Dodge and Parry take hits away, Agility is dodge and armor at once, and block value makes every block take more off the hit. More block chance adds nothing you can measure at 60, but keep the shield: your blocks still power Holy Shield's damage and Shield Specialization's mana. Armor takes a slice off every physical hit. Hit matters up to the cap and nothing past it, and Precision already gives you 3% of it. Expertise, which only a few late sets carry, lowers the chance the boss dodges or parries your swings and Holy Strike, which is threat. The table above has the order.
 
 ## Best in slot
 

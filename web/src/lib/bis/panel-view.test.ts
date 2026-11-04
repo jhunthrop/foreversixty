@@ -362,12 +362,29 @@ describe('bandInfosFor: scale rail', () => {
       { stat: 'strength', weight: 0.5, error: 0.05 },
       { stat: 'expertise', weight: 9.79, error: 0.73 },
     ];
-    const file = fileWith([band({ weights, slots: [slot()], reference_dps_per_point: null })]);
+    const expertise_to_cap = { baseline: 8, dodge: 0, parry: 6 };
+    const file = fileWith([
+      band({ weights, slots: [slot()], reference_dps_per_point: null, expertise_to_cap }),
+    ]);
     const info = bandInfosFor(file, [20], 'alliance', depsWith())[0]!;
     expect(info.scaleRows.map((row) => row.stat)).toEqual(['stamina', 'strength']);
     expect(info.scaleRows[0]!.scaleFactor).toBeCloseTo(1, 6);
     expect(info.scaleRows[1]!.scaleFactor).toBeCloseTo(0.5, 6);
     expect(info.hasteCaptionLine).toBe('Expertise: 9.79 per 1%');
+  });
+
+  it('leaves Expertise out of the panel when the band’s character gains none', () => {
+    const weights = [
+      { stat: 'stamina', weight: 1, error: 0.05 },
+      { stat: 'expertise', weight: 9.79, error: 0.73 },
+    ];
+    const expertise_to_cap = { baseline: 0, dodge: 6.5, parry: 14 };
+    const file = fileWith([
+      band({ weights, slots: [slot()], reference_dps_per_point: null, expertise_to_cap }),
+    ]);
+    const info = bandInfosFor(file, [20], 'alliance', depsWith())[0]!;
+    expect(info.hasteCaptionLine ?? '').not.toContain('Expertise');
+    expect(info.expertiseCap).toBeUndefined();
   });
 
   it('gives haste the plain caption when its own row is significant and haste_on_items is true', () => {

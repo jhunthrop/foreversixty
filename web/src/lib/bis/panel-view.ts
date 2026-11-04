@@ -35,7 +35,7 @@ import type {
 } from './types';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { Slot } from '../planner/types';
-import { expertiseCapLine, type ExpertiseCapLine } from './expertise-cap';
+import { expertiseCapLine, weightsForGainedStats, type ExpertiseCapLine } from './expertise-cap';
 import { hitCapLine, type HitCapLine } from './hit-cap';
 import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
 import {
@@ -586,7 +586,7 @@ export function bandInfosFor(
       bandData.weights_reason !== undefined && bandData.weights_reason !== null
         ? UNMEASURED_SCALE_VIEW
         : scaleViewFor({
-            weights: bandData.weights,
+            weights: weightsForGainedStats(bandData.weights, bandData.expertise_to_cap),
             spec: deps.spec,
             unit: scoreUnit,
             referenceDpsPerPoint: bandData.reference_dps_per_point ?? null,

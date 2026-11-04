@@ -77,7 +77,7 @@ describe('GuideStatTable', () => {
     expect(html).not.toContain('guide-stat-table-updated');
   });
 
-  it('gives a tank its tank-score unit and expertise per 1%, never DPS', async () => {
+  it('gives a tank its tank-score unit, never DPS, and no Expertise when nothing gives it', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(GuideStatTable, {
       props: {
@@ -90,9 +90,11 @@ describe('GuideStatTable', () => {
     });
     expect(html).toContain('Tank score per point');
     expect(html).not.toContain('DPS');
-    expect(html).toMatch(/per 1% expertise/);
-    expect(html).not.toMatch(/Weight \(Expertise = 1\.00\)/);
-    expect(html).not.toContain('Expertise cap: 0%');
+    // The level 60 Protection band's character has no Expertise (no Forever item carries it),
+    // so the weights, the table and the cap line all leave it out together.
+    expect(html).not.toMatch(/per 1% expertise/);
+    expect(html).not.toMatch(/>Expertise</);
+    expect(html).not.toContain('Expertise cap');
   });
 
   it('gives a healer HPS, and prints no negative weight', async () => {

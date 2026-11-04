@@ -86,11 +86,9 @@ describe('guideHitCapLine', () => {
 });
 
 describe('guideExpertiseCapLine', () => {
-  it('words the dodge cap, with parry for a tank', () => {
-    expect(guideExpertiseCapLine({ baseline: 0, dodge: 6.5 })?.text).toBe('Expertise cap: 6.5% (dodge)');
-    expect(guideExpertiseCapLine({ baseline: 0, dodge: 5.5, parry: 14 })?.text).toBe(
-      'Expertise cap: 5.5% (dodge), 14% (parry)',
-    );
+  it('is left out when nothing gives the character Expertise (no Forever item carries it)', () => {
+    expect(guideExpertiseCapLine({ baseline: 0, dodge: 6.5 })).toBeUndefined();
+    expect(guideExpertiseCapLine({ baseline: 0, dodge: 5.5, parry: 14 })).toBeUndefined();
     expect(guideExpertiseCapLine(null)).toBeUndefined();
   });
 

@@ -1,6 +1,12 @@
 // web/src/lib/items/source-labels.test.ts
 import { describe, expect, it } from 'vitest';
-import { craftedSourceLabel, pvpRankTitle, pvpSourceLabel } from './source-labels';
+import {
+  craftedSourceLabel,
+  pvpRankTitle,
+  pvpSourceLabel,
+  questMinLevelShown,
+  worldDropLevelsLabel,
+} from './source-labels';
 
 describe('craftedSourceLabel', () => {
   it('never doubles the profession when the source name already is it', () => {
@@ -44,5 +50,22 @@ describe('pvpSourceLabel', () => {
 
   it('falls back to rank and faction alone when the rank has no known title', () => {
     expect(pvpSourceLabel(19, 'alliance')).toBe('PvP rank 15 · Alliance');
+  });
+});
+
+describe('worldDropLevelsLabel', () => {
+  it('names one level when the dropping mobs share it, a range otherwise', () => {
+    expect(worldDropLevelsLabel(62, 62)).toBe('World drop (BoE) · level 62');
+    expect(worldDropLevelsLabel(61, 62)).toBe('World drop (BoE) · levels 61-62');
+    expect(worldDropLevelsLabel()).toBe('World drop (BoE)');
+  });
+});
+
+describe('questMinLevelShown', () => {
+  it('shows a quest floor only above level 1', () => {
+    expect(questMinLevelShown(1)).toBe(false);
+    expect(questMinLevelShown(0)).toBe(false);
+    expect(questMinLevelShown(undefined)).toBe(false);
+    expect(questMinLevelShown(48)).toBe(true);
   });
 });

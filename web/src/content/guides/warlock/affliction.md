@@ -34,7 +34,7 @@ Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps wi
 
 ### Weaknesses
 
-- Slow start: your first five globals go into putting DoTs up
+- Slow start: your first four globals, five when you hold Curse of the Elements, go into putting DoTs up
 - Short fights and targets that die fast waste the DoTs you put up
 - Life Tap costs health, and a long fight drains it
 

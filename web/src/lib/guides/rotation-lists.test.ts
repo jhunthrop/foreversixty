@@ -77,9 +77,18 @@ describe('clauseOf', () => {
     expect(clause.endsWith('…')).toBe(true);
   });
 
-  it('cuts a long clause at its last comma when there is one, with no ellipsis', () => {
+  it('keeps a one-sentence clause whole, however it wraps', () => {
+    expect(
+      clauseOf(
+        'Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.',
+        'Rapid Fire',
+      ),
+    ).toBe('On the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back');
+  });
+
+  it('cuts a run-on clause at its last comma when there is one, with no ellipsis', () => {
     const clause = clauseOf(
-      'Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit',
+      `Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit ${'and more '.repeat(10)}`,
       'Rapid Fire',
     );
     expect(clause).toBe(
@@ -340,6 +349,28 @@ describe('talentCooldownCuts', () => {
 
   it('ignores a talent with no points', () => {
     expect(talentCooldownCuts(BUILD, 'warlock', new Map()).size).toBe(0);
+  });
+
+  it('reads every wording the client uses: "on your", "abilities", a three-spell list, "its cooldown"', () => {
+    const hunter = talentCooldownCuts(
+      BUILD,
+      'hunter',
+      new Map([
+        ['Rapid Killing', 2],
+        ["Survivalist's Discipline", 2],
+      ]),
+    );
+    expect(hunter.get('Rapid Fire')).toEqual({ ms: 120_000, percent: 0 });
+    expect(hunter.get('Deterrence')).toEqual({ ms: 0, percent: 40 });
+    const paladin = talentCooldownCuts(BUILD, 'paladin', new Map([['Sacred Duty', 2]]));
+    expect(paladin.get("Templar's Bulwark")).toEqual({ ms: 60_000, percent: 0 });
+    expect(paladin.get('Divine Shield')).toEqual({ ms: 60_000, percent: 0 });
+    expect(
+      talentCooldownCuts(BUILD, 'druid', new Map([['Improved Tranquility', 2]])).get('Tranquility'),
+    ).toEqual({
+      ms: 0,
+      percent: 60,
+    });
   });
 
   it('drops a spell whose cut cooldown falls under the floor from the Cooldowns list', () => {

@@ -76,7 +76,7 @@ Thirty-one points in Beast Mastery buys every talent that makes the pet hit hard
 - **Bestial Wrath** (1 point): 50% more pet damage for 18 seconds every two minutes, and the pet ignores fear while it lasts
 - **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
 - **Careful Aim** (5 points): attack power equal to your Intellect, so a mail Intellect piece is an attack power piece for you and the pet
-- **Mortal Shots** (2 points): 12% more crit damage on your shots, 24% in the raid build at 4 points
+- **Mortal Shots** (2 points): your shot crits hit for 212% of a normal hit instead of double, 224% with the 4 points in the raid build
 
 Endurance Training (4 points) keeps the pet alive through raid damage, Bestial Discipline (2 points) keeps half your mana regeneration running while you shoot, and Intimidation (1 point) is the way to Bestial Wrath and a stun on trash: press it to stop a runner or to peel an add off a healer, since bosses cannot be stunned. Bestial Swiftness gets the cat to the target sooner after every pull. Improved Stings (2 points) is the way down the Marksmanship tree and adds Serpent Sting damage on the way. The level 60 build's point in Rapid Killing takes a minute off Rapid Fire and makes your next shot after a kill hit 10% harder, which is worth more out in the world than in a raid. Hawk Eye, Improved Concussive Shot and Deflection add nothing to raid damage, so the build skips them.
 

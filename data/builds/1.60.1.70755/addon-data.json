@@ -15318,7 +15318,7 @@
           {
             "spell_id": 6673,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -15372,7 +15372,7 @@
           {
             "spell_id": 5242,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -15447,7 +15447,7 @@
           {
             "spell_id": 6192,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -15529,7 +15529,7 @@
           {
             "spell_id": 11549,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -15611,7 +15611,7 @@
           {
             "spell_id": 11549,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -15700,7 +15700,7 @@
           {
             "spell_id": 11550,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -15789,7 +15789,7 @@
           {
             "spell_id": 11551,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -15880,7 +15880,7 @@
           {
             "spell_id": 6673,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -15920,7 +15920,7 @@
           {
             "spell_id": 5242,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -15967,7 +15967,7 @@
           {
             "spell_id": 6192,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -16028,7 +16028,7 @@
           {
             "spell_id": 11549,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -16096,7 +16096,7 @@
           {
             "spell_id": 11549,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -16178,7 +16178,7 @@
           {
             "spell_id": 11550,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -16260,7 +16260,7 @@
           {
             "spell_id": 11551,
             "name": "Battle Shout",
-            "condition": "Whenever it drops.",
+            "condition": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
             "icon": "ability_warrior_battleshout",
             "race_spell_ids": {}
           },
@@ -16344,7 +16344,7 @@
           {
             "spell_id": 6343,
             "name": "Thunder Clap",
-            "condition": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block.",
+            "condition": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take.",
             "icon": "spell_nature_thunderclap",
             "race_spell_ids": {}
           },
@@ -16412,7 +16412,7 @@
           {
             "spell_id": 8198,
             "name": "Thunder Clap",
-            "condition": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block.",
+            "condition": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take.",
             "icon": "spell_nature_thunderclap",
             "race_spell_ids": {}
           },
@@ -16494,7 +16494,7 @@
           {
             "spell_id": 8204,
             "name": "Thunder Clap",
-            "condition": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block.",
+            "condition": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take.",
             "icon": "spell_nature_thunderclap",
             "race_spell_ids": {}
           },
@@ -16576,7 +16576,7 @@
           {
             "spell_id": 8205,
             "name": "Thunder Clap",
-            "condition": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block.",
+            "condition": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take.",
             "icon": "spell_nature_thunderclap",
             "race_spell_ids": {}
           },
@@ -16665,7 +16665,7 @@
           {
             "spell_id": 8205,
             "name": "Thunder Clap",
-            "condition": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block.",
+            "condition": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take.",
             "icon": "spell_nature_thunderclap",
             "race_spell_ids": {}
           },
@@ -16754,7 +16754,7 @@
           {
             "spell_id": 11580,
             "name": "Thunder Clap",
-            "condition": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block.",
+            "condition": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take.",
             "icon": "spell_nature_thunderclap",
             "race_spell_ids": {}
           },
@@ -16843,7 +16843,7 @@
           {
             "spell_id": 11581,
             "name": "Thunder Clap",
-            "condition": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block.",
+            "condition": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take.",
             "icon": "spell_nature_thunderclap",
             "race_spell_ids": {}
           },
