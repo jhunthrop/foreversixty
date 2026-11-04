@@ -14,7 +14,10 @@ import (
 // factions, out of mana 0.7 to 0.9 s of 180. At bare 60 the top line's
 // rank 7 row is gone for the same reason (rank 10 with the rank 4 row is
 // +0.33 to +0.38%, both factions, seeds 1 and 50001); bare 50 ties and
-// keeps rank 7.
+// keeps rank 7. Round 15 wave 2 (Forever's level-gap rule): the filler's
+// rank-4 row at bare 60 is gone too, since rank 4 (learned at 20) keeps no
+// spell power at 60 (+28% without it, both factions), so the filler casts
+// its authored rank 9.
 func TestElementalRaidCastsLightningBoltRankTen(t *testing.T) {
 	var list struct {
 		Rotation json.RawMessage `json:"rotation"`
@@ -24,7 +27,7 @@ func TestElementalRaidCastsLightningBoltRankTen(t *testing.T) {
 	for _, c := range []struct {
 		preset string
 		want   map[int]bool
-	}{{RaidPreset, map[int]bool{10: true}}, {BarePreset, map[int]bool{4: true, 10: true}}} {
+	}{{RaidPreset, map[int]bool{10: true}}, {BarePreset, map[int]bool{9: true, 10: true}}} {
 		out, err := RewriteRotationRanks(list.Rotation, "shaman-elemental", "shaman", c.preset, "troll", 60)
 		if err != nil {
 			t.Fatal(err)

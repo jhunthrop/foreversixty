@@ -19,17 +19,17 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 		level                     int
 		want, not                 int32
 	}{
-		// Since Swiftmend leaves the effect up (fork 9badd243f), Rejuvenation rank 10 (9841)
-		// loses to the rotation's own rank 4 (2090) at bare 60.
-		{"Rejuvenation at bare 60", "druid-restoration", "druid", BarePreset, 60, 2090, 9841},
+		// Round 15 wave 2 (level-gap rule): rank 4 (2090, learned at 22) keeps none of the healing
+		// bonus at 60, and the tank's Rejuvenation casts its authored rank 10 (9841) at bare 60.
+		{"Rejuvenation at bare 60", "druid-restoration", "druid", BarePreset, 60, 9841, 2090},
 		// Once the published Undead casts Dark Sacrifice when mana is low (casters lane,
 		// db8fc067e), Devouring Plague rank 1 (2944) loses 4.4% at bare 60 to the top
 		// rank (19280); Shadow Word: Death rank 2 still wins there.
 		{"Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, 60, 19280, 2944},
 		{"Shadow Word: Death at bare 60 keeps rank 2", "priest-shadow", "priest", BarePreset, 60, 1309633, 1309636},
-		// Without the level penalty on heals (healers lane, 074edfadf), Healing Wave rank 2
-		// (332) beats rank 3 (547) by 5.6% at bare 60, and the fight still runs dry.
-		{"Healing Wave at bare 60", "shaman-restoration", "shaman", BarePreset, 60, 332, 547},
+		// Round 15 wave 2 (level-gap rule): Healing Wave rank 2 (332, learned at 6) keeps none of
+		// the bonus at 60; the tank's wave is the top rank (10396), +11% at bare 60.
+		{"Healing Wave at bare 60", "shaman-restoration", "shaman", BarePreset, 60, 10396, 332},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, "undead"))
 		if !ids[c.want] || ids[c.not] {
@@ -47,9 +47,10 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 		level                           int
 		want, not                       int32
 	}{
-		// Mind Blast at 50: rank 3 (8103) for Horde (Undead with Dark Sacrifice), rank 2 (8102) for Alliance.
-		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 8103, 8102},
-		{"Gnome Mind Blast at 50", "priest-shadow", "priest", BarePreset, "gnome", 50, 8102, 8103},
+		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned (10945):
+		// ranks 2 and 3 keep 15% and 45% of spell power there, and the rows lost 3.3%.
+		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 10945, 8103},
+		{"Gnome Mind Blast at 50", "priest-shadow", "priest", BarePreset, "gnome", 50, 10945, 8102},
 		{"Undead Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "undead", 60, 19280, 19276},
 		{"Gnome Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, "gnome", 60, 19280, 19276},
 		// Elemental's Flame Shock: rank 1 (8050) at 30 until client 1.60.1.70755 raised every
@@ -57,7 +58,7 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 		{"Flame Shock at 30", "shaman-elemental", "shaman", BarePreset, "orc", 30, 8053, 8050},
 		// The top-rank Lightning Bolt line (15208, cast while mana is ahead) casts rank 7 (10391) at 50.
 		// At bare 60 it casts rank 10 since client 1.60.1.70755's bolt retune (round 15, shaman).
-		{"Lightning Bolt pacing line at 50", "shaman-elemental", "shaman", BarePreset, "orc", 50, 10391, 15207},
+		{"Lightning Bolt pacing line at 50", "shaman-elemental", "shaman", BarePreset, "orc", 50, 10391, 15208},
 		{"Lightning Bolt pacing line at bare 60", "shaman-elemental", "shaman", BarePreset, "dwarf", 60, 15208, 10391},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.race))
@@ -67,14 +68,14 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 	}
 }
 
-// A request's rank choices follow its character's race: the same Shadow priest at 50 casts
-// Mind Blast rank 3 as an Undead and rank 2 as a Troll, both Horde.
+// A request's rank choices follow its character's race: the same Shadow priest at 40 casts
+// Mind Blast rank 4 as an Undead and rank 3 as a Dwarf.
 func TestBuildCastsTheRacesRankChoice(t *testing.T) {
-	for race, want := range map[string]string{"undead": `"spellId":8103`, "troll": `"spellId":8102`} {
+	for race, want := range map[string]string{"undead": `"spellId":8104`, "dwarf": `"spellId":8103`} {
 		req := api.SimRequest{
 			EngineVersion: enginever.Version, Spec: "priest-shadow",
 			Source:    api.CharacterSource{Kind: api.SourceManual},
-			Character: api.CharacterSpec{Name: "x", Race: race, Class: "priest", Level: 50},
+			Character: api.CharacterSpec{Name: "x", Race: race, Class: "priest", Level: 40},
 			Encounter: api.DefaultEncounter(), Iterations: 3000, RandomSeed: 1,
 			Preset: BarePreset,
 		}
@@ -87,7 +88,7 @@ func TestBuildCastsTheRacesRankChoice(t *testing.T) {
 			t.Fatal(err)
 		}
 		if got := strings.ReplaceAll(string(rot), " ", ""); !strings.Contains(got, want) {
-			t.Errorf("%s at 50 does not cast %s", race, want)
+			t.Errorf("%s at 40 does not cast %s", race, want)
 		}
 	}
 }
@@ -105,9 +106,9 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8104, 8103},
 		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8103, 8104},
 		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8103, 8104},
-		// Mind Blast at 50: rank 2 (8102), rank 3 (8103) for a Human or an Undead.
-		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 8102, 8103},
-		{"Human Mind Blast at 50", "priest-shadow", "priest", BarePreset, "human", 50, 8103, 8102},
+		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned for every race.
+		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 10945, 8102},
+		{"Human Mind Blast at 50", "priest-shadow", "priest", BarePreset, "human", 50, 10945, 8103},
 		// Devouring Plague at 50: rank 1 (2944), rank 2 (19276) for a Night Elf.
 		{"Undead Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 2944, 19276},
 		{"Night Elf Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 19276, 2944},

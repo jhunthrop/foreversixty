@@ -348,14 +348,15 @@ func TestRewriteKeepsTheAuthoredDownranksBelowSixty(t *testing.T) {
 		want        []int32
 		lifted      []int32
 	}{
-		{"priest-holy", "priest", 50, []int32{139}, []int32{10928}},
-		{"priest-holy", "priest", 30, []int32{139}, []int32{6076}},
-		{"priest-holy", "priest", 16, []int32{139}, []int32{6074}},
-		{"priest-discipline", "priest", 50, []int32{139, 3747}, []int32{10928, 10899}},
+		// Round 15 wave 2: Renew is authored at rank 7 (10927); its rank-1 row is a choice.
+		{"priest-holy", "priest", 50, []int32{10927}, []int32{10928}},
+		{"priest-holy", "priest", 30, []int32{6076}, []int32{6077}},
+		{"priest-holy", "priest", 16, []int32{6074}, []int32{6075}},
+		{"priest-discipline", "priest", 50, []int32{10927, 3747}, []int32{10928, 10899}},
 		{"priest-discipline", "priest", 40, []int32{3747}, []int32{6066}},
 		{"priest-discipline", "priest", 20, []int32{600}, []int32{3747}},
-		// The party's Flash of Light rank 4 and the tank's rank 1 both survive.
-		{"paladin-holy", "paladin", 50, []int32{19941, 19750}, []int32{19942}},
+		// The party's Flash of Light rank 4 and the filler's rank 5 (round 15 wave 2) both survive.
+		{"paladin-holy", "paladin", 50, []int32{19941, 19942}, []int32{19943}},
 	}
 	for _, c := range cases {
 		ids := rotationIDs(t, c.spec, c.class, c.level, nil)
@@ -406,16 +407,18 @@ func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 	}
 }
 
-// The curated table reaches the published rotation: Elemental's band-50 row
-// casts Lightning Bolt rank 4 (915) where the default rule casts rank 9. The
-// list's other Lightning Bolt line, the top rank while mana is ahead of the
-// fight (15208), has its own row since round 12 and casts rank 7 (10391).
+// The curated table reaches the published rotation: Elemental's top-rank line,
+// cast while mana is ahead of the fight (15208), has its own row since round 12
+// and casts rank 7 (10391) at 50 where the default rule casts rank 9. The
+// filler's rank-4 row at 50 to 59 went in round 15 wave 2 (Forever's level-gap
+// rule: rank 4, learned at 20, keeps 35% of spell power at 50), so the filler
+// casts its authored rank 9 (15207) there.
 func TestThePublishedRotationTakesTheCuratedRankChoices(t *testing.T) {
 	ids := rotationIDs(t, "shaman-elemental", "shaman", 50, specRankChoices("shaman-elemental", BarePreset, "orc"))
-	if !ids[915] {
-		t.Errorf("Elemental at 50 should cast Lightning Bolt rank 4 (915) on its filler line")
+	if !ids[10391] || ids[15208] {
+		t.Errorf("Elemental at 50 should cast rank 7 (10391) on its paced line, not rank 10 (15208)")
 	}
-	if !ids[10391] || ids[15207] {
-		t.Errorf("Elemental at 50 should cast rank 7 (10391) on its paced line, not rank 9 (15207)")
+	if !ids[15207] || ids[915] {
+		t.Errorf("Elemental at 50 should cast its filler at rank 9 (15207), not rank 4 (915)")
 	}
 }

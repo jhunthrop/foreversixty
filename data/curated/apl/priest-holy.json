@@ -101,8 +101,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 139,
-              "rank": 1
+              "spellId": 10927,
+              "rank": 7
             },
             "target": {
               "type": "Player",
@@ -118,8 +118,8 @@
                     "index": 5
                   },
                   "spellId": {
-                    "spellId": 139,
-                    "rank": 1
+                    "spellId": 10927,
+                    "rank": 7
                   }
                 }
               }
@@ -582,8 +582,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -642,8 +642,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -701,8 +701,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -760,8 +760,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -819,8 +819,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -878,8 +878,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -911,8 +911,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -943,8 +943,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -975,8 +975,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -1007,8 +1007,465 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2054,
-              "rank": 1
+              "spellId": 10965,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 4
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 4
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.35"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0.9"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.8"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4. Cast it at the normal thresholds while your mana is keeping pace with the fight."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 1
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0.9"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 1
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.65"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 2
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0.9"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 2
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.65"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 3
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0.9"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 3
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.65"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 4
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0.9"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 4
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.65"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 5
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.5"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 1
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 1
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.35"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 2
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 2
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.35"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 3
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 3
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.35"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
             },
             "target": {
               "type": "Player",
