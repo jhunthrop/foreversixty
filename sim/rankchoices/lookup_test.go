@@ -211,3 +211,21 @@ func TestPriestGreaterHealRankOneBelowFiftyEight(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 19: Restoration shaman's Chain Heal line casts rank 1
+// from 46 to 59. It costs 260 mana to rank 2's 315 and rank 3's 405, and a
+// leveling healer is mana-bound, so the cheaper heal heals more over the
+// fight (+0.3% at 46 to +1.2% at 59, 10,000 iterations, seeds 1 and 50001,
+// both factions). Below 46 rank 1 is the only rank; at 60 the default
+// stands for a raid (the bare-60 row is preset-scoped).
+func TestRestorationShamanChainHealRankOneWhileLeveling(t *testing.T) {
+	for level, want := range map[int][]int{45: nil, 46: {1}, 53: {1}, 59: {1}} {
+		got, err := ChosenRanks("shaman-restoration", "Chain Heal", level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(got, want) {
+			t.Errorf("Chain Heal at %d: %v, want %v", level, got, want)
+		}
+	}
+}

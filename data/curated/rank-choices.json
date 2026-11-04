@@ -730,6 +730,28 @@
             "rank": 8
           }
         ]
+      },
+      {
+        "spell": "Chain Heal",
+        "authored": 10623,
+        "lines": [
+          16
+        ],
+        "bands": [
+          {
+            "from_level": 46,
+            "to_level": 59,
+            "rank": 1,
+            "note": "Sim-accuracy round 19: judged level by level (spec-breakdown -level 46, 49, 50, 53, 54, 56, 59, 10,000 iterations, seeds 1 and 50001, both factions). Rank 1 (260 mana) beats rank 2 (315) and rank 3 (405) by 0.3% at 46 to 1.2% at 59: a leveling healer runs out of mana, so the cheaper Chain Heal heals more over the fight."
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 2,
+            "preset": "bare",
+            "note": "Sim-accuracy round 19: without raid buffs rank 2 beats rank 3 by about 1% and rank 1 by 0.2% (10,000 iterations, seeds 1 and 50001, both factions). In a raid rank 3 wins by 3.5% and the default stands."
+          }
+        ]
       }
     ],
     "warlock-demonology": [

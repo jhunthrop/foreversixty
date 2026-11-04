@@ -886,7 +886,7 @@
           }
         }
       },
-      "notes": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last. Cast on someone in your own party it only jumps inside your party; cast on anyone else it can jump to any raid member near them."
+      "notes": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last. Cast on someone in your own party it only jumps inside your party; cast on anyone else it can jump to any raid member near them. While leveling, cast rank 1 until 59: it costs 260 mana to rank 2's 315 and rank 3's 405, so it heals more before your mana runs out. At 60 without raid buffs, cast rank 2."
     },
     {
       "action": {
