@@ -29000,7 +29000,7 @@
           {
             "spell_id": 53,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29033,7 +29033,7 @@
           {
             "spell_id": 2589,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29066,7 +29066,7 @@
           {
             "spell_id": 2589,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29099,7 +29099,7 @@
           {
             "spell_id": 2589,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29132,7 +29132,7 @@
           {
             "spell_id": 2590,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29165,7 +29165,7 @@
           {
             "spell_id": 2590,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29205,7 +29205,7 @@
           {
             "spell_id": 2590,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29245,7 +29245,7 @@
           {
             "spell_id": 2591,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29285,7 +29285,7 @@
           {
             "spell_id": 2591,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29325,7 +29325,7 @@
           {
             "spell_id": 2591,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29365,7 +29365,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29405,7 +29405,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29445,7 +29445,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29492,7 +29492,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29539,7 +29539,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29586,7 +29586,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29633,7 +29633,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29680,7 +29680,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29727,7 +29727,7 @@
           {
             "spell_id": 11280,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29774,7 +29774,7 @@
           {
             "spell_id": 11280,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29821,7 +29821,7 @@
           {
             "spell_id": 11280,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29868,7 +29868,7 @@
           {
             "spell_id": 11281,
             "name": "Backstab",
-            "condition": "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29917,7 +29917,7 @@
           {
             "spell_id": 53,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -29957,7 +29957,7 @@
           {
             "spell_id": 2589,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30004,7 +30004,7 @@
           {
             "spell_id": 2589,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30051,7 +30051,7 @@
           {
             "spell_id": 2589,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30105,7 +30105,7 @@
           {
             "spell_id": 2590,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30159,7 +30159,7 @@
           {
             "spell_id": 2590,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30220,7 +30220,7 @@
           {
             "spell_id": 2590,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30281,7 +30281,7 @@
           {
             "spell_id": 2591,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30349,7 +30349,7 @@
           {
             "spell_id": 2591,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30417,7 +30417,7 @@
           {
             "spell_id": 2591,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30485,7 +30485,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30553,7 +30553,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30628,7 +30628,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30703,7 +30703,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30778,7 +30778,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30853,7 +30853,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -30928,7 +30928,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31003,7 +31003,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31078,7 +31078,7 @@
           {
             "spell_id": 11280,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31153,7 +31153,7 @@
           {
             "spell_id": 11280,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31228,7 +31228,7 @@
           {
             "spell_id": 11280,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31303,7 +31303,7 @@
           {
             "spell_id": 11281,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it.",
+            "condition": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },

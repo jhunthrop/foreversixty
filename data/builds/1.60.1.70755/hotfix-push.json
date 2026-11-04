@@ -5,7 +5,7 @@
   "ArmorLocation": 0,
   "ChrClasses": 0,
   "ChrRaces": 57,
-  "CurvePoint": 3466,
+  "CurvePoint": 3471,
   "Faction": 3,
   "ItemArmorQuality": 0,
   "ItemArmorShield": 0,
@@ -22,7 +22,7 @@
   "Map": 15,
   "RandPropPoints": 0,
   "SkillLine": 189,
-  "Spell": 22952,
+  "Spell": 23140,
   "Talent": 0,
   "TraitCond": 3,
   "TraitCurrency": 3,
@@ -207,17 +207,17 @@
    "withheld": 0
   },
   "Spell": {
-   "added": 61,
+   "added": 62,
    "changed": 61,
    "removed": 4,
-   "sha256": "3ce2a17fe2e529de05829c2fed15bc686a733c5122c2d8988666e9784173c2e0",
+   "sha256": "fc362bedd314f4a44eeef169797b5050c215c2c8ee8a8eafdf2fd389c765636f",
    "withheld": 41
   },
   "SpellAuraOptions": {
-   "added": 12,
+   "added": 13,
    "changed": 1,
    "removed": 2,
-   "sha256": "b9c089fa2d39bf36a0c69e7db0ec2bb94648badadf4e2370b2d5e9c8bb54eb53",
+   "sha256": "d2b9c7757ecd5573597a26a724206e5cfe26362cacd2caec23e2ba9789b2a5ee",
    "withheld": 1
   },
   "SpellCastTimes": {
@@ -228,10 +228,10 @@
    "withheld": 0
   },
   "SpellClassOptions": {
-   "added": 12,
+   "added": 13,
    "changed": 0,
    "removed": 0,
-   "sha256": "932413ed4c6e05c531ea53bfdbdf2a6aac6930448e01d1fe87b83a720a6d931c",
+   "sha256": "b05a75d88052e912a7e4a40770b30a2379e60a4b0023cd873a89f8fe44b42a86",
    "withheld": 2
   },
   "SpellCooldowns": {
@@ -249,10 +249,10 @@
    "withheld": 0
   },
   "SpellEffect": {
-   "added": 104,
+   "added": 123,
    "changed": 189,
    "removed": 3,
-   "sha256": "e676f00fa4b575e09c2c4ee79b48f26f8df14a443fd0ff8afa6aff86e16fe561",
+   "sha256": "642a99d2ca7711c85c8ad86a71f49dcef9d9f7e479b89b0defbdbd8ac31618d1",
    "withheld": 23
   },
   "SpellEquippedItems": {
@@ -260,7 +260,7 @@
    "changed": 0,
    "removed": 1,
    "sha256": "b7d98fb5aab43f92c22f792a996309a4e41db1b5f94a9d4e02a88a258e105af6",
-   "withheld": 18
+   "withheld": 19
   },
   "SpellItemEnchantment": {
    "added": 0,
@@ -277,17 +277,17 @@
    "withheld": 5
   },
   "SpellMisc": {
-   "added": 61,
+   "added": 62,
    "changed": 26,
    "removed": 1,
-   "sha256": "4adcf7651c50466bacc1218da9a2ea5b0245e3fff45f4a7464edca2f23af45c8",
+   "sha256": "d10c62376ad4d52f8192041e225a555a4829d06d1036c85fe3730638a681f087",
    "withheld": 18
   },
   "SpellName": {
-   "added": 61,
+   "added": 62,
    "changed": 7,
    "removed": 4,
-   "sha256": "d2b4885234fc588a0a4a8e2ffa91864daad358d3a90152a8d2139235d315774d",
+   "sha256": "67d5981ecaf38b100074f60a4b1225e119f7e56ecae683ab86fe281cff14ff74",
    "withheld": 41
   },
   "SpellPower": {
