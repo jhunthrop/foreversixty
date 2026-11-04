@@ -66,7 +66,10 @@ import { raceTableFor, racialCooldownsFor, specKindOf } from '../../../lib/guide
 import {
   litTalentsOf,
   loadApl,
+  markRaidBuildRows,
+  raidBuildOnlyTalents,
   rotationListsFrom,
+  talentNamesOf,
   specCooldowns,
   spellLookupFor,
   talentCooldownCuts,
@@ -200,8 +203,21 @@ const rotationListsUnkeyed =
         racialCooldownsFor(build, classSlug),
         role,
       );
+// The lists follow the level 60 raid priority; a talent only the raid build takes is marked
+// in them and left off the rail card, which sits beside the level 60 build.
+const raidOnlyTalents =
+  raidTrees === undefined
+    ? new Set<string>()
+    : raidBuildOnlyTalents(
+        talentNamesOf(build, classSlug),
+        litTalentsOf(buildTrees),
+        litTalentsOf(raidTrees),
+      );
 const rotationListsData =
-  rotationListsUnkeyed === undefined ? undefined : withTipKeys(rotationListsUnkeyed, tipBundle);
+  rotationListsUnkeyed === undefined
+    ? undefined
+    : withTipKeys(markRaidBuildRows(rotationListsUnkeyed, raidOnlyTalents), tipBundle);
+const railRotationLines = rotationLines.filter((line) => !raidOnlyTalents.has(line.name));
 const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');
 const rotationProseHtml = await prose(proseOnly('Rotation and priority'));
 
@@ -310,7 +326,7 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
             buildCode={buildCode}
             trees={buildTrees}
             rotationBandLabel={rotationBandLabel}
-            rotationLines={rotationLines.slice(0, 4)}
+            rotationLines={railRotationLines.slice(0, 4)}
             statRows={statRows}
             tips={tipBundle}
           />

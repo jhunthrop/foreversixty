@@ -288,3 +288,22 @@ describe('/guides/priest/shadow Leveling strip', () => {
     expect(names.slice(0, 2)).toEqual(['Wand Specialization', 'Spirit Tap']);
   });
 });
+
+describe('/guides/warrior/arms rotation rows for the raid build', () => {
+  // Sim-accuracy round 16: the priority is the level 60 raid list; Reckless Swings and
+  // Spearing Strike are talents only the raid build takes, so their rows say so and the rail
+  // card beside the level 60 build leaves them out.
+  it('tags the raid build’s own talent rows and no other', async () => {
+    const html = await container.renderToString(SpecPage, {
+      props: { entry: loadGuideEntry('warrior/arms') },
+    });
+    const priority = html.split('data-testid="guide-rotation-priority"')[1]?.split('</ol>')[0] ?? '';
+    const rows = priority.split('data-testid="guide-rotation-priority-').slice(1);
+    const tagged = rows
+      .filter((row) => row.includes('data-testid="guide-rotation-raid-build"'))
+      .map((row) => /class="rotation-name"[^>]*>\s*([^<]+?)\s*</.exec(row)?.[1]);
+    expect(tagged.sort()).toEqual(['Reckless Swings', 'Spearing Strike']);
+    const rail = html.split('data-testid="guide-rail-rotation"')[1]?.split('</ul>')[0] ?? '';
+    expect(rail).not.toContain('Reckless Swings');
+  });
+});

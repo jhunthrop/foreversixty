@@ -55,6 +55,11 @@ const groups: { id: string; title: string; items: RotationItem[]; numbered: bool
                   {item.rank !== undefined && (
                     <span class="rotation-rank numeric">{`Rank ${item.rank}`}</span>
                   )}
+                  {item.raidBuildOnly === true && (
+                    <span class="rotation-rank" data-testid="guide-rotation-raid-build">
+                      {guidesCopy.raidBuildTag}
+                    </span>
+                  )}
                 </span>
                 {item.clause !== '' && <span class="rotation-clause">{item.clause}</span>}
               </span>
