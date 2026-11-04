@@ -65,12 +65,34 @@
         }
       ]
     },
+    "mage-arcane": {
+      "reason": "The rotation casts Arcane Blast (the 10-point row, learned at 20). The plain walk spends level 20's eleventh point on Arcane Resilience's armor and reaches Arcane Blast only at 27. Taking Arcane Concentration's five ranks and then Arcane Blast as soon as they fit puts Blast at 20 in place of that armor point: +0.2% at band 20 and +17 to +21% at 25, at seeds 1 and 50001, both factions; the other bands do not change (sim-accuracy round 15, mage wave 2).",
+      "first": [
+        {
+          "talent": "Arcane Concentration",
+          "rank": 5
+        },
+        {
+          "talent": "Arcane Blast",
+          "rank": 1
+        }
+      ]
+    },
     "mage-fire": {
       "reason": "The rotation casts Pyroblast (the 10-point row, learned at 20). A level 20 mage's 11 points hold it, but the plain walk spends the last one on Ignite's fifth rank. Taking Pyroblast as soon as it fits gains about 2% at band 20, beyond error at seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); the other bands do not change.",
       "first": [
         {
           "talent": "Pyroblast",
           "rank": 1
+        }
+      ]
+    },
+    "mage-frost": {
+      "reason": "Frost casts Frostbolt from level 4. The plain walk's level-10 point is Frost Warding, armor on Frost Armor; Improved Frostbolt first makes the point a faster Frostbolt: +2.0 to +2.9% at band 10, at seeds 1 and 50001, both factions; the other bands do not change (sim-accuracy round 15, mage wave 2).",
+      "first": [
+        {
+          "talent": "Improved Frostbolt",
+          "rank": 5
         }
       ]
     },

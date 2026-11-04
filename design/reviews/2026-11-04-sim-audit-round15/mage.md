@@ -84,6 +84,32 @@ Raid 60, 10,000 iterations. Before: `$R/sb-before` / `$R/before.tsv`. After: the
 - **arcane.md, frost.md, fire.md mana lines (MAGE-11):** the claim fix pass 1 removed as unverified is verified (X1). "Mana gems and Demonic Runes share one 2 minute cooldown" is right, from ItemEffect category 1153 at 120,000 ms. The Robe of the Archmage adds a 1 minute lockout with them (category 30) and has its own 5 minutes.
 - **mage-frost.json `expected_idle[0]`** (R4): the Shoot reason names Arcane Blast. Suggested: "Frostbolt is cheap enough under Frost Channeling that this geared character never drops below the wand line's 20% mana gate; the level 20 and 30 rungs show it firing."
 
+## Wave 2: leveling orders (guide-accuracy round 1, O2)
+
+Method:
+- Checkpoint builds come from `LadderTalentString` (scratch test, not committed), at every level the ladder or ladder-order checks: 10, 20, 25, 30, 35, 38, 40, 45, 50, 55 and 60.
+- Spec-breakdown, bare preset, 10,000 iterations, seeds 1 and 50001, both factions.
+- Bands 10 and 25 have no BiS entry, so they ran from a scratch `-bis-dir`. Band 10 wears the ladder's gear (main hand 284287, ranged 286750). Band 25 wears the band-20 set on both sides.
+- Learn levels (trainables 70755): Arcane Blast rank 1 (400574) at 20, Ice Lance rank 1 (1312002) at 20. Both are 10-point-row talents, so the 11th point at level 20 can hold either.
+- All three candidates move a checkpoint, so they belong in ladder-first.json, which needs a measured gain. None is a ladder-order.json case.
+
+| # | candidate | checkpoints it moves | result (a s1 / a s50001 / h s1 / h s50001) | verdict | fix sha |
+|---|---|---|---|---|---|
+| W1 | Frost: Improved Frostbolt before Frost Warding | 10 only (Frost Warding 1 → Improved Frostbolt 1); 20 and up identical | band 10: 10.5 → 10.8, 10.5 → 10.8, 10.0 → 10.2, 10.0 → 10.2 (+2.0 to +2.9%) | **Adopted.** The level-10 point was armor on Frost Armor; now it speeds the Frostbolt the rotation casts. | S 1e702cd9f |
+| W2 | Frost: Ice Lance at 20 | 20 (Ice Shards 1 → Ice Lance) and 25 (Frostbite 1 → Ice Lance) | band 20: -0.44 / -0.44 / -0.45 / -0.67%; band 25: +0.19 / 0.00 / 0.00 / -0.19% | **Rejected: it loses at 20.** The rotation casts Ice Lance only on a Fingers of Frost charge, a level-36 talent, so the point is idle while Ice Shards' crit damage is lost. Its real leveling use, a Frost Nova shatter on a frozen mob, is outside the sim's single-target fight. Under the wave rule a loss at any band rejects it. The guide may still mention the Nova combo. | - |
+| W3 | Arcane: Arcane Blast at 20 (Blast first) | 20 (Arcane Concentration 5 → 4 plus Blast) and 25 | band 20: -2.9 to -3.6%; band 25: +17.5 to +20.7% | Rejected as written (loses at 20). | - |
+| W3b | Arcane: Arcane Concentration 5, then Arcane Blast | 20 (Arcane Resilience 1 → Blast; Concentration stays at 5) and 25 (Arcane Impact 2 → 1 plus Blast); 30 and up identical | band 20: 44.3 → 44.4, 44.3 → 44.4, 44.1 → 44.2, 44.2 → 44.3 (+0.23% each); band 25: 46.6 → 56.0, 46.5 → 56.1, 47.5 → 55.8, 47.5 → 56.0 (+17.5 to +20.7%) | **Adopted.** Blast at 20 in place of an armor point. The plain walk had no Blast until 27, which is where the band-25 gain comes from. | S 1e702cd9f |
+| W3c | Arcane: Concentration 5, Missile Barrage 2, then Blast | 20 (Missile Barrage 1 in place of Arcane Resilience) | band 20: -17.0 to -19.0% | Rejected. | - |
+
+Tests:
+- `sim/leveling/ladder_first_mage_test.go` failed, then passed.
+- `TestCuratedLadderFirstIsSound` now knows mage-arcane and mage-frost.
+- The sim/leveling package is green.
+
+**Files to regenerate (wave 2, in addition to the list above):** the mage-arcane and mage-frost ladder goldens at rungs 10 and 20, and addon-builds.json (the Arcane and Frost point orders). `web/src/lib/guides/leveling-builds.test.ts` fails for mage-arcane, mage-fire and mage-frost until the goldens are regenerated. The TS walk already reads the new rows.
+
+**For the guide lane (wave 2):** frost.md's leveling paragraph should read Improved Frostbolt at 10 to 14, then Frost Warding. arcane.md:107 "Missile Barrage comes at 21 and Arcane Blast at 27" becomes Arcane Blast at 20; read the regenerated addon-builds.json for the exact levels. Ice Lance stays at 30 in the order.
+
 ## Still open
 
 - Arcane Concentration from Shoot and Kindling Stave's Ignition (round 14 M7), and Kindling Stave's proc rate (M5): carried, with no new evidence.
