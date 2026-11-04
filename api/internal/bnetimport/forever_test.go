@@ -15,7 +15,7 @@ const foreverAccountPath = "/profile/user/wow?namespace=profile-forever-us"
 // foreverFixture stands up the Forever account the shared modeled fixture
 // describes (bnetapi/testdata/forever): Elyra Duskvale (60, realm 6798 PvP,
 // guild leader of Quiet Hours), Tor Ashbrand (42, realm 6928 RP, profile not
-// public yet) and a level 1 bank alt.
+// public yet) and Bank Holder (1, realm 6798, profile not public yet).
 func foreverFixture(t *testing.T) *blizzardFixture {
 	t.Helper()
 	f := newBlizzardFixture(t)
@@ -45,8 +45,10 @@ func foreverFixture(t *testing.T) *blizzardFixture {
 	f.json(http.MethodGet, "/profile/wow/character/elyra-duskvale/character-media?namespace=profile-forever-us",
 		http.StatusOK, map[string]any{"assets": []map[string]string{}})
 
-	for _, sub := range []string{"", "/equipment", "/character-media"} {
-		f.json(http.MethodGet, "/profile/wow/character/tor-ashbrand"+sub+"?namespace=profile-forever-us", http.StatusNotFound, nil)
+	for _, name := range []string{"tor-ashbrand", "bank-holder"} {
+		for _, sub := range []string{"", "/equipment", "/character-media"} {
+			f.json(http.MethodGet, "/profile/wow/character/"+name+sub+"?namespace=profile-forever-us", http.StatusNotFound, nil)
+		}
 	}
 	return f
 }
@@ -73,7 +75,7 @@ func TestImportAccountImportsForeverCharactersByNameSurname(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if summary.Characters != 2 || summary.Skipped != 1 || summary.Guilds != 1 || summary.Unavailable != 1 || summary.Pending != 0 {
+	if summary.Characters != 3 || summary.Skipped != 0 || summary.Guilds != 1 || summary.Unavailable != 2 || summary.Pending != 0 {
 		t.Fatalf("summary = %+v", summary)
 	}
 
@@ -91,8 +93,9 @@ func TestImportAccountImportsForeverCharactersByNameSurname(t *testing.T) {
 		}
 		rows[key] = name
 	}
-	if rows["us/pvp/elyra-duskvale"] != "Elyra Duskvale" || rows["us/rp/tor-ashbrand"] != "Tor Ashbrand" || len(rows) != 2 {
-		t.Fatalf("rows = %v, want both keyed by their realm's ruleset with the full name", rows)
+	if rows["us/pvp/elyra-duskvale"] != "Elyra Duskvale" || rows["us/rp/tor-ashbrand"] != "Tor Ashbrand" ||
+		rows["us/pvp/bank-holder"] != "Bank Holder" || len(rows) != 3 {
+		t.Fatalf("rows = %v, want all three, the level 1 included, keyed by their realm's ruleset", rows)
 	}
 
 	var rank string
@@ -124,16 +127,16 @@ func TestImportAccountListsEveryCharacterBeforeTheBudgetRunsOut(t *testing.T) {
 	if !errors.Is(err, ErrBudget) {
 		t.Fatalf("err = %v, want ErrBudget", err)
 	}
-	if summary.Characters != 2 || summary.Pending != 2 {
-		t.Fatalf("summary = %+v, want both rows written and both pending enrichment", summary)
+	if summary.Characters != 3 || summary.Pending != 3 {
+		t.Fatalf("summary = %+v, want every row written and every one pending enrichment", summary)
 	}
 	var n int
 	if err := svc.Pool.QueryRow(context.Background(),
 		`select count(*) from characters where user_id = $1`, uid).Scan(&n); err != nil {
 		t.Fatal(err)
 	}
-	if n != 2 {
-		t.Fatalf("characters = %d, want 2 listed even though enrichment ran out of budget", n)
+	if n != 3 {
+		t.Fatalf("characters = %d, want 3 listed even though enrichment ran out of budget", n)
 	}
 }
 

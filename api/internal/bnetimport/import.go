@@ -38,13 +38,6 @@ const RefreshJobCommand = "bnet-refresh"
 // §4.1).
 var ErrBudget = errors.New("bnetimport: import budget exceeded")
 
-// minImportLevel is spec §4.2 step 2's RULING: characters below this
-// level are not imported — bank alts and throwaways clutter the list,
-// and 10 is the level Forever's own tools start to matter. Cost if
-// wrong: a player wonders where their level 8 alt is; they can still
-// paste it by hand.
-const minImportLevel = 10
-
 // enrichFreshness is how recently a row must have been enriched for a run
 // to skip it: long enough to cover the sign-in run and its background
 // continuation, far shorter than the nightly refreshWindow.
@@ -146,7 +139,7 @@ func (s *Service) importRegion(ctx context.Context, userID int64, userToken, reg
 		realmCache[region] = realms
 	}
 
-	written, err := s.writeAccountRows(ctx, userID, region, realms, eligible(chars, summary), summary)
+	written, err := s.writeAccountRows(ctx, userID, region, realms, byLevel(chars), summary)
 	summary.Characters += len(written)
 	if err != nil {
 		summary.Pending += len(written)
@@ -155,18 +148,13 @@ func (s *Service) importRegion(ctx context.Context, userID int64, userToken, reg
 	return s.enrichAll(ctx, written, summary, rosterCache)
 }
 
-// eligible is the account's characters at or above minImportLevel, highest
-// level first (stable, so Blizzard's own order breaks ties). Every skipped
-// character is counted in summary.Skipped.
-func eligible(chars []bnetapi.AccountCharacter, summary *auth.ImportSummary) []bnetapi.AccountCharacter {
-	out := make([]bnetapi.AccountCharacter, 0, len(chars))
-	for _, ch := range chars {
-		if ch.Level < minImportLevel {
-			summary.Skipped++
-			continue
-		}
-		out = append(out, ch)
-	}
+// byLevel is every account character, highest level first (stable, so
+// Blizzard's own order breaks ties). Every Forever character is imported,
+// whatever its level: the old level-10 floor (spec §4.2 step 2) skipped every
+// character on launch night, when all of them were brand new (2026-11-04,
+// user 78: five characters, all skipped).
+func byLevel(chars []bnetapi.AccountCharacter) []bnetapi.AccountCharacter {
+	out := append([]bnetapi.AccountCharacter(nil), chars...)
 	sort.SliceStable(out, func(i, j int) bool { return out[i].Level > out[j].Level })
 	return out
 }
