@@ -354,7 +354,9 @@ describe('Fire levels with Burning Soul, not Impact', () => {
     const trees = [...talentsFor('mage').trees].sort((a, b) => a.position - b.position);
     const rankOf = new Map<string, number>();
     decoded.build.treeRanks.forEach((ranks, treeIndex) => {
-      trees[treeIndex]?.talents.forEach((talent, digitIndex) => rankOf.set(talent.name, ranks[digitIndex] ?? 0));
+      trees[treeIndex]?.talents.forEach((talent, digitIndex) =>
+        rankOf.set(talent.name, ranks[digitIndex] ?? 0),
+      );
     });
     expect(rankOf.get('Impact') ?? 0).toBe(0);
     expect(rankOf.get('Burning Soul') ?? 0).toBeGreaterThan(0);
