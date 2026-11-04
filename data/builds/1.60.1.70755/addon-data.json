@@ -41952,7 +41952,7 @@
           {
             "spell_id": 6546,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
@@ -42006,14 +42006,14 @@
           {
             "spell_id": 6546,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42067,14 +42067,14 @@
           {
             "spell_id": 6546,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42128,14 +42128,14 @@
           {
             "spell_id": 6547,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42196,14 +42196,14 @@
           {
             "spell_id": 6547,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42264,14 +42264,14 @@
           {
             "spell_id": 6547,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42339,14 +42339,14 @@
           {
             "spell_id": 6547,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42400,7 +42400,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -42421,14 +42421,14 @@
           {
             "spell_id": 6548,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42482,7 +42482,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -42503,14 +42503,14 @@
           {
             "spell_id": 6548,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42564,7 +42564,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -42585,14 +42585,14 @@
           {
             "spell_id": 6548,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42646,7 +42646,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -42667,14 +42667,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42735,7 +42735,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -42756,14 +42756,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42824,7 +42824,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -42845,14 +42845,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42913,7 +42913,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -42934,14 +42934,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43002,7 +43002,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -43023,14 +43023,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43091,7 +43091,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -43112,14 +43112,14 @@
           {
             "spell_id": 11573,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43180,7 +43180,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -43201,14 +43201,14 @@
           {
             "spell_id": 11573,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43269,7 +43269,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -43290,14 +43290,14 @@
           {
             "spell_id": 11573,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43358,7 +43358,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -43379,14 +43379,14 @@
           {
             "spell_id": 11573,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43447,7 +43447,7 @@
           {
             "spell_id": 2458,
             "name": "Berserker Stance",
-            "condition": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
+            "condition": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness.",
             "icon": "ability_racial_avatar",
             "race_spell_ids": {}
           },
@@ -43468,14 +43468,14 @@
           {
             "spell_id": 11574,
             "name": "Rend",
-            "condition": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11585,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43559,14 +43559,14 @@
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
           {
             "spell_id": 284,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -43599,7 +43599,7 @@
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -43613,7 +43613,7 @@
           {
             "spell_id": 284,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -43646,7 +43646,7 @@
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -43660,7 +43660,7 @@
           {
             "spell_id": 285,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -43693,7 +43693,7 @@
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -43707,7 +43707,7 @@
           {
             "spell_id": 285,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -43740,7 +43740,7 @@
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -43754,7 +43754,7 @@
           {
             "spell_id": 285,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -43787,14 +43787,14 @@
           {
             "spell_id": 5308,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -43808,7 +43808,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -43841,14 +43841,14 @@
           {
             "spell_id": 5308,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -43862,7 +43862,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -43895,14 +43895,14 @@
           {
             "spell_id": 5308,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -43923,7 +43923,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -43956,14 +43956,14 @@
           {
             "spell_id": 20658,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -43984,7 +43984,7 @@
           {
             "spell_id": 11564,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44017,21 +44017,21 @@
           {
             "spell_id": 20658,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44052,7 +44052,7 @@
           {
             "spell_id": 11564,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44085,21 +44085,21 @@
           {
             "spell_id": 20658,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44120,7 +44120,7 @@
           {
             "spell_id": 11564,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44153,7 +44153,7 @@
           {
             "spell_id": 20660,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
@@ -44167,14 +44167,14 @@
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44195,7 +44195,7 @@
           {
             "spell_id": 11565,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44228,7 +44228,7 @@
           {
             "spell_id": 20660,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
@@ -44242,14 +44242,14 @@
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44270,7 +44270,7 @@
           {
             "spell_id": 11565,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44303,7 +44303,7 @@
           {
             "spell_id": 20660,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
@@ -44317,14 +44317,14 @@
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44345,7 +44345,7 @@
           {
             "spell_id": 11565,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44378,7 +44378,7 @@
           {
             "spell_id": 20661,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
@@ -44392,14 +44392,14 @@
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44420,7 +44420,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44460,7 +44460,7 @@
           {
             "spell_id": 20661,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
@@ -44474,14 +44474,14 @@
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44502,7 +44502,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44542,7 +44542,7 @@
           {
             "spell_id": 20661,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
@@ -44556,14 +44556,14 @@
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44584,7 +44584,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44624,7 +44624,7 @@
           {
             "spell_id": 20661,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
@@ -44638,14 +44638,14 @@
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44666,7 +44666,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44706,7 +44706,7 @@
           {
             "spell_id": 20662,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
@@ -44720,14 +44720,14 @@
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44748,7 +44748,7 @@
           {
             "spell_id": 11567,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44788,7 +44788,7 @@
           {
             "spell_id": 20662,
             "name": "Execute",
-            "condition": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+            "condition": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
             "icon": "inv_sword_48",
             "race_spell_ids": {}
           },
@@ -44802,14 +44802,14 @@
           {
             "spell_id": 1680,
             "name": "Whirlwind",
-            "condition": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+            "condition": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
             "icon": "ability_whirlwind",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+            "condition": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -44830,7 +44830,7 @@
           {
             "spell_id": 11567,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and never from 25% down: hold that rage for Execute.",
+            "condition": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
