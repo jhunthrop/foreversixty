@@ -1,6 +1,7 @@
 package request
 
 import (
+	"bytes"
 	"encoding/json"
 	"slices"
 	"strings"
@@ -278,4 +279,94 @@ func TestHolySteppingDownCastsGreaterHealRankOneBeforeHeal(t *testing.T) {
 	} else if strings.Contains(string(out), "2060") {
 		t.Error("a level 30 priest casts Greater Heal rank 1")
 	}
+}
+
+// Sim-accuracy round 19: Discipline's tank filler is Greater Heal (10965),
+// learned at 40, so below 40 the tank had no filler at all (Penance, Renew
+// and the shield only, with Lesser Heal and Flash Heal on the party). A Heal
+// line behind each tank Greater Heal line, with its target and condition,
+// is +7.4% / +9.1% effective healing at bare 20 and +2.7% / +2.1% at bare 30
+// (Alliance / Horde, seeds 1 and 50001); from 40 the Greater Heal line ahead
+// of it takes the cast and nothing moves.
+func TestDisciplineHealsTheTankWithHealBeforeGreaterHeal(t *testing.T) {
+	var list struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/priest-discipline.json", &list)
+	type cast struct {
+		Action struct {
+			CastSpell *struct {
+				SpellID struct {
+					SpellID int `json:"spellId"`
+				} `json:"spellId"`
+				Target json.RawMessage `json:"target"`
+			} `json:"castSpell"`
+			Condition json.RawMessage `json:"condition"`
+		} `json:"action"`
+	}
+	parse := func(line json.RawMessage) (int, string) {
+		var c cast
+		if err := json.Unmarshal(line, &c); err != nil {
+			t.Fatal(err)
+		}
+		if c.Action.CastSpell == nil {
+			return 0, ""
+		}
+		condition := c.Action.Condition
+		if c.Action.CastSpell.SpellID.SpellID == 6064 {
+			// The Heal line's condition is the Greater Heal line's, and
+			// Greater Heal rank 1 not yet learned: at 60 a Heal rank 4
+			// fallback on the tank costs 0.8% to 1.1% at raid 60.
+			var gated struct {
+				And struct {
+					Vals []json.RawMessage `json:"vals"`
+				} `json:"and"`
+			}
+			if err := json.Unmarshal(c.Action.Condition, &gated); err != nil || len(gated.And.Vals) != 2 {
+				return c.Action.CastSpell.SpellID.SpellID, "ungated"
+			}
+			if compactJSON(t, gated.And.Vals[1]) != `{"not":{"val":{"spellIsKnown":{"spellId":{"spellId":2060,"rank":1}}}}}` {
+				return c.Action.CastSpell.SpellID.SpellID, "ungated"
+			}
+			condition = gated.And.Vals[0]
+		}
+		return c.Action.CastSpell.SpellID.SpellID, compactJSON(t, c.Action.CastSpell.Target) + compactJSON(t, condition)
+	}
+	lines := list.Rotation.PriorityList
+	tankFillers := 0
+	for index, line := range lines {
+		id, key := parse(line)
+		if id != 10965 {
+			continue
+		}
+		tankFillers++
+		if index+1 >= len(lines) {
+			t.Fatalf("tank Greater Heal line %d is the last line, with no Heal behind it", index)
+		}
+		if nid, nkey := parse(lines[index+1]); nid != 6064 || nkey != key {
+			t.Errorf("tank Greater Heal line %d is not followed by a Heal rank 4 line with its target and condition, gated on Greater Heal being unlearned", index)
+		}
+	}
+	if tankFillers == 0 {
+		t.Fatal("Discipline has no tank Greater Heal line")
+	}
+	heal := linesCasting(t, "priest-discipline", 6064)
+	assertRanks(t, heal, "priest-discipline", "priest", "human", healRanks, []rankCase{
+		{20, BarePreset, 1}, {30, BarePreset, 3}, {60, RaidPreset, 4},
+	})
+}
+
+// compactJSON is raw with its insignificant whitespace removed.
+func compactJSON(t *testing.T, raw json.RawMessage) string {
+	t.Helper()
+	var out bytes.Buffer
+	if len(raw) == 0 {
+		return ""
+	}
+	if err := json.Compact(&out, raw); err != nil {
+		t.Fatal(err)
+	}
+	return out.String()
 }
