@@ -3,7 +3,7 @@ title: Holy Paladin in Forever
 classSlug: paladin
 spec: holy
 role: healer
-build: 'FS1:1.60.1.70755:paladin:human:50320215012101251/50322/0503:'
+build: 'FS1:1.60.1.70790:paladin:human:50320215012101251/50322/0503:'
 recommendedRaces: [human, undead]
 statPriority: [MP5, Intellect, Healing power, Critical strike, Spirit]
 description: 'Tank healing with Oath of Light, Flash of Light and Divine Favor, and how to make your mana last.'
@@ -20,7 +20,7 @@ sources:
     url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
     kind: blizzard
   - label: 'Forever Sixty, races'
-    url: https://foreversixty.gg/data/1.60.1.70755/races.json
+    url: https://foreversixty.gg/data/1.60.1.70790/races.json
     kind: datamined
 ---
 

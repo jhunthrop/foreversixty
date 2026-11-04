@@ -3,7 +3,7 @@ title: Restoration Shaman in Forever
 classSlug: shaman
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.70755:shaman:dwarf:0/055/5530003315513151:'
+build: 'FS1:1.60.1.70790:shaman:dwarf:0/055/5530003315513151:'
 recommendedRaces: [dwarf, orc]
 statPriority: [MP5, Intellect, Healing power, Spirit, Critical strike]
 description: 'Restoration Shaman in Forever: Riptide into Chain Heal, Water Shield and Mana Tide for mana, which totems to drop, Chain Heal ranks, stats, races and leveling.'

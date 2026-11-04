@@ -3,7 +3,7 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.70755:priest:gnome:00500503133001143/3350500303/0:'
+build: 'FS1:1.60.1.70790:priest:gnome:00500503133001143/3350500303/0:'
 recommendedRaces: [gnome, undead]
 statPriority: [MP5, Spirit, Healing power, Intellect, Critical strike]
 description: 'How to heal as a Discipline Priest in Forever: Penance, the shield and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'

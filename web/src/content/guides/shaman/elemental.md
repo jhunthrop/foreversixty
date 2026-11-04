@@ -3,8 +3,8 @@ title: Elemental Shaman in Forever
 classSlug: shaman
 spec: elemental
 role: dps
-build: 'FS1:1.60.1.70755:shaman:dwarf:5510331300001351/05/053052:'
-raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:5510331300001351/055/053002:'
+build: 'FS1:1.60.1.70790:shaman:dwarf:5510331300001351/05/053052:'
+raidBuild: 'FS1:1.60.1.70790:shaman:dwarf:5510331300001351/055/053002:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Spell power, Hit, Nature power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman in Forever: the raid build, Flame Shock up and Lightning Bolt behind Lightning Mastery, bolt ranks for mana, totems, stats, races and leveling.'

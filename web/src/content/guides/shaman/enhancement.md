@@ -3,8 +3,8 @@ title: Enhancement Shaman in Forever
 classSlug: shaman
 spec: enhancement
 role: dps
-build: 'FS1:1.60.1.70755:shaman:dwarf:323003/055030310051202051/052:'
-raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:0533001/053030310051202051/053:'
+build: 'FS1:1.60.1.70790:shaman:dwarf:323003/055030310051202051/052:'
+raidBuild: 'FS1:1.60.1.70790:shaman:dwarf:0533001/053030310051202051/053:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and your imbue, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
