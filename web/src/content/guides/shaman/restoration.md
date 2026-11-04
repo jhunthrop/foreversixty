@@ -69,7 +69,7 @@ Ancestral Healing is three points for 25% more armor on your target for 15 secon
 **Tank first.**
 
 1. Riptide on the tank whenever it is ready and the tank is hurt. It is your cheapest heal per mana, and it sets up the Chain Heal. It heals over its 15 seconds with nothing up front, so it never answers a big hit on its own.
-2. Chain Heal on the tank as soon as anyone near it is hurt, as long as your mana is ahead of the fight. Riptide's 25% applies to the target you cast it on, and the two jumps go to the most injured raid members near it, in your party or not, each for half the heal before.
+2. Chain Heal on the tank as soon as anyone near it is hurt, as long as your mana is ahead of the fight. Riptide's 25% applies to the target you cast it on, and the two jumps go to the most injured people near it, each for half the heal before. Cast on someone in your party, it only jumps to your party, so ask to be grouped with the tank.
 3. Healing Wave when the tank is down to 60%. Drop a rank when your mana is behind the fight, but never below rank 8. Lesser Healing Wave is the fast heal when it is down to 30% and the next hit could kill it.
 4. Nature's Swiftness into your highest rank of Healing Wave when the tank is under 25%. Keep it for exactly that, and never spend it on a low rank.
 

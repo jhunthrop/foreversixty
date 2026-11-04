@@ -149,7 +149,7 @@
       }
     },
     {
-      "notes": "At 5 combo points when Rip has under 6 seconds left. Rip at 5 points does far more than a Bite, so it always comes first.",
+      "notes": "At 5 combo points when Rip has under 6 seconds left. Rip goes out before any Bite: the bleed keeps Rend and Tear on for everything else you press.",
       "action": {
         "condition": {
           "and": {

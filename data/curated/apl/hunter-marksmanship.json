@@ -204,7 +204,7 @@
         }
       },
       {
-        "notes": "",
+        "notes": "Sniper Shot when the shared cooldown is down and an auto shot has just left. Its 4 second cast holds your next auto, so start it right after one fires, never partway to the next. It is your hardest hit, on its own 15 second cooldown.",
         "action": {
           "condition": {
             "cmp": {

@@ -31,21 +31,21 @@ Shadow keeps two DoTs ticking, hits Mind Blast and Shadow Word: Death on cooldow
 
 ### Strengths
 
-- The best way to level a priest: DoTs and a wand do the work, and from level 21 Spirit Tap cuts your drinking after most kills
+- The best way to level a priest: DoTs and a wand do the work, and from level 16 Spirit Tap cuts your drinking after every kill
 - Vampiric Embrace heals your whole group for a fifth of your Shadow damage
 - Shadow Word: Death is a second big instant on an 18 second cooldown
 - Every priest now has Devouring Plague, so Shadow carries two DoTs on any race
 
 ### Weaknesses
 
-- Mind Flay is a talent and the leveling build reaches it at 28, so until then you wand between casts
+- The leveling build reaches Mind Flay at 28 and Shadowform at 42, so early on you wand between casts
 - Mind Blast and Shadow Word: Death throw a lot of threat early in a pull
 - Shadowform blocks every healing spell, so helping your healers means leaving the form
 
 ### In a raid
 
 - **Role:** Ranged caster damage
-- **Brings:** Vampiric Embrace on your group, Power Word: Fortitude, Divine Spirit, Fear Ward and Shadow Protection
+- **Brings:** Vampiric Embrace on your group, Power Word: Fortitude, Divine Spirit, Fear Ward, Shadow Protection and Silence for a caster add
 
 ## Talents and builds
 
@@ -58,21 +58,25 @@ You go deep Shadow for Shadowform and spend the rest in Discipline for mana and 
 - **Improved Mind Blast** (4 to 5 points): each point takes half a second off Mind Blast's 8 second cooldown.
 - **Improved Shadow Word: Pain** (2 points): 6 more seconds of Pain, so fewer refreshes.
 - **Shadow Focus** (5 points): 5% Shadow hit, the cheapest hit you will ever get.
-- **Spirit Tap** (3 points): a 60% chance after a kill to double your Spirit for 15 seconds, with half your regeneration running while you cast. Leveling, it is your drink between pulls; in a raid it fires off trash kills and off any add that dies carrying your Vampiric Embrace.
-- **Blackout** (4 points leveling, 2 in the raid build): an 8% chance (4% at 2 points) for your Shadow spells to stun for 3 seconds, which stops a mob that reaches you. Bosses cannot be stunned, so on a boss the raid build's two points do nothing; they pay out only on trash.
+- **Spirit Tap** (5 points leveling, none in the raid build): after every kill your Spirit doubles for 15 seconds, with half your regeneration running while you cast. It is your drink between pulls; on a raid boss nothing dies, so the raid build leaves it.
+- **Blackout** (2 points leveling, none in the raid build): a 4% chance for your Shadow spells to stun for 3 seconds, which stops a mob that reaches you. Bosses cannot be stunned, so the raid build drops it.
 - **Vampiric Embrace** (1 point): the group heal you keep on the boss in a raid. See the rotation for what it costs you.
 - **Early Demise** (2 points): 30% more Shadow Word: Death crit chance below 20%, the raid build's execute.
+- **Devouring Contagion** (2 points, raid build): Devouring Plague costs half as much, and a target that dies with it jumps it to two enemies within 10 yards.
+- **Silence** (1 point, raid build): a 5 second silence that interrupts a cast, for the add your raid needs stopped.
+- **Shadow Reach** (2 points, raid build): 20% more range on your Shadow spells, so you stand out of what the melee stand in.
+- **Dark Inspiration** (1 point, raid build): Mind Blast and a full Mind Flay give you and your party 3% more Spirit for 10 seconds.
 - **Twin Disciplines** (5 points), **Mental Agility** (3 points) and **Inner Focus** (1 point): your instants hit harder and cost less, and Inner Focus is a free Mind Blast every 3 minutes.
 - **Meditation** (3 points) and **Mental Strength** (5 points): half your regeneration keeps running while you cast, and 10% more Intellect for a deeper bar.
 - **Silent Resolve** (1 point): 10% less threat. Take more of it if you keep pulling aggro.
 
-Right after Shadowform the leveling build puts two points into Wand Specialization, for the wand that finishes your mobs, and the rest goes to Discipline. The raid build trades them, and two points of Blackout, for Early Demise, Shadow Reach and the last point of Improved Mind Blast. [Open the planner](/planner?class=priest) to change the build.
+The leveling build opens with two points in Wand Specialization for the wand that finishes your mobs, and its last points go to Discipline. The raid build trades them, Blackout and Spirit Tap for Early Demise, Devouring Contagion, Silence, both points of Shadow Reach, one of Dark Inspiration and the last point of Improved Mind Blast. [Open the planner](/planner?class=priest) to change the build.
 
 ## Rotation and priority
 
-**Before the pull.** Buff the raid, then shift into Shadowform and drink back to full: the form costs mana, so never shift on the pull. Let the tank get two or three hits in before you press anything that is not a DoT.
+**Before the pull.** Buff the raid, then shift into Shadowform and drink back to full: the form costs mana, so never shift on the pull. Start Mind Blast 1.5 seconds before the tank's pull lands so it hits as the boss is engaged, and do not pre-cast it on a tank who opens slowly.
 
-**Opener.** Shadow Word: Pain, Vampiric Embrace, Devouring Plague, then Mind Blast (with Inner Focus, so it is free and more likely to crit), Shadow Word: Death, and Mind Flay. By the end of that string Shadow Weaving is at five stacks.
+**Opener.** Mind Blast lands as the boss is engaged, then Shadow Word: Pain, Vampiric Embrace, Devouring Plague, Mind Blast again (with Inner Focus, so it is free and more likely to crit), Shadow Word: Death, and Mind Flay. By the end of that string Shadow Weaving is at five stacks.
 
 **Priority.** Keep Shadow Word: Pain up. Keep Devouring Plague up: it is on a 24 second cooldown and heals you as it ticks. Mind Blast on cooldown. Shadow Word: Death on cooldown. Mind Flay with everything else.
 
@@ -108,7 +112,7 @@ Flask of Supreme Power, Elixir of Shadow Power and Greater Arcane Elixir all sta
 
 ## Races
 
-**Human** is the Alliance pick. Ruthless adds 1% critical strike chance to all your spells, and Shadowform doubles every crit's bonus. The Human Spirit adds 10% Spirit, which is more drinking saved while Spirit Tap is up. The Human priest spells are Divine Grace, a free instant heal on an ally under 50%, and Feedback, which is for PvP.
+**Human** is the Alliance pick. Ruthless adds 1% critical strike chance to all your spells, and Shadowform doubles every crit's bonus. The Human Spirit adds 10% Spirit, which while leveling is more drinking saved while Spirit Tap is up. The Human priest spells are Divine Grace, a free instant heal on an ally under 50%, and Feedback, which is for PvP.
 
 **Undead** is the Horde pick, and the strongest Shadow priest of all. Touch of the Grave gives your spells a chance to drain health from the target, up to 5% of your maximum health, at most once every 15 seconds, which takes the edge off Shadow Word: Death's backlash. Dark Sacrifice trades your health for mana once a fight, and Will of the Forsaken breaks fears and charms.
 
@@ -124,14 +128,14 @@ Tailoring makes a lot of the cloth you wear before raids, so it pays for itself.
 
 Smite does your damage until 10: Shadow Word: Pain at 4, Smite, then the wand. Power Word: Shield comes at 6, Mind Blast at 10, Inner Fire at 12 and Psychic Scream at 14, your way out when a second mob joins.
 
-Your first five talent points go into Shadow Focus, 5% more hit with Shadow spells so Mind Blast and Shadow Word: Pain land, and the next four into Blackout, a small chance for your Shadow spells to stun.
+Your first two talent points go into Wand Specialization at 10 and 11, 25% more wand damage, because the wand finishes most of your mobs at these levels. Spirit Tap takes 12 to 16: at five points every kill doubles your Spirit for 15 seconds and keeps half your regeneration running while you cast, so you barely drink. Shadow Focus starts at 17 for more hit on your Shadow spells.
 
 Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
 
 ### Levels 20 to 60
 
-Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap procs on most kills and lets you chain pulls with little drinking.
+Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap procs on every kill that gives experience and lets you chain pulls with little drinking.
 
-From 19 the build takes Spirit Tap to 21, Improved Mind Blast to 25 and Improved Shadow Word: Pain at 26 and 27, then Mind Flay at 28. Until 28 the wand is your filler. Improved Mind Flay, Vampiric Embrace, Shadow Weaving and Darkness follow, and Shadowform is your point at 40.
+From 20 the build finishes Shadow Focus at 21, takes Improved Mind Blast to 25 and Improved Shadow Word: Pain at 26 and 27, then Mind Flay at 28. Until 28 the wand is your filler. Improved Mind Flay comes at 29 and 30 and two points of Blackout at 31 and 32, then Vampiric Embrace, Shadow Weaving and Darkness, and Shadowform is your point at 42. The two early points in Wand Specialization cost you those two levels of the form, and they are worth it.
 
 In Shadowform you cannot cast Renew or a heal. Power Word: Shield still works, so shield before the pull and let Vampiric Embrace and Devouring Plague top you up. Leave the form only for a heal you really need. Solo, cast Shadow Word: Death only when it will kill or you are well above half health: the backlash is real.

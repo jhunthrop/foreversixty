@@ -84,7 +84,7 @@
         }
       },
       {
-        "notes": "Grace of Air Totem whenever your Air slot is empty: Agility for every raid member within 30 yards, you included. Take it when another shaman already has Windfury Totem down near the melee; if none does, Windfury Totem is the stronger drop for the warriors and rogues. Learned at 42, rank 2 at 56.",
+        "notes": "Grace of Air Totem whenever your Air slot is empty: Agility for every raid member within 30 yards, you included. Take it when another shaman already has Windfury Totem down near the melee, and wear Rockbiter Weapon so that totem's swings reach you; if none does, Windfury Totem is the stronger drop for the warriors and rogues. Learned at 42, rank 2 at 56.",
         "action": {
           "condition": {
             "cmp": {

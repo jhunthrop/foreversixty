@@ -45,11 +45,11 @@ sources:
 
 ## Overview
 
-Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Serpent Sting rolling, Arcane Shot in the gaps. In a raid, no pet: Lone Wolf.
+Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Sniper Shot in a raid, Serpent Sting rolling. In a raid, no pet: Lone Wolf.
 
 ### Strengths
 
-- Barrage, Mortal Shots and Ranged Weapon Specialization all boost Aimed Shot and Multi-Shot, your biggest shots
+- Barrage, Mortal Shots and Ranged Weapon Specialization all boost Aimed Shot and Multi-Shot, the shots on your shared cooldown
 - No pet to keep alive in a raid: Lone Wolf puts 20% on everything you do instead
 - Improved Tracking adds 5% damage against most raid bosses, whenever you track the boss's type
 - Careful Aim turns Intellect into attack power
@@ -66,10 +66,10 @@ Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shar
 
 ## Talents and builds
 
-There are two builds. You level with the pet: thirty points in Marksmanship take the talents that raise your big shots and your auto shot, sixteen in Beast Mastery take the pet talents and Deadly Aspects, and five in Survival take Improved Tracking. At 60, for raids, the pet goes: thirty-three points in Marksmanship add Lone Wolf and the rest of Improved Stings, five in Beast Mastery keep Deadly Aspects, and thirteen in Survival take Improved Tracking, Survivalist and Surefooted.
+There are two builds. You level with the pet: thirty-one points in Marksmanship take the talents that raise your big shots and your auto shot, plus Rapid Killing for a shorter Rapid Fire and Rapid Recuperation to keep your mana coming back while you shoot; fifteen in Beast Mastery take Deadly Aspects and the pet talents, and five in Survival take Improved Tracking. At 60, for raids, the pet goes: thirty-three points in Marksmanship trade Rapid Killing and Rapid Recuperation for Lone Wolf, Sniper Shot, the last two ranks of Barrage and two points of Improved Stings, five in Beast Mastery keep Deadly Aspects, and thirteen in Survival take Improved Tracking, Survivalist and Surefooted.
 
 - **Mortal Shots** (5 points): your shot crits hit for 230% of a normal hit instead of double
-- **Barrage** (3 points): 15% more damage on Multi-Shot, Aimed Shot and Volley
+- **Barrage** (3 points in the raid build): 15% more damage on Multi-Shot, Aimed Shot and Volley, 5% with the 1 point you level with
 - **Ranged Weapon Specialization** (5 points): 5% more damage on everything your bow or gun does, auto shot included
 - **Careful Aim** (5 points): attack power equal to your Intellect
 - **Lethal Attacks** (5 points): 5% crit on every attack
@@ -77,12 +77,15 @@ There are two builds. You level with the pet: thirty points in Marksmanship take
 - **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
 - **Improved Tracking** (5 points): 5% more damage against the creature type you are tracking
 - **Lone Wolf** (1 point, raid build): 20% more damage with every attack while no pet is out, in the raid build
-- **Improved Stings** (3 points in the raid build): 6% more Serpent Sting damage with the 1 point you level with, 20% with all 3 in the raid build
+- **Improved Stings** (2 points, raid build): 13% more Serpent Sting damage
 - **Surefooted** (3 points, raid build): 3% hit in the raid build
+- **Sniper Shot** (1 point, raid build): weapon damage plus 590 at rank 3 on a 4 second cast and its own 15 second cooldown, the hardest hit you have
+- **Rapid Killing** (2 points, leveling build): two minutes off Rapid Fire, and your next shot after a kill hits 20% harder
+- **Rapid Recuperation** (2 points, leveling build): after your Serpent Sting lands, half your mana regeneration keeps running while you cast for 15 seconds, all of it once Rapid Killing is spent
 
 Improved Tracking only works while you track the target's type, and Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead. Most raid bosses are one of those; the boss's tooltip names its type, and on a boss of any other type the talent does nothing. Set it before the pull, and swap on trash with mixed types.
 
-In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull, and the leveling build keeps its talents. Sniper Shot, the capstone, costs a point you would take from elsewhere in either build, and its 4 second cast holds your auto shot twice as long as Aimed Shot, so neither build takes it.
+In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Sniper Shot, the last ranks of Barrage, Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. Sniper Shot, the capstone, is your biggest shot: weapon damage plus 590 at rank 3, on its own 15 second cooldown. Its 4 second cast holds your auto shot twice as long as Aimed Shot, so it goes out right after an auto shot leaves, the same as Aimed Shot. While leveling, keep the pet: it holds what you pull, the leveling build keeps its talents, and the leveling build puts its Marksmanship points into Rapid Killing and Rapid Recuperation where the raid build has Sniper Shot.
 
 ## Rotation and priority
 
@@ -90,7 +93,7 @@ Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet ou
 
 On the pull, press Rapid Fire with your trinkets and your racial (Elune's Light, Berserking or Blood Fury), just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
-Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: it outhits Multi-Shot whenever the cast fits. If you are partway to your next auto shot, take Multi-Shot instead, so the cast never holds your auto. Keep Serpent Sting rolling and refresh it only as it runs out. Fill the gaps with Arcane Shot while you are above a quarter of your mana.
+Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: it outhits Multi-Shot whenever the cast fits. If you are partway to your next auto shot, take Multi-Shot instead, so the cast never holds your auto. With the raid build, Sniper Shot comes next: when it is ready and the shared cooldown is not, cast it right after an auto shot fires, never partway to the next one. Keep Serpent Sting rolling and refresh it only as it runs out. Fill the gaps with Arcane Shot while you are above a quarter of your mana.
 
 Auto Shot does more damage than any button you press, so protect it:
 
@@ -99,7 +102,7 @@ Auto Shot does more damage than any button you press, so protect it:
 - Stay outside 8 yards. Inside it you cannot shoot at all.
 - On a movement phase, fire Arcane Shot and Multi-Shot on the run and plant your feet the moment you can.
 
-When mana gets low, stop Arcane Shot first, then Serpent Sting, and keep Aimed Shot and Multi-Shot going. Drink a Major Mana Potion before you need it.
+When mana gets low, stop Arcane Shot first, then Serpent Sting, and keep Aimed Shot, Multi-Shot and Sniper Shot going. Drink a Major Mana Potion before you need it.
 
 **The pet.** Level with a cat and train it the top ranks of Claw, Bite and Growl as you go. In a raid with the raid build, leave it dismissed. If you raid with the leveling build instead, turn off Growl (right-click it on the pet bar) and send the cat to the boss's back.
 
@@ -147,13 +150,13 @@ Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more st
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 
-Your first five points go into Lethal Attacks, 1% crit on every attack per point. Improved Stings at 15 adds 6% to Serpent Sting, and Efficiency from 16 cuts the mana cost of your shots and stings by 3% a point, which is fewer drinking breaks.
+Your first five points go into Lethal Attacks, 1% crit on every attack per point. Efficiency from 15 cuts the mana cost of your shots and stings by 3% a point, which is fewer drinking breaks.
 
 Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.
 
 ### Levels 20 to 60
 
-Marksmanship levels well, a little slower than Beast Mastery because more of the work is yours. Keep a pet out all the way: it holds what you pull while you shoot. Switch to the raid build and dismiss the pet when you start raiding at 60.
+Marksmanship levels well, a little slower than Beast Mastery because more of the work is yours. Keep a pet out all the way: it holds what you pull while you shoot. Switch to the raid build and dismiss the pet when you start raiding at 60. Rapid Killing at 25 and 26 takes two minutes off Rapid Fire, which you train at 26, so you have it for most hard pulls, and Rapid Recuperation at 33 and 34 keeps your mana coming back while you shoot, once your Serpent Sting is on the target.
 
 Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out of the 8 yard dead zone. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 

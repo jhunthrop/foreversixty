@@ -251,7 +251,7 @@
         }
       },
       {
-        "notes": "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left. Rank 10 costs 220 mana to rank 9's 190 for about 20% more base damage, so you spend the spare mana on it and drop to rank 9 as soon as you fall behind.",
+        "notes": "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left. Rank 10 costs 220 mana to rank 9's 190 for about 20% more base damage, so you spend the spare mana on it and drop to a cheaper rank as soon as you fall behind. In a raid you never need to.",
         "action": {
           "condition": {
             "cmp": {
@@ -273,7 +273,7 @@
         }
       },
       {
-        "notes": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry. Below 60, and without raid buffs, a lower rank does more in total for the same reason.",
+        "notes": "Lightning Bolt for everything else. In a raid cast rank 10 here too: raid buffs carry its mana so close to the end that the bigger bolt is worth it. Without raid buffs a cheaper rank, rank 8 at 60 and lower while leveling, so a long fight never runs you dry and you do more in total.",
         "action": {
           "castSpell": {
             "spellId": {

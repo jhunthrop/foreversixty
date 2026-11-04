@@ -135,7 +135,7 @@
         }
       },
       {
-        "notes": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+        "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute. Improved Bloodrage adds a quarter with the raid build's one point, half again with the level 60 build's two.",
         "action": {
           "condition": {
             "cmp": {
@@ -204,7 +204,7 @@
         }
       },
       {
-        "notes": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits.",
+        "notes": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -226,6 +226,7 @@
         }
       },
       {
+        "notes": "On cooldown after Mortal Strike, raid build only: your swings for the next 8 seconds each bring 5 more rage. Costs a quarter of your base health.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -280,6 +281,7 @@
         }
       },
       {
+        "notes": "On a free global in Battle Stance, raid build only: 75% weapon damage, twice that on dragons and giants.",
         "action": {
           "castSpell": {
             "spellId": {
