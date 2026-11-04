@@ -1,0 +1,127 @@
+# Guide accuracy round 1: Warrior
+
+Audited on origin/main 64168181f, client 1.60.1.70755, engine pin 2eaae03c6. Files: `web/src/content/guides/warrior/{index,arms,fury,protection}.md`. Round 14 (`int/r14`) checked for every finding.
+
+## Builds decoded (talents in `talents/warrior.json` array order, which is tier then column; all four are legal on 70755: 51 points, every tier gate and prerequisite met)
+
+**Arms `build`** `13323213032215201/0505/205`
+- Arms 34: Improved Heroic Strike 1, Deflection 3, Improved Rend 3, Improved Charge 2, Improved Tactical Mastery 3, Improved Overpower 2, Anger Management 1, Deep Wounds 3, Two-Handed Weapon Specialization 3, Impale 2, Bloodthrill 2, Sweeping Strikes 1, Weaponmaster 5, Improved Slam 2, Mortal Strike 1
+- Fury 10: Cruelty 5, Unbridled Wrath 5
+- Protection 7: Improved Bloodrage 2, Iron Will 5
+
+**Arms `raidBuild`** `34323213032215201/0505002/2`
+- Arms 37: as above but Improved Heroic Strike 3, Deflection 4
+- Fury 12: Cruelty 5, Unbridled Wrath 5, Blood Craze 2
+- Protection 2: Improved Bloodrage 2
+
+**Fury `build`** `30323013002/051531025120100231/2`
+- Arms 17: Improved Heroic Strike 3, Improved Rend 3, Improved Charge 2, Improved Tactical Mastery 3, Anger Management 1, Deep Wounds 3, Impale 2
+- Fury 32: Cruelty 5, Lingering Rage 1, Unbridled Wrath 5, Furious Precision 3, Piercing Howl 1, Enrage 2, Dual Wield Specialization 5, Reckless Swings 1, Improved Execute 2, Death Wish 1, Improved Whirlwind 2, Flurry 3, Bloodthirst 1
+- Protection 2: Improved Bloodrage 2
+
+**Protection `build`** `35300003/0/250533120330001351`
+- Arms 14: Improved Heroic Strike 3, Deflection 5, Improved Rend 3, Deep Wounds 3
+- Protection 37: Improved Bloodrage 2, Shield Specialization 5, Anticipation 5, Improved Revenge 3, Improved Thunder Clap 3, Last Stand 1, Master of Defense 2, Defiance 3, Improved Sunder Armor 3, Concussion Blow 1, Focused Rage 3, Bastion 5, Shield Slam 1
+
+Every talent the prose names is in the matching build at the stated points, and every talent description quoted (Bloodthrill 2/20%, Improved Tactical Mastery 3/+15, Two-Handed Spec 6%, Flurry 3/30%, Improved Slam -5 s cd and -0.5 s cast, Improved Whirlwind, Reckless Swings, Enrage 2 = 4%, Furious Precision 10%, Improved Execute -5) matches the 70755 tree. No Raging Blows, Improved Cleave or other removed talent is named anywhere. Spell levels, costs and cooldowns quoted (Execute 15, Whirlwind 25/10 s at 36, Berserker Stance 30, Defensive Stance and Taunt 10, Shield Block 16 and 7 s/5 s, Shield Wall 60%/12 s/15 min, Sweeping Strikes 20 s, Recklessness 30 min, Death Wish 3 min, Charge 15 rage at rank 3, Slam 1.5 s cast/15 s cd, Tactical Mastery 10 at 14, Victory Rush 20) match `trainables/warrior.json` and `spellconst/warrior.json`. Racials quoted (Ruthless 1% crit, Blood Fury 10% AP 15 s/2 min, Berserking 10% speed 15 s/3 min, Endurance 5% health, Quickness dodge) match `races.json`. Every race plus both Skyborne can be a warrior (`combos.json`).
+
+## Findings
+
+| id | status | kind | file:line | wrong claim | evidence | fix | r14 |
+|---|---|---|---|---|---|---|---|
+| WARRIOR-1 | CONFIRMED | rotation | fury.md:82 | "a Charge without it comes out even once you have paid the global to swap back out of Battle Stance" | Stance changes have no global cooldown: `spellconst/warrior.json` 2457/2458 `gcd_ms 0` (1 s category cooldown only). With Improved Tactical Mastery 3/3 the swap keeps 25 rage, so a 21 rage Charge survives it whole. The real reasons are the Bloodrage combat flag (29131 aura 94) and that Improved Bloodrage is 30 rage against Charge's 21. | "Stay in Berserker Stance and walk in. The Bloodrage has already put you in combat, so there is no Charge to take, and with Improved Bloodrage it brings more rage than a Charge would. On trash and while leveling, Charge or Intercept in freely." | not fixed (r14 reads "a stance dance only costs you globals", still wrong) |
+| WARRIOR-2 | CONFIRMED | stats | protection.md:21, :106 | statPriority "Expertise"; "Expertise stops the boss dodging and parrying you" | Expertise does not exist on Forever gear: no item in `items/warrior.json` (8,845 items) has an expertise stat. Gear gives weapon skill instead (14 items with "Increased Axes +7..." effect text, e.g. Edgemaster's Handguards 14551; engine `sim/core/character.go:284` applyWeaponSkills). The stat table then shows a row a player cannot gear for. | Drop `Expertise` from statPriority. Prose: "Weapon skill from gear like Edgemaster's Handguards stops the boss dodging and parrying you. That is threat and rage, not survival." | not fixed |
+| WARRIOR-3 | LIKELY | stats | protection.md:106 | "Defense also lowers the chance to be crit and crushed" | A level 63 boss's crushing blow chance is set by the level gap, and defense from gear does not move it. Engine agrees: `sim/core/target.go:514` BaseCrushChance is level-only. Only filling the table with Shield Block, dodge, parry, block and miss pushes crushes off. | "Defense also lowers the chance to be crit. Crushing blows do not care about defense; Shield Block on top of your dodge, parry and block is what pushes them off the table." | not fixed |
+| WARRIOR-4 | LIKELY | gear / stale | fury.md:102 | "every off-hand swing is rage, so a weak off hand costs you twice" | Forever normalizes rage per landed swing by weapon speed, not damage (owner 2026-10-07, engine `sim/core/rage.go:67-100`, 3.46 x speed one-hand, off hand x0.5). Rage per second from the off hand is the same whatever its damage, so a weak off hand costs damage, not rage. | "Both hands matter. The main hand carries Heroic Strike and the off hand swings all fight behind Flurry. Your rage comes from how often you land, not how hard you hit, so off-hand hit is rage and off-hand damage is damage." | not fixed |
+| WARRIOR-5 | LIKELY | stale | index.md:22, :24-33 | "a rage bar that fills from the hits you land and the hits you take"; What changed from 1.12 has no rage line and no Slam line | Normalized rage is the biggest warrior change from 1.12 (memory forever-rage-normalization-gap, engine `rage.go`). Slam now has a 15 s cooldown and a level 20 rank 1 (`trainables/warrior.json` Slam cd 15000, rank 1 1240193 at 20), changed again by 70755 via Improved Slam. | Add two bullets: "**Rage** comes from each swing you land, by your weapon's speed, not by how hard it hits, and a critical swing brings more. Hit and haste fill the bar; a bigger weapon only makes the hits bigger." and "**Slam** has a 15 second cooldown, and Improved Slam takes it to 10 with a one second cast that no longer resets your swing." (crit multiplier left unquoted until the owner confirms 75% vs 100%) | not fixed |
+| WARRIOR-6 | CONFIRMED | talent | fury.md:78 | "two in Improved Charge: 6 more rage from every Charge on trash, in dungeons and out in the world" (offered as the reason) | Without Improved Charge the Arms points below tier 3 are 13 (IHS 3 + IR 3 + ITM 3 + AM 1 + DW 3); Impale needs 15. The two points are the way to Impale; the Charge rage is a side effect the raid pull never uses (the same guide tells you not to Charge a raid boss). | "...and two in Improved Charge, which is what gets you down to Impale; the extra Charge rage on trash and out in the world comes free." | not fixed |
+| WARRIOR-7 | CONFIRMED | rotation | arms.md:49 | "Sweeping Strikes and Whirlwind hit up to four targets on trash" | Sweeping Strikes: "Your next 5 melee attacks strike an additional nearby opponent" (talents/warrior.json); one extra target. Whirlwind hits up to four (engine `whirlwind.go:75`). | "Sweeping Strikes copies five hits onto a second target and Whirlwind hits up to four, so trash packs go down fast" | not fixed |
+| WARRIOR-8 | LIKELY | rotation / voice | arms.md:89 | "Execute every global until the boss dies. Mortal Strike still works in Berserker Stance and goes before Execute with raid buffs" | The two sentences contradict each other. APL line 6 keeps Mortal Strike above Execute (its notes: Execute ahead of Mortal Strike lost with raid buffs, won bare). | "...press Recklessness. From there Mortal Strike on cooldown and Execute on every other global until the boss dies; in a dungeon without raid buffs, Execute goes first. Overpower and Rend do not work in Berserker Stance, so stay put." | not fixed |
+| WARRIOR-9 | LIKELY | rotation | fury.md:90 | "Press it at the pull only when a second one still fits before the boss dies; otherwise hold it for the execute phase." | APL line 2 also fires Death Wish in the last 30 s when the execute phase is short; the guide covers that only for Recklessness. | "...otherwise hold it for the execute phase, or for the last 30 seconds when that phase will be shorter than the buff." | not fixed |
+| WARRIOR-10 | LIKELY | talent / rotation | fury.md:61-78, :82-94 | Berserker Rage never appears; the build skips Improved Berserker Rage | Fury raids live in Berserker Stance, and Berserker Rage (18499, trained at 30, 30 s cd) is the fear break for Magmadar, Onyxia and Nefarian. Improved Berserker Rage (Fury tier 4, 2 points: 10 rage per cast) is modeled (engine `berserker_rage.go`, 5 rage per point). Legal swap: Lingering Rage 1 + Piercing Howl 1 into Improved Berserker Rage 2 (tier 3 still has Cruelty 5 + Unbridled Wrath 5 + Furious Precision 3 + Enrage 2 = 15). Value needs a sim. | At least add under Cooldowns: "Berserker Rage breaks fear and keeps you immune for 10 seconds: hold it for Magmadar's Panic, Onyxia's Bellowing Roar and Nefarian's fear, and Death Wish covers you the same way." Talent change pending NEEDS-SIM S2. | not fixed |
+| WARRIOR-11 | LIKELY | gear / stats | arms.md:97, fury.md:98 | Stat prose never mentions weapon skill | Forever dropped every racial weapon skill (races.json: Human has Ruthless, Will to Survive, Perception, Human Spirit; Orc's axe bonus removed), so weapon skill only comes from gear (Edgemaster's Handguards 14551 and the 13 other weapon-skill items in `items/warrior.json`). Against a level 63 boss it cuts glancing-blow loss and misses; every top Classic warrior chases it. | Add to both: "Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses." | not fixed |
+| WARRIOR-12 | LIKELY | consumable / profession | arms.md:111, fury.md:114, protection.md:120 | "Engineering is the PvP choice for its grenades" (Arms, Fury); "Engineering adds grenades for add pickups" (Prot) | Goblin Sapper Charge and Dense Dynamite are in Forever (`simconsumes.json` lines 3487, 4947). Engineering is a raid damage profession for warriors, not only PvP. | Arms and Fury: "Engineering is the other pick: Goblin Sapper Charges and Dense Dynamite on every trash pack, and grenades in PvP." | not fixed |
+| WARRIOR-13 | NEEDS-OWNER | talent | protection.md:86-88 | Improved Shield Wall is never mentioned | Improved Shield Wall (Prot tier 4, 2 points): "Reduces the cooldown of your Shield Wall ability by 11.0 min", so a 60%/12 s Shield Wall every 4 minutes instead of 15. That is a progression tank talent a top tank would at least list. A legal way in: Improved Thunder Clap 3 to 1 (Prot tier 2 still has 16 points below it). | Situational line: "Take **Improved Shield Wall** for progression, a Shield Wall every 4 minutes instead of 15, out of two points of Improved Thunder Clap." | not fixed |
+| WARRIOR-14 | LIKELY | race | protection.md:116 | "Dwarf and Tauren are the tank picks" (no reason for Dwarf) | races.json Dwarf: Stoneform takes 10% off physical damage for 8 s on a 3 min cooldown (and clears bleeds and poisons), Artisan's Precision 1% hit. | "Dwarf's Stoneform takes 10% off physical damage for 8 seconds every 3 minutes and clears bleeds and poisons, a small Shield Wall you can press on demand. Tauren's Endurance is 5% more health. Night Elf's Quickness adds 1% dodge." | not fixed |
+| WARRIOR-15 | LIKELY | voice | protection.md:124 | "the Protection tables above show the build for each level range" | Page-furniture talk ("tables above"); a top player would say what to take. The strip above it is cut from this build (`lib/guides/leveling-builds.ts`). | "If you level as the group's tank, take Shield Specialization and Anticipation first, then Improved Revenge and Defiance; Concussion Blow and Shield Slam come at 40." | not fixed |
+| WARRIOR-16 | NEEDS-OWNER | voice | arms.md:79, fury.md:78, protection.md:88 | "Open the [planner](/planner?class=warrior) to see ... point by point" | A link to a site tool inside the guide text. `_prose.test.ts` allows link targets, but the owner's voice rule bans mentioning the site. | Owner call: keep the links, or drop the sentence (the build trees already render on the page). | not fixed |
+
+## Checked and clean
+
+- Arms opener (Charge, Battle Shout from the Charge's rage, Bloodrage as the first swing lands) matches the APL prepull and the client: Bloodrage's 29131 carries aura 94 (in combat), so a Bloodrage before the Charge loses the Charge. Fury and Protection open with Bloodrage and Battle Shout at -2.5 s / -1.5 s, matching their APLs.
+- Rotation thresholds match the APLs: Arms Heroic Strike at 90+, Bloodrage under 80, Hamstring only under Windfury and never from 25%, the Berserker swap after the first Execute at 25 rage or less; Fury Heroic Strike at 60+ and none from 25%, Execute first at 20%, Reckless Swings behind Whirlwind, no Hamstring (APL notes: Hamstring under Windfury lost at every threshold); Protection Shield Block, Revenge, Shield Slam, Thunder Clap refresh at 3 s, Sunder filler, Heroic Strike above 40, Last Stand under 35%, Shield Wall under 40%.
+- Reckless Swings "four white swings": the aura's ProcTypeMask is 0x4 (auto attack only), so Heroic Strike swings do not use charges; the guide's wording is right.
+- Whirlwind with both weapons is right for Forever (off-hand strike 462891). Thunder Clap in Defensive Stance and up to four targets match the engine.
+- Stat-priority prose (hit first, then crit, Strength = 2 AP) agrees with the level 60 weights in `bis/warrior-{arms,fury}.json` (hit > crit > Strength > Agility > AP). The frontmatter order differs, but the page re-sorts the pills and table by the weights (`[spec].astro:211`), so only the set matters.
+- No em or en dashes, no quoted nightly numbers, no sim/search/APL/preset/band talk in any warrior file.
+- No sub-40 plate in any warrior BiS band under 40.
+
+## Sim findings
+
+- **S1 (also on r14: fixed).** Protection APL on main has no Demoralizing Shout line, while protection.md:96 (and the owner's round 14 ruling: tanks keep Demoralizing Shout up) says to keep it on the boss. int/r14 adds the line (204 AP at 60, which matches 11556's -196 plus -1.4 per level over 54).
+- **S2 (NEEDS-SIM).** Fury at 60, raid and bare: Lingering Rage 1 + Piercing Howl 1 moved into Improved Berserker Rage 2, with Berserker Rage cast on cooldown under 80 rage (it costs a 1.5 s global). Does it gain beyond error and 1%?
+- **S3 (NEEDS-SIM).** Arms raid build: one point of Deflection into Spearing Strike (75% weapon damage, plus 75% more against Giants and Dragonkin, 15 rage, 20 s cd), cast when Mortal Strike and Overpower are down, against a Dragonkin target (Onyxia, the BWL drakes, Chromaggus, Nefarian) and against a plain humanoid. Worth a slot on dragon fights?
+- **S4 (NEEDS-SIM, low).** Arms raid build spends 4 points in Deflection and 3 in Improved Heroic Strike, while Heroic Strike only fires above 90 rage. Is any legal Arms or Fury alternative (Improved Hamstring, Booming Voice, Spearing Strike) worth more than the third Improved Heroic Strike point?
+
+## Owner questions
+
+1. **Arms opener.** You asked for a pre-pull Bloodrage. The client puts Bloodrage's self-buff in combat (29131 aura 94), so a Bloodrage before the pull costs the Charge; the guide now Charges, shouts with the Charge's rage and Bloodrages as the first swing lands. Keep that, or switch Arms to the Fury-style pull (Bloodrage and Battle Shout before the tank pulls, walk in, no Charge)?
+2. **Expertise row (WARRIOR-2).** Drop Expertise from the Protection stat set, or relabel the engine's expertise as weapon skill everywhere players see it?
+3. **Improved Shield Wall (WARRIOR-13).** Put it in the Protection build, or only in the situational line?
+4. **Rage crit bonus (WARRIOR-5).** 75% or 100% on a critical swing? The engine uses double; the guide stays unquoted until you confirm it.
+5. **Planner links (WARRIOR-16).** Allowed in guide text or not?
+
+## Ad-review claim (checked by the integrator)
+- AD-2, REJECTED as a guide error: "the Fury rotation card's opener is Bloodrage, Death Wish, Recklessness". The guide's Opener card prints only the pre-pull casts (web/src/lib/guides/rotation-lists.ts:207-224): Bloodrage at -2.5 s, then Battle Shout at -1.5 s if no shout is up (data/curated/apl/warrior-fury.json prepullActions; same on land/r14-70755). Bloodrage, Death Wish and Recklessness are the unnumbered Cooldowns card (every line with a cooldown of 30 s or more). That is how a top Fury player pulls a boss: Bloodrage and shout before the pull, no Charge, Death Wish at the pull only when a second one fits (APL: 210 s or more left, i.e. 30 s plus the 3 minute cooldown), otherwise held for the execute; Recklessness saved for 20% or the last 15 s. fury.md:82 and :90 say the same. No APL bug. The card's presentation (a reader can take the Cooldowns list for an order) is a UX note, not an accuracy finding.
+
+## Fix log
+
+Branch gr1/warrior, commit 93e75cd96 (off ff0f466b0, round 14 landed). Line numbers are after the fix. No r14 regressions found (build stamps 70755, source labels, talent values, no removed talents).
+
+- WARRIOR-1: fixed (fury.md:82). Verified myself: spellconst 2457/2458/71 `gcd_ms 0`, category cd 1 s; Bloodrage 2687 + 29131 = 20 rage, 30 with Improved Bloodrage 2/2, Charge rank 3 15 + Improved Charge 6 = 21.
+- WARRIOR-2: fixed (protection.md:8-22 statPriority drops Expertise; protection.md:106 prose says weapon skill). Only "expertise" hit in items/warrior.json is the item name Hammer of Expertise.
+- WARRIOR-3: fixed (protection.md:106). Engine `sim/core/target.go:514` BaseCrushChance is level-only.
+- WARRIOR-4: fixed (fury.md:102). Engine `sim/core/rage.go` normalizedSwingRage: speed x 3.46/4.50, off hand x0.5, no damage term.
+- WARRIOR-5: fixed (index.md:28-29). Crit multiplier left unquoted (owner question 4). Slam cd 15000 in trainables; Improved Slam 2/2 -5 s cd, -0.5 s cast, no swing delay in talents.
+- WARRIOR-6: fixed (fury.md:78).
+- WARRIOR-7: fixed (arms.md:49). Sweeping Strikes: "next 5 melee attacks strike an additional nearby opponent".
+- WARRIOR-8: fixed (arms.md:89). APL arms line 6 Mortal Strike above line 7 Execute.
+- WARRIOR-9: fixed (fury.md:90). APL fury line 2 includes remainingTime <= 30s.
+- WARRIOR-10: fixed, prose only (fury.md:90). 18499 spellconst: 10 s, aura 77 mechanic immunity incl. fear (misc 5), 30 s cd, trained at 30. Talent swap left to S2.
+- WARRIOR-11: fixed (arms.md:97, fury.md:98). races.json: no Forever racial carries weapon skill (Orc axe bonus and Savage removed); Edgemaster's Handguards in items/warrior.json.
+- WARRIOR-12: fixed (arms.md:111, fury.md:114, protection.md:120). Goblin Sapper Charge and Dense Dynamite in simconsumes.json.
+- WARRIOR-13: left (NEEDS-OWNER; the text states nothing the data contradicts).
+- WARRIOR-14: fixed (protection.md:116). races.json Dwarf Stoneform 10% physical, 8 s, 3 min, clears bleed/poison/disease; Night Elf Quickness 1% dodge.
+- WARRIOR-15: fixed (protection.md:124). Shield Specialization tier 0, Anticipation tier 1, Shield Slam tier 6 (30 points) in talents/warrior.json.
+- WARRIOR-16: left (NEEDS-OWNER: planner links).
+- statPriority (brief rule): Arms and Fury reordered to the band 60 raid weights in bis/warrior-{arms,fury}.json (per-point: Hit, Crit, Strength, Agility, AP; Melee haste is per-1% so it sorts after). Protection reordered to bis/warrior-protection.json band 60 raid (Defense, Dodge, Agility, Parry, Stamina, Block value, Strength, Crit, AP, Armor, then the insignificant Hit and Block); Expertise dropped.
+
+Confirmed (CONFIRMED + verified LIKELY fixed): 14 fixed (WARRIOR-1..12, 14, 15). Left: WARRIOR-13, WARRIOR-16 (owner). AD-2 rejected, no change.
+
+### SIM findings and build proposals (no build strings changed)
+- S2: Fury, Lingering Rage 1 + Piercing Howl 1 into Improved Berserker Rage 2, Berserker Rage on cooldown under 80 rage.
+- S3: Arms raid, 1 Deflection into Spearing Strike on Dragonkin fights.
+- S4: Arms raid, third Improved Heroic Strike point against Improved Hamstring, Booming Voice or Spearing Strike.
+- WARRIOR-13 (if the owner wants it in the build): Protection, Improved Thunder Clap 3 to 1 into Improved Shield Wall 2; tank-score sim needed.
+- Engine/owner: the bis weights carry an `expertise` stat for all three warrior specs while no Forever item has expertise; the engine should map it to weapon skill or drop it (owner question 2).
+
+## Fix pass 2
+
+MUSTs:
+- Expertise cap footnotes (Arms/Fury/Prot stat tables): left, R2 (component-rendered).
+- Protection Stamina line: fixed, protection.md:106. Now leads with Defense, dodge and parry, then Agility, then Stamina as the buffer that buys healers reaction time, matching statPriority order.
+- Protection leveling "Shield Slam ... last thing you reach": fixed, protection.md:124. addon-builds.json warrior-protection order puts Shield Slam [3,7,2] at the 31st point (level 40), followed by Focused Rage 3, Bastion 5, then Improved Heroic Strike, Deflection, Improved Rend, Deep Wounds in Arms.
+- Planner links: left, R1.
+- Fury Enrage "Two points fill out the row": fixed, fury.md:72 (any damaging attack rolls it: cleaves, raid damage, dungeon pulls). Talent data: rank 2 = 30% chance, 4%, 12 sec.
+
+SHOULDs done:
+- Fury Piercing Howl / Lingering Rage apology: fury.md:78, now says what each buys (10 yd daze for 6 sec; rage held 10 sec longer after combat).
+- Fury Improved Rend reads as the toll to Deep Wounds, Fury never casts Rend: fury.md:74.
+- Arms Iron Will: arms.md:77, "takes 15% off every stun and fear on you" (rank 5 = 15%).
+- "until the cap above" to "until you reach the hit cap": arms.md:97, fury.md:98.
+- Arms "everything on the list" named: arms.md:103 (Elixir of the Mongoose, R.O.I.D.S., Winterfall Firewater, Smoked Desert Dumplings; all in simconsumes.json).
+- Arms Execute card note: warrior-arms.json:229, notes only; first Execute spends the bar, then shares globals with Mortal Strike (the action keeps Mortal Strike ahead, per the round-11 measurement).
+- Index "Bloodrage at the pull" vs Arms Charge-first: index.md:22, now "Charge or Bloodrage to start the fight with some".
+- Protection Challenging Shout: protection.md:102, one line (whole pack on the healers; 6 sec, 10 min cooldown per spellconst 1161; Thunder Clap and Sunder before it ends).
+
+New SIM findings: none.
