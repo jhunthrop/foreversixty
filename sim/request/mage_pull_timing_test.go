@@ -1,7 +1,9 @@
 package request
 
 import (
+	"fmt"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -156,4 +158,69 @@ func TestArcanePresenceOfMindLinesCheckTheTalent(t *testing.T) {
 			t.Errorf("line %d reads Presence of Mind's aura without spellIsKnown(%d)", i, presenceOfMind)
 		}
 	}
+}
+
+// A line that reads a talent's aura must check the talent: the engine drops an
+// auraIsActive on an aura it never registered, and an and with nothing left in
+// it, so the line would fire on every global. Arcane's Missile Barrage line was
+// the bare auraIsActive(400589): every band 20 Arcane mage (Missile Barrage
+// comes at 22) cast Arcane Missiles on every global, by accident.
+func TestMageTalentAuraLinesCheckTheTalent(t *testing.T) {
+	talentAuras := []int{400589, 12043, 400669, 400625}
+	for _, spec := range []string{"mage-arcane", "mage-fire", "mage-frost"} {
+		curated, err := loadLadderCurated(repoRoot, spec)
+		if err != nil {
+			t.Fatal(err)
+		}
+		rot := &proto.APLRotation{}
+		if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+			t.Fatal(err)
+		}
+		for i, item := range rot.PriorityList {
+			cond := protojson.Format(item.GetAction().GetCondition())
+			for _, id := range talentAuras {
+				reads := strings.Contains(compact(cond), fmt.Sprintf(`"auraIsActive":{"auraId":{"spellId":%d`, id))
+				checks := strings.Contains(compact(cond), fmt.Sprintf(`"auraIsKnown":{"auraId":{"spellId":%d`, id)) ||
+					strings.Contains(compact(cond), fmt.Sprintf(`"spellIsKnown":{"spellId":{"spellId":%d`, id))
+				if reads && !checks {
+					t.Errorf("%s line %d reads aura %d without checking the talent", spec, i, id)
+				}
+			}
+		}
+	}
+}
+
+// Before Missile Barrage (levels 20 and 21 on the leveling order, and band 20's
+// whole build) Arcane Missiles is the Arcane mage's best spell on a long fight,
+// ahead of Arcane Blast. That stays an explicit line now that the Barrage line
+// checks its talent.
+func TestArcaneCastsMissilesBeforeMissileBarrage(t *testing.T) {
+	curated, err := loadLadderCurated(repoRoot, "mage-arcane")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	blast := -1
+	missiles := -1
+	for i, item := range rot.PriorityList {
+		a := item.GetAction()
+		id := a.GetCastSpell().GetSpellId().GetSpellId()
+		if id == 1239700 && blast < 0 {
+			blast = i
+		}
+		cond := compact(protojson.Format(a.GetCondition()))
+		if id == 10212 && cond == `{"not":{"val":{"auraIsKnown":{"auraId":{"spellId":400589}}}}}` {
+			missiles = i
+		}
+	}
+	if missiles < 0 || blast < 0 || missiles > blast {
+		t.Fatalf("want an Arcane Missiles line gated on not knowing Missile Barrage ahead of Arcane Blast; missiles %d, blast %d", missiles, blast)
+	}
+}
+
+func compact(s string) string {
+	return strings.Join(strings.Fields(s), "")
 }

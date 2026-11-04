@@ -5,7 +5,7 @@
   "expected_idle": [
     {
       "id": 11294,
-      "reason": "Sinister Strike is the builder only for a rogue without Mutilate (its line is gated on Mutilate being unknown); from the rung where the talent is taken, Mutilate builds every combo point and Sinister Strike is idle by design."
+      "reason": "Sinister Strike is the builder only for a rogue without Mutilate and without a dagger in the main hand (its line is gated on Mutilate being unknown and on Backstab being uncastable); with a dagger, Backstab builds until Mutilate, and from the rung where Mutilate is taken it builds every combo point, so Sinister Strike is idle by design."
     },
     {
       "id": 11300,
@@ -204,7 +204,7 @@
             }
           }
         },
-        "notes": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever."
+        "notes": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and its ticks can crit in Forever."
       },
       {
         "action": {
@@ -268,7 +268,7 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 11294,
+              "spellId": 11281,
               "rank": 8
             }
           },
@@ -285,7 +285,61 @@
             }
           }
         },
-        "notes": "Sinister Strike only before you have Mutilate."
+        "notes": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 11294,
+              "rank": 8
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "spellIsKnown": {
+                        "spellId": {
+                          "spellId": 1241584,
+                          "rank": 3
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "spellCanCast": {
+                        "spellId": {
+                          "spellId": 11281,
+                          "rank": 8
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentEnergy": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "60"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Sinister Strike before Mutilate only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you. With a dagger it waits for 60 energy or more, so it never takes the energy Backstab needs."
       }
     ]
   }

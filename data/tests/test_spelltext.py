@@ -362,6 +362,7 @@ def _proc_text(description: str, **fields) -> str:
         period_ms=0,
         radius=fields.pop("radius", None),
         chain_targets=fields.pop("chain_targets", 0),
+        misc_value=fields.pop("misc_value", 0),
     )
     row = SpellRow(
         description=description, duration_ms=None, icon_file_id=0, effects={0: effect}, **fields
@@ -413,3 +414,26 @@ def test_a_longer_token_is_never_read_as_a_shorter_one():
     # "$rap" is ranged attack power, not "$r" followed by "ap".
     assert _proc_text("${32+($rap*(5/100))}", range_max=30.0) == "${32+($rap*(5/100))}"
     assert _proc_text("$hp $HP", proc_chance=30) == "$hp $HP"
+
+
+def test_q_is_the_effects_misc_value():
+    """Rebirth rank 5 (20748): "restoring a dead target to life with 2200 health and $q
+    mana." Effect 0 (329, resurrect) carries the health as base points and the mana as
+    EffectMiscValue_0 (2800 on 1.60.1.70755); `$q` was left raw and the tooltip unreadable
+    (sim audit round 17)."""
+    spell = {"ID": "20748", "Description_lang": "with $s1 health and $q mana."}
+    misc = {"SpellID": "20748", "DurationIndex": "0", "SpellIconFileDataID": "0"}
+    effect = {
+        "SpellID": "20748",
+        "EffectIndex": "0",
+        "EffectBasePointsF": "2200",
+        "EffectAuraPeriod": "0",
+        "EffectMiscValue_0": "2800",
+    }
+    text = load_spell_text([spell], [misc], [effect], [])
+    assert text.describe(20748) == "with 2200 health and 2800 mana."
+
+
+def test_q_reads_its_own_effect_and_stays_raw_without_a_misc_value():
+    assert _proc_text("$q1 and $q2", misc_value=5) == "5 and $q2"
+    assert _proc_text("$q mana") == "$q mana"

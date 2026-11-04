@@ -110,6 +110,24 @@ func TestEquipmentReturnsTheRawBody(t *testing.T) {
 	}
 }
 
+// Base stats (strength, agility, stamina, ...) with their base and effective values: the
+// character statistics resource, read verbatim (sim audit round 17: Skyborne base stats).
+func TestStatisticsReturnsTheRawBody(t *testing.T) {
+	fs := newFixtureServer(t)
+	fs.json(http.MethodPost, "/token", http.StatusOK, map[string]any{"access_token": "tok", "expires_in": 3600})
+	fs.json(http.MethodGet, "/profile/wow/character/whitemane/thoradin/statistics?namespace=profile-classic1x-us",
+		http.StatusOK, map[string]any{"strength": map[string]int{"base": 120, "effective": 180}})
+
+	c := newTestClient(fs)
+	raw, err := c.Statistics(context.Background(), "us", "whitemane", "Thoradin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(raw), `"base":120`) {
+		t.Fatalf("raw = %s, want the verbatim statistics body", raw)
+	}
+}
+
 func TestSpecializationsReturnsTheRawBody(t *testing.T) {
 	fs := newFixtureServer(t)
 	fs.json(http.MethodPost, "/token", http.StatusOK, map[string]any{"access_token": "tok", "expires_in": 3600})

@@ -121,7 +121,7 @@ Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: 
 
 ## Professions
 
-Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning and Leatherworking pay for your leveling, and Blacksmithing makes melee weapons worth carrying before raid drops.
+Enchanting is the profession your best in slot list asks for. Molten Heart of the Mountain and Frozen Heart of the Mountain are Enchanting trinkets that bind on pickup, so nobody can make them for you. Heartseeker, the blacksmith's dagger in your off hand, binds when equipped, so buy one and do not train Blacksmithing for it. Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning pays for your leveling.
 
 ## Leveling
 

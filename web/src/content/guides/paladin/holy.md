@@ -104,7 +104,7 @@ Mana per 5 seconds keeps you casting, and you run out of mana long before you ru
 
 ## Professions
 
-Herbalism and Alchemy keep you in mana potions, Flasks of Distilled Wisdom and elixirs, which is most of what a healer spends gold on. Enchanting gives you the healing enchants yourself.
+Herbalism and Alchemy keep you in mana potions, Flasks of Distilled Wisdom and elixirs, which is most of what a healer spends gold on. Enchanting gives you the healing enchants yourself, and it is the only way to wear Dormant Heart of the Mountain, which binds when picked up.
 
 ## Leveling
 

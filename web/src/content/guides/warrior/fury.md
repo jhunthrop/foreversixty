@@ -115,7 +115,7 @@ The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% cri
 
 ## Professions
 
-Blacksmithing and Mining. Blacksmithing makes melee weapons and armor, and Mining feeds it. Engineering is the other pick: Goblin Sapper Charges and Dense Dynamite on every trash pack, and grenades in PvP.
+Enchanting is the one that changes your gear: Frozen Heart of the Mountain, and on the Alliance Molten Heart of the Mountain beside it, are bind-on-pickup trinkets only an enchanter can make. Blacksmithing makes melee weapons and armor, but the ones on your list bind when equipped, so buy them rather than train it. Engineering brings Goblin Sapper Charges and Dense Dynamite for every trash pack, and grenades in PvP.
 
 ## Leveling
 

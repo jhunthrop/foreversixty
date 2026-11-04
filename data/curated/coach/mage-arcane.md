@@ -21,7 +21,7 @@ This is the Arcane Mage as the site's guide describes it. Arcane stacks Arcane B
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Mage Armor, Arcane Brilliance and your food buff go up before the pull.
-- Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.
+- Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.
 - Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a six second cooldown.
 - Fireball fills in a raid once you stop blasting.
 - Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.

@@ -23,7 +23,7 @@ Shaman is the totem class: a caster, a melee fighter and a healer who all bring 
 
 ## What changed from 1.12
 
-- **One weapon, never two.** Forever's shamans do not dual wield. Enhancement fights with a two-hander, or a one-hander with a shield or a held off-hand item, and your weapon imbue goes on that one weapon. Shamans train fist weapons, and they wear leather until 40 and mail from 40.
+- **One weapon, never two.** Forever's shamans do not dual wield. Enhancement fights with a two-hander, or a one-hander with a shield or a held off-hand item, and your weapon imbue goes on that one weapon. Shamans train fist weapons, and they wear leather until 40 and can wear mail from 40.
 - **Totems reach further.** Strength of Earth, Grace of Air and Windfury Totem now cover every raid member within 30 yards, not just your party, so one shaman can cover a whole melee group. Mana Spring, Healing Stream and Mana Tide still only reach your party, and two Mana Springs do not stack. Call of the Elements at 20 drops a set of totems you choose in one cast, and Totemic Call at 22 relocates your active totems to your location, every 30 seconds. Windfury Totem's bonus no longer lingers after the totem is replaced, so there is nothing to twist.
 - **Lightning Bolt and Chain Lightning** are both 2.5 second casts before any talents.
 - **Fire Nova** is an instant spell that bursts from your active Fire totem, not a totem of its own.

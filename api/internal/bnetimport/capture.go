@@ -148,3 +148,24 @@ func (s *Service) captureSpecializations(ctx context.Context, tx pgx.Tx, key, re
 	}
 	return raw, nil
 }
+
+// captureStatistics fetches and stores a character's statistics (bnet_statistics): base
+// and effective stats, the only source of a Forever race's base stats. Guarded: nothing
+// downstream reads it yet, so no failure here may cost the character its import. A
+// 403/404 is left as it was silently; any other error is logged and skipped.
+func (s *Service) captureStatistics(ctx context.Context, tx pgx.Tx, key, region, realmSlug, name string) error {
+	raw, err := s.Client.Statistics(ctx, region, realmSlug, name)
+	if err != nil {
+		if !errors.Is(err, bnetapi.ErrNotFound) && !errors.Is(err, bnetapi.ErrForbidden) {
+			s.logger().Warn("bnetimport", "op", "statistics_unavailable", "key", key, "err", err)
+		}
+		return nil
+	}
+	capped := s.capCapture("bnet_statistics", key, raw)
+	if _, err := tx.Exec(ctx,
+		`update characters set bnet_statistics = coalesce($2, bnet_statistics), bnet_captured_at = now() where key = $1`,
+		key, rawOrNil(capped)); err != nil {
+		return fmt.Errorf("bnetimport: capture statistics %s: %w", key, err)
+	}
+	return nil
+}

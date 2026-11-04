@@ -140,7 +140,7 @@ Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: 
 
 ## Professions
 
-Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash, and the explosives that save a bad pull. Skinning and Leatherworking pay for your leveling, and Leatherworking makes strong leather and mail pieces before raid gear.
+Enchanting is the profession your best in slot list asks for. The Heart of the Mountain trinkets are Enchanting crafts that bind on pickup, so nobody can make them for you. Legionite Glaive is a Blacksmithing polearm that also binds on pickup. If you are not a blacksmith, take the next two-hander on your best in slot page. Every other craft in your set binds when equipped, the Engineering rifle and the Leatherworking mail included, so buy them. Engineering is the trash pick: Thorium Grenades and the explosives that save a bad pull. Skinning pays for your leveling.
 
 ## Leveling
 
@@ -159,5 +159,7 @@ Take quest rewards over vendor gear, Agility first. Replace your starting bow or
 Marksmanship levels well, a little slower than Beast Mastery because more of the work is yours. Keep a pet out all the way: it holds what you pull while you shoot. Switch to the raid build and dismiss the pet when you start raiding at 60. Rapid Killing at 25 and 26 takes two minutes off Rapid Fire, which you train at 26, so you have it for most hard pulls, and Rapid Recuperation at 33 and 34 keeps your mana coming back while you shoot, once your Serpent Sting is on the target.
 
 Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out of the 8 yard dead zone. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+
+Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. When rank 2 arrives at 28, leave it in your spellbook and keep rank 1 on your bar through 49. Training a new rank upgrades the bar button on its own, so drag rank 1 back from the book. Out in the world you go out of mana before the mob dies, and rank 1 hits almost as hard as the higher ranks, since most of the shot is your weapon, for a fraction of the mana. From 50 to 59 the newest rank ties with rank 1, so cast the newest. At 60, drop back to rank 1 out in the world, and cast the top rank in a raid, with Judgement of Wisdom on the boss and a mana potion.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get.

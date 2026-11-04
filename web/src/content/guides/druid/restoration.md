@@ -98,7 +98,7 @@ Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your R
 
 ## Professions
 
-Herbalism and Alchemy is the healer pair: your own mana potions and elixirs.
+Your raid set asks for two crafts that bind on pickup, so only the crafter wears them: Dormant Heart of the Mountain from Enchanting and Mender's Leather Gauntlets from Leatherworking. Every other craft in your set binds when equipped and can be bought. Herbalism or Alchemy keeps you in mana potions and elixirs, which is most of what a healer spends gold on.
 
 ## Leveling
 
@@ -114,4 +114,4 @@ Druids cannot use wands, so swap the starter weapon for the first quest staff wi
 
 ### Levels 20 to 60
 
-Restoration is the slowest druid to quest with, because it is built to keep others alive, not to kill. Level as Feral and switch at 60, or heal dungeons on the way up: Rejuvenation and Regrowth carry a group from the low levels, and Healing Touch covers the big pulls.
+Restoration is the slowest druid to quest with, because it is built to keep others alive, not to kill. Level as Feral and switch at 60, or heal dungeons on the way up: Rejuvenation and Regrowth carry a group from the low levels, and Healing Touch covers the big pulls. Which Rejuvenation rank to keep on the tank changes as you level, from rank 2 at 20 to rank 4 at 38 and on up: the Ranks paragraph under [Rotation and priority](#rotation-and-priority) lists it by level range. Rank 1 stays on the party throughout.

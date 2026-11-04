@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -321,6 +322,74 @@ func TestParseRankChoicesScopesRowsToLines(t *testing.T) {
 	}
 }
 
+// A band may carry its own lines (round 17): it scopes that band alone, and a band with
+// none inherits the spell's scope (every line when the spell names none). Bands scoped
+// to lines that never meet may share levels.
+func TestParseRankChoicesScopesABandToItsOwnLines(t *testing.T) {
+	all, err := parseRankChoices([]byte(`{"specs":{"x":[{"authored":7,"bands":[
+		{"from_level":20,"to_level":24,"rank":1},
+		{"from_level":50,"to_level":59,"rank":2,"lines":[4]},
+		{"from_level":50,"to_level":59,"rank":3,"lines":[5],"prepull":[0]}]}]}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	x := all["x"]
+	for _, c := range []struct {
+		level int
+		line  castLine
+		rank  int
+		ok    bool
+	}{
+		{22, castLine{index: 0}, 1, true},
+		{22, castLine{index: 4}, 1, true},
+		{22, noLine, 1, true},
+		{55, castLine{index: 4}, 2, true},
+		{55, castLine{index: 5}, 3, true},
+		{55, castLine{prepull: true, index: 0}, 3, true},
+		{55, castLine{index: 3}, 0, false},
+		{55, castLine{prepull: true, index: 4}, 0, false},
+		{55, noLine, 0, false},
+	} {
+		rank, ok := x.rankAtLine(7, c.level, c.line)
+		if rank != c.rank || ok != c.ok {
+			t.Errorf("level %d %+v = (%d, %v), want (%d, %v)", c.level, c.line, rank, ok, c.rank, c.ok)
+		}
+	}
+	want := []castLine{{index: 4}, {prepull: true, index: 0}, {index: 5}}
+	if got := x.scopedLines(7); !reflect.DeepEqual(got, want) {
+		t.Errorf("scopedLines = %v, want %v", got, want)
+	}
+
+	inherited, err := parseRankChoices([]byte(`{"specs":{"x":[{"authored":7,"lines":[3],"bands":[
+		{"from_level":40,"to_level":49,"rank":2},
+		{"from_level":50,"to_level":59,"rank":3,"lines":[6]}]}]}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rank, ok := inherited["x"].rankAtLine(7, 45, castLine{index: 3}); !ok || rank != 2 {
+		t.Errorf("a band with no lines took (%d, %v) on the spell's line 3, want rank 2", rank, ok)
+	}
+	if _, ok := inherited["x"].rankAtLine(7, 55, castLine{index: 3}); ok {
+		t.Error("a band with its own lines kept the spell's line 3")
+	}
+	if rank, ok := inherited["x"].rankAtLine(7, 55, castLine{index: 6}); !ok || rank != 3 {
+		t.Errorf("line 6 at 55 = (%d, %v), want rank 3", rank, ok)
+	}
+
+	for _, raw := range []string{
+		// Two bands that meet on a line at one level.
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":50,"to_level":59,"rank":2,"lines":[4]},{"from_level":55,"to_level":59,"rank":3,"lines":[4,5]}]}]}}`,
+		// A scoped band meets an unscoped one.
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":50,"to_level":59,"rank":2},{"from_level":50,"to_level":59,"rank":3,"lines":[4]}]}]}}`,
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":50,"to_level":59,"rank":2,"lines":[]}]}]}}`,
+		`{"specs":{"x":[{"authored":7,"bands":[{"from_level":50,"to_level":59,"rank":2,"lines":[4,4]}]}]}}`,
+	} {
+		if _, err := parseRankChoices([]byte(raw)); err == nil {
+			t.Errorf("accepted %s", raw)
+		}
+	}
+}
+
 // Every curated spell whose rows name lines names lines of its own spec's
 // priority list that cast the authored id, so a reordered list cannot move a
 // row onto another spell.
@@ -329,7 +398,11 @@ func TestCuratedRankChoiceLinesCastTheirAuthoredSpell(t *testing.T) {
 	readJSON(t, curatedRankChoices, &file)
 	for spec, spells := range file.Specs {
 		for _, sp := range spells {
-			if len(sp.Lines) == 0 && len(sp.Prepull) == 0 {
+			lines, prepull := slices.Clone(sp.Lines), slices.Clone(sp.Prepull)
+			for _, band := range sp.Bands {
+				lines, prepull = append(lines, band.Lines...), append(prepull, band.Prepull...)
+			}
+			if len(lines) == 0 && len(prepull) == 0 {
 				continue
 			}
 			var list struct {
@@ -340,7 +413,7 @@ func TestCuratedRankChoiceLinesCastTheirAuthoredSpell(t *testing.T) {
 			}
 			readJSON(t, "../../data/curated/apl/"+spec+".json", &list)
 			entries := map[string][]json.RawMessage{"line": list.Rotation.PriorityList, "pre-pull action": list.Rotation.PrepullActions}
-			for kind, indexes := range map[string][]int{"line": sp.Lines, "pre-pull action": sp.Prepull} {
+			for kind, indexes := range map[string][]int{"line": lines, "pre-pull action": prepull} {
 				checkScopedCasts(t, spec, sp.Spell, kind, sp.Authored, indexes, entries[kind])
 			}
 		}

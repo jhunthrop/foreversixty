@@ -134,7 +134,7 @@ Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: 
 
 ## Professions
 
-Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash, and the target dummies and explosives that save wipes. Skinning and Leatherworking pay for your leveling, since you kill beasts all day, and Leatherworking makes strong leather and mail pieces before raid gear.
+Enchanting is the profession your best in slot list asks for. Frozen Heart of the Mountain is an Enchanting trinket that binds on pickup, so nobody can make it for you. Legionite Glaive is a Blacksmithing polearm that also binds on pickup. If you are not a blacksmith, take the next two-hander on your best in slot page. Every other craft in your set binds when equipped, the Engineering rifle and the Leatherworking mail included, so buy them. Engineering is the trash and utility pick: Thorium Grenades, and the target dummies and explosives that save wipes. Skinning pays for your leveling, since you kill beasts all day.
 
 ## Leveling
 
@@ -153,5 +153,7 @@ Take quest rewards over vendor gear, Agility first. Replace your starting bow or
 Beast Mastery is the best way to level a hunter. Keep the pet within a few levels of you. The pet takes the hits, you shoot, and you rarely stop to eat.
 
 Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+
+Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. When rank 2 arrives at 28, leave it in your spellbook and keep rank 1 on your bar all the way to 60. Training a new rank upgrades the bar button on its own, so drag rank 1 back from the book. Out in the world you go out of mana before the mob dies, and rank 1 hits almost as hard as the top rank, since most of the shot is your weapon, for about a quarter of the mana. In a raid at 60, with Judgement of Wisdom on the boss and a mana potion, cast the top rank.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get, and Bestial Wrath comes the same level.

@@ -338,3 +338,35 @@ Verdict: NOT zero, so round 14 is needed.
 
 Still open, all with the sim lane and none claimed in prose: the BiS re-rank on the shipped raid builds, race re-runs on the new builds, and the Feral Instinct points against Furor or Thick Hide.
 Rendered review: wow-player SHIP for paladin after checking Hammer of Wrath's family mask against Benediction's class mask.
+
+## Round 14 (client 1.60.1.70755, 2026-11-04, launch state)
+
+Built on main d7fc51fe7, engine pin f637ec32c. These are the live launch BiS files (de044125c picks), because the final re-rank failed. From this round, prose is held to the live tables and is no longer treated as provisional.
+
+Audit CONFIRMED by class: shaman 4, druid 3, hunter 3, warrior 3, mage 2, rogue 2, priest 1, warlock 0, paladin 0. Paladin had 1 likely finding, which is fixed. Total 18. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1, 18.
+
+Most findings are Professions sections that did not name the bind-on-pickup crafts in their own BiS sets:
+
+- Heart of the Mountain needs Enchanting.
+- Legionite Glaive needs Blacksmithing.
+- Robe of the Archmage needs Tailoring.
+- The goggles need Engineering 270.
+
+Other fixes:
+
+- The Arms Alliance race order: Dwarf measured first; Night Elf stays the pick.
+- The Enhancement Hearts are now worded by faction.
+- Shaman rank ladders give their starting level.
+- The Restoration druid tank Rejuvenation note matches the round 16 rank rows.
+- Two round 16 rogue fixes that a sim-branch merge undid are back in.
+
+The Arcane "before you have the Fire points" lines are left to sim round 17.
+
+For the data lane:
+
+- No single character can wear the whole Fire or Frost BiS set.
+- Frozen Heart is listed as BiS for Arcane, Fire and Retribution, where its on-use adds nothing.
+- Arcane, Shadow and Combat BiS were ranked on old talent strings.
+
+Verdict: NOT zero, so round 15 is needed.
+Rendered review: wow-player SHIP for all eight changed classes after one druid MUST (Feral leather binding) was fixed.
