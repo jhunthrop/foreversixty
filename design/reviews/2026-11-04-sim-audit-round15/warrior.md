@@ -89,3 +89,12 @@ Bare 60, horde, on the same builds: Fury 313.6 → 314.3 / 313.3 → 314.9; Arms
 
 - WARRIOR-13 (Improved Shield Wall) for the owner (2c).
 - Warcraft Logs blocked (gcloud login), not worked around. No level-60 warrior log was used.
+
+## Wave 2
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W2-1 | **Death Wish breaks fear.** True in Forever: 12328 e1 is aura 77 with mechanic 5 (fear immunity), and Attributes_1 has 0x8000, the same dispel-on-immunity bit Berserker Rage carries. Since 1.6.0 it is usable while feared and removes the fear (Vanilla WoW Wiki, https://vanilla-wow-archive.fandom.com/wiki/Death_Wish). **No sim effect:** no encounter casts a fear, the engine's Death Wish aura (talents.go:752) only applies +20% physical damage and +5% damage taken, and no rotation gates Death Wish on a fear. | SpellEffect 690204; SpellMisc 323746 | Aligned | - | - |
+| W2-2 | **A crit swing gives double rage.** Kaivax, "Warrior Updates in Today's Beta Build" (Blizzard forums, 2026-10-02, https://us.forums.blizzard.com/en/wow/t/2369360, re-fetched 2026-11-03): "Additional Rage generated from landing Critical Strikes increased to 100% increased Rage (was 75%)." The engine matches: `sim/core/rage.go` normalizedSwingRage multiplies a landed white swing by `normalizedRageCritMultiplier = 2.0`, on main-hand and off-hand auto attacks only. Specials generate no swing rage, as in vanilla, and the crit check is `result.DidCrit()`. The rage is still per swing by weapon speed with no damage term, so the "crit size unverified" note in memory forever-rage-normalization-gap is settled. The 70755 client has no table row for this server rule; the blue post is the one source, and it is Blizzard's own. The off-hand 0.5 factor stays unverified (no public number). | Blizzard forums post; rage.go:120-170 | Aligned | - | - |
+
+No code changed in wave 2, so no measurement was needed: the three warrior specs stand at the before/after table above.
