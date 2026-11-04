@@ -126,8 +126,10 @@ for (const [label, viewport] of [
       await expect(page.getByTestId('guide-stat-table')).toBeVisible();
       // Each source the band's figure counts is named; the unit test in
       // src/pages/guides/_spec.test.ts pins the exact line.
-      await expect(page.getByTestId('guide-stat-table-hit-cap')).toHaveText(
-        /^Hit cap: \d+(\.\d)?%(?: · (?:\d+(\.\d)?% hit from BiS gear and buffs, )?(?:\d+(\.\d)?% from [^,]+, )*\d+(\.\d)?% still to find)?$/,
+      await expect(page.getByTestId('guide-stat-table-hit-cap')).toHaveText(/^Hit cap: \d+(\.\d)?%$/);
+      // The breakdown is its own line under the cap (round 20).
+      await expect(page.getByTestId('guide-stat-table-hit-cap-detail')).toHaveText(
+        /^(?:\d+(\.\d)?% hit from BiS gear and buffs, )?(?:\d+(\.\d)?% from [^,]+, )*\d+(\.\d)?% still to find$/,
       );
       await expect(page.getByTestId('guide-stat-table')).toContainText('DPS per point');
       const pills = await page.locator('[data-testid^="stat-pill-"] span:last-child').allTextContents();

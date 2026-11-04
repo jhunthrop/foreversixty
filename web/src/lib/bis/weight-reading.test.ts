@@ -39,7 +39,11 @@ describe('bandReadingOf', () => {
     expect(bandReadingOf(haste, false)).toBe('not-on-items');
     expect(bandReadingOf(haste, true)).toBe('value');
     expect(bandReadingOf({ stat: 'spell_power', weight: 1, error: 0.01 }, false)).toBe('value');
-    expect(bandReadingOf({ stat: 'spell_haste', weight: 0.4, error: 0.9 }, false)).toBe('not-significant');
+    // Round 20: haste no item carries reads "Not on any item" whatever its weight says (Arcane
+    // read "Not significant" beside Fire and Frost's "Not on any item" for the same empty pool).
+    expect(bandReadingOf({ stat: 'spell_haste', weight: 0.4, error: 0.9 }, false)).toBe('not-on-items');
+    expect(bandReadingOf({ stat: 'spell_haste', weight: 0.4, error: 0.9 }, true)).toBe('not-significant');
+    expect(bandReadingOf(undefined, false)).toBe('not-significant');
   });
 
   it('ranks only a value', () => {

@@ -46,12 +46,13 @@ export function readingOf(weight: BisStatWeight | undefined): WeightReading {
  *  items never carry. */
 export type BandWeightReading = WeightReading | 'not-on-items';
 
-/** `readingOf`, with the band's inventory counted: a haste weight that would read as a value
- *  reads 'not-on-items' when `hasteOnItems` is false. */
+/** `readingOf`, with the band's inventory counted: a haste weight reads 'not-on-items' when
+ *  `hasteOnItems` is false, whatever its weight says. The empty pool is the fact a player can
+ *  act on; whether the weight cleared its error is not (round 20: Arcane read "Not significant"
+ *  beside Fire and Frost's "Not on any item" for the same level-60 pool). */
 export function bandReadingOf(weight: BisStatWeight | undefined, hasteOnItems: boolean): BandWeightReading {
-  const reading = readingOf(weight);
-  if (reading !== 'value' || hasteOnItems) return reading;
-  return perPercentOf(weight!.stat) === 'haste' ? 'not-on-items' : reading;
+  if (weight !== undefined && !hasteOnItems && perPercentOf(weight.stat) === 'haste') return 'not-on-items';
+  return readingOf(weight);
 }
 
 /** Whether a stat reading this way belongs in a ranked priority: only a value does. */

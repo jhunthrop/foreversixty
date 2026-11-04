@@ -172,8 +172,10 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       band === undefined ? [] : bandTalentHits(activeBuild.build, 'mage', band.talents),
     );
     expect(line).toBeDefined();
-    expect(html).toContain(`data-testid="guide-stat-table-hit-cap">${line!.text}<`);
-    expect(line!.text).toContain('from Precision');
+    // The cap is the headline; the breakdown sits on its own detail line under it (round 20).
+    expect(html).toContain(`data-testid="guide-stat-table-hit-cap">${line!.cap}<`);
+    expect(html).toContain(`data-testid="guide-stat-table-hit-cap-detail">${line!.detail}<`);
+    expect(line!.detail).toContain('from Precision');
     expect(html).toContain('DPS per point');
     // The unit line names the top per-point stat at 60, and the nightly sim decides which one
     // that is: for Frost, hit and spell power sit within error of each other and swap places
@@ -188,7 +190,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     );
     // No item at 60 carries haste: its row reads "Not on any item" and the note under the
     // table gives its per-1% worth.
-    expect(html).toMatch(/Spell haste: \d+\.\d per 1%, but no item at level 60 has it\./);
+    expect(html).toMatch(/Spell haste: \d+\.\d DPS per 1%, but no item at level 60 has it\./);
     expect(html).not.toMatch(/\d per 1%</);
     expect(html).toContain('Spell penetration shows as &quot;Not significant&quot;');
     expect(html).not.toContain('from school');

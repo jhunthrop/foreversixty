@@ -26,6 +26,15 @@ describe('guidesCopy', () => {
   });
 });
 
+describe('the stat table per-point column', () => {
+  it('says "or rating" when the table prices a rating stat, and not otherwise', () => {
+    expect(guidesCopy.perPointColumn('dps', true)).toBe('DPS per point or rating');
+    expect(guidesCopy.perPointColumn('dps', false)).toBe('DPS per point');
+    expect(guidesCopy.perPointColumn('healer', true)).toBe('HPS per point or rating');
+    expect(guidesCopy.perPointColumn('tank', false)).toBe('Tank score per point');
+  });
+});
+
 describe('the stat table unit line', () => {
   it('reads a plain stat per point', () => {
     expect(guidesCopy.unitLine('spell power', '0.39', 'dps')).toBe(
