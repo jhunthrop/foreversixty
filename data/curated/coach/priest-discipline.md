@@ -22,9 +22,10 @@ This is the Discipline Priest as the site's guide describes it. Discipline heals
 
 - Drop Lightwell and tell the raid it is up.
 - Fear Ward the tank if the boss fears.
-- Keep Renew on the tank all fight.
-- Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.
-- Lesser Heal when Greater Heal rank one would overheal: a small top-up for little mana.
+- Keep Renew rank seven or higher on the tank all fight.
+- Greater Heal at the top rank as the tank's filler at sixty: he takes the big hits, so the big heal goes on him.
+- Lesser Heal when Greater Heal rank one is out of reach: a small top-up for little mana.
+- Heal on the tank until you learn Greater Heal at forty: it is your biggest heal until then.
 - Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.
 - Prayer of Healing when three or more in a group are hurt.
 - Inner Focus on a Greater Heal or a Prayer of Healing. It makes the spell free and adds twenty-five percent crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.

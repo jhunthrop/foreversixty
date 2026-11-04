@@ -20,9 +20,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   build itself spends fewer than level-9 points, the remainder is left
   unspent.
 - Gear: main_hand always, off_hand for the classes that dual-wield in
-  this build (rogue, warrior-fury, shaman-enhancement, hunter),
-  ranged for hunter only. Each slot picks the highest item_level
-  weapon (speed > 0, so a shield never fills an off hand; damage_max >
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
   0, so an unfinished/placeholder weapon row this build's item table
   still carries - equipping one hangs the engine mid-sim rather than
   simulating a zero-damage weapon, see the report - is never picked)
@@ -30,9 +31,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/items/<class>.json filtered to
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
-  warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every caster spec
-  (priest-shadow, mage's three specs, warlock's three specs) fills
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
   ranged with a wand instead: the same item table's ranged rows whose
   icon names them a real wand (every wand row's own damage_max is 0 in
   this build, unlike a bow or gun, so the melee pick's damage_max > 0
@@ -99,11 +100,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-010000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 15.0 | 5 | other:attack/1=70.3, spell:3606=68.3, spell:8044=19.8, spell:3599=5.8, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498} |
-| 20 | 0000000000000000-055010000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 27.1 | 5 | other:attack/1=121.6, spell:6350=69.3, spell:8045=18.1, spell:6363=5.0, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 17364}, {SpellID: 408498} |
-| 30 | 0000000000000000-055030310031000000-0000000000000000 | main_hand:7687 off_hand:4066 | 50.8 | 6 | other:attack/1=78.5, spell:6351=32.0, spell:17364=26.1, spell:8046=5.4, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 408498} |
-| 38 | 0000000000000000-055030310051202020-0000000000000000 | main_hand:868 off_hand:4652 | 67.1 | 7 | other:attack/1=88.3, spell:6351=25.8, spell:17364=23.0, spell:10412=4.1, spell:10391=2.5 | {SpellID: 16246} |
-| 40 | 0000000000000000-055030310051202031-0000000000000000 | main_hand:2164 off_hand:4652 | 72.1 | 8 | other:attack/1=102.1, spell:6352=21.8, spell:17364=16.1, spell:10391=10.4, spell:10412=4.3 | {SpellID: 16246} |
+| 10 | 0000000000000000-010000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 15.0 | 5 | other:attack/1=70.3, spell:3606=68.3, spell:8044=19.8, spell:3599=5.8, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498, Tag: 5}, {SpellID: 408498} |
+| 20 | 0000000000000000-055010000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 27.1 | 5 | other:attack/1=121.6, spell:6350=69.3, spell:8045=18.1, spell:6363=5.0, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 17364}, {SpellID: 408498, Tag: 5}, {SpellID: 408498} |
+| 30 | 0000000000000000-055030310031000000-0000000000000000 | main_hand:7687 off_hand:4066 | 50.8 | 6 | other:attack/1=78.5, spell:6351=32.0, spell:17364=26.1, spell:8046=5.4, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 408498, Tag: 5}, {SpellID: 408498} |
+| 38 | 0000000000000000-055030310051202020-0000000000000000 | main_hand:868 off_hand:4652 | 66.7 | 7 | other:attack/1=87.8, spell:6351=31.9, spell:17364=23.6, spell:10391=3.0, spell:10412=3.0 | {SpellID: 16246}, {SpellID: 408498, Tag: 5} |
+| 40 | 0000000000000000-055030310051202031-0000000000000000 | main_hand:2164 off_hand:4652 | 72.2 | 8 | other:attack/1=101.9, spell:6352=36.0, spell:17364=16.9, spell:10391=10.5, spell:10412=2.8 | {SpellID: 16246}, {SpellID: 408498, Tag: 5} |
 | 50 | 3230000000000000-055030310051202051-0000000000000000 | main_hand:810 off_hand:10195 | 115.2 | 9 | other:attack/1=96.5, spell:17364=21.9, spell:10435=20.0, spell:15207=12.4, spell:10413=5.0 | {SpellID: 16246} |
 | 60 | 3230030000000000-055030310051202051-0520000000000000 | main_hand:22802 off_hand:22819 | 191.3 | 9 | other:attack/1=115.1, spell:10436=44.0, spell:17364=25.0, spell:15208=15.6, spell:10414=5.0 | {SpellID: 16246} |
 
@@ -171,12 +172,17 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
+- shaman-enhancement level=10 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=10 kind=zero_casts spell="Lightning Bolt" id=529 authored=15208
 - shaman-enhancement level=20 kind=unresolved_id action={SpellID: 16246}
+- shaman-enhancement level=20 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=20 kind=zero_casts spell="Lightning Bolt" id=915 authored=15208
 - shaman-enhancement level=30 kind=unresolved_id action={SpellID: 16246}
+- shaman-enhancement level=30 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=30 kind=zero_casts spell="Lightning Bolt" id=943 authored=15208
 - shaman-enhancement level=38 kind=unresolved_id action={SpellID: 16246}
+- shaman-enhancement level=38 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=40 kind=unresolved_id action={SpellID: 16246}
+- shaman-enhancement level=40 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=50 kind=unresolved_id action={SpellID: 16246}
 - shaman-enhancement level=60 kind=unresolved_id action={SpellID: 16246}

@@ -20,9 +20,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   build itself spends fewer than level-9 points, the remainder is left
   unspent.
 - Gear: main_hand always, off_hand for the classes that dual-wield in
-  this build (rogue, warrior-fury, shaman-enhancement, hunter),
-  ranged for hunter only. Each slot picks the highest item_level
-  weapon (speed > 0, so a shield never fills an off hand; damage_max >
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
   0, so an unfinished/placeholder weapon row this build's item table
   still carries - equipping one hangs the engine mid-sim rather than
   simulating a zero-damage weapon, see the report - is never picked)
@@ -30,9 +31,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/items/<class>.json filtered to
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
-  warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every caster spec
-  (priest-shadow, mage's three specs, warlock's three specs) fills
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
   ranged with a wand instead: the same item table's ranged rows whose
   icon names them a real wand (every wand row's own damage_max is 0 in
   this build, unlike a bow or gun, so the melee pick's damage_max > 0
@@ -100,12 +101,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 001000000000000000-00000000000000000-00000000000000000 | main_hand:263937 | 12.4 | 3 | spell:139=19.9, spell:2053=11.4, spell:17=10.6 | - |
-| 20 | 005005000010000000-00000000000000000-00000000000000000 | main_hand:890 | 18.3 | 5 | spell:139=20.0, spell:2053=13.1, spell:2061=9.9, spell:600=2.1, other:mana_gain=1.9 | - |
-| 30 | 005005031330001000-00000000000000000-00000000000000000 | main_hand:249392 | 43.8 | 8 | spell:2053=18.7, spell:6074=18.2, spell:402174=10.2, spell:9472=4.7, other:mana_gain=4.4 | - |
-| 38 | 005005031330011430-00000000000000000-00000000000000000 | main_hand:873 | 56.3 | 8 | spell:2053=20.6, spell:6075=14.6, spell:402174=11.7, other:mana_gain=4.8, spell:9474=4.0 | - |
-| 40 | 005005031330011430-20000000000000000-00000000000000000 | main_hand:873 | 67.9 | 10 | spell:2053=34.0, spell:1240720=7.8, spell:6076=7.1, other:mana_gain=4.8, spell:2060=4.4 | - |
-| 50 | 005005031330011430-33501000000000000-00000000000000000 | main_hand:812 | 91.5 | 10 | spell:2053=46.0, spell:1240721=5.6, other:mana_gain=5.0, spell:2060=4.4, spell:10927=4.4 | - |
-| 60 | 005005031330011430-33505003030000000-00000000000000000 | main_hand:19355 | 113.1 | 11 | spell:2053=65.7, spell:10917=6.4, other:mana_gain=4.3, spell:1316995=3.9, spell:10927=2.9 | - |
+| 20 | 005005000010000000-00000000000000000-00000000000000000 | main_hand:890 | 19.5 | 6 | spell:139=19.9, spell:2053=13.1, spell:2054=6.9, other:mana_gain=2.2, spell:2061=2.1 | {SpellID: 2060} |
+| 30 | 005005031330001000-00000000000000000-00000000000000000 | main_hand:249392 | 45.1 | 9 | spell:2053=19.2, spell:6074=18.2, spell:402174=9.8, other:mana_gain=4.3, spell:6063=3.7 | {SpellID: 2060} |
+| 38 | 005005031330011430-00000000000000000-00000000000000000 | main_hand:873 | 58.0 | 9 | spell:2053=20.9, spell:6075=14.4, spell:402174=11.4, other:mana_gain=4.8, spell:6064=3.5 | {SpellID: 2060} |
+| 40 | 005005031330011430-20000000000000000-00000000000000000 | main_hand:873 | 71.3 | 9 | spell:6076=16.5, spell:1240720=14.1, other:mana_gain=4.7, spell:2060=4.4, spell:6066=3.0 | - |
+| 50 | 005005031330011430-33501000000000000-00000000000000000 | main_hand:812 | 113.9 | 9 | spell:1240721=14.2, spell:10927=13.8, other:mana_gain=5.0, spell:2060=4.4, spell:10916=2.9 | - |
+| 60 | 005005031330011430-33505003030000000-00000000000000000 | main_hand:19355 | 112.9 | 11 | spell:2053=65.5, spell:10917=6.6, other:mana_gain=4.3, spell:1316995=4.0, spell:10927=2.9 | - |
 
 ## Learned but unused (informational)
 
@@ -189,4 +190,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- priest-discipline level=40 kind=zero_casts spell="Heal" id=6064 authored=6064
+- priest-discipline level=40 kind=zero_casts spell="Lesser Heal" id=2053 authored=2053
+- priest-discipline level=50 kind=zero_casts spell="Heal" id=6064 authored=6064
+- priest-discipline level=50 kind=zero_casts spell="Lesser Heal" id=2053 authored=2053
+- priest-discipline level=60 kind=zero_casts spell="Heal" id=6064 authored=6064

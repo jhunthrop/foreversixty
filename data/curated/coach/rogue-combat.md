@@ -26,8 +26,8 @@ This is the Combat Rogue as the site's guide describes it. Combat is the steadie
 - Shank on cooldown, right behind your racial and trinket: an off-hand stab for five energy that cannot miss and gives forty back with Flash of Steel.
 - Slice and Dice whenever it drops, at one or two combo points.
 - Eviscerate at five combo points.
-- Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.
-- Sinister Strike only when Backstab cannot be cast, held to sixty energy so a dagger rogue never spends Backstab's energy here.
+- Backstab from behind with a dagger in the main hand. Once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.
+- Sinister Strike only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you.
 - Adrenaline Rush on cooldown, with your racial, a trinket and a potion.
 - Blade Flurry costs twenty-five and can go at any energy.
 - Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five.

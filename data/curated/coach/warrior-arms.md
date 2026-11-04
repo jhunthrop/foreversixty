@@ -24,7 +24,7 @@ This is the Arms Warrior as the site's guide describes it. Arms is the two-hande
 - Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you. Then press Bloodrage as your first swing lands.
 - Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target.
 - Press Overpower the moment it lights up, even ahead of Mortal Strike. It is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later.
-- Mortal Strike goes on cooldown otherwise, and Reckless Swings right behind it in the raid build: for eight seconds your swings bring five more rage each, which is two or three swings with a slow two-hander.
+- Mortal Strike goes on cooldown otherwise, and Reckless Swings right behind it in the raid build: for eight seconds your white swings bring five more rage each, which is two or three swings with a slow two-hander.
 - With Improved Slam, Slam fills the gap between Mortal Strikes, and Spearing Strike takes any global that is still free. It only works in Battle Stance, so it stops at the execute swap.
 - Heroic Strike only when you are about to cap at ninety or more: below that, keep the rage for Mortal Strike, Overpower and Execute, which lose damage every time they wait for it.
 - Hamstring only with a Windfury Totem in the group, on a free global for ten rage. Without the totem it loses damage.
