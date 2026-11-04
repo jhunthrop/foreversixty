@@ -122,19 +122,49 @@ test.describe('desktop', () => {
     await expect(rail).toHaveCSS('grid-template-columns', /^[\d.]+px [\d.]+px [\d.]+px$/);
   });
 
-  test('the Leveling band strip has five rows, each Load in planner link carrying that band’s talent string', async ({
+  test('the leveling tree walks 10 to 60 from the keyboard and the buttons', async ({ page }) => {
+    await page.goto('/guides/warrior/fury');
+    const tree = page.getByTestId('guide-leveling-tree');
+    const slider = tree.getByTestId('guide-leveling-slider');
+    // The tree hydrates when it scrolls into view.
+    await tree.scrollIntoViewIfNeeded();
+    await expect(slider).toBeEnabled();
+    await expect(tree.getByTestId('guide-tree-columns')).toBeVisible();
+    const caption = tree.getByTestId('guide-leveling-caption');
+    await expect(caption).toContainText('51 points spent, all placed');
+    await expect(tree.getByTestId('guide-leveling-next')).toBeDisabled();
+    // Home is 10, PageUp ten levels on, End is 60.
+    await slider.focus();
+    await page.keyboard.press('Home');
+    await expect(caption).toContainText(/Level 10: .+, rank 1/);
+    await expect(caption).toContainText('1 point spent, 50 to go');
+    await expect(tree.getByTestId('guide-leveling-previous')).toBeDisabled();
+    await page.keyboard.press('PageUp');
+    await expect(caption).toContainText('Level 20:');
+    await tree.getByTestId('guide-leveling-next').click();
+    await expect(caption).toContainText('12 points spent, 39 to go');
+    await expect(tree.getByTestId('guide-leveling-load')).toHaveAccessibleName(
+      'Load the level 21 build in the planner',
+    );
+    await slider.focus();
+    await page.keyboard.press('End');
+    await expect(caption).toContainText('51 points spent, all placed');
+  });
+
+  test('the leveling tree’s Load in planner link carries the chosen level’s talent string', async ({
     page,
   }) => {
     await page.goto('/guides/warrior/fury');
-    const strip = page.getByTestId('guide-leveling-strip');
-    await expect(strip).toBeVisible();
-    const rows = strip.locator('[data-testid^="guide-leveling-row-"]:not([data-testid$="-talents"])');
-    await expect(rows).toHaveCount(5);
-    for (const row of await rows.all()) {
-      const link = row.getByText('Load in planner');
-      const href = await link.getAttribute('href');
-      expect(href).toMatch(/^\/planner\?spec=warrior-fury&talents=/);
-    }
+    const tree = page.getByTestId('guide-leveling-tree');
+    // The tree hydrates when it scrolls into view.
+    await tree.scrollIntoViewIfNeeded();
+    await expect(tree.getByTestId('guide-leveling-slider')).toBeEnabled();
+    const at60 = await tree.getByTestId('guide-leveling-load').getAttribute('href');
+    expect(at60).toMatch(/^\/planner\?spec=warrior-fury&talents=/);
+    await tree.getByTestId('guide-leveling-previous').click();
+    const at59 = await tree.getByTestId('guide-leveling-load').getAttribute('href');
+    expect(at59).toMatch(/^\/planner\?spec=warrior-fury&talents=/);
+    expect(at59).not.toBe(at60);
   });
 });
 
@@ -150,14 +180,19 @@ test.describe('phone', () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   });
 
-  test('the Leveling band strip keeps all five rows on phone, each listing its talents', async ({ page }) => {
+  test('the leveling tree keeps its control and link on phone, with no sideways scroll', async ({ page }) => {
     await page.goto('/guides/warrior/fury');
-    const rows = page
-      .getByTestId('guide-leveling-strip')
-      .locator('[data-testid^="guide-leveling-row-"]:not([data-testid$="-talents"])');
-    await expect(rows).toHaveCount(5);
-    await expect(page.getByTestId('guide-leveling-row-talents').first()).toBeVisible();
-    await expect(page.getByTestId('guide-leveling-row-talents').first().locator('li').first()).toBeVisible();
+    const tree = page.getByTestId('guide-leveling-tree');
+    // The tree hydrates when it scrolls into view.
+    await tree.scrollIntoViewIfNeeded();
+    await expect(tree.getByTestId('guide-leveling-slider')).toBeEnabled();
+    await expect(tree.getByTestId('guide-leveling-previous')).toBeVisible();
+    await expect(tree.getByTestId('guide-leveling-next')).toBeVisible();
+    await expect(tree.getByTestId('guide-leveling-load')).toBeVisible();
+    await expect(tree.getByTestId('guide-tree-columns')).toBeVisible();
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   });
 });
 

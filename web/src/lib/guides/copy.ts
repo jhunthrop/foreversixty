@@ -155,11 +155,22 @@ export const guidesCopy = {
     figure === undefined
       ? `${label}: no item at level 60 has it.`
       : `${label}: ${figure} per 1%, but no item at level 60 has it.`,
-  levelingNewTitle: 'More points here than the range before',
-  levelingLegend: 'Outlined: points added in this level range.',
   levelRangeLabel: (band: number): string => (band === 60 ? 'Level 60' : `Level ${band} to ${band + 9}`),
-  levelRangePoints: (points: number, band: number): string =>
-    band === 60 ? `${points} points` : `${points} to ${points + 9} points`,
+  // --- the leveling tree (design/specs/2026-11-04-leveling-tree.md) ---------------------------
+  talentsByLevel: 'Talents by level',
+  levelingTreeIntro:
+    'One talent point a level, from 10 to 60. Move the level to see the build at that point.',
+  /** "Level 23: Improved Gouge, rank 2"; a level the ladder places no point at reads its level alone. */
+  levelingPoint: (level: number, name: string | null, rank: number): string =>
+    name === null ? `Level ${level}` : `Level ${level}: ${name}, rank ${rank}`,
+  /** "14 points spent, 37 to go", "1 point spent, 50 to go", "51 points spent, all placed". */
+  levelingPointsSpent: (spent: number, toGo: number): string =>
+    `${spent} ${spent === 1 ? 'point' : 'points'} spent, ${toGo === 0 ? 'all placed' : `${toGo} to go`}`,
+  previousLevel: 'Previous level',
+  nextLevel: 'Next level',
+  levelSliderLabel: 'Level',
+  levelValueText: (level: number): string => `Level ${level}`,
+  loadLevelBuildAriaLabel: (level: number): string => `Load the level ${level} build in the planner`,
   tocBarLabel: 'On this page',
   tocBarHint: 'Jump to a section',
   alliancePicksHeading: 'Alliance',

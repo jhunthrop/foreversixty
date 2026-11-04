@@ -37,6 +37,8 @@ const POINTS_PER_TIER = 5;
 
 /** The level ranges the Leveling strip shows: 20 to 29 up to 60. */
 export const LEVELING_BANDS: readonly number[] = [20, 30, 40, 50, 60];
+/** The first level with a talent point. */
+export const FIRST_LADDER_LEVEL = 10;
 /** The level the ladder ends on: the guide's own build. */
 const MAX_LADDER_LEVEL = 60;
 
@@ -258,6 +260,13 @@ export function ladderPointOrder(
   return climbLadder(trees, targets, ownTreeIndex, level, first).order;
 }
 
+/** One level of the climb: the talent its point went into (null when the ladder had no legal
+ *  point to place) and the talent string after it. */
+interface LadderLevel {
+  talentId: number | null;
+  talents: string;
+}
+
 /** The planner's rule for adding one point (sim/leveling climbLadder's `legal`). */
 function canAddPoint(tree: LadderTalentTree, digits: readonly number[], j: number): boolean {
   const node = tree.talents[j]!;
@@ -278,9 +287,11 @@ function climbLadder(
   ownTreeIndex: number,
   level: number,
   first: readonly LadderFirstRank[],
-): { climb: number[][]; order: number[] } {
+): { climb: number[][]; order: number[]; levels: LadderLevel[] } {
   const climb = trees.map((tree) => new Array<number>(tree.talents.length).fill(0));
   const order: number[] = [];
+  const levels: LadderLevel[] = [];
+  const snapshot = (): string => climb.map((row) => row.join('')).join('-');
   const treeOrder = [ownTreeIndex, ...trees.map((_, i) => i).filter((i) => i !== ownTreeIndex)].filter(
     (ti) => trees[ti] !== undefined,
   );
@@ -293,7 +304,7 @@ function climbLadder(
     }
     return undefined;
   };
-  for (let lvl = 10; lvl <= level; lvl++) {
+  for (let lvl = FIRST_LADDER_LEVEL; lvl <= level; lvl++) {
     const walk = walkLevel(trees, targets, ownTreeIndex, lvl, first);
     const pick =
       firstCell((ti, j) => walk[ti]![j]!) ??
@@ -301,12 +312,17 @@ function climbLadder(
         const node = trees[ti]!.talents[j]!;
         return Math.min(target(targets, node.id), node.max_rank);
       });
-    if (pick === undefined) continue;
+    if (pick === undefined) {
+      levels.push({ talentId: null, talents: snapshot() });
+      continue;
+    }
     const row = climb[pick[0]]!;
     row[pick[1]] = row[pick[1]]! + 1;
-    order.push(trees[pick[0]]!.talents[pick[1]]!.id);
+    const talentId = trees[pick[0]]!.talents[pick[1]]!.id;
+    order.push(talentId);
+    levels.push({ talentId, talents: snapshot() });
   }
-  return { climb, order };
+  return { climb, order, levels };
 }
 
 /** The walk for one level on its own, as digits per tree (sim/leveling walkLevel). */
@@ -437,4 +453,52 @@ export function guideLevelingBuilds(
     points: Math.max(band - 9, 0),
     talents: ladderTalentString(trees, targets, ownTreeIndex, band, first),
   }));
+}
+
+/** One level of the guide's leveling tree: the point taken there and the build after it. */
+export interface LadderStep {
+  level: number;
+  /** The talent the level's point goes into; null when the ladder places none. */
+  talentId: number | null;
+  /** That talent's name and the rank it holds after this point. */
+  name: string | null;
+  rank: number;
+  /** The talent string after this level ("a-b-c", `ladderTalentString`'s), for the planner link. */
+  talents: string;
+}
+
+/** Every level from 10 to 60 of the guide's ladder, from its own level 60 code: what each
+ *  level's point is and the build after it (the Leveling tree). Empty when the build or the
+ *  talent file does not read. One climb, the same one `ladderTalentString` and `guideLadderOrder`
+ *  make. */
+export function guideLadderSteps(
+  build: string,
+  classSlug: string,
+  spec: string,
+  ownTreeIndex: number,
+  code: string,
+): LadderStep[] {
+  const trees = loadLadderTrees(build, classSlug);
+  const digits = buildCodeDigits(code);
+  if (trees === undefined || digits === undefined) return [];
+  const names = new Map(trees.flatMap((tree) => tree.talents.map((node) => [node.id, node.name] as const)));
+  const { levels } = climbLadder(
+    trees,
+    guideTargets(trees, digits),
+    ownTreeIndex,
+    MAX_LADDER_LEVEL,
+    ladderFirstFor(spec),
+  );
+  const held = new Map<number, number>();
+  return levels.map((step, index) => {
+    const rank = step.talentId === null ? 0 : (held.get(step.talentId) ?? 0) + 1;
+    if (step.talentId !== null) held.set(step.talentId, rank);
+    return {
+      level: FIRST_LADDER_LEVEL + index,
+      talentId: step.talentId,
+      name: step.talentId === null ? null : (names.get(step.talentId) ?? null),
+      rank,
+      talents: step.talents,
+    };
+  });
 }

@@ -5,8 +5,8 @@
 // its region and ruleset, where it has those fields -- through lib/character-search.ts. The
 // "/" key belongs to the header (it is on every page): it focuses the home page's box where
 // there is one, and otherwise opens the header's own.
-import { characterSearchHref, DEFAULT_REGION, DEFAULT_RULESET } from './character-search';
-import { isRegion, isRuleset } from './characters';
+import { characterSearchHref, DEFAULT_REGION, DEFAULT_RULESET, pickLookupMatch } from './character-search';
+import { characterHref, isRegion, isRuleset, splitUnitName } from './characters';
 import { wireTypeahead } from './character-typeahead-dom';
 
 /** The query parameter a "Look up another character" link fills the home box with. */
@@ -30,13 +30,43 @@ export function wireSearchForm(form: HTMLFormElement): void {
     const ruleset = String(fields.get('ruleset') ?? DEFAULT_RULESET);
     const href = isRegion(region) && isRuleset(ruleset) ? characterSearchHref(name, region, ruleset) : null;
     if (href !== null) {
-      window.location.assign(href);
+      void resolveLookup(name, region, ruleset, href).then((to) => window.location.assign(to));
       return;
     }
     const status = document.getElementById(form.dataset.statusId ?? '');
     if (status !== null)
       status.textContent = (name.trim() === '' ? form.dataset.empty : form.dataset.invalid) ?? '';
   });
+}
+
+/** How long a submit waits on the search before it opens the typed address as it is. */
+const LOOKUP_SEARCH_MS = 2500;
+
+/**
+ * The address a lookup opens: the character the site holds under that name (`pickLookupMatch`:
+ * the chosen region and ruleset first, then any other ruleset), so a name typed with the wrong
+ * ruleset, or only a first name, still lands on the profile; the typed address when the search
+ * finds no single match, fails, or is slow. A `Name-Realm` already names its ruleset.
+ */
+export async function resolveLookup(
+  name: string,
+  region: string,
+  ruleset: string,
+  fallback: string,
+): Promise<string> {
+  if (splitUnitName(name.trim()).segment !== '') return fallback;
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), LOOKUP_SEARCH_MS);
+  try {
+    const { searchCharacters } = await import('./character-search-api');
+    const rows = await searchCharacters(name.trim(), { limit: 10, signal: controller.signal });
+    const match = pickLookupMatch(rows, name, region, ruleset);
+    return match === undefined ? fallback : characterHref(match.region, match.ruleset, match.name);
+  } catch {
+    return fallback;
+  } finally {
+    window.clearTimeout(timer);
+  }
 }
 
 /**

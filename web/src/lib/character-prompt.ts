@@ -40,7 +40,7 @@ export interface CharacterNoDataInput {
 
 /**
  * A character the viewer does not hold, with no score, no gear and no fights, gets one sentence
- * ("<Name> has no Forever Sixty data yet."), the lookup box and one quiet addon link, not the
+ * ("<Name> is here, with no gear, talents or logs yet."), the lookup box and one quiet addon link, not the
  * empty score bars and the in-game tooltip lookalike (P.1, player review S3-3). The signed-in
  * holder keeps the full set: those empty cards are their to-do list.
  */
