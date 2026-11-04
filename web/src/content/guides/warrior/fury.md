@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:warrior:night-elf:30323013002/051531025120100231/2:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Dual wield in Berserker Stance: Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, Death Wish and Recklessness for the Executes.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -97,7 +97,7 @@ The build also spends a point in **Piercing Howl**, which dazes everything withi
 
 ## Stat priority
 
-Hit is worth the most until you reach the hit cap, and dual wielding has two caps: your specials reach it long before your white swings do, so past the special cap hit only trims your white misses. Crit feeds Flurry, Deep Wounds and Impale. Every point of Strength is two attack power for a warrior. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
+The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap, and dual wielding has two caps: your specials reach theirs long before your white swings do, and past the special cap every point still trims your white misses, which are rage. Every point of Strength is two attack power for a warrior. Crit feeds Flurry, Deep Wounds and Impale, and a critical swing brings twice the rage. Agility carries crit and armor with it. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
 
 ## Best in slot
 

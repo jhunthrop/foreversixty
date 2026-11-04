@@ -132,3 +132,12 @@ export async function loadReference(build: string): Promise<ReferenceData> {
   ]);
   return { classes, races, combos };
 }
+
+/** The races `combos.json` (the client's CharBaseInfo) lets the class be, in races.json order;
+ *  every race when the class is not in the file, so a picker is never empty. */
+export function playableRaces(reference: ReferenceData, classSlug: string): RaceRow[] {
+  const classId = reference.classes.find((row) => row.slug === classSlug)?.id;
+  if (classId === undefined) return reference.races;
+  const ids = new Set(reference.combos.filter((combo) => combo.class_id === classId).map((c) => c.race_id));
+  return reference.races.filter((race) => ids.has(race.id));
+}

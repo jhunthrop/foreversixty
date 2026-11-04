@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:priest:human:00500503103/33505003030121431/0:'
 recommendedRaces: [human, undead]
 statPriority: [MP5, Healing power, Spirit, Intellect, Critical strike]
 description: 'How to heal as a Holy Priest in Forever: talents, downranking, Prayer of Mending, Prayer of Healing, Lightwell, mana over a long fight, assignments and races.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -85,7 +85,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 ## Stat priority
 
-On a long fight mp5 wins: a point of it buys more healing over five minutes than a point of healing power. Spirit and healing power come next, close together, and gear decides which leads: Spiritual Guidance and Meditation turn Spirit into both healing and mana. Intellect deepens the bar. Critical strike is last for Holy, since Inspiration only adds armor. Spell power with no healing on it does nothing for a heal.
+The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every heal. Spirit pays you twice: Spiritual Guidance turns it into healing, and Meditation keeps half of its regeneration running while you cast. Intellect deepens the bar. A critical heal is a bigger heal, and for Holy that is all it is, since Inspiration only adds armor to the target. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
@@ -119,4 +119,4 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-Level as Shadow and respec at 60, or level in a group as Holy. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early: a level 30 priest who casts Heal rank 2 instead of rank 3 finishes the dungeon with mana to spare.
+From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early: a level 30 priest who casts Heal rank 2 instead of rank 3 finishes the dungeon with mana to spare.

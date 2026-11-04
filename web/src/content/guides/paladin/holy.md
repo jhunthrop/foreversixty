@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:paladin:human:50320215012101251/50322/0503:'
 recommendedRaces: [human, undead]
 statPriority: [MP5, Intellect, Healing power, Critical strike, Spirit]
 description: 'Tank healing with Oath of Light, Flash of Light and Divine Favor, and how to make your mana last.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -50,7 +50,7 @@ Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Di
 
 The build is 31 Holy, 12 Protection and 8 Retribution.
 
-- **Spiritual Focus** (5 points): Flash of Light, Holy Light and Light's Vigil keep 70% of their casts from being pushed back.
+- **Spiritual Focus** (5 points): every hit you take while casting Flash of Light, Holy Light or Light's Vigil has a 70% chance not to push the cast back.
 - **Healing Light** (3 points): 12% more healing on Holy Light, Flash of Light and Holy Shock.
 - **Reverence** (2 points): 30% of your regeneration keeps running while you cast.
 - **Illumination** (5 points): every critical heal gives back half the spell's base cost. It also keeps half your Spirit regeneration running while you cast for 15 seconds. It is the reason crit is a mana stat for you.
@@ -78,7 +78,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 4. **Flash of Light rank 4** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank, and rank 4 is the cheapest rank that still carries nearly all of your healing power at 60. Rank 1 is a trap there: Forever takes the healing power off ranks learned far below your level, so it heals for little more than its base and the Oath.
 5. **Flash of Light rank 4** on everyone else below 80%, yourself included. Without the Oath bonus it is still the best balance of heal size and mana.
 
-**Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches; rank 9 is an Ahn'Qiraj book. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but you learned it at 30, so at 60 it keeps only part of your healing power.
+**Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches, and the rank 9 book has no known source in Forever yet, so rank 8 is your top rank. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but you learned it at 30, so at 60 it keeps only part of your healing power.
 
 **Mana.** You heal off pace, not off health bars: if your bar is ahead of the fight, spend it on Holy Light and Holy Shock; if it is behind, heal with Flash of Light alone. Every crit refunds half its base cost through Illumination, which is why Holy Shock on the party, where Boundless Light adds 30% crit, gets a large part of its cost back. Major Mana Potion and Demonic Rune go on cooldown as soon as your bar has room for them.
 
@@ -92,7 +92,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 ## Stat priority
 
-Mana per 5 seconds comes first because you run out of mana long before you run out of heals. Healing power, Intellect and crit come next, close together: Intellect is your mana bar and your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, but ranks learned far below your level lose most or all of it, so at 60 your cheap heals are Flash of Light rank 4 and Holy Shock rank 3, not rank 1. Spirit only works outside the five second rule, apart from Reverence's 30% and the 50% Illumination gives you for 15 seconds after every critical heal, which is one more reason crit is a mana stat for you. Spell damage does nothing for a heal.
+Mana per 5 seconds keeps you casting, and you run out of mana long before you run out of heals. Intellect is your mana bar and your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, but ranks learned far below your level lose most or all of it, so at 60 your cheap heals are Flash of Light rank 4 and Holy Shock rank 3, not rank 1. Spirit only works once you have gone five seconds without a cast, apart from Reverence's 30% and the 50% Illumination gives you for 15 seconds after every critical heal, which is one more reason crit is a mana stat for you. Spell damage does nothing for a heal. The table above has the order.
 
 ## Best in slot
 
@@ -114,7 +114,7 @@ Holy Light and Seal of Righteousness come at 1, Judgement at 4, Holy Strike at 6
 
 At 12, the class quest from your trainer teaches Redemption. A healer without it is a long corpse run for the group.
 
-If you level as Holy, your first five points, 10 to 14, go into Spiritual Focus: at 5/5, 70% of the hits you take do not push back Holy Light or Flash of Light. Healing Light takes 15 to 17 for 12% bigger heals, then Reverence at 18 and 19 keeps 30% of your mana regen going while you cast.
+Most Holy paladins level as Retribution and respec for raids; the Retribution guide has those points. If you level as Holy, your first five points, 10 to 14, go into Spiritual Focus: at 5/5, 70% of the hits you take do not push back Holy Light or Flash of Light. Healing Light takes 15 to 17 for 12% bigger heals, then Reverence at 18 and 19 keeps 30% of your mana regen going while you cast.
 
 You still kill things with your weapon and your Seal, so take quest rewards over vendor gear and replace your Battleworn Hammer with the first better slow two-hander you find. Paladins cannot use wands. You wear mail until plate at 40.
 

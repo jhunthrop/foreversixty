@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:druid:night-elf:05002/50230032023011125001/05503:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Agility, Hit, Critical strike, Strength, Attack power, Feral attack power, Melee haste]
 description: 'Cat Form DPS in Forever: the raid build, the Ravage opener, Rip and Shred from behind, Shifting Power for energy, and what to drink in form.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
@@ -86,11 +86,11 @@ The raid build skips Furor. In Forever it no longer hands you 40 energy on a shi
 
 ## Stat priority
 
-Weapon damage per second matters in Forever. Your Cat Form auto attack has your weapon's DPS at one swing a second, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. Agility is crit and attack power at once, which is why it leads. Strength is attack power, and Heart of the Wild adds 6% to it (10% with the raid build's five points). A missed or dodged Shred hands back most of its energy, but you still lose the global and the combo point, and that is why hit matters to a cat.
+Weapon DPS matters in Forever. Your Cat Form paw swings at a fixed 1.0 speed and hits for your weapon's DPS, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. The table above gives the order for your gear. Agility is crit and attack power at once. Strength is attack power, and Heart of the Wild adds 6% to it (10% with the raid build's five points). Hit keeps Shred landing: a missed or dodged Shred hands back most of its energy, but you still lose the global and the combo point. It counts up to the hit cap and adds nothing past it. Crit is bigger hits, and through Blood Frenzy it is combo points too. Attack power from gear is plain attack power, without the crit that Agility carries.
 
 ## Best in slot
 
-Wolfshead Helm is druid-only in Forever and now gives 5 more energy on every Shifting Power (and 5 more rage on Enrage). Leatherworkers make it. It is a level 40 blue with little on it besides the bonus, so it is a small upgrade while leveling; at 60 most helms with real stats beat it.
+Wolfshead Helm is druid-only in Forever and now gives 5 more energy on every Shifting Power (and 5 more rage on Enrage). Leatherworkers make it. It is a level 40 blue with only 10 Spirit beside the bonus, so wearing it trades a helm's stats for the energy.
 
 ## Enchants and consumables
 

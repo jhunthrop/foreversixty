@@ -6,9 +6,9 @@ role: dps
 build: 'FS1:1.60.1.70755:rogue:gnome:325301/3153030000012321541/03:'
 raidBuild: 'FS1:1.60.1.70755:rogue:gnome:005203002/3243030000012321451/005:'
 recommendedRaces: [gnome, undead]
-statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
+statPriority: [Hit, Agility, Strength, Attack power, Critical strike, Melee haste]
 description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents that matter.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Rogue and Warlock class deep dive'
@@ -97,7 +97,7 @@ Blade Flurry hits anything next to your target. Never turn it on next to a Sappe
 
 ## Stat priority
 
-Hit comes first: a missed Backstab is a wasted global and a lost combo point, and Precision only gets you part of the way. Agility gives attack power and crit together, which is why it beats Strength and raw attack power. Crit is worth more to Combat than it looks, because Lethality makes your Backstab crits bigger. Haste is rare on gear and good when you find it.
+Hit counts until your attacks stop missing, and adds nothing past that: a missed Backstab is a wasted global and a lost combo point, Precision only gets you part of the way, and your white swings with two weapons miss far more often than your specials. Agility gives attack power and crit together. Strength and attack power add straight damage to every swing. A crit makes one hit bigger, and Lethality makes your Backstab crits bigger still, but Combat has no Seal Fate and keeps no bleed running, so a crit never adds a combo point. Haste is rare on gear and good when you find it. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -113,7 +113,7 @@ Gnome on Alliance and Undead on Horde. **Eureka!** makes your abilities cost 10%
 
 ## Professions
 
-**Enchanting** is the one that changes your gear: Molten Heart of the Mountain and Frozen Heart of the Mountain are bind-on-pickup trinkets only an enchanter can make, and both are pre-raid picks. **Engineering** brings grenades and dynamite for trash. **Skinning** and **Leatherworking** pay for themselves, since Devilsaur and the Stormshroud pieces are leatherworking crafts. Heartseeker is a blacksmith's dagger that binds when equipped: when it is on your list, buy one, do not train the profession for it.
+**Enchanting** is the one that changes your gear: Molten Heart of the Mountain and Frozen Heart of the Mountain are bind-on-pickup trinkets only an enchanter can make. **Engineering** brings grenades and dynamite for trash. **Skinning** and **Leatherworking** pay for themselves, since Devilsaur and the Stormshroud pieces are leatherworking crafts. Heartseeker is a blacksmith's dagger that binds when equipped: when it is on your list, buy one, do not train the profession for it.
 
 ## Leveling
 

@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:hunter:night-elf:5420001505001251/00523500014/0:'
 recommendedRaces: [night-elf, orc]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Beast Mastery Hunter in Forever: talents for leveling and raids, the shot priority, pet handling, stats, consumables and race picks.'
-updated: 2026-11-03
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Class Deep Dives: Hunter and Druid'
@@ -63,7 +63,7 @@ Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial 
 ### In a raid
 
 - **Role:** Ranged physical DPS with a pet
-- **Brings:** Heart of the Lion (10% stats and attack power for everyone near you), Trueshot Aura (100 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
+- **Brings:** Heart of the Lion (10% stats and a flat attack power bonus for everyone near you), Trueshot Aura (100 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
 
 ## Talents and builds
 
@@ -86,7 +86,7 @@ The raid build moves one point out of Efficiency and the point in Rapid Killing 
 
 Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway. Send the pet in once the tank has the boss.
 
-As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. Elune's Light raises your critical strike chance with all spells and attacks by 10% for 15 sec. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
+As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
 From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. Multi-Shot on cooldown is fine. Aimed Shot on that cooldown is a small extra for a Beast Mastery hunter: if the cooldown comes up right after an auto shot fires, cast Aimed Shot, which outhits Multi-Shot. Otherwise take Multi-Shot, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot while you have mana.
 
@@ -110,7 +110,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-Hit comes first until you reach 9% hit, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you. After hit, Agility and Intellect are close: Agility is attack power and crit, Intellect is attack power through Careful Aim and mana on top. Crit is better than it looks because the pet copies all of your crit chance. Plain attack power is the weakest per point, and haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you, and past the cap it adds nothing. Agility is attack power and crit together. Crit is better than it looks because the pet copies all of your crit chance. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -118,7 +118,7 @@ Hunters wear leather until 40 and mail from 40. Your ranged weapon is your real 
 
 ## Enchants and consumables
 
-Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 247x128 Accurascope once your raid's engineer can make it. Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers, where Careful Aim makes it count as attack power.
+Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 247x128 Accurascope once your raid's engineer can make it. Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers: no bracer enchant carries real Agility, Strength does nothing for your shots, and Careful Aim makes Intellect count as attack power.
 
 **Ammo and quiver.** Carry the best ammo your level can use and plenty of it: arrows for a bow, bullets for a gun. Jagged Arrows from 40, Ice Threaded and Thorium Headed Arrows from the early 50s, or Thorium Shells from an engineer. The quiver or ammo pouch is a free 10 to 15% ranged attack speed, so upgrade it every time you can: Quickdraw Quiver from 40 and a 15% bag near 60. Run out of ammo in a raid and you do almost nothing.
 

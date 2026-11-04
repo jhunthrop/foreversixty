@@ -21,7 +21,7 @@ statPriority:
     Block,
   ]
 description: 'Shield tank in Defensive Stance: Shield Slam and Revenge for threat, Shield Block and Thunder Clap for the hits, Sunder Armor in between.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -99,13 +99,13 @@ Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you 
 
 ## Stat priority
 
-Defense, dodge and parry come first: they take hits out entirely, and Defense also lowers the chance to be crit. Agility brings dodge and armor with it. Stamina is your buffer: a bigger health bar gives the healers more time to react to a spike. Armor cuts every physical hit, though each point is worth a little less the more you stack. Crushing blows come from the boss's level, not your defense; Shield Block on top of your dodge, parry and block is what pushes them off the table. Block takes a flat amount off the hits it catches, so it grows with your block value. Strength and attack power are threat, and Strength also adds block value. Weapon skill from gear like Edgemaster's Handguards cuts how often the boss dodges and parries you, which is threat and rage, not survival.
+The table above gives the order for your gear; this is why each stat counts. Defense takes hits out entirely and lowers the chance to be crit. Stamina is your buffer: a bigger health bar gives the healers more time to react to a spike. Dodge and parry take hits out too, and each one also lights Revenge and, with Master of Defense, brings rage. Block takes a flat amount off every hit it catches, and Shield Slam adds your block value to its damage. Agility brings dodge and armor with it. Strength is threat and also adds block value. Armor cuts every physical hit, though each point is worth a little less the more you stack. Crushing blows come from the boss's level, not your defense; Shield Block on top of your dodge, parry and block is what pushes them off the table. Weapon skill from gear like Edgemaster's Handguards cuts how often the boss dodges and parries you, which is threat and rage, not survival.
 
 ## Best in slot
 
 ## Enchants and consumables
 
-Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for Stamina and armor first; a tank that dies holds no threat.
+Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for the health bar; a tank that dies holds no threat.
 
 ## Races
 

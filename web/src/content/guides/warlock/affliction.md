@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:warlock:human:2552001013500105/00052/0550004:'
 recommendedRaces: [human, orc]
 statPriority: [Spell power, Shadow power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -82,7 +82,7 @@ Adds and AoE: Corruption and Agony on two or three adds that live 15 seconds or 
 
 ## Stat priority
 
-Hit comes first until the cap: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Once your gear reaches the cap, more hit adds nothing and spell power leads. Spell power is next, with Shadow power close behind because nearly everything you cast is Shadow. Crit is good for Affliction because DoT ticks crit too. Intellect is a small mana gain. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Spell power feeds every spell you cast, and Shadow power feeds nearly all of them, since almost everything Affliction casts is Shadow. Crit is good for Affliction because DoT ticks crit too, and Pandemic doubles the bonus on them. Intellect is a small mana gain. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces. The table above gives the order for your gear.
 
 ## Best in slot
 

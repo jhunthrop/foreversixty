@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:priest:gnome:00500503133001143/3350500303/0:'
 recommendedRaces: [gnome, undead]
 statPriority: [MP5, Spirit, Healing power, Intellect, Critical strike]
 description: 'How to heal as a Discipline Priest in Forever: Penance, shield ranks and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -85,7 +85,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 ## Stat priority
 
-Mana first on a long fight: mp5, then healing power. Intellect and critical strike sit close together after it, and Spirit is last. Critical strike is worth more to you than to Holy because every crit makes a Divine Aegis. Spell power with no healing on it does nothing for a heal.
+The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every shield, Penance and heal. Intellect deepens your bar, and Mental Strength adds 10% to it. Critical strike pays twice for Discipline: every direct heal that crits also leaves a Divine Aegis shield on the target. Spirit is mana, and Meditation keeps half of its regeneration running while you cast. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
@@ -121,4 +121,4 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-Level as Shadow and respec, or level in dungeons. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all.
+From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all.

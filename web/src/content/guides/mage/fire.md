@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:mage:human:2530050000002/50520201230133031/003:'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Spell power, Fire power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Fire Mage in Forever: the pre-pull Pyroblast, Scorch spam, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -61,7 +61,7 @@ Fire spams Scorch, keeps its own Improved Scorch stacks up, turns crits into fas
 
 Fire takes exactly 31 points to Combustion and skips Blast Wave and Improved Flamestrike, which are AoE only. Combustion asks for 30 points above it, and the damage talents plus two ranks of **Flame Throwing** (6 more yards on every Fire spell) come to 28, so two more points are the toll to reach it.
 
-The other 20 points buy mana. Seventeen in Arcane reach **Arcane Concentration** (5 points, a free spell 10% of the time) and two ranks of **Arcane Meditation** (a third of your mana regeneration keeps running while you cast). With Mage Armor on top, most of your regeneration runs through the whole fight. Three go into **Precision** in Frost for 6% hit.
+The other 20 points buy mana and hit. Seventeen in Arcane reach **Arcane Concentration** (5 points, a free spell 10% of the time) and two ranks of **Arcane Meditation** (a third of your mana regeneration keeps running while you cast). With Mage Armor on top, most of your regeneration runs through the whole fight. Three go into **Precision** in Frost for 6% hit.
 
 The 60 build pays that toll with a point in **Impact**, a 3% chance to stun a mob for 2 seconds while you farm, and a point in Accelerant. The raid build pays it with two ranks of **Burning Soul** instead: 20% less threat from your Fire spells and a 47% chance to keep a cast from being pushed back. It also moves the point of Magic Absorption into a third rank of Arcane Resilience. [Open the planner](/planner?class=mage) to change the build.
 
@@ -85,17 +85,17 @@ Frostfire Bolt is not a Fire filler. It costs more than Scorch, takes twice as l
 
 ## Stat priority
 
-Hit and spell power lead for Fire until the hit cap: every missed Scorch is a missed stack, a missed Ignite and a missed Heating Up chance. Intellect is your mana bar, and Fire needs more of it than Frost. Crit feeds Ignite, Heating Up and Master of Elements at once.
+The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: every missed Scorch is a missed stack, a missed Ignite and a missed Heating Up chance. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power and Fire power are the same stat to you, because everything you cast on a boss is Fire. Crit feeds Ignite, Heating Up and Master of Elements at once, and Critical Mass and Combustion stack more of it on top of your gear. Intellect is your mana bar, and Fire drinks a Major Mana Potion on every boss, so a deeper bar keeps you casting to the end.
 
 ## Best in slot
 
 ## Enchants and consumables
 
-Fire casts nothing but Fire, so any Fire-only spell power on gear is full value for you. Greater Arcane Elixir is your elixir. Bring Major Mana Potions and Demonic Runes to every boss; you will use both.
+Fire casts only Fire spells on a boss, so any Fire-only spell power on gear is full value for you. Greater Arcane Elixir is your elixir. Bring Major Mana Potions and Demonic Runes to every boss; you will use both.
 
 ## Races
 
-**Human** is the Alliance pick for Fire, a hair ahead of Gnome: Ruthless adds 1% crit with all spells, which Fire turns into Ignite and Heating Up, and The Human Spirit adds 10% Spirit. **Gnome** is just behind: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana, so press Eureka! with Combustion on the pull and again the moment it is back. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Orc** is next: Blood Fury adds 10% spell power for 15 seconds every 2 minutes, so press it with Combustion on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Combustion, but falls behind both. **Skyborne** is a paid unlock and only Alliance for mages, and it does the least Fire damage of the lot.
+**Human** is the Alliance pick for Fire, a hair ahead of Gnome: Ruthless adds 1% crit with all spells, which Fire turns into Ignite and Heating Up, and The Human Spirit adds 10% Spirit. **Gnome** is just behind: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana, so press Eureka! with Combustion on the pull and again the moment it is back. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Orc** is next: Blood Fury adds 10% spell power for 15 seconds every 2 minutes, so press it with Combustion on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Combustion, but falls behind both. **Skyborne** is a paid unlock and only Alliance for mages, and played without Read Leyline it does the least Fire damage of the lot.
 
 ## Professions
 

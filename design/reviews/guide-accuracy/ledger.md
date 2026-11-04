@@ -144,3 +144,26 @@ Race decisions (round5/race-sims.md): Restoration shaman goes to [dwarf, orc]. B
 
 For the data lane: Alliance BiS rows show the Horde source Frostwolf Clan for items whose Alliance source is Stormpike Guard; the "N% built in" hit baseline includes BiS gear hit; the BiS race captions for Shadow and Discipline disagree with recommendedRaces; Lesser Heal rank 1 (2050) has no icon; and the spelltips from the hotfix layer (f83b247a1) dropped icons, so the guide-tips vitest fails on main.
 For the sim round: Subtlety Hemorrhage dagger check is main-hand only in the engine (SIM-R5-1), Stormstrike trainer level 40 against the talent at 32, healer haste weights now large and positive, Demonology Soul Fire card against the prose.
+
+## Round 6 (client 1.60.1.70755, 2026-11-04)
+
+Built on round 5 (main 2b869f01d). Audit CONFIRMED by class: warrior 4, druid 3, rogue 3, warlock 2, hunter 2, paladin 2, priest 1, mage 1, shaman 1, for 21 in total. Trend: 72, 39, 33, 25, 12, 21. The rise is almost all stat-priority and gear prose that the nightly re-rank made false, on pages round 5's review pass had not reached. The rest are small:
+- Edgemaster's Handguards on Arms do nothing for a two-hander.
+- The goggles need Engineering to wear.
+- The "below" and "above" references were wrong.
+- Corruption was called cheap.
+- Master Demonologist was credited before 35.
+- Libram: Holy Light IX has no known source in Forever yet.
+- A few leveling readings were wrong under the new layout.
+
+New rule (owner-approved; it follows "prose never quotes nightly numbers" and "one job per page"): Stat priority prose no longer ranks stats. The table above it renders the order from the nightly scale factors. The prose gives each stat's lasting reason and the cap rule. _prose.test.ts now enforces this inside Stat priority sections only (STAT_RANKING: first, next, last, then, leads, ahead of, worth more than, and "second" as a rank but not as a duration). Gear prose names a piece only for a reason that does not move nightly. Every guide touched this round carries updated: 2026-11-04.
+
+Waiting for the final best-in-slot re-rank: race re-runs on the re-ranked gear (mage, hunter), and a check of where Retribution Dwarf's raid edge comes from.
+
+Rendered review, round 6: every class has a wow-player SHIP. The page-text review MUSTs, all fixed:
+- warrior 1: "Stamina and armor first".
+- shaman 1: Elemental "first stat".
+- rogue 1: Combat "no bleeds".
+- mage 2: Fire "nothing but Fire" and the Frost Skyborne line. A third MUST, the numbered stat pills, went to the component lane: they render the table's own data order.
+- priest 1: "From 20".
+Verdict: NOT zero, so round 7 is needed.

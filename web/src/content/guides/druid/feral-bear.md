@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:druid:night-elf:0/5523033202310212551/051:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Defense, Stamina, Dodge, Agility, Armor, Hit, Critical strike, Strength, Attack power]
 description: 'Bear tanking in Forever: the build, the threat opener, Lacerate and Primal Bite, cooldowns, and the potions a bear can drink in form.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
@@ -87,11 +87,11 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 ## Stat priority
 
-Stamina comes first: it is health, and Heart of the Wild adds 20% to it in form. Agility is next because it is Dodge, armor and crit at once. Dodge is the only avoidance you have. Hit keeps your Lacerate and Maul landing, which is threat, not survival, and once your gear reaches the hit cap it adds nothing. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Defense and crit come last. Defense lowers your chance to be crit and gives Thick Hide a little armor, but at 60 neither moves your survival much, so take it when it comes on a piece you want anyway.
+The table above gives the order for your gear; here is why each stat counts. Stamina is health, and Heart of the Wild adds 20% to it in form. Agility is Dodge, armor and crit at once. Dodge is the only avoidance you have. Hit keeps your Lacerate and Maul landing, which is threat, not survival, and once your gear reaches the hit cap it adds nothing. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Defense means fewer crits taken, and Thick Hide turns it into a little armor. Crit is threat, and through Blood Frenzy it is rage too.
 
 ## Best in slot
 
-Wolfshead Helm is druid-only in Forever and gives 5 more rage from Enrage (and 5 more energy from Shifting Power). Leatherworkers make it. It is a level 40 blue: a small bonus while leveling, outgrown on stats by 60.
+Wolfshead Helm is druid-only in Forever and gives 5 more rage from Enrage (and 5 more energy from Shifting Power). Leatherworkers make it. It is a level 40 blue with only 10 Spirit beside the bonus, so wearing it trades a helm's stats for the rage.
 
 ## Enchants and consumables
 
