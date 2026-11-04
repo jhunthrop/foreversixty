@@ -1053,7 +1053,7 @@
       },
       {
         "pieces": 8,
-        "description": "Gives the Rogue a chance to inflict 300 damage on the target and heal the Rogue for 50 health every 1 sec. for 6 sec. on a melee hit.\r\n"
+        "description": "Gives the Rogue a chance to inflict 300 damage on the target and heal the Rogue for 50 health every 1 sec. for 6 sec. on a melee hit."
       }
     ]
   },
@@ -3249,7 +3249,7 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a chance of returning 300 mana, 10 rage, or 40 energy to the wearer. "
+        "description": "When struck in combat has a chance of returning 300 mana, 10 rage, or 40 energy to the wearer."
       },
       {
         "pieces": 6,
@@ -4294,11 +4294,11 @@
     "bonuses": [
       {
         "pieces": 3,
-        "description": "Your Devotion Aura also reduces all spell damage taken by 5%. "
+        "description": "Your Devotion Aura also reduces all spell damage taken by 5%."
       },
       {
         "pieces": 5,
-        "description": "Judgement generates an additional 50% threat against its target. "
+        "description": "Judgement generates an additional 50% threat against its target."
       },
       {
         "pieces": 8,
@@ -4313,7 +4313,7 @@
     "bonuses": [
       {
         "pieces": 3,
-        "description": "Increases your Strength by 12. "
+        "description": "Increases your Strength by 12."
       },
       {
         "pieces": 5,
@@ -4321,7 +4321,7 @@
       },
       {
         "pieces": 8,
-        "description": "While Recklessness is active, your Execute deals damage as if you had 5 additional rage. "
+        "description": "While Recklessness is active, your Execute deals damage as if you had 5 additional rage."
       }
     ]
   },
@@ -6647,11 +6647,11 @@
       },
       {
         "pieces": 4,
-        "description": "Your Lightning Bolt critical strikes have a 35% chance to reset the cooldown on Lava Burst and Chain Lightning and make the next Lava Burst or Chain Lightning within 10 sec instant.\r\n"
+        "description": "Your Lightning Bolt critical strikes have a 35% chance to reset the cooldown on Lava Burst and Chain Lightning and make the next Lava Burst or Chain Lightning within 10 sec instant."
       },
       {
         "pieces": 6,
-        "description": "Lava Burst now also refreshes the duration of Flame Shock on your target back to 12 sec.\r\n"
+        "description": "Lava Burst now also refreshes the duration of Flame Shock on your target back to 12 sec."
       }
     ]
   },
@@ -8747,7 +8747,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your healing spell critical strikes trigger the Dreamstate effect, granting you 50% of your mana regeneration while casting for 8 sec. "
+        "description": "Your healing spell critical strikes trigger the Dreamstate effect, granting you 50% of your mana regeneration while casting for 8 sec."
       },
       {
         "pieces": 4,
@@ -10689,7 +10689,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Evocation grants you $?a1218232|a1218271|a1218275|a1218276|a1218283|a1224428[5%][1%] increased damage done every sec you channel it, stacking up to 8 times and lasting 45 sec."
+        "description": "Your Evocation grants you 1% increased damage done every sec you channel it, stacking up to 8 times and lasting 45 sec."
       },
       {
         "pieces": 6,
@@ -11129,7 +11129,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Recklessness, Retaliation, and Shield Wall abilities no longer share a cooldown. Additionally, your Recklessness ability lasts 15 sec longer, and while it is active you gain 50% of your Defense Skill over 300 as Strength. "
+        "description": "Your Recklessness, Retaliation, and Shield Wall abilities no longer share a cooldown. Additionally, your Recklessness ability lasts 15 sec longer, and while it is active you gain 50% of your Defense Skill over 300 as Strength."
       },
       {
         "pieces": 6,
@@ -11189,7 +11189,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your Rolling with the Punches now grants 2% more health and 1% more damage per stack. At 5 stacks, each time you Dodge or Parry you will gain $1226957s3 Energy. "
+        "description": "Your Rolling with the Punches now grants 2% more health and 1% more damage per stack. At 5 stacks, each time you Dodge or Parry you will gain $1226957s3 Energy."
       }
     ]
   },
@@ -11433,7 +11433,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your Arcane Blast has a 10% chance to cause Arcane Tunneling. Arcane Tunneling prevents your Arcane Blast effect from being consumed by the next other Arcane damage spell you cast. In addition, activating Arcane Power resets the cooldown on your Mass Regeneration. "
+        "description": "Your Arcane Blast has a 10% chance to cause Arcane Tunneling. Arcane Tunneling prevents your Arcane Blast effect from being consumed by the next other Arcane damage spell you cast. In addition, activating Arcane Power resets the cooldown on your Mass Regeneration."
       },
       {
         "pieces": 4,
@@ -11525,7 +11525,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your non-periodic heals from Regrowth Rank 8 or Rank 9 have a 100% chance to spread your Rejuvenation on that target to all members of the target's party within $1226046a1 yards not already affected by your Rejuvenation."
+        "description": "Your non-periodic heals from Regrowth Rank 8 or Rank 9 have a 100% chance to spread your Rejuvenation on that target to all members of the target's party within 43.5 yards not already affected by your Rejuvenation."
       }
     ]
   },
