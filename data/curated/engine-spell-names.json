@@ -205,10 +205,6 @@
       "name": "Spirit of Zandalar",
       "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
     },
-    "26297": {
-      "name": "Berserking",
-      "engine": "sim/core/racials.go: a racial no class spellbook owns"
-    },
     "29177": {
       "name": "Elemental Devastation",
       "engine": "sim/shaman/talents.go: ranks 2 and 3 of the proc"
