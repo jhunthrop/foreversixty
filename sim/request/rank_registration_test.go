@@ -67,9 +67,9 @@ func TestEveryLearnedRankOfACastSpellIsRegistered(t *testing.T) {
 // recorded so the guard is green while they are fixed in the engine, and
 // deleted when they are, the way smokeBuildWarnings carries its FINDINGs.
 var knownUnregisteredRanks = map[string]string{
-	"druid: druid-feral-bear Primal Bite rank 1 (id 407995) is not a registered engine spell at levels [50 59 60]": "FINDING: the engine registers only the highest Primal Bite rank learned; the bear rotation casts rank 3, which resolves to rank 2 at 50-59, so nothing is cast at rank 1 there today",
+	"druid: druid-feral-bear Primal Bite rank 1 (id 407995) is not a registered engine spell at levels [50 59 60]": "FINDING: the engine registers only the highest Primal Bite rank learned; the bear rotation casts rank 3, which resolves to rank 2 at 50-59, so nothing is cast at rank 1 there today. Every rank costs the same 20 rage on the same cooldown, so a lower rank never wins (round 19 druid)",
 	"druid: druid-feral-bear Primal Bite rank 2 (id 1238069) is not a registered engine spell at levels [60]":      "FINDING: as rank 1; at 60 the rotation casts rank 3",
-	"druid: druid-feral-bear Primal Bite rank 4 (id 1238073) is not a registered engine spell at levels [60]":      "FINDING: spellranks.json lists a rank 4 learned at 60 beside rank 3; the engine knows no rank 4, and the bear rotation authors rank 3",
+	"druid: druid-feral-bear Primal Bite rank 4 (id 1238073) is not a registered engine spell at levels [60]":      "FINDING, not a bug (round 19 druid): 1238073 has no SkillLineAbility row, so no trainer, talent or item teaches it, and trainables/druid.json omits it; its client rows equal rank 3 (77 plus 100% weapon damage, 6 s cooldown, same category and class mask). spellranks.json lists it by its 'Rank 4' subtext only",
 }
 
 // probeFamily is one ranked spell a spec casts: its name and an id of it.
