@@ -299,3 +299,24 @@ Almost every finding was a slip in a round 10 rewrite:
 
 Verdict: NOT zero, round 12 needed.
 Rendered review: wow-player SHIP for druid, shaman, mage, paladin, priest and rogue. Two page-text MUSTs are fixed: the Enhancement summary now says imbue, not Windfury, and Venom's 20 percentage points now has its unit.
+
+## Round 12 (client 1.60.1.70755, 2026-11-04)
+
+Built on main a8b147a6f (eleven guide rounds, guide-header-build, engine pin 9f7f1f6e4).
+
+Audit CONFIRMED by class: druid 2, mage 2, paladin 1. Warrior, warlock, shaman, hunter, priest and rogue had 0 confirmed. Rogue had 1 likely finding, also fixed. Total 5. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5.
+
+All five are refinements of rewrites from rounds 10 and 11:
+
+- Consecration ranks, once spell power is counted
+- Feral Instinct is the Brutal Impact row filler
+- the Restoration tank Rejuvenation note is "from 28 to 49"
+- the Arcane leveling loop has no Arcane Wrath or Pyroblast
+- Frost Channeling only arrives at 58
+
+Production on a8b147a6f shows rounds 10 and 11. Arcane and Feral prose agree with the new raid-build header and rank chips.
+
+Verdict: NOT zero, so round 13 is needed. Six of nine classes are at zero.
+
+Open: DRUID-R12-3 (Feral raid build spends 2 points on Feral Instinct; sim it against Furor 2 or Thick Hide 2), race re-runs on the new builds, and the BiS re-rank on the shipped raid builds.
+Rendered review: wow-player SHIP for paladin, druid, mage, rogue and hunter. No MUSTs; two SHOULDs applied.

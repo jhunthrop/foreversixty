@@ -1926,7 +1926,7 @@ ns.Data = {
 				{ spellId = 1758, name = "Sinister Strike", condition = "Sinister Strike only before you have Mutilate." },
 			} },
 			{ level = 30, lines = {
-				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds." },
+				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds." },
 				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice at four or more combo points when it is down or has under 3 seconds left." },
 				{ spellId = 8639, name = "Rupture", condition = "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever." },
 				{ spellId = 14177, name = "Cold Blood", condition = "Cold Blood at four or more combo points, right before the Eviscerate." },
@@ -1934,7 +1934,7 @@ ns.Data = {
 				{ spellId = 1760, name = "Sinister Strike", condition = "Sinister Strike only before you have Mutilate." },
 			} },
 			{ level = 38, lines = {
-				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds." },
+				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds." },
 				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice at four or more combo points when it is down or has under 3 seconds left." },
 				{ spellId = 8640, name = "Rupture", condition = "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever." },
 				{ spellId = 14177, name = "Cold Blood", condition = "Cold Blood at four or more combo points, right before the Eviscerate." },
@@ -1942,7 +1942,7 @@ ns.Data = {
 				{ spellId = 8621, name = "Sinister Strike", condition = "Sinister Strike only before you have Mutilate." },
 			} },
 			{ level = 40, lines = {
-				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds." },
+				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds." },
 				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice at four or more combo points when it is down or has under 3 seconds left." },
 				{ spellId = 8640, name = "Rupture", condition = "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever." },
 				{ spellId = 14177, name = "Cold Blood", condition = "Cold Blood at four or more combo points, right before the Eviscerate." },
@@ -1951,7 +1951,7 @@ ns.Data = {
 				{ spellId = 8621, name = "Sinister Strike", condition = "Sinister Strike only before you have Mutilate." },
 			} },
 			{ level = 50, lines = {
-				{ spellId = 1329549, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds." },
+				{ spellId = 1329549, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds." },
 				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice at four or more combo points when it is down or has under 3 seconds left." },
 				{ spellId = 11273, name = "Rupture", condition = "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever." },
 				{ spellId = 14177, name = "Cold Blood", condition = "Cold Blood at four or more combo points, right before the Eviscerate." },
@@ -1960,7 +1960,7 @@ ns.Data = {
 				{ spellId = 11293, name = "Sinister Strike", condition = "Sinister Strike only before you have Mutilate." },
 			} },
 			{ level = 60, lines = {
-				{ spellId = 1329549, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds." },
+				{ spellId = 1329549, name = "Shank", condition = "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds." },
 				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice at four or more combo points when it is down or has under 3 seconds left." },
 				{ spellId = 11275, name = "Rupture", condition = "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever." },
 				{ spellId = 14177, name = "Cold Blood", condition = "Cold Blood at four or more combo points, right before the Eviscerate." },

@@ -11817,7 +11817,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11864,7 +11864,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11911,7 +11911,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11965,7 +11965,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -12019,7 +12019,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
