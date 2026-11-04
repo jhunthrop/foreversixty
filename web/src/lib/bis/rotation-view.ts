@@ -9,8 +9,10 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { canApplyBetween, knownAtFor } from './apl-level-gate';
+import { spellIcons } from '../data/build-files';
 import { loadAplSteps, type AplStep } from './apl-steps';
 import { collapseRuns, type CollapsedLine, type StepLine } from './rotation-collapse';
+import { isRealIcon } from '../icons/placeholder';
 
 function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -84,6 +86,15 @@ function loadTalentNames(build: string, classSlug: string): Set<string> {
  *  that icon into this build's tree. */
 function iconFileExists(build: string, icon: string): boolean {
   return existsSync(path.join(repoRoot(), 'data/builds', build, 'icons', `${icon}.webp`));
+}
+
+/** A line's icon: the build's own spell icon table first (addon-data.json trails it by a
+ *  regen, so a line can still carry the placeholder), then the line's stem; only a stem the
+ *  build ships a file for, and never the placeholder. */
+function lineIcon(build: string, line: RotationLine): string | undefined {
+  return [spellIcons(build)[String(line.spell_id)], line.icon].find(
+    (stem) => isRealIcon(stem) && iconFileExists(build, stem),
+  );
 }
 
 /** The band's own top level (spec §4.C.3): `band + 9` for every band but the last, which is
@@ -202,7 +213,7 @@ export function rotationLinesFor(
       name: line.name,
       rank,
       condition: alignNoteRank(line.condition, line.name, rank),
-      icon: line.icon !== undefined && iconFileExists(build, line.icon) ? line.icon : undefined,
+      icon: lineIcon(build, line),
       truncatedAtSource: line.condition.endsWith('…'),
       words: step?.words ?? null,
     });

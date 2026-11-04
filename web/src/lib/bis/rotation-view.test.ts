@@ -61,6 +61,19 @@ describe('rotationLinesFor', () => {
     expect(views[0].icon).toBeUndefined();
   });
 
+  // Round 16: addon-data.json trails spellicons.json by a regen, and a line built before the
+  // build's icon table named its spell carries the placeholder (Arms' Spearing Strike drew a
+  // red question mark). The build's own spell icon table wins over the line's stem.
+  it("reads the build's spell icon table before the line's own stem, never the placeholder", () => {
+    const build = '1.60.1.70755';
+    const entry: RotationEntry = {
+      level: 60,
+      lines: [{ spell_id: 1310222, name: 'Spearing Strike', condition: '', icon: 'inv_misc_questionmark' }],
+    };
+    const views = rotationLinesFor(entry, build, 'warrior', 'warrior-arms', 60);
+    expect(views[0].icon).toBe('inv_spear_01');
+  });
+
   it("omits icon when the build's icon tree has no file for the named stem", () => {
     const entry: RotationEntry = {
       level: 10,

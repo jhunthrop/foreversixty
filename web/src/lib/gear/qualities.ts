@@ -8,6 +8,7 @@
 // nothing is ever painted white and recoloured.
 import { loadItems } from '../planner/load';
 import { rarityClassFor } from '../planner/items';
+import { isRealIcon } from '../icons/placeholder';
 
 export interface GearItemFacts {
   /** Client value: 0 poor ... 5 legendary. */
@@ -19,9 +20,6 @@ export interface GearItemFacts {
 }
 
 export type GearItemTable = ReadonlyMap<number, GearItemFacts>;
-
-/** The pipeline's placeholder for an id it has no real icon for (bis/GearRow.astro). */
-const PLACEHOLDER_ICON = 'inv_misc_questionmark';
 
 const cache = new Map<string, Promise<GearItemTable>>();
 
@@ -38,7 +36,7 @@ export async function itemFacts(build: string, classSlug: string): Promise<GearI
             item.id,
             {
               quality: item.quality,
-              icon: item.icon === undefined || item.icon === PLACEHOLDER_ICON ? null : item.icon,
+              icon: isRealIcon(item.icon) ? item.icon : null,
               twoHand: item.two_hand === true,
             },
           ]),
