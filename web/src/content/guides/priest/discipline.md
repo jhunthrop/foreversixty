@@ -97,7 +97,7 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Races
 
-**Gnome** is the Alliance pick, though a Human is level with it. Eureka! makes your direct heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Penance's heals 10% stronger (never Renew): put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
+**Gnome** is the Alliance pick, for Eureka!: your direct heals are 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and so are Penance's heals (never Renew), so put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
 
 **Human** is level with Gnome, a hair ahead on a long tank fight, so take whichever you would rather play. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
 
