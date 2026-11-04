@@ -44,7 +44,7 @@ describe('GuideStatTable', () => {
       if (row.reading === 'not-on-items') {
         expect(html).toContain('Not on any item');
         expect(html).toContain(
-          `${row.label}: ${row.value!.toFixed(1)} per 1%, but no item at level 60 has it.`,
+          `${row.label}: ${row.value!.toFixed(1)} DPS per 1%, but no item at level 60 has it.`,
         );
       } else if (row.value === undefined) {
         expect(html).toContain('Not significant');
@@ -72,9 +72,60 @@ describe('GuideStatTable', () => {
       },
     });
 
-    expect(html).toContain('DPS per point');
+    // Fury prices hit and crit per rating point, so the column says so (round 20).
+    expect(html).toContain('DPS per point or rating');
     expect(html).toMatch(/Weight \([A-Za-z ]+ = 1\.00\)/);
     expect(html).not.toContain('guide-stat-table-updated');
+  });
+
+  it('sets the unit and rating lines apart from the muted notes (round 20)', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(GuideStatTable, {
+      props: {
+        build: BUILD,
+        spec: 'warrior-fury',
+        classSlug: 'warrior',
+        recommendedRaces: ['human', 'troll'],
+        statPriority: STAT_PRIORITY,
+      },
+    });
+
+    expect(html).toMatch(/class="stat-unit" data-testid="guide-stat-table-unit"/);
+    expect(html).toMatch(/class="stat-unit" data-testid="guide-stat-table-ratings"/);
+    expect(html).not.toMatch(/class="stat-note" data-testid="guide-stat-table-unit"/);
+  });
+
+  it('puts the hit cap on the headline and the breakdown on its own detail line (round 20)', async () => {
+    const file = loadBisFile('warrior-fury', BUILD);
+    if (file === null) throw new Error('warrior-fury BiS file missing');
+    const expected = guideHitCapLine(bandEntry(file, 60, 'alliance')?.hit_to_cap);
+    if (expected === undefined) throw new Error('the fixture Fury band publishes a hit cap');
+
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(GuideStatTable, {
+      props: {
+        build: BUILD,
+        spec: 'warrior-fury',
+        classSlug: 'warrior',
+        recommendedRaces: ['human', 'troll'],
+        statPriority: STAT_PRIORITY,
+      },
+    });
+
+    expect(html).toContain('data-testid="guide-stat-table-hit-cap"');
+    expect(html).toContain(expected.cap);
+    expect(html).not.toMatch(/data-testid="guide-stat-table-hit-cap">[^<]*·/);
+    if (expected.detail === undefined) {
+      expect(html).not.toContain('guide-stat-table-hit-cap-detail');
+    } else {
+      expect(html).toContain('data-testid="guide-stat-table-hit-cap-detail"');
+      expect(html).toContain(expected.detail);
+    }
+    // The split form, with the breakdown, is what the fixture carries for a mage.
+    const arcane = guideHitCapLine({ kind: 'spell', baseline: 6, spell: 10 }, [
+      { name: 'Precision', scope: 'spell', percent: 6 },
+    ]);
+    expect(arcane?.detail).toBe('6% from Precision, 10% still to find');
   });
 
   it('gives a tank its tank-score unit, never DPS, and no Expertise when nothing gives it', async () => {

@@ -37,6 +37,19 @@ export function isRelicSlot(slot: string, classSlug: string | undefined): boolea
   return slot === 'ranged' && classSlug !== undefined && RELIC_CLASSES.has(classSlug);
 }
 
+/** What each relic class calls its relics in prose, lowercase ("Wear any totem ..."). */
+const RELIC_NOUN_BY_CLASS: Readonly<Record<string, string>> = {
+  paladin: 'libram',
+  druid: 'idol',
+  shaman: 'totem',
+};
+
+/** The relic noun a sentence about `classSlug`'s relic slot uses: "libram", "idol", "totem",
+ *  and the plain "relic" for any other class (round 20, wow-player). */
+export function relicNoun(classSlug: string | undefined): string {
+  return (classSlug !== undefined && RELIC_NOUN_BY_CLASS[classSlug]) || 'relic';
+}
+
 function labelFrom(
   labels: Readonly<Record<string, string>>,
   slot: string,

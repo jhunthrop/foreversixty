@@ -5,6 +5,8 @@
 /** The unit a role's per-point and set figures are in: a tank's per-point figures are
  *  tank-score points (mitigation, risk and threat combined), never damage. */
 const ROLE_RATE_UNIT = { dps: 'DPS', healer: 'HPS', tank: 'tank score' } as const;
+/** The same units as a column header leads with them. */
+const ROLE_RATE_LABEL = { dps: 'DPS', healer: 'HPS', tank: 'Tank score' } as const;
 
 /** What a stat that adds nothing would have raised, by role. */
 const ROLE_OUTPUT = { dps: 'damage', healer: 'healing', tank: 'survival or threat' } as const;
@@ -104,15 +106,16 @@ export const guidesCopy = {
   racialsColumn: 'Racials',
 
   recommendedTag: 'Recommended',
-  /** The Stat priority headline: "Hit cap: 16% · 1% hit from BiS gear and buffs, 6% from
-   *  Precision, 9% still to find". Caps
-   *  arrive formatted with their own "%" (or as `capReached`); `split` arrives joined. */
-  hitToCap: (cap: string, split?: string): string =>
-    `Hit cap: ${cap}${split === undefined ? '' : ` · ${split}`}`,
+  /** The Stat priority headline's cap: "Hit cap: 16%". Caps arrive formatted with their own
+   *  "%" (or as `capReached`); the breakdown joins through `capWithDetail`. */
+  hitToCap: (cap: string): string => `Hit cap: ${cap}`,
   /** Several caps, each with what it is for (`capLabelled`, joined): "Hit cap: 9% (special
    *  attacks), 28% (white swings)", "Hit cap: reached (weapon attacks), 16% (spells)". */
-  hitToCapEach: (caps: string, split?: string): string =>
-    `Hit cap: ${caps}${split === undefined ? '' : ` · ${split}`}`,
+  hitToCapEach: (caps: string): string => `Hit cap: ${caps}`,
+  /** A cap line and its breakdown as one string: "Hit cap: 16% · 1% hit from BiS gear and
+   *  buffs, 6% from Precision, 9% still to find". The page sets the two apart. */
+  capWithDetail: (cap: string, detail: string | undefined): string =>
+    `${cap}${detail === undefined ? '' : ` · ${detail}`}`,
   /** One of those caps: "16% (spells)". */
   capLabelled: (cap: string, label: string): string => `${cap} (${label})`,
   capLabelSpecials: 'special attacks',
@@ -121,8 +124,8 @@ export const guidesCopy = {
   capLabelSpells: 'spells',
   /** The Stat priority note under the table: "Expertise cap: 6.5% (dodge)", parry added for a
    *  tank, "reached" for a cap the character is already past. */
-  expertiseCap: (dodge: string, parry: string | undefined, split?: string): string =>
-    `Expertise cap: ${dodge} (dodge)${parry === undefined ? '' : `, ${parry} (parry)`}${split === undefined ? '' : ` · ${split}`}`,
+  expertiseCap: (dodge: string, parry: string | undefined): string =>
+    `Expertise cap: ${dodge} (dodge)${parry === undefined ? '' : `, ${parry} (parry)`}`,
   capReached: 'reached',
   /** What the band's best-in-slot set and buffs already give toward a cap (`baseline` less its
    *  talents, which `capFrom` names one by one): "10.2% hit from BiS gear and buffs". Not "built
@@ -145,12 +148,10 @@ export const guidesCopy = {
   noGainNote: (labels: string, plural: boolean, role: GuideRole): string =>
     `${labels} ${plural ? 'show' : 'shows'} as "No gain": more of it does not raise your ${ROLE_OUTPUT[role]} at level 60.`,
   weightColumn: (anchor: string): string => `Weight (${anchor} = 1.00)`,
-  /** "DPS per point", "HPS per point", "Tank score per point". */
-  perPointColumn: {
-    dps: 'DPS per point',
-    healer: 'HPS per point',
-    tank: 'Tank score per point',
-  } as const satisfies Record<GuideRole, string>,
+  /** "DPS per point", "HPS per point", "Tank score per point"; "DPS per point or rating" when
+   *  the table prices a rating stat (hit, crit), whose point is a rating point. */
+  perPointColumn: (role: GuideRole, rated: boolean): string =>
+    `${ROLE_RATE_LABEL[role]} per point${rated ? ' or rating' : ''}`,
   /** "1 point of spell power = ...", or "1 hit rating = ..." for a rating stat. */
   unitLine: (stat: string, figure: string, role: GuideRole, rated = false): string =>
     rated
@@ -169,10 +170,10 @@ export const guidesCopy = {
   notOnItems: 'Not on any item',
   /** The note under the table for that row: "Spell haste: 8.1 per 1%, but no item at level 60
    *  has it." (the BiS rail's own haste caption, `bisCopy.weightsHasteCaption`, says the same). */
-  notOnItemsNote: (label: string, figure: string | undefined): string =>
+  notOnItemsNote: (label: string, figure: string | undefined, role: GuideRole = 'dps'): string =>
     figure === undefined
       ? `${label}: no item at level 60 has it.`
-      : `${label}: ${figure} per 1%, but no item at level 60 has it.`,
+      : `${label}: ${figure} ${ROLE_RATE_UNIT[role]} per 1%, but no item at level 60 has it.`,
   levelRangeLabel: (band: number): string => (band === 60 ? 'Level 60' : `Level ${band} to ${band + 9}`),
   // --- the leveling tree (design/specs/2026-11-04-leveling-tree.md) ---------------------------
   talentsByLevel: 'Talents by level',
