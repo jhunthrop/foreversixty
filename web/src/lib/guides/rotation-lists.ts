@@ -9,6 +9,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { CollapsedLine } from '../bis/rotation-collapse';
 import { repoRoot, spellIcons } from '../data/build-files';
+import { aplGates, gateWords, type AplGate } from '../bis/apl-gates';
 import type { RacialCooldown } from './race-table';
 
 export interface RotationItem {
@@ -116,34 +117,14 @@ function lineItem(line: CollapsedLine): RotationItem {
   };
 }
 
-/** A pre-pull cast's talent gate: the cast happens only when the aura `auraId` is (or is not)
- *  known, the shape a list uses to open differently with and without a talent. */
-export interface PrepullGate {
-  auraId: number;
-  known: boolean;
-}
-
 export interface PrepullCast {
   spellId: number;
   secondsBefore: number;
-  gate?: PrepullGate;
+  /** What the APL gates the cast on (`aplGates`): a talent known or not, an aura up or not. */
+  gates: AplGate[];
 }
 
-function knownAuraId(node: unknown): number | undefined {
-  if (!isNode(node) || !isNode(node.auraIsKnown) || !isNode(node.auraIsKnown.auraId)) return undefined;
-  const id = node.auraIsKnown.auraId.spellId;
-  return typeof id === 'number' ? id : undefined;
-}
-
-/** The talent gate of a pre-pull condition: `auraIsKnown` or `not auraIsKnown`, nothing else. */
-function gateOf(condition: unknown): PrepullGate | undefined {
-  const known = knownAuraId(condition);
-  if (known !== undefined) return { auraId: known, known: true };
-  const negated = isNode(condition) && isNode(condition.not) ? knownAuraId(condition.not.val) : undefined;
-  return negated === undefined ? undefined : { auraId: negated, known: false };
-}
-
-/** Pre-pull casts in the APL, in time order, each with its talent gate when it has one. */
+/** Pre-pull casts in the APL, in time order, each with the gates its condition holds. */
 export function prepullCasts(apl: unknown): PrepullCast[] {
   const list = isNode(apl) && isNode(apl.rotation) ? apl.rotation.prepullActions : undefined;
   if (!Array.isArray(list)) return [];
@@ -156,14 +137,27 @@ export function prepullCasts(apl: unknown): PrepullCast[] {
     if (!isNode(spell) || typeof spell.spellId !== 'number' || typeof at !== 'string') continue;
     const seconds = Number.parseFloat(at);
     if (!Number.isFinite(seconds)) continue;
-    const gate = gateOf(entry.action.condition);
     casts.push({
       spellId: spell.spellId,
       secondsBefore: Math.abs(seconds),
-      ...(gate === undefined ? {} : { gate }),
+      gates: aplGates(entry.action.condition),
     });
   }
   return casts.sort((a, b) => b.secondsBefore - a.secondsBefore);
+}
+
+/** A pre-pull cast gated on an aura being on the target goes out before the pull only when an
+ *  earlier pre-pull cast puts that aura there (Hunter's Mark); otherwise the target carries no
+ *  aura yet and the cast is one the fight makes later (Retribution's Seal of Command waits for
+ *  Judgement of the Crusader), so the opener does not list it. */
+function canGoOutBeforePull(cast: PrepullCast, earlier: readonly PrepullCast[]): boolean {
+  return cast.gates.every(
+    (gate) =>
+      gate.kind !== 'active' ||
+      !gate.onTarget ||
+      !gate.positive ||
+      earlier.some((before) => before.spellId === gate.spellId),
+  );
 }
 
 /** Whether the APL hands the on-use cooldowns (trinkets, racials, potions) to the engine's
@@ -185,12 +179,30 @@ function whenText(secondsBefore: number): string {
   return secondsBefore === 0 ? 'On the pull' : `${secondsText(secondsBefore)} before the pull`;
 }
 
-/** ", with Unsealed Wrath" for a gated pre-pull cast; empty when ungated or the aura is unnamed. */
-function gateText(gate: PrepullGate | undefined, spellFacts: SpellLookup): string {
-  if (gate === undefined) return '';
-  const name = spellFacts(gate.auraId)?.name;
-  if (name === undefined) return '';
-  return `, ${gate.known ? 'with' : 'without'} ${name}`;
+/** ", with Unsealed Wrath, once Judgement of the Crusader is on the target" for a gated step;
+ *  empty when ungated. A gate whose spell the data cannot name is left out. */
+function gateText(gates: readonly AplGate[], spellFacts: SpellLookup): string {
+  return gates
+    .flatMap((gate) => {
+      const name = spellFacts(gate.spellId)?.name;
+      return name === undefined ? [] : [`, ${gateWords(gate, name)}`];
+    })
+    .join('');
+}
+
+/** A priority row's clause with the talents it is gated on that its note does not already
+ *  name ("With Heating Up" on an Arcane Fireball line with no note). Only talent gates: an
+ *  aura or resource condition is what the note explains. */
+function withTalentGates(clause: string, gates: readonly AplGate[], spellFacts: SpellLookup): string {
+  const words = gates.flatMap((gate) => {
+    const name = gate.kind === 'known' ? spellFacts(gate.spellId)?.name : undefined;
+    return name === undefined || clause.toLowerCase().includes(name.toLowerCase())
+      ? []
+      : [gateWords(gate, name)];
+  });
+  if (words.length === 0) return clause;
+  const joined = words.join(', ');
+  return clause === '' ? upperFirst(joined) : `${clause}, ${joined}`;
 }
 
 export function rotationListsFrom(
@@ -206,7 +218,10 @@ export function rotationListsFrom(
   /** The guide's role; a healer's trinket line is worded by healing. */
   role: GuideRole = 'dps',
 ): RotationLists {
-  const priority = lines.map(lineItem);
+  const priority = lines.map((line) => {
+    const item = lineItem(line);
+    return { ...item, clause: withTalentGates(item.clause, line.gates ?? [], spellFacts) };
+  });
 
   // The opener is the APL's pre-pull casts and nothing else: with none, there is no opener to
   // print (a row that is not a spell is not an opener step).
@@ -215,15 +230,16 @@ export function rotationListsFrom(
     priority.filter((item) => item.icon !== undefined).map((item) => [item.name, item.icon]),
   );
   const opener: RotationItem[] = [];
-  for (const cast of prepullCasts(apl)) {
+  const casts = prepullCasts(apl);
+  for (const [index, cast] of casts.entries()) {
     const facts = spellFacts(cast.spellId);
-    if (facts === undefined) continue;
+    if (facts === undefined || !canGoOutBeforePull(cast, casts.slice(0, index))) continue;
     opener.push({
       spellId: cast.spellId,
       name: facts.name,
       rank: facts.rank,
       icon: facts.icon ?? lineIcons.get(facts.name),
-      clause: `${whenText(cast.secondsBefore)}${gateText(cast.gate, spellFacts)}`,
+      clause: `${whenText(cast.secondsBefore)}${gateText(cast.gates, spellFacts)}`,
     });
   }
 
