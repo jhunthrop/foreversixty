@@ -7,7 +7,18 @@ build: 'FS1:1.60.1.70755:druid:night-elf:5232220115101151/0/555301:'
 raidBuild: 'FS1:1.60.1.70755:druid:night-elf:5232220115501351/0/505003:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
-  [Spell power, Arcane power, Hit, Nature power, Critical strike, MP5, Intellect, Spirit, Spell haste, Spell penetration]
+  [
+    Spell power,
+    Arcane power,
+    Hit,
+    Nature power,
+    Critical strike,
+    MP5,
+    Intellect,
+    Spirit,
+    Spell haste,
+    Spell penetration,
+  ]
 description: 'Moonkin in Forever: the build, Eclipse with Wrath into Starfire, Moonfire and Insect Swarm upkeep, Innervate and mana.'
 updated: 2026-11-02
 confidence: inferred

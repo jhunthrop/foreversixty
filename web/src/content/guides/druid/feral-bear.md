@@ -5,8 +5,7 @@ spec: feral-bear
 role: tank
 build: 'FS1:1.60.1.70755:druid:night-elf:0/5523033202310212551/051:'
 recommendedRaces: [night-elf, tauren]
-statPriority:
-  [Defense, Stamina, Dodge, Agility, Armor, Hit, Critical strike, Strength, Attack power]
+statPriority: [Defense, Stamina, Dodge, Agility, Armor, Hit, Critical strike, Strength, Attack power]
 description: 'Bear tanking in Forever: the build, the threat opener, Lacerate and Primal Bite, cooldowns, and the potions a bear can drink in form.'
 updated: 2026-11-02
 confidence: inferred
