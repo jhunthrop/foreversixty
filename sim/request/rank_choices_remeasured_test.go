@@ -130,7 +130,8 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		// of Healing rank 1 at bare 60. (Corruption rank 3 at 40 was one; round 14 found it ties
 		// for every race, and the row is gone: see below.)
 		{"Gnome Fire Blast at 30", "mage-fire", "mage", BarePreset, "gnome", 30, 2138, 8412},
-		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 596, 10961},
+		// Sim-accuracy round 18: rank 2 (996, whole at 60) beats rank 1 (596, 55% of its bonus) at bare 60.
+		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 996, 596},
 		// Protection's Holy Strike rank 1 (679) at 40: the mana it saves buys more Judgements
 		// and Hammers of the Righteous (+0.6% to +0.9% threat for every paladin race).
 		{"Dwarf Holy Strike at 40", "paladin-protection", "paladin", BarePreset, "dwarf", 40, 679, 2495},

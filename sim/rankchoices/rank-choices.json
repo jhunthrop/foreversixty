@@ -423,9 +423,9 @@
           {
             "from_level": 60,
             "to_level": 60,
-            "rank": 1,
+            "rank": 2,
             "preset": "bare",
-            "note": "Rank 1 at bare 60: Dwarf +0.2%; every other race within the 0.2% healer bar (Gnome -0.2%, Troll +0.2%/+0.16%), so no race key (round-13 ranks.md; healers lane to recheck on the new level-60 split)."
+            "note": "Sim-accuracy round 18 (10,000 iterations, seeds 1 and 50001): rank 2 at bare 60. Rank 1 keeps only 55% of its bonus at 60 (MaxLevel 39), rank 2 all of it; rank 2 beats the top rank by 0.5% (Horde) and 0.6% (Alliance) and rank 1 by 0.4% (Horde) and 0.1% (Alliance)."
           }
         ]
       },
