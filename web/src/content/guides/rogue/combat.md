@@ -3,8 +3,8 @@ title: Combat Rogue in Forever
 classSlug: rogue
 spec: combat
 role: dps
-build: 'FS1:1.60.1.70753:rogue:night-elf:32531/32530300001515201/51:'
-raidBuild: 'FS1:1.60.1.70753:rogue:night-elf:005320105/31530300001515231/002:'
+build: 'FS1:1.60.1.70755:rogue:night-elf:325301/3153030000012321541/03:'
+raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:005203002/3243030000012321451/005:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
 description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents that matter.'
@@ -49,16 +49,18 @@ Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from be
 
 ## Talents and builds
 
-The raid build goes 16/33/2: Combat to Adrenaline Rush, Assassination for Malice, Lethality and the finisher talents, two points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: Improved Gouge and Remorseless Attacks in place of Lethality and Relentless Strikes, which pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
+The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of Flash of Steel, Assassination for Malice, Ruthlessness, Improved Slice and Dice and Lethality, and five points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: 14/34/3, with Improved Gouge and Remorseless Attacks in place of Lethality, Master of Deception in place of Opportunity, and the fifth points of Hack and Slash and Lightning Reflexes. That pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
 
 - **Adrenaline Rush** (1 point): double energy regeneration for 15 seconds on a 5 minute cooldown. Every Backstab you fit into it is a free one.
 - **Blade Flurry** (1 point): 20% attack speed for 15 seconds, and every melee hit also strikes a second nearby enemy. Two-target fights are where Combat beats the other trees.
-- **Hack and Slash** (5 points): Forever folds the old weapon specializations into one talent. Daggers and fists get 5% crit, swords and axes a 5% chance at an extra attack, maces ignore 15% of armor.
+- **Hack and Slash** (5 points, 4 in the raid build): Forever folds the old weapon specializations into one talent. At five points daggers and fists get 5% crit, swords and axes a 5% chance at an extra attack, maces ignore 15% of armor.
+- **Flash of Steel** (5 points, 4 in the level 60 build): Shank gives 15 more energy and comes back 2 seconds sooner. At five points that is 40 energy for 5 every 8 seconds, the best energy in the tree.
 - **Weapon Expertise** (2 points): 2% less chance to be dodged or parried. Every dodged Backstab is a wasted global and a combo point you did not get.
-- **Dual Wield Specialization** (5 points): 25% more off-hand damage on every off-hand swing.
+- **Dual Wield Specialization** (2 points): 50% more off-hand damage on every off-hand swing.
 - **Puncturing Wounds** (3 points): 30% more crit on Backstab and a 45% chance at a second combo point. This is what makes daggers the Combat weapon in Forever.
+- **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
-In the raid build, Lethality makes Backstab crits hit 20% harder, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Aggression adds 6% to Backstab and Eviscerate. Improved Eviscerate, Flawless Execution, Ruthlessness and Relentless Strikes all feed the finisher. Murder only works on Humanoid and Giant targets: check the boss's type before you count on it, and enjoy it on every humanoid trash pull. Lightning Reflexes and the first point of Improved Sinister Strike are the points that get you down the tree.
+In the raid build, Lethality makes Backstab crits hit 20% harder, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes energy off Sinister Strike, 3 at one point and 5 at two: it is your builder's discount in the level 60 build and, with Lightning Reflexes, a step down the tree in the raid build.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -66,17 +68,17 @@ In the raid build, Lethality makes Backstab crits hit 20% harder, and with Punct
 
 ### The pull
 
-Check your poisons and stones before the pull. Stealth before the pull, walk in behind the boss, and open with **Garrote** once the tank has the boss. Garrote is a bleed, so the boss having no Sunders on it yet costs it nothing, and it gives you the combo point for Slice and Dice. Backstab out of stealth is the second best opener; Ambush is the weakest one for Combat, because none of Puncturing Wounds, Lethality or Aggression touch it. Cheap Shot is for trash: bosses are immune to stuns.
+Check your poisons and stones before the pull. Stealth before the pull, walk in behind the boss, and open with **Garrote** once the tank has the boss. Garrote is a bleed, so the boss having no Sunders on it yet costs it nothing, and it gives you the combo point for Slice and Dice. Backstab out of stealth is the second best opener; Ambush is the weakest one for Combat, because Puncturing Wounds and Lethality never touch it. Cheap Shot is for trash: bosses are immune to stuns.
 
 Every rogue picks up **Poised** at 18: at full energy out of combat, your next ability costs less. Stand at full energy in stealth before you open.
 
 ### The priority
 
-Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Sinister Strike only builds with a sword, axe, mace or fist in the main hand. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
+**Shank** on cooldown, right behind your racial and trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Sinister Strike only builds with a sword, axe, mace or fist in the main hand. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
 
 ### Energy
 
-Backstab costs 60 and you are energy-limited all fight, so you spend the moment you can and wait on energy rather than clip anything. Never sit at full energy: anything over the cap is lost. Press **Adrenaline Rush** low on energy, never at the cap: on the pull, Garrote and one Backstab first, then Adrenaline Rush. Blade Flurry costs 25 and can go at any energy. Before an add you know is coming, let energy climb a little so the first cleaved swings have Backstabs behind them.
+Backstab costs 60 and you are energy-limited all fight, so you spend the moment you can and wait on energy rather than clip anything. Never sit at full energy: anything over the cap is lost. Press **Adrenaline Rush** low on energy, never at the cap: on the pull, Garrote and one Backstab first, then Adrenaline Rush. Blade Flurry costs 25 and can go at any energy. Shank is energy too: never let it sit ready, and press it before Backstab when both are up. Before an add you know is coming, let energy climb a little so the first cleaved swings have Backstabs behind them.
 
 **Thistle Tea** gives 100 energy on a 5 minute cooldown. Drink it when you are near empty, never during Adrenaline Rush.
 
@@ -99,7 +101,7 @@ Hit comes first: a missed Backstab is a wasted global and a lost combo point, an
 
 ## Best in slot
 
-Combat wants **daggers at 60**. Hack and Slash gives daggers crit, and Backstab, Puncturing Wounds and Aggression stack on top of that, so daggers beat swords and axes in Forever. Keep a sword or axe for leveling and for any fight where you cannot stay behind the target. The off hand only needs to be fast and hit hard; Dual Wield Specialization makes it worth a real upgrade.
+Combat wants **daggers at 60**. Hack and Slash gives daggers crit, and Backstab, Puncturing Wounds, Lethality and Opportunity stack on top of that, so daggers beat swords and axes in Forever. Keep a sword or axe for leveling and for any fight where you cannot stay behind the target. The off hand only needs to be fast and hit hard; Dual Wield Specialization makes it worth a real upgrade.
 
 ## Enchants and consumables
 
@@ -115,4 +117,4 @@ Night Elf on Alliance and Troll on Horde. **Elune's Light** is 10% crit for 15 s
 
 ## Leveling
 
-Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. Open with Cheap Shot or Garrote from stealth, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Improved Gouge and Remorseless Attacks make that trick and back-to-back pulls faster. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and Vanish get you out of the pulls that go wrong.
+Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. Open with Cheap Shot or Garrote from stealth, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Efficient Strikes and Aggression make every Sinister Strike cheaper and harder, and Improved Gouge and Remorseless Attacks make the Gouge trick and back-to-back pulls faster. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and Vanish get you out of the pulls that go wrong.

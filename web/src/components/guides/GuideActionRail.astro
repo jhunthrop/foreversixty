@@ -16,6 +16,8 @@ import { dataUrl } from '../../lib/planner/load';
 import type { DecodedTreeView } from '../../lib/guides/build-tree';
 import { railStatValueText, type RailStatRow } from '../../lib/guides/rail-stats';
 import type { RotationLineView } from '../../lib/bis/rotation-view';
+import { lineTipKey } from '../../lib/guides/guide-tips';
+import type { GuideTipBundle } from '../../lib/tooltips/game-tip';
 
 interface Props {
   build: string;
@@ -24,9 +26,12 @@ interface Props {
   rotationBandLabel: string;
   rotationLines: RotationLineView[];
   statRows: RailStatRow[];
+  /** The guide's tooltip data: each rotation line opens its spell's game tooltip. */
+  tips: GuideTipBundle;
 }
 
-const { build, buildCode, trees, rotationBandLabel, rotationLines, statRows } = Astro.props;
+const { build, buildCode, trees, rotationBandLabel, rotationLines, statRows, tips } = Astro.props;
+const tipKey = (line: RotationLineView): string | undefined => lineTipKey(tips, line.spellId, line.name);
 
 // Ruling (round-1 fix, owner): a spec with no ranked BiS file (Protection) has no real
 // per-point numbers to show, so the Stat priority card is omitted rather than rendered with
@@ -92,7 +97,12 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
       >
         <ul class="guide-rail-rotation-lines">
           {rotationLines.map((line) => (
-            <li class="guide-rail-rotation-line" data-testid={`guide-rail-rotation-line-${line.spellId}`}>
+            <li
+              class:list={['guide-rail-rotation-line', tipKey(line) !== undefined && 'gtip']}
+              data-testid={`guide-rail-rotation-line-${line.spellId}`}
+              tabindex={tipKey(line) !== undefined ? 0 : undefined}
+              data-game-tip={tipKey(line)}
+            >
               {line.icon !== undefined ? (
                 <img
                   src={dataUrl(build, `icons/${line.icon}.webp`)}

@@ -9,7 +9,7 @@
      Rebuild spec §4.G/§11 (owner ruling): the Gear tab is withdrawn with GearPanel itself --
      a planner build spans only its talent trees now, so this strip switches between trees
      alone. Rebuild spec §4.E.1: each tree's header (and, below md, its own tab) now carries
-     the spec's own 28px icon from `data/curated/specs.json` -- a label, not a second
+     the spec's own 28px icon from the spec-icon map (`lib/sim/specs.ts`) -- a label, not a second
      navigation action; the phone tab strip's `role="tab"` buttons are still the only thing
      that switches the visible panel. -->
 <script lang="ts">

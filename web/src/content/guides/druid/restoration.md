@@ -3,7 +3,7 @@ title: Restoration Druid in Forever
 classSlug: druid
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.70753:druid:night-elf:05312001/0/55530051531132:'
+build: 'FS1:1.60.1.70755:druid:night-elf:05312001/0/55530051531132:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Restoration in Forever: the build, Rejuvenation and Regrowth ranks, Swiftmend that keeps the HoT, Bloom, Wild Growth and Innervate.'
@@ -96,7 +96,7 @@ Potions and runes work in any form in Forever, though you heal in caster form an
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren gets more health, which keeps you alive through raid damage. Alliance Skyborne get Read Leyline, a burst of mana regeneration a druid healer can press every fight. The sim does not cast it on its own; add it to a custom rotation to see it.
+Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren gets more health, which keeps you alive through raid damage. Alliance Skyborne get Read Leyline, a burst of mana regeneration a druid healer can press every fight.
 
 ## Professions
 

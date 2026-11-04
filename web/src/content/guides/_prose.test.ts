@@ -47,6 +47,10 @@ export const BANNED_PROSE = {
     'our simulator',
     'the simulator',
     'the sim found',
+    'the sim',
+    // "sim" or "sims" as a word ("the sim keeps it up", "Sims show"); a link path
+    // ("/sim/weights") and the engine's name ("wowsims") pass.
+    /(?<![\w/-])[Ss]ims?(?![\w/-])/,
     'search run',
     'the search',
     'our search',

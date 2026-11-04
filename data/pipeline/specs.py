@@ -1,9 +1,19 @@
-"""The canonical spec list, and the Go and TypeScript generated from it.
+"""The canonical spec list, and the Go, TypeScript and JSON generated from it.
 
 The interface contract is explicit: `data/curated/specs.json` is the list and
-"nothing hardcodes a spec list elsewhere". The two generated files it names --
-`sim/specs/specs.go` and `web/src/lib/sim/specs.ts` -- are consumed by the
-engine, api and web lanes, so their shape is contract too.
+"nothing hardcodes a spec list elsewhere". The generated files --
+`sim/specs/specs.go`, `web/src/lib/sim/specs.ts` and `web/src/data/specs.json`
+(the copy the iOS and Android apps bundle) -- are consumed by the engine, api,
+web and app lanes, so their shape is contract too.
+
+They are also the one spec-icon map. Each spec's icon is read off the active
+build's client data at generation time, never curated: its tree's own
+`TalentTab` icon (`talents/<class>.json`'s `trees[].icon`, from
+`TalentTab.SpellIconID`), or, for a spec the client does not give a tree of its
+own, the icon of the spell `form_spell` names (Cat Form for Feral, Dire Bear
+Form for Feral Bear), from `spellicons.json`. The build is named in each
+generated header, so a client move that changes an icon fails `specs --check`
+until the map is regenerated (tools/activate-build.sh does that).
 
 `tree_index` is the tree `position` the pipeline writes into
 `builds/<build>/talents/<class-slug>.json`. One spec name deliberately differs
@@ -23,6 +33,11 @@ ROLES = frozenset({"dps", "tank", "healer"})
 
 GO_PATH = Path("../sim/specs/specs.go")
 TS_PATH = Path("../web/src/lib/sim/specs.ts")
+#: The catalogue as JSON, for readers that are neither Go nor TypeScript: the
+#: iOS and Android apps bundle it.
+JSON_PATH = Path("../web/src/data/specs.json")
+#: The build the site serves; its client tables are where every spec icon comes from.
+ACTIVE_BUILD_PATH = Path("../web/src/data/active-build.json")
 # web/.prettierrc printWidth; the TypeScript renderer breaks lists the way prettier would.
 TS_PRINT_WIDTH = 110
 
@@ -74,18 +89,73 @@ def load_specs(curated_dir: Path = Path("curated")) -> list[SpecRecord]:
             )
         if record.spec in seen:
             raise SpecError(f"specs.json names {record.spec} twice")
-        if not record.icon:
-            raise SpecError(
-                f"spec {record.spec} has an empty icon; every spec needs its own "
-                f"talent-tab icon (tenet 3) -- see SpecRecord.icon's own doc for "
-                f"where to read one off the client"
-            )
         seen.add(record.spec)
         records.append(record)
     return sorted(records, key=lambda record: (record.class_slug, record.tree_index))
 
 
-def render_go(specs: list[SpecRecord]) -> str:
+def active_build_dir(
+    root: Path = Path("builds"), active_build_path: Path = ACTIVE_BUILD_PATH
+) -> Path:
+    """`builds/<build>` for the build web/src/data/active-build.json names."""
+    if not active_build_path.exists():
+        raise SpecError(f"missing {active_build_path}")
+    return root / str(json.loads(active_build_path.read_text(encoding="utf-8"))["build"])
+
+
+def _tree_icons(build_dir: Path, class_slug: str) -> dict[int, str]:
+    path = build_dir / "talents" / f"{class_slug}.json"
+    if not path.exists():
+        raise SpecError(f"missing {path}; the spec icons are read from it")
+    trees = json.loads(path.read_text(encoding="utf-8"))["trees"]
+    return {int(tree["position"]): str(tree.get("icon") or "") for tree in trees}
+
+
+def _spell_icons(build_dir: Path) -> dict[int, str]:
+    path = build_dir / "spellicons.json"
+    if not path.exists():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return {int(key): str(value) for key, value in payload.items()}
+
+
+def spec_icons(specs: list[SpecRecord], build_dir: Path) -> dict[str, str]:
+    """spec key -> icon name, read off this build's client data (module doc).
+
+    Refuses a spec with no icon, and two specs of one class drawn with the same
+    icon: Feral and Feral Bear share a tree, which is what `form_spell` is for.
+    """
+    tree_icons = {s.class_slug: _tree_icons(build_dir, s.class_slug) for s in specs}
+    spell_icons = _spell_icons(build_dir)
+    icons: dict[str, str] = {}
+    for spec in specs:
+        if spec.form_spell is not None:
+            icon = spell_icons.get(spec.form_spell, "")
+            where = f"spell {spec.form_spell} in {build_dir / 'spellicons.json'}"
+        else:
+            icon = tree_icons[spec.class_slug].get(spec.tree_index, "")
+            where = f"tree {spec.tree_index} of {build_dir / 'talents' / spec.class_slug}.json"
+        if not icon:
+            raise SpecError(f"spec {spec.spec} has no icon at {where}")
+        icons[spec.spec] = icon
+    for class_slug in sorted({s.class_slug for s in specs}):
+        mine = [icons[s.spec] for s in specs if s.class_slug == class_slug]
+        if len(set(mine)) != len(mine):
+            raise SpecError(
+                f"two {class_slug} specs share an icon ({sorted(mine)}); give the spec "
+                f"without a tree of its own a form_spell"
+            )
+    return icons
+
+
+def _source(build: str) -> str:
+    return (
+        f"// Source: data/curated/specs.json; icons from data/builds/{build} "
+        f"(TalentTab, form spells)"
+    )
+
+
+def render_go(specs: list[SpecRecord], icons: dict[str, str], build: str) -> str:
     def weight_stats_literal(stats: list[str]) -> str:
         quoted = ", ".join(f'"{stat}"' for stat in stats)
         return f"[]string{{{quoted}}}"
@@ -94,11 +164,11 @@ def render_go(specs: list[SpecRecord]) -> str:
         f'\t{{Spec: "{s.spec}", ClassSlug: "{s.class_slug}", SpecSlug: "{s.spec_slug}", '
         f'Name: "{s.name}", Role: "{s.role}", TreeIndex: {s.tree_index}, '
         f'ReferenceStat: "{s.reference_stat}", '
-        f'WeightStats: {weight_stats_literal(s.weight_stats)}, Icon: "{s.icon}"}},'
+        f'WeightStats: {weight_stats_literal(s.weight_stats)}, Icon: "{icons[s.spec]}"}},'
         for s in specs
     )
     return f"""{GENERATED}
-// Source: data/curated/specs.json
+{_source(build)}
 
 // Package specs is the canonical list of playable specialisations.
 package specs
@@ -118,9 +188,9 @@ type Spec struct {{
 \t// is never asked about spirit and a caster never sees unexplained
 \t// zeros for expertise. ReferenceStat is always one of them.
 \tWeightStats []string `json:"weight_stats"`
-\t// Icon is the spec's own talent-tab icon (tenet 3), a lowercase file
-\t// name with no extension -- the same convention /data/<build>/icons/
-\t// serves talent and item icons under.
+\t// Icon is the spec's icon from the active client: its tree's TalentTab
+\t// icon, or its form spell's (Feral, Feral Bear). A lowercase file name
+\t// with no extension, served under /data/<build>/icons/.
 \tIcon string `json:"icon"`
 }}
 
@@ -140,7 +210,7 @@ var ByKey = func() map[string]Spec {{
 """
 
 
-def render_ts(specs: list[SpecRecord]) -> str:
+def render_ts(specs: list[SpecRecord], icons: dict[str, str], build: str) -> str:
     def weight_stats_literal(stats: list[str]) -> str:
         # Prettier's rule, so a regenerated file is byte-identical to a
         # formatted one: the list stays on one line while the whole row fits
@@ -161,12 +231,12 @@ def render_ts(specs: list[SpecRecord]) -> str:
         f"    tree_index: {s.tree_index},\n"
         f"    reference_stat: '{s.reference_stat}',\n"
         f"    weight_stats: {weight_stats_literal(s.weight_stats)},\n"
-        f"    icon: '{s.icon}',\n"
+        f"    icon: '{icons[s.spec]}',\n"
         f"  }},"
         for s in specs
     )
     return f"""{GENERATED}
-// Source: data/curated/specs.json
+{_source(build)}
 
 export type SpecRole = 'dps' | 'tank' | 'healer';
 
@@ -180,9 +250,13 @@ export interface Spec {{
   reference_stat: string;
   /** The closed list of stats /sim/weights offers; reference_stat is always one of them. */
   weight_stats: readonly string[];
-  /** The spec's own talent-tab icon (tenet 3): a lowercase file name, no extension. */
+  /** The spec's icon from the active client: its tree's TalentTab icon, or its form spell's
+   *  (Feral, Feral Bear). A lowercase file name, no extension. The one spec-icon map. */
   icon: string;
 }}
+
+/** The build whose client data the icons were read from. */
+export const SPEC_ICON_BUILD = '{build}';
 
 /** Every spec, ordered by class slug then talent tree position. */
 export const SPECS: readonly Spec[] = [
@@ -196,39 +270,57 @@ export const SPEC_BY_KEY: Readonly<Record<string, Spec>> = Object.fromEntries(
 """
 
 
+def render_json(specs: list[SpecRecord], icons: dict[str, str]) -> str:
+    """curated/specs.json's own row shape with the resolved icon, one row a line."""
+    rows = [{**spec.model_dump(exclude={"form_spell"}), "icon": icons[spec.spec]} for spec in specs]
+    return "[\n" + ",\n".join(f"  {json.dumps(row)}" for row in rows) + "\n]\n"
+
+
 def _rendered(
-    curated_dir: Path, go_path: Path, ts_path: Path
+    curated_dir: Path, build_dir: Path, go_path: Path, ts_path: Path, json_path: Path
 ) -> tuple[tuple[Path, str], ...]:
     specs = load_specs(curated_dir)
-    return ((go_path, render_go(specs)), (ts_path, render_ts(specs)))
+    icons = spec_icons(specs, build_dir)
+    build = build_dir.name
+    return (
+        (go_path, render_go(specs, icons, build)),
+        (ts_path, render_ts(specs, icons, build)),
+        (json_path, render_json(specs, icons)),
+    )
 
 
 def write_specs(
-    curated_dir: Path = Path("curated"),
+    curated_dir: Path,
+    build_dir: Path,
     go_path: Path = GO_PATH,
     ts_path: Path = TS_PATH,
-) -> tuple[Path, Path]:
-    for path, source in _rendered(curated_dir, go_path, ts_path):
+    json_path: Path = JSON_PATH,
+) -> tuple[Path, ...]:
+    rendered = _rendered(curated_dir, build_dir, go_path, ts_path, json_path)
+    for path, source in rendered:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(source, encoding="utf-8")
-    return go_path, ts_path
+    return tuple(path for path, _ in rendered)
 
 
 def check_specs(
-    curated_dir: Path = Path("curated"),
+    curated_dir: Path,
+    build_dir: Path,
     go_path: Path = GO_PATH,
     ts_path: Path = TS_PATH,
+    json_path: Path = JSON_PATH,
 ) -> list[Path]:
-    """The generated files that no longer match the curated list.
+    """The generated files that no longer match the curated list and the build's icons.
 
     `specs` is not a per-build emitter, so CI's build job never runs it; the
     drift gate is this, run in the test job and by tests/test_specs.py. It
-    catches an edit to `curated/specs.json` that was never regenerated *and*
-    an edit made straight to a generated file, which is why it compares
-    contents rather than timestamps.
+    catches an edit to `curated/specs.json` that was never regenerated, a
+    client move that changed a tab or form icon, *and* an edit made straight
+    to a generated file, which is why it compares contents rather than
+    timestamps.
     """
     return [
         path
-        for path, source in _rendered(curated_dir, go_path, ts_path)
+        for path, source in _rendered(curated_dir, build_dir, go_path, ts_path, json_path)
         if not path.exists() or path.read_text(encoding="utf-8") != source
     ]

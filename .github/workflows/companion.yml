@@ -102,13 +102,22 @@ jobs:
             echo "$unformatted"
             exit 1
           fi
+      # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode"): gofmt, vet and the headless
+      # build; the tests, the coverage floor and the window build are skipped. The job still
+      # succeeds, so a release from main is unchanged.
       - name: lua5.1 for the addon contract golden test
+        if: vars.LAUNCH_MODE != 'true'
         # contracts_test.go loads the rendered inbox under the client's Lua; with CI set it
         # fails, rather than logs, when no interpreter is found.
         run: sudo apt-get update && sudo apt-get install -y lua5.1
       - run: go vet -tags "$HEADLESS_TAGS" ./...
-      - run: go test -tags "$HEADLESS_TAGS" ./... -race -coverprofile=cover.out -coverpkg=./...
+      - name: go build (launch mode)
+        if: vars.LAUNCH_MODE == 'true'
+        run: go build -tags "$HEADLESS_TAGS" ./...
+      - if: vars.LAUNCH_MODE != 'true'
+        run: go test -tags "$HEADLESS_TAGS" ./... -race -coverprofile=cover.out -coverpkg=./...
       - name: coverage floor
+        if: vars.LAUNCH_MODE != 'true'
         # The window is excluded: cmd, internal/shell and ui are the
         # tray, the webview and three static files, none of which a Go
         # test can exercise without a desktop.
@@ -121,6 +130,7 @@ jobs:
             exit 1
           }
       - name: the window still compiles
+        if: vars.LAUNCH_MODE != 'true'
         # Nothing here runs it; this only proves the cgo build is not
         # broken by a change to the headless side.
         run: |

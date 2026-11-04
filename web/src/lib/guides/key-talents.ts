@@ -9,6 +9,8 @@
 import type { DecodedTalentView, DecodedTreeView } from './build-tree';
 
 export interface KeyTalentRef {
+  /** The talent's id, absent when the build has no talent of that name. */
+  id?: number;
   name: string;
   /** The icon file stem; absent when the build has no talent of that name. */
   icon?: string;
@@ -76,7 +78,7 @@ function refFor(name: string, talents: readonly DecodedTalentView[]): KeyTalentR
   const hit = talents.find((talent) => normalise(talent.name) === wanted);
   return hit === undefined
     ? { name }
-    : { name: hit.name, icon: hit.icon, rank: hit.rank, maxRank: hit.max_rank };
+    : { id: hit.id, name: hit.name, icon: hit.icon, rank: hit.rank, maxRank: hit.max_rank };
 }
 
 const FALLBACK_COUNT = 6;
@@ -99,7 +101,9 @@ function fallbackEntries(trees: readonly DecodedTreeView[]): KeyTalentEntry[] {
     .sort((a, b) => b.tier - a.tier || b.rank - a.rank)
     .slice(0, FALLBACK_COUNT)
     .map((talent) => ({
-      talents: [{ name: talent.name, icon: talent.icon, rank: talent.rank, maxRank: talent.max_rank }],
+      talents: [
+        { id: talent.id, name: talent.name, icon: talent.icon, rank: talent.rank, maxRank: talent.max_rank },
+      ],
       why: describeRank(talent),
     }));
 }

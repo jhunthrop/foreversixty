@@ -3,7 +3,7 @@ title: Fury Warrior in Forever
 classSlug: warrior
 spec: fury
 role: dps
-build: 'FS1:1.60.1.70753:warrior:human:30305013002/05153105122010501/2:'
+build: 'FS1:1.60.1.70755:warrior:human:30323013002/051531025120100231/2:'
 recommendedRaces: [human, troll]
 statPriority: [Strength, Critical strike, Attack power, Hit, Melee haste, Agility]
 description: 'Dual wield in Berserker Stance: Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, Death Wish and Recklessness for the Executes.'
@@ -60,27 +60,28 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 
 ## Talents and builds
 
-- **Flurry** (5 points): 25% more attack speed for your next three swings after any melee crit. With two weapons and Cruelty it is up most of the fight, and every extra swing is extra rage.
+- **Flurry** (3 points): 30% more attack speed for your next three swings after any melee crit. With two weapons and Cruelty it is up most of the fight, and every extra swing is extra rage.
 - **Bloodthirst** (1 point): an instant hit that scales with 45% of your attack power, every 6 seconds. Your best hit per rage.
 - **Death Wish** (1 point): 20% more physical damage and Fear immunity for 30 seconds, at the cost of 5% more damage taken.
 - **Dual Wield Specialization** (5 points): 25% more off-hand damage and 50% more rage from off-hand swings. The core talent of a two-weapon build.
 - **Cruelty** and **Unbridled Wrath** (10 points): 5% crit, and a 60% chance at an extra rage point on every weapon hit. These are the first points you spend.
 - **Furious Precision** (3 points): 10% more hit with the off hand, which cuts the off-hand misses that cost you rage.
 - **Improved Execute** (2 points): Execute costs 10 rage instead of 15, so the rage you hold goes into damage.
-- **Raging Blows** (1 point): Whirlwind and Cleave cost 3 less rage. You press Whirlwind every time it comes off cooldown.
+- **Improved Whirlwind** (2 points): Whirlwind comes back every 8 seconds instead of 10 and hits the closest enemy 30% harder. You press Whirlwind every time it comes off cooldown, and on a single boss the closest enemy is the boss.
+- **Reckless Swings** (1 point): a button on a 15 second cooldown and a 1 second global that makes your next four white swings within 8 seconds bring 5 more rage each. It costs a quarter of your base health, which the healers cover without noticing, and 20 rage every 15 seconds is a Heroic Strike you would not otherwise have.
 - **Enrage** (2 points): a 30% chance at 4% more physical damage for 12 seconds after you get hit. Two points fill out the row.
 - **Improved Heroic Strike** (3 points): Heroic Strike costs 3 less. It is your rage dump, and you press it a lot.
 - **Improved Rend**, **Deep Wounds** and **Impale** (8 points in Arms): every crit leaves a bleed for 60% of your weapon's average damage and your ability crits hit 20% harder. Fury crits a lot, so this is the best use of the Arms points.
 - **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
-- **Anger Management** (1 point, behind 5 in **Improved Tactical Mastery**): a point of rage every 3 seconds in combat, 10 rage every half minute. Tactical Mastery itself does little for a warrior who never leaves Berserker Stance; it is the way in.
+- **Anger Management** (1 point, behind 3 in **Improved Tactical Mastery**): a point of rage every 3 seconds in combat, 10 rage every half minute. Tactical Mastery itself does little for a warrior who never leaves Berserker Stance; it is the way in.
 
-The build also spends a point each in **Piercing Howl** and **Lingering Rage** on the way down the tree. It skips Improved Charge, Deflection and Improved Intercept: you walk into a raid boss instead of Charging or Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
+The build also spends a point each in **Piercing Howl** and **Lingering Rage** on the way down the tree, and two in **Improved Charge**: 6 more rage from every Charge on trash, in dungeons and out in the world, where you still open with one. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
 
 ## Rotation and priority
 
-**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: Charging in Battle Stance and swapping back loses everything above 10 rage on the swap, which cancels out what the Charge gave you. On trash and while leveling, Charge or Intercept in freely.
+**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: the Bloodrage has already put you in combat, so there is no Charge to take, and a Charge without it comes out even once you have paid the global to swap back out of Battle Stance. On trash and while leveling, Charge or Intercept in freely.
 
-**The priority.** Bloodthirst on cooldown. Whirlwind on cooldown right behind it, every time it is ready, even on a single target. Bloodrage on cooldown whenever you are under 80 rage.
+**The priority.** Bloodthirst on cooldown. Whirlwind on cooldown right behind it, every time it is ready, even on a single target. Reckless Swings on cooldown right behind Whirlwind: your next four white swings bring 5 more rage each, and the quarter of your base health it costs is the healers' to cover, so never hold it. Bloodrage on cooldown whenever you are under 80 rage.
 
 **Heroic Strike.** Queue it whenever you are above 60 rage. It replaces your next main-hand swing and costs no global cooldown, so it never delays Bloodthirst or Whirlwind. Below 60, hold the rage for those two. Fury does not Hamstring, with or without a Windfury Totem: Heroic Strike already spends that rage better.
 

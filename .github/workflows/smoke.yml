@@ -1,0 +1,31 @@
+# .github/workflows/smoke.yml
+#
+# LAUNCH MODE's production smoke (docs/runbooks/landing.md, "Launch mode"). While
+# vars.LAUNCH_MODE is 'true' the check workflows keep only their build and lint gates, so this
+# proves the deployed site instead: after a green web or api run on main (each ends in its
+# deploy), tools/prod-smoke.sh fetches the home page, /guides, one guide per class, a BiS
+# page, /tiers, /sim, the API's health and one /go link, and fails with a summary naming
+# every URL that answered wrong. A dispatch runs it by hand. Outside launch mode it skips.
+name: smoke
+on:
+  workflow_run:
+    workflows: [web, api]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: smoke-${{ github.event.workflow_run.name || 'dispatch' }}-${{ github.event.workflow_run.head_sha || github.sha }}
+  cancel-in-progress: false
+jobs:
+  production:
+    if: >-
+      vars.LAUNCH_MODE == 'true' && (github.event_name == 'workflow_dispatch' ||
+        (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: { sparse-checkout: tools }
+      - name: the production smoke
+        run: bash tools/prod-smoke.sh

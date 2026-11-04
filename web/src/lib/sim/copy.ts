@@ -834,7 +834,7 @@ export const simCopy = {
   targetArmorEmptyHelp: (preset: string): string => `Empty; the engine uses ${preset} instead.`,
   targetArmorSetHelp: (value: string, preset: string): string => `Set to ${value}, overriding ${preset}.`,
   targetTypeHelp:
-    'Talents and gear that work against one creature type, such as Murder or a slaying enchant, count only against that type. "No creature type" is the target the tier list and BiS numbers use.',
+    'Gear that works against one creature type, such as a slaying enchant, counts only against that type. "No creature type" is the target the tier list and BiS numbers use.',
   /**
    * Newcomer MINOR (204-207): "Execute phase" was ticked by default under Patchwerk with
    * no way to tell whether the run actually had one. This says the current state, not just

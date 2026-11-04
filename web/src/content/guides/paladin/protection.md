@@ -3,7 +3,7 @@ title: Protection Paladin in Forever
 classSlug: paladin
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70753:paladin:dwarf:05005/15302102513501031/5003:'
+build: 'FS1:1.60.1.70755:paladin:dwarf:05005/15302102513501031/5003:'
 recommendedRaces: [dwarf, undead]
 statPriority:
   [
@@ -28,7 +28,7 @@ sources:
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
   - label: 'Forever Sixty build data, data/builds/1.60.1.70753/talents/paladin.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/talents/paladin.json
+    url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
   - label: 'Forever Sixty stat weights, data/curated/specs.json'
     url: https://foreversixty.gg/data/curated/specs.json
@@ -37,7 +37,7 @@ sources:
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
   - label: 'Forever Sixty build data, data/builds/1.60.1.70753/races.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/races.json
+    url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---
 

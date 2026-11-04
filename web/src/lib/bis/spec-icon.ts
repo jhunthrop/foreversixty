@@ -1,34 +1,13 @@
 // web/src/lib/bis/spec-icon.ts
-// `SpecTabs`' own 28px icon (design/DESIGN-SYSTEM.md's Class page header, bis rebuild spec
-// §4.A) -- verified against real data that this build carries NO dedicated talent-TAB icon
-// field anywhere (`data/curated/specs.json`, `data/builds/<build>/talents.json` and the
-// pipeline's own `data/pipeline/normalize/talent_trees.py` were all checked; the per-class
-// `talents/<class>.json` only resolves an icon per TALENT, via `pipeline.icons.resolve_icon`
-// on that talent's own first rank). This reads the tree's own first talent's icon as the
-// best available per-spec stand-in -- a real, per-spec-tree icon grounded in this build's
-// own client data, not an invented image -- flagged in this lane's own report as a gap a
-// future data lane could close by capturing the client's actual tab icon.
-import { existsSync, readFileSync } from 'node:fs';
+// A spec's icon is its `icon` in the generated spec list (`lib/sim/specs.ts`, written by
+// `python -m pipeline specs` from the active client's TalentTab and form-spell icons). This
+// module only checks that this site build publishes the file.
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { SpecCatalogEntry } from './types';
 
 function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
-}
-
-interface TalentTreeFile {
-  trees: { talents: { icon: string }[] }[];
-}
-
-/** `undefined` when the class has no talent file for this build, or `treeIndex` is out of
- *  range (should not happen on real data -- `specs.json`'s own `tree_index` always indexes
- *  a real tree) -- the caller renders a plain neutral square rather than guess. */
-export function specTabIcon(build: string, classSlug: string, treeIndex: number): string | undefined {
-  const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
-  if (!existsSync(file)) return undefined;
-  const data = JSON.parse(readFileSync(file, 'utf8')) as TalentTreeFile;
-  return data.trees[treeIndex]?.talents[0]?.icon;
 }
 
 /** `icon` when this site build publishes its file (`public/data/<build>/icons/`, which the
@@ -38,16 +17,4 @@ export function publishedIcon(build: string, icon: string | undefined): string |
   if (icon === undefined) return undefined;
   const file = path.join(repoRoot(), 'web/public/data', build, 'icons', `${icon}.webp`);
   return existsSync(file) ? icon : undefined;
-}
-
-/** Specs drawn from another icon than their specs.json row: Feral (cat) shares
- *  ability_racial_bearform with Feral Bear there, so it takes the cat form's own icon, the
- *  same override the raid roster's emoji uses (api/internal/raidspec, owner ruling 2026-10-28). */
-const SPEC_ICON_OVERRIDES: Readonly<Record<string, string>> = {
-  'druid-feral': 'ability_druid_catformattack',
-};
-
-/** The spec's own talent-frame icon (specs.json's `icon`), for the class landing's spec cards. */
-export function specCardIcon(entry: Pick<SpecCatalogEntry, 'spec' | 'icon'>): string {
-  return SPEC_ICON_OVERRIDES[entry.spec] ?? entry.icon;
 }

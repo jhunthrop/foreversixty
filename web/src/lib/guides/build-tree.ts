@@ -19,7 +19,8 @@ function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 }
 
-function loadTalentFile(build: string, classSlug: string): TalentFile | undefined {
+/** The class's talent file for `build`, read off disk; `undefined` when the build has none. */
+export function loadTalentFile(build: string, classSlug: string): TalentFile | undefined {
   const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
   if (!existsSync(file)) return undefined;
   return JSON.parse(readFileSync(file, 'utf8')) as TalentFile;

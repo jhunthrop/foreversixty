@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:1287 off_hand:2088 | 11.0 | 3 | other:attack/1=153.1, other:attack/2=134.0, spell:1757=40.5, spell:5171/3=11.1, spell:1784=1.0 | {SpellID: 11275}, {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 20 | 00000000000000000-00000000000000000-5310100010000000000 | main_hand:2236 off_hand:2194 | 26.0 | 5 | other:attack/1=121.4, other:attack/2=73.0, spell:1758=32.4, spell:1943/4=9.9, spell:14278=9.1 | {SpellID: 14183}, {SpellID: 16511} |
-| 30 | 00000000000000000-00000000000000000-5320201210013001000 | main_hand:23168 off_hand:7687 | 46.5 | 8 | other:attack/1=140.8, other:attack/2=82.3, spell:16511=39.3, spell:14278=8.9, spell:8639/4=7.3 | - |
-| 38 | 00000000000000000-00000000000000000-5320201310013211400 | main_hand:6831 off_hand:6829 | 63.6 | 8 | other:attack/1=131.6, other:attack/2=89.8, spell:16511=39.9, spell:14278=8.9, spell:8640/4=7.1 | - |
-| 40 | 00000000000000000-00000000000000000-5320201310013211501 | main_hand:2164 off_hand:9359 | 73.0 | 8 | other:attack/1=111.2, other:attack/2=87.1, spell:16511=43.3, spell:14278=8.7, spell:8640/4=7.0 | - |
-| 50 | 00532000000000000-00000000000000000-5320201310013211501 | main_hand:2163 off_hand:6660 | 103.9 | 9 | other:attack/2=164.4, other:attack/1=152.8, spell:16511=42.1, spell:14278=8.6, spell:11273/4=8.3 | - |
-| 60 | 00532310101400000-00000000000000000-5320201310013211501 | main_hand:22802 off_hand:23054 | 195.5 | 13 | other:attack/1=127.7, other:attack/2=85.3, spell:16511=50.3, spell:11275/4=9.0, spell:14278=8.8 | - |
+| 10 | 00000000000000000-0000000000000000000-010000000000000000 | main_hand:1287 off_hand:2088 | 11.0 | 3 | other:attack/1=153.1, other:attack/2=134.0, spell:1757=40.5, spell:5171/3=11.1, spell:1784=1.0 | {SpellID: 11275}, {SpellID: 1329549}, {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 20 | 00000000000000000-0000000000000000000-035110001000000000 | main_hand:2236 off_hand:2194 | 25.7 | 6 | other:attack/1=121.6, other:attack/2=73.1, spell:1758=40.2, spell:1943/4=10.4, spell:14183=1.0 | {SpellID: 1329549}, {SpellID: 14278}, {SpellID: 16511} |
+| 30 | 00000000000000000-0000000000000000000-035131011311000100 | main_hand:23168 off_hand:7687 | 46.7 | 8 | other:attack/1=140.8, other:attack/2=82.3, spell:16511=39.6, spell:14278=8.9, spell:8639/4=7.7 | {SpellID: 1329549} |
+| 38 | 00000000000000000-0000000000000000000-035131031321001140 | main_hand:6831 off_hand:6829 | 63.4 | 8 | other:attack/1=131.6, other:attack/2=89.8, spell:16511=39.5, spell:14278=8.9, spell:8640/4=7.1 | {SpellID: 1329549} |
+| 40 | 00000000000000000-0000000000000000000-035131031321001151 | main_hand:2164 off_hand:9359 | 70.1 | 8 | other:attack/1=109.7, other:attack/2=85.9, spell:16511=39.5, spell:14278=9.0, spell:8640/4=7.0 | {SpellID: 1329549} |
+| 50 | 00530200000000000-0000000000000000000-035131031321001151 | main_hand:2163 off_hand:6660 | 119.3 | 13 | other:attack/2=152.7, other:attack/1=141.8, spell:16511=39.9, spell:1329549=18.4, spell:14278=9.4 | - |
+| 60 | 00530201100000000-3200030000000000000-035131031321001151 | main_hand:22802 off_hand:23054 | 232.5 | 15 | other:attack/1=116.3, other:attack/2=77.7, spell:16511=45.7, spell:1329549=18.3, spell:14278=9.3 | - |
 
 ## Learned but unused (informational)
 
@@ -161,7 +161,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 11268)
 - Backstab (spell 11279)
-- Death Mark (spell 1325756)
 - Gouge (spell 11285)
 - Kick (spell 1768)
 - Serrated Blades (spell 461327)
@@ -171,7 +170,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 11269)
 - Backstab (spell 11281)
-- Death Mark (spell 1325758)
 - Gouge (spell 11286)
 - Kick (spell 1769)
 - Serrated Blades (spell 461327)
@@ -181,4 +179,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- rogue-subtlety level=10 kind=unresolved_id action={SpellID: 1329549}
+- rogue-subtlety level=20 kind=unresolved_id action={SpellID: 1329549}
+- rogue-subtlety level=30 kind=unresolved_id action={SpellID: 1329549}
+- rogue-subtlety level=38 kind=unresolved_id action={SpellID: 1329549}
+- rogue-subtlety level=40 kind=unresolved_id action={SpellID: 1329549}
+- rogue-subtlety level=40 kind=zero_casts spell="Death Mark" id=1316709 authored=1325758

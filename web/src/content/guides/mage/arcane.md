@@ -3,8 +3,8 @@ title: Arcane Mage in Forever
 classSlug: mage
 spec: arcane
 role: dps
-build: 'FS1:1.60.1.70753:mage:gnome:141005213100301531/4/05350003:'
-raidBuild: 'FS1:1.60.1.70753:mage:gnome:131205213100301531/3/05350003:'
+build: 'FS1:1.60.1.70755:mage:gnome:141005213100301531/4/05350003:'
+raidBuild: 'FS1:1.60.1.70755:mage:gnome:131205213100301531/3/05350003:'
 recommendedRaces: [gnome, orc]
 statPriority: [Spell power, Arcane power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Arcane Mage in Forever: the Arcane Blast loop, the opener, Arcane Power windows, mana over a boss fight, talents, stats and leveling.'

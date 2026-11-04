@@ -39,6 +39,11 @@ jobs:
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
       - run: uv run ruff check .
+      # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode"): ruff and a byte-compile are
+      # the gate; the tests and the --check gates below are skipped.
+      - name: byte-compile the pipeline (launch mode)
+        if: vars.LAUNCH_MODE == 'true'
+        run: uv run python -m compileall -q pipeline tests
       # loot-contract-drift, 2026-09-30: the full suite, right after lint and
       # before the slower --check/build-dependent steps below, so a contract
       # test that drifts from the pipeline's shape (or vice versa) fails fast
@@ -49,18 +54,21 @@ jobs:
       # available in this job): tests/test_genproto.py, test_loot_
       # classicdb.py, test_simdb_build.py and test_simdb_fork_parity.py all
       # `pytest.skip` cleanly when it is unset rather than failing.
-      - run: uv run pytest -q --no-cov $HELD_OUTPUT
+      - if: vars.LAUNCH_MODE != 'true'
+        run: uv run pytest -q --no-cov $HELD_OUTPUT
       # sim/specs/specs.go and web/src/lib/sim/specs.ts are generated from
       # curated/specs.json and committed. `specs` is not a per-build emitter,
       # so the fetch job never runs it; this is the gate that catches an edit
       # to either generated file, or to the curated list, that was never
       # regenerated.
-      - run: uv run python -m pipeline specs --check
+      - if: vars.LAUNCH_MODE != 'true'
+        run: uv run python -m pipeline specs --check
       # phases, like specs, is not a per-build emitter, so the fetch job
       # never runs it. This is the gate that web/src/data/phases.json was
       # re-emitted after curated/phases.json moved -- and that nobody
       # edited the generated copy by hand.
-      - run: uv run python -m pipeline phases --check
+      - if: vars.LAUNCH_MODE != 'true'
+        run: uv run python -m pipeline phases --check
       # addon-data.json and addon/ForeverSixty/Data.lua are generated from the
       # build directory and curated/stat-weights.json and committed, so the
       # addon is installable from a checkout with no build step. The nightly
@@ -79,17 +87,21 @@ jobs:
           build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' ../web/src/data/active-build.json)
           test -n "$build" || { echo "web/src/data/active-build.json names no build"; exit 1; }
           echo "build=$build" >> "$GITHUB_OUTPUT"
-      - run: uv run python -m pipeline weights --build "${{ steps.active.outputs.build }}" --check
-      - if: github.event_name == 'pull_request'
+      - if: vars.LAUNCH_MODE != 'true'
+        run: uv run python -m pipeline weights --build "${{ steps.active.outputs.build }}" --check
+      - if: github.event_name == 'pull_request' && vars.LAUNCH_MODE != 'true'
         run: uv run python -m pipeline addon-data --build "${{ steps.active.outputs.build }}" --check
-      - run: uv run python -m pipeline coach-rules --build "${{ steps.active.outputs.build }}" --check
+      - if: vars.LAUNCH_MODE != 'true'
+        run: uv run python -m pipeline coach-rules --build "${{ steps.active.outputs.build }}" --check
       # test_addondata.py gates the generated Data.lua on a real `load()`, so the
       # suite needs an interpreter; ubuntu-latest ships none and the test skips
       # itself without one. A plain apt install rather than a third-party action:
       # one binary is not worth a new supply-chain dependency.
       - name: Install Lua for the Data.lua load gate
+        if: vars.LAUNCH_MODE != 'true'
         run: sudo apt-get update && sudo apt-get install -y lua5.4
-      - run: uv run pytest $HELD_OUTPUT
+      - if: vars.LAUNCH_MODE != 'true'
+        run: uv run pytest $HELD_OUTPUT
   addon-data:
     # The push-time owner of addon-data.json and Data.lua (see the `test` job's
     # note): regenerate them from what main now holds and commit them when they
@@ -295,6 +307,11 @@ jobs:
       # SimItem. Both refresh the same manifest, and the diff step at the
       # end sees the finished directory either way.
       - run: uv run python -m pipeline loot --build "$BUILD" --engine ../.engine $SHRINK
+      # The site's spell hover cards: every trainable rank, racial, enchant spell and
+      # consumable's on-use line, from the raw spell tables. After trainables and loot
+      # (it reads trainables/, enchants.json and simbuffs.json); simdb's manifest
+      # refresh below lists it.
+      - run: uv run python -m pipeline spelltips --build "$BUILD"
       # simdb reads the same raw inputs normalize does and refreshes
       # manifest.json, so it runs after the normalize that covers icons and
       # tree art rather than before it; simconst and levels ran before icons

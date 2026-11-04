@@ -67,8 +67,8 @@ export interface SearchIndexInput {
   /** One entry per class items file, in class order. */
   classItems: readonly ClassItemsInput[];
   talents: readonly TalentFile[];
-  /** The written specs (`data/curated/specs.json`) with the extra `icon` stem it carries. */
-  specs: readonly (SpecCatalogEntry & { icon?: string })[];
+  /** The written specs (`readSpecCatalog`), each with its icon stem from the spec-icon map. */
+  specs: readonly SpecCatalogEntry[];
   /** `{class}/{spec}` of every spec with a written guide. */
   guidePaths: ReadonlySet<string>;
 }
@@ -131,7 +131,7 @@ function searchGuides(specs: SearchIndexInput['specs'], guidePaths: ReadonlySet<
       spec: spec.spec_slug,
       spec_name: spec.name,
       role: spec.role,
-      icon: spec.icon ?? '',
+      icon: spec.icon,
     }));
 }
 

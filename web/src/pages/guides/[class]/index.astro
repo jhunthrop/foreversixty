@@ -17,7 +17,6 @@ import { CLASS_LANDING_PANELS, cardLineFor, splitClassLanding } from '../../../l
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { slugify } from '../../../lib/guides/sections';
 import { readSpecCatalog } from '../../../lib/bis/load';
-import { specCardIcon } from '../../../lib/bis/spec-icon';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
@@ -72,7 +71,7 @@ const specCards = catalogEntries.flatMap((s) => {
       specName: s.name,
       role: guide.data.role,
       line: cardLineFor(guide.body ?? '', `guides/${guide.id}.md`),
-      icon: specCardIcon(s),
+      icon: s.icon,
       href: `/guides/${classSlug}/${s.spec_slug}`,
     },
   ];

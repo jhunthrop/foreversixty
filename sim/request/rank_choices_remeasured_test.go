@@ -19,10 +19,6 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 		level                     int
 		want, not                 int32
 	}{
-		// Lava Burst rank 2 (1238299) beats rank 1 (408490) from 50, beyond error at both seeds.
-		{"Lava Burst at 50", "shaman-elemental", "shaman", BarePreset, 50, 1238299, 408490},
-		{"Lava Burst at 59", "shaman-elemental", "shaman", BarePreset, 59, 1238299, 408490},
-		{"Lava Burst at 45 keeps rank 1", "shaman-elemental", "shaman", BarePreset, 45, 408490, 1238299},
 		// Since Swiftmend leaves the effect up (fork 9badd243f), Rejuvenation rank 10 (9841)
 		// loses to the rotation's own rank 4 (2090) at bare 60.
 		{"Rejuvenation at bare 60", "druid-restoration", "druid", BarePreset, 60, 2090, 9841},
@@ -125,10 +121,9 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		{"Human Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "human", 50, 1309635, 1309633},
 		{"Troll Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "troll", 50, 1309633, 1309635},
 		// Rows no race loses with lose their race key: Fire Blast rank 3 (2138) at 30, Corruption
-		// rank 3 (6223) at 40, Binding Heal and Prayer of Healing rank 1 at bare 60.
+		// rank 3 (6223) at 40, Prayer of Healing rank 1 at bare 60.
 		{"Gnome Fire Blast at 30", "mage-fire", "mage", BarePreset, "gnome", 30, 2138, 8412},
 		{"Orc Corruption at 40", "warlock-destruction", "warlock", BarePreset, "orc", 40, 6223, 7648},
-		{"Undead Binding Heal at bare 60", "priest-discipline", "priest", BarePreset, "undead", 60, 401937, 1240774},
 		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 596, 10961},
 		// Protection's Holy Strike rank 1 (679) at 40: the mana it saves buys more Judgements
 		// and Hammers of the Righteous (+0.6% to +0.9% threat for every paladin race).

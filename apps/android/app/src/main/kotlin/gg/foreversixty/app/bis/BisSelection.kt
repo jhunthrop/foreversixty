@@ -14,7 +14,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 
 /**
- * One spec of the bundled catalogue (data/curated/specs.json, copied into the app: the CDN does
+ * One spec of the bundled catalogue (web/src/data/specs.json, copied into the app: the CDN does
  * not publish it). Only the fields the picker reads; the file is the source of truth.
  */
 @Serializable

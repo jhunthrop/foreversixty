@@ -23,14 +23,13 @@ func TestBandBuildsTakeTheCastTalentsThatFit(t *testing.T) {
 	}{
 		{"hunter-survival", "hunter", "survival", 2, 30, "Strider Kick", "0000000000000000-0000000000000000-500230231040000100"},
 		{"mage-fire", "mage", "fire", 1, 20, "Pyroblast", "000000000000000000-51400001000000000-000000000000000000"},
-		{"rogue-assassination", "rogue", "assassination", 0, 30, "Mutilate", "32502110510001000-00000000000000000-0000000000000000000"},
-		{"rogue-subtlety", "rogue", "subtlety", 2, 20, "Ghostly Strike", "00000000000000000-00000000000000000-5310100010000000000"},
-		{"rogue-subtlety", "rogue", "subtlety", 2, 30, "Hemorrhage", "00000000000000000-00000000000000000-5320201210013001000"},
+		{"rogue-assassination", "rogue", "assassination", 0, 40, "Mutilate", "32530200251511001-0000000000000000000-000000000000000000"},
+		{"rogue-subtlety", "rogue", "subtlety", 2, 30, "Ghostly Strike and Hemorrhage", "00000000000000000-0000000000000000000-035131011311000100"},
 		{"shaman-restoration", "shaman", "restoration", 2, 30, "Mana Tide Totem", "0000000000000000-000000000000000000-5530003310010000"},
 		{"warlock-affliction", "warlock", "affliction", 0, 30, "Siphon Life", "25522300100001000-0000000000000000000-0000000000000000"},
 		{"warlock-demonology", "warlock", "demonology", 1, 30, "Soul Link", "00000000000000000-2332113101210001000-0000000000000000"},
-		{"warrior-arms", "warrior", "arms", 0, 40, "Mortal Strike", "03325213032510001-00000000000000000-000000000000000000"},
-		{"warrior-fury", "warrior", "fury", 1, 30, "Death Wish", "00000000000000000-05153105000010000-000000000000000000"},
+		{"warrior-arms", "warrior", "arms", 0, 40, "Mortal Strike", "13323213032214001-000000000000000000-000000000000000000"},
+		{"warrior-fury", "warrior", "fury", 1, 30, "Death Wish", "00000000000000000-051531023000100000-000000000000000000"},
 	}
 	for _, c := range cases {
 		trees, err := LoadTalentTrees(repoRoot, active, c.class)

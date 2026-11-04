@@ -3,8 +3,8 @@ title: Retribution Paladin in Forever
 classSlug: paladin
 spec: retribution
 role: dps
-build: 'FS1:1.60.1.70753:paladin:human:050250002/502/0523330100130135:'
-raidBuild: 'FS1:1.60.1.70753:paladin:human:050050002/503/05233301001301351:'
+build: 'FS1:1.60.1.70755:paladin:human:050250002/502/0523330100130135:'
+raidBuild: 'FS1:1.60.1.70755:paladin:human:050050002/503/05233301001301351:'
 recommendedRaces: [human, undead]
 statPriority: [Strength, Attack power, Critical strike, Hit, Agility, Melee haste]
 description: 'Leveling and raiding with Seals, Judgement and an instant Hammer of Wrath, including the raid Unsealed Wrath swap.'
@@ -15,7 +15,7 @@ sources:
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
   - label: 'Forever Sixty build data, data/builds/1.60.1.70753/talents/paladin.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/talents/paladin.json
+    url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
   - label: 'Forever Sixty stat weights, data/curated/specs.json'
     url: https://foreversixty.gg/data/curated/specs.json
@@ -27,7 +27,7 @@ sources:
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
   - label: 'Forever Sixty build data, data/builds/1.60.1.70753/races.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/races.json
+    url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---
 
@@ -62,8 +62,8 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 - **Conviction** (3 points): 6% crit while you hold a melee weapon, on your swings, Holy Strike, Seal procs and Judgements (they all roll like melee attacks). It does not reach Consecration or Exorcism.
 - **Sanctified Judgement** (3 points): every Judgement hands back 60% of the judged Seal's cost. This is what pays for your Seals, and for the twist at 60.
 - **Sacred Arbiter** (1 point): Holy Strike hits 20% harder and refreshes every Judgement on the target.
-- **Two-Handed Weapon Specialization** (3 points): 6% more physical damage with a two-hander, and 20% less threat. It no longer touches your Seals, Judgements or Holy Strike.
-- **Vengeance** (3 points): up to 9% more Physical and Holy damage for 30 seconds after a crit. With Conviction it is up for the whole fight.
+- **Two-Handed Weapon Specialization** (3 points): 6% more Physical and Holy damage with a two-hander, and 20% less threat. That reaches your Holy Seal procs and Judgements as well as your swings.
+- **Vengeance** (3 points): 3% more Physical and Holy damage for 30 seconds after a crit, stacking five times to 15%. With Conviction you reach five stacks early and hold them for the whole fight.
 - **Champion of the Light** (5 points): 60% of your Intellect as spell damage, and Hammer of Wrath becomes instant.
 - **Unsealed Wrath** (1 point): the raid capstone. Each swing stores a copy of your Seal, up to three, and a swing under a different Seal releases them.
 

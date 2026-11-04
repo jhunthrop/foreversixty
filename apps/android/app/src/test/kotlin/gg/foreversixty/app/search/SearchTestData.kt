@@ -47,7 +47,7 @@ object SearchTestData {
     /** The real index, prepared once for the whole run. */
     val realPrepared: PreparedIndex by lazy { realIndex().let { prepared(it.items, it.talents, it.guides) } }
 
-    fun specs(): SpecCatalog = SpecCatalog.decode(File(repo, "data/curated/specs.json").readText())
+    fun specs(): SpecCatalog = SpecCatalog.decode(File(repo, "web/src/data/specs.json").readText())
 
     fun fixtureIndex(): SearchIndex = ApiJson.decodeFromString(SearchIndex.serializer(), RaidFixture.text("cdn.search"))
 

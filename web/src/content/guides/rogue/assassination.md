@@ -3,11 +3,11 @@ title: Assassination Rogue in Forever
 classSlug: rogue
 spec: assassination
 role: dps
-build: 'FS1:1.60.1.70753:rogue:night-elf:3250211055150101/302303/512:'
-raidBuild: 'FS1:1.60.1.70753:rogue:night-elf:0053231032150105/324303000012/002:'
+build: 'FS1:1.60.1.70755:rogue:night-elf:32530200251551031/302303/011:'
+raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:00530311251551031/302302/005:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
-description: 'Assassination Rogue for Forever: Mutilate on two daggers, Seal Fate, Cold Blood Eviscerates, poisons on each hand, and why you skip Venom.'
+description: 'Assassination Rogue for Forever: Mutilate on two daggers, Seal Fate, Cold Blood Eviscerates, poisons on each hand with Shank and Venom behind them, and Relentless Strikes for energy.'
 updated: 2026-11-02
 confidence: inferred
 sources:
@@ -49,18 +49,19 @@ Assassination is the Forever rogue built on Mutilate: two daggers, two combo poi
 
 ## Talents and builds
 
-The raid build goes 31/18/2: down Assassination to Mutilate and all five points of Seal Fate, into Combat for Precision, Puncturing Wounds and Flawless Execution, and two points of Opportunity. The level 60 build is the one you level with. It keeps a single point of Seal Fate and spends the rest on Improved Gouge, Remorseless Attacks and Vile Poisons, which shine on trash and while leveling. Respec to the raid build for the raid.
+The raid build goes 36/10/5: down Assassination to Mutilate, with Seal Fate, Venom and all five points of Relentless Strikes on the way, into Combat for Coup de Grace, Puncturing Wounds and Precision, and five points of Opportunity. The level 60 build is the one you level with. It trades Vigor, Blood Splatter, a point of Improved Slice and Dice and four points of Opportunity for Improved Gouge, Remorseless Attacks and a third point of Precision, which shine on trash and while leveling. Respec to the raid build for the raid.
 
-- **Mutilate** (1 point): strikes with both daggers for 75% weapon damage plus a flat bonus each, 20% more against a poisoned target, for two combo points.
-- **Seal Fate** (5 points in the raid build): a crit from a builder adds a combo point. Mutilate can only trigger it once a cast, even when both hands crit.
+- **Mutilate** (1 point): strikes with both daggers for 90% weapon damage plus 88 each at the top rank, 20% more against a poisoned target, for two combo points. It sits below Venom in the tree.
+- **Seal Fate** (3 points): every crit from a builder adds a combo point. Mutilate can only trigger it once a cast, even when both hands crit.
+- **Venom** (1 point): every Shank makes your poisons hit 30% harder and apply 20% more often for 6 seconds. It is a passive on Shank, with no finisher or global of its own, and Mutilate needs it.
+- **Relentless Strikes** (5 points): every finisher has a 20% chance per combo point to give 25 energy back, so a four-point Eviscerate refunds it four times in five. This is what lets a 60 energy builder keep up.
 - **Cold Blood** (1 point): your next Mutilate or Eviscerate is a guaranteed crit, on a 3 minute cooldown. Save it for an Eviscerate at four or more points.
-- **Lethality** (5 points, 3 in the raid build): Mutilate crits hit up to 20% harder, and with Malice and Puncturing Wounds you crit a lot.
-- **Vile Poisons** (5 points, 2 in the raid build): up to 20% more poison damage.
+- **Lethality** (2 points): Mutilate crits hit 20% harder, and with Malice and Puncturing Wounds you crit a lot.
+- **Vile Poisons** (5 points): 20% more poison damage.
 - **Improved Poisons** (5 points): poisons apply more often and often keep their charge.
+- **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
-Murder only works on Humanoid and Giant targets: check the boss's type before you count on it, and enjoy it on every humanoid trash pull. Ruthlessness and Relentless Strikes keep finishers flowing. Improved Sinister Strike and Lightning Reflexes in the raid build are there to reach Flawless Execution, not for what they do.
-
-**Venom** is the new Assassination finisher: more poison damage and more poison procs for a few seconds per combo point. It is a trap on a boss. Every combo point you spend on Venom is one not spent on Slice and Dice or Eviscerate, and poisons are too small a share of your damage for a poison buff to pay that back. Skip the talent and never press it on a boss.
+Opportunity in the raid build adds 20% to Mutilate and Garrote. Blood Splatter keeps your opening Garrote ticking 9 seconds longer, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Lightning Reflexes in the raid build is there to reach Puncturing Wounds and Precision, not for what it does.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -74,13 +75,13 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 ### The priority
 
-At four or more combo points, Cold Blood if it is ready, then the finisher: Slice and Dice when it is down or about to fall off, Eviscerate otherwise. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
+**Shank** on cooldown, right behind your racial and trinket: 5 energy for 25 back, it cannot miss, and with Venom your poisons hit 30% harder and land 20% more often for the next 6 seconds. At four or more combo points, Cold Blood if it is ready, then the finisher: Slice and Dice when it is down or about to fall off, Eviscerate otherwise. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
 
 Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, so you go 0, 2 or 3, then 4 to 6: waiting for exactly five wastes a Mutilate. Rupture and Expose Armor do not make the list. Forever's Expose Armor does not stack with Sunder, so leave it to your warriors.
 
 ### Energy
 
-Mutilate costs 60, so you will often sit on four points waiting for energy. That is fine: finish first, then build. Do not cap. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when you are empty, ideally right before Cold Blood comes up. Line up Cold Blood with your racial, trinket and potion.
+Mutilate costs 60, so you will often sit on four points waiting for energy. That is fine: finish first, then build, and Relentless Strikes will hand most of the finisher's cost back. Never let Shank sit ready; it is the cheapest energy you have. Do not cap. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when you are empty, ideally right before Cold Blood comes up. Line up Cold Blood with your racial, trinket and potion.
 
 ### Poisons
 
@@ -115,4 +116,4 @@ Night Elf on Alliance and Troll on Horde. **Elune's Light** gives 10% crit for 1
 
 ## Leveling
 
-Level Combat or Assassination with Sinister Strike until 30. Once Mutilate comes at 30, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.
+Level Combat or Assassination with Sinister Strike until 40. Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Relentless Strikes is the energy that carries you between pulls. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.

@@ -14,22 +14,21 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Elemental Shaman as the site's guide describes it. Elemental is the shaman's caster spec: Flame Shock and Lava Burst for the big hits, Lightning Bolt in between, and Chain Lightning when there is more than one target. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Elemental Shaman as the site's guide describes it. Elemental is the shaman's caster spec: Flame Shock kept ticking, Lightning Bolt for almost every cast, Lightning Mastery with your cooldowns, and Chain Lightning on more than one target. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Mana Spring Totem goes down first, one global before the cooldowns. The loop runs short of mana long before the fight ends.
-- Lava Burst on every cooldown when you have the talent, ahead of the totems and the cooldowns.
-- Searing Totem against a single target, for the higher fire damage.
-- Lightning Bolt on every free global.
-- Chain Lightning only against two or more targets. It hits every target for close to single-target Lightning Bolt damage.
+- Mana Spring Totem goes down first, before the pull and again if it dies, one global before the cooldowns. Two Mana Springs do not stack, so skip yours if a Restoration shaman already has one down for your group.
+- Lightning Mastery goes with everything else: trinkets, racials and your potion on the pull and every three minutes after. For its fifteen seconds Lightning Bolt is half a second faster and Chain Lightning has no cooldown.
+- Flame Shock whenever it is not on the target: with Call of Flame one global keeps it burning for twenty-one seconds, and nothing else wants the shock cooldown.
+- Searing Totem against a single target, dropped within twenty yards of the boss.
 - Magma Totem in place of Searing Totem against two or more targets.
-- Flame Shock whenever it is not on the target: Lava Burst needs it, and with Call of Flame it lasts twenty-one seconds.
+- Chain Lightning only against two or more targets. It hits each of them for more than a Lightning Bolt does.
+- Fire Nova on two or more targets, with Magma Totem in the pack. On a single boss your Searing Totem stands too far out, and Lightning Bolt is the better cast.
+- Lightning Bolt on every free global: the top rank while your mana is ahead of the fight, one rank down the moment it is not.
 - Earth Shock stays on your bar for interrupts: it shares the shock cooldown, and that cooldown belongs to Flame Shock.
-- Elemental Mastery goes with everything else.
-- Fire Nova on a Clearcasting proc only when your Fire totem is out and the boss stands close to it. Otherwise the proc goes to your next Lightning Bolt.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

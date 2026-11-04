@@ -48,8 +48,6 @@ func TestRoundTwelveHealerRowsBelowSixty(t *testing.T) {
 		{"priest-discipline", "Power Word: Shield", 35, nil},
 		{"priest-discipline", "Power Word: Shield", 45, []int{6}},
 		{"priest-discipline", "Penance", 45, nil},
-		{"priest-discipline", "Binding Heal", 45, []int{1}},
-		{"priest-discipline", "Binding Heal", 55, []int{1}},
 		{"priest-discipline", "Renew", 25, []int{1}},
 		{"paladin-holy", "Flash of Light", 35, []int{1}},
 		{"paladin-holy", "Flash of Light", 45, []int{1, 3}},

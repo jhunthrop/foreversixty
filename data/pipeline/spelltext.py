@@ -63,7 +63,7 @@ TOKEN = re.compile(
     r"\$"
     r"(?:/(?P<divisor>\d+);)?"
     r"(?P<ref>\d+)?"
-    r"(?P<kind>proccooldown|[sSoOtTdDmMaAxXrRhHnNuU])"
+    r"(?P<kind>proccooldown|[sSoOtTdDmMaAxXrRhHnNuUiI])"
     r"(?P<index>[1-9])?"
     # "$rap" is ranged attack power and "$hp" is health: a longer word is never a short
     # token with letters after it.
@@ -89,6 +89,11 @@ PLURAL = re.compile(
 #: vocabulary, resolved in its own pass -- `SpellText.describe`'s own
 #: doc for the ordering this requires).
 AT_TOKEN = re.compile(r"\$@(?P<kind>spellicon|spellname|spelldesc)(?P<id>\d+)")
+#: `$ghimself:herself;` -- the client picks by the reader's gender; a page has no reader, so both.
+GENDER = re.compile(r"\$[gG](?P<male>[^:;$]+):(?P<female>[^;$]+);")
+#: `$?pc142418[text][other]` -- a condition on the reader's character the page cannot test, so
+#: the text the client shows a character it does not apply to: the second branch.
+CONDITION = re.compile(r"\$\?[^\[\s]*\[(?P<yes>[^\]]*)\]\[(?P<no>[^\]]*)\]")
 
 _BINARY: dict[type[ast.operator], Callable[[float, float], float]] = {
     ast.Add: operator.add,
@@ -106,7 +111,7 @@ class Effect:
     base_points: int
     die_sides: int
     period_ms: int
-    #: Yards, from SpellRadius through EffectRadiusIndex_0. None: the effect has no radius.
+    #: Yards, from SpellRadius through EffectRadiusIndex_0 (else _1). None: no radius.
     radius: float | None = None
     #: EffectChainTargets. Zero: the effect does not chain.
     chain_targets: int = 0
@@ -126,6 +131,8 @@ class SpellRow:
     proc_cooldown_ms: int = 0
     #: Yards, from SpellRange through SpellMisc.RangeIndex.
     range_max: float | None = None
+    #: SpellTargetRestrictions.MaxTargets, the `$i` "up to N enemies"; 0 without a cap.
+    max_targets: int = 0
 
 
 def _format_number(value: float) -> str:
@@ -210,13 +217,24 @@ _SPELL_FACTS: dict[str, Callable[[SpellRow], float | None]] = {
     "h": lambda row: None if row.proc_chance is None else min(row.proc_chance, _CERTAIN),
     "n": lambda row: row.proc_charges,
     "u": lambda row: row.max_stacks,
+    "i": lambda row: row.max_targets,
     "r": lambda row: row.range_max,
     "proccooldown": lambda row: row.proc_cooldown_ms / _MS_PER_SECOND,
 }
 _EFFECT_FACTS: dict[str, Callable[[Effect], float | None]] = {
-    "a": lambda effect: effect.radius,
     "x": lambda effect: effect.chain_targets,
 }
+
+
+def _radius_of(row: SpellRow, index: int) -> float | None:
+    """`$a<n>`: effect n's radius. A Classic row whose text names an effect it does not have
+    (Piercing Howl's `$a2` on a one-effect spell) reads as the spell's one radius when every
+    effect that has a radius agrees, which is the number the client prints."""
+    effect = row.effects.get(index)
+    if effect is not None and effect.radius:
+        return effect.radius
+    radii = {e.radius for e in row.effects.values() if e.radius}
+    return radii.pop() if len(radii) == 1 else None
 
 
 class SpellText:
@@ -260,6 +278,8 @@ class SpellText:
             row = replace(row, effects={**row.effects, **_overridden(row.effects, overrides)})
         resolved = TOKEN.sub(lambda match: self._substitute(row, match), row.description)
         resolved = PLURAL.sub(_agree, BRACES.sub(_work_out, resolved))
+        resolved = GENDER.sub(lambda m: f"{m['male']} or {m['female']}", resolved)
+        resolved = CONDITION.sub(lambda m: m["no"], resolved).rstrip()
         chain = _chain | {spell_id}
         return AT_TOKEN.sub(lambda match: self._substitute_at(match, chain), resolved)
 
@@ -293,7 +313,8 @@ class SpellText:
             logger.warning(
                 "spelltext: $@spelldesc%d cycles back to a spell already being "
                 "described (%s); leaving the raw token",
-                spell_id, sorted(chain),
+                spell_id,
+                sorted(chain),
             )
             return match[0]
         if spell_id not in self._spells:
@@ -323,6 +344,9 @@ class SpellText:
             if match["divisor"]:
                 return _render(target.duration_ms, target.duration_ms, divisor)
             return _render_duration(target.duration_ms)
+        if kind == "a":
+            radius = _radius_of(target, int(match["index"] or 1) - 1)
+            return match[0] if not radius else _render(radius, radius, divisor)
         effect = target.effects.get(int(match["index"] or 1) - 1)
         if effect is None:
             return match[0]
@@ -390,7 +414,10 @@ def _base_points(row: dict[str, str]) -> int:
             logger.warning(
                 "spell %s effect %s: EffectBasePoints %d and EffectBasePointsF %d disagree; "
                 "using the integer column (wowhead corroborates it for spell 370100)",
-                row.get("SpellID"), row.get("EffectIndex"), int_value, float_value,
+                row.get("SpellID"),
+                row.get("EffectIndex"),
+                int_value,
+                float_value,
             )
         return int_value
     if raw is not None:
@@ -430,6 +457,8 @@ class ExtraRows:
     range: list[dict[str, str]] = field(default_factory=list)
     #: `SpellName.csv`'s own `ID, Name_lang` rows, for `$@spellname<id>`.
     names: list[dict[str, str]] = field(default_factory=list)
+    #: `SpellTargetRestrictions.csv`, for `$i`.
+    target_restrictions: list[dict[str, str]] = field(default_factory=list)
 
 
 def _base_difficulty(rows: list[dict[str, str]]) -> list[dict[str, str]]:
@@ -459,6 +488,10 @@ def load_spell_text(
     radii = {int(r["ID"]): float(r["Radius"]) for r in extra.radius}
     ranges = {int(r["ID"]): float(r["RangeMax_0"]) for r in extra.range}
     aura_options = _aura_options(extra.aura_options)
+    max_targets = {
+        int(row["SpellID"]): int(row["MaxTargets"])
+        for row in _base_difficulty(extra.target_restrictions)
+    }
     durations = {int(r["ID"]): int(r["Duration"]) for r in duration_rows}
     effects: dict[int, dict[int, Effect]] = {}
     for row in effect_rows:
@@ -468,7 +501,10 @@ def load_spell_text(
             base_points=_base_points(row),
             die_sides=int(row.get("EffectDieSides") or 0),
             period_ms=int(row["EffectAuraPeriod"]),
-            radius=radii.get(int(row.get("EffectRadiusIndex_0") or 0)),
+            # Classic rows often leave index 0 unset and keep the radius in index 1
+            # (Demoralizing Shout, Thunder Clap): either one is the effect's radius.
+            radius=radii.get(int(row.get("EffectRadiusIndex_0") or 0))
+            or radii.get(int(row.get("EffectRadiusIndex_1") or 0)),
             chain_targets=int(row.get("EffectChainTargets") or 0),
         )
     misc: dict[int, tuple[int | None, int, float | None]] = {}
@@ -493,6 +529,7 @@ def load_spell_text(
             icon_file_id=icon_file_id,
             effects=effects.get(spell_id, {}),
             range_max=range_max,
+            max_targets=max_targets.get(spell_id, 0),
             **aura_options.get(spell_id, {}),
         )
     names = {int(r["ID"]): r["Name_lang"] for r in extra.names}

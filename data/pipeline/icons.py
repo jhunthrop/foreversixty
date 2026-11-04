@@ -319,9 +319,9 @@ def _referenced_names(build_dir: Path, extra: frozenset[str] = frozenset()) -> s
     talents -- it lives on the same `talents/<class>.json` row.
 
     `extra` folds in an icon set this function cannot derive from the
-    already-emitted JSON alone -- a rotation line's icon
-    (`rotation_icon_names`) and a curated spec's own tab icon
-    (`spec_icon_names`), both day3 data-followups-11 lane additions.
+    already-emitted JSON alone -- a rotation line's icon and a spec's form
+    spell icon (`rotation_icon_names`; the spec-icon map's tab icons are the
+    tree icons read here).
     """
     names: set[str] = set()
     for path in sorted((build_dir / "talents").glob("*.json")):
@@ -358,20 +358,17 @@ def rotation_icon_names(build_dir: Path, curated_dir: Path = Path("curated")) ->
     return set(icons.values())
 
 
-def spec_icon_names(curated_dir: Path = Path("curated")) -> set[str]:
-    """Every icon name `curated/specs.json` itself names (day3 data-
-    followups-11 lane): each spec's own talent-tab icon, hand-curated
-    there from the same client `TalentTab.SpellIconID` a build's own
-    `talents/<class>.json` tree icon resolves (see specs.json's own
-    comment) -- named again here, rather than only relying on it already
-    being `_referenced_names`' talent-tree set, so a future curated value
-    that drifts from the build still gets its icon downloaded rather than
-    silently 404ing on the site.
-    """
-    path = curated_dir / "specs.json"
-    if not path.exists():
-        return set()
-    return {entry["icon"] for entry in json.loads(path.read_text(encoding="utf-8"))}
+def spelltip_icon_names(build_dir: Path) -> set[str]:
+    """Every icon `spelltips/` names: a guide's tooltip draws each spell's, racial's and
+    enchant's own icon, and most trainable ranks are in no talent or rotation file. Empty before
+    the build's first `spelltips` run; `icons` runs before it on a night, so a new spell's icon
+    follows a night later."""
+    names: set[str] = set()
+    for path in sorted((build_dir / "spelltips").glob("*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        groups = [payload.get(key, {}) for key in ("spells", "racials", "enchants")]
+        names |= {tip["icon"] for group in groups for tip in group.values() if tip.get("icon")}
+    return names
 
 
 def raid_buff_icon_names(curated_dir: Path = Path("curated")) -> set[str]:
@@ -467,9 +464,9 @@ def icons_for_build(
     names = icon_names(manifest_rows)
     extra = (
         rotation_icon_names(build_dir, curated_dir)
-        | spec_icon_names(curated_dir)
         | raid_buff_icon_names(curated_dir)
         | simbuff_icon_names(build_dir)
+        | spelltip_icon_names(build_dir)
     )
     wanted = wanted_icons(build_dir, names, frozenset(extra))
 

@@ -126,15 +126,19 @@ func TestPointOrderReplaysTheArmsGuideBuild(t *testing.T) {
 // Where the ladder only ever adds a point, the order is its per-level
 // diff: after level L's point the build is the ladder's own level-L
 // build.
+//
+// Fury's ladder only adds on 1.60.1.70755; Arms's moved a rank at 41 once its build took
+// Improved Slam and Improved Bloodrage, which the test below covers.
 func TestPointOrderIsTheLaddersOwnDiffWhereTheLadderOnlyAdds(t *testing.T) {
-	trees, targets := guideTargets(t, "warrior", "arms", GuideBuildTalents)
-	order, err := LadderPointOrder(trees, targets, 0)
+	const furyTree = 1
+	trees, targets := guideTargets(t, "warrior", "fury", GuideBuildTalents)
+	order, err := LadderPointOrder(trees, targets, furyTree)
 	if err != nil {
 		t.Fatal(err)
 	}
 	for i, got := range replay(t, trees, order) {
 		level := 10 + i
-		if want := LadderTalentString(trees, targets, 0, level); got != want {
+		if want := LadderTalentString(trees, targets, furyTree, level); got != want {
 			t.Fatalf("level %d: order builds %s, ladder %s", level, got, want)
 		}
 	}

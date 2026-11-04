@@ -23,7 +23,7 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 - Windfury Weapon on your one weapon before the pull, and again whenever it falls off. Before level thirty, Rockbiter Weapon goes on it instead.
 - Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within thirty yards.
 - If your party has no other shaman, put Mana Spring Totem in your Water slot as well.
-- Totemic Projection: If the boss moves more than thirty yards from them, Totemic Projection moves them for you.
+- Totemic Call: if the boss moves more than thirty yards from your totems, stand where it is now and Totemic Call brings them to you.
 - Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown.
 - Stormstrike on cooldown. It is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder.
 - Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.

@@ -2,9 +2,9 @@ name: ios
 on:
   push:
     branches: [main, 'land/**']
-    paths: ['apps/ios/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
+    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
   pull_request:
-    paths: ['apps/ios/**', 'apps/shared/**', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
+    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
   workflow_dispatch:
     inputs:
       record:
@@ -32,6 +32,8 @@ env:
   IOS_RUNTIME_BUILD: '23F77'
 jobs:
   build-test:
+    # Skipped in launch mode (docs/runbooks/landing.md, "Launch mode").
+    if: vars.LAUNCH_MODE != 'true'
     runs-on: xcode-27
     timeout-minutes: 40
     defaults:

@@ -3,8 +3,8 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70753:mage:gnome:2520150000002/51521001230133031/003:'
-raidBuild: 'FS1:1.60.1.70753:mage:gnome:2530050000002/50520201230133031/003:'
+build: 'FS1:1.60.1.70755:mage:gnome:2520150000002/51521001230133031/003:'
+raidBuild: 'FS1:1.60.1.70755:mage:gnome:2530050000002/50520201230133031/003:'
 recommendedRaces: [gnome, orc]
 statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
 description: 'Fire Mage in Forever: the pre-pull Pyroblast, Scorch spam, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'

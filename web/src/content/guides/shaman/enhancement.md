@@ -3,8 +3,8 @@ title: Enhancement Shaman in Forever
 classSlug: shaman
 spec: enhancement
 role: dps
-build: 'FS1:1.60.1.70753:shaman:dwarf:320033/055032031005102051/052:'
-raidBuild: 'FS1:1.60.1.70753:shaman:dwarf:0533001/053032031005102051/053:'
+build: 'FS1:1.60.1.70755:shaman:dwarf:320033/055030310051202051/052:'
+raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:0533001/053030310051202051/053:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Strength, Attack power, Hit, Critical strike, Agility, Intellect, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and Windfury, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
@@ -53,17 +53,17 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 - **Thundering Strikes** (5 points): 5% crit on every attack and spell, and crits are what start Flurry.
 - **Ancestral Knowledge** (5 points, 3 in the raid build): up to 10% more Intellect. With Mental Dexterity, Intellect is attack power.
-- **Mental Dexterity** (3 points): your attack power goes up by your full Intellect. This is why Enhancement wants Intellect on its gear.
+- **Mental Dexterity** (3 points): your attack power goes up by one and a half times your Intellect. This is why Enhancement wants Intellect on its gear.
 - **Elemental Weapons** (3 points): Windfury Weapon's extra attacks carry 40% more attack power.
-- **Flurry** (5 points): 25% attack speed for your next three swings after a melee crit.
-- **Stormstrike** (1 point): an instant weapon strike on an 8 second cooldown that makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder.
+- **Flurry** (5 points): 30% attack speed for your next three swings after a melee crit.
+- **Stormstrike** (1 point): an instant strike for 150% weapon damage on a 6 second cooldown that makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder.
 - **Mental Quickness** (2 points): 30% of your Intellect as spell power, for your shocks and bolts.
 - **Maelstrom Weapon** (5 points): your melee hits build up to five stacks, each taking 20% off your next Lightning Bolt's cast time and mana. At five it is instant and free.
 - **Rage of the Farseer** (1 point): 30% attack speed for 25 seconds every 3 minutes. Press it with your trinkets.
 
 ## Rotation and priority
 
-**Before the pull.** Put Windfury Weapon on your weapon. Shamans in Forever never dual wield: you carry a two-hander, or a one-hander with a shield or a held off-hand item, and Windfury goes on the weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves more than 30 yards from them, Totemic Projection moves them for you.
+**Before the pull.** Put Windfury Weapon on your weapon. Shamans in Forever never dual wield: you carry a two-hander, or a one-hander with a shield or a held off-hand item, and Windfury goes on the weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves more than 30 yards from them, stand where it is now and Totemic Call brings them to you.
 
 **On the pull.** Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown. Then Stormstrike.
 
@@ -88,7 +88,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Stat priority
 
-Hit covers your swings, your Stormstrike and your shocks at once in Forever, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Strength is attack power twice over.
+Hit covers your swings, your Stormstrike and your shocks at once in Forever, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Strength is attack power twice over.
 
 ## Best in slot
 
