@@ -93,9 +93,10 @@ func TestPriestRenewRowsSwitchInsideBandThirty(t *testing.T) {
 }
 
 // Devouring Plague rank 1 (learned at 20) loses its bonus from 38; rank 2
-// wins from 52 on both factions (round 16 wave 2).
+// wins from 52 on both factions (round 16 wave 2), and at 50 and 51 for every
+// race since round 18.
 func TestShadowDevouringPlagueMovesToRankTwoAtFiftyTwo(t *testing.T) {
-	for level, want := range map[int][]int{51: {1, 2}, 52: {2}, 59: {2}} {
+	for level, want := range map[int][]int{51: {2}, 52: {2}, 59: {2}} {
 		got, err := ChosenRanks("priest-shadow", "Devouring Plague", level)
 		if err != nil {
 			t.Fatal(err)

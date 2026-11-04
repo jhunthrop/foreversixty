@@ -115,14 +115,16 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned for every race.
 		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 10945, 8102},
 		{"Human Mind Blast at 50", "priest-shadow", "priest", BarePreset, "human", 50, 10945, 8103},
-		// Devouring Plague at 50: rank 1 (2944), rank 2 (19276) for a Night Elf.
-		{"Undead Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 2944, 19276},
+		// Devouring Plague at 50: rank 2 (19276) for every race since sim-accuracy round 18
+		// (rank 1 for most races until then).
+		{"Undead Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 19276, 2944},
 		{"Night Elf Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 19276, 2944},
 		// Devouring Plague at bare 60: rank 2 for every race but the Undead.
 		{"Troll Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "troll", 60, 19276, 19280},
 		{"Night Elf Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "night-elf", 60, 19276, 19280},
-		// Shadow Word: Death at 50: rank 2 for every race but the Human, who casts rank 3.
-		{"Human Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "human", 50, 1309635, 1309633},
+		// Shadow Word: Death at 50: rank 2 for every race, the Human too since sim-accuracy
+		// round 18 (+2.2% at 50, +1.5% at 56 over the top rank learned).
+		{"Human Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "human", 50, 1309633, 1309635},
 		{"Troll Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "troll", 50, 1309633, 1309635},
 		// Rows no race loses with lose their race key: Fire Blast rank 3 (2138) at 30 and Prayer
 		// of Healing rank 1 at bare 60. (Corruption rank 3 at 40 was one; round 14 found it ties
