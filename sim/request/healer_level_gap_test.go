@@ -163,20 +163,22 @@ func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 	})
 }
 
-// Holy paladin: the filler Flash of Light is rank 5 (19942) in a raid, with
-// rows keeping rank 1 below 40 and at 50 to 59 and rank 3 at 40 to 49 (what
-// those bands cast before). Holy Light loses its rank-1 row at 30 to 39 and
-// its rank-4 row at bare 60, and casts rank 2 at 40 to 49 (round 16: on the
-// MaxLevel + 12 rule rank 2 beats rank 1 there at seeds 1 and 50001).
+// Holy paladin: the filler Flash of Light is rank 5 (19942) in a raid. Round
+// 16 wave 2 swept the rows level by level on the MaxLevel + 12 rule: the
+// tank's Flash of Light keeps rank 1 to 43, rank 2 at 44 to 49, rank 4 at 50
+// to 53 and rank 5, as authored, from 54; Holy Light casts rank 1 to 24, rank 2 at 25
+// to 29, its top rank at 30 to 46, rank 1 at 47 to 49 and rank 2 at 50 to 59.
 func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) {
 	filler := linesCasting(t, "paladin-holy", 19750, 19942)
 	assertRanks(t, filler, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
-		{20, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 3}, {50, BarePreset, 1}, {59, BarePreset, 1},
+		{20, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 1}, {43, BarePreset, 1}, {44, BarePreset, 2}, {49, BarePreset, 2},
+		{50, BarePreset, 4}, {53, BarePreset, 4}, {54, BarePreset, 5}, {59, BarePreset, 5},
 		{60, BarePreset, 5}, {60, RaidPreset, 5},
 	})
 	light := linesCasting(t, "paladin-holy", 10329)
 	assertRanks(t, light, "paladin-holy", "paladin", "human", holyLightRanks, []rankCase{
-		{20, BarePreset, 1}, {30, BarePreset, 5}, {40, BarePreset, 2}, {49, BarePreset, 2}, {60, BarePreset, 8}, {60, RaidPreset, 8},
+		{20, BarePreset, 1}, {24, BarePreset, 1}, {25, BarePreset, 2}, {29, BarePreset, 2}, {30, BarePreset, 5},
+		{40, BarePreset, 6}, {46, BarePreset, 7}, {47, BarePreset, 1}, {49, BarePreset, 1}, {50, BarePreset, 2}, {59, BarePreset, 2}, {60, BarePreset, 8}, {60, RaidPreset, 8},
 	})
 }
 

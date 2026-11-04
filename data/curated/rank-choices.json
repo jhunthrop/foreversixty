@@ -194,14 +194,26 @@
         "bands": [
           {
             "from_level": 20,
-            "to_level": 29,
+            "to_level": 24,
             "rank": 1
           },
           {
-            "from_level": 40,
-            "to_level": 49,
+            "from_level": 25,
+            "to_level": 29,
             "rank": 2,
-            "note": "Sim-accuracy round 16 (low-rank penalty keyed on MaxLevel + 12, E 18815822c): at band 40 bare, effective HPS, rank 2 beats rank 1 by +2.5/+2.3% alliance and +0.85/+0.85% horde at seeds 1/50001; ranks 3 to 6 and rank 1 lose."
+            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
+          },
+          {
+            "from_level": 47,
+            "to_level": 49,
+            "rank": 1,
+            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 2,
+            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
           }
         ]
       },
@@ -210,9 +222,10 @@
         "authored": 19941,
         "bands": [
           {
-            "from_level": 30,
+            "from_level": 26,
             "to_level": 39,
-            "rank": 1
+            "rank": 1,
+            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
           },
           {
             "from_level": 40,
@@ -232,16 +245,22 @@
             "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 wins at band 30 (89.5 against 73.5 with rank 5)."
           },
           {
-            "from_level": 42,
+            "from_level": 40,
+            "to_level": 43,
+            "rank": 1,
+            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
+          },
+          {
+            "from_level": 44,
             "to_level": 49,
-            "rank": 3,
-            "note": "Kept from the old rank-1 line's row (round 9)."
+            "rank": 2,
+            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
           },
           {
             "from_level": 50,
-            "to_level": 59,
-            "rank": 1,
-            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 wins at band 50 (156.9 against 148.4)."
+            "to_level": 53,
+            "rank": 4,
+            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
           }
         ]
       }
@@ -275,9 +294,9 @@
         "bands": [
           {
             "from_level": 40,
-            "to_level": 49,
+            "to_level": 42,
             "rank": 1,
-            "note": "Threat per second at 40, bare: rank 1 +0.73%/+0.78% Human, +0.79%/+0.63% Dwarf, +0.63%/+0.89% Undead over the default (rank 5), above the 0.2% bar at seeds 1 and 50001; rank 2 ties and rank 3 loses. The 5-mana rank 1 leaves the mana for more Judgements, Seals and Hammers of the Righteous; at 30, 50 and 60 rank 1 loses 3% to 5% (round-13 ranks.md)."
+            "note": "Threat per second at 40, bare: rank 1 +0.73%/+0.78% Human, +0.79%/+0.63% Dwarf, +0.63%/+0.89% Undead over the default (rank 5), above the 0.2% bar at seeds 1 and 50001; rank 2 ties and rank 3 loses. The 5-mana rank 1 leaves the mana for more Judgements, Seals and Hammers of the Righteous; at 30, 50 and 60 rank 1 loses 3% to 5% (round-13 ranks.md). Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
           }
         ]
       }
@@ -294,8 +313,14 @@
           },
           {
             "from_level": 40,
-            "to_level": 49,
+            "to_level": 43,
             "rank": 1
+          },
+          {
+            "from_level": 44,
+            "to_level": 49,
+            "rank": 2,
+            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
           },
           {
             "from_level": 50,
