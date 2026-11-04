@@ -116,7 +116,8 @@ func TestImportAccountWritesAGuildedCharacterAndItsMembership(t *testing.T) {
 	}
 }
 
-func TestImportAccountSkipsCharactersBelowMinLevel(t *testing.T) {
+// Launch night (2026-11-04) every character is brand new: a level 5 is imported.
+func TestImportAccountImportsALowLevelCharacter(t *testing.T) {
 	pool := testPool(t)
 	uid := seedUser(t, pool)
 	f := newBlizzardFixture(t)
@@ -129,21 +130,24 @@ func TestImportAccountSkipsCharactersBelowMinLevel(t *testing.T) {
 	}
 	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-classic1x-us", http.StatusOK,
 		map[string]any{"realms": []any{}})
+	for _, sub := range []string{"", "/equipment", "/character-media"} {
+		f.json(http.MethodGet, "/profile/wow/character/whitemane/bankalt"+sub+"?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+	}
 
 	svc := newTestService(t, pool, f)
 	summary, err := svc.ImportAccount(context.Background(), uid, "user-oauth-token")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if summary.Characters != 0 || summary.Skipped != 1 {
-		t.Fatalf("summary = %+v, want 0 characters, 1 skipped", summary)
+	if summary.Characters != 1 || summary.Skipped != 0 {
+		t.Fatalf("summary = %+v, want the level 5 imported, nothing skipped", summary)
 	}
 	var n int
 	if err := pool.QueryRow(context.Background(), `select count(*) from characters`).Scan(&n); err != nil {
 		t.Fatal(err)
 	}
-	if n != 0 {
-		t.Fatalf("characters rows = %d, want 0", n)
+	if n != 1 {
+		t.Fatalf("characters rows = %d, want 1", n)
 	}
 }
 

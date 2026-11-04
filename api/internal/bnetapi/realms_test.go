@@ -23,6 +23,7 @@ func TestRulesetOf(t *testing.T) {
 		{"pvp", Realm{Type: "PVP"}, character.RulesetPvP},
 		{"rp", Realm{Type: "RP"}, character.RulesetRP},
 		{"rp_pvp", Realm{Type: "RP_PVP"}, character.RulesetRP},
+		{"forever pvp_rp", Realm{Type: "PVP_RP"}, character.RulesetRP},
 		{"hardcore by category", Realm{Type: "PVP", Category: "Hardcore"}, character.RulesetHardcore},
 		{"hardcore by name", Realm{Type: "NORMAL", Name: "Doomhowl Hardcore"}, character.RulesetHardcore},
 		{"unknown type falls back to normal", Realm{Type: "SEASONAL"}, character.RulesetNormal},
