@@ -25,7 +25,14 @@ import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
 import HomeGetSetUp, { HOME_GET_SET_UP_SIGNED_OUT_ID } from '../components/HomeGetSetUp.svelte';
 import RecentReports from '../components/RecentReports.svelte';
 import HomeTopGuilds from '../components/HomeTopGuilds.svelte';
-import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
+import {
+  HOME_CHECK_AGAIN_ID,
+  HOME_CHECK_AGAIN_NOTE_ID,
+  HOME_NO_HERO_ATTR,
+  HOME_SIGNED_OUT_ATTR,
+  HOME_SIGNED_OUT_ID,
+  homePanelCopy,
+} from '../lib/home-panel-copy';
 import {
   HOME_UPGRADES_FALLBACK_PX,
   HOME_UPGRADES_MAX_RESERVE_PX,
@@ -38,8 +45,11 @@ import {
   homeCompanionRow,
   homeHeroCopy,
   homeHeroStatePanelCopy,
+  homeNoCharacterCopy,
 } from '../lib/home-landing-copy';
-import { battlenetStartUrl } from '../lib/account/api';
+import { battlenetStartUrl, meKey } from '../lib/account/api';
+import { storageKey } from '../lib/data/query';
+import { API_BASE_URL } from '../lib/planner/config';
 import { BUTTON_MD, BUTTON_PRIMARY, button } from '../lib/ui/button';
 import classes from '../data/classes.json';
 import dates from '../data/dates.json';
@@ -71,6 +81,33 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
 
 <Base title={SITE_NAME} description={HOME_DESCRIPTION} path="/">
   <main id="main" tabindex="-1" class="flex flex-col">
+    <!-- Before the hero paints: a session whose cached /v1/me lists no character gets the
+         signed-out page shape with the no-character hero (no sign-in), so the hero and the
+         rows below do not swap when /v1/me answers. HomeAccountPanel.svelte keeps both
+         attributes in step with the live answer. -->
+    <script
+      is:inline
+      define:vars={{
+        meStorageKey: storageKey(meKey(API_BASE_URL)),
+        signedOutAttr: HOME_SIGNED_OUT_ATTR,
+        noHeroAttr: HOME_NO_HERO_ATTR,
+      }}
+    >
+      (function () {
+        const root = document.documentElement;
+        if (root.dataset.session !== '1') return;
+        try {
+          const cached = localStorage.getItem(meStorageKey);
+          const me = cached ? JSON.parse(cached).data : null;
+          if (me && Array.isArray(me.characters) && me.characters.length === 0) {
+            root.setAttribute(signedOutAttr, '');
+            root.setAttribute(noHeroAttr, '');
+          }
+        } catch {
+          /* storage unavailable or malformed: the island decides once /v1/me answers */
+        }
+      })();
+    </script>
     <SkyBand>
       <div class="page-column flex flex-col gap-[22px] px-[18px] py-7 lg:py-8">
         <div class="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-end lg:gap-8">
@@ -96,7 +133,12 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
                 <span class="text-strong">{homeHeroCopy.headlineLead}</span>{' '}
                 <span class="gold-text">{homeHeroCopy.headlineAccent}</span>
               </h1>
-              <p class="max-w-[560px] text-[15px] leading-relaxed text-[#c9c2b2]">{homeHeroCopy.sentence}</p>
+              <p class="home-out-only max-w-[560px] text-[15px] leading-relaxed text-[#c9c2b2]">
+                {homeHeroCopy.sentence}
+              </p>
+              <p class="home-no-hero-only max-w-[560px] text-[15px] leading-relaxed text-[#c9c2b2]">
+                {homeNoCharacterCopy.sentence}
+              </p>
               <!-- Owner-reported defect, 2026-10-01: `overflow-x-auto` forces the vertical
                    axis to clip too, flattening every crest's outside ring/focus outline at
                    this row's top and bottom. Padding (ring + focus-outline clearance: 6px
@@ -121,7 +163,7 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
                   </a>
                 ))}
               </div>
-              <div class="mt-1 flex flex-wrap items-center gap-4">
+              <div class="home-out-only mt-1 flex flex-wrap items-center gap-4">
                 <a class={`${BUTTON_PRIMARY} ${BUTTON_MD}`} href={battlenetStartUrl('/account?signed_in=1')}>
                   {homePanelCopy.signInButton}
                 </a>
@@ -131,6 +173,46 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
                 >
                   {homeHeroCopy.addonAltLabel}
                 </a>
+              </div>
+              <!-- Signed in with no account character: no sign-in here. The characters' arrival
+                   from Battle.net with a way to check again (shown only while the account has
+                   none), then the addon way in. -->
+              <div class="home-no-hero-only mt-1 flex flex-col gap-4" data-testid="home-no-character">
+                <div class="flex flex-col gap-2" data-testid="home-no-character-status">
+                  <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <p class="text-strong text-[14px]">{homeNoCharacterCopy.status}</p>
+                    <button
+                      type="button"
+                      id={HOME_CHECK_AGAIN_ID}
+                      class={button('secondary', 'sm')}
+                      data-testid="home-check-again"
+                    >
+                      {homeNoCharacterCopy.checkAgain}
+                    </button>
+                  </div>
+                  <p
+                    id={HOME_CHECK_AGAIN_NOTE_ID}
+                    class="text-muted max-w-[560px] text-[13px] empty:hidden"
+                    role="status"
+                    data-testid="home-check-again-note"
+                  ></p>
+                </div>
+                <div class="flex flex-wrap items-center gap-4">
+                  <a
+                    class={`${BUTTON_PRIMARY} ${BUTTON_MD}`}
+                    href={homeNoCharacterCopy.pasteHref}
+                    data-testid="home-no-character-paste"
+                  >
+                    {homeNoCharacterCopy.pasteLabel}
+                  </a>
+                  <a
+                    class="text-[13px] font-semibold tracking-[0.06em] uppercase text-nav"
+                    href={homeNoCharacterCopy.addonHref}
+                    data-testid="home-no-character-addon"
+                  >
+                    {homeNoCharacterCopy.addonLabel}
+                  </a>
+                </div>
               </div>
             </div>
             <HomeAccountPanel client:idle-after-load />
@@ -301,7 +383,9 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
           const root = document.documentElement;
           const slot = document.getElementById('home-lookup-slot');
           const cell = document.getElementById('home-lookup-cell');
-          if (root.dataset.session === '1' && slot && cell) slot.append(cell);
+          // A session with no account character keeps the signed-out shape (the hint above).
+          if (root.dataset.session === '1' && !root.hasAttribute('data-home-signed-out') && slot && cell)
+            slot.append(cell);
         })();
       </script>
       <HomeOutcomeRows />
@@ -374,7 +458,10 @@ const countdownParts = (['days', 'hours', 'minutes'] as const).map((unit) => ({
                 <IconTile glyph="device" />
                 <span class="flex min-w-0 flex-col gap-1">
                   <span class="heading-name text-strong text-[18px]">{card.title}</span>
-                  <span class="text-[13px] leading-snug text-muted">{card.description}</span>
+                  <span class="home-out-only text-[13px] leading-snug text-muted">{card.description}</span>
+                  <span class="home-no-hero-only text-[13px] leading-snug text-muted">
+                    {card.descriptionSignedIn}
+                  </span>
                 </span>
               </span>
               <span class={`${button('secondary', 'md')} w-full md:w-auto`} data-testid="tool-card-button">

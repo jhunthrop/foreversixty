@@ -20,6 +20,17 @@ export const HOME_SIGNED_OUT_ID = 'home-signed-out';
  *  once, shared with that stylesheet by its comment. */
 export const HOME_SIGNED_OUT_ATTR = 'data-home-signed-out';
 
+/** On <html> when someone is signed in but the page has no account character to speak to (none
+ *  imported yet, or the pointer names a pasted export): the hero swaps its sign-in row for
+ *  `homeNoCharacterCopy`'s, since a signed-in visitor never sees a sign-in call to action. Set
+ *  before first paint from the cached /v1/me (index.astro) and kept by HomeAccountPanel.svelte. */
+export const HOME_NO_HERO_ATTR = 'data-home-no-hero';
+
+/** The hero's "Check again" button and its result note (index.astro), wired by
+ *  HomeAccountPanel.svelte. */
+export const HOME_CHECK_AGAIN_ID = 'home-check-again';
+export const HOME_CHECK_AGAIN_NOTE_ID = 'home-check-again-note';
+
 export const homePanelCopy = {
   signInButton: 'Sign in with Battle.net',
   /** The signed-in Simulator card's own empty/loading fallback (§3.B.2) -- reused verbatim

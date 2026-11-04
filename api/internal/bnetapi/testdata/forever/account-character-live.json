@@ -1,0 +1,43 @@
+{
+  "_comment": "Live shape of one /profile/user/wow?namespace=profile-forever-us character entry, captured 2026-11-04 from a real sign-in; name, surname, id and links replaced with fictional values.",
+  "entry": {
+    "id": 7001,
+    "name": "Elyra",
+    "level": 1,
+    "gender": {
+      "name": "Male",
+      "type": "MALE"
+    },
+    "faction": {
+      "name": "Alliance",
+      "type": "ALLIANCE"
+    },
+    "surname": "Duskvale",
+    "character": {
+      "href": "https://us.api.blizzard.com/profile/wow/character/elyra-duskvale?namespace=profile-forever-us"
+    },
+    "playable_race": {
+      "id": 95,
+      "key": {
+        "href": "https://us.api.blizzard.com/data/wow/playable-race/95?namespace=static-1.60.1_70399-forever-us"
+      },
+      "name": "High Order Skyborne"
+    },
+    "playable_class": {
+      "id": 3,
+      "key": {
+        "href": "https://us.api.blizzard.com/data/wow/playable-class/3?namespace=static-1.60.1_70399-forever-us"
+      },
+      "name": "Hunter"
+    },
+    "protected_character": {
+      "href": "https://us.api.blizzard.com/profile/user/wow/protected-character/6800-7001?namespace=profile-forever-us"
+    }
+  },
+  "public_profile_status": 404,
+  "public_profile_body": {
+    "code": 404,
+    "type": "BLZWEBAPI00000404",
+    "detail": "Not Found"
+  }
+}

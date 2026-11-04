@@ -37,7 +37,7 @@ describe('selector account copy', () => {
       'Sign in and your characters arrive with their gear, talents and guild.',
     );
     expect(selectorCopy.signInBnet).toBe('Sign in with Battle.net');
-    expect(selectorCopy.signInEmail).toBe('Email me a sign-in link');
+    expect(selectorCopy).not.toHaveProperty('signInEmail');
     expect(selectorCopy.signedOutHeading).toBe('Sign in to Forever Sixty');
     expect(selectorCopy.closedSignedOut).toBe('Sign in');
     expect(selectorCopy.closedSignedOutSub).toBe('to see your characters');

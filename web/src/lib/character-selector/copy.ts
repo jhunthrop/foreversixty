@@ -29,13 +29,11 @@ export const selectorCopy = {
   addonHref: '/setup',
   signedOutBody: 'Sign in and your characters arrive with their gear, talents and guild.',
   signInBnet: 'Sign in with Battle.net',
-  signInEmail: 'Email me a sign-in link',
-  signInHref: '/login',
   /** The closed control of a signed-in account with no character yet. */
   accountSub: 'No characters yet',
   accountAria: (who: string): string => `${who}. No characters yet. Open your account.`,
   accountPanelBody:
-    'Your Forever characters arrive when you sign in with Battle.net, or once the addon has seen them.',
+    'Your Forever characters are on their way from Battle.net, or arrive once the addon has seen them.',
   accountSetUp: 'Get set up',
   accountSetUpHref: '/setup',
   accountLink: 'Your account',

@@ -1474,11 +1474,6 @@
     outline: 2px solid var(--color-strong);
     outline-offset: 2px;
   }
-  .csel-cta.is-secondary {
-    border-color: var(--color-line-card);
-    background: rgb(255 255 255 / 0.04);
-    color: var(--color-strong);
-  }
 
   /* The sheet: below 1024 the same panel is a modal bottom sheet. */
   @media (max-width: 1023px) {

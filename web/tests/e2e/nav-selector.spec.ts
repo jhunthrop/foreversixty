@@ -603,7 +603,7 @@ test.describe('signed out and expired', () => {
     );
     await expect(panel(page).getByTestId('selector-sign-in-bnet')).toHaveText('Sign in with Battle.net');
     await expect(panel(page).getByTestId('selector-sign-in-bnet')).toHaveAttribute('href', /battlenet/);
-    await expect(panel(page).getByTestId('selector-sign-in-email')).toHaveAttribute('href', '/login');
+    await expect(panel(page).getByTestId('selector-sign-in-email')).toHaveCount(0);
     await expect(panel(page).getByTestId('selector-account-rows')).toHaveCount(0);
   });
 
@@ -662,7 +662,7 @@ test.describe('signed out and expired', () => {
     await expect(selector(page)).not.toContainText('Sign in');
     await selector(page).click();
     await expect(panel(page).getByTestId('selector-none')).toContainText(
-      'Your Forever characters arrive when you sign in with Battle.net, or once the addon has seen them.',
+      'Your Forever characters are on their way from Battle.net, or arrive once the addon has seen them.',
     );
     await expect(panel(page).getByTestId('selector-get-set-up')).toHaveAttribute('href', '/setup');
     await expect(panel(page).getByTestId('selector-account')).toHaveAttribute('href', '/account');
