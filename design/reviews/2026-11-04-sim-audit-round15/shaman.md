@@ -155,3 +155,41 @@ Fix: S a0497d1bc. It also updates the priest lane's `TestRestorationShamanTankHe
 Caveat for the addon: each row covers a ten-level band but was measured at the band's floor. Rank 3 at 39 and rank 6 at 59 sit deeper in the gap penalty than at 30 and 50, so mid-band levels may prefer one rank higher. The rows follow the bands, as every rank row does.
 
 Files to regenerate (in addition to wave 1): the three shaman ladder goldens, and addon-data (rank rows).
+
+## Wave 6: guide round 3 seeds
+
+int/r15 merged into both branches: site ef3195852 (this branch already held wave 3), fork 6a4695cc0. The fork branch has no changes of its own.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W6-1 | **Should Elemental drink a Major Spellblasting Potion on the pull, with the Major Mana Potion later?** No. Forever potions share one 2-minute timer, so drinking at the pull pushes the mana potion to 2:00. Measured at raid 60 (Dwarf, raid build, 10,000 iterations, seeds 1 / 50001):<br>- No potion at all: 576.1 / 576.8.<br>- Spellblasting only, used twice: 584.2 / 584.9, so one 30-second Spellblasting is worth about +4.0 DPS.<br>- Mana potion only (as published): 630.2 / 631.3.<br>- Mana potion, but the potion timer spent on the pull: 619.3 / 620.0, so the pull use costs 10.9 to 11.3 DPS.<br>The engine holds one potion type per fight, so the mixed opener is estimated by adding the parts: about 623.3, which is -1.1% against the published preset. The guide round 3 fix (no potion on the pull) stands. | Client and live wago push (fetched 2026-11-04): Spellblasting 1251932 is aura 13, 47 spell damage. Preset: raid-consumes shaman-elemental (major_mana_potion). | Aligned (no bug) | - | - |
+
+## Calls
+
+**Enhancement weapon imbue: Rockbiter Weapon in the raid preset, Windfury Weapon bare.** I decided this on the coordinator's hand-off.
+
+Reason: Windfury Weapon turns off the Windfury Totem for its wielder. Forever's Rockbiter is a flat attack power imbue: 653 at 60 by the client row (client 16313: 554 + 16.5 a level, unchanged in the live 70755 push; Wowhead's tooltip says 686). So wherever a raid's Windfury Totem reaches the shaman, Rockbiter wins:
+- Raid 60: 794.5 to 830.8 horde, 794.6 to 829.0 alliance, +4.0 to +4.6% at seeds 1 and 50001.
+- With the totem added: +5.7% at 40, +8.7% at 50, +10.1% at 60.
+- Without the totem, Windfury Weapon wins: bare 60 -1.3% and bare 30 -3.5% for Rockbiter.
+- Even when the Enhancement shaman drops the group's Windfury Totem himself, Rockbiter wins by +0.9%.
+
+Classic and Season of Discovery advice (Windfury Weapon at 60) rests on Era's flat-damage Rockbiter, a mechanic Forever changed, so it does not decide this.
+
+The swap lives in `request.ResolvedPreset.Layer`. It applies from the totem's first rank (32) wherever a preset carries `windfury_totem`, so it changes only the shaman-enhancement rows of raid-consumes.json. The bare kit is unchanged. Fix: S 1cd439ddb.
+
+Sources:
+- client spell 16313 and live wago SpellEffect (2026-11-04)
+- [Wowhead Forever Rockbiter Weapon](https://nether.wowhead.com/forever/tooltip/spell/16316)
+- [zockify Forever shaman](https://www.zockify.com/forever/shaman/)
+- [wowtbc.gg Forever Enhancement guide](https://wowtbc.gg/warcraftforever/class-guides/enhancement-shaman/)
+- [warcraft.wiki.gg Rockbiter Weapon](https://warcraft.wiki.gg/wiki/Rockbiter_Weapon) (Era's version)
+- [Icy Veins SoD Enhancement leveling](https://icy-veins.com/wow-classic/enhancement-shaman-dps-season-of-discovery-leveling)
+
+All read 2026-11-03 to 11-04. No Forever source picks either imbue.
+
+For the guide lane:
+- enhancement.md, "Keep Windfury Weapon up all fight" and the before-the-pull imbue line. Replace with: "In a raid where a Windfury Totem reaches you, put Rockbiter Weapon on your weapon: Windfury Weapon would switch the totem off for you, and Rockbiter's attack power is worth more. Solo, in dungeons and anywhere without the totem, use Windfury Weapon."
+- APL note, shaman-enhancement.json priority 2 (Grace of Air): "Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so your Air slot goes to Grace of Air." Replace with: "Your Air slot goes to Grace of Air: with Rockbiter on your weapon, the raid's Windfury Totem already reaches you."
+
+Files to regenerate: web/scripts/sync-raid-preset.mjs (the page's copy of raid-consumes.json). Measure at refresh: Enhancement raid-60 weights and picks with Rockbiter, since attack power gains against haste and Windfury procs.
