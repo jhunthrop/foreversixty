@@ -636,7 +636,7 @@
             }
           }
         },
-        "notes": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight."
+        "notes": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank."
       },
       {
         "action": {
@@ -1550,7 +1550,7 @@
             }
           }
         },
-        "notes": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60."
+        "notes": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60."
       },
       {
         "action": {

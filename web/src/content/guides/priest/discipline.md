@@ -99,7 +99,7 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 **Gnome** is the Alliance pick. Eureka! makes your direct heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Penance's heals 10% stronger (never Renew): put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
 
-**Human** is a hair behind. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
+**Human** is level with Gnome, a hair ahead on a long tank fight. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
 
 **Undead** is the Horde pick for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
 
@@ -107,7 +107,7 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Professions
 
-Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes healing cloth for the first raids, and Enchanting saves you the enchanting bill.
+Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes healing cloth for the first raids, Truefaith Vestments among it, which binds when you make it. Enchanting saves you the enchanting bill, and on Horde it makes the Dormant Heart of the Mountain, a bind on pickup trinket in your raid set.
 
 ## Leveling
 
@@ -121,4 +121,4 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 45: they cost far less than the top rank and keep nearly all of your healing bonus. From 50, rank 7 or 8 does the job just as well as the top rank. Greater Heal on the tank stays at rank 1 until you learn rank 4 at 58: ranks 2 and 3 cost a lot more mana for little extra healing.
+From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 45: they cost far less than the top rank and keep nearly all of your healing bonus. From 50, rank 7 or 8 does the job just as well as the top rank. Greater Heal on the tank stays at rank 1 until you learn rank 4 at 58: it keeps your whole healing bonus until then, and the bigger ranks spend mana on healing a dungeon tank rarely needs.

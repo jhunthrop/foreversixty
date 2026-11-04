@@ -20868,7 +20868,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -21097,7 +21097,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -21326,7 +21326,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -21555,7 +21555,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -21784,7 +21784,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22013,7 +22013,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22242,7 +22242,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22471,7 +22471,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22700,7 +22700,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22929,7 +22929,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23074,7 +23074,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -23198,7 +23198,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -23322,7 +23322,7 @@
           {
             "spell_id": 2055,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -23446,7 +23446,7 @@
           {
             "spell_id": 2055,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -23570,7 +23570,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -23701,7 +23701,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -23832,7 +23832,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -23963,7 +23963,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24094,7 +24094,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24225,7 +24225,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24363,7 +24363,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -24503,7 +24503,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24641,7 +24641,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -24781,7 +24781,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24919,7 +24919,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25059,7 +25059,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -25197,7 +25197,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25337,7 +25337,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -25475,7 +25475,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25615,7 +25615,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -25753,7 +25753,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25893,7 +25893,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -26031,7 +26031,7 @@
           {
             "spell_id": 10965,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26171,7 +26171,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -26309,7 +26309,7 @@
           {
             "spell_id": 10965,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26449,7 +26449,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
+            "condition": "Heal at your top rank before you learn Greater Heal at 40, and rank 4 after that when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },

@@ -1029,7 +1029,7 @@
           }
         }
       },
-      "notes": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank."
+      "notes": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana."
     },
     {
       "action": {
