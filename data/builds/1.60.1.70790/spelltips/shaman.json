@@ -2676,20 +2676,6 @@
       "description": "Instantly inflicts 239 fire damage to enemies within 10 yd of your active Fire totem.",
       "icon": "spell_fire_sealoffire"
     },
-    "408490": {
-      "name": "Lava Burst",
-      "rank": 1,
-      "cost": 135,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 2500,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 10000,
-      "range_yd": 30.0,
-      "description": "You hurl molten lava at the target, dealing 123 Fire damage. If your Flame Shock is on the target, Lava Burst deals 20% increased damage.",
-      "icon": "spell_shaman_lavaburst"
-    },
     "408521": {
       "name": "Riptide",
       "rank": 1,
@@ -2732,34 +2718,6 @@
       "description": "Relocates your active totems to your location.",
       "icon": "ability_shaman_totemrelocation"
     },
-    "1238299": {
-      "name": "Lava Burst",
-      "rank": 2,
-      "cost": 165,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 2500,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 10000,
-      "range_yd": 30.0,
-      "description": "You hurl molten lava at the target, dealing 164 Fire damage. If your Flame Shock is on the target, Lava Burst deals 20% increased damage.",
-      "icon": "spell_shaman_lavaburst"
-    },
-    "1238300": {
-      "name": "Lava Burst",
-      "rank": 3,
-      "cost": 230,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 2500,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 10000,
-      "range_yd": 30.0,
-      "description": "You hurl molten lava at the target, dealing 196 Fire damage. If your Flame Shock is on the target, Lava Burst deals 20% increased damage.",
-      "icon": "spell_shaman_lavaburst"
-    },
     "1239242": {
       "name": "Riptide",
       "rank": 2,
@@ -2801,20 +2759,6 @@
       "range_yd": 0.0,
       "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for ${13 sec-1} sec that restores 290 mana every 3 seconds to group members within 30 yards.",
       "icon": "spell_frost_summonwaterelemental"
-    },
-    "1326047": {
-      "name": "Lava Burst",
-      "rank": 4,
-      "cost": 265,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 2500,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 10000,
-      "range_yd": 30.0,
-      "description": "You hurl molten lava at the target, dealing 220 Fire damage. If your Flame Shock is on the target, Lava Burst deals 20% increased damage.",
-      "icon": "spell_shaman_lavaburst"
     }
   }
 }

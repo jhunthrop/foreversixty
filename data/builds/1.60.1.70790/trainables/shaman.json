@@ -833,38 +833,6 @@
       ]
     },
     {
-      "name": "Lava Burst",
-      "skill_line": "",
-      "source": "class_spell",
-      "active": true,
-      "cost": 265,
-      "cost_type": 0,
-      "cast_time_ms": 2500,
-      "cooldown_ms": 10000,
-      "ranks": [
-        {
-          "id": 408490,
-          "rank": 1,
-          "level": 30
-        },
-        {
-          "id": 1238299,
-          "rank": 2,
-          "level": 40
-        },
-        {
-          "id": 1238300,
-          "rank": 3,
-          "level": 50
-        },
-        {
-          "id": 1326047,
-          "rank": 4,
-          "level": 60
-        }
-      ]
-    },
-    {
       "name": "Lesser Healing Wave",
       "skill_line": "Restoration",
       "source": "skill_line_ability",
