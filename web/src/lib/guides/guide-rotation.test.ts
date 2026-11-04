@@ -106,8 +106,7 @@ describe('every guide card', () => {
       }
       const top = bandTopLevel(60);
       const entry = rotationEntryFor(loadRotations(BUILD, card.spec) ?? [], top)!;
-      const lines = rotationLinesFor(entry, BUILD, card.classSlug, card.spec, top);
-      const kept = lines.filter((line) => runs(line.gates ?? []));
+      const kept = rotationLinesFor(entry, BUILD, card.classSlug, card.spec, top, runs);
       expect(lists.priority.length, `${card.label} priority`).toBe(kept.length);
     }
   });

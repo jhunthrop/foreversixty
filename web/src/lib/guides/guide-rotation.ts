@@ -41,10 +41,11 @@ export function guideRotation(
   const top = bandTopLevel(GUIDE_ROTATION_LEVEL);
   const entry = rotationEntryFor(loadRotations(build, spec) ?? [], top);
   if (entry === undefined) return undefined;
-  const lines = rotationLinesFor(entry, build, classSlug, spec, top);
   const lit = litTalentsOf(describedTrees);
   const facts = spellLookupFor(build, classSlug);
   const talentNames = talentNamesOf(build, classSlug);
+  const runs = buildRunsGates(facts, talentNames, lit);
+  const lines = rotationLinesFor(entry, build, classSlug, spec, top, runs);
   return rotationListsFrom(
     lines,
     loadApl(spec),
@@ -54,7 +55,7 @@ export function guideRotation(
     racialCooldownsFor(build, classSlug),
     role,
     talentCastTimeCuts(build, classSlug, lit),
-    buildRunsGates(facts, talentNames, lit),
+    runs,
     buildSettlesGate(facts, talentNames),
   );
 }
