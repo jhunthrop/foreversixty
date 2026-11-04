@@ -110,6 +110,41 @@ Tests:
 
 **For the guide lane (wave 2):** frost.md's leveling paragraph should read Improved Frostbolt at 10 to 14, then Frost Warding. arcane.md:107 "Missile Barrage comes at 21 and Arcane Blast at 27" becomes Arcane Blast at 20; read the regenerated addon-builds.json for the exact levels. Ice Lance stays at 30 in the order.
 
+## Wave 3: rank rows on the level-gap penalty
+
+Setup:
+- Branches merged with int/r15: site 1e96d8df2, fork 9c511a2cd, which carry the priest lane's E 8d9ca6aae and 974614b8b.
+- The rule: a rank keeps its whole spell power coefficient until the caster is 17 levels past the rank's learn level. After that it loses 5% a level.
+- Learn levels: spellranks.json 70755.
+- Runs: 10,000 iterations, seeds 1 and 50001, both factions. Sweeps at 3,000.
+
+Rows and fixed-rank casts:
+
+| # | row or cast | gap at the band it covers | result | verdict | fix sha |
+|---|---|---|---|---|---|
+| V1 | Fire Scorch rank 1 (2948, learned 22) at 40-49 | 18 at 40 (-5%), 27 at 49 (-50%) | Sweep at bare 40, horde s1: rank 1 155.0, rank 2 155.0, rank 3 151.4, rank 4 (default) 147.5. At 10,000 iterations, rank 2 against rank 1: alliance 157.3 → 158.4 / 157.4 → 158.6 (+0.7%), horde 154.7 → 154.7 / 154.8 → 155.1 (+0.0 / +0.2%). | **Re-picked to rank 2** (8444, learned 28). It ties or gains at 40 and keeps its whole coefficient to 45, where rank 1 has already lost 30%. Test `Scorch at 40` failed, then passed. | S c094ddd7f |
+| V2 | Fire bare 50, after the priest lane dropped Scorch rank 1 at 50 | - | Scorch rank 2 / 3 / 4 at 50: 181.2 / 189.7 / 188.4, against 189.8 for the default rank 5. Fire Blast rank 5 / 4 at 50: 189.1 / 187.6, against 189.8. | No new row: no lower rank gains. | - |
+| V3 | Fire Scorch rank 1 at 30-39; Fire Blast rank 3 (22) at 30-39 and rank 4 (30) at 40-49 | ≤ 17 at the bands they cover | Bare 30 identical to the round start (73.6 / 73.7 / 72.0 / 72.0). | Kept. The engine change does not reach them. | - |
+| V4 | Arcane Frostbolt rank 4 (7322, learned 20) at 30-39 | 10 at 30 (19 at 39, -10%) | Bare 30 identical to the round start (88.0 / 88.1 / 86.4 / 86.6). | Kept. The band runs at 30, where it is unpenalised. | - |
+| V5 | Fixed-rank APL casts, all three specs: Frostbolt 10, Arcane Missiles 7, Arcane Blast 5, Fireball 11, Fire Blast 7, Scorch 7, Pyroblast 8, Cone of Cold 5, Ice Lance 6, Ice Barrier 4 | Top trainer ranks, learned at 54 to 60. Below 60 the level rewrite casts the highest learned rank. | Raid 60 unchanged against wave 1. | Aligned: no top rank is penalised at 60. | - |
+
+Before (round start, `$R/sb-before`) → engine change with the old rows → final:
+
+| band | faction | s1 | s50001 |
+|---|---|---|---|
+| Fire bare 40 | alliance | 159.4 → 157.3 → 158.4 (-0.6%) | 159.6 → 157.4 → 158.6 (-0.6%) |
+| Fire bare 40 | horde | 156.9 → 154.7 → 154.7 (-1.4%) | 156.9 → 154.8 → 155.1 (-1.1%) |
+| Fire bare 50 | alliance | 202.0 → 195.8 (-3.1%) | 202.1 → 195.9 (-3.1%) |
+| Fire bare 50 | horde | 195.5 → 189.5 (-3.1%) | 195.7 → 189.6 (-3.1%) |
+| Fire / Arcane bare 30 | both | unchanged | unchanged |
+| Fire raid 60 | both | unchanged (666.4, 673.0) | unchanged |
+| Arcane, Frost raid 60 | both | same as wave 1 (Before/after above) | same |
+
+- Fire bare 50's -3.1% is the engine change: the rank-1 Scorch it used to cast is gone, and no lower rank recovers any of it.
+- Bare 40 recovers 0.5% for alliance and up to 0.2% for horde.
+
+**Files to regenerate:** the mage-fire ladder golden (rung 40 casts Scorch rank 2).
+
 ## Still open
 
 - Arcane Concentration from Shoot and Kindling Stave's Ignition (round 14 M7), and Kindling Stave's proc rate (M5): carried, with no new evidence.
