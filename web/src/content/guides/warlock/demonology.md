@@ -4,7 +4,7 @@ classSlug: warlock
 spec: demonology
 role: dps
 build: 'FS1:1.60.1.70755:warlock:human:25522/203511310122000135/005:'
-raidBuild: 'FS1:1.60.1.70755:warlock:human:05/2035113011220001351/0550005:'
+raidBuild: 'FS1:1.60.1.70755:warlock:human:05/2035103021220001351/0550005:'
 recommendedRaces: [human, orc]
 statPriority:
   [Spell power, Shadow power, Hit, Critical strike, Intellect, Fire power, Spell haste, Spell penetration]
@@ -59,7 +59,7 @@ The leveling build stops at 30 Demonology points, before Demonic Pact, keeps Imp
 
 The raid build adds what the leveling build cannot use. Demonic Pact, the 31st point, keeps your sacrifice when you summon a different demon; only a new Imp ends it. So you sacrifice the Imp and still play with a Succubus out. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit, and in Forever that debuff is yours alone. Ruin doubles the crit bonus on Shadow Bolt and Immolate. To pay for it, the raid build gives up Improved Corruption, Improved Life Tap, Grim Reach, Soul Harvest and Demonic Energies.
 
-Improved Health Funnel, Demonic Embrace, Demonic Aegis and Improved Voidwalker are the toll to reach Pact, and each buys survival: a stronger, cheaper Health Funnel, 9% more Stamina, a 15% stronger Demon Armor and a tougher Voidwalker. The point in Improved Sayaad is 10% more Lash of Pain. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
+Improved Health Funnel, Demonic Embrace and Demonic Aegis are the toll to reach Pact, and each buys survival: a stronger, cheaper Health Funnel, 9% more Stamina and a 15% stronger Demon Armor. The two points in Improved Sayaad make Lash of Pain 20% stronger. Improved Voidwalker and Improved Imp stay empty, since the Voidwalker never comes out in a raid and the Imp is sacrificed before the pull. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
 
 Your demon scales from you in Forever, and raid buffs do not land on it. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets a bit under half your hit. Its melee almost never crits on a boss; Lash of Pain crits at about a normal caster's rate.
 
