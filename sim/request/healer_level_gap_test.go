@@ -2,6 +2,7 @@ package request
 
 import (
 	"encoding/json"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -24,8 +25,12 @@ func linesCasting(t *testing.T, spec string, ids ...int) json.RawMessage {
 		} `json:"rotation"`
 	}
 	readJSON(t, "../../data/curated/apl/"+spec+".json", &list)
-	var keep []json.RawMessage
-	for _, line := range list.Rotation.PriorityList {
+	// Every entry keeps its place (the others empty), so a rank choice scoped
+	// to lines still finds its line.
+	keep := make([]json.RawMessage, len(list.Rotation.PriorityList))
+	found := false
+	for index, line := range list.Rotation.PriorityList {
+		keep[index] = json.RawMessage(`{}`)
 		var entry struct {
 			Action struct {
 				CastSpell *struct {
@@ -41,13 +46,11 @@ func linesCasting(t *testing.T, spec string, ids ...int) json.RawMessage {
 		if entry.Action.CastSpell == nil {
 			continue
 		}
-		for _, id := range ids {
-			if entry.Action.CastSpell.SpellID.SpellID == id {
-				keep = append(keep, line)
-			}
+		if slices.Contains(ids, entry.Action.CastSpell.SpellID.SpellID) {
+			keep[index], found = line, true
 		}
 	}
-	if len(keep) == 0 {
+	if !found {
 		t.Fatalf("%s casts none of %v", spec, ids)
 	}
 	out, err := json.Marshal(map[string]any{"type": "TypeAPL", "priorityList": keep})
@@ -145,14 +148,13 @@ func TestRestorationDruidRejuvenationKeepsItsHealingBonusInARaid(t *testing.T) {
 	})
 }
 
-// The shaman's tank Healing Wave is the top rank (10396) at 50 and 60: rank 2
-// keeps none of the healing bonus from level 40. Below 50 the shaman lane's
-// wave-3 rows pick rank 3 at 20 to 39 and rank 5 at 40 to 49
-// (TestRestorationShamanFillerHealingWaveByBand).
+// The shaman's tank Healing Wave is the top rank (10396) at 60: rank 2
+// keeps none of the healing bonus from level 40. Below 60 the shaman lane's
+// rows pick the rank by level (TestRestorationShamanFillerHealingWaveByBand).
 func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 	filler, _ := restorationHealingWaveLines(t)
 	assertRanks(t, filler, "shaman-restoration", "shaman", "tauren", healingWaveRanks, []rankCase{
-		{12, BarePreset, 3}, {24, BarePreset, 3}, {32, BarePreset, 3}, {40, BarePreset, 5}, {50, BarePreset, 8},
+		{12, BarePreset, 3}, {24, BarePreset, 2}, {32, BarePreset, 3}, {40, BarePreset, 5}, {50, BarePreset, 6},
 		{60, BarePreset, 9}, {60, RaidPreset, 9},
 	})
 }
@@ -160,7 +162,8 @@ func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 // Holy paladin: the filler Flash of Light is rank 5 (19942) in a raid, with
 // rows keeping rank 1 below 40 and at 50 to 59 and rank 3 at 40 to 49 (what
 // those bands cast before). Holy Light loses its rank-1 row at 30 to 39 and
-// its rank-4 row at bare 60.
+// its rank-4 row at bare 60, and casts rank 2 at 40 to 49 (round 16: on the
+// MaxLevel + 12 rule rank 2 beats rank 1 there at seeds 1 and 50001).
 func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) {
 	filler := linesCasting(t, "paladin-holy", 19750, 19942)
 	assertRanks(t, filler, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
@@ -169,7 +172,7 @@ func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) 
 	})
 	light := linesCasting(t, "paladin-holy", 10329)
 	assertRanks(t, light, "paladin-holy", "paladin", "human", holyLightRanks, []rankCase{
-		{20, BarePreset, 1}, {30, BarePreset, 5}, {40, BarePreset, 1}, {60, BarePreset, 8}, {60, RaidPreset, 8},
+		{20, BarePreset, 1}, {30, BarePreset, 5}, {40, BarePreset, 2}, {49, BarePreset, 2}, {60, BarePreset, 8}, {60, RaidPreset, 8},
 	})
 }
 

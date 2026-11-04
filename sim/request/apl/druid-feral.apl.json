@@ -149,7 +149,7 @@
       }
     },
     {
-      "notes": "At 5 combo points when Rip has under 6 seconds left. Rip at 5 points does far more than a Bite, so it always comes first.",
+      "notes": "At 5 combo points when Rip is off the boss or has under 2 seconds left. A new Rip throws away the ticks the old one had left, so let it run almost to the end. Rip comes first because it is the bleed that keeps Rend and Tear on.",
       "action": {
         "condition": {
           "and": {
@@ -180,7 +180,7 @@
                   },
                   "rhs": {
                     "const": {
-                      "val": "6s"
+                      "val": "2s"
                     }
                   }
                 }
@@ -197,7 +197,7 @@
       }
     },
     {
-      "notes": "At 5 combo points while Rip still has 6 seconds or more, so your points never sit capped. With Predatory Discipline the Bite keeps the damage from your spare energy without spending it.",
+      "notes": "At 5 combo points while Rip still has 5 seconds or more. Between 2 and 5 seconds, keep Shredding and hold the points for the Rip. With Predatory Discipline the Bite keeps the damage from your spare energy without spending it.",
       "action": {
         "condition": {
           "and": {
@@ -228,7 +228,7 @@
                   },
                   "rhs": {
                     "const": {
-                      "val": "6s"
+                      "val": "5s"
                     }
                   }
                 }

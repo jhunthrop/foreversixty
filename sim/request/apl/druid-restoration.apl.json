@@ -30,6 +30,16 @@
       }
     },
     {
+      "notes": "Alliance Skyborne only: Read Leyline every time it is ready. 50% more mana regeneration for 15 seconds is worth a global cooldown on a fight that drains your mana bar.",
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 1259705
+          }
+        }
+      }
+    },
+    {
       "notes": "When the tank drops under 35%: Nature's Swiftness, then an instant Healing Touch on him.",
       "action": {
         "castSpell": {

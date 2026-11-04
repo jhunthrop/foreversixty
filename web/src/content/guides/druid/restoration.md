@@ -48,7 +48,7 @@ Restoration heals with time: Regrowth and Rejuvenation on the tank all fight, Sw
 
 ## Talents and builds
 
-The build is 39 points of Restoration and 12 of Balance. It is built for a tank-healing fight that runs your mana down.
+The build is 40 points of Restoration and 11 of Balance. It is built for a tank-healing fight that runs your mana down.
 
 - **Gift of Nature** (5 points): 10% more healing on your heals. In Forever it does not reach Tranquility.
 - **Improved Rejuvenation** (3 points): 15% more from your most-cast spell.
@@ -59,9 +59,10 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
 - **Improved Tranquility** (2 points): Tranquility with no threat and its cooldown cut from 5 minutes to 2.
 - **Heart of the Wild** (5 points): 10% more Intellect.
-- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) is the price of reaching Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on. The one Balance point left after that sits in Improved Moonfire, which does nothing for a healer. A point of Improved Regrowth, 10% more Regrowth crit, heals a little more if you would rather spend it there.
+- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) is the price of reaching Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
+- **Improved Regrowth** (1 point): 10% more crit on the Regrowth you keep on the tank.
 
-**Wild Growth.** The capstone heals a whole party over 7 seconds, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility, put one point in Wild Growth and the other in Improved Regrowth.
+**Wild Growth.** The capstone heals a whole party over 7 seconds, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility, put one point in Wild Growth and the other in a second point of Improved Regrowth.
 
 ## Rotation and priority
 
@@ -77,9 +78,9 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 
 **The party.** A hurt party member gets a Rejuvenation, you included. Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
 
-**Ranks.** Rank 1 Rejuvenation is not a cheap heal at 60. In Forever a rank learned far below your level loses its share of your healing power, and rank 1 keeps none of it. Your last three ranks (8, 9 and 10) keep all of it, so on a hurt party member cast rank 8 or 9: most of the top rank's healing for less mana. On the tank, use the top rank in a raid. While leveling, your healing power is still low and most of a Rejuvenation is its base heal, so rank 1 barely dents a tank's damage; a middle rank such as rank 4 keeps the heal sizeable and your mana going. Use the top ranks of Regrowth and Healing Touch.
+**Ranks.** Rank 1 Rejuvenation is not a cheap heal at 60. In Forever a rank learned far below your level loses its share of your healing power, and rank 1 keeps none of it. Your last three ranks (8, 9 and 10) keep all of it and rank 7 keeps most of it, so on a hurt party member cast rank 7: it costs little more than half the top rank, and on a long fight your mana runs out before your healing does. On the tank, use the top rank in a raid. While leveling, your healing power is still low and most of a Rejuvenation is its base heal, so rank 1 barely dents a tank's damage; a middle rank such as rank 4 keeps the heal sizeable and your mana going. Use the top ranks of Regrowth and Healing Touch.
 
-**Mana.** Innervate is yours from level 40. Cast it on yourself when you are low: it multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit. A Major Mana Potion and a Demonic Rune cover the rest.
+**Mana.** Innervate is yours from level 40. Cast it on yourself when you are low: it multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit. A Major Mana Potion and a Demonic Rune cover the rest. An Alliance Skyborne also presses Read Leyline every time it is ready: 50% more mana regeneration for 15 seconds.
 
 ## Stat priority
 

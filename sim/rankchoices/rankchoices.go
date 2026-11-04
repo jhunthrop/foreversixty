@@ -28,6 +28,10 @@ type Row struct {
 	// Note is the row's evidence for a reader. A race row says what each race
 	// measured and which racial drives the split.
 	Note string `json:"note,omitempty"`
+	// Lines and Prepull are the Spell's, copied onto each row by sim/request's
+	// parse; the file writes them once per spell.
+	Lines   []int `json:"-"`
+	Prepull []int `json:"-"`
 }
 
 // Spell is one authored spell id's rows, as the curated file writes them.
@@ -35,7 +39,15 @@ type Spell struct {
 	// Spell is the spellranks.json name of Authored's spell, for a reader.
 	Spell    string `json:"spell"`
 	Authored int32  `json:"authored"`
-	Bands    []Row  `json:"bands"`
+	// Lines and Prepull, when either is present, scope the rows: they apply
+	// only to those 0-based priority-list entries and pre-pull actions, and
+	// every other cast of Authored keeps the default rule. Restoration's
+	// Nature's Swiftness save and its tank filler cast the same Healing Wave id,
+	// and only the filler downranks; Elemental's opening bolt follows its
+	// filler, not its top-rank line.
+	Lines   []int `json:"lines,omitempty"`
+	Prepull []int `json:"prepull,omitempty"`
+	Bands   []Row `json:"bands"`
 }
 
 // File is the table's shape.

@@ -155,8 +155,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 			"loop: a real artifact of this bare build, not a defect in the gate.",
 	},
 	"druid-restoration": {
-		"{SpellID: 17116}": "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
-		"{SpellID: 18562}": "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
+		"{SpellID: 17116}":   "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
+		"{SpellID: 18562}":   "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
+		"{SpellID: 1259705}": "Read Leyline is the Alliance Skyborne racial (sim/core/racial_read_leyline.go); the published races are Night Elf and Tauren.",
 	},
 	"paladin-protection": {
 		"{SpellID: 20594}": "Stoneform is the Dwarf racial (sim/core/racials.go); this build is not a Dwarf.",
@@ -197,6 +198,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 14183}":   "Premeditation is a talent (sim/rogue/premeditation.go); this build takes none.",
 		"{SpellID: 16511}":   "Hemorrhage is a talent (sim/rogue/talents.go); this build takes none.",
 		"{SpellID: 1325758}": "Death Mark is the Subtlety capstone talent (sim/rogue/death_mark.go); this build takes none.",
+		"{SpellID: 1329326}": "Ghostly Strike's opener buff exists only with the Ghostly Strike talent (sim/rogue/ghostly_strike.go); this build takes none, so Hemorrhage's hold for the Garrote never fires.",
 	},
 	"shaman-enhancement": {
 		"{SpellID: 17364}":  "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",

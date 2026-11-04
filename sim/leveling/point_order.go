@@ -21,62 +21,78 @@ type cell struct {
 
 // LadderPointOrder is the guide build's learning order: one point per
 // level from 10 to 60, never removed, so the addon can spend a fresh
-// character's points the way the site's own leveling bands do.
+// character's points the way the site's own leveling bands do. It is the
+// climb LadderTalentString cuts at each level (climbLadder).
 //
-// Each level adds the first cell (own tree first, then tier, then
-// column) where that level's LadderTalentString build has more ranks
-// than the order so far and the point is legal - the site planner's own
-// rules (web/src/lib/planner/rules.ts validateOrder): pointsPerTier*tier
-// points already in the tree, the prerequisite at its rank, below max
-// rank. Where the ladder is monotonic that is exactly its per-level
-// diff. Where it is not (the own-tree spine reservation moves a rank
-// that a character could only move with a respec), no such cell may
-// exist, and the point goes instead to the first legal cell where the
-// guide's level-60 targets have more ranks than the order so far.
-//
-// The order must end on the level-60 ladder build itself, with 51
+// The order must end on the level-60 walk, the guide build itself, with 51
 // points; a level with no legal point, or an order that ends anywhere
 // else, is an error naming the level - a data defect, not something to
 // paper over.
 func LadderPointOrder(activeTrees []TalentTree, targets map[int]int, ownTreeIndex int, opts ...LadderOption) ([]Point, error) {
+	climb := climbLadder(activeTrees, targets, ownTreeIndex, 60, opts...)
+	if climb.stuckAt != 0 {
+		return nil, fmt.Errorf("leveling: level %d has no legal point toward the guide build", climb.stuckAt)
+	}
+	final := rankString(activeTrees, walkRanks(activeTrees, targets, ownTreeIndex, 60, opts...))
+	if got := rankString(activeTrees, climb.ranks); got != final {
+		return nil, fmt.Errorf("leveling: level 60 order ends on %s, not the guide build %s", got, final)
+	}
+	return climb.order, nil
+}
+
+// ladderClimb is the ladder up to one level: the ranks held, per tree by
+// talent id, the points in the order they were taken, and the first level
+// that found no legal point (0 when every level did).
+type ladderClimb struct {
+	ranks   []map[int]int
+	order   []Point
+	stuckAt int
+}
+
+// climbLadder spends one point a level from 10 up to level, never removing
+// one. Each level adds the first cell (own tree first, then tier, then
+// column) where that level's walk (walkLevel) has more ranks than the climb
+// so far and the point is legal - the site planner's own rules
+// (web/src/lib/planner/rules.ts validateOrder): pointsPerTier*tier points
+// already in the tree, the prerequisite at its rank, below max rank. Where
+// the walk only adds points that is exactly its per-level diff. Where it
+// moves a rank (an own-tree spine giving way to a wide row), no such cell
+// may exist, and the point goes instead to the first legal cell where the
+// guide's level-60 targets have more ranks than the climb so far.
+func climbLadder(activeTrees []TalentTree, targets map[int]int, ownTreeIndex, level int, opts ...LadderOption) ladderClimb {
 	cells := searchOrder(activeTrees, ownTreeIndex)
-	ranks := make([]map[int]int, len(activeTrees))
+	climb := ladderClimb{ranks: make([]map[int]int, len(activeTrees))}
 	inTree := make([]int, len(activeTrees))
-	for i := range ranks {
-		ranks[i] = make(map[int]int)
+	for i := range climb.ranks {
+		climb.ranks[i] = make(map[int]int)
 	}
 	legal := func(c cell) bool {
-		if inTree[c.tree] < pointsPerTier*c.node.Tier || ranks[c.tree][c.node.ID] >= c.node.MaxRank {
+		if inTree[c.tree] < pointsPerTier*c.node.Tier || climb.ranks[c.tree][c.node.ID] >= c.node.MaxRank {
 			return false
 		}
-		return c.node.PrereqTalentID == 0 || ranks[c.tree][c.node.PrereqTalentID] >= c.node.PrereqRank
+		return c.node.PrereqTalentID == 0 || climb.ranks[c.tree][c.node.PrereqTalentID] >= c.node.PrereqRank
 	}
-	order := make([]Point, 0, 51)
-	for level := 10; level <= 60; level++ {
-		ladder, err := TalentRanksFromString(activeTrees, LadderTalentString(activeTrees, targets, ownTreeIndex, level, opts...))
-		if err != nil {
-			return nil, err
-		}
+	for lvl := 10; lvl <= level; lvl++ {
+		walk := walkRanks(activeTrees, targets, ownTreeIndex, lvl, opts...)
 		pick, found := firstCell(cells, func(c cell) bool {
-			return ladder[c.node.ID] > ranks[c.tree][c.node.ID] && legal(c)
+			return walk[c.tree][c.node.ID] > climb.ranks[c.tree][c.node.ID] && legal(c)
 		})
 		if !found {
 			pick, found = firstCell(cells, func(c cell) bool {
-				return min(targets[c.node.ID], c.node.MaxRank) > ranks[c.tree][c.node.ID] && legal(c)
+				return min(targets[c.node.ID], c.node.MaxRank) > climb.ranks[c.tree][c.node.ID] && legal(c)
 			})
 		}
 		if !found {
-			return nil, fmt.Errorf("leveling: level %d has no legal point toward the guide build", level)
+			if climb.stuckAt == 0 {
+				climb.stuckAt = lvl
+			}
+			continue
 		}
-		ranks[pick.tree][pick.node.ID]++
+		climb.ranks[pick.tree][pick.node.ID]++
 		inTree[pick.tree]++
-		order = append(order, Point{Tab: pick.tree + 1, Tier: pick.node.Tier + 1, Column: pick.node.Column + 1})
+		climb.order = append(climb.order, Point{Tab: pick.tree + 1, Tier: pick.node.Tier + 1, Column: pick.node.Column + 1})
 	}
-	final := LadderTalentString(activeTrees, targets, ownTreeIndex, 60, opts...)
-	if got := rankString(activeTrees, ranks); got != final {
-		return nil, fmt.Errorf("leveling: level 60 order ends on %s, not the guide build %s", got, final)
-	}
-	return order, nil
+	return climb
 }
 
 func searchOrder(trees []TalentTree, ownTreeIndex int) []cell {

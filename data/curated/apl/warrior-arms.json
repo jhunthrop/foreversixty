@@ -135,7 +135,7 @@
         }
       },
       {
-        "notes": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+        "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, a quarter more with the raid build's point of Improved Bloodrage, back every minute.",
         "action": {
           "condition": {
             "cmp": {
@@ -226,6 +226,7 @@
         }
       },
       {
+        "notes": "Raid build, on cooldown right after Mortal Strike: for 8 seconds your swings each bring 5 more rage, two or three with a two-hander, for a quarter of your base health.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -280,6 +281,7 @@
         }
       },
       {
+        "notes": "Raid build, on a free global in Battle Stance while Mortal Strike, Overpower and Slam are on cooldown: a second weapon strike that hits twice as hard on Dragonkin and Giants.",
         "action": {
           "castSpell": {
             "spellId": {
