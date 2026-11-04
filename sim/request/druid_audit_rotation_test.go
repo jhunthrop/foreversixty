@@ -104,7 +104,7 @@ func TestBalanceRankRowsByLevel(t *testing.T) {
 func TestRestorationHealingTouchFillerRanksByLevel(t *testing.T) {
 	const (
 		healingTouch3, healingTouch5, healingTouch6 = 5187, 5189, 6778
-		healingTouch7, healingTouch8                 = 8903, 9758
+		healingTouch7, healingTouch8                = 8903, 9758
 	)
 	for _, c := range []struct {
 		name      string
