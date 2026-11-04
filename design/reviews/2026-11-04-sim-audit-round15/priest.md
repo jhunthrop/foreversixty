@@ -225,3 +225,35 @@ After the fix, the conformance goldens still show only Heal rank 4 penalised as 
 - **Site, not regenerated:**
   - TestRotationLadder goldens for Elemental (band 40) and Discipline;
   - dps-per-point for those two specs.
+
+## Wave 6: guide-accuracy round 3 seeds (Starshards)
+
+First merged fork int/r15 (6a4695cc0) and site int/r15 (ef3195852), then rebuilt.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W6-1 | **Starshards had no cooldown in the engine** (S-R3-1). `sim/priest/starshards.go` built every rank with a GCD only, so a line casting it would chain it back to back.<br>- **The 70755 client gives every rank a 30 s category cooldown:** SpellCooldowns CategoryRecoveryTime 30000 on 10797 and 19296 to 19305, shared through SpellCategories category 2522.<br>- **The live push agrees:** the hotfixed and unhotfixed wago rows are the same, and the Forever tooltip says "30 sec cooldown" (https://nether.wowhead.com/forever/tooltip/spell/19305).<br>- **Fix:** one 30 s timer now covers every rank and every channel-length variant. | `TestStarshardsIsOnAThirtySecondCooldownSharedByItsRanks` failed (0s), then passed. The priest packages and conformance pass. | CONFIRMED-BUG | old (no round read it; nothing cast it); guides-handoff (round 3 S-R3-1) | E 08627ce04 |
+| W6-2 | **A Starshards line for a Night Elf Shadow priest** (SIM-R3-2). Raid 60, guide raidBuild, 10,000 iterations (s1 / s50001), Night Elf: no line 695.7 / 696.0; Starshards rank 7 after Shadow Word: Death and before Mind Flay 682.0 / 682.1 (-2.0%); Starshards before Shadow Word: Death 678.0 / 678.1 (-2.5%). Arcane takes none of Shadowform, Darkness, Shadow Weaving or Shadow Focus, and the 6 s channel displaces Mind Flay. Not adopted, so the page stays silent about it (R3-D2). For the record at s1: Human 696.2, Dwarf 695.6, Gnome 693.1. That agrees with round 3's race-sims (Human first for Alliance), so Starshards does not move the Alliance pick. | sims | Aligned (not adopted) | - | - |
+| W6-3 | **The Discipline race re-run after the warlock lane's Eureka! fix** is the warlock lane's to report. This lane changes the published race only if that lane says so. Nothing has come yet. | - | Pending (warlock lane) | - | - |
+
+## Calls (owner calls delegated to the lane)
+
+| call | decision | reason | sources |
+|---|---|---|---|
+| **Discipline Power Word: Shield rank at 60** | **Rank 10 (10901), the top rank; the 40-49 rank-6 row goes.** | Round 14 held rank 4 because a full shield was thought to starve a warrior tank's rage. Forever removed that, and the level-gap rule leaves rank 4 with 5% of its bonus at 60. Rank 10 is +1.0 to +1.4% at raid 60, both factions, seeds 1 and 50001 (horde 498.2 → 505.2 and 497.9 → 504.9; alliance 518.0 → 523.3 and 518.0 → 523.1). No bare band loses (30 +0.6%, the rest tie). | Blizzard, "World of Warcraft: Forever Class Deep Dives — Priest and Warrior", 30 September 2026: "Rage gain also ignores all damage absorption effects, so Power Word: Shield will no longer decrease Rage gained" (https://worldofwarcraft.blizzard.com/news/24301514). S ee7be8d87, E eaa322397 |
+| **Shadow Wand Specialization at 10** | **Taken first: Wand Specialization 2/2 at 10-11, then Spirit Tap 5/5; Shadowform at 42.** | No legal order gets the wand early and keeps Shadowform at 40: Shadowform needs all 31 of a level-40 priest's points in Shadow, and a ladder never removes points. So it is a trade:<br>- **Gains:** band 20 +9.5% / +8.3% (alliance / horde) and band 30 +5.9% / +4.8%, with Shadow Focus, Improved Mind Blast, Improved Shadow Word: Pain and both Mind Flay talents ahead of Blackout.<br>- **Cost:** band 40 -35.7% / -37.4% for the two levels without Shadowform.<br>- **Why take it:** a priest spends thirty levels before 40 and two after it, and the strong players' guides make the same trade.<br>- **How:** the ladder-first row can now reserve another tree's first-row talent (`sim/leveling` reserveOffTree), shared code used by this row only. | Icy Veins, Forever Shadow Priest Leveling, 2026-11-02: "Your first priority is to pick up Wand Specialization, as most of your damage at early levels will come from your wand" (https://www.icy-veins.com/wow-forever/shadow-priest-leveling); Kargoz's Forever 1-60 Shadow guide (Mobalytics) takes Wand Specialization 2/2 first, then Spirit Tap 5/5 (https://mobalytics.gg/wow-forever/profile/kargoz/classes/1-60-shadow-priest-leveling-guide-wands-talents-rotation-tips-and-tricks). S 75cae4b93 |
+
+**Files to regenerate (waves 6 and calls):**
+- `addon-builds.json`: the Shadow leveling order. `TestCommittedAddonBuildsFollowTheGuides` fails until it is regenerated.
+- addon-data and Data.lua.
+- TestRotationLadder goldens: Shadow at 10, 20, 30, 38 and 40; Discipline.
+- dps-per-point: Shadow at 25, 35 and 45; Discipline.
+- The Shadow and Discipline BiS band entries, at refresh.
+
+**Measure at refresh:** Shadow bands 20 to 40 on the Wand-first ladder; Discipline every band with Power Word: Shield at the top rank.
+
+**For the guide lane:**
+- **shadow.md:** the leveling order is now "Wand Specialization at 10 and 11, Spirit Tap to 16, Shadow Focus to 21, Improved Mind Blast to 25, Improved Shadow Word: Pain at 26 and 27, Mind Flay at 28, Improved Mind Flay at 29 and 30, then Blackout, Vampiric Embrace, Shadow Weaving and Darkness, and Shadowform at 42."
+- **shadow.md, the Wand Specialization talent line** (round 3 PRIEST-R3-2): "Wand Specialization comes first, at 10 and 11: the wand finishes most of your mobs before Mind Flay. It costs two levels of Shadowform, which arrives at 42."
+- **discipline.md:** any line that keeps the shield at a low rank for the tank's rage should read "Power Word: Shield at the top rank; in Forever a shield no longer costs a warrior any rage."
+- **The Discipline APL top-level note** names Power Word: Shield rank 4. That is a note, not mine to edit.
