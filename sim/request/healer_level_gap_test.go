@@ -2,6 +2,7 @@ package request
 
 import (
 	"encoding/json"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -24,8 +25,12 @@ func linesCasting(t *testing.T, spec string, ids ...int) json.RawMessage {
 		} `json:"rotation"`
 	}
 	readJSON(t, "../../data/curated/apl/"+spec+".json", &list)
-	var keep []json.RawMessage
-	for _, line := range list.Rotation.PriorityList {
+	// Every entry keeps its place (the others empty), so a rank choice scoped
+	// to lines still finds its line.
+	keep := make([]json.RawMessage, len(list.Rotation.PriorityList))
+	found := false
+	for index, line := range list.Rotation.PriorityList {
+		keep[index] = json.RawMessage(`{}`)
 		var entry struct {
 			Action struct {
 				CastSpell *struct {
@@ -41,13 +46,11 @@ func linesCasting(t *testing.T, spec string, ids ...int) json.RawMessage {
 		if entry.Action.CastSpell == nil {
 			continue
 		}
-		for _, id := range ids {
-			if entry.Action.CastSpell.SpellID.SpellID == id {
-				keep = append(keep, line)
-			}
+		if slices.Contains(ids, entry.Action.CastSpell.SpellID.SpellID) {
+			keep[index], found = line, true
 		}
 	}
-	if len(keep) == 0 {
+	if !found {
 		t.Fatalf("%s casts none of %v", spec, ids)
 	}
 	out, err := json.Marshal(map[string]any{"type": "TypeAPL", "priorityList": keep})
@@ -145,14 +148,13 @@ func TestRestorationDruidRejuvenationKeepsItsHealingBonusInARaid(t *testing.T) {
 	})
 }
 
-// The shaman's tank Healing Wave is the top rank (10396) at 50 and 60: rank 2
-// keeps none of the healing bonus from level 40. Below 50 the shaman lane's
-// wave-3 rows pick rank 3 at 20 to 39 and rank 5 at 40 to 49
-// (TestRestorationShamanFillerHealingWaveByBand).
+// The shaman's tank Healing Wave is the top rank (10396) at 60: rank 2
+// keeps none of the healing bonus from level 40. Below 60 the shaman lane's
+// rows pick the rank by level (TestRestorationShamanFillerHealingWaveByBand).
 func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 	filler, _ := restorationHealingWaveLines(t)
 	assertRanks(t, filler, "shaman-restoration", "shaman", "tauren", healingWaveRanks, []rankCase{
-		{12, BarePreset, 3}, {24, BarePreset, 3}, {32, BarePreset, 3}, {40, BarePreset, 5}, {50, BarePreset, 8},
+		{12, BarePreset, 3}, {24, BarePreset, 2}, {32, BarePreset, 3}, {40, BarePreset, 5}, {50, BarePreset, 6},
 		{60, BarePreset, 9}, {60, RaidPreset, 9},
 	})
 }
