@@ -169,11 +169,35 @@
       ]
     },
     "priest-shadow": {
-      "reason": "Every Forever leveling guide takes Spirit Tap 5/5 first, from level 10: it is how a priest drinks less between pulls (Icy Veins Forever Shadow leveling, Mobalytics Forever Shadow guide, Kargoz's Forever leveling guide; sim-accuracy round 15, priest). The band fight has no kills, so Spirit Tap changes no number there and the band builds the sim measures are the plain walk's (Shadow Focus 5 at band 20, the same modeled talents at 30 and 40). Mind Flay is not reserved: on the band-20 fight a rank-1 Mind Flay without Improved Mind Flay loses about 2.7% to wanding because the fight runs out of mana, so it stays at 28.",
+      "reason": "Wand Specialization 2/2 at 10-11, then Spirit Tap 5/5, the order every Forever guide that orders them gives (Icy Veins Forever Shadow leveling https://www.icy-veins.com/wow-forever/shadow-priest-leveling, 2026-11-02: 'Your first priority is to pick up Wand Specialization'; Kargoz's Forever 1-60 guide on Mobalytics). The wand is 37 to 41% of a leveling priest's damage on the band fight: +10.1% at band 20 and +5.7% at band 30, seeds 1 and 50001. A ladder only adds points, so Shadowform moves from 40 to 42 (band 40 -36%); a priest spends thirty levels before 40 and two after it, and the guides take the same trade (sim-accuracy round 15 wave 6, an owner call the lane decided). Spirit Tap changes no number on the band fight (no kills). Shadow Focus, Improved Mind Blast, Improved Shadow Word: Pain, Mind Flay and Improved Mind Flay follow ahead of Blackout, which the band fight does not model, so band 30 holds Improved Mind Flay (+5.9% alliance, +4.8% horde over the Wand-first walk's band 30, which lacked it and lost 1.8 to 2.4%). Mind Flay is not reserved: on the band-20 fight a rank-1 Mind Flay loses to wanding (the fight runs out of mana), so it lands at 28.",
       "first": [
+        {
+          "talent": "Wand Specialization",
+          "rank": 2
+        },
         {
           "talent": "Spirit Tap",
           "rank": 5
+        },
+        {
+          "talent": "Shadow Focus",
+          "rank": 5
+        },
+        {
+          "talent": "Improved Mind Blast",
+          "rank": 4
+        },
+        {
+          "talent": "Improved Shadow Word: Pain",
+          "rank": 2
+        },
+        {
+          "talent": "Mind Flay",
+          "rank": 1
+        },
+        {
+          "talent": "Improved Mind Flay",
+          "rank": 2
         }
       ]
     },

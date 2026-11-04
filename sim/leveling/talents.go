@@ -224,6 +224,7 @@ func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIn
 			order = append(order, i)
 		}
 	}
+	offTree, remaining := reserveOffTree(activeTrees, targets, ownTreeIndex, cfg.first, remaining)
 	for _, ti := range order {
 		if ti < 0 || ti >= len(activeTrees) {
 			continue
@@ -235,7 +236,7 @@ func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIn
 		case ti == ownTreeIndex:
 			remaining = spendOwnTree(digits[ti], activeTrees[ti], targets, remaining)
 		default:
-			remaining = spendTree(digits[ti], activeTrees[ti], targets, nil, remaining)
+			remaining = spendTree(digits[ti], activeTrees[ti], targets, offTree[ti], remaining+spent(offTree[ti]))
 		}
 	}
 
@@ -458,4 +459,34 @@ func RequireGuideBuildMatchesActive(guideBuild, activeBuild string) error {
 		return fmt.Errorf("%w: guide stamp %q, active build %q", ErrGuideBuildMismatch, guideBuild, activeBuild)
 	}
 	return nil
+}
+
+// reserveOffTree spends a reservation's ranks that sit in another tree than the spec's own
+// (Shadow's Wand Specialization, in Discipline) before the own tree, one rank at a time in
+// list order, each capped at the guide's target and its max rank, and only where the rank
+// is legal on its own: a first-row talent with no prerequisite (a deeper one would need
+// that tree's points first, which the plain walk spends after the own tree). It returns
+// each tree's reserved ranks and the budget left.
+func reserveOffTree(trees []TalentTree, targets map[int]int, ownTreeIndex int, first []LadderFirstRank, budget int) (map[int]map[int]int, int) {
+	reserved := map[int]map[int]int{}
+	for _, r := range first {
+		for ti, tree := range trees {
+			if ti == ownTreeIndex {
+				continue
+			}
+			for _, node := range tree.Talents {
+				if node.Name != r.Talent || node.Tier != 0 || node.PrereqTalentID != 0 {
+					continue
+				}
+				if reserved[ti] == nil {
+					reserved[ti] = map[int]int{}
+				}
+				for reserved[ti][node.ID] < min(r.Rank, targets[node.ID], node.MaxRank) && budget > 0 {
+					reserved[ti][node.ID]++
+					budget--
+				}
+			}
+		}
+	}
+	return reserved, budget
 }
