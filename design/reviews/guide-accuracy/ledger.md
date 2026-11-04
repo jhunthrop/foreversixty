@@ -57,3 +57,23 @@ Every class's open owner questions were researched (Forever sources first, Class
 Biggest research answer: Forever replaced Era's level-20 downranking rule with a level-gap rule (full healing bonus until a rank is 17 levels behind you, then 5% a level), so the rank 1 and 2 heals the healer cards cast are wrong at 60; prose is fixed, the card ranks and the engine curve are the first sim-round items.
 
 Hand-set leveling order: data/curated/ladder-order.json (sim/leveling/ladder_order.go), rows that reorder points only between sim checkpoints (10, 20, 25, 30, 35, 38, 40, 45, 50, 55, 60; TestLadderOrderMovesNoCheckpoint). First row: Beast Mastery takes Focused Fire at 15-16 ahead of Endurance Training (owner; Mobalytics and Icy Veins Forever cited). Researched orders that DO move a checkpoint (Frost Improved Frostbolt first and Ice Lance at 20, Arcane Blast at 20, Enhancement Stormstrike at 25, Shadow Mind Flay at 20) need a measured ladder-first row and go to the sim round; their prose follows the shipped order until then.
+
+## Round 2 (client 1.60.1.70755, 2026-11-04)
+
+Same loop on main ab42101f7, plus the owner rules added in round 1: web research when the sim cannot decide (Forever sources first), racial and build sims where they apply, nothing left to the owner as a taste call, and a client spell description beats an inferred flag. Reports: `round2/<class>.md`; sims: `round2/race-sims.md`. Every class's rendered pages got a wow-player SHIP. Round 2 fixes are on land/guides-r2 (commits 384717fd4, 647736df5, e547daf4b), landing only on the coordinator's go.
+
+| Class | Audit CONFIRMED | Rendered-review MUSTs | Fixed | Decisions made (with sources or sims) |
+|---|---|---|---|---|
+| warrior | 3 | 2 | 5 + 2 likely | Arms and Fury: Night Elf and Undead, best free races beyond error (Skyborne leads by a hair but needs the paid Heroic Pack) |
+| shaman | 4 | 1 | 5 + 4 likely | Lightning Overload is its own smaller bolt (client rows); no logs yet |
+| rogue | 5 | 0 | 5 | Combat openers left unranked until measured |
+| priest | 2 | 1 | 3 + 2 likely | Shadowfiend is not in Forever; planner links stay in one form |
+| mage | 6 | 0 | 6 + 1 likely | Source labels in player words, no paths (_prose.test.ts filePaths rule) |
+| warlock | 6 | 2 | 8 + 4 likely | Human with Orc for all three specs; Destruction raid build Pandemic 3 + Malevolence 3 (+1.7%, adopted) |
+| hunter | 5 | 1 | 6 + 1 likely | Night Elf with Orc (BM, SV) or Troll (MM); Survival Rapid Killing loses 1.9% |
+| druid | 5 | 1 | 6 + 5 likely | (none open) |
+| paladin | 3 | 1 | 4 + 1 likely | Retribution stays Human (raid tie, bare +1.2%) |
+
+Round 2 totals: 39 audit CONFIRMED plus 9 rendered-review MUSTs, all fixed. Verdict: NOT zero, round 3 needed.
+
+Out of scope, handed on: hover tooltips (spelltips) still carry pre-hotfix text for rogue, hunter and likely warrior/shaman (data regen with the 70755 hotfix layer); BiS headers name the old default race; the Fury BiS entry's talent string is illegal on 70755; card actions for low-rank heals, Agony vs Doom, Curse of the Elements order, Soul Fire, Subtlety gating, Arcane Wrath (sim round).
