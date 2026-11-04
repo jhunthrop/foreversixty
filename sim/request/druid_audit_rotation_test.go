@@ -132,3 +132,24 @@ func TestRestorationHealingTouchFillerRanksByLevel(t *testing.T) {
 		}
 	}
 }
+
+// Round 18 R2: the party Rejuvenation (authored 8910) is rank 2 at 40 and 41,
+// where it beats rank 1 by 1.4 to 2.1% (night elf) and 0.8 to 1.4% (tauren);
+// rank 1 again at 39 (-0.9%) and 42 (+0.8%, under the bar).
+func TestRestorationPartyRejuvenationAtFortyAndFortyOne(t *testing.T) {
+	const rejuvenation1, rejuvenation2 = 774, 1058
+	for _, c := range []struct {
+		level     int
+		want, not int32
+	}{
+		{39, rejuvenation1, 0},
+		{40, rejuvenation2, rejuvenation1},
+		{41, rejuvenation2, rejuvenation1},
+		{42, rejuvenation1, rejuvenation2},
+	} {
+		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, "night-elf"))
+		if !ids[c.want] || (c.not != 0 && ids[c.not]) {
+			t.Errorf("level %d: want Rejuvenation %d cast and %d not", c.level, c.want, c.not)
+		}
+	}
+}
