@@ -99,12 +99,16 @@ func TestBalanceRankRowsByLevel(t *testing.T) {
 // R1): Restoration's Healing Touch filler (line 9, the tank under 55%) was
 // never judged by level. Rank 3 beats the top rank by 1.2 to 1.5% at 30 to
 // 33 and rank 5 by 1.1 to 1.3% at 40 to 44 (10,000 iterations, seeds 1 and
-// 50001, both factions); the levels between and after are within 1%. The
-// Nature's Swiftness line (4) keeps the top rank.
+// 50001, both factions). Round 19: the levels between and after gain beyond
+// error too, and rank rows take no 1% bar: rank 4 beats the top rank by 0.6
+// to 0.9% at 34 to 39, rank 5 by 1.1% at 45 and rank 6 by 0.8 to 0.9% at 46
+// to 49; the top rank wins from 50. The Nature's Swiftness line (4) keeps the
+// top rank.
 func TestRestorationHealingTouchFillerRanksByLevel(t *testing.T) {
 	const (
-		healingTouch3, healingTouch5, healingTouch6 = 5187, 5189, 6778
-		healingTouch7, healingTouch8                = 8903, 9758
+		healingTouch3, healingTouch4, healingTouch5 = 5187, 5188, 5189
+		healingTouch6, healingTouch7, healingTouch8 = 6778, 8903, 9758
+		healingTouch9                               = 9888
 	)
 	for _, c := range []struct {
 		name      string
@@ -113,11 +117,13 @@ func TestRestorationHealingTouchFillerRanksByLevel(t *testing.T) {
 	}{
 		{"30: rank 3 filler beside the top-rank save", 30, []int32{healingTouch3, healingTouch5}, nil},
 		{"33: rank 3 filler beside the top-rank save", 33, []int32{healingTouch3, healingTouch6}, nil},
-		{"34: top rank only", 34, []int32{healingTouch6}, []int32{healingTouch3}},
-		{"39: top rank only", 39, []int32{healingTouch7}, []int32{healingTouch5}},
+		{"34: rank 4 filler beside the top-rank save", 34, []int32{healingTouch4, healingTouch6}, []int32{healingTouch3}},
+		{"39: rank 4 filler beside the top-rank save", 39, []int32{healingTouch4, healingTouch7}, []int32{healingTouch5}},
 		{"40: rank 5 filler beside the top-rank save", 40, []int32{healingTouch5, healingTouch7}, nil},
-		{"44: rank 5 filler beside the top-rank save", 44, []int32{healingTouch5, healingTouch8}, nil},
-		{"45: top rank only", 45, []int32{healingTouch8}, []int32{healingTouch5}},
+		{"45: rank 5 filler beside the top-rank save", 45, []int32{healingTouch5, healingTouch8}, []int32{healingTouch6}},
+		{"46: rank 6 filler beside the top-rank save", 46, []int32{healingTouch6, healingTouch8}, []int32{healingTouch5}},
+		{"49: rank 6 filler beside the top-rank save", 49, []int32{healingTouch6, healingTouch8}, nil},
+		{"50: top rank only", 50, []int32{healingTouch9}, []int32{healingTouch6}},
 	} {
 		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, "night-elf"))
 		for _, id := range c.want {
