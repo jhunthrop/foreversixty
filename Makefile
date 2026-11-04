@@ -447,10 +447,23 @@ loot-check:
 #
 # Needs the embedded item database (`make simdb`), the same as
 # `cd sim && go test ./request`.
+#
+# A spec that fails or hits leveling-bis's per-spec cap keeps its previous
+# file, and the run still exits 0 so bis.yml commits every spec that did
+# finish (2026-11-04: three healers over the cap cost all 28 specs' picks).
+# The failure is not hidden: it prints a GitHub error annotation naming the
+# specs. Any other failure (no "spec(s) failed" line: a build error, a bad
+# flag) still fails the target, and BIS_STRICT=1 restores the hard failure.
 BIS_ARGS ?= -all
 bis: simdb
 	@test -n "$(ACTIVE_BUILD)" || { echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
-	go run ./sim/cmd/leveling-bis $(BIS_ARGS)
+	@{ go run ./sim/cmd/leveling-bis $(BIS_ARGS); echo $$? > .bis-status; } 2>&1 | tee .bis-run.log; \
+	  status=$$(cat .bis-status); failed=$$(grep -o '[0-9]* of [0-9]* spec(s) failed: .*' .bis-run.log | tail -1); \
+	  rm -f .bis-status .bis-run.log; \
+	  if [ "$$status" -ne 0 ]; then \
+	    if [ -z "$$failed" ] || [ -n "$(BIS_STRICT)" ]; then exit "$$status"; fi; \
+	    echo "::error title=leveling-bis::$$failed; their previous files stand"; \
+	  fi
 
 .PHONY: sheet-fonts
 # sheet-fonts fetches the Discord character sheet's faces (spec

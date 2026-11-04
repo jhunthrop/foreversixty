@@ -137,8 +137,12 @@ func run(execPath string, args []string) error {
 // ranking sims at healIterationScale times the DPS count on top of set
 // completion and the verify-best guard, which took the five healers past
 // the old five-minute ceiling on 2026-10-08 and had the nightly skip
-// them all; thirty minutes is several times the slowest measured spec.
-const specTimeout = 30 * time.Minute
+// them all. Thirty minutes held until sim round 15 (heal rank rows, the 2.3
+// heal profile): on 2026-11-04 Holy paladin, Holy priest and Restoration
+// shaman were each killed at 30m while reconciling band 60, and the run lost
+// every spec's picks. Forty-five minutes fits them while the -all run still
+// ends inside bis.yml's 300-minute job (about 142 min for the other 25 specs).
+const specTimeout = 45 * time.Minute
 
 // runAllSpecsIsolated runs writtenSpecs, one subprocess per spec, and
 // reports which (if any) failed or hung - see run()'s own doc for why
