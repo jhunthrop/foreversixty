@@ -1,0 +1,101 @@
+# Round 15, lane hunter: Beast Mastery, Marksmanship, Survival (melee)
+
+Client 1.60.1.70755, site int/r15 fd320b60e, fork int/r15 d1d9f2775. Branches: site wt/r15-hunter, fork lane/r15-hunter.
+Sims: spec-breakdown through the lock, 3000 iterations to explore, 10000 at seeds 1 and 50001 for every reported number.
+
+Note on the baseline: the default raid-60 runs (before.tsv) use the published BiS talents, which are 70753 carry-overs. For Marksmanship the published raid-60 entry runs the **leveling** build (no Lone Wolf, 708 DPS), not the guide raidBuild (745.7). Every build measure below therefore passes the guide string with `-talents` on both sides. The refresh replaces the published talents (MR19/MR20).
+
+## Seed items (guide-accuracy round 1)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| H1 | **Focused Fire before Endurance Training (Beast Mastery leveling).** The plain walk spent levels 15 to 18 on Endurance Training 1 to 4 (pet health and armor), then took Focused Fire (2% more damage for you and the pet) at 19 and 20. Focused Fire's row opens at 15. | addon-builds.json BM order `[1,1,3]x4` before `[1,2,1]x2`; talents/hunter.json 104975 (tier 1) and 104976. The published bands (10, 20, 30...) hold the same points either way, so no sim can separate them. Owner ruling 2026-11-04: on a tie, real leveling play decides, through a checked-in order override. | CONFIRMED (owner ruling) | old, guides-handoff | S 426825c1c |
+| H2 | **Sniper Shot left out of the Marksmanship raid build.** The 2026-11-03 push doubled it (rank 3 590 over normalized weapon damage, 4 s cast, 15 s cooldown). The raid build had 33 Marksmanship points and stopped one short. Sniper Shot now takes the third Improved Stings point (Serpent Sting 20% to 13%), and the rotation casts it after Multi-Shot under Aimed Shot's own gate (next auto shot more than 1.2 s away). Gain: +2.5% at both seeds and both factions. Swapping out Surefooted instead gains only +0.6% (hit). Casting it on cooldown with no gate gains +0.3 to +1.0%. | spellconst 1310687/1310785/1310786 (effect 121, 320/450/590), engine constants_auto_gen.go:4473, sniper_shot.go (Mortal Shots, Lone Wolf and Ranged Weapon Specialization apply; Barrage does not, per its text). Warcraft Tavern's Forever MM guide ([link](https://www.warcrafttavern.com/forever/guides/marksmanship-hunter/), read 2026-11-04, no date shown) takes Sniper Shot and recasts it on cooldown. | CONFIRMED | old (rounds 13 and 14 took the pushed value and never re-asked the build), guides-handoff | S 1b923c4f0, E 7e25c12ab |
+| H3 | **Rapid Killing and Rapid Recuperation missing from the Marksmanship leveling build.** The engine has no kills on a boss dummy, so it cannot price Rapid Killing's 20% next Shot after a kill, or Rapid Recuperation's 100% clause. It does model Rapid Recuperation's Serpent Sting half. The sim ties at every bare band: 20 +1.0%, 30 -0.6%, 40 +0.3%, 50 +0.5%, 60 +0.2 to +0.4%, and time out of mana drops at 60. Under the owner's tie rule the Forever guides decide, and they take both. New leveling build `532000050/005055200152105/5`: Rapid Killing 2 and Rapid Recuperation 2, paid for by Ferocity 1, Improved Stings 1 and two Barrage ranks. Other point sources tested (Improved Tracking 5 to 1 or 3; Efficiency 5 to 3) cost up to 1.5% at band 30. | talents/hunter.json 105005 and 104999 (Rapid Recuperation requires Rapid Killing 2); engine talents.go:554-640. Web, read 2026-11-04: Icy Veins Forever MM leveling ([link](https://www.icy-veins.com/wow-forever/marksmanship-hunter-leveling), as quoted in search: the pair "will solve almost all of your mana issues while leveling"; the page itself returned 403) and Robcat's Mobalytics guide, updated 2026-10-17 ([link](https://mobalytics.gg/wow-forever/profile/robcat94/classes/my-class), "Rapid Killing 2/2"). The one dissent is a PvP guide. The Aimed Shot rank-1 bare-60 rank row still wins on the new build (333.5 vs 319.8 without it). | CONFIRMED (tie, web consensus) | old, guides-handoff | S 1134376ac |
+| H4 | **Deadly Aspects under Aspect of the Falcon.** The engine rolls the ranged proc only under Hawk. Falcon's tooltip says the talent "can now proc from and benefit melee attacks". | sim/hunter/talents.go:433-470; spelltips 469145 | PENDING OWNER (do not reopen) | - | - |
+
+## Beast Mastery
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| B1 | Talents in the raid and leveling builds checked against 70755 rank text and the engine: Deadly Aspects 10%/30%/12 s (Hawk ranged; Beast melee), Focused Fire 2%, Unleashed Fury 15%, Ferocity 10%, Frenzy 100%/30%/8 s, Bestial Wrath 50%/18 s/2 min/12% base mana (2 casts, 412.8 mana), Bestial Discipline (pet focus, 50% casting regen), Intimidation and Bestial Swiftness as prerequisites. Endurance Training is tier-0 gate filler; every other tier-0/1 filler (Improved Aspect of the Monkey, Improved Revive Pet) does less. | talents/hunter.json; talents.go:115-125, 241, 433-470; breakdown at raid 60 | Aligned | - | - |
+| B2 | Summon Hawk for the fourth Endurance Training point (guides S7). The engine models only the dive. The "continuing its assault for 18 sec" half (trigger 1312639, the hawk NPC's kit) has no client body, and the hawk shares Arcane Shot's timer. So no sim can price it, and the web is split: some guides call it core, one skips it for Arcane Shot. | summon_hawk.go:10-35; spellconst 1293241; web search 2026-11-04 (mobalytics BM guides, wow.gg overview) | OPEN: the hawk's own attack data (creature for 1312639, or a Forever log of hawk swings) would settle it | - | - |
+| B3 | Horde race (guides S6): Orc 678.9, Undead 676.6, Troll 673.6 (3000 iterations, guide raid build). Orc is +0.8% over Troll, under 1%, so the race stays. | spec-breakdown -race | Aligned (race within 1% stays) | - | - |
+| B4 | Pet: a cat at 1.2 s swing speed, full uptime (sim/request/request.go:685). Forever keeps Classic's per-family attack speeds (EU beta feedback thread, [link](https://eu.forums.blizzard.com/en/wow/t/634929/1)). Cat damage is normalized by speed, and a fast cat is the standard pick. Cat swings and Frenzy/Bite/Claw counts are consistent with the 1.2 s base, Frenzy and Leader of the Pack. Cat vs raptor (guides owner question 4) is a pet-family choice the request cannot express. | request.go:675-692; pet.go:40-67 | Aligned (choice); cat vs raptor OPEN for the owner's question | - | - |
+| B5 | Rotation: Hunter's Mark, Bestial Wrath on cooldown, Rapid Fire as an auto leaves with Multi-Shot ready, Aimed Shot when the next auto is over 1.2 s away, Multi-Shot, Serpent Sting under 1.5 s, Arcane Shot above 25% mana. No mana loss at raid 60. | data/curated/apl/hunter-beast-mastery.json; breakdown | Aligned | - | - |
+
+## Marksmanship
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| M1 | Sniper Shot and the leveling build: see H2 and H3. | | CONFIRMED (2) | | S 1b923c4f0, S 1134376ac, E 7e25c12ab |
+| M2 | 70755 talent values in the engine: Barrage 5/10/15% (barrageDamageByRank), Sniper Shot 320/450/590, Trueshot Aura 20/35/50/75/100 by trainer rank, ranged attack power only (core/buff_ranks.go:127, client aura 124). Lone Wolf 20% with no pet, and the Lone Wolf build sims with no pet (request.go hunterTakesLoneWolf). Improved Stings 6/13/20%, Efficiency 3%/rank on Shot/Sting flags (Sniper Shot included), Ranged Weapon Specialization on every ranged spell but Serpent Sting and the hawk. Fork hunter spellconst/hotfix/talent tests pass on the lane head. | talents.go:31-60, 143-155, 393-403, 595-601; constants_auto_gen.go:4473, 5381-5392 | Aligned | - | - |
+| M3 | The deep-Marksmanship raid build (5/46/0, Warcraft Tavern) without Surefooted and Improved Tracking: 717.8 against 764.3. The Survival dip (hit plus 5% damage) stays. Survivalist 5 is the gate to Surefooted, and every other tier-0/1 Survival filler (Deflection, Entrapment, Savage Strikes, Improved Wing Clip) does nothing for a ranged hunter either. | spec-breakdown 3000 iterations | Aligned | - | - |
+| M4 | Pre-casting Sniper Shot at -3.5 s in place of the -2 s Aimed Shot: +0.5%, under 1%. Not adopted: the 4 s pre-cast also lands before the tank has threat (guides HUNTER-10). | spec-breakdown | Aligned (kept) | - | - |
+| M5 | Horde race on the new raid build: Undead 767.9, Troll 764.3, Orc 762.1, all within 1%. | | Aligned | - | - |
+
+## Survival (melee)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| S1 | Melee kit and costs at raid 60: Raptor Strike 25.8 casts at 40 mana (100 less Resourcefulness 60%), Mongoose Bite 20.3 casts at 26 mana, opened by Expose Prey on the raid preset's Hunter's Mark (10%, 10 s). Strider Kick 19.1 of 22.5 possible (8 s), Immolation Trap 9.7 (18 s with Survivalist's Discipline 2/2), Lacerate 58 a tick. Predator's Edge: 30% melee-ability crit damage on Raptor Strike, Mongoose Bite, Strider Kick, Wing Clip, Counterattack, Lacerate and Lacerating Strikes, and off hand +50%. Savage Strikes +4% on the same set. Lightning Reflexes 15% Agility. No mana loss at raid or bare 60. | talents/hunter.json 110861, 104983, 104985, 110859; talents.go:326-352, 683-809; breakdown | Aligned | - | - |
+| S2 | Counterattack (1 point) never fires in a raid (the boss swings at the tank). Survival has one build at 60 (owner ruling) that also levels solo, where mobs hit the hunter and parries open it, so the point does something for the spec. Deterrence is its prerequisite. | apl expected_idle 20910; survival_melee_test.go | Aligned | - | - |
+| S3 | Bare-60 Intellect weight 2.60 (guides S2). The weights predate the push (engine 8baffe5fc). On the current tree bare 60 runs out of mana for 0 s, so the weight should fall at the refresh. | spec-breakdown -preset bare | Measure at refresh | - | - |
+| S4 | Horde race: Undead 821.7, Orc 819.4, Troll 817.6, all within 1%. | | Aligned | - | - |
+| S5 | Crusader on both weapons vs Mighty Intellect (guides S5): the enchant table scores stat enchants only, and spec-breakdown cannot swap enchants. | web/src/lib/guides/gear-extras.ts | Measure at refresh / for other lanes (ranker) | - | - |
+
+## Cross-cutting
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| X1 | Sniper Shot's trainer row (SkillLineAbility 59257, AcquireMethod 2 to 0 in the 70755 push, round-14 build X5) only makes rank 3 a trainer rank of the talent spell, like ranks 1 and 2 (both already 0). Sniper Shot is not baseline: trainables lists it as source talent, and the engine's talent gate is right. | wago SkillLineAbility 70755 (59255-59257); trainables/hunter.json | Aligned | - | - |
+| X2 | Teebu's Blazing Longsword's Firebolt (1300753) crits at the hunter's spell crit (15.8% bare, separate from melee 10.6%), as the crit split says. | common/item_effects.go:2250 | Aligned | - | - |
+
+## Before/after
+
+Guide builds passed explicitly on both sides (before = $R/sb-before at site-before; after = the lane's engine and site). 10000 iterations, raid 60 unless noted.
+
+| spec / band | faction | seed 1 before to after | seed 50001 before to after | % |
+|---|---|---|---|---|
+| Marksmanship raid 60 (H2) | alliance | 739.9 to 758.4 | 739.9 to 758.7 | +2.50 / +2.54 |
+| Marksmanship raid 60 (H2) | horde | 745.5 to 764.3 | 745.7 to 764.7 | +2.52 / +2.55 |
+| Marksmanship bare 60 (H3) | alliance | 330.7 to 331.8 | 330.5 to 331.7 | +0.33 / +0.36 |
+| Marksmanship bare 60 (H3) | horde | 332.4 to 333.5 | 332.8 to 333.7 | +0.33 / +0.27 |
+
+Bare bands 20 to 50 for H3 (3000 iterations, seed 1, horde): 66.8 to 67.5, 110.3 to 109.6, 168.2 to 168.7, 237.1 to 238.3.
+H1 moves no band. The default raid-60 runs (published talents, before.tsv) are unchanged for all three specs at both seeds and factions, because the published files still carry the old talents.
+
+## Files to regenerate
+
+- data/builds/1.60.1.70755/addon-builds.json (BM leveling order H1; MM leveling and raid builds H2/H3). `TestCommittedAddonBuildsFollowTheGuides` fails until it is regenerated.
+- Ladder goldens for hunter-marksmanship (new leveling walk) and, if they print the order, hunter-beast-mastery.
+- addon-data (MM rotation gains the Sniper Shot line; builds); coach starters for hunter-marksmanship; dps-per-point for the hunters.
+- No apl-sync is needed: the fork and sim/request copies of hunter-marksmanship were edited by hand to match.
+
+## Measure at refresh
+
+- Marksmanship raid 60 on the new raidBuild (Sniper Shot) and every bare band on the new leveling build, plus their weights.
+- Published MM raid-60 talents are the leveling build, and Survival's raid-60 talents are not the guide build (70753 carry-over). The refresh must rank raid 60 on the guide raidBuild.
+- Survival bare-60 Intellect weight (S3).
+
+## For other lanes
+
+- Ranker/page: Crusader vs Mighty Intellect for Survival (S5). The guide's enchant table cannot show proc enchants.
+- Web: run builds.test.ts and rotation-lists.test.ts (no node_modules in this worktree, so not run here). The MM build strings decode to 51 legal points in the sim's decoder.
+
+## For the guide lane
+
+All in web/src/content/guides/hunter/marksmanship.md (text as on land/guides-r1):
+- Line 63: "thirty points in Marksmanship take the talents that raise your big shots and your auto shot, sixteen in Beast Mastery take the pet talents and Deadly Aspects" -> "thirty-one points in Marksmanship take the talents that raise your big shots and your auto shot plus Rapid Killing and Rapid Recuperation, fifteen in Beast Mastery take the pet talents and Deadly Aspects". In the same paragraph: "thirty-three points in Marksmanship add Lone Wolf and the rest of Improved Stings" -> "thirty-three points in Marksmanship add Lone Wolf, a second point of Improved Stings and Sniper Shot".
+- Line 66: "**Barrage** (3 points)" -> "**Barrage** (3 points in the raid build, 1 while leveling)".
+- Line 74: "**Improved Stings** (3 points in the raid build): 20% more Serpent Sting damage" -> "**Improved Stings** (2 points in the raid build): 13% more Serpent Sting damage". Add bullets: "**Sniper Shot** (1 point, raid build): a 4 second shot for your ranged damage plus 590, every 15 seconds" and "**Rapid Killing** and **Rapid Recuperation** (2 points each, leveling build): Rapid Fire every 3 minutes, 20% on your next shot after a kill, and Serpent Sting keeps your mana ticking while you shoot".
+- Line 79: "So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit" -> "...spends the points on Improved Stings, Sniper Shot and Surefooted's hit". Replace the last sentence "Sniper Shot, the capstone, costs a point you would take from elsewhere in either build, and its 4 second cast holds your auto shot longer than any other shot you have, so neither build takes it." with "Sniper Shot, the capstone, costs the third point of Improved Stings and is worth more; it holds your auto shot for its whole cast, so start it right after an auto shot fires. The leveling build skips it for Rapid Killing and Rapid Recuperation, which keep you shooting between pulls."
+- Rotation paragraph ("Then work the shared six second cooldown..."), after the Multi-Shot sentence, add: "Sniper Shot has its own 15 second cooldown: cast it whenever it is ready right after an auto shot fires, the same rule as Aimed Shot."
+- data/curated/apl/hunter-marksmanship.json: the new Sniper Shot line (after Multi-Shot) has an empty `notes`. Proposed: "Sniper Shot whenever it is ready and an auto shot has just left. Its long cast holds the next auto, so it only pays right after one fires."
+
+## Still open
+
+- H4: Deadly Aspects' ranged proc under Falcon (owner).
+- B2: Summon Hawk's 18 s assault (needs the hawk's attack data).
+- B4: cat vs raptor (owner question 4; the request has no pet-family field).
+- Carried from round 14: Ranged Weapon Specialization on Serpent Sting (H4), Lacerating Strikes on refresh (H7), the queued Raptor Strike lifting the off-hand miss penalty (H10).
