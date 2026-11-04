@@ -214,7 +214,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 20920}":   "Seal of Command is a talent (sim/paladin/sotc.go); this build takes none.",
 	},
 	"warrior-arms": {
-		"{SpellID: 21553}": "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",
+		"{SpellID: 21553}":   "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",
+		"{SpellID: 1310222}": "Spearing Strike is an Arms talent ability (sim/warrior/spearing_strike.go); this build takes none.",
+		"{SpellID: 1329555}": "Reckless Swings is a Fury talent ability (sim/warrior/reckless_swings.go); this build takes none.",
 	},
 	"warrior-fury": {
 		"{SpellID: 1329555}": "Reckless Swings is a Fury talent ability (sim/warrior/reckless_swings.go); the engine's ForeverFuryTalents reference build takes none.",

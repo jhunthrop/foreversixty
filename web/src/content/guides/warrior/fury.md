@@ -3,7 +3,7 @@ title: Fury Warrior in Forever
 classSlug: warrior
 spec: fury
 role: dps
-build: 'FS1:1.60.1.70755:warrior:human:30323013002/051531025120100231/2:'
+build: 'FS1:1.60.1.70755:warrior:human:30323013002/050530025122100231/2:'
 recommendedRaces: [human, troll]
 statPriority: [Strength, Critical strike, Attack power, Hit, Melee haste, Agility]
 description: 'Dual wield in Berserker Stance: Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, Death Wish and Recklessness for the Executes.'

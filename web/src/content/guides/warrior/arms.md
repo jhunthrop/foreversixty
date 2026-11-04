@@ -4,7 +4,7 @@ classSlug: warrior
 spec: arms
 role: dps
 build: 'FS1:1.60.1.70755:warrior:human:13323213032215201/0505/205:'
-raidBuild: 'FS1:1.60.1.70755:warrior:human:34323213032215201/0505002/2:'
+raidBuild: 'FS1:1.60.1.70755:warrior:human:30303213132215201/05050005012/1:'
 recommendedRaces: [human, orc]
 statPriority: [Strength, Attack power, Critical strike, Hit, Melee haste, Agility]
 description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'
