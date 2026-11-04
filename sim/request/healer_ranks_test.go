@@ -152,25 +152,33 @@ func TestRestorationShamanSwiftnessHealingWaveIsTheTopRank(t *testing.T) {
 		level  int
 		preset string
 		rank   int
-	}{{50, BarePreset, 8}, {56, BarePreset, 9}, {60, BarePreset, 9}, {60, RaidPreset, 9}} {
+	}{{44, BarePreset, 7}, {49, BarePreset, 8}, {50, BarePreset, 8}, {56, BarePreset, 9}, {60, BarePreset, 9}, {60, RaidPreset, 9}} {
 		assertOnlyRank(t, swiftness, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)
 	}
 }
 
 // Sim-accuracy round 15 wave 3: on Forever's level-gap rule a Healing Wave
 // rank keeps its whole healing bonus until it is 17 levels behind, so the
-// tank filler pays for a lower rank below 50: rank 3 (learned at 12) at 20
-// (+10.9 to +12.1%) and 30 (+19.8%), rank 5 (24) at 40 (+8.4 to +8.6%),
-// each fight still running dry; 50 and 60 keep the top rank learned. Both
-// factions, seeds 1 and 50001. The row shares the authored id with the
-// Nature's Swiftness line, which the band builds below 50 do not take.
+// tank filler pays for a lower rank below 50. Round 16 measured every level,
+// not only each band's floor, and added rank 2 and the ranks between: the
+// filler casts rank 2 to 25 (+3.0% over rank 3 at 20), 3 to 36, 4 at 37, 5
+// to 43 (+3.5% over rank 3 at 39), 6 to 56 (+5.3% over rank 5 at 49, +2.0%
+// over rank 8 at 50), 7 at 57 and 58, 8 at 59, and the top rank at 60. Each
+// fight still runs dry; seeds 1 and 50001. The rows are scoped to the
+// filler's line, so the Nature's Swiftness save on the same id keeps its top
+// rank (TestRestorationShamanSwiftnessHealingWaveIsTheTopRank).
 func TestRestorationShamanFillerHealingWaveByBand(t *testing.T) {
 	filler, _ := restorationHealingWaveLines(t)
 	for _, c := range []struct {
 		level  int
 		preset string
 		rank   int
-	}{{20, BarePreset, 3}, {30, BarePreset, 3}, {39, BarePreset, 3}, {40, BarePreset, 5}, {49, BarePreset, 5}, {50, BarePreset, 8}, {60, BarePreset, 9}, {60, RaidPreset, 9}} {
+	}{
+		{20, BarePreset, 2}, {25, BarePreset, 2}, {26, BarePreset, 3}, {30, BarePreset, 3}, {36, BarePreset, 3},
+		{37, BarePreset, 4}, {38, BarePreset, 5}, {40, BarePreset, 5}, {43, BarePreset, 5}, {44, BarePreset, 6},
+		{50, BarePreset, 6}, {56, BarePreset, 6}, {57, BarePreset, 7}, {58, BarePreset, 7}, {59, BarePreset, 8},
+		{60, BarePreset, 9}, {60, RaidPreset, 9},
+	} {
 		assertOnlyRank(t, filler, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)
 	}
 }
@@ -179,7 +187,8 @@ var healingWaveRanks = map[int]int{1: 331, 2: 332, 3: 547, 4: 913, 5: 939, 6: 95
 
 // restorationHealingWaveLines splits the Restoration list's Healing Wave
 // lines into two one-line rotations: the tank filler and the cast that
-// spends Nature's Swiftness (16188).
+// spends Nature's Swiftness (16188). Each keeps its line's place in the list
+// (earlier entries empty), so a rank choice scoped to lines still finds it.
 func restorationHealingWaveLines(t *testing.T) (filler, swiftness json.RawMessage) {
 	t.Helper()
 	var list struct {
@@ -188,14 +197,19 @@ func restorationHealingWaveLines(t *testing.T) (filler, swiftness json.RawMessag
 		} `json:"rotation"`
 	}
 	readJSON(t, "../../data/curated/apl/shaman-restoration.json", &list)
-	wrap := func(line json.RawMessage) json.RawMessage {
-		out, err := json.Marshal(map[string]any{"type": "TypeAPL", "priorityList": []json.RawMessage{line}})
+	wrap := func(index int, line json.RawMessage) json.RawMessage {
+		entries := make([]json.RawMessage, index+1)
+		for i := range index {
+			entries[i] = json.RawMessage(`{}`)
+		}
+		entries[index] = line
+		out, err := json.Marshal(map[string]any{"type": "TypeAPL", "priorityList": entries})
 		if err != nil {
 			t.Fatal(err)
 		}
 		return out
 	}
-	for _, line := range list.Rotation.PriorityList {
+	for index, line := range list.Rotation.PriorityList {
 		var entry struct {
 			Action struct {
 				CastSpell *struct {
@@ -214,9 +228,9 @@ func restorationHealingWaveLines(t *testing.T) (filler, swiftness json.RawMessag
 			continue
 		}
 		if strings.Contains(string(entry.Action.Condition), `"auraIsActive"`) && strings.Contains(string(entry.Action.Condition), "16188") {
-			swiftness = wrap(line)
+			swiftness = wrap(index, line)
 		} else {
-			filler = wrap(line)
+			filler = wrap(index, line)
 		}
 	}
 	if filler == nil || swiftness == nil {
@@ -508,5 +522,18 @@ func TestRestorationShamanRiptidesTheTankBeforeItsWaves(t *testing.T) {
 		if at, ok := first[wave]; ok && at < riptide {
 			t.Errorf("the tank's %s line (priority %d) comes before its Riptide (priority %d)", wave, at, riptide)
 		}
+	}
+}
+
+// Sim-accuracy round 16: the Nature's Swiftness save asked only whether the
+// aura was active, and the engine drops a condition on an aura the character
+// does not have, so below 44 (no Nature's Swiftness yet) the line fired as a
+// plain Healing Wave whenever the tank fell under 25%: a heal no leveling
+// shaman's rotation has (+5.5% effective HPS at bare 40 on that phantom line).
+// The line now also needs the talent known.
+func TestRestorationShamanSwiftnessSaveNeedsTheTalent(t *testing.T) {
+	_, swiftness := restorationHealingWaveLines(t)
+	if !strings.Contains(strings.ReplaceAll(string(swiftness), " ", ""), `"auraIsKnown":{"auraId":{"spellId":16188}}`) {
+		t.Errorf("the Nature's Swiftness Healing Wave does not ask that Nature's Swiftness is known: %s", swiftness)
 	}
 }
