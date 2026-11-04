@@ -27,11 +27,8 @@ import type { Faction, RateUnit } from '../lib/bis/types';
 export interface SpecTabEntry {
   specSlug: string;
   name: string;
-  /** The tree's own first talent's icon (`talents/<class>.json`'s own
-   *  `trees[tree_index].talents[0].icon`) -- the best available per-spec icon; this build
-   *  carries no dedicated talent-TAB icon field at all (confirmed by search), so this is a
-   *  defensible, real-data-grounded stand-in, not an invented image (see this lane's own
-   *  report for the full reasoning). `undefined` renders a plain neutral square. */
+  /** The spec's icon from the spec-icon map (`lib/sim/specs.ts`: the client's TalentTab or
+   *  form-spell icon). `undefined` renders a plain neutral square. */
   icon?: string;
   href: string;
   active: boolean;
@@ -113,7 +110,7 @@ const {
   titleInk = 'class',
 } = Astro.props;
 
-const tabs = specTabs.map((tab) => ({ ...tab, icon: publishedIcon(build, tab.icon) }));
+const tabs = specTabs.map((tab) => ({ ...tab, shownIcon: publishedIcon(build, tab.icon) }));
 const shownMetaIcon = publishedIcon(build, metaIcon);
 
 const TitleTag = asHeading ? 'h1' : 'p';
@@ -174,6 +171,7 @@ const bandTextVariants = bands.map((band) => ({
           {shownMetaIcon !== undefined && (
             <img
               src={`/data/${build}/icons/${shownMetaIcon}.webp`}
+              data-icon={metaIcon}
               alt=""
               width="20"
               height="20"
@@ -198,9 +196,10 @@ const bandTextVariants = bands.map((band) => ({
           style={tab.active ? `border-color:${color}` : undefined}
           data-testid={`bis-spec-tab-${tab.specSlug}`}
         >
-          {tab.icon !== undefined ? (
+          {tab.shownIcon !== undefined ? (
             <img
-              src={`/data/${build}/icons/${tab.icon}.webp`}
+              src={`/data/${build}/icons/${tab.shownIcon}.webp`}
+              data-icon={tab.icon}
               alt=""
               width="28"
               height="28"
@@ -210,7 +209,11 @@ const bandTextVariants = bands.map((band) => ({
               class="class-header-spec-icon"
             />
           ) : (
-            <span class="class-header-spec-icon class-header-spec-icon-placeholder" aria-hidden="true" />
+            <span
+              class="class-header-spec-icon class-header-spec-icon-placeholder"
+              aria-hidden="true"
+              data-icon={tab.icon}
+            />
           )}
           <span class="display class-header-spec-name" style={tab.active ? `color:${color}` : undefined}>
             {tab.name}

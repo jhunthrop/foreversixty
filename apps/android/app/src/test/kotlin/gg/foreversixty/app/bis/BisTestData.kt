@@ -30,7 +30,7 @@ object BisTestData {
         return ApiJson.decodeFromJsonElement(Me.serializer(), requireNotNull(root["data"]))
     }
 
-    fun catalog(): SpecCatalog = SpecCatalog.decode(File(repo, "data/curated/specs.json").readText())
+    fun catalog(): SpecCatalog = SpecCatalog.decode(File(repo, "web/src/data/specs.json").readText())
 
     fun bis(): BisFile = fixture("cdn.bis.warrior-fury", BisFile.serializer())
     fun items(): ItemsFile = fixture("cdn.items.warrior", ItemsFile.serializer())

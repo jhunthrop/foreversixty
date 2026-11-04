@@ -43,7 +43,7 @@ All art is served by the site's own origin, `https://foreversixty.gg`, never fro
 | --- | --- | --- |
 | Class crest | `/icons/hd/crests/<class-slug>.webp` | 128 px WebP, the client's class icon upscaled 4x, cropped to the art. Nine slugs: warrior, paladin, hunter, rogue, priest, shaman, mage, warlock, druid. Source: `web/public/icons/hd/crests/`, path built by `web/src/lib/class-crest.ts`. |
 | Faction emblem | `/icons/hd/faction/<faction>.webp` (72 px), `<faction>-logo-64.webp`, `<faction>-logo-512.webp`, `<faction>-512.webp` | `alliance` or `horde`; flat logo at 16 px in row descriptors. Source: `web/public/icons/hd/faction/`. |
-| Spec icon | `/data/<build>/icons/<icon>.webp` | `<icon>` is the `icon` field of `data/curated/specs.json` (e.g. `spell_nature_starfall`); `<build>` is the active build id (e.g. `1.60.1.70009`). |
+| Spec icon | `/data/<build>/icons/<icon>.webp` | `<icon>` is the `icon` field of `web/src/data/specs.json` (e.g. `spell_nature_starfall`); `<build>` is the active build id (e.g. `1.60.1.70009`). |
 | Item and spell icons | `/data/<build>/icons/<icon>.webp` | The same tree as spec icons. |
 
 The ring is drawn by the app, not baked into the image: the whole crest is a circle (clip

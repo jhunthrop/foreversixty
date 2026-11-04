@@ -82,10 +82,10 @@ describe('withoutTalentBullets', () => {
 });
 
 describe('keyTalentsFor', () => {
-  it('attaches the build icon and rank to each named talent', () => {
+  it('attaches the build id, icon and rank to each named talent', () => {
     const entries = keyTalentsFor(MARKDOWN, [TREE]);
     expect(entries[0]).toEqual({
-      talents: [{ name: 'Improved Frostbolt', icon: 'icon_1', rank: 5, maxRank: 5 }],
+      talents: [{ id: 1, name: 'Improved Frostbolt', icon: 'icon_1', rank: 5, maxRank: 5 }],
       why: 'Up to 0.5 seconds off the cast',
     });
     expect(entries[1]!.talents.map((t) => t.icon)).toEqual(['icon_2', 'icon_3']);

@@ -12,7 +12,6 @@ import PageHead from '../../components/ui/PageHead.astro';
 import classes from '../../data/classes.json';
 import { guidesCopy } from '../../lib/guides/copy';
 import { readSpecCatalog } from '../../lib/bis/load';
-import { specTabIcon } from '../../lib/bis/spec-icon';
 import { latest } from '../../lib/dates';
 import activeBuild from '../../data/active-build.json';
 import { rankedBisFile } from '../../lib/guides/class-dps';
@@ -43,7 +42,7 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
     .map((s) => ({
       name: s.name,
       href: `/guides/${c.slug}/${s.spec_slug}`,
-      icon: specTabIcon(activeBuild.build, c.slug, s.tree_index),
+      icon: s.icon,
       role: (['dps', 'healer', 'tank'].includes(s.role) ? s.role : 'dps') as 'dps' | 'healer' | 'tank',
     })),
 }));
@@ -59,7 +58,7 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
     tabindex="-1"
     class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
   >
-    <PageHead eyebrow={guidesCopy.eyebrow} title="Guides" job={guidesCopy.indexHonestyLine()}>
+    <PageHead eyebrow={guidesCopy.eyebrow} title="Guides" job={guidesCopy.indexLine}>
       <Fragment slot="meta">
         <UpdatedStamp date={updated} />
       </Fragment>

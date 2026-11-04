@@ -18,7 +18,7 @@ from pipeline.icons import (
     resolve_icon_name,
     rotation_icon_names,
     simbuff_icon_names,
-    spec_icon_names,
+    spelltip_icon_names,
     wanted_icons,
 )
 
@@ -431,21 +431,6 @@ def test_rotation_icon_names_reads_every_rotation_lines_icon(tmp_path: Path):
     assert rotation_icon_names(build_dir, curated_dir) == {"ability_golemthunderclap"}
 
 
-def test_spec_icon_names_reads_every_curated_specs_own_icon(tmp_path: Path):
-    curated_dir = tmp_path / "curated"
-    curated_dir.mkdir()
-    (curated_dir / "specs.json").write_text(
-        json.dumps(
-            [
-                {"spec": "warrior-fury", "icon": "ability_warrior_rampage"},
-                {"spec": "warrior-arms", "icon": "ability_rogue_eviscerate"},
-            ]
-        ),
-        encoding="utf-8",
-    )
-    assert spec_icon_names(curated_dir) == {"ability_warrior_rampage", "ability_rogue_eviscerate"}
-
-
 def test_raid_buff_icon_names_reads_every_curated_raid_buff_icon(tmp_path: Path):
     curated_dir = tmp_path / "curated"
     curated_dir.mkdir()
@@ -499,12 +484,30 @@ def test_a_buff_icon_the_client_lacks_falls_back_to_wowheads_copy():
     assert not_in_client(names, by_name) == {"classic_ability_druid_demoralizingroar"}
 
 
+def test_spelltip_icon_names_reads_every_spell_racial_and_enchant_icon(tmp_path: Path):
+    (tmp_path / "spelltips").mkdir()
+    (tmp_path / "spelltips" / "warrior.json").write_text(
+        json.dumps({"spells": {"12323": {"icon": "spell_shadow_deathscream"}}}), encoding="utf-8"
+    )
+    (tmp_path / "spelltips" / "shared.json").write_text(
+        json.dumps(
+            {
+                "racials": {"Blood Fury": {"icon": "racial_orc_berserkerstrength"}},
+                "enchants": {"1": {"icon": ""}},
+                "consumables": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert spelltip_icon_names(tmp_path) == {
+        "spell_shadow_deathscream",
+        "racial_orc_berserkerstrength",
+    }
+    assert spelltip_icon_names(tmp_path / "none") == set()
+
+
 def test_simbuff_icon_names_is_empty_before_the_first_loot_build(tmp_path: Path):
     assert simbuff_icon_names(tmp_path) == set()
-
-
-def test_spec_icon_names_is_empty_without_a_curated_specs_file(tmp_path: Path):
-    assert spec_icon_names(tmp_path / "curated") == set()
 
 
 def write_items(tmp_path: Path, icons: list[str]) -> None:

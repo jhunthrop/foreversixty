@@ -8,13 +8,18 @@ import { guidesCopy } from '../../lib/guides/copy';
 import { dataUrl } from '../../lib/planner/load';
 import { factionColorVar } from '../../lib/guides/race-pills';
 import { recommendedRaceLines, type GuideRaceRow } from '../../lib/guides/race-table';
+import { racialKeyFor } from '../../lib/guides/guide-tips';
+import type { GuideTipBundle } from '../../lib/tooltips/game-tip';
 import GuideTableBox from './GuideTableBox.astro';
 
 interface Props {
   build: string;
   rows: GuideRaceRow[];
+  /** The guide's tooltip data: each racial opens the client's own racial tooltip. */
+  tips: GuideTipBundle;
 }
-const { build, rows } = Astro.props;
+const { build, rows, tips } = Astro.props;
+const tipKey = (name: string): string | undefined => racialKeyFor(tips, name);
 const factionName = (faction: string): string => (faction === 'alliance' ? 'Alliance' : 'Horde');
 const picks = recommendedRaceLines(rows);
 const nameOf = (slug: string): string => rows.find((row) => row.slug === slug)?.name ?? slug;
@@ -70,7 +75,13 @@ const sentences = picks.map((pick) => {
                             data-testid="guide-racial-icon"
                           />
                         )}
-                        <span class="race-racial">{racial.name}</span>
+                        <span
+                          class:list={['race-racial', tipKey(racial.name) !== undefined && 'gtip']}
+                          tabindex={tipKey(racial.name) !== undefined ? 0 : undefined}
+                          data-game-tip={tipKey(racial.name)}
+                        >
+                          {racial.name}
+                        </span>
                         {`: ${racial.effect}`}
                       </span>
                     ))}

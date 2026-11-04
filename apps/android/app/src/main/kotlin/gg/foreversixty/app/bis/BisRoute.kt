@@ -202,7 +202,7 @@ fun staticDataStore(context: Context, engine: HttpClientEngine): StaticDataStore
 
 private const val STATIC_DATA_DIR = "static-data"
 
-/** The spec catalogue bundled with the app (data/curated/specs.json). */
+/** The spec catalogue bundled with the app (web/src/data/specs.json). */
 fun bundledSpecCatalog(context: Context): SpecCatalog = SpecCatalog.decode(readAsset(context, SpecCatalog.ASSET).orEmpty())
 
 /** The active build bundled with the app, for a first launch with no connection. */

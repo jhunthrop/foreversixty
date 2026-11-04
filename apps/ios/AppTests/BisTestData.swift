@@ -23,7 +23,7 @@ enum BisTestData {
     }
 
     static func catalog() throws -> SpecCatalog {
-        try SpecCatalog.decode(Data(contentsOf: repo.appending(path: "data/curated/specs.json")))
+        try SpecCatalog.decode(Data(contentsOf: repo.appending(path: "web/src/data/specs.json")))
     }
 
     static let build = "1.60.1.70658"

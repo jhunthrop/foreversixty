@@ -18,8 +18,8 @@ describe('tooltipShiftPx', () => {
   });
 
   it('defaults to the panel width and margin the real ItemTooltip.svelte uses', () => {
-    // Same math as the explicit-args case above, using the exported defaults.
-    expect(tooltipShiftPx(320, 360)).toBe(-256);
+    // The default side margin is the site's 16 px gutter: 320 + 288 + 16 - 360 = 264.
+    expect(tooltipShiftPx(320, 360)).toBe(-264);
   });
 });
 
@@ -59,15 +59,15 @@ describe('tooltipVerticalPlacementFor', () => {
 describe('tooltipLeftPx', () => {
   it('hangs a start-aligned panel from the anchor’s left edge, shifted inside the viewport', () => {
     expect(tooltipLeftPx('start', 100, 200, 1280, 360)).toBe(0);
-    expect(tooltipLeftPx('start', 1000, 200, 1280, 360)).toBe(1280 - 8 - 360 - 1000);
+    expect(tooltipLeftPx('start', 1000, 200, 1280, 360)).toBe(1280 - 16 - 360 - 1000);
   });
 
   it('meets an end-aligned panel’s right edge with the anchor’s right edge (the right column)', () => {
     expect(tooltipLeftPx('end', 900, 300, 1280, 360)).toBe(300 - 360);
   });
 
-  it('keeps an end-aligned panel 8 px inside the left edge when the anchor is narrow and near it', () => {
-    expect(tooltipLeftPx('end', 20, 100, 1000, 360)).toBe(8 - 20);
+  it('keeps an end-aligned panel 16 px inside the left edge when the anchor is narrow and near it', () => {
+    expect(tooltipLeftPx('end', 20, 100, 1000, 360)).toBe(16 - 20);
   });
 
   it('spans the 16 px phone gutters with a viewport-wide panel, whichever column was tapped', () => {

@@ -9,8 +9,8 @@ import { dataUrl } from '../../lib/planner/load';
 export interface ClassCardSpec {
   name: string;
   href: string;
-  /** The spec's tree icon stem, absent when the build has none. */
-  icon?: string;
+  /** The spec's icon stem from the spec-icon map (`lib/sim/specs.ts`). */
+  icon: string;
   role: 'dps' | 'healer' | 'tank';
 }
 
@@ -41,7 +41,7 @@ const classFor = (slug: string) => classes.find((c) => c.slug === slug);
         specSlug: spec.name,
         name: spec.name,
         role: spec.role,
-        iconSrc: spec.icon === undefined ? '' : dataUrl(build, `icons/${spec.icon}.webp`),
+        iconSrc: dataUrl(build, `icons/${spec.icon}.webp`),
         href: spec.href,
       }))}
     />

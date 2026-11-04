@@ -8,7 +8,6 @@ import classes from '../../data/classes.json';
 import { bandEntry, readSpecCatalog } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
 import { bandTopLevel, loadRotations, rotationEntryFor, rotationLinesFor } from '../bis/rotation-view';
-import { specTabIcon } from '../bis/spec-icon';
 import type { SpecCatalogEntry } from '../bis/types';
 import { decodeBuildTrees, type DecodedTreeView } from '../guides/build-tree';
 import { band60Weights, factionForFirstRace, rankedBisFile } from '../guides/class-dps';
@@ -328,7 +327,7 @@ export function buildGuideFile(
     class_name: className(classSlug),
     spec_name: entry.name,
     role,
-    icon: specTabIcon(build, classSlug, entry.tree_index) ?? null,
+    icon: entry.icon,
     title: data.title,
     updated: isoDay(pageUpdatedAt(data.updated, rankedBisFile(build, spec)?.generated_at)),
     summary: overview.summary !== '' ? overview.summary : (data.description ?? ''),

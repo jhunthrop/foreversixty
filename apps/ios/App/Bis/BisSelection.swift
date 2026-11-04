@@ -2,7 +2,7 @@ import Foundation
 import Models
 import Networking
 
-/// One spec of the bundled catalog (data/curated/specs.json, copied into the app: the CDN does
+/// One spec of the bundled catalog (web/src/data/specs.json, copied into the app: the CDN does
 /// not publish it). Only the fields the picker reads; the file is the source of truth.
 struct SpecInfo: Decodable, Equatable, Sendable, Identifiable {
     /// The spec key, `shaman-elemental`: the BiS file's name.
@@ -24,7 +24,7 @@ struct SpecCatalog: Equatable, Sendable {
 
     static let resourceName = "specs"
 
-    /// The copy bundled with the app (project.yml copies data/curated/specs.json in). Empty only
+    /// The copy bundled with the app (project.yml copies web/src/data/specs.json in). Empty only
     /// for a broken build, which the bundle test catches; never a crash on a user's phone.
     static func bundled(_ bundle: Bundle = .main) -> SpecCatalog {
         guard let url = bundle.url(forResource: resourceName, withExtension: "json"),

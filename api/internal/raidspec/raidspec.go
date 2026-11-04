@@ -20,11 +20,6 @@ const (
 // emojiPrefix starts every roster emoji's name: fs_{class}_{spec}.
 const emojiPrefix = "fs_"
 
-// iconOverrides draws a spec from another icon than its specs.json row: Feral (cat) shares
-// ability_racial_bearform with Feral Bear there, so its emoji is the cat form's own icon and the
-// two read apart in the roster (owner ruling 2026-10-28).
-var iconOverrides = map[string]string{"druid-feral": "ability_druid_catformattack"}
-
 // meleeSpecs are the DPS specs that fight in melee (§P.9.4; Survival is melee in Forever).
 var meleeSpecs = map[string]bool{
 	"druid-feral": true, "hunter-survival": true, "paladin-retribution": true,
@@ -61,11 +56,7 @@ func All() []Spec {
 }
 
 func of(s specs.Spec) Spec {
-	icon := s.Icon
-	if o, ok := iconOverrides[s.Spec]; ok {
-		icon = o
-	}
-	return Spec{Key: s.Spec, Class: s.ClassSlug, Name: s.Name, Role: s.Role, Icon: icon}
+	return Spec{Key: s.Spec, Class: s.ClassSlug, Name: s.Name, Role: s.Role, Icon: s.Icon}
 }
 
 // ByKey is the spec with this specs.json key.

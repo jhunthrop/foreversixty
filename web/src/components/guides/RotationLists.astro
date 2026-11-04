@@ -2,7 +2,8 @@
 // web/src/components/guides/RotationLists.astro
 // The Rotation block: an Opener list, a Priority list and a Cooldowns list, each line a spell
 // icon, its name and one clause (lib/guides/rotation-lists.ts builds them from the sim's APL).
-// Opener and Priority are numbered; Cooldowns is a plain list.
+// Opener and Priority are numbered; Cooldowns is a plain list. A line whose spell the guide's
+// tooltip data carries opens the game tooltip (GuideTooltips.svelte).
 import { dataUrl } from '../../lib/planner/load';
 import { guidesCopy } from '../../lib/guides/copy';
 import type { RotationItem, RotationLists } from '../../lib/guides/rotation-lists';
@@ -27,7 +28,12 @@ const groups: { id: string; title: string; items: RotationItem[]; numbered: bool
         <h3 id={group.id}>{group.title}</h3>
         <ListTag class="rotation-list">
           {group.items.map((item, index) => (
-            <li class="rotation-item" data-testid={`guide-rotation-${group.id}-${index}`}>
+            <li
+              class:list={['rotation-item', item.tipKey !== undefined && 'gtip']}
+              data-testid={`guide-rotation-${group.id}-${index}`}
+              tabindex={item.tipKey !== undefined ? 0 : undefined}
+              data-game-tip={item.tipKey}
+            >
               {group.numbered && <span class="rotation-num numeric">{index + 1}</span>}
               {item.icon === undefined && group.items.some((other) => other.icon !== undefined) && (
                 <span class="rotation-icon-spacer" aria-hidden="true" />

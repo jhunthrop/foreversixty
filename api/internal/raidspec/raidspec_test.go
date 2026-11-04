@@ -1,6 +1,7 @@
 package raidspec
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -8,8 +9,22 @@ import (
 	"unicode/utf8"
 )
 
-// activeIconBuild is the build folder the emoji are drawn from today (§P.9.1).
-const activeIconBuild = "1.60.1.70658"
+// activeIconBuild is the build folder the emoji are drawn from (§P.9.1): the site's active
+// build, the same one the spec-icon map in sim/specs was generated from.
+func activeIconBuild(t *testing.T) string {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "web", "src", "data", "active-build.json"))
+	if err != nil {
+		t.Fatalf("active build: %v", err)
+	}
+	var active struct {
+		Build string `json:"build"`
+	}
+	if err := json.Unmarshal(raw, &active); err != nil || active.Build == "" {
+		t.Fatalf("active build: %v %q", err, active.Build)
+	}
+	return active.Build
+}
 
 var emojiNameRE = regexp.MustCompile(`^fs_[a-z]+(_[a-z]+)+$`)
 
@@ -34,7 +49,7 @@ func TestTheEmojiAreTheTwentyEightSpecsJSONKeys(t *testing.T) {
 func TestFeralAndFeralBearHaveTheirOwnIcons(t *testing.T) {
 	cat, _ := ByKey("druid-feral")
 	bear, _ := ByKey("druid-feral-bear")
-	if cat.Icon == bear.Icon || cat.Icon != "ability_druid_catformattack" {
+	if cat.Icon == bear.Icon || cat.Icon != "ability_druid_catform" {
 		t.Fatalf("cat %q bear %q", cat.Icon, bear.Icon)
 	}
 }
@@ -47,7 +62,7 @@ func TestEveryIconExistsInTheActiveBuild(t *testing.T) {
 	if os.Getenv("RAIDSPEC_ICONS") != "check" {
 		t.Skip("set RAIDSPEC_ICONS=check on a checkout with the real build's web data synced")
 	}
-	dir := filepath.Join("..", "..", "..", "web", "public", "data", activeIconBuild, "icons")
+	dir := filepath.Join("..", "..", "..", "web", "public", "data", activeIconBuild(t), "icons")
 	if _, err := os.Stat(dir); err != nil {
 		t.Skipf("no icon folder at %s", dir)
 	}
