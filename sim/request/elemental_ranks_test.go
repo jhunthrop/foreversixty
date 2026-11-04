@@ -36,3 +36,18 @@ func TestElementalRaidCastsLightningBoltRankTen(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 15: 70755 raised every Flame Shock rank, so the
+// rank 1 and 2 rows judged on 70753 lose. The top rank learned wins at 30
+// (+3.5 to +4.2%) and 50 (+1.4 to +1.7%); rank 3 wins at 40 (+0.8 to
+// +0.9% over rank 1, ahead of rank 4), both factions, seeds 1 and 50001.
+func TestElementalFlameShockRanksByBand(t *testing.T) {
+	var list struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/shaman-elemental.json", &list)
+	shock := map[int]int{1: 8050, 2: 8052, 3: 8053, 4: 10447, 5: 10448}
+	for level, want := range map[int]int{30: 3, 39: 3, 40: 3, 49: 3, 50: 4, 55: 5} {
+		assertOnlyRank(t, list.Rotation, "shaman-elemental", "shaman", BarePreset, "troll", level, shock, want)
+	}
+}

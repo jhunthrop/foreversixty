@@ -52,8 +52,9 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 		{"Gnome Mind Blast at 50", "priest-shadow", "priest", BarePreset, "gnome", 50, 8102, 8103},
 		{"Undead Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "undead", 60, 19280, 19276},
 		{"Gnome Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, "gnome", 60, 19280, 19276},
-		// Elemental's Flame Shock rank 1 (8050) at 30.
-		{"Flame Shock at 30", "shaman-elemental", "shaman", BarePreset, "orc", 30, 8050, 8053},
+		// Elemental's Flame Shock: rank 1 (8050) at 30 until client 1.60.1.70755 raised every
+		// rank; the top rank learned (8053) wins there since (round 15, shaman).
+		{"Flame Shock at 30", "shaman-elemental", "shaman", BarePreset, "orc", 30, 8053, 8050},
 		// The top-rank Lightning Bolt line (15208, cast while mana is ahead) casts rank 7 (10391) at 50.
 		// At bare 60 it casts rank 10 since client 1.60.1.70755's bolt retune (round 15, shaman).
 		{"Lightning Bolt pacing line at 50", "shaman-elemental", "shaman", BarePreset, "orc", 50, 10391, 15207},
