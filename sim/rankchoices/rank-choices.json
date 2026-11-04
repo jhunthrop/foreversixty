@@ -108,8 +108,9 @@
         "bands": [
           {
             "from_level": 30,
-            "to_level": 39,
-            "rank": 4
+            "to_level": 33,
+            "rank": 4,
+            "note": "Rank 4 (learned at 20) wins at 30-33. From 34, with Mage Armor, the highest rank wins (+0.3% at 34, +6% at 39 as rank 4 loses its spell power from 37) (round 16 mage wave 2, per-level sweep)."
           }
         ]
       }
@@ -143,9 +144,35 @@
           },
           {
             "from_level": 40,
-            "to_level": 49,
+            "to_level": 45,
             "rank": 2,
-            "note": "Rank 2 (learned at 28) keeps all its spell power to 45 under Forever's level-gap rule; rank 1 (22) loses 5% a level from 40. Rank 2 ties or gains at bare 40 (round 15 mage wave 3)."
+            "note": "Rank 2 (learned at 28) keeps all its spell power to 44 and wins at 40-45; rank 1 (22) loses 5% a level from 39 (round 15 mage wave 3; round 16 wave 2 per-level sweep)."
+          },
+          {
+            "from_level": 46,
+            "to_level": 49,
+            "rank": 3,
+            "note": "Rank 3 (learned at 34) wins from 46 as rank 2 loses its spell power from 45: tie at 46, +1.8% at 47, +4.3% at 49 (round 16 mage wave 2, per-level sweep)."
+          }
+        ]
+      }
+    ],
+    "mage-frost": [
+      {
+        "spell": "Frostbolt",
+        "authored": 10181,
+        "bands": [
+          {
+            "from_level": 26,
+            "to_level": 29,
+            "rank": 4,
+            "note": "Rank 4 beats rank 5 by 3 to 6% at 26-29 on the band-20 kit, which runs short of mana on rank 5 (round 16 mage wave 2, per-level sweep)."
+          },
+          {
+            "from_level": 32,
+            "to_level": 33,
+            "rank": 5,
+            "note": "Rank 5 beats rank 6 by 3 to 4% at 32-33; from Mage Armor at 34 rank 6 wins (round 16 mage wave 2, per-level sweep)."
           }
         ]
       }

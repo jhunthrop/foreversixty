@@ -166,3 +166,37 @@ func TestRound14RankChoicesCastTheWinningRank(t *testing.T) {
 		}
 	}
 }
+
+// Round 16 wave 2 (per-level sweep, spec-breakdown -level): the mage rows were measured only at a
+// band's floor. Swept at every few levels, seeds 1 and 50001, both factions:
+//   - Frost's Frostbolt: rank 4 (7322) beats rank 5 at 26-29 by 3 to 6%, and rank 5 (8406)
+//     beats rank 6 at 32-33 by 3 to 4% (until Mage Armor at 34);
+//   - Arcane's Frostbolt rank 4 row ends at 33: from 34 (Mage Armor) the highest rank wins,
+//     +0.3 to +6% at 34-39 as rank 4 loses its spell power from 37;
+//   - Fire's Scorch rank 2 (8444) row ends at 45: rank 3 (8445) wins from 46, +1.8% at 47 and
+//     +4.3% at 49, as rank 2 loses its spell power from 45.
+func TestRound16MageRankRowsFollowTheLevel(t *testing.T) {
+	for _, c := range []struct {
+		name, spec string
+		level      int
+		want, not  int32
+	}{
+		{"Frost Frostbolt at 26", "mage-frost", 26, 7322, 8406},
+		{"Frost Frostbolt at 29", "mage-frost", 29, 7322, 8406},
+		{"Frost Frostbolt at 30", "mage-frost", 30, 8406, 7322},
+		{"Frost Frostbolt at 32", "mage-frost", 32, 8406, 8407},
+		{"Frost Frostbolt at 33", "mage-frost", 33, 8406, 8407},
+		{"Frost Frostbolt at 34", "mage-frost", 34, 8407, 8406},
+		{"Arcane Frostbolt at 33", "mage-arcane", 33, 7322, 8407},
+		{"Arcane Frostbolt at 34", "mage-arcane", 34, 8407, 7322},
+		{"Arcane Frostbolt at 39", "mage-arcane", 39, 8408, 7322},
+		{"Fire Scorch at 45", "mage-fire", 45, 8444, 8445},
+		{"Fire Scorch at 46", "mage-fire", 46, 8445, 8444},
+		{"Fire Scorch at 49", "mage-fire", 49, 8445, 8444},
+	} {
+		ids := rotationIDs(t, c.spec, "mage", c.level, specRankChoices(c.spec, BarePreset, "gnome"))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}
