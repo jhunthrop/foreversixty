@@ -45,7 +45,7 @@ Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shar
 
 - Barrage, Mortal Shots and Ranged Weapon Specialization all boost Aimed Shot and Multi-Shot, your biggest shots
 - No pet to keep alive in a raid: Lone Wolf puts 20% on everything you do instead
-- Improved Tracking adds 5% damage on any boss whose creature type you track
+- Improved Tracking adds 5% damage against most raid bosses, whenever you track the boss's type
 - Careful Aim turns Intellect into attack power
 
 ### Weaknesses
@@ -60,7 +60,7 @@ Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shar
 
 ## Talents and builds
 
-There are two builds. You level with the pet: thirty points in Marksmanship take every talent that raises your shots, sixteen in Beast Mastery take the pet talents and Deadly Aspects, and five in Survival take Improved Tracking. At 60, for raids, the pet goes: thirty-three points in Marksmanship add Lone Wolf and the rest of Improved Stings, five in Beast Mastery keep Deadly Aspects, and thirteen in Survival take Improved Tracking, Survivalist and Surefooted.
+There are two builds. You level with the pet: thirty points in Marksmanship take the talents that raise your big shots and your auto shot, sixteen in Beast Mastery take the pet talents and Deadly Aspects, and five in Survival take Improved Tracking. At 60, for raids, the pet goes: thirty-three points in Marksmanship add Lone Wolf and the rest of Improved Stings, five in Beast Mastery keep Deadly Aspects, and thirteen in Survival take Improved Tracking, Survivalist and Surefooted.
 
 - **Mortal Shots** (5 points): 30% more crit damage on your shots
 - **Barrage** (3 points): 15% more damage on Multi-Shot, Aimed Shot and Volley
@@ -74,17 +74,17 @@ There are two builds. You level with the pet: thirty points in Marksmanship take
 - **Improved Stings** (3 points in the raid build): 20% more Serpent Sting damage
 - **Surefooted** (3 points, raid build): 3% hit
 
-Improved Tracking only works if you track the boss's type. Every raid boss has a type you can track: Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids or Undead. Set it before the pull, and swap on trash with mixed types.
+Improved Tracking only works while you track the target's type, and Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead. Most raid bosses are one of those; the boss's tooltip names its type, and on a boss of any other type the talent does nothing. Set it before the pull, and swap on trash with mixed types.
 
-In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and get no raid buffs, and since the November hotfix raised your own shots, the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull, and the leveling build keeps its talents. Sniper Shot, the capstone, is out of reach with either split, and its 4 second cast would cost you auto shots anyway.
+In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and get no raid buffs, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull, and the leveling build keeps its talents. Sniper Shot, the capstone, costs a point you would take from elsewhere in either build, and its 4 second cast holds your auto shot longer than any other shot you have, so neither build takes it.
 
 ## Rotation and priority
 
-Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin. Track the boss's creature type for Improved Tracking. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight.
+Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Track the boss's type for Improved Tracking if Track covers it. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
 
 On the pull, press Rapid Fire with your trinkets and Berserking or Blood Fury, just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
-Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: the November hotfix doubled its bonus damage, so it now outhits Multi-Shot when the cast fits. If you are partway to your next auto shot, take Multi-Shot instead, so the cast never holds your auto. Keep Serpent Sting rolling and refresh it only as it runs out. Fill the gaps with Arcane Shot while you are above a quarter of your mana.
+Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: it outhits Multi-Shot whenever the cast fits. If you are partway to your next auto shot, take Multi-Shot instead, so the cast never holds your auto. Keep Serpent Sting rolling and refresh it only as it runs out. Fill the gaps with Arcane Shot while you are above a quarter of your mana.
 
 Auto Shot does more damage than any button you press, so protect it:
 
@@ -103,11 +103,11 @@ When mana gets low, stop Arcane Shot first, then Serpent Sting, and keep Aimed S
 
 There is no execute phase for a hunter: the priority holds to the end.
 
-**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up. Freezing Trap takes care of anything loose in the back line.
+**Utility.** Tranquilizing Shot (bought from your trainer at 60, so you do not wait on Lucifron's tome) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls a loose add onto you for a few seconds so your tank can grab it before it reaches the healers. Freezing Trap takes care of anything loose in the back line.
 
 ## Stat priority
 
-Hit first until the hit cap shown above: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. Surefooted's 3% adds to your gear's hit, so you need 3% less from gear. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
+Hit first until you reach 9% hit, the cap against a raid boss: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. In the raid build Surefooted gives you 3% of that cap and 1% is built in, so you need 5% from gear. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -119,13 +119,15 @@ Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 24
 
 **Ammo and quiver.** Carry the best ammo your level can use and plenty of it: arrows for a bow, bullets for a gun. Jagged Arrows from 40, Ice Threaded and Thorium Headed Arrows from the early 50s, or Thorium Shells from an engineer. The quiver or ammo pouch is a free 10 to 15% ranged attack speed, so upgrade it every time you can: Quickdraw Quiver from 40 and a 15% bag near 60. Run out of ammo in a raid and you do almost nothing.
 
-Forever's damage potions share the two-minute potion cooldown with mana potions, so a Marksmanship hunter drinks Major Mana Potions. Keep Elixir of the Mongoose up, with the food above and Ground Scorpok Assay alongside it.
+Forever's damage potions share the two-minute potion cooldown with mana potions, so a Marksmanship hunter drinks Major Mana Potions. Keep Elixir of the Mongoose up, with Poached Sunscale Salmon and Ground Scorpok Assay alongside it.
 
 ## Races
 
 Dwarf for the Alliance: Artisan's Precision is 1% hit, and Big Game Hunter adds damage against beasts. Night Elf's Elune's Light (10% crit for 15 seconds) lines up with Rapid Fire on the pull, and Human's Ruthless is 1% crit. Humans can be Hunters for the first time in Forever.
 
 Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire. Orc's Blood Fury is the other good pull cooldown.
+
+Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds every auto shot you fire.
 
 ## Professions
 

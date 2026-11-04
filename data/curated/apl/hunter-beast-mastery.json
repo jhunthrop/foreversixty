@@ -177,7 +177,7 @@
         }
       },
       {
-        "notes": "Aimed Shot when the shared cooldown comes up right after an auto shot fires. The November hotfix doubled its bonus damage, but for Beast Mastery it is only a small extra over Multi-Shot, and Multi-Shot on every cooldown is fine. If you are partway to your next auto shot, take Multi-Shot and keep the auto rolling.",
+        "notes": "Aimed Shot when the shared cooldown comes up right after an auto shot fires. For Beast Mastery it is only a small extra over Multi-Shot, and Multi-Shot on every cooldown is fine. If you are partway to your next auto shot, take Multi-Shot and keep the auto rolling.",
         "action": {
           "condition": {
             "cmp": {

@@ -66,23 +66,23 @@ Thirty-one points in Beast Mastery buys every talent that makes the pet hit hard
 - **Unleashed Fury** (5 points): 15% more damage for the pet on every hit, white or special
 - **Ferocity** (5 points): 10% pet crit on top of the crit it already copies from you, and every crit feeds Frenzy
 - **Frenzy** (5 points): a pet crit always grants 30% attack speed for 8 seconds, which with Ferocity is close to permanent
-- **Focused Fire** (2 points): 2% more damage for you and the pet while the pet is out, the one Beast Mastery talent that raises your own shots
+- **Focused Fire** (2 points): 2% more damage for you and the pet while the pet is out, the only flat damage bonus to your own shots in the Beast Mastery tree
 - **Bestial Wrath** (1 point): 50% more pet damage for 18 seconds every two minutes, and the pet ignores fear while it lasts
 - **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
 - **Careful Aim** (5 points): attack power equal to your Intellect, so a mail Intellect piece is an attack power piece for you and the pet
 - **Mortal Shots** (2 points): 12% more crit damage on your shots, 24% in the raid build at 4 points
 
-Endurance Training (4 points) keeps the pet alive through raid damage, Bestial Discipline (2 points) keeps half your mana regeneration running while you shoot, and Intimidation (1 point) is the way to Bestial Wrath and a free stun on trash. Bestial Swiftness gets the cat to the target sooner after every pull. Improved Stings (2 points) is the way down the Marksmanship tree and adds Serpent Sting damage on the way. The level 60 build's point in Rapid Killing takes a minute off Rapid Fire and makes your next shot after a kill hit 10% harder, which is worth more out in the world than in a raid. Hawk Eye, Improved Concussive Shot and Deflection add nothing to raid damage, so the build skips them.
+Endurance Training (4 points) keeps the pet alive through raid damage, Bestial Discipline (2 points) keeps half your mana regeneration running while you shoot, and Intimidation (1 point) is the way to Bestial Wrath and a stun on trash: press it to stop a runner or to peel an add off a healer, since bosses cannot be stunned. Bestial Swiftness gets the cat to the target sooner after every pull. Improved Stings (2 points) is the way down the Marksmanship tree and adds Serpent Sting damage on the way. The level 60 build's point in Rapid Killing takes a minute off Rapid Fire and makes your next shot after a kill hit 10% harder, which is worth more out in the world than in a raid. Hawk Eye, Improved Concussive Shot and Deflection add nothing to raid damage, so the build skips them.
 
 The raid build moves one point out of Efficiency and the point in Rapid Killing into Mortal Shots. With Judgement of Wisdom on the boss and a Major Mana Potion you do not run dry, and two more ranks of Mortal Shots beat the mana. Out in the world, keep the level 60 build: you will run out of mana long before you run out of targets.
 
 ## Rotation and priority
 
-Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight. Send the pet in once the tank has the boss.
+Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway. Send the pet in once the tank has the boss.
 
 As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and Berserking or Blood Fury together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
-From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. Multi-Shot on cooldown is fine. Aimed Shot on that cooldown is a small extra for a Beast Mastery hunter: if the cooldown comes up right after an auto shot fires, cast Aimed Shot, which outhits Multi-Shot since the November hotfix doubled its bonus damage. Otherwise take Multi-Shot, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot while you have mana.
+From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. Multi-Shot on cooldown is fine. Aimed Shot on that cooldown is a small extra for a Beast Mastery hunter: if the cooldown comes up right after an auto shot fires, cast Aimed Shot, which outhits Multi-Shot. Otherwise take Multi-Shot, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot while you have mana.
 
 Auto Shot does more damage than any button you press, so protect it:
 
@@ -100,11 +100,11 @@ When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed S
 
 There is no execute phase for a hunter: the priority holds to the end.
 
-**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up. Freezing Trap takes care of anything loose in the back line.
+**Utility.** Tranquilizing Shot (bought from your trainer at 60, so you do not wait on Lucifron's tome) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls a loose add onto you for a few seconds so your tank can grab it before it reaches the healers. Freezing Trap takes care of anything loose in the back line.
 
 ## Stat priority
 
-Hit comes first until the hit cap shown above, because a missed auto shot is the most expensive thing that can happen to you. After hit, Agility and Intellect are close: Agility is attack power and crit, Intellect is attack power through Careful Aim and mana on top. Crit is better than it looks because the pet copies all of your crit chance. Plain attack power is the weakest per point, and haste is rare on gear but strong when you find it.
+Hit comes first until you reach 9% hit, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you. After hit, Agility and Intellect are close: Agility is attack power and crit, Intellect is attack power through Careful Aim and mana on top. Crit is better than it looks because the pet copies all of your crit chance. Plain attack power is the weakest per point, and haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -116,13 +116,15 @@ Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 24
 
 **Ammo and quiver.** Carry the best ammo your level can use and plenty of it: arrows for a bow, bullets for a gun. Jagged Arrows from 40, Ice Threaded and Thorium Headed Arrows from the early 50s, or Thorium Shells from an engineer. The quiver or ammo pouch is a free 10 to 15% ranged attack speed, so upgrade it every time you can: Quickdraw Quiver from 40 and a 15% bag near 60. Run out of ammo in a raid and you do almost nothing.
 
-Forever's damage potions share the two-minute potion cooldown with mana potions, so a Beast Mastery hunter drinks Major Mana Potions. Elixir of the Mongoose is the elixir to keep up, with the food above and Ground Scorpok Assay alongside it.
+Forever's damage potions share the two-minute potion cooldown with mana potions, so a Beast Mastery hunter drinks Major Mana Potions. Elixir of the Mongoose is the elixir to keep up, with Poached Sunscale Salmon and Ground Scorpok Assay alongside it.
 
 ## Races
 
 Dwarf for the Alliance: Artisan's Precision is 1% hit, and Big Game Hunter adds damage against beasts. Night Elf's Elune's Light (10% crit for 15 seconds) lines up with Rapid Fire on the pull, and Human's Ruthless is 1% crit. Humans can be Hunters for the first time in Forever.
 
-Troll for the Horde: Berserking is 10% attack speed for 15 seconds, and it stacks with Rapid Fire on the pull. Orc is the other strong Horde hunter: Blood Fury on the pull, and Command makes your pet hit 5% harder.
+Troll or Orc for the Horde, and the two are close. Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull. Orc is the pet's pick: Command makes your pet hit 5% harder all fight, and Blood Fury's two minute cooldown comes up with every Bestial Wrath.
+
+Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds every auto shot you fire.
 
 ## Professions
 
@@ -131,6 +133,8 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 ## Leveling
 
 Beast Mastery is the best way to level a hunter. Tame your first pet at 10 and keep it within a few levels of you. The pet takes the hits, you shoot, and you rarely stop to eat.
+
+Your first five points go into Deadly Aspects. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training comes after it.
 
 Open every pull with Hunter's Mark and Serpent Sting, send the pet, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 

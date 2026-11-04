@@ -51,6 +51,9 @@ import {
 } from '../../../lib/bis/rotation-view';
 import { classRows, racesForClass } from '../../../lib/planner/reference';
 import { bandPresets, BARE_PRESET, presetMeta, RAID_PRESET } from '../../../lib/bis/presets';
+import { bisSimHref } from '../../../lib/bis/sim-link';
+import { loadTalentFile } from '../../../lib/guides/build-tree';
+import { indexTalents } from '../../../lib/planner/rules';
 import type { BandView } from '../../../lib/bis/band-view';
 import type { BisPresetId, Faction } from '../../../lib/bis/types';
 
@@ -76,6 +79,13 @@ const details = itemDetails(build, specEntry.class_slug);
 const loot = loadLootFile(build);
 const factions: Faction[] = ['alliance', 'horde'];
 const rotationEntries = loadRotations(build, specEntry.spec) ?? [];
+const talentFile = loadTalentFile(build, specEntry.class_slug);
+if (talentFile === undefined) {
+  throw new Error(
+    `data/builds/${build}/talents/${specEntry.class_slug}.json is missing; the sim link needs the trees`,
+  );
+}
+const talentIndex = indexTalents(talentFile);
 
 function tooltipFor(itemId: number): ItemTooltipModel | undefined {
   return readItemTooltipModel(build, specEntry.class_slug, itemId) ?? undefined;
@@ -147,7 +157,7 @@ function bandViewsFor(faction: Faction, infos: readonly BandInfo[], preset?: Bis
       bandIndex,
       bandLabel: bisCopy.bandRangeLabel(band),
       info,
-      simHref: `/sim?spec=${specEntry.spec}&band=${band}`,
+      simHref: rawBand === undefined ? '/sim' : bisSimHref(rawBand, talentIndex, build),
       plannerHref: `/planner?spec=${specEntry.spec}&talents=${encodeURIComponent(rawBand?.talents ?? '')}`,
       generatedAtDate: file.generated_at.slice(0, 10),
       rotationLines:

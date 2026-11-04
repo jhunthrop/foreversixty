@@ -81,7 +81,7 @@
       }
     },
     {
-      "notes": "Bane of Agony whenever it has fallen off. Never clip it, since its biggest ticks come last; it beats Bane of Doom here because it starts ticking at once and Amplify Curse adds 50% to it.",
+      "notes": "Bane of Agony whenever it has fallen off. Never clip it, since its biggest ticks come last, and Amplify Curse makes the next one 50% stronger.",
       "action": {
         "condition": {
           "not": {

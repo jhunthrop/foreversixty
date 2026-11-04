@@ -26,7 +26,7 @@ Paladin is the plate hybrid: one tree heals, one tanks with a shield, and one sw
 
 ## What changed from 1.12
 
-- **Judgement no longer consumes your Seal.** You put a Seal up once every 30 seconds and Judge on cooldown. Old Seal twisting is dead: a new Seal just replaces the old one. Retribution's Unsealed Wrath brings a new kind of swap back at 60.
+- **Judgement no longer consumes your Seal.** You put a Seal up once every 30 seconds and Judge on cooldown. Old Seal twisting is dead: a new Seal just replaces the old one. Retribution's capstone, Unsealed Wrath, brings a new kind of swap back for raiders.
 - **Holy Strike** is a trainer spell from level 6, on a 10 second cooldown, and both melee specs press it.
 - **Consecration** is baseline from level 20, **Blessing of Kings** from 20, and **Hammer of the Righteous** from 40.
 - **Seal of Fury** and **Righteous Fury** come at level 10, so any paladin can tank a dungeon from Ragefire Chasm on.

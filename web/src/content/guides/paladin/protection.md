@@ -7,19 +7,18 @@ build: 'FS1:1.60.1.70755:paladin:dwarf:05005/15302102513501031/5003:'
 recommendedRaces: [dwarf, undead]
 statPriority:
   [
-    Stamina,
-    Armor,
     Defense,
+    Block,
     Dodge,
     Parry,
-    Block,
-    Block value,
-    Strength,
     Agility,
-    Attack power,
+    Block value,
+    Stamina,
     Hit,
+    Strength,
     Critical strike,
-    Expertise,
+    Armor,
+    Attack power,
   ]
 description: 'Holding threat with Righteous Fury, Holy Shield and Holy Strike, taunting with Judgement of Fury, and keeping your mana.'
 updated: 2026-11-02
@@ -28,7 +27,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/talents/paladin.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/talents/paladin.json'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
   - label: 'Forever Sixty stat weights, data/curated/specs.json'
@@ -37,7 +36,7 @@ sources:
   - label: 'Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json'
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/races.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/races.json'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---
@@ -57,12 +56,12 @@ Protection tanks with a shield and Holy damage: Righteous Fury on, Holy Shield o
 
 - Mana, not cooldowns, limits what you press: run dry and your threat stops
 - Templar's Bulwark, Divine Shield and Divine Protection share Forbearance, so you get one at a time
-- No Blessing of Salvation in Forever, so you hold threat against damage dealers at full threat
+- Forever has no Blessing of Salvation, so your damage dealers keep all their threat and you have to out-threat them without that help
 
 ### In a raid
 
 - **Role:** Main or off tank. You hold the boss, and you swap with Judgement of Fury when the fight calls for it
-- **Brings:** Devotion Aura for your group, Greater Blessing of Kings or Might, and a Lay on Hands for the raid's worst moment
+- **Brings:** Devotion Aura for your group, Greater Blessing of Might (or Kings where no hunter's Heart of the Lion covers the raid), and a Lay on Hands for the raid's worst moment
 
 ## Talents and builds
 
@@ -82,11 +81,11 @@ The build is 10 Holy, 33 Protection and 8 Retribution.
 
 **Toughness** (10% armor from items) and a point of **Divine Intellect** fill the tree. In Retribution, **Deflection** is 5% parry, the only parry talent a paladin has, and **Conviction** is 6% crit on everything you do. In Holy, **Divine Strength** is 10% Strength and **Improved Seals** adds 15% to Seal of Fury and its Judgement.
 
-Left out: Reckoning (extra attacks after a block or a crit, worth less than Conviction), Stoicism, Guardian's Favor and Improved Hammer of Justice. Pick those up for PvP or utility. There is no Blessing of Sanctuary in Forever, so the tree gives you no blessing of your own. Open the planner at [/planner?class=paladin](/planner?class=paladin) to change it.
+Left out: Reckoning (extra attacks after a block or a crit, worth less than Conviction), Stoicism, Guardian's Favor and Improved Hammer of Justice. Pick those up for PvP or utility. There is no Blessing of Sanctuary in Forever, so the tree gives you no blessing of your own.
 
 ## Rotation and priority
 
-**Before the pull.** Righteous Fury is a 30 minute buff, not a stance: cast it before the raid (it costs 30% of your base mana, so do it before you drink) and keep it on all night. Without it you make a fraction of the threat. Get Greater Blessing of Kings on yourself, and keep Devotion Aura on.
+**Before the pull.** Righteous Fury is a 30 minute buff, not a stance: cast it before the raid (it costs 30% of your base mana, so do it before you drink) and keep it on all night. Without it you make a fraction of the threat. Get Greater Blessing of Kings on yourself unless a hunter's Heart of the Lion already covers you: the two are the same 10% to every stat and do not stack, so with a hunter in the raid take Might instead. Keep Devotion Aura on.
 
 **The opener.** Put up Seal of Fury about 3 seconds before the pull. Pull with Judgement: under Seal of Fury it taunts, so the boss comes straight to you. Press Holy Shield about 2 seconds before the boss reaches you, so all four charges are there for its first swings. Then Swift Judgement, Holy Strike and Hammer of the Righteous in the first few globals. There is no Blessing of Salvation in Forever, so your damage dealers have no threat drop: give them a few seconds on the opener.
 
@@ -107,11 +106,11 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 **Adds.** Consecration and Hammer of the Righteous are your multi-target threat; Holy Shield and Shieldsworn's block keep the damage down. Judge the add that is loose, Holy Strike your main target.
 
-**Defensives.** Templar's Bulwark first, at about a third of your health: a full health bar of absorb for 8 seconds. Divine Shield and Divine Protection come after it, once Forbearance is gone. All three put Forbearance on you, so plan one per bad moment, not three in a row. Lay on Hands is a full heal on a 20 minute cooldown: save it for the swing that would kill you.
+**Defensives.** Templar's Bulwark first, at about a third of your health: a full health bar of absorb for 8 seconds. Divine Shield and Divine Protection come after it, once Forbearance is gone. All three put Forbearance on you, so plan one per bad moment, not three in a row. Lay on Hands heals you to full on a 20 minute cooldown, but it takes every point of your mana with it. Your mana keeps regenerating afterwards, but until it comes back you have no Holy Shield and little threat, so save it for the swing that would kill you and have a mana potion ready.
 
 ## Stat priority
 
-Expertise and Defense come first. A boss that dodges or parries your Holy Strike and Judgement is threat you never made, and Defense takes hits away and lowers the boss's chance to crit you. Block, Dodge and Parry come next because they take hits away or blunt them, and Block also feeds Holy Shield's damage, Redoubt and Shield Specialization's mana. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
+Defense comes first: it takes hits away and lowers the boss's chance to crit you. Block, Dodge and Parry come next because they take hits away or blunt them, and Block also feeds Holy Shield's damage, Redoubt and Shield Specialization's mana. Agility is dodge and armor at once, and block value makes every block take more off the hit. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
 
 ## Best in slot
 
@@ -119,11 +118,11 @@ Expertise and Defense come first. A boss that dodges or parries your Holy Strike
 
 ## Races
 
-**Dwarf** is the Alliance tank. Stoneform takes physical damage off for a few seconds, a free defensive on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Ruthless, 1% crit, and The Human Spirit. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
+**Dwarf** is the Alliance tank. Stoneform takes physical damage off for a few seconds, a free defensive on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Will to Survive, which breaks a stun so you get back to holding the boss, and Ruthless, 1% crit for a little more threat. The Human Spirit does little for a tank. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
 
 ## Professions
 
-Mining and Blacksmithing make plate, shields and the tanking weapons. Engineering gives you explosives for trash threat. First Aid is free, and you will use bandages between pulls while leveling.
+Mining and Blacksmithing make plate, shields and the tanking weapons. Engineering gives you explosives for trash threat. With Alchemy, Elixir of Holy Power adds to every Holy threat button you have. First Aid is free, and you will use bandages between pulls while leveling.
 
 ## Leveling
 

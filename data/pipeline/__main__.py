@@ -331,7 +331,8 @@ def build_parser() -> argparse.ArgumentParser:
         "carry-bis",
         help="carry builds/<from>/bis/ onto a new client build until the ranking reruns "
         "(tools/activate-build.sh): restamps each file and drops every pick or alternative "
-        "the new build's items.json lacks, one report line each",
+        "the new build's items.json lacks, and re-keys each band's talents onto the new trees "
+        "by name, one report line per dropped candidate or talent",
     )
     cb.add_argument("--from", dest="from_build", required=True)
     cb.add_argument("--to", dest="to_build", required=True)
@@ -746,7 +747,7 @@ def main(argv: list[str] | None = None) -> int:
         for line in lines:
             print(f"carry-bis: {line}")
         print(
-            f"carry-bis: {len(lines)} candidate(s) dropped carrying "
+            f"carry-bis: {len(lines)} candidate(s) or talent(s) dropped carrying "
             f"{args.from_build} -> {args.to_build}"
         )
     elif args.command == "coach-rules":

@@ -63,7 +63,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Rotation and priority
 
-**Before the pull.** Put Windfury Weapon on your weapon. Shamans in Forever never dual wield: you carry a two-hander, or a one-hander with a shield or a held off-hand item, and Windfury goes on the weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves more than 30 yards from them, stand where it is now and Totemic Call brings them to you.
+**Before the pull.** Put Windfury Weapon on your weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves more than 30 yards from them, stand where it is now and Totemic Call brings them to you.
 
 **On the pull.** Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown. Then Stormstrike.
 
@@ -76,7 +76,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 5. Fire Nova when Clearcasting makes it free.
 6. Earth Shock on cooldown while you are above half mana. It takes Stormstrike's 20% when no bolt is ready.
 
-**Which Air totem.** Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so you never drop Windfury for yourself. In Forever Windfury Totem, Grace of Air and Strength of Earth reach every raid member within 30 yards, not just your party. One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and it is worth far more to them than Grace of Air is to you. If another shaman already has it down, take Grace of Air. There is nothing to twist: Windfury Totem in Forever is an aura around the totem, not a buff that lingers on the weapon, so it ends the moment you replace the totem.
+**Which Air totem.** Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so you never drop Windfury for yourself. Windfury Totem, Grace of Air and Strength of Earth reach every raid member within 30 yards, not just your party. One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and it is worth far more to them than Grace of Air is to you. If another shaman already has it down, take Grace of Air. There is nothing to twist: Windfury Totem is an aura around the totem, not a buff that lingers on the weapon, so it ends the moment you replace the totem.
 
 **Fire Nova on Clearcasting.** In the raid build, Elemental Focus sometimes makes your next damage spell free. Spend it on Fire Nova: in melee your Searing Totem stands within its 10 yards of the boss. Outside a proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target, and so does Flame Shock.
 
@@ -88,7 +88,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Stat priority
 
-Hit covers your swings, your Stormstrike and your shocks at once in Forever, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Strength is attack power twice over.
+Hit covers your swings, your Stormstrike and your shocks at once, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Strength is attack power twice over.
 
 ## Best in slot
 
@@ -96,7 +96,7 @@ Your raid set leans on Leatherworking crafts that bind when equipped, a crafted 
 
 ## Enchants and consumables
 
-Windfury Weapon is your weapon's temporary enchant, so there is no room for a sharpening stone or weighted stone on it. Keep Windfury Weapon up all fight, and use the weapon enchant and consumables listed here.
+Windfury Weapon is your weapon's temporary enchant, so there is no room for a sharpening stone or weighted stone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
 
 ## Races
 
@@ -110,4 +110,4 @@ Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain a
 
 ## Leveling
 
-Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Take Stormstrike as soon as the tree opens it. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.
+Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Stormstrike sits in the fourth row and you can press it the moment you learn it: this build fills Mental Dexterity, Elemental Weapons, Shamanistic Focus and Flurry first and takes Stormstrike at 32, with Improved Ghost Wolf right after. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.

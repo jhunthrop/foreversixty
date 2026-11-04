@@ -5,7 +5,7 @@ spec: restoration
 role: healer
 build: 'FS1:1.60.1.70755:druid:night-elf:05312001/0/55530051531132:'
 recommendedRaces: [night-elf, tauren]
-statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
+statPriority: [MP5, Spirit, Intellect, Healing power, Critical strike]
 description: 'Restoration in Forever: the build, Rejuvenation and Regrowth ranks, Swiftmend that keeps the HoT, Bloom, Wild Growth and Innervate.'
 updated: 2026-11-02
 confidence: inferred
@@ -56,15 +56,15 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 - **Gift of Nature** (5 points): 10% more healing on your heals. In Forever it does not reach Tranquility.
 - **Improved Rejuvenation** (3 points): 15% more from your most-cast spell.
 - **Bloom** (1 point): when a Rejuvenation or Regrowth runs out on its own, the target is healed for your Spirit. With HoTs doing most of your healing, it is the best single point you take.
-- **Swiftmend** (1 point): an instant heal for the whole of a Regrowth or Rejuvenation on the target, and in Forever the HoT keeps ticking.
+- **Swiftmend** (1 point): an instant heal for the whole of your own Regrowth or Rejuvenation on the target (another druid's does not count), and in Forever the HoT keeps ticking.
 - **Nature's Swiftness** (1 point): your next Healing Touch is instant, the save for a dying tank.
 - **Naturalist** (5 points): Healing Touch and Wild Growth half a second faster.
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
 - **Improved Tranquility** (2 points): Tranquility with no threat and a much shorter cooldown.
 - **Heart of the Wild** (5 points): 10% more Intellect.
-- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow does nothing for a healer; it is the filler that gets you to Nature's Splendor's row, and the Improved Moonfire point is a spare.
+- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) and Improved Moonfire (1 point) are the price of Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
 
-**Wild Growth.** The capstone heals a whole party over 7 seconds, but it is a 3 second cast with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility and put one point in Wild Growth.
+**Wild Growth.** The capstone heals a whole party over 7 seconds, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility and put one of its points in Wild Growth.
 
 ## Rotation and priority
 
@@ -80,7 +80,7 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 
 **The party.** A hurt party member gets a Rejuvenation, you included. Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
 
-**Ranks.** Cast Rejuvenation rank 1 on a hurt party member. Rank 1 carries the same bonus healing as the top rank in Forever, so on a geared druid it heals for a large share of the top rank at a small fraction of the mana: by far your cheapest healing. On the tank, use the top rank in a raid. While leveling, your healing power is still low and most of a Rejuvenation is its base heal, so rank 1 barely dents a tank's damage; a middle rank such as rank 4 keeps the heal sizeable and your mana going. Use the top ranks of Regrowth and Healing Touch.
+**Ranks.** Rank 1 Rejuvenation is not a cheap heal at 60. In Forever a rank learned far below your level loses its share of your healing power, and rank 1 keeps none of it. Your last three ranks (8, 9 and 10) keep all of it, so on a hurt party member cast rank 8 or 9: most of the top rank's healing for less mana. On the tank, use the top rank in a raid. While leveling, your healing power is still low and most of a Rejuvenation is its base heal, so rank 1 barely dents a tank's damage; a middle rank such as rank 4 keeps the heal sizeable and your mana going. Use the top ranks of Regrowth and Healing Touch.
 
 **Mana.** Innervate is yours from level 40. Cast it on yourself when you are low: it multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit. A Major Mana Potion and a Demonic Rune cover the rest.
 

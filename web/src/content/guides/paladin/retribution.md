@@ -14,7 +14,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/talents/paladin.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/talents/paladin.json'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
   - label: 'Forever Sixty stat weights, data/curated/specs.json'
@@ -26,7 +26,7 @@ sources:
   - label: 'Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json'
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/races.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/races.json'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---
@@ -51,7 +51,7 @@ Retribution is a two-handed Seal fighter: keep a Seal up, Judge every 8 seconds,
 ### In a raid
 
 - **Role:** Melee damage, and one of the paladins holding a Judgement on the boss
-- **Brings:** Greater Blessings (Might, Wisdom or Kings), an aura for the melee group, and Judgement of the Crusader or Wisdom on the boss
+- **Brings:** Greater Blessings (Might or Wisdom, and Kings where no hunter's Heart of the Lion covers the raid), an aura for the melee group, and Judgement of the Crusader or Wisdom on the boss
 
 ## Talents and builds
 
@@ -59,7 +59,7 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 
 - **Benediction** (5 points): every instant costs 10% less, and nearly everything you press is instant.
 - **Improved Judgement** (2 points): Judgement every 8 seconds instead of 10.
-- **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs and Judgements, and your spells too, Consecration and Exorcism included.
+- **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs, Judgements and Consecration's ticks. Exorcism is the exception: it never crits in Forever.
 - **Sanctified Judgement** (3 points): every Judgement hands back 60% of the judged Seal's cost. This is what pays for your Seals, and for the twist at 60.
 - **Sacred Arbiter** (1 point): Holy Strike hits 20% harder and refreshes every Judgement on the target.
 - **Two-Handed Weapon Specialization** (3 points): 6% more Physical and Holy damage with a two-hander, and 20% less threat. That reaches your Holy Seal procs and Judgements as well as your swings.
@@ -69,9 +69,9 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 
 **Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** and one point of **Repentance** are filler on the way to Champion of the Light, since nothing else in the tree adds damage there. Repentance still earns its point in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
 
-In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your regeneration running in combat, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**: hit is worth more to you than any other stat per point until you reach the cap.
+In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your regeneration running in combat, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. With raid buffs at 60, hit is your best stat per point until you reach the cap.
 
-Leveling order: Benediction and Improved Judgement first, then Conviction and Sanctified Judgement, then down the tree to Champion of the Light by level 40. Open the planner at [/planner?class=paladin](/planner?class=paladin) to change anything.
+Leveling order: Benediction and Improved Judgement first, then Conviction and Sanctified Judgement, then down the tree to Champion of the Light by level 40.
 
 ## Rotation and priority
 
@@ -92,7 +92,7 @@ Leveling order: Benediction and Improved Judgement first, then Conviction and Sa
 
 **Judgements in a raid.** Your own Judgement is for damage. The debuff Judgements are assigned: one paladin keeps Judgement of the Crusader on the boss and another keeps Judgement of Wisdom. If that is you, open with that Seal, Judge it, then go to your damage Seal. The debuff lasts 40 seconds and Holy Strike with Sacred Arbiter refreshes every Judgement you have on the target, so after the first one it costs you nothing. On your own, skip Crusader: one Seal and one Judgement spent on it are worth more as damage.
 
-**Consecration.** It is your most expensive button, so pace it. Cast it only while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and while your mana bar is no further behind than the fight itself (with a fifth of slack). Spam it and your Seal drops and you go into the execute with nothing for Hammer of Wrath. Hold it too long and you end the fight with a full bar. Below 60, rank 1 does more over a fight than the higher ranks because it costs so little, and at 60 without raid buffs rank 4 does. On two or more targets, cast it freely.
+**Consecration.** It is your most expensive button, so pace it. Cast it only while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and while your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more). Fall under that and Consecration waits until you catch up. Spam it and your Seal drops and you go into the execute with nothing for Hammer of Wrath. Hold it too long and you end the fight with a full bar. Before 40, rank 1 does more over a fight than the higher ranks because it costs so little; from 40 move up to the newest rank you can afford. At 60, use rank 4 without raid buffs and rank 5, the top rank, with them. On two or more targets, cast it freely.
 
 **The execute.** Below 20% Hammer of Wrath goes ahead of everything but Judgement and Exorcism. It is instant with Champion of the Light, so you never stop swinging to cast it. Save a Major Mana Potion for this phase if you are low.
 
@@ -112,13 +112,13 @@ Hit comes first until the cap: every miss is a lost swing and a lost Seal proc, 
 
 ## Professions
 
-Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and elixirs. Pick two that pay for your consumables.
+Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and Elixirs of Holy Power, Forever's 40 Holy damage elixir, which reaches every Seal proc, Judgement and Consecration tick. Pick two that pay for your consumables.
 
 ## Leveling
 
 Retribution is the paladin leveling spec, even if you want to heal or tank at 60. Pull with Judgement, Holy Strike on cooldown, and let Seal of Righteousness do the rest. Sanctified Judgement refunds most of each Seal, so on one or two mobs at a time you rarely drink.
 
-From level 20 Consecration is your AoE: two or three mobs on you is the time for it, and rank 1 at 135 mana is the rank to keep on your bar until 60. Exorcism (level 20) and Holy Wrath (level 50) are easy kills on Undead and Demons, so quest zones full of them, like the Plaguelands, are paladin country. Repentance takes one Humanoid out of a bad pull, and Hammer of Justice stops a runner or a caster.
+From level 20 Consecration is your AoE: two or three mobs on you is the time for it, and rank 1 at 135 mana is the rank to keep on your bar through your 30s. A rank loses its spell damage bonus once you are far above the level you learned it, so from 40 move up to the newest rank you can afford, and keep moving up as you train them. Exorcism (level 20) and Holy Wrath (level 50) are easy kills on Undead and Demons, so quest zones full of them, like the Plaguelands, are paladin country. Repentance takes one Humanoid out of a bad pull, and Hammer of Justice stops a runner or a caster.
 
 Common mistakes:
 

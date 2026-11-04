@@ -785,7 +785,7 @@
       }
     },
     {
-      "notes": "On a hurt party member under 70%, you included, at rank 1. Rank 1 is the cheapest healing you have: your healing power adds the same to every rank, and in Forever a rank learned below level 20 keeps the whole of it, so it heals for most of the top rank's amount at a fraction of the mana. It does not wait on the mana pace the costly heals follow.",
+      "notes": "On a hurt party member under 70%, you included. It does not wait on the mana pace the costly heals follow.",
       "action": {
         "castSpell": {
           "spellId": {

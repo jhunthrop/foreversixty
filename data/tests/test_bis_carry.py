@@ -114,3 +114,90 @@ def test_a_file_stamped_with_another_build_stops_the_carry(tmp_path: Path):
     with pytest.raises(BisCarryError, match="1.60.1.70630"):
         carry_bis(tmp_path, OLD, NEW)
     assert not (tmp_path / NEW / "bis").exists()
+
+
+def _write_talents(root: Path, build: str, trees: list[list[str]]) -> None:
+    (root / build / "talents").mkdir()
+    payload = {
+        "trees": [{"talents": [{"name": name, "max_rank": 3} for name in tree]} for tree in trees]
+    }
+    (root / build / "talents" / "mage.json").write_text(json.dumps(payload))
+
+
+def _talent_payload(talents: str) -> dict:
+    band = {**_band([]), "talents": talents, "talent_points": 7}
+    return {"spec": "mage-fire", "build": OLD, "engine_version": "abc", "bands": [band]}
+
+
+def test_talents_are_re_keyed_onto_a_reshaped_tree_by_name(tmp_path: Path):
+    """2026-11-03: 1.60.1.70755 added Reckless Swings and Improved Whirlwind to Fury and
+    removed Raging Blows; the carried strings read every rank against the wrong talent."""
+    _write_build(tmp_path, OLD, [], _talent_payload("12-30-1"))
+    _write_build(tmp_path, NEW, [])
+    _write_talents(tmp_path, OLD, [["A", "B"], ["C", "Gone"], ["D"]])
+    _write_talents(tmp_path, NEW, [["A", "B"], ["New", "C"], ["D"]])
+
+    lines = carry_bis(tmp_path, OLD, NEW)
+
+    band = json.loads((tmp_path / NEW / "bis" / "mage-fire.json").read_text())["bands"][0]
+    assert band["talents"] == "12-03-1"
+    assert band["talent_points"] == 7
+    assert lines == []
+
+
+def test_a_ranked_talent_the_new_tree_lacks_is_dropped_with_a_report_line(tmp_path: Path):
+    _write_build(tmp_path, OLD, [], _talent_payload("12-32-1"))
+    _write_build(tmp_path, NEW, [])
+    _write_talents(tmp_path, OLD, [["A", "B"], ["C", "Gone"], ["D"]])
+    _write_talents(tmp_path, NEW, [["A", "B"], ["New", "C"], ["D"]])
+
+    lines = carry_bis(tmp_path, OLD, NEW)
+
+    band = json.loads((tmp_path / NEW / "bis" / "mage-fire.json").read_text())["bands"][0]
+    assert band["talents"] == "12-03-1"
+    assert band["talent_points"] == 7
+    assert len(lines) == 1 and "Gone 2" in lines[0]
+
+
+def test_unchanged_trees_leave_the_talent_string_as_it_was(tmp_path: Path):
+    _write_build(tmp_path, OLD, [], _talent_payload("1200-30-1"))
+    _write_build(tmp_path, NEW, [])
+    for build in (OLD, NEW):
+        _write_talents(tmp_path, build, [["A", "B", "E", "F"], ["C", "G"], ["D"]])
+
+    carry_bis(tmp_path, OLD, NEW)
+
+    band = json.loads((tmp_path / NEW / "bis" / "mage-fire.json").read_text())["bands"][0]
+    assert band["talents"] == "1200-30-1"
+    assert band["talent_points"] == 7
+
+
+def test_a_band_with_talents_and_no_talent_file_stops_the_carry(tmp_path: Path):
+    _write_build(tmp_path, OLD, [], _talent_payload("12-30-1"))
+    _write_build(tmp_path, NEW, [])
+
+    with pytest.raises(BisCarryError, match="talents/mage.json is missing"):
+        carry_bis(tmp_path, OLD, NEW)
+    assert not (tmp_path / NEW / "bis").exists()
+
+
+def test_a_rank_past_the_new_maximum_is_capped_with_a_report_line(tmp_path: Path):
+    _write_build(tmp_path, OLD, [], _talent_payload("12-30-1"))
+    _write_build(tmp_path, NEW, [])
+    _write_talents(tmp_path, OLD, [["A", "B"], ["C", "Gone"], ["D"]])
+    trees = [["A", "B"], ["New", "C"], ["D"]]
+    (tmp_path / NEW / "talents").mkdir()
+    payload = {
+        "trees": [
+            {"talents": [{"name": name, "max_rank": 2 if name == "C" else 3} for name in tree]}
+            for tree in trees
+        ]
+    }
+    (tmp_path / NEW / "talents" / "mage.json").write_text(json.dumps(payload))
+
+    lines = carry_bis(tmp_path, OLD, NEW)
+
+    band = json.loads((tmp_path / NEW / "bis" / "mage-fire.json").read_text())["bands"][0]
+    assert band["talents"] == "12-02-1"
+    assert band["talent_points"] == 6
+    assert len(lines) == 1 and "C 3 is past its new maximum 2" in lines[0]
