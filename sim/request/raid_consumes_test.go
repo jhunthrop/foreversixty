@@ -118,6 +118,10 @@ func TestRaidConsumesFollowTheKitsLevelGates(t *testing.T) {
 	if at := ConsumesAtLevel(enh, 30); !slices.Contains(at, "main_hand_imbue:windfury_weapon") {
 		t.Errorf("shaman-enhancement at 30: %v, want Windfury Weapon", at)
 	}
+	// From the raid Windfury Totem's first rank (32), Rockbiter Weapon (round 15, shaman).
+	if at := ConsumesAtLevel(enh, 32); !slices.Contains(at, "main_hand_imbue:rockbiter_weapon") {
+		t.Errorf("shaman-enhancement at 32: %v, want Rockbiter Weapon under the raid's Windfury Totem", at)
+	}
 }
 
 func TestRaidConsumesGiveRoguesTheirPoisons(t *testing.T) {

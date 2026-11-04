@@ -97,6 +97,7 @@ type ResolvedPreset struct {
 	Notes    string        `json:"notes"`
 
 	slots map[string]string // consumable id -> the Consumes field it fills
+	level int               // the level UsableAt filtered for; 0 when unknown
 }
 
 // LoadPresets reads and validates the curated presets file at path.
@@ -285,6 +286,7 @@ func publicEntries(entries []presetEntry) []PresetEntry {
 // and stay.
 func (r ResolvedPreset) UsableAt(level int, levels ItemLevels) ResolvedPreset {
 	out := r
+	out.level = level
 	out.Consumes = make([]PresetEntry, 0, len(r.Consumes))
 	for _, entry := range r.Consumes {
 		if levels.Usable(entry.ID, level) {
@@ -348,7 +350,39 @@ func (r ResolvedPreset) Layer(kitBuffs, kitConsumes []string) (buffs, consumeIDs
 			}
 		}
 	}
-	return buffs, consumeIDs
+	return buffs, r.swapImbueUnderWindfuryTotem(buffs, consumeIDs)
+}
+
+// windfuryTotemBuff, windfuryWeaponImbue and rockbiterWeaponImbue are the
+// request ids of the raid's Windfury Totem and the two shaman imbues.
+const (
+	windfuryTotemBuff    = "windfury_totem"
+	windfuryWeaponImbue  = "main_hand_imbue:windfury_weapon"
+	rockbiterWeaponImbue = "main_hand_imbue:rockbiter_weapon"
+	// windfuryTotemFirstLevel is the totem's first rank (8512, learned at
+	// 32; core.WindfuryTotemLevel): below it the buff does nothing.
+	windfuryTotemFirstLevel = 32
+)
+
+// swapImbueUnderWindfuryTotem puts Rockbiter Weapon in place of the kit's
+// Windfury Weapon wherever the buffs carry the Windfury Totem. Windfury
+// Weapon "disables any benefit you personally receive from" the totem, and
+// Forever's Rockbiter Weapon is a flat 653 attack power at 60 (client spell
+// 16313, 554 + 16.5 a level), so under the totem Rockbiter wins: +4.5% at
+// raid 60 and +5.7 to +10.1% at 40 to 60 with the totem added (sim-accuracy
+// round 15, shaman). Below the totem's first rank, or without the totem,
+// Windfury Weapon stays.
+func (r ResolvedPreset) swapImbueUnderWindfuryTotem(buffs, consumeIDs []string) []string {
+	if !slices.Contains(buffs, windfuryTotemBuff) || (r.level != 0 && r.level < windfuryTotemFirstLevel) {
+		return consumeIDs
+	}
+	out := slices.Clone(consumeIDs)
+	for i, id := range out {
+		if id == windfuryWeaponImbue {
+			out[i] = rockbiterWeaponImbue
+		}
+	}
+	return out
 }
 
 // roguePoisons are the kit imbues Forever lets share a weapon with a
