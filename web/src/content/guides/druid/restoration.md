@@ -19,8 +19,8 @@ sources:
   - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty, where the raid gear drops'
-    url: https://foreversixty.gg/sim/drops
+  - label: 'Forever Sixty, Restoration best in slot'
+    url: https://foreversixty.gg/bis/druid/restoration
     kind: site
 ---
 
@@ -103,10 +103,13 @@ Herbalism and Alchemy is the healer pair: your own mana potions and elixirs.
 
 ### Levels 1 to 19
 
-- Healing Touch comes at level 1, Rejuvenation at 4, Regrowth at 12 and Cure Poison at 14. Revive at 12 raises a dead groupmate out of combat. Solo, you kill with Wrath and Moonfire.
-- Heart of the Wild takes your points from 10 to 14: 10% more Intellect, 20% more Stamina in Bear Form. Reflection from 15 to 17 keeps half your mana regeneration going while you cast, and Nature's Focus at 18 and 19 saves a heal from pushback more than a quarter of the time.
-- At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form for the pulls that go wrong.
-- Druids cannot use wands, so swap the starter weapon for the first quest staff with Intellect. Leather or cloth quest rewards with Intellect and Spirit beat vendor gear, and the Aquatic Form quest at 16 pays the Aquarius Belt or the Idol of Shifting Tides.
+Healing Touch comes at level 1, Rejuvenation at 4, Regrowth at 12 and Cure Poison at 14. Revive at 12 raises a dead groupmate out of combat. Solo, you kill with Wrath and Moonfire.
+
+Heart of the Wild takes your points from 10 to 14: 10% more Intellect, 20% more Stamina in Bear Form. Reflection from 15 to 17 keeps half your mana regeneration going while you cast, and Nature's Focus at 18 and 19 saves a heal from pushback more than a quarter of the time.
+
+At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form for the pulls that go wrong.
+
+Druids cannot use wands, so swap the starter weapon for the first quest staff with Intellect. Leather or cloth quest rewards with Intellect and Spirit beat vendor gear, and the Aquatic Form quest at 16 pays the Aquarius Belt or the Idol of Shifting Tides.
 
 ### Levels 20 to 60
 

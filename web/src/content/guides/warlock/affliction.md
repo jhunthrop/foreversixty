@@ -20,9 +20,6 @@ sources:
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, how Affliction plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
 ---
 
 ## Overview
@@ -107,9 +104,11 @@ Tailoring and Enchanting: tailored cloth and a couple of enchanted caster pieces
 
 ### Levels 1 to 19
 
-- Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10; it is the pet that makes solo play easy. Drain Life comes at 14.
-- Your points at 10 and 11 go into Improved Life Tap for 20% more mana from every tap, then Suppression from 12 to 16 for 5% hit and 20% less threat. Improved Corruption starts at 17: each point takes 0.4 seconds off Corruption's 2 second cast, and at 21 it is instant. Until then, open with it while the mob is still running at you.
-- Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
+Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10; it is the pet that makes solo play easy. Drain Life comes at 14.
+
+Your points at 10 and 11 go into Improved Life Tap for 20% more mana from every tap, then Suppression from 12 to 16 for 5% hit and 20% less threat. Improved Corruption starts at 17: each point takes 0.4 seconds off Corruption's 2 second cast, and at 21 it is instant. Until then, open with it while the mob is still running at you.
+
+Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
 
 ### Levels 20 to 60
 

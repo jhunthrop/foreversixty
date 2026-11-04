@@ -119,10 +119,13 @@ Gnome on Alliance and Undead on Horde. **Eureka!** makes your abilities cost 10%
 
 ### Levels 1 to 19
 
-- Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Slice and Dice at 10 is the big one: from then on, a short one on anything that will live, Eviscerate on the rest.
-- Poised at 18 takes 10 Energy off your first ability when you start a pull at full Energy out of combat, so never pull half empty.
-- Your points from 10 to 12 go into Coup de Grace for 20% more Eviscerate damage. Efficient Strikes at 13 takes 3 Energy off Sinister Strike, Lightning Reflexes from 14 to 18 gives you 5% dodge, and Puncturing Wounds from 19 only pays off when you have a dagger in the main hand and get behind the mob for Backstab.
-- Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger with the first quest sword, axe or mace that beats it, and keep throwing knives for pulling.
+Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Slice and Dice at 10 is the big one: from then on, a short one on anything that will live, Eviscerate on the rest.
+
+Poised at 18 takes 10 Energy off your first ability when you start a pull at full Energy out of combat, so never pull half empty.
+
+Your points from 10 to 12 go into Coup de Grace for 20% more Eviscerate damage. Efficient Strikes at 13 takes 3 Energy off Sinister Strike, Lightning Reflexes from 14 to 18 gives you 5% dodge, and Puncturing Wounds from 19 only pays off when you have a dagger in the main hand and get behind the mob for Backstab.
+
+Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger with the first quest sword, axe or mace that beats it, and keep throwing knives for pulling.
 
 ### Levels 20 to 60
 

@@ -29,10 +29,7 @@ sources:
   - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, how Arms plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
-  - label: 'Forever Sixty, where the raid gear drops'
+  - label: 'Forever Sixty, which boss drops are upgrades'
     url: https://foreversixty.gg/sim/drops
     kind: site
   - label: 'Forever Sixty, character planner'
@@ -121,10 +118,13 @@ Blacksmithing and Mining. Blacksmithing makes Arcanite Champion, and Mining feed
 
 ### Levels 1 to 19
 
-- Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 12. Rend's bleed ignores armor, so put it on anything that will live through it. Tactical Mastery at 14 lets you keep 10 Rage through a stance swap.
-- At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander, a good pick if your two-hander is still the starter.
-- Your first point at 10 makes Heroic Strike cost 1 less Rage. Three points of Deflection follow for parry, then Improved Rend from 14 to 16 for a much bigger bleed, and Improved Charge at 17 and 18 for 6 more Rage on every opener.
-- Weapon damage is nearly all your damage, so swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
+Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 12. Rend's bleed ignores armor, so put it on anything that will live through it. Tactical Mastery at 14 lets you keep 10 Rage through a stance swap.
+
+At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander, a good pick if your two-hander is still the starter.
+
+Your first point at 10 makes Heroic Strike cost 1 less Rage. Three points of Deflection follow for parry, then Improved Rend from 14 to 16 for a much bigger bleed, and Improved Charge at 17 and 18 for 6 more Rage on every opener.
+
+Weapon damage is nearly all your damage, so swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 

@@ -112,16 +112,19 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ## Professions
 
-**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can wear, and both are pre-raid picks. **Engineering** gives you grenades and dynamite for trash. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
+**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make, and both are pre-raid picks. **Engineering** gives you grenades and dynamite for trash. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
 
 ## Leveling
 
 ### Levels 1 to 19
 
-- You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it is the hardest hit you have this early.
-- Poised also comes at 18: at full Energy out of combat your next ability costs 10 less, so walk into every pull capped and open with Ambush or Garrote.
-- Your first three points, 10 to 12, go into Improved Gouge, which holds the mob 1.5 seconds longer and gives you time to get behind it. Remorseless Attacks at 13 and 14 adds 40% crit to your next Sinister Strike, Backstab or Ambush after a kill, then Malice from 15 to 19 gives you 5% crit.
-- Wear leather and take quest rewards over vendor gear. Drop the Worn Dagger the moment a quest offers a better dagger, so Backstab and Ambush stay open to you, and keep throwing knives for pulling.
+You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it is the hardest hit you have this early.
+
+Poised also comes at 18: at full Energy out of combat your next ability costs 10 less, so walk into every pull capped and open with Ambush or Garrote.
+
+Your first three points, 10 to 12, go into Improved Gouge, which holds the mob 1.5 seconds longer and gives you time to get behind it. Remorseless Attacks at 13 and 14 adds 40% crit to your next Sinister Strike, Backstab or Ambush after a kill, then Malice from 15 to 19 gives you 5% crit.
+
+Wear leather and take quest rewards over vendor gear. Drop the Worn Dagger the moment a quest offers a better dagger, so Backstab and Ambush stay open to you, and keep throwing knives for pulling.
 
 ### Levels 20 to 60
 

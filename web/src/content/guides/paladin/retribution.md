@@ -15,7 +15,7 @@ sources:
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
   - label: 'Forever Sixty, paladin talents'
-    url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
+    url: https://foreversixty.gg/planner?class=paladin
     kind: datamined
   - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/sim/weights
@@ -118,10 +118,13 @@ Mining and Blacksmithing make your two-handers and plate. Engineering adds explo
 
 ### Levels 1 to 19
 
-- Seal of Righteousness and Holy Light come at 1, Judgement and Blessing of Might at 4, Holy Strike at 6, Hammer of Justice at 8 and Lay on Hands at 10. Judgement does not use up your Seal, and it and Holy Strike both come back every 10 seconds.
-- At 12, the class quest from your trainer teaches Redemption. Do it before your first dungeon.
-- Your first five points, 10 to 14, go into Benediction: 10% less mana on every instant, which is your whole bar. Improved Judgement takes 15 and 16 for a Judgement every 8 seconds, then Conviction from 17 to 19 for 6% crit.
-- Take quest rewards over vendor gear, and replace your Battleworn Hammer with the first harder-hitting slow two-hander you find: Seal of Righteousness hits harder per swing the slower the weapon. Paladins cannot use wands. You wear mail until plate at 40.
+Seal of Righteousness and Holy Light come at 1, Judgement and Blessing of Might at 4, Holy Strike at 6, Hammer of Justice at 8 and Lay on Hands at 10. Judgement does not use up your Seal, and it and Holy Strike both come back every 10 seconds.
+
+At 12, the class quest from your trainer teaches Redemption. Do it before your first dungeon.
+
+Your first five points, 10 to 14, go into Benediction: 10% less mana on every instant, which is your whole bar. Improved Judgement takes 15 and 16 for a Judgement every 8 seconds, then Conviction from 17 to 19 for 6% crit.
+
+Take quest rewards over vendor gear, and replace your Battleworn Hammer with the first harder-hitting slow two-hander you find: Seal of Righteousness hits harder per swing the slower the weapon. Paladins cannot use wands. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 

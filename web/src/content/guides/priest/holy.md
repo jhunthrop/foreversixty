@@ -45,7 +45,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 
 ## Talents and builds
 
-Deep Holy for Prayer of Mending, with Discipline taken to Meditation and Inner Focus.
+Deep Holy for Prayer of Mending, with 17 points in Discipline for stronger, cheaper Renews and mana.
 
 - **Prayer of Mending** (1 point): the capstone. It heals its holder on the next hit or direct heal, then jumps. Keep it on the tank.
 - **Spiritual Healing** (3 points): 10% more healing on everything.
@@ -56,6 +56,7 @@ Deep Holy for Prayer of Mending, with Discipline taken to Meditation and Inner F
 - **Litany of Light** (2 points): mana back whenever your heal is a different spell from the last one. Put a Renew or a Prayer of Mending between your Greater Heals and it pays all fight; two Greater Heals in a row, even at different ranks, earn nothing.
 - **Holy Binding** (1 point): every Flash Heal you put on someone else heals you for half as much. Raid damage hits you too.
 - **Twilight Focus** (3 points): 70% of the hits you take no longer push back your casts. On raid-wide damage this is worth more than any throughput point.
+- **Twin Disciplines** (5 points) and **Mental Agility** (3 points): Renew heals 5% more, and Renew and Power Word: Shield cost 10% less.
 - **Meditation** (3 points), **Mental Strength** (5 points) and **Inner Focus** (1 point): regeneration while casting, a deeper bar, and a free spell every 3 minutes.
 
 Spirit of Redemption is the step to Prayer of Mending, and if you die it gives you 15 seconds of free heals: keep casting, a death in the last seconds of a hard pull still heals the raid through. [Open the planner](/planner?class=priest) to change the build.
@@ -110,9 +111,11 @@ Tailoring makes healing cloth you will wear into the first raids. Enchanting sav
 
 ### Levels 1 to 19
 
-- Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12.
-- Three points of Twilight Focus from 10 to 12 mean most hits no longer push back your casts. Improved Renew takes 13 to 15 for 15% bigger Renews, and Holy Specialization starts at 16 for more crit on your Holy spells.
-- Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
+Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12.
+
+Three points of Twilight Focus from 10 to 12 mean most hits no longer push back your casts. Improved Renew takes 13 to 15 for 15% bigger Renews, and Holy Specialization starts at 16 for more crit on your Holy spells.
+
+Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
 
 ### Levels 20 to 60
 

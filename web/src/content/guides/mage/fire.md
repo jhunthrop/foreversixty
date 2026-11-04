@@ -20,10 +20,7 @@ sources:
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, how Fire plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
-  - label: 'Forever Sixty, raid loot tables'
+  - label: 'Forever Sixty, which boss drops are upgrades'
     url: https://foreversixty.gg/sim/drops
     kind: site
 ---
@@ -108,9 +105,11 @@ Tailoring and Enchanting are the standard pair: Tailoring makes the early cloth 
 
 ### Levels 1 to 19
 
-- Fireball is trained at 1 with new ranks at 6, 12 and 18, so visit the trainer every even level. Frostbolt at 4 is your slow, Fire Blast at 6 is the instant finisher, Frost Nova at 10 buys distance and Flamestrike at 16 hits packs.
-- From 10 to 14 put five points into Incineration, 10% more crit on Fire Blast, then Accelerant at 15 to cut 0.1 sec off Fireball, and Ignite from 16 to 19 so every Fire crit burns for more.
-- Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
+Fireball is trained at 1 with new ranks at 6, 12 and 18, so visit the trainer every even level. Frostbolt at 4 is your slow, Fire Blast at 6 is the instant finisher, Frost Nova at 10 buys distance and Flamestrike at 16 hits packs.
+
+From 10 to 14 put five points into Incineration, 10% more crit on Fire Blast, then Accelerant at 15 to cut 0.1 sec off Fireball, and Ignite from 16 to 19 so every Fire crit burns for more.
+
+Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Alliance, Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
 
 ### Levels 20 to 60
 

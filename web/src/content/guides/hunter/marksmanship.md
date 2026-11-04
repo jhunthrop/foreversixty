@@ -24,7 +24,7 @@ sources:
     url: https://warcrafttavern.com/forever/guides/hunter/
     kind: community
   - label: 'Forever Sixty, talent trees'
-    url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
+    url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
   - label: 'Forever Sixty, spell values'
     url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
@@ -140,10 +140,13 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 
 ### Levels 1 to 19
 
-- Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8 and Aspect of the Hawk at 10, which replaces Monkey for good. Multi-Shot comes at 18.
-- At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
-- Your first five points go into Lethal Attacks, 1% crit on every attack per point. Improved Stings at 15 adds 6% to Serpent Sting, and Efficiency from 16 cuts the mana cost of your shots and stings by 3% a point, which is fewer drinking breaks.
-- Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8 and Aspect of the Hawk at 10, which replaces Monkey for good. Multi-Shot comes at 18.
+
+At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
+
+Your first five points go into Lethal Attacks, 1% crit on every attack per point. Improved Stings at 15 adds 6% to Serpent Sting, and Efficiency from 16 cuts the mana cost of your shots and stings by 3% a point, which is fewer drinking breaks.
+
+Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.
 
 ### Levels 20 to 60
 

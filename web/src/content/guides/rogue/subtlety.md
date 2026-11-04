@@ -116,10 +116,13 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ### Levels 1 to 19
 
-- You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. Keep a dagger in the main hand: Backstab and Ambush need one, and they are what this tree builds on.
-- Poised at 18 takes 10 Energy off your opener when you are at full Energy out of combat, so Ambush from stealth costs 50.
-- Your first three points, 10 to 12, go into Master of Deception, which lets you sneak past mobs as if you were three levels higher. Opportunity from 13 to 17 adds 20% to Backstab, Garrote and Ambush. Dirty Deeds at 18 makes Garrote 10 Energy cheaper and lets you use it from the front, and a point of Camouflage at 19 speeds you up in stealth.
-- Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for the first better quest dagger, and keep throwing knives for pulling.
+You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. Keep a dagger in the main hand: Backstab and Ambush need one, and they are what this tree builds on.
+
+Poised at 18 takes 10 Energy off your opener when you are at full Energy out of combat, so Ambush from stealth costs 50.
+
+Your first three points, 10 to 12, go into Master of Deception, which lets you sneak past mobs as if you were three levels higher. Opportunity from 13 to 17 adds 20% to Backstab, Garrote and Ambush. Dirty Deeds at 18 makes Garrote 10 Energy cheaper and lets you use it from the front, and a point of Camouflage at 19 speeds you up in stealth.
+
+Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for the first better quest dagger, and keep throwing knives for pulling.
 
 ### Levels 20 to 60
 

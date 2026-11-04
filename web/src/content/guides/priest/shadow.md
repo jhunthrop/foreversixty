@@ -122,9 +122,11 @@ Tailoring makes a lot of the cloth you wear before raids, so it pays for itself.
 
 ### Levels 1 to 19
 
-- Smite does your damage until 10: Shadow Word: Pain at 4, Smite, then the wand. Power Word: Shield comes at 6, Mind Blast at 10, Inner Fire at 12 and Psychic Scream at 14, your way out when a second mob joins.
-- Your first five talent points go into Shadow Focus, 5% more hit with Shadow spells so Mind Blast and Shadow Word: Pain land, and the next four into Blackout, a small chance for your Shadow spells to stun.
-- Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
+Smite does your damage until 10: Shadow Word: Pain at 4, Smite, then the wand. Power Word: Shield comes at 6, Mind Blast at 10, Inner Fire at 12 and Psychic Scream at 14, your way out when a second mob joins.
+
+Your first five talent points go into Shadow Focus, 5% more hit with Shadow spells so Mind Blast and Shadow Word: Pain land, and the next four into Blackout, a small chance for your Shadow spells to stun.
+
+Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
 
 ### Levels 20 to 60
 

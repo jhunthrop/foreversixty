@@ -20,10 +20,7 @@ sources:
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, how Frost plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
-  - label: 'Forever Sixty, raid loot tables'
+  - label: 'Forever Sixty, which boss drops are upgrades'
     url: https://foreversixty.gg/sim/drops
     kind: site
 ---
@@ -99,7 +96,7 @@ Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell po
 
 ## Races
 
-**Gnome** is the best Alliance Frost mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit and is just behind. **Skyborne** edges a Gnome by a hair in a raid with Wind Blessed, 2% haste that never turns off, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Troll** and **Orc** are close behind: Berserking adds 10% cast speed for 15 seconds every 3 minutes and Blood Fury 10% spell power for 15 seconds every 2 minutes, so press either on the pull and on cooldown after that.
+**Gnome** is the best Alliance Frost mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit and is just behind. **Skyborne** is a paid unlock and only edges a Gnome by a hair with Wind Blessed's 2% haste, which is not worth buying for. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Troll** and **Orc** are close behind: Berserking adds 10% cast speed for 15 seconds every 3 minutes and Blood Fury 10% spell power for 15 seconds every 2 minutes, so press either on the pull and on cooldown after that.
 
 ## Professions
 
@@ -109,9 +106,11 @@ Tailoring and Enchanting are the standard pair: Tailoring makes the early cloth 
 
 ### Levels 1 to 19
 
-- Frostbolt at 4 is your spell from the moment you have it, with new ranks at 8, 14 and 20. Train Conjure Water with it, Fire Blast at 6 as the instant finisher and Frost Nova at 10.
-- At 10 and 11 the points go into Frost Warding, 30% more armor from Frost Armor, then Improved Frostbolt from 12 to 16 for a Frostbolt 0.5 sec faster, and Precision from 17 to 19 for 6% hit.
-- Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
+Frostbolt at 4 is your spell from the moment you have it, with new ranks at 8, 14 and 20. Train Conjure Water with it, Fire Blast at 6 as the instant finisher and Frost Nova at 10.
+
+At 10 and 11 the points go into Frost Warding, 30% more armor from Frost Armor, then Improved Frostbolt from 12 to 16 for a Frostbolt 0.5 sec faster, and Precision from 17 to 19 for 6% hit.
+
+Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Alliance, Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
 
 ### Levels 20 to 60
 

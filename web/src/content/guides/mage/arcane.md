@@ -20,10 +20,7 @@ sources:
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, how Arcane plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
-  - label: 'Forever Sixty, raid loot tables'
+  - label: 'Forever Sixty, which boss drops are upgrades'
     url: https://foreversixty.gg/sim/drops
     kind: site
 ---
@@ -106,10 +103,12 @@ Tailoring and Enchanting are the standard pair: Tailoring makes the early cloth 
 
 ### Levels 1 to 19
 
-- Train Frostbolt and Conjure Water at 4, Fire Blast at 6, Arcane Missiles at 8, Frost Nova at 10 and Arcane Explosion at 14. From 8, open with Frostbolt so the mob walks in slowed, channel Missiles as it closes and finish with Fire Blast.
-- At 10 the first point goes into Wand Specialization for 13% more wand damage, then 11 to 14 into Improved Channeling, so most hits no longer push back your Missiles. Arcane Resilience at 15 turns a quarter of your Intellect into armor, and 16 to 19 go into Arcane Concentration for free casts.
-- Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
+Train Frostbolt and Conjure Water at 4, Fire Blast at 6, Arcane Missiles at 8, Frost Nova at 10 and Arcane Explosion at 14. From 8, open with Frostbolt so the mob walks in slowed, channel Missiles as it closes and finish with Fire Blast.
+
+At 10 the first point goes into Wand Specialization for 13% more wand damage, then 11 to 14 into Improved Channeling, so most hits no longer push back your Missiles. Arcane Resilience at 15 turns a quarter of your Intellect into armor, and 16 to 19 go into Arcane Concentration for free casts.
+
+Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Alliance, Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
 
 ### Levels 20 to 60
 
-Keep every point in Arcane. Missile Barrage comes at 21 and Arcane Blast at 27, and from there you level on Blast and free Missiles. Arcane levels fast on single pulls but burns mana, so drink after every two or three mobs and keep Frost Nova and Blink for anything that reaches you. Frostbolt's slow is your kiting tool at every level. From level 22 to the 40s, AoE grinding with Arcane Explosion after a Frost Nova is the fastest way to level, but it needs gear with Stamina and a careful pull. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.
+Every point goes into Arcane up to 40, where you take Arcane Power. From 41 the points go into Incineration, then Improved Frostbolt, Precision, Ice Shards and Frost Channeling for the Frostbolt filler. Missile Barrage comes at 21 and Arcane Blast at 27, and from there you level on Blast and free Missiles. Arcane levels fast on single pulls but burns mana, so drink after every two or three mobs and keep Frost Nova and Blink for anything that reaches you. Frostbolt's slow is your kiting tool at every level. From level 22 to the 40s, AoE grinding with Arcane Explosion after a Frost Nova is the fastest way to level, but it needs gear with Stamina and a careful pull. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.

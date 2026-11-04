@@ -113,9 +113,11 @@ Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes h
 
 ### Levels 1 to 19
 
-- Train Power Word: Shield at 6 and Renew at 8, then Mind Blast at 10 and Inner Fire at 12. Shadow Word: Pain at 4 opens every pull, Smite does the work until a wand takes over, and Dispel Magic arrives at 18.
-- Twin Disciplines takes your points from 10 to 14: 5% more damage and healing on your instants, which at this level means Shadow Word: Pain and Renew. Mental Strength takes 15 to 19 for 10% more Intellect, a bigger mana bar between drinks.
-- Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
+Train Power Word: Shield at 6 and Renew at 8, then Mind Blast at 10 and Inner Fire at 12. Shadow Word: Pain at 4 opens every pull, Smite does the work until a wand takes over, and Dispel Magic arrives at 18.
+
+Twin Disciplines takes your points from 10 to 14: 5% more damage and healing on your instants, which at this level means Shadow Word: Pain and Renew. Mental Strength takes 15 to 19 for 10% more Intellect, a bigger mana bar between drinks.
+
+Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
 
 ### Levels 20 to 60
 

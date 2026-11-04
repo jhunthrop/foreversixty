@@ -28,7 +28,7 @@ sources:
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
   - label: 'Forever Sixty, paladin talents'
-    url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
+    url: https://foreversixty.gg/planner?class=paladin
     kind: datamined
   - label: "Blizzard, What's Next panel recap"
     url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
@@ -125,10 +125,13 @@ Mining and Blacksmithing make plate, shields and the tanking weapons. Engineerin
 
 ### Levels 1 to 19
 
-- Devotion Aura comes at 1, Judgement at 4, Holy Strike at 6 and Hammer of Justice at 8. At 10 you get Righteous Fury and Seal of Fury: with a shield on, every swing under Seal of Fury gives you an absorb, and judging it hits for Holy damage and taunts for 3 seconds.
-- At 12, the class quest from your trainer teaches Redemption.
-- If you level as Protection, your first point at 10 is Divine Intellect for 2% Intellect. Redoubt takes 11 to 15: hits on you can give 30% more block chance for 10 seconds or 5 blocks. Precision takes 16 to 18 for 3% hit, and the first point of Sacred Duty at 19 takes 30 seconds off Divine Protection.
-- Take quest rewards over vendor gear. To tank, pair a one-hander with a shield as soon as you have both, since Seal of Fury's absorb needs the shield. Paladins cannot use wands. You wear mail until plate at 40.
+Devotion Aura comes at 1, Judgement at 4, Holy Strike at 6 and Hammer of Justice at 8. At 10 you get Righteous Fury and Seal of Fury: with a shield on, every swing under Seal of Fury gives you an absorb, and judging it hits for Holy damage and taunts for 3 seconds.
+
+At 12, the class quest from your trainer teaches Redemption.
+
+If you level as Protection, your first point at 10 is Divine Intellect for 2% Intellect. Redoubt takes 11 to 15: hits on you can give 30% more block chance for 10 seconds or 5 blocks. Precision takes 16 to 18 for 3% hit, and the first point of Sacred Duty at 19 takes 30 seconds off Divine Protection.
+
+Take quest rewards over vendor gear. To tank, pair a one-hander with a shield as soon as you have both, since Seal of Fury's absorb needs the shield. Paladins cannot use wands. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 

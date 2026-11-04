@@ -21,9 +21,6 @@ sources:
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, how Destruction plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
 ---
 
 ## Overview
@@ -120,9 +117,11 @@ Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting a
 
 ### Levels 1 to 19
 
-- Train Immolate at 1, Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10. Drain Life at 14 is your heal.
-- Your points at 10 and 11 go into Destructive Reach: 20% more range on Shadow Bolt and Immolate, so you open from farther out and get a little more casting done before the mob reaches you. Bane from 12 to 16 cuts half a second off Shadow Bolt and Immolate. Molten Skin from 17 to 19 takes 6% off all damage you take.
-- Wand the mob down once Immolate and Corruption are ticking; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 from an enchanter carry you to 20. Swap your starting weapon for the first quest staff or dagger with Intellect or Stamina.
+Train Immolate at 1, Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10. Drain Life at 14 is your heal.
+
+Your points at 10 and 11 go into Destructive Reach: 20% more range on Shadow Bolt and Immolate, so you open from farther out and get a little more casting done before the mob reaches you. Bane from 12 to 16 cuts half a second off Shadow Bolt and Immolate. Molten Skin from 17 to 19 takes 6% off all damage you take.
+
+Wand the mob down once Immolate and Corruption are ticking; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 from an enchanter carry you to 20. Swap your starting weapon for the first quest staff or dagger with Intellect or Stamina.
 
 ### Levels 20 to 60
 

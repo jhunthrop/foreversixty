@@ -26,7 +26,7 @@ sources:
     url: https://www.wowhead.com/forever/spell=19306
     kind: community
   - label: 'Forever Sixty, talent trees'
-    url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
+    url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
   - label: 'Forever Sixty, spell values'
     url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
@@ -127,10 +127,13 @@ Engineering gives Survival the AoE it lacks: grenades and explosives on trash. S
 
 ### Levels 1 to 19
 
-- Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike from level 1 is your main button, with new ranks at 8 and 16. Train Aspect of the Monkey and Serpent Sting at 4, Hunter's Mark at 6, Wing Clip at 12 and Mongoose Bite at 16, which lights up after you dodge.
-- At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
-- Your first five points go into Improved Tracking, 1% damage per point against whatever you are tracking: Track Beasts from level 1, Track Humanoids at 10, Track Undead at 18. Keep the right one on. Savage Strikes at 15 and 16 adds 2% crit to your melee abilities per point, then Survivalist from 17 adds 2% health per point.
-- Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since Raptor Strike adds its damage on top of the weapon hit. Wear leather until mail at 40.
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike from level 1 is your main button, with new ranks at 8 and 16. Train Aspect of the Monkey and Serpent Sting at 4, Hunter's Mark at 6, Wing Clip at 12 and Mongoose Bite at 16, which lights up after you dodge.
+
+At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
+
+Your first five points go into Improved Tracking, 1% damage per point against whatever you are tracking: Track Beasts from level 1, Track Humanoids at 10, Track Undead at 18. Keep the right one on. Savage Strikes at 15 and 16 adds 2% crit to your melee abilities per point, then Survivalist from 17 adds 2% health per point.
+
+Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since Raptor Strike adds its damage on top of the weapon hit. Wear leather until mail at 40.
 
 ### Levels 20 to 60
 

@@ -28,10 +28,7 @@ sources:
   - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, how Fury plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
-  - label: 'Forever Sixty, where the raid gear drops'
+  - label: 'Forever Sixty, which boss drops are upgrades'
     url: https://foreversixty.gg/sim/drops
     kind: site
   - label: 'Forever Sixty, character planner'
@@ -114,7 +111,7 @@ Mighty Rage Potion goes on the pull and again when it comes back. Enchant and sh
 
 Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes, which Flurry turns into extra swings: press it with Death Wish, and never inside Recklessness, which already makes every hit crit. On the Alliance, Skyborne's Wind Blessed, 2% haste that never turns off, edges Night Elf by a hair, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it. On the Horde, Undead stays ahead of it. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds; with two weapons hitting, it comes back almost as soon as it can.
 
-The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, are next, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes. Troll's Berserking is 10% attack speed for only 15 seconds in every 3 minutes, so it trails the races that are always on. Whatever you pick, press its active racial with Death Wish. Blood Fury and Berserking also stack with Recklessness; a crit racial does not.
+The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, are next, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes. Troll's Berserking is 10% attack speed for only 15 seconds in every 3 minutes, so it trails Undead and Orc. Whatever you pick, press its active racial with Death Wish. Blood Fury and Berserking also stack with Recklessness; a crit racial does not.
 
 ## Professions
 
@@ -124,10 +121,13 @@ Blacksmithing and Mining. Blacksmithing makes melee weapons and armor, and Minin
 
 ### Levels 1 to 19
 
-- Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 12. Rend's bleed ignores armor, so put it on anything that will live through it. Tactical Mastery at 14 lets you keep 10 Rage through a stance swap.
-- At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander worth keeping for when you dual wield.
-- Your first five points, 10 to 14, go into Cruelty for 5% melee crit. One point of Lingering Rage at 15 holds your Rage longer between pulls, then Unbridled Wrath from 16 to 20 gives your hits a 60% chance at an extra Rage.
-- Dual Wield trains at 20. Until then, swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
+Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 12. Rend's bleed ignores armor, so put it on anything that will live through it. Tactical Mastery at 14 lets you keep 10 Rage through a stance swap.
+
+At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander worth keeping for when you dual wield.
+
+Your first five points, 10 to 14, go into Cruelty for 5% melee crit. One point of Lingering Rage at 15 holds your Rage longer between pulls, then Unbridled Wrath from 16 to 20 gives your hits a 60% chance at an extra Rage.
+
+Dual Wield trains at 20. Until then, swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 

@@ -33,8 +33,8 @@ sources:
   - label: 'Icy Veins, the racial rework'
     url: https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/
     kind: community
-  - label: 'Forever Sixty, where the raid gear drops'
-    url: https://foreversixty.gg/sim/drops
+  - label: 'Forever Sixty, Protection best in slot'
+    url: https://foreversixty.gg/bis/warrior/protection
     kind: site
   - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
@@ -121,10 +121,13 @@ Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feed
 
 ### Levels 1 to 19
 
-- Charge and Rend train at 4, Thunder Clap at 6 and Hamstring at 8. At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander to pair with a shield.
-- Shield Bash comes at 12, Revenge and Demoralizing Shout at 14, and Shield Block at 16: two attacks blocked, and every block lights Revenge.
-- The first two points, at 10 and 11, are Improved Bloodrage for half again the Rage. Shield Specialization takes 12 to 16: more block, and from the fifth point every block gives 5 Rage. Anticipation starts at 17 for Defense.
-- Take quest rewards over vendor gear: a one-hander and the best shield you can find beat the starter weapon. You wear mail until plate at 40.
+Charge and Rend train at 4, Thunder Clap at 6 and Hamstring at 8. At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander to pair with a shield.
+
+Shield Bash comes at 12, Revenge and Demoralizing Shout at 14, and Shield Block at 16: two attacks blocked, and every block lights Revenge.
+
+The first two points, at 10 and 11, are Improved Bloodrage for half again the Rage. Shield Specialization takes 12 to 16: more block, and from the fifth point every block gives 5 Rage. Anticipation starts at 17 for Defense.
+
+Take quest rewards over vendor gear: a one-hander and the best shield you can find beat the starter weapon. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 
