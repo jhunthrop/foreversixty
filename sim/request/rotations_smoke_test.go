@@ -124,6 +124,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 	"hunter-beast-mastery": {
 		"{SpellID: 19574}": "Bestial Wrath is a talent (sim/hunter/talents.go); this build takes none.",
 	},
+	"hunter-marksmanship": {
+		"{SpellID: 1310786}": "Sniper Shot is the Marksmanship capstone talent (sim/hunter/sniper_shot.go's registerSniperShotSpell); this build takes none.",
+	},
 	"hunter-survival": {
 		"{SpellID: 1317257}": "Strider Kick is a talent (sim/hunter/strider_kick.go, Forever's Survival tree); this build takes none.",
 		"{SpellID: 20910}":   "Counterattack is a talent (sim/hunter/counterattack.go, Forever's Survival tree); this build takes none.",
