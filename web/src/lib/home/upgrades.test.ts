@@ -67,6 +67,21 @@ describe('weightsRecordFor', () => {
       ),
     ).toEqual({ agility: 2, hit: 0.5 });
   });
+
+  it('takes a rating row per 1%, the unit scoreItem weighs in', () => {
+    expect(
+      weightsRecordFor(
+        band({
+          weights: [
+            { stat: 'agility', weight: 2, weight_per_percent: 2 },
+            { stat: 'hit', weight: 3.2, unit: 'rating', rating_factor: 10, weight_per_percent: 32 },
+            { stat: 'crit', weight: 1.5, unit: 'rating', rating_factor: 14 },
+            { stat: 'expertise', weight: 18, weight_per_percent: 18 },
+          ],
+        }),
+      ),
+    ).toEqual({ agility: 2, hit: 32, crit: 21, expertise: 18 });
+  });
 });
 
 describe('upgradesFor', () => {

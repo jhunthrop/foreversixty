@@ -63,6 +63,70 @@ describe("Gear", function()
 		assert.are.equal(0, Gear.score({ dodge = 9 }, DATA.weights["paladin-holy"]))
 	end)
 
+	-- Sim audit round 17: every weight is per 1% (Data.lua weights from stat-weights.json, the
+	-- companion's sim), while GetItemStats gives rating points, so a hit- and crit-rated item
+	-- scored 10x and 14x too high. The Fury hands of 1.60.1.70755 (items/warrior.json) under
+	-- stat-weights.json warrior-fury, as GetItemStats reads them.
+	describe("rating stats", function()
+		local FURY = { attack_power = 1, strength = 1.9, agility = 0.7, hit = 32, crit = 18, expertise = 18 }
+		local HANDS = {
+			annihilation = { strength = 35, stamina = 15, crit = 14, hit = 10 },
+			enforcement = { agility = 20, strength = 28, stamina = 6, hit = 10 },
+			batskin = { agility = 10, stamina = 9, hit = 20 },
+		}
+
+		it("reads hit and crit rating as percent before the per-1% weight", function()
+			assert.is_near(35 * 1.9 + 18 + 32, Gear.score(HANDS.annihilation, FURY), 1e-9)
+			assert.is_near(28 * 1.9 + 20 * 0.7 + 32, Gear.score(HANDS.enforcement, FURY), 1e-9)
+			-- 10 * 0.7 + 2% hit * 32; it was 647.
+			assert.is_near(71, Gear.score(HANDS.batskin, FURY), 1e-9)
+		end)
+
+		it("puts Gauntlets of Annihilation first and Primal Batskin Gloves last", function()
+			local names = { "batskin", "enforcement", "annihilation" }
+			table.sort(names, function(a, b)
+				return Gear.score(HANDS[a], FURY) > Gear.score(HANDS[b], FURY)
+			end)
+			assert.are.same({ "annihilation", "enforcement", "batskin" }, names)
+		end)
+
+		it("reads expertise, dodge, parry and block at their own factors and defense one for one", function()
+			local tank = { expertise = 18, dodge = 12, parry = 15, block = 5, defense = 2 }
+			local stats = { expertise = 20, dodge = 12, parry = 15, block = 5, defense = 3 }
+			assert.is_near(36 + 12 + 15 + 5 + 6, Gear.score(stats, tank), 1e-9)
+		end)
+
+		it("feeds rating haste to a caster's spell haste as well as melee haste", function()
+			mock.install({ itemStats = { link = { ITEM_MOD_HASTE_RATING_SHORT = 10, ITEM_MOD_SPELL_POWER_SHORT = 20 } } })
+			-- stat-weights.json mage-fire: spell_haste 6 per 1%; 10 haste rating is 1%.
+			local fire = { spell_power = 1, spell_haste = 6 }
+			assert.is_near(20 + 6, Gear.score(Gear.statsOf("link"), fire), 1e-9)
+			-- A sim's weights naming both: the rating speeds attacks and casts alike.
+			assert.is_near(2 + 3, Gear.score({ haste = 10 }, { melee_haste = 2, spell_haste = 3 }), 1e-9)
+		end)
+
+		it("pins its rating table to the shared contract fixture", function()
+			local text
+			for _, root in ipairs({ "../docs/contracts/fixtures/", "docs/contracts/fixtures/" }) do
+				local file = io.open(root .. "rating-per-percent.json", "rb")
+				if file then
+					text = file:read("a")
+					file:close()
+					break
+				end
+			end
+			assert.is_not_nil(text)
+			local Rules = helper.load("Rules")
+			local count = 0
+			for stat, factor in pairs(Rules.RATING_PER_PERCENT) do
+				count = count + 1
+				assert.is_truthy(text:find(string.format('"%s": %d[,\n]', stat, factor)), stat)
+			end
+			local _, inFixture = text:match('"rating_per_percent": (%b{})'):gsub('"[%w_]+": %d+', "")
+			assert.are.equal(inFixture, count)
+		end)
+	end)
+
 	it("reads the spec off the tree with the most points", function()
 		local ranks = { [1] = { ["1:1"] = 2 }, [2] = { ["1:1"] = 5 }, [3] = { ["1:1"] = 1 } }
 		assert.are.equal("paladin-protection", Gear.specOf(DATA, "paladin", ranks))

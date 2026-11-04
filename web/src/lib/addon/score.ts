@@ -3,6 +3,10 @@
 //
 // The same arithmetic the addon's Gear.lua does, on the same numbers, so a player who
 // sorts by score here and then opens the in-game panel sees the two agree.
+//
+// Every weight is per 1% of a rating stat, while an item's line carries rating points, so
+// a rating stat is read as percent first (RATING_PER_PERCENT) before its weight.
+import ratingFixture from '../../../../docs/contracts/fixtures/rating-per-percent.json';
 import { SPECS } from '../sim/specs';
 import type { Item, StatKey } from '../planner/types';
 
@@ -33,6 +37,18 @@ export const CONTRACT_STAT_NAMES: Readonly<Record<string, string>> = {
   arcane_res: 'arcane_resistance',
 };
 
+/** Rating points per 1% for each rating stat, the client's combatratings.txt (flat over
+ *  every level): the contract fixture the API and the addon pin their tables to. */
+export const RATING_PER_PERCENT: Readonly<Record<string, number>> = ratingFixture.rating_per_percent;
+
+/** A stat line amount in the unit its weight is in: rating points as percent, with an
+ *  on-equip literal percent (`percent_stats`, Fury Visor's 1% hit) kept as it is. */
+function weighedAmount(key: StatKey, value: number, literalPercent: number): number {
+  const factor = RATING_PER_PERCENT[key];
+  return factor === undefined ? value : (value - literalPercent) / factor + literalPercent;
+}
+
+/** An item's weighted score. `weights` are per 1% for the rating stats. */
 export function scoreItem(item: Item, weights: SpecWeights): number {
   let total = 0;
   // item.stats is Partial<Record<StatKey, number>>, so a value read back is
@@ -41,7 +57,8 @@ export function scoreItem(item: Item, weights: SpecWeights): number {
   for (const key of Object.keys(item.stats) as StatKey[]) {
     const value = item.stats[key];
     if (value === undefined) continue;
-    total += value * (weights[CONTRACT_STAT_NAMES[key] ?? key] ?? 0);
+    const amount = weighedAmount(key, value, item.percent_stats?.[key] ?? 0);
+    total += amount * (weights[CONTRACT_STAT_NAMES[key] ?? key] ?? 0);
   }
   // Armour is a column on the record, not a stat, but it is a stat to every tank weight
   // list; leaving it out would score a shield at nothing.

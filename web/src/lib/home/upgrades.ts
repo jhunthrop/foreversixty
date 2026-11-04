@@ -17,7 +17,7 @@ import type { MeCharacter } from '../account/api';
 import { scoreItem, type SpecWeights } from '../addon/score';
 import { hasKnownSource } from '../bis/source-cell';
 import { slotScoreUnitFor, type SlotScoreUnit } from '../bis/tank-view';
-import type { BisBand, BisSlot } from '../bis/types';
+import type { BisBand, BisSlot, BisStatWeight } from '../bis/types';
 import { SLOTS, type Item, type Slot } from '../planner/types';
 
 /** The slots a weapon can occupy -- `scoreItem` only sums `item.stats`, so it cannot
@@ -89,12 +89,21 @@ export interface UpgradesResult {
   notSimCheckedCount: number;
 }
 
-/** `band.weights` (an array of `{stat, weight}` rows) as the `Record<string, number>`
+/** `band.weights` (an array of `{stat, weight}` rows), per 1%, as the `Record<string, number>`
  *  `scoreItem` (`lib/addon/score.ts`) takes -- one place this reshaping happens, so a BiS
  *  band's own weight list and the addon panel's `stat-weights.json` shape can both feed the
  *  identical scorer without this module caring which one it was given. */
 export function weightsRecordFor(band: Pick<BisBand, 'weights'>): SpecWeights {
-  return Object.fromEntries(band.weights.map((weight) => [weight.stat, weight.weight]));
+  return Object.fromEntries(band.weights.map((weight) => [weight.stat, perPercentWeight(weight)]));
+}
+
+/** A band row's weight per 1%, the unit `scoreItem` weighs in: a rating row's `weight` is
+ *  per rating point, so its `weight_per_percent` (or the weight times its factor). */
+function perPercentWeight(weight: BisStatWeight): number {
+  if (weight.weight_per_percent !== undefined) return weight.weight_per_percent;
+  return weight.unit === 'rating' && weight.rating_factor !== undefined
+    ? weight.weight * weight.rating_factor
+    : weight.weight;
 }
 
 /** The worn item's own listed-alternative row, when `pick.alternatives` names it -- `undefined`

@@ -104,7 +104,7 @@ func TestLootValuesPricesTheRaidsLootAgainstWhatIsWorn(t *testing.T) {
 	if !ok {
 		t.Fatal("the warrior item pool has no Breastplate of Might")
 	}
-	want := math.Round((statScore(breastplate.Stats, weights)-statScore(worn.Stats, weights))*dpp*10) / 10
+	want := math.Round((statScore(breastplate, weights)-statScore(worn, weights))*dpp*10) / 10
 	got, ok := set.Items[16865]
 	if !ok || got.Value != want || got.Unit != UnitDPS || got.Planned {
 		t.Fatalf("Breastplate of Might = %+v (present %v), want %v dps, not planned", got, ok, want)
@@ -118,7 +118,7 @@ func TestLootValuesPricesTheRaidsLootAgainstWhatIsWorn(t *testing.T) {
 		if item.Slot != "finger" {
 			continue
 		}
-		ring := math.Round(statScore(item.Stats, weights)*dpp*10) / 10
+		ring := math.Round(statScore(item, weights)*dpp*10) / 10
 		if set.Items[id].Value != ring {
 			t.Fatalf("ring %d = %v, want %v", id, set.Items[id].Value, ring)
 		}
@@ -186,7 +186,7 @@ func TestLootValuesUnderAWornTwoHander(t *testing.T) {
 	p, _ := DPSPerPoint(lootBuild, "mage-fire")
 	staff, _ := b.Item(classID, 13249)
 	dominance, _ := b.Item(classID, 18842) // Staff of Dominance
-	want := math.Round((statScore(dominance.Stats, weights)-statScore(staff.Stats, weights))*p.DPS*10) / 10
+	want := math.Round((statScore(dominance, weights)-statScore(staff, weights))*p.DPS*10) / 10
 	if got := set.Items[18842]; got.Value != want {
 		t.Fatalf("Staff of Dominance = %+v, want %v", got, want)
 	}
@@ -215,7 +215,7 @@ func TestLootValuesWeighATwoHanderAgainstBothHands(t *testing.T) {
 	if !blade.TwoHand {
 		t.Fatal("Obsidian Edged Blade must be two-handed for this case")
 	}
-	want := math.Round((statScore(blade.Stats, weights)-statScore(sword.Stats, weights)-statScore(disk.Stats, weights))*
+	want := math.Round((statScore(blade, weights)-statScore(sword, weights)-statScore(disk, weights))*
 		p.DPS*10) / 10
 	if got := set.Items[18822]; got.Value != want {
 		t.Fatalf("Obsidian Edged Blade = %+v, want %v against sword and shield together", got, want)

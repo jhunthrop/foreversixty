@@ -251,7 +251,8 @@ Rules.STAT_KEYS = {
 	ITEM_MOD_CRIT_MELEE_RATING_SHORT = "crit",
 	ITEM_MOD_CRIT_RANGED_RATING_SHORT = "crit",
 	ITEM_MOD_CRIT_SPELL_RATING_SHORT = "crit",
-	ITEM_MOD_HASTE_RATING_SHORT = "melee_haste",
+	-- Rating haste speeds attacks and casts alike: Gear.score feeds it to melee and spell haste.
+	ITEM_MOD_HASTE_RATING_SHORT = "haste",
 	ITEM_MOD_EXPERTISE_RATING_SHORT = "expertise",
 	ITEM_MOD_DEFENSE_SKILL_RATING_SHORT = "defense",
 	ITEM_MOD_DODGE_RATING_SHORT = "dodge",
@@ -267,6 +268,17 @@ Rules.STAT_KEYS = {
 	-- Progress.itemScore prices it at the band's measured weapon term (Gear.weaponTerm).
 	ITEM_MOD_DAMAGE_PER_SECOND_SHORT = "weapon_dps",
 }
+
+--- Rating points per 1% of each rating stat GetItemStats gives, the client's
+--- combatratings.txt (flat over every level). Every weight is per 1% (Data.lua's weights,
+--- the companion's sim), so Gear.score reads a rating stat as percent first. Pinned to
+--- docs/contracts/fixtures/rating-per-percent.json, which the site pins to the client table.
+Rules.RATING_PER_PERCENT = {
+	hit = 10, crit = 14, expertise = 10, dodge = 12, parry = 15, block = 5, defense = 1, haste = 10,
+}
+
+--- The weights rating haste counts against: it speeds attacks and casts alike.
+Rules.HASTE_WEIGHTS = { "melee_haste", "spell_haste" }
 
 --- hit and crit are one stat in Forever; the key the weights table uses, or
 --- nil for a client key this module does not know.

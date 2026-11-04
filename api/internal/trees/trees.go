@@ -63,8 +63,12 @@ type Item struct {
 	ItemLevel     int            `json:"item_level"`
 	Armor         int            `json:"armor"`
 	Stats         map[string]int `json:"stats"`
-	SetID         *int           `json:"set_id"`
-	Unique        bool           `json:"unique"`
+	// PercentStats is the share of a rating stat in Stats that an on-equip aura states as a
+	// literal percent (Fists of the Unrelenting's 1% hit and crit); the rest is rating
+	// points (items/<class>.json percent_stats).
+	PercentStats map[string]float64 `json:"percent_stats"`
+	SetID        *int               `json:"set_id"`
+	Unique       bool               `json:"unique"`
 	// TwoHand is set on a weapon that occupies both hands. A weapon with
 	// slot "main_hand" and TwoHand false is a one-hander: the data
 	// pipeline tags every one-handed weapon with the "main_hand" slot,

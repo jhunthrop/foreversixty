@@ -269,7 +269,7 @@ func LootValues(ctx context.Context, zone, gearCode, spec string, runWeights map
 		if !ok {
 			return 0
 		}
-		return statScore(item.Stats, weights)
+		return statScore(item, weights)
 	}
 	// Under a worn two-hander an off-hand item cannot be weighed alone: wearing it means
 	// a one-hander as well, which this item does not bring (the addon's own L3.1 ruling).
@@ -294,7 +294,7 @@ func LootValues(ctx context.Context, zone, gearCode, spec string, runWeights map
 				}
 			}
 		}
-		delta := (statScore(item.Stats, weights) - replaced) * scale
+		delta := (statScore(item, weights) - replaced) * scale
 		out.Items[id] = LootValue{Value: math.Round(delta*10) / 10, Unit: unit, Planned: planned[id]}
 	}
 	return out, true, nil
