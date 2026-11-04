@@ -83,7 +83,7 @@ test.describe('a spec guide opens the game tooltip for every name it shows', () 
     await expect(itemTip).toContainText(/^[\s\S]*Use: /);
   });
 
-  test('a talent in the build tree opens the talent tooltip on hover and arrows move between cells', async ({
+  test('a talent in the build tree carries its tooltip key and arrows move between cells', async ({
     page,
     isMobile,
   }) => {
@@ -93,12 +93,18 @@ test.describe('a spec guide opens the game tooltip for every name it shows', () 
     await page.getByTestId('guide-tree-skeleton').first().scrollIntoViewIfNeeded();
     const columns = page.getByTestId('guide-tree-columns').first();
     await expect(columns).toBeVisible();
+    // A read-only cell opens the page's shared game tooltip through its data-game-tip key, as
+    // every other talent name on the guide does (TalentCell.svelte); it has no tooltip of its
+    // own. The fixture's talent ids are not in the real build's tooltip bundle, so this checks
+    // the key and the roving focus; the tooltip itself is the key-talent tests' above.
     const cell = columns.locator('[data-testid^="talent-"][role="group"]').first();
-    await cell.hover();
-    await expect(columns.getByRole('tooltip')).toBeVisible();
+    await expect(cell).toHaveAttribute('data-game-tip', /^talent:\d+:\d+$/);
+    await expect(columns.getByRole('tooltip')).toHaveCount(0);
     await cell.focus();
     await page.keyboard.press('ArrowRight');
-    await expect(columns.getByRole('tooltip')).toHaveCount(1);
+    const focused = page.locator(':focus');
+    await expect(focused).toHaveAttribute('data-game-tip', /^talent:\d+:\d+$/);
+    expect(await focused.getAttribute('data-testid')).not.toBe(await cell.getAttribute('data-testid'));
   });
 
   test('a tap opens a talent on touch and a second tap closes it', async ({ page, isMobile }) => {

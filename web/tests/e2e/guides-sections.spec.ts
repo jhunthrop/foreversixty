@@ -231,32 +231,21 @@ for (const [label, viewport] of [
       await expect(page.getByTestId('guide-race-row-human')).not.toContainText('Recommended');
     });
 
-    test('shows the leveling journey as a talent tree from 10 to 60, with a planner link per level', async ({
+    // The fixture ships warrior and hunter talents only, so the Frost tree itself stays a
+    // skeleton here; its keyboard walk is guides-redesign.spec.ts's, on Fury. What the server
+    // renders (the level 60 caption and link) is checked on Frost.
+    test('renders the leveling tree at level 60 with its planner link, before the trees load', async ({
       page,
     }) => {
       await page.goto(PAGE);
       const tree = page.getByTestId('guide-leveling-tree');
-      const slider = tree.getByTestId('guide-leveling-slider');
-      await expect(slider).toBeEnabled();
-      await expect(tree.getByTestId('guide-tree-columns')).toBeVisible();
       await expect(tree.getByTestId('guide-leveling-caption')).toContainText('51 points spent, all placed');
-      // The keyboard walks the levels: Home is 10, PageUp ten levels on, End is 60.
-      await slider.focus();
-      await page.keyboard.press('Home');
-      await expect(tree.getByTestId('guide-leveling-caption')).toContainText(/Level 10: .+, rank 1/);
-      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('1 point spent, 50 to go');
-      await expect(tree.getByTestId('guide-leveling-previous')).toBeDisabled();
-      await page.keyboard.press('PageUp');
-      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('Level 20:');
-      await tree.getByTestId('guide-leveling-next').click();
-      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('12 points spent, 39 to go');
+      await expect(tree.getByTestId('guide-leveling-caption')).toContainText(/Level 60: .+, rank \d/);
       await expect(tree.getByTestId('guide-leveling-load')).toHaveAttribute(
         'href',
         /^\/planner\?spec=mage-frost&talents=[\d-]+$/,
       );
-      await expect(tree.getByTestId('guide-leveling-load')).toHaveAccessibleName(
-        'Load the level 21 build in the planner',
-      );
+      await expect(tree.getByTestId('guide-leveling-slider')).toHaveAttribute('aria-valuetext', 'Level 60');
       await noSidewaysScroll(page);
     });
 
