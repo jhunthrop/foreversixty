@@ -18365,7 +18365,7 @@
           {
             "spell_id": 20287,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18405,7 +18405,7 @@
           {
             "spell_id": 20287,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18445,7 +18445,7 @@
           {
             "spell_id": 20288,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18485,7 +18485,7 @@
           {
             "spell_id": 20288,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18553,7 +18553,7 @@
           {
             "spell_id": 20289,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18621,7 +18621,7 @@
           {
             "spell_id": 20289,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18689,7 +18689,7 @@
           {
             "spell_id": 20289,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18757,7 +18757,7 @@
           {
             "spell_id": 20290,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18825,7 +18825,7 @@
           {
             "spell_id": 20290,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18893,7 +18893,7 @@
           {
             "spell_id": 20290,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18961,7 +18961,7 @@
           {
             "spell_id": 20290,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -19029,7 +19029,7 @@
           {
             "spell_id": 20291,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -19097,7 +19097,7 @@
           {
             "spell_id": 20291,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -19172,7 +19172,7 @@
           {
             "spell_id": 20292,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -19247,7 +19247,7 @@
           {
             "spell_id": 20292,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -19322,7 +19322,7 @@
           {
             "spell_id": 20292,
             "name": "Seal of Righteousness",
-            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "condition": "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },

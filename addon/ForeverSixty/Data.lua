@@ -3023,28 +3023,28 @@ ns.Data = {
 		["paladin-retribution"] = {
 			{ level = 10, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20287, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20287, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 20287, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20287, name = "Seal of Righteousness", condition = "Otherwise keep Seal of Righteousness up, and recast it in its last second." },
 				{ spellId = 679, name = "Holy Strike", condition = "On cooldown." },
 			} },
 			{ level = 12, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20287, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20287, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 20287, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20287, name = "Seal of Righteousness", condition = "Otherwise keep Seal of Righteousness up, and recast it in its last second." },
 				{ spellId = 678, name = "Holy Strike", condition = "On cooldown." },
 			} },
 			{ level = 18, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20288, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20288, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 20288, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20288, name = "Seal of Righteousness", condition = "Otherwise keep Seal of Righteousness up, and recast it in its last second." },
 				{ spellId = 678, name = "Holy Strike", condition = "On cooldown." },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20288, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20288, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 879, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 20288, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20375, name = "Seal of Command", condition = "Straight back after that one swing under Righteousness has landed." },
@@ -3055,7 +3055,7 @@ ns.Data = {
 			} },
 			{ level = 26, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20289, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20289, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 879, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 20289, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20375, name = "Seal of Command", condition = "Straight back after that one swing under Righteousness has landed." },
@@ -3066,7 +3066,7 @@ ns.Data = {
 			} },
 			{ level = 28, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20289, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20289, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 5614, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 20289, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20375, name = "Seal of Command", condition = "Straight back after that one swing under Righteousness has landed." },
@@ -3077,7 +3077,7 @@ ns.Data = {
 			} },
 			{ level = 30, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20289, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20289, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 5614, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 20289, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20915, name = "Seal of Command", condition = "Straight back after that one swing under Righteousness has landed." },
@@ -3088,7 +3088,7 @@ ns.Data = {
 			} },
 			{ level = 34, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20290, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20290, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 5614, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 20290, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20915, name = "Seal of Command", condition = "Straight back after that one swing under Righteousness has landed." },
@@ -3099,7 +3099,7 @@ ns.Data = {
 			} },
 			{ level = 36, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20290, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20290, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 5615, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 20290, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20915, name = "Seal of Command", condition = "Straight back after that one swing under Righteousness has landed." },
@@ -3110,7 +3110,7 @@ ns.Data = {
 			} },
 			{ level = 38, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20290, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20290, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 5615, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 20290, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20915, name = "Seal of Command", condition = "Straight back after that one swing under Righteousness has landed." },
@@ -3121,7 +3121,7 @@ ns.Data = {
 			} },
 			{ level = 40, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20290, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20290, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 5615, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 20290, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20918, name = "Seal of Command", condition = "Straight back after that one swing under Righteousness has landed." },
@@ -3132,7 +3132,7 @@ ns.Data = {
 			} },
 			{ level = 42, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20291, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20291, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 5615, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 20291, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
 				{ spellId = 20918, name = "Seal of Command", condition = "Straight back after that one swing under Righteousness has landed." },
@@ -3143,7 +3143,7 @@ ns.Data = {
 			} },
 			{ level = 44, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20291, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20291, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 10312, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 24275, name = "Hammer of Wrath", condition = "Below 20% health, on its 6 second cooldown." },
 				{ spellId = 20291, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
@@ -3155,7 +3155,7 @@ ns.Data = {
 			} },
 			{ level = 50, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20292, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20292, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 10312, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 24275, name = "Hammer of Wrath", condition = "Below 20% health, on its 6 second cooldown." },
 				{ spellId = 20292, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
@@ -3167,7 +3167,7 @@ ns.Data = {
 			} },
 			{ level = 52, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20292, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20292, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 10313, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 24274, name = "Hammer of Wrath", condition = "Below 20% health, on its 6 second cooldown." },
 				{ spellId = 20292, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
@@ -3179,7 +3179,7 @@ ns.Data = {
 			} },
 			{ level = 60, lines = {
 				{ spellId = 20271, name = "Judgement", condition = "On cooldown." },
-				{ spellId = 20292, name = "Seal of Righteousness", condition = "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage." },
+				{ spellId = 20292, name = "Seal of Righteousness", condition = "On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then swap straight to Seal of Righteousness." },
 				{ spellId = 10314, name = "Exorcism", condition = "On cooldown against Undead and Demons." },
 				{ spellId = 24239, name = "Hammer of Wrath", condition = "Below 20% health, on its 6 second cooldown." },
 				{ spellId = 20292, name = "Seal of Righteousness", condition = "With Unsealed Wrath, once three swings have stored Seal of Command." },
