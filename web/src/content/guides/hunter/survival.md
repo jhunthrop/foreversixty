@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:hunter:dwarf:5/005005001/500230231051222151:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Hit, Critical strike, Agility, Intellect, Strength, Attack power, Attack speed]
 description: 'How to play a melee Survival Hunter in Forever: talents, the Raptor Strike and Mongoose Bite priority, Lone Wolf, stats, consumables and race picks.'
-updated: 2026-11-02
+updated: 2026-11-03
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -110,6 +110,8 @@ Forever's damage potions share the two-minute potion cooldown with mana potions.
 Dwarf for the Alliance: Artisan's Precision is 1% hit, which is worth more to a dual-wielder than to anyone. Night Elf's Elune's Light (10% crit for 15 seconds) lines up with Rapid Fire, and Human's Ruthless is 1% crit. Humans can be Hunters for the first time in Forever.
 
 Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on your swings. Orc's Blood Fury is the other good pull cooldown.
+
+Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds both of your weapons.
 
 ## Professions
 

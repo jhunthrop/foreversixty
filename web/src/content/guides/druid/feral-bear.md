@@ -85,7 +85,7 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 **Adds.** Swipe moves to the top on a pack, with Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.
 
-**Cooldowns.** Barkskin takes 20% off physical damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns rage into health over 10 seconds; use it under half health with rage to spare, not at the pull. Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
+**Cooldowns.** Barkskin takes 20% off physical damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns up to 10 rage a second into health for 10 seconds, and in Forever a full 100 rage of it heals your whole health bar. Use it under half health with rage banked, not at the pull. Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
 
 **There is no Savage Defense in Forever.** Your mitigation is armor, Dodge, Barkskin and your healers.
 

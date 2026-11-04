@@ -59,7 +59,7 @@ You go deep Shadow for Shadowform and spend the rest in Discipline for mana and 
 - **Improved Shadow Word: Pain** (2 points): 6 more seconds of Pain, so fewer refreshes.
 - **Shadow Focus** (5 points): 5% Shadow hit, the cheapest hit you will ever get.
 - **Spirit Tap** (3 points): a 60% chance after a kill to double your Spirit for 15 seconds, with half your regeneration running while you cast. Leveling, it is your drink between pulls; in a raid it fires off trash kills and off any add that dies carrying your Vampiric Embrace.
-- **Blackout** (4 points leveling, 2 in the raid build): an 8% chance (4% at 2 points) for your Shadow spells to stun for 3 seconds, which stops a mob that reaches you. Bosses cannot be stunned, so in the raid build these points and Spirit Tap's are the toll toward the 30 Shadow points Shadowform needs, and they pay out on trash.
+- **Blackout** (4 points leveling, 2 in the raid build): an 8% chance (4% at 2 points) for your Shadow spells to stun for 3 seconds, which stops a mob that reaches you. Bosses cannot be stunned, so on a boss the raid build's two points do nothing; they pay out only on trash.
 - **Vampiric Embrace** (1 point): the group heal you keep on the boss in a raid. See the rotation for what it costs you.
 - **Early Demise** (2 points): 30% more Shadow Word: Death crit chance below 20%, the raid build's execute.
 - **Twin Disciplines** (5 points), **Mental Agility** (3 points) and **Inner Focus** (1 point): your instants hit harder and cost less, and Inner Focus is a free Mind Blast every 3 minutes.
@@ -82,7 +82,7 @@ The leveling build finishes with two points of Wand Specialization, for the wand
 
 **Vampiric Embrace.** On the boss, keep it up: it costs a global every 30 seconds, a few percent of your own damage, and in return your whole group heals for 20% of every Shadow spell you land. On a fight with group damage that is a lot of healing, and it pays for Shadow Word: Death. On a fight where your group takes nothing, skip it and push damage. That healing goes to your group, so it never shows on your own damage meter.
 
-**Execute.** Nothing changes below 20%, except that Early Demise makes Shadow Word: Death crit far more often. Keep Shadow Word: Pain up until the closing seconds of a fight. It ticks every 3 seconds, so a late refresh only earns its global while the boss lives long enough for it to tick; once the kill is seconds away, spend the global on Mind Blast, Shadow Word: Death or Mind Flay.
+**Execute.** Nothing changes below 20%, except that Early Demise makes Shadow Word: Death crit far more often. Keep Shadow Word: Pain up until the last 6 seconds of a fight. It ticks every 3 seconds, and it takes two ticks to out-damage the Mind Flay you would cast instead, so once the boss has less than 6 seconds to live, spend the global on Mind Blast, Shadow Word: Death or Mind Flay.
 
 **AoE and adds.** Shadow has no real AoE. Put Shadow Word: Pain on adds that will live 15 seconds or more and keep your rotation on the kill target. Mind Flay slows by 50%, which is a good way to peel a runner off a healer.
 

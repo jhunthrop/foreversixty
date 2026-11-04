@@ -6,7 +6,7 @@ role: healer
 build: 'FS1:1.60.1.70755:paladin:human:50320215012101251/50322/0503:'
 recommendedRaces: [human, undead]
 statPriority: [MP5, Intellect, Healing power, Critical strike, Spirit]
-description: 'Tank healing with Oath of Light, rank 1 Flash of Light and Divine Favor, and how to make your mana last.'
+description: 'Tank healing with Oath of Light, Flash of Light and Divine Favor, and how to make your mana last.'
 updated: 2026-11-02
 confidence: inferred
 sources:
@@ -33,7 +33,7 @@ Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Di
 
 ### Strengths
 
-- Oath of Light makes your cheapest Flash of Light a real heal on the tank, for a quarter of the top rank's mana
+- Oath of Light adds a flat amount to every heal on the tank, so a middle rank Flash of Light heals them almost like the top rank for two thirds of the mana
 - Holy Shock is an instant heal for movement and emergencies, and Divine Favor guarantees a crit when it counts
 - Illumination refunds half the cost of every critical heal
 - Spiritual Focus and Concentration Aura keep your casts going while you take damage
@@ -47,7 +47,7 @@ Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Di
 ### In a raid
 
 - **Role:** Tank healer first, then your own party
-- **Brings:** Greater Blessings (Wisdom, Kings or Might), an aura for your group, Blessing of Protection every 3 minutes and Lay on Hands
+- **Brings:** Greater Blessings (Wisdom or Might, and Kings where no hunter's Heart of the Lion covers the raid), an aura for your group, Blessing of Protection every 3 minutes and Lay on Hands
 
 ## Talents and builds
 
@@ -78,10 +78,10 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 1. **Oath of Light** kept on the tank. It lasts 5 minutes: renew it in a long fight, and move it when the tank changes.
 2. **Divine Favor**, then **Holy Light** (rank 8), when the tank drops below 40%. It is the only heal that outheals a tank by itself, and the crit is guaranteed.
 3. **Holy Light** on the tank below 70%, and **Holy Shock** on anyone below 70%, but only with mana to spare: keep your mana percent no more than 5 points under the percent of the fight left (halfway through, above 45% mana). Once you fall more than 5 points under, heal with Flash of Light alone until you catch up.
-4. **Flash of Light rank 1** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank, so the 35 mana rank 1 heals the tank for well over half of what the top rank does at a quarter of the cost.
-5. **Flash of Light rank 4** on everyone else below 80%, yourself included. Without the Oath bonus, rank 4 is the best balance of heal size and mana.
+4. **Flash of Light rank 4** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank, and rank 4 is the cheapest rank that still carries nearly all of your healing power at 60. Rank 1 is a trap there: Forever takes the healing power off ranks learned far below your level, so it heals for little more than its base and the Oath.
+5. **Flash of Light rank 4** on everyone else below 80%, yourself included. Without the Oath bonus it is still the best balance of heal size and mana.
 
-**Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches; rank 9 is an Ahn'Qiraj book. Holy Shock rank 1 costs half the top rank and, with healing gear, still heals about two thirds as much.
+**Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches; rank 9 is an Ahn'Qiraj book. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but you learned it at 30, so at 60 it keeps only part of your healing power.
 
 **Mana.** You heal off pace, not off health bars: if your bar is ahead of the fight, spend it on Holy Light and Holy Shock; if it is behind, heal with Flash of Light alone. Every crit refunds half its base cost through Illumination, which is why Holy Shock on the party (where Boundless Light's crit applies) pays for itself. Major Mana Potion and Demonic Rune go on cooldown as soon as your bar has room for them.
 
@@ -89,11 +89,11 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 **Movement.** Holy Shock is your only instant heal outside Lay on Hands, and Flash of Light is a 1.5 second cast. Stand where you reach the tank and your party, so you never have to move to heal.
 
-**Emergencies.** Divine Favor into Holy Light first. Lay on Hands is a full heal on a 20 minute cooldown, and it empties your mana bar. Use it on someone who is about to die when Divine Favor and Holy Light could not have saved them, ideally late in the fight. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
+**Emergencies.** Divine Favor into Holy Light first. Lay on Hands is a full heal on a 20 minute cooldown, and in Forever it no longer empties your mana bar, so there is no reason to hold it for the end of a fight. Use it on anyone about to die whom Divine Favor and Holy Light could not have saved. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
 
 ## Stat priority
 
-Mana per 5 seconds and Intellect come first because you run out of mana long before you run out of heals. Intellect is also your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank, which is what makes your low ranks strong. Spirit only works outside the five second rule, apart from Reverence's 30%. Spell damage does nothing for a heal.
+Mana per 5 seconds and Intellect come first because you run out of mana long before you run out of heals. Intellect is also your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, but ranks learned far below your level lose most or all of it, so at 60 your cheap heals are Flash of Light rank 4 and Holy Shock rank 3, not rank 1. Spirit only works outside the five second rule, apart from Reverence's 30%. Spell damage does nothing for a heal.
 
 ## Best in slot
 
@@ -109,11 +109,11 @@ Herbalism and Alchemy keep you in mana potions, Flasks of Distilled Wisdom and e
 
 ## Leveling
 
-Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Respec Holy for raids. If you do level as Holy, this build picks up Oath of Light in your 30s and Holy Shock in your 40s, but questing as Holy is slow.
+Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Respec Holy for raids. If you do level as Holy, take Oath of Light at 25, the first point you can spend in its row, ahead of Divine Precision and Infusion of Light: it is the biggest heal in that row from the day you get it, and Divine Precision only helps your Holy spells hit enemies. Questing as Holy is slow either way.
 
 Common mistakes:
 
-- Healing the tank with top rank Flash of Light. Rank 1 under Oath of Light does most of the work for a quarter of the mana.
+- Healing the tank with rank 1 Flash of Light at 60. It has lost your healing power; rank 4 under Oath of Light does the work for far less mana than the top rank.
 - Letting Oath of Light lapse after 5 minutes, or leaving it on the old tank after a swap.
 - Holy Shock on the Oath target when the tank is fine. On anyone else it crits far more often and refunds mana.
 - Casting Light's Vigil on an ordinary boss.

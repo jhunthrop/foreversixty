@@ -100,7 +100,7 @@ Hit first: a missed Mutilate is a wasted global and two combo points you did not
 
 ## Best in slot
 
-Two daggers, always. The main-hand dagger matters most: it carries Deadly Poison and your full-weight white hits. Mutilate swings both, though, so the off-hand dagger is a real upgrade too.
+Two daggers, always. The main-hand dagger matters most: it carries Deadly Poison, your full-weight white hits and the bigger half of every Mutilate, because the off-hand strike only gets half of its dagger's weapon damage. The flat bonus still lands in full on both hands, so a good off-hand dagger is a real upgrade, just never ahead of the main hand.
 
 ## Enchants and consumables
 

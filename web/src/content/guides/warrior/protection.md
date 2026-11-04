@@ -85,7 +85,7 @@ Protection is the shield tank: Defensive Stance all fight, Shield Slam and Reven
 
 The Arms points go to **Deflection** for 5% parry, **Improved Heroic Strike** for a cheaper rage dump, and **Improved Rend** into **Deep Wounds**. Improved Tactical Mastery and Anger Management are left out: a tank who stays in Defensive Stance gets more from Bastion's last ranks and Improved Bloodrage.
 
-Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you pull with Charge, **Improved Shield Bash** for a boss with a cast you must silence, and **Iron Will** for a fight full of stuns and fears. Open the [planner](/planner?class=warrior) to see the build point by point.
+Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you pull with Charge, **Improved Shield Bash** for a boss with a cast you must silence, and **Iron Will** for a fight full of stuns and fears. On progression bosses, take two points of **Improved Shield Wall** out of Improved Thunder Clap: Shield Wall comes back every 4 minutes instead of every 15, so a long fight gets it two or three times, and each Thunder Clap only costs 4 more rage. Open the [planner](/planner?class=warrior) to see the build point by point.
 
 ## Rotation and priority
 

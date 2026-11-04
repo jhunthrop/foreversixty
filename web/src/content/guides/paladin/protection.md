@@ -61,7 +61,7 @@ Protection tanks with a shield and Holy damage: Righteous Fury on, Holy Shield o
 ### In a raid
 
 - **Role:** Main or off tank. You hold the boss, and you swap with Judgement of Fury when the fight calls for it
-- **Brings:** Devotion Aura for your group, Greater Blessing of Kings or Might, and a Lay on Hands for the raid's worst moment
+- **Brings:** Devotion Aura for your group, Greater Blessing of Might (or Kings where no hunter's Heart of the Lion covers the raid), and a Lay on Hands for the raid's worst moment
 
 ## Talents and builds
 
@@ -85,7 +85,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 ## Rotation and priority
 
-**Before the pull.** Righteous Fury is a 30 minute buff, not a stance: cast it before the raid (it costs 30% of your base mana, so do it before you drink) and keep it on all night. Without it you make a fraction of the threat. Get Greater Blessing of Kings on yourself, and keep Devotion Aura on.
+**Before the pull.** Righteous Fury is a 30 minute buff, not a stance: cast it before the raid (it costs 30% of your base mana, so do it before you drink) and keep it on all night. Without it you make a fraction of the threat. Get Greater Blessing of Kings on yourself unless a hunter's Heart of the Lion already covers you: the two are the same 10% to every stat and do not stack, so with a hunter in the raid take Might instead. Keep Devotion Aura on.
 
 **The opener.** Put up Seal of Fury about 3 seconds before the pull. Pull with Judgement: under Seal of Fury it taunts, so the boss comes straight to you. Press Holy Shield about 2 seconds before the boss reaches you, so all four charges are there for its first swings. Then Swift Judgement, Holy Strike and Hammer of the Righteous in the first few globals. There is no Blessing of Salvation in Forever, so your damage dealers have no threat drop: give them a few seconds on the opener.
 
@@ -106,7 +106,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 **Adds.** Consecration and Hammer of the Righteous are your multi-target threat; Holy Shield and Shieldsworn's block keep the damage down. Judge the add that is loose, Holy Strike your main target.
 
-**Defensives.** Templar's Bulwark first, at about a third of your health: a full health bar of absorb for 8 seconds. Divine Shield and Divine Protection come after it, once Forbearance is gone. All three put Forbearance on you, so plan one per bad moment, not three in a row. Lay on Hands heals you to full on a 20 minute cooldown, but it takes every point of your mana with it, and with no mana you have no Holy Shield and no threat. Save it for the swing that would kill you, and have a mana potion ready after it.
+**Defensives.** Templar's Bulwark first, at about a third of your health: a full health bar of absorb for 8 seconds. Divine Shield and Divine Protection come after it, once Forbearance is gone. All three put Forbearance on you, so plan one per bad moment, not three in a row. Lay on Hands heals you to full on a 20 minute cooldown, and in Forever it costs no mana, so you keep your Holy Shield and your threat after it. Save it for the swing that would kill you.
 
 ## Stat priority
 

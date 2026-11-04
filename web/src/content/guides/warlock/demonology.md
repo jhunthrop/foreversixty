@@ -5,7 +5,7 @@ spec: demonology
 role: dps
 build: 'FS1:1.60.1.70755:warlock:gnome:25522/203511310122000135/005:'
 raidBuild: 'FS1:1.60.1.70755:warlock:gnome:05/2035113011220001351/0550005:'
-recommendedRaces: [gnome, troll]
+recommendedRaces: [gnome, orc]
 statPriority:
   [Spell power, Shadow power, Hit, Critical strike, Intellect, Fire power, Spell haste, Spell penetration]
 description: 'How to play Demonology in Forever: the Imp sacrifice and Demonic Pact setup, Soul Link, Decimation, the Shadow Bolt rotation, shards, races and leveling.'
@@ -78,7 +78,7 @@ The setup, in order, starting about a minute before the pull:
 
 Each summon is a 6 second cast with Master Summoner, and the Succubus costs a Soul Shard. Send the Succubus to the boss's back once the tank has it.
 
-On the pull: Corruption, then Curse of the Elements if you hold it, then Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight. Curses and banes have their own slots in Forever, so Curse of the Elements and Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
+On the pull: Curse of the Elements first if you hold it, since every spell the raid casts hits harder from that global on, then Corruption, then Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight. Curses and banes have their own slots in Forever, so Curse of the Elements and Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 
 Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute left never lands, so in the last minute put Bane of Agony up instead. Doom's damage scales hard with your spell damage, which is why it beats Agony here.
 
@@ -110,7 +110,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Gnome and Troll are the picks. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Save it for the Soul Fire burn below 35%. Expansive Mind adds 5% mana. Berserking is 10% cast speed on a three minute cooldown: press it with your trinkets, and again for the Decimation phase if it is back. Orc is the strong Horde alternative for this spec: Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your Succubus hit 5% harder. Human's Ruthless is 1% crit. Undead's Touch of the Grave drains health from your target now and then.
+Gnome and Orc are the picks. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Save it for the Soul Fire burn below 35%. Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the Decimation phase if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Human's Ruthless is 1% crit. Undead's Touch of the Grave drains health from your target now and then.
 
 ## Professions
 

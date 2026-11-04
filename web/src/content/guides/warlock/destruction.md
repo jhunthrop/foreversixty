@@ -68,7 +68,7 @@ Bane of Havoc is the path to Incinerate, and it only earns a cast on fights with
 
 Before the pull: Demon Armor on, Succubus out, at least one shard spare for Shadowburn, a Healthstone, and Life Tap to full while the healers top you off. You have no Demonology talents, but the Succubus still earns her shard: her melee and Lash of Pain out-damage the Imp's Firebolt.
 
-Opener: when your tank pulls on a timer and opens hard, start Immolate 1.5 seconds before the pull so it lands with the tank. That precast is worth a little damage over the fight. If your tank needs a second to settle, start Immolate as the tank reaches the boss instead. Then Corruption, Curse of the Elements if it is yours, Bane of Doom, Conflagrate, Shadowburn, and Incinerate from there.
+Opener: when your tank pulls on a timer and opens hard, start Immolate 1.5 seconds before the pull so it lands with the tank. That precast is worth a little damage over the fight. If your tank needs a second to settle, start Immolate as the tank reaches the boss instead. Then Curse of the Elements if it is yours, so the whole raid gets it from the first global, then Corruption, Bane of Doom, Conflagrate, Shadowburn, and Incinerate from there.
 
 Priority after that:
 

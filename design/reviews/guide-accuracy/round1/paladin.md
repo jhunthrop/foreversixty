@@ -105,3 +105,55 @@ SHOULDs:
 
 New SIM findings:
 - S1 (restated, NEEDS-SIM): the Holy leveling walk reaches Oath of Light only in the 30 to 39 range and Holy Shock in 40 to 49. Test moving Oath of Light ahead of Divine Precision (and Infusion of Light) so it lands at 25 to 29; keep if it heals more beyond error at bands 30 and 40.
+
+## Owner questions resolved by research
+
+Open items listed: O1 (Exorcism crit), O2 (Lay on Hands mana), O3 (Kings vs Heart of the Lion), PALADIN-12 / S2 (Dwarf vs Human Retribution), S1 / Fix pass 2 S1 (Oath of Light earlier in the Holy leveling order), plus the integrator's added item L1 (Forever's low-rank healing and damage bonus rule against every rank the guides recommend). Resolved 5 of 6; one left with the owner.
+
+Sources:
+- Blizzard, World of Warcraft: Forever Class Deep Dives, Paladin: https://news.blizzard.com/en-us/article/24302099 (also https://worldofwarcraft.blizzard.com/news/24302099)
+- Warcraft Tavern, All Changes to Paladins in WoW Forever: https://www.warcrafttavern.com/forever/news/all-changes-to-paladins-in-wow-forever/
+- Warcraft Tavern, Forever Holy Paladin Guide: https://www.warcrafttavern.com/forever/guides/holy-paladin/
+- wow.gg, WoW Forever Retribution Paladin (beta): https://wow.gg/guides/wow-forever-retribution-paladin-beta
+- wowtbc.gg, Retribution Paladin PvE Guide, WoW Forever: https://wowtbc.gg/warcraftforever/class-guides/retribution-paladin/
+- Kami-labs, Holy Paladin Build, WoW Forever: https://kami-labs.fr/en/wow-forever/build-paladin-sacre-wow-forever/
+- Wowhead Forever spell pages: Lay on Hands https://www.wowhead.com/forever/spell=633/lay-on-hands and https://www.wowhead.com/forever/spell=10310/lay-on-hands ; Exorcism https://www.wowhead.com/forever/spell=879/exorcism ; Classic Era comparison https://www.wowhead.com/classic/spell=633/lay-on-hands and https://www.wowhead.com/classic/spell=10310/lay-on-hands
+- wago.tools SpellMisc exports: https://wago.tools/db2/SpellMisc?build=1.60.1.70755 (Forever) and build 1.15.8.63829 (Era), read 2026-11-03
+- Blizzard forums (SoD), Blessing of Kings doesn't stack with Aspect of Lion BUT: https://us.forums.blizzard.com/en/wow/t/blessing-of-kings-doesnt-stack-with-aspect-of-lion-but/1738967
+- Game Rant, WoW Season of Discovery: Best SoD Runes, Ranked (Heart of the Lion "doesn't stack" with Kings): https://gamerant.com/wow-season-of-discovery-best-sod-runes-ranked-each-class/
+- Warcraft Wiki, Heart of the Lion: https://warcraft.wiki.gg/wiki/Heart_of_the_Lion
+- Low-rank rule sources as gathered in round1/priest.md: Blizzard Forever Beta Development Notes (Oct 1, Nov 3) https://us.forums.blizzard.com/en/wow/t/forever-beta-development-notes/2360696 ; ForeverChanges downranking https://foreverchanges.pro/downranking ; ForeverWisp https://www.foreverwisp.com/guides/wow-forever-downranking-spell-ranks ; Master of Warcraft https://www.masterofwarcraft.net/2026/10/wow-forever-spell-downranking-nerf-healers.html
+- Forever beta logs as summarized in engine commit f1c7fa888 (wowsims-forever, 2026-11-02): foreverlogs.gg, 39 paladins at 20 to 30.
+- 70755 data: trainables/paladin.json (rank learn levels), talents/paladin.json (Holy tiers), spellconst/paladin.json (Oath of Light 1328548 per-level scaling, Lay on Hands 633/2800/10310).
+
+### O1: can Exorcism crit in Forever?
+**Answer: RESOLVED, no.** No web source addresses it (Deep Dive, Warcraft Tavern, wow.gg, wowtbc.gg are silent; the "always crits on demons" posts are a later expansion or a player wish). The client gives no answer either way: SpellMisc Attributes_2 for 879 to 10314 is 0 in both 70755 and Era, so no cannot-crit flag, and Wowhead Forever lists no such flag. The deciding evidence is the beta logs: 0 crits in 641 Exorcism hits from 39 paladins, against 18 of 367 Judgement of Righteousness crits by the same players and about 35 expected Exorcism crits. That is far outside chance, so it is the server's rule.
+- Prose changed: retribution.md:62 adds "Exorcism is the exception: it never crits in Forever." (the engine pin already rolls hit only, exorcism.go).
+- Owner: re-check on a live 60 log after launch; nothing to decide.
+
+### O2: does Lay on Hands drain all mana in Forever?
+**Answer: RESOLVED, no, it costs nothing.** Era's SpellMisc Attributes_1 for 633, 2800 and 10310 is 131074 (bit 0x2, "Uses all power", Wowhead Classic shows the flag); Forever 70755 has 131072 for all three ranks, the flag removed, and Wowhead Forever no longer lists "Uses all power". The target still receives 550 mana (rank 3). Blizzard's Deep Dive only says the cooldown went to 20 minutes. Warcraft Tavern's Forever Holy guide still says "it costs all of your mana", but that page predates the racial rework in other places (Dwarf crit damage) and contradicts the Forever client rows, which win.
+- Prose changed: protection.md:109 ("in Forever it costs no mana, so you keep your Holy Shield and your threat after it"), holy.md:92 ("in Forever it no longer empties your mana bar, so there is no reason to hold it for the end of a fight").
+- **RESOLVED, needs sim round:** engine sim/paladin/lay_on_hands.go:58, drop `paladin.SpendMana(sim, paladin.CurrentMana(), layOnHandsManaMetrics)`; keep the heal and the target mana gain. Prot card note at paladin-protection.json:61 is still right.
+
+### O3: does Blessing of Kings stack with Heart of the Lion?
+**Answer: RESOLVED, they do not stack.** Forever uses the Season of Discovery spell (409583; its SpellMisc row is identical in Era and 70755), and in SoD the two did not stack: Game Rant's rune ranking ("which doesn't stack") and the SoD forum thread (Kings replaces the Lion aura on the target; only the hunter's own extra 10% stays). No Forever source reports a change. The raid preset already leaves Kings out, which is correct; no preset change.
+- Prose changed: protection.md:64 and :88 (Might with a hunter in the raid; Kings only where no hunter's Heart of the Lion covers you), retribution.md:54, holy.md:50 (Kings only where no Heart of the Lion covers the raid).
+- Remove the "if they do stack" hedge from the presets.json note when the integrator next edits it (not my file).
+
+### PALADIN-12 / S2: Dwarf vs Human for Retribution
+**Stays with the owner (taste inside the error).** No Forever guide names a winner; wowtbc.gg says "each race for a spec are within 1% DPS of each other", which matches Blizzard's "tuned for similar offensive power". The math leans Dwarf in raids: Artisan's Precision (1% hit) beats Ruthless (1% crit) per point until the hit cap (raid 60 weights 52.2 vs 33.7 per 1%), and the raid build is still short of the cap; Human's Spirit helps only while leveling.
+- Options: (a) keep Human (guide build strings and recommendedRaces today); (b) Dwarf for the raid build, Human for leveling; (c) Dwarf for both. Recommendation (b), if the sim round shows Dwarf ahead beyond error at raid 60. Prose not changed: retribution.md:111 describes both truthfully, and flipping it needs the build-string race change.
+- Needs sim round: Dwarf vs Human Retribution at 60, raid and bare, raidBuild.
+
+### S1: Oath of Light earlier in the Holy leveling order
+**Answer: RESOLVED, Oath of Light at 25.** No Forever guide publishes a Holy leveling order (Warcraft Tavern and Kami-labs give level 30 or 60 builds only). 70755 data settles it: Oath of Light, Divine Precision and Infusion of Light share tier 3 (15 points, so the 16th point at 25 is the first legal one), Divine Precision is only Holy spell hit and silence reduction (nothing for a heal), Infusion of Light needs Flash of Light or Holy Shock crits, and Oath of Light's bonus scales with level (points per level 6.67 / 1.92 / 3.83 on Holy Light / Flash of Light / Holy Shock), so at 30 it is still half the 60 bonus, a large share of a level 30 Flash of Light.
+- Prose changed: holy.md:112 now says take Oath of Light at 25, ahead of Divine Precision and Infusion of Light.
+- **RESOLVED, needs sim round:** bis/paladin-holy.json band 30 talents `50320215012000000` to `50320215002100000` (Divine Precision 1 to 0, Oath of Light 0 to 1; tier 3 reads Divine Precision 0, Infusion of Light 2, Oath of Light 1), and the Holy leveling walk (lib/guides/leveling-builds.ts order / addon-builds) puts Oath of Light as the 16th point. Until then the Leveling strip shows Oath in the 30s and the prose is the game-correct side.
+
+### L1: Forever's low-rank rule against every recommended rank
+**Answer: RESOLVED.** Blizzard's Oct 1 note: ranks "vastly below your current level receive less benefit from your Spell Damage and Spell Healing"; measured: full bonus for 17 levels after a rank's learn level, then 5% less per level, none from 37 levels on (sources above, as in round1/priest.md). Oath of Light's flat amount is its own aura, not healing power, so it should still land in full on any rank (unmeasured). At 60 by 70755 learn levels: Flash of Light rank 1 (20) keeps none, rank 4 (42) about 95%, ranks 5 and 6 all; Holy Shock rank 1 (30) about 35%, rank 3 (48) and 4 all; Holy Light rank 8 (54) all; Consecration rank 4 (50) and 5 all, rank 1 (20) none from 57.
+- Prose changed: holy.md:9 (description drops "rank 1"), :36, :81 (tank staple Flash of Light rank 4, rank 1 named as the trap), :82, :84 (Holy Shock rank 3 or 4), :96 (healing power reaches only ranks near your level), :116 (common mistake now rank 1 at 60); retribution.md:121 (Consecration rank 1 through your 30s, then the newest rank you can afford). Protection recommends no low rank.
+- **RESOLVED, needs sim round:** (a) engine: the low-rank healing and spell damage bonus curve (as priest/druid); (b) Holy card: Flash of Light on the tank 19750 r1 (paladin-holy.json:575) to 19941 r4, Holy Shock 1311606 r1 (lines 246, 306, 366, 425, 484, 543) to 20929 r3, rerun the rank ranker with the curve on; card notes at paladin-holy.json:255 and :584 still describe rank 1 and are rewritten with the action change (actions untouched this round, so notes left matching the card); (c) Retribution rank-choices: rerun the leveling Consecration rank with the curve (rank 1 below 60 today).
+
+Left for the owner: PALADIN-12 only (race, recommendation Dwarf for the raid build if the sim agrees).

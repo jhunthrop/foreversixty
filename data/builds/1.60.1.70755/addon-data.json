@@ -4838,7 +4838,7 @@
           {
             "spell_id": 774,
             "name": "Rejuvenation",
-            "condition": "On a hurt party member under 70%, you included, at rank 1.",
+            "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
@@ -4920,7 +4920,7 @@
           {
             "spell_id": 774,
             "name": "Rejuvenation",
-            "condition": "On a hurt party member under 70%, you included, at rank 1.",
+            "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
@@ -5009,7 +5009,7 @@
           {
             "spell_id": 774,
             "name": "Rejuvenation",
-            "condition": "On a hurt party member under 70%, you included, at rank 1.",
+            "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
@@ -5098,7 +5098,7 @@
           {
             "spell_id": 774,
             "name": "Rejuvenation",
-            "condition": "On a hurt party member under 70%, you included, at rank 1.",
+            "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
@@ -5194,7 +5194,7 @@
           {
             "spell_id": 774,
             "name": "Rejuvenation",
-            "condition": "On a hurt party member under 70%, you included, at rank 1.",
+            "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
@@ -5290,7 +5290,7 @@
           {
             "spell_id": 774,
             "name": "Rejuvenation",
-            "condition": "On a hurt party member under 70%, you included, at rank 1.",
+            "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
@@ -5386,7 +5386,7 @@
           {
             "spell_id": 774,
             "name": "Rejuvenation",
-            "condition": "On a hurt party member under 70%, you included, at rank 1.",
+            "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
@@ -12783,14 +12783,14 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
+            "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
+            "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -12830,7 +12830,7 @@
           {
             "spell_id": 913,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
+            "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -12872,7 +12872,7 @@
           {
             "spell_id": 913,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
+            "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -12912,7 +12912,7 @@
           {
             "spell_id": 939,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
+            "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -12954,7 +12954,7 @@
           {
             "spell_id": 939,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
+            "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -12994,7 +12994,7 @@
           {
             "spell_id": 959,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
+            "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13036,7 +13036,7 @@
           {
             "spell_id": 959,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
+            "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -13076,7 +13076,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
+            "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13153,14 +13153,14 @@
           {
             "spell_id": 1064,
             "name": "Chain Heal",
-            "condition": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
+            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and the jumps reach any raid member near the target.",
             "icon": "spell_nature_healingwavegreater",
             "race_spell_ids": {}
           },
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
+            "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -13200,7 +13200,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
+            "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13277,14 +13277,14 @@
           {
             "spell_id": 10622,
             "name": "Chain Heal",
-            "condition": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
+            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and the jumps reach any raid member near the target.",
             "icon": "spell_nature_healingwavegreater",
             "race_spell_ids": {}
           },
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
+            "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -13324,7 +13324,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness, on the tank under 25%.",
+            "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13401,14 +13401,14 @@
           {
             "spell_id": 10623,
             "name": "Chain Heal",
-            "condition": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
+            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and the jumps reach any raid member near the target.",
             "icon": "spell_nature_healingwavegreater",
             "race_spell_ids": {}
           },
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid.",
+            "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }

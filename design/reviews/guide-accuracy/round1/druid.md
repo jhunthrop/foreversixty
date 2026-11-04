@@ -101,3 +101,55 @@ APL notes: no player-facing stale text found in druid APL notes; untouched.
 - S3 open: Frenzied Regeneration conversion (owner question 1).
 - S4 open: bear weights put expertise first, but no druid item carries it; drop expertise from the bear weights run or the rendered table at the refresh.
 - S5 open: Eclipse on a resisted Wrath (owner question 3).
+
+## Owner questions resolved by research
+
+Research pass under the owner's rule (web search when the sim or client data cannot decide). Source order: Blizzard Forever notes and Deep Dive recaps first, Forever guides second, SoD/Era only where Forever did not change the mechanic, all checked against the 1.60.1.70755 client data.
+
+Open questions carried in: owner questions 1 to 4 (DRUID-18, DRUID-20, DRUID-16, DRUID-19), plus the feral leveling build's Nature's Focus/Subtlety points (DRUID-3 / SIM-D1). Owner question 5 is an integrator note, not a question. Resolved: 5 of 5.
+
+### Q1. Frenzied Regeneration healing (DRUID-18, S3): RESOLVED
+
+- Answer: in Forever it heals for 100% of maximum health over its 10 seconds given enough rage, i.e. 1% of max health per rage spent at up to 10 rage a second. The guide's original "whole health bar" was right; the Era 0.3%-a-rage conversion is not Forever's.
+- Data: the trainable row 22842 (level 36, 3 min cooldown) holds only a 1 s periodic aura triggering 22845; the conversion is server side, so the client cannot settle it. No 70755 change contradicts the Deep Dive.
+- Sources: "Powershifting is Back (Sort of): Hunter & Druid Deep Dive for WoW Forever", Warcraft Tavern, https://www.warcrafttavern.com/forever/news/powershifting-is-back-sort-of-hunter-druid-deep-dive-for-wow-forever/ ("Now heals the Druid for 100% of max health over the duration (given sufficient Rage)"); "WoW Forever Druid: Every Reworked Spell and Talent", Kami Labs, https://kami-labs.fr/en/wow-forever/druide-wow-forever-sorts-et-talents-modifies/ (health per rage spent, one to one in percent); "WoW Forever Class Changes", EpicCarry, https://epiccarry.com/blogs/wow-forever-class-changes/.
+- Changed: web/src/content/guides/druid/feral-bear.md:88, now "turns up to 10 rage a second into health for 10 seconds, and in Forever a full 100 rage of it heals your whole health bar. Use it under half health with rage banked, not at the pull."
+- RESOLVED, needs sim round: sim/druid/frenzied_regeneration.go conversion from 0.3% max health per rage to 1.0% per rage (10 rage a second, 10 ticks, 100% at 100 rage); re-measure the bear APL's "under half health with 20 rage" line (druid-feral-bear.json line 53) after.
+
+### Q2. Rebirth (and Innervate) in Moonkin Form (DRUID-20): RESOLVED
+
+- Answer: yes. Forever's Moonkin Form blocks only healing spells; every non-healing spell casts from form, which includes Rebirth, Innervate and Remove Curse. Only a real heal needs a shift out.
+- Data: talents/druid.json Moonkin Form 24858: "...prevents the use of healing spells" (no Balance-only restriction, unlike Era).
+- Sources: Warcraft Tavern Deep Dive recap above ("all non-healing spells can now be cast, instead of just Balance spells"); SoD precedent, Kaivax blue post via devtrackers, https://devtrackers.gg/warcraft/p/ffe2629e-season-of-discovery-class-tuning-incoming-february-27 (Moonkins cast Innervate, Rebirth, Remove Curse, Abolish Poison, Revive and the Marks without leaving form); "WoW Forever Macros: Druid", RankedBoost, https://rankedboost.com/world-of-warcraft/forever/macros/druid/ (Innervate and Rebirth work in Moonkin Form).
+- Changed: web/src/content/guides/druid/balance.md:50, now "Moonkin Form cannot heal, so an emergency heal means shifting out (Rebirth, Innervate and Remove Curse all cast from form)". feral-bear.md:59 (a bear shifts out to rez) is unaffected.
+
+### Q3. Does a resisted Wrath bank Eclipse charges (DRUID-16, S5): RESOLVED from client data
+
+- Answer: no. A fully resisted Wrath banks nothing.
+- Data: wago.tools SpellAuraOptions for build 1.60.1.70755, Eclipse 408248: ProcChance 100, ProcTypeMask_0 65536 (0x10000, "done harmful magic spell"). That is the on-landed-hit proc class (the same class as Winter's Chill and Shadow Weaving, which a full resist does not apply in Classic), not an on-cast-complete proc. No web source tests it directly (searched Forever and SoD Eclipse rune pages); the proc flag is the deciding evidence.
+- Sources: wago.tools SpellAuraOptions CSV, https://wago.tools/db2/SpellAuraOptions/csv?build=1.60.1.70755 (row 223856, SpellID 408248); "Eclipse Rune", Warcraft Tavern, https://www.warcrafttavern.com/wow-classic-sod/guides/eclipse-rune/ (no miss behaviour stated).
+- Changed: web/src/content/guides/druid/balance.md:97, now "...a resisted Starfire is a 3 second cast for nothing, and a resisted Wrath banks no Eclipse charges."
+- RESOLVED, needs sim round: bank Eclipse charges on Wrath's landed hit (not OnCastComplete) in the balance talent code (pinned by sim/druid/balance/talents_test.go:228); add a resisted-Wrath test.
+
+### Q4. Rejuvenation rank 1 healing bonus (DRUID-19, O2): RESOLVED, the guide was wrong
+
+- Answer: Forever penalises ranks far below your level: Blizzard states that ranks "vastly below your current level receive less benefit from your Spell Damage and Spell Healing". Beta measurements put it at full bonus until a rank is 17 levels behind you, then 5% less a level (share kept = 1 - (L - 17 - T) x 0.05, clamped 0 to 1). At 60, rank 1 (learned at 4) keeps none of your healing power; ranks 8, 9 and 10 (46, 52, 58) keep all of it. Era's sub-level-20 rule (and the engine's 074edfadf full coefficient) is not Forever's rule. The 2026-11-03 notes remove the low-rank penalty on talent trigger chance only (still applied past 12 levels), not on healing power.
+- Sources: "WoW Forever Beta Development Notes", Kaivax, Blizzard forums, https://us.forums.blizzard.com/en/wow/t/2360696 (Oct 1 UI note; Nov 3 talent-trigger change); "WoW Forever: Das legendaere Downranking wird viel schwaecher", Mein-MMO, https://mein-mmo.de/wow-forever-kein-downranking/; "WoW Forever Downranking Spell Nerf: Which Ranks to Cast", EpicCarry, https://epiccarry.com/blogs/?p=41909 (formula, measured in beta 18 to 30; "keep the last three or four ranks"); RankedBoost spell power page, https://rankedboost.com/world-of-warcraft/forever/stats/spell-power/ (quotes the Blizzard line, no numbers).
+- Changed: web/src/content/guides/druid/restoration.md:83, rank 1 claim replaced: rank 1 keeps none of your healing power at 60, the last three ranks keep all of it, party members get rank 8 or 9, tank keeps the top rank. data/curated/apl/druid-restoration.json:805 notes: the false "a rank learned below level 20 keeps the whole of it" sentence removed (note now only states the trigger).
+- RESOLVED, needs sim round: (a) engine: replace the sub-20 coefficient rule for Forever heals and damage with the level-gap rule above (it touches every class's downranked casts: priest, paladin, shaman ranks too); (b) APL: the party Rejuvenation rank-choice action moves from rank 1 to rank 8 (9839) or rank 9 (9840), picked by the sim; then put the matching "why" back in the note. The leveling rank 4 tank line (line 695) stays legal under the rule (rank 4 keeps 95% or more until about level 40).
+
+### Q5. Feral leveling build: Nature's Focus and Subtlety (DRUID-3, SIM-D1): RESOLVED, needs sim round
+
+- Answer: strong ferals take neither. Both do nothing for a cat (Arcane/Nature cast pushback and Arcane/Nature threat). The Forever feral leveling builds spend Restoration on Heart of the Wild, Naturalist and Natural Shapeshifter, and Balance on Genesis and Nature's Majesty (Mobalytics adds Nature's Reach 2).
+- Sources: "Druid Leveling Guide (Level 1-60)", Mobalytics (yumytv, verified, updated 2026-11-03), https://mobalytics.gg/wow-forever/classes/druid-leveling-guide (9/31/11: Genesis 5, Nature's Majesty 2, Nature's Reach 2; Heart of the Wild 5, Naturalist 5, Natural Shapeshifter 1; no Nature's Focus, no Subtlety); "Feral Druid Leveling Guide", Icy Veins (Meyra), https://www.icy-veins.com/wow-forever/feral-druid-leveling (Feral-first, no caster-defense points); "Druid Leveling Guide", Warcraft Tavern, https://www.warcrafttavern.com/forever/guides/druid-leveling/.
+- Changed: no prose. feral.md:58 describes the current build string correctly (Nature's Focus does protect the heals cast between forms), so it stays until the build moves; rewrite that sentence with the build.
+- RESOLVED, needs sim round: replace feral `build:` `FS1:1.60.1.70755:druid:night-elf:01/50212032123012123001/535033:` with SIM-D1 `...:05002/50212032123012123001/05503:` or the Mobalytics shape `...:0500220/50212032123012123001/05501:` (both 51 points, legal), whichever the adoption run keeps; regenerate the feral ladder goldens (S6). Nature's Reach 70755 text is "improves your chance to hit by 4%" with no spell-only qualifier: check whether it gives melee hit in Forever before the run, because if it does it also belongs in the feral raid build.
+
+### Also found while researching (not owner questions)
+
+- Blizzard notes 2026-11-03: Swiftmend now needs your own Rejuvenation or Regrowth (70755 text: "your active"). Applied at restoration.md:59 ("your own ... another druid's does not count"). Engine check for the sim round: Swiftmend must ignore another druid's HoT.
+- Same notes: Moonkin Form and Leader of the Pack are again all-crit and exclusive (guides already say so); Primal Bite needs Leader of the Pack (bear build takes it); Bloom fires on a HoT running its full duration (guides already say so).
+
+### Left for the owner
+
+None. Every open question had a factual answer.

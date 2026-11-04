@@ -37,7 +37,7 @@ Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal throug
 
 ### Weaknesses
 
-- Chain Heal's jumps go to whoever is most hurt near its target, so stand where the damage is
+- Chain Heal only jumps to people standing close to its target, so it does little when the raid is spread out
 - Your Water totems only reach your own party, and every totem stays where you drop it
 - Without raid gear and buffs your mana does not last a long fight
 
@@ -72,15 +72,15 @@ Ancestral Healing takes the last three points: 25% more armor on your target for
 **Tank first.**
 
 1. Riptide on the tank whenever it is ready and the tank is hurt. It is your cheapest heal per mana, and it sets up the Chain Heal. It heals over its 15 seconds with nothing up front, so it never answers a big hit on its own.
-2. Chain Heal on the tank as soon as anyone in your party is hurt, as long as your mana is ahead of the fight. Riptide's 25% applies to the target you cast it on, and the two jumps go to the most injured people near it, each for half the heal before.
-3. Healing Wave when the tank is down to 60%. Drop a rank when your mana is behind the fight. Lesser Healing Wave is the fast heal when it is down to 30% and the next hit could kill it.
+2. Chain Heal on the tank as soon as anyone near it is hurt, as long as your mana is ahead of the fight. Riptide's 25% applies to the target you cast it on, and the two jumps go to the most injured raid members near it, in your party or not, each for half the heal before.
+3. Healing Wave when the tank is down to 60%. Drop a rank when your mana is behind the fight, but never below rank 8. Lesser Healing Wave is the fast heal when it is down to 30% and the next hit could kill it.
 4. Nature's Swiftness into your highest rank of Healing Wave when the tank is under 25%. Keep it for exactly that, and never spend it on a low rank.
 
-**Low ranks.** Before you lean on any low rank, open its tooltip at 60 with your healing gear on and see how much of your healing bonus it shows. A rank that shows little of it saves no mana at all.
+**Low ranks.** A rank keeps your whole healing bonus until you are 17 levels past the level you learned it, then loses a twentieth of it every level after, so at 60 a rank learned at 23 or earlier gets none of your gear. The ranks that keep all of it at 60 are Healing Wave 8 to 10, Lesser Healing Wave 4 to 6 and Chain Heal 2 and 3. Healing Wave 7 and Chain Heal 1, both learned at 40, keep most of it. Everything below those heals for little more than the number in its tooltip, however much healing gear you wear.
 
-**Party members.** Heal them directly only while your mana is above half: Riptide when one is under 50%, Lesser Healing Wave under 25%. Otherwise Chain Heal is how they get healed.
+**Everyone else.** Heal them directly only while your mana is above half: Riptide when one is under 50%, Lesser Healing Wave under 25%. Otherwise Chain Heal is how they get healed.
 
-**Chain Heal ranks.** Rank 3 costs 405 mana for a 490 base heal; rank 1 costs 260 for 251. On the base heal alone rank 3 is the better buy per mana as well as the bigger heal. Every rank takes the same share of your healing bonus, though, so with a raid's healing gear rank 1 pulls slightly ahead per mana while rank 3 still heals far more per cast. Cast rank 3 while your mana is ahead of the fight, and drop to rank 1 or 2 only on fights where you would run dry.
+**Chain Heal ranks.** Rank 3 costs 405 mana for a 490 base heal, rank 2 costs 315 for 335, and both take your whole healing bonus. With a raid's healing gear rank 2 heals the most per point of mana and rank 3 the most per cast. Rank 1, learned at 40, loses part of your bonus at 60 and is never better than rank 2. Cast rank 3 while your mana is ahead of the fight, and drop to rank 2 on fights where you would run dry.
 
 **Your party matters.** Healing Stream, Mana Spring and Mana Tide only reach your party. Ask to be grouped with whoever takes the damage, usually the tank and the melee.
 

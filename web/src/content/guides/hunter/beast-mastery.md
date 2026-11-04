@@ -78,7 +78,7 @@ The raid build moves one point out of Efficiency and the point in Rapid Killing 
 
 ## Rotation and priority
 
-Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and Deadly Aspects' Auto Shot proc is written for Hawk, so Hawk is the safe pick. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight. Send the pet in once the tank has the boss.
+Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway. Send the pet in once the tank has the boss.
 
 As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and Berserking or Blood Fury together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
@@ -100,7 +100,7 @@ When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed S
 
 There is no execute phase for a hunter: the priority holds to the end.
 
-**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls a loose add onto you for a few seconds so your tank can grab it before it reaches the healers. Freezing Trap takes care of anything loose in the back line.
+**Utility.** Tranquilizing Shot (bought from your trainer at 60, so you do not wait on Lucifron's tome) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls a loose add onto you for a few seconds so your tank can grab it before it reaches the healers. Freezing Trap takes care of anything loose in the back line.
 
 ## Stat priority
 
@@ -122,7 +122,9 @@ Forever's damage potions share the two-minute potion cooldown with mana potions,
 
 Dwarf for the Alliance: Artisan's Precision is 1% hit, and Big Game Hunter adds damage against beasts. Night Elf's Elune's Light (10% crit for 15 seconds) lines up with Rapid Fire on the pull, and Human's Ruthless is 1% crit. Humans can be Hunters for the first time in Forever.
 
-Troll for the Horde: Berserking is 10% attack speed for 15 seconds, and it stacks with Rapid Fire on the pull. Orc is the other strong Horde hunter: Blood Fury on the pull, and Command makes your pet hit 5% harder.
+Troll or Orc for the Horde, and the two are close. Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull. Orc is the pet's pick: Command makes your pet hit 5% harder all fight, and Blood Fury's two minute cooldown comes up with every Bestial Wrath.
+
+Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds every auto shot you fire.
 
 ## Professions
 
@@ -131,6 +133,8 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 ## Leveling
 
 Beast Mastery is the best way to level a hunter. Tame your first pet at 10 and keep it within a few levels of you. The pet takes the hits, you shoot, and you rarely stop to eat.
+
+Your first five points go into Deadly Aspects. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training comes after it.
 
 Open every pull with Hunter's Mark and Serpent Sting, send the pet, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 

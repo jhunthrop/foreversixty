@@ -181,7 +181,7 @@
           }
         }
       },
-      "notes": "Healing Wave right after Nature's Swiftness, on the tank under 25%. It is shown at rank 2, but for the save cast your highest rank: Nature's Swiftness makes any rank instant."
+      "notes": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have."
     },
     {
       "action": {
@@ -879,7 +879,7 @@
           }
         }
       },
-      "notes": "Chain Heal on the tank as soon as anyone in your party is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last."
+      "notes": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and the jumps reach any raid member near the target."
     },
     {
       "action": {
@@ -912,7 +912,7 @@
           }
         }
       },
-      "notes": "Healing Wave when the tank drops below 60%, shown at rank 2, the cheapest rank, to save mana in a raid. While leveling, cast the highest rank you have."
+      "notes": "Healing Wave when the tank drops below 60%. To save mana at 60 drop to rank 8, never lower: a rank loses your healing bonus once you are 17 levels past it, and ranks 1 to 4 keep none of it at 60. While leveling, cast the highest rank you have."
     }
   ]
 }

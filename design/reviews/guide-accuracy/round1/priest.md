@@ -125,3 +125,50 @@ Integration tree only; no actions, conditions, ids, ranks or build strings touch
 - SIM-P2 Shadow SW:P end-of-fight cutoff (`remainingTime >= 10`): test >= 6 / >= 3. Prose and note say "closing seconds" until settled (replaces S2).
 - SIM-P3 Shadow leveling order: Mind Flay at 20 (Spirit Tap / Blackout / ISWP / IMB to 10 points, then Mind Flay) vs the build's 28 on the ladder (B2).
 - SIM-P4 Shadow raid build: Blackout 2 + Spirit Tap 3 are not a hard toll (SF5 + IMB5 open tier 3); test moving them to Devouring Contagion 2 / Silence 1 / Shadow Reach 2 / Dark Inspiration 1 (B3, O2).
+
+## Owner questions resolved by research
+
+Sources used throughout:
+- WoW Forever Beta Development Notes (Blizzard, Kaivax), entries Oct 1, Oct 8, Oct 16, Nov 3: https://us.forums.blizzard.com/en/wow/t/forever-beta-development-notes/2360696
+- World of Warcraft: Forever Class Deep Dives — Priest and Warrior: https://worldofwarcraft.blizzard.com/news/24301514
+- ForeverChanges, "WoW Forever downranking: the level penalty and which ranks to keep": https://foreverchanges.pro/downranking ; downrank calculator: https://foreverchanges.pro/downrank-calculator
+- ForeverWisp, "WoW Forever downranking: how low spell ranks lose power and procs": https://www.foreverwisp.com/guides/wow-forever-downranking-spell-ranks
+- Master of Warcraft, "WoW Forever Just Nerfed Spell Downranking, and Healers May Feel It Most": https://www.masterofwarcraft.net/2026/10/wow-forever-spell-downranking-nerf-healers.html
+- SpellCoeffsForever (CurseForge): https://www.curseforge.com/wow/addons/spellcoeffsforever
+- Warcraft Tavern, Forever Priest Leveling Guide: https://www.warcrafttavern.com/forever/guides/priest-leveling/ ; Forever Priest Guide: https://www.warcrafttavern.com/forever/guides/priest/
+- wow.gg, WoW Forever Shadow Priest (beta): https://wow.gg/guides/wow-forever-shadow-priest-beta
+- Kami-labs, Shadow Priest Build — WoW Forever: https://kami-labs.fr/en/wow-forever/build-pretre-ombre-shadow-magic-wow-forever/
+- wowtbc.gg, Shadow Priest PvE Guide - WoW Forever: https://wowtbc.gg/warcraftforever/class-guides/shadow-priest/
+- 70755 data: `trainables/priest.json` (rank learn levels), `talents/priest.json` (Shadow tree tiers).
+
+### O1 / PRIEST-6 / SIM-P1: low-rank heals at 60 (Renew r1, Heal r1, Lesser Heal r1)
+**Answer: RESOLVED. Forever penalizes them, harder than 1.12.** Blizzard's Oct 1 note: on the character sheet, Spell Damage and Spell Healing now explain that "spells cast using spell ranks vastly below your current level receive less benefit from your Spell Damage and Spell Healing". The Nov 3 note removes the low-rank penalty only for talent procs ("Various talents no longer have a penalty to their chance to trigger"; still applies to Blizzard), not for the healing bonus. Community measurement (ForeverChanges, beta 1.60.1.70338/70532 to level 30, echoed by ForeverWisp): a rank keeps its full bonus for 17 levels after it is learned, loses 5% per level after, and has none 37 levels later; Lesser Heal keeps none at 60, Heal at most 55%. Not measured above 30, so exact percentages stay unquoted in prose; the direction is official. The old fixed below-20 rule is not how Forever works (no level-20 clause in the measured curve). By 70755 learn levels: Renew r7 (44) and up, Greater Heal r2 (46) and up, Flash Heal r5 (44) and up keep everything at 60; Greater Heal r1 (40) keeps most; Heal (top rank learned 34), Renew r1 (8), Lesser Heal (1-10) keep little or nothing.
+- Prose changed: index.md:29; discipline.md:73, 75, 77 (Renew rank 7+, party filler Greater Heal rank 1 or 2, "Low ranks" paragraph); holy.md:29, 70, 72, 74, 76, 80, 82, 84 (Renew rank 7+, raid filler downranked Greater Heal, Heal rank 4 only on bare gear or in dungeons, "Low ranks" paragraph, every "Heal" filler mention now Greater Heal).
+- **RESOLVED, needs sim round:** (a) engine: implement the Forever low-rank healing-bonus curve (full for 17 levels after the rank's learn level, minus 5% per level, zero at 37; apply to healing; damage spells likely the same, unverified) and drop "no downrank penalty" from the Disc/Holy top-level notes once it lands; (b) Disc card: Renew r1 (139) to r7+ (10927 or higher), party filler Lesser Heal r1 (2050) / top-level note's Lesser Heal r3 (2053) to Greater Heal r1/r2 (2060/10963); (c) Holy card: Renew r1 (139) to r7+, raid Heal r1 (2054) filler to Greater Heal r1/r2 (2060/10963); rerun the rank ranker with the curve on. Card notes still describe the r1 casts; rewrite them with (b)/(c). Until then prose and cards disagree on these lines; prose is the game-correct side.
+
+### SIM-P3 / PRIEST-2 / B2: Shadow leveling order, Mind Flay at 20 vs 28
+**Answer: RESOLVED, Mind Flay at 20.** 70755 tree: Shadow Focus, Blackout and Spirit Tap are tier 0, Improved Mind Blast / Improved SW:P / Shadow Reach tier 1, Mind Flay tier 2 (10 points), so the 11th point at level 20 is legal. Warcraft Tavern's Forever leveling guide plays Mind Flay "after level 20"; Classic consensus has always been Spirit Tap first, Mind Flay at 20. A 1.5 s channel filler from 20 instead of eight more levels of wanding is not a taste call.
+- **RESOLVED, needs sim round:** leveling order in the build/addon-builds: Spirit Tap 10-14, Improved Shadow Word: Pain 15-16, Improved Mind Blast 17-19, Mind Flay 20, Improved Mind Flay 21-22, Vampiric Embrace from tier 3 as points allow, then Shadow Weaving, Shadow Focus, Darkness, Shadowform 40, Blackout/Wand Specialization last. Prose not changed: shadow.md:41 and :125 describe the build players import (fix pass 2 MUST 5), so they flip with the build. Replacement for :125 when it lands: "Spirit Tap from 10 to 14, Improved Shadow Word: Pain and Improved Mind Blast to 19, and Mind Flay at 20. Improved Mind Flay, Vampiric Embrace and Shadow Weaving follow, Shadow Focus once you run dungeons, then Darkness, and Shadowform is your point at 40." For :41: "Mind Flay is a talent in Forever, your point at 20; until then you wand between casts." For :34: "from level 10 Spirit Tap ...".
+
+### PRIEST-1 / B1: Spirit Tap 3/5 vs 5/5 leveling
+**Answer: RESOLVED, 5/5.** wow.gg's Forever build takes Spirit Tap 5/5 by 20 and calls it "the main leveling talent"; Classic consensus is the same. 70755: rank 5 is a 100% chance, rank 3 60%.
+- **RESOLVED, needs sim round:** leveling build Shadow `54342001201300051` to `52542001201300051` (Spirit Tap 5, Blackout 2), together with the order above. Prose (shadow.md:34, :61, :123) describes 3/5 truthfully today; on the flip, :61 becomes "Spirit Tap (5 points): after every kill your Spirit doubles for 15 seconds..." and :123 "Spirit Tap after every kill lets you chain pulls without drinking."
+
+### O2 / PRIEST-10 / SIM-P4 / B3: Shadow raid Blackout 2 + Spirit Tap 3
+**Answer: RESOLVED, move them.** No Forever raid build is published yet (wowtbc.gg and Kami-labs builds are placeholders; Kami-labs notes Devouring Contagion halves Devouring Plague's cost and spreads it). Forever's tree is not 1.12's: Shadow Focus alone opens tier 1 and SF5 + IMB5 open tier 2, so these five points are not a toll; the only gate they serve is Improved Psychic Scream's Blackout prerequisite (Deep Dive), which a raid build does not take. Blackout cannot stun a boss; Spirit Tap fires only on kills. Devouring Contagion's 50% cheaper Devouring Plague is mana every 24 seconds on every boss.
+- Prose changed: shadow.md:62 drops the false "toll toward the 30 Shadow points" claim ("on a boss the raid build's two points do nothing; they pay out only on trash").
+- **RESOLVED, needs sim round:** raid build Blackout 2 + Spirit Tap 3 into Devouring Contagion 2, Shadow Reach 2/2, Silence 1, Dark Inspiration 1 (legal per the audit's tier check); confirm Dark Inspiration's point is not negative, else Silence/other. Then shadow.md:61-62, :69 per PRIEST-10.
+
+### S2 / SIM-P2 / PRIEST-9: Shadow Word: Pain end-of-fight cutoff
+**Answer: RESOLVED, 6 seconds.** SW:P r8 ticks every 3 s; two ticks (2 × (127 + 0.2 SP)) out-damage the Mind Flay global it replaces (1.5 ticks of 130 + 0.167 SP with Improved Mind Flay's ramp), one tick does not. Kami-labs' Forever sim APL casts SW:P only while "the remaining fight time is at least 6 s".
+- Prose changed: shadow.md:85 ("until the last 6 seconds ... it takes two ticks to out-damage the Mind Flay you would cast instead").
+- **RESOLVED, needs sim round:** `priest-shadow.json` SW:P condition `remainingTime >= 10` to `>= 6`; then note to "Always up; stop refreshing it in the last 6 seconds of a fight." (note left as "closing seconds" so it matches the current card).
+
+### O3: Shadowfiend learnability
+**Stays with the owner (fact, not taste; the web cannot settle it).** No Forever source (Blizzard dev notes, Deep Dive, Warcraft Tavern, Kami-labs, wowtbc.gg) mentions Shadowfiend; 70755 has a rank-0 row at level 1 with no skill-line learn level (`class-spell-limits.json` notLearnable), and no beta priest cast it. Recommendation: keep "cannot be learned at launch"; check a level 60 trainer on launch day (11-04).
+
+### O4 / PRIEST-7: r14 Binding Heal and build prefixes
+**Resolved already.** Blizzard Nov 3 notes: "Binding Heal removed", replaced by the Holy Binding talent. Main has no Binding Heal and reads 70755 in every build string. No change.
+
+### O5 / PRIEST-17: "Open the planner" links
+**Stays with the owner (taste/house rule).** Options: (a) keep as is; (b) keep bare links, drop "Open the"; (c) remove (discipline.md:63, holy.md:64, shadow.md:69). Recommendation (c): the guide-voice rule says no site talk, and the sources block already links the planner.

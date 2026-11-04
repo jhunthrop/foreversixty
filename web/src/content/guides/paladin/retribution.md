@@ -51,7 +51,7 @@ Retribution is a two-handed Seal fighter: keep a Seal up, Judge every 8 seconds,
 ### In a raid
 
 - **Role:** Melee damage, and one of the paladins holding a Judgement on the boss
-- **Brings:** Greater Blessings (Might, Wisdom or Kings), an aura for the melee group, and Judgement of the Crusader or Wisdom on the boss
+- **Brings:** Greater Blessings (Might or Wisdom, and Kings where no hunter's Heart of the Lion covers the raid), an aura for the melee group, and Judgement of the Crusader or Wisdom on the boss
 
 ## Talents and builds
 
@@ -59,7 +59,7 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 
 - **Benediction** (5 points): every instant costs 10% less, and nearly everything you press is instant.
 - **Improved Judgement** (2 points): Judgement every 8 seconds instead of 10.
-- **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs, Judgements and Consecration's ticks.
+- **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs, Judgements and Consecration's ticks. Exorcism is the exception: it never crits in Forever.
 - **Sanctified Judgement** (3 points): every Judgement hands back 60% of the judged Seal's cost. This is what pays for your Seals, and for the twist at 60.
 - **Sacred Arbiter** (1 point): Holy Strike hits 20% harder and refreshes every Judgement on the target.
 - **Two-Handed Weapon Specialization** (3 points): 6% more Physical and Holy damage with a two-hander, and 20% less threat. That reaches your Holy Seal procs and Judgements as well as your swings.
@@ -118,7 +118,7 @@ Mining and Blacksmithing make your two-handers and plate. Engineering adds explo
 
 Retribution is the paladin leveling spec, even if you want to heal or tank at 60. Pull with Judgement, Holy Strike on cooldown, and let Seal of Righteousness do the rest. Sanctified Judgement refunds most of each Seal, so on one or two mobs at a time you rarely drink.
 
-From level 20 Consecration is your AoE: two or three mobs on you is the time for it, and rank 1 at 135 mana is the rank to keep on your bar until 60. Exorcism (level 20) and Holy Wrath (level 50) are easy kills on Undead and Demons, so quest zones full of them, like the Plaguelands, are paladin country. Repentance takes one Humanoid out of a bad pull, and Hammer of Justice stops a runner or a caster.
+From level 20 Consecration is your AoE: two or three mobs on you is the time for it, and rank 1 at 135 mana is the rank to keep on your bar through your 30s. A rank loses its spell damage bonus once you are far above the level you learned it, so from 40 move up to the newest rank you can afford, and keep moving up as you train them. Exorcism (level 20) and Holy Wrath (level 50) are easy kills on Undead and Demons, so quest zones full of them, like the Plaguelands, are paladin country. Repentance takes one Humanoid out of a bad pull, and Hammer of Justice stops a runner or a caster.
 
 Common mistakes:
 

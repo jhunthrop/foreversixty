@@ -47,7 +47,7 @@ Balance is the Moonkin: two DoTs on the boss, Wrath to bank Eclipse charges, and
 
 - Starfire is a long cast: moving costs you more than it costs a mage
 - Two DoTs to keep up on top of the Eclipse loop
-- Moonkin Form cannot heal, so a battle rez or an emergency heal means shifting out
+- Moonkin Form cannot heal, so an emergency heal means shifting out (Rebirth, Innervate and Remove Curse all cast from form)
 
 ### In a raid
 
@@ -94,7 +94,7 @@ From Restoration, Nature's Focus saves your Starfire from pushback 70% of the ti
 
 ## Stat priority
 
-Spell power is damage on every cast. Hit is worth more to you than to most casters: a resisted Starfire is a 3 second cast for nothing. Arcane damage is nearly as good as spell power, because Starfire and Moonfire are Arcane; Nature damage only feeds Wrath and Insect Swarm. Crit pays twice, through Vengeance and Nature's Grace. Intellect is your mana pool and a little crit.
+Spell power is damage on every cast. Hit is worth more to you than to most casters: a resisted Starfire is a 3 second cast for nothing, and a resisted Wrath banks no Eclipse charges. Arcane damage is nearly as good as spell power, because Starfire and Moonfire are Arcane; Nature damage only feeds Wrath and Insect Swarm. Crit pays twice, through Vengeance and Nature's Grace. Intellect is your mana pool and a little crit.
 
 ## Best in slot
 

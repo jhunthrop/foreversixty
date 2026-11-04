@@ -26,7 +26,7 @@ sources:
 
 ## Overview
 
-Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, downranked Heal as the filler, and Prayer of Healing for a hurt group.
+Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, downranked Greater Heal as the filler, and Prayer of Healing for a hurt group.
 
 ### Strengths
 
@@ -67,21 +67,21 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 **Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Put Fear Ward on the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
 
-**On the tank.** Prayer of Mending every time it is ready. Renew rank 1 always up, for very little mana. Go up in rank only on a tank who is dropping through it.
+**On the tank.** Prayer of Mending every time it is ready. Renew always up at rank 7 or higher. Go up to the top rank on a tank who is dropping through it.
 
-**The filler is Heal rank 1** in a raid, the cheapest heal you have. In a dungeon group or on bare gear, where you are the only healer and each cast has to count, use rank 4. With Divine Fury every rank is a 2.5 second cast. Greater Heal comes out only when the tank needs one big number.
+**The filler is a downranked Greater Heal** in a raid: rank 1 or 2, whichever fills the hole without overhealing. In a dungeon group or on bare gear, where your bonus is small, Heal rank 4 is the cheaper cast. With Divine Fury both are 2.5 second casts. The top rank of Greater Heal comes out only when the tank needs one big number.
 
-**Check your low ranks once.** Renew rank 1 and Heal rank 1 are learned below level 20, and in 1.12 such ranks lost part of your healing bonus. On your geared 60, read each tooltip with your healing gear on and then off. If the number barely moves, the penalty is still there: cast Renew rank 3 and Heal rank 4 instead.
+**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal, every rank of Heal and Renew below rank 7 were learned too early to scale with raid gear, so a cheap rank of them heals for little more than its base. Downrank within the ranks you learned from your forties on.
 
-**Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
+**Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Greater Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
 
 **Prayer of Healing.** Cast it when three or more players in one group are missing a fair chunk. In Forever it heals the target and the target's party, so target a member of whichever group took the hit: you are not limited to your own party.
 
-**Overheal.** Start Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Heal; Prayer of Mending and Renew cover those.
+**Overheal.** Start Greater Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Greater Heal; Prayer of Mending and Renew cover those.
 
-**Inner Focus.** Spend it on a Prayer of Healing, your most expensive spell, or on a Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
+**Inner Focus.** Spend it on a Prayer of Healing, your most expensive spell, or on a Greater Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
 
-**Assignments.** In a raid you will be on a group or on a tank. On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. On a tank, Renew, Prayer of Mending and Heal, with Flash Heal for the spikes. Either way, never stand where the boss's cleave or the raid's AoE lands on you: Twilight Focus helps, it does not make you immune.
+**Assignments.** In a raid you will be on a group or on a tank. On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. On a tank, Renew, Prayer of Mending and Greater Heal, with Flash Heal for the spikes. Either way, never stand where the boss's cleave or the raid's AoE lands on you: Twilight Focus helps, it does not make you immune.
 
 **Mana.** Every heal you skip early is mana for the last minute. Sit out of casting for five seconds when you can and Spirit regeneration comes back in full. Drink a Major Mana Potion and use a Demonic Rune once you are down enough that neither wastes, an Undead uses Dark Sacrifice, and a Gnome's Eureka! goes on a string of Prayers of Healing.
 
