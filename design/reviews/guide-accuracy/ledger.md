@@ -97,3 +97,25 @@ Same loop on main 7a2165cb0. New this round: race picks measured for every spec 
 Round 3 totals: 33 audit CONFIRMED and 3 rendered-review MUSTs, all fixed. Verdict: NOT zero, round 4 needed. The count fell 72, then 39, then 33, and the round 3 errors are smaller (wording, single numbers, a round 2 edit that overstated).
 
 Not adopted: the Restoration druid Improved Moonfire to Improved Regrowth swap (+0.5%, under the bar, and it breaks the Restoration ladder-first invariant). For the sim round: Starshards cooldown and a Shadow line; Eureka! masks (Incinerate in, periodic ticks out; re-run Gnome vs Human for Destruction, Assassination and Discipline); Stoneform rotation line for Dwarf tanks; Crusader opener for Retribution; Elune's Light outside Recklessness; Pounce behind-target check; Sniper Shot and Summon Hawk builds; Spellblasting potion on the Elemental pull; Destruction weapon enchant.
+
+## Round 4 (client 1.60.1.70755, 2026-11-04)
+
+On top of round 3 (main 85ba627ab). New this round, from the day-1 walkthrough: a "Levels 1 to 19" subsection opens every spec guide's Leveling section (first abilities and trainer levels, the first talent points as the shipped order takes them, gear before 20 with wands for casters, the class quests that matter; notes in round4/<class>-levels.md), the rest sits under "Levels 20 to 60", and every source link was swept. Every class got a wow-player SHIP on rendered pages. Fixes on land/guides-r4 (752c02e43, 77bd7c12b, a901bae80).
+
+| Class | Audit CONFIRMED | Rendered-review MUSTs |
+|---|---|---|
+| warrior | 4 | 3 (source entries) |
+| shaman | 2 | 0 |
+| rogue | 2 | 1 |
+| priest | 3 | 2 |
+| mage | 3 | 4 (2 source entries) |
+| warlock | 5 | 1 (source entry) |
+| hunter | 2 | 0 |
+| druid | 2 | 2 (source entries) |
+| paladin | 2 | 0 |
+
+Round 4 totals: 25 audit CONFIRMED and 13 rendered-review MUSTs, all fixed. Verdict: NOT zero, round 5 needed. Trend 72, 39, 33, 25; round 4's errors are mostly source labels and wording, with one level-scaled value (Demoralizing Shout 204 at 60) reverted.
+
+Source-link rule now in force: no guide links /sources; stat weights link /sim/weights on damage specs only; boss-drop entries read "which boss drops are upgrades" (/sim/drops) on damage specs, and healer and tank pages link their own best in slot page; no "how <spec> plays" entries (the specs page is the simulator's coverage page); talent-tree sources open the planner; Talents Forever is labelled as beta client data; wago.tools links carry the build. Race picks re-measured this round (round4/race-sims.md) all held.
+
+For the sim round, new: haste shortens the global cooldown in the engine (Classic does not), Summon Hawk unmodeled, no Sniper Shot line, Feral Charge (Cat) unmodeled, non-stat pet buffs blocked.
