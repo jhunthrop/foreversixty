@@ -93,3 +93,4 @@ Wording SHOULDs, not findings:
 ## Fix log (round 18)
 
 - SHAMAN-R18-1 to R18-3: fixed with the report's wording on `enhancement.md:74`, `:77`, `:87` and the Lightning Bolt and Earth Shock notes in `shaman-enhancement.json`: the half-mana reserve runs from the first point of Maelstrom Weapon to the fifth, a quarter before the talent and at five points; the five-stack bolt is instant and free only with all five points. The optional half-against-quarter sim at 37 to 41 goes to the sim lane. `sim/request/apl/shaman-enhancement.apl.json`, `addon-data.json` and Data.lua regenerated (notes only; no engine pin).
+- Rendered review (wow-player SHIP, one SHOULD taken): the Earth Shock note opens "while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth".
