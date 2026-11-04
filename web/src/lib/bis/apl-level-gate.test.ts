@@ -63,6 +63,36 @@ describe('conditionAt', () => {
   });
 });
 
+// Round 19: a line scoped to a level range with currentLevel (Discipline's 40-59 step-down)
+// is decided by the level alone, so the level 60 card leaves it out and a 40-59 band shows it.
+describe('currentLevel', () => {
+  const noneKnown: KnownAt = () => undefined;
+  const level = (op: string, val: number) => ({
+    cmp: { op, lhs: { currentLevel: {} }, rhs: { const: { val: String(val) } } },
+  });
+  const band40to59 = { and: { vals: [level('OpGe', 40), level('OpLt', 60), open] } };
+
+  it('decides a level comparison at a level, either way round', () => {
+    expect(conditionAt(level('OpGe', 40), 45, noneKnown)).toBe(true);
+    expect(conditionAt(level('OpLt', 60), 60, noneKnown)).toBe(false);
+    expect(
+      conditionAt(
+        { cmp: { op: 'OpGt', lhs: { const: { val: '59' } }, rhs: { currentLevel: {} } } },
+        60,
+        noneKnown,
+      ),
+    ).toBe(false);
+    expect(conditionAt(band40to59, 45, noneKnown)).toBeUndefined();
+    expect(conditionAt(band40to59, 60, noneKnown)).toBe(false);
+  });
+
+  it('shows a 40-59 line on the 40 and 50 bands and not on the 60 card', () => {
+    expect(canApplyBetween(band40to59, 60, 60, noneKnown)).toBe(false);
+    expect(canApplyBetween(band40to59, 50, 59, noneKnown)).toBe(true);
+    expect(canApplyBetween(band40to59, 30, 39, noneKnown)).toBe(false);
+  });
+});
+
 describe('canApplyBetween', () => {
   const knownAt: KnownAt = (id, level) => (id === 1 ? level >= 24 : undefined);
 

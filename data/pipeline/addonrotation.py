@@ -193,11 +193,81 @@ def _collect_cast_lines(action: dict, notes: str, lines: list[dict], line: int) 
 
 def _cast_lines(rotation: dict) -> list[dict]:
     """Every priority-list cast, in the curated file's own order, with the
-    0-based index of the entry it sits under (a rank choice's "lines")."""
+    0-based index of the entry it sits under (a rank choice's "lines") and
+    that entry's condition (`_level_allows`)."""
     lines: list[dict] = []
     for index, entry in enumerate(rotation.get("priorityList", [])):
-        _collect_cast_lines(entry.get("action", {}), entry.get("notes", ""), lines, index)
+        action = entry.get("action", {})
+        start = len(lines)
+        _collect_cast_lines(action, entry.get("notes", ""), lines, index)
+        for line in lines[start:]:
+            line["condition"] = action.get("condition")
     return lines
+
+
+#: The engine's APLValueCompare ops a currentLevel clause can use.
+_LEVEL_OPS: dict[str, Callable[[float, float], bool]] = {
+    "OpEq": lambda a, b: a == b,
+    "OpNe": lambda a, b: a != b,
+    "OpLt": lambda a, b: a < b,
+    "OpLe": lambda a, b: a <= b,
+    "OpGt": lambda a, b: a > b,
+    "OpGe": lambda a, b: a >= b,
+}
+
+
+def _level_operand(node: object, level: int) -> float | None:
+    """A comparison side at `level`: the character's level, a constant, else None."""
+    if not isinstance(node, dict):
+        return None
+    if "currentLevel" in node:
+        return float(level)
+    const = node.get("const")
+    if isinstance(const, dict):
+        try:
+            return float(const.get("val"))
+        except (TypeError, ValueError):
+            return None
+    return None
+
+
+def _level_truth(condition: object, level: int) -> bool | None:
+    """The condition at `level` as far as its currentLevel comparisons decide
+    it: True, False, or None (open). Mirrors web/src/lib/bis/apl-level-gate.ts."""
+    if condition is None:
+        return True
+    if not isinstance(condition, dict):
+        return None
+    cmp = condition.get("cmp")
+    if isinstance(cmp, dict):
+        sides = (cmp.get("lhs"), cmp.get("rhs"))
+        compare = _LEVEL_OPS.get(cmp.get("op", ""))
+        if compare is None or not any(isinstance(s, dict) and "currentLevel" in s for s in sides):
+            return None
+        lhs, rhs = (_level_operand(side, level) for side in sides)
+        return None if lhs is None or rhs is None else compare(lhs, rhs)
+    inner = condition.get("not")
+    if isinstance(inner, dict):
+        value = _level_truth(inner.get("val"), level)
+        return None if value is None else not value
+    for key in ("and", "or"):
+        group = condition.get(key)
+        if isinstance(group, dict):
+            values = [_level_truth(v, level) for v in group.get("vals", [])]
+            if key == "and":
+                if False in values:
+                    return False
+                return True if all(v is True for v in values) else None
+            if True in values:
+                return True
+            return False if all(v is False for v in values) else None
+    return None
+
+
+def _level_allows(condition: object, level: int) -> bool:
+    """False only when a currentLevel comparison rules the line out at `level`
+    (round 19: a line scoped to a level range)."""
+    return _level_truth(condition, level) is not False
 
 
 def apl_cast_spell_ids(rotation: object) -> set[int]:
@@ -427,7 +497,12 @@ def build_rotation(
     context = _SpecContext(spec, spellranks, families, id_to_family, rank_of, choices, icon_of)
     bands: list[AddonRotationBand] = []
     for level in _band_levels():
-        lines = [line for cast in casts if (line := _line_at(context, cast, level)) is not None]
+        lines = [
+            line
+            for cast in casts
+            if _level_allows(cast.get("condition"), level)
+            and (line := _line_at(context, cast, level)) is not None
+        ]
         if level in LEVEL_BANDS or not bands or lines != bands[-1].lines:
             bands.append(AddonRotationBand(level=level, lines=lines))
     return bands
