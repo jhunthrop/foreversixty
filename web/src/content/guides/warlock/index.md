@@ -23,7 +23,7 @@ Warlock is a ranged caster that pays for mana with health through Life Tap, keep
 - **Banes and curses are two slots.** Curse of Agony is now Bane of Agony and Curse of Doom is Bane of Doom, with Bane of Havoc added. Each warlock keeps one bane and one curse on a target, so your own bane always goes up even when you hold the raid's curse.
 - **Curse of the Elements covers every magic school.** It raises Shadow, Fire, Frost, Arcane, Nature and Holy damage taken by 10% and lowers those resistances by 75. There is no Curse of Shadow. One warlock in the raid keeps it up; a second copy does not stack.
 - **DoTs crit.** Corruption, the banes and Immolate's burn can all crit, and Pandemic doubles the bonus on Affliction's.
-- **New talents.** Malevolence (Shadow crit), Pandemic, Wrack (a 6 second channel), Decimation (Soul Fire below 35%), Demonic Pact (keep the Imp's sacrifice with another demon out), Shadow and Flame, Incinerate and Bane of Havoc.
+- **New talents.** Malevolence (Shadow crit), Pandemic, Wrack (a 6 second channel), Decimation (Soul Fire below 35%), Demonic Pact (keep the Imp's sacrifice with another demon out), Shadow and Flame, Incinerate and Bane of Havoc. Smaller new picks fill the trees: Demonic Knowledge (spell damage equal to your level with a demon out), Soul Harvest, Improved Drains, Demonic Aegis, Demonic Energies, Molten Skin and Fire and Brimstone.
 - **The sacrifices swapped schools.** The Imp's sacrifice now raises Shadow damage and the Succubus' raises Fire.
 - **Improved Shadow Bolt is your own.** Its 20% applies to your Shadow damage only, not the raid's.
 - **Your demon scales from you** and does not take raid buffs. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.

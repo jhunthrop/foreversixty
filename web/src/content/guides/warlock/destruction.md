@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:warlock:gnome:25522/0/2053235103101351:'
 raidBuild: 'FS1:1.60.1.70755:warlock:gnome:2550000002/0/2053345103101351:'
 recommendedRaces: [gnome, orc]
 statPriority:
-  [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, Shadow power, Fire power]
+  [Spell power, Hit, Fire power, Critical strike, Shadow power, Intellect, Spell haste, Spell penetration]
 description: 'How to play Destruction in Forever: Immolate, Conflagrate, Shadowburn and Incinerate under Shadow and Flame, the opener, banes, shards, races and leveling.'
 updated: 2026-11-02
 confidence: inferred
@@ -40,7 +40,7 @@ Destruction keeps Immolate on the boss, fires Conflagrate and Shadowburn on cool
 ### Weaknesses
 
 - Lapsing Immolate costs you Incinerate's bonus and Conflagrate
-- Incinerate and Conflagrate are expensive, so you Life Tap often
+- Conflagrate and Shadowburn on cooldown burn mana fast, so you Life Tap often
 - Big crits pull threat fast
 
 ### In a raid
@@ -62,7 +62,7 @@ The leveling and raid builds are the same Destruction tree. The raid build moves
 - **Incinerate** (1 point): your filler from level 40. It deals 25% more while your Immolate is on the target.
 - **Suppression** and **Improved Corruption** (10 points): 5% hit on every spell, 20% less threat, and an instant Corruption.
 
-Bane of Havoc, Molten Skin and Destructive Reach are path points for this build. Havoc only earns its slot on fights with two targets.
+Bane of Havoc is the path to Incinerate, and it only earns a cast on fights with two targets. Molten Skin and Destructive Reach are survival and range picks, not damage: Molten Skin takes 6% off every hit you take, and Destructive Reach adds 20% range to your Destruction spells.
 
 ## Rotation and priority
 
@@ -87,7 +87,7 @@ Searing Pain is a threat spell, not a damage spell, and Incinerate does more. Ke
 
 Life Tap below about 10% mana and whenever you have to move. Each tap converts its base amount plus your Spirit, and Improved Life Tap adds 20%. Major Mana Potion and Demonic Rune have separate cooldowns, so use both once you are low enough that none of it is wasted.
 
-Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag. Shadowburn needs one in your bag to cast, even though Shadow and Flame hands it straight back.
+Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill. Shadowburn needs one in your bag to cast, even though Shadow and Flame hands it straight back.
 
 Threat: you crit big and often, and Conflagrate and Shadowburn come early in the fight. If you climb to the top of the threat meter, stop casting Incinerate and let Corruption and your DoTs tick until the tank pulls ahead.
 
@@ -101,7 +101,7 @@ Spell power first. Hit matters up to the cap shown above, and Suppression gives 
 
 ## Best in slot
 
-The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows each piece and where it drops; the full list and its alternatives are one click away.
+The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows each piece and where it drops.
 
 ## Enchants and consumables
 
@@ -113,8 +113,8 @@ Gnome and Orc are the picks. Gnome's Eureka! gives 8 seconds of 10% more damage 
 
 ## Professions
 
-Tailoring and Enchanting. Much of your pre-raid gear is tailored cloth, Enchanting makes some of the best pre-raid caster pieces, and you enchant your own gear. Alchemy is the swap when your guild expects a flask every raid night.
+Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting adds a few strong caster pieces, and you enchant your own gear. Alchemy is the swap when your guild expects a flask every raid night, and it keeps your Fire Power elixirs cheap.
 
 ## Leveling
 
-Destruction kills single mobs fast but has no self-heal, so pull one at a time. Before 40, Shadow Bolt is your filler: Immolate, Corruption and Bane of Agony on the mob, Shadow Bolt it down, and finish with Shadowburn. Until Shadow and Flame reaches 5 points, Shadowburn does not always refund its shard and Conflagrate can eat your Immolate, so Drain Soul the last few percent of a mob's health to keep shards coming. From 40, Incinerate replaces Shadow Bolt. Keep the Voidwalker out when pulls get messy, and Life Tap between pulls instead of drinking.
+Destruction kills single mobs fast but has no self-heal, so pull one at a time. Before 40, Shadow Bolt is your filler: Immolate, Corruption and Bane of Agony on the mob, Shadow Bolt it down, and finish with Shadowburn. Until Shadow and Flame reaches 5 points, Shadowburn does not always refund its shard and Conflagrate can eat your Immolate, so Drain Soul the last few percent of a mob's health to keep shards coming. Put every point into Destruction until Incinerate at 40, and only then go back for Suppression and Improved Corruption. From 40, Incinerate replaces Shadow Bolt. Keep the Voidwalker out when pulls get messy, and Life Tap between pulls instead of drinking.
