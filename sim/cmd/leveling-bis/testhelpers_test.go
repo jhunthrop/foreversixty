@@ -69,6 +69,8 @@ type fakeEngine struct {
 	FailWeights bool
 	// HitProfile is what HitProfile returns.
 	HitProfile core.HitProfile
+	// HitProfileRequests records every request HitProfileFor was asked about.
+	HitProfileRequests []api.SimRequest
 
 	// WeightsFunc, when set, computes RunWeights' return value
 	// directly from the full request rather than
@@ -188,7 +190,8 @@ func (f *fakeEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64,
 	return mean, f.DefaultStdErr, nil
 }
 
-func (f *fakeEngine) HitProfileFor(api.SimRequest) (core.HitProfile, error) {
+func (f *fakeEngine) HitProfileFor(req api.SimRequest) (core.HitProfile, error) {
+	f.HitProfileRequests = append(f.HitProfileRequests, req)
 	return f.HitProfile, nil
 }
 

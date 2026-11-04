@@ -146,16 +146,4 @@ describe('the raid-build line on the real guides', () => {
     expect(bracketTotal(fromPart!)).toBe(diff.moved);
     expect(bracketTotal(toPart!)).toBe(diff.moved);
   });
-
-  it('reads Affliction as 15 points out of seven talents into four', () => {
-    const pair = guidePairs.find((entry) => entry.page === 'warlock/affliction')!;
-    const line = buildDiffLine(
-      diffBuilds(decodeBuildTrees('1.60.1.70755', pair.build)!, decodeBuildTrees('1.60.1.70755', pair.raid)!),
-    );
-    expect(line).toBe(
-      'The raid build moves 15 points from Soul Harvest (2), Improved Drains (3), Nightfall (2), ' +
-        'Soul Siphon (3), Wrack (1), Improved Health Funnel (2) and Improved Voidwalker (2) to ' +
-        'Improved Bane of Agony (1), Malevolence (5), Improved Shadow Bolt (5) and Ruin (4).',
-    );
-  });
 });

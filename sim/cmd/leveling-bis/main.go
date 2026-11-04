@@ -701,9 +701,12 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// the sweep's own sample happened to land significant -
 				// see bandReport.HasteOnItems' own doc.
 				report.HasteOnItems = bandHasHasteCandidate(pool.Scored, pool.NoSource)
-				// hit_to_cap: where the character the weights were measured
-				// on stands against the miss table (hitToCap's own doc).
-				profile, err := runner.HitProfileFor(wreq)
+				// hit_to_cap and expertise_to_cap: where the published set
+				// stands against the miss table (hitToCap's own doc), on
+				// this faction's race - never the weights sweep's own
+				// character, whose first-pass gear and race the page does
+				// not show.
+				profile, err := runner.HitProfileFor(publishedSetRequest(wreq, f.race, picks))
 				if err != nil {
 					return fmt.Errorf("band %d hit profile: %w", band, err)
 				}

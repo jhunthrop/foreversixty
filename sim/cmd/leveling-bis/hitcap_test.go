@@ -246,6 +246,62 @@ func TestRunSpecPublishesNoExpertiseForARangedHunter(t *testing.T) {
 	}
 }
 
+// The published hit_to_cap and expertise_to_cap describe the set a band
+// publishes, not the weights sweep's character: round 15 found every
+// feral-bear band but Alliance raid reporting "8% expertise from gear" while
+// the published sets wore none (the geared sweep's first-pass gear did).
+func TestHitProfileIsReadOnThePublishedSet(t *testing.T) {
+	outDir := t.TempDir()
+	fake := &fakeEngine{
+		DefaultDPS: 500,
+		WeightsResult: map[string]api.StatWeight{
+			"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0},
+			"agility":             {Stat: "agility", Weight: 1.8},
+		},
+		HitProfile: meleeProfile,
+	}
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20}, 5, identityTalentLayout); err != nil {
+		t.Fatalf("runSpec: %v", err)
+	}
+	b, err := os.ReadFile(filepath.Join(outDir, "hunter-marksmanship.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out struct {
+		Bands []struct {
+			Race  string `json:"race"`
+			Slots []struct {
+				Slot   string `json:"slot"`
+				ItemID int    `json:"item_id"`
+			} `json:"slots"`
+		} `json:"bands"`
+	}
+	if err := json.Unmarshal(b, &out); err != nil {
+		t.Fatal(err)
+	}
+	if len(out.Bands) == 0 || len(fake.HitProfileRequests) != len(out.Bands) {
+		t.Fatalf("%d bands, %d hit profiles; want one profile per published band", len(out.Bands), len(fake.HitProfileRequests))
+	}
+	for i, band := range out.Bands {
+		want := map[string]int{}
+		for _, s := range band.Slots {
+			if s.ItemID != 0 {
+				want[s.Slot] = s.ItemID
+			}
+		}
+		got := map[string]int{}
+		for _, g := range fake.HitProfileRequests[i].Character.Gear {
+			got[g.Slot] = g.ItemID
+		}
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("band %d hit profile gear = %v, want the published set %v", i, got, want)
+		}
+		if race := fake.HitProfileRequests[i].Character.Race; race != band.Race {
+			t.Errorf("band %d hit profile race = %q, want %q", i, race, band.Race)
+		}
+	}
+}
+
 // Beast Mastery and Marksmanship fight at range with a stat-stick pair of
 // melee weapons equipped. The engine profiles the character before the
 // rotation moves it out, so it reports a melee dual wielder; the ranged

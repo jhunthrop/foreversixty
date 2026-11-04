@@ -119,6 +119,17 @@ func buildGear(picks map[string]slotPick) []api.GearSlot {
 	return out
 }
 
+// publishedSetRequest is weights request req worn by the set a band
+// publishes: race and picks replace the sweep character's own race and
+// gear, everything else (talents, level, buffs, the weights block the hit
+// profile builds from) is kept.
+func publishedSetRequest(req api.SimRequest, race string, picks map[string]slotPick) api.SimRequest {
+	out := req
+	out.Character.Race = race
+	out.Character.Gear = buildGear(picks)
+	return out
+}
+
 // pairSlot is each slot's partner that can never physically hold the
 // same item at once: pick() only ever excludes a pair-mate's own
 // id/name from the OTHER slot's candidate list going forward (finger1
