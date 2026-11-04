@@ -101,3 +101,4 @@ By page: holy card 1 (R18-1); shadow.md 1 (R18-2) plus the Shadow card 1 (R18-4)
 - PRIEST-R18-3: fixed, `priest-discipline.json` Power Word: Shield note: Renewed Hope and Divine Aegis credited "once you have" them (32 to 38 in the shipped order).
 - PRIEST-R18-4: fixed, `priest-shadow.json` Mind Flay note: the biggest last tick "once you have Improved Mind Flay" (29 to 30).
 - `sim/request/apl/priest-*.apl.json`, `addon-data.json` and Data.lua regenerated (notes only; no engine pin).
+- Rendered review (wow-player SHIP for warrior and priest, one SHOULD taken): `shadow.md:137` "Mind Blast rank 4 from 40 to 43 (a Gnome keeps the top rank)", since the rank row excludes Gnome.
