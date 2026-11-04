@@ -371,18 +371,40 @@ func TestARankAboveTheLevelCapDoesNotSetTheTiersLevel(t *testing.T) {
 	}
 }
 
-// Mutilate rank 1 is 1310707, SpellLevels BaseLevel 30 and a trainable
-// SkillLineAbility row (AcquireMethod 0). The tier's other id, 1329, is
-// Era's: no SkillLineAbility row and no BaseLevel, but listed first at 40.
-func TestMutilateRankOneIsLearnedAtThirty(t *testing.T) {
-	if _, ok := LearnedSpellID("rogue", 1241584, 29); ok {
-		t.Error("Mutilate is learned at 29")
+// Mutilate is the Assassination 31-point talent on 70755's tree (node 105709,
+// tier 6, prerequisite Venom), so its first rank, 399956, is learned at 40.
+// 70753's rank 1310707 at 30 (tier 4) is gone from the 70755 trainables and
+// talents; the tier's other id, 1329, is Era's.
+func TestMutilateRankOneIsLearnedAtForty(t *testing.T) {
+	if _, ok := LearnedSpellID("rogue", 1241584, 39); ok {
+		t.Error("Mutilate is learned at 39")
 	}
-	if got, ok := LearnedSpellID("rogue", 1241584, 30); !ok || got != 1310707 {
-		t.Errorf("Mutilate at 30: got (%d, %v), want (1310707, true)", got, ok)
+	if got, ok := LearnedSpellID("rogue", 1241584, 40); !ok || got != 399956 {
+		t.Errorf("Mutilate at 40: got (%d, %v), want (399956, true)", got, ok)
 	}
-	if got, _ := LearnedSpellID("rogue", 1241584, 40); got != 399956 {
-		t.Errorf("Mutilate at 40: got %d, want 399956", got)
+	if got, _ := LearnedSpellID("rogue", 1241584, 50); got != 1241582 {
+		t.Errorf("Mutilate at 50: got %d, want 1241582", got)
+	}
+}
+
+// Shank (70755) has two trainer rows, 1329283 at 24 and 1329549 at 44
+// (SkillLineAbility 59899/59900, trainables/rogue.json), but the client
+// gives neither a "Rank N" subtext, so spellranks.json lists both at rank 0
+// and the rewrite left a rotation's 1329549 unresolved from 24 to 43: no
+// Shank was cast below 44.
+func TestShankRanksChainByLevel(t *testing.T) {
+	if _, ok := LearnedSpellID("rogue", 1329549, 23); ok {
+		t.Error("Shank is learned at 23")
+	}
+	for _, level := range []int{24, 30, 43} {
+		if got, ok := LearnedSpellID("rogue", 1329549, level); !ok || got != 1329283 {
+			t.Errorf("Shank at %d: got (%d, %v), want (1329283, true)", level, got, ok)
+		}
+	}
+	for _, level := range []int{44, 60} {
+		if got, ok := LearnedSpellID("rogue", 1329549, level); !ok || got != 1329549 {
+			t.Errorf("Shank at %d: got (%d, %v), want (1329549, true)", level, got, ok)
+		}
 	}
 }
 
