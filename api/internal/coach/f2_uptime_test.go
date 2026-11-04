@@ -355,3 +355,17 @@ func withDebuffOnPlayer(t *testing.T) Input {
 	in.Fight = withAura(in.Fight, f2SecondaryGUID, f2RendID, f2RendName, []string{furyGUID}, f2Segments(f2FightMS/5)...)
 	return withPool(in, poolUptime(f2RendID, 80, 25))
 }
+
+// TestUptime_PoolKeyedByAnotherRankStillCompares: a stored profile keys an aura's uptime by
+// the rule's primary rank when it was built (profile_build.go). Round 14 moved Battle Shout's
+// primary from rank 7 (25289) to rank 6 (11551); the reference pool keyed by rank 7 must
+// still be the comparison, not "Top logs don't record this".
+func TestUptime_PoolKeyedByAnotherRankStillCompares(t *testing.T) {
+	in := furyShoutRanks(t, poolUptime(f2ShoutRank7ID, 97, 25),
+		map[int64][]summary.Segment{f2ShoutRank6ID: {span(0, f2FightMS)}})
+	in.Tables.Rules.Auras[0].SpellID = f2ShoutRank6ID
+	o := uptime(in, CountedTime(in))
+	if o.Finding != nil || len(o.Strengths) != 1 || o.Strengths[0].Sentence != "Battle Shout up 100% of the fight. Top 25: 97%." {
+		t.Fatalf("finding %+v strengths %+v cannot %+v", o.Finding, o.Strengths, o.CouldNotCheck)
+	}
+}

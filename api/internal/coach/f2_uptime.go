@@ -132,11 +132,23 @@ func addUptimeCannot(o *outcome, line string) {
 
 func uptimeInt(n int64) string { return strconv.FormatInt(n, 10) }
 
+// A profile keys an aura by the rule's primary rank when it was built (measureAuras), so a
+// rule whose primary later moved to another of its ranks (Battle Shout 25289 to 11551) reads
+// the primary first, then any other rank the rule names.
 func uptimePool(rule AuraRule) func(Profile) (float64, bool) {
+	read := Profile.UptimeOf
 	if rule.Kind == AuraDefensive {
-		return func(p Profile) (float64, bool) { return p.DefensiveOf(rule.SpellID) }
+		read = Profile.DefensiveOf
 	}
-	return func(p Profile) (float64, bool) { return p.UptimeOf(rule.SpellID) }
+	ids := append([]int64{rule.SpellID}, rule.SpellIDs...)
+	return func(p Profile) (float64, bool) {
+		for _, id := range ids {
+			if v, ok := read(p, id); ok {
+				return v, true
+			}
+		}
+		return 0, false
+	}
 }
 
 func uptimeSim(rule AuraRule) func(SimRef) (float64, bool) {
