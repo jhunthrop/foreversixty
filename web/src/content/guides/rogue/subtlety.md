@@ -3,7 +3,7 @@ title: Subtlety Rogue in Forever
 classSlug: rogue
 spec: subtlety
 role: dps
-build: 'FS1:1.60.1.70755:rogue:night-elf:005302011/320003/035131031321001151:'
+build: 'FS1:1.60.1.70755:rogue:night-elf:005302011/320003/035230031321001151:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike and Shank on cooldown, Boot Knife, Death Mark and its raid spot.'
@@ -30,7 +30,7 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and B
 
 ### Strengths
 
-- No facing requirement anywhere in the rotation: Hemorrhage, Ghostly Strike and Rupture all work from the front
+- No facing requirement anywhere in the level 60 rotation: Hemorrhage, Ghostly Strike and Rupture all work from the front
 - A four-point opener from stealth with Premeditation and Initiative
 - Bleeds ignore armor, so Rupture is full value from the first second of the pull
 - The best rogue for PvP and world play: Preparation, a short Vanish and Blind with Elusiveness
@@ -59,7 +59,7 @@ One build does everything: 12 in Assassination for Malice, Ruthlessness, Improve
 - **Premeditation** (1 point): two combo points on a 2 minute cooldown. In Forever it needs no Stealth, so it opens the fight and comes back in it.
 - **Initiative** (3 points): Garrote, Ambush and Cheap Shot add a combo point.
 
-Opportunity (5 points) adds 20% to Garrote, and to Ambush and Backstab when you hold a dagger. Blood Splatter keeps Rupture up 6 seconds longer and every Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. One point of Dirty Deeds takes 10 energy off Garrote and Cheap Shot. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. The point in Improved Ambush is there for the points total that opens Boot Knife and Death Mark; Ambush needs a dagger in the main hand, and even with one it is not a boss opener for you.
+Opportunity (5 points) adds 20% to Garrote, and to Ambush and Backstab when you hold a dagger. Blood Splatter keeps Rupture up 6 seconds longer and every Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. Both points of Dirty Deeds take 20 energy off Garrote and Cheap Shot, on the opener and on every Garrote after a Ghostly Strike, and let Garrote go in from the front. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. Improved Ambush is skipped: Ambush is not your boss opener.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -77,7 +77,7 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 Ghostly Strike goes on cooldown too, just never at five points. Every Ghostly Strike that lands is followed by a **Garrote** at four points or fewer, even with the old one still ticking: the strike lets it in without Stealth, a fresh Garrote is worth more than the ticks it replaces, and with Initiative it gives two combo points, which Hemorrhage does not. At exactly four with a Ghostly Strike just landed, Garrote first: its window is 7 seconds and Rupture can wait one global.
 
-Rupture at four or more combo points whenever it is not ticking. **Death Mark** at four or more points while Rupture ticks. Once you have Death Mark, every point Rupture does not need goes into the next mark, never into Eviscerate, even with Death Mark on cooldown. While Rupture ticks, spend three or more on Slice and Dice when that is down or about to fall off. Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy. After a Ghostly Strike it waits for the Garrote: every Hemorrhage spends energy the Garrote needs, and if you press it the Garrote never gets its 40 energy before the window closes.
+Rupture at four or more combo points whenever it is not ticking. **Death Mark** at four or more points while Rupture ticks. Once you have Death Mark, every point Rupture does not need goes into the next mark, never into Eviscerate, even with Death Mark on cooldown. While Rupture ticks, spend three or more on Slice and Dice when that is down or about to fall off. Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy. After a Ghostly Strike it waits for the Garrote: every Hemorrhage spends energy the Garrote needs, and if you press it the Garrote never gets its 30 energy before the window closes.
 
 Rupture before Death Mark, always: Hemorrhage's debuff and Serrated Blades both feed it, and Death Mark stores every tick at twice the rate. A mark with no Rupture under it has lost its best source, so never press it into a lapsed bleed. Mark at four, and do not hold it for a fifth point: it comes back every 10 seconds, so a mark you hold back delays every mark after it.
 
@@ -124,10 +124,10 @@ Combat levels faster with a sword, so if you only want Subtlety for raids, level
 
 Poised at 18 takes 10 Energy off your opener when you are at full Energy out of combat, so Ambush from stealth costs 50.
 
-Your first three points, 10 to 12, go into Master of Deception, which lets you sneak past mobs as if you were three levels higher. Opportunity from 13 to 17 adds 20% to Backstab, Garrote and Ambush. Dirty Deeds at 18 makes Garrote 10 Energy cheaper and lets you use it from the front, and a point of Camouflage at 19 speeds you up in stealth.
+Your first three points, 10 to 12, go into Master of Deception, which lets you sneak past mobs as if you were three levels higher. Opportunity from 13 to 17 adds 20% to Backstab, Garrote and Ambush. Both points of Dirty Deeds, at 18 and 19, make Garrote 20 Energy cheaper and let you use it from the front.
 
 Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for the first better quest dagger, and keep throwing knives for pulling.
 
 ### Levels 20 to 60
 
-Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five on mobs. On anything bigger, Rupture at four and Eviscerate at three while it ticks, until Death Mark comes at 40. From 26, follow every Ghostly Strike with a Garrote on anything that will live through it: the strike lets it in without Stealth. From 40, keep Rupture ticking on anything that will live, and put four or more points into Death Mark while it ticks; Eviscerate a mob that will die before the mark goes off.
+Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage, from 24, keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Until Hemorrhage, Backstab with a dagger is your builder whenever you are behind the target, and Sinister Strike when you are not. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five on mobs. On anything bigger, Rupture at four and Eviscerate at three while it ticks, until Death Mark comes at 40. From 26, follow every Ghostly Strike with a Garrote on anything that will live through it: the strike lets it in without Stealth. From 40, keep Rupture ticking on anything that will live, and put four or more points into Death Mark while it ticks; Eviscerate a mob that will die before the mark goes off.
