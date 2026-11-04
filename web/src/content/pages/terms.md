@@ -41,8 +41,8 @@ entitlement revoked.
 
 ## The company
 
-This service is provided by Commish LLC, an Arkansas limited liability company, trading as
-Forever Sixty.
+This service is provided by Commish LLC d/b/a Forever Sixty: Commish LLC, an Arkansas limited
+liability company, doing business as Forever Sixty, a fictitious name registered in Arkansas.
 
 - Email: [help@foreversixty.gg](mailto:help@foreversixty.gg)
 - Phone: (479) 227-2208

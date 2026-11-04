@@ -29,6 +29,6 @@ email us and we will put it right.
 
 ## Who processes the refund
 
-Commish LLC, the Arkansas company that operates Forever Sixty, issues the refund through
+Commish LLC d/b/a Forever Sixty, the Arkansas company that operates this service, issues the refund through
 Stripe to the card you paid with. Stripe's own timing applies from there, usually five to ten
 business days.

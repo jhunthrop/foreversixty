@@ -40,9 +40,11 @@ describe('Footer', () => {
   it('names Commish LLC as the operator, with the copyright year', async () => {
     const html = await renderFooter();
     expect(html).toContain(
-      `Forever Sixty is operated by Commish LLC. © ${new Date().getFullYear()} Commish LLC.`,
+      `Forever Sixty is a registered trade name of Commish LLC. © ${new Date().getFullYear()} Commish LLC.`,
     );
-    expect(footerOperatorLine(2026)).toBe('Forever Sixty is operated by Commish LLC. © 2026 Commish LLC.');
+    expect(footerOperatorLine(2026)).toBe(
+      'Forever Sixty is a registered trade name of Commish LLC. © 2026 Commish LLC.',
+    );
   });
 
   it('has the four labelled columns of the spec in order', () => {
