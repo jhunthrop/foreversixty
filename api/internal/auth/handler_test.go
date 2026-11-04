@@ -1362,6 +1362,40 @@ func TestBattleNetImportContinuesInTheBackgroundWhenTheBudgetRunsOut(t *testing.
 	}
 }
 
+// rateLimitedImporter answers every run as stopped by a Battle.net 429.
+type rateLimitedImporter struct{ calls atomic.Int32 }
+
+func (b *rateLimitedImporter) ImportAccount(context.Context, int64, string) (ImportSummary, error) {
+	b.calls.Add(1)
+	return ImportSummary{Characters: 3, Pending: 2, RateLimited: true}, errors.New("rate limited")
+}
+
+// TestBattleNetImportIsNotContinuedAfterA429: a run Blizzard rate limited is left
+// for the nightly refresh; continuing it would only spend the shared quota on
+// another refusal. The sign-in itself still succeeds.
+func TestBattleNetImportIsNotContinuedAfterA429(t *testing.T) {
+	h := newHarness(t)
+	h.withBattleNet(t, "12347", "Tarn#1234")
+	importer := &rateLimitedImporter{}
+	h.svc.Importer = importer
+
+	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/start?next=/account", "")
+	res.Body.Close()
+	target, err := url.Parse(res.Header.Get("Location"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?code=the-code&state="+target.Query().Get("state"), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusFound {
+		t.Fatalf("callback = %d, want the sign-in to redirect", res.StatusCode)
+	}
+	time.Sleep(200 * time.Millisecond)
+	if got := importer.calls.Load(); got != 1 {
+		t.Fatalf("importer ran %d times, want once: a rate-limited run is not continued", got)
+	}
+}
+
 // TestChoosingAMainCharacter: PATCH /v1/me with main_character_key records the
 // account's main, refuses a character the account does not own, and /v1/me
 // carries the choice back.

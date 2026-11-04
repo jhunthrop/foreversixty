@@ -32,8 +32,11 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 )
 
-// routerRequestsPerMinute is the router-wide per-IP request budget.
-const routerRequestsPerMinute = 120
+// routerRequestsPerMinute is the router-wide per-IP request budget. 300 (was 120
+// until launch, 2026-11-04): a campus or carrier NAT puts many players behind one
+// address, and each page view spends several calls. The costly routes keep their
+// own per-account or per-IP limits on top.
+const routerRequestsPerMinute = 300
 
 // deviceRequestsPerMinute is each device token's own budget, so a companion's
 // traffic is never counted against the browser on the same IP.

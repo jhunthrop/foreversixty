@@ -301,7 +301,7 @@ func (s *Service) runImport(r *http.Request, userID int64, accessToken string) {
 	summary, err := s.Importer.ImportAccount(ctx, userID, accessToken)
 	id := httpx.RequestIDFrom(r.Context())
 	s.logImport(id, "battlenet_import", userID, summary, err)
-	if summary.Pending > 0 {
+	if summary.Pending > 0 && !summary.RateLimited {
 		s.continueImport(id, userID, accessToken)
 	}
 }
@@ -320,7 +320,8 @@ func (s *Service) continueImport(id string, userID int64, accessToken string) {
 
 func (s *Service) logImport(id, op string, userID int64, summary ImportSummary, err error) {
 	if err != nil {
-		s.logger().Warn("auth", "id", id, "op", op, "user_id", userID, "pending", summary.Pending, "err", err)
+		s.logger().Warn("auth", "id", id, "op", op, "user_id", userID, "pending", summary.Pending,
+			"rate_limited", summary.RateLimited, "err", err)
 		return
 	}
 	s.logger().Info("auth", "id", id, "op", op, "user_id", userID,

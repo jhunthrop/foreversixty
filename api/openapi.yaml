@@ -3937,7 +3937,7 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Envelope' }
         '429':
-          description: "Rate limited: 10 requests per minute per IP on this route, 120 per minute per IP overall"
+          description: "Rate limited: 10 requests per minute per IP on this route, 300 per minute per IP overall"
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Envelope' }
