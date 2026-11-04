@@ -28,10 +28,12 @@ type Row struct {
 	// Note is the row's evidence for a reader. A race row says what each race
 	// measured and which racial drives the split.
 	Note string `json:"note,omitempty"`
-	// Lines and Prepull are the Spell's, copied onto each row by sim/request's
-	// parse; the file writes them once per spell.
-	Lines   []int `json:"-"`
-	Prepull []int `json:"-"`
+	// Lines and Prepull, when either is present, scope this band alone to those 0-based
+	// priority-list entries and pre-pull actions (rank 2 at 50-59 on line 4 only). A band
+	// that names neither inherits its Spell's scope (every line when the Spell names
+	// none); sim/request's parse copies the Spell's scope onto such a band.
+	Lines   []int `json:"lines,omitempty"`
+	Prepull []int `json:"prepull,omitempty"`
 }
 
 // Spell is one authored spell id's rows, as the curated file writes them.
@@ -41,7 +43,8 @@ type Spell struct {
 	Authored int32  `json:"authored"`
 	// Lines and Prepull, when either is present, scope the rows: they apply
 	// only to those 0-based priority-list entries and pre-pull actions, and
-	// every other cast of Authored keeps the default rule. Restoration's
+	// every other cast of Authored keeps the default rule. A band naming its own
+	// Lines or Prepull replaces this scope for that band (Row). Restoration's
 	// Nature's Swiftness save and its tank filler cast the same Healing Wave id,
 	// and only the filler downranks; Elemental's opening bolt follows its
 	// filler, not its top-rank line.

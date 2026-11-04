@@ -98,15 +98,20 @@ func (c rankChoices) rankAtLine(id int32, level int, line castLine) (int, bool) 
 	return 0, false
 }
 
-// scopedLines is every line a row for id is scoped to.
+// scopedLines is every line a row for id is scoped to, each once, in row order.
 func (c rankChoices) scopedLines(id int32) []castLine {
 	var out []castLine
+	add := func(line castLine) {
+		if !slices.Contains(out, line) {
+			out = append(out, line)
+		}
+	}
 	for _, row := range c[id] {
 		for _, index := range row.Prepull {
-			out = append(out, castLine{prepull: true, index: index})
+			add(castLine{prepull: true, index: index})
 		}
 		for _, index := range row.Lines {
-			out = append(out, castLine{index: index})
+			add(castLine{index: index})
 		}
 	}
 	return out
@@ -151,9 +156,9 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 			if err := errors.Join(checkLines("lines", sp.Lines), checkLines("prepull", sp.Prepull)); err != nil {
 				return nil, fmt.Errorf("rank choices: %s %d: %w", spec, sp.Authored, err)
 			}
-			rows := slices.Clone(sp.Bands)
-			for i := range rows {
-				rows[i].Lines, rows[i].Prepull = sp.Lines, sp.Prepull
+			rows, err := scopeBands(sp)
+			if err != nil {
+				return nil, fmt.Errorf("rank choices: %s %d: %w", spec, sp.Authored, err)
 			}
 			slices.SortFunc(rows, func(a, b RankChoiceRow) int { return a.FromLevel - b.FromLevel })
 			for i, row := range rows {
@@ -179,6 +184,23 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 	return out, nil
 }
 
+// scopeBands is sp's bands, each with its own lines and pre-pull scope: a band that
+// names either keeps its own, checked like the spell's; a band that names neither takes
+// the spell's (none: every line).
+func scopeBands(sp rankChoiceSpell) ([]RankChoiceRow, error) {
+	rows := slices.Clone(sp.Bands)
+	for i, row := range rows {
+		if row.Lines == nil && row.Prepull == nil {
+			rows[i].Lines, rows[i].Prepull = sp.Lines, sp.Prepull
+			continue
+		}
+		if err := errors.Join(checkLines("lines", row.Lines), checkLines("prepull", row.Prepull)); err != nil {
+			return nil, fmt.Errorf("the band from level %d: %w", row.FromLevel, err)
+		}
+	}
+	return rows, nil
+}
+
 // checkRowRaces refuses a row's race key unless it is absent (every race) or
 // names known race slugs, each once.
 func checkRowRaces(rowRaces []string) error {
@@ -196,10 +218,20 @@ func checkRowRaces(rowRaces []string) error {
 	return nil
 }
 
-// overlap reports whether two rows can apply to the same request: their
-// presets and their races both meet.
+// overlap reports whether two rows can apply to the same cast: their presets,
+// their races and their line scopes all meet.
 func overlap(a, b RankChoiceRow) bool {
-	return keysMeet(a.Preset, b.Preset) && racesMeet(a.Races, b.Races)
+	return keysMeet(a.Preset, b.Preset) && racesMeet(a.Races, b.Races) && scopesMeet(a, b)
+}
+
+// scopesMeet reports whether two rows can apply to one line: an unscoped row
+// meets every line, two scoped rows only a line or pre-pull action both name.
+func scopesMeet(a, b RankChoiceRow) bool {
+	if !scoped(a) || !scoped(b) {
+		return true
+	}
+	return slices.ContainsFunc(a.Lines, func(line int) bool { return slices.Contains(b.Lines, line) }) ||
+		slices.ContainsFunc(a.Prepull, func(line int) bool { return slices.Contains(b.Prepull, line) })
 }
 
 // keysMeet reports whether two rows' keys ("" for every value) share a value.
