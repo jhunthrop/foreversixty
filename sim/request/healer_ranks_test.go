@@ -602,3 +602,22 @@ func TestHolyHealRanksByBand(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 15: 70755 made Riptide a heal over time only (no
+// direct heal, 12 s cooldown, 150/180/230 mana), and the bare-60 row that
+// held it at rank 2 now loses to rank 3 by 1.5% effective HPS, both
+// factions, seeds 1 and 50001. Every band casts the highest rank learned.
+func TestRestorationShamanRiptideIsTheTopRank(t *testing.T) {
+	var list struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/shaman-restoration.json", &list)
+	riptide := map[int]int{1: 408521, 2: 1239242, 3: 1239243}
+	for _, c := range []struct {
+		level  int
+		preset string
+		rank   int
+	}{{40, BarePreset, 1}, {50, BarePreset, 2}, {60, BarePreset, 3}, {60, RaidPreset, 3}} {
+		assertOnlyRank(t, list.Rotation, "shaman-restoration", "shaman", c.preset, "tauren", c.level, riptide, c.rank)
+	}
+}

@@ -597,18 +597,6 @@
             "rank": 6
           }
         ]
-      },
-      {
-        "spell": "Riptide",
-        "authored": 1239243,
-        "bands": [
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 2,
-            "preset": "bare"
-          }
-        ]
       }
     ],
     "warlock-destruction": [
