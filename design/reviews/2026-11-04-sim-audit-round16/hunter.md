@@ -60,7 +60,7 @@ Nothing new. Round 15's list stands: MM raid and bare bands on the new builds, a
 
 ## For other lanes
 
-- **Data / client watcher:** the wago hotfix feed shows pushes for a build **1.60.1.70783** (first seen 2026-11-04 10:02 UTC). A search finds about 3120 SpellEffect rows and 1188 SpellMisc rows, plus quest text. 70783 is not in wago's wowf build list. It may be the launch client re-pushing the 70755 hotfix set, as 70707, 70753 and 70755 each carried push 113534. Hawk 692138 shows no 70783 row. I could not check every hunter row: wago started refusing connections mid-scan.
+- Withdrawn: the "build 70783" hotfix rows are retail 12.1.5.70783 region pushes, not Forever (still 1.60.1.70755, no new push since the re-layer). Rule: check a wago hotfix row's region before reading it as Forever (Forever is region 91).
 - Core/test harness: X2.
 - The class rule from H1 applies to warlock demons too (`sim/warlock/pet.go` RefusePlayerBuffs). The same client flag supports it.
 
