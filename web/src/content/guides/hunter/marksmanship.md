@@ -60,7 +60,7 @@ Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shar
 
 ## Talents and builds
 
-There are two builds. You level with the pet: thirty points in Marksmanship take every talent that raises your shots, sixteen in Beast Mastery take the pet talents and Deadly Aspects, and five in Survival take Improved Tracking. At 60, for raids, the pet goes: thirty-three points in Marksmanship add Lone Wolf and the rest of Improved Stings, five in Beast Mastery keep Deadly Aspects, and thirteen in Survival take Improved Tracking, Survivalist and Surefooted.
+There are two builds. You level with the pet: thirty points in Marksmanship take the talents that raise your big shots and your auto shot, sixteen in Beast Mastery take the pet talents and Deadly Aspects, and five in Survival take Improved Tracking. At 60, for raids, the pet goes: thirty-three points in Marksmanship add Lone Wolf and the rest of Improved Stings, five in Beast Mastery keep Deadly Aspects, and thirteen in Survival take Improved Tracking, Survivalist and Surefooted.
 
 - **Mortal Shots** (5 points): 30% more crit damage on your shots
 - **Barrage** (3 points): 15% more damage on Multi-Shot, Aimed Shot and Volley
@@ -76,11 +76,11 @@ There are two builds. You level with the pet: thirty points in Marksmanship take
 
 Improved Tracking only works if you track the boss's type. Every raid boss has a type you can track: Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids or Undead. Set it before the pull, and swap on trash with mixed types.
 
-In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and get no raid buffs, and since the November hotfix raised your own shots, the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull, and the leveling build keeps its talents. Sniper Shot, the capstone, is out of reach with either split, and its 4 second cast would cost you auto shots anyway.
+In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and get no raid buffs, and since the November hotfix raised your own shots, the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull, and the leveling build keeps its talents. Sniper Shot, the capstone, costs a point you would take from elsewhere in either build, and its 4 second cast holds your auto shot longer than any other shot you have, so neither build takes it.
 
 ## Rotation and priority
 
-Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin. Track the boss's creature type for Improved Tracking. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight.
+Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and Deadly Aspects' Auto Shot proc is written for Hawk, so Hawk is the safe pick. Track the boss's creature type for Improved Tracking. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight.
 
 On the pull, press Rapid Fire with your trinkets and Berserking or Blood Fury, just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
@@ -103,7 +103,7 @@ When mana gets low, stop Arcane Shot first, then Serpent Sting, and keep Aimed S
 
 There is no execute phase for a hunter: the priority holds to the end.
 
-**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls an add onto you so the pet can pick it up. Freezing Trap takes care of anything loose in the back line.
+**Utility.** Tranquilizing Shot (trained at 60) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls a loose add onto you for a few seconds so your tank can grab it before it reaches the healers. Freezing Trap takes care of anything loose in the back line.
 
 ## Stat priority
 

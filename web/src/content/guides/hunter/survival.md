@@ -38,7 +38,7 @@ sources:
 
 ## Overview
 
-Survival is a melee spec in Forever: two weapons, Raptor Strike on every swing, Mongoose Bite whenever it lights up, and no pet.
+Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet.
 
 ### Strengths
 
@@ -77,11 +77,11 @@ The Marksmanship shot talents do nothing for you. Mortal Shots is ranged only, H
 
 ## Rotation and priority
 
-Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. It is the melee aspect. Aspect of the Falcon matches your best rank of Aspect of the Hawk, so at 60 it gives the same melee attack power as Beast (10 more once you have Hawk's Ahn'Qiraj rank). Leave Aspect of the Falcon off anyway: Deadly Aspects does nothing under it, and under Beast its attack speed proc is a 10% chance on every white swing against Falcon's own 5%. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
+Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. At 60, Aspect of the Falcon gives the same melee attack power as Beast (it copies your best Aspect of the Hawk, 10 more once you own Hawk's Ahn'Qiraj rank), and Deadly Aspects procs from your swings under either one, so Falcon is no upgrade for you. Before 60 Beast is the only melee aspect you have. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
 
 Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and Berserking or Blood Fury together: Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
 
-Then play the priority above. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Mongoose Bite and Counterattack are the buttons you watch for: Expose Prey opens Mongoose Bite off your own hits, while Counterattack needs a parry, and from behind a boss you will not parry, so it is mostly an add and trash button. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
+Then play the priority above. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Mongoose Bite and Counterattack are the buttons you watch for: Expose Prey opens Mongoose Bite off your own hits, while Counterattack needs a parry, and from behind a boss you will not parry, so it is mostly an add and trash button. Keep Lacerate's bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and Strider Kick and Immolation Trap fill what is left. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
 
 You fire no shots in this spec. Your bow or gun is there for its stats.
 

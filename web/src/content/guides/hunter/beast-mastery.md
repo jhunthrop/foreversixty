@@ -66,7 +66,7 @@ Thirty-one points in Beast Mastery buys every talent that makes the pet hit hard
 - **Unleashed Fury** (5 points): 15% more damage for the pet on every hit, white or special
 - **Ferocity** (5 points): 10% pet crit on top of the crit it already copies from you, and every crit feeds Frenzy
 - **Frenzy** (5 points): a pet crit always grants 30% attack speed for 8 seconds, which with Ferocity is close to permanent
-- **Focused Fire** (2 points): 2% more damage for you and the pet while the pet is out, the one Beast Mastery talent that raises your own shots
+- **Focused Fire** (2 points): 2% more damage for you and the pet while the pet is out, the only flat damage bonus to your own shots in the Beast Mastery tree
 - **Bestial Wrath** (1 point): 50% more pet damage for 18 seconds every two minutes, and the pet ignores fear while it lasts
 - **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
 - **Careful Aim** (5 points): attack power equal to your Intellect, so a mail Intellect piece is an attack power piece for you and the pet
@@ -78,7 +78,7 @@ The raid build moves one point out of Efficiency and the point in Rapid Killing 
 
 ## Rotation and priority
 
-Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight. Send the pet in once the tank has the boss.
+Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and Deadly Aspects' Auto Shot proc is written for Hawk, so Hawk is the safe pick. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then start Aimed Shot a couple of seconds before the tank pulls, so it is your first hit of the fight. Send the pet in once the tank has the boss.
 
 As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and Berserking or Blood Fury together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
