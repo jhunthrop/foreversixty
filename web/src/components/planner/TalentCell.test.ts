@@ -41,6 +41,15 @@ describe('TalentCell read-only mode', () => {
     expect(body).toContain('<button');
   });
 
+  it('names its rank to the shared tooltip host, with no tooltip of its own, when readOnly', () => {
+    const store = storeWithRank(2);
+    const { body } = render(TalentCell, {
+      props: { store, talent, focused: false, onfocuscell: () => {}, readOnly: true },
+    });
+    expect(body).toContain(`data-game-tip="talent:${talent.id}:2"`);
+    expect(body).not.toContain('role="tooltip"');
+  });
+
   it('renders locked, not available, for an unspent talent when readOnly', () => {
     const store = storeWithRank(0);
     const { body } = render(TalentCell, {

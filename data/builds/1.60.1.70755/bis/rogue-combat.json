@@ -10,8 +10,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "night-elf",
-      "talents": "00000000000000000-32510000000000000-0000000000000000000",
-      "talent_points": 11,
+      "talents": "00000000000000000-0051000000000000000-000000000000000000",
+      "talent_points": 6,
       "weights": [
         {
           "stat": "attack_power",
@@ -860,8 +860,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "00000000000000000-32510000000000000-0000000000000000000",
-      "talent_points": 11,
+      "talents": "00000000000000000-0051000000000000000-000000000000000000",
+      "talent_points": 6,
       "weights": [
         {
           "stat": "attack_power",
@@ -1699,8 +1699,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "night-elf",
-      "talents": "00000000000000000-32530300001400000-0000000000000000000",
-      "talent_points": 21,
+      "talents": "00000000000000000-0053030000010020000-000000000000000000",
+      "talent_points": 14,
       "weights": [
         {
           "stat": "attack_power",
@@ -2568,8 +2568,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "00000000000000000-32530300001400000-0000000000000000000",
-      "talent_points": 21,
+      "talents": "00000000000000000-0053030000010020000-000000000000000000",
+      "talent_points": 14,
       "weights": [
         {
           "stat": "attack_power",
@@ -3473,8 +3473,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "night-elf",
-      "talents": "00000000000000000-32530300001515201-0000000000000000000",
-      "talent_points": 31,
+      "talents": "00000000000000000-0053030000012021501-000000000000000000",
+      "talent_points": 23,
       "weights": [
         {
           "stat": "attack_power",
@@ -4350,8 +4350,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "00000000000000000-32530300001515201-0000000000000000000",
-      "talent_points": 31,
+      "talents": "00000000000000000-0053030000012021501-000000000000000000",
+      "talent_points": 23,
       "weights": [
         {
           "stat": "attack_power",
@@ -5225,8 +5225,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "night-elf",
-      "talents": "32500000000000000-32530300001515201-0000000000000000000",
-      "talent_points": 41,
+      "talents": "32500000000000000-0053030000012021501-000000000000000000",
+      "talent_points": 33,
       "weights": [
         {
           "stat": "attack_power",
@@ -6129,8 +6129,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "32500000000000000-32530300001515201-0000000000000000000",
-      "talent_points": 41,
+      "talents": "32500000000000000-0053030000012021501-000000000000000000",
+      "talent_points": 33,
       "weights": [
         {
           "stat": "attack_power",
@@ -7049,8 +7049,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "night-elf",
-      "talents": "32531000000000000-32530300001515201-5100000000000000000",
-      "talent_points": 51,
+      "talents": "32530000000000000-0053030000012021501-010030000000000000",
+      "talent_points": 40,
       "weights": [
         {
           "stat": "attack_power",
@@ -7952,8 +7952,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "32531000000000000-32530300001515201-5100000000000000000",
-      "talent_points": 51,
+      "talents": "32530000000000000-0053030000012021501-010030000000000000",
+      "talent_points": 40,
       "weights": [
         {
           "stat": "attack_power",
@@ -8869,8 +8869,8 @@
       "preset": "raid",
       "faction": "alliance",
       "race": "night-elf",
-      "talents": "00532010500000000-31530300001515231-0020000000000000000",
-      "talent_points": 51,
+      "talents": "00530000200010000-0053030000012321501-002000000000000000",
+      "talent_points": 39,
       "weights": [
         {
           "stat": "attack_power",
@@ -9786,8 +9786,8 @@
       "preset": "raid",
       "faction": "horde",
       "race": "troll",
-      "talents": "00532010500000000-31530300001515231-0020000000000000000",
-      "talent_points": 51,
+      "talents": "00530000200010000-0053030000012321501-002000000000000000",
+      "talent_points": 39,
       "weights": [
         {
           "stat": "attack_power",

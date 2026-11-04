@@ -3313,8 +3313,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5510331300001350-010000000000000000-0000000000000000",
-      "talent_points": 31,
+      "talents": "5510331300000350-010000000000000000-0000000000000000",
+      "talent_points": 30,
       "weights": [
         {
           "stat": "spell_power",
@@ -4152,8 +4152,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "5510331300001350-010000000000000000-0000000000000000",
-      "talent_points": 31,
+      "talents": "5510331300000350-010000000000000000-0000000000000000",
+      "talent_points": 30,
       "weights": [
         {
           "stat": "spell_power",
@@ -4993,8 +4993,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5510331300001350-030000000000000000-5030000000000000",
-      "talent_points": 41,
+      "talents": "5510331300000350-030000000000000000-5030000000000000",
+      "talent_points": 40,
       "weights": [
         {
           "stat": "spell_power",
@@ -5923,8 +5923,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "5510331300001350-030000000000000000-5030000000000000",
-      "talent_points": 41,
+      "talents": "5510331300000350-030000000000000000-5030000000000000",
+      "talent_points": 40,
       "weights": [
         {
           "stat": "spell_power",
@@ -6850,8 +6850,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5510331300001350-030000000000000000-5033520000000000",
-      "talent_points": 51,
+      "talents": "5510331300000350-030000000000000000-5033520000000000",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",
@@ -7790,8 +7790,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "5510331300001350-030000000000000000-5033520000000000",
-      "talent_points": 51,
+      "talents": "5510331300000350-030000000000000000-5033520000000000",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",
@@ -8719,8 +8719,8 @@
       "preset": "raid",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5510331300001351-055000000000000000-0530020000000000",
-      "talent_points": 51,
+      "talents": "5510331300000350-055000000000000000-0530020000000000",
+      "talent_points": 49,
       "weights": [
         {
           "stat": "spell_power",
@@ -9625,8 +9625,8 @@
       "preset": "raid",
       "faction": "horde",
       "race": "orc",
-      "talents": "5510331300001351-055000000000000000-0530020000000000",
-      "talent_points": 51,
+      "talents": "5510331300000350-055000000000000000-0530020000000000",
+      "talent_points": 49,
       "weights": [
         {
           "stat": "spell_power",
