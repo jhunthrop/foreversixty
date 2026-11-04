@@ -5,7 +5,7 @@ spec: holy
 role: healer
 build: 'FS1:1.60.1.70755:priest:human:00500503103/33505003030121431/0:'
 recommendedRaces: [human, undead]
-statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
+statPriority: [MP5, Healing power, Spirit, Intellect, Critical strike]
 description: 'How to heal as a Holy Priest in Forever: talents, downranking, Prayer of Mending, Prayer of Healing, Lightwell, mana over a long fight, assignments and races.'
 updated: 2026-11-02
 confidence: inferred
@@ -33,7 +33,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 - Prayer of Mending is the cheapest healing in the game: five jumps for one cast
 - Prayer of Healing heals any five-player group at once, not only your own
 - Spiritual Guidance and Meditation turn Spirit into both healing and mana
-- Lightwell and Holy Binding heal while you are busy with something else
+- Lightwell heals the melee while you heal the tank, and Holy Binding heals you every time you Flash Heal someone else
 
 ### Weaknesses
 
@@ -67,9 +67,9 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 **Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Put Fear Ward on the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
 
-**On the tank.** Prayer of Mending every time it is ready. Renew always up, at rank 1: Forever keeps a low rank's whole healing bonus, so rank 1 heals the most per mana you spend. Go up in rank only on a tank who is dropping through it.
+**On the tank.** Prayer of Mending every time it is ready. Renew always up, at a low rank: it heals the most per mana you spend as long as it keeps your healing bonus. In 1.12 a rank learned below level 20 lost part of it, so read Renew rank 1's tooltip on your geared priest before you settle on it. Go up in rank only on a tank who is dropping through it.
 
-**The filler is Heal.** In a raid, cast rank 1: it is learned at 16, so it keeps its whole healing bonus and is the cheapest healing per mana you have. Without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4 is the classic downrank, with Greater Heal's spell power coefficient for far less mana. With Divine Fury every rank is a 2.5 second cast. Greater Heal comes out only when the tank needs one big number.
+**The filler is Heal.** Rank 4 is the classic downrank, with Greater Heal's spell power coefficient for far less mana. Rank 1 is cheaper still, but it is learned at 16, and in 1.12 a rank learned below level 20 lost part of its healing bonus: read its tooltip on your geared priest before you make it your raid filler. With Divine Fury every rank is a 2.5 second cast. Greater Heal comes out only when the tank needs one big number.
 
 **Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
 
@@ -93,7 +93,7 @@ Forever puts a third of a healing item's bonus on it as spell damage. Only the h
 
 ## Enchants and consumables
 
-Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric's Elixir and Elixir of Sages, Sage's Tea for food, Brilliant Mana Oil on the weapon, and Major Mana Potions with Demonic Runes in the fight. Forever's Mender's Potions add healing for 30 seconds, but they share the potion cooldown with your mana potion, and on a long fight the mana is worth more.
+Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric's Elixir and Elixir of Sages, Sage's Tea for food, Brilliant Mana Oil on the weapon, and Major Mana Potions with Demonic Runes in the fight. Forever's Major Mender's Potions add healing for 30 seconds, but they share the potion cooldown with your mana potion, and on a long fight the mana is worth more.
 
 ## Races
 

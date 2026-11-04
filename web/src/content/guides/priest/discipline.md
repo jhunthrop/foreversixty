@@ -5,7 +5,7 @@ spec: discipline
 role: healer
 build: 'FS1:1.60.1.70755:priest:human:00500503133001143/3350500303/0:'
 recommendedRaces: [human, undead]
-statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
+statPriority: [MP5, Spirit, Healing power, Intellect, Critical strike]
 description: 'How to heal as a Discipline Priest in Forever: Penance, shield ranks and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
 updated: 2026-11-02
 confidence: inferred
@@ -57,7 +57,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 - **Twin Disciplines** (5 points) and **Mental Agility** (3 points): Penance and Renew heal 5% more, and Renew and the shield cost 10% less.
 - **Inner Focus** (1 point): a free spell with 25% more crit every 3 minutes.
 - **Meditation** (3 points) and **Mental Strength** (5 points): regeneration while casting, and a deeper bar.
-- **Holy Specialization** (5 points), **Divine Fury** (5 points) and **Improved Healing** (3 points): more crits for Divine Aegis, faster Heal and Greater Heal, and cheaper direct heals.
+- **Holy Specialization** (5 points), **Divine Fury** (5 points) and **Improved Healing** (3 points): more crits for Divine Aegis, faster Heal and Greater Heal, and 15% off Lesser Heal, Heal, Greater Heal and Penance.
 - **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and casts that raid damage rarely pushes back.
 
 **Power Infusion** is not in the build because it adds nothing to your own healing. In a raid with a mage or warlock worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to your best caster on their burst. Open the [planner](/planner?class=priest) to make the swap.
@@ -70,9 +70,9 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **The shield is a switch.** Shield the tank at a low rank whenever Weakened Soul is off him. A small shield costs little and soaks one hit, and the Weakened Soul it leaves is what Renewed Hope needs: your next heals on him crit far more often, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner. A full-rank shield on a warrior tank eats the rage he needs at the start of a pull; save the big one for a hit he cannot take.
 
-**Renew** stays on the tank at rank 1. Forever keeps a low rank's whole healing bonus, so rank 1 heals the most per mana.
+**Renew** stays on the tank. A low rank heals the most per mana only if it keeps your healing bonus: In 1.12 a rank learned below level 20 lost part of its healing bonus; read that rank's tooltip on your geared priest before you lean on it.
 
-**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. A cheap low-rank heal on everyone else: in Forever a heal learned below level 20 keeps all of its spell power bonus, so those ranks heal far more than their tooltip suggests for very little mana.
+**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. A cheap low-rank heal on everyone else, which heals for very little mana. In 1.12 a rank learned below level 20 lost part of its healing bonus; read that rank's tooltip on your geared priest before you lean on it.
 
 **Emergencies.** Flash Heal at the top rank on anyone about to die. It is your fastest heal and your dearest, so it never becomes the filler.
 
@@ -94,7 +94,7 @@ Meditation keeps half your regeneration running while you cast, so Spirit still 
 
 ## Enchants and consumables
 
-Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and Elixir of Sages, Sage's Tea, Brilliant Mana Oil, and Major Mana Potions with Demonic Runes. Forever's Mender's Potion shares the potion cooldown with your mana potion; on a long fight the mana is worth more.
+Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and Elixir of Sages, Sage's Tea, Brilliant Mana Oil, and Major Mana Potions with Demonic Runes. Forever's Major Mender's Potion shares the potion cooldown with your mana potion; on a long fight the mana is worth more.
 
 ## Races
 

@@ -348,7 +348,7 @@
             }
           }
         },
-        "notes": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana."
+        "notes": "Renew on the tank all fight at rank 1: a low rank heals the most per mana as long as it keeps your healing bonus; in 1.12 a rank learned below level 20 lost part of it, so check the tooltip on a geared priest."
       },
       {
         "action": {
@@ -1026,7 +1026,7 @@
             }
           }
         },
-        "notes": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana."
+        "notes": "A cheap low-rank heal on a party member who is missing a third of their health, for very little mana. In 1.12 a rank learned below level 20 lost part of its healing bonus, so check the tooltip on a geared priest."
       },
       {
         "action": {
