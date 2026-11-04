@@ -27,6 +27,7 @@ FACTION_VALUES = {"alliance", "horde"}
 BUILD = "1.60.1.70374"
 BUILD_DIR = Path("builds") / BUILD
 IDS_MD = Path("../sim/request/IDS.md")
+ACTIVE_BUILD_JSON = Path("../web/src/data/active-build.json")
 
 #: Sources per kind. src-classicdb lane, 2026-09-29: the cmangos/classic-db
 #: dump (pipeline.classic_sources) joined as a third loot.json origin --
@@ -413,7 +414,11 @@ def items() -> list[dict]:
 
 @cache
 def simbuffs() -> dict:
-    return json.loads((BUILD_DIR / SIMBUFFS).read_text(encoding="utf-8"))
+    """The ACTIVE build's simbuffs.json, unlike the rest of this file: it is held
+    to today's IDS.md, which a pinned build's file stops tracking at the next id
+    (the Mender's potions and Elixir of Holy Power, rounds 12 and 13)."""
+    active = json.loads(ACTIVE_BUILD_JSON.read_text(encoding="utf-8"))["build"]
+    return json.loads((Path("builds") / active / SIMBUFFS).read_text(encoding="utf-8"))
 
 
 def source_items(source: dict) -> set[int]:
