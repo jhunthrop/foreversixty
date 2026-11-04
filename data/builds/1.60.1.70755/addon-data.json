@@ -9392,14 +9392,14 @@
           {
             "spell_id": 13549,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9418,14 +9418,14 @@
           {
             "spell_id": 13549,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9451,14 +9451,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9491,14 +9491,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9531,14 +9531,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9578,14 +9578,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9625,14 +9625,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9672,14 +9672,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9719,14 +9719,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9766,14 +9766,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9813,14 +9813,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9867,14 +9867,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9921,14 +9921,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9975,14 +9975,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10029,14 +10029,14 @@
           {
             "spell_id": 13554,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10083,14 +10083,14 @@
           {
             "spell_id": 13554,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14286,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10137,14 +10137,14 @@
           {
             "spell_id": 13555,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14286,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10191,14 +10191,14 @@
           {
             "spell_id": 13555,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14287,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10219,14 +10219,14 @@
           {
             "spell_id": 13549,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10245,14 +10245,14 @@
           {
             "spell_id": 13549,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10278,14 +10278,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10318,14 +10318,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10358,14 +10358,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10405,14 +10405,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10452,14 +10452,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10499,14 +10499,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10546,14 +10546,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10593,14 +10593,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10640,14 +10640,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10694,14 +10694,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10748,14 +10748,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10802,14 +10802,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10856,14 +10856,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10910,14 +10910,14 @@
           {
             "spell_id": 13554,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10964,14 +10964,14 @@
           {
             "spell_id": 13554,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14286,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -11018,14 +11018,14 @@
           {
             "spell_id": 13555,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14286,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -11072,14 +11072,14 @@
           {
             "spell_id": 13555,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14287,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap when the shared cooldown is more than a global away and you are above 25% mana.",
+            "condition": "Arcane Shot to fill a gap above 25% mana, and from 18 only when Multi-Shot is more than a global away.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
