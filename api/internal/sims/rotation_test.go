@@ -45,12 +45,18 @@ func TestRotationListsEveryRankOfAListedAbility(t *testing.T) {
 			t.Errorf("band 60 lists spell %d", id)
 		}
 	}
-	at20, _ := RotationFor("", "warrior-fury", 25)
-	if at20.Lists(5308) || at20.Lists(23894) {
-		t.Error("band 20 lists Execute or Bloodthirst, which it does not carry yet")
+	// Since round 16 the addon carries a band at every level a line changes, so level
+	// 22 sits before Execute (learned at 24) and level 25 sits after it.
+	at22, _ := RotationFor("", "warrior-fury", 22)
+	if at22.Lists(5308) || at22.Lists(23894) {
+		t.Error("level 22 lists Execute or Bloodthirst, which it does not carry yet")
 	}
-	if !at20.Lists(1608) {
-		t.Error("band 20 does not list Heroic Strike rank 4")
+	if !at22.Lists(285) {
+		t.Error("level 22 does not list Heroic Strike rank 3")
+	}
+	at25, _ := RotationFor("", "warrior-fury", 25)
+	if !at25.Lists(5308) || !at25.Lists(1608) || at25.Lists(23894) {
+		t.Error("level 25 should list Execute and Heroic Strike rank 4, and not Bloodthirst")
 	}
 	if _, ok := RotationFor("", "warrior-gladiator", 60); ok {
 		t.Error("a spec with no shipped rotation has one")
