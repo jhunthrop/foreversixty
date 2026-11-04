@@ -5,7 +5,7 @@ spec: restoration
 role: healer
 build: 'FS1:1.60.1.70755:shaman:dwarf:0/055/5530003315513151:'
 recommendedRaces: [dwarf, tauren]
-statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
+statPriority: [MP5, Intellect, Healing power, Spirit, Critical strike]
 description: 'Restoration Shaman in Forever: Riptide into Chain Heal, Water Shield and Mana Tide for mana, which totems to drop, Chain Heal ranks, stats, races and leveling.'
 updated: 2026-11-02
 confidence: inferred
@@ -37,7 +37,7 @@ Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal throug
 
 ### Weaknesses
 
-- Chain Heal cast on a party member only jumps inside your party, so your group placement matters
+- Chain Heal's jumps go to whoever is most hurt near its target, so stand where the damage is
 - Your Water totems only reach your own party, and every totem stays where you drop it
 - Without raid gear and buffs your mana does not last a long fight
 
@@ -73,14 +73,14 @@ Ancestral Healing takes the last three points: 25% more armor on your target for
 
 1. Riptide on the tank whenever it is ready and the tank is hurt. It is your cheapest heal per mana, and it sets up the Chain Heal. It heals over its 15 seconds with nothing up front, so it never answers a big hit on its own.
 2. Chain Heal on the tank as soon as anyone in your party is hurt, as long as your mana is ahead of the fight. Riptide's 25% applies to the target you cast it on, and the two jumps go to the most injured people near it, each for half the heal before.
-3. Healing Wave when the tank is down to 60%. Cast it at rank 2 in a raid; a low rank keeps all of your healing bonus for a fraction of the mana. Lesser Healing Wave is the fast heal when it is down to 30% and the next hit could kill it.
+3. Healing Wave when the tank is down to 60%. Drop a rank when your mana is behind the fight, and check what the low ranks actually heal for before you lean on them. Lesser Healing Wave is the fast heal when it is down to 30% and the next hit could kill it.
 4. Nature's Swiftness into Healing Wave when the tank is under 25%. Keep it for exactly that.
 
 **Party members.** Heal them directly only while your mana is above half: Riptide when one is under 50%, Lesser Healing Wave under 25%. Otherwise Chain Heal is how they get healed.
 
 **Chain Heal ranks.** Rank 3 costs 405 mana for a 490 base heal; rank 1 costs 260 for 251. Rank 1 is cheaper for what it heals, but in a raid with Water Shield, Mana Tide and your consumables, rank 3 heals more over the whole fight. Pace your Chain Heals to your mana rather than downranking them; save ranks 1 and 2 for fights where you will run dry.
 
-**Your party matters.** Chain Heal cast on a party member only jumps to other party members, and Healing Stream, Mana Spring and Mana Tide only reach your party. Ask to be grouped with whoever takes the damage, usually the tank and the melee.
+**Your party matters.** Healing Stream, Mana Spring and Mana Tide only reach your party. Ask to be grouped with whoever takes the damage, usually the tank and the melee.
 
 **Water totem.** Healing Stream heals your party every 2 seconds for 5 minutes. Mana Spring is the other choice, but two Mana Springs do not stack, so if another shaman in your group already has one down, Healing Stream is the one that adds something. Mana Tide replaces either for 12 seconds; drop it under 25% mana, then put your Water totem back.
 
@@ -94,7 +94,7 @@ Healing from any source counts, including items that add damage and healing; dam
 
 ## Best in slot
 
-Your raid set is most of the Devout set from Stratholme and Blackrock Spire, a crafted Leatherworking helm and Tailoring's Mooncloth Boots; both crafts bind when equipped. Carry a healing staff, or a one-hander with a shield or held off-hand item, whichever the list ranks higher for your level. The full list, with alternatives for every slot, is on the [Restoration BiS page](/bis/shaman/restoration).
+Your raid set is most of the Devout set from Stratholme and Blackrock Spire, a crafted Leatherworking helm and Tailoring's Mooncloth Boots; both crafts bind when equipped. Carry a healing staff, or a one-hander with a shield or held off-hand item, and at 60 the staff usually wins. The full list, with alternatives for every slot, is on the [Restoration BiS page](/bis/shaman/restoration).
 
 ## Enchants and consumables
 

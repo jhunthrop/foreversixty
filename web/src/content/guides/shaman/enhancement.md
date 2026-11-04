@@ -63,7 +63,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Rotation and priority
 
-**Before the pull.** Put Windfury Weapon on your weapon. Shamans in Forever never dual wield: you carry a two-hander, or a one-hander with a shield or a held off-hand item, and Windfury goes on the weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves more than 30 yards from them, stand where it is now and Totemic Call brings them to you.
+**Before the pull.** Put Windfury Weapon on your weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves more than 30 yards from them, stand where it is now and Totemic Call brings them to you.
 
 **On the pull.** Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown. Then Stormstrike.
 
@@ -96,7 +96,7 @@ Your raid set leans on Leatherworking crafts that bind when equipped, a crafted 
 
 ## Enchants and consumables
 
-Windfury Weapon is your weapon's temporary enchant, so there is no room for a sharpening stone or weighted stone on it. Keep Windfury Weapon up all fight, and use the weapon enchant and consumables listed here.
+Windfury Weapon is your weapon's temporary enchant, so there is no room for a sharpening stone or weighted stone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
 
 ## Races
 
@@ -110,4 +110,4 @@ Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain a
 
 ## Leveling
 
-Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Take Stormstrike as soon as the tree opens it. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.
+Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Stormstrike opens in the fourth row of the tree, but the spell itself is a level 40 spell; if it will not cast for you yet, take it at 40. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.
