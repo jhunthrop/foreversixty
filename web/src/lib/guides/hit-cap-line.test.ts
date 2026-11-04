@@ -1,7 +1,7 @@
 // web/src/lib/guides/hit-cap-line.test.ts
 import { describe, expect, it } from 'vitest';
 import type { DecodedTalentView, DecodedTreeView } from './build-tree';
-import { guideExpertiseCapLine, guideHitCapLine, schoolHitTalent } from './hit-cap-line';
+import { guideHitCapLine, schoolHitTalent } from './hit-cap-line';
 
 function tree(...talents: [string, number][]): DecodedTreeView {
   const views = talents.map(
@@ -89,25 +89,5 @@ describe('schoolHitTalent', () => {
   it('ignores one with no points and returns undefined when there is none', () => {
     expect(schoolHitTalent([tree(['Precision', 0])])).toBeUndefined();
     expect(schoolHitTalent([])).toBeUndefined();
-  });
-});
-
-describe('guideExpertiseCapLine', () => {
-  it('words the dodge cap, with parry for a tank', () => {
-    expect(guideExpertiseCapLine({ baseline: 0, dodge: 6.5 })?.text).toBe('Expertise cap: 6.5% (dodge)');
-    expect(guideExpertiseCapLine({ baseline: 0, dodge: 5.5, parry: 14 })?.text).toBe(
-      'Expertise cap: 5.5% (dodge), 14% (parry)',
-    );
-    expect(guideExpertiseCapLine(null)).toBeUndefined();
-  });
-
-  it('names the caps for a tank who starts with expertise, never a 0% cap', () => {
-    // The real tank shape: 8% expertise, dodge already gone, parry 6% away (boss parry 14%).
-    expect(guideExpertiseCapLine({ baseline: 8, dodge: 0, parry: 6.000000000000002 })?.text).toBe(
-      'Expertise cap: reached (dodge), 14% (parry) · 8% built in',
-    );
-    expect(guideExpertiseCapLine({ baseline: 2, dodge: 4.5 })?.text).toBe(
-      'Expertise cap: 6.5% (dodge) · 2% built in',
-    );
   });
 });

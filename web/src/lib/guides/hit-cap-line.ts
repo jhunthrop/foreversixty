@@ -5,7 +5,7 @@
 // that supplies the school hit is named from the build, never typed per guide.
 import { bisCopy } from '../bis/copy';
 import { formatCapPercent } from '../bis/hit-cap';
-import type { BisExpertiseToCap, BisHitToCap, BisSpellHitToCap } from '../bis/types';
+import type { BisHitToCap, BisSpellHitToCap } from '../bis/types';
 import type { DecodedTreeView } from './build-tree';
 import { guidesCopy } from './copy';
 
@@ -28,8 +28,8 @@ export function schoolHitTalent(trees: readonly DecodedTreeView[]): string | und
 }
 
 // The band publishes how far its character is FROM each cap (`to_cap`, floored at 0) and what
-// it already has (`baseline`), never the cap itself (2026-11-02 launch defect: a tank with 8%
-// expertise read "Expertise cap: 0% (dodge), 6% (parry)"). The cap a guide names is the two
+// it already has (`baseline`), never the cap itself (2026-11-02 launch defect: a cap line
+// read 0% for a character already past it). The cap a guide names is the two
 // added together; a distance of 0 with a baseline means the character is already past it,
 // so the cap reads "reached" rather than a number the data cannot pin down.
 
@@ -85,21 +85,5 @@ export function guideHitCapLine(
         ? guidesCopy.hitToCap(specials, split)
         : guidesCopy.hitToCapWhite(specials, capText(hitToCap.baseline, hitToCap.white), split),
     title: bisCopy.hitToCapTitle,
-  };
-}
-
-/** The guide's expertise line ("Expertise cap: 6.5% (dodge)"); the BiS rail keeps its own wording. */
-export function guideExpertiseCapLine(
-  expertiseToCap: BisExpertiseToCap | null | undefined,
-): GuideHitCapLine | undefined {
-  if (expertiseToCap === null || expertiseToCap === undefined) return undefined;
-  const { baseline, dodge, parry } = expertiseToCap;
-  return {
-    text: guidesCopy.expertiseCap(
-      capText(baseline, dodge),
-      parry === undefined ? undefined : capText(baseline, parry),
-      baseline > 0 ? guidesCopy.capBuiltIn(formatCapPercent(baseline)) : undefined,
-    ),
-    title: bisCopy.expertiseToCapTitle,
   };
 }

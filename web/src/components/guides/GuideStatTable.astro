@@ -12,7 +12,7 @@
 // expertise, which have no rating in this client). A stat inside its error reads "Not
 // significant" and one below zero beyond its error "No gain", here and in the hero.
 import { band60Weights } from '../../lib/guides/class-dps';
-import { guideExpertiseCapLine, guideHitCapLine } from '../../lib/guides/hit-cap-line';
+import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { guidesCopy } from '../../lib/guides/copy';
 import { railStatRows, railStatValueText } from '../../lib/guides/rail-stats';
 import GuideTableBox from './GuideTableBox.astro';
@@ -37,7 +37,6 @@ const rows =
   band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.hasteScaleFactor);
 const anchor = rows.find((row) => row.value !== undefined && row.perPercent === undefined)?.label;
 const hitCap = guideHitCapLine(band60?.hitToCap, hitTalent);
-const expertiseCap = guideExpertiseCapLine(band60?.expertiseToCap);
 const role = band60?.role ?? 'dps';
 const unitRow = rows.find(
   (row) => row.value !== undefined && row.perPercent === undefined && row.perPoint !== undefined,
@@ -114,11 +113,6 @@ function perPointText(value: number | undefined): string {
     {noGain.length > 0 && (
       <p class="stat-note" data-testid="guide-stat-table-no-gain">
         {guidesCopy.noGainNote(noGain.join(' and '), noGain.length > 1, role)}
-      </p>
-    )}
-    {expertiseCap !== undefined && (
-      <p class="stat-note" title={expertiseCap.title} data-testid="guide-stat-table-expertise-cap">
-        {expertiseCap.text}
       </p>
     )}
   </div>
