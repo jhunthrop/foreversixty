@@ -150,13 +150,13 @@ func TestRewriteAtSixtyTakesOnlyThePresetsRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	choices := rankChoices{15207: {{FromLevel: 60, ToLevel: 60, Rank: 4, Preset: BarePreset}}}
+	choices := rankChoices{15208: {{FromLevel: 60, ToLevel: 60, Rank: 4, Preset: BarePreset}}}
 	bare, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forRequest(BarePreset, "orc"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(bare), `"spellId":915`) || strings.Contains(string(bare), `"spellId":15207`) {
-		t.Error("bare 60 should cast Lightning Bolt rank 4 (915) in place of 15207")
+	if !strings.Contains(string(bare), `"spellId":915`) || strings.Contains(string(bare), `"spellId":15208`) {
+		t.Error("bare 60 should cast Lightning Bolt rank 4 (915) in place of 15208")
 	}
 	raid, err := rewriteRotationRanks(raw, "shaman", api.MaxLevel, choices.forRequest(RaidPreset, "orc"))
 	if err != nil {
@@ -294,22 +294,26 @@ func TestParseRankChoicesScopesRowsToLines(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if rank, ok := all["x"].rankAtLine(7, 45, 3); !ok || rank != 2 {
+	if rank, ok := all["x"].rankAtLine(7, 45, castLine{index: 3}); !ok || rank != 2 {
 		t.Errorf("line 3 at 45 = (%d, %v), want rank 2", rank, ok)
 	}
-	if _, ok := all["x"].rankAtLine(7, 45, 4); ok {
+	if _, ok := all["x"].rankAtLine(7, 45, castLine{index: 4}); ok {
 		t.Error("line 4 took a row scoped to line 3")
+	}
+	if _, ok := all["x"].rankAtLine(7, 45, castLine{prepull: true, index: 3}); ok {
+		t.Error("pre-pull action 3 took a row scoped to priority line 3")
 	}
 	if _, ok := all["x"].rankAt(7, 45); ok {
 		t.Error("an unscoped read took a row scoped to line 3")
 	}
-	if got := all["x"].scopedLines(7); !reflect.DeepEqual(got, []int{3}) {
-		t.Errorf("scopedLines = %v, want [3]", got)
+	if got := all["x"].scopedLines(7); !reflect.DeepEqual(got, []castLine{{index: 3}}) {
+		t.Errorf("scopedLines = %v, want line 3", got)
 	}
 	for _, raw := range []string{
 		`{"specs":{"x":[{"authored":7,"lines":[-1],"bands":[]}]}}`,
 		`{"specs":{"x":[{"authored":7,"lines":[2,2],"bands":[]}]}}`,
 		`{"specs":{"x":[{"authored":7,"lines":[],"bands":[]}]}}`,
+		`{"specs":{"x":[{"authored":7,"prepull":[0,0],"bands":[]}]}}`,
 	} {
 		if _, err := parseRankChoices([]byte(raw)); err == nil {
 			t.Errorf("accepted %s", raw)
@@ -325,36 +329,47 @@ func TestCuratedRankChoiceLinesCastTheirAuthoredSpell(t *testing.T) {
 	readJSON(t, curatedRankChoices, &file)
 	for spec, spells := range file.Specs {
 		for _, sp := range spells {
-			if len(sp.Lines) == 0 {
+			if len(sp.Lines) == 0 && len(sp.Prepull) == 0 {
 				continue
 			}
 			var list struct {
 				Rotation struct {
-					PriorityList []json.RawMessage `json:"priorityList"`
+					PrepullActions []json.RawMessage `json:"prepullActions"`
+					PriorityList   []json.RawMessage `json:"priorityList"`
 				} `json:"rotation"`
 			}
 			readJSON(t, "../../data/curated/apl/"+spec+".json", &list)
-			for _, line := range sp.Lines {
-				if line >= len(list.Rotation.PriorityList) {
-					t.Errorf("%s %s: line %d is past the list's %d entries", spec, sp.Spell, line, len(list.Rotation.PriorityList))
-					continue
-				}
-				var entry struct {
-					Action struct {
-						CastSpell struct {
-							SpellID struct {
-								SpellID int32 `json:"spellId"`
-							} `json:"spellId"`
-						} `json:"castSpell"`
-					} `json:"action"`
-				}
-				if err := json.Unmarshal(list.Rotation.PriorityList[line], &entry); err != nil {
-					t.Fatal(err)
-				}
-				if got := entry.Action.CastSpell.SpellID.SpellID; got != sp.Authored {
-					t.Errorf("%s %s: line %d casts %d, not the authored %d", spec, sp.Spell, line, got, sp.Authored)
-				}
+			entries := map[string][]json.RawMessage{"line": list.Rotation.PriorityList, "pre-pull action": list.Rotation.PrepullActions}
+			for kind, indexes := range map[string][]int{"line": sp.Lines, "pre-pull action": sp.Prepull} {
+				checkScopedCasts(t, spec, sp.Spell, kind, sp.Authored, indexes, entries[kind])
 			}
+		}
+	}
+}
+
+// checkScopedCasts fails each of indexes that is not an entry of entries
+// casting authored.
+func checkScopedCasts(t *testing.T, spec, spell, kind string, authored int32, indexes []int, entries []json.RawMessage) {
+	t.Helper()
+	for _, line := range indexes {
+		if line >= len(entries) {
+			t.Errorf("%s %s: %s %d is past the list's %d entries", spec, spell, kind, line, len(entries))
+			continue
+		}
+		var entry struct {
+			Action struct {
+				CastSpell struct {
+					SpellID struct {
+						SpellID int32 `json:"spellId"`
+					} `json:"spellId"`
+				} `json:"castSpell"`
+			} `json:"action"`
+		}
+		if err := json.Unmarshal(entries[line], &entry); err != nil {
+			t.Fatal(err)
+		}
+		if got := entry.Action.CastSpell.SpellID.SpellID; got != authored {
+			t.Errorf("%s %s: %s %d casts %d, not the authored %d", spec, spell, kind, line, got, authored)
 		}
 	}
 }

@@ -427,6 +427,15 @@ func TestRewriteScopesARankChoiceToItsLines(t *testing.T) {
 		`"priorityList":[{"action":{"castSpell":{"spellId":{"spellId":10396}}}},{"action":{"castSpell":{"spellId":{"spellId":10396}}}}]}`)
 	const swiftness, filler = 0, 1
 	choices := rankChoices{10396: {{FromLevel: 44, ToLevel: 56, Rank: 6, Lines: []int{filler}}}}
+	opener := rankChoices{10396: {{FromLevel: 44, ToLevel: 56, Rank: 6, Prepull: []int{0}}}}
+	scopedOpener, err := rewriteRotationRanks(raw, "shaman", 50, opener)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(scopedOpener), `"prepullActions":[{"action":{"castSpell":{"spellId":{"spellId":959}}}}]`) ||
+		strings.Count(string(scopedOpener), `"spellId":959`) != 1 {
+		t.Errorf("a row scoped to pre-pull action 0 should rewrite that action alone: %s", scopedOpener)
+	}
 	got, err := rewriteRotationRanks(raw, "shaman", 50, choices)
 	if err != nil {
 		t.Fatal(err)

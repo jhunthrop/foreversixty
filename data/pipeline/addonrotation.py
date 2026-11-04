@@ -257,7 +257,7 @@ def _band_ranks(choices: dict, spell_id: int, level: int, line: int) -> dict[str
     for row in choices.get(spell_id, []):
         if row.get("preset", BARE_PRESET) != BARE_PRESET:
             continue
-        if row.get("lines") and line not in row["lines"]:
+        if row["lines"] is not None and line not in row["lines"]:
             continue
         if row["from_level"] <= level <= row["to_level"]:
             for race in row.get("races") or [None]:
@@ -295,16 +295,26 @@ def _race_ids(pick: _RankPick, ranks: dict[str | None, int], resolved_id: int) -
 
 def load_rank_choices(curated_dir: Path, spec: str) -> dict[int, list[dict]]:
     """One spec's per-band rank choices, by the list's authored id, each row
-    carrying its spell's "lines" scope (None for every line). The file is
-    optional here (a test's curated dir may have none)."""
+    carrying the priority-list lines it applies to: its spell's "lines", none
+    when the spell scopes only pre-pull actions, None (every line) when it
+    scopes nothing. The file is optional here (a test's curated dir may have
+    none)."""
     path = curated_dir / "rank-choices.json"
     if not path.exists():
         return {}
     spells = json.loads(path.read_text(encoding="utf-8")).get("specs", {}).get(spec, [])
-    return {
-        spell["authored"]: [{**row, "lines": spell.get("lines")} for row in spell["bands"]]
-        for spell in spells
-    }
+    return {spell["authored"]: _scoped_rows(spell) for spell in spells}
+
+
+def _scoped_rows(spell: dict) -> list[dict]:
+    """`spell`'s rows, each with the priority-list "lines" it applies to."""
+    if spell.get("lines"):
+        lines = spell["lines"]
+    elif spell.get("prepull"):
+        lines = []
+    else:
+        lines = None
+    return [{**row, "lines": lines} for row in spell["bands"]]
 
 
 def _rank_of(spellranks: dict, class_slug: str) -> dict[int, int]:

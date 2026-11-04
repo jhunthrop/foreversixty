@@ -85,13 +85,12 @@ func rewriteRotationRanks(raw []byte, class string, level int, choices rankChoic
 	if err := json.Unmarshal(raw, &root); err != nil {
 		return nil, fmt.Errorf("the embedded APL is not valid JSON: %w", err)
 	}
-	if v, ok := root["prepullActions"]; ok {
-		root["prepullActions"] = filterRankedActions(v, rankResolver(class, level, choices))
-	}
-	if v, ok := root["priorityList"]; ok {
-		root["priorityList"] = filterRankedLines(v, func(line int) func(int32) (int32, bool) {
-			return lineRankResolver(class, level, choices, line)
-		})
+	for key, prepull := range map[string]bool{"prepullActions": true, "priorityList": false} {
+		if v, ok := root[key]; ok {
+			root[key] = filterRankedLines(v, func(index int) func(int32) (int32, bool) {
+				return lineRankResolver(class, level, choices, castLine{prepull: prepull, index: index})
+			})
+		}
 	}
 	out, err := json.Marshal(root)
 	if err != nil {
@@ -110,7 +109,7 @@ func filterRankedActions(v any, resolve func(int32) (int32, bool)) any {
 
 // filterRankedLines is filterRankedActions with each entry resolved by
 // resolveLine of its 0-based index, so a rank choice scoped to lines
-// (rankchoices.Spell.Lines) rewrites only those entries.
+// (rankchoices.Spell Lines and Prepull) rewrites only those entries.
 func filterRankedLines(v any, resolveLine func(line int) func(int32) (int32, bool)) any {
 	arr, ok := v.([]any)
 	if !ok {
@@ -196,9 +195,9 @@ func rankResolver(class string, level int, choices rankChoices) func(int32) (int
 	return lineRankResolver(class, level, choices, noLine)
 }
 
-// lineRankResolver is rankResolver for a cast on priority-list entry line,
-// where rows scoped to that line apply as well.
-func lineRankResolver(class string, level int, choices rankChoices, line int) func(int32) (int32, bool) {
+// lineRankResolver is rankResolver for a cast at line, where rows scoped to
+// that line apply as well.
+func lineRankResolver(class string, level int, choices rankChoices, line castLine) func(int32) (int32, bool) {
 	return func(id int32) (int32, bool) {
 		if rank, ok := choices.rankAtLine(id, level, line); ok {
 			if chosen, learned := spellranks.SpellIDOfRank(class, id, rank, level); learned {
