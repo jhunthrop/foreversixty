@@ -307,6 +307,10 @@ jobs:
       # (it reads trainables/, enchants.json and simbuffs.json); simdb's manifest
       # refresh below lists it.
       - run: uv run python -m pipeline spelltips --build "$BUILD"
+      # icons again, now that spelltips/ exists: the first icons run above reads the tooltips the
+      # build had before this run, so a spell new to them (Travel Form, Polymorph on 2026-11-04)
+      # had no art until the next night. The icons already on disk are skipped.
+      - run: uv run python -m pipeline icons --build "$BUILD"
       # simdb reads the same raw inputs normalize does and refreshes
       # manifest.json, so it runs after the normalize that covers icons and
       # tree art rather than before it; simconst and levels ran before icons

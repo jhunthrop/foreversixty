@@ -1,6 +1,6 @@
 // web/src/lib/guides/hit-cap-line.ts
 // The Stat priority block's headline, worded the way a guide gives it: "Hit cap: 16% ·
-// 6% from Precision, 10% from gear". The numbers are the same ones the BiS page's rail
+// 6% from Precision, 10% still to find". The numbers are the same ones the BiS page's rail
 // prints (`hitCapLine`), so the two pages cannot disagree; only the sentence differs. The talent
 // that supplies the school hit is named from the build, never typed per guide.
 import { bisCopy } from '../bis/copy';
@@ -27,30 +27,37 @@ export function schoolHitTalent(trees: readonly DecodedTreeView[]): string | und
   return undefined;
 }
 
-// The band publishes how far its character is FROM each cap (`to_cap`, floored at 0) and what
-// it already has (`baseline`), never the cap itself (2026-11-02 launch defect: a tank with 8%
+// The band publishes how far its best-in-slot character is FROM each cap (`to_cap`, floored at 0)
+// and what that character already has from its set, talents and buffs (`baseline`), never the
+// cap itself (2026-11-02 launch defect: a tank with 8%
 // expertise read "Expertise cap: 0% (dodge), 6% (parry)"). The cap a guide names is the two
 // added together; a distance of 0 with a baseline means the character is already past it,
 // so the cap reads "reached" rather than a number the data cannot pin down.
+
+/** What each published `baseline` counts (`sim/cmd/leveling-bis/hitcap.go`, `expertisecap.go`). */
+const MELEE_HIT_SOURCES = 'gear, talents and buffs';
+const SPELL_HIT_SOURCES = 'gear and buffs';
+const EXPERTISE_SOURCES = 'gear and talents';
 
 /** The cap as the guide names it: `baseline + toCap`, or "reached" past it. */
 function capText(baseline: number, toCap: number): string {
   return toCap <= 0 && baseline > 0 ? guidesCopy.capReached : `${formatCapPercent(baseline + toCap)}%`;
 }
 
-/** The split after the cap: what the character starts with, what a talent adds, what is left
- *  for gear. Empty when the character starts at 0 and no talent adds hit (the cap is then
+/** The split after the cap: what the band's best-in-slot set already has, what a school talent
+ *  adds, and what is still short. Empty when the character starts at 0 and no talent adds hit (the cap is then
  *  all gear, and the cap alone says it). */
 function splitText(
   baseline: number,
   gear: number,
+  sources: string,
   talent?: { name: string; percent: number },
 ): string | undefined {
   if (baseline <= 0 && talent === undefined) return undefined;
   const parts = [
-    ...(baseline > 0 ? [guidesCopy.capBuiltIn(formatCapPercent(baseline))] : []),
+    ...(baseline > 0 ? [guidesCopy.capOnSet(formatCapPercent(baseline), 'hit', sources)] : []),
     ...(talent === undefined ? [] : [guidesCopy.capFrom(formatCapPercent(talent.percent), talent.name)]),
-    ...(gear > 0 ? [guidesCopy.capFrom(formatCapPercent(gear), 'gear')] : []),
+    ...(gear > 0 ? [guidesCopy.capStillToFind(formatCapPercent(gear))] : []),
   ];
   return parts.join(', ');
 }
@@ -65,7 +72,7 @@ function spellHitLine(hitToCap: BisSpellHitToCap, talentName: string | undefined
   return {
     text: guidesCopy.hitToCap(
       capText(hitToCap.baseline, hitToCap.spell),
-      splitText(hitToCap.baseline, gear, talent),
+      splitText(hitToCap.baseline, gear, SPELL_HIT_SOURCES, talent),
     ),
     title: bisCopy.spellHitToCapTitle,
   };
@@ -78,7 +85,7 @@ export function guideHitCapLine(
   if (hitToCap === null || hitToCap === undefined) return undefined;
   if (hitToCap.kind === 'spell') return spellHitLine(hitToCap, talentName);
   const specials = capText(hitToCap.baseline, hitToCap.specials);
-  const split = splitText(hitToCap.baseline, hitToCap.specials);
+  const split = splitText(hitToCap.baseline, hitToCap.specials, MELEE_HIT_SOURCES);
   return {
     text:
       hitToCap.white === undefined
@@ -98,7 +105,9 @@ export function guideExpertiseCapLine(
     text: guidesCopy.expertiseCap(
       capText(baseline, dodge),
       parry === undefined ? undefined : capText(baseline, parry),
-      baseline > 0 ? guidesCopy.capBuiltIn(formatCapPercent(baseline)) : undefined,
+      baseline > 0
+        ? guidesCopy.capOnSet(formatCapPercent(baseline), 'expertise', EXPERTISE_SOURCES)
+        : undefined,
     ),
     title: bisCopy.expertiseToCapTitle,
   };
