@@ -217,7 +217,9 @@ func isHealingWave(id int) bool {
 }
 
 // Round 14, at the 2.3 heal scale: Holy Shock is rank 4 (20930) at bare 60,
-// +0.3% both factions, seeds 1 and 50001; the raid keeps rank 1.
+// +0.3% both factions, seeds 1 and 50001. Round 15 wave 3: under the
+// level-gap rule rank 1 (learned at 30) keeps only 35% of its healing bonus
+// at 60, and rank 4 wins the raid too, +0.4 to +0.6% both factions and seeds.
 func TestHolyPaladinHolyShockAtBareSixty(t *testing.T) {
 	raw, err := os.ReadFile("../../data/curated/apl/paladin-holy.json")
 	if err != nil {
@@ -231,7 +233,7 @@ func TestHolyPaladinHolyShockAtBareSixty(t *testing.T) {
 	}
 	shock := map[int]int{1: 1311606, 2: 20473, 3: 20929, 4: 20930}
 	assertOnlyRank(t, rotation.Rotation, "paladin-holy", "paladin", BarePreset, "human", 60, shock, 4)
-	assertOnlyRank(t, rotation.Rotation, "paladin-holy", "paladin", RaidPreset, "human", 60, shock, 1)
+	assertOnlyRank(t, rotation.Rotation, "paladin-holy", "paladin", RaidPreset, "human", 60, shock, 4)
 }
 
 // Round 13: Prayer of Mending is Holy's cheapest healing (its line says so:
