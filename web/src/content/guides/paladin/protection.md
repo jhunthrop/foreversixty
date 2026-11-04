@@ -7,19 +7,18 @@ build: 'FS1:1.60.1.70755:paladin:dwarf:05005/15302102513501031/5003:'
 recommendedRaces: [dwarf, undead]
 statPriority:
   [
-    Stamina,
-    Armor,
     Defense,
+    Block,
     Dodge,
     Parry,
-    Block,
-    Block value,
-    Strength,
     Agility,
-    Attack power,
+    Block value,
+    Stamina,
     Hit,
+    Strength,
     Critical strike,
-    Expertise,
+    Armor,
+    Attack power,
   ]
 description: 'Holding threat with Righteous Fury, Holy Shield and Holy Strike, taunting with Judgement of Fury, and keeping your mana.'
 updated: 2026-11-02
@@ -28,7 +27,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/talents/paladin.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/talents/paladin.json'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
   - label: 'Forever Sixty stat weights, data/curated/specs.json'
@@ -37,7 +36,7 @@ sources:
   - label: 'Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json'
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/races.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/races.json'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---
@@ -82,7 +81,7 @@ The build is 10 Holy, 33 Protection and 8 Retribution.
 
 **Toughness** (10% armor from items) and a point of **Divine Intellect** fill the tree. In Retribution, **Deflection** is 5% parry, the only parry talent a paladin has, and **Conviction** is 6% crit on everything you do. In Holy, **Divine Strength** is 10% Strength and **Improved Seals** adds 15% to Seal of Fury and its Judgement.
 
-Left out: Reckoning (extra attacks after a block or a crit, worth less than Conviction), Stoicism, Guardian's Favor and Improved Hammer of Justice. Pick those up for PvP or utility. There is no Blessing of Sanctuary in Forever, so the tree gives you no blessing of your own. Open the planner at [/planner?class=paladin](/planner?class=paladin) to change it.
+Left out: Reckoning (extra attacks after a block or a crit, worth less than Conviction), Stoicism, Guardian's Favor and Improved Hammer of Justice. Pick those up for PvP or utility. There is no Blessing of Sanctuary in Forever, so the tree gives you no blessing of your own.
 
 ## Rotation and priority
 
@@ -107,11 +106,11 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 **Adds.** Consecration and Hammer of the Righteous are your multi-target threat; Holy Shield and Shieldsworn's block keep the damage down. Judge the add that is loose, Holy Strike your main target.
 
-**Defensives.** Templar's Bulwark first, at about a third of your health: a full health bar of absorb for 8 seconds. Divine Shield and Divine Protection come after it, once Forbearance is gone. All three put Forbearance on you, so plan one per bad moment, not three in a row. Lay on Hands is a full heal on a 20 minute cooldown: save it for the swing that would kill you.
+**Defensives.** Templar's Bulwark first, at about a third of your health: a full health bar of absorb for 8 seconds. Divine Shield and Divine Protection come after it, once Forbearance is gone. All three put Forbearance on you, so plan one per bad moment, not three in a row. Lay on Hands heals you to full on a 20 minute cooldown, but it takes every point of your mana with it, and with no mana you have no Holy Shield and no threat. Save it for the swing that would kill you, and have a mana potion ready after it.
 
 ## Stat priority
 
-Expertise and Defense come first. A boss that dodges or parries your Holy Strike and Judgement is threat you never made, and Defense takes hits away and lowers the boss's chance to crit you. Block, Dodge and Parry come next because they take hits away or blunt them, and Block also feeds Holy Shield's damage, Redoubt and Shield Specialization's mana. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
+Defense comes first: it takes hits away and lowers the boss's chance to crit you. Block, Dodge and Parry come next because they take hits away or blunt them, and Block also feeds Holy Shield's damage, Redoubt and Shield Specialization's mana. Agility is dodge and armor at once, and block value makes every block take more off the hit. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
 
 ## Best in slot
 
@@ -123,7 +122,7 @@ Expertise and Defense come first. A boss that dodges or parries your Holy Strike
 
 ## Professions
 
-Mining and Blacksmithing make plate, shields and the tanking weapons. Engineering gives you explosives for trash threat. First Aid is free, and you will use bandages between pulls while leveling.
+Mining and Blacksmithing make plate, shields and the tanking weapons. Engineering gives you explosives for trash threat. With Alchemy, Elixir of Holy Power adds to every Holy threat button you have. First Aid is free, and you will use bandages between pulls while leveling.
 
 ## Leveling
 
