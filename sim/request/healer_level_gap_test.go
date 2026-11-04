@@ -87,14 +87,17 @@ var (
 // Both priests' tank Renew is rank 7 (10927, learned at 44, whole bonus at
 // 60); rank 1 still wins to 29 (Holy to 32) and rank 3 at 39 (round 16
 // priest wave 2: Holy and Discipline split their Renew rows level by level).
+// Round 18: at 40-59 a cheaper rank with its whole bonus wins too: rank 4 at
+// 40, then Holy rank 5 at 50 and Discipline the list's rank 7.
 func TestPriestsRenewKeepsItsHealingBonus(t *testing.T) {
+	atFifty := map[string]int{"priest-holy": 5, "priest-discipline": 7}
 	for _, spec := range []string{"priest-holy", "priest-discipline"} {
 		renew := linesCasting(t, spec, 139, 10927)
 		if strings.Contains(string(renew), `"spellId":139`) && !strings.Contains(string(renew), `"spellId":10927`) {
 			t.Errorf("%s still authors Renew rank 1", spec)
 		}
 		assertRanks(t, renew, spec, "priest", "human", renewRanks, []rankCase{
-			{20, BarePreset, 1}, {29, BarePreset, 1}, {39, BarePreset, 3}, {40, BarePreset, 6}, {50, BarePreset, 7},
+			{20, BarePreset, 1}, {29, BarePreset, 1}, {39, BarePreset, 3}, {40, BarePreset, 4}, {50, BarePreset, atFifty[spec]},
 			{60, BarePreset, 7}, {60, RaidPreset, 7},
 		})
 	}

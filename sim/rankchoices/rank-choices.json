@@ -401,6 +401,18 @@
             "to_level": 39,
             "rank": 3,
             "note": "Sim-accuracy round 16 wave 2 (MaxLevel + 12 rule, level by level, 10000 iterations, seeds 1 and 50001, horde): rank 3 from 34 (ties rank 2 at 34, 90.4 against 88.9 at 36); from 40 the list's rank 7."
+          },
+          {
+            "from_level": 40,
+            "to_level": 44,
+            "rank": 4,
+            "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): the tank Renew at rank 4 beats the highest rank learned: +2.0% (Horde) / +1.9% (Alliance) at 40, +1.7% / +1.9% at 43, +1.9% / +1.8% at 44 over rank 7."
+          },
+          {
+            "from_level": 45,
+            "to_level": 49,
+            "rank": 5,
+            "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): rank 5 from 45 (+1.4% / +1.3% over rank 7 at 45, +2.2% / +1.7% at 49). From 50 ranks 6 to 8 tie and the list's rank 7 stands; rank 9 at 56-59 is within 0.5% (Alliance 0.0% at 59)."
           }
         ]
       }
@@ -444,6 +456,24 @@
             "to_level": 39,
             "rank": 3,
             "note": "Sim-accuracy round 16 wave 2 (MaxLevel + 12 rule, level by level, 10000 iterations, seeds 1 and 50001, horde): once rank 1 (MaxLevel 13) loses its bonus, rank 3 wins: 69.5 against rank 1's 67.8 at 33 (rank 2 ties), 69.2 against rank 2's 68.3 at 34, 70.8 against 68.6 at 36; from 40 the list's rank 7."
+          },
+          {
+            "from_level": 40,
+            "to_level": 44,
+            "rank": 4,
+            "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): the tank Renew at rank 4 heals more than the highest rank learned, which a mana-bound healer cannot keep up: +4.3% (Horde) / +3.5% (Alliance) at 40, +4.3% / +4.5% at 43, +6.1% / +6.3% at 44 over rank 7; rank 5 ties it at 44."
+          },
+          {
+            "from_level": 45,
+            "to_level": 51,
+            "rank": 5,
+            "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): rank 5 from 45: +5.8% / +5.6% over rank 7 at 45, +4.7% / +5.2% at 49, +6.0% / +5.9% at 50; at 51 rank 5 and rank 6 split by faction (Horde -0.4%, Alliance +0.7%)."
+          },
+          {
+            "from_level": 52,
+            "to_level": 59,
+            "rank": 6,
+            "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): rank 6 from 52 (+1.7% / +0.9% over rank 5 at 52): +6.6% / +6.0% over rank 7 at 53, +4.8% / +2.3% at 56, +2.2% / +2.6% at 59. At 60 the list's rank 7 wins."
           }
         ]
       }

@@ -92,6 +92,39 @@ func TestPriestRenewRowsSwitchInsideBandThirty(t *testing.T) {
 	}
 }
 
+// Sim-accuracy round 18: from 40 the tank's Renew was the list's rank 7 (or
+// the highest learned) at every level, but a mana-bound healer at 40-59 heals
+// more with a cheaper rank that still keeps its whole bonus: rank 4 to 44,
+// rank 5 from 45, and for Holy rank 6 from 52 (level by level, 10,000
+// iterations, seeds 1 and 50001, both factions).
+func TestPriestRenewRowsBelowSixty(t *testing.T) {
+	for _, c := range []struct {
+		spec  string
+		level int
+		want  []int
+	}{
+		{"priest-holy", 40, []int{4}},
+		{"priest-holy", 44, []int{4}},
+		{"priest-holy", 45, []int{5}},
+		{"priest-holy", 51, []int{5}},
+		{"priest-holy", 52, []int{6}},
+		{"priest-holy", 59, []int{6}},
+		{"priest-discipline", 40, []int{4}},
+		{"priest-discipline", 44, []int{4}},
+		{"priest-discipline", 45, []int{5}},
+		{"priest-discipline", 49, []int{5}},
+		{"priest-discipline", 50, nil},
+	} {
+		got, err := ChosenRanks(c.spec, "Renew", c.level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(got, c.want) {
+			t.Errorf("%s Renew at %d: %v, want %v", c.spec, c.level, got, c.want)
+		}
+	}
+}
+
 // Devouring Plague rank 1 (learned at 20) loses its bonus from 38; rank 2
 // wins from 52 on both factions (round 16 wave 2), and at 50 and 51 for every
 // race since round 18.
