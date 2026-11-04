@@ -20,7 +20,10 @@ async function openGuide(page: Page): Promise<string[]> {
 }
 
 test.describe('a spec guide opens the game tooltip for every name it shows', () => {
-  test('a key talent opens on hover with its rank, and the data loads only then', async ({ page, isMobile }) => {
+  test('a key talent opens on hover with its rank, and the data loads only then', async ({
+    page,
+    isMobile,
+  }) => {
     test.skip(isMobile, 'hover is the desktop path; the tap test covers touch');
     const requests = await openGuide(page);
     expect(requests).toEqual([]);
