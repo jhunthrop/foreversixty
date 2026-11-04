@@ -36,3 +36,39 @@ export function characterSearchHref(
     fromRealm === '' ? characterHref(region, ruleset, typed) : characterHref(region, fromRealm, name);
   return parseCharacterPath(href) === null ? null : href;
 }
+
+/** The one search row a lookup should open, from GET /v1/characters/search's rows. */
+export interface LookupRow {
+  key: string;
+  region: string;
+  ruleset: string;
+  name: string;
+}
+
+/**
+ * The character a lookup meant (first-real-user feedback, 2026-11-04: a phone user typed their
+ * name, kept the form's Normal default and got "not found" for a character the site had on
+ * PvP). Among the search rows whose name is what was typed, or starts with it as a whole word
+ * ("Frickin" for "Frickin Laserbeams"), the one on the chosen region and ruleset wins, then the
+ * chosen region, then the only one there is. Undefined when nothing or several match.
+ */
+export function pickLookupMatch(
+  rows: readonly LookupRow[],
+  typed: string,
+  region: string,
+  ruleset: string,
+): LookupRow | undefined {
+  const want = typed.trim().toLowerCase();
+  if (want === '') return undefined;
+  const named = rows.filter((row) => {
+    const name = row.name.toLowerCase();
+    return name === want || name.startsWith(`${want} `);
+  });
+  const exact = named.filter((row) => row.name.toLowerCase() === want);
+  const pool = exact.length > 0 ? exact : named;
+  const here = pool.filter((row) => row.region === region && row.ruleset === ruleset);
+  if (here.length === 1) return here[0];
+  const sameRegion = pool.filter((row) => row.region === region);
+  if (sameRegion.length === 1) return sameRegion[0];
+  return pool.length === 1 ? pool[0] : undefined;
+}
