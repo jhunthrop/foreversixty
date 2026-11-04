@@ -403,3 +403,57 @@ func compactJSON(t *testing.T, raw json.RawMessage) string {
 	}
 	return out.String()
 }
+
+// Sim-accuracy round 19: from 40 to 59 Discipline casts no Lesser Heal rank
+// 3 (2053, learned at 10). Its line fires when Greater Heal rank 1 is out of
+// mana reach, and by 47 the level-gap rule has taken its whole bonus: each
+// cast heals for little and breaks the five-second rule. Without it the bar
+// regenerates for the next Greater Heal: +7.7% / +6.4% at bare 40, +13% /
+// +11% at 43, +21% / +17% at 49 and +45% / +38% at 53 (Alliance / Horde,
+// seeds 1 and 50001). A Heal rank 4 line in its place is cast 0.1 times a
+// fight (it needs the mana Greater Heal rank 1 lacked) and adds nothing.
+// Before 40 Lesser Heal stays; at 60 dropping it rests on the owner's pending
+// low-rank heal ruling, so it stays there too.
+func TestDisciplineSkipsLesserHealFromFortyToFiftyNine(t *testing.T) {
+	var list struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/priest-discipline.json", &list)
+	const outside = `{"not":{"val":{"and":{"vals":[` +
+		`{"cmp":{"op":"OpGe","lhs":{"currentLevel":{}},"rhs":{"const":{"val":"40"}}}},` +
+		`{"cmp":{"op":"OpLt","lhs":{"currentLevel":{}},"rhs":{"const":{"val":"60"}}}}]}}}}`
+	lessers := 0
+	for index, raw := range list.Rotation.PriorityList {
+		var l struct {
+			Action struct {
+				CastSpell *struct {
+					SpellID struct {
+						SpellID int `json:"spellId"`
+					} `json:"spellId"`
+				} `json:"castSpell"`
+				Condition json.RawMessage `json:"condition"`
+			} `json:"action"`
+		}
+		if err := json.Unmarshal(raw, &l); err != nil {
+			t.Fatal(err)
+		}
+		if l.Action.CastSpell == nil || l.Action.CastSpell.SpellID.SpellID != 2053 {
+			continue
+		}
+		lessers++
+		var and struct {
+			And struct {
+				Vals []json.RawMessage `json:"vals"`
+			} `json:"and"`
+		}
+		if err := json.Unmarshal(l.Action.Condition, &and); err != nil || len(and.And.Vals) != 2 ||
+			compactJSON(t, and.And.Vals[1]) != outside {
+			t.Errorf("Lesser Heal line %d is not scoped outside levels 40 to 59", index)
+		}
+	}
+	if lessers == 0 {
+		t.Fatal("Discipline casts no Lesser Heal rank 3")
+	}
+}
