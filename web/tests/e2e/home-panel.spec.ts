@@ -190,10 +190,10 @@ test('a signed-in panel shows the shared header, the two next-action cards, and 
     '/setup',
   );
   await expect(panel.getByTestId('character-header-action')).toHaveText('See your upgrades →');
-  // Talents: this fixture's Zulmara carries no `spec` yet, so the card shows the honest "Pick
-  // a spec" state -- never a fabricated figure (§3.B.2). Best in slot is the header's answer.
+  // Talents: no character is ever asked to pick a spec (spec 2026-11-04-low-level-home.md).
+  // Best in slot is the header's answer.
   await expect(panel.getByTestId('home-hero-card-bis')).toHaveCount(0);
-  await expect(panel.getByTestId('home-hero-card-talents')).toContainText('Pick a spec');
+  await expect(panel.getByTestId('home-hero-card-talents')).not.toContainText('Pick a spec');
   // Simulator: the one card with a real, live figure -- no saved sim for this fixture, so
   // the existing empty-state copy/action shows.
   await expect(panel.getByTestId('home-hero-card-sim')).toContainText('No sim yet.');

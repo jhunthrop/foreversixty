@@ -18,6 +18,7 @@ import type { Item } from '../planner/types';
 import { upgradesFor, type UpgradesResult } from './upgrades';
 import { classSlugFromName } from '../report/tree-sizes';
 import { SPECS } from '../sim/specs';
+import { levelingSpecKey } from '../leveling/leveling-plan';
 
 /** `character.class` ("Hunter") + `character.spec` ("Marksmanship") -> the canonical spec
  *  key (`"hunter-marksmanship"`) `SPECS`/BiS files key by. `undefined` when either half is
@@ -28,6 +29,18 @@ export function specKeyForCharacter(raw: Pick<MeCharacter, 'class' | 'spec' | 'b
   if (character.class === undefined || character.spec === undefined) return undefined;
   const classSlug = classSlugFromName(character.class);
   return SPECS.find((row) => row.class_slug === classSlug && row.name === character.spec)?.spec;
+}
+
+/** The spec the home page reads a character as: its own (`specKeyForCharacter`), else its class's
+ *  leveling spec, so a character with no spec yet is never asked to pick one
+ *  (design/specs/2026-11-04-low-level-home.md rule 1). */
+export function homeSpecKeyFor(raw: Pick<MeCharacter, 'class' | 'spec' | 'build'>): string | undefined {
+  return specKeyForCharacter(raw) ?? levelingSpecKey(raw);
+}
+
+/** True when the home page is reading the character as its class's leveling spec. */
+export function readsAsLevelingSpec(raw: Pick<MeCharacter, 'class' | 'spec' | 'build'>): boolean {
+  return specKeyForCharacter(raw) === undefined && levelingSpecKey(raw) !== undefined;
 }
 
 /** One item-file fetch per class slug for the life of the page -- every character of the
@@ -65,9 +78,9 @@ export interface BisContext {
  * Callers read `null` as "show the not-available state," never retry it into a guess.
  */
 export async function loadBisContextFor(
-  character: Pick<MeCharacter, 'class' | 'spec' | 'level' | 'faction'>,
+  character: Pick<MeCharacter, 'class' | 'spec' | 'level' | 'faction' | 'build'>,
 ): Promise<BisContext | null> {
-  const specKey = specKeyForCharacter(character);
+  const specKey = homeSpecKeyFor(character);
   if (specKey === undefined || character.level === undefined || character.faction === undefined) return null;
   const classSlug = classSlugFromName(character.class ?? '');
   const [bisFile, items] = await Promise.all([fetchBisFile(activeBuild.build, specKey), itemsFor(classSlug)]);

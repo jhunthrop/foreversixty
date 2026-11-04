@@ -31,7 +31,7 @@ export const landingCopy = {
   /** `Fury gear for 40 to 49 →`, `Fury gear for 60 →`. */
   leadButton: (specName: string, band: number): string => `${specName} gear for ${bandLabel(band)} →`,
   /** A character whose class the site does not know: the action points at the grid below. */
-  fallbackAction: 'Pick a spec →',
+  fallbackAction: 'Every class and spec →',
   fallbackHref: '#bis-classes',
 
   gridHeadingSignedOut: 'Pick a class and spec',

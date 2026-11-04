@@ -10,7 +10,7 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "human",
-      "talents": "03323000000000000-00000000000000000-000000000000000000",
+      "talents": "03323000000000000-000000000000000000-000000000000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -857,7 +857,7 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "03323000000000000-00000000000000000-000000000000000000",
+      "talents": "03323000000000000-000000000000000000-000000000000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -1705,8 +1705,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "human",
-      "talents": "03325213020000000-00000000000000000-000000000000000000",
-      "talent_points": 21,
+      "talents": "03323213020000000-000000000000000000-000000000000000000",
+      "talent_points": 19,
       "weights": [
         {
           "stat": "attack_power",
@@ -2557,8 +2557,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "03325213020000000-00000000000000000-000000000000000000",
-      "talent_points": 21,
+      "talents": "03323213020000000-000000000000000000-000000000000000000",
+      "talent_points": 19,
       "weights": [
         {
           "stat": "attack_power",
@@ -3407,8 +3407,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "human",
-      "talents": "03325213032511000-00000000000000000-000000000000000000",
-      "talent_points": 31,
+      "talents": "03323213032211000-000000000000000000-000000000000000000",
+      "talent_points": 26,
       "weights": [
         {
           "stat": "attack_power",
@@ -4253,8 +4253,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "03325213032511000-00000000000000000-000000000000000000",
-      "talent_points": 31,
+      "talents": "03323213032211000-000000000000000000-000000000000000000",
+      "talent_points": 26,
       "weights": [
         {
           "stat": "attack_power",
@@ -5099,8 +5099,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "human",
-      "talents": "03325213032515001-05000000000000000-000000000000000000",
-      "talent_points": 41,
+      "talents": "03323213032215001-050000000000000000-000000000000000000",
+      "talent_points": 36,
       "weights": [
         {
           "stat": "attack_power",
@@ -5980,8 +5980,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "03325213032515001-05000000000000000-000000000000000000",
-      "talent_points": 41,
+      "talents": "03323213032215001-050000000000000000-000000000000000000",
+      "talent_points": 36,
       "weights": [
         {
           "stat": "attack_power",
@@ -6856,8 +6856,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "human",
-      "talents": "03325213032515001-05050000000000000-005000000000000000",
-      "talent_points": 51,
+      "talents": "03323213032215001-050500000000000000-005000000000000000",
+      "talent_points": 46,
       "weights": [
         {
           "stat": "attack_power",
@@ -7743,8 +7743,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "03325213032515001-05050000000000000-005000000000000000",
-      "talent_points": 51,
+      "talents": "03323213032215001-050500000000000000-005000000000000000",
+      "talent_points": 46,
       "weights": [
         {
           "stat": "attack_power",
@@ -8606,8 +8606,8 @@
       "preset": "raid",
       "faction": "alliance",
       "race": "human",
-      "talents": "02325213032515201-05050020000000000-200000000000000000",
-      "talent_points": 51,
+      "talents": "02323213032215201-050500200000000000-200000000000000000",
+      "talent_points": 46,
       "weights": [
         {
           "stat": "attack_power",
@@ -9513,8 +9513,8 @@
       "preset": "raid",
       "faction": "horde",
       "race": "orc",
-      "talents": "02325213032515201-05050020000000000-200000000000000000",
-      "talent_points": 51,
+      "talents": "02323213032215201-050500200000000000-200000000000000000",
+      "talent_points": 46,
       "weights": [
         {
           "stat": "attack_power",
