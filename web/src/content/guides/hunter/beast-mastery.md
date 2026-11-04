@@ -11,6 +11,9 @@ description: 'How to play a Beast Mastery Hunter in Forever: talents for levelin
 updated: 2026-11-03
 confidence: inferred
 sources:
+  - label: 'Blizzard, Class Deep Dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
@@ -51,7 +54,7 @@ Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial 
 ### Weaknesses
 
 - A dead or idle pet is a large part of your damage gone
-- The pet gets no raid buffs in Forever, so only your own gear makes it stronger
+- The pet takes no stat buffs from other players in Forever, so your gear is what makes it stronger
 - Mana runs out on long fights if you spend Arcane Shots freely
 
 ### In a raid
@@ -92,7 +95,7 @@ Auto Shot does more damage than any button you press, so protect it:
 
 When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed Shot and Multi-Shot going. Drink a Major Mana Potion before you need it, not at 5%.
 
-**The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Pets in Forever get no buffs from your raid, so the only way to make it stronger is your own gear. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
+**The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Other players' stat buffs do not reach your pet in Forever, so your own gear is what makes it stronger. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
 
 **Threat.** A Beast Mastery hunter with Bestial Wrath up can pass a fresh tank in the opening seconds. Watch your threat and Feign Death before you reach the tank, not after the boss turns. Feign Death can be resisted: if it says Resisted, you still have all your threat. The pet keeps its own threat, which is fine, since it sits behind the boss.
 
@@ -134,7 +137,7 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 
 ### Levels 1 to 19
 
-- Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8 and Aspect of the Hawk at 10, which replaces Monkey for good.
+- Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8 and Aspect of the Hawk at 10, which replaces Monkey for good.
 - At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 - Your first five points go into Deadly Aspects: with Aspect of the Hawk up, each point is a 2% chance on Auto Shot for 30% ranged attack speed over 12 sec. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training starts at 17.
 - Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.

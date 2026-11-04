@@ -11,7 +11,7 @@ sources:
   - label: 'Icy Veins, Forever talent calculator'
     url: https://www.icy-veins.com/wow-forever/news/start-planning-your-wow-forever-character-with-our-new-talent-calculator/
     kind: community
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Wowhead, Skyborne First Look'

@@ -13,12 +13,9 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty, stat weights'
-    url: https://foreversixty.gg/sim/weights
-    kind: site
   - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
@@ -61,7 +58,7 @@ Deep Holy for Prayer of Mending, with Discipline taken to Meditation and Inner F
 - **Twilight Focus** (3 points): 70% of the hits you take no longer push back your casts. On raid-wide damage this is worth more than any throughput point.
 - **Meditation** (3 points), **Mental Strength** (5 points) and **Inner Focus** (1 point): regeneration while casting, a deeper bar, and a free spell every 3 minutes.
 
-Spirit of Redemption is only the path to Prayer of Mending. [Open the planner](/planner?class=priest) to change the build.
+Spirit of Redemption is the step to Prayer of Mending, and if you die it gives you 15 seconds of free heals: keep casting, a death in the last seconds of a hard pull still heals the raid through. [Open the planner](/planner?class=priest) to change the build.
 
 ## Rotation and priority
 
@@ -114,7 +111,7 @@ Tailoring makes healing cloth you will wear into the first raids. Enchanting sav
 ### Levels 1 to 19
 
 - Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12.
-- Three points of Twilight Focus from 10 to 12 stop your casts from being pushed back when something hits you. Improved Renew takes 13 to 15 for 15% bigger Renews, and Holy Specialization starts at 16 for more crit on your Holy spells.
+- Three points of Twilight Focus from 10 to 12 mean most hits no longer push back your casts. Improved Renew takes 13 to 15 for 15% bigger Renews, and Holy Specialization starts at 16 for more crit on your Holy spells.
 - Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
 
 ### Levels 20 to 60

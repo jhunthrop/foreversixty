@@ -15,14 +15,14 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever client spell and talent data'
-    url: https://wago.tools/db2/SpellEffect
+  - label: 'Forever client spell data (wago.tools, build 70755)'
+    url: https://wago.tools/db2/SpellEffect?build=1.60.1.70755
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, rotation'
-    url: https://foreversixty.gg/sources
+  - label: 'Forever Sixty, how Demonology plays'
+    url: https://foreversixty.gg/sim/specs
     kind: site
 ---
 
@@ -80,7 +80,7 @@ Each summon is a 6 second cast with Master Summoner, and the Succubus costs a So
 
 On the pull: Curse of the Elements first if you hold it, since every spell the raid casts hits harder from that global on, then Corruption, then Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight. Curses and banes have their own slots in Forever, so Curse of the Elements and Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 
-Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute left never lands, so in the last minute put Bane of Agony up instead. Doom's damage scales hard with your spell damage, which is why it beats Agony here.
+Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute left never lands, so in the last minute put Bane of Agony up instead. Doom does more damage per minute than Agony for one global instead of two and a half, which is why it beats Agony here.
 
 Recast Corruption when it falls off and never clip it. Start Immolate's cast with about 3 seconds left on the old one. Everything else is Shadow Bolt.
 
@@ -110,7 +110,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, so more of your Shadow Bolts put up Improved Shadow Bolt and land for double the bonus through Ruin, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, so save it for the last 35%, when every Shadow Bolt hits 6% harder, and Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the last 35% if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, so more of your Shadow Bolts put up Improved Shadow Bolt and land for double the bonus through Ruin, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, so save it for the last 35%, when every Shadow Bolt hits 6% harder, and Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the last 35% if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is close behind Orc: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds.
 
 ## Professions
 
@@ -122,7 +122,7 @@ Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted cast
 
 - Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10, then train Health Funnel at 12.
 - Your points at 10 and 11 go into Improved Health Funnel: 40% more health moved, 30% cheaper, no threat, and usable at any demon health. It wakes up at 12 with Health Funnel and keeps the Voidwalker standing through bad pulls. Demonic Embrace follows from 12 to 14 for 9% more Stamina, then Unholy Power from 15 to 19 for 10% more pet damage.
-- Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
+- Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 do more than your bolts. An enchanter makes both, or check the Auction House. Cloth quest rewards with Intellect and Stamina beat anything a vendor sells.
 
 ### Levels 20 to 60
 

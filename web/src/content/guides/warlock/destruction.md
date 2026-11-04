@@ -15,14 +15,14 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever client spell and talent data'
-    url: https://wago.tools/db2/SpellEffect
+  - label: 'Forever client spell data (wago.tools, build 70755)'
+    url: https://wago.tools/db2/SpellEffect?build=1.60.1.70755
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, rotation'
-    url: https://foreversixty.gg/sources
+  - label: 'Forever Sixty, how Destruction plays'
+    url: https://foreversixty.gg/sim/specs
     kind: site
 ---
 
@@ -94,7 +94,7 @@ Threat: you crit big and often, and Conflagrate and Shadowburn come early in the
 
 Movement: Corruption, both banes, Conflagrate, Shadowburn and Life Tap are all instant. When you know a move is coming in the next second or two, hold Conflagrate and Shadowburn for it.
 
-Adds and AoE: on two targets, put Bane of Havoc on the one that must die and spend your casts on the other: 15% of that damage also lands on the Havoc target. Havoc takes your bane slot, so no Doom on that target. Rain of Fire for trash packs that stay put. Hellfire burns you as well.
+Adds and AoE: on two targets, spend your casts on the one that must die and put Bane of Havoc on the other: 15% of everything you deal also lands on it. Havoc takes your bane slot, so no Doom on that target. Rain of Fire for trash packs that stay put. Hellfire burns you as well.
 
 ## Stat priority
 
@@ -110,7 +110,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, and with Ruin every Destruction crit lands for double the usual bonus; The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on everything that is not a DoT tick, every two minutes: press it as Conflagrate and Shadowburn come off cooldown and fill the rest of it with Incinerate. Expansive Mind's 5% more mana means fewer Life Taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder: press Blood Fury at the pull with your trinkets. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, and with Ruin every Destruction crit lands for double the usual bonus; The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on everything that is not a DoT tick, every two minutes: press it as Conflagrate and Shadowburn come off cooldown and fill the rest of it with Incinerate. Expansive Mind's 5% more mana means fewer Life Taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder: press Blood Fury at the pull with your trinkets. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is close behind Orc: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds.
 
 ## Professions
 
@@ -121,8 +121,8 @@ Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting a
 ### Levels 1 to 19
 
 - Train Immolate at 1, Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10. Drain Life at 14 is your heal.
-- Your points at 10 and 11 go into Destructive Reach for 20% more range on Shadow Bolt and Immolate, so the mob takes an extra cast before it reaches you. Bane from 12 to 16 cuts half a second off Shadow Bolt and Immolate. Molten Skin from 17 to 19 takes 6% off all damage you take.
-- Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
+- Your points at 10 and 11 go into Destructive Reach: 20% more range on Shadow Bolt and Immolate, so you open from farther out and get a little more casting done before the mob reaches you. Bane from 12 to 16 cuts half a second off Shadow Bolt and Immolate. Molten Skin from 17 to 19 takes 6% off all damage you take.
+- Wand the mob down once Immolate and Corruption are ticking; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 from an enchanter carry you to 20. Swap your starting weapon for the first quest staff or dagger with Intellect or Stamina.
 
 ### Levels 20 to 60
 

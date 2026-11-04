@@ -121,7 +121,7 @@
           }
         }
       },
-      "notes": "Wing Clip on any free global under a Windfury Totem, as a cheap melee special that can proc Windfury. It is a main hand hit that also rolls your weapon procs. Without the totem it is 80 mana for 50 damage, so leave it alone."
+      "notes": "Wing Clip on any free global under a Windfury Totem, as a cheap melee special that can proc Windfury. It is a main hand hit that also rolls your weapon procs. Without the totem it is 50 damage for a global, so leave it alone."
     }
   ],
   "prepullActions": [

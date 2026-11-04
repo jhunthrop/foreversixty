@@ -13,12 +13,9 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty, stat weights'
-    url: https://foreversixty.gg/sim/weights
-    kind: site
   - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
@@ -116,7 +113,7 @@ Herbalism and Alchemy keep you in Major Mana Potions and flasks, which is most o
 
 ### Levels 1 to 19
 
-You quest like any shaman: Lightning Bolt to pull, Earth Shock from 4, Flame Shock and Searing Totem from 10, and your weapon to finish, since a shaman has no wand. Do the Call of Earth class quest at 4 for Stoneskin Totem and Call of Fire at 10 for Searing Totem. Talents go Improved Healing Wave from 10 to 14, a tenth of a second off Healing Wave per point, then two points of Mindfulness at 15 and 16 so mana keeps coming back while you cast, and Tidal Focus from 17, 1% cheaper heals per point. Healing Wave gets new ranks at 6, 12 and 18; train each one before a dungeon. Tremor Totem at 18 breaks the sleeps in Wailing Caverns. Take quest rewards with Intellect over vendor gear, wear leather, and replace your starter weapon with the first quest staff or mace that carries spell damage.
+You quest like any shaman: Lightning Bolt to pull, Earth Shock from 4, Flame Shock and Searing Totem from 10, and your weapon to finish, since a shaman has no wand. Do the Call of Earth class quest at 4 and Call of Fire at 10: they give the Earth Totem every Earth totem needs and the Fire Totem every Fire totem needs, carried in your bags, and without them those totems do not cast. Talents go Improved Healing Wave from 10 to 14, a tenth of a second off Healing Wave per point, then two points of Mindfulness at 15 and 16 so mana keeps coming back while you cast, and Tidal Focus from 17, 1% cheaper heals per point. Healing Wave gets new ranks at 6, 12 and 18; train each one before a dungeon. Tremor Totem at 18 breaks the sleeps in Wailing Caverns. Take quest rewards with Intellect over vendor gear, wear leather, and replace your starter weapon with the first quest staff or mace that carries spell damage.
 
 ### Levels 20 to 60
 

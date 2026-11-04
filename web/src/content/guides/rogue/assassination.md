@@ -12,15 +12,15 @@ updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Rogue and Warlock class deep dive'
-    url: https://www.warcrafttavern.com/forever/news/poison-pets-rogue-warlock-deep-dive-for-wow-forever/
+    url: https://news.blizzard.com/en-us/article/24310968/world-of-warcraft-forever-class-deep-dives-rogue-and-warlock
     kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -121,7 +121,7 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 - You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it is the hardest hit you have this early.
 - Poised also comes at 18: at full Energy out of combat your next ability costs 10 less, so walk into every pull capped and open with Ambush or Garrote.
 - Your first three points, 10 to 12, go into Improved Gouge, which holds the mob 1.5 seconds longer and gives you time to get behind it. Remorseless Attacks at 13 and 14 adds 40% crit to your next Sinister Strike, Backstab or Ambush after a kill, then Malice from 15 to 19 gives you 5% crit.
-- Wear leather and take quest rewards over vendor gear. Drop the Worn Dagger the moment a quest offers a better weapon, and keep throwing knives for pulling.
+- Wear leather and take quest rewards over vendor gear. Drop the Worn Dagger the moment a quest offers a better dagger, so Backstab and Ambush stay open to you, and keep throwing knives for pulling.
 
 ### Levels 20 to 60
 

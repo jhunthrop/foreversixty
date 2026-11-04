@@ -14,7 +14,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Forever Sixty, stat weights'
@@ -96,7 +96,7 @@ Your raid set leans on Leatherworking crafts that bind when equipped, a crafted 
 
 ## Enchants and consumables
 
-Windfury Weapon is your weapon's temporary enchant, so there is no room for a sharpening stone or weighted stone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
+Windfury Weapon is your weapon's temporary enchant, so there is no room for a sharpening stone or a weightstone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
 
 ## Races
 
@@ -112,7 +112,7 @@ Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain a
 
 ### Levels 1 to 19
 
-Rockbiter Weapon goes on at 1 and Earth Shock comes at 4. Lightning Shield at 8 stays up while you quest: mobs hit you, so it does damage. Rockbiter stays on your weapon until Windfury Weapon at 30; below 20 its attack power is worth more than Flametongue Weapon. Do the Call of Earth class quest at 4 for Stoneskin Totem and Call of Fire at 10 for Searing Totem. From 10, Searing Totem and Strength of Earth Totem go down on every pull that lasts. Talents open with Thundering Strikes from 10 to 14, 1% crit with spells and attacks per point, then Ancestral Knowledge from 15 to 19, 2% Intellect per point. Replace the starter weapon with the first slow two-hander a quest gives you: staves are trained already, and a weapon master teaches two-handed maces and axes. Quest rewards beat vendor gear, you wear leather until 40, and you never dual wield.
+Rockbiter Weapon goes on at 1 and Earth Shock comes at 4. Lightning Shield at 8 stays up while you quest: mobs hit you, so it does damage. Rockbiter stays on your weapon until Windfury Weapon at 30; below 20 its attack power is worth more than Flametongue Weapon. Do the Call of Earth class quest at 4 and Call of Fire at 10: they give the Earth Totem every Earth totem needs and the Fire Totem every Fire totem needs, carried in your bags, and without them those totems do not cast. From 10, Searing Totem and Strength of Earth Totem go down on every pull that lasts. Talents open with Thundering Strikes from 10 to 14, 1% crit with spells and attacks per point, then Ancestral Knowledge from 15 to 19, 2% Intellect per point. Replace the starter weapon with the first slow two-hander a quest gives you: staves are trained already, and a weapon master teaches two-handed maces and axes. Quest rewards beat vendor gear, you wear leather until 40, and you never dual wield.
 
 ### Levels 20 to 60
 

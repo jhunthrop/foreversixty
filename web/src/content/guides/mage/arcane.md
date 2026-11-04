@@ -14,17 +14,17 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Forever Sixty, stat weights'
-    url: https://foreversixty.gg/sources
+    url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, rotation'
-    url: https://foreversixty.gg/sources
+  - label: 'Forever Sixty, how Arcane plays'
+    url: https://foreversixty.gg/sim/specs
     kind: site
   - label: 'Forever Sixty, raid loot tables'
-    url: https://foreversixty.gg/sources
+    url: https://foreversixty.gg/sim/drops
     kind: site
 ---
 
@@ -107,8 +107,8 @@ Tailoring and Enchanting are the standard pair: Tailoring makes the early cloth 
 ### Levels 1 to 19
 
 - Train Frostbolt and Conjure Water at 4, Fire Blast at 6, Arcane Missiles at 8, Frost Nova at 10 and Arcane Explosion at 14. From 8, open with Frostbolt so the mob walks in slowed, channel Missiles as it closes and finish with Fire Blast.
-- At 10 the first point goes into Wand Specialization for 13% more wand damage, then 11 to 14 into Improved Channeling so taking hits stops pushing back your Missiles. Arcane Resilience at 15 turns a quarter of your Intellect into armor, and 16 to 19 go into Arcane Concentration for free casts.
-- Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff, an orb or a wand; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
+- At 10 the first point goes into Wand Specialization for 13% more wand damage, then 11 to 14 into Improved Channeling, so most hits no longer push back your Missiles. Arcane Resilience at 15 turns a quarter of your Intellect into armor, and 16 to 19 go into Arcane Concentration for free casts.
+- Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear's Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Bashal'Aran, Darkshore) are early quest wands. Your trainer's level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.
 
 ### Levels 20 to 60
 

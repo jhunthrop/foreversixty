@@ -4139,7 +4139,7 @@
           {
             "spell_id": 1082,
             "name": "Claw",
-            "condition": "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy.",
+            "condition": "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy.",
             "icon": "ability_druid_rake",
             "race_spell_ids": {}
           }
@@ -4200,7 +4200,7 @@
           {
             "spell_id": 3029,
             "name": "Claw",
-            "condition": "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy.",
+            "condition": "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy.",
             "icon": "ability_druid_rake",
             "race_spell_ids": {}
           }
@@ -4268,7 +4268,7 @@
           {
             "spell_id": 5201,
             "name": "Claw",
-            "condition": "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy.",
+            "condition": "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy.",
             "icon": "ability_druid_rake",
             "race_spell_ids": {}
           }
@@ -4336,7 +4336,7 @@
           {
             "spell_id": 5201,
             "name": "Claw",
-            "condition": "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy.",
+            "condition": "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy.",
             "icon": "ability_druid_rake",
             "race_spell_ids": {}
           }
@@ -4404,7 +4404,7 @@
           {
             "spell_id": 9849,
             "name": "Claw",
-            "condition": "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy.",
+            "condition": "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy.",
             "icon": "ability_druid_rake",
             "race_spell_ids": {}
           }
@@ -4472,7 +4472,7 @@
           {
             "spell_id": 9850,
             "name": "Claw",
-            "condition": "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy.",
+            "condition": "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy.",
             "icon": "ability_druid_rake",
             "race_spell_ids": {}
           }

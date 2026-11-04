@@ -11,6 +11,9 @@ description: 'How to play a Marksmanship Hunter in Forever: talents for leveling
 updated: 2026-11-03
 confidence: inferred
 sources:
+  - label: 'Blizzard, Class Deep Dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
@@ -76,7 +79,7 @@ There are two builds. You level with the pet: thirty points in Marksmanship take
 
 Improved Tracking only works while you track the target's type, and Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead. Most raid bosses are one of those; the boss's tooltip names its type, and on a boss of any other type the talent does nothing. Set it before the pull, and swap on trash with mixed types.
 
-In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and get no raid buffs, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull, and the leveling build keeps its talents. Sniper Shot, the capstone, costs a point you would take from elsewhere in either build, and its 4 second cast holds your auto shot longer than any other shot you have, so neither build takes it.
+In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull, and the leveling build keeps its talents. Sniper Shot, the capstone, costs a point you would take from elsewhere in either build, and its 4 second cast holds your auto shot twice as long as Aimed Shot, so neither build takes it.
 
 ## Rotation and priority
 
@@ -137,7 +140,7 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 
 ### Levels 1 to 19
 
-- Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8 and Aspect of the Hawk at 10, which replaces Monkey for good. Multi-Shot comes at 18.
+- Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8 and Aspect of the Hawk at 10, which replaces Monkey for good. Multi-Shot comes at 18.
 - At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 - Your first five points go into Lethal Attacks, 1% crit on every attack per point. Improved Stings at 15 adds 6% to Serpent Sting, and Efficiency from 16 cuts the mana cost of your shots and stings by 3% a point, which is fewer drinking breaks.
 - Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.

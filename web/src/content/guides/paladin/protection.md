@@ -30,12 +30,9 @@ sources:
   - label: 'Forever Sixty, paladin talents'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
-  - label: 'Forever Sixty, what each stat is worth'
-    url: https://foreversixty.gg/sim/weights
-    kind: site
-  - label: 'Forever Sixty, raids by phase'
-    url: https://foreversixty.gg/sources
-    kind: site
+  - label: "Blizzard, What's Next panel recap"
+    url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
+    kind: blizzard
   - label: 'Forever Sixty, races'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
@@ -118,7 +115,7 @@ Defense comes first: it takes hits away and lowers the boss's chance to crit you
 
 ## Races
 
-**Dwarf** is the Alliance tank. Stoneform takes physical damage off for a few seconds, a free defensive on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Will to Survive, which breaks a stun so you get back to holding the boss, and Ruthless, 1% crit for a little more threat. The Human Spirit does little for a tank. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
+**Dwarf** is the Alliance tank. Dwarf and Human take hits and hold threat about the same, so Stoneform tips it: it takes physical damage off for a few seconds, a free defensive on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Will to Survive, which breaks a stun so you get back to holding the boss, and Ruthless, 1% crit for a little more threat. The Human Spirit does little for a tank. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
 
 ## Professions
 

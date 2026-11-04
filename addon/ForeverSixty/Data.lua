@@ -671,7 +671,7 @@ ns.Data = {
 				{ spellId = 1322605, name = "Shifting Power", condition = "At 60 energy or less, so all 40 energy fits under the cap." },
 				{ spellId = 1079, name = "Rip", condition = "At 5 combo points when Rip has under 6 seconds left." },
 				{ spellId = 5221, name = "Shred", condition = "Your builder from level 20, always from behind the target." },
-				{ spellId = 1082, name = "Claw", condition = "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy." },
+				{ spellId = 1082, name = "Claw", condition = "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy." },
 			} },
 			{ level = 30, lines = {
 				{ spellId = 778, name = "Faerie Fire", condition = "When the target has no Faerie Fire on it." },
@@ -681,7 +681,7 @@ ns.Data = {
 				{ spellId = 9492, name = "Rip", condition = "At 5 combo points when Rip has under 6 seconds left." },
 				{ spellId = 1328618, name = "Ferocious Bite", condition = "At 5 combo points while Rip still has 6 seconds or more, so your points never sit capped." },
 				{ spellId = 6800, name = "Shred", condition = "Your builder from level 20, always from behind the target." },
-				{ spellId = 3029, name = "Claw", condition = "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy." },
+				{ spellId = 3029, name = "Claw", condition = "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy." },
 			} },
 			{ level = 38, lines = {
 				{ spellId = 6785, name = "Ravage", condition = "Your opener, from Prowl and from behind the target." },
@@ -692,7 +692,7 @@ ns.Data = {
 				{ spellId = 9493, name = "Rip", condition = "At 5 combo points when Rip has under 6 seconds left." },
 				{ spellId = 22568, name = "Ferocious Bite", condition = "At 5 combo points while Rip still has 6 seconds or more, so your points never sit capped." },
 				{ spellId = 8992, name = "Shred", condition = "Your builder from level 20, always from behind the target." },
-				{ spellId = 5201, name = "Claw", condition = "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy." },
+				{ spellId = 5201, name = "Claw", condition = "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy." },
 			} },
 			{ level = 40, lines = {
 				{ spellId = 6785, name = "Ravage", condition = "Your opener, from Prowl and from behind the target." },
@@ -703,7 +703,7 @@ ns.Data = {
 				{ spellId = 9493, name = "Rip", condition = "At 5 combo points when Rip has under 6 seconds left." },
 				{ spellId = 22827, name = "Ferocious Bite", condition = "At 5 combo points while Rip still has 6 seconds or more, so your points never sit capped." },
 				{ spellId = 8992, name = "Shred", condition = "Your builder from level 20, always from behind the target." },
-				{ spellId = 5201, name = "Claw", condition = "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy." },
+				{ spellId = 5201, name = "Claw", condition = "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy." },
 			} },
 			{ level = 50, lines = {
 				{ spellId = 9866, name = "Ravage", condition = "Your opener, from Prowl and from behind the target." },
@@ -714,7 +714,7 @@ ns.Data = {
 				{ spellId = 9752, name = "Rip", condition = "At 5 combo points when Rip has under 6 seconds left." },
 				{ spellId = 22828, name = "Ferocious Bite", condition = "At 5 combo points while Rip still has 6 seconds or more, so your points never sit capped." },
 				{ spellId = 9829, name = "Shred", condition = "Your builder from level 20, always from behind the target." },
-				{ spellId = 9849, name = "Claw", condition = "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy." },
+				{ spellId = 9849, name = "Claw", condition = "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy." },
 			} },
 			{ level = 60, lines = {
 				{ spellId = 9867, name = "Ravage", condition = "Your opener, from Prowl and from behind the target." },
@@ -725,7 +725,7 @@ ns.Data = {
 				{ spellId = 9896, name = "Rip", condition = "At 5 combo points when Rip has under 6 seconds left." },
 				{ spellId = 22829, name = "Ferocious Bite", condition = "At 5 combo points while Rip still has 6 seconds or more, so your points never sit capped." },
 				{ spellId = 9830, name = "Shred", condition = "Your builder from level 20, always from behind the target." },
-				{ spellId = 9850, name = "Claw", condition = "Your builder from 20 to 23, where Shredding Attacks is not yet full: Claw costs 40 to Shred's 54 at 20 and does more for its energy." },
+				{ spellId = 9850, name = "Claw", condition = "Your builder at 20 and 21, before Shredding Attacks is full: Claw costs 40 to Shred's 54 at 20 and 48 at 21, and does more for its energy." },
 			} },
 		},
 		["druid-feral-bear"] = {

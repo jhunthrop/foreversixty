@@ -27,20 +27,14 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Icy Veins, the racial rework'
     url: https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/
     kind: community
-  - label: 'Forever Sixty, what each stat is worth'
-    url: https://foreversixty.gg/sim/weights
-    kind: site
-  - label: 'Forever Sixty, how Protection plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
   - label: 'Forever Sixty, where the raid gear drops'
-    url: https://foreversixty.gg/sources
+    url: https://foreversixty.gg/sim/drops
     kind: site
   - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
@@ -95,7 +89,7 @@ Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you 
 
 **The priority.** Shield Block whenever it is down: it is off the global cooldown, it lasts 7 seconds on a 5 second cooldown, and every block it gives you also lights Revenge. Revenge the moment it lights. Shield Slam on cooldown. Keep Thunder Clap on the boss and refresh it in its last 3 seconds: its attack speed slow is a straight cut to the damage you take. Demoralizing Shout comes next, refreshed the same way. Sunder Armor on every free global: five stacks for the raid, then flat threat on every cast. Heroic Strike with spare rage above 40.
 
-**Demoralizing Shout.** 196 less melee attack power at 60 takes a real slice off every swing, so keep it on the boss and refresh it in its last 3 seconds, unless a druid or another warrior already holds it: two do not stack.
+**Demoralizing Shout.** 204 less melee attack power at 60 takes a real slice off every swing, so keep it on the boss and refresh it in its last 3 seconds, unless a druid or another warrior already holds it: two do not stack.
 
 **Shield Block timing.** It is your mitigation and your rage engine at once, so it never waits for a big hit: keep it up. On a boss that crushes, it is also what pushes crushing blows off the table.
 

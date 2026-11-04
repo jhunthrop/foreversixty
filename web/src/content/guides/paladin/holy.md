@@ -16,12 +16,9 @@ sources:
   - label: 'Forever Sixty, paladin talents'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
-  - label: 'Forever Sixty, what each stat is worth'
-    url: https://foreversixty.gg/sim/weights
-    kind: site
-  - label: 'Forever Sixty, raids by phase'
-    url: https://foreversixty.gg/sources
-    kind: site
+  - label: "Blizzard, What's Next panel recap"
+    url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
+    kind: blizzard
   - label: 'Forever Sixty, races'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
@@ -114,7 +111,7 @@ Herbalism and Alchemy keep you in mana potions, Flasks of Distilled Wisdom and e
 - Holy Light and Seal of Righteousness come at 1, Judgement at 4, Holy Strike at 6, Purify at 8 and Lay on Hands at 10. New Holy Light ranks come at 6 and 14, and Blessing of Wisdom at 14 is your mana blessing once you heal groups.
 - At 12, the class quest from your trainer teaches Redemption. A healer without it is a long corpse run for the group.
 - If you level as Holy, your first five points, 10 to 14, go into Spiritual Focus: at 5/5, 70% of the hits you take do not push back Holy Light or Flash of Light. Healing Light takes 15 to 17 for 12% bigger heals, then Reverence at 18 and 19 keeps 30% of your mana regen going while you cast.
-- You still kill things with your weapon and your Seal, so take quest rewards over vendor gear and swap the starter for the first slow two-hander you find. Paladins cannot use wands. You wear mail until plate at 40.
+- You still kill things with your weapon and your Seal, so take quest rewards over vendor gear and replace your Battleworn Hammer with the first better slow two-hander you find. Paladins cannot use wands. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 

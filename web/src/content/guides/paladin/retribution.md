@@ -23,9 +23,9 @@ sources:
   - label: 'Warcraft Tavern, Classic Retribution Paladin rotation'
     url: https://www.warcrafttavern.com/wow-classic/guides/pve-retribution-paladin-rotations-cooldowns/
     kind: community
-  - label: 'Forever Sixty, raids by phase'
-    url: https://foreversixty.gg/sources
-    kind: site
+  - label: "Blizzard, What's Next panel recap"
+    url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
+    kind: blizzard
   - label: 'Forever Sixty, races'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
@@ -121,7 +121,7 @@ Mining and Blacksmithing make your two-handers and plate. Engineering adds explo
 - Seal of Righteousness and Holy Light come at 1, Judgement and Blessing of Might at 4, Holy Strike at 6, Hammer of Justice at 8 and Lay on Hands at 10. Judgement does not use up your Seal, and it and Holy Strike both come back every 10 seconds.
 - At 12, the class quest from your trainer teaches Redemption. Do it before your first dungeon.
 - Your first five points, 10 to 14, go into Benediction: 10% less mana on every instant, which is your whole bar. Improved Judgement takes 15 and 16 for a Judgement every 8 seconds, then Conviction from 17 to 19 for 6% crit.
-- Take quest rewards over vendor gear and drop the starter weapon for the first slow two-hander you find: Seal of Righteousness hits harder per swing the slower the weapon. Paladins cannot use wands. You wear mail until plate at 40.
+- Take quest rewards over vendor gear, and replace your Battleworn Hammer with the first harder-hitting slow two-hander you find: Seal of Righteousness hits harder per swing the slower the weapon. Paladins cannot use wands. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 

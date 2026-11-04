@@ -10,14 +10,20 @@ description: 'How to play a melee Survival Hunter in Forever: talents, the Rapto
 updated: 2026-11-03
 confidence: inferred
 sources:
+  - label: 'Blizzard, Class Deep Dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
   - label: 'Warcraft Tavern, Hunter and Druid Deep Dive for WoW Forever'
     url: https://www.warcrafttavern.com/forever/news/powershifting-is-back-sort-of-hunter-druid-deep-dive-for-wow-forever/
     kind: community
-  - label: 'Wowhead Forever, Mongoose Bite and Counterattack tooltips'
+  - label: 'Wowhead Forever, Mongoose Bite'
     url: https://www.wowhead.com/forever/spell=1495
+    kind: community
+  - label: 'Wowhead Forever, Counterattack'
+    url: https://www.wowhead.com/forever/spell=19306
     kind: community
   - label: 'Forever Sixty, talent trees'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
@@ -62,7 +68,7 @@ Survival is a melee spec in Forever: two weapons, Raptor Strike queued every tim
 
 Thirty-five points in Survival take every melee damage talent, eleven in Marksmanship take Careful Aim and Lone Wolf, and five in Beast Mastery take Deadly Aspects.
 
-- **Lone Wolf** (1 point): 20% more damage with every attack while no pet is out. Forever's pets copy only a tenth of your attack power and get no raid buffs, so for a melee hunter the talent beats the pet
+- **Lone Wolf** (1 point): 20% more damage with every attack while no pet is out. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so for a melee hunter the talent beats the pet
 - **Expose Prey** (2 points): your hits on a target with Hunter's Mark have a 10% chance to open Mongoose Bite for 10 seconds, the only way it opens on a boss that is not attacking you
 - **Lacerating Strikes** (1 point): Mongoose Bite also bleeds the target for 40% of its damage over 21 seconds
 - **Predator's Edge** (5 points): 30% more crit damage on your melee specials and 50% more off-hand damage
@@ -121,7 +127,7 @@ Engineering gives Survival the AoE it lacks: grenades and explosives on trash. S
 
 ### Levels 1 to 19
 
-- Raptor Strike from level 1 is your main button, with new ranks at 8 and 16. Train Aspect of the Monkey and Serpent Sting at 4, Hunter's Mark at 6, Wing Clip at 12 and Mongoose Bite at 16, which lights up after you dodge.
+- Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike from level 1 is your main button, with new ranks at 8 and 16. Train Aspect of the Monkey and Serpent Sting at 4, Hunter's Mark at 6, Wing Clip at 12 and Mongoose Bite at 16, which lights up after you dodge.
 - At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 - Your first five points go into Improved Tracking, 1% damage per point against whatever you are tracking: Track Beasts from level 1, Track Humanoids at 10, Track Undead at 18. Keep the right one on. Savage Strikes at 15 and 16 adds 2% crit to your melee abilities per point, then Survivalist from 17 adds 2% health per point.
 - Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since Raptor Strike adds its damage on top of the weapon hit. Wear leather until mail at 40.

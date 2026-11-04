@@ -16,15 +16,9 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty, rotation'
-    url: https://foreversixty.gg/sources
-    kind: site
-  - label: 'Forever Sixty, tank fight'
-    url: https://foreversixty.gg/sources
-    kind: site
 ---
 
 ## Overview
@@ -102,7 +96,7 @@ Forever lets a druid drink in form. Mighty Rage Potion is the bear's threat poti
 
 ## Races
 
-Tauren is the tank pick: Endurance is 5% more health, and War Stomp stuns five enemies around you, in form, which is a great trash pull. Night Elf brings Quickness for a little Dodge and Elune's Light for a crit burst, which is threat.
+Your faction picks your race: Night Elf on the Alliance, Tauren on the Horde, and both tank well. Night Elf takes slightly less damage and holds a little more threat, through Quickness, 1% more Dodge, and Elune's Light, 10% crit with all spells and attacks for 15 seconds on a 3 minute cooldown, which is threat when you press it on the pull. Tauren's health is steadier: Endurance is 5% more health, and War Stomp stuns up to 5 enemies around you for 2 seconds, in form, which is a great trash pull. If you already own the paid Skyborne Heroic Pack, Skyborne can be bears on either faction, with Wind Blessed, 2% haste that never turns off.
 
 ## Professions
 

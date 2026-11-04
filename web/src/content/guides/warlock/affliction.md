@@ -14,14 +14,14 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever client spell and talent data'
-    url: https://wago.tools/db2/SpellEffect
+  - label: 'Forever client spell data (wago.tools, build 70755)'
+    url: https://wago.tools/db2/SpellEffect?build=1.60.1.70755
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, rotation'
-    url: https://foreversixty.gg/sources
+  - label: 'Forever Sixty, how Affliction plays'
+    url: https://foreversixty.gg/sim/specs
     kind: site
 ---
 
@@ -50,7 +50,7 @@ Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps wi
 
 The leveling build is a real Affliction tree: Nightfall, Soul Siphon and Wrack make the drains and the free Shadow Bolts carry you while you quest. The raid build is a Shadow Bolt build that keeps its DoTs up: it stops at 30 points in Affliction and buys Improved Shadow Bolt and Ruin in Destruction.
 
-- **Suppression** (5 points): 5% hit on every spell and 20% less threat. Every warlock build starts here.
+- **Suppression** (5 points): 5% hit on every spell and 20% less threat. Every warlock build takes all five.
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
 - **Amplify Curse** (1 point): no global cooldown, a 3 minute cooldown and 30 seconds to use it. Your next Bane of Agony or Curse of Weakness is 50% stronger, or your next Curse of Exhaustion 20%. In a raid it goes on the Bane of Agony you put up in a boss's last minute.
 - **Pandemic** (3 points): Corruption, both banes, Siphon Life, the drains and Wrack crit for double the usual bonus.
@@ -97,7 +97,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, DoT ticks included, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, but your DoTs get nothing from it, so press it as you start a run of Shadow Bolts; Expansive Mind's 5% more mana helps a spec that taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder for the whole fight: press Blood Fury with your trinkets once the DoTs are up. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then, which helps a spec that pays for mana in health.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, DoT ticks included, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, but your DoTs get nothing from it, so press it as you start a run of Shadow Bolts; Expansive Mind's 5% more mana helps a spec that taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder for the whole fight: press Blood Fury with your trinkets once the DoTs are up. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is as good as Orc for Affliction: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, which helps a spec that pays for mana in health.
 
 ## Professions
 
@@ -108,7 +108,7 @@ Tailoring and Enchanting: tailored cloth and a couple of enchanted caster pieces
 ### Levels 1 to 19
 
 - Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10; it is the pet that makes solo play easy. Drain Life comes at 14.
-- Your points at 10 and 11 go into Improved Life Tap for 20% more mana from every tap, then Suppression from 12 to 16 for 5% hit and 20% less threat. Improved Corruption starts at 17 and makes Corruption instant at 21. Until then Corruption has a 2 second cast, so open with it while the mob is still running at you.
+- Your points at 10 and 11 go into Improved Life Tap for 20% more mana from every tap, then Suppression from 12 to 16 for 5% hit and 20% less threat. Improved Corruption starts at 17: each point takes 0.4 seconds off Corruption's 2 second cast, and at 21 it is instant. Until then, open with it while the mob is still running at you.
 - Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
 
 ### Levels 20 to 60

@@ -12,15 +12,15 @@ updated: 2026-11-02
 confidence: inferred
 sources:
   - label: 'Blizzard, Rogue and Warlock class deep dive'
-    url: https://www.warcrafttavern.com/forever/news/poison-pets-rogue-warlock-deep-dive-for-wow-forever/
+    url: https://news.blizzard.com/en-us/article/24310968/world-of-warcraft-forever-class-deep-dives-rogue-and-warlock
     kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -109,7 +109,7 @@ Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **
 
 ## Races
 
-Gnome on Alliance and Undead on Horde. **Eureka!** makes your abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** gives you 5% more energy. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc and Night Elf are next; Troll trails. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
+Gnome on Alliance and Undead on Horde. **Eureka!** makes your abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** gives you 5% more energy. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc, Troll and Night Elf all land a step behind and within a hair of each other. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
 
 ## Professions
 
@@ -121,7 +121,7 @@ Gnome on Alliance and Undead on Horde. **Eureka!** makes your abilities cost 10%
 
 - Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Slice and Dice at 10 is the big one: from then on, a short one on anything that will live, Eviscerate on the rest.
 - Poised at 18 takes 10 Energy off your first ability when you start a pull at full Energy out of combat, so never pull half empty.
-- Your points from 10 to 12 go into Coup de Grace for 20% more Eviscerate damage. Efficient Strikes at 13 takes 3 Energy off Sinister Strike, Lightning Reflexes from 14 to 18 gives you 5% dodge, and Puncturing Wounds starts at 19 for Backstab crits and the odd extra combo point.
+- Your points from 10 to 12 go into Coup de Grace for 20% more Eviscerate damage. Efficient Strikes at 13 takes 3 Energy off Sinister Strike, Lightning Reflexes from 14 to 18 gives you 5% dodge, and Puncturing Wounds from 19 only pays off when you have a dagger in the main hand and get behind the mob for Backstab.
 - Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger with the first quest sword, axe or mace that beats it, and keep throwing knives for pulling.
 
 ### Levels 20 to 60

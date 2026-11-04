@@ -8,10 +8,10 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever client spell and talent data'
-    url: https://wago.tools/db2/SpellEffect
+  - label: 'Forever client spell data (wago.tools, build 70755)'
+    url: https://wago.tools/db2/SpellEffect?build=1.60.1.70755
     kind: datamined
-  - label: 'But Why Tho, interview with Anna Resendez and Clayton Stone'
+  - label: 'But Why Tho, interview with Ana Resendez and Clayton Stone'
     url: https://butwhytho.net/2026/09/wow-classic-devs-world-of-warcraft-forever/
     kind: community
 ---
