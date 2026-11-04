@@ -45,6 +45,7 @@ import json
 import logging
 import re
 import shutil
+import time
 from collections.abc import Callable, Iterable, Mapping
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
@@ -85,6 +86,14 @@ _PAGE_SIZE = 25
 _DIGITS = "0123456789"
 #: Searches in flight at once.
 _WORKERS = 6
+#: Tries per search: wago.tools drops connections under load (data runs
+#: 41867694425 and 41869498423, launch day: "Server disconnected without
+#: sending a response"), and one dropped search used to lose the whole push.
+_ATTEMPTS = 4
+#: Seconds before the first retry, doubled each time.
+_BACKOFF_SECONDS = 2.0
+#: Statuses worth another try; any other error status fails at once.
+_RETRY_STATUSES = frozenset({429, 500, 502, 503, 504})
 
 #: (build, tables) -> the build's push per table.
 PushFetcher = Callable[[str, tuple[str, ...]], Mapping[str, list["PushEntry"]]]
@@ -213,9 +222,29 @@ class _Answer:
     total: int
 
 
-def _ask(client: httpx.Client, search: str) -> _Answer:
-    response = client.get("/hotfixes", params={"search": search}, timeout=_TIMEOUT_SECONDS)
-    response.raise_for_status()
+def _get(client: httpx.Client, search: str, sleep: Callable[[float], None]) -> httpx.Response:
+    """One search's page, retried on a dropped connection or a transient status;
+    the last failure is raised as it was, so a search that never answers still
+    fails the fetch (and the layer record is never written)."""
+    for attempt in range(_ATTEMPTS):
+        last = attempt == _ATTEMPTS - 1
+        try:
+            response = client.get("/hotfixes", params={"search": search}, timeout=_TIMEOUT_SECONDS)
+        except httpx.TransportError as error:
+            if last:
+                raise
+            logger.warning("wago.tools search %r: %s; retrying", search, error)
+        else:
+            if response.status_code not in _RETRY_STATUSES or last:
+                response.raise_for_status()
+                return response
+            logger.warning("wago.tools search %r: HTTP %d; retrying", search, response.status_code)
+        sleep(_BACKOFF_SECONDS * 2**attempt)
+    raise AssertionError("unreachable")
+
+
+def _ask(client: httpx.Client, search: str, sleep: Callable[[float], None] = time.sleep) -> _Answer:
+    response = _get(client, search, sleep)
     payload = _read_page(response.text, str(response.url))
     return _Answer(tuple(payload["data"]), int(payload["total"]))
 
