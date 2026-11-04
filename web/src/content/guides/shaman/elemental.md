@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:shaman:dwarf:5510331300001351/05/053052:'
 raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:5510331300001351/055/053002:'
 recommendedRaces: [dwarf, orc]
-statPriority: [Intellect, Spell power, Hit, Nature power, Critical strike, Spell haste, Spell penetration]
+statPriority: [Spell power, Hit, Nature power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman in Forever: the raid build, Flame Shock up and Lightning Bolt behind Lightning Mastery, bolt ranks for mana, totems, stats, races and leveling.'
 updated: 2026-11-02
 confidence: inferred
@@ -77,7 +77,7 @@ Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt
 
 **Fire Nova** is a pack spell for you. It only hits within 10 yards of your Fire totem, and on a boss your Searing Totem stands with you, up to 20 yards out. Let a Clearcasting proc go to your next Lightning Bolt instead.
 
-**Lightning Bolt ranks.** Rank 10 costs 220 mana and rank 9 costs 190 for about 16% less base damage, with the same spell power bonus. Even with raid buffs, a three minute fight of nothing but rank 10 runs you dry before the boss dies. So pace it: cast rank 10 while your mana bar is fuller than the share of the fight left (above half mana at the halfway point, for example), and drop to rank 9 the moment it is not. That spends every point of mana on the bigger bolt without ever standing around empty.
+**Lightning Bolt ranks.** Rank 10 costs 220 mana and rank 9 costs 190 for about 16% less base damage, with the same spell power bonus. On a long fight, rank 10 alone runs you dry. So pace it: cast rank 10 while your mana bar is fuller than the share of the fight left (above half mana at the halfway point, for example), and drop to rank 9 the moment it is not. That spends every point of mana on the bigger bolt without ever standing around empty.
 
 **Packs.** On two or more targets drop Magma Totem in the pack (20 seconds), cast Chain Lightning on its 6 second cooldown and Fire Nova on its 10 second cooldown while you stand close enough to place the totem, with Lightning Bolt between. Under Lightning Mastery Chain Lightning has no cooldown at all; save Mastery for the pack if the pull is worth it.
 
@@ -85,15 +85,15 @@ Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt
 
 ## Stat priority
 
-Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, which leaves the 10% your gear has to find. Nature power adds to Lightning Bolt, Chain Lightning and Earth Shock, which is nearly everything you cast, but Flame Shock and Searing Totem are fire, so it still ranks just below plain spell power. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. Crit feeds Elemental Fury's doubled bonus, on top of the 5% Call of Thunder already gives your bolts. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
+Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, which leaves the 10% your gear has to find. Nature power adds to Lightning Bolt, Chain Lightning and Earth Shock, which is nearly everything you cast, but Flame Shock and Searing Totem are fire, so a point of it is worth less than a point of plain spell power. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. Crit feeds Elemental Fury's doubled bonus, on top of the 5% Call of Thunder already gives your bolts. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
 
 ## Best in slot
 
-Your raid set leans on Leatherworking and Tailoring crafts. Most bind when equipped and can be bought, but check each one: a piece that binds on pickup needs the profession yourself. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
+Your raid set leans on Leatherworking and Tailoring crafts. Most bind when equipped and can be bought, except the Skycaller's belt, which binds on pickup, so you make it yourself. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
 
 ## Enchants and consumables
 
-Your weapon imbues only proc on melee swings, so an Elemental's weapon carries Brilliant Wizard Oil instead. The flask replaces both elixirs; without one, run Greater Arcane Elixir. Drink your Major Mana Potion and use your Demonic Rune as soon as each fits under your mana cap. They are on separate cooldowns, and using them early is what lets you use each one twice in a long fight. Demonic Rune costs you health, so never use it while you are taking damage.
+Your weapon imbues only proc on melee swings, so an Elemental's weapon carries Brilliant Wizard Oil instead. Flask of Supreme Power and Greater Arcane Elixir go on together; a flask stacks with your elixirs. Drink your Major Mana Potion and use your Demonic Rune as soon as each fits under your mana cap. They are on separate cooldowns, and using them early is what lets you use each one twice in a long fight. Demonic Rune costs you health, so never use it while you are taking damage.
 
 ## Races
 
@@ -103,7 +103,7 @@ On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% 
 
 ## Professions
 
-Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Most Leatherworking pieces bind when equipped and can be bought, so unless your list carries one that binds on pickup, your second profession is free: Alchemy for your own flasks and mana potions, or a gathering profession to pay for them.
+Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Your Leatherworking helm, chest, legs and gloves bind when equipped and can be bought, but the Skycaller's belt binds on pickup: take Leatherworking for it, or wear Satyrmane Sash from Lord Vyletongue in Maraudon and keep your second profession for Alchemy or gathering.
 
 ## Leveling
 
