@@ -448,3 +448,22 @@ Sims routed to the sim lane: Retribution fresh-boss opener (Righteousness first 
 
 Verdict: NOT zero, so round 18 is needed. Three classes audit at zero this round.
 Rendered review: wow-player SHIP for all six changed classes (rogue, shaman, warrior, warlock, priest, paladin), every tile of every page read.
+
+## Round 18 (client 1.60.1.70755, 2026-11-04, launch state)
+
+Built on main 588a3ce2b (guide round 17 plus sim round 19), engine pin da54b7b06, five auditors at a time, the live client 1.60.1.70790 identical in talents, items, racials and numbers.
+
+Audit CONFIRMED by class: warrior 6, hunter 6, priest 4, warlock 4 (plus 2 likely, taken), shaman 3, mage 3, paladin 1, rogue 1, druid 0. Total 28. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1, 18, 8, 4, 14, 28. Page prose was clean on seven of nine classes; the rise is the every-level rule applied to every card note's later sentences (a note that credits a talent, pet ability or trained button before the shipped order gives it is false on the bands it renders on), which round 17 applied only to the priest and rogue notes.
+
+Fixes:
+
+- **Card notes, six classes (warrior, hunter, warlock, mage, priest, rogue):** every note now credits Bloodthrill, Mortal Strike, Recklessness, Execute, Whirlwind, Resourcefulness, Expose Prey, Clever Traps, Multi-Shot, Shadow and Flame, Bane, Improved Corruption, Amplify Curse, the Imp sacrifice, Heating Up, Fingers of Frost, Missile Barrage, Renewed Hope, Divine Aegis and Improved Mind Flay only from the level the player has them; Wing Clip no longer quotes the level 60 rank's damage.
+- **Priest:** the Holy Greater Heal filler note is true at 59 (rank 3 or the top rank); Shadow's Devouring Plague line follows the Human rows at 50 and 51.
+- **Shaman:** the Enhancement half-mana reserve runs from the first point of Maelstrom Weapon to the fifth, a quarter before the talent and at five points; the five-stack bolt is instant and free only with all five points (page and notes).
+- **Paladin:** Consecration keeps its measured rank levels without the per-cast cost reason the client rows contradict; the Seal of Righteousness and rank 1 sentences read plainly.
+- **Rogue:** Subtlety's weakness is its bleed dependence, not a damage ranking the current engine reverses.
+
+Sims routed to the sim lane: Consecration ranks 1 to 4 at 50 to 53 without the pacing line; Fire Blast before Heating Up at 20 and 28; Arcane Missiles-first at 12 and 16; Enhancement half against a quarter at 37 to 41; Subtlety's Eviscerate fallback below 20 (SIM-R11-1); the cross-tree rogue order after the re-rank; Fury Alliance Skyborne against Night Elf. Component lane: the addon rows carry no talent gate (Arcane Fire Blast renders on the leveling build); the Survival cooldown card shows the trap's base cooldown beside a talented Deterrence.
+
+Verdict: NOT zero, so round 19 is needed. Druid audits at zero; seven classes have clean page prose.
+Rendered review: wow-player SHIP for all eight changed classes, every tile of every page read.
