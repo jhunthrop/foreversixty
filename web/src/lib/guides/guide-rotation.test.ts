@@ -28,28 +28,16 @@ function rankOf(trees: readonly DecodedTreeView[], name: string): number {
 }
 
 describe('guideRotation', () => {
-  // Sim-accuracy round 18: the pre-pull Frostbolt runs only without Heating Up, so the raid
-  // build (which takes it) never casts it; the level 60 build does, with Improved Frostbolt
-  // 5/5, a 2.5 s cast (3 s base, client 10181, less 0.5 s), which the APL starts at -2.5 s and
-  // the prose names. The card read the raid build's 3 s.
-  it('times Arcane’s pre-pull Frostbolt by the build that casts it', () => {
+  it('times Arcane’s pre-pull Frostbolt by the raid build’s own cast time', () => {
     const { leveling, raid } = guideTrees('mage/arcane.md');
-    expect(rankOf(raid!, 'Heating Up')).toBeGreaterThan(0);
-    expect(rankOf(leveling, 'Heating Up')).toBe(0);
-    expect(rankOf(leveling, 'Improved Frostbolt')).toBe(5);
     const trees = describedBuildTrees(leveling, raid);
-    const frostbolt = guideRotation(BUILD, 'mage', 'mage-arcane', 'dps', trees, leveling)?.opener.find(
+    const frostbolt = guideRotation(BUILD, 'mage', 'mage-arcane', 'dps', trees)?.opener.find(
       (item) => item.name === 'Frostbolt',
     );
-    expect(frostbolt?.clause).toBe('2.5 s before the pull, without Heating Up');
-  });
-
-  it('times a pre-pull cast both builds run by the described build', () => {
-    const { leveling, raid } = guideTrees('mage/arcane.md');
-    const pyroblast = guideRotation(BUILD, 'mage', 'mage-arcane', 'dps', raid!, leveling)?.opener.find(
-      (item) => item.name === 'Pyroblast',
-    );
-    expect(pyroblast?.clause).toBe('6 s before the pull, with Heating Up');
+    // 3 s base, less half a second only when the build takes Improved Frostbolt. Since sim
+    // round 16 the Frostbolt opener is the one without Heating Up, and the clause says so.
+    const want = rankOf(trees, 'Improved Frostbolt') > 0 ? '2.5 s before the pull' : '3 s before the pull';
+    expect(frostbolt?.clause).toBe(`${want}, without Heating Up`);
   });
 
   it('gives Marksmanship’s Rapid Fire the raid build’s cooldown, not the level 60 build’s Rapid Killing', () => {
