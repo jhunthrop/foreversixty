@@ -239,6 +239,8 @@ export function ladderTalentString(
   let remaining = Math.max(level - 9, 0);
   const digits = trees.map((tree) => new Array<number>(tree.talents.length).fill(0));
   const order = [ownTreeIndex, ...trees.map((_, i) => i).filter((i) => i !== ownTreeIndex)];
+  const offTree = reserveOffTree(trees, targets, ownTreeIndex, first, remaining);
+  remaining = offTree.budget;
   for (const ti of order) {
     const tree = trees[ti];
     if (tree === undefined) continue;
@@ -247,10 +249,48 @@ export function ladderTalentString(
     } else if (ti === ownTreeIndex) {
       remaining = spendOwnTree(digits[ti]!, tree, targets, remaining);
     } else {
-      remaining = spendTree(digits[ti]!, tree, targets, undefined, remaining);
+      const reserved = offTree.reserved.get(ti);
+      remaining = spendTree(
+        digits[ti]!,
+        tree,
+        targets,
+        reserved,
+        remaining + (reserved ? spent(reserved) : 0),
+      );
     }
   }
   return digits.map((row) => row.join('')).join('-');
+}
+
+/** A reservation's ranks in another tree than the spec's own (Shadow's Wand
+ *  Specialization, in Discipline), spent before the own tree one rank at a time in list
+ *  order, each capped at the guide's target and its max rank, and only for a first-row
+ *  talent with no prerequisite (sim/leveling reserveOffTree). */
+function reserveOffTree(
+  trees: readonly LadderTalentTree[],
+  targets: Targets,
+  ownTreeIndex: number,
+  first: readonly LadderFirstRank[],
+  budget: number,
+): { reserved: Map<number, Ranks>; budget: number } {
+  const reserved = new Map<number, Ranks>();
+  let left = budget;
+  for (const row of first) {
+    trees.forEach((tree, ti) => {
+      if (ti === ownTreeIndex) return;
+      for (const node of tree.talents) {
+        if (node.name !== row.talent || node.tier !== 0 || node.prereq_talent_id !== null) continue;
+        const ranks = reserved.get(ti) ?? new Map<number, number>();
+        reserved.set(ti, ranks);
+        const cap = Math.min(row.rank, target(targets, node.id), node.max_rank);
+        while ((ranks.get(node.id) ?? 0) < cap && left > 0) {
+          ranks.set(node.id, (ranks.get(node.id) ?? 0) + 1);
+          left--;
+        }
+      }
+    });
+  }
+  return { reserved, budget: left };
 }
 
 interface LadderFirstFile {
