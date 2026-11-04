@@ -295,10 +295,8 @@ def _race_ids(pick: _RankPick, ranks: dict[str | None, int], resolved_id: int) -
 
 def load_rank_choices(curated_dir: Path, spec: str) -> dict[int, list[dict]]:
     """One spec's per-band rank choices, by the list's authored id, each row
-    carrying the priority-list lines it applies to: its spell's "lines", none
-    when the spell scopes only pre-pull actions, None (every line) when it
-    scopes nothing. The file is optional here (a test's curated dir may have
-    none)."""
+    carrying the priority-list lines it applies to (`_scoped_rows`). The file
+    is optional here (a test's curated dir may have none)."""
     path = curated_dir / "rank-choices.json"
     if not path.exists():
         return {}
@@ -307,14 +305,29 @@ def load_rank_choices(curated_dir: Path, spec: str) -> dict[int, list[dict]]:
 
 
 def _scoped_rows(spell: dict) -> list[dict]:
-    """`spell`'s rows, each with the priority-list "lines" it applies to."""
-    if spell.get("lines"):
-        lines = spell["lines"]
-    elif spell.get("prepull"):
-        lines = []
-    else:
-        lines = None
-    return [{**row, "lines": lines} for row in spell["bands"]]
+    """`spell`'s rows, each with the priority-list "lines" it applies to: a band
+    naming its own "lines" or "prepull" (round 17) keeps its own scope, a band
+    naming neither takes its spell's (sim/request scopeBands)."""
+    return [
+        {**row, "lines": _priority_lines(row if _names_scope(row) else spell)}
+        for row in spell["bands"]
+    ]
+
+
+def _names_scope(entry: dict) -> bool:
+    """Whether a spell or band names a "lines" or "prepull" scope."""
+    return "lines" in entry or "prepull" in entry
+
+
+def _priority_lines(entry: dict) -> list[int] | None:
+    """The priority-list lines a spell's or band's scope reaches: its "lines",
+    none when it scopes only pre-pull actions, None (every line) when it
+    scopes nothing."""
+    if entry.get("lines"):
+        return entry["lines"]
+    if entry.get("prepull"):
+        return []
+    return None
 
 
 def _rank_of(spellranks: dict, class_slug: str) -> dict[int, int]:

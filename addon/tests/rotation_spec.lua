@@ -320,6 +320,47 @@ describe("Rotation", function()
 	end)
 end)
 
+-- A rank-choice band scoped to its own lines (round 17: rank 2 at 50-59 on line 4 only) is
+-- resolved by the data job, line by line: two lines of one spell in one band carry their own
+-- ids, and a race's id rides only on the line its row reaches. The addon shows each line as
+-- shipped and never folds one line's rank into another's.
+describe("Rotation with a band scoped to one line", function()
+	local SCOPED = {
+		build = DATA.build,
+		classes = DATA.classes,
+		weights = {},
+		rotations = { ["warrior-fury"] = {
+			{ level = 50, lines = {
+				{ spellId = 285, name = "Heroic Strike", condition = "" },
+				{ spellId = 284, name = "Heroic Strike", condition = "",
+					raceSpellId = { ["undead"] = 1608 } },
+			} },
+		} },
+	}
+
+	local function shownFor(raceToken, factionToken)
+		mock.install({
+			class = { name = "Warrior", token = "WARRIOR" },
+			race = raceToken and { name = raceToken, token = raceToken } or nil,
+			globals = { UnitFactionGroup = function() return factionToken end },
+		})
+		helper.load("Compat")
+		helper.load("Gear")
+		local Rotation = helper.load("Rotation")
+		local model = Rotation.model(SCOPED, BUILD, RANKS, 55, true)
+		mock.uninstall()
+		return { model.lines[1].spellId, model.lines[2].spellId }
+	end
+
+	it("shows each line of one spell its own rank", function()
+		assert.are.same({ 285, 284 }, shownFor("Troll", "Horde"))
+	end)
+
+	it("swaps a race's id only on the line its row reaches", function()
+		assert.are.same({ 285, 1608 }, shownFor("Scourge", "Horde"))
+	end)
+end)
+
 -- L3.7 pre-item (round A review): a second line whose only word that fits is a figure keeps that
 -- one word rather than cutting down to none.
 -- A line whose rank a race's rank-choice row changes (round 13) carries each keyed

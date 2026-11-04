@@ -634,6 +634,65 @@ def test_a_rank_choice_scoped_to_pre_pull_actions_leaves_every_line(tmp_path):
     assert [line.spell_id for line in _healer_bands("priest-holy", tmp_path)[50]] != [6075]
 
 
+def test_a_band_scoped_to_its_own_lines_rewrites_only_those_lines(tmp_path):
+    """A band may carry its own "lines" (round 17), as sim/request's parse
+    reads it: rank 3 at 50-59 on line 1 only, while a band with none keeps the
+    spell's scope (every line here) at 40-49."""
+    _write_apl(
+        tmp_path,
+        "priest-holy",
+        [_cast(10929, rank=9, notes="Save."), _cast(10929, rank=9, notes="Filler.")],
+    )
+    (tmp_path / "rank-choices.json").write_text(
+        json.dumps(
+            {
+                "specs": {
+                    "priest-holy": [
+                        {
+                            "spell": "Renew",
+                            "authored": 10929,
+                            "bands": [
+                                {"from_level": 40, "to_level": 49, "rank": 3},
+                                {"from_level": 50, "to_level": 59, "rank": 3, "lines": [1]},
+                            ],
+                        }
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    bands = _healer_bands("priest-holy", tmp_path)
+    assert [line.spell_id for line in bands[40]] == [6075, 6075]
+    assert [line.spell_id for line in bands[50]][1] == 6075
+    assert [line.spell_id for line in bands[50]][0] != 6075
+
+
+def test_a_band_scoped_to_its_own_pre_pull_actions_leaves_every_line(tmp_path):
+    """A band naming only "prepull" changes no priority-list line, even when its
+    spell's rows otherwise apply everywhere."""
+    _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
+    (tmp_path / "rank-choices.json").write_text(
+        json.dumps(
+            {
+                "specs": {
+                    "priest-holy": [
+                        {
+                            "spell": "Renew",
+                            "authored": 10929,
+                            "bands": [
+                                {"from_level": 50, "to_level": 59, "rank": 3, "prepull": [0]}
+                            ],
+                        }
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert [line.spell_id for line in _healer_bands("priest-holy", tmp_path)[50]] != [6075]
+
+
 def test_a_race_rank_choice_below_sixty_names_each_races_rank(tmp_path):
     """A rank-choice row may name races (round 13). The addon carries one
     rotation per band for every race, so a line whose rank a race row changes
