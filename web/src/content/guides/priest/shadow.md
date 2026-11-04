@@ -134,7 +134,7 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap procs on every kill that gives experience and lets you chain pulls with little drinking.
+Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap procs on every kill that gives experience and lets you chain pulls with little drinking. Your mana runs out before your health does, so keep cheaper ranks on your bars. Shadow Word: Pain rank 3 through your thirties, then the top rank. Devouring Plague rank 1 until 43, then rank 2 from 44 to 59. Mind Blast rank 4 from 40 to 43, then back to the top rank. Shadow Word: Death rank 2 through your fifties.
 
 From 20 the build finishes Shadow Focus at 21, takes Improved Mind Blast to 25 and Improved Shadow Word: Pain at 26 and 27, then Mind Flay at 28. Until 28 the wand is your filler. Improved Mind Flay comes at 29 and 30 and two points of Blackout at 31 and 32, then Vampiric Embrace, Shadow Weaving and Darkness, and Shadowform is your point at 42. The two early points in Wand Specialization cost you those two levels of the form, and they are worth it.
 
