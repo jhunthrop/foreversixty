@@ -19,10 +19,11 @@ const HERO_WITH_SPEC: MeCharacter = {
 };
 
 describe('HomeHeroCards', () => {
-  it('shows "Pick a spec" on Talents for a character with no spec yet, never a fabricated figure', () => {
-    const { body } = render(HomeHeroCards, { props: { hero: HERO } });
-    expect(body).toContain('Pick a spec');
-    expect(body).toContain('href="/planner"');
+  it('below 20 never asks for a spec: Talents teaches the leveling order and the sim card is quiet', () => {
+    const { body } = render(HomeHeroCards, { props: { hero: { ...HERO, level: 5, spec: undefined } } });
+    expect(body).not.toContain('Pick a spec');
+    expect(body).toContain('data-testid="home-talents-leveling"');
+    expect(body).toContain('Sim numbers start at level 20.');
   });
 
   it('is exactly two cards, Talents and Simulator: Best in slot is the header’s answer now', () => {

@@ -6,14 +6,14 @@ import type { MeCharacter } from '../account/api';
 import { hasGearOnFile } from './sync';
 import type { AnswerSpec } from './types';
 
-export type AnswerPlan = 'below-floor' | 'no-gear' | 'load';
+export type AnswerPlan = 'below-floor' | 'load-below-floor' | 'no-gear' | 'load';
 
 export function planAnswer(
   character: MeCharacter,
-  spec: Pick<AnswerSpec, 'levelFloor' | 'needsGear'>,
+  spec: Pick<AnswerSpec, 'levelFloor' | 'needsGear' | 'loadBelowFloor'>,
 ): AnswerPlan {
   if (spec.levelFloor !== undefined && character.level !== undefined && character.level < spec.levelFloor) {
-    return 'below-floor';
+    return spec.loadBelowFloor === undefined ? 'below-floor' : 'load-below-floor';
   }
   if (spec.needsGear === true && !hasGearOnFile(character)) return 'no-gear';
   return 'load';

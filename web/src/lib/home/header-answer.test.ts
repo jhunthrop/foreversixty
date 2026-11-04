@@ -86,18 +86,18 @@ describe('homeAction', () => {
     });
   });
 
-  it('under the level floor opens the first band’s list for the character’s own spec and faction', () => {
+  it('under the level floor opens the character’s own spec guide at its Leveling section', () => {
     expect(homeAction({ character: CHARACTER, belowLevelFloor: true })).toEqual({
-      label: 'Fury gear for 20 to 29 →',
-      href: '/bis/warrior/fury?faction=horde#band-horde-20',
+      label: 'Level as Fury →',
+      href: '/guides/warrior/fury#leveling',
     });
   });
 
-  it('under the level floor with no spec points at the BiS index', () => {
+  it('under the level floor with no spec opens the class’s leveling spec guide', () => {
     const bare = { ...CHARACTER, spec: undefined };
     expect(homeAction({ character: bare, belowLevelFloor: true })).toEqual({
-      label: 'Pick a spec →',
-      href: '/bis',
+      label: 'Level as Arms →',
+      href: '/guides/warrior/arms#leveling',
     });
   });
 });

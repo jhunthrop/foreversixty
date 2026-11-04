@@ -13,8 +13,8 @@
   import type { MeCharacter } from '../../lib/account/api';
   import { bisPageHref } from '../../lib/bis/hover';
   import { bisCopy } from '../../lib/bis/copy';
-  import { homeHeroCardsCopy, homeUpgradesCopy } from '../../lib/home-panel-copy';
-  import { cachedUpgradesFor, type CachedUpgrades } from '../../lib/home/upgrades-loader';
+  import { homeHeroCardsCopy, homeUpgradesCopy, levelingHomeCopy } from '../../lib/home-panel-copy';
+  import { cachedUpgradesFor, homeSpecKeyFor, type CachedUpgrades } from '../../lib/home/upgrades-loader';
   import type { Item } from '../../lib/planner/types';
   import type { UpgradesResult } from '../../lib/home/upgrades';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
@@ -26,13 +26,16 @@
   import Card from '../ui/Card.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import ItemHover from '../ItemHover.svelte';
+  import ActionLink from '../ui/ActionLink.svelte';
+  import { FIRST_BAND_LEVEL } from '../../lib/bis/landing-bands';
+  import { levelingGuideHref } from '../../lib/leveling/leveling-plan';
 
   let { hero }: { hero: MeCharacter } = $props();
 
   /** The card's own box (not the slot, whose min-height is the reserve being set). */
   let box = $state<HTMLElement | null>(null);
 
-  type Status = 'loading' | 'no-spec' | 'no-gear' | 'no-list-yet' | 'ready';
+  type Status = 'loading' | 'leveling' | 'no-spec' | 'no-gear' | 'no-list-yet' | 'ready';
 
   let status = $state<Status>('loading');
   let ctx = $state<CachedUpgrades | null>(null);
@@ -45,7 +48,11 @@
     const current = hero;
     ctx = null;
     result = null;
-    if (current.spec === undefined) {
+    if ((current.level ?? 1) < FIRST_BAND_LEVEL) {
+      status = 'leveling';
+      return;
+    }
+    if (homeSpecKeyFor(current) === undefined) {
       status = 'no-spec';
       return;
     }
@@ -79,6 +86,10 @@
   });
 
   const classSlug = $derived(classSlugFromName(hero.class ?? ''));
+  const guideHref = $derived.by(() => {
+    const specKey = homeSpecKeyFor(hero);
+    return specKey === undefined ? undefined : levelingGuideHref(specKey);
+  });
   const bandLabel = $derived(ctx === null ? '' : bisCopy.bandRangeLabel(ctx.band));
   const fullListHref = $derived(
     ctx === null || hero.faction === undefined ? undefined : bisPageHref(ctx.specKey, hero.faction, ctx.band),
@@ -104,10 +115,21 @@
   >
     {#if status === 'loading'}
       <Skeleton lines={4} rowHeight="h-5" testid="home-upgrades-skeleton" />
+    {:else if status === 'leveling'}
+      <div class="flex min-h-11 flex-col gap-2 text-[14px]" data-testid="home-upgrades-locked">
+        <p>
+          <span class="text-strong font-semibold">{levelingHomeCopy.gearLocked(FIRST_BAND_LEVEL)}</span>
+          <span class="text-muted">{levelingHomeCopy.gearUntil}</span>
+        </p>
+        {#if guideHref !== undefined}
+          <ActionLink href={guideHref} data-testid="home-upgrades-leveling-guide">
+            {levelingHomeCopy.openLevelingGuide}
+          </ActionLink>
+        {/if}
+      </div>
     {:else if status === 'no-spec'}
       <p class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]" data-testid="home-upgrades-no-spec">
-        <span class="label text-gold">{homeHeroCardsCopy.pickASpec}</span>
-        <a href="/planner" class="text-nav text-[13px] font-semibold">{homeHeroCardsCopy.pickASpecLine}</a>
+        <span class="text-muted">{homeHeroCardsCopy.bestInSlotNoListYet}</span>
       </p>
     {:else if status === 'no-gear'}
       <p

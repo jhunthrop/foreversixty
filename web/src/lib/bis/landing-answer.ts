@@ -15,6 +15,7 @@ import { bandEntryFor, fetchBisFile } from './hover';
 import { DEFAULT_LANDING_BAND, FIRST_BAND_LEVEL, characterBand } from './landing-bands';
 import { classFor, specKeyFor, type LandingConfig } from './landing-config';
 import { landingCopy } from './landing-copy';
+import { levelingSpecKey } from '../leveling/leveling-plan';
 import { specLinkHref } from './landing-links';
 import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
 import { hasKnownSource } from './source-cell';
@@ -141,21 +142,24 @@ export function bisAnswerSpec(options: BisAnswerOptions): AnswerSpec {
 export function landingAnswerSpec(config: LandingConfig): AnswerSpec {
   return bisAnswerSpec({
     build: config.build,
-    specKeyOf: (character) => specKeyFor(config, character.class, characterSpecName(character)),
+    specKeyOf: (character) =>
+      specKeyFor(config, character.class, characterSpecName(character)) ?? levelingSpecKey(character),
   });
 }
 
 /** The character's own spec page at its own band and faction; the pointer to the grid for an unknown class. */
 export function landingAction(character: MeCharacter, config: LandingConfig): HeaderAction {
   const cls = classFor(config, character.class);
-  const specKey = specKeyFor(config, character.class, characterSpecName(character));
+  // No spec yet (a fresh import): the class's leveling spec, never a "pick a spec" prompt.
+  const specKey =
+    specKeyFor(config, character.class, characterSpecName(character)) ?? levelingSpecKey(character);
   const spec = cls === undefined ? undefined : config.specs[specKey ?? cls.defaultSpecKey];
   if (cls === undefined || spec === undefined) {
     return { label: landingCopy.fallbackAction, href: landingCopy.fallbackHref };
   }
   const band = characterBand(character.level) ?? DEFAULT_LANDING_BAND;
   return {
-    label: landingCopy.leadButton(specKey === undefined ? cls.name : spec.name, band),
+    label: landingCopy.leadButton(spec.name, band),
     href: specLinkHref({
       classSlug: spec.classSlug,
       specSlug: spec.specSlug,
