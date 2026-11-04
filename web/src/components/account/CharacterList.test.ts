@@ -125,7 +125,7 @@ describe('CharacterList', () => {
     );
     expect(body).toContain(characterListCopy.pasteHref);
     expect(characterListCopy.empty).toBe(
-      'No characters yet. Install the addon and the companion, then log out once in game; your characters appear here within a minute. Or paste an export.',
+      'No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.',
     );
   });
 

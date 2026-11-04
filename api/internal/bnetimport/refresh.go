@@ -141,28 +141,12 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 		return err
 	}
 
-	if _, err := tx.Exec(ctx, `update characters set refreshed_at = now() where key = $1`, key); err != nil {
-		return fmt.Errorf("bnetimport: refresh stamp %s: %w", key, err)
+	ref := characterRef{
+		UserID: sc.UserID, Region: region, Ruleset: ruleset, Key: key,
+		RealmSlug: sc.RealmSlug, Name: name, BnetID: sc.BnetCharacterID,
 	}
-	profile, _, _, err := s.syncCharacterGuild(ctx, tx, sc.UserID, region, ruleset, key, sc.RealmSlug, name, rosterCache)
-	if err != nil {
-		return err
-	}
-	rawEquipment, err := s.captureEquipment(ctx, tx, key, region, sc.RealmSlug, name)
-	if err != nil {
-		return err
-	}
-	rawSpecializations, err := s.captureSpecializations(ctx, tx, key, region, sc.RealmSlug, name)
-	if err != nil {
-		return err
-	}
-	if err := s.captureMedia(ctx, tx, key, region, sc.RealmSlug, name); err != nil {
-		return err
-	}
-	if err := s.buildAndWriteExport(ctx, tx, sc.UserID, key, region, ruleset, profile, rawEquipment, rawSpecializations); err != nil {
-		return err
-	}
-	if err := synclog.Record(ctx, tx, key, synclog.SourceBlizzard, synclog.OutcomeOK); err != nil {
+	var guildWritten, unavailable bool
+	if err := s.enrichInTx(ctx, tx, ref, rosterCache, &guildWritten, &unavailable); err != nil {
 		return err
 	}
 	if err := tx.Commit(ctx); err != nil {
@@ -233,7 +217,9 @@ func (s *Service) rekeyInPlace(ctx context.Context, tx pgx.Tx, key, region, rule
 		}
 		realmCache[region] = realms
 	}
-	if realms == nil {
+	// A realmless (Forever) row's ruleset came from the account profile's
+	// realm id, which only the sign-in import holds; the refresh leaves it.
+	if realms == nil || realmSlug == "" {
 		return key, ruleset, nil
 	}
 	newRuleset := rulesetForRealm(realms, realmSlug)

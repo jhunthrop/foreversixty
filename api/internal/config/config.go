@@ -34,13 +34,16 @@ const (
 
 	// defaultBnetProfileGame is the profile-game segment of a namespace
 	// (spec §1 rule 3): the value between "profile-" and "-{region}".
-	// Forever's real namespace is one env change on launch day.
-	defaultBnetProfileGame = "classic1x"
-	// defaultBnetRegions is which regional hosts to try for an account.
-	defaultBnetRegions = "us,eu"
+	// Blizzard serves Forever as profile-forever-{region} and
+	// dynamic-forever-{region} (probed 2026-11-03).
+	defaultBnetProfileGame = "forever"
+	// defaultBnetRegions is which regional hosts to try for an account: the
+	// three whose Forever namespaces answer. KR's dynamic-forever-kr answers
+	// 404, so a KR player's characters come from the addon.
+	defaultBnetRegions = "us,eu,tw"
 	// defaultBnetProbeGames is every game namespace segment the nightly
 	// refresh's probe checks (spec §5).
-	defaultBnetProbeGames = "classic1x,classic-forever,classicforever,forever,classic60,anniversary"
+	defaultBnetProbeGames = "forever,classic1x"
 )
 
 // defaultTrustedProxyHops is used when TRUSTED_PROXY_HOPS is not set. 1
@@ -117,12 +120,11 @@ type Config struct {
 	BnetProfileGame string
 	BnetRegions     []string
 	BnetProbeGames  []string
-	// BnetImportCharacters (BNET_IMPORT_CHARACTERS=true) turns the account
-	// character import on. Off by default since 2026-09-27: Blizzard serves
-	// no Forever namespace yet, so with only classic1x answering the import
-	// filled accounts with Era and Season of Discovery characters that are
-	// not Forever characters at all. Off, sign-in still works, the nightly
-	// job still probes for the namespace, and nothing is written.
+	// BnetImportCharacters is the account character import, the primary way
+	// characters reach the site: on by default since Blizzard began serving
+	// profile-forever (2026-11-03). BNET_IMPORT_CHARACTERS=false turns it off
+	// (an incident switch): sign-in still works, the nightly job only probes
+	// namespaces, and characters come from the addon alone.
 	BnetImportCharacters bool
 	// AppSignIn (APP_SIGN_IN=true) mounts the native app sign-in: GET /v1/auth/app/start,
 	// POST /v1/auth/app/exchange and POST /v1/auth/app/logout. Off by default; the routes
@@ -282,7 +284,7 @@ func Load(getenv func(string) string) (Config, error) {
 	if c.BnetProfileGame == "" {
 		c.BnetProfileGame = defaultBnetProfileGame
 	}
-	c.BnetImportCharacters = getenv("BNET_IMPORT_CHARACTERS") == "true"
+	c.BnetImportCharacters = getenv("BNET_IMPORT_CHARACTERS") != "false"
 	c.AppSignIn = getenv("APP_SIGN_IN") == "true"
 	c.AppWidgets = getenv("APP_WIDGETS") == "true"
 	if err := loadAppTokenLifetimes(&c, getenv); err != nil {

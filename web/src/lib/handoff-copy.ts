@@ -11,6 +11,10 @@ export const handoffCopy = {
    *  (character-list-copy.ts) -- this per-row line only points at the one action. */
   needsExportLead: 'No export yet ·',
   needsExportPasteLink: 'paste it here',
+  /** A Battle.net-imported character whose gear and talents have not arrived yet: they are on
+   *  their way from Blizzard, and the export is only the shortcut. */
+  battlenetPendingLead: 'Gear and talents on their way from Battle.net ·',
+  battlenetPendingPasteLink: 'or paste an export',
   pasteHref: '/setup#paste',
 } as const;
 

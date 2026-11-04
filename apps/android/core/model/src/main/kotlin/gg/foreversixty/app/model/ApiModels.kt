@@ -11,11 +11,13 @@ data class AccountCharacter(
     @SerialName("key") val key: String,
     @SerialName("region") val region: String,
     @SerialName("ruleset") val ruleset: String,
+    /** The full display name, first name and surname ("Elyra Duskvale"); show it whole. */
     @SerialName("name") val name: String,
     /** Which path last wrote this character: export (addon or companion) or bnet. */
     @SerialName("source") val source: String,
     /** The class slug */
     @SerialName("class") val className: String? = null,
+    /** Omitted for Forever characters (rulesets replace realms). */
     @SerialName("realm") val realm: String? = null,
     @SerialName("level") val level: Int? = null,
     @SerialName("faction") val faction: String? = null,
@@ -1553,7 +1555,7 @@ data class Me(
     @SerialName("discord_link_suggested") val discordLinkSuggested: String? = null,
     /** Omitted until the account picks a main. */
     @SerialName("main_character_key") val mainCharacterKey: String? = null,
-    /** Omitted when the Battle.net import never ran. */
+    /** When the Battle.net import last ran. Every Battle.net sign-in imports the account's Forever characters (us, eu, tw); omitted when it never ran. */
     @SerialName("bnet_imported_at") val bnetImportedAt: String? = null,
     /** Omitted when the server has no sims store configured. */
     @SerialName("server_sims") val serverSims: ServerSimsUsage? = null,

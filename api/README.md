@@ -41,9 +41,10 @@ make run
 | `BNET_CLIENT_ID` | no | — | Battle.net OAuth client. Without the id, the secret, and the redirect URL, only the email magic link is offered. |
 | `BNET_CLIENT_SECRET` | no | — | |
 | `BNET_REDIRECT_URL` | no | — | Registered for production and for `http://localhost:8080/v1/auth/battlenet/callback`. |
-| `BNET_PROFILE_GAME` | no | `classic1x` | The profile-game segment of a Blizzard namespace (`profile-<game>-<region>`, `dynamic-<game>-<region>`). Forever's real namespace is one env change on launch day — see "The Battle.net character import" below. |
-| `BNET_REGIONS` | no | `us,eu` | Comma-separated; which regional Blizzard hosts to try for an account during import and refresh. |
-| `BNET_PROBE_GAMES` | no | `classic1x,classic-forever,classicforever,forever,classic60,anniversary` | Comma-separated; every game namespace segment the nightly refresh's namespace probe checks, logging one line per game (any game other than `BNET_PROFILE_GAME` that answers 200 is logged at WARN as `namespace_appeared`). |
+| `BNET_PROFILE_GAME` | no | `forever` | The profile-game segment of a Blizzard namespace (`profile-<game>-<region>`, `dynamic-<game>-<region>`). Blizzard serves Forever as `profile-forever-<region>` since 2026-11-03. |
+| `BNET_IMPORT_CHARACTERS` | no | on | The account character import on sign-in, the primary way characters reach the site. `false` is the incident switch: sign-in still works and characters come from the addon alone. |
+| `BNET_REGIONS` | no | `us,eu,tw` | Comma-separated; which regional Blizzard hosts to try for an account during import and refresh. |
+| `BNET_PROBE_GAMES` | no | `forever,classic1x` | Comma-separated; every game namespace segment the nightly refresh's namespace probe checks, logging one line per game (any game other than `BNET_PROFILE_GAME` that answers 200 is logged at WARN as `namespace_appeared`). |
 | `PARSE_JOB_NAME` | no | `parse-report` | The Cloud Run job that parses a whole-file upload. |
 | `PARSE_JOB_REGION` | no | `us-east1` | |
 | `PARSE_JOB_PROJECT` | no | `foreversixty` | The Google Cloud project the job lives in. |
@@ -453,8 +454,7 @@ Like `parse-report`, `sim-run` and `sim-validate`, `data-addon` is in `.github/w
 guild-roster data (the app's own client-credentials token — no user's OAuth token is needed,
 or kept, for this job), at most 4 Blizzard calls per second, stopping the run on the first
 `429`. It then runs the namespace probe (`BNET_PROBE_GAMES`), logging one line per game and a
-WARN for any game other than `BNET_PROFILE_GAME` that answers 200 — the owner's signal to flip
-`BNET_PROFILE_GAME` on launch day. It needs the same Battle.net credentials the service itself
+WARN for any game other than `BNET_PROFILE_GAME` that answers 200. It needs the same Battle.net credentials the service itself
 does (`BNET_CLIENT_ID`, `BNET_CLIENT_SECRET`) and is a no-op with none configured.
 
     gcloud run jobs create bnet-refresh \

@@ -22,6 +22,13 @@
   <a class={LINK} href={simArmoryHref(character.key)} data-testid="character-open-sim">
     {handoffCopy.openInSimulator}
   </a>
+{:else if character.source === 'bnet'}
+  <span class="text-muted text-[13px]" data-testid="character-bnet-pending">
+    {handoffCopy.battlenetPendingLead}
+    <a class="text-text inline-flex min-h-11 items-center underline md:min-h-0" href={handoffCopy.pasteHref}>
+      {handoffCopy.battlenetPendingPasteLink}
+    </a>
+  </span>
 {:else}
   <span class="text-muted text-[13px]" data-testid="character-needs-addon">
     {handoffCopy.needsExportLead}
