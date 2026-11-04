@@ -30,6 +30,15 @@ var ladderFirstSpecs = map[string]struct {
 	"warrior-fury":        {"warrior", "fury", 1},
 }
 
+// spineCapstoneNotDefining names a spec whose guide build's deepest talent is a filler point
+// rather than the build's defining talent, so a reservation may leave it to level 60. The
+// Restoration druid's deepest talent is Improved Regrowth 1 (round 15: the point Improved
+// Moonfire wasted); the plain walk's spine would reach for it at 40 by dropping Nature's
+// Swiftness and Swiftmend.
+var spineCapstoneNotDefining = map[string]string{
+	"druid-restoration": "Improved Regrowth",
+}
+
 // Every curated reservation is sound on the active build: its spec is one this test knows,
 // every talent sits in the spec's own tree with a guide rank at or above the reserved one,
 // every level's build is legal, no level removes a point the level before it had, and
@@ -86,7 +95,7 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if level%10 == 0 && plain[capstone.ID] > 0 && ranks[capstone.ID] == 0 {
+			if level%10 == 0 && plain[capstone.ID] > 0 && ranks[capstone.ID] == 0 && spineCapstoneNotDefining[spec] != capstone.Name {
 				t.Errorf("%s level %d: %q drops %s, which the plain walk's spine holds", spec, level, s, capstone.Name)
 			}
 			for ti, part := range strings.Split(s, "-") {

@@ -1,0 +1,143 @@
+# Sim-accuracy round 15: Druid
+
+Lane `druid`. Site wt/r15-druid, fork lane/r15-druid, both from int/r15 (site fd320b60e, fork d1d9f2775). Client 1.60.1.70755. Specs: Balance, Feral cat, Feral bear (threat, boss AP 268, keeps Demoralizing Roar), Restoration (heal scale 2.3; druid rows of rank-choices.json and its APL).
+
+Summary: 3 confirmed bugs, all fixed: one engine value the server changed (Rend and Tear) and two dead talent points in guide builds (cat leveling, Restoration). One owner question (bear Furor). The guide-accuracy round-1 sim leads are settled below.
+
+## Seed items
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| S1 | **Rend and Tear was 2% a rank; Forever's server makes it 3%.**<br>**What was wrong:** cat and bear melee abilities against a bleeding target dealt 10% more at 5/5.<br>**What the client says:** the client's own curve for the talent (TraitDefinitionEffectPoints 23779, curve 85357) still reads 2/4/6/8/10 on 70755, and the hotfix push does not touch it. The server's value is in Wowhead's live Forever talent payload (fetched 2026-11-03): "by 3% / 6% / 9% / 12% / 15%". The site's talents/druid.json carries the same text (its 70753 copy read 2%..10%). As the talent-hotfix memory note says, talent hotfixes live in that payload, not in wago tables. Note: the talent has 5 ranks, so 15% is 5/5, not 3/3.<br>**What it touches (checked):** the direct damage of Claw, Shred, the first hit of Rake, Ravage, Ferocious Bite, Primal Bite, Maul, Swipe and Lacerate (`feral_talents.go:99`, callers in claw/shred/rake/ravage/ferocious_bite/primal_bite/maul/swipe/lacerate.go). It never touches a bleed's own ticks or white swings. "Bleeding" means the druid's own Lacerate, Rip, Rake or Pounce, or the raid's assumed bleed.<br>**What changed:** `rendAndTearDamagePerRank` 0.02 to 0.03. | Tests changed first and failed: `TestRendAndTearNeedsABleed` (1.1, want 1.15), `TestRendAndTearRaisesShredOnABleedingTarget`, `TestRendAndTearCountsTheCatsOwnBleeds`. All three pass now. Fork golden `sim/druid/tank/TestFeralTank.results` regenerated. talents/druid.json lines 784-800; nether.wowhead.com/forever/data/talents-classic?dv=100 | CONFIRMED-BUG | new-data (70755 server value; client curve unchanged), guides-handoff (S1) | E e45a540db |
+| S2 | **The cat leveling build spent 8 points on caster talents.**<br>**What was wrong:** `01/50212032123012123001/535033` took Nature's Focus 5 (pushback on Arcane and Nature spells) and Subtlety 3 (threat from Nature and Arcane spells). The cat's rotation casts neither school after 20, so neither does anything for it. Meanwhile Heart of the Wild sat at 3/5.<br>**What changed:** the build is now `05002/50212032123012123001/05503`, guide-accuracy DRUID-3's proposal. It keeps the questing Feral 31 (Brutal Impact, Feral Charge) and takes the raid build's Balance 7 (Genesis 5, Nature's Majesty 2) and Restoration 13 (Heart of the Wild 5, Naturalist 5, Natural Shapeshifter 3). It is legal: 51 points, the tier gates are met by Genesis 5 and Heart of the Wild 5, and json order equals the (tier, column) order the ladder reads.<br>**Bands:** the ladder walks Feral, then Balance, then Restoration, so bands 20-40 are unchanged. Band 50 swaps Genesis 1, Nature's Focus 5, Heart of the Wild 3 and Naturalist 1 for Genesis 5, Nature's Majesty 2 and Heart of the Wild 3. Bare 60 is the whole build. | `TestGuideBuildsSpendNothingOnDeadTalents/feral` and `TestCatLevelSixtyBuildFinishesHeartOfTheWild` (sim/leveling) failed on the old string and pass. Bare 50: 161.1 to 168.7 (alliance) and 157.0 to 164.5 (horde) at seed 1, +4.7% at both seeds. Bare 60: 275.6 to 297.1 and 272.0 to 293.7, +7.8 / +8.0% at both seeds (`lvl.tsv`) | CONFIRMED-BUG (owner rule: a provably dead point is a bug by itself) | old (round 12, 454ae42b9: the talent search held both talents as unmodeled keeps), guides-handoff (DRUID-3 / SIM-D1) | S 6b9b19145 |
+| S3 | Guide-accuracy round-1 sim rows, each re-checked:<br>- **S1 Rend and Tear:** item S1 above.<br>- **S2 Demoralizing Roar in the bear APL:** present (9898, priority 6, refreshed in its last 3 s).<br>- **S3 Frenzied Regeneration:** the engine reads 1% of max health a rage point, up to 10 rage a second for 10 s (`frenzied_regeneration.go:23`, round 14 B1). Wowhead tooltip 22842 says the same: "Converts up to 10 Rage per second into health for 10 sec. Each point of Rage is converted into 1% health." So at full rage it can heal your whole health bar. The guide's original wording was right, and the guide lane softened it (see "For the guide lane").<br>- **S4 expertise in the bear weights:** no Forever item for any class carries expertise (items/*.json). The weight comes from the shared weights tool (`sim/cmd/leveling-bis/expertisecap.go`); it never moves a pick. Sent to "For other lanes" and "Measure at refresh".<br>- **S5 Eclipse banked on a resisted Wrath:** round 14 casters B1 settled this by the identical proc-mask analogue (408248 = Missile Barrage's 0x10000). No new data. Aligned (analogue).<br>- **S6 feral ladder goldens:** listed under Files to regenerate.<br>- **DRUID-19 Rejuvenation rank 1 tooltip:** pending owner, not reopened. | see each line | S1 confirmed; S2, S3, S5 aligned; S4 other lane; DRUID-19 pending | - | - |
+
+## Feral cat (re-audit)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| C1 | **Rake upkeep re-measured** after Rend and Tear's 15% and the bleed-crit ruling (last measured in round 3 F5, -4.1%). Raid 60, 3000 iterations, seed 1: base 675.1 / 670.7; Rake whenever it is down, ahead of Shred: 648.5 / 644.6 (-3.9%); Rake only before the first Rip (to open Rend and Tear early): 673.4 / 668.3 (-0.3%). The list stays without Rake. | `rot/rake*.json` (lane dir) | Aligned | - | - |
+| C2 | APL read cast by cast: Prowl pre-pull, Ravage 9867 r4, Faerie Fire 9907 in form (free, 6 s cd; round 14 C3), the sub-20 Moonfire and Wrath lines gated on Claw, Shifting Power at 60 energy or less, Rip at 5 CP under 6 s, Bite at 5 CP with Rip at 6 s or more, then Shred, Claw before Bite is learned. Ranks are the trainable maxima (Rip 9896 r6 at 60, Rake 9904 r4 at 54). Costs match trainables (Shred 60, less Shredding Attacks' 18 = 42; Claw 45; Rake 40; Rip 30). | trainables/druid.json; `claw.go:47`, `lacerate.go:42` | Aligned | - | - |
+| C3 | Raid build, talent by talent: every point is modeled or a path point. Ferocity, Feral Swiftness and Feral Instinct get you down the tree; Shredding Attacks, Savage Fury, Sharpened Claws, Predatory Strikes, Predatory Discipline, Blood Frenzy 1, Leader of the Pack, Natural Instinct, Rend and Tear 5 and Shifting Power are all modeled; Genesis feeds Rip; Nature's Majesty 4% crit; Heart of the Wild, Naturalist and Natural Shapeshifter (Shifting Power's cost). No dead point. | talents/druid.json; round 14 hybrids C1 | Aligned | - | - |
+| C4 | Raid BiS gear (night elf): Shadowcraft 5 pieces give Rogue Armor Energize (27787 to 27788, 20 energy) through the shared client-set model at the unstated proc rate. Molten Heart of the Mountain is Molten Fury (1249113, 55 AP for 15 s). Frozen Heart of the Mountain is worn for its 9 hit; its Frost/Shadow use does nothing for a cat. Idol of the Dream adds 2 s to Rip. Hammer of the Titans' stun does no damage. All are modeled as the item text says. The proc rate of the unstated set chance is shared core work that earlier rounds own. | items/druid.json effect text; `sim/common/item_effects.go:3674-3730`; `client_sets_gen.go:26,406-407` | Aligned | - | - |
+
+## Feral bear (re-audit)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| B1 | Rend and Tear (S1) is 5/5 in the bear build: threat rises 3.8% at raid 60. | after.tsv | (S1) | - | E e45a540db |
+| B2 | APL and costs: Enrage pre-pull, Barkskin on cooldown (castable in form, round 11 G3), Frenzied Regeneration under 50% health with 20+ rage, Primal Bite r3, Lacerate r5 (15 rage less Shredding Attacks' 3), Faerie Fire, Demoralizing Roar r5, Maul r7 at 15+ rage (less Ferocity's 5), Swipe r5 at 40+. Every value matches round 14 B3 and the client rows; 70755 changed none of them. | spellconst druid.json; `maul.go:50`, `lacerate.go:42-45`, `bear_talents_consts.go` | Aligned | - | - |
+| B3 | **Furor 5 never fires in the tank fight** (the bear starts in Dire Bear Form and never shifts; round 6 G0). In game it is 10 rage each time a bear shifts back in (Innervate, Rebirth, a decurse), which the engine does not model, so the adoption rule keeps it. Probe: Furor 0, Naturalist 1 to 5 and Feral Charge 1 raise threat 993.1 to 1070.0 (+7.7%, raid 60, horde, 3000 iterations). The one Forever source (Warcraft Tavern's Forever feral guide, undated, read 2026-11-03) says Furor is "usually not needed in endgame group content". Its bear build is 9/42/0, which predates Heart of the Wild's move to Restoration. Mobalytics and Icy Veins Forever pages refused the fetch (403). | warcrafttavern.com/forever/guides/feral-druid/ | OPEN (owner: is a bear's Furor an unmodeled keep, or a point that does nothing in a raid?) | - | - |
+| B4 | Leveling ladder and talents: Lacerate at 30 and Primal Bite at 40 (ladder-first row); Thick Hide, Natural Reaction, Feral Swiftness dodge, Blood Frenzy rage on crits, Heart of the Wild Stamina, Naturalist 1. All modeled. | ladder-first.json; `feral_talents.go` | Aligned | - | - |
+
+## Balance (re-audit)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| L1 | APL cast by cast: Wrath r8 pre-pull, Moonfire as the last-seconds filler, Starfire r6 9876 (rank 7 is a book, round 14 B5), Moonfire r10 and Insect Swarm r5 upkeep, Wrath to bank Eclipse, Wrath when mana-bound (downranking allowed), Starfire. 70755 changed no druid spell row (round 14 build.md X7). | APL; round 14 casters B2 | Aligned | - | - |
+| L2 | Builds, talent by talent: every Balance point is modeled or a path point. Improved Moonfire 2 is cast and is Vengeance's prerequisite. Nature's Reach gives 4% hit. Improved Starfire 5 is 0.1 s a rank. Restoration's Nature's Focus 5 and Subtlety 3 do nothing in the sim but are real for a caster (pushback, threat): they are on the raid keep list (raid-keeps.json), so the adoption rule keeps them. Round 14 B3's +1.6% swap stays with the owner. | raid-keeps.json; round 14 casters B3 | Aligned (keeps) | - | - |
+| L3 | Rank rows: Moonfire r3, Wrath r4 and Insect Swarm r1 at 30-39 are all trainable by 30 (learned at 16, 22 and 20; Insect Swarm's 15-point row opens at 24). | trainables/druid.json | Aligned | - | - |
+
+## Restoration (re-audit)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| R1 | **Improved Moonfire 1 did nothing for a Restoration druid.**<br>**What was wrong:** the build `05312001/0/55530051531132` spent a point on "damage and critical strike chance of your Moonfire spell". The healer never casts Moonfire. Improved Moonfire is the prerequisite only of Vengeance, which the build does not take. Nature's Splendor's 10-point gate is already met by Genesis 5, Moonglow 3 and Nature's Majesty 2. Moonglow is itself damage-only in Forever (text "damaging spells"; engine mask `DruidSpellMaskBalanceDamage`), but it is the cheapest path to Nature's Splendor.<br>**What changed:** the point moves to Improved Regrowth 1 (+10% crit on Regrowth, which the tank line casts; prerequisite Improved Rejuvenation 3 is held): `05302001/0/555300515311321`. Bands 20-40 are unchanged. Band 50 swaps Genesis 2 for Genesis 1 and Improved Regrowth 1. | `TestGuideBuildsSpendNothingOnDeadTalents/restoration` failed on the old string and passes. Raid 60: 1014.5 to 1019.2 (alliance) and 1013.6 to 1018.5 (horde), +0.46 to +0.48%. Bare 60: +0.79 to +0.81%. Bare 50: +0.18 to +0.23%. Both seeds (`resto-imf.tsv`) | CONFIRMED-BUG (dead point) | old (Improved Moonfire in the build since e43958ce5, 2026-10-31; round 14 healers R2 read the spells, not the build) | S 9b931dc3d |
+| R2 | **Side effect in a shared test:** `TestCuratedLadderFirstIsSound` takes the build's deepest talent as the "capstone" a reservation must not drop at a published band. Restoration's deepest talent is now Improved Regrowth (row 5). The plain walk's spine would chase it at 40 by dropping Nature's Swiftness and Swiftmend, and a reservation cannot hold it at 40. The test gains a one-entry map naming this filler as not defining. The ladder output is unchanged (checked at 20/30/40/50/60). | `sim/leveling/ladder_first_curated_test.go` | - (test policy) | - | S 9b931dc3d |
+| R3 | APL: Innervate under 30% mana, Nature's Swiftness into Healing Touch r10 on a tank under 35%, Swiftmend on the tank under 75% with mana to spare, Tranquility r4 on group damage, Regrowth r9 and Rejuvenation r10 on the tank, Healing Touch r10 under 55%, Rejuvenation r1 on the party (pending owner, O2). Spell rows, Swiftmend (20% base mana, 15 s), Innervate and Bloom are as round 14 R2 records. | APL; round 14 healers R2 | Aligned | - | - |
+| R4 | Rank rows: Rejuvenation r4 at 28-49 and bare 60, r1 at 50-59. Each rank is trainable at its band (r4 at 22, r1 at 4). The r1 row rests on the pending tooltip. | rank-choices.json; trainables | Aligned (r1 pending owner) | - | - |
+| R5 | Build, rest of it: Nature's Focus 5 (heals are Nature, so pushback protection is real but unmodeled), Heart of the Wild, Naturalist (Healing Touch cast time), Reflection, Gift of Nature, Bloom, Tranquil Spirit, Improved Rejuvenation, Swiftmend, Nature's Swiftness, Living Spirit, Improved Tranquility (Tranquility's cooldown -60%, which the list uses) are all modeled or real. | talents/druid.json | Aligned | - | - |
+
+## Cross-cutting
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| X1 | Racials of the published races (night elf, tauren): unchanged since round 12; Elune's Light, Quickness, Endurance and War Stomp match races.json (guide-accuracy "checked and right"). | races.json | Aligned | - | - |
+| X2 | Talent-text provenance: on 70755 the client curve and the server value disagree for Rend and Tear, and the pipeline's talents/druid.json follows the server. I diffed every druid talent between the two builds' talents json: Rend and Tear is the only change. | `diff talents/druid.json` | Aligned (others) | - | - |
+
+## Before/after
+
+Raid 60, 10,000 iterations, both factions, seeds 1 and 50001. Before = `$R/before.tsv` (site fd320b60e, engine d1d9f2775). After = lane engine e45a540db with site wt/r15-druid. spec-breakdown sims the published BiS talents, which predate the guide builds. So the raid table shows Rend and Tear. The build fixes are measured on the guide builds in S2 and R1.
+
+| Spec | Faction | Seed | Before | After | % |
+|---|---|---|---|---|---|
+| druid-balance | alliance | 1 | 569.5 | 569.5 | +0.00% |
+| druid-balance | alliance | 50001 | 570.3 | 570.3 | +0.00% |
+| druid-balance | horde | 1 | 574.9 | 574.9 | +0.00% |
+| druid-balance | horde | 50001 | 575.1 | 575.1 | +0.00% |
+| druid-feral-bear | alliance | 1 | 964.2 | 1000.6 | +3.78% |
+| druid-feral-bear | alliance | 50001 | 965.2 | 1001.6 | +3.77% |
+| druid-feral-bear | horde | 1 | 955.7 | 992.0 | +3.80% |
+| druid-feral-bear | horde | 50001 | 956.3 | 992.6 | +3.80% |
+| druid-feral | alliance | 1 | 664.9 | 675.1 | +1.53% |
+| druid-feral | alliance | 50001 | 664.8 | 675.1 | +1.55% |
+| druid-feral | horde | 1 | 660.4 | 670.6 | +1.54% |
+| druid-feral | horde | 50001 | 660.2 | 670.3 | +1.53% |
+| druid-restoration | alliance | 1 | 1006.4 | 1006.4 | +0.00% |
+| druid-restoration | alliance | 50001 | 1006.7 | 1006.7 | +0.00% |
+| druid-restoration | horde | 1 | 1005.3 | 1005.3 | +0.00% |
+| druid-restoration | horde | 50001 | 1005.2 | 1005.2 | +0.00% |
+
+Healers are in effective HPS, the bear in threat per second. Balance and Restoration do not move on published talents (the Restoration build change is R1).
+
+Bare bands (horde, published band talents, Rend and Tear only):
+
+| Spec | Band | Seed | Before | After | % |
+|---|---|---|---|---|---|
+| druid-feral | 20 | 1 | 45.0 | 45.0 | +0.00% |
+| druid-feral | 20 | 50001 | 45.0 | 45.0 | +0.00% |
+| druid-feral | 30 | 1 | 83.3 | 83.3 | +0.00% |
+| druid-feral | 30 | 50001 | 83.2 | 83.2 | +0.00% |
+| druid-feral | 40 | 1 | 115.5 | 116.2 | +0.61% |
+| druid-feral | 40 | 50001 | 115.4 | 116.2 | +0.69% |
+| druid-feral | 50 | 1 | 153.6 | 154.6 | +0.65% |
+| druid-feral | 50 | 50001 | 153.6 | 154.6 | +0.65% |
+| druid-feral | 60 | 1 | 266.8 | 268.8 | +0.75% |
+| druid-feral | 60 | 50001 | 267.0 | 269.0 | +0.75% |
+| druid-feral-bear | 20 | 1 | 57.2 | 57.2 | +0.00% |
+| druid-feral-bear | 20 | 50001 | 57.1 | 57.1 | +0.00% |
+| druid-feral-bear | 30 | 1 | 75.1 | 75.1 | +0.00% |
+| druid-feral-bear | 30 | 50001 | 75.0 | 75.0 | +0.00% |
+| druid-feral-bear | 40 | 1 | 170.1 | 170.1 | +0.00% |
+| druid-feral-bear | 40 | 50001 | 170.0 | 170.0 | +0.00% |
+| druid-feral-bear | 50 | 1 | 302.1 | 312.0 | +3.28% |
+| druid-feral-bear | 50 | 50001 | 301.9 | 311.8 | +3.28% |
+| druid-feral-bear | 60 | 1 | 416.7 | 430.9 | +3.41% |
+| druid-feral-bear | 60 | 50001 | 416.0 | 430.1 | +3.39% |
+
+Bands 20-30 take no Rend and Tear; the cat build reaches it at 40 (3 ranks), the bear at 50.
+
+No spec outside the druid moves: the engine change is in `sim/druid`, and the site changes are two druid guide build lines and sim/leveling tests.
+
+## Files to regenerate
+
+- `sim/request/testdata/ladder/druid-feral.golden.md`, `druid-feral-bear.golden.md` (Rend and Tear) and `druid-restoration.golden.md` (the band 50/60 build): TestRotationLadder.
+- BiS, weights and band talents (at the refresh): `bis/druid-feral.json` (band 50/60 bare talents, raid Rend and Tear), `bis/druid-feral-bear.json`, `bis/druid-restoration.json` (band 50/60 talents).
+- `addon-builds.json`, `dps-per-point.json`, `addon-data.json` / Data.lua, and the coach starters that carry the cat leveling or Restoration build strings.
+- Fork golden regenerated here: `sim/druid/tank/TestFeralTank.results` (E e45a540db).
+
+## Measure at refresh
+
+- The cat bare-50/60 and Restoration band-50/60 gains on the re-picked gear (measured here on published gear with guide-build talents).
+- S4: drop expertise from the bear weights table (no item carries it).
+- Restoration coverage at raid 60 after the Improved Regrowth point (+0.5% healing; round 14 A1's 83% coverage figure moves slightly).
+
+## For other lanes
+
+- **Weights tooling (shared):** bear band weights publish an expertise scale factor (7.06 raid, 8.32 bare) although no Forever item has expertise. Hide it from the rendered table, or drop the stat from the bear weights run.
+- **sim/leveling (shared test):** `TestCuratedLadderFirstIsSound` gained `spineCapstoneNotDefining` (one entry, druid-restoration). No other spec is affected.
+
+## For the guide lane
+
+On land/guides-r1:
+- `feral.md:58`, replace "From 41 take Genesis, then Nature's Focus and three points of Heart of the Wild to open Restoration, then Naturalist, Natural Shapeshifter and Subtlety last. Nature's Focus keeps a mob's hits from pushing back the Healing Touch or Regrowth you cast between forms; Subtlety and Nature's Focus both move at the 60 respec." with "From 41 take Genesis and Nature's Majesty in Balance, then Heart of the Wild, Naturalist and Natural Shapeshifter in Restoration: the same points as the raid build." In the next sentence, drop "and Heart of the Wild" from "it finishes Rend and Tear and Heart of the Wild" and drop "and takes Genesis and Nature's Majesty" (the leveling build already has both).
+- `restoration.md:54`, replace "The build is 39 points of Restoration and 12 of Balance." with "The build is 40 points of Restoration and 11 of Balance."
+- `restoration.md:65`, replace "Moonglow (3 points) and Improved Moonfire (1 point) are the price of Nature's Splendor" with "Moonglow (3 points) is the price of Nature's Splendor". Add to the Restoration talent list: "- **Improved Regrowth** (1 point): more crits on the Regrowth you keep on the tank."
+- `feral-bear.md:88`: Frenzied Regeneration's tooltip (22842) is 1% of your health per rage point, up to 10 rage a second for 10 seconds. "Frenzied Regeneration turns rage into health over 10 seconds" can become "Frenzied Regeneration turns up to 10 rage a second into 1% of your health a point for 10 seconds, so a full bar of rage heals you to full; use it under half health with rage to spare, not at the pull."
+- (Already on the guide lane) Rend and Tear's 3% / 15% text (DRUID-1, DRUID-2) is now what the engine deals.
+
+## Still open
+
+- B3: bear Furor (owner).
+- Pending owner, not reopened: Rejuvenation rank 1 tooltip (DRUID-19, O2); Moonkin Rebirth (DRUID-20); Eclipse on a resisted Wrath (DRUID-16, aligned by analogue).
+- Warcraft Logs is blocked (gcloud login expired); not used.
