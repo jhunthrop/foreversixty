@@ -3,8 +3,8 @@ title: Beast Mastery Hunter in Forever
 classSlug: hunter
 spec: beast-mastery
 role: dps
-build: 'FS1:1.60.1.70753:hunter:dwarf:5420001505001251/00524510012/0:'
-raidBuild: 'FS1:1.60.1.70753:hunter:dwarf:5420001505001251/00523500014/0:'
+build: 'FS1:1.60.1.70755:hunter:dwarf:5420001505001251/00524510012/0:'
+raidBuild: 'FS1:1.60.1.70755:hunter:dwarf:5420001505001251/00523500014/0:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Beast Mastery Hunter in Forever: talents for leveling and raids, the shot priority, pet handling, stats, consumables and race picks.'
@@ -21,13 +21,13 @@ sources:
     url: https://warcrafttavern.com/forever/guides/hunter/
     kind: community
   - label: 'Forever Sixty build data, talents/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/talents/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, spellconst/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/spellconst/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, races.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/races.json
+    url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights

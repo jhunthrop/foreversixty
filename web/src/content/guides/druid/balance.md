@@ -3,8 +3,8 @@ title: Balance Druid in Forever
 classSlug: druid
 spec: balance
 role: dps
-build: 'FS1:1.60.1.70753:druid:night-elf:5232220115101151/0/555301:'
-raidBuild: 'FS1:1.60.1.70753:druid:night-elf:5232220115501351/0/505003:'
+build: 'FS1:1.60.1.70755:druid:night-elf:5232220115101151/0/555301:'
+raidBuild: 'FS1:1.60.1.70755:druid:night-elf:5232220115501351/0/505003:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Intellect, Spell power, Nature power, Hit, Arcane power, Critical strike, Spell haste, Spell penetration]

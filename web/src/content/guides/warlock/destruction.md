@@ -3,8 +3,8 @@ title: Destruction Warlock in Forever
 classSlug: warlock
 spec: destruction
 role: dps
-build: 'FS1:1.60.1.70753:warlock:gnome:25522/0/2053235103101351:'
-raidBuild: 'FS1:1.60.1.70753:warlock:gnome:2550000002/0/2053345103101351:'
+build: 'FS1:1.60.1.70755:warlock:gnome:25522/0/2053235103101351:'
+raidBuild: 'FS1:1.60.1.70755:warlock:gnome:2550000002/0/2053345103101351:'
 recommendedRaces: [gnome, troll]
 statPriority:
   [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, Shadow power, Fire power]
@@ -33,7 +33,7 @@ Destruction keeps Immolate on the boss, fires Conflagrate and Shadowburn on cool
 ### Strengths
 
 - Conflagrate and Shadowburn are instants on short cooldowns, so you keep casting while you move
-- Shadow and Flame keeps 10% more Shadow and 10% more Fire damage running all fight
+- Shadow and Flame keeps 20% more Shadow and 20% more Fire damage running all fight
 - Ruin doubles the bonus on every Destruction crit
 - No setup before the pull beyond your demon and Demon Armor
 
@@ -58,7 +58,7 @@ The leveling and raid builds are the same Destruction tree. The raid build moves
 - **Aftermath** (3 points, 4 in the raid build): Immolate's first hit deals 30% more, 40% at 4 points.
 - **Conflagrate** and **Fire and Brimstone** (4 points): an instant Fire hit on a target with your Immolate, 10 second cooldown, with 25% more crit chance from Fire and Brimstone.
 - **Shadowburn** (1 point): an instant Shadow hit, 15 second cooldown, at any health. It costs a Soul Shard.
-- **Shadow and Flame** (5 points): Conflagrate gives you 10% more Shadow damage for 20 seconds and Shadowburn 10% more Fire damage for 20 seconds. At 5 points Conflagrate never eats your Immolate and every Shadowburn refunds its shard on the spot.
+- **Shadow and Flame** (5 points): Conflagrate gives you 20% more Shadow damage for 20 seconds and Shadowburn 20% more Fire damage for 20 seconds. At 5 points Conflagrate never eats your Immolate and every Shadowburn refunds its shard on the spot.
 - **Incinerate** (1 point): your filler from level 40. It deals 25% more while your Immolate is on the target.
 - **Suppression** and **Improved Corruption** (10 points): 5% hit on every spell, 20% less threat, and an instant Corruption.
 

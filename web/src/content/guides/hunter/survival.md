@@ -3,7 +3,7 @@ title: Survival Hunter in Forever
 classSlug: hunter
 spec: survival
 role: dps
-build: 'FS1:1.60.1.70753:hunter:dwarf:5/005005001/500230231051222151:'
+build: 'FS1:1.60.1.70755:hunter:dwarf:5/005005001/500230231051222151:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Hit, Critical strike, Agility, Intellect, Strength, Attack power, Attack speed]
 description: 'How to play a melee Survival Hunter in Forever: talents, the Raptor Strike and Mongoose Bite priority, Lone Wolf, stats, consumables and race picks.'
@@ -20,13 +20,13 @@ sources:
     url: https://www.wowhead.com/forever/spell=1495
     kind: community
   - label: 'Forever Sixty build data, talents/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/talents/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, spellconst/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/spellconst/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, races.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/races.json
+    url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
@@ -67,7 +67,7 @@ Thirty-five points in Survival take every melee damage talent, eleven in Marksma
 - **Lacerating Strikes** (1 point): Mongoose Bite also bleeds the target for 40% of its damage over 21 seconds
 - **Predator's Edge** (5 points): 30% more crit damage on your melee specials and 50% more off-hand damage
 - **Savage Strikes** (2 points): 4% crit on your melee specials
-- **Lightning Reflexes** (5 points): 10% Agility
+- **Lightning Reflexes** (5 points): 15% Agility
 - **Deadly Aspects** (5 points): under Aspect of the Beast, every white swing has a 10% chance to speed your melee attacks by 30% for 12 seconds
 - **Resourcefulness** (2 points): 60% off melee and trap costs, and your special crits keep half your mana regeneration running
 
@@ -93,7 +93,7 @@ You fire no shots in this spec. Your bow or gun is there for its stats.
 
 ## Stat priority
 
-Hit first until the special attack cap shown above. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Then crit, which Predator's Edge and Savage Strikes make strong, and Agility, which Lightning Reflexes raises by 10%. Intellect is attack power through Careful Aim. Strength and plain attack power are the weakest per point. Haste is rare on gear but strong when you find it.
+Hit first until the special attack cap shown above. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Then crit, which Predator's Edge and Savage Strikes make strong, and Agility, which Lightning Reflexes raises by 15%. Intellect is attack power through Careful Aim. Strength and plain attack power are the weakest per point. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 

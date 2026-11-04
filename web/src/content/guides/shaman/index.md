@@ -24,11 +24,11 @@ Shaman is the totem class: a caster, a melee fighter and a healer who all bring 
 ## What changed from 1.12
 
 - **One weapon, never two.** Forever's shamans do not dual wield. Enhancement fights with a two-hander, or a one-hander with a shield or a held off-hand item, and Windfury Weapon goes on that weapon. Shamans train fist weapons, and they wear leather until 40 and mail from 40.
-- **Totems reach further.** Strength of Earth, Grace of Air and Windfury Totem now cover every raid member within 30 yards, not just your party, so one shaman can cover a whole melee group. Mana Spring, Healing Stream and Mana Tide still only reach your party, and two Mana Springs do not stack. Call of the Elements at 20 drops a set of totems you choose in one cast, and Totemic Projection at 22 picks up your totems and moves them where you point. Windfury Totem's bonus no longer lingers after the totem is replaced, so there is nothing to twist.
-- **Lightning Bolt** is a 2.5 second cast and Chain Lightning a 2.0 second cast before any talents.
+- **Totems reach further.** Strength of Earth, Grace of Air and Windfury Totem now cover every raid member within 30 yards, not just your party, so one shaman can cover a whole melee group. Mana Spring, Healing Stream and Mana Tide still only reach your party, and two Mana Springs do not stack. Call of the Elements at 20 drops a set of totems you choose in one cast, and Totemic Call at 22 picks up your totems and brings them to where you stand, every 30 seconds. Windfury Totem's bonus no longer lingers after the totem is replaced, so there is nothing to twist.
+- **Lightning Bolt and Chain Lightning** are both 2.5 second casts before any talents.
 - **Fire Nova** is an instant spell that bursts from your active Fire totem, not a totem of its own.
-- **Elemental Mastery** speeds up Lightning Bolt and Lava Burst for 15 seconds instead of granting a crit.
-- **Lava Burst, Maelstrom Weapon and Water Shield** are new talents; Enhancement ends in Rage of the Farseer and Restoration in Riptide.
+- **Lightning Mastery** is the 31-point Elemental talent: for 15 seconds every 3 minutes Lightning Bolt casts half a second faster and Chain Lightning has no cooldown. Call of Thunder, 5% crit on both lightning spells, is the talent that opens it.
+- **Maelstrom Weapon and Water Shield** are new talents; Enhancement ends in Rage of the Farseer and Restoration in Riptide, a heal over time that makes your Chain Heal stronger on its target. Stormstrike hits for 150% weapon damage.
 - **Hit and crit on gear count everywhere.** A hit or crit piece raises your melee and your spells alike, which Enhancement feels most. Agility still gives melee crit and Intellect spell crit.
 
 ## Races

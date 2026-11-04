@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/assassination.md
   - data/curated/apl/rogue-assassination.json
-  - data/builds/1.60.1.70753/spellconst/rogue.json
+  - data/builds/1.60.1.70755/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Assassination Rogue as the site's guide describes it. Assassination is the Forever rogue built on Mutilate: two daggers, two combo points a strike, Seal Fate crits for a third and a Cold Blood Eviscerate whenever it is up. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Assassination Rogue as the site's guide describes it. Assassination is the Forever rogue built on Mutilate: two daggers, two combo points a strike, Seal Fate crits for a third, Shank on cooldown with Venom behind your poisons and a Cold Blood Eviscerate whenever it is up. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
@@ -23,9 +23,10 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 - Garrote: Stealth, get behind the boss and open with Garrote once the tank has the boss.
 - Ambush hits harder on paper, but it lands into that armor and gets none of Lethality's bonus.
 - Cheap Shot is for trash only: bosses are immune to stuns.
+- Shank on cooldown, right behind your racial and trinket: five energy for twenty-five back, it cannot miss, and with Venom your poisons hit thirty percent harder and land twenty percent more often for six seconds.
 - Cold Blood at four or more combo points, right before the Eviscerate.
 - Slice and Dice.
-- Eviscerate at four or more combo points.
+- Eviscerate at four or more combo points. Relentless Strikes hands most of its cost back.
 - Mutilate is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.
 - Deadly Poison on the main hand, Instant Poison on the off hand, with a sharpening stone beside each in Forever.
 - Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five: use it on casters and on whatever is hitting your healer.

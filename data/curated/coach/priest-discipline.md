@@ -25,7 +25,6 @@ This is the Discipline Priest as the site's guide describes it. Discipline heals
 - Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.
 - Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.
 - Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.
-- Binding Heal instead of Flash Heal while you are under ninety percent yourself: same mana and cast time, and it heals you as much as your target.
 - Prayer of Healing when three or more in a group are hurt.
 - Penance on cooldown, on whoever is hurt: three heals one second apart for one cast every twelve seconds, your best heal per mana.
 - Inner Focus on a Greater Heal or a Prayer of Healing. It makes the spell free and adds twenty-five percent crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.

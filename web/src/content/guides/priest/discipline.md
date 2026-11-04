@@ -3,10 +3,10 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.70753:priest:human:00500503133001143/3350500303/0:'
+build: 'FS1:1.60.1.70755:priest:human:00500503133001143/3350500303/0:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
-description: 'How to heal as a Discipline Priest in Forever: Penance, shield ranks and Weakened Soul, Renewed Hope, Binding Heal, downranking, mana, Power Infusion and races.'
+description: 'How to heal as a Discipline Priest in Forever: Penance, shield ranks and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
 updated: 2026-11-02
 confidence: inferred
 sources:
@@ -33,7 +33,6 @@ Discipline heals the tank with Penance on cooldown, a cheap shield to open Renew
 - Penance is three heals for one cast every 12 seconds
 - A shield that soaks the next hit before it lands
 - Renewed Hope and Divine Aegis turn Weakened Soul into crits, and crits into more shields
-- Binding Heal heals you as much as the tank when raid damage reaches you
 
 ### Weaknesses
 
@@ -75,7 +74,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Fillers.** Greater Heal at the top rank on the tank, where the big hits land. A cheap low-rank heal on everyone else: in Forever a heal learned below level 20 keeps all of its spell power bonus, so those ranks heal far more than their tooltip suggests for very little mana.
 
-**Emergencies.** Flash Heal at the top rank on anyone about to die. If raid damage has you under 90% too, cast Binding Heal instead: the same mana and cast time, and it heals you as much as your target.
+**Emergencies.** Flash Heal at the top rank on anyone about to die. It is your fastest heal and your dearest, so it never becomes the filler.
 
 **Prayer of Healing** when three or more in a group are hurt. It heals the target's party, so target a member of the group that took the damage.
 

@@ -3,10 +3,10 @@ title: Subtlety Rogue in Forever
 classSlug: rogue
 spec: subtlety
 role: dps
-build: 'FS1:1.60.1.70753:rogue:night-elf:005323101014/0/5320201310013211501:'
+build: 'FS1:1.60.1.70755:rogue:night-elf:005302011/320003/035131031321001151:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
-description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike on cooldown, Thousand Cuts and Quietus, and where the tree stands in a raid.'
+description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike and Shank on cooldown, Boot Knife and Death Mark, and where the tree stands in a raid.'
 updated: 2026-11-02
 confidence: inferred
 sources:
@@ -26,7 +26,7 @@ sources:
 
 ## Overview
 
-Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage to build, Rupture as the main finisher and Ghostly Strike every 20 seconds.
+Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and Boot Knife Shanks to build, Rupture as the main finisher and Death Mark to cash the bleeds in.
 
 ### Strengths
 
@@ -38,7 +38,7 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage to bu
 ### Weaknesses
 
 - The lowest raid damage of the three trees
-- More moving parts than Combat: a debuff, a bleed and a cooldown to track
+- More moving parts than Combat: a debuff, a bleed, a mark and three short cooldowns to track
 - Its strongest tools (Vanish, Preparation, Blind) do little on a raid boss
 
 ### In a raid
@@ -48,17 +48,18 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage to bu
 
 ## Talents and builds
 
-One build does everything: 20 in Assassination for Malice, Ruthlessness, Murder, Improved Slice and Dice and Relentless Strikes, then 31 down Subtlety to Thousand Cuts.
+One build does everything: 12 in Assassination for Malice, Ruthlessness, Improved Slice and Dice, Blood Splatter and a point of Lethality, 8 in Combat for Coup de Grace, Efficient Strikes and Precision, then 31 down Subtlety to Death Mark.
 
-- **Hemorrhage** (1 point): your builder. 145% weapon damage with a dagger, one combo point, and the target takes 15% more damage from your Rupture.
+- **Hemorrhage** (1 point): your builder. 145% weapon damage with a dagger, one combo point, and the target takes 15% more damage from your Rupture and Garrote.
 - **Serrated Blades** (3 points): ignore 9% of the target's armor, and Rupture deals 30% more.
-- **Thousand Cuts** (1 point): every Rupture tick makes your next Hemorrhage cheaper, stacking five times. With Rupture always up, Hemorrhage costs a lot less than it says.
-- **Quietus** (5 points): Hemorrhage and Ghostly Strike hit 10% harder below 35% health.
-- **Ghostly Strike** (1 point): 180% weapon damage with a dagger and 15% dodge for 7 seconds, on a 20 second cooldown.
+- **Boot Knife** (5 points): every Shank adds two combo points. Shank is 5 energy for 25 back on a 10 second cooldown, so this is two free combo points every 10 seconds.
+- **Death Mark** (1 point): a 25 energy finisher on a 10 second cooldown. It marks the target for 6 seconds and stores 12% per combo point of the damage you deal it, Rupture and Garrote at twice that, then deals it all at once, up to a cap set by your attack power and crit.
+- **Coup de Grace** (3 points): Death Mark stores 20% more and its cap rises 20%, and Eviscerate hits 20% harder.
+- **Ghostly Strike** (1 point): 180% weapon damage with a dagger and 15% dodge for 7 seconds, on a 20 second cooldown. A Ghostly Strike that lands also lets your next Ambush or Garrote within 7 seconds go in without Stealth.
 - **Premeditation** (1 point): two combo points before you open, on a 2 minute cooldown.
 - **Initiative** (3 points): Garrote, Ambush and Cheap Shot add a combo point.
 
-Opportunity adds 10% to Garrote and Ambush. Dirty Deeds makes Garrote and Cheap Shot cheaper and lets Garrote go in from the front. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. Cutthroat only fires off Backstab, which this build never casts, so Quietus takes those points.
+Opportunity (5 points) adds 20% to Garrote and Ambush. Blood Splatter keeps Rupture up 6 seconds longer and the opening Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. One point of Dirty Deeds takes 10 energy off Garrote and Cheap Shot. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -66,23 +67,23 @@ Opportunity adds 10% to Garrote and Ambush. Dirty Deeds makes Garrote and Cheap 
 
 ### The pull
 
-Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush is the opener for anything that will die fast, not for a boss. Then **Rupture** right away at four points.
+Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush is the opener for anything that will die fast, not for a boss. Then **Rupture** right away at four points, and **Death Mark** as soon as you have five with both bleeds ticking.
 
 Every rogue learns **Poised** at 18: at full energy out of combat, your next ability costs less, so open from full energy.
 
 ### The priority
 
-Ghostly Strike on cooldown. Rupture at four or more combo points whenever it is not ticking. While it ticks, spend three or more points on Eviscerate, or on Slice and Dice when that is down or about to fall off. Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
+**Shank** and Ghostly Strike on cooldown, right behind your racial and trinket: with Boot Knife every Shank is two combo points for 5 energy. Rupture at four or more combo points whenever it is not ticking. **Death Mark** at five points while Rupture ticks. While Rupture ticks and Death Mark is on cooldown, spend three or more points on Eviscerate, or on Slice and Dice when that is down or about to fall off. Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
 
-Rupture first, always: Hemorrhage's debuff and Serrated Blades both feed it, and every tick makes your next Hemorrhage cheaper through Thousand Cuts. Points that build up while Rupture is still ticking go into Eviscerate or Slice and Dice, so nothing sits idle. Below 35% health Quietus makes Hemorrhage and Ghostly Strike hit harder; nothing else changes.
+Rupture first, always: Hemorrhage's debuff and Serrated Blades both feed it, and Death Mark stores every tick at twice the rate. A mark with no Rupture under it has lost its best source, so never press it into a lapsed bleed. Mark at five points, not four: the storage is per combo point, and the 10 second cooldown means one comes back every few finishers anyway.
 
 ### Energy
 
-Thousand Cuts is your energy talent: a Rupture that lapses also lapses the Hemorrhage discount, so a dropped Rupture costs you twice. Do not cap energy. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when empty.
+Shank is your energy: 5 to press, 25 back, and two combo points with Boot Knife, so a Shank left on cooldown costs you energy and points at once. Efficient Strikes keeps Hemorrhage cheap. Do not cap energy. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when empty.
 
 ### Cooldowns
 
-You have no burst cooldown of your own on a boss: line your racial, trinket and potion up at the pull. **Preparation** resets your other rogue cooldowns on a 10 minute timer, which on a raid boss mostly means a second Vanish or a second Evasion.
+Death Mark is your only damage cooldown and it comes back every 10 seconds, so there is nothing to hold: line your racial, trinket and potion up at the pull, where the first mark stores Garrote and Rupture together. **Preparation** resets your other rogue cooldowns on a 10 minute timer, which on a raid boss mostly means a second Vanish or a second Evasion.
 
 ### Trash, threat and survival
 
@@ -113,4 +114,4 @@ Night Elf on Alliance and Troll on Horde: Elune's Light is 10% crit for 15 secon
 
 ## Leveling
 
-Level as Combat and respec at 60. Subtlety's leveling talents (Camouflage, Master of Deception, Elusiveness) make you safe, not fast, and Hemorrhage only arrives at 30. If you do level Subtlety, open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.
+Level as Combat and respec at 60. Subtlety's leveling talents (Camouflage, Master of Deception, Elusiveness) make you safe, not fast, and Hemorrhage only arrives at 30. Shank comes at 24 for every rogue: press it on cooldown. If you do level Subtlety, open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.

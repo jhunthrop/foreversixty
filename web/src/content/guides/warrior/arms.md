@@ -3,8 +3,8 @@ title: Arms Warrior in Forever
 classSlug: warrior
 spec: arms
 role: dps
-build: 'FS1:1.60.1.70753:warrior:human:03325213032515001/0505/005:'
-raidBuild: 'FS1:1.60.1.70753:warrior:human:02325213032515201/0505002/2:'
+build: 'FS1:1.60.1.70755:warrior:human:13323213032215201/0505/205:'
+raidBuild: 'FS1:1.60.1.70755:warrior:human:34323213032215201/0505002/2:'
 recommendedRaces: [human, orc]
 statPriority: [Strength, Attack power, Critical strike, Hit, Melee haste, Agility]
 description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'
@@ -61,20 +61,22 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 
 ## Talents and builds
 
-- **Bloodthrill** (5 points): while your Rend is on the target, every main-hand hit has a 20% chance to open Overpower. This is the talent the whole spec is built around, so Rend is never optional.
+- **Bloodthrill** (2 points): while your Rend is on the target, every main-hand hit has a 20% chance to open Overpower. This is the talent the whole spec is built around, so Rend is never optional.
 - **Improved Overpower** (2 points): 50% more crit chance on Overpower. With Bloodthrill feeding you Overpowers, this is where your crits come from.
 - **Weaponmaster** (5 points): a bonus that depends on your two-hander. Swords give a 5% chance at an extra attack, axes and polearms 5% crit, maces and staves ignore 15% of armor. Take all five whatever you swing.
 - **Improved Rend** and **Deep Wounds** (3 points each): Rend hits 35% harder and every crit adds a bleed for 60% of your weapon's average damage. Deep Wounds needs the Improved Rend points anyway.
 - **Impale** (2 points): 20% more crit damage on your abilities. Overpower crits most of the time, so this pays every few seconds.
-- **Two-Handed Weapon Specialization** (3 points): 3% more damage with the weapon you always carry.
-- **Improved Tactical Mastery** (5 points): you keep 25 rage through a stance change instead of 10. This is what makes the swap to Berserker Stance for Recklessness and Whirlwind free.
+- **Two-Handed Weapon Specialization** (3 points): 6% more damage with the weapon you always carry.
+- **Improved Tactical Mastery** (3 points): you keep 25 rage through a stance change instead of 10. This is what makes the swap to Berserker Stance for Recklessness and Whirlwind free.
 - **Anger Management** and **Improved Charge** (3 points): a point of rage every 3 seconds in combat, and 21 rage from Charge instead of 15. Rage is the limit for Arms, and both pay from the first second of the pull.
 - **Sweeping Strikes** and **Mortal Strike** (1 point each): Sweeping Strikes is the stepping stone to Mortal Strike and your two-target button. Mortal Strike is the spec.
+- **Improved Slam** (2 points): Slam's cast and global drop to one second, your swing timer keeps running through it, and its cooldown falls from 15 seconds to 10. That puts a Slam between your Mortal Strikes without costing you a swing.
+- **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
 - **Cruelty** and **Unbridled Wrath** (10 points in Fury): 5% crit and a 60% chance at an extra rage point on every weapon hit.
 
-The level 60 build parks five points in **Iron Will** (shorter stuns and fears) and three in **Deflection**, which matter while you level and in PvP.
+The level 60 build puts one point in **Improved Heroic Strike**, three in **Deflection** and five in **Iron Will** (shorter stuns and fears), which matter while you level and in PvP.
 
-The raid build moves Iron Will and one point of Deflection into **Improved Slam** (2 points), which takes Slam's cast to one second, keeps your swing timer running through it and brings its cooldown down to 15 seconds. That puts a Slam between Mortal Strikes. **Improved Bloodrage** (2 points) makes every Bloodrage half again as strong, and two points of **Blood Craze** give back a little health after big hits. Open the [planner](/planner?class=warrior) to see both builds point by point.
+The raid build drops Iron Will for two more points of **Improved Heroic Strike**, so your rage dump costs 3 less, a fourth point of **Deflection** for the times a boss turns on you, and two points of **Blood Craze**, which give back a little health after big hits. Open the [planner](/planner?class=warrior) to see both builds point by point.
 
 ## Rotation and priority
 
