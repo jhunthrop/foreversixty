@@ -214,3 +214,68 @@ func TestDisciplineShieldsAtTheTopRank(t *testing.T) {
 		{60, BarePreset, 10}, {60, RaidPreset, 10},
 	})
 }
+
+// Sim-accuracy round 18: when Holy's top-rank Greater Heal is out of reach
+// (it would overheal or the mana is short), Greater Heal rank 1 (2060) comes
+// before Heal rank 4. At 60 Heal rank 4 keeps 55% of the healing bonus and
+// rank 1 85%: +0.5% to +1.0% effective healing at raid 60 and +0.2% to +0.4%
+// at bare 60, seeds 1 and 50001, both factions. Each Heal line has a rank-1
+// Greater Heal line with its condition right before it; before 40 those lines
+// drop out and Heal is the filler as before.
+func TestHolySteppingDownCastsGreaterHealRankOneBeforeHeal(t *testing.T) {
+	var list struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/priest-holy.json", &list)
+	castOf := func(line json.RawMessage) (int, json.RawMessage) {
+		var entry struct {
+			Action struct {
+				CastSpell *struct {
+					SpellID struct {
+						SpellID int `json:"spellId"`
+					} `json:"spellId"`
+					Target json.RawMessage `json:"target"`
+				} `json:"castSpell"`
+			} `json:"action"`
+			Condition json.RawMessage `json:"condition"`
+		}
+		if err := json.Unmarshal(line, &entry); err != nil {
+			t.Fatal(err)
+		}
+		if entry.Action.CastSpell == nil {
+			return 0, nil
+		}
+		return entry.Action.CastSpell.SpellID.SpellID, append(entry.Action.CastSpell.Target, entry.Condition...)
+	}
+	heals := 0
+	for index, line := range list.Rotation.PriorityList {
+		id, key := castOf(line)
+		if id != 6064 {
+			continue
+		}
+		heals++
+		match := false
+		for _, earlier := range list.Rotation.PriorityList[:index] {
+			if eid, ekey := castOf(earlier); eid == 2060 && string(ekey) == string(key) {
+				match = true
+			}
+		}
+		if !match {
+			t.Errorf("Heal line %d has no Greater Heal rank 1 line with its target and condition ahead of it", index)
+		}
+	}
+	if heals == 0 {
+		t.Fatal("Holy casts no Heal rank 4")
+	}
+	stepDown := linesCasting(t, "priest-holy", 2060)
+	assertRanks(t, stepDown, "priest-holy", "priest", "troll", greaterHealRanks, []rankCase{
+		{40, BarePreset, 1}, {60, BarePreset, 1}, {60, RaidPreset, 1},
+	})
+	if out, err := RewriteRotationRanks(stepDown, "priest-holy", "priest", BarePreset, "troll", 30); err != nil {
+		t.Fatal(err)
+	} else if strings.Contains(string(out), "2060") {
+		t.Error("a level 30 priest casts Greater Heal rank 1")
+	}
+}

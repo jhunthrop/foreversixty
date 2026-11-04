@@ -67,7 +67,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **On the tank.** Prayer of Mending every time it is ready. Renew always up at rank 7 or higher. Go up to the top rank on a tank who is dropping through it.
 
-**The filler is Greater Heal** at your top rank. Rank 2 and 3 were learned late enough to keep your whole healing bonus and cost less, so step down to rank 3 or 2 when the top rank would overheal. Rank 1 already loses part of its bonus at 60. In a dungeon group or on bare gear, where your bonus is small, Heal rank 4 is the cheaper cast. With Divine Fury both are 2.5 second casts.
+**The filler is Greater Heal** at your top rank. When it would overheal or your mana runs short, step down to rank 1: it costs far less, and though it has lost a little of your healing bonus by 60, it heals more for its mana than rank 2 or 3. Heal rank 4 is cheaper still, but it keeps only about half your bonus, so it is the last step down. With Divine Fury every one of them is a 2.5 second cast.
 
 **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on.
 
