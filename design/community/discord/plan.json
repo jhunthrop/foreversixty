@@ -1,0 +1,536 @@
+{
+  "$comment": "Server layout for the Forever Sixty community Discord. apply.mjs reads this file; classes and specs come from web/src/data/classes.json and specs.json. {{channel:key}} and {{role:key}} resolve to mentions at apply time.",
+  "server": {
+    "description": "Play your class better in World of Warcraft: Forever.",
+    "verificationLevel": 2,
+    "explicitContentFilter": 2,
+    "defaultMessageNotifications": 1,
+    "icon": "assets/icon.png",
+    "banner": "assets/banner.png",
+    "systemChannel": "general",
+    "rulesChannel": "rules",
+    "updatesChannel": "mod-log",
+    "safetyAlertsChannel": "mod-log",
+    "vanity": "foreversixty"
+  },
+  "roles": [
+    {
+      "key": "founder",
+      "name": "Founder",
+      "color": "#e5b955",
+      "hoist": true,
+      "mentionable": false,
+      "permissions": [
+        "MANAGE_MESSAGES",
+        "MANAGE_THREADS",
+        "MODERATE_MEMBERS",
+        "MENTION_EVERYONE"
+      ]
+    },
+    {
+      "key": "moderator",
+      "name": "Moderator",
+      "color": "#e04848",
+      "hoist": true,
+      "mentionable": true,
+      "permissions": [
+        "MANAGE_MESSAGES",
+        "MANAGE_THREADS",
+        "MODERATE_MEMBERS",
+        "MENTION_EVERYONE"
+      ]
+    },
+    {
+      "key": "classes",
+      "$comment": "the nine class roles sit here, above Premium, so a member's name shows their class colour and crest"
+    },
+    {
+      "key": "factions",
+      "$comment": "Alliance and Horde roles sit here, uncoloured, so they never hide a class colour"
+    },
+    {
+      "key": "premium",
+      "name": "Premium",
+      "color": "#fbe7a1",
+      "hoist": true,
+      "mentionable": false,
+      "permissions": [],
+      "icon": "assets/premium.png"
+    }
+  ],
+  "classEmoji": {
+    "warrior": "⚔️",
+    "paladin": "🔨",
+    "hunter": "🏹",
+    "rogue": "🗡️",
+    "priest": "✨",
+    "shaman": "⚡",
+    "mage": "🔮",
+    "warlock": "😈",
+    "druid": "🐾"
+  },
+  "classChannelTopic": "{{class}} talk: builds, gear, leveling and raid play. Each spec has its own thread.",
+  "access": {
+    "readOnly": {
+      "everyone": {
+        "deny": [
+          "SEND_MESSAGES",
+          "CREATE_PUBLIC_THREADS",
+          "CREATE_PRIVATE_THREADS",
+          "SEND_MESSAGES_IN_THREADS"
+        ]
+      },
+      "staffAllow": [
+        "SEND_MESSAGES"
+      ]
+    },
+    "premium": {
+      "everyone": {
+        "deny": [
+          "VIEW_CHANNEL"
+        ]
+      },
+      "roleAllow": {
+        "premium": [
+          "VIEW_CHANNEL"
+        ]
+      },
+      "staffAllow": [
+        "VIEW_CHANNEL"
+      ]
+    },
+    "staff": {
+      "everyone": {
+        "deny": [
+          "VIEW_CHANNEL"
+        ]
+      },
+      "staffAllow": [
+        "VIEW_CHANNEL"
+      ]
+    }
+  },
+  "categories": [
+    {
+      "key": "start",
+      "name": "Start Here",
+      "channels": [
+        {
+          "key": "welcome",
+          "name": "welcome",
+          "type": "text",
+          "access": "readOnly",
+          "topic": "New here? Start with this channel."
+        },
+        {
+          "key": "rules",
+          "name": "rules",
+          "type": "text",
+          "access": "readOnly",
+          "topic": "Server rules. Moderators have the final say."
+        },
+        {
+          "key": "announcements",
+          "name": "announcements",
+          "type": "announcement",
+          "access": "readOnly",
+          "topic": "News about Forever Sixty and WoW: Forever."
+        }
+      ]
+    },
+    {
+      "key": "community",
+      "name": "Community",
+      "channels": [
+        {
+          "key": "general",
+          "name": "general",
+          "type": "text",
+          "existing": "general",
+          "topic": "Anything WoW: Forever."
+        },
+        {
+          "key": "lfg",
+          "name": "lfg-and-recruitment",
+          "type": "text",
+          "topic": "Looking for a group or a guild, or recruiting. The only channel where guild ads and invite links are allowed.",
+          "slowmode": 60
+        },
+        {
+          "key": "screenshots",
+          "name": "screenshots",
+          "type": "text",
+          "topic": "Your transmog, your dings, your first kills."
+        },
+        {
+          "key": "offtopic",
+          "name": "off-topic",
+          "type": "text",
+          "topic": "Everything that is not WoW."
+        }
+      ]
+    },
+    {
+      "key": "classes",
+      "name": "Classes",
+      "classChannels": true
+    },
+    {
+      "key": "theorycraft",
+      "name": "Theorycraft",
+      "channels": [
+        {
+          "key": "sims",
+          "name": "sims-and-bis",
+          "type": "text",
+          "topic": "Sims, stat weights and BiS lists. Bring your numbers."
+        },
+        {
+          "key": "logs",
+          "name": "logs",
+          "type": "text",
+          "topic": "Post a log, get eyes on it. Say what you want looked at."
+        }
+      ]
+    },
+    {
+      "key": "fs",
+      "name": "Forever Sixty",
+      "channels": [
+        {
+          "key": "feedback",
+          "name": "site-feedback",
+          "type": "text",
+          "topic": "What should foreversixty.gg do better? Ideas and gripes welcome."
+        },
+        {
+          "key": "addon",
+          "name": "addon-support",
+          "type": "text",
+          "topic": "Help with installing or using the Forever Sixty addon and companion."
+        },
+        {
+          "key": "bugs",
+          "name": "bug-reports",
+          "type": "forum",
+          "topic": "One post per bug. Pick a tag, say what you did, what you expected and what happened. Screenshots help. For an addon bug, include the addon version.",
+          "requireTag": true,
+          "defaultReaction": "👍",
+          "tags": [
+            {
+              "name": "Site",
+              "emoji": "🌐"
+            },
+            {
+              "name": "Addon",
+              "emoji": "🧩"
+            },
+            {
+              "name": "Companion",
+              "emoji": "💻"
+            },
+            {
+              "name": "Discord bot",
+              "emoji": "🤖"
+            },
+            {
+              "name": "Data",
+              "emoji": "📊"
+            },
+            {
+              "name": "Confirmed",
+              "emoji": "✅",
+              "moderated": true
+            },
+            {
+              "name": "Fixed",
+              "emoji": "🛠️",
+              "moderated": true
+            },
+            {
+              "name": "Need info",
+              "emoji": "❓",
+              "moderated": true
+            }
+          ]
+        },
+        {
+          "key": "lounge",
+          "name": "premium-lounge",
+          "type": "text",
+          "access": "premium",
+          "topic": "For Premium members. Thank you for keeping the site running."
+        }
+      ]
+    },
+    {
+      "key": "voice",
+      "name": "Voice",
+      "channels": [
+        {
+          "key": "voiceGeneral",
+          "name": "General",
+          "type": "voice",
+          "existing": "General"
+        },
+        {
+          "key": "voiceDungeon",
+          "name": "Dungeon",
+          "type": "voice",
+          "userLimit": 5
+        },
+        {
+          "key": "voiceRaid",
+          "name": "Raid",
+          "type": "voice",
+          "userLimit": 40
+        }
+      ]
+    },
+    {
+      "key": "staff",
+      "name": "Staff",
+      "access": "staff",
+      "channels": [
+        {
+          "key": "modchat",
+          "name": "mod-chat",
+          "type": "text",
+          "access": "staff"
+        },
+        {
+          "key": "modlog",
+          "name": "mod-log",
+          "type": "text",
+          "access": "staff",
+          "topic": "AutoMod alerts and Discord's community updates."
+        }
+      ]
+    }
+  ],
+  "onboarding": {
+    "defaultChannels": [
+      "welcome",
+      "rules",
+      "announcements",
+      "general",
+      "lfg",
+      "screenshots",
+      "offtopic",
+      "feedback",
+      "addon",
+      "bugs"
+    ],
+    "prompts": [
+      {
+        "title": "Which class?",
+        "classes": true,
+        "singleSelect": false,
+        "required": true,
+        "$comment": "one option per class: the class role and its channel; pick alts too"
+      },
+      {
+        "title": "Alliance or Horde?",
+        "factions": true,
+        "singleSelect": false,
+        "required": false
+      },
+      {
+        "title": "What brings you here?",
+        "singleSelect": false,
+        "required": false,
+        "options": [
+          {
+            "title": "Leveling and dungeons",
+            "emoji": "🗺️",
+            "channels": [
+              "sims"
+            ]
+          },
+          {
+            "title": "Raiding",
+            "emoji": "🐉",
+            "channels": [
+              "logs",
+              "sims"
+            ]
+          },
+          {
+            "title": "Theorycraft and sims",
+            "emoji": "📈",
+            "channels": [
+              "sims",
+              "logs"
+            ]
+          },
+          {
+            "title": "Help with the site or addon",
+            "emoji": "🧩",
+            "channels": [
+              "feedback",
+              "addon",
+              "bugs"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "automod": [
+    {
+      "name": "Spam",
+      "trigger": "spam",
+      "actions": [
+        "block",
+        "alert"
+      ]
+    },
+    {
+      "name": "Mention spam",
+      "trigger": "mention_spam",
+      "mentionLimit": 5,
+      "raidProtection": true,
+      "actions": [
+        "block",
+        "alert",
+        "timeout"
+      ]
+    },
+    {
+      "name": "Invite links",
+      "trigger": "keyword",
+      "regex": [
+        "(discord\\.gg|discord(app)?\\.com/invite|dsc\\.gg)/[a-z0-9-]+"
+      ],
+      "allow": [
+        "discord.gg/NZhBtPwvHt",
+        "discord.gg/foreversixty"
+      ],
+      "exemptChannels": [
+        "lfg"
+      ],
+      "exemptRoles": [
+        "founder",
+        "moderator"
+      ],
+      "message": "Invite links go in #lfg-and-recruitment.",
+      "actions": [
+        "block",
+        "alert"
+      ]
+    },
+    {
+      "name": "Real-money trading",
+      "trigger": "keyword",
+      "keywords": [
+        "*cheap gold*",
+        "*buy gold*",
+        "*sell gold*",
+        "*gold for sale*",
+        "*selling account*",
+        "*buying account*",
+        "*account for sale*",
+        "*boost for $*",
+        "*carry for $*",
+        "*power leveling service*",
+        "*powerleveling service*",
+        "*pm me for gold*"
+      ],
+      "exemptRoles": [
+        "founder",
+        "moderator"
+      ],
+      "message": "No real-money trading or account sales here.",
+      "actions": [
+        "block",
+        "alert"
+      ]
+    },
+    {
+      "name": "Slurs",
+      "trigger": "preset",
+      "presets": [
+        "slurs"
+      ],
+      "actions": [
+        "block",
+        "alert"
+      ]
+    }
+  ],
+  "messages": [
+    {
+      "key": "welcome",
+      "channel": "welcome",
+      "pin": true,
+      "embeds": [
+        {
+          "title": "Welcome to Forever Sixty",
+          "color": "#e5b955",
+          "description": "Talk about your class, find a group and tell us what to fix on the site and the addon.\n\n**Start here**\n1. Read {{channel:rules}}.\n2. Pick your class and faction in **Channels & Roles** at the top of the channel list. Your class channel and name colour come with it. Add your alts too.\n3. Say hello in {{channel:general}}.\n\n**On foreversixty.gg**\nA guide for every spec, leveling BiS at 20, 30, 40, 50 and 60, a tier list, a sim and a talent planner.\n[foreversixty.gg](https://foreversixty.gg/go/discord)\n\n**The addon**\nMarks upgrades in your bags, marks your next talent and puts your rotation on the character panel.\n[Get set up](https://foreversixty.gg/setup?golink=discord)\n\n**Something broken?**\nOpen a post in {{channel:bugs}} with a tag. Quick questions go in {{channel:addon}}."
+        },
+        {
+          "title": "Your class",
+          "color": "#e5b955",
+          "description": "{{classRoster}}\n\nChange it any time in **Channels & Roles**."
+        },
+        {
+          "title": "Premium",
+          "color": "#fbe7a1",
+          "description": "Premium members get {{channel:lounge}} and the {{role:premium}} role. The role is not added automatically yet: once you subscribe, message any {{role:moderator}} with your Forever Sixty account name and we will add it.\n[What Premium adds](https://foreversixty.gg/premium?golink=discord)"
+        }
+      ]
+    },
+    {
+      "key": "rules",
+      "channel": "rules",
+      "pin": true,
+      "embeds": [
+        {
+          "title": "Rules",
+          "color": "#e5b955",
+          "description": "**1. Be decent.** Argue about builds all you like. Go after the argument, never the person. No harassment, slurs or hate.\n\n**2. No spam or self-promotion.** Guild ads, streams and invite links go in {{channel:lfg}} and nowhere else. No unsolicited DMs to members.\n\n**3. No real-money trading.** No selling or buying accounts, gold, boosts, carries or power-leveling for real money.\n\n**4. Follow the Blizzard and Discord Terms of Service.** No cheats, exploits, botting or third-party tools that break them.\n\n**5. Keep personal info private.** Yours and everyone else's. No real names, addresses or photos of people without their consent.\n\n**6. Tag spoilers.** Wrap new raid and quest spoilers in ||spoiler tags|| for the first week after they come out.\n\n**7. Moderators have the final say.** If something is wrong, ping {{role:moderator}} or message a moderator rather than arguing it out in the channel.\n\nBreaking a rule gets a warning, a timeout or a ban, depending on how bad it is."
+        }
+      ]
+    },
+    {
+      "key": "launch",
+      "channel": "announcements",
+      "pin": false,
+      "embeds": [
+        {
+          "title": "Forever launches 4 November",
+          "color": "#e5b955",
+          "description": "World of Warcraft: Forever opens <t:1793833200:F> (<t:1793833200:R>).\n\nBefore you log in:\n- Read your spec's guide. Shamans carry one weapon, Survival hunters fight in melee, and there are six new race and class pairs.\n- Check your leveling BiS for 20 and 30 so you know which quest rewards to take.\n- Install the addon so your bags tell you what is an upgrade.\n\n[foreversixty.gg](https://foreversixty.gg/go/discord)\n\nSee you in Azeroth."
+        }
+      ]
+    },
+    {
+      "key": "lfgFormat",
+      "channel": "lfg",
+      "pin": true,
+      "embeds": [
+        {
+          "title": "How to post",
+          "color": "#e5b955",
+          "description": "One post, everything a reader needs:\n\n**Class and spec, level, faction, ruleset, what you need**\n\n`Prot warrior, 60, Horde, PvP, LF Strat UD healer + 2 dps`\n`Guild recruiting: Alliance, Normal, raids Tue/Thu 8pm ST, need resto shaman and holy priest`\n\nGuild ads and invite links are allowed here and nowhere else."
+        }
+      ]
+    }
+  ],
+  "factions": [
+    {
+      "key": "alliance",
+      "name": "Alliance",
+      "emoji": "alliance"
+    },
+    {
+      "key": "horde",
+      "name": "Horde",
+      "emoji": "horde"
+    }
+  ],
+  "classTopics": {
+    "hunter": "Hunter talk: builds, gear, pets, leveling and raid play. Survival fights in melee in Forever; Beast Mastery and Marksmanship stay ranged. Each spec has its own thread."
+  }
+}
