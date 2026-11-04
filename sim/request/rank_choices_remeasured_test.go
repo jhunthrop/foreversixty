@@ -200,3 +200,33 @@ func TestRound16MageRankRowsFollowTheLevel(t *testing.T) {
 		}
 	}
 }
+
+// Round 17 (hunter lane, per-level sweep): since round 13 put Aimed Shot on the shared cooldown
+// with Multi-Shot, it is a rotation shot, not only the pre-pull opener, and the bare bands run
+// out of mana for one to two minutes. Rank 1 (19434: 75 mana, 40 damage) then beats the highest
+// rank learned at every level from 28 (rank 2) at seeds 1 and 50001, 10000 iterations, Horde and
+// Alliance: Beast Mastery +1.9 to +3.1% at 28-39 and +0.1 to +0.6% at 50-59 (40-49 already had
+// the row), Marksmanship +1.4 to +3.9% at 28-49. Marksmanship at 50 ties (0.0 to +0.1), so its
+// row ends at 49.
+func TestRound17HunterAimedShotRankRowsFollowTheLevel(t *testing.T) {
+	for _, c := range []struct {
+		name, spec string
+		level      int
+		want, not  int32
+	}{
+		{"Beast Mastery Aimed Shot at 28", "hunter-beast-mastery", 28, 19434, 20900},
+		{"Beast Mastery Aimed Shot at 36", "hunter-beast-mastery", 36, 19434, 20901},
+		{"Beast Mastery Aimed Shot at 49", "hunter-beast-mastery", 49, 19434, 20902},
+		{"Beast Mastery Aimed Shot at 50", "hunter-beast-mastery", 50, 19434, 20902},
+		{"Beast Mastery Aimed Shot at 59", "hunter-beast-mastery", 59, 19434, 20903},
+		{"Marksmanship Aimed Shot at 28", "hunter-marksmanship", 28, 19434, 20900},
+		{"Marksmanship Aimed Shot at 39", "hunter-marksmanship", 39, 19434, 20901},
+		{"Marksmanship Aimed Shot at 46", "hunter-marksmanship", 46, 19434, 20902},
+		{"Marksmanship Aimed Shot at 50", "hunter-marksmanship", 50, 20902, 19434},
+	} {
+		ids := rotationIDs(t, c.spec, "hunter", c.level, specRankChoices(c.spec, BarePreset, "orc"))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}

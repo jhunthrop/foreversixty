@@ -429,7 +429,7 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 11294,
+            "spellId": 11281,
             "rank": 8
           }
         },
@@ -445,7 +445,60 @@
           }
         }
       },
-      "notes": "Sinister Strike only before you have Hemorrhage."
+      "notes": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and Opportunity adds 20% to it."
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 11294,
+            "rank": 8
+          }
+        },
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "not": {
+                  "val": {
+                    "spellIsKnown": {
+                      "spellId": {
+                        "spellId": 16511
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "not": {
+                  "val": {
+                    "spellCanCast": {
+                      "spellId": {
+                        "spellId": 11281,
+                        "rank": 8
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "currentEnergy": {}
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "60"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "notes": "Sinister Strike before Hemorrhage only when Backstab cannot be cast: no dagger in the main hand, or the target is facing you. With a dagger it waits for 60 energy or more, so it never takes the energy Backstab needs."
     }
   ]
 }

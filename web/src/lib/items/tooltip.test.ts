@@ -470,6 +470,18 @@ describe('statLines sign', () => {
     ]);
   });
 
+  it('prints expertise rating the items JSON carries as a white line', () => {
+    // Expertise rating (ItemSparse stat 37; Waywatcher Gauntlets 240081 carry 20) reaches
+    // the items JSON since round 16; the tooltip dropped it (sim audit round 17).
+    const gauntlets = item({ stats: { agility: 14, stamina: 10, hit: 10, expertise: 20 } });
+    expect(itemTooltipModel(gauntlets, NO_SOURCES).stats).toEqual([
+      '+14 Agility',
+      '+10 Stamina',
+      '+10 Hit',
+      '+20 Expertise',
+    ]);
+  });
+
   it('says how the item binds when the row states it', () => {
     expect(itemTooltipModel(item({ bonding: 'pickup' }), NO_SOURCES).bindLabel).toBe('Binds when picked up');
     expect(itemTooltipModel(item({ bonding: 'equip' }), NO_SOURCES).bindLabel).toBe('Binds when equipped');

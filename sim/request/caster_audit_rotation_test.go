@@ -262,3 +262,36 @@ func TestShadowOpensWithAPrePullMindBlast(t *testing.T) {
 		t.Errorf("Shadow prepull %v, want Shadowform then Mind Blast rank 9 at -1.5s", got)
 	}
 }
+
+// Round 17 (priest): Discipline puts Renew on the tank one second before the
+// pull, after Lightwell, at the rank its tank Renew line casts. Raid 60 gains
+// 0.2 to 0.4% and bare 60 about 1% (seeds 1 and 50001, both factions); band
+// 20 is unchanged and no band loses. Round 15 held it only because band 20
+// lost.
+func TestDisciplineRenewsTheTankBeforeThePull(t *testing.T) {
+	const (
+		lightwell  = 27871
+		renewRank7 = 10927
+		tankIndex  = 5
+	)
+	curated, err := loadLadderCurated(repoRoot, "priest-discipline")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	pre := rot.PrepullActions
+	if len(pre) != 2 ||
+		pre[0].GetAction().GetCastSpell().GetSpellId().GetSpellId() != lightwell {
+		t.Fatalf("Discipline prepull has %d lines, want Lightwell then Renew", len(pre))
+	}
+	renew := pre[1].GetAction().GetCastSpell()
+	if renew.GetSpellId().GetSpellId() != renewRank7 || renew.GetSpellId().GetRank() != 7 ||
+		renew.GetTarget().GetType() != proto.UnitReference_Player || renew.GetTarget().GetIndex() != tankIndex ||
+		pre[1].GetDoAtValue().GetConst().GetVal() != "-1s" {
+		t.Errorf("Discipline second prepull line %s at %s, want Renew rank 7 on the tank (player %d) at -1s",
+			protojson.Format(renew), pre[1].GetDoAtValue().GetConst().GetVal(), tankIndex)
+	}
+}

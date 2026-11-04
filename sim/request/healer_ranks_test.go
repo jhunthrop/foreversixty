@@ -164,7 +164,10 @@ func TestRestorationShamanSwiftnessHealingWaveIsTheTopRank(t *testing.T) {
 // filler casts rank 2 to 25 (+3.0% over rank 3 at 20), 3 to 36, 4 at 37, 5
 // to 43 (+3.5% over rank 3 at 39), 6 to 56 (+5.3% over rank 5 at 49, +2.0%
 // over rank 8 at 50), 7 at 57 and 58, 8 at 59, and the top rank at 60. Each
-// fight still runs dry; seeds 1 and 50001. The rows are scoped to the
+// fight still runs dry; seeds 1 and 50001. Round 17 re-measured the rows on
+// the gated Nature's Swiftness save (round 16 picked 37 to 47 before the
+// save needed the talent): rank 4 holds to 41 (+3.3% over rank 5 at 38) and
+// rank 5 to 46 (+3.9% over rank 6 at 44). The rows are scoped to the
 // filler's line, so the Nature's Swiftness save on the same id keeps its top
 // rank (TestRestorationShamanSwiftnessHealingWaveIsTheTopRank).
 func TestRestorationShamanFillerHealingWaveByBand(t *testing.T) {
@@ -175,8 +178,8 @@ func TestRestorationShamanFillerHealingWaveByBand(t *testing.T) {
 		rank   int
 	}{
 		{20, BarePreset, 2}, {25, BarePreset, 2}, {26, BarePreset, 3}, {30, BarePreset, 3}, {36, BarePreset, 3},
-		{37, BarePreset, 4}, {38, BarePreset, 5}, {40, BarePreset, 5}, {43, BarePreset, 5}, {44, BarePreset, 6},
-		{50, BarePreset, 6}, {56, BarePreset, 6}, {57, BarePreset, 7}, {58, BarePreset, 7}, {59, BarePreset, 8},
+		{37, BarePreset, 4}, {38, BarePreset, 4}, {41, BarePreset, 4}, {42, BarePreset, 5}, {44, BarePreset, 5},
+		{46, BarePreset, 5}, {47, BarePreset, 6}, {50, BarePreset, 6}, {56, BarePreset, 6}, {57, BarePreset, 7}, {58, BarePreset, 7}, {59, BarePreset, 8},
 		{60, BarePreset, 9}, {60, RaidPreset, 9},
 	} {
 		assertOnlyRank(t, filler, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)

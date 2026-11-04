@@ -7,6 +7,9 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
+	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
@@ -49,7 +52,7 @@ func TestSubtletyHemorrhageWaitsForGhostlyStrike(t *testing.T) {
 // (round 16).
 func TestSubtletyGarrotesAfterEveryGhostlyStrike(t *testing.T) {
 	registerEngine.Do(engine.RegisterAll)
-	const guideBuild = "005302011-320003-035131031321001151"
+	const guideBuild = "005302011-320003-035230031321001151"
 	req := smokeRequest(t, "rogue-subtlety")
 	req.Character.Talents = guideBuild
 	engineReq, err := BuildWith(req, Options{OpenIterations: true})
@@ -103,4 +106,70 @@ func TestSubtletyDeathMarksAtFourComboPoints(t *testing.T) {
 		return
 	}
 	t.Fatal("Subtlety casts no Death Mark")
+}
+
+// Before Mutilate (40) and Hemorrhage (30), Assassination and Subtlety
+// built with Sinister Strike even with a dagger in the main hand, behind
+// a boss, where Backstab is the bigger hit (and Opportunity, which
+// Subtlety's leveling build takes at 13, raises Backstab, not Sinister
+// Strike). Combat already backstabs at every level. With a dagger, both
+// must build with Backstab (round 17).
+func TestDaggerLevelingBuildsWithBackstab(t *testing.T) {
+	registerEngine.Do(engine.RegisterAll)
+	const level = 25
+	for _, spec := range []string{"rogue-assassination", "rogue-subtlety"} {
+		req := smokeRequest(t, spec)
+		req.Character.Level = level
+		req.Character.Talents = ""
+		// Blackfang (dagger) in the main hand, Diamond Hammer in the off hand.
+		req.Character.Gear = []api.GearSlot{{Slot: "main_hand", ItemID: 2236}, {Slot: "off_hand", ItemID: 2194}}
+		engineReq, err := BuildWith(req, Options{OpenIterations: true})
+		if err != nil {
+			t.Fatalf("%s: building the request: %v", spec, err)
+		}
+		if err := simdb.Attach(engineReq); err != nil {
+			t.Fatalf("%s: attaching the item database: %v", spec, err)
+		}
+		res := core.RunRaidSim(engineReq)
+		if err := adapter.ResultError(res); err != nil {
+			t.Fatalf("%s: the sim failed: %v", spec, err)
+		}
+		player, err := adapter.PlayerMetrics(res)
+		if err != nil {
+			t.Fatal(err)
+		}
+		casts := map[string]float64{}
+		for _, c := range castSet(player) {
+			casts[strings.SplitN(c.name, "/", 2)[0]] += c.casts
+		}
+		backstab, sinister := casts["spell:2591"]+casts["spell:2590"], casts["spell:1759"]+casts["spell:1758"]
+		if backstab < 15 || sinister > backstab/5 {
+			t.Errorf("%s at %d with a dagger: Backstab %.2f casts, Sinister Strike %.2f (%v)", spec, level, backstab, sinister, casts)
+		}
+	}
+}
+
+// Subtlety's build put its last tier-two point in Improved Ambush, which
+// only raises Ambush's crit: the rotation never casts Ambush (a Garrote
+// opener, a Garrote after every Ghostly Strike), and the published level
+// 60 weapons are not daggers, so Ambush cannot even be pressed. Dirty
+// Deeds' second point sits in the same tier, keeps the points total that
+// opens Boot Knife and Death Mark, and takes 10 more energy off every
+// Garrote, about nine a fight (round 17).
+func TestSubtletyBuildSpendsNoPointOnAmbush(t *testing.T) {
+	const (
+		dirtyDeeds     = 3 // Subtlety tree positions, talents/rogue.json 1.60.1.70755
+		improvedAmbush = 5
+	)
+	_, trees, err := leveling.GuideBuildTalents(repoRoot, "rogue", "subtlety")
+	if err != nil {
+		t.Fatal(err)
+	}
+	sub := trees[2]
+	if got := sub[improvedAmbush]; got != '0' {
+		t.Errorf("the Subtlety build spends %c points in Improved Ambush, which the rotation never uses (%s)", got, sub)
+	}
+	if got := sub[dirtyDeeds]; got != '2' {
+		t.Errorf("the Subtlety build has Dirty Deeds at %c of 2 (%s)", got, sub)
+	}
 }

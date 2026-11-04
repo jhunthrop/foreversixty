@@ -1,6 +1,7 @@
 package rankchoices
 
 import (
+	"encoding/json"
 	"slices"
 	"testing"
 )
@@ -101,6 +102,31 @@ func TestShadowDevouringPlagueMovesToRankTwoAtFiftyTwo(t *testing.T) {
 		}
 		if !slices.Equal(got, want) {
 			t.Errorf("Devouring Plague at %d: %v, want %v", level, got, want)
+		}
+	}
+}
+
+// A band may carry its own lines and pre-pull scope (round 17); the coach still counts
+// every band's rank at a level as a choice, whatever line it is scoped to.
+func TestABandCarriesItsOwnLines(t *testing.T) {
+	raw := []byte(`{"specs":{"x":[{"spell":"Holy Light","authored":7,"lines":[2],"bands":[
+		{"from_level":20,"to_level":24,"rank":1},
+		{"from_level":50,"to_level":59,"rank":2,"lines":[4],"prepull":[0]}]}]}}`)
+	var file File
+	if err := json.Unmarshal(raw, &file); err != nil {
+		t.Fatal(err)
+	}
+	bands := file.Specs["x"][0].Bands
+	if bands[0].Lines != nil || !slices.Equal(bands[1].Lines, []int{4}) || !slices.Equal(bands[1].Prepull, []int{0}) {
+		t.Fatalf("bands = %+v, want the second band's own lines [4] and prepull [0], the first none", bands)
+	}
+	table, err := byName(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for level, want := range map[int][]int{22: {1}, 55: {2}, 40: nil} {
+		if got := ranksAt(table, "x", "Holy Light", level); !slices.Equal(got, want) {
+			t.Errorf("level %d = %v, want %v", level, got, want)
 		}
 	}
 }

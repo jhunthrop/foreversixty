@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-0000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 27.8 | 4 | other:shoot=82.4, spell:3044=19.4, spell:13549=13.7, spell:1130=2.4, other:move=1.0 | {SpellID: 19574}, {SpellID: 2643} |
-| 20 | 5420000000000000-0000000000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 49.5 | 6 | other:shoot=81.5, spell:2643=10.0, spell:19434=9.3, spell:14282=3.5, spell:13550=3.1 | {SpellID: 19574} |
-| 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 78.1 | 7 | other:shoot=82.9, spell:2643=10.5, spell:20900=5.7, spell:14283=3.3, spell:13551=2.9 | {SpellID: 19574} |
-| 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 106.1 | 7 | other:shoot=86.6, spell:2643=10.9, spell:20901=5.8, spell:14284=3.8, spell:13552=3.3 | {SpellID: 19574} |
-| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 126.5 | 8 | other:shoot=87.2, spell:19434=18.1, spell:13552=4.6, spell:14284=4.3, spell:2643=3.6 | - |
-| 50 | 5420001505001251-0052300000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 159.4 | 8 | other:shoot=156.7, spell:2643=14.2, spell:14285=3.7, spell:13554=2.8, spell:14324=2.4 | - |
-| 60 | 5420001505001251-0052451001200000-000000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 276.2 | 8 | other:shoot=82.8, spell:2643=10.2, spell:20904=3.6, spell:14287=3.1, spell:13555=3.0 | - |
+| 10 | 1000000000000000-0000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 31.8 | 4 | other:shoot=82.4, spell:3044=19.4, spell:13549=13.7, spell:1130=2.4, other:move=1.0 | {SpellID: 19574}, {SpellID: 2643} |
+| 20 | 5420000000000000-0000000000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 55.3 | 6 | other:shoot=81.5, spell:2643=10.0, spell:19434=9.3, spell:14282=3.5, spell:13550=3.1 | {SpellID: 19574} |
+| 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 90.6 | 7 | other:shoot=82.9, spell:19434=16.1, spell:14283=4.0, spell:13551=3.3, spell:14323=2.4 | {SpellID: 19574} |
+| 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 125.5 | 7 | other:shoot=85.2, spell:19434=19.2, spell:14284=5.2, spell:13552=4.9, spell:2643=3.1 | {SpellID: 19574} |
+| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 141.9 | 8 | other:shoot=87.2, spell:19434=18.1, spell:13552=4.6, spell:14284=4.3, spell:2643=3.6 | - |
+| 50 | 5420001505001251-0052300000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 181.4 | 8 | other:shoot=156.5, spell:2643=14.5, spell:14285=3.7, spell:13554=3.1, spell:14324=2.4 | - |
+| 60 | 5420001505001251-0052451001200000-000000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 300.7 | 8 | other:shoot=82.8, spell:2643=10.2, spell:20904=3.6, spell:14287=3.1, spell:13555=3.0 | - |
 
 ## Learned but unused (informational)
 
@@ -143,6 +143,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
+- Aimed Shot (spell 20900)
 - Bite (spell 17257)
 - Claw (spell 16830)
 - Counterattack (spell 1242634)
@@ -167,6 +168,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
+- Aimed Shot (spell 20901)
 - Bite (spell 17258)
 - Claw (spell 16831)
 - Counterattack (spell 1242634)
@@ -218,6 +220,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
+- Aimed Shot (spell 20902)
 - Bite (spell 17260)
 - Claw (spell 3010)
 - Counterattack (spell 20909)

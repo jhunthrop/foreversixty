@@ -170,3 +170,53 @@ func TestImportAccountKeepsAnAddonRowsRulesetWhenNoRealmIsKnown(t *testing.T) {
 		t.Fatalf("key = %q, bnet id = %d: want the addon row adopted, not a second row under normal", key, bnetID)
 	}
 }
+
+// Sim audit round 17: a Forever race's base stats (Skyborne) come only from the profile
+// API's /statistics resource, which the import never read. It is read when it answers and
+// stored verbatim in bnet_statistics.
+func TestImportAccountRecordsTheStatisticsWhenTheyAnswer(t *testing.T) {
+	f := foreverFixture(t)
+	f.rawJSON("/profile/wow/character/elyra-duskvale/statistics?namespace=profile-forever-us",
+		[]byte(`{"strength":{"base":20,"effective":31},"intellect":{"base":125,"effective":290}}`))
+	svc := foreverService(t, f)
+	uid := seedUser(t, svc.Pool)
+	if _, err := svc.ImportAccount(context.Background(), uid, "user-oauth-token"); err != nil {
+		t.Fatal(err)
+	}
+	var base int
+	if err := svc.Pool.QueryRow(context.Background(),
+		`select (bnet_statistics->'intellect'->>'base')::int from characters where key = 'us/pvp/elyra-duskvale'`).
+		Scan(&base); err != nil {
+		t.Fatal(err)
+	}
+	if base != 125 {
+		t.Fatalf("intellect base = %d, want 125 from /statistics", base)
+	}
+}
+
+// The read is guarded: a /statistics that fails outright never costs the character its
+// import, its equipment or its export.
+func TestImportAccountKeepsGoingWhenTheStatisticsFail(t *testing.T) {
+	f := foreverFixture(t)
+	f.json(http.MethodGet, "/profile/wow/character/elyra-duskvale/statistics?namespace=profile-forever-us",
+		http.StatusInternalServerError, nil)
+	svc := foreverService(t, f)
+	uid := seedUser(t, svc.Pool)
+	summary, err := svc.ImportAccount(context.Background(), uid, "user-oauth-token")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if summary.Characters != 3 || summary.Pending != 0 {
+		t.Fatalf("summary = %+v, want every character imported and enriched", summary)
+	}
+	var stats *string
+	var captured bool
+	if err := svc.Pool.QueryRow(context.Background(),
+		`select bnet_statistics::text, bnet_equipment is not null from characters where key = 'us/pvp/elyra-duskvale'`).
+		Scan(&stats, &captured); err != nil {
+		t.Fatal(err)
+	}
+	if stats != nil || !captured {
+		t.Fatalf("bnet_statistics = %v, equipment captured = %v: want no statistics and the rest intact", stats, captured)
+	}
+}
