@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Discipline Priest as the site's guide describes it. Discipline heals the tank with Penance on cooldown, a cheap shield to open Renewed Hope, and crits that leave Divine Aegis shields behind. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Discipline Priest as the site's guide describes it. Discipline heals the tank with Penance on cooldown, a shield to open Renewed Hope, and crits that leave Divine Aegis shields behind. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
@@ -24,7 +24,7 @@ This is the Discipline Priest as the site's guide describes it. Discipline heals
 - Fear Ward the tank if the boss fears.
 - Keep Renew on the tank all fight.
 - Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.
-- At sixty, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank five and six and Heal rank four keep only part of it.
+- Lesser Heal when Greater Heal rank one would overheal: a small top-up for little mana.
 - Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.
 - Prayer of Healing when three or more in a group are hurt.
 - Inner Focus on a Greater Heal or a Prayer of Healing. It makes the spell free and adds twenty-five percent crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.

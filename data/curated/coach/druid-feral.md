@@ -21,11 +21,11 @@ This is the Feral Druid as the site's guide describes it. The cat opens with Rav
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Shifting Power every time it comes off cooldown, but only at sixty energy or lower. Then the whole forty energy fits under the cap.
-- At five combo points when Rip has under six seconds left.
+- At five combo points when Rip is off the boss or has under two seconds left.
 - Shred fills every other global, building combo points.
 - Prowl, walk behind the boss and Ravage once the tank has two or three globals on it.
 - Pounce needs Prowl and your position behind the target, exactly like Ravage, so it is never the fallback for a boss you cannot get behind.
-- Ferocious Bite is only for five points you would otherwise sit on while Rip still has time.
+- Ferocious Bite is for five points while Rip still has five seconds or more; between two and five seconds, keep Shredding and hold the points for the Rip.
 - When the target has no Faerie Fire on it.
 - Claw: When the boss turns to you, or you cannot get behind, Claw in place of Shred until you can.
 - Cower.

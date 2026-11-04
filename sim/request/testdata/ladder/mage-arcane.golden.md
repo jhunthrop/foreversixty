@@ -102,7 +102,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 100000000000000000-00000000000000000-000000000000000000 | main_hand:284287 ranged:286750 | 11.6 | 4 | spell:5019=62.1, spell:205=20.0, spell:5143=11.0, spell:12051=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589}, {SpellID: 400625} |
 | 20 | 140005000100000000-00000000000000000-000000000000000000 | main_hand:6505 ranged:5243 | 27.8 | 5 | spell:5019=36.2, spell:5144=22.7, spell:7322=6.3, spell:400574=4.3, spell:12051=1.0 | {SpellID: 11366}, {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589}, {SpellID: 400625} |
 | 30 | 141005213100300000-00000000000000000-000000000000000000 | main_hand:249392 ranged:5213 | 50.4 | 5 | spell:7322=29.0, spell:5019=23.4, spell:1239696=22.3, spell:5145=14.4, item:5514=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 12522}, {SpellID: 1326079}, {SpellID: 400625} |
-| 38 | 141005213100301520-00000000000000000-000000000000000000 | main_hand:873 ranged:13064 | 83.5 | 6 | spell:7322=33.1, spell:1239696=29.9, spell:8416=18.1, other:mana_gain=2.0, spell:12043=1.5 | {SpellID: 12042}, {SpellID: 12523}, {SpellID: 1326080}, {SpellID: 400625} |
+| 38 | 141005213100301520-00000000000000000-000000000000000000 | main_hand:873 ranged:13064 | 87.9 | 6 | spell:1239696=26.0, spell:8408=24.8, spell:5019=16.5, spell:8416=15.0, other:mana_gain=2.0 | {SpellID: 12042}, {SpellID: 12523}, {SpellID: 1326080}, {SpellID: 400625} |
 | 40 | 141005213100301531-00000000000000000-000000000000000000 | main_hand:873 ranged:5216 | 101.9 | 7 | spell:1239697=24.4, spell:8408=24.3, spell:5019=20.7, spell:8417=14.5, other:mana_gain=2.0 | {SpellID: 12523}, {SpellID: 1326080}, {SpellID: 400625} |
 | 50 | 141005213100301531-40000000000000000-051000000000000000 | main_hand:873 ranged:249232 | 149.1 | 7 | spell:5019=24.1, spell:10180=23.5, spell:1239699=23.2, spell:10211=13.8, other:mana_gain=2.0 | {SpellID: 12525}, {SpellID: 1326081}, {SpellID: 400625} |
 | 60 | 141005213100301531-40000000000000000-053500030000000000 | main_hand:22589 ranged:22821 | 279.8 | 7 | spell:10181=27.5, spell:1239700=25.6, spell:5019=20.3, spell:10212=15.5, other:mana_gain=2.0 | {SpellID: 1326082}, {SpellID: 18809}, {SpellID: 400625} |
@@ -163,7 +163,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flamestrike (spell 8422)
 - Frost Blast (spell 1326054)
 - Frost Nova (spell 865)
-- Frostbolt (spell 8408)
 - Ice Lance (spell 1240044)
 - Pyroblast (spell 12523)
 - Scorch (spell 8445)

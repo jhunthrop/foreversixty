@@ -25,7 +25,7 @@ This is the Destruction Warlock as the site's guide describes it. Destruction ke
 - Curse of the Elements when no warlock's is on the target.
 - Corruption whenever it has fallen off.
 - Bane of Doom the moment the last one fires, with a minute or more of the fight left.
-- Bane of Agony in the last minute, once Doom has fired.
+- Bane of Agony whenever Bane of Doom is not on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Immolate with three seconds or less left on it.
 - Conflagrate on cooldown while Immolate is up.
 - Shadowburn on cooldown, at any boss health.

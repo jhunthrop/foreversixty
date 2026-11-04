@@ -24,7 +24,7 @@ This is the Demonology Warlock as the site's guide describes it. Demonology sacr
 - Curse of the Elements when no warlock's is on the target.
 - Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 - Bane of Doom the moment the last one fires, with a minute or more of the fight left.
-- Bane of Agony in the last minute, once Doom has fired.
+- Bane of Agony whenever Bane of Doom is not on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Corruption whenever it has fallen off.
 - Immolate with three seconds or less left on it.
 - Shadow Bolt for every other cast.

@@ -101,8 +101,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:284287 ranged:286750 | 16.6 | 5 | other:mana_gain=35.0, spell:1454=35.0, spell:695=28.5, spell:172=14.3, spell:707=13.3 | {SpellID: 412758}, {SpellID: 603} |
 | 20 | 00000000000000000-0000000000000000000-2053100000000000 | main_hand:6505 ranged:5243 | 35.8 | 6 | spell:705=32.7, other:mana_gain=32.3, spell:1455=32.3, spell:1094=13.3, spell:6222=12.1 | {SpellID: 17877}, {SpellID: 412758}, {SpellID: 603} |
-| 30 | 00000000000000000-0000000000000000000-2053235100000000 | main_hand:249392 ranged:5213 | 58.7 | 7 | other:mana_gain=32.8, spell:1456=32.8, spell:1088=25.1, spell:2941=13.3, spell:6223=10.7 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 603} |
-| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:873 ranged:13064 | 90.5 | 8 | other:mana_gain=29.2, spell:11687=29.2, spell:2941=18.7, spell:1088=16.4, spell:1293818=14.5 | {SpellID: 412758}, {SpellID: 603} |
+| 30 | 00000000000000000-0000000000000000000-2053235100000000 | main_hand:249392 ranged:5213 | 59.5 | 8 | other:mana_gain=35.6, spell:1456=35.6, spell:1106=21.6, spell:2941=13.4, spell:6223=10.5 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 603} |
+| 38 | 00000000000000000-0000000000000000000-2053235103101300 | main_hand:873 ranged:13064 | 92.5 | 8 | other:mana_gain=32.8, spell:11687=32.8, spell:2941=18.6, spell:1293818=14.6, spell:7641=14.4 | {SpellID: 412758}, {SpellID: 603} |
 | 40 | 00000000000000000-0000000000000000000-2053235103101311 | main_hand:873 ranged:5216 | 104.0 | 8 | other:mana_gain=38.6, spell:11687=38.6, spell:11665=17.5, spell:412758=15.1, spell:17962=14.1 | {SpellID: 603} |
 | 50 | 24000000000000000-0000000000000000000-2053235103101351 | main_hand:873 ranged:249232 | 176.8 | 8 | other:mana_gain=32.7, spell:11688=32.7, spell:1293812=22.5, spell:18930=13.9, spell:11667=13.5 | {SpellID: 603} |
 | 60 | 25522000000000000-0000000000000000000-2053235103101351 | main_hand:22630 ranged:22821 | 354.2 | 9 | other:mana_gain=32.7, spell:11689=32.7, spell:1293813=25.7, spell:18932=14.4, spell:11668=13.5 | - |
@@ -139,7 +139,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lash of Pain (spell 7815)
 - Rain of Fire (spell 5740)
 - Searing Pain (spell 17919)
-- Shadow Bolt (spell 1106)
 - Shadow Cleave (spell 403842)
 
 ### Level 38
@@ -152,7 +151,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lash of Pain (spell 7816)
 - Rain of Fire (spell 6219)
 - Searing Pain (spell 17920)
-- Shadow Bolt (spell 7641)
 - Shadow Cleave (spell 403843)
 
 ### Level 40
@@ -210,7 +208,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - warlock-destruction level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=20 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
-- warlock-destruction level=30 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=38 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
 - warlock-destruction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)

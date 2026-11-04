@@ -100,9 +100,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 1000000000000000-00000000000000000000-0000000000000000 | main_hand:284287 | 7.0 | 3 | other:attack/1=38.6, spell:5177=36.6, spell:8924=3.2, spell:1259799=1.5 | {SpellID: 29166}, {SpellID: 408248}, {SpellID: 9876} |
-| 20 | 5231000000000000-00000000000000000000-0000000000000000 | main_hand:6505 | 21.3 | 4 | spell:5178=71.2, other:attack/1=16.6, spell:8925=9.9, spell:1259799=1.5, spell:2912=0.2 | {SpellID: 29166}, {SpellID: 408248}, {SpellID: 5570} |
+| 20 | 5231000000000000-00000000000000000000-0000000000000000 | main_hand:6505 | 21.3 | 4 | spell:5178=75.8, other:attack/1=14.3, spell:8924=11.3, spell:1259799=1.5, spell:2912=0.2 | {SpellID: 29166}, {SpellID: 408248}, {SpellID: 5570} |
 | 30 | 5232220113000000-00000000000000000000-0000000000000000 | main_hand:249392 | 35.8 | 5 | spell:5179=69.1, other:attack/1=28.1, spell:5570=11.2, spell:8925=10.2, spell:1259799=1.5 | {SpellID: 29166}, {SpellID: 408248} |
-| 38 | 5232220115101130-00000000000000000000-0000000000000000 | main_hand:873 | 53.8 | 5 | spell:5179=85.2, spell:5570=12.6, spell:8925=11.7, other:attack/1=6.9, spell:1259799=1.5 | {SpellID: 29166} |
+| 38 | 5232220115101130-00000000000000000000-0000000000000000 | main_hand:873 | 55.0 | 5 | spell:5179=80.8, spell:5570=12.4, spell:8926=11.0, other:attack/1=9.1, spell:1259799=1.5 | {SpellID: 29166} |
 | 40 | 5232220115101141-00000000000000000000-0000000000000000 | main_hand:873 | 74.4 | 6 | spell:6780=53.9, spell:8929=9.7, spell:8950=9.4, other:attack/1=9.2, spell:24975=8.7 | - |
 | 50 | 5232220115101151-00000000000000000000-5400000000000000 | main_hand:873 | 91.7 | 6 | spell:8905=55.7, other:attack/1=9.7, spell:9833=9.6, spell:24976=8.3, spell:9875=7.5 | - |
 | 60 | 5232220115101151-00000000000000000000-5553010000000000 | main_hand:22799 | 174.7 | 6 | spell:9912=66.9, spell:9835=10.3, spell:24977=9.5, spell:9876=9.5, other:attack/1=2.1 | - |
@@ -121,6 +121,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Entangling Roots (spell 1062)
 - Insect Swarm (spell 5570)
 - Maul (spell 6808)
+- Moonfire (spell 8925)
 - Rip (spell 1079)
 - Shred (spell 5221)
 - Swipe (spell 779)

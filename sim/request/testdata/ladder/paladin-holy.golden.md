@@ -103,8 +103,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 50320001000000000-00000000000000000-00000000000000000 | main_hand:286977 | 14.3 | 2 | spell:635=54.5, spell:19750=26.2, other:mana_gain=1.0 | {SpellID: 1328548}, {SpellID: 20216} |
 | 30 | 50320215002100000-00000000000000000-00000000000000000 | main_hand:9604 | 35.6 | 4 | spell:19750=102.2, other:mana_gain=9.0, spell:20216=3.0, spell:1042=2.0, spell:1328548=1.0 | {SpellID: 1311606} |
 | 38 | 50320215012101240-00000000000000000-00000000000000000 | main_hand:9604 | 47.9 | 6 | spell:19750=122.8, other:mana_gain=9.8, spell:20216=2.5, spell:3472=2.0, spell:1328548=1.0 | - |
-| 40 | 50320215012101251-00000000000000000-00000000000000000 | main_hand:7723 | 103.6 | 5 | spell:635=97.4, spell:19940=22.2, other:mana_gain=9.9, spell:20216=2.9, spell:1328548=1.0 | - |
-| 50 | 50320215012101251-50320000000000000-00000000000000000 | main_hand:7723 | 67.4 | 7 | spell:19750=122.3, other:mana_gain=10.5, spell:10328=4.4, spell:20216=3.0, spell:1328548=1.0 | - |
+| 40 | 50320215012101251-00000000000000000-00000000000000000 | main_hand:7723 | 50.6 | 6 | spell:19750=111.0, other:mana_gain=9.5, spell:3472=3.5, spell:20216=2.8, spell:1328548=1.0 | - |
+| 50 | 50320215012101251-50320000000000000-00000000000000000 | main_hand:7723 | 122.4 | 6 | spell:639=88.0, spell:19941=10.4, other:mana_gain=8.6, spell:20216=3.0, spell:1328548=1.0 | - |
 | 60 | 50320215012101251-50322000000000000-05030000000000000 | main_hand:23455 | 87.1 | 7 | spell:19941=34.1, spell:19942=27.4, other:mana_gain=10.9, spell:10329=4.0, spell:20216=3.0 | - |
 
 ## Learned but unused (informational)
@@ -176,5 +176,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- paladin-holy level=40 kind=zero_casts spell="Holy Shock" id=20473 authored=20930
-- paladin-holy level=50 kind=dps_regression dps=67.4 prev_dps=103.6
+- paladin-holy level=60 kind=dps_regression dps=87.1 prev_dps=122.4

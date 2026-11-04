@@ -14,13 +14,14 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Enhancement Shaman as the site's guide describes it. Enhancement is the shaman's melee spec: one weapon with Windfury on it, Stormstrike on cooldown, and a free instant Lightning Bolt every time Maelstrom Weapon reaches five stacks. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Enhancement Shaman as the site's guide describes it. Enhancement is the shaman's melee spec: one weapon and its imbue, Stormstrike on cooldown, and a free instant Lightning Bolt whenever Maelstrom Weapon reaches five stacks. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Windfury Weapon on your one weapon before the pull, and again whenever it falls off. Before level thirty, Rockbiter Weapon goes on it instead.
+- Windfury Totem: Imbue your weapon: Rockbiter Weapon in a raid where a Windfury Totem reaches you, Windfury Weapon everywhere else.
 - Strength of Earth Totem whenever it is down. It is Strength for every melee player near you, and in Forever the totem reaches the whole raid within thirty yards.
 - If your party has no other shaman, put Mana Spring Totem in your Water slot as well.
 - Totemic Call: If the boss moves away from them, follow it and press Totemic Call. It relocates your active totems to your location.
@@ -30,7 +31,6 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 - Searing Totem when it is down, unless the boss is about to die.
 - Fire Nova on a Clearcasting proc. It is free then, and in melee your Searing Totem stands within its ten yards of the boss.
 - Earth Shock last, and only while mana is above half.
-- Windfury Totem, Grace of Air and Strength of Earth reach every raid member within thirty yards, not just your party.
 - Flame Shock.
 - Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it.
 - Lightning Shield only fires when something hits you, which behind a boss is never.

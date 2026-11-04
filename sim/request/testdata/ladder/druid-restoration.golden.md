@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-00000000000000000000-0100000000000000 | main_hand:263937 | 8.9 | 4 | spell:774=32.8, spell:1058=17.8, spell:1259799=2.0, spell:5186=1.2 | {SpellID: 17116}, {SpellID: 18562} |
-| 20 | 0000000000000000-00000000000000000000-2503000100000000 | main_hand:890 | 28.7 | 5 | spell:774=69.1, spell:1430=8.4, spell:8938=4.3, spell:1259799=2.0, spell:5188=1.0 | {SpellID: 17116}, {SpellID: 18562} |
-| 30 | 0000000000000000-00000000000000000000-5553001100010000 | main_hand:9604 | 43.7 | 7 | spell:774=67.0, spell:2090=7.2, spell:8940=3.4, spell:5189=2.4, spell:1259799=2.0 | {SpellID: 18562} |
-| 38 | 0000000000000000-00000000000000000000-5553005140010000 | main_hand:873 | 68.7 | 7 | spell:774=69.6, spell:2090=9.9, spell:8941=4.6, spell:8903=2.4, spell:1259799=2.0 | {SpellID: 18562} |
-| 40 | 0000000000000000-00000000000000000000-5553005151010000 | main_hand:873 | 91.7 | 8 | spell:774=84.1, spell:2090=11.2, spell:8941=6.1, spell:8903=3.9, spell:1259799=2.0 | {SpellID: 18562} |
-| 50 | 0100000000000000-00000000000000000000-5553005153113210 | main_hand:812 | 141.6 | 9 | spell:774=104.4, spell:9839=8.5, spell:9856=5.1, spell:1259799=2.0, spell:17116=2.0 | - |
-| 60 | 0530200100000000-00000000000000000000-5553005153113210 | main_hand:19355 | 164.3 | 9 | spell:8910=35.4, spell:9841=4.1, spell:9858=2.5, spell:1259799=2.0, spell:17116=2.0 | - |
+| 10 | 0000000000000000-00000000000000000000-0100000000000000 | main_hand:263937 | 8.9 | 4 | spell:774=32.8, spell:1058=17.8, spell:1259799=2.0, spell:5186=1.2 | {SpellID: 1259705}, {SpellID: 17116}, {SpellID: 18562} |
+| 20 | 0000000000000000-00000000000000000000-2503000100000000 | main_hand:890 | 30.0 | 5 | spell:774=70.4, spell:1058=10.6, spell:8938=5.2, spell:1259799=2.0, spell:5188=1.2 | {SpellID: 1259705}, {SpellID: 17116}, {SpellID: 18562} |
+| 30 | 0000000000000000-00000000000000000000-5553001100010000 | main_hand:9604 | 47.1 | 7 | spell:774=66.4, spell:1058=9.4, spell:8940=4.8, spell:5189=2.7, spell:1259799=2.0 | {SpellID: 1259705}, {SpellID: 18562} |
+| 38 | 0000000000000000-00000000000000000000-5553005140010000 | main_hand:873 | 68.7 | 7 | spell:774=69.6, spell:2090=9.9, spell:8941=4.6, spell:8903=2.4, spell:1259799=2.0 | {SpellID: 1259705}, {SpellID: 18562} |
+| 40 | 0000000000000000-00000000000000000000-5553005151010000 | main_hand:873 | 91.7 | 8 | spell:774=84.1, spell:2090=11.2, spell:8941=6.1, spell:8903=3.9, spell:1259799=2.0 | {SpellID: 1259705}, {SpellID: 18562} |
+| 50 | 0100000000000000-00000000000000000000-5553005153113210 | main_hand:812 | 141.6 | 9 | spell:774=103.4, spell:3627=10.1, spell:9856=5.1, spell:9888=2.4, spell:18562=2.1 | {SpellID: 1259705} |
+| 60 | 0530200100000000-00000000000000000000-5553005153113210 | main_hand:19355 | 164.3 | 9 | spell:8910=35.4, spell:9841=4.1, spell:9858=2.5, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 1259705} |
 
 ## Learned but unused (informational)
 
@@ -223,4 +223,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- druid-restoration level=10 kind=unresolved_id action={SpellID: 1259705}
+- druid-restoration level=20 kind=unresolved_id action={SpellID: 1259705}
+- druid-restoration level=30 kind=unresolved_id action={SpellID: 1259705}
+- druid-restoration level=38 kind=unresolved_id action={SpellID: 1259705}
+- druid-restoration level=40 kind=unresolved_id action={SpellID: 1259705}
+- druid-restoration level=50 kind=unresolved_id action={SpellID: 1259705}
+- druid-restoration level=60 kind=unresolved_id action={SpellID: 1259705}

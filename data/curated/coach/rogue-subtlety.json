@@ -5,6 +5,7 @@
     {
       "family": "Ghostly Strike",
       "spell_ids": [
+        1329326,
         14278
       ],
       "talent": true,

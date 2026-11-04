@@ -23,11 +23,13 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 - Garrote: Stealth, get behind the boss and open with Garrote once the tank has the boss.
 - Ambush hits harder on paper, but it lands into that armor and gets none of Lethality's bonus.
 - Cheap Shot is for trash only: bosses are immune to stuns.
-- Shank on cooldown. It cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit thirty percent harder and land more often for six seconds.
+- Shank on cooldown. It cannot miss, pays back more energy than it costs and, with Venom, adds thirty percent to your poison damage on top of Vile Poisons and makes them land more often for six seconds.
 - At four or more combo points, Slice and Dice first if it is down or about to fall off.
+- Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter. It lasts six seconds longer, and bleeds always crit in Forever.
 - Cold Blood at four or more combo points, right before the Eviscerate.
 - Eviscerate at four or more combo points.
 - Mutilate is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.
+- Expose Armor does not make the list: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors.
 - Deadly Poison on the main hand, Instant Poison on the off hand, with a sharpening stone beside each in Forever.
 - Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five: use it on casters and on whatever is hitting your healer.
 - Kick, Gouge and Blind handle the rest.

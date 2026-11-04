@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Affliction Warlock as the site's guide describes it. Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps with Shadow Bolt, and every one of those ticks can crit in Forever. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Affliction Warlock as the site's guide describes it. Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps with Wrack, and every one of those ticks can crit in Forever. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
@@ -22,20 +22,18 @@ This is the Affliction Warlock as the site's guide describes it. Affliction keep
 
 - Before the pull, get set up: Demon Armor on, Succubus out, a Healthstone in your bag, and Life Tap to full mana while the healers top you off.
 - Lash of Pain: The Succubus costs a shard where the Imp is free, but her melee and Lash of Pain do more damage than the Imp's Firebolt, and Unholy Power makes her hit harder still.
-- Curse of the Elements when no warlock's is on the target.
+- Curse of the Elements when it is not already on the target.
 - Corruption whenever it has fallen off.
 - Siphon Life whenever it has fallen off.
 - Curse of Recklessness: Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid, Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard.
-- Amplify Curse also strengthens Curse of Weakness and goes to whichever of the two you cast first, so if you hold Weakness, put your last Bane of Agony up before you refresh Weakness.
-- Bane of Doom is your bane on a boss.
-- Bane of Agony whenever it has fallen off.
+- Amplify Curse just before the Bane of Agony that covers the last minute.
+- Bane of Doom while a minute or more of the fight is left.
+- Bane of Agony whenever no Bane of Doom is on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Immolate is the fifth DoT, recast when under three seconds remain.
-- Without Soul Siphon behind it, Wrack is a six second channel that Shadow Bolt beats, so Shadow Bolt is your filler.
-- Health Funnel.
+- Wrack with your DoTs up.
 - Life Tap keeps you casting once mana runs low.
 - Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
 - In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
-- Shadow Bolt with every DoT up.
 - Rain of Fire for trash packs that stay put.
 
 **The mistakes the coach looks for, by finding.**
