@@ -3,7 +3,7 @@ title: Feral Bear Druid in Forever
 classSlug: druid
 spec: feral-bear
 role: tank
-build: 'FS1:1.60.1.70755:druid:night-elf:0/5523033202310212551/051:'
+build: 'FS1:1.60.1.70755:druid:night-elf:0/5123033202310212551/055:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Defense, Stamina, Dodge, Agility, Armor, Hit, Critical strike, Strength, Attack power]
 description: 'Bear tanking in Forever: the build, the threat opener, Lacerate and Primal Bite, cooldowns, and the potions a bear can drink in form.'
