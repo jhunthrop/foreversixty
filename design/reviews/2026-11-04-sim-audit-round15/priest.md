@@ -184,3 +184,44 @@ Each change below was measured on the engine change. Sweeps ran at 3,000 iterati
 ### Wave 2 still open
 - Above level 30 the curve is assumed, not measured; one level-60 tooltip check would settle it. The same holds for damage spells.
 - Discipline bare 60 would gain 4.4% with a Lesser Heal rank 1 filler; it needs a list split by preset.
+
+## Wave 3b: hand-added spell power that skipped the penalty
+
+Merged fork int/r15 (86fe4bf34, Consecration) and site int/r15 (a10efe245) first.
+
+**The sweep.** Over `sim/<class>/` and `sim/core` in the fork, I looked for every reader of spell power or healing power outside core's own damage, heal and dot paths:
+- `GetBonusDamage(`, `HealingPower(`, and `GetStat`/`Stats[...]` of SpellPower, SpellDamage, HealingPower or a school power;
+- every write to `BonusCoefficient` outside a config literal (assignments, `+=`, swaps);
+- `SpellMod_BonusCoeffecient_Flat`;
+- `ShieldConfig` users.
+
+| # | site | hand-added? | cast 17+ levels behind? | verdict | fix sha |
+|---|---|---|---|---|---|
+| X1 | `paladin/consecration.go` (0.042 × spell power by hand) | yes | rank 1 at 50 and 60 | fixed by the paladin lane | E 86fe4bf34 |
+| X2 | `shaman/talents.go` AtLightningOverloadCoefficient: swaps in the overload row's raw coefficient | yes | yes: Lightning Bolt rank 4 (learned at 20) at 40 to 49 (Elemental row), and rank 4 at 60 in the fork's legacy default APL | CONFIRMED-BUG. It now takes core.LevelPenalty at the cast rank's level. `TestADownrankedBoltsOverloadTakesTheLevelGapShare` failed (0.357 at rank 4, want 0), then passed | E 27c8c6367 |
+| X3 | `priest/power_word_shield.go`: absorb = amount + entry.coefficient × healing | yes | yes: Discipline casts rank 4 (learned at 24) at 60 (5% share) | CONFIRMED-BUG. It now reads the spell's penalised BonusCoefficient. `TestADownrankedShieldAbsorbsWithTheLevelGapShare` failed (306.0 against 239.5), then passed | E 27c8c6367 |
+| X4 | `priest/renew.go`, `druid/healing.go`: tick = base + dot.BonusCoefficient × healing | by hand, but on the dot's coefficient | - | Aligned. dot.BonusCoefficient comes from config.Hot, which RegisterSpell scales | - |
+| X5 | `mage/cone_of_cold.go`: Winter's Chill adds 0.07 a stack to BonusCoefficient for the cast | yes (raw) | no: no list or row casts a low Cone of Cold, and bands cast the highest learned | Listed, not fixed. It is a talent's add-on; whether it should scale with the rank is unknown | - |
+| X6 | `mage/arcane_wrath.go`: mana share × spell.BonusCoefficient | reads the penalised coefficient | - | Aligned (follows the rank's share) | - |
+| X7 | `shaman/{lightning_bolt,chain_lightning,earth_shock,frost_shock,flame_shock}.go` `spell.BonusCoefficient = …` | no: these set the config before registering | - | Aligned (conformance shows the share) | - |
+| X8 | `priest/racials.go` Contingency Plan shield and HoT; `priest/healing_talents.go` Divine Aegis; `common/item_effects.go` shield | Contingency is a proc at the highest rank learned; Divine Aegis is a share of a heal; the item has no rank | - | Aligned | - |
+| X9 | `warlock/pet.go`: pet spell power from the owner's stats | not a rank | - | Aligned | - |
+| X10 | `core/spell_result.go`: the target's school bonus taken × dot.BonusCoefficient | uses the penalised coefficient | - | Aligned | - |
+| X11 | `SpellMod_BonusCoeffecient_Flat` | defined, used by no spell | - | Aligned | - |
+
+After the fix, the conformance goldens still show only Heal rank 4 penalised as a top rank at 60.
+
+**Before/after** (10,000 iterations, seeds 1 / 50001). Before is fork 86fe4bf34 with site a10efe245.
+- **Elemental, bare 40:** horde 105.6 → 104.5 / 104.4 (-1.0 / -1.1%); alliance 106.3 → 105.2 and 106.4 → 105.2 (-1.0 / -1.1%). Bare 30 and 50 are unchanged.
+- **Discipline, raid 60:**
+  - horde: 500.4 → 498.2 and 500.7 → 497.9 (-0.44 / -0.56%);
+  - alliance: 520.5 → 518.0 at both seeds (-0.48%).
+- **Discipline, bare 60:** -0.1 to -0.2%. Bare 30 to 50 are unchanged.
+- **No other spec moves.**
+- **Power Word: Shield rank 4** stays held for the rage cost (round 14 F4). Rank 10 was +0.8% on wave 2's engine and gains a little more now; that is the owner's or healers' call.
+
+**Files to regenerate:**
+- **Fork golden regenerated:** `sim/shaman/elemental/TestElemental.results` (explained by X2).
+- **Site, not regenerated:**
+  - TestRotationLadder goldens for Elemental (band 40) and Discipline;
+  - dps-per-point for those two specs.
