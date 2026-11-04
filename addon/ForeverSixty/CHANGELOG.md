@@ -1,5 +1,11 @@
 # Forever Sixty
 
+## 2.0.25
+
+- Beast Mastery pets and warlock demons now get Heart of the Lion.
+- Rogues now Backstab before Mutilate or Hemorrhage while leveling.
+- Rotation notes and leveling ranks are updated for several classes.
+
 ## 2.0.24
 
 - Upgrade scores now count hit, crit, haste, expertise, dodge, parry and block correctly. They were weighted far too heavily before, so the order of your upgrades changes.
