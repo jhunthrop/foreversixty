@@ -351,8 +351,11 @@ rank-choices-sync:
 # ranks a spec's band builds take before the top-row-down walk) to the file
 # sim/leveling embeds. data/curated/ladder-first.json is the single source;
 # sim/leveling's TestEmbeddedLadderFirstMatchesCurated fails when the copy is stale.
+# It also copies data/curated/ladder-order.json, the hand-set leveling orders that move no
+# checkpoint build (sim/leveling/ladder_order.go; TestEmbeddedLadderOrderMatchesCurated).
 ladder-first-sync:
 	cp data/curated/ladder-first.json sim/leveling/ladder-first.json
+	cp data/curated/ladder-order.json sim/leveling/ladder-order.json
 
 .PHONY: apl-sync
 # apl-sync copies every WRITTEN curated rotation into the two places that

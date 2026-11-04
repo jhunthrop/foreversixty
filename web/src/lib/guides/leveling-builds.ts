@@ -257,11 +257,17 @@ interface LadderFirstFile {
   specs: Record<string, { first: LadderFirstRank[] }>;
 }
 
-/** The spec's curated leveling reservation (data/curated/ladder-first.json, ForSpec). */
+function curatedReservation(file: string, spec: string): LadderFirstRank[] {
+  const full = path.join(repoRoot(), 'data/curated', file);
+  if (!existsSync(full)) return [];
+  return (JSON.parse(readFileSync(full, 'utf8')) as LadderFirstFile).specs[spec]?.first ?? [];
+}
+
+/** The spec's curated leveling reservation, as sim/leveling ForSpec spends it: its
+ *  ladder-first.json row, then its hand-set order from ladder-order.json (an order that
+ *  moves no checkpoint build, sim/leveling/ladder_order.go). */
 export function ladderFirstFor(spec: string): LadderFirstRank[] {
-  const file = path.join(repoRoot(), 'data/curated/ladder-first.json');
-  if (!existsSync(file)) return [];
-  return (JSON.parse(readFileSync(file, 'utf8')) as LadderFirstFile).specs[spec]?.first ?? [];
+  return [...curatedReservation('ladder-first.json', spec), ...curatedReservation('ladder-order.json', spec)];
 }
 
 export interface LevelingBuild {

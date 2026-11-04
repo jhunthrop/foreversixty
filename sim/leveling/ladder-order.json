@@ -1,0 +1,14 @@
+{
+  "notes": "Hand-set leveling orders (guide-accuracy round 1, owner 2026-11-04). Same schema as ladder-first.json, spent after it (sim/leveling ForSpec). A row here may only change the order of points BETWEEN the levels any sim runs (sim/leveling/ladder_order.go ladderCheckpointLevels: 10, 20, 25, 30, 35, 38, 40, 45, 50, 55, 60), so no band build, golden or published number moves; TestLadderOrderMovesNoCheckpoint enforces it. Real leveling play decides these, researched on the web with Forever sources first; each reason is one line and cites them. A row that would move a checkpoint belongs in ladder-first.json, which needs a measured gain.",
+  "specs": {
+    "hunter-beast-mastery": {
+      "reason": "Focused Fire's 2% to every shot and pet hit opens at 15 and outvalues Endurance Training's pet health on single pulls, so take it before Endurance Training 3-4 (owner 2026-11-04; Mobalytics Forever BM leveling https://mobalytics.gg/wow-forever/classes/beast-mastery-leveling-guide takes it at 15-16, Icy Veins Forever BM https://www.icy-veins.com/wow-forever/beast-mastery-hunter-ranged-dps-pve-guide calls it the strongest damage talent there).",
+      "first": [
+        {
+          "talent": "Focused Fire",
+          "rank": 2
+        }
+      ]
+    }
+  }
+}
