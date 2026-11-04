@@ -141,10 +141,12 @@ export function cooldownText(cooldownMs: number): string | undefined {
  */
 export function displayDescription(text: string): string {
   let out = text;
-  // A conditional's branches can hold one more level of brackets; resolve inner ones first.
-  const CONDITIONAL = /\$\?[!a-z]?\d*(?:[&|]!?[a-z]?\d+)*\[([^[\]]*)\]\[([^[\]]*)\]/gi;
+  // A conditional's branches can hold one more level of brackets; resolve inner ones first. A
+  // chain (`$?s2060[Greater Heal]?s5185[Healing Touch][either]`) reads as its last, general branch.
+  const CONDITIONAL =
+    /\$\?[!a-z]?\d*(?:[&|]!?[a-z]?\d+)*\[[^[\]]*\](?:\?[!a-z]?\d*(?:[&|]!?[a-z]?\d+)*\[[^[\]]*\])*\[([^[\]]*)\]/gi;
   for (let pass = 0; pass < 3 && CONDITIONAL.test(out); pass += 1) {
-    out = out.replace(CONDITIONAL, (_match, _yes: string, no: string) => no);
+    out = out.replace(CONDITIONAL, (_match, no: string) => no);
   }
   out = out.replace(
     /\$[gG]([^:;]*):([^;]*);/g,

@@ -87,7 +87,8 @@ export const guidesCopy = {
   racialsColumn: 'Racials',
 
   recommendedTag: 'Recommended',
-  /** The Stat priority headline: "Hit cap: 16% · 3% from Precision, 13% from gear". Caps
+  /** The Stat priority headline: "Hit cap: 16% · 1% hit from BiS gear and buffs, 5% from
+   *  talents, 10% still to find". Caps
    *  arrive formatted with their own "%" (or as `capReached`); `split` arrives joined. */
   hitToCap: (cap: string, split?: string): string =>
     `Hit cap: ${cap}${split === undefined ? '' : ` · ${split}`}`,
@@ -98,8 +99,14 @@ export const guidesCopy = {
   expertiseCap: (dodge: string, parry: string | undefined, split?: string): string =>
     `Expertise cap: ${dodge} (dodge)${parry === undefined ? '' : `, ${parry} (parry)`}${split === undefined ? '' : ` · ${split}`}`,
   capReached: 'reached',
-  /** What the character starts with toward a cap, before gear: "8% built in". */
-  capBuiltIn: (percent: string): string => `${percent}% built in`,
+  /** What the band's best-in-slot character already has toward a cap (`baseline`), and from
+   *  what: "12.9% hit from BiS gear, talents and buffs". Not "built in": two specs with the same
+   *  talents differ here because their sets differ. `sources` is what the ranker counts for that
+   *  cap (`sim/cmd/leveling-bis/hitcap.go`, `expertisecap.go`). */
+  capOnSet: (percent: string, stat: string, sources: string): string =>
+    `${percent}% ${stat} from BiS ${sources}`,
+  /** The hit that set is still short of the cap. */
+  capStillToFind: (percent: string): string => `${percent}% still to find`,
   capFrom: (percent: string, source: string): string => `${percent}% from ${source}`,
   notSignificantNote: (labels: string, plural: boolean): string =>
     `${labels} ${plural ? 'show' : 'shows'} as "Not significant": no measurable value at level 60.`,

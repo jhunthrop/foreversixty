@@ -15,6 +15,7 @@ from pipeline.addonrotation import (
     coach_persona_spell_ids,
     coach_spell_ids,
     compute_spell_icons,
+    rank_siblings,
 )
 
 BUILD = "1.60.1.70374"
@@ -804,3 +805,21 @@ def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts
     assert flash[0] == 19940  # the tank's line comes first in the list
     assert set(flash[1:]) == {19750}
     assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {635}
+
+
+def test_rank_siblings_adds_every_rank_of_a_named_family() -> None:
+    # Lesser Heal rank 2 is named, so rank 1 (2050) and rank 3 come with it; Smite is untouched.
+    spellranks = {
+        "classes": {
+            "priest": {
+                "Lesser Heal": [
+                    {"id": 2050, "level": 1, "rank": 1},
+                    {"id": 2052, "level": 4, "rank": 2},
+                    {"id": 2053, "level": 10, "rank": 3},
+                ],
+                "Smite": [{"id": 585, "level": 1, "rank": 1}],
+            }
+        }
+    }
+    assert rank_siblings(spellranks, {2052}) == {2050, 2053}
+    assert rank_siblings(spellranks, {9999}) == set()
