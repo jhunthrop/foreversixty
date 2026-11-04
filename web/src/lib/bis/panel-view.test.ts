@@ -827,7 +827,7 @@ describe('bandInfosFor: effect_unmodelled and low_value flags', () => {
     expect(row?.lowValueTitle).toBe(bisCopy.nearTieTitle('DPS'));
     expect(row?.lowValueTitle).toContain('empty');
     // The pick shows how little it adds, so it reads against its alternatives.
-    expect(row?.evidenceLine).toBe('+0.2 DPS over an empty relic slot, inside its ±1.4 DPS error');
+    expect(row?.evidenceLine).toBe('+0.2 DPS over an empty relic slot, within the ±1.4 DPS margin of error');
   });
 });
 

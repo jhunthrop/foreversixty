@@ -302,7 +302,7 @@ export const bisCopy = {
   /** A relic near tie's line under the pick: its gain over an empty relic slot and the bar it
    *  sits inside. */
   nearTieEvidence: (gain: number, error: number, unit: RateUnit = 'DPS'): string =>
-    `${signedFigure(gain, unit)} over an empty relic slot, inside its ±${error.toFixed(1)} ${unit} error`,
+    `${signedFigure(gain, unit)} over an empty relic slot, within the ±${error.toFixed(1)} ${unit} margin of error`,
   /** The same tag's hover on a relic near tie (`BisSlot.near_tie`). */
   nearTieTitle: (unit: RateUnit = 'DPS'): string =>
     `Every relic here is within its measured error of an empty slot; this one measured best and its effect reaches a spell you cast, so it is worth wearing for the little ${unit} it adds`,
