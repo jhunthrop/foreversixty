@@ -939,10 +939,11 @@ def test_the_lua_names_each_races_id_only_where_they_differ():
 def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts():
     """Sim-accuracy round 16 wave 2 (per-level rows on the MaxLevel + 12
     penalty): at level 40 the curated rows cast Flash of Light rank 1 on the
-    tank (rank 2 from 44) and on the group, and Holy Light at its top learned
-    rank (rank 1 only from 47). The addon's list names those ranks' own ids:
-    Flash of Light rank 1 is 19750 (level 20), Holy Light rank 6 is 3472
-    (level 38)."""
+    tank (rank 2 from 44) and on the group. Round 19: Holy Light is rank 4 at
+    40 to 42 (the top rank again at 43 to 46, rank 1 from 47) and Holy Shock
+    rank 1 at 40 to 46. The addon's list names those ranks' own ids: Flash of
+    Light rank 1 is 19750 (level 20), Holy Light rank 4 is 1026 (level 22),
+    Holy Shock rank 1 is 1311606 (level 30)."""
     spellranks = json.loads(Path("builds/1.60.1.70753/spellranks.json").read_text(encoding="utf-8"))
     learned = {r["id"]: r["level"] for r in spellranks["classes"]["paladin"]["Flash of Light"]}
     assert learned[19750] <= 40
@@ -951,7 +952,8 @@ def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts
     )
     flash = [line.spell_id for line in band.lines if line.name == "Flash of Light"]
     assert set(flash) == {19750}
-    assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {3472}
+    assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {1026}
+    assert {line.spell_id for line in band.lines if line.name == "Holy Shock"} == {1311606}
 
 
 def test_rank_siblings_adds_every_rank_of_a_named_family() -> None:
