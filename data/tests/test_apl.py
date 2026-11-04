@@ -313,6 +313,7 @@ EXPECTED_ABILITY_NAMES = {
         1719: "Recklessness",
         23894: "Bloodthirst",
         1680: "Whirlwind",
+        1329555: "Reckless Swings",
         11585: "Overpower",
         20662: "Execute",
         11567: "Heroic Strike",
