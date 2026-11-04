@@ -57,6 +57,9 @@ func TestRoundTwelveHealerRowsBelowSixty(t *testing.T) {
 		// Round 16 wave 2: the tank's Flash of Light is rank 2 at 44 to 48;
 		// round 19: the group's is rank 2 at 44 to 46 as well.
 		{"paladin-holy", "Flash of Light", 45, []int{2}},
+		// Round 20: the tank's Flash of Light is rank 3 at 50 to 54 and rank 4 at 55 to 59 and bare 60.
+		{"paladin-holy", "Flash of Light", 52, []int{3}},
+		{"paladin-holy", "Flash of Light", 60, []int{4}},
 	} {
 		got, err := ChosenRanks(c.spec, c.spell, c.level)
 		if err != nil {
