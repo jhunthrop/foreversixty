@@ -146,6 +146,11 @@ describe('the guide leveling builds match the sim’s ladder', () => {
     const total = (talents: string): number =>
       [...talents.replace(/-/g, '')].reduce((sum, d) => sum + Number(d), 0);
     expect(builds.every((b) => total(b.talents) <= b.points)).toBe(true);
+    // Round 18: each range also carries the build at its last level, and the levels whose
+    // points its list names (the first range from the first point at 10).
+    expect(builds.map((b) => b.lastLevel)).toEqual([29, 39, 49, 59, 60]);
+    expect(builds.map((b) => b.pointsFrom)).toEqual([10, 30, 40, 50, 60]);
+    expect(builds.map((b) => total(b.lastTalents))).toEqual([20, 30, 40, 50, 51]);
   });
 });
 
