@@ -77,3 +77,23 @@ Same loop on main ab42101f7, plus the owner rules added in round 1: web research
 Round 2 totals: 39 audit CONFIRMED plus 9 rendered-review MUSTs, all fixed. Verdict: NOT zero, round 3 needed.
 
 Out of scope, handed on: hover tooltips (spelltips) still carry pre-hotfix text for rogue, hunter and likely warrior/shaman (data regen with the 70755 hotfix layer); BiS headers name the old default race; the Fury BiS entry's talent string is illegal on 70755; card actions for low-rank heals, Agony vs Doom, Curse of the Elements order, Soul Fire, Subtlety gating, Arcane Wrath (sim round).
+
+## Round 3 (client 1.60.1.70755, 2026-11-04)
+
+Same loop on main 7a2165cb0. New this round: race picks measured for every spec on the guide raid builds (round3/race-sims.md: DPS specs, Disc/Holy on the healer fight, Protection warrior on the tank fight), and paid races (Skyborne) never recommended. Every class got a wow-player SHIP on rendered pages. Fixes on land/guides-r3 (c2cece8b7, f085c45f9).
+
+| Class | Audit CONFIRMED | Likely fixed | Rendered-review MUSTs | Race picks now |
+|---|---|---|---|---|
+| warrior | 3 | 0 | 1 (Demoralizing Shout 196) | Arms/Fury Night Elf + Undead; Protection Night Elf + Tauren |
+| shaman | 2 | 1 | 0 | Dwarf + Orc (Elemental, Enhancement); Dwarf + Tauren (Restoration) |
+| rogue | 5 | 2 | 0 | Night Elf + Undead (Assassination, Subtlety); Gnome + Undead (Combat) |
+| priest | 3 | 1 | 0 | Human + Undead (Shadow, Holy); Gnome + Undead (Discipline) |
+| mage | 9 | 1 | 1 (Ice Block) | Gnome + Undead (Arcane, Frost); Human + Undead (Fire) |
+| warlock | 1 | 4 | 0 | Human + Orc |
+| hunter | 1 | 3 | 0 | Night Elf + Orc (BM, SV) / Troll (MM) |
+| druid | 4 | 1 | 0 | Night Elf + Tauren |
+| paladin | 5 | 4 | 1 (Reverence wording) | Human (Ret, Holy), Dwarf (Protection) |
+
+Round 3 totals: 33 audit CONFIRMED and 3 rendered-review MUSTs, all fixed. Verdict: NOT zero, round 4 needed. The count fell 72, then 39, then 33, and the round 3 errors are smaller (wording, single numbers, a round 2 edit that overstated).
+
+Not adopted: the Restoration druid Improved Moonfire to Improved Regrowth swap (+0.5%, under the bar, and it breaks the Restoration ladder-first invariant). For the sim round: Starshards cooldown and a Shadow line; Eureka! masks (Incinerate in, periodic ticks out; re-run Gnome vs Human for Destruction, Assassination and Discipline); Stoneform rotation line for Dwarf tanks; Crusader opener for Retribution; Elune's Light outside Recklessness; Pounce behind-target check; Sniper Shot and Summon Hawk builds; Spellblasting potion on the Elemental pull; Destruction weapon enchant.
