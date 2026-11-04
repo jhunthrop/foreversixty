@@ -106,7 +106,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 **Adds.** Consecration and Hammer of the Righteous are your multi-target threat; Holy Shield and Shieldsworn's block keep the damage down. Judge the add that is loose, Holy Strike your main target.
 
-**Defensives.** Templar's Bulwark first, at about a third of your health: a full health bar of absorb for 8 seconds. Divine Shield and Divine Protection come after it, once Forbearance is gone. All three put Forbearance on you, so plan one per bad moment, not three in a row. Lay on Hands heals you to full on a 20 minute cooldown, and in Forever it costs no mana, so you keep your Holy Shield and your threat after it. Save it for the swing that would kill you.
+**Defensives.** Templar's Bulwark first, at about a third of your health: a full health bar of absorb for 8 seconds. Divine Shield and Divine Protection come after it, once Forbearance is gone. All three put Forbearance on you, so plan one per bad moment, not three in a row. Lay on Hands heals you to full on a 20 minute cooldown, but it takes every point of your mana with it. Your mana keeps regenerating afterwards, but until it comes back you have no Holy Shield and little threat, so save it for the swing that would kill you and have a mana potion ready.
 
 ## Stat priority
 

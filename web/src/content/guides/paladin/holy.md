@@ -89,7 +89,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 **Movement.** Holy Shock is your only instant heal outside Lay on Hands, and Flash of Light is a 1.5 second cast. Stand where you reach the tank and your party, so you never have to move to heal.
 
-**Emergencies.** Divine Favor into Holy Light first. Lay on Hands is a full heal on a 20 minute cooldown, and in Forever it no longer empties your mana bar, so there is no reason to hold it for the end of a fight. Use it on anyone about to die whom Divine Favor and Holy Light could not have saved. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
+**Emergencies.** Divine Favor into Holy Light first. Lay on Hands is a full heal on a 20 minute cooldown, and it empties your mana bar, though your mana keeps regenerating as normal afterwards. Use it on someone about to die whom Divine Favor and Holy Light could not have saved, ideally late in the fight. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
 
 ## Stat priority
 
