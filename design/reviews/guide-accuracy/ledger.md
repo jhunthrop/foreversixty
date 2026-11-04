@@ -167,3 +167,34 @@ Rendered review, round 6: every class has a wow-player SHIP. The page-text revie
 - mage 2: Fire "nothing but Fire" and the Frost Skyborne line. A third MUST, the numbered stat pills, went to the component lane: they render the table's own data order.
 - priest 1: "From 20".
 Verdict: NOT zero, so round 7 is needed.
+
+## Round 7 (client 1.60.1.70755, 2026-11-04)
+
+Built on round 6 (main 394562f20). Audit CONFIRMED by class: mage 4, warrior 3, paladin 2, druid 2, warlock 1, shaman 1, rogue 1, priest 0, hunter 0. Total 14. Trend: 72, 39, 33, 25, 12, 21, 14. Errors fixed:
+- Impale makes a crit 220% of a normal hit.
+- Intellect also gives spell crit to mages and warlocks.
+- Seal of Righteousness scales with weapon speed and spell damage, not attack power.
+- Rend and Tear covers melee abilities only.
+- Shifting Power costs 30% less with Natural Shapeshifter.
+- Ambush needs a main-hand dagger, so Subtlety's sword set opens with Cheap Shot or Garrote.
+- Improved Bloodrage is now in the Arms and Fury Bloodrage notes.
+- Fire power on Demonology covers Rain of Fire, not Soul Fire.
+- Shaman BiS prose keeps only bind facts.
+- Two round 6 rewrites were wrong and are fixed.
+
+Rendered review: every class got a wow-player SHIP. The page-text MUSTs, all fixed:
+- shaman 1 (Restoration Professions)
+- warlock 2 (Destruction setup line, weapon oil)
+- rogue 1 (Eureka! covers only non-periodic damaging abilities)
+- mage 2 (Arcane Blast's Intellect, the "cheapest" claims)
+
+Class index pages now carry the date of their last content change. Verdict: NOT zero, round 8 needed.
+
+Open sims, none of them claimed in prose:
+- Retribution Human against Dwarf on a Beast target. No race sim uses one, so Big Game Hunter never counts.
+- Fire Scorch ranks.
+- Arcane Frostbolt ranks.
+- Protection threat by ability.
+- Elemental Earth Shock filler.
+- Warrior Dwarf against Human breakdown.
+- Race re-runs after the final best-in-slot re-rank.

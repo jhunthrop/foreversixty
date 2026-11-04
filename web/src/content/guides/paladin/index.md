@@ -2,7 +2,7 @@
 title: Paladin in Forever
 classSlug: paladin
 description: 'What the Paladin does in Forever, its three specs, the new Undead Paladin, and what changed from 1.12.'
-updated: 2026-11-02
+updated: 2026-11-03
 confidence: confirmed
 sources:
   - label: 'Blizzard, Deep Dive panel recap'

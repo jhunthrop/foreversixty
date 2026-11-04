@@ -67,7 +67,7 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 - **Champion of the Light** (5 points): 60% of your Intellect as spell damage, and Hammer of Wrath becomes instant.
 - **Unsealed Wrath** (1 point): the raid capstone. Each swing stores a copy of your Seal, up to three, and a swing under a different Seal releases them.
 
-**Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** and one point of **Repentance** are filler on the way to Champion of the Light, since nothing else in the tree adds damage there. Repentance still earns its point in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
+**Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** is filler on the way to Champion of the Light, since nothing else in that row adds damage. **Repentance** is the point Unsealed Wrath requires, and it still earns its place in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
 
 In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your mana regeneration running while you cast, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. At 60, hit is worth taking up to the cap and adds nothing past it.
 
@@ -100,7 +100,7 @@ Leveling order: Benediction and Improved Judgement first, then Conviction and Sa
 
 ## Stat priority
 
-Strength is attack power on every swing and Seal proc, and Divine Strength raises it by 10%. Crit counts twice: a melee crit doubles the hit, and it feeds Vengeance. Champion of the Light turns 60% of your Intellect into spell damage for your Seals, Judgements and Consecration, so spell power and Intellect both add to your damage, and Intellect is also your mana bar. Agility is crit and armor at once. Hit matters up to the cap and nothing past it. Below the cap, in leveling or fresh 60 gear, every miss is a lost swing and a lost Seal proc, so take hit until you get there; Precision and Artisan's Precision both count toward it. The table above has the order for your gear.
+Strength is attack power on every swing, every Holy Strike and every Seal of Command proc, and Divine Strength raises it by 10%. Seal of Righteousness works differently: it scales with your weapon's speed and your spell damage, not attack power. Crit counts twice: a melee crit doubles the hit, and it feeds Vengeance. Champion of the Light turns 60% of your Intellect into spell damage for your Seals, Judgements and Consecration, so spell power and Intellect both add to your damage, and Intellect is also your mana bar. Agility is crit and armor at once. Hit matters up to the cap and nothing past it. Below the cap, in leveling or fresh 60 gear, every miss is a lost swing and a lost Seal proc, so take hit until you get there; Precision and Artisan's Precision both count toward it. The table above has the order for your gear.
 
 ## Best in slot
 
@@ -108,7 +108,7 @@ Strength is attack power on every swing and Seal proc, and Divine Strength raise
 
 ## Races
 
-**Human** is the Alliance pick. Ruthless is 1% crit on everything, The Human Spirit's 10% Spirit keeps your mana up while leveling and in dungeons, and Will to Survive breaks a stun. **Dwarf** comes out slightly ahead on the raid build in a raid, but Human is ahead solo and while leveling, which is why Human stays the pick. Stoneform takes 10% off physical damage for 8 seconds on a hard pull. **Undead** is new to the class in Forever and the Horde's only paladin. Touch of the Grave can drain a little health from the target, at most once every 15 seconds. Will of the Forsaken breaks a fear, but no longer makes you immune to the next one, so use it after the fear lands. Cannibalize restores mana as well as health, which cuts your drinking while leveling.
+**Human** is the Alliance pick. Ruthless is 1% crit on everything, The Human Spirit's 10% Spirit keeps your mana up while leveling and in dungeons, and Will to Survive breaks a stun. **Dwarf** comes out slightly ahead on the raid build in a raid, but Human is ahead solo against Humanoids, which is why Human stays the pick. Dwarf's Big Game Hunter adds 5% to the damage you deal to Beasts. Stoneform takes 10% off physical damage for 8 seconds on a hard pull. **Undead** is new to the class in Forever and the Horde's only paladin. Touch of the Grave can drain a little health from the target, at most once every 15 seconds. Will of the Forsaken breaks a fear, but no longer makes you immune to the next one, so use it after the fear lands. Cannibalize restores mana as well as health, which cuts your drinking while leveling.
 
 ## Professions
 

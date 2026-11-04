@@ -2,7 +2,7 @@
 title: Warrior in Forever
 classSlug: warrior
 description: 'Warrior in Forever: the three specs, how rage shapes all of them, and what changed from 1.12.'
-updated: 2026-11-02
+updated: 2026-11-03
 confidence: confirmed
 sources:
   - label: 'Blizzard, Deep Dive panel recap'

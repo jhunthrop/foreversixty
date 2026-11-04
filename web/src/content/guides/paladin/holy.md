@@ -37,7 +37,7 @@ Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Di
 
 ### Weaknesses
 
-- No heal over time and only one party heal, Light's Vigil, which costs as much as ten top-rank Flash of Lights
+- No heal over time and only one party heal, Light's Vigil, which costs almost as much as ten top-rank Flash of Lights
 - Long fights test your mana: you heal off pace, not off the health bars
 - Oath of Light is one target, so most of your strength goes to one player
 
@@ -78,7 +78,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 4. **Flash of Light rank 4** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank, and rank 4 is the cheapest rank that still carries nearly all of your healing power at 60. Rank 1 is a trap there: Forever takes the healing power off ranks learned far below your level, so it heals for little more than its base and the Oath.
 5. **Flash of Light rank 4** on everyone else below 80%, yourself included. Without the Oath bonus it is still the best balance of heal size and mana.
 
-**Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches, and the rank 9 book has no known source in Forever yet, so rank 8 is your top rank. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but you learned it at 30, so at 60 it keeps only part of your healing power.
+**Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches, and the rank 9 book has no known source in Forever yet, so rank 8 is your top rank. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but it is a level 30 rank, so at 60 it keeps only part of your healing power.
 
 **Mana.** You heal off pace, not off health bars: if your bar is ahead of the fight, spend it on Holy Light and Holy Shock; if it is behind, heal with Flash of Light alone. Every crit refunds half its base cost through Illumination, which is why Holy Shock on the party, where Boundless Light adds 30% crit, gets a large part of its cost back. Major Mana Potion and Demonic Rune go on cooldown as soon as your bar has room for them.
 

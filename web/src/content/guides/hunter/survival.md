@@ -99,7 +99,7 @@ You fire no shots in this spec. Your bow or gun is there for its stats.
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit is strong because Predator's Edge and Savage Strikes build on it. Agility is attack power and crit together, and Lightning Reflexes raises it by 15%. Intellect is attack power through Careful Aim, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit pays off on your melee specials: Predator's Edge makes their crits hit 30% harder, and every special crit keeps half your mana regeneration running through Resourcefulness. Savage Strikes adds 4% crit chance to those specials on top of what your gear gives. Agility is attack power and crit together, and Lightning Reflexes raises it by 15%. Intellect is attack power through Careful Aim, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -113,7 +113,7 @@ Forever's damage potions share the two-minute potion cooldown with mana potions.
 
 ## Races
 
-Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, and Predator's Edge makes every crit count, so press it with Rapid Fire on the pull. Human's Ruthless is next, and Dwarf's 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.
+Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, and Predator's Edge makes your special crits hit harder, so press it with Rapid Fire on the pull. Human's Ruthless is next, and Dwarf's 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.
 
 Orc and Troll are level for the Horde. Blood Fury is 10% attack power for 15 seconds every two minutes, so it goes on the pull with Rapid Fire and again at two and four minutes. Berserking is 10% attack speed for 15 seconds every three minutes and stacks with Rapid Fire on your swings.
 

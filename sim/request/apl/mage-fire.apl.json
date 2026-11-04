@@ -218,7 +218,7 @@
       }
     },
     {
-      "notes": "Scorch is the filler, not Fireball. At 150 mana for 1.5 seconds it does far more damage per mana than Fireball's 395 and its long cast, every cast keeps your stacks rolling, and a Fire mage runs short of mana long before a boss dies.",
+      "notes": "Scorch is the filler, not Fireball. You land two Scorches in the time of one Fireball, so you roll twice the crits for Heating Up and Ignite, and every cast keeps your stacks rolling.",
       "action": {
         "castSpell": {
           "spellId": {

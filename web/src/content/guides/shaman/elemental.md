@@ -49,7 +49,7 @@ Elemental is the shaman's caster spec: Flame Shock kept ticking, Lightning Bolt 
 
 ## Talents and builds
 
-The leveling build spends every point in Elemental until Lightning Mastery at 40. The next five go to Thundering Strikes, 5% crit on every spell. From there the rest go to Restoration: Tidal Focus for 5% spell hit and all three points of Mindfulness, so half your mana regeneration keeps running while you cast, then Totemic Focus and Improved Reincarnation: cheaper totems and a shorter Reincarnation cooldown. Tidal Focus comes first because a Lightning Bolt that misses is the most expensive cast you make; Improved Healing Wave only speeds up a heal your damage rotation never casts. The raid build keeps the same 31 Elemental points, Thundering Strikes and Tidal Focus, and trades Totemic Focus for Ancestral Knowledge (10% more Intellect).
+The leveling build spends every point in Elemental until Lightning Mastery at 40. The next five go to Thundering Strikes, 5% crit on every spell. From there the rest go to Restoration: Tidal Focus for 5% spell hit and all three points of Mindfulness, so half your mana regeneration keeps running while you cast, then Totemic Focus and Improved Reincarnation: cheaper totems and a shorter Reincarnation cooldown. Tidal Focus comes first because a Lightning Bolt that misses throws away its mana and its cast time; Improved Healing Wave only speeds up a heal your damage rotation never casts. The raid build keeps the same 31 Elemental points, Thundering Strikes and Tidal Focus, and trades Totemic Focus for Ancestral Knowledge (10% more Intellect).
 
 Lightning Mastery is the 31st point, and Call of Thunder above it is the point that opens it. For 15 seconds every 3 minutes Lightning Bolt casts half a second faster and Chain Lightning has no cooldown. With Elemental Alacrity that makes Lightning Bolt a 1.5 second cast.
 
@@ -63,7 +63,7 @@ Lightning Mastery is the 31st point, and Call of Thunder above it is the point t
 - **Elemental Fury** (5 points): doubles the crit bonus of your spells and your Searing and Magma Totems.
 - **Lightning Mastery** (1 point): 15 seconds of faster Lightning Bolts and Chain Lightning with no cooldown, every 3 minutes.
 
-Elemental Warding (3 points) cuts the Fire, Frost and Nature damage you take by 10%. It and the single point of Elemental Devastation are the toll to reach Elemental Fury. Mindfulness keeps half your regeneration running while you cast. Improved Reincarnation (2 points) cuts Reincarnation to a 40 minute cooldown and brings you back with more health and mana.
+Elemental Warding (3 points) cuts the Fire, Frost and Nature damage you take by 10%. It and the single point of Elemental Devastation are the toll to reach Elemental Fury. Mindfulness keeps half your regeneration running while you cast. Improved Reincarnation (2 points) adds 4% maximum health, cuts Reincarnation to a 40 minute cooldown and brings you back with more health and mana.
 
 ## Rotation and priority
 
@@ -89,7 +89,7 @@ Hit matters up to the cap and adds nothing past it: a bolt that misses does noth
 
 ## Best in slot
 
-Your raid set leans on crafts. The Leatherworking and Tailoring pieces bind when equipped, so you can buy them. Frozen Heart of the Mountain and Totem of Thunder are Enchanting crafts that bind on pickup, so you make those yourself. The rest comes from reputation, quests, dungeons and world drops. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
+Your raid set leans on crafts. Frozen Heart of the Mountain and Totem of Thunder are Enchanting crafts that bind on pickup, so you make those yourself; every other craft in it binds when equipped, so you can buy it. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
 
 ## Enchants and consumables
 

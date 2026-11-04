@@ -2,7 +2,7 @@
 title: Shaman in Forever
 classSlug: shaman
 description: 'Shaman in Forever: the three specs, the new Dwarf shaman, raid-wide totems, one weapon and no dual wield, and what changed from 1.12.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: single-source
 sources:
   - label: 'Blizzard, Deep Dive panel recap'

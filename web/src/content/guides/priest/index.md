@@ -2,7 +2,7 @@
 title: Priest in Forever
 classSlug: priest
 description: 'The Priest in Forever: what each spec does, the spells every priest now has, the new Gnome priest and which race to pick.'
-updated: 2026-11-02
+updated: 2026-11-03
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'

@@ -32,7 +32,7 @@ Destruction keeps Immolate on the boss, fires Conflagrate and Shadowburn on cool
 - Conflagrate and Shadowburn are instants on short cooldowns, so you keep casting while you move
 - Shadow and Flame keeps 20% more Shadow and 20% more Fire damage running all fight
 - Ruin doubles the bonus on every Destruction crit
-- No setup before the pull beyond your demon and Demon Armor
+- Little setup before the pull: your demon, Demon Armor and a full mana bar
 
 ### Weaknesses
 
@@ -95,7 +95,7 @@ Adds and AoE: on two targets, spend your casts on the one that must die and put 
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Incinerate is a whole cast lost. Spell power feeds every spell you cast. Fire power feeds Incinerate, Immolate and Conflagrate, which are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need. Spirit only matters through Life Tap. The table above gives the order for your gear.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Incinerate is a whole cast lost. Spell power feeds every spell you cast. Fire power feeds Incinerate, Immolate and Conflagrate, which are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need, plus a little crit, which Ruin doubles like any other. Spirit only matters through Life Tap. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -103,7 +103,7 @@ The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 
-Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Firestone costs a shard and is the fallback. Its 2% crit lands for double through Ruin and its Fire damage feeds Incinerate, Immolate and Conflagrate, while a Spellstone's bonus damage only reaches your Shadow spells.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Put Brilliant Wizard Oil or a Firestone on the weapon. A Firestone costs a shard, its 2% crit lands for double through Ruin and its Fire damage feeds Incinerate, Immolate and Conflagrate.
 
 ## Races
 

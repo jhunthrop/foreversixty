@@ -2,7 +2,7 @@
 title: Warlock in Forever
 classSlug: warlock
 description: 'The Forever warlock: three specs, banes and curses in separate slots, DoTs that crit, the new talents, the races, and what a raid asks of you.'
-updated: 2026-11-02
+updated: 2026-11-03
 confidence: single-source
 sources:
   - label: 'Blizzard, Deep Dive panel recap'

@@ -32,7 +32,7 @@ Arcane stacks Arcane Blast for spell damage, fills with Frostbolt, fires free Mi
 ### Strengths
 
 - The best burst a mage has: Arcane Power's 15 second window, with Presence of Mind and your trinkets stacked into it
-- Arcane Blast turns Intellect into spell damage, so every Intellect item counts twice
+- Arcane Blast turns 12% of your Intellect per stack into spell damage, up to 48% at four stacks
 - Missile Barrage makes a big share of your damage free
 - Frostbolt filler and Frost Channeling keep you slowing adds and light on threat
 
@@ -73,7 +73,7 @@ Skip Flame Throwing and Impact: Fire Blast on the move is the only Fire spell yo
 
 **Arcane Power windows.** Arcane Power and Presence of Mind are both 3 minute cooldowns, so press them together with your on-use trinkets and your racial: Eureka! on a Gnome, Blood Fury on an Orc, Berserking on a Troll. In a 3 minute fight you get one window, on the pull. The second is ready as the boss dies, so on a longer fight hold it for a phase where the boss takes extra damage or the adds are down.
 
-**Mana in a 3 minute fight.** You will run dry. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The Robe of the Archmage has its own 5 minute cooldown, but using any of the three locks the other two out for a minute. Evocation is an 8 minute cooldown and comes once a fight: channel it when the bar is near empty with more than 30 seconds left, and never in the last 30 seconds, where the mana comes back too late to spend. Do not downrank Frostbolt to stretch mana; the cheaper ranks lose more damage than the mana buys.
+**Mana in a 3 minute fight.** You will run dry. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The Robe of the Archmage has its own 5 minute cooldown, but using any of the three locks the other two out for a minute. Evocation is an 8 minute cooldown and comes once a fight: channel it when the bar is near empty with more than 30 seconds left, and never in the last 30 seconds, where the mana comes back too late to spend.
 
 **AoE.** Arcane Explosion is instant and hits everything within 10 yards, so you stand in the pack with the tank and spam it. It costs 390 mana a cast, which drains a full bar in under a minute: let the tank get two or three seconds of threat, Frost Nova when the pack turns on you and Blink out. On spread packs or anything that hits hard, stand back and Blizzard instead.
 
@@ -83,7 +83,7 @@ Skip Flame Throwing and Impact: Fire Blast on the move is the only Fire spell yo
 
 ## Stat priority
 
-The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: a missed Blast deals nothing but still costs the full stacked price and still raises the cost of the Blast after it. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power goes into every Blast, Missile and Frostbolt you cast. Arcane power covers your Blasts and Missiles but not your Frostbolts. Each Arcane Blast stack adds 12% of your Intellect as spell damage and Arcane Mind adds 10% more Intellect, so for you Intellect is damage as well as your mana bar, where a Fire or Frost mage only drinks it as mana. Crit hits harder on your Arcane spells, because Arcane Mind doubles their crit bonus.
+The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: a missed Blast deals nothing but still costs the full stacked price and still raises the cost of the Blast after it. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power goes into every Blast, Missile and Frostbolt you cast. Arcane power covers your Blasts and Missiles but not your Frostbolts. Each Arcane Blast stack adds 12% of your Intellect as spell damage and Arcane Mind adds 10% more Intellect, so for you Intellect is spell damage on top of the spell crit and the mana bar every mage gets from it. Crit hits harder on your Arcane spells, because Arcane Mind doubles their crit bonus.
 
 ## Best in slot
 

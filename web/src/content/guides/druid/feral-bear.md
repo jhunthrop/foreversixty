@@ -113,7 +113,7 @@ Before 10 you are a caster: Moonfire from 4, then Wrath. At 10, Heeding the Call
 
 Your points from 10 to 14 go into Ferocity, so Maul and Swipe cost 5 less Rage. Furor from 15 to 19 adds 20% to the chance that a shift into Bear Form grants 10 Rage, so by 19 every shift does, and a pull opens with Maul ready.
 
-Your paw hits with your weapon's DPS, so replace the starter weapon with the highest-DPS staff or two-handed mace a quest gives you. Wear leather quest rewards over vendor gear, Stamina and Agility first, and take the Idol of Shifting Tides from the Aquatic Form quest at 16.
+Your paw hits with your weapon's DPS, so replace the starter weapon with the highest-DPS staff or two-handed mace a quest gives you. Wear leather quest rewards with Stamina and Agility over vendor gear, and take the Idol of Shifting Tides from the Aquatic Form quest at 16.
 
 ### Levels 20 to 60
 

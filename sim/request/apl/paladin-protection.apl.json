@@ -227,7 +227,7 @@
           }
         }
       },
-      "notes": "On cooldown, once Holy Shield's mana is safe. It hits your target and the enemies next to it, and it is your biggest single threat button."
+      "notes": "On cooldown, once Holy Shield's mana is safe. It hits your target and up to three enemies next to it, for Holy damage that Righteous Fury multiplies, so it carries your threat on a pack."
     },
     {
       "action": {
