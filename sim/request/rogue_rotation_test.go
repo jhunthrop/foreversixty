@@ -95,8 +95,9 @@ func TestSubtletyDeathMarksAtFourComboPoints(t *testing.T) {
 		if item.GetAction().GetCastSpell().GetSpellId().GetSpellId() != deathMark {
 			continue
 		}
-		cond := protojson.Format(item.GetAction().GetCondition())
-		if !strings.Contains(cond, `"currentComboPoints"`) || !strings.Contains(cond, `"val": "4"`) {
+		// protojson.Format randomizes its whitespace on purpose, so compare with it removed.
+		cond := strings.Join(strings.Fields(protojson.Format(item.GetAction().GetCondition())), "")
+		if !strings.Contains(cond, `"currentComboPoints"`) || !strings.Contains(cond, `"val":"4"`) {
 			t.Errorf("Death Mark's condition does not mark at four combo points: %s", cond)
 		}
 		return

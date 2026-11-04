@@ -85,7 +85,8 @@ var (
 )
 
 // Both priests' tank Renew is rank 7 (10927, learned at 44, whole bonus at
-// 60); rank 1 still wins at bands 20 and 30, so a row keeps it to 39.
+// 60); rank 1 still wins to 29 (Holy to 32) and rank 3 at 39 (round 16
+// priest wave 2: Holy and Discipline split their Renew rows level by level).
 func TestPriestsRenewKeepsItsHealingBonus(t *testing.T) {
 	for _, spec := range []string{"priest-holy", "priest-discipline"} {
 		renew := linesCasting(t, spec, 139, 10927)
@@ -93,7 +94,7 @@ func TestPriestsRenewKeepsItsHealingBonus(t *testing.T) {
 			t.Errorf("%s still authors Renew rank 1", spec)
 		}
 		assertRanks(t, renew, spec, "priest", "human", renewRanks, []rankCase{
-			{20, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 6}, {50, BarePreset, 7},
+			{20, BarePreset, 1}, {29, BarePreset, 1}, {39, BarePreset, 3}, {40, BarePreset, 6}, {50, BarePreset, 7},
 			{60, BarePreset, 7}, {60, RaidPreset, 7},
 		})
 	}

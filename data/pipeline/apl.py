@@ -164,6 +164,13 @@ UNGROUPED_CLIENT_SPELL_IDS: dict[int, str] = {
         "sim/core/racials.go registers it by this id for every Dwarf; the "
         "Protection paladin list casts it below 70% health."
     ),
+    1259705: (
+        "Read Leyline: the Alliance Skyborne's racial (raw/Spell.csv), learned "
+        "by race rather than class, so it carries no class family_mask and "
+        "spellconst's per-class split never carries it. "
+        "sim/core/racial_read_leyline.go registers it by this id for every "
+        "Alliance Skyborne; the Restoration druid list casts it on cooldown."
+    ),
 }
 
 
