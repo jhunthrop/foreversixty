@@ -192,7 +192,7 @@
       }
     },
     {
-      "notes": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back. Refreshing any earlier throws away a tick, and Multi-Shot is always the better global.",
+      "notes": "Serpent Sting when it has under 1.5 seconds left and Multi-Shot is not about to come back. Refreshing any earlier throws away a tick. When both are ready, Multi-Shot goes first: a late Multi-Shot pushes back the shared cooldown, while a late sting costs only a moment of its damage.",
       "action": {
         "condition": {
           "and": {

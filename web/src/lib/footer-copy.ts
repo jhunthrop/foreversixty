@@ -75,5 +75,5 @@ export const FOOTER_TRADEMARK =
   'Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.';
 
 export function footerOperatorLine(year: number): string {
-  return `Forever Sixty is operated by Commish LLC. © ${year} Commish LLC.`;
+  return `Forever Sixty is a registered trade name of Commish LLC. © ${year} Commish LLC.`;
 }

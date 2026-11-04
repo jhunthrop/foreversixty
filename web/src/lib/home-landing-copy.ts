@@ -36,9 +36,10 @@ export const homeNoCharacterCopy = {
   sentence: 'Pick your class for its best-in-slot list, talents and rotation.',
   status: 'You are signed in. Battle.net lists a character after you play it and log out; then check again.',
   checkAgain: 'Check again',
-  checking: 'Checking...',
-  stillNone:
-    'None yet. Battle.net sends a character once it has been made in game; the addon brings it in sooner.',
+  checking: 'Checking…',
+  stillNone: 'Still nothing from Battle.net. Make a character in game, then check again.',
+  checkFailed: 'Could not reach Forever Sixty. Try again.',
+  tryAgain: 'Try again',
   pasteLabel: 'Paste an addon export',
   pasteHref: '/setup#paste',
   addonLabel: 'Get the addon',

@@ -96,7 +96,7 @@ Auto Shot does more damage than any button you press, so protect it:
 - Fire your instants right after an auto shot leaves, so they never push the next one back.
 - Stay outside 8 yards. Inside it you cannot shoot at all.
 
-When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed Shot and Multi-Shot going. Drink a Major Mana Potion before you need it, not at 5%.
+When mana gets low, drop Arcane Shot first, then Multi-Shot, and let Aimed Shot take the shared cooldown only when its cast fits after an auto shot. Serpent Sting is the last shot you give up: it does more damage for its mana than anything else you fire. Drink a Major Mana Potion before you need it, not at 5%.
 
 **The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Other players' stat buffs do not reach your pet in Forever, so your own gear is what makes it stronger. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
 
@@ -114,7 +114,7 @@ The table above gives the order for your gear; here is why each stat counts. Hit
 
 ## Best in slot
 
-Hunters wear leather until 40 and mail from 40. Your ranged weapon is your real weapon, the melee weapon is there for its stats, so a two-hander with Agility or Intellect beats a fast one-hander with damage. The full lists by level are on the [Beast Mastery best in slot page](/bis/hunter/beast-mastery).
+Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Your ranged weapon is your real weapon, the melee weapon is there for its stats, so a two-hander with Agility or Intellect beats a fast one-hander with damage. The full lists by level are on the [Beast Mastery best in slot page](/bis/hunter/beast-mastery).
 
 ## Enchants and consumables
 
@@ -146,7 +146,7 @@ At 10 your trainer starts the taming quests, which end by teaching Tame Beast. T
 
 Your first five points go into Deadly Aspects: with Aspect of the Hawk up, each point is a 2% chance on Auto Shot for 30% ranged attack speed over 12 sec. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training starts at 17.
 
-Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.
+Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until 40. From 40 you can wear mail, but keep a leather piece whenever it is the better one.
 
 ### Levels 20 to 60
 

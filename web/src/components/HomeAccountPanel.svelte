@@ -86,17 +86,38 @@
     const button = document.getElementById(HOME_CHECK_AGAIN_ID);
     const note = document.getElementById(HOME_CHECK_AGAIN_NOTE_ID);
     if (!(button instanceof HTMLButtonElement) || note === null) return;
-    const settle = (answer: { characters: unknown[] } | null): void => {
-      button.disabled = false;
-      button.textContent = homeNoCharacterCopy.checkAgain;
-      note.textContent =
-        answer !== null && answer.characters.length === 0 ? homeNoCharacterCopy.stillNone : '';
+    const label = button.querySelector<HTMLElement>('.home-check-label');
+    const spinner = button.querySelector<SVGElement>('.home-check-spinner');
+    const setBusy = (busy: boolean, text: string): void => {
+      button.disabled = busy;
+      button.setAttribute('aria-busy', busy ? 'true' : 'false');
+      spinner?.classList.toggle('hidden', !busy);
+      if (label !== null) label.textContent = text;
+    };
+    // The busy state shows for at least this long, so a quick answer still reads as a check.
+    const MIN_BUSY_MS = 600;
+    let startedAt = 0;
+    const settle = (answer: { characters: unknown[] } | null, failed: boolean): void => {
+      const wait = Math.max(0, MIN_BUSY_MS - (Date.now() - startedAt));
+      setTimeout(() => {
+        setBusy(false, failed ? homeNoCharacterCopy.tryAgain : homeNoCharacterCopy.checkAgain);
+        note.classList.toggle('text-wipe', failed);
+        note.textContent = failed
+          ? homeNoCharacterCopy.checkFailed
+          : answer !== null && answer.characters.length === 0
+            ? homeNoCharacterCopy.stillNone
+            : '';
+      }, wait);
     };
     const onClick = (): void => {
-      button.disabled = true;
-      button.textContent = homeNoCharacterCopy.checking;
+      startedAt = Date.now();
+      setBusy(true, homeNoCharacterCopy.checking);
       note.textContent = '';
-      refetchMe(settle, undefined, () => settle(null));
+      refetchMe(
+        (answer) => settle(answer, false),
+        undefined,
+        () => settle(null, true),
+      );
     };
     button.addEventListener('click', onClick);
     return () => button.removeEventListener('click', onClick);

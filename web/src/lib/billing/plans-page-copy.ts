@@ -264,8 +264,7 @@ export const plansPageCopy = {
     },
     {
       question: 'Who am I paying?',
-      answer:
-        'COMMISH LLC, the company behind Forever Sixty. Stripe handles the payment; we never see or store your card.',
+      answer: 'Commish LLC d/b/a Forever Sixty. Stripe handles the payment; we never see or store your card.',
     },
   ] as FaqEntry[],
 };

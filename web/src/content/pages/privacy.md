@@ -45,8 +45,8 @@ with dates before anything is removed.
 
 ## Who is responsible
 
-Forever Sixty is operated by Commish LLC, an Arkansas limited liability company, which is the
-party responsible for the data described on this page. Mail reaches it at Commish LLC, c/o
+This service is operated by Commish LLC d/b/a Forever Sixty, an Arkansas limited liability
+company, which is the party responsible for the data described on this page. Mail reaches it at Commish LLC, c/o
 Northwest Registered Agent, LLC, 701 South St., STE 100, Mountain Home, AR 72653, United
 States.
 

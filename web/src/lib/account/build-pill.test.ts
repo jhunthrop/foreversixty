@@ -4,8 +4,8 @@ import { buildSourcePill } from './build-pill';
 const NOW = new Date('2026-09-22T00:00:00Z');
 
 describe('buildSourcePill', () => {
-  it('reads "No build yet" with no pill class when there is no build', () => {
-    expect(buildSourcePill(undefined, NOW)).toEqual({ label: 'No build yet', pillClass: null });
+  it('reads "No gear yet" with no pill class when there is no build', () => {
+    expect(buildSourcePill(undefined, NOW)).toEqual({ label: 'No gear yet', pillClass: null });
   });
 
   it('reads Battle.net for a blizzard build', () => {

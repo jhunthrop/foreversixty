@@ -35,7 +35,7 @@ Two healing specs and one shadow caster, as always. Shadow is also how a priest 
 - Discipline: Gnome on Alliance for Eureka! and Expansive Mind, with Human a hair behind. Undead on Horde for Dark Sacrifice.
 - Holy: Human on Alliance for The Human Spirit and Divine Grace, with Gnome close. Undead on Horde for Dark Sacrifice.
 - Shadow: Human on Alliance for Ruthless, with Night Elf just as good and Dwarf close. Undead on Horde for Touch of the Grave, well ahead of Troll.
-- **The Gnome priest** is new. Gnomes bring Eureka! (8 seconds of 10% cheaper and 10% stronger direct heals and damage spells every 2 minutes, never a DoT, a channel, Renew or a shield), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. Gnome is the Alliance pick for Discipline.
+- **The Gnome priest** is new. Gnomes bring Eureka! (8 seconds of 10% cheaper and 10% stronger direct heals and damage spells every 2 minutes, and 10% stronger Mind Flay and Penance ticks; never Shadow Word: Pain, Devouring Plague, Renew or a shield), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. Gnome is the Alliance pick for Discipline.
 
 **Each race has its own two priest spells.**
 

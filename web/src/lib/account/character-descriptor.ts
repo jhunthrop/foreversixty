@@ -15,6 +15,12 @@ import { characterListCopy } from './character-list-copy';
  *  region location is omitted when the character has never been through the Battle.net
  *  import. */
 export function characterDescriptor(character: MeCharacter): string {
+  return characterDescriptorSegments(character).join(' · ');
+}
+
+/** The descriptor's phrases ("High Order Skyborne Warrior", "Level 1", "Forever (PvP US)"),
+ *  for a reader that keeps each phrase on one line and wraps only between them. */
+export function characterDescriptorSegments(character: MeCharacter): string[] {
   const className = character.class === undefined ? undefined : classDisplayName(character.class);
   const raceClass = [character.race, characterSpecName(character), className]
     .filter((part): part is string => part !== undefined)
@@ -28,7 +34,7 @@ export function characterDescriptor(character: MeCharacter): string {
     character.level === undefined ? '' : characterListCopy.levelPrefix(character.level),
     location,
   ];
-  return segments.filter((segment) => segment !== '').join(' · ');
+  return segments.filter((segment) => segment !== '');
 }
 
 function locationLabel(character: MeCharacter): string {

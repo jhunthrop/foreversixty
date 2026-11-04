@@ -107,7 +107,9 @@ test('every control on the account page clears 44px on phone', async ({ page }, 
   }
 });
 
-test('a signed-in visitor sees imported characters, refreshes, and gets the toast', async ({ page }) => {
+test('a signed-in visitor sees imported characters, refreshes, and is told what the refresh did', async ({
+  page,
+}) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(fulfil({ ok: true, data: meBnetFixture, error: null, request_id: 'r' })),
   );
@@ -117,7 +119,8 @@ test('a signed-in visitor sees imported characters, refreshes, and gets the toas
 
   await page.goto('/account?refreshed=1');
 
-  await expect(page.getByText('Characters refreshed from Battle.net.')).toBeVisible();
+  // No snapshot from before the redirect (a fresh test page): the return reads as updated.
+  await expect(page.getByTestId('bnet-refresh-result')).toContainText('Updated just now');
   await expect.poll(() => new URL(page.url()).search).toBe('');
 
   // The guilded, verified character.
@@ -134,10 +137,14 @@ test('a signed-in visitor sees imported characters, refreshes, and gets the toas
     .locator('..');
   await expect(elyraRow.getByTestId('character-guild-line')).toHaveCount(0);
 
-  await expect(page.getByTestId('bnet-imported')).toContainText('Imported from Battle.net');
-  await expect(
-    page.getByTestId('bnet-imported').getByRole('link', { name: 'Refresh from Battle.net' }),
-  ).toHaveAttribute('href', /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Frefreshed%3D1$/);
+  // The result line gives way, after a few seconds, to the import time and the refresh link.
+  await expect(page.getByTestId('bnet-imported')).toContainText('Imported from Battle.net', {
+    timeout: 12_000,
+  });
+  await expect(page.getByTestId('bnet-refresh')).toHaveAttribute(
+    'href',
+    /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Frefreshed%3D1$/,
+  );
 });
 
 test('choosing a main on the account page records it and makes it the hero', async ({ page }) => {

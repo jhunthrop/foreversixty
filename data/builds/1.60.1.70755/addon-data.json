@@ -31845,7 +31845,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -31885,7 +31885,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -31925,14 +31925,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 703,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -31972,14 +31972,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 703,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32019,14 +32019,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 703,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32073,14 +32073,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8631,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32134,14 +32134,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8631,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32195,14 +32195,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8631,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32256,14 +32256,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8632,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32324,14 +32324,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8632,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32392,14 +32392,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8632,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32460,14 +32460,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8633,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32528,14 +32528,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8633,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32603,14 +32603,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8633,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32678,14 +32678,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8633,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32753,14 +32753,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11289,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32828,14 +32828,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11289,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32903,14 +32903,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11289,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -32978,14 +32978,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11289,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -33053,14 +33053,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11290,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -33128,14 +33128,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11290,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -33203,14 +33203,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11290,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
