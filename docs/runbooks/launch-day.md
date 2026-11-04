@@ -45,7 +45,8 @@ connections lazily and close them after 10 idle minutes, so normal usage is far 
 
 ## What to watch
 
-The alerts email the owner (channel "Forever Sixty owner"). Each one links back here.
+The alerts email jhunthrop@gmail.com (channel "Forever Sixty owner") and help@foreversixty.gg
+(channel "Forever Sixty help inbox"). Each one links back here.
 
 | Alert (project foreversixty) | Fires when |
 | --- | --- |
