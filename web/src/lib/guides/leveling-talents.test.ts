@@ -113,12 +113,15 @@ describe('the Leveling strip of every guide', () => {
     expect(guides.length).toBeGreaterThan(20);
   });
 
-  it('shows the Shadow priest’s Mind Flay before Shadow Focus, the order a player spends them', () => {
+  // Sim-accuracy round 15 wave 6: the Shadow ladder takes Shadow Focus (17-21) before Mind
+  // Flay (28) and Improved Mind Flay (29-30), and band 30 holds all three
+  // (data/curated/ladder-first.json priest-shadow).
+  it('shows the Shadow priest’s Shadow Focus before Mind Flay and Improved Mind Flay at band 30', () => {
     const shadow = guides.find((guide) => guide.spec === 'priest-shadow')!;
     const names = stripRows(shadow).find((row) => row.band === 30)!.names;
     expect(names.indexOf('Mind Flay')).toBeGreaterThan(-1);
-    expect(names.indexOf('Mind Flay')).toBeLessThan(names.indexOf('Shadow Focus'));
-    expect(names[0]).toBe('Spirit Tap');
+    expect(names.indexOf('Shadow Focus')).toBeLessThan(names.indexOf('Mind Flay'));
+    expect(names.indexOf('Mind Flay')).toBeLessThan(names.indexOf('Improved Mind Flay'));
   });
 
   it('lists every band in the order the points of the guide’s own build are spent', () => {
