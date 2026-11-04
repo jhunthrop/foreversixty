@@ -39,6 +39,57 @@ What runs where:
   took 5 to 16 minutes when a landing started ~35 jobs at once (2026-11-03). No check job has
   a timeout under 20 minutes for that reason. See "Checkout" below.
 
+## Launch mode
+
+Owner, 2026-11-03 (WoW Forever launches 4 Nov): smoke gates only until after launch. One
+switch, the repository variable `LAUNCH_MODE`; every check workflow reads `vars.LAUNCH_MODE`.
+While it is `true`:
+
+- What still runs (target 5 to 8 minutes of wall time on a land branch):
+  - web `build`: check, lint, format, the guide prose test
+    (`src/content/guides/_prose.test.ts`) and the fixture build. deploy runs on main as before.
+  - api `check`: the engine-free `go vet` and `go build ./...` with `GOWORK=off`, and the
+    workspace `go vet`. `image` and `deploy` run on main only.
+  - sim `test`: gofmt, `go vet`, `go build ./...`. `rotations`: apl-check and styles-check.
+  - data: ruff and a byte-compile. tools: shellcheck and actionlint. addon: luacheck and the
+    Lua 5.1 and Data.lua parse checks. logs: gofmt, vet, build. companion: gofmt, vet and the
+    headless build (its release on main is unchanged).
+- What is skipped (jobs show as skipped, which `tools/land.sh` counts as green):
+  - the full vitest beyond the prose test;
+  - the e2e shards, real-engine, lhci and lhci-alert;
+  - every Go test run and `-race`: the api's four test shards, the sim suite and its
+    artifacts job (the wasm smoke), logs' tests, fuzz and bench, the image tests;
+  - the iOS and Android suites and mobile-codegen's drift checks;
+  - the companion tests and the window build;
+  - addon busted, data's pytest and `--check` gates, the tools script tests and coach;
+  - the fork suite (engine.yml is not a push check; leave its schedule alone).
+- `smoke.yml` runs on main after every green web or api run (each ends in its deploy):
+  `tools/prod-smoke.sh` fetches the home page, /guides, one guide per class (each must carry
+  its Priority list), /bis/warrior/fury, /tiers, /sim, the API's /health and /go/discord, and
+  fails with a summary naming every URL that answered wrong. Run it by hand with
+  `gh workflow run smoke` or `bash tools/prod-smoke.sh`.
+- Lanes run no local tests: commit and push straight to `land/<n>`, then
+  `tools/land.sh land/<n>`. The smoke gate is the land branch's run and smoke.yml after the
+  deploy.
+
+Turning it off (after launch):
+
+1. `gh variable set LAUNCH_MODE --body false`.
+2. Run the full suite once on main HEAD by dispatching every check workflow by file name:
+
+   ```
+   for w in web api sim tools addon logs coach companion ios android mobile-codegen; do
+     gh workflow run "$w.yml" --ref main
+   done
+   ```
+
+   Not data.yml: its dispatch always runs the fetch job, which downloads and commits a
+   build (the data run is held). Run its `test` job's steps locally instead (in data/, with
+   that job's `HELD_OUTPUT` deselect), or let the next push that touches data/ run it.
+   An empty land branch is not enough: a land branch is diffed against main, so an empty
+   one starts only companion.
+3. Fix what it finds, in one landing, before the next feature batch.
+
 ## Checkout
 
 Every check job that runs on a `land/**` push checks out only what it reads:

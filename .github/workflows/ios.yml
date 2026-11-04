@@ -32,6 +32,8 @@ env:
   IOS_RUNTIME_BUILD: '23F77'
 jobs:
   build-test:
+    # Skipped in launch mode (docs/runbooks/landing.md, "Launch mode").
+    if: vars.LAUNCH_MODE != 'true'
     runs-on: xcode-27
     timeout-minutes: 40
     defaults:
