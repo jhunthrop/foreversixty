@@ -21,6 +21,7 @@ import { raceRows } from '../../lib/planner/reference';
 import { racialEffects } from '../../lib/guides/race-table';
 import { bandEntry } from '../../lib/bis/load';
 import { rankedBisFile } from '../../lib/guides/class-dps';
+import { guidesCopy } from '../../lib/guides/copy';
 import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { bandTalentHits } from '../../lib/guides/talent-hit';
 import { createPageContainer } from '../../test-support/page-container';
@@ -254,7 +255,32 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toMatch(/leveling-chip-rank[^>]*>\d\/\d</);
     expect(html).toContain('Level 20 to 29');
     expect(html).toContain('11 to 20 points');
-    expect(html).toContain('Outlined: points added in this level range.');
+    expect(html).toContain(guidesCopy.levelingLegend);
+  });
+
+  // Sim-accuracy round 18: "Level 30 to 39" listed the level 30 build, so a level 36 reader
+  // never saw the points taken at 31 to 36. The row lists the level 39 build (30 points), each
+  // talent with the levels its points come at inside the range.
+  it('lists the level 39 build under Level 30 to 39, with the level of every point', async () => {
+    const html = await frostHtml();
+    const row =
+      html.split('data-testid="guide-leveling-row-30"')[1]?.split('data-testid="guide-leveling-row-40"')[0] ??
+      '';
+    const ranks = [...row.matchAll(/class="numeric leveling-chip-rank"[^>]*>(\d)\/\d</g)].map((m) =>
+      Number(m[1]),
+    );
+    expect(ranks.reduce((sum, rank) => sum + rank, 0)).toBe(30);
+    const stamps = [...row.matchAll(/class="numeric leveling-chip-levels"[^>]*>([^<]+)</g)].map((m) => m[1]!);
+    const levels = stamps.flatMap((stamp) =>
+      stamp
+        .replace(/^Lv /, '')
+        .split(', ')
+        .flatMap((run) => {
+          const [a, b] = run.split('-').map(Number);
+          return Array.from({ length: (b ?? a!) - a! + 1 }, (_, k) => a! + k);
+        }),
+    );
+    expect(levels.sort((a, b) => a - b)).toEqual([30, 31, 32, 33, 34, 35, 36, 37, 38, 39]);
   });
 
   it('opens #leveling on the Levels 1 to 19 text and plants the strip under Levels 20 to 60', async () => {

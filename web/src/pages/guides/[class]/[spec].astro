@@ -180,7 +180,14 @@ const describedCode = raidTrees === undefined ? buildCode : raidCode;
 // entirely when no rotation entry applies yet (spec §5's own state table), never a card
 // with zero lines standing in for "no data". The Rotation section's lists read the same lines.
 const rotationBandLabel = String(bandTopLevel(60));
-const rotationListsUnkeyed = guideRotation(build, classSlug, fullSpecId, role, describedTrees);
+const rotationListsUnkeyed = guideRotation(
+  build,
+  classSlug,
+  fullSpecId,
+  role,
+  describedTrees,
+  raidTrees === undefined ? undefined : buildTrees,
+);
 // The lists follow the raid build's level 60 priority; a talent only the raid build takes is
 // marked in them, so a player on the level 60 build knows to skip that row.
 const raidOnlyTalents =
@@ -235,9 +242,10 @@ const racesProse = proseOnly('Races');
 const racesProseHtml = await prose(racesProse);
 const professionsHtml = await prose(sections.get('Professions') ?? '');
 
-// The strip is the leveling journey: the guide's own level 60 build cut down to each range's
-// points, the same walk the sim's ladder uses (lib/guides/leveling-builds.ts), so it follows
-// the guide's build the moment it changes rather than the published ranker file.
+// The strip is the leveling journey: the guide's own level 60 build cut down to the points
+// held at each range's last level, the same walk the sim's ladder uses
+// (lib/guides/leveling-builds.ts), so it follows the guide's build the moment it changes
+// rather than the published ranker file.
 const treeIndex = catalogEntries.find((s) => s.spec_slug === specSlug)?.tree_index;
 const levelingRows: LevelingBandRow[] =
   buildCode === undefined || treeIndex === undefined
@@ -246,8 +254,10 @@ const levelingRows: LevelingBandRow[] =
         band: b.band,
         bandLabel: guidesCopy.levelRangeLabel(b.band),
         pointsLabel: guidesCopy.levelRangePoints(b.points, b.band),
-        plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
-        talents: b.talents,
+        plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.lastTalents)}`,
+        talents: b.lastTalents,
+        lastLevel: b.lastLevel,
+        pointsFrom: b.pointsFrom,
       }));
 // The order the points go in, the ladder's own (lib/guides/leveling-builds.ts guideLadderOrder):
 // the strip, the planner links below and /data/leveling-plans.json all read this one order.

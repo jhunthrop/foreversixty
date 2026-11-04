@@ -250,8 +250,12 @@ for (const [label, viewport] of [
         await expect(chips.first()).toContainText(/\d\/\d/);
       }
       await expect(page.getByTestId('guide-leveling-legend')).toHaveText(
-        'Outlined: points added in this level range.',
+        'Each range lists what you hold by its last level. Lv: the character level each point comes at, one point a level. Outlined: points added in this range.',
       );
+      // Round 18: each talent names the levels its points come at inside the range.
+      await expect(
+        strip.getByTestId('guide-leveling-row-30').locator('.leveling-chip-levels').first(),
+      ).toHaveText(/^Lv \d\d/);
       await expect(strip.getByTestId('guide-leveling-row-20')).toContainText('Level 20 to 29');
       await expect(strip.getByTestId('guide-leveling-row-20')).toContainText('11 to 20 points');
       await imagesLoaded(page, '[data-testid="guide-leveling-strip"] img');
