@@ -160,7 +160,8 @@ func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 // Holy paladin: the filler Flash of Light is rank 5 (19942) in a raid, with
 // rows keeping rank 1 below 40 and at 50 to 59 and rank 3 at 40 to 49 (what
 // those bands cast before). Holy Light loses its rank-1 row at 30 to 39 and
-// its rank-4 row at bare 60.
+// its rank-4 row at bare 60, and casts rank 2 at 40 to 49 (round 16: on the
+// MaxLevel + 12 rule rank 2 beats rank 1 there at seeds 1 and 50001).
 func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) {
 	filler := linesCasting(t, "paladin-holy", 19750, 19942)
 	assertRanks(t, filler, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
@@ -169,7 +170,7 @@ func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) 
 	})
 	light := linesCasting(t, "paladin-holy", 10329)
 	assertRanks(t, light, "paladin-holy", "paladin", "human", holyLightRanks, []rankCase{
-		{20, BarePreset, 1}, {30, BarePreset, 5}, {40, BarePreset, 1}, {60, BarePreset, 8}, {60, RaidPreset, 8},
+		{20, BarePreset, 1}, {30, BarePreset, 5}, {40, BarePreset, 2}, {49, BarePreset, 2}, {60, BarePreset, 8}, {60, RaidPreset, 8},
 	})
 }
 

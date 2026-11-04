@@ -39,6 +39,20 @@ One CONFIRMED-BUG, fixed (seed 3). No published number moves. No APL, build stri
 | R1 | Checked against 70755: Judgement of Righteousness 20286 (170 + 4.1/level, 0.429, melee table); Seal of Righteousness proc (1786 + 47/level dummy, 0.1 after Blizzard's 16 October fix); Seal of Command 20424 (70%, 0.29, 1 s ProcCategoryRecovery); Exorcism 10314 (502 + 3.2/level, 0.429, 15 s); Hammer of Wrath 24239 (498, 6 s, instant with Champion of the Light 5); Holy Strike 10333 (50% weapon + 93, 0.429); Consecration 5; Unsealed Wrath 1310735; Holy Conduit and Improved Seals masks; Sanctified Judgement; Vengeance; Two-Handed Weapon Specialization. Raid BiS: Highlander's 2-piece is +5 Stamina only; Thunderbrew's Boot Flask and Cloak of Flames are modelled. | wago rows; code read; bis-frozen | Aligned | - | - |
 | R2 | 70755 late re-layer (43dc0f074): no paladin spellconst, spelltips or talent change; paladin item and set text changes are whitespace only. | git show 43dc0f074 | Aligned | - | - |
 
+## Wave 2: Holy rank rows on the MaxLevel + 12 rule
+
+Merged int/r16 (site 88ebcb13e, fork ddc356138; the priest lane's E 18815822c keys the low-rank penalty on the rank's client MaxLevel + 12). Variant binaries with sim/rankchoices/rank-choices.json edited per variant and restored; Holy bare, effective HPS, own heal profile.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W2-1 | **Holy Light at 40 to 49: rank 2 now beats the rank-1 row.** 3,000 iterations, alliance, seed 1: rank 1 145.8, rank 2 149.3, ranks 3 to 6 146.9. 10,000 iterations: alliance 145.9 / 145.9 to 149.5 / 149.3 (+2.5 / +2.3%), horde 141.4 / 141.4 to 142.6 / 142.6 (+0.85 / +0.85%), seeds 1 / 50001. Both races gain beyond error, so the row is not race-keyed. | variant runs; `TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus` now expects rank 2 at 40 and 49 (it failed on the new row first, as written), rankchoices, rank-choice and preset-rank tests pass | CONFIRMED-BUG (row stale under the new rule) | R16 18815822c | S (this commit) |
+| W2-2 | Holy Light at 20 to 29 keeps rank 1: 48.8 against 41.9 for ranks 2 and 3 (seed 1, 3,000 iterations; +16%, far beyond error). | variant runs | Aligned (kept) | - | - |
+| W2-3 | Flash of Light (19941 line) at 40 to 49 keeps rank 1: 145.8 against 144.0 (rank 2) and 140.5 (rank 3). The 19942 rows at 26 to 39 and 42 to 49 do not apply at band 40 (it casts the top rank learned, 3), unchanged. | variant runs | Aligned (kept) | - | - |
+
+Guide text: none needed. No guide prose or card note names a leveling Holy Light rank (holy.md:76 and :81 and the card note speak to rank 8 at 60), and the web does not render rank rows, so the rendered page is unchanged and there was nothing for wow-player to review.
+
+Wave 2 files to regenerate: sim/request/testdata/ladder/paladin-holy.golden.md (band 40), and addon outputs that read rank rows (data/pipeline/addonrotation.py: addon-data / Data.lua).
+
 ## Before/after
 
 Raid 60, 10,000 iterations, frozen BiS, guide raid builds (`measure.sh`, ALLRT=1). Identical to before.tsv on all 12 rows (0.00%):

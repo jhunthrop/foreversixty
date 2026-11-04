@@ -163,7 +163,8 @@
           {
             "from_level": 40,
             "to_level": 49,
-            "rank": 1
+            "rank": 2,
+            "note": "Sim-accuracy round 16 (low-rank penalty keyed on MaxLevel + 12, E 18815822c): at band 40 bare, effective HPS, rank 2 beats rank 1 by +2.5/+2.3% alliance and +0.85/+0.85% horde at seeds 1/50001; ranks 3 to 6 and rank 1 lose."
           }
         ]
       },
