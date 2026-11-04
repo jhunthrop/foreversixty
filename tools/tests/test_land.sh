@@ -126,6 +126,19 @@ assert "it asks for the push runs of the branch's head sha" \
 	contains "$(cat "$c/gh/calls")" "run list --branch land/1 --commit $sha --event push"
 assert "a skipped job is green" lacks "$(cat "$c/out")" 'failed'
 
+# --- launch mode: skipped test jobs, and whole runs whose every job skipped, are green ---
+c=$(setup launch)
+sha=$(git -C "$c" rev-parse HEAD)
+fixture "$c" 1 "$(run_json 51 web completed success build:completed:success \
+	'e2e (1):completed:skipped' real-engine:completed:skipped lhci:completed:skipped deploy:completed:skipped)" \
+	"$(run_json 52 api completed success check:completed:success test:completed:skipped image:completed:skipped)" \
+	"$(run_json 53 ios completed skipped build-test:completed:skipped)" \
+	"$(run_json 54 coach completed skipped)"
+land "$c" land/1
+assert "a launch-mode landing with skipped jobs exits 0" equal $? 0
+assert "main is the launch-mode sha" equal "$(origin_ref "$c" refs/heads/main)" "$sha"
+assert "no skipped job or run is listed as failed" lacks "$(cat "$c/out")" 'failed'
+
 # --- red: a failed job stops the wait at once and is listed, main and the branch stay ---
 c=$(setup red)
 main_before=$(origin_ref "$c" refs/heads/main)

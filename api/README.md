@@ -25,7 +25,7 @@ make run
 | Variable | Required | Default | Notes |
 |---|---|---|---|
 | `PORT` | no | `8080` | |
-| `DATABASE_URL` | yes | — | Runtime connection; may point at a pooler (e.g. Neon's PgBouncer endpoint). |
+| `DATABASE_URL` | yes | — | Runtime connection. Production: the Cloud SQL unix socket, with the pool size in the URL. See "Production database" below. |
 | `MIGRATE_DATABASE_URL` | no | `DATABASE_URL` | Connection used only for running migrations. See "Migrations and connection poolers" below. |
 | `RESEND_API_KEY` | yes | — | |
 | `PUBLIC_BASE_URL` | yes | — | e.g. `https://foreversixty.gg`; confirm/unsubscribe redirects land here. |
@@ -69,10 +69,50 @@ alone; with no Cloud Run credentials it serves the live ingest but not whole-fil
 run, so it needs a session-pooled or direct (non-pooled) connection. A transaction-pooled
 connection (e.g. Neon's default pooled/PgBouncer endpoint) cannot hold that lock reliably.
 
-Point `DATABASE_URL` at Neon's pooled endpoint for normal runtime traffic, and point
-`MIGRATE_DATABASE_URL` at Neon's direct (unpooled) endpoint so migrations run against a
-connection that can actually hold the advisory lock. When `MIGRATE_DATABASE_URL` is unset,
-`DATABASE_URL` is used for migrations too.
+When `MIGRATE_DATABASE_URL` is unset, `DATABASE_URL` is used for migrations too. Production
+connects directly (no pooler), so both URLs name the same socket. `MIGRATE_DATABASE_URL` stays
+separate because golang-migrate's lib/pq driver rejects pgx's `pool_*` parameters.
+
+### Production database
+
+Since 2026-11-04 production runs on the Cloud SQL instance `commish-pg` (project `trycommish`,
+Postgres 18, db-g1-small, us-east1). That instance is shared with the Commish app, so Forever
+Sixty is fenced into its own space:
+
+- Database `foreversixty`, owned by the login role `foreversixty_app`. That role isn't a member of
+  `cloudsqlsuperuser`, has `CONNECTION LIMIT 30`, and holds no grants in the `commish` database.
+  `PUBLIC` connect on `foreversixty` is revoked, so Commish's roles can't open it.
+- The service and every job mount the instance through the Cloud Run Cloud SQL connector
+  (`--add-cloudsql-instances` / `--set-cloudsql-instances trycommish:us-east1:commish-pg`). The
+  runtime account `api-runtime@foreversixty` holds `roles/cloudsql.client` on `trycommish`.
+- `DATABASE_URL` is `postgres://foreversixty_app:…@/foreversixty?host=/cloudsql/trycommish:us-east1:commish-pg&sslmode=disable&pool_max_conns=6&pool_max_conn_idle_time=10m`.
+  `MIGRATE_DATABASE_URL` is the same without the `pool_*` parameters. Both live only in Secret
+  Manager (version 2). Version 1 of each is the old Neon URL, kept for rollback.
+- Connection budget: 6 per process × 3 service instances (`maxScale` 3) = 18. That leaves 12 of
+  the role's 30 for jobs and deploy overlap. Raising `maxScale` or the pool means raising the
+  role limit with it: `alter role foreversixty_app connection limit N`, run as the role's admin.
+  Never resize or restart `commish-pg` without the owner; it interrupts Commish.
+
+A tool that reads the production `DATABASE_URL` from Secret Manager can't use the
+`/cloudsql/...` socket from a laptop. Run `cloud-sql-proxy --gcloud-auth --port 6543
+trycommish:us-east1:commish-pg` and swap the host for `127.0.0.1:6543`. The rule that only the
+deployed API migrates still holds.
+
+**Rollback to Neon** (kept running until at least 2026-11-11):
+
+```bash
+P="--project foreversixty --region us-east1"
+gcloud run services update-traffic api $P --to-revisions api-00381-wg5=100   # pinned to the Neon versions
+gcloud run services update api $P --update-secrets DATABASE_URL=DATABASE_URL:1,MIGRATE_DATABASE_URL=MIGRATE_DATABASE_URL:1
+gcloud run services update-traffic api $P --to-latest
+for j in $(gcloud run jobs list $P --format='value(name)'); do
+  gcloud run jobs update "$j" $P --update-secrets DATABASE_URL=DATABASE_URL:1,MIGRATE_DATABASE_URL=MIGRATE_DATABASE_URL:1
+done
+```
+
+Writes made on Cloud SQL after the cutover aren't on Neon. A rollback loses them unless they're
+copied back by hand. Neon also lacks any migration newer than 66 (`go_links`), so roll back before
+a newer migration lands, or apply it to Neon from the deployed API.
 
 Tests need a Postgres instance:
 
@@ -656,8 +696,8 @@ gcloud projects create foreversixty --name "Forever Sixty"
 gcloud config set project foreversixty
 gcloud services enable run.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com iamcredentials.googleapis.com
 gcloud artifacts repositories create api --repository-format docker --location us-east1
-printf '%s' '<neon pooled url>'   | gcloud secrets create DATABASE_URL --data-file=-
-printf '%s' '<neon direct url>'   | gcloud secrets create MIGRATE_DATABASE_URL --data-file=-
+printf '%s' '<runtime url>'       | gcloud secrets create DATABASE_URL --data-file=-   # see "Production database"
+printf '%s' '<migrate url>'       | gcloud secrets create MIGRATE_DATABASE_URL --data-file=-
 printf '%s' '<resend key>'        | gcloud secrets create RESEND_API_KEY --data-file=-
 gcloud iam service-accounts create api-runtime
 gcloud secrets add-iam-policy-binding DATABASE_URL --member serviceAccount:api-runtime@foreversixty.iam.gserviceaccount.com --role roles/secretmanager.secretAccessor

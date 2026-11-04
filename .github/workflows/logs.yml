@@ -50,8 +50,15 @@ jobs:
             exit 1
           fi
       - run: go vet ./...
-      - run: go test ./... -race -coverprofile=cover.out
+      # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode"): gofmt, vet and build; no
+      # test, coverage or fuzz run.
+      - name: go build (launch mode)
+        if: vars.LAUNCH_MODE == 'true'
+        run: go build ./...
+      - if: vars.LAUNCH_MODE != 'true'
+        run: go test ./... -race -coverprofile=cover.out
       - name: coverage floor
+        if: vars.LAUNCH_MODE != 'true'
         run: |
           total=$(go tool cover -func=cover.out | awk '/^total:/ {print substr($3, 1, length($3)-1)}')
           echo "total coverage ${total}%"
@@ -60,6 +67,7 @@ jobs:
             exit 1
           }
       - name: fuzz
+        if: vars.LAUNCH_MODE != 'true'
         # Short runs, because the point is to keep the corpus honest against
         # every change rather than to search: the seeds alone cover the
         # shapes that used to panic. A crasher is written to
@@ -76,6 +84,7 @@ jobs:
     # Non-blocking. It downloads a 77 MB sample that is not in the repository,
     # so it is a signal rather than a gate: a slow runner must not fail a PR.
     needs: test
+    if: vars.LAUNCH_MODE != 'true'
     continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
