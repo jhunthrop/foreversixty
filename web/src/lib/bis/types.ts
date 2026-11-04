@@ -87,6 +87,9 @@ export interface BisSlot {
   /** A weapon slot where no sourced candidate carried a positive score and the ranker
    *  fell back to the best by item level rather than publish an empty weapon slot. */
   low_value?: boolean;
+  /** A relic published although its measured gain over an empty relic slot is inside its
+   *  error: its effect reaches a spell the rotation casts (`report.go` `NearTie`). */
+  near_tie?: BisNearTie;
   /** Present only on a slot the ranker adopted for the set bonus it completes. */
   set_bonus?: BisSetBonus;
   /** Why an empty slot is empty: `two_hand_equipped`, `no_dps_value`, `no_sourced_item`,
@@ -184,6 +187,13 @@ export interface BisPresetMeta {
   notes?: string;
 }
 
+/** `BisSlot.near_tie` (`report.go` `nearTie`): the relic's measured gain over an empty relic
+ *  slot and the error bar it sits inside, both in the band's rate unit. */
+export interface BisNearTie {
+  gain: number;
+  error: number;
+}
+
 /** `BisBand.hit_to_cap` for a weapon user (`sim/cmd/leveling-bis/hitcap.go`): the weights
  *  character's distance to the hit caps, all in engine percent of hit (10 hit rating = 1%).
  *  Published for a band whose spec swings or shoots; a caster's is `BisSpellHitToCap`. It has
@@ -197,6 +207,10 @@ export interface BisMeleeHitToCap {
   specials: number;
   /** Percent to the white-swing cap; present only for a dual-wield spec. */
   white?: number;
+  /** Percent to the 16% spell cap; present only for a character that also casts damaging
+   *  spells (an Enhancement shaman's shocks and bolts), whose one hit stat keeps landing more
+   *  of them past the weapon cap. Absent in files ranked before 2026-11-04 round 19. */
+  spell?: number;
 }
 
 /** `BisBand.hit_to_cap` for a caster (`spellHitToCap` in `hitcap.go`): the distance to the

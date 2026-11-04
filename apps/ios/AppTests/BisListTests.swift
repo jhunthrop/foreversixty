@@ -240,6 +240,22 @@ struct BisTooltipTests {
         #expect(list.rows.compactMap(\.pick).contains { $0.next.hasSuffix(" score") })
     }
 
+    @Test("a paladin, shaman or druid list names the ranged row Relic; everyone else keeps Ranged")
+    func relicSlotLabel() throws {
+        let label = { (spec: String) throws -> String? in
+            let file = try self.real(spec)
+            let band = try #require(file.band(for: BisRange(band: 60, preset: "raid"), faction: "horde"))
+            let list = BisListBuilder(items: [], worn: [], timeZone: .gmt).list(file: file, band: band, specLabel: spec, rangeLabel: "60")
+            return list.rows.first { $0.slot == "ranged" }?.slotLabel
+        }
+        #expect(try label("shaman-enhancement") == "Relic")
+        #expect(try label("paladin-retribution") == "Relic")
+        #expect(try label("druid-balance") == "Relic")
+        #expect(try label("hunter-marksmanship") == "Ranged")
+        #expect(ItemVocabulary.slotLabel("ranged", classSlug: "mage") == "Ranged")
+        #expect(ItemVocabulary.slotLabel("ranged", classSlug: "druid") == "Relic")
+    }
+
     @Test("the raid chip says when raids open, from the data, until they do")
     func raidsOpening() throws {
         let dates: [KeyDate] = try BisTestData.fixture("cdn.dates")

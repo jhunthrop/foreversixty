@@ -24,6 +24,13 @@ type hitToCap struct {
 	// for a dual wielder, whose white swings miss 19 points more than a
 	// special does; everyone else's white swings share the special cap.
 	White *float64 `json:"white,omitempty"`
+	// Spell is the hit still worth anything to the character's damaging
+	// spells: the spell cap (16 points against a level-63 boss) less the
+	// spell hit. Set only for a character that casts damaging spells (an
+	// Enhancement shaman's shocks and bolts), whose one Hit stat keeps
+	// landing more of them past the weapon cap; the hit weight counts it
+	// (core.hitStepWindow).
+	Spell *float64 `json:"spell,omitempty"`
 }
 
 // hitToCapFromProfile reads the engine's hit profile into the published
@@ -37,6 +44,10 @@ func hitToCapFromProfile(profile core.HitProfile) *hitToCap {
 	if profile.DualWielding {
 		white := profile.ToWhiteCap()
 		out.White = &white
+	}
+	if profile.Spell {
+		spell := profile.SpellProfile.ToSpellCap()
+		out.Spell = &spell
 	}
 	return out
 }

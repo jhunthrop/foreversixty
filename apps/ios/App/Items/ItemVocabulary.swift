@@ -35,9 +35,17 @@ enum ItemVocabulary {
         }
     }
 
+    /// The classes whose ranged slot is a relic slot (libram, totem, idol); the game's frame
+    /// names it Relic for them (web: lib/bis/slot-display-labels.ts `RELIC_CLASSES`).
+    static let relicClasses: Set<String> = ["paladin", "shaman", "druid"]
+
     /// A slot's label: two rings read `Finger 1` and `Finger 2`, two trinkets `Trinket 1` and
-    /// `Trinket 2`, so the BiS rows can be told apart; an unknown key prints as published.
-    static func slotLabel(_ slot: String) -> String { slotName(slot) ?? slot }
+    /// `Trinket 2`, so the BiS rows can be told apart; a paladin, shaman or druid's ranged slot
+    /// reads `Relic`; an unknown key prints as published.
+    static func slotLabel(_ slot: String, classSlug: String? = nil) -> String {
+        if slot == "ranged", let classSlug, relicClasses.contains(classSlug) { return Copy.itemsSlotRelic }
+        return slotName(slot) ?? slot
+    }
 
     /// The stats a tooltip lists, in the site's order (`STAT_KEYS`, armor excluded: it has its own line).
     static let statOrder: [(key: String, name: String)] = [

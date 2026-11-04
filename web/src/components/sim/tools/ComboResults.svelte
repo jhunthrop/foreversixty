@@ -12,13 +12,8 @@
   import { buildCodeFor } from '../../../lib/addon/build-code';
   import { indexTalents } from '../../../lib/planner/rules';
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
-  import {
-    SLOT_LABELS,
-    type Item,
-    type ItemSet,
-    type Slot,
-    type TalentFile,
-  } from '../../../lib/planner/types';
+  import type { Item, ItemSet, TalentFile } from '../../../lib/planner/types';
+  import { slotLabelForClass } from '../../../lib/bis/slot-display-labels';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
   import { codeForCharacterSpec } from '../../../lib/sim/character';
   import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
@@ -324,7 +319,9 @@
       <ul class="flex flex-col">
         {#each summary as row (`${row.slot}-${row.item_id}`)}
           <li class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 last:border-b-0">
-            <span class="text-muted w-24 text-[12px]">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</span>
+            <span class="text-muted w-24 text-[12px]"
+              >{slotLabelForClass(row.slot, result.request.character.class)}</span
+            >
             <span class="text-text flex-1 text-[13px]">{row.name}</span>
             <span class="text-gold numeric text-[13px]">
               {signedGainLabel(row.gain)}

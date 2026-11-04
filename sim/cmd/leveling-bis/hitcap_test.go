@@ -134,6 +134,31 @@ func TestMeleeSpecKeepsTheMeleeShapeEvenWithSpells(t *testing.T) {
 	}
 }
 
+// Round 19 (round 18 shaman X1): an Enhancement shaman past the 9% weapon
+// cap still misses with Earth Shock and the Maelstrom bolts up to 16%, and the
+// hit weight already counts it (hitStepWindow). The melee figure says so: it
+// carries the distance to the spell cap whenever the character casts damaging
+// spells, and only then.
+func TestMeleeFigureCarriesTheSpellCapWhenTheCharacterCastsSpells(t *testing.T) {
+	profile := core.HitProfile{Physical: true, Hit: 10, SpecialCap: 9, WhiteCap: 9, Spell: true, SpellProfile: core.SpellHitProfile{Hit: 10, SchoolHit: 10, Cap: 16}}
+	got, ok := hitToCapFor("shaman-enhancement", profile).(*hitToCap)
+	if !ok || got.Specials != 0 || got.Spell == nil || *got.Spell != 6 {
+		t.Fatalf("hit_to_cap = %+v, want specials 0 and spell 6", got)
+	}
+	out, _ := json.Marshal(got)
+	if string(out) != `{"baseline":10,"specials":0,"spell":6}` {
+		t.Errorf("melee shape with spells = %s", out)
+	}
+	if plain := hitToCapFromProfile(core.HitProfile{Physical: true, Hit: 2, SpecialCap: 9, WhiteCap: 9}); plain.Spell != nil {
+		t.Errorf("a character with no damaging spell publishes no spell figure, got %v", *plain.Spell)
+	}
+	capped := profile
+	capped.SpellProfile.Hit = 17
+	if got := hitToCapFromProfile(capped); got.Spell == nil || *got.Spell != 0 {
+		t.Errorf("spell distance past the cap = %+v, want 0", got)
+	}
+}
+
 func TestPublishedShapesAreToldApartByKind(t *testing.T) {
 	melee, _ := json.Marshal(hitToCapFromProfile(core.HitProfile{Physical: true, Hit: 2, SpecialCap: 9, WhiteCap: 9}))
 	if string(melee) != `{"baseline":2,"specials":7}` {

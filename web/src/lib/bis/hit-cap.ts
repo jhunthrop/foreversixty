@@ -27,8 +27,9 @@ export function hitCapLine(hitToCap: BisHitToCap | null | undefined): HitCapLine
   if (hitToCap === null || hitToCap === undefined) return undefined;
   if (hitToCap.kind === 'spell') return spellHitCapLine(hitToCap);
   const white = hitToCap.white === undefined ? undefined : formatCapPercent(hitToCap.white);
+  const spell = hitToCap.spell === undefined ? undefined : formatCapPercent(hitToCap.spell);
   return {
-    text: bisCopy.hitToCapLine(formatCapPercent(hitToCap.specials), white),
-    title: bisCopy.hitToCapTitle,
+    text: bisCopy.hitToCapLine(formatCapPercent(hitToCap.specials), white, spell),
+    title: spell === undefined ? bisCopy.hitToCapTitle : bisCopy.hitToCapWithSpellsTitle,
   };
 }

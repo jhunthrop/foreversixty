@@ -247,6 +247,54 @@ describe('the APL readers', () => {
     ]);
   });
 
+  // Sim-accuracy round 19: a card describes one build and lists only the rows that build
+  // casts, so a talent gate that build settles is not worded ("Fireball: Fills in a raid once
+  // you stop blasting, with Heating Up" read as a condition on the stacks Fireball builds).
+  it('words no talent gate the described build settles', () => {
+    const heating: AplGate = { kind: 'known', spellId: 9, positive: true };
+    const judged: AplGate = { kind: 'active', spellId: 7, positive: true, onTarget: true };
+    const names: Record<number, SpellFacts> = {
+      3: { name: 'Pyroblast', cooldownMs: 0 },
+      7: { name: 'Judgement of the Crusader', cooldownMs: 0 },
+      9: { name: 'Heating Up', cooldownMs: 0 },
+    };
+    const known = { auraIsKnown: { auraId: { spellId: 9 } } };
+    const apl = {
+      rotation: {
+        prepullActions: [
+          {
+            action: { condition: known, castSpell: { spellId: { spellId: 3 } } },
+            doAtValue: { const: { val: '-6s' } },
+          },
+        ],
+      },
+    };
+    const line = (name: string, condition: string, gates: AplGate[]): CollapsedLine => ({
+      spellId: name.length,
+      name,
+      condition,
+      truncatedAtSource: false,
+      steps: 1,
+      gates,
+    });
+    const settled = (gate: AplGate): boolean => gate.kind === 'known' && gate.spellId === 9;
+    const { opener, priority } = rotationListsFrom(
+      [line('Fireball', 'Fills in a raid', [heating]), line('Seal', 'Filler', [heating, judged])],
+      apl,
+      (id) => names[id],
+      [],
+      new Map(),
+      [],
+      'dps',
+      new Map(),
+      () => true,
+      settled,
+    );
+    expect(opener.map((item) => item.clause)).toEqual(['6 s before the pull']);
+    // An aura gate is not a talent gate: the note explains it, so it is never worded here.
+    expect(priority.map((item) => item.clause)).toEqual(['Fills in a raid', 'Filler']);
+  });
+
   it('knows when the cooldown pass is on', () => {
     expect(usesCooldownPass(apl)).toBe(true);
     expect(usesCooldownPass({ rotation: { priorityList: [] } })).toBe(false);
@@ -764,6 +812,38 @@ describe('raid build rows', () => {
     expect(marked.cooldowns[0]!.raidBuildOnly).toBe(true);
     expect(marked.opener[0]!.raidBuildOnly).toBeUndefined();
     expect(lists.priority[1]).not.toHaveProperty('raidBuildOnly');
+  });
+
+  // Round 19: with the "with Heating Up" words gone from the raid card, a row that needs a
+  // raid-only talent (Arcane's Fire Blast, Fireball and raid Frostbolt need Heating Up) says
+  // so with the tag, as a raid-only talent's own row does.
+  it('marks a row that needs one of them, and carries what each row needs', () => {
+    const heating: AplGate = { kind: 'known', spellId: 9, positive: true };
+    const pom: AplGate = { kind: 'known', spellId: 8, positive: true };
+    const names: Record<number, SpellFacts> = {
+      8: { name: 'Presence of Mind', cooldownMs: 0 },
+      9: { name: 'Heating Up', cooldownMs: 0 },
+    };
+    const line = (name: string, gates: AplGate[]): CollapsedLine => ({
+      spellId: name.length,
+      name,
+      condition: '',
+      truncatedAtSource: false,
+      steps: 1,
+      gates,
+    });
+    const lists = rotationListsFrom(
+      [line('Fireball', [heating]), line('Frostbolt', [pom]), line('Arcane Blast', [])],
+      undefined,
+      (id) => names[id],
+    );
+    expect(lists.priority.map((item) => item.needs ?? [])).toEqual([
+      ['Heating Up'],
+      ['Presence of Mind'],
+      [],
+    ]);
+    const marked = markRaidBuildRows(lists, new Set(['Heating Up']));
+    expect(marked.priority.map((item) => item.raidBuildOnly === true)).toEqual([true, false, false]);
   });
 
   it('marks Arms’ Reckless Swings and Spearing Strike, which only the raid build takes', () => {

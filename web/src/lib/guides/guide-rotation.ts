@@ -20,6 +20,7 @@ import {
   talentCastTimeCuts,
   talentCooldownCuts,
   talentNamesOf,
+  type GateSettled,
   type GuideRole,
   type LitTalents,
   type RotationLists,
@@ -40,9 +41,11 @@ export function guideRotation(
   const top = bandTopLevel(GUIDE_ROTATION_LEVEL);
   const entry = rotationEntryFor(loadRotations(build, spec) ?? [], top);
   if (entry === undefined) return undefined;
-  const lines = rotationLinesFor(entry, build, classSlug, spec, top);
   const lit = litTalentsOf(describedTrees);
   const facts = spellLookupFor(build, classSlug);
+  const talentNames = talentNamesOf(build, classSlug);
+  const runs = buildRunsGates(facts, talentNames, lit);
+  const lines = rotationLinesFor(entry, build, classSlug, spec, top, runs);
   return rotationListsFrom(
     lines,
     loadApl(spec),
@@ -52,7 +55,8 @@ export function guideRotation(
     racialCooldownsFor(build, classSlug),
     role,
     talentCastTimeCuts(build, classSlug, lit),
-    buildRunsGates(facts, talentNamesOf(build, classSlug), lit),
+    runs,
+    buildSettlesGate(facts, talentNames),
   );
 }
 
@@ -69,6 +73,15 @@ export function buildRunsGates(
       const name = gate.kind === 'known' ? facts(gate.spellId)?.name : undefined;
       return name === undefined || !talentNames.has(name) || lit.has(name) === gate.positive;
     });
+}
+
+/** Whether a gate is on knowing one of the class's talents: the described build takes it or
+ *  leaves it, which `buildRunsGates` has already applied, so a card need not word it. */
+export function buildSettlesGate(facts: SpellLookup, talentNames: ReadonlySet<string>): GateSettled {
+  return (gate) => {
+    const name = gate.kind === 'known' ? facts(gate.spellId)?.name : undefined;
+    return name !== undefined && talentNames.has(name);
+  };
 }
 
 /** The build a guide's level 60 sections describe: the raid build when the guide has one that

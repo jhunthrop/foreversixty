@@ -49,6 +49,12 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
     ]);
   });
 
+  // Round 19: a paladin, shaman or druid wears a relic in that slot, and the game calls it Relic.
+  it('labels the last row Relic for a relic class and Ranged otherwise', () => {
+    expect(gearRows(GEAR_FIXTURE, () => false, 'shaman').at(-1)?.label).toBe('Relic');
+    expect(gearRows(GEAR_FIXTURE, () => false, 'warrior').at(-1)?.label).toBe('Ranged');
+  });
+
   it('an upgrade: worn → pick, the source, "17% drop" and the gap', () => {
     expect(row('head')).toEqual({
       slot: 'head',

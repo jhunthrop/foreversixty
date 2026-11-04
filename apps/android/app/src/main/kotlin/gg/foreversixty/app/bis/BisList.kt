@@ -96,7 +96,7 @@ class BisListBuilder(
         val mainHand = band.slots.firstOrNull { it.slot == MAIN_HAND }?.itemName
         return BisList(
             setDpsLine = headline(file, band, unit),
-            rows = band.slots.map { row(it, unit, mainHand) },
+            rows = band.slots.map { row(it, unit, mainHand, file.spec.substringBefore('-')) },
             unit = unit,
             specLabel = specLabel,
             rangeLabel = rangeLabel,
@@ -114,8 +114,8 @@ class BisListBuilder(
         return band.setDps?.let { res.getString(R.string.bis_setDps, figure(it), res.getString(unit.word), date) }
     }
 
-    fun row(slot: BisSlot, unit: BisUnit, mainHand: String?): BisRow {
-        val label = ItemVocabulary.slotLabel(res, slot.slot)
+    fun row(slot: BisSlot, unit: BisUnit, mainHand: String?, classSlug: String? = null): BisRow {
+        val label = ItemVocabulary.slotLabel(res, slot.slot, classSlug)
         val id = slot.itemId
         val name = slot.itemName
         if (id == null || id <= 0 || name == null) {

@@ -33,6 +33,7 @@
     type PaperdollUpgrade,
   } from '../../lib/gear/paperdoll';
   import { gearCopy } from '../../lib/gear/copy';
+  import { isRelicSlot } from '../../lib/bis/slot-display-labels';
   import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
   import { dataUrl } from '../../lib/planner/load';
   import { classColorVar } from '../../lib/report/format';
@@ -85,7 +86,7 @@
         ? 'finger'
         : slot === 'trinket1' || slot === 'trinket2'
           ? 'trinket'
-          : slot === 'ranged' && slotLabel('ranged', classSlug) === copy.relic
+          : isRelicSlot(slot, classSlug)
             ? 'relic'
             : slot;
     return `/icons/hd/slots/${key}.webp`;

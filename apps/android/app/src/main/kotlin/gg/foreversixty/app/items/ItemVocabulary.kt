@@ -37,9 +37,21 @@ object ItemVocabulary {
 
     /**
      * A slot's label: two rings read `Finger 1` and `Finger 2`, two trinkets `Trinket 1` and
-     * `Trinket 2`, so the BiS rows can be told apart; an unknown key prints as published.
+     * `Trinket 2`, so the BiS rows can be told apart; a paladin, shaman or druid's ranged slot
+     * reads `Relic`; an unknown key prints as published.
      */
-    fun slotLabel(res: Resources, slot: String): String = slotName(slot)?.let(res::getString) ?: slot
+    fun slotLabel(res: Resources, slot: String, classSlug: String? = null): String =
+        if (slot == "ranged" && classSlug in relicClasses) {
+            res.getString(R.string.items_slot_relic)
+        } else {
+            slotName(slot)?.let(res::getString) ?: slot
+        }
+
+    /**
+     * The classes whose ranged slot is a relic slot (libram, totem, idol); the game's frame names
+     * it Relic for them (web: lib/bis/slot-display-labels.ts `RELIC_CLASSES`).
+     */
+    val relicClasses: Set<String> = setOf("paladin", "shaman", "druid")
 
     /** The stats a tooltip lists, in the site's order (`STAT_KEYS`, armor excluded: it has its own line). */
     val statOrder: List<Pair<String, Int>> = listOf(

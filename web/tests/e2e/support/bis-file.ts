@@ -19,6 +19,7 @@ export interface BisHitToCapFile {
   baseline: number;
   specials: number;
   white?: number;
+  spell?: number;
 }
 
 export interface TankMetricsFile {
@@ -106,7 +107,8 @@ export function bisPreset(spec: string, preset: BisPresetId): PresetFile {
 /** "Hit to cap: 7% for specials[, 27% for white swings]" for a whole-percent melee cap. */
 export function hitCapText(hitToCap: BisHitToCapFile): string {
   const white = hitToCap.white === undefined ? '' : `, ${hitToCap.white}% for white swings`;
-  return `Hit to cap: ${hitToCap.specials}% for specials${white}`;
+  const spell = hitToCap.spell === undefined ? '' : `, ${hitToCap.spell}% for spells`;
+  return `Hit to cap: ${hitToCap.specials}% for specials${white}${spell}`;
 }
 
 const WHOLE = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });

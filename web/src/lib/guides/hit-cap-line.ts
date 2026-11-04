@@ -7,7 +7,7 @@
 import { bisCopy } from '../bis/copy';
 import { expertiseIsGained } from '../bis/expertise-cap';
 import { formatCapPercent } from '../bis/hit-cap';
-import type { BisExpertiseToCap, BisHitToCap, BisSpellHitToCap } from '../bis/types';
+import type { BisExpertiseToCap, BisHitToCap, BisMeleeHitToCap, BisSpellHitToCap } from '../bis/types';
 import { guidesCopy } from './copy';
 import type { TalentHit, TalentHitScope } from './talent-hit';
 
@@ -69,13 +69,37 @@ function baselineParts(
   ];
 }
 
+/** "6% still to find" when `toFind` is above 0 (worded by `words`), else nothing. */
+function stillToFind(
+  toFind: number,
+  words: (percent: string) => string = guidesCopy.capStillToFind,
+): string | undefined {
+  return toFind > 0 ? words(formatCapPercent(toFind)) : undefined;
+}
+
 /** The split after the cap: where the hit comes from, then what is still short. Empty when
  *  nothing counts toward the cap yet (the cap is then all gear, and the cap alone says it). */
-function splitText(sources: readonly string[], toFind: number): string | undefined {
+function splitText(sources: readonly string[], short: string | undefined): string | undefined {
   if (sources.length === 0) return undefined;
-  return [...sources, ...(toFind > 0 ? [guidesCopy.capStillToFind(formatCapPercent(toFind))] : [])].join(
-    ', ',
-  );
+  return [...sources, ...(short === undefined ? [] : [short])].join(', ');
+}
+
+/** What a melee band is still short of: the weapon cap first, then, past it, the spell cap
+ *  of a spec that also casts damaging spells. */
+function meleeStillToFind(hitToCap: BisMeleeHitToCap): string | undefined {
+  if (hitToCap.specials > 0 || hitToCap.spell === undefined) return stillToFind(hitToCap.specials);
+  return stillToFind(hitToCap.spell, guidesCopy.capStillToFindForSpells);
+}
+
+/** The melee caps with what each is for; one bare cap when there is only the weapon's. */
+function meleeCaps(hitToCap: BisMeleeHitToCap): { cap: string; label: string }[] {
+  const { baseline, white, spell } = hitToCap;
+  const specials = capText(baseline, hitToCap.specials);
+  return [
+    { cap: specials, label: white === undefined ? guidesCopy.capLabelWeapon : guidesCopy.capLabelSpecials },
+    ...(white === undefined ? [] : [{ cap: capText(baseline, white), label: guidesCopy.capLabelWhite }]),
+    ...(spell === undefined ? [] : [{ cap: capText(baseline, spell), label: guidesCopy.capLabelSpells }]),
+  ];
 }
 
 function inScope(talents: readonly TalentHit[], scopes: readonly TalentHitScope[]): TalentHit[] {
@@ -108,7 +132,10 @@ function spellHitLine(hitToCap: BisSpellHitToCap, talents: readonly TalentHit[])
     ...(school === undefined ? [] : schoolParts(school.hit - hitToCap.baseline, school.names, talents)),
   ];
   return {
-    text: guidesCopy.hitToCap(capText(hitToCap.baseline, hitToCap.spell), splitText(sources, toFind)),
+    text: guidesCopy.hitToCap(
+      capText(hitToCap.baseline, hitToCap.spell),
+      splitText(sources, stillToFind(toFind)),
+    ),
     title: bisCopy.spellHitToCapTitle,
   };
 }
@@ -120,7 +147,6 @@ export function guideHitCapLine(
 ): GuideHitCapLine | undefined {
   if (hitToCap === null || hitToCap === undefined) return undefined;
   if (hitToCap.kind === 'spell') return spellHitLine(hitToCap, talents);
-  const specials = capText(hitToCap.baseline, hitToCap.specials);
   const split = splitText(
     baselineParts(
       hitToCap.baseline,
@@ -129,14 +155,18 @@ export function guideHitCapLine(
       HIT_GEAR_SOURCES,
       HIT_ALL_SOURCES,
     ),
-    hitToCap.specials,
+    meleeStillToFind(hitToCap),
   );
+  const caps = meleeCaps(hitToCap);
   return {
     text:
-      hitToCap.white === undefined
-        ? guidesCopy.hitToCap(specials, split)
-        : guidesCopy.hitToCapWhite(specials, capText(hitToCap.baseline, hitToCap.white), split),
-    title: bisCopy.hitToCapTitle,
+      caps.length === 1
+        ? guidesCopy.hitToCap(caps[0].cap, split)
+        : guidesCopy.hitToCapEach(
+            caps.map(({ cap, label }) => guidesCopy.capLabelled(cap, label)).join(', '),
+            split,
+          ),
+    title: hitToCap.spell === undefined ? bisCopy.hitToCapTitle : bisCopy.hitToCapWithSpellsTitle,
   };
 }
 
@@ -160,7 +190,7 @@ export function guideExpertiseCapLine(
           EXPERTISE_GEAR_SOURCES,
           EXPERTISE_ALL_SOURCES,
         ),
-        0,
+        undefined,
       ),
     ),
     title: bisCopy.expertiseToCapTitle,

@@ -136,6 +136,7 @@
     <string name="items_slot_mainHand">Main hand</string>
     <string name="items_slot_offHand">Off hand</string>
     <string name="items_slot_ranged">Ranged</string>
+    <string name="items_slot_relic">Relic</string>
     <string name="items_slot_finger">Finger</string>
     <string name="items_slot_trinket">Trinket</string>
     <string name="items_stat_strength">Strength</string>

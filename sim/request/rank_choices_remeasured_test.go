@@ -259,3 +259,26 @@ func TestRound18MarksmanshipAimedShotRankOneFrom52(t *testing.T) {
 		}
 	}
 }
+
+// Round 19 (hunter lane): at 46 and 47 Survival queues Raptor Strike rank 5.
+// Immolation Trap rank 4 arrives at 46 and runs the mana dry; rank 5's lower
+// cost buys back traps and gains beyond error at seeds 1 and 50001 (Horde
+// +0.3%, Alliance +0.1%). From 48 rank 7 and from 40 to 45 the top rank
+// wins or ties.
+func TestRound19SurvivalRaptorStrikeRankFiveAt46(t *testing.T) {
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not int32
+	}{
+		{"Survival Raptor Strike at 45", 45, 14264, 14263},
+		{"Survival Raptor Strike at 46", 46, 14263, 14264},
+		{"Survival Raptor Strike at 47", 47, 14263, 14264},
+		{"Survival Raptor Strike at 48", 48, 14265, 14263},
+	} {
+		ids := rotationIDs(t, "hunter-survival", "hunter", c.level, specRankChoices("hunter-survival", BarePreset, "orc"))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}

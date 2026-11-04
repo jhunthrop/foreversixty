@@ -111,7 +111,11 @@
 
   /** The unread panel's rows and the empty section's title line. */
   const rows = $derived(
-    gearRows(gear, table === undefined || table === null ? null : (id) => table.get(id)?.twoHand === true),
+    gearRows(
+      gear,
+      table === undefined || table === null ? null : (id) => table.get(id)?.twoHand === true,
+      classSlug ?? undefined,
+    ),
   );
   const summary = $derived(gearTitleSummary(gear, total));
   /** Icons whose image failed: their box stays, empty (fix round 2 ruling 1). */
