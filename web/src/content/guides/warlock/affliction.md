@@ -3,7 +3,7 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.70755:warlock:human:25522300130201351/200522/005:'
+build: 'FS1:1.60.1.70755:warlock:human:25522300132001351/200522/005:'
 raidBuild: 'FS1:1.60.1.70755:warlock:human:25520020135001351/00052/005004:'
 recommendedRaces: [human, orc]
 statPriority: [Spell power, Shadow power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
@@ -45,18 +45,18 @@ Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps wi
 
 ## Talents and builds
 
-The leveling build is a real Affliction tree: Nightfall, Soul Siphon and Wrack make the drains and the free Shadow Bolts carry you while you quest. The raid build is a Wrack build too: it goes to 35 points in Affliction for Malevolence, Soul Siphon and Wrack, and spends its Destruction points on Bane and Aftermath for a faster, harder Immolate.
+The leveling build is a real Affliction tree: Soul Siphon and Wrack make the drains carry you while you quest, and two points of Malevolence add crit to every Shadow spell. The raid build is a Wrack build too: it goes to 35 points in Affliction for all five points of Malevolence, Soul Siphon and Wrack, and spends its Destruction points on Bane and Aftermath for a faster, harder Immolate.
 
 - **Suppression** (5 points): 5% hit on every spell and 20% less threat. Every warlock build takes all five.
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
 - **Amplify Curse** (1 point): no global cooldown, a 3 minute cooldown and 30 seconds to use it. Your next Bane of Agony or Curse of Weakness is 50% stronger, or your next Curse of Exhaustion 20%. In a raid it goes on the Bane of Agony you put up in a boss's last minute.
 - **Pandemic** (3 points): Corruption, both banes, Siphon Life, the drains and Wrack crit for double the usual bonus.
-- **Nightfall** (2 points): each Corruption, Drain Life, Drain Soul or Wrack tick has a 4% chance to make your next Shadow Bolt instant. The leveling build takes it for free instant Shadow Bolts while you quest. The raid build drops it, and its points go toward Malevolence.
+- **Malevolence** (2 points leveling, 5 in a raid): 1% crit a point on your Shadow spells, DoT ticks and Wrack included, and Pandemic doubles the bonus on those. The leveling build takes two points at 34 and 35 instead of Nightfall. Nightfall only makes your next Shadow Bolt instant, and from 40 Wrack replaces Shadow Bolt as your filler, so its procs would cost you a Wrack's worth of cheap damage for a pricey bolt.
 - **Shadow Mastery** (5 points): 10% more Shadow damage on everything you cast.
 - **Siphon Life** (1 point): a 30 second DoT that heals you, and one more Affliction effect for Soul Siphon.
 - **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your other Shadow DoTs. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. With three of your effects on the boss it out-damages Shadow Bolt for a fraction of the mana, so both builds take it and it is your filler from 40.
 
-The raid build drops Nightfall, Soul Harvest and the three points of Improved Drains (a raid rotation casts no drain), along with Improved Health Funnel and Improved Voidwalker. It takes Malevolence and both points of Improved Bane of Agony, for 10% more damage on the Agony that covers the last minute, and keeps Grim Reach for range. Malevolence gives your Shadow spells 5% crit, DoT ticks and Wrack included. In Destruction, Bane makes Immolate a 1.5 second cast and four points of Aftermath add 40% to its first hit. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
+The raid build drops Soul Harvest and the three points of Improved Drains (a raid rotation casts no drain), along with Improved Health Funnel and Improved Voidwalker. It takes the last three points of Malevolence and both points of Improved Bane of Agony, for 10% more damage on the Agony that covers the last minute, and keeps Grim Reach for range. All five points of Malevolence give your Shadow spells 5% crit, DoT ticks and Wrack included. In Destruction, Bane makes Immolate a 1.5 second cast and four points of Aftermath add 40% to its first hit. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
 
 ## Rotation and priority
 
@@ -112,4 +112,4 @@ Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Grea
 
 ### Levels 20 to 60
 
-Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. Drain Life or Wrack while the DoTs run: with three of your effects on the target, Soul Siphon adds 36%, and Wrack costs far less mana than the Shadow Bolts it replaces. Wand the mob down when the DoTs are enough. Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards. Soul Harvest's mana regeneration then lets you drink less. Fire every Nightfall proc as an instant Shadow Bolt before its 10 seconds run out. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit.
+Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. Drain Life or Wrack while the DoTs run: with three of your effects on the target, Soul Siphon adds 36%, and Wrack costs far less mana than the Shadow Bolts it replaces. Wand the mob down when the DoTs are enough. Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards. Soul Harvest's mana regeneration then lets you drink less. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit.
