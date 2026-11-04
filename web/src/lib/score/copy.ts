@@ -132,7 +132,7 @@ export const scoreCopy = {
   notFoundElsewhere: 'Is it one of these?',
   /** Why a brand-new character is missing, and the one path that always works today. */
   notFoundNewCharacter:
-    'A new character can take a while to show up here: Blizzard publishes it after you play it and log out. Sign in with Battle.net and all your characters are listed straight away.',
+    'Lookup only finds characters someone has already brought to Forever Sixty, and Blizzard publishes a brand-new one only after it is played and logged out. If this is yours, sign in with Battle.net: all your characters are listed straight away, new ones too.',
   /** The same card on a character the site holds with nothing on it yet. */
   knownYours:
     'Is this your character? Sign in with Battle.net and it opens as yours, with its gear and talents.',
