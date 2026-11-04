@@ -44,6 +44,7 @@ enum ItemVocabulary {
         ("strength", Copy.itemsStatStrength), ("agility", Copy.itemsStatAgility),
         ("stamina", Copy.itemsStatStamina), ("intellect", Copy.itemsStatIntellect),
         ("spirit", Copy.itemsStatSpirit), ("crit", Copy.itemsStatCrit), ("hit", Copy.itemsStatHit),
+        ("expertise", Copy.itemsStatExpertise),
         ("spell_power", Copy.itemsStatSpellPower), ("healing", Copy.itemsStatHealing),
         ("attack_power", Copy.itemsStatAttackPower), ("ranged_attack_power", Copy.itemsStatRangedAttackPower),
         ("defense", Copy.itemsStatDefense), ("dodge", Copy.itemsStatDodge), ("parry", Copy.itemsStatParry),

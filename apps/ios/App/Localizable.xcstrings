@@ -5427,6 +5427,17 @@
         }
       }
     },
+    "items.stat.expertise": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expertise"
+          }
+        }
+      }
+    },
     "items.stat.firePower": {
       "extractionState": "manual",
       "localizations": {

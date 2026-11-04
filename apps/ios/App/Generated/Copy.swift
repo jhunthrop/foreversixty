@@ -477,6 +477,9 @@ enum Copy {
     /// Hit
     static var itemsStatHit: String { text("items.stat.hit") }
 
+    /// Expertise
+    static var itemsStatExpertise: String { text("items.stat.expertise") }
+
     /// Spell power
     static var itemsStatSpellPower: String { text("items.stat.spellPower") }
 
