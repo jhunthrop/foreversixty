@@ -145,3 +145,22 @@ describe('the guide leveling builds match the sim’s ladder', () => {
     expect(builds.every((b) => total(b.talents) <= b.points)).toBe(true);
   });
 });
+
+describe('every guide ladder only adds points', () => {
+  // No character takes a point back without a respec (sim/leveling
+  // TestEveryLadderOnlyAddsPoints); Protection Warrior's walk dropped Shield Slam at 41.
+  it.each(guideBuilds().map((row) => [row.spec, row] as const))('%s', (spec, row) => {
+    const trees = loadLadderTrees(BUILD, row.classSlug)!;
+    const digits = buildCodeDigits(row.build);
+    if (digits === undefined) return;
+    const targets = guideTargets(trees, digits);
+    const first = ladderFirstFor(spec);
+    let prev = ladderTalentString(trees, targets, row.treeIndex, 10, first);
+    for (let level = 11; level <= 60; level++) {
+      const at = ladderTalentString(trees, targets, row.treeIndex, level, first);
+      const dropped = [...at].some((d, i) => d !== '-' && Number(d) < Number(prev[i]));
+      expect(dropped, `level ${level}: ${at} after ${prev}`).toBe(false);
+      prev = at;
+    }
+  });
+});

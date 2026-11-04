@@ -144,7 +144,7 @@ func TestPointOrderIsTheLaddersOwnDiffWhereTheLadderOnlyAdds(t *testing.T) {
 	}
 }
 
-// Somewhere among the guide builds the ladder moves a rank between two
+// Somewhere among the guide builds the one-level walk (walkLevel) moves a rank between two
 // levels (an own-tree spine taking a deep talent's chain; 1.60.1.70658's
 // Protection paladin did it at level 40). Wherever it does, the point order
 // never takes a point back and still ends on the guide build.
@@ -153,8 +153,8 @@ func TestPointOrderNeverRemovesAPointWhereTheLadderMovesOne(t *testing.T) {
 	for _, spec := range specs.All {
 		trees, targets := guideTargets(t, spec.ClassSlug, spec.SpecSlug, GuideBuildTalents)
 		for level := 11; level <= 60; level++ {
-			before := LadderTalentString(trees, targets, spec.TreeIndex, level-1)
-			at := LadderTalentString(trees, targets, spec.TreeIndex, level)
+			before := rankString(trees, walkRanks(trees, targets, spec.TreeIndex, level-1))
+			at := rankString(trees, walkRanks(trees, targets, spec.TreeIndex, level))
 			if !ladderMovesARank(before, at) {
 				continue
 			}
