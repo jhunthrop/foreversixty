@@ -1,7 +1,7 @@
 # Reddit launch posts, 4 November 2026
 
 Drafts only. The owner posts them by hand from their own account. Every link is in
-[tracked-links.md](tracked-links.md); create the slugs on /admin/links before posting.
+[tracked-links.md](tracked-links.md); every slug was created in production on 3 November 2026.
 
 ## The subreddits' rules, read 3 November 2026
 

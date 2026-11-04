@@ -10,7 +10,7 @@ button, a Twitch panel or a Discord they run. This file holds no personal contac
 |---|---|
 | Free Premium for as long as they cover Forever | `api grant --user <battletag> --plan premium --note "creator: <name>"` with no `--until`, or one year. Run it from the deployed sha only, since the grant CLI migrates at startup. |
 | Early sim data | The nightly tier list and leveling BiS for their class, sent the day before it goes live when a client build changes the rankings. Raw numbers come from the nightly run; never promise a figure in advance. |
-| Their own tracked link | `foreversixty.gg/go/yt-<name>`, pointing at the guide for their main class (targets are below). Create each one on /admin/links before sending. The owner's /admin/links page shows the clicks and sign-ups each link brings. |
+| Their own tracked link | `foreversixty.gg/go/yt-<name>`, pointing at the guide for their main class (targets are below). All 20 were created in production on 3 November 2026 and each one 302s to its target. The owner's /admin/links page shows the clicks and sign-ups each link brings. |
 
 **Owner decisions:**
 
@@ -27,7 +27,7 @@ the same first line.
 
 > Hi [name], I loved your [specific video title, and one specific thing from it].
 >
-> I run Forever Sixty (foreversixty.gg), a free helper for Forever players: class guides, leveling
+> I run Forever Sixty, a free helper for Forever players: class guides, leveling
 > BiS at every level range ranked by our own sim, a tier list, and an addon that marks upgrades in
 > your bags.
 >

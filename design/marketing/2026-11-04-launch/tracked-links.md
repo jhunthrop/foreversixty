@@ -37,7 +37,10 @@ eleven links; everything else is made on the admin page. Do not add a migration 
 
 Production may differ if the owner has edited these; check the table on /admin/links.
 
-## To create on /admin/links (36 links)
+## Created in production (36 links)
+
+All 36 below were inserted on 3 November 2026 (production now holds 47 links), and each
+`/go/<slug>` was checked to answer a 302 to its target with `?golink=<slug>`. Nothing more to create.
 
 ### Reddit (4)
 
@@ -70,7 +73,7 @@ Production may differ if the owner has edited these; check the table on /admin/l
 | `bsky-tiers` | `/tiers` | Bluesky: tier list post |
 | `bsky-guild` | `/guild` | Bluesky: guild tools post |
 
-### Creators (20, create each just before its DM goes out)
+### Creators (20)
 
 | Slug | Target | Label |
 |---|---|---|
@@ -101,5 +104,5 @@ slug rule.
 ## Total
 
 - 2 existing links used: `curseforge`, `wago`.
-- 16 to create before launch posts: the Reddit, guild and social tables.
-- 20 creator links to create one by one as DMs go out.
+- 16 created for the launch posts: the Reddit, guild and social tables.
+- 20 creator links created, one per creator.

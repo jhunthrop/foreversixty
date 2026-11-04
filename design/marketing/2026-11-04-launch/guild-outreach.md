@@ -60,7 +60,7 @@ Use the first line to show you know the guild. The bracketed parts change per gu
 
 > Hi [name], I saw [guild] is recruiting for [raid night / progression goal] on [realm].
 >
-> I run Forever Sixty (foreversixty.gg), a free class helper for Forever: guides, leveling BiS and
+> I run Forever Sixty, a free class helper for Forever: guides, leveling BiS and
 > a sim. We also built guild tools, and I think they would save your officers time:
 >
 > - Post a raid on the site and in your Discord. Members sign up with one tap.

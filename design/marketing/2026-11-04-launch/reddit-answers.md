@@ -11,10 +11,12 @@ How to use them:
   Rewrite the first line for each thread.
 - **Say it is ours** when you link it ("we keep the list here").
 - The links carry `?golink=reddit-answer`. Nothing is counted on the click. If the reader signs
-  up within the hour, the account records that slug. The slug must exist on /admin/links first
-  (see [tracked-links.md](tracked-links.md)).
-- **BiS items change nightly.** The item names in answers 1 and 2 were read from the live pages on
-  3 November. Open the page and check them before posting.
+  up within the hour, the account records that slug. The slug exists in production (created
+  3 November 2026, see [tracked-links.md](tracked-links.md)). These stay plain page URLs, not
+  `/go/` links, because Reddit lists link redirects as spam and the BiS answers need an anchor.
+- **BiS items change nightly.** The item names in answers 1 and 2 were re-read from production on
+  the evening of 3 November, before the pending BiS refresh: every item named matched the page.
+  The refresh will change some picks, so open the page and check them before posting.
 
 ---
 
