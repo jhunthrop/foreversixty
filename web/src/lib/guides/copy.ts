@@ -156,11 +156,7 @@ export const guidesCopy = {
       ? `${label}: no item at level 60 has it.`
       : `${label}: ${figure} per 1%, but no item at level 60 has it.`,
   levelingNewTitle: 'More points here than the range before',
-  levelingLegend:
-    'Each range lists what you hold by its last level. Lv: the character level each point comes at, one point a level. Outlined: points added in this range.',
-  /** The levels a talent's points come at inside a range ("Lv 30-32, 35"), from
-   *  `levelRunsText` (lib/guides/leveling-talents.ts). */
-  levelingChipLevels: (runs: string): string => `Lv ${runs}`,
+  levelingLegend: 'Outlined: points added in this level range.',
   levelRangeLabel: (band: number): string => (band === 60 ? 'Level 60' : `Level ${band} to ${band + 9}`),
   levelRangePoints: (points: number, band: number): string =>
     band === 60 ? `${points} points` : `${points} to ${points + 9} points`,

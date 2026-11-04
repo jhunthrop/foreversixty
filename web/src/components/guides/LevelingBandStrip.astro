@@ -7,14 +7,12 @@
 // (`guideLadderOrder`, lib/guides/leveling-builds.ts), the one the sim, the addon, the planner's
 // band loads and the low-level home read, so the strip never invents its own. A talent that
 // takes more points than in the band before is marked, so the strip also reads as what each
-// range adds. Each row lists the build a player holds at the range's LAST level, every talent
-// stamped with the levels its points come at inside the range (sim-accuracy round 18: a level
-// 36 reader of "Level 30 to 39" saw only the level 30 build). Every row is wrapped in the same
-// `decodeBandTalents` the rail and the full tree share.
+// range adds. Every row is wrapped in the same `decodeBandTalents` the rail and the full tree
+// share.
 import { CARD_QUIET } from '../../lib/ui/card';
 import { decodeBandTalents } from '../../lib/guides/build-tree';
 import { guidesCopy } from '../../lib/guides/copy';
-import { levelingChipRows, levelRunsText } from '../../lib/guides/leveling-talents';
+import { levelingChipRows } from '../../lib/guides/leveling-talents';
 import { dataUrl } from '../../lib/planner/load';
 import { talentTipKey } from '../../lib/tooltips/game-tip';
 
@@ -25,11 +23,7 @@ export interface LevelingBandRow {
   /** "11 to 20 points". */
   pointsLabel: string;
   plannerHref: string;
-  /** The build held at `lastLevel`, the range's last level. */
   talents: string;
-  lastLevel: number;
-  /** The first level whose point the row names (10 on the first row). */
-  pointsFrom: number;
 }
 
 interface Props {
@@ -42,14 +36,8 @@ interface Props {
 
 const { build, classSlug, rows, spendOrder } = Astro.props;
 
-const chipRows = levelingChipRows(
-  rows.map((row) => ({
-    trees: decodeBandTalents(build, classSlug, row.talents),
-    from: row.pointsFrom,
-    to: row.lastLevel,
-  })),
-  spendOrder,
-);
+const decoded = rows.map((row) => decodeBandTalents(build, classSlug, row.talents));
+const chipRows = levelingChipRows(decoded, spendOrder);
 ---
 
 <p class="leveling-legend" data-testid="guide-leveling-legend">
@@ -87,11 +75,6 @@ const chipRows = levelingChipRows(
                 />
                 <span class="leveling-chip-name">{chip.name}</span>
                 <span class="numeric leveling-chip-rank">{`${chip.rank}/${chip.maxRank}`}</span>
-                {chip.levels.length > 0 && (
-                  <span class="numeric leveling-chip-levels">
-                    {guidesCopy.levelingChipLevels(levelRunsText(chip.levels))}
-                  </span>
-                )}
               </li>
             ))}
           </ul>
@@ -183,10 +166,6 @@ const chipRows = levelingChipRows(
   .leveling-chip-rank {
     font-size: 12px;
     color: var(--color-gold);
-  }
-  .leveling-chip-levels {
-    font-size: 12px;
-    color: var(--color-text);
   }
 
   @media (max-width: 1023px) {

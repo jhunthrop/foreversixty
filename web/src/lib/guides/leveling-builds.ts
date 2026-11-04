@@ -7,7 +7,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../data/build-files';
-import { FIRST_POINT_LEVEL } from '../planner/types';
 
 export interface LadderTalentNode {
   id: number;
@@ -40,8 +39,6 @@ const POINTS_PER_TIER = 5;
 export const LEVELING_BANDS: readonly number[] = [20, 30, 40, 50, 60];
 /** The level the ladder ends on: the guide's own build. */
 const MAX_LADDER_LEVEL = 60;
-/** Levels per leveling range ("Level 30 to 39"). */
-const LEVELS_PER_BAND = 10;
 
 /** The class's trees, by position, each sorted top row down, left to right (LoadTalentTrees). */
 export function loadLadderTrees(build: string, classSlug: string): LadderTalentTree[] | undefined {
@@ -396,16 +393,8 @@ export function ladderFirstFor(spec: string): LadderFirstRank[] {
 
 export interface LevelingBuild {
   band: number;
-  /** Points at the range's first level, and the build there. */
   points: number;
   talents: string;
-  /** The range's last level (59 for 50 to 59; 60 for 60), and the build a player holds there:
-   *  the Leveling strip lists this one, so a reader anywhere in the range sees every point. */
-  lastLevel: number;
-  lastTalents: string;
-  /** The first level whose point the range's list names: the range's own first level, or the
-   *  first talent point (10) for the first range, which also carries the points before it. */
-  pointsFrom: number;
 }
 
 /** The guide's ladder point order through level 60, from its own level 60 code: one talent
@@ -430,7 +419,7 @@ export function guideLadderOrder(
   );
 }
 
-/** The guide's build at each leveling range's first and last level, from its own level 60 code. */
+/** The guide's build at each leveling range's first level, from its own level 60 code. */
 export function guideLevelingBuilds(
   build: string,
   classSlug: string,
@@ -443,15 +432,9 @@ export function guideLevelingBuilds(
   if (trees === undefined || digits === undefined) return [];
   const targets = guideTargets(trees, digits);
   const first = ladderFirstFor(spec);
-  return LEVELING_BANDS.map((band, index) => {
-    const lastLevel = Math.min(band + LEVELS_PER_BAND - 1, MAX_LADDER_LEVEL);
-    return {
-      band,
-      points: Math.max(band - 9, 0),
-      talents: ladderTalentString(trees, targets, ownTreeIndex, band, first),
-      lastLevel,
-      lastTalents: ladderTalentString(trees, targets, ownTreeIndex, lastLevel, first),
-      pointsFrom: index === 0 ? FIRST_POINT_LEVEL : band,
-    };
-  });
+  return LEVELING_BANDS.map((band) => ({
+    band,
+    points: Math.max(band - 9, 0),
+    talents: ladderTalentString(trees, targets, ownTreeIndex, band, first),
+  }));
 }
