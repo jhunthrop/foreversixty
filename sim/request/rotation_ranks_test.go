@@ -417,3 +417,37 @@ func TestThePublishedRotationTakesTheCuratedRankChoices(t *testing.T) {
 		t.Errorf("Elemental at 50 should cast its filler at rank 6 (6041), not rank 4 (915)")
 	}
 }
+
+// A spell's rows may name the priority-list lines they apply to
+// (sim-accuracy round 16): Restoration's Nature's Swiftness save and its tank
+// filler both cast Healing Wave rank 9, and only the filler downranks. A line
+// the rows do not name casts the default rule; so does every pre-pull action.
+func TestRewriteScopesARankChoiceToItsLines(t *testing.T) {
+	raw := []byte(`{"type":"TypeAPL","prepullActions":[{"action":{"castSpell":{"spellId":{"spellId":10396}}}}],` +
+		`"priorityList":[{"action":{"castSpell":{"spellId":{"spellId":10396}}}},{"action":{"castSpell":{"spellId":{"spellId":10396}}}}]}`)
+	const swiftness, filler = 0, 1
+	choices := rankChoices{10396: {{FromLevel: 44, ToLevel: 56, Rank: 6, Lines: []int{filler}}}}
+	got, err := rewriteRotationRanks(raw, "shaman", 50, choices)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var rot struct {
+		Prepull  []json.RawMessage `json:"prepullActions"`
+		Priority []json.RawMessage `json:"priorityList"`
+	}
+	if err := json.Unmarshal(got, &rot); err != nil {
+		t.Fatal(err)
+	}
+	for name, c := range map[string]struct {
+		entry json.RawMessage
+		want  string
+	}{
+		"pre-pull":           {rot.Prepull[0], "10395"},
+		"Nature's Swiftness": {rot.Priority[swiftness], "10395"},
+		"filler":             {rot.Priority[filler], "959"},
+	} {
+		if !strings.Contains(string(c.entry), `"spellId":`+c.want) {
+			t.Errorf("%s at 50 = %s, want Healing Wave %s", name, c.entry, c.want)
+		}
+	}
+}

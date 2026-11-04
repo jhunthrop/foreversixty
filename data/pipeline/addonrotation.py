@@ -170,7 +170,7 @@ def _id_to_family(families: dict[str, list[tuple[int, int]]]) -> dict[int, str]:
     return lookup
 
 
-def _collect_cast_lines(action: dict, notes: str, lines: list[dict]) -> None:
+def _collect_cast_lines(action: dict, notes: str, lines: list[dict], line: int) -> None:
     """Depth-first over one priority-list action: a direct castSpell is one
     line; a strictSequence/sequence unfolds into one line per step (each
     step is itself an action-shaped dict, not wrapped in another "action"
@@ -182,20 +182,21 @@ def _collect_cast_lines(action: dict, notes: str, lines: list[dict]) -> None:
     if cast is not None:
         spell_id = cast.get("spellId", {}).get("spellId")
         if spell_id is not None:
-            lines.append({"spell_id": spell_id, "notes": notes})
+            lines.append({"spell_id": spell_id, "notes": notes, "line": line})
         return
     for key in ("strictSequence", "sequence"):
         sub = action.get(key)
         if isinstance(sub, dict):
             for step in sub.get("actions", []):
-                _collect_cast_lines(step, notes, lines)
+                _collect_cast_lines(step, notes, lines, line)
 
 
 def _cast_lines(rotation: dict) -> list[dict]:
-    """Every priority-list cast, in the curated file's own order."""
+    """Every priority-list cast, in the curated file's own order, with the
+    0-based index of the entry it sits under (a rank choice's "lines")."""
     lines: list[dict] = []
-    for entry in rotation.get("priorityList", []):
-        _collect_cast_lines(entry.get("action", {}), entry.get("notes", ""), lines)
+    for index, entry in enumerate(rotation.get("priorityList", [])):
+        _collect_cast_lines(entry.get("action", {}), entry.get("notes", ""), lines, index)
     return lines
 
 
@@ -245,15 +246,18 @@ def _rank_choice_id(
 BARE_PRESET = "bare"
 
 
-def _band_ranks(choices: dict, spell_id: int, level: int) -> dict[str | None, int]:
+def _band_ranks(choices: dict, spell_id: int, level: int, line: int) -> dict[str | None, int]:
     """The ranks data/curated/rank-choices.json picks for the list's
     `spell_id` at `level` (one spec's rows), keyed by each race slug a row
     names (None for a row of every race); empty outside every row. A band
     below 60 is the bare preset's, so a row for the raid preset only never
-    applies here. sim/request refuses two rows that meet one race."""
+    applies here, and a row scoped to lines applies only on those priority-list
+    entries. sim/request refuses two rows that meet one race."""
     ranks: dict[str | None, int] = {}
     for row in choices.get(spell_id, []):
         if row.get("preset", BARE_PRESET) != BARE_PRESET:
+            continue
+        if row.get("lines") and line not in row["lines"]:
             continue
         if row["from_level"] <= level <= row["to_level"]:
             for race in row.get("races") or [None]:
@@ -290,13 +294,17 @@ def _race_ids(pick: _RankPick, ranks: dict[str | None, int], resolved_id: int) -
 
 
 def load_rank_choices(curated_dir: Path, spec: str) -> dict[int, list[dict]]:
-    """One spec's per-band rank choices, by the list's authored id. The file
-    is optional here (a test's curated dir may have none)."""
+    """One spec's per-band rank choices, by the list's authored id, each row
+    carrying its spell's "lines" scope (None for every line). The file is
+    optional here (a test's curated dir may have none)."""
     path = curated_dir / "rank-choices.json"
     if not path.exists():
         return {}
     spells = json.loads(path.read_text(encoding="utf-8")).get("specs", {}).get(spec, [])
-    return {spell["authored"]: spell["bands"] for spell in spells}
+    return {
+        spell["authored"]: [{**row, "lines": spell.get("lines")} for row in spell["bands"]]
+        for spell in spells
+    }
 
 
 def _rank_of(spellranks: dict, class_slug: str) -> dict[int, int]:
@@ -402,7 +410,11 @@ def build_rotation(
             name, resolved_id = resolved
             # A per-band rank choice (sim/request rankResolver) wins below 60;
             # a race's own row wins for that race.
-            ranks = _band_ranks(choices, cast["spell_id"], level) if level < MAX_LEVEL else {}
+            ranks = (
+                _band_ranks(choices, cast["spell_id"], level, cast["line"])
+                if level < MAX_LEVEL
+                else {}
+            )
             pick = _RankPick(spellranks, _class_slug(spec), name, cast["spell_id"], level)
             resolved_id = pick.id_of(ranks.get(None), resolved_id)
             race_ids = _race_ids(pick, ranks, resolved_id)

@@ -85,11 +85,13 @@ func rewriteRotationRanks(raw []byte, class string, level int, choices rankChoic
 	if err := json.Unmarshal(raw, &root); err != nil {
 		return nil, fmt.Errorf("the embedded APL is not valid JSON: %w", err)
 	}
-	resolve := rankResolver(class, level, choices)
-	for _, key := range []string{"prepullActions", "priorityList"} {
-		if v, ok := root[key]; ok {
-			root[key] = filterRankedActions(v, resolve)
-		}
+	if v, ok := root["prepullActions"]; ok {
+		root["prepullActions"] = filterRankedActions(v, rankResolver(class, level, choices))
+	}
+	if v, ok := root["priorityList"]; ok {
+		root["priorityList"] = filterRankedLines(v, func(line int) func(int32) (int32, bool) {
+			return lineRankResolver(class, level, choices, line)
+		})
 	}
 	out, err := json.Marshal(root)
 	if err != nil {
@@ -103,14 +105,21 @@ func rewriteRotationRanks(raw []byte, class string, level int, choices rankChoic
 // (there is none today, but a malformed or future field should not
 // panic) passes through unchanged.
 func filterRankedActions(v any, resolve func(int32) (int32, bool)) any {
+	return filterRankedLines(v, func(int) func(int32) (int32, bool) { return resolve })
+}
+
+// filterRankedLines is filterRankedActions with each entry resolved by
+// resolveLine of its 0-based index, so a rank choice scoped to lines
+// (rankchoices.Spell.Lines) rewrites only those entries.
+func filterRankedLines(v any, resolveLine func(line int) func(int32) (int32, bool)) any {
 	arr, ok := v.([]any)
 	if !ok {
 		return v
 	}
 	kept := make([]any, 0, len(arr))
-	for _, item := range arr {
+	for line, item := range arr {
 		drop := false
-		rewriteRankedSpellIDs(item, resolve, &drop, false)
+		rewriteRankedSpellIDs(item, resolveLine(line), &drop, false)
 		if !drop {
 			kept = append(kept, item)
 		}
@@ -184,8 +193,14 @@ func rewriteRankedSpellIDs(node any, resolve func(int32) (int32, bool), drop *bo
 // At MaxLevel the rotation runs as written (it is authored there), so an id
 // with no row is returned unchanged.
 func rankResolver(class string, level int, choices rankChoices) func(int32) (int32, bool) {
+	return lineRankResolver(class, level, choices, noLine)
+}
+
+// lineRankResolver is rankResolver for a cast on priority-list entry line,
+// where rows scoped to that line apply as well.
+func lineRankResolver(class string, level int, choices rankChoices, line int) func(int32) (int32, bool) {
 	return func(id int32) (int32, bool) {
-		if rank, ok := choices.rankAt(id, level); ok {
+		if rank, ok := choices.rankAtLine(id, level, line); ok {
 			if chosen, learned := spellranks.SpellIDOfRank(class, id, rank, level); learned {
 				return chosen, true
 			}

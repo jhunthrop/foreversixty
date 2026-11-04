@@ -59,14 +59,56 @@ func racesInclude(races []string, race string) bool {
 	return len(races) == 0 || slices.Contains(races, race)
 }
 
-// rankAt is the rank the row holding level chooses for id, if any.
+// noLine is the line of a cast outside the priority list (a pre-pull action):
+// no line-scoped row applies to it.
+const noLine = -1
+
+// rankAt is the rank the row holding level chooses for id on a line its rows
+// do not scope, if any.
 func (c rankChoices) rankAt(id int32, level int) (int, bool) {
+	return c.rankAtLine(id, level, noLine)
+}
+
+// rankAtLine is the rank the row holding level chooses for id cast on
+// priority-list entry line, if any: a row scoped to lines applies only there.
+func (c rankChoices) rankAtLine(id int32, level, line int) (int, bool) {
 	for _, row := range c[id] {
-		if row.FromLevel <= level && level <= row.ToLevel {
+		if row.FromLevel <= level && level <= row.ToLevel && (len(row.Lines) == 0 || slices.Contains(row.Lines, line)) {
 			return row.Rank, true
 		}
 	}
 	return 0, false
+}
+
+// scopedLines is every line a row for id is scoped to, ascending.
+func (c rankChoices) scopedLines(id int32) []int {
+	var out []int
+	for _, row := range c[id] {
+		for _, line := range row.Lines {
+			if !slices.Contains(out, line) {
+				out = append(out, line)
+			}
+		}
+	}
+	slices.Sort(out)
+	return out
+}
+
+// checkLines refuses a spell's line scope unless it is absent or names
+// distinct non-negative priority-list entries.
+func checkLines(lines []int) error {
+	if lines != nil && len(lines) == 0 {
+		return errors.New("lines name no line; leave the key out for every line")
+	}
+	for i, line := range lines {
+		if line < 0 {
+			return fmt.Errorf("line %d is not a priority-list entry", line)
+		}
+		if slices.Contains(lines[:i], line) {
+			return fmt.Errorf("line %d is named twice", line)
+		}
+	}
+	return nil
 }
 
 // parseRankChoices decodes the curated table, sorting each spell's rows and
@@ -88,7 +130,13 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 			if _, dup := bySpell[sp.Authored]; dup {
 				return nil, fmt.Errorf("rank choices: %s names %d twice", spec, sp.Authored)
 			}
+			if err := checkLines(sp.Lines); err != nil {
+				return nil, fmt.Errorf("rank choices: %s %d: %w", spec, sp.Authored, err)
+			}
 			rows := slices.Clone(sp.Bands)
+			for i := range rows {
+				rows[i].Lines = sp.Lines
+			}
 			slices.SortFunc(rows, func(a, b RankChoiceRow) int { return a.FromLevel - b.FromLevel })
 			for i, row := range rows {
 				if row.Preset != "" && row.Preset != BarePreset && row.Preset != RaidPreset {

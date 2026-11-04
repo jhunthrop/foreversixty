@@ -1,6 +1,7 @@
 package request
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -284,4 +285,76 @@ func playableRaces(t *testing.T) map[string]map[string]bool {
 		out[classSlug[c.Class]][raceSlug[c.Race]] = true
 	}
 	return out
+}
+
+// A spell's "lines" scope every one of its rows to those priority-list entries;
+// a negative or repeated line is refused.
+func TestParseRankChoicesScopesRowsToLines(t *testing.T) {
+	all, err := parseRankChoices([]byte(`{"specs":{"x":[{"authored":7,"lines":[3],"bands":[{"from_level":40,"to_level":49,"rank":2}]}]}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rank, ok := all["x"].rankAtLine(7, 45, 3); !ok || rank != 2 {
+		t.Errorf("line 3 at 45 = (%d, %v), want rank 2", rank, ok)
+	}
+	if _, ok := all["x"].rankAtLine(7, 45, 4); ok {
+		t.Error("line 4 took a row scoped to line 3")
+	}
+	if _, ok := all["x"].rankAt(7, 45); ok {
+		t.Error("an unscoped read took a row scoped to line 3")
+	}
+	if got := all["x"].scopedLines(7); !reflect.DeepEqual(got, []int{3}) {
+		t.Errorf("scopedLines = %v, want [3]", got)
+	}
+	for _, raw := range []string{
+		`{"specs":{"x":[{"authored":7,"lines":[-1],"bands":[]}]}}`,
+		`{"specs":{"x":[{"authored":7,"lines":[2,2],"bands":[]}]}}`,
+		`{"specs":{"x":[{"authored":7,"lines":[],"bands":[]}]}}`,
+	} {
+		if _, err := parseRankChoices([]byte(raw)); err == nil {
+			t.Errorf("accepted %s", raw)
+		}
+	}
+}
+
+// Every curated spell whose rows name lines names lines of its own spec's
+// priority list that cast the authored id, so a reordered list cannot move a
+// row onto another spell.
+func TestCuratedRankChoiceLinesCastTheirAuthoredSpell(t *testing.T) {
+	var file rankChoicesFile
+	readJSON(t, curatedRankChoices, &file)
+	for spec, spells := range file.Specs {
+		for _, sp := range spells {
+			if len(sp.Lines) == 0 {
+				continue
+			}
+			var list struct {
+				Rotation struct {
+					PriorityList []json.RawMessage `json:"priorityList"`
+				} `json:"rotation"`
+			}
+			readJSON(t, "../../data/curated/apl/"+spec+".json", &list)
+			for _, line := range sp.Lines {
+				if line >= len(list.Rotation.PriorityList) {
+					t.Errorf("%s %s: line %d is past the list's %d entries", spec, sp.Spell, line, len(list.Rotation.PriorityList))
+					continue
+				}
+				var entry struct {
+					Action struct {
+						CastSpell struct {
+							SpellID struct {
+								SpellID int32 `json:"spellId"`
+							} `json:"spellId"`
+						} `json:"castSpell"`
+					} `json:"action"`
+				}
+				if err := json.Unmarshal(list.Rotation.PriorityList[line], &entry); err != nil {
+					t.Fatal(err)
+				}
+				if got := entry.Action.CastSpell.SpellID.SpellID; got != sp.Authored {
+					t.Errorf("%s %s: line %d casts %d, not the authored %d", spec, sp.Spell, line, got, sp.Authored)
+				}
+			}
+		}
+	}
 }
