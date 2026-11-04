@@ -14555,7 +14555,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -14595,7 +14595,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -14656,7 +14656,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -14724,7 +14724,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -14792,7 +14792,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -14867,7 +14867,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -14942,7 +14942,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15012,7 +15012,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15052,7 +15052,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15099,7 +15099,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15153,7 +15153,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15214,7 +15214,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15282,7 +15282,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15357,7 +15357,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },

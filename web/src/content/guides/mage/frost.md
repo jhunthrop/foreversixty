@@ -33,7 +33,7 @@ Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, 
 
 - Ice Barrier is a shield and your biggest damage buff in one button
 - Fingers of Frost lets Ice Lance and Frostbolt shatter a boss that cannot be frozen
-- Frost Channeling makes it the cheapest and lowest-threat mage in the raid
+- Frost Channeling makes every Frostbolt 15% cheaper and 30% lower in threat
 - Ice Block, Cold Snap, Frost Nova and the Frostbolt slow make it the safest spec to level and to raid
 
 ### Weaknesses
@@ -72,13 +72,13 @@ If a boss lets you stand within 10 yards, more points in Winter's Chill and Impr
 
 **Cooldowns.** Frost has no damage cooldown. Use your on-use trinkets and your racial on the pull and again whenever they come back: Berserking on a Troll, Blood Fury on an Orc, Eureka! on a Gnome. Save Cold Snap for a second Ice Block or for an Ice Barrier that broke early on a fight that hits you.
 
-**Mana in a 3 minute fight.** Frost is the cheapest spec, so a geared Frost mage barely touches Evocation in a raid. Use a Mana Ruby when you are 1,200 mana down and the Citrine two minutes later. Mana gems and Demonic Runes share one 2 minute cooldown, and the Robe of the Archmage has its own 5 minute one, but using any of the three locks the other two out for a minute. If you do run dry, Evocation is once a fight, near empty with more than 30 seconds left. Downranking Frostbolt to stretch mana loses more damage than it saves at every level: drink before pulls instead. The one rank-1 Frostbolt worth keeping on your bars is for slowing a runner or an add for a few mana.
+**Mana in a 3 minute fight.** A geared Frost mage rarely needs Evocation in a raid. Use a Mana Ruby when you are 1,200 mana down and the Citrine two minutes later. Mana gems and Demonic Runes share one 2 minute cooldown, and the Robe of the Archmage has its own 5 minute one, but using any of the three locks the other two out for a minute. If you do run dry, Evocation is once a fight, near empty with more than 30 seconds left. Drink before pulls so you start each one full. The one rank-1 Frostbolt worth keeping on your bars is for slowing a runner or an add for a few mana.
 
 **AoE.** Blizzard from range on packs the tank holds; it channels for 8 seconds and costs about 1,200 mana even with Frost Channeling, so it is for big pulls. On a pack that comes to you, Frost Nova, step back out of their reach, then Cone of Cold and Arcane Explosion while they are rooted, and Blink out when the root breaks. Frostbite's freezes let your Ice Lance and Frostbolt shatter trash too.
 
-**Cone of Cold on a boss.** Frostbolt and Fingers of Frost Ice Lances stack Winter's Chill on the boss, and Cone of Cold spends 5 stacks for double damage. Cast it only when you can stand within 10 yards (12 with Arctic Reach) and your mana is above half. At 30 yards it never comes up.
+**Cone of Cold on a boss.** Frostbolt and Fingers of Frost Ice Lances stack Winter's Chill on the boss, and Cone of Cold spends 5 stacks for double damage. Cast it only when you can stand within 10 yards and your mana is above half. At 30 yards it never comes up.
 
-**Threat and Ice Block.** Frost Channeling makes you the lowest-threat mage in the raid, but there is no Invisibility in Forever, and Ice Block does not wipe your threat. It makes you immune for 10 seconds while the boss turns to the next target, and when you come out you still hold your threat. Use it to survive: a breath, a bomb, a pull gone wrong, a mechanic you cannot outrun. Click it off early when the danger has passed. If you pull threat, stop casting and let the tank taunt.
+**Threat and Ice Block.** Frost Channeling cuts 30% of the threat from your Frostbolts, but there is no Invisibility in Forever, and Ice Block does not wipe your threat. It makes you immune for 10 seconds while the boss turns to the next target, and when you come out you still hold your threat. Use it to survive: a breath, a bomb, a pull gone wrong, a mechanic you cannot outrun. Click it off early when the danger has passed. If you pull threat, stop casting and let the tank taunt.
 
 **Movement.** Frostbolt needs you standing still. Spend a Fingers of Frost charge on Ice Lance on the run, Blink through what you need to cross and use Fire Blast. Frost Nova and Cone of Cold are instant too, when the boss is close.
 
@@ -86,7 +86,7 @@ Frostfire Bolt is not a Frost filler: it hits for less than Frostbolt, costs mor
 
 ## Stat priority
 
-The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: a missed Frostbolt is a missed Fingers of Frost chance and no chill on the boss. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power goes into everything you cast. Frost power is full value for nearly everything you cast on a boss: only Missiles and the odd Fire Blast on the move miss out. Crit is where Frost's damage piles up: Ice Shards doubles the crit bonus of your Frost spells, and Shatter adds 50% crit to every spell cast on a Fingers of Frost charge. Intellect is only your mana bar, and Frost is the spec that does not run out.
+The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: a missed Frostbolt is a missed Fingers of Frost chance and no chill on the boss. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power goes into everything you cast. Frost power is full value for nearly everything you cast on a boss: only Missiles and the odd Fire Blast on the move miss out. Crit is where Frost's damage piles up: Ice Shards doubles the crit bonus of your Frost spells, and Shatter adds 50% crit to every spell cast on a Fingers of Frost charge. Intellect is your mana bar and a little spell crit, and Frost is the spec that does not run out.
 
 ## Best in slot
 
@@ -114,4 +114,4 @@ Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater
 
 ### Levels 20 to 60
 
-Frost is the easiest way to level a mage. Open with Frostbolt from range, Frostbolt again as the mob walks in slowed, Frost Nova when it reaches you, step back and finish it. Every point goes into Frost to 40: Ice Shards in the early 20s, Frostbite, Permafrost and Frost Channeling in the late 20s, Ice Lance at 30 and Ice Block at 31, because it saves the run more than once. After a Frost Nova or a Frostbite freeze, Ice Lance hits a mob for four times its damage, and once Shatter is in by 34 it crits. Fingers of Frost at 36 makes Ice Lance a single-target nuke too, and Ice Barrier lands at 40. From level 26, when Cone of Cold arrives, AoE grinding packs with Frost Nova, Blizzard and Cone of Cold is the fastest experience in the game for a careful player. It wants Improved Blizzard to keep the pack slowed, so respec into it while you farm and back out for dungeons. Train Mage Armor at 34 for the mana; wear Ice Armor instead when you are taking melee hits in the open world, since it chills anything that hits you.
+Frost is the easiest way to level a mage. Open with Frostbolt from range, Frostbolt again as the mob walks in slowed, Frost Nova when it reaches you, step back and finish it. Every point goes into Frost to 40: Ice Shards in the early 20s, Frostbite, Permafrost and Frost Channeling in the late 20s, Ice Lance at 30 and Ice Block at 31, because it saves the run more than once. After a Frost Nova or a Frostbite freeze, Ice Lance hits a mob for four times its damage, and once Shatter is in by 34 it crits more often than not. Fingers of Frost at 36 makes Ice Lance a single-target nuke too, and Ice Barrier lands at 40. From level 26, when Cone of Cold arrives, AoE grinding packs with Frost Nova, Blizzard and Cone of Cold is the fastest experience in the game for a careful player. It wants Improved Blizzard to keep the pack slowed, so respec into it while you farm and back out for dungeons. Train Mage Armor at 34 for the mana; wear Ice Armor instead when you are taking melee hits in the open world, since it chills anything that hits you.

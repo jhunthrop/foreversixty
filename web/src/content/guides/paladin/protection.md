@@ -91,7 +91,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 1. **Seal of Fury** in its last 2 seconds, if you still have Holy Shield's mana after it.
 2. **Holy Shield** on cooldown. Its cooldown is its duration, so it is always up while it has charges, and it is the first claim on your mana.
 3. **Holy Strike** on cooldown: every 6 seconds with Shieldsworn, 20 mana, and your damage reduction from Iron Creed.
-4. **Hammer of the Righteous** on cooldown, once Holy Shield's mana is safe. It hits your target and the enemies next to it, and it is your biggest single threat button.
+4. **Hammer of the Righteous** on cooldown, once Holy Shield's mana is safe. It hits your target and up to three enemies next to it, for Holy damage that Righteous Fury multiplies, so it is where your threat on a pack comes from.
 5. **Swift Judgement** whenever it is ready.
 6. **Judgement** on cooldown, once Holy Shield's mana is safe.
 7. **Exorcism** on Undead and Demons.

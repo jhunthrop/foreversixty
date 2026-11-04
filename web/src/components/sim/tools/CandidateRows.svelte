@@ -135,6 +135,7 @@
               rows={enchants}
               {slot}
               {classSlug}
+              item={row.item}
               {treeVersion}
               onpick={(enchant) => {
                 oncopy(candidateKey(row), { enchant });

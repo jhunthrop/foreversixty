@@ -16,10 +16,15 @@ import {
   enchantScore,
   loadGearExtras,
   pickEnchants,
+  enchantFits,
   type ConsumableRow,
+  type EnchantContext,
   type EnchantRecord,
+  type EnchantTarget,
 } from './gear-extras';
 import type { BisStatWeight } from '../bis/types';
+import { buildItemCatalog, readBuildJson } from './build-files';
+import { specGuideData } from './guide-tips';
 
 const BUILD = activeBuild.build;
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -34,9 +39,27 @@ function enchant(overrides: Partial<EnchantRecord>): EnchantRecord {
     classes: [],
     stats: {},
     phase: 0,
+    equipped_item_class: -1,
+    equipped_item_subclass_mask: 0,
+    equipped_inventory_type_mask: 0,
     ...overrides,
   };
 }
+
+/** The client's item shapes the tests equip (ItemClass, ItemSubClass, InventoryType). */
+const CLOTH_WRIST = { class_id: 4, subclass_id: 1, inventory_type: 9 };
+const CLOTH_FEET = { class_id: 4, subclass_id: 1, inventory_type: 8 };
+const ONE_HAND_DAGGER = { class_id: 2, subclass_id: 15, inventory_type: 13 };
+const STAFF = { class_id: 2, subclass_id: 10, inventory_type: 17 };
+const HELD_IN_OFF_HAND = { class_id: 4, subclass_id: 0, inventory_type: 23 };
+const SHIELD = { class_id: 4, subclass_id: 6, inventory_type: 14 };
+
+/** Enchant Weapon - Spell Power (2504, spell 22749) as SpellEquippedItems states it. */
+const WEAPON_RULE = { equipped_item_class: 2, equipped_item_subclass_mask: 0xe5f3 };
+/** Enchant 2H Weapon (spell 7745): the two-handed weapon subclasses only. */
+const TWO_HAND_RULE = { equipped_item_class: 2, equipped_item_subclass_mask: 0x562 };
+/** Enchant Shield: armor, the shield subclass. */
+const SHIELD_RULE = { equipped_item_class: 4, equipped_item_subclass_mask: 0x40 };
 
 const WEIGHTS: BisStatWeight[] = [
   { stat: 'spell_power', weight: 1 },
@@ -44,7 +67,10 @@ const WEIGHTS: BisStatWeight[] = [
   { stat: 'stamina', weight: 0.5, insignificant: true },
 ];
 
-const CONTEXT = { classSlug: 'mage', twoHanded: false, shield: false, hasOffHand: false };
+const CONTEXT = {
+  classSlug: 'mage',
+  items: { wrist: CLOTH_WRIST, feet: CLOTH_FEET, main_hand: ONE_HAND_DAGGER },
+};
 
 describe('enchantGives', () => {
   it('words flat stats in the weights’ own terms', () => {
@@ -81,6 +107,23 @@ describe('enchantScore', () => {
         ]),
       ),
     ).toBe(0);
+  });
+});
+
+describe('enchantFits', () => {
+  it('follows the client: class, then the subclass and inventory-type masks, an empty mask for any', () => {
+    expect(enchantFits(enchant(WEAPON_RULE), ONE_HAND_DAGGER)).toBe(true);
+    expect(enchantFits(enchant(WEAPON_RULE), HELD_IN_OFF_HAND)).toBe(false);
+    expect(enchantFits(enchant(TWO_HAND_RULE), ONE_HAND_DAGGER)).toBe(false);
+    expect(enchantFits(enchant(TWO_HAND_RULE), STAFF)).toBe(true);
+    const bracer = enchant({
+      equipped_item_class: 4,
+      equipped_item_subclass_mask: 0x1e,
+      equipped_inventory_type_mask: 1 << 9,
+    });
+    expect(enchantFits(bracer, CLOTH_WRIST)).toBe(true);
+    expect(enchantFits(bracer, CLOTH_FEET)).toBe(false);
+    expect(enchantFits(enchant({}), HELD_IN_OFF_HAND)).toBe(true);
   });
 });
 
@@ -124,15 +167,56 @@ describe('pickEnchants', () => {
         slots: ['main_hand', 'off_hand'],
         item_types: ['two_hand'],
         stats: { intellect: 20 },
+        ...TWO_HAND_RULE,
       }),
-      enchant({ id: 2, name: 'One Hand', slots: ['main_hand', 'off_hand'], stats: { intellect: 5 } }),
+      enchant({
+        id: 2,
+        name: 'One Hand',
+        slots: ['main_hand', 'off_hand'],
+        stats: { intellect: 5 },
+        ...WEAPON_RULE,
+      }),
     ];
-    expect(pickEnchants(records, WEIGHTS, CONTEXT).map((row) => row.name)).toEqual(['One Hand']);
-    expect(pickEnchants(records, WEIGHTS, { ...CONTEXT, twoHanded: true }).map((row) => row.name)).toEqual([
-      'Two Hand',
+    const weapon = (items: EnchantContext['items']) =>
+      pickEnchants(records, WEIGHTS, { classSlug: 'mage', items }).map((row) => [row.slot, row.name]);
+    expect(weapon({ main_hand: ONE_HAND_DAGGER })).toEqual([['main_hand', 'One Hand']]);
+    expect(weapon({ main_hand: STAFF })).toEqual([['main_hand', 'Two Hand']]);
+    expect(weapon({ main_hand: ONE_HAND_DAGGER, off_hand: ONE_HAND_DAGGER })).toEqual([
+      ['main_hand', 'One Hand'],
+      ['off_hand', 'One Hand'],
     ]);
-    const withOffHand = pickEnchants(records, WEIGHTS, { ...CONTEXT, hasOffHand: true });
-    expect(withOffHand.map((row) => row.slot)).toEqual(['main_hand', 'off_hand']);
+  });
+
+  it('offers no weapon enchant for a held-in-off-hand item, and a shield enchant only for a shield', () => {
+    const records = [
+      enchant({
+        id: 2504,
+        name: 'Weapon SP',
+        slots: ['main_hand', 'off_hand'],
+        stats: { spell_damage: 30 },
+        ...WEAPON_RULE,
+      }),
+      enchant({
+        id: 1890,
+        name: 'Shield Int',
+        slots: ['main_hand', 'off_hand'],
+        stats: { intellect: 7 },
+        ...SHIELD_RULE,
+      }),
+    ];
+    const offHand = (item: EnchantTarget) =>
+      pickEnchants(records, WEIGHTS, { classSlug: 'mage', items: { off_hand: item } }).map((row) => row.name);
+    expect(offHand(HELD_IN_OFF_HAND)).toEqual([]);
+    expect(offHand(SHIELD)).toEqual(['Shield Int']);
+    expect(offHand(ONE_HAND_DAGGER)).toEqual(['Weapon SP']);
+  });
+
+  it('gives a slot with no level 60 pick no row', () => {
+    const rows = pickEnchants([enchant({ id: 1, name: 'Bracer Int', stats: { intellect: 7 } })], WEIGHTS, {
+      classSlug: 'mage',
+      items: {},
+    });
+    expect(rows).toEqual([]);
   });
 
   it('ignores a weight the sweep marked insignificant', () => {
@@ -333,7 +417,7 @@ describe('consumableLines', () => {
 });
 
 describe('loadGearExtras for Frost Mage, from the real data', () => {
-  const extras = loadGearExtras(BUILD, 'mage', 'mage-frost', ['gnome', 'troll'], {});
+  const extras = loadGearExtras(BUILD, 'mage', 'mage-frost', ['gnome', 'troll'], { main_hand: STAFF });
 
   it('picks a weapon enchant for spell power and lists the preset’s consumables', () => {
     if (extras === undefined) throw new Error('mage-frost has no ranked file');
@@ -345,5 +429,39 @@ describe('loadGearExtras for Frost Mage, from the real data', () => {
 
   it('is undefined for a spec with no ranked file', () => {
     expect(loadGearExtras(BUILD, 'mage', 'mage-nonexistent', ['gnome'], {})).toBeUndefined();
+  });
+});
+
+/** The guide's own `recommendedRaces` frontmatter. */
+function guideRaces(classSlug: string, spec: string): string[] {
+  const file = path.join(REPO, 'web/src/content/guides', classSlug, `${spec.slice(classSlug.length + 1)}.md`);
+  const list = /^recommendedRaces: \[(.*)\]$/m.exec(readFileSync(file, 'utf8'))?.[1] ?? '';
+  return list.split(',').map((race) => race.trim());
+}
+
+describe('every guide’s enchant table, from the real data', () => {
+  const catalog = buildItemCatalog(BUILD);
+  const records = readBuildJson<EnchantRecord[]>(BUILD, 'enchants.json') ?? [];
+
+  it.each(SPECS)('%s: each enchant fits the level 60 pick in its slot, by the client’s rule', (spec) => {
+    const classSlug = spec.split('-')[0]!;
+    const { bis, extras } = specGuideData(BUILD, classSlug, spec, guideRaces(classSlug, spec));
+    const panel = bis?.panels.find((p) => p.faction === bis.defaultFaction && p.band === bis.defaultBand);
+    for (const row of extras?.enchants ?? []) {
+      const pick = panel?.rows.find((candidate) => candidate.slot === row.slot);
+      const item = pick?.itemId === undefined ? undefined : catalog.get(pick.itemId);
+      const record = records.find((candidate) => candidate.id === row.id && candidate.name === row.name);
+      expect(item, `${spec} ${row.slot}`).toBeDefined();
+      expect(record, `${spec} ${row.name}`).toBeDefined();
+      expect(enchantFits(record!, item!), `${spec}: ${row.name} on ${row.slot}`).toBe(true);
+    }
+  });
+
+  it('offers Arcane no weapon enchant for its held-in-off-hand item', () => {
+    const { extras } = specGuideData(BUILD, 'mage', 'mage-arcane', ['gnome', 'undead']);
+    expect(extras?.enchants.find((row) => row.slot === 'off_hand')).toBeUndefined();
+    expect(extras?.enchants.find((row) => row.slot === 'main_hand')?.name).toBe(
+      'Enchant Weapon - Spell Power',
+    );
   });
 });

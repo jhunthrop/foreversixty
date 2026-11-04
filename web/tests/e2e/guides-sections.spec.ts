@@ -124,15 +124,16 @@ for (const [label, viewport] of [
       await page.goto(PAGE);
       await expect(page.getByTestId('stat-priority-pills')).toBeVisible();
       await expect(page.getByTestId('guide-stat-table')).toBeVisible();
-      // Since 1.60.1.70707 Precision adds hit to every Mage spell, so it sits in the band's
-      // baseline and the line carries a talent split only when some spells out-hit the rest.
-      // The unit test in src/pages/guides/_spec.test.ts pins which talent a split names.
+      // Each source the band's figure counts is named; the unit test in
+      // src/pages/guides/_spec.test.ts pins the exact line.
       await expect(page.getByTestId('guide-stat-table-hit-cap')).toHaveText(
-        /^Hit cap: \d+(\.\d)?%(?: · (?:\d+(\.\d)?% (?:from [^,]+|built in), )?\d+(\.\d)?% from gear)?$/,
+        /^Hit cap: \d+(\.\d)?%(?: · (?:\d+(\.\d)?% hit from BiS gear and buffs, )?(?:\d+(\.\d)?% from [^,]+, )*\d+(\.\d)?% still to find)?$/,
       );
       await expect(page.getByTestId('guide-stat-table')).toContainText('DPS per point');
       const pills = await page.locator('[data-testid^="stat-pill-"] span:last-child').allTextContents();
-      const rows = await page.locator('[data-testid^="guide-stat-table-row-"] .stat-name').allTextContents();
+      const rows = await page
+        .locator('[data-testid^="guide-stat-table-row-"]:not(:has(.stat-muted)) .stat-name')
+        .allTextContents();
       expect(pills).toEqual(rows);
     });
 
@@ -223,9 +224,8 @@ for (const [label, viewport] of [
       await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Recommended');
       await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Eureka!');
       await expect(page.getByTestId('guide-race-row-gnome')).toContainText('Expansive Mind');
-      await expect(page.getByTestId('guide-race-picks')).toContainText(
-        'Gnome is the Alliance pick: Eureka! and Expansive Mind.',
-      );
+      // The prose names both picks, so the line under the table is not said again.
+      await expect(page.getByTestId('guide-race-picks')).toHaveCount(0);
       await expect(page.getByTestId('guide-rotation-cooldowns')).toContainText('Eureka! (Gnome)');
       await expect(page.getByTestId('guide-race-row-troll')).toContainText('Berserking');
       await expect(page.getByTestId('guide-race-row-human')).not.toContainText('Recommended');

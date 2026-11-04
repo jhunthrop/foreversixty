@@ -56,7 +56,7 @@ The leveling build takes Brutal Impact for a longer Pounce stun and Feral Charge
 
 - **Shredding Attacks** (3 points): Shred drops to 42 energy, and Shred is most of your globals.
 - **Savage Fury** (2 points): 10% more damage on Shred, Claw and Rake.
-- **Rend and Tear**: 3% more melee damage a point against a bleeding target, 15% at 5. Rip keeps the boss bleeding, so it is on for the whole fight after your first finisher.
+- **Rend and Tear**: 3% more damage a point from your melee abilities against a bleeding target, 15% at 5. Your auto attacks do not get it. Rip keeps the boss bleeding, so it is on for every Shred and Bite after your first finisher.
 - **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and a bonus combo point on builder crits (every time with both points while leveling, a 50% chance with the raid build's single point). Crit is what makes your 5 points come quickly.
 - **Predatory Strikes** (3 points): 150% of your level as attack power in Cat Form.
 - **Predatory Discipline** (1 point): Ferocious Bite keeps the bonus damage from your extra energy but no longer spends it. It also opens Shifting Power.
@@ -78,7 +78,7 @@ The raid build skips Furor. In Forever it no longer hands you 40 energy on a shi
 
 **Faerie Fire.** In Cat Form it is free on a 6 second cooldown. If no one else has it on the boss, keep yours up.
 
-**Mana.** Shifting Power costs 55% of your base mana, and mana decides how many you get. With a paladin's Judgement of Wisdom on the boss, your hits refill most of it over a fight. Without one, or if you run dry, drink a mana potion in Cat Form; Forever lets you drink without shifting.
+**Mana.** Shifting Power costs 55% of your base mana, 30% less with Natural Shapeshifter's three points, and mana decides how many you get. With a paladin's Judgement of Wisdom on the boss, your hits refill most of it over a fight. Without one, or if you run dry, drink a mana potion in Cat Form; Forever lets you drink without shifting.
 
 **Adds and movement.** You have no cleave. On a pack, Rip the target that will live longest and Shred down the kill order. When the boss turns to you, or you cannot get behind, Claw in place of Shred until you can. Keep Rip rolling through movement; it ticks while you run.
 

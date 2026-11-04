@@ -77,7 +77,10 @@ export const guidesCopy = {
   sourceColumn: 'Source',
   enchants: 'Enchants',
   consumables: 'Consumables',
-  enchantsNote: 'Crit, hit and haste enchants are not listed yet.',
+  /** What the enchant table is: each slot's best flat-stat enchant by the band's weights
+   *  (gear-extras.ts); crit, hit and haste enchants are not scored. wow-player SHIP 2026-11-04. */
+  enchantsNote:
+    'The enchant for each slot that adds the most of your weighted stats. Crit, hit and haste enchants are not included.',
   consumablesNote: 'What to bring to a raid.',
   enchantColumn: 'Enchant',
   givesColumn: 'Gives',
@@ -87,8 +90,8 @@ export const guidesCopy = {
   racialsColumn: 'Racials',
 
   recommendedTag: 'Recommended',
-  /** The Stat priority headline: "Hit cap: 16% · 1% hit from BiS gear and buffs, 5% from
-   *  talents, 10% still to find". Caps
+  /** The Stat priority headline: "Hit cap: 16% · 1% hit from BiS gear and buffs, 6% from
+   *  Precision, 9% still to find". Caps
    *  arrive formatted with their own "%" (or as `capReached`); `split` arrives joined. */
   hitToCap: (cap: string, split?: string): string =>
     `Hit cap: ${cap}${split === undefined ? '' : ` · ${split}`}`,
@@ -99,15 +102,19 @@ export const guidesCopy = {
   expertiseCap: (dodge: string, parry: string | undefined, split?: string): string =>
     `Expertise cap: ${dodge} (dodge)${parry === undefined ? '' : `, ${parry} (parry)`}${split === undefined ? '' : ` · ${split}`}`,
   capReached: 'reached',
-  /** What the band's best-in-slot character already has toward a cap (`baseline`), and from
-   *  what: "12.9% hit from BiS gear, talents and buffs". Not "built in": two specs with the same
-   *  talents differ here because their sets differ. `sources` is what the ranker counts for that
-   *  cap (`sim/cmd/leveling-bis/hitcap.go`, `expertisecap.go`). */
+  /** What the band's best-in-slot set and buffs already give toward a cap (`baseline` less its
+   *  talents, which `capFrom` names one by one): "10.2% hit from BiS gear and buffs". Not "built
+   *  in": two specs with the same talents differ here because their sets differ. `sources` is
+   *  what the ranker counts besides talents (`sim/cmd/leveling-bis/hitcap.go`, `expertisecap.go`). */
   capOnSet: (percent: string, stat: string, sources: string): string =>
     `${percent}% ${stat} from BiS ${sources}`,
   /** The hit that set is still short of the cap. */
   capStillToFind: (percent: string): string => `${percent}% still to find`,
   capFrom: (percent: string, source: string): string => `${percent}% from ${source}`,
+  /** A school talent's share, which only that school's spells get: "5% from Shadow Focus on
+   *  Shadow spells". */
+  capFromOnSchools: (percent: string, source: string, schools: string): string =>
+    `${percent}% from ${source} on ${schools} spells`,
   notSignificantNote: (labels: string, plural: boolean): string =>
     `${labels} ${plural ? 'show' : 'shows'} as "Not significant": no measurable value at level 60.`,
   /** A stat whose weight is below zero beyond its error: no number is printed for it. */
@@ -126,6 +133,14 @@ export const guidesCopy = {
   perPercentValue: (figure: string, stat: 'haste' | 'expertise'): string => `${figure} per 1% ${stat}`,
   notSignificant: 'Not significant',
   noGain: 'No gain',
+  /** Haste no item at level 60 carries: worth something, but not a stat to gear for. */
+  notOnItems: 'Not on any item',
+  /** The note under the table for that row: "Spell haste: 8.1 per 1%, but no item at level 60
+   *  has it." (the BiS rail's own haste caption, `bisCopy.weightsHasteCaption`, says the same). */
+  notOnItemsNote: (label: string, figure: string | undefined): string =>
+    figure === undefined
+      ? `${label}: no item at level 60 has it.`
+      : `${label}: ${figure} per 1%, but no item at level 60 has it.`,
   levelingNewTitle: 'More points here than the range before',
   levelingLegend: 'Outlined: points added in this level range.',
   levelRangeLabel: (band: number): string => (band === 60 ? 'Level 60' : `Level ${band} to ${band + 9}`),

@@ -31,7 +31,11 @@ describe('band60Weights', () => {
     expect(result).toBeDefined();
     expect(result!.weights).toEqual(expected.weights);
     expect(result!.role).toBe('dps');
-    expect(result!.hasteScaleFactor).toBe(expected.haste_scale_factor ?? null);
+    expect(result!.haste).toEqual({
+      scaleFactor: expected.haste_scale_factor ?? null,
+      onItems: expected.haste_on_items ?? true,
+    });
+    expect(result!.talents).toBe(expected.talents);
     expect(result!.generatedAt).toBe(file.generated_at);
     expect(result!.hitToCap).toEqual(expected.hit_to_cap ?? null);
     expect(result!.expertiseToCap).toEqual(expected.expertise_to_cap ?? null);

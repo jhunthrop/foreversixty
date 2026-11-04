@@ -2,7 +2,7 @@
 title: Druid in Forever
 classSlug: druid
 description: 'The Forever druid: four roles from three trees, what changed from 1.12, and which guide to read.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: single-source
 sources:
   - label: 'Blizzard, Forever class deep dives: Hunter and Druid'

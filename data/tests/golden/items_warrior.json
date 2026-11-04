@@ -30,7 +30,10 @@
       "bonding": null,
       "armor_type": null,
       "reputation": null,
-      "limit_category": null
+      "limit_category": null,
+      "class_id": 2,
+      "subclass_id": 2,
+      "inventory_type": 15
     },
     {
       "id": 13315,
@@ -62,7 +65,10 @@
       "bonding": null,
       "armor_type": null,
       "reputation": null,
-      "limit_category": null
+      "limit_category": null,
+      "class_id": 4,
+      "subclass_id": 0,
+      "inventory_type": 23
     },
     {
       "id": 12798,
@@ -92,7 +98,10 @@
       "bonding": null,
       "armor_type": null,
       "reputation": null,
-      "limit_category": null
+      "limit_category": null,
+      "class_id": 2,
+      "subclass_id": 0,
+      "inventory_type": 21
     },
     {
       "id": 19325,
@@ -124,7 +133,10 @@
       "bonding": null,
       "armor_type": null,
       "reputation": null,
-      "limit_category": null
+      "limit_category": null,
+      "class_id": 4,
+      "subclass_id": 0,
+      "inventory_type": 11
     },
     {
       "id": 17066,
@@ -156,7 +168,10 @@
       "bonding": null,
       "armor_type": "shield",
       "reputation": null,
-      "limit_category": null
+      "limit_category": null,
+      "class_id": 4,
+      "subclass_id": 6,
+      "inventory_type": 14
     },
     {
       "id": 16866,
@@ -190,7 +205,10 @@
       "bonding": null,
       "armor_type": "plate",
       "reputation": null,
-      "limit_category": null
+      "limit_category": null,
+      "class_id": 4,
+      "subclass_id": 4,
+      "inventory_type": 1
     },
     {
       "id": 19019,
@@ -222,7 +240,10 @@
       "bonding": null,
       "armor_type": null,
       "reputation": null,
-      "limit_category": null
+      "limit_category": null,
+      "class_id": 2,
+      "subclass_id": 7,
+      "inventory_type": 13
     }
   ]
 }

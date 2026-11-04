@@ -59,7 +59,7 @@ One build does everything: 12 in Assassination for Malice, Ruthlessness, Improve
 - **Premeditation** (1 point): two combo points on a 2 minute cooldown. In Forever it needs no Stealth, so it opens the fight and comes back in it.
 - **Initiative** (3 points): Garrote, Ambush and Cheap Shot add a combo point.
 
-Opportunity (5 points) adds 20% to Garrote and Ambush. Blood Splatter keeps Rupture up 6 seconds longer and the opening Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. One point of Dirty Deeds takes 10 energy off Garrote and Cheap Shot. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. The point in Improved Ambush is there for the points total that opens Boot Knife and Death Mark; Ambush is not a boss opener for you.
+Opportunity (5 points) adds 20% to Garrote, and to Ambush and Backstab when you hold a dagger. Blood Splatter keeps Rupture up 6 seconds longer and the opening Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. One point of Dirty Deeds takes 10 energy off Garrote and Cheap Shot. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. The point in Improved Ambush is there for the points total that opens Boot Knife and Death Mark; Ambush needs a dagger in the main hand, and even with one it is not a boss opener for you.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -67,7 +67,7 @@ Opportunity (5 points) adds 20% to Garrote and Ambush. Blood Splatter keeps Rupt
 
 ### The pull
 
-Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. It needs no Stealth in Forever, so press it again every 2 minutes in the fight whenever you have three combo points or fewer, and spend them inside the 20 seconds. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush is the opener for anything that will die fast, not for a boss. Then **Rupture** right away at four points, and **Death Mark** as soon as you have five with both bleeds ticking.
+Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. It needs no Stealth in Forever, so press it again every 2 minutes in the fight whenever you have three combo points or fewer, and spend them inside the 20 seconds. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush needs a dagger in the main hand, so with a sword it is off your bar. On trash that will die fast, open with **Cheap Shot**, which Initiative makes three combo points and which holds the mob still for 4 seconds, or with Garrote. Then **Rupture** right away at four points, and **Death Mark** as soon as you have five with both bleeds ticking.
 
 Every rogue learns **Poised** at 18: at full energy out of combat, your next ability costs less, so open from full energy.
 

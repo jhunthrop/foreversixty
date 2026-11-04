@@ -51,13 +51,12 @@ import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { band60Weights, rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
-import { railStatRows } from '../../../lib/guides/rail-stats';
+import { railStatRows, rankedStatLabels } from '../../../lib/guides/rail-stats';
 import { splitSpecSections, type SpecSection } from '../../../lib/guides/sections';
 import { diffBuilds, buildDiffLine } from '../../../lib/guides/build-diff';
 import { guideTipsUrl, proseNames, specGuideData, withTipKeys } from '../../../lib/guides/guide-tips';
 import { linkProse } from '../../../lib/guides/prose-tips';
 import GuideTooltips from '../../../components/guides/GuideTooltips.svelte';
-import { schoolHitTalent } from '../../../lib/guides/hit-cap-line';
 import { pageScript } from '../../../lib/guides/page-script';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
 import { guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
@@ -203,7 +202,6 @@ const rotationListsUnkeyed =
       );
 const rotationListsData =
   rotationListsUnkeyed === undefined ? undefined : withTipKeys(rotationListsUnkeyed, tipBundle);
-const hitTalent = schoolHitTalent(raidTrees ?? buildTrees);
 const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');
 const rotationProseHtml = await prose(proseOnly('Rotation and priority'));
 
@@ -217,12 +215,10 @@ const ranked = rankedBisFile(build, fullSpecId);
 // table can never disagree.
 const band60 = band60Weights(build, fullSpecId, classSlug, entry.data.recommendedRaces);
 const statRows =
-  band60 === undefined
-    ? []
-    : railStatRows(entry.data.statPriority, band60.weights, fullSpecId, band60.hasteScaleFactor);
-// The pills, the table and the hero card follow the weights, in the table's order; the
+  band60 === undefined ? [] : railStatRows(entry.data.statPriority, band60.weights, fullSpecId, band60.haste);
+// The pills rank only the stats the table gives a value, in the table's order; the
 // frontmatter list is only the fallback for a spec with no weights yet.
-const statPills = statRows.length > 0 ? statRows.map((row) => row.label) : entry.data.statPriority;
+const statPills = rankedStatLabels(statRows, entry.data.statPriority);
 const statPriorityHeadingHtml = await renderGuideMarkdown('## Stat priority');
 const statPriorityProseHtml = await prose(proseOnly('Stat priority'));
 
@@ -242,7 +238,8 @@ const raceRows = raceTableFor(
   specKindOf(classSlug, fullSpecId, role),
 );
 const racesHeadingHtml = await renderGuideMarkdown('## Races');
-const racesProseHtml = await prose(proseOnly('Races'));
+const racesProse = proseOnly('Races');
+const racesProseHtml = await prose(racesProse);
 const professionsHtml = await prose(sections.get('Professions') ?? '');
 
 // The strip is the leveling journey: the guide's own level 60 build cut down to each range's
@@ -342,7 +339,6 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
     classSlug={classSlug}
     recommendedRaces={entry.data.recommendedRaces}
     statPriority={entry.data.statPriority}
-    hitTalent={hitTalent}
   />
   <Fragment set:html={statPriorityProseHtml} />
   <Fragment set:html={gearHeadingHtml} />
@@ -362,7 +358,7 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
     classSlug={entry.data.classSlug}
     recommendedRaces={entry.data.recommendedRaces}
   />
-  <RaceTable build={build} rows={raceRows} tips={tipBundle} />
+  <RaceTable build={build} rows={raceRows} tips={tipBundle} prose={racesProse} />
   <Fragment set:html={racesProseHtml} />
   <Fragment set:html={professionsHtml} />
   <Fragment set:html={levelingHeadingHtml} />

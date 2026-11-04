@@ -220,6 +220,11 @@ export interface Item {
   /** The armour word from the item's class and subclass (`Item.armor_type`; a cloak is
    *  `cloth`); null for jewellery, a weapon or unknown; absent on a build not yet regenerated. */
   armor_type?: 'cloth' | 'leather' | 'mail' | 'plate' | 'shield' | null;
+  /** The client's ItemClass, ItemSubClass and InventoryType, for an enchant's
+   *  SpellEquippedItems rule (lib/gear/enchant-fit.ts); absent on a build not yet regenerated. */
+  class_id?: number | null;
+  subclass_id?: number | null;
+  inventory_type?: number | null;
 }
 
 export interface ItemFile {

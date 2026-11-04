@@ -85,7 +85,7 @@ Mutilate costs 60, so you will often sit on four points waiting for energy. That
 
 ### Poisons
 
-**Deadly Poison** on the main hand, **Instant Poison** on the off hand, with a sharpening stone beside each in Forever. Mutilate's bonus needs a poison sitting on the target, and Deadly Poison is the one that stays there, so never run two Instants. Refresh poisons before every pull; a Mutilate into an unpoisoned boss is a weak one.
+**Deadly Poison** on the main hand, **Instant Poison** on the off hand, with a sharpening stone beside each in Forever. Mutilate's bonus needs a poison sitting on the target, and Deadly Poison is the one that stays there, so never run two Instants. Check both coats before every boss pull and re-apply any that is close to running out; a Mutilate into an unpoisoned boss is a weak one.
 
 ### Trash, threat and survival
 
@@ -112,7 +112,7 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ## Professions
 
-**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make; the table above shows which of them your set wants. **Engineering** gives you grenades and dynamite for trash. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
+**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make; your best in slot table shows which of them your set wants. **Engineering** gives you grenades and dynamite for trash. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
 
 ## Leveling
 

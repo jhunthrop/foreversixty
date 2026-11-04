@@ -2,7 +2,7 @@
 title: Hunter in Forever
 classSlug: hunter
 description: 'What the Hunter plays like in Forever: the three specs, melee Survival, the reworked pets, Heart of the Lion and the new Human Hunter.'
-updated: 2026-11-03
+updated: 2026-11-04
 confidence: single-source
 sources:
   - label: 'Blizzard, Class Deep Dives: Hunter and Druid'

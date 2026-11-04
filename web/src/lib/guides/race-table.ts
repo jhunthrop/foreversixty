@@ -289,17 +289,26 @@ export function raceTableFor(
 }
 
 /** The recommended races as the one line under the table: "Gnome is the Alliance pick: Eureka!
- *  and Expansive Mind." ("a" when a faction has more than one). */
+ *  and Expansive Mind." ("a" when a faction has more than one). A race the guide's own Races
+ *  `prose` already names is left out: the prose owns the why, and the table already tags it. */
 export function recommendedRaceLines(
   rows: readonly GuideRaceRow[],
+  prose = '',
 ): { slug: string; faction: string; names: string[] }[] {
   return rows
-    .filter((row) => row.recommended && row.racials.length > 0)
+    .filter((row) => row.recommended && row.racials.length > 0 && !proseNamesRace(prose, row.name))
     .map((row) => ({
       slug: row.slug,
       faction: row.faction,
       names: row.racials.map((racial) => racial.name),
     }));
+}
+
+/** Whether the guide's own Races prose already names `race`: the prose then says why it is
+ *  the pick, and the line under the table would only say it again (one job per page). */
+export function proseNamesRace(prose: string, race: string): boolean {
+  const escaped = race.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`\\b${escaped}\\b`).test(prose);
 }
 
 /** A race's display name from its slug (a BiS band names its race by slug); the slug itself

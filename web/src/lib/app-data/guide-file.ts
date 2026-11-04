@@ -12,11 +12,12 @@ import type { SpecCatalogEntry } from '../bis/types';
 import { decodeBuildTrees, type DecodedTreeView } from '../guides/build-tree';
 import { band60Weights, factionForFirstRace, rankedBisFile } from '../guides/class-dps';
 import { pageUpdatedAt } from '../guides/guide-header';
-import { guideHitCapLine, schoolHitTalent } from '../guides/hit-cap-line';
+import { guideHitCapLine } from '../guides/hit-cap-line';
 import { keyTalentsFor } from '../guides/key-talents';
 import { plainText, splitOverview } from '../guides/overview';
 import { raceTableFor, racialCooldownsFor, specKindOf } from '../guides/race-table';
-import { railStatRows } from '../guides/rail-stats';
+import { railStatRows, rankedStatLabels } from '../guides/rail-stats';
+import { bandTalentHits } from '../guides/talent-hit';
 import {
   loadApl,
   rotationListsFrom,
@@ -106,7 +107,7 @@ export interface AppGuideFile {
   /** The `In a raid` block's Role line ("Ranged spell damage"), when the guide has one. */
   role_line: string | null;
   recommended_races: AppGuideRace[];
-  /** In the order the web's pills draw them: the sim's per-point order, else the guide's list. */
+  /** The web's pills: the stats the weights give a value, in the sim's order, else the guide's list. */
   stat_priority: string[];
   hit_cap: string | null;
   overview: { strengths: string[]; weaknesses: string[]; raid: string[] };
@@ -311,9 +312,7 @@ export function buildGuideFile(
   const raid = bulletLines(overview.raid);
   const weights = band60Weights(build, spec, classSlug, data.recommendedRaces);
   const statRows =
-    weights === undefined
-      ? []
-      : railStatRows(data.statPriority, weights.weights, spec, weights.hasteScaleFactor);
+    weights === undefined ? [] : railStatRows(data.statPriority, weights.weights, spec, weights.haste);
   const raceRows = raceTableFor(build, classSlug, data.recommendedRaces, specKindOf(classSlug, spec, role));
   const litTalents = litTalentsOf([...levelingTrees, ...(raidTrees ?? [])]);
 
@@ -336,8 +335,12 @@ export function buildGuideFile(
       const row = raceRows.find((candidate) => candidate.slug === slug);
       return row === undefined ? [] : [{ slug, name: row.name, faction: row.faction }];
     }),
-    stat_priority: statRows.length > 0 ? statRows.map((row) => row.label) : [...data.statPriority],
-    hit_cap: guideHitCapLine(weights?.hitToCap, schoolHitTalent(raidTrees ?? levelingTrees))?.text ?? null,
+    stat_priority: rankedStatLabels(statRows, data.statPriority),
+    hit_cap:
+      weights === undefined
+        ? null
+        : (guideHitCapLine(weights.hitToCap, bandTalentHits(build, classSlug, weights.talents))?.text ??
+          null),
     overview: {
       strengths: bulletLines(overview.strengths),
       weaknesses: bulletLines(overview.weaknesses),

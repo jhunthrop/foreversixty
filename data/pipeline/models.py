@@ -337,6 +337,14 @@ class GearItem(BaseModel):
     #: "Unique-Equipped: <family> (1)" line. `None` for none. The BiS ranker never
     #: pairs two items of one category (sim/cmd/leveling-bis/pair.go).
     limit_category: int | None = None
+    #: The client's own item shape, Item.ClassID, SubclassID and
+    #: InventoryType (items.json's same three columns), so a page can apply
+    #: an enchant's SpellEquippedItems rule (`EnchantRecord.equipped_*`) to
+    #: the item: a held-in-off-hand item (class 4, inventory type 23) takes
+    #: no weapon enchant. `None` on a build written before these existed.
+    class_id: int | None = None
+    subclass_id: int | None = None
+    inventory_type: int | None = None
 
 
 class ClassItems(BaseModel):
@@ -382,6 +390,15 @@ class EnchantRecord(BaseModel):
     #: same effect id apart. 0 where the fork states neither.
     spell_id: int
     item_id: int
+    #: The client's own rule for what the enchant can go on: its spell's
+    #: SpellEquippedItems row. An item takes it when its class is
+    #: `equipped_item_class` (-1: any), its subclass bit is set in
+    #: `equipped_item_subclass_mask` (0: any) and its inventory type bit in
+    #: `equipped_inventory_type_mask` (0: any). A held-in-off-hand item
+    #: (armor class 4) takes no weapon enchant (class 2).
+    equipped_item_class: int = -1
+    equipped_item_subclass_mask: int = 0
+    equipped_inventory_type_mask: int = 0
 
 
 class LootBoss(BaseModel):

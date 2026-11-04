@@ -2,7 +2,8 @@
 // web/src/components/guides/RaceTable.astro
 // The Races table under the pills: one row per race the class can be, with its faction and the
 // racials that matter for this spec, each with what it does; the guide's recommended races
-// carry a tag, and a line under the table says which racials make them the pick. Rows and the
+// carry a tag, and a line under the table says which racials make them the pick, for a race the
+// guide's own prose does not already name (the prose then says it, with the why). Rows and the
 // line come from lib/guides/race-table.ts, so the line can never contradict the table.
 import { guidesCopy } from '../../lib/guides/copy';
 import { dataUrl } from '../../lib/planner/load';
@@ -17,11 +18,13 @@ interface Props {
   rows: GuideRaceRow[];
   /** The guide's tooltip data: each racial opens the client's own racial tooltip. */
   tips: GuideTipBundle;
+  /** The guide's own Races prose (markdown): a race it names gets no pick line here. */
+  prose: string;
 }
-const { build, rows, tips } = Astro.props;
+const { build, rows, tips, prose } = Astro.props;
 const tipKey = (name: string): string | undefined => racialKeyFor(tips, name);
 const factionName = (faction: string): string => (faction === 'alliance' ? 'Alliance' : 'Horde');
-const picks = recommendedRaceLines(rows);
+const picks = recommendedRaceLines(rows, prose);
 const nameOf = (slug: string): string => rows.find((row) => row.slug === slug)?.name ?? slug;
 const sentences = picks.map((pick) => {
   const sameFaction = picks.filter((other) => other.faction === pick.faction).length;
