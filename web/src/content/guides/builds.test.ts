@@ -341,3 +341,22 @@ describe('Frost spends no point on a talent for spells it never casts', () => {
     },
   );
 });
+
+// Sim-accuracy round 15 (mage, from guide-accuracy round 1 SIM-6): the engine models neither
+// Impact's stun nor Burning Soul's pushback, so the Fire leveling toll point follows the
+// Forever guides, which call Burning Soul vital for solo and dungeon play.
+describe('Fire levels with Burning Soul, not Impact', () => {
+  it('mage/fire build: takes Burning Soul and no Impact', () => {
+    const guide = guides.find((g) => g.id === 'mage/fire');
+    expect(guide, 'mage/fire: no such guide').toBeDefined();
+    const decoded = decodeFS1(guide?.frontmatter.build as string);
+    if (!decoded.ok) return; // reported by the decode test above
+    const trees = [...talentsFor('mage').trees].sort((a, b) => a.position - b.position);
+    const rankOf = new Map<string, number>();
+    decoded.build.treeRanks.forEach((ranks, treeIndex) => {
+      trees[treeIndex]?.talents.forEach((talent, digitIndex) => rankOf.set(talent.name, ranks[digitIndex] ?? 0));
+    });
+    expect(rankOf.get('Impact') ?? 0).toBe(0);
+    expect(rankOf.get('Burning Soul') ?? 0).toBeGreaterThan(0);
+  });
+});
