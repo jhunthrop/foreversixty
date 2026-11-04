@@ -128,8 +128,20 @@ export const scoreCopy = {
   notFoundTitle: 'Character not found',
   notFoundLine: (name: string, where: string): string => `No character called ${name} on ${where} yet.`,
   notFoundLookupLabel: 'Look up another character',
+  /** The same name on another ruleset or region the site does hold: one link each. */
+  notFoundElsewhere: 'Is it one of these?',
+  /** Why a brand-new character is missing, and the one path that always works today. */
+  notFoundNewCharacter:
+    'A new character can take a while to show up here: Blizzard publishes it after you play it and log out. Sign in with Battle.net and all your characters are listed straight away.',
+  /** The same card on a character the site holds with nothing on it yet. */
+  knownYours:
+    'Is this your character? Sign in with Battle.net and it opens as yours, with its gear and talents.',
+  notFoundSignIn: 'Sign in with Battle.net',
+  notFoundSignedIn: 'Your own characters are in the character menu at the top of the page.',
+  /** Under the not-found line once the search found the name nowhere else either. */
+  notFoundNowhere: 'Not on any other ruleset or region either.',
   /** A character the site holds with nothing on it, shown to a visitor who does not hold it (P.1). */
-  noDataLine: (name: string): string => `${name} has no Forever Sixty data yet.`,
+  noDataLine: (name: string): string => `${name} is here, with no gear, talents or logs yet.`,
   noDataAddon: 'Get the addon',
 
   /** The no-logs card (fix round 2 item 4). */
