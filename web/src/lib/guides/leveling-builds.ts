@@ -228,7 +228,9 @@ function spendReserved(
   return spendTree(digits, tree, targets, undefined, budget);
 }
 
-/** The talent string ("a-b-c", one digit per talent) for `level` (LadderTalentString). */
+/** The talent string ("a-b-c", one digit per talent) for `level` (LadderTalentString): the
+ *  ladder climbed one point a level from 10, so a level never takes back a point the level
+ *  below holds (climbLadder). */
 export function ladderTalentString(
   trees: readonly LadderTalentTree[],
   targets: Targets,
@@ -236,6 +238,68 @@ export function ladderTalentString(
   level: number,
   first: readonly LadderFirstRank[] = [],
 ): string {
+  return climbLadder(trees, targets, ownTreeIndex, level, first)
+    .map((row) => row.join(''))
+    .join('-');
+}
+
+/** The planner's rule for adding one point (sim/leveling climbLadder's `legal`). */
+function canAddPoint(tree: LadderTalentTree, digits: readonly number[], j: number): boolean {
+  const node = tree.talents[j]!;
+  const inTree = digits.reduce((sum, d) => sum + d, 0);
+  if (inTree < POINTS_PER_TIER * node.tier || digits[j]! >= node.max_rank) return false;
+  if (node.prereq_talent_id === null) return true;
+  const prereq = tree.talents.findIndex((other) => other.id === node.prereq_talent_id);
+  const held = prereq >= 0 ? digits[prereq]! : 0;
+  return held >= (node.prereq_rank ?? 0);
+}
+
+/** One point a level from 10 up to `level`, never removed (sim/leveling climbLadder): the
+ *  first legal cell, own tree first, then tier and column, where that level's walk holds
+ *  more ranks than the climb so far, else where the guide's targets do. */
+function climbLadder(
+  trees: readonly LadderTalentTree[],
+  targets: Targets,
+  ownTreeIndex: number,
+  level: number,
+  first: readonly LadderFirstRank[],
+): number[][] {
+  const climb = trees.map((tree) => new Array<number>(tree.talents.length).fill(0));
+  const treeOrder = [ownTreeIndex, ...trees.map((_, i) => i).filter((i) => i !== ownTreeIndex)].filter(
+    (ti) => trees[ti] !== undefined,
+  );
+  const firstCell = (wants: (ti: number, j: number) => number): [number, number] | undefined => {
+    for (const ti of treeOrder) {
+      const tree = trees[ti]!;
+      for (let j = 0; j < tree.talents.length; j++) {
+        if (wants(ti, j) > climb[ti]![j]! && canAddPoint(tree, climb[ti]!, j)) return [ti, j];
+      }
+    }
+    return undefined;
+  };
+  for (let lvl = 10; lvl <= level; lvl++) {
+    const walk = walkLevel(trees, targets, ownTreeIndex, lvl, first);
+    const pick =
+      firstCell((ti, j) => walk[ti]![j]!) ??
+      firstCell((ti, j) => {
+        const node = trees[ti]!.talents[j]!;
+        return Math.min(target(targets, node.id), node.max_rank);
+      });
+    if (pick === undefined) continue;
+    const row = climb[pick[0]]!;
+    row[pick[1]] = row[pick[1]]! + 1;
+  }
+  return climb;
+}
+
+/** The walk for one level on its own, as digits per tree (sim/leveling walkLevel). */
+function walkLevel(
+  trees: readonly LadderTalentTree[],
+  targets: Targets,
+  ownTreeIndex: number,
+  level: number,
+  first: readonly LadderFirstRank[],
+): number[][] {
   let remaining = Math.max(level - 9, 0);
   const digits = trees.map((tree) => new Array<number>(tree.talents.length).fill(0));
   const order = [ownTreeIndex, ...trees.map((_, i) => i).filter((i) => i !== ownTreeIndex)];
@@ -259,7 +323,7 @@ export function ladderTalentString(
       );
     }
   }
-  return digits.map((row) => row.join('')).join('-');
+  return digits;
 }
 
 /** A reservation's ranks in another tree than the spec's own (Shadow's Wand

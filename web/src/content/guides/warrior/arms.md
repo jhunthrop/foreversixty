@@ -68,15 +68,15 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 - **Impale** (2 points): your ability crits hit for 220% of a normal hit instead of double. Overpower crits most of the time, so this pays every few seconds.
 - **Two-Handed Weapon Specialization** (3 points): 6% more damage with the weapon you always carry.
 - **Improved Tactical Mastery** (3 points): you keep 25 rage through a stance change instead of 10. This is what makes the swap to Berserker Stance for Recklessness and Whirlwind free.
-- **Anger Management** and **Improved Charge** (3 points): a point of rage every 3 seconds in combat, and 21 rage from Charge instead of 15. Rage is the limit for Arms, and both pay from the first second of the pull.
+- **Anger Management** and **Improved Charge** (3 points): a point of rage every 3 seconds in combat, and 21 rage from Charge instead of 15. Rage is the limit for Arms, and both pay from the first second of the pull. The raid build keeps Anger Management and skips Improved Charge, since you Charge a boss once.
 - **Sweeping Strikes** and **Mortal Strike** (1 point each): Sweeping Strikes is the stepping stone to Mortal Strike and your two-target button. Mortal Strike is the spec.
 - **Improved Slam** (2 points): Slam's cast and global drop to one second, your swing timer keeps running through it, and its cooldown falls from 15 seconds to 10. That puts a Slam between your Mortal Strikes without costing you a swing.
-- **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
+- **Improved Bloodrage** (2 points in Protection, 1 in the raid build): each point adds a quarter to the rage every Bloodrage brings, so two make it half again as much.
 - **Cruelty** and **Unbridled Wrath** (10 points in Fury): 5% crit and a 60% chance at an extra rage point on every weapon hit.
 
 The level 60 build puts one point in **Improved Heroic Strike**, three in **Deflection** and five in **Iron Will**, which takes 15% off every stun and fear on you.
 
-The raid build drops Iron Will for two more points of **Improved Heroic Strike**, so your rage dump costs 3 less, a fourth point of **Deflection** for the times a boss turns on you, and two points of **Blood Craze**, which give back a little health after big hits.
+The raid build trades Iron Will, Deflection, Improved Charge and a point of Improved Bloodrage for damage: a raid boss faces the tank, so you rarely parry it, and you Charge it once. Two more points of **Improved Heroic Strike** make your rage dump cost 3 less. **Spearing Strike** is a second weapon strike on a 20 second cooldown, Battle Stance only, that hits twice as hard on Dragonkin and Giants. Fifteen points in Fury reach **Reckless Swings** and **Improved Execute**, which takes 5 off every Execute. Reckless Swings is a 15 second cooldown that costs a quarter of your base health and makes your swings for the next 8 seconds bring 5 more rage each; with a slow two-hander that is two or three swings. **Enrage** is the way down to them: a 30% chance at more physical damage for 12 seconds after any damaging hit you take, so it pays whenever raid damage lands on you.
 
 [Open the planner](/planner?class=warrior) to change the build.
 
@@ -84,7 +84,7 @@ The raid build drops Iron Will for two more points of **Improved Heroic Strike**
 
 **The pull.** Charge on the pull. In a raid that means once the tank has engaged the boss, never before. Out in the world, Charge is how you pull. Charge only works out of combat, and Bloodrage puts you in combat, so a Bloodrage before the pull costs you the Charge. Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you; then press Bloodrage as your first swing lands. That is a shout, a Rend and a Mortal Strike in your first three globals, or Rend and Mortal Strike in the first two when another warrior's shout is already on you.
 
-**Battle Stance.** Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target. Press Overpower the moment it lights up, even ahead of Mortal Strike: it is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later. Mortal Strike goes on cooldown otherwise. With Improved Slam, Slam fills the gap between Mortal Strikes.
+**Battle Stance.** Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target. Press Overpower the moment it lights up, even ahead of Mortal Strike: it is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later. Mortal Strike goes on cooldown otherwise. With the raid build, Reckless Swings goes right after it every time it comes back, unless you are low on health, and your next two or three swings bring the rage back. With Improved Slam, Slam fills the gap between Mortal Strikes. In the raid build, Spearing Strike takes any free global while Mortal Strike, Overpower and Slam are all on cooldown.
 
 **Rage.** Bloodrage on cooldown whenever you are under 80 rage. Heroic Strike only when you are about to cap at 90 or more: below that, keep the rage for Mortal Strike, Overpower and Execute, which lose damage every time they wait for it. If a shaman drops Windfury Totem in your group, Hamstring on any free global: it is a cheap main-hand hit that can trigger the totem's extra attack. Without Windfury, never Hamstring for damage.
 

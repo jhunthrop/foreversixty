@@ -207,7 +207,19 @@ const pointsPerTier = 5
 // ForSpec replaces the spine with the spec's curated reservation where it has one
 // (ladder_first.go): those ranks of its own tree are taken first, each once the build can
 // legally hold it.
+//
+// The walk above sees one level at a time, so on its own it can move a point between two
+// levels (Protection Warrior's spine gave way to Bastion at 41 and Shield Slam left the
+// build). No character can do that without a respec, so the ladder is climbed: each level
+// keeps the level below's ranks and adds the one point the walk (LadderPointOrder) takes
+// for it. Where the walk only adds points, the two are the same build at every level.
 func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIndex, level int, opts ...LadderOption) string {
+	climb := climbLadder(activeTrees, targets, ownTreeIndex, level, opts...)
+	return rankString(activeTrees, climb.ranks)
+}
+
+// walkLevel is the walk for one level on its own, as positional digits per tree.
+func walkLevel(activeTrees []TalentTree, targets map[int]int, ownTreeIndex, level int, opts ...LadderOption) [][]int {
 	var cfg ladderConfig
 	for _, opt := range opts {
 		opt(&cfg)
@@ -239,16 +251,22 @@ func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIn
 			remaining = spendTree(digits[ti], activeTrees[ti], targets, offTree[ti], remaining+spent(offTree[ti]))
 		}
 	}
+	return digits
+}
 
-	parts := make([]string, len(digits))
-	for i, row := range digits {
-		var sb strings.Builder
-		for _, d := range row {
-			sb.WriteByte(byte('0' + d))
+// walkRanks is walkLevel's build by talent id, per tree.
+func walkRanks(activeTrees []TalentTree, targets map[int]int, ownTreeIndex, level int, opts ...LadderOption) []map[int]int {
+	digits := walkLevel(activeTrees, targets, ownTreeIndex, level, opts...)
+	ranks := make([]map[int]int, len(activeTrees))
+	for i, tree := range activeTrees {
+		ranks[i] = make(map[int]int, len(tree.Talents))
+		for j, node := range tree.Talents {
+			if digits[i][j] > 0 {
+				ranks[i][node.ID] = digits[i][j]
+			}
 		}
-		parts[i] = sb.String()
 	}
-	return strings.Join(parts, "-")
+	return ranks
 }
 
 // spendTree writes tree's ranks into digits (one per talent, tree order):
