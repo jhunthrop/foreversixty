@@ -9,6 +9,8 @@ import { FIRST_POINT_LEVEL, BASE_LEVEL } from '../planner/types';
 import { classSlugFromName } from '../report/tree-sizes';
 import { SPECS } from '../sim/specs';
 
+export { LEVELING_PLANS_URL, loadLevelingPlans } from './plans-file';
+
 /** The spec each class's guide says to level as (its Leveling sections, checked 2026-11-04). */
 export const LEVELING_SPEC_BY_CLASS: Readonly<Record<string, string>> = {
   druid: 'druid-feral',
@@ -21,9 +23,6 @@ export const LEVELING_SPEC_BY_CLASS: Readonly<Record<string, string>> = {
   warlock: 'warlock-affliction',
   warrior: 'warrior-arms',
 };
-
-/** Where the plans are published. */
-export const LEVELING_PLANS_URL = '/data/leveling-plans.json';
 
 /** One point of a guide's leveling order: the talent it goes into and that talent's rank after it. */
 export interface LevelingPoint {
@@ -53,6 +52,9 @@ export interface LevelingPlan {
   tipsUrl: string;
   /** The points from level 10 up to the first gear range, in spend order. */
   points: LevelingPoint[];
+  /** The whole ladder order, level 10 to 60: one talent id per point (`guideLadderOrder`). The
+   *  planner orders a band it loads for this spec by it (`loadFromBand`). */
+  ladder: number[];
 }
 
 export type LevelingPlans = Readonly<Record<string, LevelingPlan>>;
@@ -120,17 +122,4 @@ export function talentStepFor(
   const spent = talents.points.reduce((sum, count) => sum + count, 0);
   const nextIndex = plan.points.findIndex((point) => wornRank(talents.trees, point) < point.rank);
   return { toSpend: Math.max(0, earned - spent), nextIndex, nextPointLevel: FIRST_POINT_LEVEL + spent };
-}
-
-let plansPromise: Promise<LevelingPlans> | null = null;
-
-/** The published plans, fetched once per page; an empty map when they cannot be read. */
-export function loadLevelingPlans(fetcher: typeof fetch = fetch): Promise<LevelingPlans> {
-  plansPromise ??= fetcher(LEVELING_PLANS_URL)
-    .then((response) => (response.ok ? (response.json() as Promise<LevelingPlans>) : {}))
-    .catch(() => {
-      plansPromise = null;
-      return {};
-    });
-  return plansPromise;
 }
