@@ -190,10 +190,11 @@ func TestMageTalentAuraLinesCheckTheTalent(t *testing.T) {
 	}
 }
 
-// Before Missile Barrage (levels 20 and 21 on the leveling order, and band 20's
-// whole build) Arcane Missiles is the Arcane mage's best spell on a long fight,
-// ahead of Arcane Blast. That stays an explicit line now that the Barrage line
-// checks its talent.
+// Until Missile Barrage has both ranks (levels 20 to 22 on the leveling order,
+// and band 20's whole build) Arcane Missiles is the Arcane mage's best spell on
+// a long fight, ahead of Arcane Blast. At 22, with one rank, Missiles first is
+// 49.0 DPS against 41.4 for Blast first (round 18); at 23 Blast first wins. The
+// talent's aura (400588) carries the rank as its tag.
 func TestArcaneCastsMissilesBeforeMissileBarrage(t *testing.T) {
 	curated, err := loadLadderCurated(repoRoot, "mage-arcane")
 	if err != nil {
@@ -212,12 +213,12 @@ func TestArcaneCastsMissilesBeforeMissileBarrage(t *testing.T) {
 			blast = i
 		}
 		cond := compact(protojson.Format(a.GetCondition()))
-		if id == 10212 && cond == `{"not":{"val":{"auraIsKnown":{"auraId":{"spellId":400589}}}}}` {
+		if id == 10212 && cond == `{"not":{"val":{"auraIsKnown":{"auraId":{"spellId":400588,"tag":2}}}}}` {
 			missiles = i
 		}
 	}
 	if missiles < 0 || blast < 0 || missiles > blast {
-		t.Fatalf("want an Arcane Missiles line gated on not knowing Missile Barrage ahead of Arcane Blast; missiles %d, blast %d", missiles, blast)
+		t.Fatalf("want an Arcane Missiles line gated on not having Missile Barrage 2/2 ahead of Arcane Blast; missiles %d, blast %d", missiles, blast)
 	}
 }
 
