@@ -198,3 +198,13 @@ Skyborne Arms leads the published race by +0.4 to +1.0%. Horde bare 60 is the on
 For other lanes:
 - druid / healers: a Read Leyline line for Skyborne Restoration druids measures +0.7% (K3). Worth it if a Skyborne druid is ever published.
 - warrior: Skyborne is within 1% of the published race for Arms and Fury on the current (cloned) base stats.
+
+## Wave 10: Decimation's 6%
+
+Merged site int/r15 cf47d2e54 and fork int/r15 fbc5dbddf first. No code change.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| M1 | **Decimation's damage half is 3% / 6%, and the engine is right.** The 0 in 440870's SpellEffect row (record 1341977, effect 3: aura 108 misc 0, mask 257 = Shadow Bolt plus Searing Pain) is not the rank's value. In Forever's talent trees each rank's points come from TraitDefinitionEffectPoints: TraitDefinition 135428 (spell 440870) gives effect 3 curve 110390, which is 3 at rank 1 and 6 at rank 2, matching the talent text. The same table gives effect 0 (curve 83197: -20 / -40, Soul Fire's cast-time cut) and effect 1 (curve 83196: -45 / -90, the cooldown cut). The live 70755 push (fetched now: CurvePoint 2,309 entries, TraitDefinitionEffectPoints 68, SpellEffect 1,716) touches none of these records. The engine applies 1.03 / 1.06 to Shadow Bolt and Searing Pain on a target below 35% (`soul_fire.go:104`, called from `shadowbolt.go:78` and `searing_pain.go:74`), and the five `decimation_test.go` tests pass. No web research was needed: the client's own rank curve settles it. | wago TraitDefinition, TraitDefinitionEffectPoints, CurvePoint, SpellEffect 70755 plus live push | Aligned | - | - |
+
+Demonology now, on int/r15 cf47d2e54 (unchanged by this wave; the rise since wave 4 comes from other lanes' merges). Raid 60: horde 706.7 / 706.2, alliance 716.6 / 717.6. Bare horde, seeds 1 / 50001: 20 55.0 / 54.9, 30 91.3 / 91.3, 40 162.7 / 162.8, 50 229.7 / 229.7, 60 386.0 / 385.9.
