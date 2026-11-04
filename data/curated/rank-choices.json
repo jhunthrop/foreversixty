@@ -326,14 +326,8 @@
           {
             "from_level": 47,
             "to_level": 49,
-            "rank": 1,
-            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 2,
-            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
+            "rank": 4,
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 4 (level 22) keeps 60 to 50% of its bonus at 47 to 49 and beats the top rank by 0.1 to 0.4% at both seeds and factions; at 43 to 46 the two tie, so no row."
           }
         ]
       },
@@ -361,7 +355,8 @@
           {
             "from_level": 47,
             "to_level": 49,
-            "rank": 1
+            "rank": 2,
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 2 beats rank 1 at 47 to 49 (rank 1 keeps 40 to 50% of its bonus there)."
           }
         ]
       },
@@ -377,27 +372,34 @@
           },
           {
             "from_level": 40,
-            "to_level": 43,
+            "to_level": 42,
             "rank": 1,
             "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
           },
           {
-            "from_level": 44,
-            "to_level": 48,
-            "rank": 2,
-            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
-          },
-          {
-            "from_level": 49,
+            "from_level": 43,
             "to_level": 49,
-            "rank": 3,
-            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
+            "rank": 2,
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 2 beats rank 1 by 2.9 to 3.6% at 43 and rank 3 by 8% at 49; it holds at 44 to 48."
           },
           {
             "from_level": 50,
-            "to_level": 53,
+            "to_level": 54,
+            "rank": 3,
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 3 beats rank 4 by 4 to 11% at 50 to 53 and by 0.15 to 0.3% at 54: with the Oath's whole 100 to 115 on every cast, the cheaper rank heals more before the mana runs out."
+          },
+          {
+            "from_level": 55,
+            "to_level": 59,
             "rank": 4,
-            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 4 beats rank 3 by 11% at 55 and rank 5 by 15% at 56 to 59."
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 4,
+            "preset": "bare",
+            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Bare 60: rank 4 beats the authored rank 5 by 9.8 to 9.9% at both seeds and factions; the raid preset keeps rank 5 (its ranks all hold at raid 60)."
           }
         ]
       },
@@ -407,9 +409,9 @@
         "bands": [
           {
             "from_level": 40,
-            "to_level": 46,
+            "to_level": 49,
             "rank": 1,
-            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
+            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md). Round 20: rank 1 also beats rank 2 by 0.3 to 0.4% at 47 to 49 (both seeds and factions); from 50 the ranks tie and no row applies."
           }
         ]
       }
