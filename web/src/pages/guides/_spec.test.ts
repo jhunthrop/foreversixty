@@ -303,6 +303,7 @@ describe('/guides/warrior/arms rotation rows for the raid build', () => {
       .filter((row) => row.includes('data-testid="guide-rotation-raid-build"'))
       .map((row) => /class="rotation-name"[^>]*>\s*([^<]+?)\s*</.exec(row)?.[1]);
     expect(tagged.sort()).toEqual(['Reckless Swings', 'Spearing Strike']);
+    expect(html).toContain('data-testid="guide-rotation-raid-build-legend"');
     const rail = html.split('data-testid="guide-rail-rotation"')[1]?.split('</ul>')[0] ?? '';
     expect(rail).not.toContain('Reckless Swings');
   });

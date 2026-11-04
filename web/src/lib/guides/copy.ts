@@ -66,7 +66,10 @@ export const guidesCopy = {
   priority: 'Priority',
   cooldowns: 'Cooldowns',
   /** A rotation row for a talent only the raid build takes. */
-  raidBuildTag: 'Raid build',
+  raidBuildTag: 'Raid build only',
+  /** Said once above the lists when a row carries that tag. */
+  raidBuildLegend:
+    'Raid build only: a talent the level 60 build does not take. On the level 60 build, skip that row.',
   bestInSlot: 'Best in slot',
   levelRange: 'Level range',
   bisCaption: (race: string, faction: string): string => `Picks for a ${race} (${faction}).`,
