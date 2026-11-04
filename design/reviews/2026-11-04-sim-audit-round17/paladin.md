@@ -43,6 +43,25 @@ How to read the results:
 
 **Also note:** at 50-59 most of the gain from Holy Light rank 2 comes from the below-40% emergency line behind Divine Favor (line 3), not the spare-mana line. Holy Light at top rank on line 3 alone: 50: 177.4 to 164.2; 55: 192.7 to 162.8; 59: 202.8 to 167.9 (seeds 1/50001 agree). The heal profile has no tank-death cost, so a cheap rank on the "heal that must land" scores well in the model. If the Oath is not penalized, it is the owner's taste call whether to scope the 47-59 rows to line 4 (`lines`) for real-play safety. I did not change it.
 
+## Hedge (coordinator's decision: option c, rows kept)
+
+The coordinator asked for a hedge: keep the cheap Holy Light ranks on the spare-mana line (line 4) only, and cast the top rank on the below-40% Divine Favor heal (line 3). I measured it at 10,000 iterations, seeds 1 and 50001 (agreeing), on the own-band heal profile, alliance.
+
+| level | current rows | line 3 at top rank | cost |
+|---|---|---|---|
+| 47 | 160.6 | 159.3 | -0.8% |
+| 49 | 157.5 | 152.8 | -3% |
+| 50 | 177.4 | 164.4 | -7.3% |
+| 54 | 190.2 | 160.4 | -15.7% |
+| 59 | 202.8 | 167.8 | -17% |
+
+- **Line 4's cheap rank still wins.** It beats the top rank on line 4 beyond error at every level checked, both factions. For example, at 59: 167.8 / 167.9 against 164.5 / 164.5.
+- **`lines` cannot scope only the 47-59 rows.** It scopes a whole spell entry, and the authored id must be unique per spec. Scoping Holy Light to [4] also takes the 20-24 rank-1 row off line 3. That costs -12% at 20 (48.8 to 42.8), -0.6% at 24, and ties at 25-29.
+- **Decision (c):** the rows stay as modelled. They matter only from level 47, so they carry no day-one risk. The platform lane is building per-band `lines` this round, which makes the hedge or the fix a one-row edit later.
+- Raw numbers are in scratchpad r17/paladin/hedge10k.txt.
+
+**Owner check, for the post-launch list.** It needs a Holy paladin of level 25 or higher with Oath of Light, so it is not a day-one item. Run the check below and give the results to the paladin lane. Revisit when it is done, or as soon as launch logs show a low-rank Holy Light on an Oath target at level 40 or higher.
+
 ## Holy
 
 | # | finding | evidence and source | confirmed? | origin | fix sha |
