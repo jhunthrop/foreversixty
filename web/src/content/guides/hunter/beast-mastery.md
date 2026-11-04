@@ -57,7 +57,7 @@ Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial 
 ### Weaknesses
 
 - A dead or idle pet is a large part of your damage gone
-- The pet takes no stat buffs from other players in Forever, so your gear is what makes it stronger
+- The pet takes no stat buffs from other players in Forever, only your own Heart of the Lion, so your gear is what makes it stronger
 - Mana runs out on long fights if you spend Arcane Shots freely
 
 ### In a raid
@@ -154,6 +154,6 @@ Beast Mastery is the best way to level a hunter. Keep the pet within a few level
 
 Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
-Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. When rank 2 arrives at 28, leave it in your spellbook and keep rank 1 on your bar all the way to 60. Training a new rank upgrades the bar button on its own, so drag rank 1 back from the book. Out in the world you go out of mana before the mob dies, and rank 1 hits almost as hard as the top rank, since most of the shot is your weapon, for about a quarter of the mana. In a raid at 60, with Judgement of Wisdom on the boss and a mana potion, cast the top rank.
+Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. When rank 2 arrives at 28, leave it in your spellbook and keep rank 1 on your bar all the way to 60. Training a new rank upgrades the bar button on its own, so drag rank 1 back from the book. Out in the world you run dry over a chain of pulls, and rank 1 still hits for well over half of what the newest rank does, since most of the shot is your weapon, for far less mana. More damage for every point of mana keeps you shooting instead of drinking. In a raid at 60, with Judgement of Wisdom on the boss and a mana potion, cast the top rank.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get, and Bestial Wrath comes the same level.
