@@ -2,8 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { decodeBandTalents, decodeBuildTrees, litTalents, primaryTree } from './build-tree';
-import { bandEntry, loadBisFile } from '../bis/load';
+import { decodeBuildTrees, litTalents, primaryTree } from './build-tree';
 
 const BUILD = '1.60.1.70374';
 
@@ -50,24 +49,6 @@ describe('primaryTree', () => {
 
   it('is undefined for an empty list', () => {
     expect(primaryTree([])).toBeUndefined();
-  });
-});
-
-describe('decodeBandTalents', () => {
-  it('decodes a BiS band’s own dash-separated talent string, point totals matching the band’s own talent_points', () => {
-    const file = loadBisFile('warrior-fury', BUILD);
-    if (file === null) throw new Error('warrior-fury BiS file missing');
-    const band = bandEntry(file, 60, 'alliance');
-    if (band === undefined) throw new Error('band 60 alliance missing');
-
-    const trees = decodeBandTalents(BUILD, 'warrior', band.talents);
-    expect(trees).toBeDefined();
-    const totalPoints = trees!.reduce((sum, tree) => sum + tree.points, 0);
-    expect(totalPoints).toBe(band.talent_points);
-  });
-
-  it('is undefined when the string does not split into exactly three segments', () => {
-    expect(decodeBandTalents(BUILD, 'warrior', '1-2')).toBeUndefined();
   });
 });
 

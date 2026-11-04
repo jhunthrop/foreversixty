@@ -9,6 +9,7 @@ import { readSpecCatalog } from '../bis/load';
 import { indexTalents, validateOrder } from '../planner/rules';
 import {
   buildCodeDigits,
+  guideLadderSteps,
   guideLevelingBuilds,
   guideLadderOrder,
   guideTargets,
@@ -215,5 +216,39 @@ describe('the ladder’s point order', () => {
       'Spirit Tap',
       'Spirit Tap',
     ]);
+  });
+});
+
+describe('guideLadderSteps', () => {
+  it.each(['rogue-combat', 'priest-shadow', 'hunter-beast-mastery'])(
+    '%s: one step a level from 10 to 60, each the ladder’s own build at that level',
+    (spec) => {
+      const guide = guideBuilds().find((row) => row.spec === spec);
+      if (guide === undefined) throw new Error(`${spec} has no guide build`);
+      const steps = guideLadderSteps(BUILD, guide.classSlug, spec, guide.treeIndex, guide.build);
+      expect(steps.map((step) => step.level)).toEqual(Array.from({ length: 51 }, (_, i) => i + 10));
+      const trees = loadLadderTrees(BUILD, guide.classSlug)!;
+      const targets = guideTargets(trees, buildCodeDigits(guide.build)!);
+      const first = ladderFirstFor(spec);
+      for (const step of steps) {
+        expect(step.talents, `${spec} level ${step.level}`).toBe(
+          ladderTalentString(trees, targets, guide.treeIndex, step.level, first),
+        );
+      }
+      // The points, in order, are the ladder's own order, each talent's rank counted up.
+      const order = guideLadderOrder(BUILD, guide.classSlug, spec, guide.treeIndex, guide.build);
+      expect(steps.flatMap((step) => (step.talentId === null ? [] : [step.talentId]))).toEqual(order);
+      const held = new Map<number, number>();
+      for (const step of steps) {
+        if (step.talentId === null) continue;
+        held.set(step.talentId, (held.get(step.talentId) ?? 0) + 1);
+        expect(step.rank).toBe(held.get(step.talentId));
+        expect(step.name).not.toBeNull();
+      }
+    },
+  );
+
+  it('is empty for a code that does not read', () => {
+    expect(guideLadderSteps(BUILD, 'rogue', 'rogue-combat', 1, 'not a code')).toEqual([]);
   });
 });
