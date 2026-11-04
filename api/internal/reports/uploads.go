@@ -29,7 +29,7 @@ const (
 	maxFilename = 120
 	// uploadsStartPerHour bounds how often one signed-in account may call
 	// POST /v1/uploads: each call opens a real R2 multipart upload, so
-	// this is a per-account cost cap on top of the router-wide 120/min
+	// this is a per-account cost cap on top of the router-wide 300/min
 	// per-IP budget (night-api-security finding, LOW - a compromised
 	// session could otherwise open up many uploads from a rotating set
 	// of addresses). Uploads carry no entitlement tier of their own -

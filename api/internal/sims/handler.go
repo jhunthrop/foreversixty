@@ -53,7 +53,7 @@ const (
 	publicObjectStale  = 600 * time.Second
 	// simsRunPerMinute bounds how often one signed-in account may call
 	// POST /v1/sims/run: each call dispatches a real Cloud Run job, so
-	// this is a per-account cost cap on top of the router-wide 120/min
+	// this is a per-account cost cap on top of the router-wide 300/min
 	// per-IP budget (night-api-security finding, LOW - a compromised
 	// session could otherwise run up real compute cost from a rotating
 	// set of addresses). The route already gates on
