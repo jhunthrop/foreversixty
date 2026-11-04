@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:mage:gnome:2520150000002/51521001230133031/003:'
 raidBuild: 'FS1:1.60.1.70755:mage:gnome:2530050000002/50520201230133031/003:'
 recommendedRaces: [gnome, orc]
-statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
+statPriority: [Hit, Spell power, Fire power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Fire Mage in Forever: the pre-pull Pyroblast, Scorch spam, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'
 updated: 2026-11-02
 confidence: inferred
@@ -37,7 +37,7 @@ Fire spams Scorch, keeps its own Improved Scorch stacks up, turns crits into fas
 - The cheapest filler a mage has: Scorch is 150 mana for a 1.5 second cast
 - Every crit pays twice, once through Ignite and once through Heating Up
 - Fire Power rewards you for every burn you keep on the boss
-- Fire Blast and a 1.5 second Pyroblast give you damage on the move
+- Fire Blast is instant and a 3-stack Pyroblast is short enough to cast between steps, so you keep doing damage through movement
 
 ### Weaknesses
 
@@ -59,7 +59,7 @@ Fire spams Scorch, keeps its own Improved Scorch stacks up, turns crits into fas
 - **Fire Power** (3 points): 3% more Fire damage for each of your Fire effects on the target, up to 12%. Improved Scorch, Ignite and Pyroblast's burn are three of them.
 - **Incineration** and **Critical Mass** (8 points): 10% more crit on Scorch and Fire Blast and 6% more on every Fire spell, which is what keeps Ignite and Heating Up rolling.
 - **Master of Elements** (3 points): every Fire crit refunds 30% of the spell's base cost. It is the steady trickle that makes the gems and potions last.
-- **Improved Fire Blast** (2 points): Fire Blast every 6 seconds instead of 8, and every Fire Blast is a Heating Up stack.
+- **Improved Fire Blast** (2 points): Fire Blast every 6 seconds instead of 8, and 15 yards more range. With Heating Up, that is a Pyroblast stack every 6 seconds.
 - **Combustion** (1 point): each Fire hit adds 10% Fire crit until three non-periodic crits land, on a 3 minute cooldown.
 
 Fire takes exactly 31 points to Combustion and skips Blast Wave and Improved Flamestrike, which are AoE only. Accelerant only speeds up Fireball, Frostfire Bolt and Arcane Wrath, none of which you cast at 60, so it gets at most a spare point.
@@ -78,7 +78,7 @@ The 60 build keeps a point in **Impact** for the odd stun on mobs while you farm
 
 **Ignite and threat.** Ignite's damage is your damage and your threat. Fire mages pull more than anyone else in the first twenty seconds, mostly off a Combustion window that crits three times in a row. You have no Ice Block and no Invisibility, so the only fix is not to pull: watch your threat, hold Combustion on a fresh tank, and stop casting for a global if you are close. Burning Soul takes some off the top.
 
-**Mana in a 3 minute fight.** Fire runs dry first. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. In Forever, mana gems and Demonic Runes share one 2 minute cooldown, and the Robe of the Archmage has its own 5 minute one. Evocation is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep Fire Blast on cooldown even when you are short: skipping it saves less damage than it costs. Never downrank Scorch; the top rank is already the cheapest damage you have.
+**Mana in a 3 minute fight.** Fire runs dry first. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. A mana gem, a Demonic Rune and the Robe of the Archmage lock each other out for a minute after you use one, and the Robe has its own 5 minute cooldown on top. Evocation is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep Fire Blast on cooldown even when you are short: skipping it saves less damage than it costs. Never downrank Scorch; the top rank is already the cheapest damage you have.
 
 **AoE.** Flamestrike is a 3 second cast that burns the ground for 8 seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range. Flamestrike costs 990 mana, so two of them and you are on the wand. Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
 
@@ -94,11 +94,11 @@ Hit and spell power lead for Fire until the hit cap: every missed Scorch is a mi
 
 ## Enchants and consumables
 
-Fire casts nothing but Fire, so the Fire-only elixir and enchants are full value for you. Bring Major Mana Potions and Demonic Runes to every boss; you will use both.
+Fire casts nothing but Fire, so any Fire-only spell power on gear is full value for you. Greater Arcane Elixir is your elixir. Bring Major Mana Potions and Demonic Runes to every boss; you will use both.
 
 ## Races
 
-**Gnome** is the best Alliance Fire mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Combustion. **Human** brings 1% crit, which Fire turns into Ignite. On the Horde, **Orc** Blood Fury adds 10% spell power for 15 seconds every 2 minutes and **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes. Both line up with Combustion. **Undead** gets a small Shadow drain from Touch of the Grave and Will of the Forsaken for fear fights.
+**Gnome** is the best Alliance Fire mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Combustion on the pull and again the moment it is back. **Human** brings 1% crit, which Fire turns into Ignite. On the Horde, **Orc** Blood Fury adds 10% spell power for 15 seconds every 2 minutes: press it with Combustion on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Combustion. **Undead** gets a small Shadow drain from Touch of the Grave and Will of the Forsaken for fear fights.
 
 ## Professions
 
