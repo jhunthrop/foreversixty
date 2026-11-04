@@ -89,7 +89,7 @@ export interface BisSlot {
   low_value?: boolean;
   /** A relic published although its measured gain over an empty relic slot is inside its
    *  error: its effect reaches a spell the rotation casts (`report.go` `NearTie`). */
-  near_tie?: boolean;
+  near_tie?: BisNearTie;
   /** Present only on a slot the ranker adopted for the set bonus it completes. */
   set_bonus?: BisSetBonus;
   /** Why an empty slot is empty: `two_hand_equipped`, `no_dps_value`, `no_sourced_item`,
@@ -185,6 +185,13 @@ export interface BisPresetMeta {
   debuffs: BisPresetEffect[];
   consumes: BisPresetEffect[];
   notes?: string;
+}
+
+/** `BisSlot.near_tie` (`report.go` `nearTie`): the relic's measured gain over an empty relic
+ *  slot and the error bar it sits inside, both in the band's rate unit. */
+export interface BisNearTie {
+  gain: number;
+  error: number;
 }
 
 /** `BisBand.hit_to_cap` for a weapon user (`sim/cmd/leveling-bis/hitcap.go`): the weights

@@ -222,8 +222,11 @@ func relicRow(t *testing.T, gain, stdErr float64) slotRow {
 // as a near tie instead.
 func TestBuildReportPublishesATouchingRelicInsideItsErrorAsANearTie(t *testing.T) {
 	row := relicRow(t, 0.8, 0.7)
-	if row.ItemID != libramOfLaw || row.EmptyReason != "" || !row.NearTie {
+	if row.ItemID != libramOfLaw || row.EmptyReason != "" || row.NearTie == nil {
 		t.Fatalf("ranged row = %+v, want Libram of Law published as a near tie", row)
+	}
+	if row.NearTie.GainDPS != 0.8 || row.NearTie.Error != 1.4 {
+		t.Errorf("near tie = %+v, want the measured gain 0.8 inside its 1.4 bar (2 x 0.7)", *row.NearTie)
 	}
 	if row.LowValue {
 		t.Errorf("a relic near tie is not the weapon fallback: low_value set")
@@ -231,7 +234,7 @@ func TestBuildReportPublishesATouchingRelicInsideItsErrorAsANearTie(t *testing.T
 	if worse := relicRow(t, -1.6, 0.7); worse.ItemID != 0 || worse.EmptyReason != noDPSValueReason {
 		t.Errorf("a relic measurably worse than an empty slot = %+v, want empty", worse)
 	}
-	if real := relicRow(t, 1.5, 0.2); real.NearTie {
+	if real := relicRow(t, 1.5, 0.2); real.NearTie != nil {
 		t.Errorf("a relic with a real gain is no near tie: %+v", real)
 	}
 }

@@ -59,6 +59,15 @@ func preferTouchingRelic(picks map[string]slotPick, slot string) map[string]slot
 	return out
 }
 
+// nearTie is a published relic near tie's measured gain over an empty relic
+// slot and the error bar it sits inside (trinketGainSignificanceMultiplier
+// times its standard error, the bar a significant gain must clear), so the
+// page can show how small it is.
+type nearTie struct {
+	GainDPS float64 `json:"gain"`
+	Error   float64 `json:"error"`
+}
+
 // relicNearTie reports whether a modelled relic whose measured gain over an
 // empty relic slot is inside its own error still publishes, as a near tie
 // (report.go's NearTie). A relic has no stats to lose and every class that

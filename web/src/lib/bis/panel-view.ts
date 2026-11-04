@@ -428,12 +428,15 @@ function buildRowView(
       buildAlternativeView(alt, faction, lootFile, tooltipFor, band, unit),
     ),
     replacedName: replacedBySlot.get(row.slot),
-    evidenceLine: evidenceLineFor(row.swap_note, row.dps_delta, unit),
+    evidenceLine:
+      row.near_tie === undefined
+        ? evidenceLineFor(row.swap_note, row.dps_delta, unit)
+        : bisCopy.nearTieEvidence(row.near_tie.gain, row.near_tie.error, rateUnitFor(unit)),
     verifiedGlyphTitle: verifiedGlyphTitleFor(row, unit),
     effectUnmodelled: row.effect_unmodelled,
     notSimChecked: row.sim_status === 'not_in_sim',
-    lowValue: row.low_value === true || row.near_tie === true ? true : undefined,
-    lowValueTitle: row.near_tie === true ? bisCopy.nearTieTitle(rateUnitFor(unit)) : undefined,
+    lowValue: row.low_value === true || row.near_tie !== undefined ? true : undefined,
+    lowValueTitle: row.near_tie !== undefined ? bisCopy.nearTieTitle(rateUnitFor(unit)) : undefined,
     setBonus: row.set_bonus && {
       line: bisCopy.setBonusLine(row.set_bonus.set, row.set_bonus.pieces),
       title: bisCopy.setBonusTitle(row.set_bonus.set, row.set_bonus.pieces, row.set_bonus.bonus),
