@@ -46,7 +46,7 @@ describe('the bundled sample report data', () => {
   const report = read<{ units: Unit[]; fights: { index: number }[] }>('report.json');
 
   it('is the beta night, dated from its own log, with no owner or guild', () => {
-    expect(meta.title).toBe('Beta night, 17 Sept 2026');
+    expect(meta.title).toBe('Sample raid night, 17 Sept 2026');
     expect(meta.created_at.startsWith('2026-09-17')).toBe(true);
     expect(meta.owner).toBeNull();
     expect(meta.guild).toBeUndefined();

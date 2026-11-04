@@ -28,7 +28,9 @@ import communityLinks from '../data/links.json';
 // Footer.astro's Contribute link uses; the data pack is released nightly under its own tag.
 export const CURSEFORGE_URL = 'https://www.curseforge.com/projects/1706689';
 export const WAGO_URL = 'https://addons.wago.io/addons/foreversixty';
-export const GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases/latest`;
+// Not releases/latest: that is the companion's release (companion.yml keeps --latest), which
+// carries no addon zip. The addon's own releases are tagged addon-v<version>.
+export const GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases?q=addon-v`;
 export const DATA_GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases?q=data-v`;
 
 // CurseForge is the step's button; Wago and the zip are secondary buttons beside it in one row.
@@ -114,7 +116,8 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
         <p class="text-pretty text-muted text-[13px] leading-relaxed" data-testid="setup-data-addon">
           {addonCopy.installDataHint}
         </p>
-        <p class="text-pretty text-[14px] leading-relaxed" data-testid="setup-how-it-arrives">
+        <!-- Signed out only: signed in, SetupStepLine below says the characters are in. -->
+        <p class="text-pretty setup-when-out text-[14px] leading-relaxed" data-testid="setup-how-it-arrives">
           {arrivesLead}
           <a href="#paste" class="whitespace-nowrap" data-open-disclosure="setup-try-export">
             {addonCopy.setupTryExport}
@@ -289,12 +292,9 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
               />
             </picture>
           </div>
-          <!-- Below the picture, never over it: the companion's own SETTINGS tab and text sit in its corners. -->
-          <span
-            class="pill pill-sample in-[html[data-session='1']]:hidden w-fit"
-            data-session-hide
-            data-testid="setup-companion-capture-label"
-          >
+          <!-- Below the picture, never over it: the companion's own SETTINGS tab and text sit in its corners.
+               Shown signed in too: the picture's player name is a sample, never the viewer's. -->
+          <span class="pill pill-sample w-fit" data-testid="setup-companion-capture-label">
             {capture.exampleLabel}
           </span>
         </div>

@@ -192,7 +192,8 @@ export const addonCopy = {
   setupCompanionPair: 'Sign in with Battle.net inside the companion; it connects itself.',
   /** Said under the download while the release carries no Mac bundle (companion.yml has the
    *  darwin targets off): the repo declines a "macOS next". */
-  setupCompanionPlatforms: (available: string): string => `${available} only; Mac is not supported yet.`,
+  setupCompanionPlatforms: (available: string): string =>
+    `${available} only; Mac is not supported yet. On a Mac, paste an export instead.`,
   /** The primary download button: "Download for Windows". */
   setupCompanionDownload: (platform: string): string => `Download for ${platform}`,
   /** A 2x crop of the 0.2.11 companion's Status page, the Logging state credited to a fictional

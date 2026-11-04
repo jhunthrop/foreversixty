@@ -184,7 +184,7 @@ for (const size of SIZES) {
       expect(await goldSteps(page)).toEqual(['2']);
       await chipRowIsOneLine(page);
       await pictureShowsPhoneCrop(page, phone);
-      await expect(page.getByTestId('setup-companion-capture-label')).toBeHidden();
+      await expect(page.getByTestId('setup-companion-capture-label')).toBeVisible();
       await settle(page);
       await shot(page, `setup-signed-in-pending-${size.name}`);
     });

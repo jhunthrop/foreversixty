@@ -81,7 +81,9 @@ for (const size of SIZES) {
       await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Install from CurseForge' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Download for Windows' })).toBeVisible();
-      await expect(page.getByText('Windows only; Mac is not supported yet.')).toBeVisible();
+      await expect(
+        page.getByText('Windows only; Mac is not supported yet. On a Mac, paste an export instead.'),
+      ).toBeVisible();
       await expect(page.getByTestId('setup-line-signin')).toBeHidden();
       for (const id of ['setup-try-export', 'setup-everything']) {
         await expect(page.getByTestId(id)).not.toHaveAttribute('open', '');

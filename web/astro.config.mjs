@@ -163,6 +163,9 @@ export default defineConfig({
         !page.endsWith('/report-shell') &&
         !page.endsWith('/reports') &&
         !page.endsWith('/design-sheet') &&
+        // The character page's shell: it only answers with a name after /character/.
+        !page.endsWith('/character') &&
+        !page.endsWith('/character/') &&
         !page.endsWith('/app/auth') &&
         !page.includes('/admin/'),
       // lastmod comes from each content file's `updated` field, so a page's sitemap entry
