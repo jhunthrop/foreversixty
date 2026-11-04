@@ -107,4 +107,10 @@ Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and 
 
 ## Leveling
 
-Enhancement levels faster: it fights in melee, lives through bad pulls and spends less time drinking. If you want to level as Elemental anyway, Lightning Bolt and Flame Shock carry you the whole way, Searing Totem adds damage to every pull, Chain Lightning from 32 handles pairs, and Lightning Mastery at 40 is a 15 second burst for the pull that goes wrong. Cast the top rank of Lightning Bolt when you drink after every pull. Drop a rank or two on a long fight where your mana, not the mob, runs out first. Learn Ghost Wolf at 20: its 3 second cast is slow, but the 40% speed is how a shaman travels until a mount. Shamans wear leather until 40 and mail from 40, and Chain Heal comes at 40 as well.
+### Levels 1 to 19
+
+Pull with Lightning Bolt, add Earth Shock from 4 and finish in melee to save mana; a shaman has no wand. Do the Call of Earth class quest at 4 for Stoneskin Totem and Call of Fire at 10 for Searing Totem, which goes down on every pull from then on. Flame Shock also comes at 10, and Fire Nova at 12 bursts around that Searing Totem when two mobs reach you. Your first talent points go to Convection from 10 to 14, 2% off the mana cost of your shocks and Lightning Bolt per point, then Concussion from 15 to 19, 1% more Lightning Bolt and Earth Shock damage per point. Wear leather or cloth with Intellect, take quest rewards over vendor gear, and replace your starter weapon with the first quest staff or mace that carries spell damage.
+
+### Levels 20 to 60
+
+Enhancement levels faster: it fights in melee, lives through bad pulls and spends less time drinking. If you want to level as Elemental anyway, Lightning Bolt and Flame Shock carry you the whole way, Chain Lightning from 32 handles pairs, and Lightning Mastery at 40 is a 15 second burst for the pull that goes wrong. Cast the top rank of Lightning Bolt when you drink after every pull. Drop a rank or two on a long fight where your mana, not the mob, runs out first. Learn Ghost Wolf at 20: its 3 second cast is slow, but the 40% speed is how a shaman travels until a mount. Shamans wear leather until 40 and mail from 40, and Chain Heal comes at 40 as well.

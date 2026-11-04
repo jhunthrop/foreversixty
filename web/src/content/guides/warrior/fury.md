@@ -16,8 +16,8 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Warcraft Tavern: Classic Fury Warrior DPS rotation'
-    url: https://www.warcrafttavern.com/wow-classic/guides/dps-warrior-rotation/
+  - label: 'Warcraft Tavern, Forever Fury Warrior guide'
+    url: https://www.warcrafttavern.com/forever/guides/fury-warrior/
     kind: community
   - label: 'Warcraft Tavern, Forever warrior guide'
     url: https://www.warcrafttavern.com/forever/guides/warrior/
@@ -121,5 +121,14 @@ The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% cri
 Blacksmithing and Mining. Blacksmithing makes melee weapons and armor, and Mining feeds it. Engineering is the other pick: Goblin Sapper Charges and Dense Dynamite on every trash pack, and grenades in PvP.
 
 ## Leveling
+
+### Levels 1 to 19
+
+- Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 12. Rend's bleed ignores armor, so put it on anything that will live through it. Tactical Mastery at 14 lets you keep 10 Rage through a stance swap.
+- At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander worth keeping for when you dual wield.
+- Your first five points, 10 to 14, go into Cruelty for 5% melee crit. One point of Lingering Rage at 15 holds your Rage longer between pulls, then Unbridled Wrath from 16 to 20 gives your hits a 60% chance at an extra Rage.
+- Dual Wield trains at 20. Until then, swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
+
+### Levels 20 to 60
 
 Fury levels fastest once Bloodthirst and Whirlwind are in, but it needs two good one-handers to get there. Until Whirlwind arrives at 36 you fight in Battle Stance, so Overpower is still in your bar: press it whenever it lights. Charge every pull, and Victory Rush whenever it is up after a kill: it heals 10% and comes back every 30 seconds, so open the next pull with it if the last one died fast. Bloodrage on cooldown. Berserker Stance trains at 30, and from 36 Whirlwind makes it your home stance and pulls of two or three quick.

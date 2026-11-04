@@ -105,4 +105,12 @@ Tailoring and Enchanting: tailored cloth and a couple of enchanted caster pieces
 
 ## Leveling
 
+### Levels 1 to 19
+
+- Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10; it is the pet that makes solo play easy. Drain Life comes at 14.
+- Your points at 10 and 11 go into Improved Life Tap for 20% more mana from every tap, then Suppression from 12 to 16 for 5% hit and 20% less threat. Improved Corruption starts at 17 and makes Corruption instant at 21. Until then Corruption has a 2 second cast, so open with it while the mob is still running at you.
+- Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
+
+### Levels 20 to 60
+
 Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. Drain Life or Wrack while the DoTs run: with three of your effects on the target, Soul Siphon adds 36%, and Wrack costs far less mana than the Shadow Bolts it replaces. Wand the mob down when the DoTs are enough. Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards. Soul Harvest's mana regeneration then lets you drink less. Fire every Nightfall proc as an instant Shadow Bolt before its 10 seconds run out. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit.

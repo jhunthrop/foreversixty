@@ -18,13 +18,13 @@ sources:
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
   - label: 'Forever Sixty, what each stat is worth'
-    url: https://foreversixty.gg/data/curated/specs.json
+    url: https://foreversixty.gg/sim/weights
     kind: site
   - label: 'Warcraft Tavern, Classic Retribution Paladin rotation'
     url: https://www.warcrafttavern.com/wow-classic/guides/pve-retribution-paladin-rotations-cooldowns/
     kind: community
   - label: 'Forever Sixty, raids by phase'
-    url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
+    url: https://foreversixty.gg/sources
     kind: site
   - label: 'Forever Sixty, races'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
@@ -115,6 +115,15 @@ Hit comes first until the cap: every miss is a lost swing and a lost Seal proc, 
 Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and Elixirs of Holy Power, Forever's 40 Holy damage elixir, which reaches every Seal proc, Judgement and Consecration tick. Pick two that pay for your consumables.
 
 ## Leveling
+
+### Levels 1 to 19
+
+- Seal of Righteousness and Holy Light come at 1, Judgement and Blessing of Might at 4, Holy Strike at 6, Hammer of Justice at 8 and Lay on Hands at 10. Judgement does not use up your Seal, and it and Holy Strike both come back every 10 seconds.
+- At 12, the class quest from your trainer teaches Redemption. Do it before your first dungeon.
+- Your first five points, 10 to 14, go into Benediction: 10% less mana on every instant, which is your whole bar. Improved Judgement takes 15 and 16 for a Judgement every 8 seconds, then Conviction from 17 to 19 for 6% crit.
+- Take quest rewards over vendor gear and drop the starter weapon for the first slow two-hander you find: Seal of Righteousness hits harder per swing the slower the weapon. Paladins cannot use wands. You wear mail until plate at 40.
+
+### Levels 20 to 60
 
 Retribution is the paladin leveling spec, even if you want to heal or tank at 60. Pull with Judgement, Holy Strike on cooldown, and let Seal of Righteousness do the rest. Sanctified Judgement refunds most of each Seal, so on one or two mobs at a time you rarely drink.
 

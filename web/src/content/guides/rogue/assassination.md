@@ -116,4 +116,13 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ## Leveling
 
+### Levels 1 to 19
+
+- You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it is the hardest hit you have this early.
+- Poised also comes at 18: at full Energy out of combat your next ability costs 10 less, so walk into every pull capped and open with Ambush or Garrote.
+- Your first three points, 10 to 12, go into Improved Gouge, which holds the mob 1.5 seconds longer and gives you time to get behind it. Remorseless Attacks at 13 and 14 adds 40% crit to your next Sinister Strike, Backstab or Ambush after a kill, then Malice from 15 to 19 gives you 5% crit.
+- Wear leather and take quest rewards over vendor gear. Drop the Worn Dagger the moment a quest offers a better weapon, and keep throwing knives for pulling.
+
+### Levels 20 to 60
+
 Level Combat or Assassination with Sinister Strike until 40. Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Relentless Strikes comes late, at 39 to 44, and from then on most finishers hand their energy back. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.

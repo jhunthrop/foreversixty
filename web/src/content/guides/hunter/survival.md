@@ -119,6 +119,15 @@ Engineering gives Survival the AoE it lacks: grenades and explosives on trash. S
 
 ## Leveling
 
+### Levels 1 to 19
+
+- Raptor Strike from level 1 is your main button, with new ranks at 8 and 16. Train Aspect of the Monkey and Serpent Sting at 4, Hunter's Mark at 6, Wing Clip at 12 and Mongoose Bite at 16, which lights up after you dodge.
+- At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
+- Your first five points go into Improved Tracking, 1% damage per point against whatever you are tracking: Track Beasts from level 1, Track Humanoids at 10, Track Undead at 18. Keep the right one on. Savage Strikes at 15 and 16 adds 2% crit to your melee abilities per point, then Survivalist from 17 adds 2% health per point.
+- Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since Raptor Strike adds its damage on top of the weapon hit. Wear leather until mail at 40.
+
+### Levels 20 to 60
+
 Survival levels in melee. Keep a pet out while you level: Lone Wolf is one of the last points this build takes, and until then the pet holds aggro and adds damage. Dismiss it the moment you take Lone Wolf.
 
 Open with Hunter's Mark, send the pet, then walk in and queue Raptor Strike. Press Mongoose Bite whenever it lights up and keep Lacerate on anything that will live long enough to bleed. Wing Clip a runner. Wear Aspect of the Monkey until 30: its dodges open Mongoose Bite. At 30 switch to Aspect of the Beast and keep it up. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.

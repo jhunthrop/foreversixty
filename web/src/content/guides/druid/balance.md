@@ -123,4 +123,13 @@ Tailoring makes some of the best early caster gear, and Enchanting puts spell po
 
 ## Leveling
 
-Balance levels fine with Wrath and Moonfire, and Moonkin Form at 40 makes it smooth. Feral is faster: Cat Form kills without drinking, and Bear Form survives the bad pulls. If you level as Balance, take Improved Wrath first, Moonfire every pull, and Wrath until the mob dies. Starfire is for the opener on a mob that is not yet on you.
+### Levels 1 to 19
+
+- Wrath is yours from level 1, with new ranks at 6 and 14. Moonfire trains at 4, Entangling Roots at 8 to hold a second mob, Nature's Grasp at 10 and Faerie Fire at 18.
+- Improved Wrath takes your points from 10 to 14: Wrath 0.5 sec faster for half the mana. Genesis at 15 and 16 adds 4% to Moonfire's ticks and Rejuvenation, and Moonglow from 17 to 19 makes damage spells 25% cheaper.
+- At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form for the pulls that go wrong.
+- Druids cannot use wands, so swap the starter weapon for the first quest staff with Intellect. Leather or cloth quest rewards with Intellect and Spirit beat vendor gear, and the Aquatic Form quest at 16 pays the Aquarius Belt or the Idol of Shifting Tides.
+
+### Levels 20 to 60
+
+Balance levels fine with Wrath and Moonfire, and Moonkin Form at 40 makes it smooth. Feral is faster: Cat Form kills without drinking, and Bear Form survives the bad pulls. If you level as Balance, Moonfire every pull and Wrath until the mob dies. Starfire is for the opener on a mob that is not yet on you.

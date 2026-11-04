@@ -109,4 +109,12 @@ Skinning and Leatherworking is the classic cat pair: leather is your armor, and 
 
 ## Leveling
 
-Cat Form arrives at 20. Before that, play as a caster: Moonfire, then Wrath, and Bear Form from 10 when a pull gets heavy. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind once Shredding Attacks has it at 42 energy; before that, Claw buys more damage for its energy. Open from Prowl behind the mob: Ravage once you learn it at 32, or Pounce from 36 when you want the stun. Both need you behind the target in Forever. When you cannot get there, open with Claw. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Feral Charge's Cat Form leap lands you behind a mob for a Shred, and in Bear Form it is the charge you pull dungeon packs with. Respec into the raid build at 60.
+### Levels 1 to 19
+
+- Until 20 you are a caster: Moonfire from 4, then Wrath. At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, with Maul and Demoralizing Roar; shift when a pull gets heavy. Bash trains at 14, Swipe at 16.
+- Ferocity takes your points from 10 to 14: Maul and Swipe cost 5 less Rage now, Claw and Rake less Energy later. Feral Swiftness at 15 and 16 adds 4% dodge and Cat Form run speed, Feral Instinct at 17 adds 10% to Swipe, and Brutal Impact at 18 and 19 makes Bash stun longer and come back 30 seconds sooner.
+- Your bear hits with your weapon's DPS, so swap the starter weapon for the highest-DPS quest staff or two-handed mace. Leather quest rewards beat vendor gear, and the Aquatic Form quest at 16 pays the Idol of Shifting Tides. Druids cannot use wands.
+
+### Levels 20 to 60
+
+Cat Form arrives at 20. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind once Shredding Attacks has it at 42 energy; before that, Claw buys more damage for its energy. Open from Prowl behind the mob: Ravage once you learn it at 32, or Pounce from 36 when you want the stun. Both need you behind the target in Forever. When you cannot get there, open with Claw. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Feral Charge's Cat Form leap lands you behind a mob for a Shred, and in Bear Form it is the charge you pull dungeon packs with. Respec into the raid build at 60.

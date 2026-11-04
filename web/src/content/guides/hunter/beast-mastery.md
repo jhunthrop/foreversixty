@@ -132,9 +132,16 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 
 ## Leveling
 
-Beast Mastery is the best way to level a hunter. Tame your first pet at 10 and keep it within a few levels of you. The pet takes the hits, you shoot, and you rarely stop to eat.
+### Levels 1 to 19
 
-Your first five points go into Deadly Aspects. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training comes after it.
+- Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8 and Aspect of the Hawk at 10, which replaces Monkey for good.
+- At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
+- Your first five points go into Deadly Aspects: with Aspect of the Hawk up, each point is a 2% chance on Auto Shot for 30% ranged attack speed over 12 sec. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training starts at 17.
+- Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.
+
+### Levels 20 to 60
+
+Beast Mastery is the best way to level a hunter. Keep the pet within a few levels of you. The pet takes the hits, you shoot, and you rarely stop to eat.
 
 Open every pull with Hunter's Mark and Serpent Sting, send the pet, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 

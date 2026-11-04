@@ -111,4 +111,12 @@ Tailoring makes healing cloth you will wear into the first raids. Enchanting sav
 
 ## Leveling
 
+### Levels 1 to 19
+
+- Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12.
+- Three points of Twilight Focus from 10 to 12 stop your casts from being pushed back when something hits you. Improved Renew takes 13 to 15 for 15% bigger Renews, and Holy Specialization starts at 16 for more crit on your Holy spells.
+- Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
+
+### Levels 20 to 60
+
 Level as Shadow and respec at 60, or level in a group as Holy. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early: a level 30 priest who casts Heal rank 2 instead of rank 3 finishes the dungeon with mana to spare.

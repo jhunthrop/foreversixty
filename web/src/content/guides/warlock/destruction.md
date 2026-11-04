@@ -118,4 +118,12 @@ Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting a
 
 ## Leveling
 
+### Levels 1 to 19
+
+- Train Immolate at 1, Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10. Drain Life at 14 is your heal.
+- Your points at 10 and 11 go into Destructive Reach for 20% more range on Shadow Bolt and Immolate, so the mob takes an extra cast before it reaches you. Bane from 12 to 16 cuts half a second off Shadow Bolt and Immolate. Molten Skin from 17 to 19 takes 6% off all damage you take.
+- Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
+
+### Levels 20 to 60
+
 Destruction kills single mobs fast but has little sustain: no Siphon Life and no talented drains, so Drain Life and Death Coil are your only heals. Pull one at a time. Before 40, Shadow Bolt is your filler: Immolate, Corruption and Bane of Agony on the mob, Shadow Bolt it down, and finish with Shadowburn. A mob that dies within 8 seconds of Shadowburn gives the shard back, so as a finisher it is free. Until Shadow and Flame reaches 5 points, Conflagrate can eat your Immolate, so cast it once the DoT has done most of its work. Drain Soul the last few percent of a mob when you need shards for stones and summons. Put every point into Destruction until Shadow and Flame is full at 44, with Incinerate at 40 on the way, and only then go back for Improved Life Tap, Suppression and Improved Corruption. From 40, Incinerate replaces Shadow Bolt. Keep the Voidwalker out when pulls get messy, and Life Tap between pulls instead of drinking.

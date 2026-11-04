@@ -110,4 +110,12 @@ Skinning and Leatherworking, as for the cat: leather is your armor, and Leatherw
 
 ## Leveling
 
-Bear Form comes at 10 and Dire Bear Form at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate arrives at 25 and Primal Bite at 40, and until then Maul, Swipe and Demoralizing Roar hold a dungeon pack.
+### Levels 1 to 19
+
+- Before 10 you are a caster: Moonfire from 4, then Wrath. At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, and Maul, Growl and Demoralizing Roar train the same level. Enrage follows at 12, Bash at 14, Swipe at 16 and a second Maul rank at 18.
+- Your points from 10 to 14 go into Ferocity, so Maul and Swipe cost 5 less Rage. Furor from 15 to 19 gives you 10 Rage every time you shift into Bear Form, which means a pull opens with Maul ready.
+- Your paw hits with your weapon's DPS, so replace the starter weapon with the highest-DPS staff or two-handed mace a quest gives you. Wear leather quest rewards over vendor gear, Stamina and Agility first, and take the Idol of Shifting Tides from the Aquatic Form quest at 16.
+
+### Levels 20 to 60
+
+Dire Bear Form comes at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate arrives at 25 and Primal Bite at 40, and until then Maul, Swipe and Demoralizing Roar hold a dungeon pack.

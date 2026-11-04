@@ -120,8 +120,16 @@ Tailoring makes a lot of the cloth you wear before raids, so it pays for itself.
 
 ## Leveling
 
+### Levels 1 to 19
+
+- Smite does your damage until 10: Shadow Word: Pain at 4, Smite, then the wand. Power Word: Shield comes at 6, Mind Blast at 10, Inner Fire at 12 and Psychic Scream at 14, your way out when a second mob joins.
+- Your first five talent points go into Shadow Focus, 5% more hit with Shadow spells so Mind Blast and Shadow Word: Pain land, and the next four into Blackout, a small chance for your Shadow spells to stun.
+- Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
+
+### Levels 20 to 60
+
 Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap procs on most kills and lets you chain pulls with little drinking.
 
-The leveling build goes Shadow Focus from 10 to 14, Blackout to 18, Spirit Tap to 21, Improved Mind Blast to 25 and Improved Shadow Word: Pain at 26 and 27, then Mind Flay at 28. Until 28 the wand is your filler. Improved Mind Flay, Vampiric Embrace, Shadow Weaving and Darkness follow, and Shadowform is your point at 40.
+From 19 the build takes Spirit Tap to 21, Improved Mind Blast to 25 and Improved Shadow Word: Pain at 26 and 27, then Mind Flay at 28. Until 28 the wand is your filler. Improved Mind Flay, Vampiric Embrace, Shadow Weaving and Darkness follow, and Shadowform is your point at 40.
 
 In Shadowform you cannot cast Renew or a heal. Power Word: Shield still works, so shield before the pull and let Vampiric Embrace and Devouring Plague top you up. Leave the form only for a heal you really need. Solo, cast Shadow Word: Death only when it will kill or you are well above half health: the backlash is real.

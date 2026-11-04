@@ -125,4 +125,13 @@ Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feed
 
 ## Leveling
 
-Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, take Improved Bloodrage, Shield Specialization and Anticipation first. Shield Slam is the 31st point, so it arrives at 40. The last point of Focused Rage comes at 41, then Bastion, and the levels after that go to Improved Heroic Strike, Deflection, Improved Rend and Deep Wounds in Arms.
+### Levels 1 to 19
+
+- Charge and Rend train at 4, Thunder Clap at 6 and Hamstring at 8. At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander to pair with a shield.
+- Shield Bash comes at 12, Revenge and Demoralizing Shout at 14, and Shield Block at 16: two attacks blocked, and every block lights Revenge.
+- The first two points, at 10 and 11, are Improved Bloodrage for half again the Rage. Shield Specialization takes 12 to 16: more block, and from the fifth point every block gives 5 Rage. Anticipation starts at 17 for Defense.
+- Take quest rewards over vendor gear: a one-hander and the best shield you can find beat the starter weapon. You wear mail until plate at 40.
+
+### Levels 20 to 60
+
+Solo, Arms or Fury levels faster; keep a shield in your bags, because with one on you can tank every dungeon on the way up, even in damage talents. Shield Slam is the 31st point, so it arrives at 40. The last point of Focused Rage comes at 41, then Bastion, and the levels after that go to Improved Heroic Strike, Deflection, Improved Rend and Deep Wounds in Arms.

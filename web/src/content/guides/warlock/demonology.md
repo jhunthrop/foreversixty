@@ -118,4 +118,12 @@ Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted cast
 
 ## Leveling
 
+### Levels 1 to 19
+
+- Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10, then train Health Funnel at 12.
+- Your points at 10 and 11 go into Improved Health Funnel: 40% more health moved, 30% cheaper, no threat, and usable at any demon health. It wakes up at 12 with Health Funnel and keeps the Voidwalker standing through bad pulls. Demonic Embrace follows from 12 to 14 for 9% more Stamina, then Unholy Power from 15 to 19 for 10% more pet damage.
+- Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
+
+### Levels 20 to 60
+
 Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice, and solo you keep a demon out for Soul Link, Master Demonologist and Demonic Knowledge. Use the Voidwalker when pulls hurt, since Master Demonologist then cuts the physical damage you take by 10%. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. From 48, when you learn Soul Fire, Decimation's free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.

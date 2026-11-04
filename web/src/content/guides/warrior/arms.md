@@ -119,4 +119,13 @@ Blacksmithing and Mining. Blacksmithing makes Arcanite Champion, and Mining feed
 
 ## Leveling
 
+### Levels 1 to 19
+
+- Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 12. Rend's bleed ignores armor, so put it on anything that will live through it. Tactical Mastery at 14 lets you keep 10 Rage through a stance swap.
+- At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander, a good pick if your two-hander is still the starter.
+- Your first point at 10 makes Heroic Strike cost 1 less Rage. Three points of Deflection follow for parry, then Improved Rend from 14 to 16 for a much bigger bleed, and Improved Charge at 17 and 18 for 6 more Rage on every opener.
+- Weapon damage is nearly all your damage, so swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
+
+### Levels 20 to 60
+
 Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, and Victory Rush whenever it is up after a kill: it heals 10% and comes back every 30 seconds, so open the next pull with it if the last one died fast. Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Improved Overpower comes in at 22 and Bloodthrill at 33, after Deep Wounds and Impale; once both are in, keep Rend on everything and every pull turns into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.
