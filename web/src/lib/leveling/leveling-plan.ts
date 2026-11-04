@@ -98,8 +98,8 @@ function wornRank(trees: readonly string[], point: LevelingPoint): number {
 }
 
 /**
- * Where a character stands in the plan. Without a talent export the guide's order is assumed
- * followed, so the next point is the one this level earns. With one, the next point is the
+ * Where a character stands in the plan. Without a talent export nothing is known to be spent,
+ * so every earned point waits and the order starts at its first point. With one, the next point is the
  * first in the order the character has not matched, and the points to spend are what the
  * level earns minus what is spent.
  */
@@ -110,8 +110,12 @@ export function talentStepFor(
 ): TalentStep {
   const earned = pointsEarnedAt(level);
   if (talents === undefined) {
-    const nextIndex = earned === 0 ? 0 : Math.min(earned - 1, plan.points.length - 1);
-    return { toSpend: earned, nextIndex, nextPointLevel: FIRST_POINT_LEVEL };
+    // A fresh import has spent nothing: every earned point waits, starting from the first.
+    return {
+      toSpend: earned,
+      nextIndex: plan.points.length === 0 ? -1 : 0,
+      nextPointLevel: FIRST_POINT_LEVEL,
+    };
   }
   const spent = talents.points.reduce((sum, count) => sum + count, 0);
   const nextIndex = plan.points.findIndex((point) => wornRank(talents.trees, point) < point.rank);

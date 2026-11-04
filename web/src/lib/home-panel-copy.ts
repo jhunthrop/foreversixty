@@ -66,8 +66,6 @@ export const homeHeroCardsCopy = {
   bestInSlotNoListYet: 'No best in slot list published yet for this spec and level range.',
   talentsLabel: 'Talents',
   talentsAction: 'Open the planner',
-  talentsNotAvailable:
-    'Not available yet: no talent export for this character. Open the addon once to send it.',
   talentsNoListYet: 'No talent build published yet for this spec and level range.',
   talentsOptimizedFigure: 'Optimized',
   talentsUnoptimizedFigure: 'Unoptimized',
@@ -103,6 +101,10 @@ export const homeHeroCardsCopy = {
 export const levelingHomeCopy = {
   headerFirstPoint: (level: number): string => `First talent point at level ${level}.`,
   headerLevelTalent: (level: number, talent: string): string => `Level ${level} talent: ${talent}.`,
+  headerPointsToSpend: (count: number, talent: string): string =>
+    `${count} talent point${count === 1 ? '' : 's'} to spend. Start with ${talent}.`,
+  firstPick: (talent: string): string => `First pick: ${talent}`,
+  talentsAtLevel: 'Your guide build for this level is in the planner.',
   headerNextPoint: (level: number): string => `Next talent point at level ${level}.`,
   headerNoPlan: 'Open the leveling guide for your talent order.',
   /** The header's one button below 20: the leveling guide. */
@@ -111,7 +113,6 @@ export const levelingHomeCopy = {
   comparedAs: (specName: string): string => `Compared as ${specName}`,
   levelingAs: (specName: string): string => `Leveling as ${specName}`,
   otherSpecs: 'Other specs',
-  firstPointAt: (level: number): string => `Your first point is at level ${level}.`,
   toSpend: (count: number): string => `${count} to spend now`,
   nextPointAt: (level: number): string => `Next point at level ${level}.`,
   orderDone: 'Every leveling point is in. Gear lists start at 20.',

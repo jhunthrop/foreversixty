@@ -88,8 +88,10 @@ export async function loadLevelingAnswer(character: MeCharacter): Promise<Header
   if (next === undefined) return { kind: 'sentence', text: levelingHomeCopy.orderDone };
   if (step.toSpend === 0)
     return { kind: 'sentence', text: levelingHomeCopy.headerNextPoint(step.nextPointLevel) };
-  const pointLevel = character.build?.talents === undefined ? level : next.level;
-  return { kind: 'sentence', text: levelingHomeCopy.headerLevelTalent(pointLevel, next.name) };
+  if (character.build?.talents === undefined) {
+    return { kind: 'sentence', text: levelingHomeCopy.headerPointsToSpend(step.toSpend, next.name) };
+  }
+  return { kind: 'sentence', text: levelingHomeCopy.headerLevelTalent(next.level, next.name) };
 }
 
 export const homeAnswerSpec: AnswerSpec = {

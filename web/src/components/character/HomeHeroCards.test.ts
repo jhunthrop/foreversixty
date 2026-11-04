@@ -34,11 +34,9 @@ describe('HomeHeroCards', () => {
     expect(body).not.toContain('href="#upgrades"');
   });
 
-  it('shows the honest not-yet-synced sentence for a character with a spec but no addon export yet', () => {
+  it('points a character with no talent export at the guide build in the planner', () => {
     const { body } = render(HomeHeroCards, { props: { hero: HERO_WITH_SPEC } });
-    expect(body).toContain(
-      'Not available yet: no talent export for this character. Open the addon once to send it.',
-    );
+    expect(body).toContain('Your guide build for this level is in the planner.');
   });
 
   it('links the Talents card to the planner with ?spec= for a character with a learned spec', () => {

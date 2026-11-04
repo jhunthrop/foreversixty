@@ -70,7 +70,9 @@
     const level = hero.level ?? 1;
     const lead = levelingHomeCopy.levelingAs(plan.specName);
     if (step.nextIndex < 0) return `${lead} · ${levelingHomeCopy.orderDone}`;
-    if (level < FIRST_POINT_LEVEL) return `${lead} · ${levelingHomeCopy.firstPointAt(FIRST_POINT_LEVEL)}`;
+    const first = plan.points[0];
+    if (level < FIRST_POINT_LEVEL && first !== undefined)
+      return `${lead} · ${levelingHomeCopy.firstPick(first.name)}`;
     if (step.toSpend === 0) return `${lead} · ${levelingHomeCopy.nextPointAt(step.nextPointLevel)}`;
     return `${lead} · ${levelingHomeCopy.toSpend(step.toSpend)}`;
   });
@@ -216,7 +218,7 @@
         {#if bandStatus === 'no-spec'}
           <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNoListYet}</span>
         {:else if hero.build?.talents === undefined}
-          <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNotAvailable}</span>
+          <span class="text-muted text-[13px]">{levelingHomeCopy.talentsAtLevel}</span>
         {:else if bandStatus === 'loading'}
           <!-- Fix round 1 item C.9 (tenet 13, no layout shift): the ready figure and its caption,
            22 px each (`CARD_ANSWER_CLASS`). -->
