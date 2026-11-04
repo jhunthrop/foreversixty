@@ -14,44 +14,55 @@ import (
 //     Arcane spells") do nothing for it;
 //   - a Restoration druid never casts Moonfire, and Improved Moonfire is the prerequisite
 //     only of Vengeance, which the build does not take; Genesis 5, Moonglow 3 and Nature's
-//     Majesty 2 already open Nature's Splendor's row.
+//     Majesty 2 already open Nature's Splendor's row;
+//   - an Elemental shaman never swings a weapon, so Elemental Devastation ("your chance to
+//     get a Critical Strike with melee attacks") does nothing for it; Trial by Fire (Fire
+//     Nova and Magma Totem, which the rotation casts on two or more targets) is the toll
+//     point that does something (sim-accuracy round 20).
 func TestGuideBuildsSpendNothingOnDeadTalents(t *testing.T) {
 	cases := []struct {
-		spec string
-		dead []string
+		class string
+		spec  string
+		dead  []string
 	}{
-		{"feral", []string{"Nature's Focus", "Subtlety"}},
-		{"restoration", []string{"Improved Moonfire"}},
+		{"druid", "feral", []string{"Nature's Focus", "Subtlety"}},
+		{"druid", "restoration", []string{"Improved Moonfire"}},
+		{"shaman", "elemental", []string{"Elemental Devastation"}},
 	}
 	repoRoot := filepath.Join("..", "..")
 	active, err := ReadActiveBuild(repoRoot)
 	if err != nil {
 		t.Fatal(err)
 	}
-	trees, err := LoadTalentTrees(repoRoot, active, "druid")
-	if err != nil {
-		t.Fatal(err)
-	}
-	ids := make(map[string]int)
-	for _, tree := range trees {
-		for _, node := range tree.Talents {
-			ids[node.Name] = node.ID
-		}
-	}
 	for _, tc := range cases {
-		t.Run(tc.spec, func(t *testing.T) {
-			_, digits, err := GuideBuildTalents(repoRoot, "druid", tc.spec)
+		t.Run(tc.class+"-"+tc.spec, func(t *testing.T) {
+			trees, err := LoadTalentTrees(repoRoot, active, tc.class)
 			if err != nil {
 				t.Fatal(err)
 			}
-			targets := GuideTalentTargets(trees, digits)
-			for _, name := range tc.dead {
-				id, ok := ids[name]
-				if !ok {
-					t.Fatalf("no %s in the druid trees", name)
+			ids := make(map[string]int)
+			for _, tree := range trees {
+				for _, node := range tree.Talents {
+					ids[node.Name] = node.ID
 				}
-				if got := targets[id]; got != 0 {
-					t.Errorf("the %s build spends %d points on %s, want 0", tc.spec, got, name)
+			}
+			builds := map[string]func(string, string, string) (string, [3]string, error){
+				"build": GuideBuildTalents, "raidBuild": GuideRaidBuildTalents,
+			}
+			for line, read := range builds {
+				_, digits, err := read(repoRoot, tc.class, tc.spec)
+				if err != nil {
+					t.Fatal(err)
+				}
+				targets := GuideTalentTargets(trees, digits)
+				for _, name := range tc.dead {
+					id, ok := ids[name]
+					if !ok {
+						t.Fatalf("no %s in the %s trees", name, tc.class)
+					}
+					if got := targets[id]; got != 0 {
+						t.Errorf("the %s %s %s spends %d points on %s, want 0", tc.class, tc.spec, line, got, name)
+					}
 				}
 			}
 		})

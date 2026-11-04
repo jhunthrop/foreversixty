@@ -3,8 +3,8 @@ title: Elemental Shaman in Forever
 classSlug: shaman
 spec: elemental
 role: dps
-build: 'FS1:1.60.1.70755:shaman:dwarf:5510331300001351/05/053052:'
-raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:5510331300001351/055/053002:'
+build: 'FS1:1.60.1.70755:shaman:dwarf:5500331220001351/05/053052:'
+raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:5500331220001351/055/053002:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Spell power, Hit, Nature power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman in Forever: the raid build, Flame Shock up and Lightning Bolt behind Lightning Mastery, bolt ranks for mana, totems, stats, races and leveling.'
@@ -63,7 +63,7 @@ Lightning Mastery is the 31st point, and Call of Thunder above it is the point t
 - **Elemental Fury** (5 points): doubles the crit bonus of your spells and your Searing and Magma Totems.
 - **Lightning Mastery** (1 point): 15 seconds of faster Lightning Bolts and Chain Lightning with no cooldown, every 3 minutes.
 
-Elemental Warding (3 points) cuts the Fire, Frost and Nature damage you take by 10%. It and the single point of Elemental Devastation are the toll to reach Elemental Fury. Mindfulness keeps half your regeneration running while you cast. Improved Reincarnation (2 points) adds 4% maximum health, cuts Reincarnation to a 40 minute cooldown and brings you back with more health and mana.
+Four more Elemental points are the toll to reach Elemental Fury, and two of them do real work: Trial by Fire (2 points) makes Fire Nova hit 20% harder on a 6 second cooldown and keeps Magma Totem burning for 40 seconds, which is your damage on dungeon packs. Elemental Warding (2 points) cuts the Fire, Frost and Nature damage you take by 7%. Elemental Devastation is melee crit, and you never swing a weapon, so it gets nothing. Mindfulness keeps half your regeneration running while you cast. Improved Reincarnation (2 points) adds 4% maximum health, cuts Reincarnation to a 40 minute cooldown and brings you back with more health and mana.
 
 ## Rotation and priority
 
