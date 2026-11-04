@@ -283,6 +283,7 @@ export const KIT_IMBUES: ReadonlySet<string> = new Set([
   'off_hand_imbue:deadly_poison',
   'off_hand_imbue:instant_poison',
   'main_hand_imbue:windfury_weapon',
+  'main_hand_imbue:rockbiter_weapon',
 ]);
 
 interface RaidConsumesFile {
