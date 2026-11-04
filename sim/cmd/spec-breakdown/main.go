@@ -58,6 +58,7 @@ type options struct {
 	buffs      string
 	talents    string
 	rotation   string
+	rank       string
 	jsonOut    bool
 	tank       bool
 	heal       bool
@@ -81,6 +82,7 @@ func main() {
 	flag.StringVar(&o.consumes, "consumes", "", "comma list replacing the kit and preset consumables")
 	flag.StringVar(&o.buffs, "buffs", "", "comma list added to the request's buffs")
 	flag.StringVar(&o.talents, "talents", "", "talent string replacing the published one")
+	flag.StringVar(&o.rank, "rank", "", "comma list of authoredSpellID=rank pairs forced on every reference to that spell (casts and conditions, every line), on -rotation or the spec's own curated rotation; the way to judge a rank row")
 	flag.StringVar(&o.rotation, "rotation", "", "JSON file whose \"rotation\" object (the curated file's shape) replaces the spec's own priority list")
 	flag.StringVar(&o.gear, "gear", "", "comma list of slot:item_id pairs replacing the published entry's items, e.g. off_hand:20688")
 	flag.BoolVar(&o.heal, "heal", false, "print the healer fight: mana income and spend against data/curated/heal-profile.json (healer specs only)")
@@ -120,7 +122,11 @@ func run(o options) error {
 	if err != nil {
 		return err
 	}
-	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, req.Character.Race, req.Character.Level)
+	forced, err := parseForcedRanks(o.rank)
+	if err != nil {
+		return err
+	}
+	rotation, err := rotationFor(o, forced, specs.ByKey[o.spec].ClassSlug, req.Character.Race, req.Character.Level)
 	if err != nil {
 		return err
 	}
@@ -150,6 +156,15 @@ func loadRotation(path, spec, class, preset, race string, level int) (*proto.APL
 	if path == "" {
 		return nil, nil
 	}
+	raw, err := readRotationFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return decodeRotation(raw, path, spec, class, preset, race, level)
+}
+
+// readRotationFile is the "rotation" object of a curated rotation file.
+func readRotationFile(path string) (json.RawMessage, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -163,14 +178,70 @@ func loadRotation(path, spec, class, preset, race string, level int) (*proto.APL
 	if len(file.Rotation) == 0 {
 		return nil, fmt.Errorf("%s has no \"rotation\" object", path)
 	}
-	if file.Rotation, err = request.RewriteRotationRanks(file.Rotation, spec, class, preset, race, level); err != nil {
+	return file.Rotation, nil
+}
+
+// decodeRotation rewrites a rotation's ranks as the published one's are
+// (see loadRotation) and parses it.
+func decodeRotation(raw []byte, path, spec, class, preset, race string, level int) (*proto.APLRotation, error) {
+	raw, err := request.RewriteRotationRanks(raw, spec, class, preset, race, level)
+	if err != nil {
 		return nil, fmt.Errorf("rewriting %s to level %d: %w", path, level, err)
 	}
 	rotation := &proto.APLRotation{}
-	if err := protojson.Unmarshal(file.Rotation, rotation); err != nil {
+	if err := protojson.Unmarshal(raw, rotation); err != nil {
 		return nil, fmt.Errorf("decoding the rotation in %s: %w", path, err)
 	}
 	return rotation, nil
+}
+
+// forcedRank is one -rank pair: the authored spell id and the rank forced on
+// every reference to it.
+type forcedRank struct {
+	authored int32
+	rank     int
+}
+
+// parseForcedRanks reads -rank's comma list of authoredID=rank pairs.
+func parseForcedRanks(list string) ([]forcedRank, error) {
+	if list == "" {
+		return nil, nil
+	}
+	var out []forcedRank
+	for _, pair := range strings.Split(list, ",") {
+		idText, rankText, ok := strings.Cut(strings.TrimSpace(pair), "=")
+		id, idErr := strconv.ParseInt(idText, 10, 32)
+		rank, rankErr := strconv.Atoi(rankText)
+		if !ok || idErr != nil || rankErr != nil || id <= 0 || rank <= 0 {
+			return nil, fmt.Errorf("-rank wants authoredSpellID=rank pairs, got %q", pair)
+		}
+		out = append(out, forcedRank{authored: int32(id), rank: rank})
+	}
+	return out, nil
+}
+
+// rotationFor is the rotation a run uses: -rotation's file, or with -rank the
+// spec's own curated rotation when -rotation is not given, with each forced
+// rank on every reference to its spell (request.ForceRotationRank) before
+// the ordinary rank rewrite.
+func rotationFor(o options, forced []forcedRank, class, race string, level int) (*proto.APLRotation, error) {
+	if len(forced) == 0 {
+		return loadRotation(o.rotation, o.spec, class, o.preset, race, level)
+	}
+	path := o.rotation
+	if path == "" {
+		path = filepath.Join(o.repoRoot, "data", "curated", "apl", o.spec+".json")
+	}
+	raw, err := readRotationFile(path)
+	if err != nil {
+		return nil, err
+	}
+	for _, f := range forced {
+		if raw, err = request.ForceRotationRank(raw, class, f.authored, f.rank, level); err != nil {
+			return nil, fmt.Errorf("-rank %d=%d: %w", f.authored, f.rank, err)
+		}
+	}
+	return decodeRotation(raw, path, o.spec, class, o.preset, race, level)
 }
 
 type bisEntry struct {
