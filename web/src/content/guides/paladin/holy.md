@@ -13,16 +13,16 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/talents/paladin.json'
+  - label: 'Forever Sixty, paladin talents'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
-  - label: 'Forever Sixty stat weights, data/curated/specs.json'
+  - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/data/curated/specs.json
     kind: site
-  - label: 'Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json'
+  - label: 'Forever Sixty, raids by phase'
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/races.json'
+  - label: 'Forever Sixty, races'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---
@@ -33,7 +33,7 @@ Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Di
 
 ### Strengths
 
-- Oath of Light adds a flat amount to every heal on the tank, so a middle rank Flash of Light heals them almost like the top rank for two thirds of the mana
+- Oath of Light adds a flat amount to every heal on the tank, so a middle rank Flash of Light on them heals for most of what the top rank does and gets more healing out of every point of mana
 - Holy Shock is an instant heal for movement and emergencies, and Divine Favor guarantees a crit when it counts
 - Illumination refunds half the cost of every critical heal
 - Spiritual Focus and Concentration Aura keep your casts going while you take damage
@@ -89,7 +89,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 **Movement.** Holy Shock is your only instant heal outside Lay on Hands, and Flash of Light is a 1.5 second cast. Stand where you reach the tank and your party, so you never have to move to heal.
 
-**Emergencies.** Divine Favor into Holy Light first. Lay on Hands is a full heal on a 20 minute cooldown, and it empties your mana bar, though your mana keeps regenerating as normal afterwards. Use it on someone about to die whom Divine Favor and Holy Light could not have saved, ideally late in the fight. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
+**Emergencies.** Divine Favor into Holy Light first. Lay on Hands heals your target for as much as your own maximum health and gives them 550 mana at its top rank, on a 20 minute cooldown. It drains all of your own mana, and your regeneration keeps running. Use it on someone about to die whom Divine Favor and Holy Light could not have saved, ideally late in the fight. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
 
 ## Stat priority
 

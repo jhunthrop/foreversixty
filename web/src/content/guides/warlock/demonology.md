@@ -3,9 +3,9 @@ title: Demonology Warlock in Forever
 classSlug: warlock
 spec: demonology
 role: dps
-build: 'FS1:1.60.1.70755:warlock:gnome:25522/203511310122000135/005:'
-raidBuild: 'FS1:1.60.1.70755:warlock:gnome:05/2035113011220001351/0550005:'
-recommendedRaces: [gnome, orc]
+build: 'FS1:1.60.1.70755:warlock:human:25522/203511310122000135/005:'
+raidBuild: 'FS1:1.60.1.70755:warlock:human:05/2035113011220001351/0550005:'
+recommendedRaces: [human, orc]
 statPriority:
   [Spell power, Shadow power, Hit, Critical strike, Intellect, Fire power, Spell haste, Spell penetration]
 description: 'How to play Demonology in Forever: the Imp sacrifice and Demonic Pact setup, Soul Link, Decimation, the Shadow Bolt rotation, shards, races and leveling.'
@@ -18,22 +18,22 @@ sources:
   - label: 'Forever client spell and talent data'
     url: https://wago.tools/db2/SpellEffect
     kind: datamined
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty rotation data, warlock-demonology'
+  - label: 'Forever Sixty, rotation'
     url: https://foreversixty.gg/sources
     kind: site
 ---
 
 ## Overview
 
-Demonology sacrifices the Imp for 15% Shadow damage, keeps a Succubus out for 10% more, and casts Shadow Bolt, with free Soul Fires below 35%.
+Demonology sacrifices the Imp for 15% Shadow damage, keeps a Succubus out for 10% more, and casts Shadow Bolt from the pull to the kill.
 
 ### Strengths
 
 - The most Shadow bonuses of any warlock build at once: the Imp sacrifice, Master Demonologist and Soul Link, plus Demonic Knowledge's spell damage
-- Decimation turns the last 35% of every boss into a Soul Fire burn
+- Decimation makes every Shadow Bolt below 35% hit 6% harder
 - Soul Link sends 30% of the damage you take to your demon
 - The demon does real damage of its own
 
@@ -60,7 +60,7 @@ The leveling build stops at 30 Demonology points, before Demonic Pact, keeps Imp
 - **Master Summoner** (2 points): 4 seconds off every summon and 40% off its mana. A summon becomes a 6 second cast, which is what makes a mid-fight resummon possible.
 - **Fel Vitality** (3 points): 15% more mana for you and your demons.
 
-The raid build adds what the leveling build cannot use. Demonic Pact, the 31st point, keeps your sacrifice when you summon a different demon; only a new Imp ends it. So you sacrifice the Imp and still play with a Succubus out. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit, and in Forever that debuff is yours alone. Ruin doubles the crit bonus on Shadow Bolt and Soul Fire, and all 5 points of Unholy Power go into the Succubus. To pay for it, the raid build gives up Improved Corruption, Improved Life Tap, Grim Reach, Soul Harvest and Demonic Energies.
+The raid build adds what the leveling build cannot use. Demonic Pact, the 31st point, keeps your sacrifice when you summon a different demon; only a new Imp ends it. So you sacrifice the Imp and still play with a Succubus out. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit, and in Forever that debuff is yours alone. Ruin doubles the crit bonus on Shadow Bolt and Immolate. To pay for it, the raid build gives up Improved Corruption, Improved Life Tap, Grim Reach, Soul Harvest and Demonic Energies.
 
 Improved Health Funnel, Demonic Embrace, Demonic Aegis and Improved Voidwalker are the toll to reach Pact, and each buys survival: a stronger, cheaper Health Funnel, 9% more Stamina, a 15% stronger Demon Armor and a tougher Voidwalker. The point in Improved Sayaad is 10% more Lash of Pain. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
 
@@ -84,7 +84,7 @@ Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it 
 
 Recast Corruption when it falls off and never clip it. Start Immolate's cast with about 3 seconds left on the old one. Everything else is Shadow Bolt.
 
-Below 35% the fight changes. Every Shadow Bolt now gives you 10 seconds of Decimation. Decimation also cuts Soul Fire's cooldown to 6 seconds all the time, so the burn is Soul Fire every time it comes off cooldown and two Shadow Bolts in between: each Soul Fire is a 2.4 second cast that costs no shard and beats Shadow Bolt, and each Shadow Bolt keeps Decimation up. Outside Decimation, Soul Fire is a 4 second cast that costs a shard. Never cast it above 35%.
+Below 35% your button does not change. Every Shadow Bolt now hits 6% harder, and it also gives you 10 seconds of Decimation, which makes Soul Fire a free 2.4 second cast on a 6 second cooldown. Skip it anyway. Soul Fire is Fire, and your Imp sacrifice, Master Demonologist and Improved Shadow Bolt all raise Shadow, so it does no more than the Shadow Bolt it replaces. Shadow Bolt to the end. Outside Decimation Soul Fire is a 4 second cast that costs a shard; never cast it in a raid.
 
 Searing Pain also triggers Decimation, but it carries a lot of extra threat and Shadow Bolt hits harder with your Shadow bonuses. Keep it off your bars in raids.
 
@@ -98,7 +98,7 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Spell power first, and Shadow power is nearly as good, though Immolate and Soul Fire are Fire. Hit comes next until the cap, and Suppression already gives you 5% of it. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
+Spell power first, and Shadow power is nearly as good, though Immolate is Fire. Hit comes next until the cap, and Suppression already gives you 5% of it. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
 
 ## Best in slot
 
@@ -106,11 +106,11 @@ The pre-raid set leans on Tailoring and Enchanting crafts, with an Engineering h
 
 ## Enchants and consumables
 
-Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate and Soul Fire. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
 
 ## Races
 
-Gnome and Orc are the picks. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Save it for the Soul Fire burn below 35%. Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the Decimation phase if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Human's Ruthless is 1% crit. Undead's Touch of the Grave drains health from your target now and then.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, so more of your Shadow Bolts put up Improved Shadow Bolt and land for double the bonus through Ruin, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, so save it for the last 35%, when every Shadow Bolt hits 6% harder, and Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the last 35% if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then.
 
 ## Professions
 

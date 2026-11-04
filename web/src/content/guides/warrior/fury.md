@@ -3,8 +3,8 @@ title: Fury Warrior in Forever
 classSlug: warrior
 spec: fury
 role: dps
-build: 'FS1:1.60.1.70755:warrior:human:30323013002/051531025120100231/2:'
-recommendedRaces: [human, troll]
+build: 'FS1:1.60.1.70755:warrior:night-elf:30323013002/051531025120100231/2:'
+recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Dual wield in Berserker Stance: Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, Death Wish and Recklessness for the Executes.'
 updated: 2026-11-02
@@ -19,19 +19,22 @@ sources:
   - label: 'Warcraft Tavern: Classic Fury Warrior DPS rotation'
     url: https://www.warcrafttavern.com/wow-classic/guides/dps-warrior-rotation/
     kind: community
+  - label: 'Warcraft Tavern, Forever warrior guide'
+    url: https://www.warcrafttavern.com/forever/guides/warrior/
+    kind: community
   - label: 'Icy Veins, the racial rework'
     url: https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/
     kind: community
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty Fury rotation'
+  - label: 'Forever Sixty, how Fury plays'
     url: https://foreversixty.gg/sim/specs
     kind: site
-  - label: 'Forever Sixty raid loot'
+  - label: 'Forever Sixty, where the raid gear drops'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -73,9 +76,11 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 - **Improved Heroic Strike** (3 points): Heroic Strike costs 3 less. It is your rage dump, and you press it a lot.
 - **Deep Wounds** and **Impale** (8 points in Arms, with **Improved Rend** as the toll to reach Deep Wounds; Fury never casts Rend): every crit leaves a bleed for 60% of your weapon's average damage and your ability crits hit 20% harder. Fury crits a lot, so this is the best use of the Arms points.
 - **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
-- **Anger Management** (1 point, behind 3 in **Improved Tactical Mastery**): a point of rage every 3 seconds in combat, 10 rage every half minute. Tactical Mastery itself does little for a warrior who never leaves Berserker Stance; it is the way in.
+- **Anger Management** (1 point, behind 3 in **Improved Tactical Mastery**): a point of rage every 3 seconds in combat, 10 rage every half minute. Improved Tactical Mastery is the way in. In a raid you never leave Berserker Stance, but on trash it lets a Charge's rage come with you when you swap back.
 
-The build also spends a point in **Piercing Howl**, which dazes everything within 10 yards for 6 seconds to stop runners and kite on trash, a point in **Lingering Rage**, which holds your rage 2 seconds longer before it starts to decay, a small bridge between quick pulls, and two in **Improved Charge**, which is what gets you down to Impale; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
+The build also spends a point in **Piercing Howl**, which dazes everything within 10 yards for 6 seconds to stop runners and kite on trash, a point in **Lingering Rage**, which holds your rage 2 seconds longer before it starts to decay, a small bridge between quick pulls, and two in **Improved Charge**, which is what gets you down to Impale; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry.
+
+[Open the planner](/planner?class=warrior) to change the build.
 
 ## Rotation and priority
 
@@ -107,7 +112,9 @@ Mighty Rage Potion goes on the pull and again when it comes back. Enchant and sh
 
 ## Races
 
-Troll's Berserking is 10% attack speed for 15 seconds every 3 minutes: press it with Death Wish and Recklessness. Human's Ruthless is a flat 1% crit, which Flurry turns into extra swings. Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes.
+Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes, which Flurry turns into extra swings: press it with Death Wish and Recklessness. Skyborne's Wind Blessed, 2% haste that never turns off, edges both by a hair, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds; with two weapons hitting, it comes back almost as soon as it can.
+
+The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, are next, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes. Troll's Berserking is 10% attack speed for only 15 seconds in every 3 minutes, so it trails the races that are always on. Whatever you pick, press its active racial with Death Wish and Recklessness.
 
 ## Professions
 
@@ -115,4 +122,4 @@ Blacksmithing and Mining. Blacksmithing makes melee weapons and armor, and Minin
 
 ## Leveling
 
-Fury levels fastest once Bloodthirst and Whirlwind are in, but it needs two good one-handers to get there. Until Whirlwind arrives at 36 you fight in Battle Stance, so Overpower is still in your bar: press it whenever it lights. Charge every pull, Victory Rush after every kill, and Bloodrage on cooldown. Berserker Stance trains at 30, and from 36 Whirlwind makes it your home stance and pulls of two or three quick.
+Fury levels fastest once Bloodthirst and Whirlwind are in, but it needs two good one-handers to get there. Until Whirlwind arrives at 36 you fight in Battle Stance, so Overpower is still in your bar: press it whenever it lights. Charge every pull, and Victory Rush whenever it is up after a kill: it heals 10% and comes back every 30 seconds, so open the next pull with it if the last one died fast. Bloodrage on cooldown. Berserker Stance trains at 30, and from 36 Whirlwind makes it your home stance and pulls of two or three quick.

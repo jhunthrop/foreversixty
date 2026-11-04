@@ -14,7 +14,7 @@ sources:
   - label: 'Wowhead, Undead Paladins coming to Forever'
     url: https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823
     kind: community
-  - label: 'Forever Sixty build data, combos.json'
+  - label: 'Forever Sixty, which races can be paladins'
     url: https://foreversixty.gg/data/1.60.1.70755/combos.json
     kind: datamined
   - label: 'Power Up Gaming, Forever talent changes vs Classic'

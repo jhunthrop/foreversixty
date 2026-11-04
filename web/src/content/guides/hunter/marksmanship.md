@@ -3,9 +3,9 @@ title: Marksmanship Hunter in Forever
 classSlug: hunter
 spec: marksmanship
 role: dps
-build: 'FS1:1.60.1.70755:hunter:dwarf:5320000501/005155000150305/5:'
-raidBuild: 'FS1:1.60.1.70755:hunter:dwarf:5/005355001150305/50005003:'
-recommendedRaces: [dwarf, troll]
+build: 'FS1:1.60.1.70755:hunter:night-elf:5320000501/005155000150305/5:'
+raidBuild: 'FS1:1.60.1.70755:hunter:night-elf:5/005355001150305/50005003:'
+recommendedRaces: [night-elf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Marksmanship Hunter in Forever: talents for leveling and raids, the shot priority, auto shot discipline, stats, consumables and race picks.'
 updated: 2026-11-03
@@ -20,13 +20,13 @@ sources:
   - label: 'Warcraft Tavern, Forever Hunter Guide'
     url: https://warcrafttavern.com/forever/guides/hunter/
     kind: community
-  - label: 'Forever Sixty build data, talents/hunter.json'
+  - label: 'Forever Sixty, talent trees'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, spellconst/hunter.json'
+  - label: 'Forever Sixty, spell values'
     url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, races.json'
+  - label: 'Forever Sixty, racial abilities'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
   - label: 'Forever Sixty, stat weights'
@@ -103,11 +103,11 @@ When mana gets low, stop Arcane Shot first, then Serpent Sting, and keep Aimed S
 
 There is no execute phase for a hunter: the priority holds to the end.
 
-**Utility.** Tranquilizing Shot (bought from your trainer at 60, so you do not wait on Lucifron's tome) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot pulls a loose add onto you for a few seconds so your tank can grab it before it reaches the healers. Freezing Trap takes care of anything loose in the back line.
+**Utility.** Tranquilizing Shot (bought from your trainer at 60, so you do not wait on Lucifron's tome) removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage. Distracting Shot puts a big lump of threat on a loose add, enough to pull it off a healer and onto you. Bring it to your tank and let him take it from you. Freezing Trap takes care of anything loose in the back line.
 
 ## Stat priority
 
-Hit first until you reach 9% hit, the cap against a raid boss: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. In the raid build Surefooted gives you 3% of that cap and 1% is built in, so you need 5% from gear. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
+Hit first until you reach 9% hit, the cap against a raid boss: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. In the raid build Surefooted gives you 3% of that cap, so you need 6% from gear, or 5% as a Dwarf. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -123,9 +123,9 @@ Forever's damage potions share the two-minute potion cooldown with mana potions,
 
 ## Races
 
-Dwarf for the Alliance: Artisan's Precision is 1% hit, and Big Game Hunter adds damage against beasts. Night Elf's Elune's Light (10% crit for 15 seconds) lines up with Rapid Fire on the pull, and Human's Ruthless is 1% crit. Humans can be Hunters for the first time in Forever.
+Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds and lines up with Rapid Fire on the pull. Human is next with Ruthless's 1% crit all fight, and Dwarf's 1% hit and Big Game Hunter come last. Humans can be Hunters for the first time in Forever.
 
-Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire. Orc's Blood Fury is the other good pull cooldown.
+Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull, and more auto shots is what Marksmanship lives on. Orc is close behind: Blood Fury is 10% attack power for 15 seconds every two minutes, but Command does nothing for you with the pet dismissed.
 
 Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds every auto shot you fire.
 

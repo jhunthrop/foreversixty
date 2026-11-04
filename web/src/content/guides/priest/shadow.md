@@ -17,10 +17,10 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty talent planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -38,7 +38,7 @@ Shadow keeps two DoTs ticking, hits Mind Blast and Shadow Word: Death on cooldow
 
 ### Weaknesses
 
-- Mind Flay is a talent in Forever and the leveling build reaches it at 28, so until then you wand between casts
+- Mind Flay is a talent and the leveling build reaches it at 28, so until then you wand between casts
 - Mind Blast and Shadow Word: Death throw a lot of threat early in a pull
 - Shadowform blocks every healing spell, so helping your healers means leaving the form
 
@@ -66,7 +66,7 @@ You go deep Shadow for Shadowform and spend the rest in Discipline for mana and 
 - **Meditation** (3 points) and **Mental Strength** (5 points): half your regeneration keeps running while you cast, and 10% more Intellect for a deeper bar.
 - **Silent Resolve** (1 point): 10% less threat. Take more of it if you keep pulling aggro.
 
-The leveling build finishes with two points of Wand Specialization, for the wand you lean on between casts. The raid build trades them, and two points of Blackout, for Early Demise, Shadow Reach and the last point of Improved Mind Blast. Open the [planner](/planner?class=priest) to adjust either.
+The leveling build finishes with two points of Wand Specialization, for the wand you lean on between casts. The raid build trades them, and two points of Blackout, for Early Demise, Shadow Reach and the last point of Improved Mind Blast. [Open the planner](/planner?class=priest) to change either build.
 
 ## Rotation and priority
 
@@ -90,7 +90,7 @@ The leveling build finishes with two points of Wand Specialization, for the wand
 
 **Threat.** Mind Blast threatens hard. Fade sheds threat for a few seconds on a 30 second cooldown; use it the moment you climb past the tank, not after the boss turns. If you keep pulling, move a point from Mental Strength into Silent Resolve.
 
-**Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice. Shadowfiend cannot be learned at launch.
+**Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice.
 
 **Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Gnome Eureka! on a Mind Blast, a Shadow Word: Death and the Mind Flay after them (it skips Shadow Word: Pain and Devouring Plague, so never spend it on a refresh), Troll Berserking and Night Elf Elune's Light whenever they are up.
 

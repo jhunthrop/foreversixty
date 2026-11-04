@@ -16,10 +16,10 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty talent planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -37,7 +37,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 
 ### Weaknesses
 
-- Mana is the limit on every long fight; you have no Shadowfiend at launch
+- Mana is the limit on every long fight
 - No damage prevention: you heal what has already happened
 - Slow heals on a spiky tank need you to pre-cast and cancel
 
@@ -56,12 +56,12 @@ Deep Holy for Prayer of Mending, with Discipline taken to Meditation and Inner F
 - **Holy Specialization** (5 points) and **Divine Fury** (5 points): 5% crit on Holy spells, and Heal and Greater Heal cast half a second faster.
 - **Improved Healing** (3 points): 15% off Lesser Heal, Heal, Greater Heal and Prayer of Mending.
 - **Improved Renew** (3 points): 15% more on the Renew you keep on the tank.
-- **Litany of Light** (2 points): mana back whenever your heal is a different spell from the last one. Weaving Heal, Flash Heal and Prayer of Mending earns it all fight.
+- **Litany of Light** (2 points): mana back whenever your heal is a different spell from the last one. Put a Renew or a Prayer of Mending between your Greater Heals and it pays all fight; two Greater Heals in a row, even at different ranks, earn nothing.
 - **Holy Binding** (1 point): every Flash Heal you put on someone else heals you for half as much. Raid damage hits you too.
 - **Twilight Focus** (3 points): 70% of the hits you take no longer push back your casts. On raid-wide damage this is worth more than any throughput point.
 - **Meditation** (3 points), **Mental Strength** (5 points) and **Inner Focus** (1 point): regeneration while casting, a deeper bar, and a free spell every 3 minutes.
 
-Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/planner?class=priest) to adjust the build.
+Spirit of Redemption is only the path to Prayer of Mending. [Open the planner](/planner?class=priest) to change the build.
 
 ## Rotation and priority
 
