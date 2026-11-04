@@ -23,13 +23,17 @@ import { repoRoot } from '../data/build-files';
 import { bandEntry } from '../bis/load';
 import { SLOT_DISPLAY_LABELS } from '../bis/slot-display-labels';
 import type { Slot } from '../planner/types';
-import { buildFile, buildItemCatalog, readBuildJson, type CatalogItem } from './build-files';
+import { enchantFits, type EnchantRule, type EnchantTarget } from '../gear/enchant-fit';
+import { buildFile, buildItemCatalog, readBuildJson } from './build-files';
+
+export { enchantFits, type EnchantTarget };
 import { factionForFirstRace, rankedBisFile } from './class-dps';
 import { guidesCopy } from './copy';
 import type { BisBand, BisStatWeight } from '../bis/types';
 import type { GuideBis } from './guide-bis';
 
-export interface EnchantRecord {
+/** An `enchants.json` row; its `EnchantRule` says what it goes on (`enchantFits`). */
+export interface EnchantRecord extends EnchantRule {
   id: number;
   name: string;
   icon: string;
@@ -38,32 +42,6 @@ export interface EnchantRecord {
   classes: string[];
   stats: Record<string, number>;
   phase: number;
-  /** The client's rule for what the enchant goes on (`enchantFits`): ItemClass, -1 for any. */
-  equipped_item_class: number;
-  /** ItemSubClass bits; 0 for any. */
-  equipped_item_subclass_mask: number;
-  /** InventoryType bits; 0 for any. */
-  equipped_inventory_type_mask: number;
-}
-
-/** What the client checks an item by when an enchant is applied to it. */
-export type EnchantTarget = Pick<CatalogItem, 'class_id' | 'subclass_id' | 'inventory_type'>;
-
-/** SpellEquippedItems' "any item class". */
-const ANY_ITEM_CLASS = -1;
-
-function maskAllows(mask: number, bit: number): boolean {
-  return mask === 0 || (mask & (1 << bit)) !== 0;
-}
-
-/** The client's rule: the item's class is the enchant's, and its subclass and inventory type
- *  are among the ones the enchant's masks name (an empty mask names every one). */
-export function enchantFits(record: EnchantRecord, item: EnchantTarget): boolean {
-  return (
-    (record.equipped_item_class === ANY_ITEM_CLASS || record.equipped_item_class === item.class_id) &&
-    maskAllows(record.equipped_item_subclass_mask, item.subclass_id) &&
-    maskAllows(record.equipped_inventory_type_mask, item.inventory_type)
-  );
 }
 
 export interface EnchantRow {

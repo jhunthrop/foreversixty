@@ -36,6 +36,7 @@
 // runtime and the two can never disagree about what fits where.
 import { dataUrl, loadOptional } from '../planner/load';
 import type { Item, StatKey } from '../planner/types';
+import { enchantFits, enchantRuleOf, enchantTargetOf, type EnchantRule } from '../gear/enchant-fit';
 
 /**
  * `StatKey` plus every stat key the real enchant/suffix files carry that the planner's
@@ -57,7 +58,9 @@ export type EnchantStatKey =
   | 'shadow_power'
   | 'spell_damage';
 
-export interface EnchantRow {
+/** An `enchants.json` row; its `EnchantRule` (absent on an older build) says what item it goes
+ *  on (`enchantFits`). */
+export interface EnchantRow extends Partial<EnchantRule> {
   /**
    * The client's enchantment effect id. This is the key (contract 10.4, as corrected above)
    * and it is what `GearSlot.enchant` and `Candidate.enchant` carry.
@@ -107,20 +110,25 @@ export function loadSuffixes(build: string): Promise<SuffixRow[]> {
 }
 
 /**
- * The enchants this slot allows. Two gates, both the fork's own: the enchant's slot list,
- * and its class list where it has one (an empty `classes` is for everyone).
- *
- * `item_types` is deliberately NOT applied here. It is the `EnchantType` shape restriction
- * and `items.json` rows carry no armour subclass to test it against, so the browser cannot
- * evaluate it. `Expand` inside the wasm can, from simdb, and refuses a bad pairing at the
- * boundary with its own words -- which is the honest failure, and better than a filter here
- * that would have to guess.
+ * The enchants this slot allows. Three gates: the enchant's slot list, its class list where
+ * it has one (an empty `classes` is for everyone), and, for the item in the slot, the
+ * client's own rule (`enchantFits`: no weapon enchant on a held-in-off-hand item, no two-hand
+ * enchant on a one-hander, a shield enchant only on a shield). An item from a build written
+ * before items carried their class, subclass and inventory type is not gated by the rule;
+ * `Expand` inside the wasm still refuses a bad pairing at the boundary.
  */
-export function enchantsForSlot(rows: readonly EnchantRow[], slot: string, classSlug = ''): EnchantRow[] {
+export function enchantsForSlot(
+  rows: readonly EnchantRow[],
+  slot: string,
+  classSlug = '',
+  item?: Parameters<typeof enchantTargetOf>[0],
+): EnchantRow[] {
+  const target = item === undefined ? undefined : enchantTargetOf(item);
   return rows.filter((row) => {
     if (!row.slots.includes(slot)) return false;
     if (row.classes.length > 0 && classSlug !== '' && !row.classes.includes(classSlug)) return false;
-    return true;
+    const rule = enchantRuleOf(row);
+    return target === undefined || rule === undefined || enchantFits(rule, target);
   });
 }
 

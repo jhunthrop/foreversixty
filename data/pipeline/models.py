@@ -337,6 +337,14 @@ class GearItem(BaseModel):
     #: "Unique-Equipped: <family> (1)" line. `None` for none. The BiS ranker never
     #: pairs two items of one category (sim/cmd/leveling-bis/pair.go).
     limit_category: int | None = None
+    #: The client's own item shape, Item.ClassID, SubclassID and
+    #: InventoryType (items.json's same three columns), so a page can apply
+    #: an enchant's SpellEquippedItems rule (`EnchantRecord.equipped_*`) to
+    #: the item: a held-in-off-hand item (class 4, inventory type 23) takes
+    #: no weapon enchant. `None` on a build written before these existed.
+    class_id: int | None = None
+    subclass_id: int | None = None
+    inventory_type: int | None = None
 
 
 class ClassItems(BaseModel):

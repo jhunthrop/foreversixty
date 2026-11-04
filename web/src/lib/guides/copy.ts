@@ -77,7 +77,10 @@ export const guidesCopy = {
   sourceColumn: 'Source',
   enchants: 'Enchants',
   consumables: 'Consumables',
-  enchantsNote: 'Crit, hit and haste enchants are not listed yet.',
+  /** What the enchant table is: each slot's best flat-stat enchant by the band's weights
+   *  (gear-extras.ts); crit, hit and haste enchants are not scored. wow-player SHIP 2026-11-04. */
+  enchantsNote:
+    'The enchant for each slot that adds the most of your weighted stats. Crit, hit and haste enchants are not included.',
   consumablesNote: 'What to bring to a raid.',
   enchantColumn: 'Enchant',
   givesColumn: 'Gives',

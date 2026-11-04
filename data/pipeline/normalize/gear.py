@@ -1073,6 +1073,9 @@ def build_class_items(
                 _optional_int(row, "MinFactionID"), _optional_int(row, "MinReputation"), factions
             ),
             limit_category=_optional_int(row, "LimitCategory") or None,
+            class_id=item_class_id,
+            subclass_id=subclass_id,
+            inventory_type=inventory_type,
         )
         candidates.append(
             (

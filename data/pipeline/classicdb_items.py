@@ -1092,6 +1092,9 @@ def to_gear_item(
         weapon_type=weapon_type_for(item.class_id, item.subclass_id, item.inventory_type),
         armor_type=armor_type_for(item.class_id, item.subclass_id),
         bonding=bonding_for(item.bonding),
+        class_id=item.class_id,
+        subclass_id=item.subclass_id,
+        inventory_type=item.inventory_type,
     )
 
 

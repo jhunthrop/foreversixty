@@ -12,22 +12,26 @@
     type EnchantRow,
   } from '../../../lib/sim/enchants';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import type { Item } from '../../../lib/planner/types';
 
   let {
     rows,
     slot,
     classSlug,
+    item,
     treeVersion,
     onpick,
   }: {
     rows: readonly EnchantRow[];
     slot: string;
     classSlug: string;
+    /** The item the enchant would go on: only enchants the client lets go on it are offered. */
+    item?: Item;
     treeVersion: string;
     onpick: (enchantId: number) => void;
   } = $props();
 
-  const allowed = $derived(enchantsForSlot(rows, slot, classSlug).slice(0, ENCHANTS_PER_SLOT_CAP));
+  const allowed = $derived(enchantsForSlot(rows, slot, classSlug, item).slice(0, ENCHANTS_PER_SLOT_CAP));
 </script>
 
 <ul class="border-line bg-raised rounded-panel flex flex-col border p-2" data-testid={`sim-enchants-${slot}`}>
