@@ -26,7 +26,7 @@ Two healing specs and one shadow caster, as always. Shadow is also how a priest 
 - **Every priest now has** Fear Ward, Devouring Plague, Shadow Word: Death, Divine Spirit and Lightwell from the trainer.
 - **Mind Flay** is a Shadow talent instead of a trainer spell, Penance and Prayer of Mending are the deep Discipline and Holy talents, and the trainer teaches their higher ranks once you have them.
 - **Shadowfiend** is not learnable at launch.
-- In Forever **a heal learned below level 20** keeps its full healing power bonus, so low ranks of Renew and Lesser Heal are real mana savers at 60.
+- **Heals learned below level 20** lost part of their healing bonus in 1.12. If Forever drops that rule, low ranks of Renew, Heal and Lesser Heal become real mana savers at 60, so read their tooltips on a geared priest before you lean on one.
 
 ## Races
 
