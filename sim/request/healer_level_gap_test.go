@@ -141,9 +141,9 @@ func TestDisciplineFillsThePartyWithGreaterHealRankOne(t *testing.T) {
 // The druid's party Rejuvenation is rank 7 (8910) in a raid; on every bare
 // fight, bare 60 included, rank 1 still wins (the fight runs dry), so rows
 // keep it. The tank's rank-10 line follows round 16's level-by-level sweep
-// (design/reviews/2026-11-04-sim-audit-round16/druid.md, wave 2): rank 2 at
-// 20 to 37, rank 4 at 38 to 49, rank 6 at 50 to 52, the top rank at 53 to 57,
-// rank 8 at 58 and 59, and the top rank at 60.
+// (design/reviews/2026-11-04-sim-audit-round16/druid.md, wave 2) and round
+// 19's (round19/druid.md): rank 2 at 20 to 37, rank 4 at 38 to 43, rank 5 at
+// 44 to 48, rank 6 at 49 to 56, rank 8 at 57 to 59, and the top rank at 60.
 func TestRestorationDruidRejuvenationKeepsItsHealingBonusInARaid(t *testing.T) {
 	party := linesCasting(t, "druid-restoration", 774, 8910)
 	assertRanks(t, party, "druid-restoration", "druid", "tauren", rejuvenationRank, []rankCase{
@@ -151,8 +151,9 @@ func TestRestorationDruidRejuvenationKeepsItsHealingBonusInARaid(t *testing.T) {
 	})
 	tank := linesCasting(t, "druid-restoration", 9841)
 	assertRanks(t, tank, "druid-restoration", "druid", "tauren", rejuvenationRank, []rankCase{
-		{20, BarePreset, 2}, {30, BarePreset, 2}, {37, BarePreset, 2}, {38, BarePreset, 4}, {49, BarePreset, 4},
-		{50, BarePreset, 6}, {52, BarePreset, 6}, {53, BarePreset, 9}, {58, BarePreset, 8}, {59, BarePreset, 8},
+		{20, BarePreset, 2}, {30, BarePreset, 2}, {37, BarePreset, 2}, {38, BarePreset, 4}, {43, BarePreset, 4},
+		{44, BarePreset, 5}, {48, BarePreset, 5}, {49, BarePreset, 6}, {56, BarePreset, 6}, {57, BarePreset, 8},
+		{59, BarePreset, 8},
 		{60, BarePreset, 10}, {60, RaidPreset, 10},
 	})
 }
