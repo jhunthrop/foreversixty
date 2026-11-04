@@ -6,7 +6,12 @@
 // that file's own header for why (the item tooltip needs those two functions but must
 // never pay for the rest of this much larger, /bis-page-only object).
 import { dropPercentLabel } from '../items/drop-chance';
-import { craftedSourceLabel, pvpRankTitle, pvpSourceLabel } from '../items/source-labels';
+import {
+  craftedSourceLabel,
+  pvpRankTitle,
+  pvpSourceLabel,
+  worldDropLevelsLabel,
+} from '../items/source-labels';
 import { utcDayMonth } from '../dates';
 import { bandRangeLabel } from '../planner/band-title';
 import type { RateUnit } from './types';
@@ -109,10 +114,7 @@ export const bisCopy = {
   /** Rounded the way the client and Wowhead show it: whole percent, "<1%" below one, and
    *  never "0%" -- a chance of 0 means unknown and the caller omits the label. */
   dropChanceLabel: (chance: number, from: string): string => `${dropPercentLabel(chance)} from ${from}`,
-  worldDropSourceLabel: (levelMin?: number, levelMax?: number): string =>
-    levelMin === undefined || levelMax === undefined
-      ? 'World drop (BoE)'
-      : `World drop (BoE) · levels ${levelMin}-${levelMax}`,
+  worldDropSourceLabel: worldDropLevelsLabel,
 
   // --- band navigation (step 2) ------------------------------------------------------------
   bandStripGroupLabel: 'Jump to level',

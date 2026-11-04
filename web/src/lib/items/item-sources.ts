@@ -4,7 +4,12 @@
 // when the data has one. The tooltip's one-line sources (`tooltip.ts`) and the apps' item page
 // (`/data/{build}/item-uses/{shard}.json`, Wave 3 spec F12.4) are both read from these rows,
 // so the two never word one source two ways.
-import { craftedSourceLabel, pvpSourceLabel } from './source-labels';
+import {
+  craftedSourceLabel,
+  pvpSourceLabel,
+  questMinLevelShown,
+  worldDropLevelsLabel,
+} from './source-labels';
 import {
   bossName,
   itemsOfBoss,
@@ -44,7 +49,7 @@ export interface ItemSourceRow {
 function worldDropTitle(source: LootSource): string {
   const { level_min: levelMin, level_max: levelMax } = source;
   if (typeof levelMin === 'number' && typeof levelMax === 'number') {
-    return `World drop (BoE) · levels ${levelMin}-${levelMax}`;
+    return worldDropLevelsLabel(levelMin, levelMax);
   }
   return 'World drop';
 }
@@ -124,7 +129,7 @@ function questRows(itemId: number, loot: LootFile): ItemSourceRow[] {
       kind: 'quest' as const,
       title: quest.name,
       place,
-      ...(quest.min_level > 0 ? { min_level: quest.min_level } : {}),
+      ...(questMinLevelShown(quest.min_level) ? { min_level: quest.min_level } : {}),
       primary: true,
       text: `${quest.name} (${place})`,
     };

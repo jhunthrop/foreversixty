@@ -10,9 +10,13 @@ describe('expertiseCapLine', () => {
   });
 
   it('adds the parry clause for a tank', () => {
-    expect(expertiseCapLine({ baseline: 0, dodge: 6.5, parry: 14 })?.text).toBe(
-      'Expertise to cap: 6.5% for dodge, 14% for parry',
+    expect(expertiseCapLine({ baseline: 2, dodge: 4.5, parry: 12 })?.text).toBe(
+      'Expertise to cap: 4.5% for dodge, 12% for parry',
     );
+  });
+
+  it('is undefined when nothing the character wears or talents into gives Expertise', () => {
+    expect(expertiseCapLine({ baseline: 0, dodge: 6.5, parry: 14 })).toBeUndefined();
   });
 
   it('prints a fully capped figure as 0', () => {

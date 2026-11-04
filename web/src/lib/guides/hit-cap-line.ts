@@ -4,6 +4,7 @@
 // prints (`hitCapLine`), so the two pages cannot disagree; only the sentence differs. The talent
 // that supplies the school hit is named from the build, never typed per guide.
 import { bisCopy } from '../bis/copy';
+import { expertiseIsGained } from '../bis/expertise-cap';
 import { formatCapPercent } from '../bis/hit-cap';
 import type { BisExpertiseToCap, BisHitToCap, BisSpellHitToCap } from '../bis/types';
 import type { DecodedTreeView } from './build-tree';
@@ -100,6 +101,7 @@ export function guideExpertiseCapLine(
   expertiseToCap: BisExpertiseToCap | null | undefined,
 ): GuideHitCapLine | undefined {
   if (expertiseToCap === null || expertiseToCap === undefined) return undefined;
+  if (!expertiseIsGained(expertiseToCap)) return undefined;
   const { baseline, dodge, parry } = expertiseToCap;
   return {
     text: guidesCopy.expertiseCap(
