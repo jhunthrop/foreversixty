@@ -70,13 +70,13 @@ You go deep Shadow for Shadowform and spend the rest in Discipline for mana and 
 - **Meditation** (3 points) and **Mental Strength** (5 points): half your regeneration keeps running while you cast, and 10% more Intellect for a deeper bar.
 - **Silent Resolve** (1 point): 10% less threat. Take more of it if you keep pulling aggro.
 
-The leveling build opens with two points in Wand Specialization for the wand that finishes your mobs, and its last points go to Discipline. The raid build trades them, Blackout and Spirit Tap for Early Demise, Devouring Contagion, Silence, both points of Shadow Reach, one of Dark Inspiration and the last point of Improved Mind Blast. [Open the planner](/planner?class=priest) to change the build.
+The leveling build opens with two points in Wand Specialization for the wand that finishes your mobs, and its last points go to Discipline. The raid build trades Wand Specialization, Blackout and Spirit Tap for Early Demise, Devouring Contagion, Silence, both points of Shadow Reach, one of Dark Inspiration and the last point of Improved Mind Blast. [Open the planner](/planner?class=priest) to change the build.
 
 ## Rotation and priority
 
 **Before the pull.** Buff the raid, then shift into Shadowform and drink back to full: the form costs mana, so never shift on the pull. Start Mind Blast 1.5 seconds before the tank's pull lands so it hits as the boss is engaged, and do not pre-cast it on a tank who opens slowly.
 
-**Opener.** Mind Blast lands as the boss is engaged, then Shadow Word: Pain, Vampiric Embrace, Devouring Plague, Mind Blast again (with Inner Focus, so it is free and more likely to crit), Shadow Word: Death, and Mind Flay. By the end of that string Shadow Weaving is at five stacks.
+**Opener.** Mind Blast lands as the boss is engaged, then Shadow Word: Pain, Vampiric Embrace, Devouring Plague and Shadow Word: Death. By then Mind Blast is back: Inner Focus first, so it is free and more likely to crit, then Mind Flay. By the end of that string Shadow Weaving is at five stacks.
 
 **Priority.** Keep Shadow Word: Pain up. Keep Devouring Plague up: it is on a 24 second cooldown and heals you as it ticks. Mind Blast on cooldown. Shadow Word: Death on cooldown. Mind Flay with everything else.
 

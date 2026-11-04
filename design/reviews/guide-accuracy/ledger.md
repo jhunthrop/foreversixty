@@ -282,3 +282,20 @@ Process note: a sim round that changes a build: line should ship the matching pr
 Verdict: NOT zero, so round 11 is needed.
 
 Open sims: race re-runs on the new builds for most specs, Rip against Bite, Bite pooling, Crusader opener on short mobs, Consecration on packs, and Wrack's mask against its tooltip.
+
+## Round 11 (client 1.60.1.70755, 2026-11-04)
+
+Built on main d54de48aa (round 10 landed, engine pin 9f7f1f6e4). Audit CONFIRMED by class: rogue 2, druid 1, shaman 1, mage 1, paladin 1, priest 1. Warrior, warlock and hunter had 0. Total 7. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7.
+
+Almost every finding was a slip in a round 10 rewrite:
+
+- Natural Shapeshifter and Feral Instinct reasons
+- Chain Heal's party-only jumps, in the card note and the grouping line
+- Arcane Meditation at 2 ranks keeps most regeneration running, not all
+- Consecration: the newest rank on packs from 40, rank 1 for single targets
+- The Shadow opener puts Shadow Word: Death before the second Mind Blast
+- Venom adds 20 points of poison chance, which lands Instant Poison on half your hits
+- Subtlety keeps Rupture ticking and marks at five while it ticks
+
+Verdict: NOT zero, round 12 needed.
+Rendered review: wow-player SHIP for druid, shaman, mage, paladin, priest and rogue. Two page-text MUSTs are fixed: the Enhancement summary now says imbue, not Windfury, and Venom's 20 percentage points now has its unit.

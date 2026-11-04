@@ -63,7 +63,7 @@ Fire takes exactly 31 points to Combustion and skips Blast Wave and Improved Fla
 
 The other 20 points buy mana and hit. Seventeen in Arcane reach **Arcane Concentration** (5 points, a free spell 10% of the time) and two ranks of **Arcane Meditation** (a third of your mana regeneration keeps running while you cast). With Mage Armor on top, most of your regeneration runs through the whole fight. Three go into **Precision** in Frost for 6% hit.
 
-The 60 build pays that toll with a point in **Burning Soul**, a 23% chance to keep a cast from being pushed back and 10% less Fire threat, and a point in Accelerant, which speeds up Fireball until you have Scorch. The raid build pays it with two ranks of **Burning Soul** instead: 20% less threat from your Fire spells and a 47% chance to keep a cast from being pushed back. It also moves the point of Magic Absorption into a third rank of Arcane Resilience. [Open the planner](/planner?class=mage) to change the build.
+The leveling build pays that toll with a point in **Burning Soul**, a 23% chance to keep a cast from being pushed back and 10% less Fire threat, and a point in Accelerant, which speeds up Fireball until you have Scorch. The raid build pays it with two ranks of **Burning Soul** instead: 20% less threat from your Fire spells and a 47% chance to keep a cast from being pushed back. It also moves the point of Magic Absorption into a third rank of Arcane Resilience. [Open the planner](/planner?class=mage) to change the build.
 
 ## Rotation and priority
 

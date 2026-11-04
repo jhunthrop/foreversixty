@@ -27,7 +27,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 
 ### Strengths
 
-- Prayer of Mending is the cheapest healing in the game: five jumps for one cast
+- Prayer of Mending is the cheapest healing in the game: five heals for one cast
 - Prayer of Healing heals any five-player group at once, not only your own
 - Spiritual Guidance and Meditation turn Spirit into both healing and mana
 - Lightwell heals the melee while you heal the tank, and Holy Binding heals you every time you Flash Heal someone else
@@ -77,7 +77,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **Overheal.** Start Greater Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Greater Heal; Prayer of Mending and Renew cover those.
 
-**Inner Focus.** Spend it on a Prayer of Healing, your most expensive spell, or on a Greater Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
+**Inner Focus.** Spend it on a Prayer of Healing, your most expensive heal, or on a Greater Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
 
 **Assignments.** In a raid you will be on a group or on a tank. On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. On a tank, Renew, Prayer of Mending and Greater Heal, with Flash Heal for the spikes. Either way, never stand where the boss's cleave or the raid's AoE lands on you: Twilight Focus helps, it does not make you immune.
 

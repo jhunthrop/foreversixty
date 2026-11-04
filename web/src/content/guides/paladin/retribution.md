@@ -130,7 +130,7 @@ Take quest rewards over vendor gear, and replace your Battleworn Hammer with the
 
 Retribution is the paladin leveling spec, even if you want to heal or tank at 60. Pull with Seal of the Crusader and a Judgement on your first swing, then Seal of Righteousness and Holy Strike on cooldown. Sanctified Judgement refunds most of each Seal, so on one or two mobs at a time you rarely drink.
 
-From level 20 Consecration is your AoE: two or three mobs on you is the time for it, and rank 1 at 135 mana is the rank to keep on your bar until 60: a rank loses its spell damage bonus once you are far above the level you learned it, but rank 1 has so little to lose that its low cost wins. Exorcism (level 20) and Holy Wrath (level 50) are easy kills on Undead and Demons, so quest zones full of them, like the Plaguelands, are paladin country. Repentance takes one Humanoid out of a bad pull, and Hammer of Justice stops a runner or a caster.
+From level 20 Consecration is your AoE: two or three mobs on you is the time for it. Through your 30s, rank 1 at 135 mana does about as much for its mana as rank 2, so keep it. From 40, on a pack, cast the newest rank you have: each new rank hits every mob far harder for its mana, and rank 1 also loses its spell damage bonus as you outlevel it. On a single target, rank 1 stays the rank to use until 60, for the reason in the Consecration paragraph of the rotation. Exorcism (level 20) and Holy Wrath (level 50) are easy kills on Undead and Demons, so quest zones full of them, like the Plaguelands, are paladin country. Repentance takes one Humanoid out of a bad pull, and Hammer of Justice stops a runner or a caster.
 
 Common mistakes:
 

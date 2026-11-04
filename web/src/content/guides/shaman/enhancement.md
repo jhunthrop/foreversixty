@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:shaman:dwarf:323003/055030310051202051/052:'
 raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:0533001/053030310051202051/053:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
-description: 'Enhancement Shaman in Forever: one weapon and Windfury, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
+description: 'Enhancement Shaman in Forever: one weapon and your imbue, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
 updated: 2026-11-04
 confidence: inferred
 sources:
@@ -27,7 +27,7 @@ sources:
 
 ## Overview
 
-Enhancement is the shaman's melee spec: one weapon with Windfury on it, Stormstrike on cooldown, and a free instant Lightning Bolt every time Maelstrom Weapon reaches five stacks.
+Enhancement is the shaman's melee spec: one weapon and its imbue, Stormstrike on cooldown, and a free instant Lightning Bolt whenever Maelstrom Weapon reaches five stacks.
 
 ### Strengths
 
