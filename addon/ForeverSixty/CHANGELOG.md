@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.27
+
+- Built for client 1.60.1.70790, the build on the live realms: the item, talent and spell tables the addon ships match it. Nothing else changed.
+
 ## 2.0.25
 
 - Beast Mastery pets and warlock demons now get Heart of the Lion.

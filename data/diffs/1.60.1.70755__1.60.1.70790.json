@@ -1,0 +1,645 @@
+{
+  "from": "1.60.1.70755",
+  "to": "1.60.1.70790",
+  "entities": {
+    "zones": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "dungeons": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "items": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        {
+          "id": 2459,
+          "before": {
+            "id": 2459,
+            "name": "Swiftness Potion",
+            "quality": 1,
+            "item_level": 15,
+            "required_level": 5,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": 287975
+          },
+          "after": {
+            "id": 2459,
+            "name": "Swiftness Potion",
+            "quality": 1,
+            "item_level": 15,
+            "required_level": 5,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": 288898
+          },
+          "fields": [
+            "superseded_by"
+          ]
+        },
+        {
+          "id": 288896,
+          "before": {
+            "id": 288896,
+            "name": "Superior Healing Potion",
+            "quality": 1,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288896,
+            "name": "Superior Healing Potion",
+            "quality": 1,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288897,
+          "before": {
+            "id": 288897,
+            "name": "Superior Mana Potion",
+            "quality": 1,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288897,
+            "name": "Superior Mana Potion",
+            "quality": 1,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288898,
+          "before": {
+            "id": 288898,
+            "name": "Swiftness Potion",
+            "quality": 1,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288898,
+            "name": "Swiftness Potion",
+            "quality": 1,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288900,
+          "before": {
+            "id": 288900,
+            "name": "Earthshaker",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 5,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288900,
+            "name": "Earthshaker",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 5,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288926,
+          "before": {
+            "id": 288926,
+            "name": "Choker of the Fire Lord",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288926,
+            "name": "Choker of the Fire Lord",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288927,
+          "before": {
+            "id": 288927,
+            "name": "Quick Strike Ring",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288927,
+            "name": "Quick Strike Ring",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288928,
+          "before": {
+            "id": 288928,
+            "name": "Heavy Dark Iron Ring",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288928,
+            "name": "Heavy Dark Iron Ring",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288929,
+          "before": {
+            "id": 288929,
+            "name": "Band of Sulfuras",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288929,
+            "name": "Band of Sulfuras",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288930,
+          "before": {
+            "id": 288930,
+            "name": "Cauterizing Band",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288930,
+            "name": "Cauterizing Band",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288931,
+          "before": {
+            "id": 288931,
+            "name": "Ring of Spell Power",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288931,
+            "name": "Ring of Spell Power",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        }
+      ]
+    },
+    "spells": {
+      "added": [],
+      "removed": [
+        {
+          "id": 48953,
+          "name": "Infect!"
+        },
+        {
+          "id": 50146,
+          "name": "Righteous Purge"
+        },
+        {
+          "id": 55724,
+          "name": "You're a...! (NPC)"
+        },
+        {
+          "id": 55725,
+          "name": "You're a...! (NPC)"
+        },
+        {
+          "id": 55726,
+          "name": "You're a...! (NPC)"
+        },
+        {
+          "id": 55727,
+          "name": "You're a...! (NPC)"
+        },
+        {
+          "id": 1327657,
+          "name": "Frost Breath"
+        },
+        {
+          "id": 1327713,
+          "name": "Terrifying Roar"
+        },
+        {
+          "id": 1327716,
+          "name": "Cleave"
+        },
+        {
+          "id": 1327726,
+          "name": "Rushing Charge"
+        },
+        {
+          "id": 1327736,
+          "name": "Elixir of Endless Intellect"
+        },
+        {
+          "id": 1327737,
+          "name": "Elixir of Endless Power"
+        },
+        {
+          "id": 1327738,
+          "name": "Elixir of Endless Healing"
+        },
+        {
+          "id": 1327751,
+          "name": "Elixir of Endless Rapidity"
+        },
+        {
+          "id": 1327753,
+          "name": "Elixir of Endless Opportunity"
+        },
+        {
+          "id": 1327754,
+          "name": "Scroll of Endless Fortitude"
+        },
+        {
+          "id": 1327926,
+          "name": "Ultra Hogger"
+        },
+        {
+          "id": 1327961,
+          "name": "Giga Hogger"
+        },
+        {
+          "id": 1327963,
+          "name": "Cosmic Hogger"
+        },
+        {
+          "id": 1327978,
+          "name": "Frenzy"
+        },
+        {
+          "id": 1327984,
+          "name": "Manastorm"
+        },
+        {
+          "id": 1327987,
+          "name": "Manastorm"
+        },
+        {
+          "id": 1327989,
+          "name": "Chill"
+        },
+        {
+          "id": 1327990,
+          "name": "Chill"
+        },
+        {
+          "id": 1327991,
+          "name": "Call Anathema"
+        },
+        {
+          "id": 1327993,
+          "name": "Call Benediction"
+        },
+        {
+          "id": 1328013,
+          "name": "Cleave"
+        },
+        {
+          "id": 1328019,
+          "name": "Mortal Strike"
+        },
+        {
+          "id": 1328022,
+          "name": "Ding!"
+        },
+        {
+          "id": 1328028,
+          "name": "Charge"
+        },
+        {
+          "id": 1328032,
+          "name": "Elixir of Endless Mana"
+        },
+        {
+          "id": 1328034,
+          "name": "Chain Lightning"
+        },
+        {
+          "id": 1328040,
+          "name": "Hurricane"
+        },
+        {
+          "id": 1328041,
+          "name": "Hurricane"
+        },
+        {
+          "id": 1328067,
+          "name": "Summon Infernal"
+        },
+        {
+          "id": 1328068,
+          "name": "Summon Infernal"
+        },
+        {
+          "id": 1328069,
+          "name": "Summon Infernal"
+        },
+        {
+          "id": 1328117,
+          "name": "Summon Infernal"
+        },
+        {
+          "id": 1328118,
+          "name": "Elixir of Endless Growth"
+        },
+        {
+          "id": 1328119,
+          "name": "Scroll of Endless Speed"
+        },
+        {
+          "id": 1328127,
+          "name": "Elixir of Endless Experience"
+        }
+      ],
+      "changed": [
+        {
+          "id": 1327245,
+          "before": {
+            "id": 1327245,
+            "name": "Warstomp"
+          },
+          "after": {
+            "id": 1327245,
+            "name": "Thunderclap"
+          },
+          "fields": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "classes": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "races": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "talents": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "sets": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    }
+  }
+}

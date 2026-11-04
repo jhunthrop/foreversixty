@@ -3,8 +3,8 @@ title: Demonology Warlock in Forever
 classSlug: warlock
 spec: demonology
 role: dps
-build: 'FS1:1.60.1.70755:warlock:human:25522/203511310122000135/005:'
-raidBuild: 'FS1:1.60.1.70755:warlock:human:05/2035103021220001351/0550005:'
+build: 'FS1:1.60.1.70790:warlock:human:25522/203511310122000135/005:'
+raidBuild: 'FS1:1.60.1.70790:warlock:human:05/2035103021220001351/0550005:'
 recommendedRaces: [human, orc]
 statPriority:
   [Spell power, Shadow power, Hit, Critical strike, Intellect, Fire power, Spell haste, Spell penetration]

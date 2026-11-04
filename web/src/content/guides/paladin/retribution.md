@@ -3,8 +3,8 @@ title: Retribution Paladin in Forever
 classSlug: paladin
 spec: retribution
 role: dps
-build: 'FS1:1.60.1.70755:paladin:human:050250002/502/0523330100130135:'
-raidBuild: 'FS1:1.60.1.70755:paladin:human:050050002/503/05233301001301351:'
+build: 'FS1:1.60.1.70790:paladin:human:050250002/502/0523330100130135:'
+raidBuild: 'FS1:1.60.1.70790:paladin:human:050050002/503/05233301001301351:'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Intellect, Strength, Critical strike, Agility, Spell power, Attack power, Melee haste]
 description: 'Leveling and raiding with Seals, Judgement and an instant Hammer of Wrath, including the raid Unsealed Wrath swap.'
@@ -27,7 +27,7 @@ sources:
     url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
     kind: blizzard
   - label: 'Forever Sixty, races'
-    url: https://foreversixty.gg/data/1.60.1.70755/races.json
+    url: https://foreversixty.gg/data/1.60.1.70790/races.json
     kind: datamined
 ---
 

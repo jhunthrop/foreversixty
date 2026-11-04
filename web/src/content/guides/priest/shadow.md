@@ -3,8 +3,8 @@ title: Shadow Priest in Forever
 classSlug: priest
 spec: shadow
 role: dps
-build: 'FS1:1.60.1.70755:priest:human:02510503103/0/52542001201300051:'
-raidBuild: 'FS1:1.60.1.70755:priest:human:00510503103/0/50052201211312251:'
+build: 'FS1:1.60.1.70790:priest:human:02510503103/0/52542001201300051:'
+raidBuild: 'FS1:1.60.1.70790:priest:human:00510503103/0/50052201211312251:'
 recommendedRaces: [human, undead]
 statPriority: [Spell power, Shadow power, Hit, Spell haste, Critical strike, Intellect, Spell penetration]
 description: 'How to play Shadow Priest in Forever: talents for leveling and raids, the opener and priority, Vampiric Embrace, threat, mana, races and consumables.'

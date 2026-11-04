@@ -3,8 +3,8 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.70755:warlock:human:25522300132001351/200522/005:'
-raidBuild: 'FS1:1.60.1.70755:warlock:human:25520020135001351/00052/005004:'
+build: 'FS1:1.60.1.70790:warlock:human:25522300132001351/200522/005:'
+raidBuild: 'FS1:1.60.1.70790:warlock:human:25520020135001351/00052/005004:'
 recommendedRaces: [human, orc]
 statPriority: [Spell power, Shadow power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'

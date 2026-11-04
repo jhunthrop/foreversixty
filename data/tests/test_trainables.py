@@ -5,7 +5,14 @@ from pathlib import Path
 import pytest
 
 from pipeline.manifest import newest_build
-from pipeline.trainables import TRAINABLES, build_trainables, is_excluded_name
+from pipeline.trainables import (
+    SPELLS_FILE,
+    TRAINABLES,
+    PreviousBuild,
+    build_trainables,
+    is_excluded_name,
+    load_previous_build,
+)
 
 #: A floor, never an exact count: the 1.60.1.70009 class with the fewest active
 #: trainables (warrior) has 51.
@@ -369,8 +376,10 @@ def test_without_live_trees_nothing_is_tagged_a_talent(raw, tmp_path):
         # (Blizzard recap, Wowhead's live spellbook, beta casts; round 12 trainables report)
         ("hunter", "Aimed Shot"), ("paladin", "Blessing of Kings"), ("paladin", "Consecration"),
         ("priest", "Divine Spirit"), ("druid", "Omen of Clarity"), ("priest", "Lightwell"),
-        # talents whose nodes the 70707 push repointed; trainer spells since
-        ("paladin", "Voice of Truth"), ("priest", "Binding Heal"),
+        # a talent whose node the 70707 push repointed; a trainer spell since (Binding Heal
+        # went the same way until 70755's push removed its learn rows for good: see
+        # test_abilities_the_client_removed_are_not_trainable)
+        ("paladin", "Voice of Truth"),
     ],
 )  # fmt: skip
 def test_the_baseline_spells_round_12_settled_are_trainer_spells(slug, name):
@@ -485,3 +494,119 @@ def test_an_inactive_learn_row_spell_on_an_active_rank_is_its_effect_not_a_rank(
     shield = {t.name: t for t in by_slug(raw)["mage"].trainables}["Ice Shield"]
     assert [r.id for r in shield.ranks] == [ICE_SHIELD]
     assert shield.cost == 45
+
+
+# --- removed learn rows carried from the previous build ---------------------------------
+
+LAVA_BURST, BINDING_HEAL = 408490, 401937
+
+
+def test_a_no_learn_row_spell_the_previous_build_knew_and_did_not_list_is_a_removed_learn_row(
+    raw,
+):
+    """70790 shipped without the Lava Burst learn rows 70755's push had removed: the previous
+    build knew the spell (spells.json) and did not list it without a learn row, so the
+    fallback must not resurrect it."""
+    previous = PreviousBuild("1.60.1.70755", known=frozenset({UA}), no_learn_row=frozenset())
+    records = {r.class_slug: r for r in build_trainables("9.9.9.9", raw, previous=previous)}
+    assert "Unstable Affliction" not in names(records["warlock"])
+    assert "Frostfire Bolt" in names(records["mage"])  # learn rows are never filtered
+
+
+def test_a_no_learn_row_spell_the_previous_build_listed_that_way_stays(raw):
+    previous = PreviousBuild("1.60.1.70755", known=frozenset({UA}), no_learn_row=frozenset({UA}))
+    records = {r.class_slug: r for r in build_trainables("9.9.9.9", raw, previous=previous)}
+    assert "Unstable Affliction" in names(records["warlock"])
+
+
+def test_a_no_learn_row_spell_the_previous_build_never_knew_is_new_and_listed(raw):
+    previous = PreviousBuild(
+        "1.60.1.70755", known=frozenset({FROSTBOLT_1}), no_learn_row=frozenset()
+    )
+    records = {r.class_slug: r for r in build_trainables("9.9.9.9", raw, previous=previous)}
+    assert "Unstable Affliction" in names(records["warlock"])
+
+
+def _write_build(
+    root: Path,
+    build: str,
+    known: list[int],
+    class_spells: list[int],
+    trainer_spells: list[int] = (),
+    family_talents: list[int] = (),
+) -> None:
+    """A committed build: its spell list and one warlock trainables file with class spells
+    (no learn row), trainer spells (a skill line) and talents the live tree re-tagged from
+    class spells (talent source, the empty family skill line)."""
+    build_dir = root / build
+    (build_dir / TRAINABLES).mkdir(parents=True)
+    (build_dir / SPELLS_FILE).write_text(
+        json.dumps([{"id": i, "name": f"Spell {i}"} for i in known]), encoding="utf-8"
+    )
+
+    def entry(i: int, source: str, skill_line: str) -> dict:
+        return {
+            "name": f"Spell {i}",
+            "skill_line": skill_line,
+            "source": source,
+            "active": True,
+            "cost": 1,
+            "cost_type": 0,
+            "cast_time_ms": 0,
+            "cooldown_ms": 0,
+            "ranks": [{"id": i, "rank": 1, "level": 10}],
+        }
+
+    record = {
+        "build": build,
+        "class_slug": "warlock",
+        "trainables": [
+            *(entry(i, "class_spell", "") for i in class_spells),
+            *(entry(i, "skill_line_ability", "Affliction") for i in trainer_spells),
+            *(entry(i, "talent", "") for i in family_talents),
+        ],
+    }
+    (build_dir / TRAINABLES / "warlock.json").write_text(json.dumps(record), encoding="utf-8")
+
+
+def test_load_previous_build_reads_the_newest_older_committed_build(tmp_path):
+    _write_build(tmp_path, "1.60.1.70700", known=[1, 2], class_spells=[1])
+    _write_build(
+        tmp_path, "1.60.1.70755", known=[2, 3, 5, 6], class_spells=[3],
+        trainer_spells=[5], family_talents=[6],
+    )  # fmt: skip
+    _write_build(tmp_path, "1.60.1.70800", known=[4], class_spells=[4])  # newer: ignored
+    (tmp_path / "notes").mkdir()  # not a build directory
+    previous = load_previous_build(tmp_path, "1.60.1.70790")
+    assert previous is not None
+    assert previous.build == "1.60.1.70755"
+    assert previous.known == {2, 3, 5, 6}
+    assert previous.no_learn_row == {3, 6}
+    assert previous.keeps_without_learn_row(3)  # listed without a learn row before
+    assert previous.keeps_without_learn_row(6)  # a talent re-tagged from a class spell (Turn Evil)
+    assert previous.keeps_without_learn_row(9)  # unknown to 70755: new
+    assert not previous.keeps_without_learn_row(2)  # known, not listed: its learn rows are gone
+    assert not previous.keeps_without_learn_row(5)  # had a trainer row: gone now means removed
+
+
+def test_load_previous_build_is_none_for_the_first_build(tmp_path):
+    _write_build(tmp_path, "1.60.1.70800", known=[4], class_spells=[4])
+    assert load_previous_build(tmp_path, "1.60.1.70790") is None
+    assert load_previous_build(tmp_path, "not-a-build") is None
+
+
+@pytest.mark.parametrize(
+    ("slug", "name", "spell_id"),
+    [("shaman", "Lava Burst", LAVA_BURST), ("priest", "Binding Heal", BINDING_HEAL)],
+)
+def test_abilities_the_client_removed_are_not_trainable(slug, name, spell_id):
+    """1.60.1.70755's push removed both abilities' learn rows and every later client ships
+    without them (Lava Burst is gone from the Elemental talent texts too); neither may come
+    back through the no-learn-row fallback."""
+    record = committed()[slug]
+    listed = [
+        t
+        for t in record["trainables"]
+        if t["name"] == name or any(r["id"] == spell_id for r in t["ranks"])
+    ]
+    assert listed == [], [(t["name"], t["source"]) for t in listed]
