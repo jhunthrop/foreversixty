@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:mage:gnome:141005213100301531/4/05350003:'
 raidBuild: 'FS1:1.60.1.70755:mage:gnome:131205213100301531/3/05350003:'
 recommendedRaces: [gnome, orc]
-statPriority: [Spell power, Arcane power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
+statPriority: [Spell power, Hit, Intellect, Arcane power, Critical strike, Spell haste, Spell penetration]
 description: 'Arcane Mage in Forever: the Arcane Blast loop, the opener, Arcane Power windows, mana over a boss fight, talents, stats and leveling.'
 updated: 2026-11-02
 confidence: inferred
@@ -70,13 +70,13 @@ You never cast a Fire spell, so Flame Throwing and Impact do nothing for Arcane.
 
 ## Rotation and priority
 
-**Opener.** Mage Armor, Arcane Brilliance and your food buff go up before the pull. Conjure a Mana Ruby and a Mana Citrine and drink back to full. Start a Frostbolt 2.5 seconds before the pull so it lands just after the tank's first hit: it rolls Missile Barrage before the fight starts. Then press Arcane Power, Presence of Mind, your trinkets and your racial together, put the instant Frostbolt out, and start blasting.
+**Opener.** Mage Armor, Arcane Brilliance and your food buff go up before the pull. Conjure a Mana Ruby and a Mana Citrine and drink back to full. Start a Frostbolt 2.5 seconds before the pull so it lands just after the tank's first hit: it can roll Missile Barrage before the fight starts. Blast twice while the tank puts a couple of Sunders up, then press Arcane Power, Presence of Mind, your trinkets and your racial together, put the instant Frostbolt out and go back to blasting.
 
 **The loop.** Blast to 3 stacks. Keep going to 4 while you are above 20% mana and ahead of the fight, which means more of your mana bar left than of the fight: half the fight left with more than half your mana, keep blasting. Then cast Frostbolt until the 18 seconds run out. The stacks do not refresh, so the next Blast starts a fresh, cheap set. Missiles go out the moment Missile Barrage lights up, whatever you were doing. A Clearcasting proc makes the next spell free, so a Clearcasting on 3 stacks is a free fourth Blast.
 
 **Arcane Power windows.** Arcane Power and Presence of Mind are both 3 minute cooldowns, so press them together with your on-use trinkets and your racial: Eureka! on a Gnome, Blood Fury on an Orc, Berserking on a Troll. In a 3 minute fight you get one window, on the pull. The second is ready as the boss dies, so on a longer fight hold it for a phase where the boss takes extra damage or the adds are down.
 
-**Mana in a 3 minute fight.** You will run dry. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. In Forever, mana gems and Demonic Runes share one 2 minute cooldown, and the Robe of the Archmage has its own 5 minute one. Evocation is an 8 minute cooldown and comes once a fight: channel it when the bar is near empty with more than 30 seconds left, and never in the last 30 seconds, where the mana comes back too late to spend. Do not downrank Frostbolt to stretch mana; the cheaper ranks lose more damage than the mana buys.
+**Mana in a 3 minute fight.** You will run dry. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. A mana gem, a Demonic Rune and the Robe of the Archmage lock each other out for a minute after you use one, and the Robe has its own 5 minute cooldown on top. Evocation is an 8 minute cooldown and comes once a fight: channel it when the bar is near empty with more than 30 seconds left, and never in the last 30 seconds, where the mana comes back too late to spend. Do not downrank Frostbolt to stretch mana; the cheaper ranks lose more damage than the mana buys.
 
 **AoE.** Arcane Explosion is instant and hits everything within 10 yards, so you stand in the pack with the tank and spam it. It costs 390 mana a cast, which drains a full bar in under a minute: let the tank get two or three seconds of threat, Frost Nova when the pack turns on you and Blink out. On spread packs or anything that hits hard, stand back and Blizzard instead.
 
@@ -86,7 +86,7 @@ You never cast a Fire spell, so Flame Throwing and Impact do nothing for Arcane.
 
 ## Stat priority
 
-Arcane Blast gives spell damage from Intellect, so Intellect is close to a damage stat for this spec and much better than for Fire or Frost. Hit and spell power are your two best stats until you reach the hit cap: a missed Blast costs the full stacked price and does nothing.
+Arcane Blast gives spell damage from Intellect, so Intellect is close to a damage stat for this spec: a bit better than for Fire, which wants it for mana, and far better than for Frost. Hit and spell power are your two best stats until you reach the hit cap: a missed Blast costs the full stacked price and does nothing.
 
 ## Best in slot
 
@@ -96,7 +96,7 @@ Arcane casts Arcane and Frost spells, so any spell power enchant or elixir that 
 
 ## Races
 
-**Gnome** is the best Alliance Arcane mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Arcane Power. **Human** brings 1% crit and 10% Spirit, which runs all the time thanks to Arcane Meditation and Mage Armor. On the Horde, **Orc** Blood Fury adds 10% spell power for 15 seconds every 2 minutes, **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Arcane Power, and **Undead** gets a small Shadow drain from Touch of the Grave plus Will of the Forsaken for fear fights.
+**Gnome** is the best Alliance Arcane mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Arcane Power on the pull and again the moment it is back. **Human** brings 1% crit and 10% Spirit, which runs all the time thanks to Arcane Meditation and Mage Armor. On the Horde, **Orc** Blood Fury adds 10% spell power for 15 seconds every 2 minutes: press it with Arcane Power on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Arcane Power. **Undead** gets a small Shadow drain from Touch of the Grave plus Will of the Forsaken for fear fights.
 
 ## Professions
 
@@ -104,4 +104,4 @@ Tailoring and Enchanting are the standard pair: Tailoring makes the early cloth 
 
 ## Leveling
 
-Level as Frost or Arcane to 20, then pick up Arcane Blast and Missile Barrage in the 30s. Arcane levels fast on single pulls but burns mana, so drink after every two or three mobs and keep Frost Nova and Blink for anything that reaches you. Frostbolt's slow is your kiting tool at every level. From level 22 to the 40s, AoE grinding with Arcane Explosion after a Frost Nova is the fastest way to level, but it needs gear with Stamina and a careful pull. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.
+Put every point in Arcane from 10. Missile Barrage comes at 21 and Arcane Blast at 27, and from there you level on Blast and free Missiles. Arcane levels fast on single pulls but burns mana, so drink after every two or three mobs and keep Frost Nova and Blink for anything that reaches you. Frostbolt's slow is your kiting tool at every level. From level 22 to the 40s, AoE grinding with Arcane Explosion after a Frost Nova is the fastest way to level, but it needs gear with Stamina and a careful pull. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.
