@@ -74,7 +74,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 3. Lightning Bolt the moment Maelstrom Weapon shows five stacks. It is instant and free, so it costs you nothing. If Stormstrike is a second or two from ready, use it first and let the bolt take the 20%.
 4. Searing Totem when it is down, unless the boss is about to die.
 5. Fire Nova when Clearcasting makes it free.
-6. Earth Shock on cooldown while you are above half mana. It takes Stormstrike's 20% when no bolt is ready.
+6. Earth Shock on cooldown while you have more than a quarter of your mana. It takes Stormstrike's 20% when no bolt is ready.
 
 **Which imbue.** Windfury Weapon on your main hand turns off any Windfury Totem's bonus for you. So in a raid where a Windfury Totem reaches you, yours or another shaman's, put Rockbiter Weapon on instead: Forever's Rockbiter is a large flat attack power bonus, it keeps the totem's extra swings working for you, and Elemental Weapons makes it bigger. It also adds threat to your swings, so watch your meter early in a fight. Solo and anywhere without that totem, use Windfury Weapon.
 
@@ -84,7 +84,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 **Packs.** Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it. On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning while your mana lasts, and keep spending five Maelstrom stacks on Lightning Bolt.
 
-**Mana.** Without raid buffs, stop using Earth Shock below half mana and let your swings and free bolts carry you.
+**Mana.** In a raid, Judgement of Wisdom and Mana Spring keep you topped up, so Earth Shock never needs to wait. Without them, stop shocking at a quarter of your mana: that last quarter pays for Stormstrike and your totems, which hit harder than the shock you skip. Your swings and free bolts carry you until it comes back.
 
 **Lightning Shield** only fires when something hits you, which behind a boss is never. Keep it for leveling and for adds that turn on you.
 
