@@ -134,9 +134,10 @@ func TestRestorationHealingTouchFillerRanksByLevel(t *testing.T) {
 }
 
 // Round 18 R2: the party Rejuvenation (authored 8910) is rank 2 at 40 and 41,
-// where it beats rank 1 by 1.4 to 2.1% (night elf) and 0.8 to 1.4% (tauren);
-// rank 1 again at 39 (-0.9%) and 42 (+0.8%, under the bar).
-func TestRestorationPartyRejuvenationAtFortyAndFortyOne(t *testing.T) {
+// where it beats rank 1 by 1.4 to 2.1% (night elf) and 0.8 to 1.4% (tauren).
+// Round 19: rank 2 also wins at 42 (+0.8% night elf, +0.3% tauren, beyond
+// error at both seeds; rank rows take no 1% bar); rank 1 again at 39 and 43.
+func TestRestorationPartyRejuvenationAtFortyToFortyTwo(t *testing.T) {
 	const rejuvenation1, rejuvenation2 = 774, 1058
 	for _, c := range []struct {
 		level     int
@@ -145,11 +146,35 @@ func TestRestorationPartyRejuvenationAtFortyAndFortyOne(t *testing.T) {
 		{39, rejuvenation1, 0},
 		{40, rejuvenation2, rejuvenation1},
 		{41, rejuvenation2, rejuvenation1},
-		{42, rejuvenation1, rejuvenation2},
+		{42, rejuvenation2, rejuvenation1},
+		{43, rejuvenation1, rejuvenation2},
 	} {
 		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, "night-elf"))
 		if !ids[c.want] || (c.not != 0 && ids[c.not]) {
 			t.Errorf("level %d: want Rejuvenation %d cast and %d not", c.level, c.want, c.not)
+		}
+	}
+}
+
+// Sim-accuracy round 19 (design/reviews/2026-11-04-sim-audit-round19/druid.md).
+// The tank Rejuvenation (authored 9841) judged level by level at 40-59 under
+// the low-rank penalty (10,000 iterations, seeds 1 and 50001, both factions):
+// rank 4 wins at 40-43, rank 5 at 44-48, rank 6 at 49-56 (it beats the top
+// rank by 1.0 to 2.7% at 53-56, where round 16 left the top rank) and rank 8
+// at 57-59.
+func TestRestorationTankRejuvenationRanksByLevel(t *testing.T) {
+	rejuvenation := map[int]int32{4: 2090, 5: 2091, 6: 3627, 8: 9839, 9: 9840}
+	for _, c := range []struct {
+		level int
+		rank  int
+	}{
+		{43, 4}, {44, 5}, {48, 5}, {49, 6}, {53, 6}, {56, 6}, {57, 8}, {59, 8},
+	} {
+		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, "night-elf"))
+		for rank, id := range rejuvenation {
+			if got, want := ids[id], rank == c.rank; got != want {
+				t.Errorf("level %d: Rejuvenation rank %d (%d) cast = %v, want %v", c.level, rank, id, got, want)
+			}
 		}
 	}
 }
