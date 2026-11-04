@@ -141,3 +141,13 @@ On land/guides-r1:
 - B3: bear Furor (owner).
 - Pending owner, not reopened: Rejuvenation rank 1 tooltip (DRUID-19, O2); Moonkin Rebirth (DRUID-20); Eclipse on a resisted Wrath (DRUID-16, aligned by analogue).
 - Warcraft Logs is blocked (gcloud login expired); not used.
+
+## Wave 2
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W1 | **Frenzied Regeneration "heals the full bar" (guide-accuracy Q1, which calls for a sim change from 0.3% to 1% a rage).** The guide lane worked on engine 2eaae03c6, which still had 0.3%. Round 14 B1 (E 809b1fc9b, inside the int/r15 base d1d9f2775) already made it 1%. The 70755 client agrees on every value:<br>- SpellEffect 700422 is aura 23, period 1000 ms, base points 1.<br>- The Spell text is "Converts up to 10 Rage per second into health for $d. Each point of Rage is converted into $s1% health."<br>- SpellDuration 1 is 10,000 ms; SpellCooldowns 55743 is a 180,000 ms category with a 1.5 s global.<br>The engine (`frenzied_regeneration.go:17-24`) has 10 s, 3 min, 10 rage a second and 0.01 a rage. At full rage that is 10 ticks of 10% = the whole bar. The guide claim is right and the engine already deals it. No change. | `TestFrenziedRegenerationIsOnePercentAPointOfRage` passes on the lane engine; client rows above | Aligned (fixed in round 14) | - | - |
+
+Bear raid 60 on the lane (10,000 iterations): threat 1000.6 / 1001.6 (alliance, seeds 1 / 50001) and 992.0 / 992.6 (horde); chance of death 10.9 / 9.9% and 10.1 / 9.8%; damage taken 465.8 / 465.3 and 473.5 / 472.9. Round 14 recorded 10.1% for horde at seed 1, so Rend and Tear (S1) moves threat, not survival. The bear's "under half health with 20 rage" line was already measured on the 1% conversion in round 14 (B1, O4).
+
+For the guide lane: the original "can heal you for your whole health bar given the rage" stands; see the feral-bear.md:88 wording above.
