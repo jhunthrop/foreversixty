@@ -145,6 +145,39 @@ Before (round start, `$R/sb-before`) → engine change with the old rows → fin
 
 **Files to regenerate:** the mage-fire ladder golden (rung 40 casts Scorch rank 2).
 
+## Wave 4: guide-accuracy round 2 seeds
+
+Setup:
+- Branches merged with int/r15: site 0d9241e0c, fork 86fe4bf34.
+- Live hotfix check: wago SpellEffect at 1.60.1.70755, fetched 2026-11-04. Every mage effect this wave relies on matches our spellconst: Arcane Wrath 1326082, Eureka! 1259817, Arcane Blast 1239700 and its stack 400573, Fire Blast 10199, Pyroblast 18809 and 11366, Fireball 10151, Arcane Missiles 10212 and 10274, Frostbolt 10181, Scorch 10207, Heating Up 400624 and 400625, Arcane Power, Presence of Mind, Incineration, Accelerant, Ignite, Ice Lance 1240047. No live difference to record.
+
+| # | finding | evidence | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| G1 | **Arcane Wrath in the engine** matches the client (MAGE-R2-1). Rank 4 is 451 + 3.0 a level, ±20%, coefficient 1.0, 3.5 s cast, 6 s cooldown, 395 mana. Effect 1 is the 5% maximum-mana share, applied as spell damage. | `arcane_wrath.go`; constants; live SpellEffect | Aligned | - | - |
+| G2 | **Arcane Wrath on the old Arcane/Frost raid build** (SIM-R2-1). The point comes from Frost Channeling 1 or Incineration 1. Wand Specialization cannot give it: without it the build is illegal, because Arcane Subtlety needs 5 points above. Best line: Presence of Mind on Arcane Wrath, 616.7 to 624.3 against 613.4 to 619.9 (+0.6 to +0.7%, 10,000 iterations, both seeds). Arcane Wrath at three Blast stacks: +0.3%. | runs | Held under the adoption rule (<1%) | - | - |
+| G3 | **The Arcane raid build that takes Fire second** (SIM-R2-2). Build `131205213100211531/525000012001/003`: <ul><li>Arcane 32, as before, but Arcane Meditation 2 and Arcane Wrath;</li><li>Fire 16: Incineration 5, Accelerant 2, Ignite 5, Pyroblast, Improved Fire Blast 2, Heating Up;</li><li>Frost: Precision 3.</li></ul>The rotation adds, each gated on Heating Up or the Arcane Wrath talent so the leveling build is untouched: <ul><li>Pyroblast on three Heating Up stacks, and on Presence of Mind;</li><li>Fire Blast on cooldown;</li><li>Arcane Wrath at three Blast stacks;</li><li>Fireball as the filler, ahead of Frostbolt.</li></ul>Raid 60 (alliance / horde, seeds 1 and 50001): 613.4 / 614.0 / 619.4 / 619.9 → 657.1 / 657.2 / 659.1 / 659.1 (+6.4 to +7.1%). Without Arcane Wrath (Arcane Meditation 3): 645.4 / 644.8 / 648.7 / 648.3. Bare 30 to 60 on the leveling build: unchanged. Adoption rule: <ul><li>the Arcane tree holds;</li><li>every unmodeled talent stays (Improved Channeling, Arcane Resilience, Arcane Subtlety, Arcane Geometry);</li><li>the dropped Frost points (Improved Frostbolt, Ice Shards, Frost Channeling) go with the Frostbolt they served, and Frostbolt stays as the fallback line;</li><li>the gain is beyond error at both seeds.</li></ul>Sources: Mobalytics Verified Arcane ("the expected raiding build for Arcane mages", 32/16/3) and Icy Veins Forever Arcane (Fire subspec), both cited in guide-accuracy round 2. | `TestArcaneRaidPlaysItsFireSecondTree` failed, then passed; apl-check green; builds vitest green | CONFIRMED-BUG | old, guides-handoff (SIM-R2-2) | S e01dc2dff, E b46cc2fe4 |
+| G4 | **Eureka!'s mask** reaches Arcane Blast, Arcane Missiles (cast and missiles), Frostbolt, Fireball, Fire Blast, Scorch, Pyroblast, Ice Lance and Cone of Cold, for +10% damage and -10% cost. It does not reach Arcane Wrath or any periodic damage. The client says the same: <ul><li>effect 1's mask (551688947, 4096, 0, 8) misses Arcane Wrath's family bits (0x40000000, 0x8000);</li><li>effect 2, the periodic modifier, has an all-zero mask, so Pyroblast's and Fireball's burns and Ignite get nothing.</li></ul>The tooltip says "Your damaging abilities", which is broader, but the client table decides. | live SpellEffect 1259817; `core/eureka_auto_gen.go` | Aligned (client mask; tooltip broader) | - | - |
+
+**Measure at refresh:** Arcane raid 60 gear, weights and tiers on the Fire second tree. Fire spell power and hit now count, and Kindling Stave's case changes.
+
+**Files to regenerate:** the mage-arcane ladder golden at rung 60 (if the ladder uses the raid build), addon-builds.json (the Arcane raid order), and the coach starter for Arcane.
+
+**For the guide lane (wave 4):**
+- arcane.md's Talents section must describe the raid build's 16 Fire points:
+  - Incineration 5 (Fire Blast and Arcane Blast crit), Accelerant 2 (faster Fireball);
+  - Ignite 5, Pyroblast, Improved Fire Blast 2 and Heating Up (instant Pyroblasts from Fire Blast);
+  - Arcane Wrath for one rank of Arcane Meditation;
+  - Precision 3 in Frost.
+- The raid loop: Pyroblast on three Heating Up and with Presence of Mind, Fire Blast on cooldown, Arcane Wrath at three Blast stacks, Fireball as the filler.
+- The leveling build keeps Frost and Frostbolt.
+- The new rotation lines have no notes. Suggested:
+  - Pyroblast: "Pyroblast on three Heating Up stacks, when it is a 1.5 second cast, or with Presence of Mind."
+  - Fire Blast: "Fire Blast on cooldown: every hit is a Heating Up stack."
+  - Arcane Wrath: "Arcane Wrath on cooldown once you hold three Blast stacks, so their spell damage rides on it."
+  - Fireball: "Fireball fills in the raid build; its crits add Heating Up."
+- The Presence of Mind note ("spend it on a 2.5 second Frostbolt") becomes "spend it on Pyroblast" for the raid build.
+- The threat line should say that Fire spells get no Burning Soul cut.
+
 ## Still open
 
 - Arcane Concentration from Shoot and Kindling Stave's Ignition (round 14 M7), and Kindling Stave's proc rate (M5): carried, with no new evidence.
