@@ -53,7 +53,7 @@ stat weights.
 
 ### What's new for launch
 
-- **Built for the launch client, 1.60.1.70753.** Item, talent and spell data is regenerated for
+- **Built for the launch client, 1.60.1.70755.** Item, talent and spell data is regenerated for
   every new client build, usually the same day.
 - **No offer you cannot wear.** The minimap line, the bag rows and the counts check level, class
   and your armor and weapon training first. `/fs loot` says why a piece is not for you.
@@ -107,6 +107,6 @@ Add above `## The Forever Score, in game`:
 
 ## Owner checks before pasting
 
-- The "What's new" list names client build 1.60.1.70753 (addon 2.0.22). If a newer build ships
+- The "What's new" list names client build 1.60.1.70755 (addon 2.0.23). If a newer build ships
   before you paste, change the number.
 - Gallery stays as it is: the twelve plates in design/listing/gallery, in the listed order.

@@ -45,8 +45,9 @@ other og:image returns a 1200 by 630 PNG.
 - Three guide descriptions shortened.
 - `web/public/ee556cf79f11bf298b87463b0558a4e4.txt`: the IndexNow key file (below).
 
-None of this is live until main deploys. **Defects 1 to 4 stay on production until then.** Check
-after the deploy:
+**Live since main 153b9b5a0 (3 November 2026, evening).** Checked after the deploy: all 97
+sitemap pages have an og:image that returns a PNG, the three tier titles differ, the key file is
+served, and IndexNow accepted the 97 sitemap URLs with HTTP 202. To re-check:
 
 ```sh
 for p in tiers tiers/tank tiers/healer sim premium guild; do
