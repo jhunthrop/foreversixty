@@ -66,11 +66,31 @@
       ]
     },
     "paladin-holy": {
-      "reason": "On band 30's own fight, Oath of Light ahead of Infusion of Light's second rank beats the plain walk beyond error, both factions; no other band changes.",
+      "reason": "On band 30's own fight, Oath of Light ahead of Infusion of Light's second rank beats the plain walk beyond error, both factions (sim-accuracy round 11). The plain walk also spends Holy points a healer cannot use while live ones wait: at band 20 the 11th point goes to Purifying Power (Cleanse cost and the Exorcism and Holy Wrath cooldowns, none of which the healer casts) instead of Illumination, and at band 30 the 19th goes to Divine Precision (Holy spell hit; heals cannot miss) instead of Infusion of Light's second rank. Illumination's first rank, Divine Favor (which the rotation casts), Illumination to four ranks, Oath of Light, Illumination's fifth rank and both ranks of Infusion of Light, in that order, raise band 20's effective healing about 3.5% on its own fight, both factions, seeds 1 and 50001, hold band 30 level, and leave bands 35 to 60 on the plain walk (sim-accuracy round 15, paladin). The order keeps every level's build a superset of the level before (the walk takes the longest legal prefix) and still takes Oath of Light at 25.",
       "first": [
+        {
+          "talent": "Illumination",
+          "rank": 1
+        },
+        {
+          "talent": "Divine Favor",
+          "rank": 1
+        },
+        {
+          "talent": "Illumination",
+          "rank": 4
+        },
         {
           "talent": "Oath of Light",
           "rank": 1
+        },
+        {
+          "talent": "Illumination",
+          "rank": 5
+        },
+        {
+          "talent": "Infusion of Light",
+          "rank": 2
         }
       ]
     },
