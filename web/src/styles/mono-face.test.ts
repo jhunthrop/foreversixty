@@ -15,7 +15,6 @@ const STYLED_EXTENSIONS = new Set(['.astro', '.svelte', '.ts', '.css']);
 /** Every place the code face may appear, with what it sets. */
 const ALLOWED = new Map<string, number>([
   ['styles/nav.css', 2], // the header export paste box and the search box's "/" key hint
-  ['components/Character.svelte', 1], // <code> a character address
   ['components/Guild.svelte', 1], // <code> a guild address
   ['components/CharacterSearch.astro', 1], // the "/" key hint
   ['components/CopyForGame.svelte', 1], // the copy-for-the-game string field

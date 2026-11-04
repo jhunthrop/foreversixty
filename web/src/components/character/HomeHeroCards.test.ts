@@ -44,13 +44,15 @@ describe('HomeHeroCards', () => {
     expect(body).toContain('href="/planner?spec=hunter-marksmanship"');
   });
 
+  // A character with no level reads as below 20, whose sim card is quiet (the low-level
+  // home); the sim card's link and skeleton belong to a character from 20 up.
   it('links the Simulator card to the armory sim href for this character', () => {
-    const { body } = render(HomeHeroCards, { props: { hero: HERO } });
+    const { body } = render(HomeHeroCards, { props: { hero: HERO_WITH_SPEC } });
     expect(body).toContain('href="/sim?source=armory&amp;ref=us%2Fnormal%2Fzulmara"');
   });
 
   it('shows the Simulator card loading skeleton on first render (SSR, before the sim fetch settles)', () => {
-    const { body } = render(HomeHeroCards, { props: { hero: HERO } });
+    const { body } = render(HomeHeroCards, { props: { hero: HERO_WITH_SPEC } });
     expect(body).toContain('data-testid="home-hero-card-sim-skeleton"');
   });
 });
