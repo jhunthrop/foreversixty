@@ -61,7 +61,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 ## Rotation and priority
 
-**Before the pull.** Drop Lightwell and tell the raid it is up. Fear Ward the tank if the boss fears. Renew the tank as he engages.
+**Before the pull.** Drop Lightwell and tell the raid it is up. Fear Ward the tank if the boss fears. Renew the tank a second before he engages, so its first tick lands on the first hits he takes.
 
 **Penance on cooldown.** On the tank whenever he is missing health, on a party member who drops low when the tank is fine. It is the heal you never let sit.
 
