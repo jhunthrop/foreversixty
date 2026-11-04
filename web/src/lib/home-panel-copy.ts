@@ -64,10 +64,6 @@ export const homePanelCopy = {
  *   - a spec and an export, but no published BiS file/band for it yet.
  */
 export const homeHeroCardsCopy = {
-  /** §4's "no spec yet" state, named once and shared by the header, the Talents card and the
-   *  upgrades panel (all blocked on the identical missing fact). */
-  pickASpec: 'Pick a spec',
-  pickASpecLine: 'Set a spec in the planner to see this.',
   /** Reworded (home rebuild spec §4, "Empty states stay honest") from the pre-contract
    *  "the addon does not send worn gear" -- now that the addon CAN send it, the honest gap
    *  is this one character's own export, not a site-wide limitation. Best in slot card and
@@ -81,8 +77,6 @@ export const homeHeroCardsCopy = {
   bestInSlotNoListYet: 'No best in slot list published yet for this spec and level range.',
   talentsLabel: 'Talents',
   talentsAction: 'Open the planner',
-  talentsNotAvailable:
-    'Not available yet: no talent export for this character. Open the addon once to send it.',
   talentsNoListYet: 'No talent build published yet for this spec and level range.',
   talentsOptimizedFigure: 'Optimized',
   talentsUnoptimizedFigure: 'Unoptimized',
@@ -110,6 +104,37 @@ export const homeHeroCardsCopy = {
  * no-list sentences (the identical real gaps), so only the table's own rows/footer need
  * their own strings here.
  */
+/**
+ * A level 1 to 19 character's home (design/specs/2026-11-04-low-level-home.md): the class's
+ * leveling spec from its guide, the next talent point, and when gear lists and sim numbers start.
+ * Nobody is asked to pick a spec.
+ */
+export const levelingHomeCopy = {
+  headerFirstPoint: (level: number): string => `First talent point at level ${level}.`,
+  headerLevelTalent: (level: number, talent: string): string => `Level ${level} talent: ${talent}.`,
+  headerPointsToSpend: (count: number, talent: string): string =>
+    `${count} talent point${count === 1 ? '' : 's'} to spend. Start with ${talent}.`,
+  firstPick: (talent: string): string => `First pick: ${talent}`,
+  talentsAtLevel: 'Your guide build for this level is in the planner.',
+  headerNextPoint: (level: number): string => `Next talent point at level ${level}.`,
+  headerNoPlan: 'Open the leveling guide for your talent order.',
+  /** The header's one button below 20: the leveling guide. */
+  levelAs: (specName: string): string => `Level as ${specName} →`,
+  /** A 20+ character with no spec yet is compared as its class's leveling spec, and told so. */
+  comparedAs: (specName: string): string => `Compared as ${specName}`,
+  levelingAs: (specName: string): string => `Leveling as ${specName}`,
+  otherSpecs: 'Other specs',
+  toSpend: (count: number): string => `${count} to spend now`,
+  nextPointAt: (level: number): string => `Next point at level ${level}.`,
+  orderDone: 'Every leveling point is in. Gear lists start at 20.',
+  talentOrder: 'Open the talent order',
+  talentOrderFailed: 'Talent order did not load.',
+  simLocked: (level: number): string => `Sim numbers start at level ${level}.`,
+  gearLocked: (level: number): string => `Gear lists start at level ${level}.`,
+  gearUntil: 'Until then, wear the best quest rewards you can use.',
+  openLevelingGuide: 'Open the leveling guide',
+} as const;
+
 export const homeUpgradesCopy = {
   heading: 'Your upgrades',
   slotHeader: 'Slot',

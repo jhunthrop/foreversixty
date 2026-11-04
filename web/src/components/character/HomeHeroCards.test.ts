@@ -19,10 +19,11 @@ const HERO_WITH_SPEC: MeCharacter = {
 };
 
 describe('HomeHeroCards', () => {
-  it('shows "Pick a spec" on Talents for a character with no spec yet, never a fabricated figure', () => {
-    const { body } = render(HomeHeroCards, { props: { hero: HERO } });
-    expect(body).toContain('Pick a spec');
-    expect(body).toContain('href="/planner"');
+  it('below 20 never asks for a spec: Talents teaches the leveling order and the sim card is quiet', () => {
+    const { body } = render(HomeHeroCards, { props: { hero: { ...HERO, level: 5, spec: undefined } } });
+    expect(body).not.toContain('Pick a spec');
+    expect(body).toContain('data-testid="home-talents-leveling"');
+    expect(body).toContain('Sim numbers start at level 20.');
   });
 
   it('is exactly two cards, Talents and Simulator: Best in slot is the header’s answer now', () => {
@@ -33,11 +34,9 @@ describe('HomeHeroCards', () => {
     expect(body).not.toContain('href="#upgrades"');
   });
 
-  it('shows the honest not-yet-synced sentence for a character with a spec but no addon export yet', () => {
+  it('points a character with no talent export at the guide build in the planner', () => {
     const { body } = render(HomeHeroCards, { props: { hero: HERO_WITH_SPEC } });
-    expect(body).toContain(
-      'Not available yet: no talent export for this character. Open the addon once to send it.',
-    );
+    expect(body).toContain('Your guide build for this level is in the planner.');
   });
 
   it('links the Talents card to the planner with ?spec= for a character with a learned spec', () => {

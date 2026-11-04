@@ -27,15 +27,15 @@ Forever keeps that whole kit and rebuilds the three trees underneath, so a 1.12 
 
 - **Personal debuffs.** Improved Scorch and Winter's Chill now only boost your own spells. Every Fire mage keeps their own Scorch stacks, and nobody else's Scorches help you.
 - **Ice Block is a talent.** It sits in the Frost tree at 15 points, so Arcane and Fire mages have no Ice Block at all.
-- **No Molten Armor and no Invisibility.** Mage Armor is the raid armor (half your mana regeneration keeps running while you cast) and Ice Armor is for when things hit you. Threat is handled with the 30% threat talents in each tree and by not out-casting your tank.
+- **No Molten Armor and no Invisibility.** Mage Armor is the raid armor (half your mana regeneration keeps running while you cast) and Ice Armor is for when things hit you. Threat is handled with Arcane Subtlety, Burning Soul and Frost Channeling, and by not out-casting your tank.
 - **One hit stat.** Hit is a single stat for every school, and Precision in the Frost tree adds 6% hit to every spell, which is why every build dips three points there.
-- **New spells.** Arcane Blast, Arcane Wrath, Frostfire Bolt (trained at 40, 50 and 60), Ice Lance with an 8 second cooldown, Heating Up, Fingers of Frost and Missile Barrage are all in the client.
+- **New spells.** Arcane Blast, Arcane Wrath, Ice Lance on an 8 second cooldown, Heating Up, Fingers of Frost and Missile Barrage are new talents, Frostfire Bolt is trained at 40, 50 and 60, and Teleport: Dalaran at 50.
 
 ## Races
 
 - **Orc Mage** is new for Forever and gives the Horde a third mage race, with Blood Fury's spell power on a 2 minute cooldown.
 - **Skyborne** can be mages too, but only the Alliance High Order Skyborne; the Horde Windshapers cannot.
-- **Gnome** is still the strongest Alliance pick: Eureka! makes your next spells 10% stronger and 10% cheaper for 8 seconds, every 2 minutes. Arcane Power and Combustion come back every 3, so pair Eureka! with them whenever both are ready.
+- **Gnome** is still the strongest Alliance pick: Eureka! makes your spells 10% stronger and 10% cheaper for 8 seconds, every 2 minutes. Arcane Power and Combustion come back every 3, so pair Eureka! with them whenever both are ready.
 
 ## Raids and leveling
 

@@ -16,7 +16,7 @@
     UNLINK_BUTTON_SELECTOR,
     type DiscordLinkOutcome,
   } from '../../lib/account/discord-link-return';
-  import { ACCOUNT_DISCORD_LINK_RESERVE } from '../../lib/account/layout';
+  import { ACCOUNT_DISCORD_LINK_ROW_RESERVE } from '../../lib/account/layout';
   import { createFocusQueue } from '../../lib/account/discord-return.svelte';
   import { button } from '../../lib/ui/button';
   import DiscordConnectLink from './discord/DiscordConnectLink.svelte';
@@ -129,7 +129,7 @@
   }
 
   const linkClass = $derived(suggested === null ? OUTLINE : button('primary'));
-  const settledMinHeight = ACCOUNT_DISCORD_LINK_RESERVE.linked.lg - GAP_PX;
+  const settledMinHeight = ACCOUNT_DISCORD_LINK_ROW_RESERVE.linked.lg - GAP_PX;
 </script>
 
 {#if me.discord_link_available === true}

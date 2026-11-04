@@ -1,0 +1,281 @@
+{
+  "takenAt": "2026-11-04T03:21:55.911Z",
+  "guild": {
+    "id": "1548671158973628576",
+    "name": "Forever Sixty",
+    "icon": null,
+    "description": null,
+    "home_header": null,
+    "splash": null,
+    "discovery_splash": null,
+    "features": [
+      "ROLE_ICONS",
+      "AUDIO_BITRATE_256_KBPS",
+      "INVITE_SPLASH",
+      "VIDEO_QUALITY_720_60FPS",
+      "VIDEO_QUALITY_1080_60FPS",
+      "MAX_FILE_SIZE_50_MB",
+      "BANNER",
+      "STAGE_CHANNEL_VIEWERS_50",
+      "STAGE_CHANNEL_VIEWERS_150",
+      "TIERLESS_BOOSTING",
+      "VIDEO_BITRATE_ENHANCED",
+      "AUDIO_BITRATE_128_KBPS",
+      "ANIMATED_ICON"
+    ],
+    "banner": null,
+    "owner_id": "222393408990216192",
+    "application_id": null,
+    "region": "rotterdam",
+    "afk_channel_id": null,
+    "afk_timeout": 300,
+    "system_channel_id": "1548671160374263840",
+    "system_channel_flags": 0,
+    "widget_enabled": false,
+    "widget_channel_id": null,
+    "verification_level": 0,
+    "verification_role_id": null,
+    "roles": [
+      {
+        "id": "1548671158973628576",
+        "name": "@everyone",
+        "description": null,
+        "permissions": "2248473465835073",
+        "position": 0,
+        "color": 0,
+        "colors": {
+          "primary_color": 0,
+          "secondary_color": null,
+          "tertiary_color": null
+        },
+        "hoist": false,
+        "managed": false,
+        "mentionable": false,
+        "icon": null,
+        "unicode_emoji": null,
+        "flags": 0
+      },
+      {
+        "id": "1567377826368323634",
+        "name": "Server Booster",
+        "description": null,
+        "permissions": "2248473465835073",
+        "position": 1,
+        "color": 16023551,
+        "colors": {
+          "primary_color": 16023551,
+          "secondary_color": 11816191,
+          "tertiary_color": null
+        },
+        "hoist": false,
+        "managed": true,
+        "mentionable": false,
+        "icon": null,
+        "unicode_emoji": null,
+        "tags": {
+          "premium_subscriber": null
+        },
+        "flags": 0
+      },
+      {
+        "id": "1567378086108995586",
+        "name": "Forever Sixty",
+        "description": null,
+        "permissions": "1427271707760",
+        "position": 1,
+        "color": 0,
+        "colors": {
+          "primary_color": 0,
+          "secondary_color": null,
+          "tertiary_color": null
+        },
+        "hoist": false,
+        "managed": true,
+        "mentionable": false,
+        "icon": null,
+        "unicode_emoji": null,
+        "tags": {
+          "bot_id": "1563973783985852506"
+        },
+        "flags": 0
+      }
+    ],
+    "default_message_notifications": 0,
+    "mfa_level": 0,
+    "explicit_content_filter": 0,
+    "max_presences": null,
+    "max_members": 25000000,
+    "max_stage_video_channel_users": 150,
+    "max_video_channel_users": 25,
+    "vanity_url_code": null,
+    "premium_tier": 2,
+    "premium_subscription_count": 7,
+    "preferred_locale": "en-US",
+    "rules_channel_id": null,
+    "safety_alerts_channel_id": null,
+    "public_updates_channel_id": null,
+    "hub_type": null,
+    "premium_progress_bar_enabled": false,
+    "premium_progress_bar_enabled_user_updated_at": null,
+    "latest_onboarding_question_id": null,
+    "nsfw": false,
+    "nsfw_level": 0,
+    "owner_configured_content_level": 0,
+    "emojis": [],
+    "stickers": [],
+    "incidents_data": null,
+    "inventory_settings": null,
+    "official_message_color": null,
+    "theme": null,
+    "linked_game_organization": null,
+    "embed_enabled": false,
+    "embed_channel_id": null,
+    "approximate_member_count": 4,
+    "approximate_presence_count": 1
+  },
+  "roles": [
+    {
+      "id": "1548671158973628576",
+      "name": "@everyone",
+      "description": null,
+      "permissions": "2248473465835073",
+      "position": 0,
+      "color": 0,
+      "colors": {
+        "primary_color": 0,
+        "secondary_color": null,
+        "tertiary_color": null
+      },
+      "hoist": false,
+      "managed": false,
+      "mentionable": false,
+      "icon": null,
+      "unicode_emoji": null,
+      "flags": 0
+    },
+    {
+      "id": "1567377826368323634",
+      "name": "Server Booster",
+      "description": null,
+      "permissions": "2248473465835073",
+      "position": 1,
+      "color": 16023551,
+      "colors": {
+        "primary_color": 16023551,
+        "secondary_color": 11816191,
+        "tertiary_color": null
+      },
+      "hoist": false,
+      "managed": true,
+      "mentionable": false,
+      "icon": null,
+      "unicode_emoji": null,
+      "tags": {
+        "premium_subscriber": null
+      },
+      "flags": 0
+    },
+    {
+      "id": "1567378086108995586",
+      "name": "Forever Sixty",
+      "description": null,
+      "permissions": "1427271707760",
+      "position": 1,
+      "color": 0,
+      "colors": {
+        "primary_color": 0,
+        "secondary_color": null,
+        "tertiary_color": null
+      },
+      "hoist": false,
+      "managed": true,
+      "mentionable": false,
+      "icon": null,
+      "unicode_emoji": null,
+      "tags": {
+        "bot_id": "1563973783985852506"
+      },
+      "flags": 0
+    }
+  ],
+  "channels": [
+    {
+      "id": "1548671160374263838",
+      "type": 4,
+      "flags": 0,
+      "guild_id": "1548671158973628576",
+      "name": "Text Channels",
+      "parent_id": null,
+      "position": 0,
+      "permission_overwrites": []
+    },
+    {
+      "id": "1548671160374263839",
+      "type": 4,
+      "flags": 0,
+      "guild_id": "1548671158973628576",
+      "name": "Voice Channels",
+      "parent_id": null,
+      "position": 0,
+      "permission_overwrites": []
+    },
+    {
+      "id": "1548671160374263840",
+      "type": 0,
+      "last_message_id": "1567378087031742475",
+      "flags": 0,
+      "guild_id": "1548671158973628576",
+      "name": "general",
+      "parent_id": "1548671160374263838",
+      "rate_limit_per_user": 0,
+      "topic": null,
+      "position": 0,
+      "permission_overwrites": [],
+      "nsfw": false,
+      "icon_emoji": {
+        "id": null,
+        "name": "👋"
+      },
+      "theme_color": null
+    },
+    {
+      "id": "1548671160374263841",
+      "type": 2,
+      "last_message_id": null,
+      "flags": 0,
+      "guild_id": "1548671158973628576",
+      "name": "General",
+      "parent_id": "1548671160374263839",
+      "rate_limit_per_user": 0,
+      "bitrate": 64000,
+      "user_limit": 0,
+      "rtc_region": null,
+      "position": 0,
+      "permission_overwrites": [],
+      "nsfw": false,
+      "icon_emoji": {
+        "id": null,
+        "name": "🎙"
+      },
+      "theme_color": null,
+      "application_id": null,
+      "voice_background_display": null,
+      "voice_hangout": null
+    }
+  ],
+  "onboarding": {
+    "guild_id": "1548671158973628576",
+    "prompts": [],
+    "default_channel_ids": [],
+    "enabled": false,
+    "mode": 0,
+    "below_requirements": false,
+    "responses": [],
+    "onboarding_prompts_seen": {},
+    "onboarding_responses_seen": {}
+  },
+  "auto-moderation/rules": [],
+  "welcome-screen": {
+    "error": "GET /guilds/1548671158973628576/welcome-screen -> 404: {\"message\":\"Unknown Guild Welcome Screen\",\"code\":10069}"
+  }
+}

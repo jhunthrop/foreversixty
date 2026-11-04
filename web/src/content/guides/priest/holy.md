@@ -5,7 +5,7 @@ spec: holy
 role: healer
 build: 'FS1:1.60.1.70755:priest:human:00500503103/33505003030121431/0:'
 recommendedRaces: [human, undead]
-statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
+statPriority: [MP5, Healing power, Spirit, Intellect, Critical strike]
 description: 'How to heal as a Holy Priest in Forever: talents, downranking, Prayer of Mending, Prayer of Healing, Lightwell, mana over a long fight, assignments and races.'
 updated: 2026-11-02
 confidence: inferred
@@ -26,14 +26,14 @@ sources:
 
 ## Overview
 
-Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, downranked Heal as the filler, and Prayer of Healing for a hurt group.
+Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, downranked Greater Heal as the filler, and Prayer of Healing for a hurt group.
 
 ### Strengths
 
 - Prayer of Mending is the cheapest healing in the game: five jumps for one cast
 - Prayer of Healing heals any five-player group at once, not only your own
 - Spiritual Guidance and Meditation turn Spirit into both healing and mana
-- Lightwell and Holy Binding heal while you are busy with something else
+- Lightwell heals the melee while you heal the tank, and Holy Binding heals you every time you Flash Heal someone else
 
 ### Weaknesses
 
@@ -67,19 +67,21 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 **Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Put Fear Ward on the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
 
-**On the tank.** Prayer of Mending every time it is ready. Renew always up, at rank 1: Forever keeps a low rank's whole healing bonus, so rank 1 heals the most per mana you spend. Go up in rank only on a tank who is dropping through it.
+**On the tank.** Prayer of Mending every time it is ready. Renew always up at rank 7 or higher. Go up to the top rank on a tank who is dropping through it.
 
-**The filler is Heal.** In a raid, cast rank 1: it is learned at 16, so it keeps its whole healing bonus and is the cheapest healing per mana you have. Without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4 is the classic downrank, with Greater Heal's spell power coefficient for far less mana. With Divine Fury every rank is a 2.5 second cast. Greater Heal comes out only when the tank needs one big number.
+**The filler is a downranked Greater Heal** in a raid: rank 1 or 2, whichever fills the hole without overhealing. In a dungeon group or on bare gear, where your bonus is small, Heal rank 4 is the cheaper cast. With Divine Fury both are 2.5 second casts. The top rank of Greater Heal comes out only when the tank needs one big number.
 
-**Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
+**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on.
+
+**Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Greater Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
 
 **Prayer of Healing.** Cast it when three or more players in one group are missing a fair chunk. In Forever it heals the target and the target's party, so target a member of whichever group took the hit: you are not limited to your own party.
 
-**Overheal.** Start Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Heal; Prayer of Mending and Renew cover those.
+**Overheal.** Start Greater Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Greater Heal; Prayer of Mending and Renew cover those.
 
-**Inner Focus.** Spend it on a Prayer of Healing, your most expensive spell, or on a Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
+**Inner Focus.** Spend it on a Prayer of Healing, your most expensive spell, or on a Greater Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
 
-**Assignments.** In a raid you will be on a group or on a tank. On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. On a tank, Renew, Prayer of Mending and Heal, with Flash Heal for the spikes. Either way, never stand where the boss's cleave or the raid's AoE lands on you: Twilight Focus helps, it does not make you immune.
+**Assignments.** In a raid you will be on a group or on a tank. On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. On a tank, Renew, Prayer of Mending and Greater Heal, with Flash Heal for the spikes. Either way, never stand where the boss's cleave or the raid's AoE lands on you: Twilight Focus helps, it does not make you immune.
 
 **Mana.** Every heal you skip early is mana for the last minute. Sit out of casting for five seconds when you can and Spirit regeneration comes back in full. Drink a Major Mana Potion and use a Demonic Rune once you are down enough that neither wastes, an Undead uses Dark Sacrifice, and a Gnome's Eureka! goes on a string of Prayers of Healing.
 
@@ -93,7 +95,7 @@ Forever puts a third of a healing item's bonus on it as spell damage. Only the h
 
 ## Enchants and consumables
 
-Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric's Elixir and Elixir of Sages, Sage's Tea for food, Brilliant Mana Oil on the weapon, and Major Mana Potions with Demonic Runes in the fight. Forever's Mender's Potions add healing for 30 seconds, but they share the potion cooldown with your mana potion, and on a long fight the mana is worth more.
+Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric's Elixir and Elixir of Sages, Sage's Tea for food, Brilliant Mana Oil on the weapon, and Major Mana Potions with Demonic Runes in the fight. Forever's Major Mender's Potions add healing for 30 seconds, but they share the potion cooldown with your mana potion, and on a long fight the mana is worth more.
 
 ## Races
 

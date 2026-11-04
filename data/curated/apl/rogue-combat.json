@@ -63,7 +63,7 @@
         }
       },
       {
-        "notes": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds.",
+        "notes": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
         "action": {
           "castSpell": {
             "spellId": {

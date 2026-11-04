@@ -7,19 +7,18 @@ build: 'FS1:1.60.1.70755:warrior:dwarf:35300003/0/250533120330001351:'
 recommendedRaces: [dwarf, tauren]
 statPriority:
   [
-    Stamina,
-    Armor,
     Defense,
     Dodge,
+    Agility,
     Parry,
-    Block,
+    Stamina,
     Block value,
     Strength,
-    Agility,
-    Attack power,
-    Hit,
     Critical strike,
-    Expertise,
+    Attack power,
+    Armor,
+    Hit,
+    Block,
   ]
 description: 'Shield tank in Defensive Stance: Shield Slam and Revenge for threat, Shield Block and Thunder Clap for the hits, Sunder Armor in between.'
 updated: 2026-11-02
@@ -86,7 +85,7 @@ Protection is the shield tank: Defensive Stance all fight, Shield Slam and Reven
 
 The Arms points go to **Deflection** for 5% parry, **Improved Heroic Strike** for a cheaper rage dump, and **Improved Rend** into **Deep Wounds**. Improved Tactical Mastery and Anger Management are left out: a tank who stays in Defensive Stance gets more from Bastion's last ranks and Improved Bloodrage.
 
-Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you pull with Charge, **Improved Shield Bash** for a boss with a cast you must silence, and **Iron Will** for a fight full of stuns and fears. Open the [planner](/planner?class=warrior) to see the build point by point.
+Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you pull with Charge, **Improved Shield Bash** for a boss with a cast you must silence, and **Iron Will** for a fight full of stuns and fears. On progression bosses, take two points of **Improved Shield Wall** out of Improved Thunder Clap: Shield Wall comes back every 4 minutes instead of every 15, so a long fight gets it two or three times, and each Thunder Clap only costs 4 more rage. Open the [planner](/planner?class=warrior) to see the build point by point.
 
 ## Rotation and priority
 
@@ -100,11 +99,11 @@ Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you 
 
 **Emergencies.** Last Stand below 35% health. Shield Wall below 40% for 60% less damage taken over 12 seconds, on a 15 minute cooldown. On a fight you know, press Shield Wall before the big hit lands rather than after.
 
-**Adds.** Thunder Clap hits up to four targets and slows all of them. Sunder and Revenge the add the healers can least afford, and Taunt anything that peels off.
+**Adds.** Thunder Clap hits up to four targets and slows all of them. Sunder and Revenge the add the healers can least afford, and Taunt anything that peels off. When a whole pack breaks loose onto the healers, Challenging Shout makes everything around you attack you for 6 seconds on a 10 minute cooldown: Thunder Clap and Sunder them before it runs out.
 
 ## Stat priority
 
-Stamina is health, and health is the one thing a healer cannot give you back mid-pull. Armor cuts every physical hit, though each point is worth a little less the more you stack. Defense, dodge and parry take hits out entirely, and Defense also lowers the chance to be crit and crushed. Block takes a flat amount off the hits it catches, so it grows with your block value. Strength and attack power are threat, and Strength also adds block value. Expertise stops the boss dodging and parrying you, which is threat and rage, not survival.
+Defense, dodge and parry come first: they take hits out entirely, and Defense also lowers the chance to be crit. Agility brings dodge and armor with it. Stamina is your buffer: a bigger health bar gives the healers more time to react to a spike. Armor cuts every physical hit, though each point is worth a little less the more you stack. Crushing blows come from the boss's level, not your defense; Shield Block on top of your dodge, parry and block is what pushes them off the table. Block takes a flat amount off the hits it catches, so it grows with your block value. Strength and attack power are threat, and Strength also adds block value. Weapon skill from gear like Edgemaster's Handguards cuts how often the boss dodges and parries you, which is threat and rage, not survival.
 
 ## Best in slot
 
@@ -114,12 +113,12 @@ Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for Stamina an
 
 ## Races
 
-Dwarf and Tauren are the tank picks; Tauren's Endurance is 5% more health. Night Elf's Quickness adds dodge.
+Dwarf and Tauren are the tank picks. Dwarf's Stoneform takes 10% off physical damage for 8 seconds every 3 minutes and clears bleeds and poisons, a small Shield Wall you can press on demand. Tauren's Endurance is 5% more health. Night Elf's Quickness adds 1% dodge.
 
 ## Professions
 
-Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feeds it. Engineering adds grenades for add pickups.
+Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feeds it. Engineering adds Goblin Sapper Charges, Dense Dynamite and grenades for trash and add pickups.
 
 ## Leveling
 
-Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, the Protection tables above show the build for each level range.
+Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, take Improved Bloodrage, Shield Specialization and Anticipation first. Shield Slam is the 31st point, so it arrives at 40; Bastion, then Improved Heroic Strike and Deflection in Arms, fill the levels after it.

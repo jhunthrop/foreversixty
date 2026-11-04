@@ -237,7 +237,9 @@ if [ "$NEW" = "$ACTIVE" ]; then resume_move; fi
 NEW_DIR="data/builds/$NEW"; OLD_DIR="data/builds/$ACTIVE"
 step "the fetched tables for $NEW" \
   "gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=$NEW, then $REDO"
-for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json; do
+# spelltips/: every guide's spell, racial and enchant tooltips (70755 went live without it
+# on 2026-11-03 and no spell on a guide opened a tooltip).
+for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json spelltips/shared.json; do
   [ -e "$NEW_DIR/$f" ] || die "$NEW_DIR/$f is missing: data.yml's fetch has not landed $NEW"
 done
 

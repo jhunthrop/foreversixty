@@ -140,6 +140,8 @@ const (
 	StateKindGuildWebhook = "guild_webhook"
 	StateKindBotInstall   = "bot_install"
 	StateKindLink         = "link"
+	// StateKindLinkedRole is the Discord Linked Roles verification (package linkedrole).
+	StateKindLinkedRole = "linked_role"
 )
 
 // CreateConnectState stores a guild-webhook state for userID connecting guildID.

@@ -8,6 +8,7 @@
   import { dataUrl } from '../../lib/planner/load';
   import { canAddPoint } from '../../lib/planner/rules';
   import { CELL_BORDER, CELL_PILL, cellState, CELL_FACE } from '../../lib/planner/styles';
+  import { talentTipKey } from '../../lib/tooltips/game-tip';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { Talent } from '../../lib/planner/types';
 
@@ -238,36 +239,24 @@
 <div class="relative">
   {#if readOnly}
     <!-- A read-only tree (a guide's build) has no points to spend, but every talent still
-         opens its tooltip: hover, keyboard focus (the grid's roving tabindex, arrows between
-         cells) or a tap, which toggles it on touch. Escape closes it. -->
+         opens the game tooltip through the page's shared host (BisTooltipHost.svelte, the
+         `data-game-tip` key): hover, keyboard focus (the grid's roving tabindex, arrows
+         between cells), a tap that toggles it on touch, and Escape, exactly as every other
+         talent and spell name on the guide. The cell keeps no tooltip of its own: its own
+         mouseenter, focus and click each toggled it, so a tap opened and closed it at once. -->
     <div
       role="group"
       tabindex={focused ? 0 : -1}
       aria-label={`${talent.name}, rank ${rank} of ${talent.max_rank}`}
-      aria-describedby={open ? tooltipId : undefined}
+      data-game-tip={talentTipKey(talent.id, rank)}
       data-testid={`talent-${talent.id}`}
       data-rank={rank}
       data-state={state}
       class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
-      onfocus={() => {
-        open = true;
-        onfocuscell();
-      }}
-      onblur={() => (open = false)}
-      onmouseenter={() => (open = true)}
-      onmouseleave={() => (open = false)}
-      onclick={() => (open = !open)}
-      onkeydown={(event) => {
-        if (event.key !== 'Escape' || !open) return;
-        event.stopPropagation();
-        open = false;
-      }}
+      onfocus={onfocuscell}
     >
       {@render face()}
     </div>
-    {#if open}
-      {@render tooltip()}
-    {/if}
   {:else}
     <button
       type="button"

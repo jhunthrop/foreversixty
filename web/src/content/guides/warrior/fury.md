@@ -5,7 +5,7 @@ spec: fury
 role: dps
 build: 'FS1:1.60.1.70755:warrior:human:30323013002/050530025122100231/2:'
 recommendedRaces: [human, troll]
-statPriority: [Strength, Critical strike, Attack power, Hit, Melee haste, Agility]
+statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Dual wield in Berserker Stance: Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, Death Wish and Recklessness for the Executes.'
 updated: 2026-11-02
 confidence: inferred
@@ -69,17 +69,17 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 - **Improved Execute** (2 points): Execute costs 10 rage instead of 15, so the rage you hold goes into damage.
 - **Improved Whirlwind** (2 points): Whirlwind comes back every 8 seconds instead of 10 and hits the closest enemy 30% harder. You press Whirlwind every time it comes off cooldown, and on a single boss the closest enemy is the boss.
 - **Reckless Swings** (1 point): a button on a 15 second cooldown and a 1 second global that makes your next four white swings within 8 seconds bring 5 more rage each. It costs a quarter of your base health, which the healers cover without noticing, and 20 rage every 15 seconds is a Heroic Strike you would not otherwise have.
-- **Enrage** (2 points): a 30% chance at 4% more physical damage for 12 seconds after you get hit. Two points fill out the row.
+- **Enrage** (2 points): a 30% chance at 4% more physical damage for 12 seconds after you get hit. Any damaging attack rolls it, so cleaves, raid-wide damage and every dungeon pull keep it coming up.
 - **Improved Heroic Strike** (3 points): Heroic Strike costs 3 less. It is your rage dump, and you press it a lot.
-- **Improved Rend**, **Deep Wounds** and **Impale** (8 points in Arms): every crit leaves a bleed for 60% of your weapon's average damage and your ability crits hit 20% harder. Fury crits a lot, so this is the best use of the Arms points.
+- **Deep Wounds** and **Impale** (8 points in Arms, with **Improved Rend** as the toll to reach Deep Wounds; Fury never casts Rend): every crit leaves a bleed for 60% of your weapon's average damage and your ability crits hit 20% harder. Fury crits a lot, so this is the best use of the Arms points.
 - **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
 - **Anger Management** (1 point, behind 3 in **Improved Tactical Mastery**): a point of rage every 3 seconds in combat, 10 rage every half minute. Tactical Mastery itself does little for a warrior who never leaves Berserker Stance; it is the way in.
 
-The build also spends a point each in **Piercing Howl** and **Lingering Rage** on the way down the tree, and two in **Improved Charge**: 6 more rage from every Charge on trash, in dungeons and out in the world, where you still open with one. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
+The build also spends a point in **Piercing Howl**, which dazes everything within 10 yards for 6 seconds to stop runners and kite on trash, a point in **Lingering Rage**, which holds your rage 2 seconds longer before it starts to decay, a small bridge between quick pulls, and two in **Improved Charge**, which is what gets you down to Impale; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
 
 ## Rotation and priority
 
-**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: the Bloodrage you pressed before the pull has already put you in combat, so Charge is gone, and a stance dance only costs you globals. On trash and while leveling, Charge or Intercept in freely.
+**The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: the Bloodrage you pressed before the pull has already put you in combat, so there is no Charge to take, and with Improved Bloodrage it brings more rage than a Charge would. On trash and while leveling, Charge or Intercept in freely.
 
 **The priority.** Bloodthirst on cooldown. Whirlwind on cooldown right behind it, every time it is ready, even on a single target. Reckless Swings on cooldown right behind Whirlwind: your next four white swings bring 5 more rage each, and the quarter of your base health it costs is the healers' to cover, so never hold it. Bloodrage on cooldown whenever you are under 80 rage.
 
@@ -87,7 +87,7 @@ The build also spends a point each in **Piercing Howl** and **Lingering Rage** o
 
 **Execute.** From 25%, stop queueing Heroic Strike and let the bar fill. At 20%, Execute goes ahead of everything, including Bloodthirst, and every point of rage you hold goes into the hit.
 
-**Cooldowns.** Death Wish lasts 30 seconds on a 3 minute cooldown. Press it at the pull only when a second one still fits before the boss dies; otherwise hold it for the execute phase. Recklessness is once a fight: press it at 20% with Death Wish, or in the last 15 seconds when the execute phase is shorter than that. Trinkets, racials and potions go with them.
+**Cooldowns.** Death Wish lasts 30 seconds on a 3 minute cooldown. Press it at the pull only when a second one still fits before the boss dies; otherwise hold it for the execute phase, or for the last 30 seconds when that phase will be shorter than the buff. Berserker Rage breaks fear and keeps you immune to it for 10 seconds: hold it for Magmadar's Panic, Onyxia's Bellowing Roar and Nefarian's fear. Death Wish can be pressed while you are feared too: it breaks the fear and keeps you immune for its 30 seconds, so if Berserker Rage is down and you have the 10 rage, it is your second fear break. Recklessness is once a fight: press it at 20% with Death Wish, or in the last 15 seconds when the execute phase is shorter than that. Trinkets, racials and potions go with them.
 
 **Two or more targets.** Whirlwind hits up to four targets with both weapons. Swap Heroic Strike for Cleave with two or more mobs in front of you.
 
@@ -95,11 +95,11 @@ The build also spends a point each in **Piercing Howl** and **Lingering Rage** o
 
 ## Stat priority
 
-Hit is worth the most until the cap above, and dual wielding has two caps: your specials reach it long before your white swings do, so past the special cap hit only trims your white misses. Crit feeds Flurry, Deep Wounds and Impale. Every point of Strength is two attack power for a warrior. Haste adds swings, and swings are rage.
+Hit is worth the most until you reach the hit cap, and dual wielding has two caps: your specials reach it long before your white swings do, so past the special cap hit only trims your white misses. Crit feeds Flurry, Deep Wounds and Impale. Every point of Strength is two attack power for a warrior. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
 
 ## Best in slot
 
-Both hands matter. The main hand carries Heroic Strike and every off-hand swing is rage, so a weak off hand costs you twice.
+Both hands matter. The main hand carries Heroic Strike and the off hand swings all fight behind Flurry. Your rage comes from how often you land, not how hard you hit, so off-hand hit is rage and off-hand damage is damage.
 
 ## Enchants and consumables
 
@@ -111,7 +111,7 @@ Troll's Berserking is 10% attack speed for 15 seconds every 3 minutes: press it 
 
 ## Professions
 
-Blacksmithing and Mining. Blacksmithing makes melee weapons and armor, and Mining feeds it. Engineering is the PvP choice for its grenades.
+Blacksmithing and Mining. Blacksmithing makes melee weapons and armor, and Mining feeds it. Engineering is the other pick: Goblin Sapper Charges and Dense Dynamite on every trash pack, and grenades in PvP.
 
 ## Leveling
 

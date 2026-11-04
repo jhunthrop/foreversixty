@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:mage:gnome:230005203/5/253510130101301221:'
 raidBuild: 'FS1:1.60.1.70755:mage:gnome:230005203/5/253510130101301221:'
 recommendedRaces: [gnome, troll]
-statPriority: [Hit, Spell power, Frost power, Intellect, Critical strike, Spell haste, Spell penetration]
+statPriority: [Spell power, Hit, Frost power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Frost Mage in Forever: Ice Barrier as a damage buff, the pre-pull Frostbolt, Fingers of Frost into Ice Lance, threat and mana on a boss, talents and leveling.'
 updated: 2026-11-02
 confidence: inferred
@@ -63,7 +63,7 @@ Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, 
 - **Missile Barrage** (2 points, Arcane): Frostbolt procs it 20% of the time, and the proc makes your next Arcane Missiles free and halves its channel.
 - **Precision** (3 points): 6% hit on every school. Every mage build takes it.
 
-One build does it all at 60, in a raid or out. Frost takes 31 points to Ice Barrier, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, which you only need for the 30 points Ice Barrier asks for. Twelve go into Arcane for **Arcane Concentration** (a free spell 10% of the time) and Missile Barrage. The last eight go into Fire for five ranks of **Incineration**, which adds 10% crit to Ice Lance, two of Flame Throwing and a spare point in Accelerant, which only speeds up Fireball, Frostfire Bolt and Arcane Wrath and does nothing for Frost.
+One build does it all at 60, in a raid or out. Frost takes 31 points to Ice Barrier, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, the toll to reach the 30 points Ice Barrier asks for; each Frostbolt then has a 40% chance to add a stack for your next Cone of Cold. Twelve go into Arcane for **Arcane Concentration** (a free spell 10% of the time) and Missile Barrage. The last eight go into Fire: five ranks of **Incineration**, which adds 10% crit to Ice Lance, two of Flame Throwing for 6 more yards on Fire Blast, and one in Accelerant.
 
 If a boss lets you stand within 10 yards, more points in Winter's Chill and Improved Cone of Cold turn Cone of Cold into a real nuke. Most bosses cleave, breathe or stomp at that range, so the build stays at range. Build it in the [talent planner](/planner?class=mage).
 
@@ -75,9 +75,9 @@ If a boss lets you stand within 10 yards, more points in Winter's Chill and Impr
 
 **Cooldowns.** Frost has no damage cooldown. Use your on-use trinkets and your racial on the pull and again whenever they come back: Berserking on a Troll, Blood Fury on an Orc, Eureka! on a Gnome. Save Cold Snap for a second Ice Block or for an Ice Barrier that broke early on a fight that hits you.
 
-**Mana in a 3 minute fight.** Frost is the cheapest spec, so a geared Frost mage barely touches Evocation in a raid. Use a Mana Ruby when you are 1,200 mana down and the Citrine two minutes later. In Forever, mana gems and Demonic Runes share one 2 minute cooldown, and the Robe of the Archmage has its own 5 minute one. If you do run dry, Evocation is once a fight, near empty with more than 30 seconds left. Downranking Frostbolt to stretch mana loses more damage than it saves at every level: drink before pulls instead. The one rank-1 Frostbolt worth keeping on your bars is for slowing a runner or an add for a few mana.
+**Mana in a 3 minute fight.** Frost is the cheapest spec, so a geared Frost mage barely touches Evocation in a raid. Use a Mana Ruby when you are 1,200 mana down and the Citrine two minutes later. Mana gems and Demonic Runes share one 2 minute cooldown, and the Robe of the Archmage has its own 5 minute one, but using any of the three locks the other two out for a minute. If you do run dry, Evocation is once a fight, near empty with more than 30 seconds left. Downranking Frostbolt to stretch mana loses more damage than it saves at every level: drink before pulls instead. The one rank-1 Frostbolt worth keeping on your bars is for slowing a runner or an add for a few mana.
 
-**AoE.** Blizzard from range on packs the tank holds; it channels for 8 seconds and costs 1,400 mana, so it is for big pulls. On a pack that comes to you, Frost Nova, then Cone of Cold and Arcane Explosion while they are rooted, then Blink out. Frostbite's freezes let your Ice Lance and Frostbolt shatter trash too.
+**AoE.** Blizzard from range on packs the tank holds; it channels for 8 seconds and costs about 1,200 mana even with Frost Channeling, so it is for big pulls. On a pack that comes to you, Frost Nova, step back out of their reach, then Cone of Cold and Arcane Explosion while they are rooted, and Blink out when the root breaks. Frostbite's freezes let your Ice Lance and Frostbolt shatter trash too.
 
 **Cone of Cold on a boss.** Frostbolt and Fingers of Frost Ice Lances stack Winter's Chill on the boss, and Cone of Cold spends 5 stacks for double damage. Cast it only when you can stand within 10 yards (12 with Arctic Reach) and your mana is above half. At 30 yards it never comes up.
 
@@ -95,11 +95,11 @@ Hit and spell power are your two best stats until the hit cap: a missed Frostbol
 
 ## Enchants and consumables
 
-Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost-only spell power is close to full value. A Major Mana Potion is enough for most bosses.
+Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell power on gear and an Elixir of Frost Power are close to full value. A Major Mana Potion is enough for most bosses.
 
 ## Races
 
-**Gnome** is the best Alliance Frost mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit. On the Horde, **Troll** Berserking gives 10% cast speed for 15 seconds every 3 minutes, which is the best Horde cooldown for a spec that has none of its own. **Orc** Blood Fury adds 10% spell power for 15 seconds every 2 minutes. **Undead** gets a small Shadow drain from Touch of the Grave and Will of the Forsaken for fear fights.
+**Gnome** is the best Alliance Frost mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit. **Skyborne** mages are Alliance and bring 2% haste from Wind Blessed and Read Leyline, 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. On the Horde, **Troll** Berserking gives 10% cast speed for 15 seconds every 3 minutes, which is the best Horde cooldown for a spec that has none of its own. **Orc** Blood Fury adds 10% spell power for 15 seconds every 2 minutes. **Undead** gets a small Shadow drain from Touch of the Grave and Will of the Forsaken for fear fights.
 
 ## Professions
 
@@ -107,4 +107,4 @@ Tailoring and Enchanting are the standard pair: Tailoring makes the early cloth 
 
 ## Leveling
 
-Frost is the easiest way to level a mage. Open with Frostbolt from range, Frostbolt again as the mob walks in slowed, Frost Nova when it reaches you, step back and finish it. Ice Lance needs its talent point, which you have by the 30s: after a Frost Nova or a Frostbite freeze it hits a mob for four times its damage, and once you have Shatter it crits. The talents above are the damage picks for each level range; put a point in Ice Block anyway as soon as you reach 15 points in Frost, because it saves the run more than once. Fingers of Frost at 20 Frost points makes Ice Lance a single-target nuke too. From level 26, when Cone of Cold arrives, AoE grinding packs with Frost Nova, Blizzard and Cone of Cold is the fastest experience in the game for a careful player. It wants Improved Blizzard to keep the pack slowed, so respec into it while you farm and back out for dungeons. Train Mage Armor at 34 for the mana; wear Ice Armor instead when you are taking melee hits in the open world, since it chills anything that hits you.
+Frost is the easiest way to level a mage. Open with Frostbolt from range, Frostbolt again as the mob walks in slowed, Frost Nova when it reaches you, step back and finish it. Every point goes into Frost to 40: Frost Warding at 10 and 11, Improved Frostbolt from 12, Precision before 20, Ice Shards in the early 20s, Frostbite, Permafrost and Frost Channeling in the late 20s, Ice Lance at 30 and Ice Block at 31, because it saves the run more than once. After a Frost Nova or a Frostbite freeze, Ice Lance hits a mob for four times its damage, and once Shatter is in by 34 it crits. Fingers of Frost at 36 makes Ice Lance a single-target nuke too, and Ice Barrier lands at 40. From level 26, when Cone of Cold arrives, AoE grinding packs with Frost Nova, Blizzard and Cone of Cold is the fastest experience in the game for a careful player. It wants Improved Blizzard to keep the pack slowed, so respec into it while you farm and back out for dungeons. Train Mage Armor at 34 for the mana; wear Ice Armor instead when you are taking melee hits in the open world, since it chills anything that hits you.

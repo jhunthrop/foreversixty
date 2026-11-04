@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:rogue:night-elf:325301/3153030000012321541/03:'
 raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:005203002/3043030002012321451/005:'
 recommendedRaces: [night-elf, troll]
-statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
+statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents that matter.'
 updated: 2026-11-02
 confidence: inferred
@@ -49,7 +49,7 @@ Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from be
 
 ## Talents and builds
 
-The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of Flash of Steel, Assassination for Malice, Ruthlessness, Improved Slice and Dice and Lethality, and five points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: 14/34/3, with Improved Gouge and Remorseless Attacks in place of Lethality, Master of Deception in place of Opportunity, and the fifth points of Hack and Slash and Lightning Reflexes. That pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
+The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of Flash of Steel, Assassination for Malice, Ruthlessness, Improved Slice and Dice and Lethality, and five points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: 14/34/3: Improved Gouge and Remorseless Attacks in place of Lethality and two points of Improved Slice and Dice, Master of Deception in place of Opportunity, a third point of Ruthlessness, and the fifth points of Hack and Slash and Lightning Reflexes in place of the fifth Flash of Steel and the second Efficient Strikes. That pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
 
 - **Adrenaline Rush** (1 point): double energy regeneration for 15 seconds on a 5 minute cooldown. Every Backstab you fit into it is a free one.
 - **Blade Flurry** (1 point): 20% attack speed for 15 seconds, and every melee hit also strikes a second nearby enemy. Two-target fights are where Combat beats the other trees.
@@ -60,7 +60,7 @@ The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of F
 - **Puncturing Wounds** (3 points): 30% more crit on Backstab and a 45% chance at a second combo point. This is what makes daggers the Combat weapon in Forever.
 - **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
-In the raid build, Lethality makes Backstab crits hit 20% harder, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes energy off Sinister Strike, 3 at one point and 5 at two: it is your builder's discount in the level 60 build and, with Lightning Reflexes, a step down the tree in the raid build.
+In the raid build, Lethality makes Backstab crits hit 20% harder, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes energy off Sinister Strike, 3 at one point and 5 at two: your builder's discount in the level 60 build. In the raid build its two points and four of Lightning Reflexes are the toll to reach Flawless Execution, Weapon Expertise and Aggression.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -74,7 +74,7 @@ Every rogue picks up **Poised** at 18: at full energy out of combat, your next a
 
 ### The priority
 
-**Shank** on cooldown, right behind your racial and trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Sinister Strike only builds with a sword, axe, mace or fist in the main hand. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
+**Shank** on cooldown, right behind your racial and trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Backstab needs a dagger in the main hand; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
 
 ### Energy
 

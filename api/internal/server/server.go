@@ -17,6 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/golinks"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/linkedrole"
 	"github.com/jhunthrop/foreversixty/api/internal/livesurface"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
@@ -68,6 +69,8 @@ type Deps struct {
 	Seats *seats.Service
 	// DiscordBot serves the signed interactions endpoint; nil leaves it unmounted.
 	DiscordBot *discordbot.Service
+	// LinkedRole serves the Discord Linked Roles verification start; nil leaves it unmounted.
+	LinkedRole *linkedrole.Handler
 	// Coach serves the log coach's routes; nil leaves them unmounted.
 	Coach *coach.Service
 	// Tiles serves the Discord panel's item tiles; nil leaves the route unmounted.
@@ -153,6 +156,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.DiscordBot != nil {
 		discordbot.Mount(mux, d.DiscordBot, d.TrustedProxyHops)
+	}
+	if d.LinkedRole != nil {
+		linkedrole.Mount(mux, d.LinkedRole, d.TrustedProxyHops)
 	}
 	if d.Coach != nil {
 		coach.Mount(mux, d.Coach)

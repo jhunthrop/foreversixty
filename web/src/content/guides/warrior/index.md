@@ -19,16 +19,18 @@ sources:
     kind: community
 ---
 
-Warrior is the pure melee class: plate, a weapon and a rage bar that fills from the hits you land and the hits you take. Nothing in the kit is free at the pull, so every warrior plays around rage: Bloodrage at the pull, and nothing spent that a bigger button needs.
+Warrior is the pure melee class: plate, a weapon and a rage bar that fills from the hits you land and the hits you take. Nothing in the kit is free at the pull, so every warrior plays around rage: Charge or Bloodrage to start the fight with some, and nothing spent that a bigger button needs.
 
 ## What changed from 1.12
 
 - **Tactical Mastery** is baseline from level 14 and keeps 10 rage through a stance change; Improved Tactical Mastery adds 15 more.
 - **Victory Rush** is baseline at 20 and heals you after a kill.
+- **Rage** from your swings is set by weapon speed, not by how hard the swing hits, and a critical swing brings twice the rage. Hit and haste fill the bar; a bigger weapon only makes the hits bigger.
+- **Slam** has a 15 second cooldown, and Improved Slam takes it to 10 with a one second cast that no longer stops your swing.
 - **Thunder Clap** works in Defensive Stance.
 - **Shield Block** lasts 7 seconds on a 5 second cooldown.
 - **Sweeping Strikes** lasts 20 seconds.
-- **Shield Wall** is 60% for 12 seconds on a 15 minute cooldown.
+- **Shield Wall** is 60% for 12 seconds on a 15 minute cooldown, and Improved Shield Wall now cuts that cooldown to 4 minutes instead of adding duration.
 - **Death Wish** costs 5% more damage taken instead of armor.
 - **New talents** include Bloodthrill and Weaponmaster in Arms, Reckless Swings and Furious Precision in Fury, and Vanguard and Master of Defense in Protection.
 

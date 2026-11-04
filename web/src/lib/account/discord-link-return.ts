@@ -69,8 +69,13 @@ const FLAGS = Object.keys(OUTCOMES) as readonly DiscordLinkFlag[];
 
 /** The `discord_link` flag in a query string; any other value is no flag. */
 export function discordLinkFlag(search: string): DiscordLinkFlag | null {
-  const value = new URLSearchParams(search).get(FLAG_PARAM);
-  return FLAGS.find((flag) => flag === value) ?? null;
+  return queryFlag(search, FLAG_PARAM, FLAGS);
+}
+
+/** The value of `param` in a query string when it is one of `flags`, else null. */
+export function queryFlag<T extends string>(search: string, param: string, flags: readonly T[]): T | null {
+  const value = new URLSearchParams(search).get(param);
+  return flags.find((flag) => flag === value) ?? null;
 }
 
 /**
@@ -82,10 +87,20 @@ export function takeDiscordLinkFlag(
   location: Location = window.location,
   history: History = window.history,
 ): DiscordLinkFlag | null {
+  return takeQueryFlag(FLAG_PARAM, FLAGS, location, history);
+}
+
+/** Reads `param` once as one of `flags` and drops it from the address bar (see takeDiscordLinkFlag). */
+export function takeQueryFlag<T extends string>(
+  param: string,
+  flags: readonly T[],
+  location: Location = window.location,
+  history: History = window.history,
+): T | null {
   const params = new URLSearchParams(location.search);
-  if (!params.has(FLAG_PARAM)) return null;
-  const flag = discordLinkFlag(location.search);
-  params.delete(FLAG_PARAM);
+  if (!params.has(param)) return null;
+  const flag = queryFlag(location.search, param, flags);
+  params.delete(param);
   const query = params.toString();
   history.replaceState(
     history.state,

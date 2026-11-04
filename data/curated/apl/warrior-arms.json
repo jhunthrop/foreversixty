@@ -235,7 +235,7 @@
         }
       },
       {
-        "notes": "Below 20%. Every point of rage you hold goes into the hit, so walk into the phase with a full bar.",
+        "notes": "Below 20%. Your first one spends the full bar you walked in with, so arrive with rage; after that it shares the globals with Mortal Strike.",
         "action": {
           "condition": {
             "isExecutePhase": {

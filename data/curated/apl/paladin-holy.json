@@ -192,7 +192,7 @@
             }
           }
         },
-        "notes": "With mana to spare, on the tank below 70% as well: only while your mana is no more than five points behind the share of the fight left."
+        "notes": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana)."
       },
       {
         "action": {

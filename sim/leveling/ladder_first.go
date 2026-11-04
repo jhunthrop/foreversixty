@@ -76,9 +76,12 @@ type ladderConfig struct {
 	first []LadderFirstRank
 }
 
-// ForSpec spends spec's curated reservation first, if it has one.
+// ForSpec spends spec's curated reservation first, if it has one, then its hand-set
+// leveling order (ladder_order.go), so a spec can carry both.
 func ForSpec(spec string) LadderOption {
-	return withFirst(embeddedLadderFirst().Specs[spec].First)
+	first := embeddedLadderFirst().Specs[spec].First
+	order := embeddedLadderOrder().Specs[spec].First
+	return withFirst(append(append([]LadderFirstRank{}, first...), order...))
 }
 
 func withFirst(first []LadderFirstRank) LadderOption {
