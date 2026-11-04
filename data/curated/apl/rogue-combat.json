@@ -160,7 +160,7 @@
             }
           }
         },
-        "notes": "Backstab with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too."
+        "notes": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too."
       },
       {
         "action": {
@@ -212,7 +212,7 @@
             }
           }
         },
-        "notes": "Sinister Strike only when Backstab cannot be cast (no dagger in the main hand), held to 60 energy so a dagger rogue never spends Backstab's energy here."
+        "notes": "Sinister Strike only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you."
       }
     ]
   },
