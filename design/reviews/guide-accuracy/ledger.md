@@ -320,3 +320,21 @@ Verdict: NOT zero, so round 13 is needed. Six of nine classes are at zero.
 
 Open: DRUID-R12-3 (Feral raid build spends 2 points on Feral Instinct; sim it against Furor 2 or Thick Hide 2), race re-runs on the new builds, and the BiS re-rank on the shipped raid builds.
 Rendered review: wow-player SHIP for paladin, druid, mage, rogue and hunter. No MUSTs; two SHOULDs applied.
+
+## Round 13 (client 1.60.1.70755, 2026-11-04)
+
+Built on main 604b78a80 (twelve guide rounds, engine pin 9f7f1f6e4).
+
+Audit CONFIRMED by class:
+
+- paladin 1
+- warrior, warlock, shaman, hunter, priest, rogue, mage and druid 0
+
+That is 1 in total. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1. Eight of nine classes are at zero, and warrior, warlock and hunter have been at zero for three rounds running.
+
+The one error: a round 8 wording said Hammer of Wrath "still costs full price" after Benediction. Holy Conduit 2/2 takes 40% off it, as the same page says. The line now says Benediction does not discount it.
+
+Verdict: NOT zero, so round 14 is needed.
+
+Still open, all with the sim lane and none claimed in prose: the BiS re-rank on the shipped raid builds, race re-runs on the new builds, and the Feral Instinct points against Furor or Thick Hide.
+Rendered review: wow-player SHIP for paladin after checking Hammer of Wrath's family mask against Benediction's class mask.
