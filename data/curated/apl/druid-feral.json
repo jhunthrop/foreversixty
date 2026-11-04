@@ -286,7 +286,7 @@
         }
       },
       {
-        "notes": "Your builder from level 24, always from behind the target. Shred hits harder than Claw at every rank, but until Shredding Attacks is full it costs 14 to 20 more energy, and Claw does more for the energy.",
+        "notes": "Your builder from level 24, always from behind the target. Shred hits harder than Claw at every rank, but until Shredding Attacks is full it costs 8 to 20 more energy, and Claw does more for the energy.",
         "action": {
           "condition": {
             "spellIsKnown": {

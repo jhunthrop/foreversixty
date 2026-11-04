@@ -23,7 +23,7 @@
       }
     },
     {
-      "notes": "Dark Sacrifice (Undead) when mana is below a fifth and running behind the fight: it trades your own health for mana over fifteen seconds and adds your Spirit to it, and its ten minute cooldown makes it a once-a-fight cast. Other races do not have it and skip the line.",
+      "notes": "Dark Sacrifice (Undead) when mana is below a fifth and running behind the fight: it trades your own health for mana over fifteen seconds and adds your Spirit to it, and its ten minute cooldown makes it a once-a-fight cast. Only Undead priests have it.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -106,7 +106,7 @@
       }
     },
     {
-      "notes": "Vampiric Embrace on the boss whenever it is down: the guide keeps it up in a raid. It costs a global every 30 seconds (its cooldown equals its duration) and heals the whole group for 20% of every Shadow spell you land, which the damage figure does not count. Skipped in the last 10 seconds, and below the level that takes the talent.",
+      "notes": "Vampiric Embrace on the boss whenever it is down. It costs a global every 30 seconds (its cooldown equals its duration) and heals your whole group for 20% of every Shadow spell you land; your own damage meter never shows that healing. Skip it in the last 10 seconds, and until you have the talent.",
       "action": {
         "condition": {
           "and": {

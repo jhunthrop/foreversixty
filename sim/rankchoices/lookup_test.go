@@ -48,7 +48,8 @@ func TestRoundTwelveHealerRowsBelowSixty(t *testing.T) {
 		{"priest-discipline", "Power Word: Shield", 35, nil},
 		{"priest-discipline", "Power Word: Shield", 45, []int{6}},
 		{"priest-discipline", "Penance", 45, nil},
-		{"priest-discipline", "Renew", 25, []int{1}},
+		// Renew rank 1 is the list's own rank since round 14, so no row names it.
+		{"priest-discipline", "Renew", 25, nil},
 		{"paladin-holy", "Flash of Light", 35, []int{1}},
 		{"paladin-holy", "Flash of Light", 45, []int{1, 3}},
 	} {

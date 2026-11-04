@@ -50,13 +50,8 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 		// Mind Blast at 50: rank 3 (8103) for Horde (Undead with Dark Sacrifice), rank 2 (8102) for Alliance.
 		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 8103, 8102},
 		{"Gnome Mind Blast at 50", "priest-shadow", "priest", BarePreset, "gnome", 50, 8102, 8103},
-		// Devouring Plague at bare 60: Alliance gains with rank 2 (19276); Horde casts the top rank.
-		{"Gnome Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "gnome", 60, 19276, 19280},
 		{"Undead Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "undead", 60, 19280, 19276},
 		{"Gnome Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, "gnome", 60, 19280, 19276},
-		// Beast Mastery's Arcane Shot: rank 3 (14282) at 40, rank 1 (3044) at 50.
-		{"Arcane Shot at 40", "hunter-beast-mastery", "hunter", BarePreset, "orc", 40, 14282, 14284},
-		{"Arcane Shot at 50", "hunter-beast-mastery", "hunter", BarePreset, "dwarf", 50, 3044, 14285},
 		// Elemental's Flame Shock rank 1 (8050) at 30.
 		{"Flame Shock at 30", "shaman-elemental", "shaman", BarePreset, "orc", 30, 8050, 8053},
 		// The top-rank Lightning Bolt line (15208, cast while mana is ahead) casts rank 7 (10391) at 50 and bare 60.
@@ -120,10 +115,10 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		// Shadow Word: Death at 50: rank 2 for every race but the Human, who casts rank 3.
 		{"Human Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "human", 50, 1309635, 1309633},
 		{"Troll Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "troll", 50, 1309633, 1309635},
-		// Rows no race loses with lose their race key: Fire Blast rank 3 (2138) at 30, Corruption
-		// rank 3 (6223) at 40, Prayer of Healing rank 1 at bare 60.
+		// Rows no race loses with lose their race key: Fire Blast rank 3 (2138) at 30 and Prayer
+		// of Healing rank 1 at bare 60. (Corruption rank 3 at 40 was one; round 14 found it ties
+		// for every race, and the row is gone: see below.)
 		{"Gnome Fire Blast at 30", "mage-fire", "mage", BarePreset, "gnome", 30, 2138, 8412},
-		{"Orc Corruption at 40", "warlock-destruction", "warlock", BarePreset, "orc", 40, 6223, 7648},
 		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 596, 10961},
 		// Protection's Holy Strike rank 1 (679) at 40: the mana it saves buys more Judgements
 		// and Hammers of the Righteous (+0.6% to +0.9% threat for every paladin race).
@@ -131,6 +126,32 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		{"Holy Strike at 50 keeps the top rank", "paladin-protection", "paladin", BarePreset, "dwarf", 50, 5569, 679},
 		// Lightwell rank 1 now loses or ties for every race at bare 60: the row is gone.
 		{"Troll Lightwell at bare 60", "priest-holy", "priest", BarePreset, "troll", 60, 27871, 724},
+	} {
+		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.race))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}
+
+// Rows re-judged at sim-accuracy round 14 (design/reviews/2026-11-04-sim-audit-round14/data.md),
+// each row against the default rule on its own at seeds 1 and 50001, 10000 iterations. Since
+// the 3 November hotfix push (Arcane Shot 217 to 280 at rank 8) Beast Mastery's lower Arcane
+// Shot ranks lose or tie; since Shadow keeps Vampiric Embrace up a Human or Gnome loses with
+// Devouring Plague rank 2 at bare 60; Corruption rank 3 at 40 ties for every warlock race.
+func TestRound14RankChoicesCastTheWinningRank(t *testing.T) {
+	for _, c := range []struct {
+		name, spec, class, preset, race string
+		level                           int
+		want, not                       int32
+	}{
+		{"Arcane Shot at 40 is the default rank 5", "hunter-beast-mastery", "hunter", BarePreset, "troll", 40, 14284, 14282},
+		{"Arcane Shot at 50 is the default rank 6", "hunter-beast-mastery", "hunter", BarePreset, "dwarf", 50, 14285, 3044},
+		{"Arcane Shot at bare 60 is the top rank", "hunter-beast-mastery", "hunter", BarePreset, "troll", 60, 14287, 3044},
+		{"Human Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "human", 60, 19280, 19276},
+		{"Gnome Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "gnome", 60, 19280, 19276},
+		{"Troll Devouring Plague at bare 60 keeps rank 2", "priest-shadow", "priest", BarePreset, "troll", 60, 19276, 19280},
+		{"Corruption at 40 is the default rank 4", "warlock-destruction", "warlock", BarePreset, "troll", 40, 7648, 6223},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.race))
 		if !ids[c.want] || ids[c.not] {

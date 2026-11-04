@@ -36,7 +36,7 @@
       "action": {
         "autocastOtherCooldowns": {}
       },
-      "notes": "Mana potions and runes as soon as they fit under your mana cap: both are on their own cooldowns, so early use means a second use. Nature's Swiftness is saved for the emergency line below."
+      "notes": "Mana potions and runes as soon as they fit under your mana cap: both are on their own cooldowns, so early use means a second use. Nature's Swiftness is saved for the emergency Healing Wave on the tank."
     },
     {
       "action": {
@@ -141,8 +141,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 10396,
-            "rank": 9
+            "spellId": 332,
+            "rank": 2
           },
           "target": {
             "type": "Player",
@@ -181,7 +181,7 @@
           }
         }
       },
-      "notes": "Healing Wave right after Nature's Swiftness: the instant, full-size save."
+      "notes": "Healing Wave right after Nature's Swiftness: the instant save. Rank 2 is cheap, and it still carries your whole healing bonus."
     },
     {
       "action": {
@@ -885,8 +885,8 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "spellId": 10396,
-            "rank": 9
+            "spellId": 332,
+            "rank": 2
           },
           "target": {
             "type": "Player",
@@ -912,7 +912,7 @@
           }
         }
       },
-      "notes": "Healing Wave when the tank drops below 60%: your biggest efficient heal. Rank 9 is the top rank you can learn at launch; while leveling, cast the highest rank you have."
+      "notes": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana. While leveling, cast the highest rank you have."
     }
   ]
 }

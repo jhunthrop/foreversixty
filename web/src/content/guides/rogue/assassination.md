@@ -77,7 +77,7 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 **Shank** on cooldown, right behind your racial and trinket: 5 energy for 25 back, it cannot miss, and with Venom your poisons hit 30% harder and land 20% more often for the next 6 seconds. At four or more combo points, Cold Blood if it is ready, then the finisher: Slice and Dice when it is down or about to fall off, Eviscerate otherwise. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
 
-Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, so you go 0, 2 or 3, then 4 to 6: waiting for exactly five wastes a Mutilate. Rupture and Expose Armor do not make the list. Forever's Expose Armor does not stack with Sunder, so leave it to your warriors.
+Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, so you go from nothing to 2 or 3, then to 4 or 5: waiting for exactly five wastes a Mutilate. Rupture and Expose Armor do not make the list. Forever's Expose Armor does not stack with Sunder, so leave it to your warriors.
 
 ### Energy
 

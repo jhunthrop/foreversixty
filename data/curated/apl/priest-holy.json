@@ -101,8 +101,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6075,
-              "rank": 3
+              "spellId": 139,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -118,22 +118,22 @@
                     "index": 5
                   },
                   "spellId": {
-                    "spellId": 6075,
-                    "rank": 3
+                    "spellId": 139,
+                    "rank": 1
                   }
                 }
               }
             }
           }
         },
-        "notes": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana."
+        "notes": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana."
       },
       {
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 9472,
-              "rank": 2
+              "spellId": 10917,
+              "rank": 7
             },
             "target": {
               "type": "Player",
@@ -159,7 +159,7 @@
             }
           }
         },
-        "notes": "Flash Heal at a low rank on a tank who is really low: it lands in 1.5 seconds for a fraction of the top rank's mana. The top rank is for a party member about to die."
+        "notes": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters."
       },
       {
         "action": {
@@ -582,8 +582,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -636,14 +636,14 @@
             }
           }
         },
-        "notes": "The filler, the classic downrank: rank 4 has Greater Heal's spell power coefficient for far less mana. Cast it at the normal thresholds while your mana is keeping pace with the fight."
+        "notes": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4. Cast it at the normal thresholds while your mana is keeping pace with the fight."
       },
       {
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -701,8 +701,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -760,8 +760,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -819,8 +819,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -878,8 +878,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -911,8 +911,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -943,8 +943,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -975,8 +975,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -1007,8 +1007,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6064,
-              "rank": 4
+              "spellId": 2054,
+              "rank": 1
             },
             "target": {
               "type": "Player",

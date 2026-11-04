@@ -80,8 +80,8 @@ func TestHealProfileAtTheReferenceBandIsUnchanged(t *testing.T) {
 	for _, level := range []int{60, 0} {
 		got := profile.ForLevel(level).Model()
 		want := &proto.RaidDamageModel{
-			Profile: profile.ID, TankHealth: 9500, MemberHealth: 5000, TankHitDamage: 2128,
-			TankSwingSeconds: 3.3, DamageSpread: 0.25, PulseDamage: 555, PulseIntervalSeconds: 5,
+			Profile: profile.ID, TankHealth: 9500, MemberHealth: 5000, TankHitDamage: 2645,
+			TankSwingSeconds: 3.3, DamageSpread: 0.25, PulseDamage: 690, PulseIntervalSeconds: 5,
 			PulseMembers: 3, PulsesReachHealer: true,
 		}
 		if got.TankHealth != want.TankHealth || got.MemberHealth != want.MemberHealth || got.TankHitDamage != want.TankHitDamage ||
@@ -102,13 +102,13 @@ func TestHealProfileScalesEachBandByItsContent(t *testing.T) {
 		level                                int
 		tankHealth, memberHealth, hit, pulse float64
 	}{
-		{20, 1836, 966, 147, 35},
-		{29, 1836, 966, 147, 35},
-		{30, 3204, 1687, 274, 63},
-		{40, 4938, 2599, 482, 116},
-		{50, 7036, 3703, 1037, 250},
-		{59, 7036, 3703, 1037, 250},
-		{10, 1836, 966, 147, 35},
+		{20, 1836, 966, 183, 44},
+		{29, 1836, 966, 183, 44},
+		{30, 3204, 1687, 341, 78},
+		{40, 4938, 2599, 600, 144},
+		{50, 7036, 3703, 1289, 311},
+		{59, 7036, 3703, 1289, 311},
+		{10, 1836, 966, 183, 44},
 	}
 	for _, c := range cases {
 		m := profile.ForLevel(c.level).Model()
@@ -157,13 +157,13 @@ func TestHealProfileAttachUsesTheHealersBand(t *testing.T) {
 		Encounter: &proto.Encounter{Duration: 180},
 	}
 	profile.Attach(req)
-	if m := req.Raid.RaidDamageModel; m.TankHitDamage != 482 || m.TankHealth != 4938 {
-		t.Errorf("a level-40 healer's raid: hit %v on %v health, want 482 on 4938", m.TankHitDamage, m.TankHealth)
+	if m := req.Raid.RaidDamageModel; m.TankHitDamage != 600 || m.TankHealth != 4938 {
+		t.Errorf("a level-40 healer's raid: hit %v on %v health, want 600 on 4938", m.TankHitDamage, m.TankHealth)
 	}
 	weights := &proto.StatWeightsRequest{Player: &proto.Player{Level: 20}, Encounter: &proto.Encounter{Duration: 180}}
 	profile.AttachWeights(weights)
-	if m := weights.RaidDamageModel; m.TankHitDamage != 147 || m.PulseDamage != 35 {
-		t.Errorf("a level-20 weights request: hit %v pulse %v, want 147 / 35", m.TankHitDamage, m.PulseDamage)
+	if m := weights.RaidDamageModel; m.TankHitDamage != 183 || m.PulseDamage != 44 {
+		t.Errorf("a level-20 weights request: hit %v pulse %v, want 183 / 44", m.TankHitDamage, m.PulseDamage)
 	}
 }
 
@@ -174,9 +174,9 @@ func TestHealProfileRefusesABandFigureThatIsNotTheRules(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	field := regexp.MustCompile(`"tank_hit_damage": 482`)
+	field := regexp.MustCompile(`"tank_hit_damage": 600`)
 	if !field.Match(raw) {
-		t.Fatal("the curated band 40 no longer states tank_hit_damage 482; update this test")
+		t.Fatal("the curated band 40 no longer states tank_hit_damage 600; update this test")
 	}
 	if _, err := parseHealProfile(field.ReplaceAll(raw, []byte(`"tank_hit_damage": 483`)), "broken"); !errors.Is(err, ErrBadHealProfile) {
 		t.Errorf("err = %v, want ErrBadHealProfile", err)

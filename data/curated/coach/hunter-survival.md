@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/hunter/survival.md
   - data/curated/apl/hunter-survival.json
-  - data/builds/1.60.1.70753/spellconst/hunter.json
+  - data/builds/1.60.1.70755/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -21,6 +21,7 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Put up Aspect of the Beast and leave it up.
+- Aspect of the Hawk.
 - Mark the boss with Hunter's Mark.
 - On the pull, press Rapid Fire, your trinkets and Berserking or Blood Fury together: Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you.
 - Raptor Strike queued on every swing it is ready.

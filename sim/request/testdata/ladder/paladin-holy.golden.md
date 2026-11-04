@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-00000000000000000-00000000000000000 | main_hand:277247 | 9.7 | 1 | spell:639=31.4 | {SpellID: 1328548}, {SpellID: 20216} |
-| 20 | 50320100000000000-00000000000000000-00000000000000000 | main_hand:286977 | 13.9 | 2 | spell:635=48.6, spell:19750=29.5 | {SpellID: 1328548}, {SpellID: 20216} |
-| 30 | 50320215011100000-00000000000000000-00000000000000000 | main_hand:9604 | 64.5 | 4 | spell:635=68.4, spell:19750=49.2, other:mana_gain=8.9, spell:20216=2.0, spell:1328548=1.0 | {SpellID: 1311606} |
-| 38 | 50320215012101240-00000000000000000-00000000000000000 | main_hand:9604 | 73.8 | 6 | spell:19750=90.6, spell:635=49.6, other:mana_gain=10.3, spell:20216=2.0, spell:1328548=1.0 | - |
-| 40 | 50320215012101251-00000000000000000-00000000000000000 | main_hand:7723 | 88.4 | 5 | spell:635=75.5, spell:19940=31.9, other:mana_gain=8.1, spell:20216=2.0, spell:19750=1.9 | - |
-| 50 | 50320215012101251-50320000000000000-00000000000000000 | main_hand:7723 | 67.5 | 7 | spell:19750=124.7, other:mana_gain=10.6, spell:10328=4.2, spell:20216=2.9, spell:1328548=1.0 | - |
-| 60 | 50320215012101251-50322000000000000-05030000000000000 | main_hand:23455 | 113.8 | 7 | spell:19750=168.3, other:mana_gain=23.9, spell:10329=5.2, spell:20216=3.0, spell:1328548=1.0 | - |
+| 10 | 10000000000000000-00000000000000000-00000000000000000 | main_hand:277247 | 9.8 | 1 | spell:639=31.7 | {SpellID: 1328548}, {SpellID: 20216} |
+| 20 | 50320100000000000-00000000000000000-00000000000000000 | main_hand:286977 | 13.9 | 2 | spell:635=52.6, spell:19750=26.0 | {SpellID: 1328548}, {SpellID: 20216} |
+| 30 | 50320215011100000-00000000000000000-00000000000000000 | main_hand:9604 | 75.8 | 4 | spell:635=94.0, spell:19750=23.2, other:mana_gain=10.1, spell:20216=3.0, spell:1328548=1.0 | {SpellID: 1311606} |
+| 38 | 50320215012101240-00000000000000000-00000000000000000 | main_hand:9604 | 96.8 | 6 | spell:635=96.0, spell:19750=34.0, other:mana_gain=10.1, spell:20216=2.2, spell:1328548=1.0 | - |
+| 40 | 50320215012101251-00000000000000000-00000000000000000 | main_hand:7723 | 103.6 | 5 | spell:635=97.4, spell:19940=22.2, other:mana_gain=9.9, spell:20216=2.9, spell:1328548=1.0 | - |
+| 50 | 50320215012101251-50320000000000000-00000000000000000 | main_hand:7723 | 67.4 | 7 | spell:19750=122.4, other:mana_gain=10.6, spell:10328=4.4, spell:20216=3.0, spell:1328548=1.0 | - |
+| 60 | 50320215012101251-50322000000000000-05030000000000000 | main_hand:23455 | 114.0 | 7 | spell:19750=168.6, other:mana_gain=24.2, spell:10329=5.2, spell:20216=3.0, spell:1328548=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -176,4 +176,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- paladin-holy level=50 kind=dps_regression dps=67.5 prev_dps=88.4
+- paladin-holy level=50 kind=dps_regression dps=67.4 prev_dps=103.6

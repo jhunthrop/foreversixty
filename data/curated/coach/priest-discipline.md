@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/priest/discipline.md
   - data/curated/apl/priest-discipline.json
-  - data/builds/1.60.1.70753/spellconst/priest.json
+  - data/builds/1.60.1.70755/spellconst/priest.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -22,7 +22,7 @@ This is the Discipline Priest as the site's guide describes it. Discipline heals
 
 - Drop Lightwell and tell the raid it is up.
 - Fear Ward the tank if the boss fears.
-- Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.
+- Renew on the tank all fight at rank one: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.
 - Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.
 - Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.
 - Prayer of Healing when three or more in a group are hurt.
