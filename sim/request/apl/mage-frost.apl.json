@@ -194,7 +194,7 @@
       }
     },
     {
-      "notes": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage. Never stop casting to wait for a proc.",
+      "notes": "Frostbolt is the filler, and you never stop casting it to wait on a proc. Once Fingers of Frost at 36 and Missile Barrage at 51 are in, every cast can roll one.",
       "action": {
         "castSpell": {
           "spellId": {

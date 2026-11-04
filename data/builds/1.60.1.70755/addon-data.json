@@ -12049,7 +12049,7 @@
           {
             "spell_id": 2136,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12117,7 +12117,7 @@
           {
             "spell_id": 2136,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12185,7 +12185,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12253,7 +12253,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12321,7 +12321,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12410,7 +12410,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12506,7 +12506,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12602,7 +12602,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12698,7 +12698,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12801,7 +12801,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -12904,7 +12904,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13007,7 +13007,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13110,7 +13110,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13213,7 +13213,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13316,7 +13316,7 @@
           {
             "spell_id": 8413,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13419,7 +13419,7 @@
           {
             "spell_id": 8413,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13522,7 +13522,7 @@
           {
             "spell_id": 8413,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13625,7 +13625,7 @@
           {
             "spell_id": 8413,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13728,7 +13728,7 @@
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13831,7 +13831,7 @@
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13934,7 +13934,7 @@
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14037,7 +14037,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14140,7 +14140,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14243,7 +14243,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
+            "condition": "Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14292,7 +14292,7 @@
           {
             "spell_id": 2136,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14311,7 +14311,7 @@
           {
             "spell_id": 2136,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14330,7 +14330,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14349,7 +14349,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14382,7 +14382,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14422,7 +14422,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14469,7 +14469,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14516,7 +14516,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14563,7 +14563,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14610,7 +14610,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14657,7 +14657,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14711,7 +14711,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14765,7 +14765,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14819,7 +14819,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14873,7 +14873,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14927,7 +14927,7 @@
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14981,7 +14981,7 @@
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15035,7 +15035,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15089,7 +15089,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15143,7 +15143,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15178,7 +15178,7 @@
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15197,7 +15197,7 @@
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15216,7 +15216,7 @@
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15249,7 +15249,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15282,7 +15282,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15322,7 +15322,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15362,7 +15362,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15402,7 +15402,7 @@
           {
             "spell_id": 8406,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15442,7 +15442,7 @@
           {
             "spell_id": 8406,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15482,7 +15482,7 @@
           {
             "spell_id": 8407,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15522,7 +15522,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15569,7 +15569,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15616,7 +15616,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15663,7 +15663,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15710,7 +15710,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15757,7 +15757,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15804,7 +15804,7 @@
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15851,7 +15851,7 @@
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15898,7 +15898,7 @@
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15945,7 +15945,7 @@
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -15992,7 +15992,7 @@
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
