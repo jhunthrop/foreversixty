@@ -43,6 +43,11 @@ export const guidesCopy = {
   loadInPlanner: 'Load in planner',
   loadBuildRailAriaLabel: 'Load this build in the planner (summary)',
   simBuildRailAriaLabel: 'Sim this build (summary)',
+  loadRaidBuildRailAriaLabel: 'Load the raid build in the planner (summary)',
+  simRaidBuildRailAriaLabel: 'Sim the raid build (summary)',
+  /** Under "Rotation and priority" when the guide has its own raid build: the cards are worked
+   *  out for it (its talents, cooldowns and cast times). */
+  rotationForRaidBuild: 'For the raid build.',
   // --- raid build (2026-10-07) -------------------------------------------------------------
   levelingBuild: 'Level 60 build',
   raidBuild: 'Raid build',
@@ -62,6 +67,10 @@ export const guidesCopy = {
   weaknesses: 'Weaknesses',
   inARaid: 'In a raid',
   keyTalents: 'Key talents',
+  /** A key talent the two builds take at different ranks: "Level 60 3/3" and "Raid 2/3", each
+   *  kept on one line. */
+  keyTalentBuildRank: (build: 'leveling' | 'raid', rank: number, max: number): string =>
+    `${build === 'leveling' ? 'Level 60' : 'Raid'} ${rank}/${max}`,
   opener: 'Opener',
   priority: 'Priority',
   cooldowns: 'Cooldowns',

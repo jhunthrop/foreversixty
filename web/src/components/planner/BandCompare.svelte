@@ -35,6 +35,7 @@
   import { siblingSpecNames, specDisplayName } from '../../lib/sim/spec-label';
   import { specKeyFor } from '../../lib/addon/score';
   import Card from '../ui/Card.svelte';
+  import type { LadderOrderFor } from '../../lib/planner/ladder-load';
   import Skeleton from '../ui/Skeleton.svelte';
 
   let {
@@ -86,6 +87,15 @@
     specOverride ?? (store.talentIndex ? specKeyFor(store.classSlug, store.split) : null),
   );
   const bandLabel = $derived(band === 60 ? '60' : `${band} to ${band + 9}`);
+  // The spec's ladder order (/data/leveling-plans.json), so "Load" spends the band's points the
+  // way the sim and the guide's Leveling strip do; {} until read, and on a failed read.
+  let ladderOrderFor = $state<LadderOrderFor>(() => undefined);
+  $effect(() => {
+    void import('../../lib/planner/ladder-load')
+      .then((m) => m.loadLadderOrderFor())
+      .then((fn) => (ladderOrderFor = fn))
+      .catch(() => {});
+  });
 
   // undefined: still loading (or not started). null: fetched, and there is no file for this
   // spec yet -- the honest empty state, never a guess (BisSlotPopover.svelte's own pattern).
@@ -170,7 +180,9 @@
 
   function applyLoad(): void {
     if (store.talentIndex === null || bandEntry === undefined) return;
-    const result = loadFromBandAtLevel(store.talentIndex, bandEntry.talents, characterLevel);
+    const ordered =
+      specKey === null ? undefined : ladderOrderFor(store.talentIndex, bandEntry.talents, specKey);
+    const result = loadFromBandAtLevel(store.talentIndex, bandEntry.talents, characterLevel, ordered);
     store.applyOrder(result.order, {});
     const points = result.order.length;
     loaded = {

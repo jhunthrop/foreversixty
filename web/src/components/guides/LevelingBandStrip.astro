@@ -3,8 +3,9 @@
 // The Leveling section's band strip: one row per this spec's BiS band (one faction -- the
 // guide's own first `recommendedRaces` entry decides which), each with the talent-point total, a direct "Load in planner" link built from that
 // band's own verified talent string, and the band's talents as a list to work through: icon,
-// name and rank, in the order a player spends the points (`spendOrder`: the ladder's own
-// point order, `guideLadderOrder`, which the sim's ladder and the addon spend). A talent that
+// name and rank, in the order a player spends the points: the ladder's own order
+// (`guideLadderOrder`, lib/guides/leveling-builds.ts), the one the sim, the addon, the planner's
+// band loads and the low-level home read, so the strip never invents its own. A talent that
 // takes more points than in the band before is marked, so the strip also reads as what each
 // range adds. Every row is wrapped in the same `decodeBandTalents` the rail and the full tree
 // share.
@@ -29,7 +30,7 @@ interface Props {
   build: string;
   classSlug: string;
   rows: LevelingBandRow[];
-  /** One talent id per point, in the ladder's order (`guideLadderOrder`). */
+  /** One talent id per point, level 10 to 60, in the ladder's order (`guideLadderOrder`). */
   spendOrder: readonly number[];
 }
 

@@ -106,9 +106,14 @@ export interface BandLoad {
   dropped: number[];
 }
 
-/** The band's own build, as a loadable point order -- `orderFromRanks`, unchanged, fed from
- *  a band's digit string instead of a decoded FS1 code (spec §4.D's "load mechanism"). */
-export function loadFromBand(index: TalentIndex, bandTalents: string): BandLoad {
+/**
+ * The band's own build, as a loadable point order. `ladderOrder` is the spec's ladder prefix
+ * for exactly this band (`ladderOrderFor`, lib/planner/ladder-load.ts, loaded on demand so the
+ * planner island stays in budget): the order the sim, the addon and the guide's Leveling strip
+ * use. Without one, `orderFromRanks` reconstructs an order from the band's digit string.
+ */
+export function loadFromBand(index: TalentIndex, bandTalents: string, ladderOrder?: number[]): BandLoad {
+  if (ladderOrder !== undefined) return { order: ladderOrder, dropped: [] };
   const { order, dropped } = orderFromRanks(index, bandTreeRanksFrom(bandTalents));
   return { order, dropped };
 }
@@ -128,8 +133,9 @@ export function loadFromBandAtLevel(
   index: TalentIndex,
   bandTalents: string,
   characterLevel: number | null,
+  ladderOrder?: number[],
 ): BandLoadAtLevel {
-  const full = loadFromBand(index, bandTalents);
+  const full = loadFromBand(index, bandTalents, ladderOrder);
   const fullPoints = full.order.length;
   const allowed = (characterLevel ?? 9) - 9;
   const order = allowed > 0 ? full.order.slice(0, allowed) : full.order;

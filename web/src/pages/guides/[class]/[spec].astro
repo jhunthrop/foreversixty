@@ -41,13 +41,9 @@ import Content from '../../../layouts/Content.astro';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
 import { readSpecCatalog } from '../../../lib/bis/load';
-import {
-  bandTopLevel,
-  loadRotations,
-  rotationEntryFor,
-  rotationLinesFor,
-} from '../../../lib/bis/rotation-view';
+import { bandTopLevel } from '../../../lib/bis/rotation-view';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
+import { describedBuildTrees, guideRotation } from '../../../lib/guides/guide-rotation';
 import { band60Weights, rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
@@ -62,17 +58,12 @@ import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
 import { guideLadderOrder, guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
-import { raceTableFor, racialCooldownsFor, specKindOf } from '../../../lib/guides/race-table';
+import { raceTableFor, specKindOf } from '../../../lib/guides/race-table';
 import {
   litTalentsOf,
-  loadApl,
   markRaidBuildRows,
   raidBuildOnlyTalents,
-  rotationListsFrom,
   talentNamesOf,
-  specCooldowns,
-  spellLookupFor,
-  talentCooldownCuts,
 } from '../../../lib/guides/rotation-lists';
 
 export async function getStaticPaths() {
@@ -176,35 +167,22 @@ const talentsHeadingHtml = await renderGuideMarkdown('## Talents and builds');
 const keyTalents = keyTalentsFor(
   proseOnly('Talents and builds'),
   buildTrees.length > 0 ? buildTrees : undefined,
+  raidTrees,
 );
 const talentsProseHtml = await prose(withoutTalentBullets(proseOnly('Talents and builds')));
+
+// The build the level 60 sections describe (the rail, the key talents' ranks, the rotation
+// cards): the raid build when the guide has its own, else the level 60 build.
+const describedTrees = describedBuildTrees(buildTrees, raidTrees);
+const describedCode = raidTrees === undefined ? buildCode : raidCode;
 
 // Rail: Rotation card's first four level-60 lines (spec §4.C.2) -- the card is omitted
 // entirely when no rotation entry applies yet (spec §5's own state table), never a card
 // with zero lines standing in for "no data". The Rotation section's lists read the same lines.
-const rotationEntries = loadRotations(build, fullSpecId) ?? [];
-const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(60));
-const rotationLines =
-  rotationEntry === undefined
-    ? []
-    : rotationLinesFor(rotationEntry, build, classSlug, fullSpecId, bandTopLevel(60));
 const rotationBandLabel = String(bandTopLevel(60));
-const litTalents = litTalentsOf([...buildTrees, ...(raidTrees ?? [])]);
-const spellFacts = spellLookupFor(build, classSlug);
-const rotationListsUnkeyed =
-  rotationEntry === undefined
-    ? undefined
-    : rotationListsFrom(
-        rotationLines,
-        loadApl(fullSpecId),
-        spellFacts,
-        specCooldowns(build, classSlug, fullSpecId, litTalents, spellFacts),
-        talentCooldownCuts(build, classSlug, litTalents),
-        racialCooldownsFor(build, classSlug),
-        role,
-      );
-// The lists follow the level 60 raid priority; a talent only the raid build takes is marked
-// in them and left off the rail card, which sits beside the level 60 build.
+const rotationListsUnkeyed = guideRotation(build, classSlug, fullSpecId, role, describedTrees);
+// The lists follow the raid build's level 60 priority; a talent only the raid build takes is
+// marked in them, so a player on the level 60 build knows to skip that row.
 const raidOnlyTalents =
   raidTrees === undefined
     ? new Set<string>()
@@ -217,7 +195,6 @@ const rotationListsData =
   rotationListsUnkeyed === undefined
     ? undefined
     : withTipKeys(markRaidBuildRows(rotationListsUnkeyed, raidOnlyTalents), tipBundle);
-const railRotationLines = rotationLines.filter((line) => !raidOnlyTalents.has(line.name));
 const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');
 const rotationProseHtml = await prose(proseOnly('Rotation and priority'));
 
@@ -272,7 +249,9 @@ const levelingRows: LevelingBandRow[] =
         plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
         talents: b.talents,
       }));
-const levelingOrder =
+// The order the points go in, the ladder's own (lib/guides/leveling-builds.ts guideLadderOrder):
+// the strip, the planner links below and /data/leveling-plans.json all read this one order.
+const ladderOrder =
   buildCode === undefined || treeIndex === undefined
     ? []
     : guideLadderOrder(build, classSlug, fullSpecId, treeIndex, buildCode);
@@ -319,16 +298,16 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
         metaLine={metaLine}
         metaIcon={specIcon}
       />
-      {buildCode !== undefined && (
+      {describedCode !== undefined && (
         <div class="guide-rail-wrap">
           <GuideActionRail
             build={build}
-            buildCode={buildCode}
-            trees={buildTrees}
+            buildCode={describedCode}
+            trees={describedTrees}
+            isRaidBuild={raidTrees !== undefined}
             rotationBandLabel={rotationBandLabel}
-            rotationLines={railRotationLines.slice(0, 4)}
+            rotationLines={rotationListsData?.priority.slice(0, 4) ?? []}
             statRows={statRows}
-            tips={tipBundle}
           />
         </div>
       )}
@@ -349,6 +328,11 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   <KeyTalentList build={build} entries={keyTalents} />
   <Fragment set:html={talentsProseHtml} />
   <Fragment set:html={rotationHeadingHtml} />
+  {rotationListsData !== undefined && raidTrees !== undefined && (
+    <p class="text-muted" data-testid="guide-rotation-build">
+      {guidesCopy.rotationForRaidBuild}
+    </p>
+  )}
   {rotationListsData !== undefined && <RotationLists build={build} lists={rotationListsData} />}
   <Fragment set:html={rotationProseHtml} />
   <Fragment set:html={statPriorityHeadingHtml} />
@@ -385,7 +369,7 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   <Fragment set:html={levelingEarlyHtml} />
   <Fragment set:html={levelingStripHeadingHtml} />
   {levelingRows.length > 0 && (
-    <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} spendOrder={levelingOrder} />
+    <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} spendOrder={ladderOrder} />
   )}
   <Fragment set:html={levelingLateHtml} />
   <script is:inline set:html={pageScript}></script>

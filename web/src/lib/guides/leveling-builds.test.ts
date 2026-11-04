@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 import { describe, expect, it } from 'vitest';
 import { readSpecCatalog } from '../bis/load';
+import { indexTalents, validateOrder } from '../planner/rules';
 import {
   buildCodeDigits,
   guideLevelingBuilds,
@@ -191,6 +192,11 @@ describe('the ladder’s point order', () => {
           ladderTalentString(trees, targets, row.treeIndex, level, first),
         );
       });
+      // And the order is one the planner accepts point by point (its band loads read it).
+      const talentFile = JSON.parse(
+        readFileSync(path.join(REPO, 'data/builds', BUILD, 'talents', `${row.classSlug}.json`), 'utf8'),
+      );
+      expect(validateOrder(indexTalents(talentFile), order)).toEqual([]);
     },
   );
 

@@ -1,7 +1,8 @@
 // /data/leveling-plans.json: each spec guide's first talent points, from level 10 to the first
 // gear range, in the order a player spends them (design/specs/2026-11-04-low-level-home.md).
 // Built from the guide's own build through the same walk its Leveling strip uses
-// (lib/guides/leveling-builds.ts), so the home page names exactly the talents the guide does.
+// (lib/guides/leveling-builds.ts guideLadderOrder), so the home page names exactly the talents,
+// in exactly the order, the guide does; `ladder` carries the whole order for the planner.
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import activeBuild from '../../data/active-build.json';
@@ -62,11 +63,10 @@ function planFor(specKey: string, buildCode: string): LevelingPlan | undefined {
   );
   const file = loadTalentFile(build, spec.class_slug);
   if (first === undefined || file === undefined) return undefined;
-  // The ladder's own order (the guide strip's and the addon's), cut at the first range.
-  const order = guideLadderOrder(build, spec.class_slug, specKey, spec.tree_index, buildCode).slice(
-    0,
-    first.points,
-  );
+  // The ladder's own order (guideLadderOrder), cut at the first gear range's points: the same
+  // order the guide's Leveling strip and the planner's band loads read.
+  const ladder = guideLadderOrder(build, spec.class_slug, specKey, spec.tree_index, buildCode);
+  const order = ladder.slice(0, first.points);
   return {
     specKey,
     classSlug: spec.class_slug,
@@ -75,6 +75,7 @@ function planFor(specKey: string, buildCode: string): LevelingPlan | undefined {
     plannerHref: `/planner?spec=${specKey}&talents=${encodeURIComponent(first.talents)}`,
     tipsUrl: guideTipsUrl(build, spec.class_slug, spec.spec_slug),
     points: pointsOf(order, talentCells(file)),
+    ladder,
   };
 }
 

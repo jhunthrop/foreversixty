@@ -151,7 +151,8 @@
               }
             }
           }
-        }
+        },
+        "notes": "Dwarf: Stoneform when you drop under 70% health. Ten percent less physical damage for 8 seconds, on the global cooldown, every 3 minutes."
       },
       {
         "action": {

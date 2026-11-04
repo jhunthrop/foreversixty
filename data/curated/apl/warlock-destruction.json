@@ -153,7 +153,7 @@
         }
       },
       {
-        "notes": "Bane of Agony in the last minute, once Doom has fired. A new Doom would not land before the boss dies.",
+        "notes": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired. A new Doom would not land before the boss dies.",
         "action": {
           "condition": {
             "and": {

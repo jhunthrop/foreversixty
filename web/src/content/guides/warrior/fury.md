@@ -61,21 +61,21 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 ## Talents and builds
 
 - **Flurry** (3 points): 30% more attack speed for your next three swings after any melee crit. With two weapons and Cruelty it is up most of the fight, and every extra swing is extra rage.
-- **Bloodthirst** (1 point): an instant hit that scales with 45% of your attack power, every 6 seconds. It is the button you never delay.
+- **Bloodthirst** (1 point): an instant hit that scales with 45% of your attack power, every 6 seconds. Outside the execute phase, it is the button you never delay.
 - **Death Wish** (1 point): 20% more physical damage and Fear immunity for 30 seconds, at the cost of 5% more damage taken.
 - **Dual Wield Specialization** (5 points): 25% more off-hand damage and 50% more rage from off-hand swings. The core talent of a two-weapon build.
 - **Cruelty** and **Unbridled Wrath** (10 points): 5% crit, and a 60% chance at an extra rage point on every weapon hit. These are your first points: Cruelty from 10 to 14, then Unbridled Wrath from 15 to 19.
 - **Furious Precision** (3 points): 10% more hit with the off hand, which cuts the off-hand misses that cost you rage.
 - **Improved Execute** (2 points): Execute costs 10 rage instead of 15, so the rage you hold goes into damage.
 - **Improved Whirlwind** (2 points): Whirlwind comes back every 8 seconds instead of 10 and hits the closest enemy 30% harder. You press Whirlwind every time it comes off cooldown, and on a single boss the closest enemy is the boss.
-- **Reckless Swings** (1 point): a button on a 15 second cooldown and a 1 second global that makes your next four white swings within 8 seconds bring 5 more rage each. It costs a quarter of your base health, which the healers cover on most fights; skip it only when you are low. Twenty rage every 15 seconds is a Heroic Strike you would not otherwise have.
+- **Reckless Swings** (1 point): a button on a 15 second cooldown and a 1 second global that makes your next four white swings within 8 seconds bring 5 more rage each. It costs a quarter of your base health, which the healers cover without noticing, and 20 rage every 15 seconds is a Heroic Strike you would not otherwise have.
 - **Enrage** (2 points): a 30% chance at 4% more physical damage for 12 seconds after you get hit. Any damaging attack rolls it, so cleaves, raid-wide damage and every dungeon pull keep it coming up.
 - **Improved Heroic Strike** (3 points): Heroic Strike costs 3 less. It is your rage dump, and you press it a lot.
 - **Deep Wounds** and **Impale** (8 points in Arms, with **Improved Rend** as the toll to reach Deep Wounds; Fury never casts Rend): every crit leaves a bleed for 60% of your weapon's average damage, and your ability crits hit for 220% of a normal hit instead of double. Fury crits a lot, so this is the best use of the Arms points.
 - **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
 - **Anger Management** (1 point, behind 3 in **Improved Tactical Mastery**): a point of rage every 3 seconds in combat, 10 rage every half minute. Improved Tactical Mastery is the way in. In a raid you never leave Berserker Stance, but on trash it lets a Charge's rage come with you when you swap back.
 
-The build also puts two points in **Improved Berserker Rage**, so every Berserker Rage brings 10 rage and breaks any slow on you, and two in **Improved Charge**, which is what gets you down to Impale; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry.
+The build also puts two points in **Improved Berserker Rage**, so every Berserker Rage brings 10 rage and breaks any slow on you, and two in **Improved Charge**, part of the points the rows above Deep Wounds ask for; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry.
 
 [Open the planner](/planner?class=warrior) to change the build.
 
@@ -83,13 +83,13 @@ The build also puts two points in **Improved Berserker Rage**, so every Berserke
 
 **The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: the Bloodrage you pressed before the pull has already put you in combat, so there is no Charge to take, and with Improved Bloodrage it brings more rage than a Charge would. On trash and while leveling, Charge or Intercept in freely.
 
-**The priority.** Bloodthirst on cooldown. Whirlwind on cooldown right behind it, every time it is ready, even on a single target. Reckless Swings on cooldown right behind Whirlwind: your next four white swings bring 5 more rage each, and the quarter of your base health it costs is the healers' to cover, so hold it only when you are low. Bloodrage on cooldown whenever you are under 80 rage, and Berserker Rage the same: with Improved Berserker Rage it is 10 rage every 30 seconds.
+**The priority.** Bloodthirst on cooldown. Whirlwind on cooldown right behind it, every time it is ready, even on a single target. Reckless Swings on cooldown right behind Whirlwind: your next four white swings bring 5 more rage each, and the quarter of your base health it costs is the healers' to cover, so never hold it. Berserker Rage right behind Reckless Swings whenever you are under 80 rage: with Improved Berserker Rage it is 10 rage every 30 seconds. Bloodrage on cooldown whenever you are under 80 rage.
 
 **Heroic Strike.** Queue it whenever you are above 60 rage. It replaces your next main-hand swing and costs no global cooldown, so it never delays Bloodthirst or Whirlwind. Below 60, hold the rage for those two. Fury does not Hamstring, with or without a Windfury Totem: Heroic Strike already spends that rage better.
 
 **Execute.** From 25%, stop queueing Heroic Strike and let the bar fill. At 20%, Execute goes ahead of everything, including Bloodthirst, and every point of rage you hold goes into the hit.
 
-**Cooldowns.** Death Wish lasts 30 seconds on a 3 minute cooldown. Press it at the pull only when a second one still fits before the boss dies; otherwise hold it for the execute phase, or for the last 30 seconds when that phase will be shorter than the buff. Berserker Rage breaks fear and keeps you immune to it for 10 seconds. Press it for rage on every other boss, but on Magmadar, Onyxia and Nefarian hold it for Panic, Bellowing Roar and the fear. Death Wish can be pressed while you are feared too: it breaks the fear and keeps you immune for its 30 seconds, so if Berserker Rage is down and you have the 10 rage, it is your second fear break. Recklessness is once a fight: press it at 20% with Death Wish, or in the last 15 seconds when the execute phase is shorter than that. Trinkets, Blood Fury and Berserking go on cooldown from the pull; when one comes up close to Death Wish, wait the few seconds and press them together. Elune's Light the same, but never inside Recklessness.
+**Cooldowns.** Death Wish lasts 30 seconds on a 3 minute cooldown. Press it at the pull only when a second one still fits before the boss dies; otherwise hold it for the execute phase, or for the last 30 seconds when that phase will be shorter than the buff. Berserker Rage breaks fear and keeps you immune to it for 10 seconds. Press it for rage everywhere except Magmadar, Onyxia and Nefarian, where you hold it for Panic, Bellowing Roar and the fear. Death Wish can be pressed while you are feared too: it breaks the fear and keeps you immune for its 30 seconds, so if Berserker Rage is down and you have the 10 rage, it is your second fear break. Recklessness is once a fight: press it at 20% with Death Wish, or in the last 15 seconds when the execute phase is shorter than that. Trinkets, Blood Fury and Berserking go on cooldown from the pull; when one comes up close to Death Wish, wait the few seconds and press them together. Elune's Light the same, but never inside Recklessness.
 
 **Two or more targets.** Whirlwind hits up to four targets with both weapons. Swap Heroic Strike for Cleave with two or more mobs in front of you.
 
@@ -125,7 +125,7 @@ Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 1
 
 At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander worth keeping for when you dual wield.
 
-Your first five points, 10 to 14, go into Cruelty for 5% melee crit, then Unbridled Wrath from 15 to 19 gives your hits a 60% chance at an extra Rage.
+Your first five points, 10 to 14, go into Cruelty for 5% melee crit, then Unbridled Wrath from 15 to 19 gives your hits a 60% chance at an extra Rage. Furious Precision starts at 20, the level you can first dual wield, for off-hand hit.
 
 Dual Wield trains at 20. Until then, swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
 

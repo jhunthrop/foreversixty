@@ -34,7 +34,7 @@ The cat opens with Ravage, keeps Rip on the boss, Shreds from behind and turns m
 
 ### Strengths
 
-- Rip at 5 combo points hits as hard as your biggest Bite and keeps the boss bleeding for Rend and Tear
+- Rip at 5 combo points bleeds the boss for its whole duration, and the bleed keeps Rend and Tear on for every Shred and Bite
 - Shifting Power turns mana into 40 energy every 8 seconds
 - Potions, Thistle Tea, weapon stones and Windfury Totem all work in Cat Form now
 - Your paw hits with your weapon's damage, so a real two-hander is a real upgrade
@@ -52,19 +52,19 @@ The cat opens with Ravage, keeps Rip on the boss, Shreds from behind and turns m
 
 ## Talents and builds
 
-The leveling build takes Brutal Impact for a longer Pounce stun and Feral Charge, which in Forever is two buttons: the Bear Form charge and interrupt, and a Cat Form leap behind the target on a 30 second cooldown, which puts you straight into Shred position. Your 31 Feral points are done at 40. From 41 take Genesis, Nature's Majesty and Nature's Reach in Balance, then Heart of the Wild, Naturalist and a point of Natural Shapeshifter in Restoration. At 60, respec into the raid build: Brutal Impact, Feral Charge and the Natural Shapeshifter point finish Rend and Tear and fill Feral Instinct.
+The leveling build takes Brutal Impact for a longer Pounce stun and Feral Charge, which in Forever is two buttons: the Bear Form charge and interrupt, and a Cat Form leap behind the target on a 30 second cooldown, which puts you straight into Shred position. Your 31 Feral points are done at 40. From 41 take Genesis, then Nature's Majesty and Nature's Reach in Balance, then Heart of the Wild, Naturalist and a point of Natural Shapeshifter in Restoration. At 60, respec into the raid build: Brutal Impact, Feral Charge and that Natural Shapeshifter point finish Rend and Tear and fill Feral Instinct.
 
 - **Shredding Attacks** (3 points): Shred drops to 42 energy, and Shred is most of your globals.
 - **Savage Fury** (2 points): 10% more damage on Shred, Claw and Rake.
 - **Rend and Tear**: 3% more damage a point from your melee abilities against a bleeding target, 15% at 5. Your auto attacks do not get it. Rip keeps the boss bleeding, so it is on for every Shred and Bite after your first finisher.
-- **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and a bonus combo point on builder crits (every time with both points, in both builds). Crit is what makes your 5 points come quickly.
+- **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and a bonus combo point on every builder crit, with both points in either build. Crit is what makes your 5 points come quickly.
 - **Predatory Strikes** (3 points): 150% of your level as attack power in Cat Form.
 - **Predatory Discipline** (1 point): Ferocious Bite keeps the bonus damage from your extra energy but no longer spends it. It also opens Shifting Power.
 - **Shifting Power** (1 point): the capstone, 40 energy for mana on an 8 second cooldown. It replaces Tiger's Fury, and without it the cat runs out of things to press.
 - **Leader of the Pack** (1 point): the raid's crit aura. Take it in every build.
 - **Heart of the Wild** and **Naturalist**: Heart of the Wild is 10% more Strength in Cat Form at five points; Naturalist is 10% more damage of every kind. These are why a cat goes into Restoration at all.
 
-The raid build skips Furor. In Forever it no longer hands you 40 energy on a shift; it gives back the energy you left Cat Form with, plus 10 for each second out of form that you did not spend as a bear. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. Both builds take the same Balance points: Genesis, 10% more periodic damage (a bigger Rip), Nature's Majesty, 4% crit, and Nature's Reach, 4% hit on your attacks as well as your spells. Natural Shapeshifter makes Shifting Power cheaper; a raid's mana never runs short enough to need it, so only the leveling build keeps a point. Primal Bite and Lacerate are bear buttons, Brutal Impact is for questing, and Feral Charge is a leap you can buy back for a boss you keep losing your back to.
+The raid build skips Furor. In Forever it no longer hands you 40 energy on a shift; it gives back the energy you left Cat Form with, plus 10 for each second out of form that you did not spend as a bear. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. Both builds' Balance points are Genesis, 10% more periodic damage (a bigger Rip), Nature's Majesty, 4% crit, and Nature's Reach, 4% hit on your attacks as well as your spells. Natural Shapeshifter only makes your shifts and Shifting Power cheaper, so the raid build spends that point on Rend and Tear. The extra Feral Instinct points add nothing to a cat's damage; with Brutal Impact gone, they are the two points that keep that row at ten and open the next one. Primal Bite and Lacerate are bear buttons, Brutal Impact is for questing, and Feral Charge is a leap you can buy back for a boss you keep losing your back to.
 
 ## Rotation and priority
 
@@ -78,7 +78,7 @@ The raid build skips Furor. In Forever it no longer hands you 40 energy on a shi
 
 **Faerie Fire.** In Cat Form it is free on a 6 second cooldown. If no one else has it on the boss, keep yours up.
 
-**Mana.** Shifting Power costs 55% of your base mana, 10% less with the leveling build's point of Natural Shapeshifter, and mana decides how many you get. With a paladin's Judgement of Wisdom on the boss, your hits refill most of it over a fight. Without one, or if you run dry, drink a mana potion in Cat Form; Forever lets you drink without shifting.
+**Mana.** Shifting Power costs 55% of your base mana, and mana decides how many you get. With a paladin's Judgement of Wisdom on the boss, your hits refill most of it over a fight. Without one, or if you run dry, drink a mana potion in Cat Form; Forever lets you drink without shifting.
 
 **Adds and movement.** You have no cleave. On a pack, Rip the target that will live longest and Shred down the kill order. When the boss turns to you, or you cannot get behind, Claw in place of Shred until you can. Keep Rip rolling through movement; it ticks while you run.
 
@@ -116,4 +116,4 @@ Your bear hits with your weapon's DPS, so swap the starter weapon for the highes
 
 ### Levels 20 to 60
 
-Cat Form arrives at 20. Solo mobs face you, so Shred will not land: Claw builds your points and Rake adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind once Shredding Attacks has it at 42 energy; before that, Claw buys more damage for its energy. Open from Prowl behind the mob: Ravage once you learn it at 32, or Pounce from 36 when you want the stun. Both need you behind the target in Forever. When you cannot get there, open with Claw. Rip at 5 points on anything with a lot of health, Ferocious Bite on the rest. Feral Charge's Cat Form leap lands you behind a mob for a Shred, and in Bear Form it is the charge you pull dungeon packs with. Respec into the raid build at 60.
+Cat Form arrives at 20. Solo mobs face you, so Shred will not land: Claw builds your points and Rake, from 24, adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind once Shredding Attacks has it at 42 energy; before that, Claw buys more damage for its energy. Open from Prowl behind the mob: Ravage once you learn it at 32, or Pounce from 36 when you want the stun. Both need you behind the target in Forever. When you cannot get there, open with Claw. Rip at 5 points on anything with a lot of health, Ferocious Bite, from 24, on the rest. Feral Charge's Cat Form leap lands you behind a mob for a Shred, and in Bear Form it is the charge you pull dungeon packs with. Respec into the raid build at 60.

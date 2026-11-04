@@ -27,7 +27,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 
 ### Strengths
 
-- Prayer of Mending is the cheapest healing in the game: five jumps for one cast
+- Prayer of Mending is the cheapest healing in the game: five heals for one cast
 - Prayer of Healing heals any five-player group at once, not only your own
 - Spiritual Guidance and Meditation turn Spirit into both healing and mana
 - Lightwell heals the melee while you heal the tank, and Holy Binding heals you every time you Flash Heal someone else
@@ -67,7 +67,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **On the tank.** Prayer of Mending every time it is ready. Renew always up at rank 7 or higher. Go up to the top rank on a tank who is dropping through it.
 
-**The filler is Greater Heal** at the top rank your trainer teaches, in a raid and in a dungeon group alike. Its low ranks lose part of your healing bonus, so they no longer heal more for their mana, and the big rank fills the hole in one cast. Before you learn Greater Heal at 40, Heal at its top rank is the filler, and it stays the cheaper cast for when your mana is too low for a Greater Heal. With Divine Fury both are 2.5 second casts.
+**The filler is Greater Heal** at your top rank. Rank 2 and 3 were learned late enough to keep your whole healing bonus and cost less, so step down to rank 3 or 2 when the top rank would overheal. Rank 1 already loses part of its bonus at 60. In a dungeon group or on bare gear, where your bonus is small, Heal rank 4 is the cheaper cast. With Divine Fury both are 2.5 second casts.
 
 **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on.
 
@@ -77,7 +77,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **Overheal.** Start Greater Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with Greater Heal; Prayer of Mending and Renew cover those.
 
-**Inner Focus.** Spend it on a Prayer of Healing, your most expensive spell, or on a Greater Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
+**Inner Focus.** Spend it on a Prayer of Healing, your most expensive heal, or on a Greater Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
 
 **Assignments.** In a raid you will be on a group or on a tank. On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. On a tank, Renew, Prayer of Mending and Greater Heal, with Flash Heal for the spikes. Either way, never stand where the boss's cleave or the raid's AoE lands on you: Twilight Focus helps, it does not make you immune.
 

@@ -5940,8 +5940,8 @@
           {
             "spell_id": 1310687,
             "name": "Sniper Shot",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Sniper Shot when the shared cooldown is down and an auto shot has just left.",
+            "icon": "hunter_pvp_snipershot",
             "race_spell_ids": {}
           },
           {
@@ -5994,8 +5994,8 @@
           {
             "spell_id": 1310785,
             "name": "Sniper Shot",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Sniper Shot when the shared cooldown is down and an auto shot has just left.",
+            "icon": "hunter_pvp_snipershot",
             "race_spell_ids": {}
           },
           {
@@ -6048,8 +6048,8 @@
           {
             "spell_id": 1310786,
             "name": "Sniper Shot",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Sniper Shot when the shared cooldown is down and an auto shot has just left.",
+            "icon": "hunter_pvp_snipershot",
             "race_spell_ids": {}
           },
           {
@@ -6407,7 +6407,7 @@
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -6421,21 +6421,21 @@
           {
             "spell_id": 2136,
             "name": "Fire Blast",
-            "condition": "",
+            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
           {
             "spell_id": 143,
             "name": "Fireball",
-            "condition": "",
+            "condition": "Fireball fills in a raid once you stop blasting.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting.",
+            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -6468,14 +6468,14 @@
           {
             "spell_id": 11366,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast the moment Presence of Mind is up, once you have Heating Up: the 6 second cast goes out instant, the most cast time Presence of Mind can save you.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -6489,14 +6489,14 @@
           {
             "spell_id": 11366,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast on 3 Heating Up stacks, when it is a 1.5 second cast.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "",
+            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -6510,14 +6510,14 @@
           {
             "spell_id": 3140,
             "name": "Fireball",
-            "condition": "",
+            "condition": "Fireball fills in a raid once you stop blasting.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting.",
+            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -6550,14 +6550,14 @@
           {
             "spell_id": 12522,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast the moment Presence of Mind is up, once you have Heating Up: the 6 second cast goes out instant, the most cast time Presence of Mind can save you.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -6571,22 +6571,22 @@
           {
             "spell_id": 12522,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast on 3 Heating Up stacks, when it is a 1.5 second cast.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "",
+            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1326079,
             "name": "Arcane Wrath",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Arcane Wrath every time it is ready while you hold 3 Blast stacks: the stacks' spell damage and 5% of your maximum mana both go into it.",
+            "icon": "ability_mage_netherwindpresence",
             "race_spell_ids": {}
           },
           {
@@ -6599,14 +6599,14 @@
           {
             "spell_id": 8401,
             "name": "Fireball",
-            "condition": "",
+            "condition": "Fireball fills in a raid once you stop blasting.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting.",
+            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -6639,14 +6639,14 @@
           {
             "spell_id": 12523,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast the moment Presence of Mind is up, once you have Heating Up: the 6 second cast goes out instant, the most cast time Presence of Mind can save you.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -6660,22 +6660,22 @@
           {
             "spell_id": 12523,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast on 3 Heating Up stacks, when it is a 1.5 second cast.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8413,
             "name": "Fire Blast",
-            "condition": "",
+            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1326080,
             "name": "Arcane Wrath",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Arcane Wrath every time it is ready while you hold 3 Blast stacks: the stacks' spell damage and 5% of your maximum mana both go into it.",
+            "icon": "ability_mage_netherwindpresence",
             "race_spell_ids": {}
           },
           {
@@ -6688,14 +6688,14 @@
           {
             "spell_id": 8402,
             "name": "Fireball",
-            "condition": "",
+            "condition": "Fireball fills in a raid once you stop blasting.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting.",
+            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -6728,14 +6728,14 @@
           {
             "spell_id": 12523,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast the moment Presence of Mind is up, once you have Heating Up: the 6 second cast goes out instant, the most cast time Presence of Mind can save you.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -6749,22 +6749,22 @@
           {
             "spell_id": 12523,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast on 3 Heating Up stacks, when it is a 1.5 second cast.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8413,
             "name": "Fire Blast",
-            "condition": "",
+            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1326080,
             "name": "Arcane Wrath",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Arcane Wrath every time it is ready while you hold 3 Blast stacks: the stacks' spell damage and 5% of your maximum mana both go into it.",
+            "icon": "ability_mage_netherwindpresence",
             "race_spell_ids": {}
           },
           {
@@ -6777,14 +6777,14 @@
           {
             "spell_id": 8402,
             "name": "Fireball",
-            "condition": "",
+            "condition": "Fireball fills in a raid once you stop blasting.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting.",
+            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -6817,14 +6817,14 @@
           {
             "spell_id": 12525,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast the moment Presence of Mind is up, once you have Heating Up: the 6 second cast goes out instant, the most cast time Presence of Mind can save you.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -6838,22 +6838,22 @@
           {
             "spell_id": 12525,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast on 3 Heating Up stacks, when it is a 1.5 second cast.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "",
+            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1326081,
             "name": "Arcane Wrath",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Arcane Wrath every time it is ready while you hold 3 Blast stacks: the stacks' spell damage and 5% of your maximum mana both go into it.",
+            "icon": "ability_mage_netherwindpresence",
             "race_spell_ids": {}
           },
           {
@@ -6866,14 +6866,14 @@
           {
             "spell_id": 10149,
             "name": "Fireball",
-            "condition": "",
+            "condition": "Fireball fills in a raid once you stop blasting.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting.",
+            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -6906,14 +6906,14 @@
           {
             "spell_id": 18809,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast the moment Presence of Mind is up, once you have Heating Up: the 6 second cast goes out instant, the most cast time Presence of Mind can save you.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -6927,22 +6927,22 @@
           {
             "spell_id": 18809,
             "name": "Pyroblast",
-            "condition": "",
+            "condition": "Pyroblast on 3 Heating Up stacks, when it is a 1.5 second cast.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "",
+            "condition": "Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a 6 second cooldown.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1326082,
             "name": "Arcane Wrath",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Arcane Wrath every time it is ready while you hold 3 Blast stacks: the stacks' spell damage and 5% of your maximum mana both go into it.",
+            "icon": "ability_mage_netherwindpresence",
             "race_spell_ids": {}
           },
           {
@@ -6955,14 +6955,14 @@
           {
             "spell_id": 10151,
             "name": "Fireball",
-            "condition": "",
+            "condition": "Fireball fills in a raid once you stop blasting.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting.",
+            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -9093,7 +9093,7 @@
           {
             "spell_id": 17,
             "name": "Power Word: Shield",
-            "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -9107,7 +9107,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal when Greater Heal rank 1 would overheal: a small top-up for little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9175,7 +9175,7 @@
           {
             "spell_id": 600,
             "name": "Power Word: Shield",
-            "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -9224,7 +9224,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal when Greater Heal rank 1 would overheal: a small top-up for little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9327,7 +9327,7 @@
           {
             "spell_id": 6065,
             "name": "Power Word: Shield",
-            "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -9383,7 +9383,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal when Greater Heal rank 1 would overheal: a small top-up for little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9486,7 +9486,7 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -9542,7 +9542,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal when Greater Heal rank 1 would overheal: a small top-up for little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9645,7 +9645,7 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -9708,14 +9708,14 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal when Greater Heal rank 1 would overheal: a small top-up for little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9874,7 +9874,7 @@
           {
             "spell_id": 10899,
             "name": "Power Word: Shield",
-            "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -9937,14 +9937,14 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal when Greater Heal rank 1 would overheal: a small top-up for little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -10103,7 +10103,7 @@
           {
             "spell_id": 10901,
             "name": "Power Word: Shield",
-            "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -10166,14 +10166,14 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
+            "condition": "Lesser Heal when Greater Heal rank 1 would overheal: a small top-up for little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -10353,7 +10353,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -10484,7 +10484,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10615,7 +10615,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10753,7 +10753,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -10788,7 +10788,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
+            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -10823,7 +10823,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10961,7 +10961,7 @@
           {
             "spell_id": 10963,
             "name": "Greater Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -10996,7 +10996,7 @@
           {
             "spell_id": 10963,
             "name": "Greater Heal",
-            "condition": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
+            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -11031,7 +11031,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -11169,7 +11169,7 @@
           {
             "spell_id": 10965,
             "name": "Greater Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -11204,7 +11204,7 @@
           {
             "spell_id": 10965,
             "name": "Greater Heal",
-            "condition": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
+            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -11239,7 +11239,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -11791,7 +11791,7 @@
           {
             "spell_id": 1943,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -11817,7 +11817,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11831,7 +11831,7 @@
           {
             "spell_id": 8639,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -11864,7 +11864,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11878,7 +11878,7 @@
           {
             "spell_id": 8640,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -11911,7 +11911,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11925,7 +11925,7 @@
           {
             "spell_id": 8640,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -11965,7 +11965,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11979,7 +11979,7 @@
           {
             "spell_id": 11273,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -12019,7 +12019,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit 30% harder and land more often for 6 seconds.",
+            "condition": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -12033,7 +12033,7 @@
           {
             "spell_id": 11275,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -12364,14 +12364,14 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6760,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking, only before you have Death Mark: from 40, five points go into Death Mark while Rupture ticks.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -12397,7 +12397,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -12418,7 +12418,7 @@
           {
             "spell_id": 6761,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking, only before you have Death Mark: from 40, five points go into Death Mark while Rupture ticks.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -12444,14 +12444,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -12472,7 +12472,7 @@
           {
             "spell_id": 6762,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking, only before you have Death Mark: from 40, five points go into Death Mark while Rupture ticks.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -12505,14 +12505,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -12533,7 +12533,7 @@
           {
             "spell_id": 8623,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking, only before you have Death Mark: from 40, five points go into Death Mark while Rupture ticks.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -12566,14 +12566,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -12601,7 +12601,7 @@
           {
             "spell_id": 8624,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking, only before you have Death Mark: from 40, five points go into Death Mark while Rupture ticks.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -12634,14 +12634,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -12669,7 +12669,7 @@
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking, only before you have Death Mark: from 40, five points go into Death Mark while Rupture ticks.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -12702,14 +12702,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -12737,7 +12737,7 @@
           {
             "spell_id": 11300,
             "name": "Eviscerate",
-            "condition": "Eviscerate at three or more combo points while Rupture is ticking.",
+            "condition": "Eviscerate at three or more combo points while Rupture is ticking, only before you have Death Mark: from 40, five points go into Death Mark while Rupture ticks.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -12793,7 +12793,7 @@
           {
             "spell_id": 529,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
+            "condition": "Lightning Bolt for everything else.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           }
@@ -12833,7 +12833,7 @@
           {
             "spell_id": 915,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
+            "condition": "Lightning Bolt for everything else.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           }
@@ -12887,7 +12887,7 @@
           {
             "spell_id": 548,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
+            "condition": "Lightning Bolt for everything else.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           }
@@ -12948,7 +12948,7 @@
           {
             "spell_id": 548,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
+            "condition": "Lightning Bolt for everything else.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           }
@@ -13009,7 +13009,7 @@
           {
             "spell_id": 915,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
+            "condition": "Lightning Bolt for everything else.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           }
@@ -13070,7 +13070,7 @@
           {
             "spell_id": 6041,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
+            "condition": "Lightning Bolt for everything else.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           }
@@ -13131,7 +13131,7 @@
           {
             "spell_id": 15207,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
+            "condition": "Lightning Bolt for everything else.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           }
@@ -13839,7 +13839,7 @@
           {
             "spell_id": 1064,
             "name": "Chain Heal",
-            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and the jumps reach any raid member near the target.",
+            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
             "icon": "spell_nature_healingwavegreater",
             "race_spell_ids": {}
           },
@@ -13963,7 +13963,7 @@
           {
             "spell_id": 10622,
             "name": "Chain Heal",
-            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and the jumps reach any raid member near the target.",
+            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
             "icon": "spell_nature_healingwavegreater",
             "race_spell_ids": {}
           },
@@ -14087,7 +14087,7 @@
           {
             "spell_id": 10623,
             "name": "Chain Heal",
-            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last, and the jumps reach any raid member near the target.",
+            "condition": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last.",
             "icon": "spell_nature_healingwavegreater",
             "race_spell_ids": {}
           },
@@ -14122,7 +14122,7 @@
           {
             "spell_id": 980,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony whenever it has fallen off.",
+            "condition": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14136,7 +14136,7 @@
           {
             "spell_id": 695,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt with every DoT up.",
+            "condition": "Shadow Bolt with every DoT up, until Wrack at 40 takes over as your filler.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           }
@@ -14155,7 +14155,7 @@
           {
             "spell_id": 440892,
             "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "condition": "Curse of the Elements when it is not already on the target (one per target, from any warlock).",
             "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
@@ -14169,14 +14169,14 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "",
+            "condition": "Amplify Curse just before the Bane of Agony that covers the last minute.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1014,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony whenever it has fallen off.",
+            "condition": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14190,7 +14190,7 @@
           {
             "spell_id": 1088,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt with every DoT up.",
+            "condition": "Shadow Bolt with every DoT up, until Wrack at 40 takes over as your filler.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           }
@@ -14209,7 +14209,7 @@
           {
             "spell_id": 1311676,
             "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "condition": "Curse of the Elements when it is not already on the target (one per target, from any warlock).",
             "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
@@ -14223,14 +14223,14 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "",
+            "condition": "Amplify Curse just before the Bane of Agony that covers the last minute.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6217,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony whenever it has fallen off.",
+            "condition": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14251,7 +14251,7 @@
           {
             "spell_id": 1106,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt with every DoT up.",
+            "condition": "Shadow Bolt with every DoT up, until Wrack at 40 takes over as your filler.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           }
@@ -14270,7 +14270,7 @@
           {
             "spell_id": 1311676,
             "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "condition": "Curse of the Elements when it is not already on the target (one per target, from any warlock).",
             "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
@@ -14284,14 +14284,14 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "",
+            "condition": "Amplify Curse just before the Bane of Agony that covers the last minute.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony whenever it has fallen off.",
+            "condition": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14312,7 +14312,7 @@
           {
             "spell_id": 7641,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt with every DoT up.",
+            "condition": "Shadow Bolt with every DoT up, until Wrack at 40 takes over as your filler.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           }
@@ -14331,7 +14331,7 @@
           {
             "spell_id": 1311677,
             "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "condition": "Curse of the Elements when it is not already on the target (one per target, from any warlock).",
             "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
@@ -14345,14 +14345,14 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "",
+            "condition": "Amplify Curse just before the Bane of Agony that covers the last minute.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony whenever it has fallen off.",
+            "condition": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14373,14 +14373,14 @@
           {
             "spell_id": 1316697,
             "name": "Wrack",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Wrack with your DoTs up.",
+            "icon": "ability_deathknight_hemorrhagicfever",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7641,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt with every DoT up.",
+            "condition": "Shadow Bolt with every DoT up, until Wrack at 40 takes over as your filler.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           }
@@ -14399,7 +14399,7 @@
           {
             "spell_id": 1311680,
             "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "condition": "Curse of the Elements when it is not already on the target (one per target, from any warlock).",
             "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
@@ -14413,14 +14413,14 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "",
+            "condition": "Amplify Curse just before the Bane of Agony that covers the last minute.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11712,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony whenever it has fallen off.",
+            "condition": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14441,14 +14441,14 @@
           {
             "spell_id": 1316697,
             "name": "Wrack",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Wrack with your DoTs up.",
+            "icon": "ability_deathknight_hemorrhagicfever",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11659,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt with every DoT up.",
+            "condition": "Shadow Bolt with every DoT up, until Wrack at 40 takes over as your filler.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           }
@@ -14467,7 +14467,7 @@
           {
             "spell_id": 1311680,
             "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "condition": "Curse of the Elements when it is not already on the target (one per target, from any warlock).",
             "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
@@ -14481,21 +14481,21 @@
           {
             "spell_id": 603,
             "name": "Bane of Doom",
-            "condition": "",
+            "condition": "Bane of Doom while a minute or more of the fight is left.",
             "icon": "spell_shadow_auraofdarkness",
             "race_spell_ids": {}
           },
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "",
+            "condition": "Amplify Curse just before the Bane of Agony that covers the last minute.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11713,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony whenever it has fallen off.",
+            "condition": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14516,14 +14516,14 @@
           {
             "spell_id": 1316697,
             "name": "Wrack",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Wrack with your DoTs up.",
+            "icon": "ability_deathknight_hemorrhagicfever",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11661,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt with every DoT up.",
+            "condition": "Shadow Bolt with every DoT up, until Wrack at 40 takes over as your filler.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           }
@@ -14551,7 +14551,7 @@
           {
             "spell_id": 980,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14598,7 +14598,7 @@
           {
             "spell_id": 1014,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14645,7 +14645,7 @@
           {
             "spell_id": 6217,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14692,7 +14692,7 @@
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14739,7 +14739,7 @@
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14793,7 +14793,7 @@
           {
             "spell_id": 11712,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14854,7 +14854,7 @@
           {
             "spell_id": 11713,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14896,7 +14896,7 @@
           {
             "spell_id": 980,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14943,7 +14943,7 @@
           {
             "spell_id": 1014,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -14997,7 +14997,7 @@
           {
             "spell_id": 6217,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -15058,7 +15058,7 @@
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -15119,7 +15119,7 @@
           {
             "spell_id": 11711,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -15187,7 +15187,7 @@
           {
             "spell_id": 11712,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -15262,7 +15262,7 @@
           {
             "spell_id": 11713,
             "name": "Bane of Agony",
-            "condition": "Bane of Agony in the last minute, once Doom has fired.",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
             "icon": "spell_shadow_curseofsargeras",
             "race_spell_ids": {}
           },
@@ -15311,7 +15311,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15332,15 +15332,15 @@
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "",
+            "condition": "On cooldown after Mortal Strike, raid build only: your swings for the next 8 seconds each bring 5 more rage.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1310222,
             "name": "Spearing Strike",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "On a free global in Battle Stance, raid build only: 75% weapon damage, twice that on dragons and giants.",
+            "icon": "inv_spear_01",
             "race_spell_ids": {}
           },
           {
@@ -15365,7 +15365,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15386,14 +15386,14 @@
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "",
+            "condition": "On cooldown after Mortal Strike, raid build only: your swings for the next 8 seconds each bring 5 more rage.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -15407,8 +15407,8 @@
           {
             "spell_id": 1310222,
             "name": "Spearing Strike",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "On a free global in Battle Stance, raid build only: 75% weapon damage, twice that on dragons and giants.",
+            "icon": "inv_spear_01",
             "race_spell_ids": {}
           },
           {
@@ -15440,7 +15440,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15461,14 +15461,14 @@
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "",
+            "condition": "On cooldown after Mortal Strike, raid build only: your swings for the next 8 seconds each bring 5 more rage.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -15489,8 +15489,8 @@
           {
             "spell_id": 1310222,
             "name": "Spearing Strike",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "On a free global in Battle Stance, raid build only: 75% weapon damage, twice that on dragons and giants.",
+            "icon": "inv_spear_01",
             "race_spell_ids": {}
           },
           {
@@ -15522,7 +15522,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15543,14 +15543,14 @@
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "",
+            "condition": "On cooldown after Mortal Strike, raid build only: your swings for the next 8 seconds each bring 5 more rage.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -15571,8 +15571,8 @@
           {
             "spell_id": 1310222,
             "name": "Spearing Strike",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "On a free global in Battle Stance, raid build only: 75% weapon damage, twice that on dragons and giants.",
+            "icon": "inv_spear_01",
             "race_spell_ids": {}
           },
           {
@@ -15604,7 +15604,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15625,7 +15625,7 @@
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -15639,7 +15639,7 @@
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "",
+            "condition": "On cooldown after Mortal Strike, raid build only: your swings for the next 8 seconds each bring 5 more rage.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -15660,8 +15660,8 @@
           {
             "spell_id": 1310222,
             "name": "Spearing Strike",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "On a free global in Battle Stance, raid build only: 75% weapon damage, twice that on dragons and giants.",
+            "icon": "inv_spear_01",
             "race_spell_ids": {}
           },
           {
@@ -15693,7 +15693,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15714,7 +15714,7 @@
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -15728,7 +15728,7 @@
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "",
+            "condition": "On cooldown after Mortal Strike, raid build only: your swings for the next 8 seconds each bring 5 more rage.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -15749,8 +15749,8 @@
           {
             "spell_id": 1310222,
             "name": "Spearing Strike",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "On a free global in Battle Stance, raid build only: 75% weapon damage, twice that on dragons and giants.",
+            "icon": "inv_spear_01",
             "race_spell_ids": {}
           },
           {
@@ -15782,7 +15782,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -15803,7 +15803,7 @@
           {
             "spell_id": 11585,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -15817,7 +15817,7 @@
           {
             "spell_id": 1329555,
             "name": "Reckless Swings",
-            "condition": "",
+            "condition": "On cooldown after Mortal Strike, raid build only: your swings for the next 8 seconds each bring 5 more rage.",
             "icon": "ability_warrior_bloodfrenzy",
             "race_spell_ids": {}
           },
@@ -15838,8 +15838,8 @@
           {
             "spell_id": 1310222,
             "name": "Spearing Strike",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "On a free global in Battle Stance, raid build only: 75% weapon damage, twice that on dragons and giants.",
+            "icon": "inv_spear_01",
             "race_spell_ids": {}
           },
           {
@@ -15988,8 +15988,8 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
           {
@@ -16056,8 +16056,8 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
           {
@@ -16131,8 +16131,8 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
           {
@@ -16213,8 +16213,8 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
           {
@@ -16295,8 +16295,8 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "",
-            "icon": "inv_misc_questionmark",
+            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
           {

@@ -64,6 +64,7 @@
   import SummaryBar from './SummaryBar.svelte';
   import { watchMedia } from '../../lib/watch-media';
   import TreeTabs from './TreeTabs.svelte';
+  import type { LadderOrderFor } from '../../lib/planner/ladder-load';
 
   let {
     treeVersion,
@@ -112,6 +113,14 @@
   // `talentsApplied` flag and its one call site inside `load()`, below.
   const talentsParam = fromQuery('talents') ?? null;
   let talentsApplied = false;
+  // The ladder orders (/data/leveling-plans.json): a band link is spent in the sim's and the
+  // guide's own order, not a reconstruction. Only read for a `?talents=` link, on demand (its
+  // own chunk), and awaited by `load()` beside the talent data so the link never misses it.
+  const noLadder: LadderOrderFor = () => undefined;
+  const ladderReady: Promise<LadderOrderFor> =
+    talentsParam === null || typeof window === 'undefined'
+      ? Promise.resolve(noLadder)
+      : import('../../lib/planner/ladder-load').then((m) => m.loadLadderOrderFor()).catch(() => noLadder);
 
   // Current-character pointer (Task 10, spec section 1) -- decision in current-character-
   // planner.ts. `codeParam` is `?code=` itself, or a restored pointer's code, same path.
@@ -672,6 +681,7 @@
       await yieldToMain();
       if (stale()) return;
 
+      const ladderOrderFor = await ladderReady;
       let talents: TalentFile;
       try {
         talents = await talentsPromise;
@@ -754,7 +764,9 @@
         // this only ever gets a turn on a build that is still empty, same "never silently
         // overwrite a build already in progress" rule `?code=` already follows.
         talentsApplied = true;
-        const rebuilt = loadFromBand(store.talentIndex, talentsParam);
+        const ordered =
+          specParam === null ? undefined : ladderOrderFor(store.talentIndex, talentsParam, specParam);
+        const rebuilt = loadFromBand(store.talentIndex, talentsParam, ordered);
         store.applyOrder(rebuilt.order, {});
         const bandLabel = bandRangeLabel(bandForLevel(levelReached(rebuilt.order)));
         store.nameBandBuild(bandTitleForDraft(bandLabel, store.classSlug, store.split));

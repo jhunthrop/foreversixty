@@ -245,7 +245,7 @@
         }
       },
       {
-        "notes": "Whenever rage is under 80: with Improved Berserker Rage it is 10 rage every 30 seconds. On Magmadar, Onyxia and Nefarian hold it for the fear.",
+        "notes": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds. Hold it for the fear on Magmadar, Onyxia and Nefarian.",
         "action": {
           "condition": {
             "cmp": {

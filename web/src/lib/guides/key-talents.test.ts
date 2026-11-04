@@ -106,6 +106,27 @@ describe('keyTalentsFor', () => {
     expect(entries[0]!.why).toBe('Stacks a debuff');
   });
 
+  it('names each build’s rank where the level 60 and raid builds differ, and the raid build’s otherwise', () => {
+    const raid: DecodedTreeView = {
+      ...TREE,
+      talents: [
+        talent(1, 'Improved Frostbolt', 0, 0, 'Cuts the cast time.'),
+        talent(2, 'Ice Shards', 4, 5, 'More crit damage.'),
+        talent(3, "Winter's Chill", 5, 3, 'Stacks a debuff.'),
+      ],
+    };
+    const [frostbolt, multipliers] = keyTalentsFor(MARKDOWN, [TREE], [raid]);
+    expect(frostbolt!.talents[0]).toMatchObject({ rank: 5, buildRanks: { leveling: 5, raid: 0 } });
+    expect(multipliers!.talents[0]).toEqual({
+      id: 2,
+      name: 'Ice Shards',
+      icon: 'icon_2',
+      rank: 5,
+      maxRank: 5,
+    });
+    expect(multipliers!.talents[1]).toMatchObject({ rank: 3, buildRanks: { leveling: 5, raid: 3 } });
+  });
+
   it('is empty without a build', () => {
     expect(keyTalentsFor('Only prose here.', undefined)).toEqual([]);
   });

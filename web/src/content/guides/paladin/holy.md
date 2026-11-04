@@ -30,7 +30,7 @@ Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Di
 
 ### Strengths
 
-- Oath of Light adds a flat amount to every heal on the tank, so a middle rank Flash of Light on them heals for most of what the top rank does and gets more healing out of every point of mana
+- Oath of Light adds a flat amount to every heal on the tank, so a lower rank Flash of Light on them heals for most of what the top rank does and gets more healing out of every point of mana
 - Holy Shock is an instant heal for movement and emergencies, and Divine Favor guarantees a crit when it counts
 - Illumination refunds half the cost of every critical heal
 - Spiritual Focus and Concentration Aura keep your casts going while you take damage
@@ -75,7 +75,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 1. **Oath of Light** kept on the tank. It lasts 5 minutes: renew it in a long fight, and move it when the tank changes.
 2. **Divine Favor**, then **Holy Light** (rank 8), when the tank drops below 40%. It is the only heal that outheals a tank by itself, and the crit is guaranteed.
 3. **Holy Light** on the tank below 70%, and **Holy Shock** on anyone below 70%, but only with mana to spare: keep your mana percent no more than 5 points under the percent of the fight left (halfway through, above 45% mana). Once you fall more than 5 points under, heal with Flash of Light alone until you catch up.
-4. **Flash of Light rank 4** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank, and rank 4 is the cheapest rank that still carries nearly all of your healing power at 60. Rank 1 is a trap there: Forever takes the healing power off ranks learned far below your level, so it heals for little more than its base and the Oath.
+4. **Flash of Light rank 5** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank, and rank 5 carries all of your healing power at 60 for less mana than rank 6. Rank 1 is a trap there: Forever takes the healing power off ranks learned far below your level, so it heals for little more than its base and the Oath.
 5. **Flash of Light rank 4** on everyone else below 80%, yourself included. Without the Oath bonus it is still the best balance of heal size and mana.
 
 **Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches, and the rank 9 book has no known source in Forever yet, so rank 8 is your top rank. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but it is a level 30 rank, so at 60 it keeps only part of your healing power.
@@ -92,7 +92,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 ## Stat priority
 
-Mana per 5 seconds keeps you casting, and you run out of mana long before you run out of heals. Intellect is your mana bar and your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, but ranks learned far below your level lose most or all of it, so at 60 your cheap heals are Flash of Light rank 4 and Holy Shock rank 3, not rank 1. Spirit only works once you have gone five seconds without a cast, apart from Reverence's 30% and the 50% Illumination gives you for 15 seconds after every critical heal, which is one more reason crit is a mana stat for you. Spell damage does nothing for a heal. The table above has the order.
+Mana per 5 seconds keeps you casting, and you run out of mana long before you run out of heals. Intellect is your mana bar and your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, but ranks learned far below your level lose most or all of it, so at 60 your cheap heals are Flash of Light rank 4 or 5 and Holy Shock rank 3 or 4, not rank 1. Spirit only works once you have gone five seconds without a cast, apart from Reverence's 30% and the 50% Illumination gives you for 15 seconds after every critical heal, which is one more reason crit is a mana stat for you. Spell damage does nothing for a heal. The table above has the order.
 
 ## Best in slot
 
@@ -114,7 +114,7 @@ Holy Light and Seal of Righteousness come at 1, Judgement at 4, Holy Strike at 6
 
 At 12, the class quest from your trainer teaches Redemption. A healer without it is a long corpse run for the group.
 
-Most Holy paladins level as Retribution and respec for raids; the Retribution guide has those points. If you level as Holy, your first five points, 10 to 14, go into Spiritual Focus: at 5/5, 70% of the hits you take do not push back Holy Light or Flash of Light. Healing Light takes 15 to 17 for 12% bigger heals, then Reverence at 18 and 19 keeps 30% of your mana regen going while you cast.
+Most Holy paladins level as Retribution and respec for raids; the Retribution guide has those points. If you level as Holy, your first five points, 10 to 14, go into Spiritual Focus: at 5/5, 70% of the hits you take do not push back Holy Light, or Flash of Light once you learn it at 20. Healing Light takes 15 to 17 for 12% bigger heals, then Reverence at 18 and 19 keeps 30% of your mana regen going while you cast.
 
 You still kill things with your weapon and your Seal, so take quest rewards over vendor gear and replace your Battleworn Hammer with the first better slow two-hander you find. Paladins cannot use wands. You wear mail until plate at 40.
 
@@ -124,7 +124,7 @@ Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is
 
 Common mistakes:
 
-- Healing the tank with rank 1 Flash of Light at 60. It has lost your healing power; rank 4 under Oath of Light does the work for far less mana than the top rank.
+- Healing the tank with rank 1 Flash of Light at 60. It has lost your healing power; rank 5 under Oath of Light does the work for less mana than the top rank.
 - Letting Oath of Light lapse after 5 minutes, or leaving it on the old tank after a swap.
 - Holy Shock on the Oath target when the tank is fine. On anyone else it crits far more often and refunds mana.
 - Casting Light's Vigil on an ordinary boss.

@@ -39,7 +39,7 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and B
 
 - The lowest raid damage of the three trees
 - More moving parts than Combat: a debuff, two bleeds, a mark and three short cooldowns to track
-- Its strongest tools (Vanish and Blind) do little on a raid boss, and Preparation is worth only one extra five-point finisher there
+- Its strongest tools (Vanish and Blind) do little on a raid boss, and Preparation is worth only one extra round of combo points there
 
 ### In a raid
 
@@ -67,7 +67,7 @@ Opportunity (5 points) adds 20% to Garrote, and to Ambush and Backstab when you 
 
 ### The pull
 
-Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. It needs no Stealth in Forever, so press it again every 2 minutes in the fight whenever you have three combo points or fewer, and spend them inside the 20 seconds. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush needs a dagger in the main hand, so with a sword it is off your bar. On trash that will die fast, open with **Cheap Shot**, which Initiative makes three combo points and which holds the mob still for 4 seconds, or with Garrote. Then **Rupture** right away at four points, and **Death Mark** as soon as you have four or more again with Rupture ticking.
+Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. It needs no Stealth in Forever, so press it again every 2 minutes in the fight whenever you have three combo points or fewer, and spend them inside the 20 seconds. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush needs a dagger in the main hand, so with a sword it is off your bar. Then **Rupture** right away at four points, and **Death Mark** as soon as you have four or more again with Rupture ticking. On trash that will die fast, open with **Cheap Shot**, which Initiative makes three combo points and which holds the mob still for 4 seconds, then Eviscerate.
 
 Every rogue learns **Poised** at 18: at full energy out of combat, your next ability costs less, so open from full energy.
 
@@ -77,7 +77,7 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 Ghostly Strike goes on cooldown too, just never at five points. Every Ghostly Strike that lands is followed by a **Garrote** at four points or fewer, even with the old one still ticking: the strike lets it in without Stealth, a fresh Garrote is worth more than the ticks it replaces, and with Initiative it gives two combo points, which Hemorrhage does not. At exactly four with a Ghostly Strike just landed, Garrote first: its window is 7 seconds and Rupture can wait one global.
 
-Rupture at four or more combo points whenever it is not ticking. **Death Mark** at four or more points while Rupture ticks. Once you have Death Mark, every point Rupture does not need goes into the next mark, never into Eviscerate, even with Death Mark on cooldown. While Rupture ticks, spend three or more on Slice and Dice when that is down or about to fall off. Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy. After a Ghostly Strike it waits for the Garrote: Hemorrhage costs less, and if you press it the Garrote never gets its 40 energy before the window closes.
+Rupture at four or more combo points whenever it is not ticking. **Death Mark** at four or more points while Rupture ticks. Once you have Death Mark, every point Rupture does not need goes into the next mark, never into Eviscerate, even with Death Mark on cooldown. While Rupture ticks, spend three or more on Slice and Dice when that is down or about to fall off. Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy. After a Ghostly Strike it waits for the Garrote: every Hemorrhage spends energy the Garrote needs, and if you press it the Garrote never gets its 40 energy before the window closes.
 
 Rupture before Death Mark, always: Hemorrhage's debuff and Serrated Blades both feed it, and Death Mark stores every tick at twice the rate. A mark with no Rupture under it has lost its best source, so never press it into a lapsed bleed. Mark at four, and do not hold it for a fifth point: it comes back every 10 seconds, so a mark you hold back delays every mark after it.
 
@@ -87,7 +87,7 @@ Shank is your energy: 5 to press, 25 back, and two combo points with Boot Knife,
 
 ### Cooldowns
 
-Death Mark is your only damage cooldown and it comes back every 10 seconds, so there is nothing to hold: line your racial, trinket and potion up at the pull, where the first mark stores Garrote and Rupture together. **Preparation** finishes every other rogue cooldown, once every 10 minutes. On a boss, spend Premeditation, Shank and Ghostly Strike first, then Preparation and press all three again for another five points. Keep it for a second Vanish only when the fight needs one.
+Death Mark is your only damage cooldown and it comes back every 10 seconds, so there is nothing to hold: line your racial, trinket and potion up at the pull, where the first mark stores Garrote and Rupture together. **Preparation** finishes every other rogue cooldown, once every 10 minutes. On a boss, spend Premeditation, Shank and Ghostly Strike first, then Preparation and press all three again for another five combo points. Keep it for a second Vanish only when the fight needs one.
 
 ### Trash, threat and survival
 
@@ -130,4 +130,4 @@ Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for t
 
 ### Levels 20 to 60
 
-Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five until Death Mark at 40. From 26, follow every Ghostly Strike with a Garrote on anything that will live through it: the strike lets it in without Stealth. From 40, put four or more points into Death Mark while Rupture ticks and into Rupture when it has lapsed, and keep Eviscerate for trash that dies fast.
+Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five on mobs. On anything bigger, Rupture at four and Eviscerate at three while it ticks, until Death Mark comes at 40. From 26, follow every Ghostly Strike with a Garrote on anything that will live through it: the strike lets it in without Stealth. From 40, keep Rupture ticking on anything that will live, and put four or more points into Death Mark while it ticks; Eviscerate a mob that will die before the mark goes off.

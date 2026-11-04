@@ -9,6 +9,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { CollapsedLine } from '../bis/rotation-collapse';
 import { repoRoot, spellIcons } from '../data/build-files';
+import { aplGates, gateWords, type AplGate } from '../bis/apl-gates';
 import type { RacialCooldown } from './race-table';
 
 export interface RotationItem {
@@ -41,6 +42,8 @@ export interface SpellFacts {
   icon?: string;
   /** The longest of its own and its category cooldown, in milliseconds; 0 for none. */
   cooldownMs: number;
+  /** Its base cast time in milliseconds (`spelltips/<class>.json`); absent or 0 for instant. */
+  castMs?: number;
 }
 
 export type SpellLookup = (spellId: number) => SpellFacts | undefined;
@@ -119,34 +122,14 @@ function lineItem(line: CollapsedLine): RotationItem {
   };
 }
 
-/** A pre-pull cast's talent gate: the cast happens only when the aura `auraId` is (or is not)
- *  known, the shape a list uses to open differently with and without a talent. */
-export interface PrepullGate {
-  auraId: number;
-  known: boolean;
-}
-
 export interface PrepullCast {
   spellId: number;
   secondsBefore: number;
-  gate?: PrepullGate;
+  /** What the APL gates the cast on (`aplGates`): a talent known or not, an aura up or not. */
+  gates: AplGate[];
 }
 
-function knownAuraId(node: unknown): number | undefined {
-  if (!isNode(node) || !isNode(node.auraIsKnown) || !isNode(node.auraIsKnown.auraId)) return undefined;
-  const id = node.auraIsKnown.auraId.spellId;
-  return typeof id === 'number' ? id : undefined;
-}
-
-/** The talent gate of a pre-pull condition: `auraIsKnown` or `not auraIsKnown`, nothing else. */
-function gateOf(condition: unknown): PrepullGate | undefined {
-  const known = knownAuraId(condition);
-  if (known !== undefined) return { auraId: known, known: true };
-  const negated = isNode(condition) && isNode(condition.not) ? knownAuraId(condition.not.val) : undefined;
-  return negated === undefined ? undefined : { auraId: negated, known: false };
-}
-
-/** Pre-pull casts in the APL, in time order, each with its talent gate when it has one. */
+/** Pre-pull casts in the APL, in time order, each with the gates its condition holds. */
 export function prepullCasts(apl: unknown): PrepullCast[] {
   const list = isNode(apl) && isNode(apl.rotation) ? apl.rotation.prepullActions : undefined;
   if (!Array.isArray(list)) return [];
@@ -159,14 +142,42 @@ export function prepullCasts(apl: unknown): PrepullCast[] {
     if (!isNode(spell) || typeof spell.spellId !== 'number' || typeof at !== 'string') continue;
     const seconds = Number.parseFloat(at);
     if (!Number.isFinite(seconds)) continue;
-    const gate = gateOf(entry.action.condition);
     casts.push({
       spellId: spell.spellId,
       secondsBefore: Math.abs(seconds),
-      ...(gate === undefined ? {} : { gate }),
+      gates: aplGates(entry.action.condition),
     });
   }
   return casts.sort((a, b) => b.secondsBefore - a.secondsBefore);
+}
+
+/** A pre-pull cast gated on an aura being on the target goes out before the pull only when an
+ *  earlier pre-pull cast puts that aura there (Hunter's Mark); otherwise the target carries no
+ *  aura yet and the cast is one the fight makes later (Retribution's Seal of Command waits for
+ *  Judgement of the Crusader), so the opener does not list it. */
+function canGoOutBeforePull(cast: PrepullCast, earlier: readonly PrepullCast[]): boolean {
+  return cast.gates.every(
+    (gate) =>
+      gate.kind !== 'active' ||
+      !gate.onTarget ||
+      !gate.positive ||
+      earlier.some((before) => before.spellId === gate.spellId),
+  );
+}
+
+/** When a pre-pull cast starts. One the APL times to land on the pull (no earlier than its
+ *  base cast takes) starts its cast time before the pull, at the cast time the build's own
+ *  talents give it (Arcane's Frostbolt: 3 s with no Improved Frostbolt, where the APL's 2.5 s is
+ *  Frost's). Any other cast keeps the APL's own time (a summon a minute out, a Lightwell placed
+ *  early). */
+function prepullSeconds(
+  cast: PrepullCast,
+  facts: SpellFacts,
+  castTimeCuts: ReadonlyMap<string, number>,
+): number {
+  const castMs = facts.castMs ?? 0;
+  if (castMs <= 0 || cast.secondsBefore * 1000 > castMs) return cast.secondsBefore;
+  return Math.max(0, castMs - (castTimeCuts.get(facts.name) ?? 0)) / 1000;
 }
 
 /** Whether the APL hands the on-use cooldowns (trinkets, racials, potions) to the engine's
@@ -188,12 +199,30 @@ function whenText(secondsBefore: number): string {
   return secondsBefore === 0 ? 'On the pull' : `${secondsText(secondsBefore)} before the pull`;
 }
 
-/** ", with Unsealed Wrath" for a gated pre-pull cast; empty when ungated or the aura is unnamed. */
-function gateText(gate: PrepullGate | undefined, spellFacts: SpellLookup): string {
-  if (gate === undefined) return '';
-  const name = spellFacts(gate.auraId)?.name;
-  if (name === undefined) return '';
-  return `, ${gate.known ? 'with' : 'without'} ${name}`;
+/** ", with Unsealed Wrath, once Judgement of the Crusader is on the target" for a gated step;
+ *  empty when ungated. A gate whose spell the data cannot name is left out. */
+function gateText(gates: readonly AplGate[], spellFacts: SpellLookup): string {
+  return gates
+    .flatMap((gate) => {
+      const name = spellFacts(gate.spellId)?.name;
+      return name === undefined ? [] : [`, ${gateWords(gate, name)}`];
+    })
+    .join('');
+}
+
+/** A priority row's clause with the talents it is gated on that its note does not already
+ *  name ("With Heating Up" on an Arcane Fireball line with no note). Only talent gates: an
+ *  aura or resource condition is what the note explains. */
+function withTalentGates(clause: string, gates: readonly AplGate[], spellFacts: SpellLookup): string {
+  const words = gates.flatMap((gate) => {
+    const name = gate.kind === 'known' ? spellFacts(gate.spellId)?.name : undefined;
+    return name === undefined || clause.toLowerCase().includes(name.toLowerCase())
+      ? []
+      : [gateWords(gate, name)];
+  });
+  if (words.length === 0) return clause;
+  const joined = words.join(', ');
+  return clause === '' ? upperFirst(joined) : `${clause}, ${joined}`;
 }
 
 export function rotationListsFrom(
@@ -208,8 +237,13 @@ export function rotationListsFrom(
   racialCooldowns: readonly RacialCooldown[] = [],
   /** The guide's role; a healer's trinket line is worded by healing. */
   role: GuideRole = 'dps',
+  /** What the build's talents take off a spell's cast time, by spell name (`talentCastTimeCuts`). */
+  castTimeCuts: ReadonlyMap<string, number> = new Map(),
 ): RotationLists {
-  const priority = lines.map(lineItem);
+  const priority = lines.map((line) => {
+    const item = lineItem(line);
+    return { ...item, clause: withTalentGates(item.clause, line.gates ?? [], spellFacts) };
+  });
 
   // The opener is the APL's pre-pull casts and nothing else: with none, there is no opener to
   // print (a row that is not a spell is not an opener step).
@@ -218,15 +252,16 @@ export function rotationListsFrom(
     priority.filter((item) => item.icon !== undefined).map((item) => [item.name, item.icon]),
   );
   const opener: RotationItem[] = [];
-  for (const cast of prepullCasts(apl)) {
+  const casts = prepullCasts(apl);
+  for (const [index, cast] of casts.entries()) {
     const facts = spellFacts(cast.spellId);
-    if (facts === undefined) continue;
+    if (facts === undefined || !canGoOutBeforePull(cast, casts.slice(0, index))) continue;
     opener.push({
       spellId: cast.spellId,
       name: facts.name,
       rank: facts.rank,
       icon: facts.icon ?? lineIcons.get(facts.name),
-      clause: `${whenText(cast.secondsBefore)}${gateText(cast.gate, spellFacts)}`,
+      clause: `${whenText(prepullSeconds(cast, facts, castTimeCuts))}${gateText(cast.gates, spellFacts)}`,
     });
   }
 
@@ -313,6 +348,7 @@ export function spellLookupFor(build: string, classSlug: string): SpellLookup {
     const icon = icons[id];
     if (icon !== undefined && !iconByName.has(row.name)) iconByName.set(row.name, icon);
   }
+  const castTimes = classSpellCastTimes(build, classSlug);
   return (spellId) => {
     const row = constants?.spells[String(spellId)];
     if (row === undefined) {
@@ -332,8 +368,19 @@ export function spellLookupFor(build: string, classSlug: string): SpellLookup {
       rank: row.rank > 0 ? row.rank : undefined,
       icon: iconExists ? icon : undefined,
       cooldownMs: Math.max(row.cooldown_ms, row.category_cooldown_ms),
+      castMs: castTimes.get(spellId) ?? 0,
     };
   };
+}
+
+/** The class's spells' base cast times, by spell id, from the build's spell tooltips. */
+function classSpellCastTimes(build: string, classSlug: string): Map<number, number> {
+  const file = path.join(repoRoot(), 'data/builds', build, 'spelltips', `${classSlug}.json`);
+  if (!existsSync(file)) return new Map();
+  const spells = (
+    JSON.parse(readFileSync(file, 'utf8')) as { spells: Record<string, { cast_time_ms?: number }> }
+  ).spells;
+  return new Map(Object.entries(spells).map(([id, tip]) => [Number(id), tip.cast_time_ms ?? 0]));
 }
 
 /** The spec's curated APL, or `undefined` when none is on disk. */
@@ -438,28 +485,55 @@ export function talentCooldownCuts(
   classSlug: string,
   lit: LitTalents,
 ): Map<string, CooldownCut> {
-  const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
   const cuts = new Map<string, CooldownCut>();
-  if (!existsSync(file)) return cuts;
-  for (const tree of (JSON.parse(readFileSync(file, 'utf8')) as TalentNameFile).trees) {
-    for (const talent of tree.talents) {
-      const rank = lit.get(talent.name) ?? 0;
-      const text = rank > 0 ? talent.ranks?.[rank - 1]?.description : undefined;
-      if (text === undefined) continue;
-      for (const match of COOLDOWN_CUTS.flatMap((pattern) => [...text.matchAll(pattern)])) {
-        const amount = Number(match[2]);
-        const add: CooldownCut =
-          match[3] === '%'
-            ? { ms: 0, percent: amount }
-            : { ms: amount * (match[3] === 'min' ? 60_000 : 1000), percent: 0 };
-        for (const name of match[1]!.split(NAME_LIST)) {
-          const held = cuts.get(name.trim()) ?? { ms: 0, percent: 0 };
-          cuts.set(name.trim(), { ms: held.ms + add.ms, percent: held.percent + add.percent });
-        }
+  for (const text of talentRankTexts(build, classSlug, lit)) {
+    for (const match of COOLDOWN_CUTS.flatMap((pattern) => [...text.matchAll(pattern)])) {
+      const amount = Number(match[2]);
+      const add: CooldownCut =
+        match[3] === '%'
+          ? { ms: 0, percent: amount }
+          : { ms: amount * (match[3] === 'min' ? 60_000 : 1000), percent: 0 };
+      for (const name of match[1]!.split(NAME_LIST)) {
+        const held = cuts.get(name.trim()) ?? { ms: 0, percent: 0 };
+        cuts.set(name.trim(), { ms: held.ms + add.ms, percent: held.percent + add.percent });
       }
     }
   }
   return cuts;
+}
+
+/** The client's wording of a talent's lasting cast-time cut: "Reduces the casting time of your
+ *  Frostbolt spell by 0.5 sec" (Improved Frostbolt), "...of your Shadow Bolt, Immolate, and
+ *  Incinerate spells by 0.5 sec" (Bane), "Reduces the cast time of Starfire by 0.5 sec". A
+ *  cut that a proc or an active grants ("reduce the cast time of your next ...", "Gain
+ *  mastery ..., reducing the cast time") is worded otherwise and not read. */
+const CAST_TIME_CUT =
+  /[Rr]educes the cast(?:ing)? time of (?:your )?([A-Z][A-Za-z' ,]+?)(?: spells?| abilit(?:y|ies))? by (\d+(?:\.\d+)?) sec/g;
+
+/** What the lit talents take off each spell's cast time, in milliseconds, by spell name. */
+export function talentCastTimeCuts(build: string, classSlug: string, lit: LitTalents): Map<string, number> {
+  const cuts = new Map<string, number>();
+  for (const text of talentRankTexts(build, classSlug, lit)) {
+    for (const match of text.matchAll(CAST_TIME_CUT)) {
+      for (const name of match[1]!.split(NAME_LIST)) {
+        cuts.set(name.trim(), (cuts.get(name.trim()) ?? 0) + Number(match[2]) * 1000);
+      }
+    }
+  }
+  return cuts;
+}
+
+/** Each lit talent's own description at the rank the build takes. */
+function talentRankTexts(build: string, classSlug: string, lit: LitTalents): string[] {
+  const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
+  if (!existsSync(file)) return [];
+  return (JSON.parse(readFileSync(file, 'utf8')) as TalentNameFile).trees.flatMap((tree) =>
+    tree.talents.flatMap((talent) => {
+      const rank = lit.get(talent.name) ?? 0;
+      const text = rank > 0 ? talent.ranks?.[rank - 1]?.description : undefined;
+      return text === undefined ? [] : [text];
+    }),
+  );
 }
 
 interface GuideCooldownsFile {

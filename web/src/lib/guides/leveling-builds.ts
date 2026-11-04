@@ -398,7 +398,8 @@ export interface LevelingBuild {
 }
 
 /** The guide's ladder point order through level 60, from its own level 60 code: one talent
- *  id per point (`ladderPointOrder`); empty when the build or the talent file does not read. */
+ *  id per point (`ladderPointOrder`), the one order the guide's Leveling strip, the planner's
+ *  band loads and the low-level home read; empty when the build or the talent file does not read. */
 export function guideLadderOrder(
   build: string,
   classSlug: string,

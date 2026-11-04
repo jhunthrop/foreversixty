@@ -243,3 +243,98 @@ Expertise was restored on the three tank pages in round 8 (bb4d616e0). The guide
 
 Verdict: NOT zero, so round 10 is needed.
 Rendered review: wow-player SHIP for priest, warrior, mage and paladin, with no MUSTs.
+
+## Round 10 (client 1.60.1.70755, 2026-11-04)
+
+Built on main 84460cec8 (sim round 15, engine pin 9f7f1f6e4), with r15c and rotation-gates merged in. Audit CONFIRMED by class: druid 11, priest 11, warlock 10, mage 8, warrior 7, rogue 6, hunter 6, shaman 3, paladin 3, for 65 in total. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65.
+
+Almost every finding came from one cause. Sim round 15 changed builds, card ranks and rotations but updated only the frontmatter build lines, so prose and card notes still described the old builds. The new builds the prose now describes:
+
+- Arcane raid is 32/16/3 with a Fireball filler.
+- Affliction runs a Wrack raid build.
+- Arms takes Spearing Strike, Reckless Swings and Improved Execute.
+- Fury takes Improved Berserker Rage.
+- Marksmanship takes Sniper Shot.
+- Shadow levels with Wand Specialization, then Spirit Tap.
+- The bear takes 1 point of Furor and puts the rest into Naturalist.
+- Restoration druid ranks changed.
+- Subtlety from 40 builds every finisher to five points for Death Mark.
+- Retribution opens with Seal of the Crusader.
+
+Prose and card notes now match the shipped builds, point orders and cards. The new APL lines have notes.
+
+Rendered review: wow-player SHIP for every class. The page-text MUSTs were:
+
+- paladin race tie
+- Marksmanship leveling line
+- Subtlety Death Mark
+- Rupture with Blood Splatter only
+- Shadow pre-cast timing
+- Holy Greater Heal step-down
+- Reckless Swings' 8 seconds and health cost
+- Chain Heal's party-only jumps
+- Arcane Impact and Heating Up wording
+
+Handed to the component lane: the Arcane, Fire, Feral, Balance and Marksmanship headers load the leveling `build` next to raid-oriented cards, the key-talent chips show leveling ranks, and the Arcane opener timing.
+
+Process note: a sim round that changes a build: line should ship the matching prose or flag the guide lane.
+
+Verdict: NOT zero, so round 11 is needed.
+
+Open sims: race re-runs on the new builds for most specs, Rip against Bite, Bite pooling, Crusader opener on short mobs, Consecration on packs, and Wrack's mask against its tooltip.
+
+## Round 11 (client 1.60.1.70755, 2026-11-04)
+
+Built on main d54de48aa (round 10 landed, engine pin 9f7f1f6e4). Audit CONFIRMED by class: rogue 2, druid 1, shaman 1, mage 1, paladin 1, priest 1. Warrior, warlock and hunter had 0. Total 7. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7.
+
+Almost every finding was a slip in a round 10 rewrite:
+
+- Natural Shapeshifter and Feral Instinct reasons
+- Chain Heal's party-only jumps, in the card note and the grouping line
+- Arcane Meditation at 2 ranks keeps most regeneration running, not all
+- Consecration: the newest rank on packs from 40, rank 1 for single targets
+- The Shadow opener puts Shadow Word: Death before the second Mind Blast
+- Venom adds 20 points of poison chance, which lands Instant Poison on half your hits
+- Subtlety keeps Rupture ticking and marks at five while it ticks
+
+Verdict: NOT zero, round 12 needed.
+Rendered review: wow-player SHIP for druid, shaman, mage, paladin, priest and rogue. Two page-text MUSTs are fixed: the Enhancement summary now says imbue, not Windfury, and Venom's 20 percentage points now has its unit.
+
+## Round 12 (client 1.60.1.70755, 2026-11-04)
+
+Built on main a8b147a6f (eleven guide rounds, guide-header-build, engine pin 9f7f1f6e4).
+
+Audit CONFIRMED by class: druid 2, mage 2, paladin 1. Warrior, warlock, shaman, hunter, priest and rogue had 0 confirmed. Rogue had 1 likely finding, also fixed. Total 5. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5.
+
+All five are refinements of rewrites from rounds 10 and 11:
+
+- Consecration ranks, once spell power is counted
+- Feral Instinct is the Brutal Impact row filler
+- the Restoration tank Rejuvenation note is "from 28 to 49"
+- the Arcane leveling loop has no Arcane Wrath or Pyroblast
+- Frost Channeling only arrives at 58
+
+Production on a8b147a6f shows rounds 10 and 11. Arcane and Feral prose agree with the new raid-build header and rank chips.
+
+Verdict: NOT zero, so round 13 is needed. Six of nine classes are at zero.
+
+Open: DRUID-R12-3 (Feral raid build spends 2 points on Feral Instinct; sim it against Furor 2 or Thick Hide 2), race re-runs on the new builds, and the BiS re-rank on the shipped raid builds.
+Rendered review: wow-player SHIP for paladin, druid, mage, rogue and hunter. No MUSTs; two SHOULDs applied.
+
+## Round 13 (client 1.60.1.70755, 2026-11-04)
+
+Built on main 604b78a80 (twelve guide rounds, engine pin 9f7f1f6e4).
+
+Audit CONFIRMED by class:
+
+- paladin 1
+- warrior, warlock, shaman, hunter, priest, rogue, mage and druid 0
+
+That is 1 in total. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1. Eight of nine classes are at zero, and warrior, warlock and hunter have been at zero for three rounds running.
+
+The one error: a round 8 wording said Hammer of Wrath "still costs full price" after Benediction. Holy Conduit 2/2 takes 40% off it, as the same page says. The line now says Benediction does not discount it.
+
+Verdict: NOT zero, so round 14 is needed.
+
+Still open, all with the sim lane and none claimed in prose: the BiS re-rank on the shipped raid builds, race re-runs on the new builds, and the Feral Instinct points against Furor or Thick Hide.
+Rendered review: wow-player SHIP for paladin after checking Hammer of Wrath's family mask against Benediction's class mask.

@@ -620,7 +620,7 @@
           }
         }
       },
-      "notes": "Greater Heal is the filler, at the top rank a trainer teaches: its low ranks lose part of your healing bonus and no longer heal more for their mana. Cast it at the normal thresholds while your mana is keeping pace with the fight."
+      "notes": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight."
     },
     {
       "action": {
@@ -1077,7 +1077,7 @@
           }
         }
       },
-      "notes": "Heal at its top rank is the filler before you learn Greater Heal at 40, and the cheaper cast when your mana is too low for a Greater Heal. Cast it at the normal thresholds while your mana is keeping pace with the fight."
+      "notes": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60."
     },
     {
       "action": {

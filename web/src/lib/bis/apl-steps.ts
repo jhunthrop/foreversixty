@@ -33,6 +33,9 @@ export interface AplStep {
   words: StepWords | null;
   /** The step's raw condition tree, for the level gate (`apl-level-gate.ts`). */
   condition: unknown;
+  /** The ability's name in `spellranks.json` (every rank of one spell), for lining a step up
+   *  with a published line that names another rank of it. */
+  family: string | null;
 }
 
 function isNode(value: unknown): value is Node {
@@ -73,6 +76,14 @@ export function levelledRanks(ranks: readonly RankRow[]): RankRow[] {
   return levelled.length > 0 ? levelled : sorted;
 }
 
+/** The `spellranks.json` ability `spellId` is a rank of, or null for an id it does not list. */
+export function spellFamilyOf(families: SpellRanksByName, spellId: number): string | null {
+  for (const [name, ranks] of Object.entries(families)) {
+    if (ranks.some((rank) => rank.id === spellId)) return name;
+  }
+  return null;
+}
+
 function resolveAt(families: SpellRanksByName, spellId: number, level: number): number | null {
   for (const ranks of Object.values(families)) {
     const levelled = levelledRanks(ranks);
@@ -93,7 +104,12 @@ export function loadAplSteps(spec: string, families: SpellRanksByName, level: nu
   for (const cast of castSteps(JSON.parse(readFileSync(file, 'utf8')))) {
     const resolvedSpellId = resolveAt(families, cast.spellId, level);
     if (resolvedSpellId !== null)
-      steps.push({ resolvedSpellId, words: stepWords(cast), condition: cast.condition });
+      steps.push({
+        resolvedSpellId,
+        words: stepWords(cast),
+        condition: cast.condition,
+        family: spellFamilyOf(families, cast.spellId),
+      });
   }
   return steps;
 }

@@ -3,6 +3,7 @@
 // steps), and the published list prints one line per step. A player reads a rotation as
 // abilities, so consecutive steps casting the same spell at the same rank are one row here,
 // and the row says in words each condition the steps carried.
+import { sharedGates, type AplGate } from './apl-gates';
 import { describeSteps, type StepWords } from './apl-condition';
 
 export interface StepLine {
@@ -21,9 +22,14 @@ export interface StepLine {
   truncatedAtSource: boolean;
   /** The step's target and condition in words; null when the step has a clause not read. */
   words: StepWords | null;
+  /** What the curated step's condition gates it on (`aplGates`); empty when it has none or the
+   *  step could not be lined up with the published line. */
+  gates: AplGate[];
 }
 
-export interface CollapsedLine extends Omit<StepLine, 'words'> {
+export interface CollapsedLine extends Omit<StepLine, 'words' | 'gates'> {
+  /** The gates every step of the row shares. Absent on a row not built from curated steps. */
+  gates?: AplGate[];
   /** How many curated steps this row stands for. */
   steps: number;
 }
@@ -56,6 +62,7 @@ function collapseRun(run: readonly StepLine[]): CollapsedLine {
     icon: first.icon,
     truncatedAtSource: run.some((line) => line.truncatedAtSource),
     steps: run.length,
+    gates: run.slice(1).reduce((gates, line) => sharedGates(gates, line.gates), first.gates),
   };
 }
 

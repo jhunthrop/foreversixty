@@ -7,7 +7,6 @@
 import classes from '../../data/classes.json';
 import { bandEntry, readSpecCatalog } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
-import { bandTopLevel, loadRotations, rotationEntryFor, rotationLinesFor } from '../bis/rotation-view';
 import type { SpecCatalogEntry } from '../bis/types';
 import { decodeBuildTrees, type DecodedTreeView } from '../guides/build-tree';
 import { band60Weights, factionForFirstRace, rankedBisFile } from '../guides/class-dps';
@@ -15,20 +14,11 @@ import { pageUpdatedAt } from '../guides/guide-header';
 import { guideHitCapLine } from '../guides/hit-cap-line';
 import { keyTalentsFor } from '../guides/key-talents';
 import { plainText, splitOverview } from '../guides/overview';
-import { raceTableFor, racialCooldownsFor, specKindOf } from '../guides/race-table';
+import { raceTableFor, specKindOf } from '../guides/race-table';
 import { railStatRows, rankedStatLabels } from '../guides/rail-stats';
 import { bandTalentHits } from '../guides/talent-hit';
-import {
-  loadApl,
-  rotationListsFrom,
-  specCooldowns,
-  spellLookupFor,
-  type GuideRole,
-  type RotationItem,
-  litTalentsOf,
-  talentCooldownCuts,
-  type LitTalents,
-} from '../guides/rotation-lists';
+import { describedBuildTrees, guideRotation } from '../guides/guide-rotation';
+import { type GuideRole, type RotationItem } from '../guides/rotation-lists';
 import { splitSpecSections, type SpecSection } from '../guides/sections';
 import type { GuideSource } from './guide-content';
 import { isRealIcon } from '../icons/placeholder';
@@ -189,8 +179,12 @@ function repeatsText(why: string, text: string | null): boolean {
   return text !== null && bare(why) === bare(text);
 }
 
-function keyTalents(prose: string, trees: readonly DecodedTreeView[]): AppGuideKeyTalent[] {
-  return keyTalentsFor(prose, trees.length > 0 ? trees : undefined).flatMap((entry) =>
+function keyTalents(
+  prose: string,
+  trees: readonly DecodedTreeView[],
+  raidTrees: readonly DecodedTreeView[] | undefined,
+): AppGuideKeyTalent[] {
+  return keyTalentsFor(prose, trees.length > 0 ? trees : undefined, raidTrees).flatMap((entry) =>
     entry.talents.map((ref) => ({
       name: ref.name,
       icon: ref.icon ?? null,
@@ -232,22 +226,13 @@ interface RotationContext {
   classSlug: string;
   spec: string;
   role: GuideRole;
-  litTalents: LitTalents;
+  /** The build the rotation describes (`describedBuildTrees`). */
+  trees: readonly DecodedTreeView[];
 }
 
 function rotationOf(ctx: RotationContext): AppGuideFile['rotation'] {
-  const entry = rotationEntryFor(loadRotations(ctx.build, ctx.spec) ?? [], bandTopLevel(GUIDE_LEVEL));
-  if (entry === undefined) return null;
-  const facts = spellLookupFor(ctx.build, ctx.classSlug);
-  const lists = rotationListsFrom(
-    rotationLinesFor(entry, ctx.build, ctx.classSlug, ctx.spec, bandTopLevel(GUIDE_LEVEL)),
-    loadApl(ctx.spec),
-    facts,
-    specCooldowns(ctx.build, ctx.classSlug, ctx.spec, ctx.litTalents, facts),
-    talentCooldownCuts(ctx.build, ctx.classSlug, ctx.litTalents),
-    racialCooldownsFor(ctx.build, ctx.classSlug),
-    ctx.role,
-  );
+  const lists = guideRotation(ctx.build, ctx.classSlug, ctx.spec, ctx.role, ctx.trees);
+  if (lists === undefined) return null;
   return {
     opener: lists.opener.map(spellOf),
     priority: lists.priority.map(spellOf),
@@ -312,9 +297,9 @@ export function buildGuideFile(
   const statRows =
     weights === undefined ? [] : railStatRows(data.statPriority, weights.weights, spec, weights.haste);
   const raceRows = raceTableFor(build, classSlug, data.recommendedRaces, specKindOf(classSlug, spec, role));
-  const litTalents = litTalentsOf([...levelingTrees, ...(raidTrees ?? [])]);
+  const describedTrees = describedBuildTrees(levelingTrees, raidTrees);
 
-  const rotation = rotationOf({ build, classSlug, spec, role, litTalents });
+  const rotation = rotationOf({ build, classSlug, spec, role, trees: describedTrees });
 
   const guide: Omit<AppGuideFile, 'sections'> = {
     build,
@@ -346,7 +331,7 @@ export function buildGuideFile(
     },
     talents: {
       key: withCastTalents(
-        keyTalents(prose('Talents and builds'), levelingTrees),
+        keyTalents(prose('Talents and builds'), levelingTrees, raidTrees),
         raidTrees ?? levelingTrees,
         rotation,
       ),

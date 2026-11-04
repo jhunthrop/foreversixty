@@ -49,7 +49,7 @@ Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from be
 
 ## Talents and builds
 
-The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of Flash of Steel, Assassination for Malice, Ruthlessness, Improved Slice and Dice and Lethality, and five points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: 14/34/3: Improved Gouge and Remorseless Attacks in place of Lethality and two points of Improved Slice and Dice, Master of Deception in place of Opportunity, a third point of Ruthlessness, and a point of Efficient Strikes and the fifth points of Hack and Slash and Lightning Reflexes in place of Composure and the fifth Flash of Steel. That pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
+The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of Flash of Steel, Assassination for Malice, Ruthlessness, Improved Slice and Dice and Lethality, and five points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: 14/34/3: Improved Gouge and Remorseless Attacks in place of Lethality and two points of Improved Slice and Dice, Master of Deception in place of Opportunity, a third point of Ruthlessness, and a point of Efficient Strikes plus the fifth points of Hack and Slash and Lightning Reflexes in place of the fifth Flash of Steel and both points of Composure. That pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
 
 - **Adrenaline Rush** (1 point): double energy regeneration for 15 seconds on a 5 minute cooldown. Every Backstab you fit into it is a free one.
 - **Blade Flurry** (1 point): 20% attack speed for 15 seconds, and every melee hit also strikes a second nearby enemy. Two-target fights are where Combat beats the other trees.
@@ -60,7 +60,7 @@ The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of F
 - **Puncturing Wounds** (3 points): 30% more crit on Backstab and a 45% chance at a second combo point. This is what makes daggers the Combat weapon in Forever.
 - **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
-In the raid build, Lethality takes Backstab crits from 200% to 220%, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes 3 energy off Sinister Strike at one point: your builder's discount in the level 60 build. With daggers, the raid build never presses Sinister Strike, so it takes Composure instead, 10 more energy off your Poised opener, and Composure and four points of Lightning Reflexes are the toll to reach Flawless Execution, Weapon Expertise and Aggression.
+In the raid build, Lethality takes Backstab crits from 200% to 220%, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes 3 energy off Sinister Strike at one point: your builder's discount in the level 60 build. The raid build never presses Sinister Strike, so it skips Efficient Strikes and puts two points in Composure instead: Poised takes 20 energy off your opener, not 10, so the opening Garrote costs 30. Those two points and four of Lightning Reflexes are the toll to reach Flawless Execution, Weapon Expertise and Aggression.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -70,7 +70,7 @@ In the raid build, Lethality takes Backstab crits from 200% to 220%, and with Pu
 
 Check your poisons and stones before the pull. Stealth before the pull, walk in behind the boss, and open with **Garrote** once the tank has the boss. Garrote is a bleed, so the boss having no Sunders on it yet costs it nothing, and it gives you the combo point for Slice and Dice. Ambush and Backstab from stealth both hit into armor that has no shred on it yet, and neither leaves a bleed behind. Cheap Shot is for trash: bosses are immune to stuns.
 
-Every rogue picks up **Poised** at 18: at full energy out of combat, your next ability costs less. Stand at full energy in stealth before you open.
+Every rogue picks up **Poised** at 18: at full energy out of combat, your next ability costs less. Stand at full energy in stealth before you open; with Composure in the raid build, Poised takes 20 off that opener.
 
 ### The priority
 
@@ -101,7 +101,7 @@ Hit counts until your attacks stop missing, and adds nothing past that: a missed
 
 ## Best in slot
 
-Combat wants **daggers at 60**. Hack and Slash gives daggers crit, and Backstab, Puncturing Wounds, Lethality and Opportunity stack on top of that, so daggers beat swords and axes in Forever. Keep a sword or axe for leveling and for any fight where you cannot stay behind the target. The off hand only needs to be fast and hit hard; Dual Wield Specialization makes it worth a real upgrade.
+Combat wants **daggers at 60**. Hack and Slash gives daggers crit, and Backstab, Puncturing Wounds, Lethality and Opportunity stack on top of that, so daggers beat swords and axes in Forever. Keep a sword or axe for leveling and for any fight where you cannot stay behind the target. The off hand carries Instant Poison and every Shank, so it wants to hit hard; Dual Wield Specialization makes it worth a real upgrade.
 
 ## Enchants and consumables
 
@@ -109,7 +109,7 @@ Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **
 
 ## Races
 
-Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damaging abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** gives you 5% more energy. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc, Troll and Night Elf all land a step behind and within a hair of each other. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
+Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damaging abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** makes your energy bar 5% bigger. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc, Troll and Night Elf all land a step behind and within a hair of each other. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
 
 ## Professions
 
