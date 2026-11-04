@@ -5,7 +5,7 @@ spec: restoration
 role: healer
 build: 'FS1:1.60.1.70755:druid:night-elf:05312001/0/55530051531132:'
 recommendedRaces: [night-elf, tauren]
-statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
+statPriority: [MP5, Spirit, Intellect, Healing power, Critical strike]
 description: 'Restoration in Forever: the build, Rejuvenation and Regrowth ranks, Swiftmend that keeps the HoT, Bloom, Wild Growth and Innervate.'
 updated: 2026-11-02
 confidence: inferred
@@ -64,7 +64,7 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 - **Heart of the Wild** (5 points): 10% more Intellect.
 - **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow does nothing for a healer; it is the filler that gets you to Nature's Splendor's row, and the Improved Moonfire point is a spare.
 
-**Wild Growth.** The capstone heals a whole party over 7 seconds, but it is a 3 second cast with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility and put one point in Wild Growth.
+**Wild Growth.** The capstone heals a whole party over 7 seconds, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility and put one of its points in Wild Growth.
 
 ## Rotation and priority
 
