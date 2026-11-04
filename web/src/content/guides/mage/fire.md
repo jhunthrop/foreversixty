@@ -31,7 +31,7 @@ Fire spams Scorch, keeps its own Improved Scorch stacks up, turns crits into fas
 
 ### Strengths
 
-- The cheapest filler a mage has: Scorch is 150 mana for a 1.5 second cast
+- Scorch is 150 mana for a 1.5 second cast, so you land two for every Fireball
 - Every Scorch and Fire Blast crit pays twice, once through Ignite and once through Heating Up
 - Fire Power rewards you for every burn you keep on the boss
 - Fire Blast is instant and a 3-stack Pyroblast is short enough to cast between steps, so you keep doing damage through movement
@@ -75,7 +75,7 @@ The 60 build pays that toll with a point in **Impact**, a 3% chance to stun a mo
 
 **Ignite and threat.** Ignite's damage is your damage and your threat. Fire mages pull more than anyone else in the first twenty seconds, mostly off a Combustion window that crits three times in a row. You have no Ice Block and no Invisibility, so the only fix is not to pull: watch your threat, hold Combustion on a fresh tank, and stop casting for a global if you are close. Burning Soul takes some off the top.
 
-**Mana in a 3 minute fight.** Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The Robe of the Archmage has its own 5 minute cooldown, but using any of the three locks the other two out for a minute. Evocation is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep Fire Blast on cooldown even when you are short: every cast is a Heating Up stack, and the mana you would save is worth less than the Pyroblasts you would lose. Never downrank Scorch; the top rank is already the cheapest damage you have.
+**Mana in a 3 minute fight.** Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The Robe of the Archmage has its own 5 minute cooldown, but using any of the three locks the other two out for a minute. Evocation is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep Fire Blast on cooldown even when you are short: every cast is a Heating Up stack, and the mana you would save is worth less than the Pyroblasts you would lose. Scorch stays your filler when you are short too: you land two of them in the time of one Fireball, and each is a roll for Heating Up and Ignite.
 
 **AoE.** Flamestrike is a 3 second cast that burns the ground for 8 seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range. Flamestrike costs 990 mana, so two of them on a big pull eat a third of your bar before the Arcane Explosions start. Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
 
@@ -85,7 +85,7 @@ Frostfire Bolt is not a Fire filler. It costs more than Scorch, takes twice as l
 
 ## Stat priority
 
-The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: every missed Scorch is a missed stack, a missed Ignite and a missed Heating Up chance. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power and Fire power are the same stat to you, because everything you cast on a boss is Fire. Crit feeds Ignite, Heating Up and Master of Elements at once, and Critical Mass and Combustion stack more of it on top of your gear. Intellect is your mana bar, and Fire drinks a Major Mana Potion on every boss, so a deeper bar keeps you casting to the end.
+The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: every missed Scorch is a missed stack, a missed Ignite and a missed Heating Up chance. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power and Fire power are the same stat to you, because everything you cast on a boss is Fire. Crit feeds Ignite, Heating Up and Master of Elements at once, and Critical Mass and Combustion stack more of it on top of your gear. Intellect is your mana bar and adds spell crit, which Fire turns into Ignite and Heating Up. Fire drinks a Major Mana Potion on every boss, so a deeper bar keeps you casting to the end.
 
 ## Best in slot
 

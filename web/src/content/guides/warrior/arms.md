@@ -65,7 +65,7 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 - **Improved Overpower** (2 points): 50% more crit chance on Overpower. With Bloodthrill feeding you Overpowers, this is where your crits come from.
 - **Weaponmaster** (5 points): a bonus that depends on your two-hander. Swords give a 5% chance at an extra attack, axes and polearms 5% crit, maces and staves ignore 15% of armor. Take all five whatever you swing.
 - **Improved Rend** and **Deep Wounds** (3 points each): Rend hits 35% harder and every crit adds a bleed for 60% of your weapon's average damage. Deep Wounds needs the Improved Rend points anyway.
-- **Impale** (2 points): 20% more crit damage on your abilities. Overpower crits most of the time, so this pays every few seconds.
+- **Impale** (2 points): your ability crits hit for 220% of a normal hit instead of double. Overpower crits most of the time, so this pays every few seconds.
 - **Two-Handed Weapon Specialization** (3 points): 6% more damage with the weapon you always carry.
 - **Improved Tactical Mastery** (3 points): you keep 25 rage through a stance change instead of 10. This is what makes the swap to Berserker Stance for Recklessness and Whirlwind free.
 - **Anger Management** and **Improved Charge** (3 points): a point of rage every 3 seconds in combat, and 21 rage from Charge instead of 15. Rage is the limit for Arms, and both pay from the first second of the pull.
@@ -108,7 +108,7 @@ Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take
 
 Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes: press it on the pull and every time it comes back, but never inside Recklessness, which already makes every hit crit. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds. Skyborne edges both by a hair on either faction, since Wind Blessed is 2% haste that never turns off, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it.
 
-If you want a different look, the gap is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, sit just behind it, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Orc is next: Blood Fury is 10% attack power for 15 seconds every 2 minutes, so press it on the pull and every time it comes back, and it still adds damage inside Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails Undead and Orc; Tauren brings nothing for damage and comes last.
+If you want a different look, the gap is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, sit just behind it, and Dwarf's Artisan's Precision, 1% hit, trails them. On the Horde, Orc is next: Blood Fury is 10% attack power for 15 seconds every 2 minutes, so press it on the pull and every time it comes back, and it still adds damage inside Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails Undead and Orc; Tauren brings nothing for damage and comes last.
 
 ## Professions
 

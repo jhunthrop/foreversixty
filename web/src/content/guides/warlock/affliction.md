@@ -82,7 +82,7 @@ Adds and AoE: Corruption and Agony on two or three adds that live 15 seconds or 
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Spell power feeds every spell you cast, and Shadow power feeds nearly all of them, since almost everything Affliction casts is Shadow. Crit is good for Affliction because DoT ticks crit too, and Pandemic doubles the bonus on them. Intellect is a small mana gain. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces. The table above gives the order for your gear.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Spell power feeds every spell you cast, and Shadow power feeds nearly all of them, since almost everything Affliction casts is Shadow. Crit is good for Affliction because DoT ticks crit too, and Pandemic doubles the bonus on them. Intellect is mana, plus a little crit: about 1% for every 60 points. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -90,7 +90,7 @@ The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 
-Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for your Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for your Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Put Brilliant Wizard Oil or a Spellstone on the weapon; a Spellstone costs a shard.
 
 ## Races
 

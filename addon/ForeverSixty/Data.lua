@@ -2409,14 +2409,14 @@ ns.Data = {
 		},
 		["warrior-arms"] = {
 			{ level = 10, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 6673, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 6546, name = "Rend", condition = "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend." },
 				{ spellId = 1715, name = "Hamstring", condition = "Only with a Windfury Totem on you, on a free global, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's extra attack." },
 				{ spellId = 284, name = "Heroic Strike", condition = "Only above 90 rage, so a full bar does not waste what your swings make." },
 			} },
 			{ level = 20, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 5242, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 6547, name = "Rend", condition = "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend." },
 				{ spellId = 7384, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits." },
@@ -2426,7 +2426,7 @@ ns.Data = {
 			} },
 			{ level = 30, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 6548, name = "Rend", condition = "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend." },
 				{ spellId = 7887, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits." },
@@ -2437,7 +2437,7 @@ ns.Data = {
 			} },
 			{ level = 38, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 11549, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 6548, name = "Rend", condition = "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend." },
 				{ spellId = 7887, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits." },
@@ -2448,7 +2448,7 @@ ns.Data = {
 			} },
 			{ level = 40, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 11549, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 11572, name = "Rend", condition = "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend." },
 				{ spellId = 7887, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits." },
@@ -2460,7 +2460,7 @@ ns.Data = {
 			} },
 			{ level = 50, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 11550, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 11573, name = "Rend", condition = "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend." },
 				{ spellId = 11584, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits." },
@@ -2472,7 +2472,7 @@ ns.Data = {
 			} },
 			{ level = 60, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 11551, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 11574, name = "Rend", condition = "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend." },
 				{ spellId = 11585, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it nearly always crits." },
@@ -2485,14 +2485,14 @@ ns.Data = {
 		},
 		["warrior-fury"] = {
 			{ level = 10, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 12328, name = "Death Wish", condition = "At the pull only if a second one fits before the boss dies." },
 				{ spellId = 6673, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 284, name = "Heroic Strike", condition = "Only above 60 rage, and never from 25% down: hold that rage for Execute." },
 			} },
 			{ level = 20, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 12328, name = "Death Wish", condition = "At the pull only if a second one fits before the boss dies." },
 				{ spellId = 5242, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
@@ -2500,7 +2500,7 @@ ns.Data = {
 				{ spellId = 285, name = "Heroic Strike", condition = "Only above 60 rage, and never from 25% down: hold that rage for Execute." },
 			} },
 			{ level = 30, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 12328, name = "Death Wish", condition = "At the pull only if a second one fits before the boss dies." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 5308, name = "Execute", condition = "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold." },
@@ -2509,7 +2509,7 @@ ns.Data = {
 				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 60 rage, and never from 25% down: hold that rage for Execute." },
 			} },
 			{ level = 38, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 12328, name = "Death Wish", condition = "At the pull only if a second one fits before the boss dies." },
 				{ spellId = 11549, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 20658, name = "Execute", condition = "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold." },
@@ -2519,7 +2519,7 @@ ns.Data = {
 				{ spellId = 11564, name = "Heroic Strike", condition = "Only above 60 rage, and never from 25% down: hold that rage for Execute." },
 			} },
 			{ level = 40, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 12328, name = "Death Wish", condition = "At the pull only if a second one fits before the boss dies." },
 				{ spellId = 11549, name = "Battle Shout", condition = "Whenever it drops." },
 				{ spellId = 20660, name = "Execute", condition = "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold." },
@@ -2530,7 +2530,7 @@ ns.Data = {
 				{ spellId = 11565, name = "Heroic Strike", condition = "Only above 60 rage, and never from 25% down: hold that rage for Execute." },
 			} },
 			{ level = 50, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 12328, name = "Death Wish", condition = "At the pull only if a second one fits before the boss dies." },
 				{ spellId = 1719, name = "Recklessness", condition = "In the execute phase, or in the last 15 seconds when that phase is short." },
 				{ spellId = 11550, name = "Battle Shout", condition = "Whenever it drops." },
@@ -2542,7 +2542,7 @@ ns.Data = {
 				{ spellId = 11566, name = "Heroic Strike", condition = "Only above 60 rage, and never from 25% down: hold that rage for Execute." },
 			} },
 			{ level = 60, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute." },
 				{ spellId = 12328, name = "Death Wish", condition = "At the pull only if a second one fits before the boss dies." },
 				{ spellId = 1719, name = "Recklessness", condition = "In the execute phase, or in the last 15 seconds when that phase is short." },
 				{ spellId = 11551, name = "Battle Shout", condition = "Whenever it drops." },

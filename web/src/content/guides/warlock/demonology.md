@@ -95,7 +95,7 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Spell power feeds every spell you cast. Shadow power feeds Shadow Bolt and your DoTs; Immolate and Decimation's Soul Fires are Fire, and Fire power reaches only those. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap. The table above gives the order for your gear.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Spell power feeds every spell you cast. Shadow power feeds Shadow Bolt, Corruption and Doom. Fire power reaches Immolate on a boss and Rain of Fire on trash, since this build skips Soul Fire. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana, plus a little crit, which pays the same way. Spirit only matters through Life Tap. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -103,7 +103,7 @@ The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 
-Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Put Brilliant Wizard Oil or a Spellstone on the weapon; a Spellstone costs a shard.
 
 ## Races
 
@@ -125,4 +125,4 @@ Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a
 
 ### Levels 20 to 60
 
-Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice, and solo you keep a demon out for Soul Link, Master Demonologist and Demonic Knowledge. Use the Voidwalker when pulls hurt; from 35 Master Demonologist also cuts the physical damage you take while it is out, by 10% once it is full at 39. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. From 48, when you learn Soul Fire, Decimation's free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.
+Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice. Keep a demon out instead: it tanks for you, and from 30 Soul Link, then Demonic Knowledge and Master Demonologist, only work while it lives. Use the Voidwalker when pulls hurt; from 35 Master Demonologist also cuts the physical damage you take while it is out, by 10% once it is full at 39. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. From 48, when you learn Soul Fire, Decimation's free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.
