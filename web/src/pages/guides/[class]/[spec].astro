@@ -59,14 +59,17 @@ import { linkProse } from '../../../lib/guides/prose-tips';
 import GuideTooltips from '../../../components/guides/GuideTooltips.svelte';
 import { pageScript } from '../../../lib/guides/page-script';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
-import { guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
+import { guideLadderOrder, guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
 import { raceTableFor, racialCooldownsFor, specKindOf } from '../../../lib/guides/race-table';
 import {
   litTalentsOf,
   loadApl,
+  markRaidBuildRows,
+  raidBuildOnlyTalents,
   rotationListsFrom,
+  talentNamesOf,
   specCooldowns,
   spellLookupFor,
   talentCooldownCuts,
@@ -200,8 +203,21 @@ const rotationListsUnkeyed =
         racialCooldownsFor(build, classSlug),
         role,
       );
+// The lists follow the level 60 raid priority; a talent only the raid build takes is marked
+// in them and left off the rail card, which sits beside the level 60 build.
+const raidOnlyTalents =
+  raidTrees === undefined
+    ? new Set<string>()
+    : raidBuildOnlyTalents(
+        talentNamesOf(build, classSlug),
+        litTalentsOf(buildTrees),
+        litTalentsOf(raidTrees),
+      );
 const rotationListsData =
-  rotationListsUnkeyed === undefined ? undefined : withTipKeys(rotationListsUnkeyed, tipBundle);
+  rotationListsUnkeyed === undefined
+    ? undefined
+    : withTipKeys(markRaidBuildRows(rotationListsUnkeyed, raidOnlyTalents), tipBundle);
+const railRotationLines = rotationLines.filter((line) => !raidOnlyTalents.has(line.name));
 const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');
 const rotationProseHtml = await prose(proseOnly('Rotation and priority'));
 
@@ -256,6 +272,10 @@ const levelingRows: LevelingBandRow[] =
         plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
         talents: b.talents,
       }));
+const levelingOrder =
+  buildCode === undefined || treeIndex === undefined
+    ? []
+    : guideLadderOrder(build, classSlug, fullSpecId, treeIndex, buildCode);
 const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
 // The strip covers levels 20 to 60, so it sits under that subsection's heading: #leveling,
 // the character home's link, then opens on the Levels 1 to 19 text a new character needs.
@@ -306,7 +326,7 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
             buildCode={buildCode}
             trees={buildTrees}
             rotationBandLabel={rotationBandLabel}
-            rotationLines={rotationLines.slice(0, 4)}
+            rotationLines={railRotationLines.slice(0, 4)}
             statRows={statRows}
             tips={tipBundle}
           />
@@ -364,7 +384,9 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   <Fragment set:html={levelingHeadingHtml} />
   <Fragment set:html={levelingEarlyHtml} />
   <Fragment set:html={levelingStripHeadingHtml} />
-  {levelingRows.length > 0 && <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} />}
+  {levelingRows.length > 0 && (
+    <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} spendOrder={levelingOrder} />
+  )}
   <Fragment set:html={levelingLateHtml} />
   <script is:inline set:html={pageScript}></script>
   <GuideTooltips client:idle-after-load build={build} bundleUrl={guideTipsUrl(build, classSlug, specSlug)} />

@@ -37,6 +37,8 @@ const POINTS_PER_TIER = 5;
 
 /** The level ranges the Leveling strip shows: 20 to 29 up to 60. */
 export const LEVELING_BANDS: readonly number[] = [20, 30, 40, 50, 60];
+/** The level the ladder ends on: the guide's own build. */
+const MAX_LADDER_LEVEL = 60;
 
 /** The class's trees, by position, each sorted top row down, left to right (LoadTalentTrees). */
 export function loadLadderTrees(build: string, classSlug: string): LadderTalentTree[] | undefined {
@@ -239,8 +241,21 @@ export function ladderTalentString(
   first: readonly LadderFirstRank[] = [],
 ): string {
   return climbLadder(trees, targets, ownTreeIndex, level, first)
-    .map((row) => row.join(''))
+    .climb.map((row) => row.join(''))
     .join('-');
+}
+
+/** The talent each point goes into, one a level from 10 up to `level`, in the order the
+ *  ladder spends them (sim/leveling LadderPointOrder): the order the Leveling strip and the
+ *  low-level home show, so they agree with the sim's ladder and the addon. */
+export function ladderPointOrder(
+  trees: readonly LadderTalentTree[],
+  targets: Targets,
+  ownTreeIndex: number,
+  level: number,
+  first: readonly LadderFirstRank[] = [],
+): number[] {
+  return climbLadder(trees, targets, ownTreeIndex, level, first).order;
 }
 
 /** The planner's rule for adding one point (sim/leveling climbLadder's `legal`). */
@@ -263,8 +278,9 @@ function climbLadder(
   ownTreeIndex: number,
   level: number,
   first: readonly LadderFirstRank[],
-): number[][] {
+): { climb: number[][]; order: number[] } {
   const climb = trees.map((tree) => new Array<number>(tree.talents.length).fill(0));
+  const order: number[] = [];
   const treeOrder = [ownTreeIndex, ...trees.map((_, i) => i).filter((i) => i !== ownTreeIndex)].filter(
     (ti) => trees[ti] !== undefined,
   );
@@ -288,8 +304,9 @@ function climbLadder(
     if (pick === undefined) continue;
     const row = climb[pick[0]]!;
     row[pick[1]] = row[pick[1]]! + 1;
+    order.push(trees[pick[0]]!.talents[pick[1]]!.id);
   }
-  return climb;
+  return { climb, order };
 }
 
 /** The walk for one level on its own, as digits per tree (sim/leveling walkLevel). */
@@ -378,6 +395,27 @@ export interface LevelingBuild {
   band: number;
   points: number;
   talents: string;
+}
+
+/** The guide's ladder point order through level 60, from its own level 60 code: one talent
+ *  id per point (`ladderPointOrder`); empty when the build or the talent file does not read. */
+export function guideLadderOrder(
+  build: string,
+  classSlug: string,
+  spec: string,
+  ownTreeIndex: number,
+  code: string,
+): number[] {
+  const trees = loadLadderTrees(build, classSlug);
+  const digits = buildCodeDigits(code);
+  if (trees === undefined || digits === undefined) return [];
+  return ladderPointOrder(
+    trees,
+    guideTargets(trees, digits),
+    ownTreeIndex,
+    MAX_LADDER_LEVEL,
+    ladderFirstFor(spec),
+  );
 }
 
 /** The guide's build at each leveling range's first level, from its own level 60 code. */

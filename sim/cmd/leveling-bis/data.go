@@ -410,7 +410,17 @@ var ratingStatColumns = map[string][]string{
 	"parry":   {"Parry"},
 	"block":   {"Block"},
 	"defense": {"Defense Skill"},
+	// Item expertise is rating points too (ItemSparse stat 37; Waywatcher
+	// Gauntlets 240081: 20 = 2%). Its published weight stays per 1%
+	// (perPercentWeightStats).
+	"expertise": {"Expertise"},
 }
+
+// perPercentWeightStats are the rating-family stats whose published weight
+// stays per 1%: the site reads expertise that way
+// (web/src/lib/bis/weight-reading.ts), the engine's expertise point being
+// one percent off the boss's dodge and parry (expertisecap.go).
+var perPercentWeightStats = map[string]bool{"expertise": true}
 
 // ratingFactors is level-60 rating points per 1%, one entry per
 // ratingStatColumns key - loadRatingFactors' own return and

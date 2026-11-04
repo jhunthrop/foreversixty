@@ -273,3 +273,38 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     }
   });
 });
+
+describe('/guides/priest/shadow Leveling strip', () => {
+  // Sim-accuracy round 16: the strip lists the first range in the ladder's order (Wand
+  // Specialization at 10 and 11, Spirit Tap from 12), which the addon spends too.
+  it('opens the 20 to 29 row on Wand Specialization, then Spirit Tap', async () => {
+    const html = await container.renderToString(SpecPage, {
+      props: { entry: loadGuideEntry('priest/shadow') },
+    });
+    const row =
+      html.split('data-testid="guide-leveling-row-20"')[1]?.split('data-testid="guide-leveling-row-30"')[0] ??
+      '';
+    const names = [...row.matchAll(/class="leveling-chip-name"[^>]*>([^<]+)</g)].map((m) => m[1]);
+    expect(names.slice(0, 2)).toEqual(['Wand Specialization', 'Spirit Tap']);
+  });
+});
+
+describe('/guides/warrior/arms rotation rows for the raid build', () => {
+  // Sim-accuracy round 16: the priority is the level 60 raid list; Reckless Swings and
+  // Spearing Strike are talents only the raid build takes, so their rows say so and the rail
+  // card beside the level 60 build leaves them out.
+  it('tags the raid build’s own talent rows and no other', async () => {
+    const html = await container.renderToString(SpecPage, {
+      props: { entry: loadGuideEntry('warrior/arms') },
+    });
+    const priority = html.split('data-testid="guide-rotation-priority"')[1]?.split('</ol>')[0] ?? '';
+    const rows = priority.split('data-testid="guide-rotation-priority-').slice(1);
+    const tagged = rows
+      .filter((row) => row.includes('data-testid="guide-rotation-raid-build"'))
+      .map((row) => /class="rotation-name"[^>]*>\s*([^<]+?)\s*</.exec(row)?.[1]);
+    expect(tagged.sort()).toEqual(['Reckless Swings', 'Spearing Strike']);
+    expect(html).toContain('data-testid="guide-rotation-raid-build-legend"');
+    const rail = html.split('data-testid="guide-rail-rotation"')[1]?.split('</ul>')[0] ?? '';
+    expect(rail).not.toContain('Reckless Swings');
+  });
+});

@@ -7,8 +7,8 @@ the published bis/*.json picks" (this category's own brief) means in
 practice: both files ARE `build_addon_data`'s output, byte- (Lua) or value-
 (JSON) identical. Rotation-band completeness is the same function's own
 `AddonRotationError` (it does not tolerate a missing curated/apl entry, per
-that module's doc) plus a direct count against `pipeline.addonrotation.
-LEVEL_BANDS`.
+that module's doc) plus a check that every `pipeline.addonrotation.LEVEL_BANDS` rung has a
+band (a band also starts between rungs wherever a line changes).
 """
 
 from __future__ import annotations
@@ -70,12 +70,12 @@ def check(ctx: AuditContext) -> CategoryResult:
                 result.add(
                     "major", spec, f"addon-data.json has no rotation bands at all for {spec}"
                 )
-            elif len(bands) != len(LEVEL_BANDS):
+            elif missing := sorted(set(LEVEL_BANDS) - {band.get("level") for band in bands}):
                 result.add(
                     "minor",
                     spec,
-                    f"{spec} has {len(bands)} rotation bands, LEVEL_BANDS names {len(LEVEL_BANDS)}",
-                    ours=str(len(bands)),
-                    theirs=str(len(LEVEL_BANDS)),
+                    f"{spec} has no rotation band at the LEVEL_BANDS rungs {missing}",
+                    ours=str(sorted(band.get("level") for band in bands)),
+                    theirs=str(LEVEL_BANDS),
                 )
     return result

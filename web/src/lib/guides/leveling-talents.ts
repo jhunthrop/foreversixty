@@ -1,7 +1,7 @@
 // web/src/lib/guides/leveling-talents.ts
 // A leveling band's talents as the list a player works through, in the order the points are
-// spent: one order for every band (the guide's level 60 build through the planner's
-// `orderFromRanks`, see `bandSpendOrder`), each talent placed by its first point, so a talent
+// spent: one order for every band (the ladder's own point order, `guideLadderOrder` in
+// leveling-builds.ts), each talent placed by its first point, so a talent
 // never moves between bands. A talent whose rank rose since the band before is marked, so the
 // strip also shows what each band adds. Pure over the decoded trees `decodeBandTalents` produces.
 import type { DecodedTreeView } from './build-tree';

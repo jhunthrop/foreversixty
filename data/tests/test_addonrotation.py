@@ -547,6 +547,39 @@ def test_a_band_casts_the_rank_choice_the_curated_table_names(tmp_path):
     assert [line.spell_id for line in bands[60]] == [10929]
 
 
+def test_a_rank_row_or_a_rank_learned_mid_band_starts_its_own_band(tmp_path):
+    """Round 16 (shaman lane): rank rows start at any level now (Lightning Bolt
+    rank 4 at 34-38, rank 5 at 39-44), and a rank is learned at any level. The
+    addon reads the band whose level is the highest at or below the player's
+    (Rotation.lua bandFor), so a band starts wherever a line changes; a
+    player at 52 sees the row that starts at 52, not band 50's."""
+    _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
+    (tmp_path / "rank-choices.json").write_text(
+        json.dumps(
+            {
+                "specs": {
+                    "priest-holy": [
+                        {
+                            "spell": "Renew",
+                            "authored": 10929,
+                            "bands": [{"from_level": 52, "to_level": 55, "rank": 3}],
+                        }
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    rotation = build_rotation("priest-holy", tmp_path, _HEALER_RANKS)
+    levels = [band.level for band in rotation]
+    assert levels == [10, 14, 20, 30, 38, 40, 50, 52, 56, 60]
+    bands = {band.level: [line.spell_id for line in band.lines] for band in rotation}
+    assert bands[14] == [6074]
+    assert bands[50] == [10928]
+    assert bands[52] == [6075]
+    assert bands[56] == [10929]
+
+
 def test_a_rank_choice_scoped_to_lines_rewrites_only_those_lines(tmp_path):
     """A spell's rows that name "lines" (0-based priority-list entries) apply
     only there, as sim/request's rewrite does: Restoration's Nature's

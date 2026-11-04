@@ -396,7 +396,8 @@ def build_rotation(
     trainable_ids: frozenset[int] = frozenset(),
     talent_spells: Mapping[str, list[tuple[int, int]]] = MappingProxyType({}),
 ) -> list[AddonRotationBand]:
-    """One spec's rotation table, one band per LEVEL_BANDS entry.
+    """One spec's rotation table: a band at every LEVEL_BANDS rung and at
+    every level between where a line changes (`_band_levels`).
     `trainable_ids` is the class's trainer-learned ids (`load_trainable_ids`),
     `talent_spells` its talents' own spells (`load_talent_spells`)."""
     apl_path = curated_dir / "apl" / f"{spec}.json"
@@ -410,37 +411,61 @@ def build_rotation(
     rank_of = _rank_of(spellranks, _class_slug(spec))
     choices = load_rank_choices(curated_dir, spec)
 
-    bands = []
-    for level in LEVEL_BANDS:
-        lines = []
-        for cast in casts:
-            resolved = _resolve(families, id_to_family, rank_of, cast["spell_id"], level)
-            if resolved is None:
-                continue
-            name, resolved_id = resolved
-            # A per-band rank choice (sim/request rankResolver) wins below 60;
-            # a race's own row wins for that race.
-            ranks = (
-                _band_ranks(choices, cast["spell_id"], level, cast["line"])
-                if level < MAX_LEVEL
-                else {}
-            )
-            pick = _RankPick(spellranks, _class_slug(spec), name, cast["spell_id"], level)
-            resolved_id = pick.id_of(ranks.get(None), resolved_id)
-            race_ids = _race_ids(pick, ranks, resolved_id)
-            condition = _one_line(cast["notes"])
-            icon = _resolve_icon(resolved_id, icon_of)
-            lines.append(
-                AddonRotationLine(
-                    spell_id=resolved_id,
-                    name=name,
-                    condition=condition,
-                    icon=icon,
-                    race_spell_ids=race_ids,
-                )
-            )
-        bands.append(AddonRotationBand(level=level, lines=lines))
+    context = _SpecContext(spec, spellranks, families, id_to_family, rank_of, choices, icon_of)
+    bands: list[AddonRotationBand] = []
+    for level in _band_levels():
+        lines = [line for cast in casts if (line := _line_at(context, cast, level)) is not None]
+        if level in LEVEL_BANDS or not bands or lines != bands[-1].lines:
+            bands.append(AddonRotationBand(level=level, lines=lines))
     return bands
+
+
+def _band_levels() -> range:
+    """Every level from the first rung to the last. A band is published at
+    each rung and at every level between where a line changes (a rank row
+    or a rank learned mid-band); the addon reads the band whose level is the
+    highest at or below the player's (Rotation.lua bandFor)."""
+    return range(LEVEL_BANDS[0], LEVEL_BANDS[-1] + 1)
+
+
+@dataclass(frozen=True)
+class _SpecContext:
+    """One spec's rank tables, read once for every level's lines."""
+
+    spec: str
+    spellranks: dict
+    families: dict[str, list[tuple[int, int]]]
+    id_to_family: dict[int, str]
+    rank_of: dict[int, int]
+    choices: dict[int, list[dict]]
+    icon_of: Callable[[int], str] | None
+
+
+def _line_at(context: _SpecContext, cast: dict, level: int) -> AddonRotationLine | None:
+    """`cast` as the band at `level` publishes it, or None when not learned yet."""
+    resolved = _resolve(
+        context.families, context.id_to_family, context.rank_of, cast["spell_id"], level
+    )
+    if resolved is None:
+        return None
+    name, resolved_id = resolved
+    # A per-band rank choice (sim/request rankResolver) wins below 60;
+    # a race's own row wins for that race.
+    ranks = (
+        _band_ranks(context.choices, cast["spell_id"], level, cast["line"])
+        if level < MAX_LEVEL
+        else {}
+    )
+    class_slug = _class_slug(context.spec)
+    pick = _RankPick(context.spellranks, class_slug, name, cast["spell_id"], level)
+    resolved_id = pick.id_of(ranks.get(None), resolved_id)
+    return AddonRotationLine(
+        spell_id=resolved_id,
+        name=name,
+        condition=_one_line(cast["notes"]),
+        icon=_resolve_icon(resolved_id, context.icon_of),
+        race_spell_ids=_race_ids(pick, ranks, resolved_id),
+    )
 
 
 #: The client tables a rotation line's icon needs, straight off `raw/` --

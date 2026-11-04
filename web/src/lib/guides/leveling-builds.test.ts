@@ -9,8 +9,10 @@ import { readSpecCatalog } from '../bis/load';
 import {
   buildCodeDigits,
   guideLevelingBuilds,
+  guideLadderOrder,
   guideTargets,
   ladderFirstFor,
+  ladderPointOrder,
   ladderTalentString,
   loadLadderTrees,
   type LadderTalentTree,
@@ -162,5 +164,50 @@ describe('every guide ladder only adds points', () => {
       expect(dropped, `level ${level}: ${at} after ${prev}`).toBe(false);
       prev = at;
     }
+  });
+});
+
+describe('the ladder’s point order', () => {
+  // Sim-accuracy round 16: the Leveling strip and the low-level home follow the order the
+  // ladder spends its points in, one a level from 10, not the planner's reconstruction.
+  it.each(guideBuilds().map((row) => [row.spec, row] as const))(
+    '%s replays the ladder level by level',
+    (spec, row) => {
+      const trees = loadLadderTrees(BUILD, row.classSlug)!;
+      const digits = buildCodeDigits(row.build);
+      if (digits === undefined) return;
+      const targets = guideTargets(trees, digits);
+      const first = ladderFirstFor(spec);
+      const order = ladderPointOrder(trees, targets, row.treeIndex, 60, first);
+      const cellOf = new Map(
+        trees.flatMap((tree, ti) => tree.talents.map((t, j) => [t.id, [ti, j]] as const)),
+      );
+      const climb = trees.map((tree) => new Array<number>(tree.talents.length).fill(0));
+      order.forEach((id, point) => {
+        const [ti, j] = cellOf.get(id)!;
+        climb[ti]![j]! += 1;
+        const level = 10 + point;
+        expect(climb.map((r) => r.join('')).join('-'), `level ${level}`).toBe(
+          ladderTalentString(trees, targets, row.treeIndex, level, first),
+        );
+      });
+    },
+  );
+
+  it('starts Shadow on Wand Specialization at 10 and 11, then Spirit Tap from 12', () => {
+    const shadow = guideBuilds().find((row) => row.spec === 'priest-shadow')!;
+    const order = guideLadderOrder(BUILD, 'priest', 'priest-shadow', shadow.treeIndex, shadow.build);
+    const trees = loadLadderTrees(BUILD, 'priest')!;
+    const nameOf = new Map(trees.flatMap((tree) => tree.talents.map((t) => [t.id, t.name] as const)));
+    const names = order.map((id) => nameOf.get(id));
+    expect(names.slice(0, 7)).toEqual([
+      'Wand Specialization',
+      'Wand Specialization',
+      'Spirit Tap',
+      'Spirit Tap',
+      'Spirit Tap',
+      'Spirit Tap',
+      'Spirit Tap',
+    ]);
   });
 });

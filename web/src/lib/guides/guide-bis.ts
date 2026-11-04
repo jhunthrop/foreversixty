@@ -13,6 +13,7 @@ import { readItemTooltipModel } from '../items/lookup-node';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { Slot } from '../planner/types';
 import type { BisFile, Faction } from '../bis/types';
+import { isRealIcon } from '../icons/placeholder';
 
 export interface GuideBisRow {
   slot: string;
@@ -63,8 +64,6 @@ export interface GuideBis {
   panels: GuideBisPanel[];
 }
 
-const PLACEHOLDER_ICON = 'inv_misc_questionmark';
-
 function rowFor(row: RowView): GuideBisRow {
   const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
   if (row.empty || row.itemId === undefined) {
@@ -78,7 +77,7 @@ function rowFor(row: RowView): GuideBisRow {
     itemId: row.itemId,
     itemName: row.itemName,
     quality: row.model?.quality ?? 1,
-    icon: icon === undefined || icon === PLACEHOLDER_ICON ? undefined : icon,
+    icon: isRealIcon(icon) ? icon : undefined,
     sourceKind: row.sourceKind,
     sourceDetail: row.sourceDetail,
     notSimChecked: row.notSimChecked ?? false,

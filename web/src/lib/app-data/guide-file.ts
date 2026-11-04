@@ -31,6 +31,7 @@ import {
 } from '../guides/rotation-lists';
 import { splitSpecSections, type SpecSection } from '../guides/sections';
 import type { GuideSource } from './guide-content';
+import { isRealIcon } from '../icons/placeholder';
 
 /** The level every guide block answers for: the raid build, the rotation ranks and the BiS link. */
 export const GUIDE_LEVEL = 60;
@@ -162,16 +163,13 @@ function buildOf(
   return { code, totals: trees.map((tree) => tree.points), tree_names: trees.map((tree) => tree.name) };
 }
 
-/** The client's own art for a spell it has no icon for (data/pipeline/icons.py). The apps draw
- *  their neutral bordered tile for a null icon, never the red question mark. */
-export const PLACEHOLDER_ICON = 'inv_misc_questionmark';
-
 function spellOf(item: RotationItem): AppGuideSpell {
   return {
     spell_id: item.spellId ?? null,
     name: item.name,
     rank: item.rank ?? null,
-    icon: item.icon === undefined || item.icon === PLACEHOLDER_ICON ? null : item.icon,
+    // The apps draw their neutral bordered tile for a null icon, never the red question mark.
+    icon: isRealIcon(item.icon) ? item.icon : null,
     clause: item.clause,
   };
 }

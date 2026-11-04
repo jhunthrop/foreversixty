@@ -13,6 +13,9 @@ import {
   formatCooldown,
   litTalentsOf,
   loadApl,
+  markRaidBuildRows,
+  raidBuildOnlyTalents,
+  talentNamesOf,
   specCooldowns,
   prepullCasts,
   talentCooldownCuts,
@@ -639,5 +642,54 @@ describe('the guide builds’ own cooldowns', () => {
     const holy = specCooldowns(BUILD, 'paladin', 'paladin-holy', lit, spellLookupFor(BUILD, 'paladin'));
     const want = ['5 min cooldown', '4 min cooldown', '3 min cooldown'][rank];
     expect(holy.find((item) => item.name === 'Blessing of Protection')?.clause).toBe(want);
+  });
+});
+
+// Sim-accuracy round 16: the lists come from the level 60 raid priority, and the page shows
+// the level 60 build beside the raid build. A row for a talent only the raid build takes is
+// marked, so a player on the level 60 build knows it is not theirs.
+describe('raid build rows', () => {
+  it('names the talents only the raid build takes', () => {
+    const only = raidBuildOnlyTalents(
+      new Set(['Reckless Swings', 'Mortal Strike', 'Improved Slam']),
+      new Map([
+        ['Mortal Strike', 1],
+        ['Improved Slam', 5],
+      ]),
+      new Map([
+        ['Mortal Strike', 1],
+        ['Reckless Swings', 1],
+      ]),
+    );
+    expect([...only]).toEqual(['Reckless Swings']);
+  });
+
+  it('marks every list row whose spell is one of them, and no other', () => {
+    const lists = {
+      opener: [{ name: 'Charge', clause: '' }],
+      priority: [
+        { name: 'Mortal Strike', clause: 'On cooldown' },
+        { name: 'Reckless Swings', clause: '' },
+      ],
+      cooldowns: [{ name: 'Reckless Swings', clause: '1 min cooldown' }],
+    };
+    const marked = markRaidBuildRows(lists, new Set(['Reckless Swings']));
+    expect(marked.priority.map((item) => item.raidBuildOnly === true)).toEqual([false, true]);
+    expect(marked.cooldowns[0]!.raidBuildOnly).toBe(true);
+    expect(marked.opener[0]!.raidBuildOnly).toBeUndefined();
+    expect(lists.priority[1]).not.toHaveProperty('raidBuildOnly');
+  });
+
+  it('marks Arms’ Reckless Swings and Spearing Strike, which only the raid build takes', () => {
+    const arms = readFileSync(path.join(GUIDES_DIR, 'warrior/arms.md'), 'utf8');
+    const code = (key: string): string => new RegExp(`^${key}: '([^']+)'`, 'm').exec(arms)![1]!;
+    const only = raidBuildOnlyTalents(
+      talentNamesOf(BUILD, 'warrior'),
+      litTalentsOf(decodeBuildTrees(BUILD, code('build')) ?? []),
+      litTalentsOf(decodeBuildTrees(BUILD, code('raidBuild')) ?? []),
+    );
+    expect(only.has('Reckless Swings')).toBe(true);
+    expect(only.has('Spearing Strike')).toBe(true);
+    expect(only.has('Mortal Strike')).toBe(false);
   });
 });

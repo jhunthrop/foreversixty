@@ -158,6 +158,18 @@ func TestPublishWeightRatingUnitsConvertsOnlyRatingFamilyRows(t *testing.T) {
 	}
 }
 
+// TestPublishWeightRatingUnitsKeepsExpertisePerPercent: items state
+// expertise as rating points, so the ranker converts it (ratingStatColumns),
+// but the site reads the published expertise weight per 1%
+// (web/src/lib/bis/weight-reading.ts), so the published row stays per 1%.
+func TestPublishWeightRatingUnitsKeepsExpertisePerPercent(t *testing.T) {
+	rows := []weightRow{{Stat: "expertise", Weight: 8.8, Error: 0.4}}
+	got := publishWeightRatingUnits(rows, ratingFactors{"expertise": 10})[0]
+	if got.Unit != "" || got.RatingFactor != 0 || got.Weight != 8.8 || got.Error != 0.4 {
+		t.Errorf("expertise row = %+v, want weight 8.8 per 1%% with no rating unit", got)
+	}
+}
+
 // TestDedupeAlternativesCollapsesByNameToo is this lane's brief, item
 // 3: "Signet Ring of the Bronze Dragonflight" published twice in the
 // same band-60 finger1 Alternatives list under two different item

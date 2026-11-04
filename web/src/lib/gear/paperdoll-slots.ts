@@ -9,9 +9,8 @@ import type { PaperdollItemRef, PaperdollSlot, PaperdollSlotKey } from './paperd
 import { upgradeFor } from './paperdoll';
 import type { GearItemTable } from './qualities';
 import type { CharacterGearSlot } from './types';
+import { isRealIcon } from '../icons/placeholder';
 
-/** The pipeline's placeholder icon: drawn as no icon, never a red "?". */
-const PLACEHOLDER_ICON = 'inv_misc_questionmark';
 /** Drawn only when worn (§3.1). */
 const OPTIONAL_SLOTS: readonly PaperdollSlotKey[] = ['shirt', 'tabard'];
 
@@ -29,7 +28,7 @@ export interface WornLookup {
 }
 
 function iconOf(icon: string | undefined | null): string | null {
-  return icon === undefined || icon === null || icon === '' || icon === PLACEHOLDER_ICON ? null : icon;
+  return isRealIcon(icon) ? icon : null;
 }
 
 function wornSlot(slot: PaperdollSlotKey, id: number, source: WornLookup): PaperdollSlot {

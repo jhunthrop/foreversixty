@@ -1,7 +1,8 @@
 -- addon/tests/rotation_spec.lua
 -- The per-level rotation lines (design section 2 item 3, section 6 Wave
--- B): ns.Data.rotations[spec] is one band per level in
--- data/pipeline/addonrotation.LEVEL_BANDS (10, 20, 30, 38, 40, 50, 60).
+-- B): ns.Data.rotations[spec] is a band at each data/pipeline/addonrotation
+-- LEVEL_BANDS rung (10, 20, 30, 38, 40, 50, 60) and at every level between
+-- where a line changes.
 -- Rotation.lua picks the band for a level and slices it novice/advanced;
 -- this covers that against a small hand-built rotations table, the same
 -- shape addonlua.py renders into Data.lua.
@@ -75,6 +76,22 @@ describe("Rotation", function()
 			assert.are.equal(20, model.level)
 			model = Rotation.model(DATA, BUILD, RANKS, 60, false)
 			assert.are.equal(40, model.level)
+		end)
+
+		-- Round 16: a band starts wherever a line changes (a rank row from 34, a rank learned
+		-- at 34), not only at the ladder's rungs; the player reads it from its own level.
+		it("reads a band that starts between two rungs from its own level", function()
+			local data = { build = DATA.build, classes = DATA.classes, weights = {}, rotations = {
+				["warrior-fury"] = {
+					{ level = 30, lines = { line(285, "Heroic Strike") } },
+					{ level = 34, lines = { line(1608, "Heroic Strike") } },
+					{ level = 38, lines = { line(1608, "Heroic Strike"), line(1680, "Whirlwind") } },
+				},
+			} }
+			assert.are.equal(30, Rotation.model(data, BUILD, RANKS, 33, true).level)
+			local at35 = Rotation.model(data, BUILD, RANKS, 35, true)
+			assert.are.equal(34, at35.level)
+			assert.are.equal(1608, at35.lines[1].spellId)
 		end)
 
 		it("trims to the novice line count and flags that there is more", function()

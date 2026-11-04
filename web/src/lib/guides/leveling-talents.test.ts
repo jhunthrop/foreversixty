@@ -5,13 +5,8 @@ import activeBuild from '../../data/active-build.json';
 import { repoRoot } from '../data/build-files';
 import { describe, expect, it } from 'vitest';
 import { loadBisFile } from '../bis/load';
-import {
-  bandSpendOrder,
-  decodeBandTalents,
-  type DecodedTalentView,
-  type DecodedTreeView,
-} from './build-tree';
-import { guideLevelingBuilds } from './leveling-builds';
+import { decodeBandTalents, type DecodedTalentView, type DecodedTreeView } from './build-tree';
+import { guideLadderOrder, guideLevelingBuilds } from './leveling-builds';
 import { levelingChipRows } from './leveling-talents';
 
 function talent(id: number, name: string, tier: number, column: number, rank: number): DecodedTalentView {
@@ -94,7 +89,7 @@ describe('a real band talent string', () => {
     if (band === undefined) throw new Error('mage-frost band 40 missing');
     const trees = decodeBandTalents(BUILD, 'mage', band.talents);
     if (trees === undefined) throw new Error('mage talent file missing');
-    const chips = levelingChipRows([trees], bandSpendOrder(BUILD, 'mage', band.talents) ?? [])[0]!;
+    const chips = levelingChipRows([trees], [])[0]!;
     expect(chips.length).toBeGreaterThan(5);
     expect(chips.reduce((sum, chip) => sum + chip.rank, 0)).toBe(band.talent_points);
     for (const chip of chips) {
@@ -124,10 +119,19 @@ describe('the Leveling strip of every guide', () => {
     expect(names.indexOf('Mind Flay')).toBeLessThan(names.indexOf('Improved Mind Flay'));
   });
 
-  it('lists every band in the order the points of the guide’s own build are spent', () => {
+  // Sim-accuracy round 16: the strip follows the ladder's own order, which the sim's ladder
+  // and the addon spend (Wand Specialization at 10 and 11, Spirit Tap from 12), not the
+  // planner's reconstruction of the level 60 build (Blackout first).
+  it('starts the Shadow priest’s first range on Wand Specialization, then Spirit Tap', () => {
+    const shadow = guides.find((guide) => guide.spec === 'priest-shadow')!;
+    const names = stripRows(shadow).find((row) => row.band === 20)!.names;
+    expect(names.slice(0, 2)).toEqual(['Wand Specialization', 'Spirit Tap']);
+  });
+
+  it('lists every band in the order the ladder spends the guide’s points', () => {
     for (const guide of guides) {
       const rows = stripRows(guide);
-      const order = bandSpendOrder(BUILD, guide.classSlug, rows[rows.length - 1]!.talents) ?? [];
+      const order = guideLadderOrder(BUILD, guide.classSlug, guide.spec, guide.treeIndex, guide.code);
       const firstPoint = (name: string): number =>
         order.findIndex((id) =>
           rows.at(-1)!.trees!.some((tree) => tree.talents.some((t) => t.id === id && t.name === name)),
@@ -175,7 +179,7 @@ function guideBuilds(): GuideBuild[] {
 function stripRows(guide: GuideBuild) {
   const bands = guideLevelingBuilds(BUILD, guide.classSlug, guide.spec, guide.treeIndex, guide.code);
   const decoded = bands.map((band) => decodeBandTalents(BUILD, guide.classSlug, band.talents));
-  const order = bandSpendOrder(BUILD, guide.classSlug, bands[bands.length - 1]!.talents) ?? [];
+  const order = guideLadderOrder(BUILD, guide.classSlug, guide.spec, guide.treeIndex, guide.code);
   const chips = levelingChipRows(decoded, order);
   return bands.map((band, i) => ({
     band: band.band,

@@ -150,7 +150,9 @@ WEAPON_DAMAGE_STAT_KEY = "bonus_physical_damage"
 #: Forever's "Reduces chance to be Dodged or Parried by N%" and "Increases your
 #: attack speed and casting speed by N%". simdb converts them at
 #: combatratings.txt's level-60 factors (`pipeline.simdb.ratings`) and splits
-#: haste into melee and spell haste; the planner has no key for either.
+#: haste into melee and spell haste. Expertise reaches the planner's `stats` as
+#: rating points, like hit and crit (Waywatcher Gauntlets 240081: 20 = 2.0%);
+#: haste has no planner key.
 EXPERTISE_STAT_KEY = "expertise"
 HASTE_STAT_KEY = "haste"
 #: ITEM_MOD_EXTRA_ARMOR (stat 50): armour on top of the curve's, which the
@@ -167,7 +169,7 @@ BONUS_ARMOR_STAT_KEY = "bonus_armor"
 MODIFIER_ALSO_GRANTS: dict[int, tuple[str, ...]] = {45: ("healing",)}
 
 PLANNER_EXCLUDED_STAT_KEYS = frozenset(
-    {WEAPON_DAMAGE_STAT_KEY, EXPERTISE_STAT_KEY, HASTE_STAT_KEY, BONUS_ARMOR_STAT_KEY}
+    {WEAPON_DAMAGE_STAT_KEY, HASTE_STAT_KEY, BONUS_ARMOR_STAT_KEY}
 )
 
 #: StatModifier_bonusStat_<n> -> the planner's stat key, or None for a stat the

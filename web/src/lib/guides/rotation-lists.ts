@@ -23,6 +23,9 @@ export interface RotationItem {
   /** The key of the spell's game tooltip (lib/tooltips/game-tip.ts), set once the guide's
    *  tooltip data is known to carry it. */
   tipKey?: string;
+  /** The spell is a talent only the guide's raid build takes (`markRaidBuildRows`): the
+   *  lists follow the level 60 raid priority, shown beside the level 60 build too. */
+  raidBuildOnly?: boolean;
 }
 
 export interface RotationLists {
@@ -395,6 +398,27 @@ export function litTalentsOf(
     if (talent.rank > 0) lit.set(talent.name, Math.max(lit.get(talent.name) ?? 0, talent.rank));
   }
   return lit;
+}
+
+/** Every talent name of the class. */
+export function talentNamesOf(build: string, classSlug: string): Set<string> {
+  return new Set([...talentSpells(build, classSlug).values()].map((talent) => talent.name));
+}
+
+/** The talents the raid build takes and the level 60 build does not. */
+export function raidBuildOnlyTalents(
+  talentNames: ReadonlySet<string>,
+  levelLit: LitTalents,
+  raidLit: LitTalents,
+): Set<string> {
+  return new Set([...raidLit.keys()].filter((name) => talentNames.has(name) && !levelLit.has(name)));
+}
+
+/** New lists whose rows for `raidOnly` talents carry `raidBuildOnly`. */
+export function markRaidBuildRows(lists: RotationLists, raidOnly: ReadonlySet<string>): RotationLists {
+  const mark = (items: readonly RotationItem[]): RotationItem[] =>
+    items.map((item) => (raidOnly.has(item.name) ? { ...item, raidBuildOnly: true } : item));
+  return { opener: mark(lists.opener), priority: mark(lists.priority), cooldowns: mark(lists.cooldowns) };
 }
 
 /** A cooldown less a talent's cut, never below zero. */

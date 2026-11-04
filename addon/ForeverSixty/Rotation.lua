@@ -1,9 +1,10 @@
 -- addon/ForeverSixty/Rotation.lua
 -- The per-level rotation lines (design section 2 item 3, section 6 Wave B):
 -- data/pipeline/addonrotation.py resolves data/curated/apl/<spec>.json
--- against spellranks.json into ns.Data.rotations[spec], one band per level
--- in its own LEVEL_BANDS (10, 20, 30, 38, 40, 50, 60). This module picks
--- the right band for a character's level and slices it for novice
+-- against spellranks.json into ns.Data.rotations[spec]: a band at each of its
+-- LEVEL_BANDS rungs (10, 20, 30, 38, 40, 50, 60) and at every level between
+-- where a line changes (a rank row or a rank learned mid-band). This module
+-- picks the right band for a character's level and slices it for novice
 -- (top four lines) or advanced (every line) display. Rotation.newAbilities
 -- fed the level-up rotation toast, which went with the chip (L3.1). The
 -- character-panel tab's rotation region (L4.3) reads Rotation.model with
@@ -34,10 +35,9 @@ local function specBands(data, build, ranks)
 	return spec and data.rotations[spec] or nil
 end
 
---- The band whose level is the highest one <= `level`: bands' own levels
---- (data/pipeline/addonrotation.LEVEL_BANDS) are never contiguous
---- (10, 20, 30, 38, 40, 50, 60), so every level between two rungs reads
---- the earlier rung's band. `bands[1]` (the lowest rung) covers a
+--- The band whose level is the highest one <= `level`: a band starts at each
+--- rung and wherever a line changes between rungs (a rank row from 34), so
+--- every level reads the band that holds its own ranks. `bands[1]` (the lowest rung) covers a
 --- character below it too, so a level-1 alt has something to show rather
 --- than nothing before its first rung.
 local function bandFor(bands, level)
