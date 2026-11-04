@@ -1,0 +1,28 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://us.api.blizzard.com/data/wow/realm/camwow-us1-realm-2-pvp?namespace=dynamic-forever-us"
+    }
+  },
+  "id": 6798,
+  "region": {
+    "key": {
+      "href": "https://us.api.blizzard.com/data/wow/region/91?namespace=dynamic-forever-us"
+    },
+    "name": "CAMWOW North America",
+    "id": 91
+  },
+  "connected_realm": {
+    "href": "https://us.api.blizzard.com/data/wow/connected-realm/6798?namespace=dynamic-forever-us"
+  },
+  "name": "CAMWOW US1 Realm 2 PvP",
+  "category": "United States",
+  "locale": "enUS",
+  "timezone": "America/Chicago",
+  "type": {
+    "type": "PVP",
+    "name": "PvP"
+  },
+  "is_tournament": false,
+  "slug": "camwow-us1-realm-2-pvp"
+}

@@ -12,7 +12,8 @@ export const accountPageCopy = {
   devicesLabel: 'Devices',
   reportsLabel: 'Your reports',
   /** The current-character card's prompt when it has no export (polish spec 4.3). */
-  noExportPrompt: 'No export yet. Paste one from the addon to see gear, talents and your score.',
+  noExportPrompt:
+    'No gear or talents yet. They come from Battle.net shortly after you sign in; paste an export from the addon to see them now.',
   youLabel: 'You',
   guildLabel: 'Guild',
   planLabel: 'Plan',
@@ -33,9 +34,13 @@ export const accountPageCopy = {
   /** The hub-arrival banner, shown once per `?signed_in=1` visit. */
   signedInBanner: (name: string): string =>
     `Signed in. ${name} is your current character; change it from any row below.`,
-  /** The same banner for an account the site has no characters for yet. */
-  signedInBannerEmpty: (who: string): string =>
-    `Signed in as ${who}. Install the addon and the companion to bring your characters here.`,
+  /** The same banner for an account the site has no characters for yet. A Battle.net
+   *  account imports its Forever characters on sign-in, so with none there are none to bring;
+   *  an email account has only the addon. */
+  signedInBannerEmpty: (who: string, viaBattlenet: boolean): string =>
+    viaBattlenet
+      ? `Signed in as ${who}. Battle.net lists no Forever character on this account yet; make one in game, then refresh from Battle.net.`
+      : `Signed in as ${who}. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.`,
   /** Shown in the hero band instead of the handoff links when no character on the account
    *  has a build at all (spec 2026-09-22 §3.1). */
   noBattlenetDataForRealm: 'Blizzard serves no data for this realm type yet.',

@@ -1,0 +1,33 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://us.api.blizzard.com/data/wow/realm/?namespace=dynamic-forever-us"
+    }
+  },
+  "realms": [
+    {
+      "key": {
+        "href": "https://us.api.blizzard.com/data/wow/realm/6794?namespace=dynamic-forever-us"
+      },
+      "name": "CAMWOW US1 Realm 1 PvE",
+      "id": 6794,
+      "slug": "camwow-us1-realm-1-pve"
+    },
+    {
+      "key": {
+        "href": "https://us.api.blizzard.com/data/wow/realm/6798?namespace=dynamic-forever-us"
+      },
+      "name": "CAMWOW US1 Realm 2 PvP",
+      "id": 6798,
+      "slug": "camwow-us1-realm-2-pvp"
+    },
+    {
+      "key": {
+        "href": "https://us.api.blizzard.com/data/wow/realm/6928?namespace=dynamic-forever-us"
+      },
+      "name": "CAMWOW US1 Realm 10 RP",
+      "id": 6928,
+      "slug": "camwow-us1-realm-10-rp"
+    }
+  ]
+}

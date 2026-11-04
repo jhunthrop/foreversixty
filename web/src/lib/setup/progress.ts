@@ -51,7 +51,10 @@ export function newestAddonCharacter(
 export function addonLine(me: Me | null, now: Date = new Date()): StepLine | null {
   if (me === null) return null;
   const arrived = newestAddonCharacter(me.characters);
-  if (arrived === null) return { done: false, text: addonCopy.setupAddonWaiting };
+  if (arrived === null) {
+    const text = me.characters.length > 0 ? addonCopy.setupAddonOptional : addonCopy.setupAddonWaiting;
+    return { done: false, text };
+  }
   return {
     done: true,
     text: addonCopy.setupAddonArrived(

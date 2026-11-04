@@ -1540,7 +1540,12 @@ components:
         discord_link: { oneOf: [{ $ref: '#/components/schemas/DiscordLink' }, { type: "null" }] }
         discord_link_suggested: { type: [string, "null"] }
         main_character_key: { type: string, description: Omitted until the account picks a main. }
-        bnet_imported_at: { type: string, format: date-time, description: Omitted when the Battle.net import never ran. }
+        bnet_imported_at:
+          type: string
+          format: date-time
+          description: >-
+            When the Battle.net import last ran. Every Battle.net sign-in imports the account's
+            Forever characters (us, eu, tw); omitted when it never ran.
         server_sims:
           type: object
           title: ServerSimsUsage
@@ -1569,10 +1574,10 @@ components:
         key: { type: string }
         region: { type: string, enum: [us, eu, kr, tw, cn] }
         ruleset: { type: string, enum: [normal, pvp, rp, hardcore] }
-        name: { type: string }
+        name: { type: string, description: 'The full display name, first name and surname ("Elyra Duskvale"); show it whole.' }
         source: { type: string, description: "Which path last wrote this character: export (addon or companion) or bnet." }
         class: { type: string, x-name: className, description: The class slug, lowercase. }
-        realm: { type: string }
+        realm: { type: string, description: Omitted for Forever characters (rulesets replace realms). }
         level: { type: integer }
         faction: { type: string, enum: [alliance, horde] }
         race: { type: string }

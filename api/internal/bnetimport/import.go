@@ -15,6 +15,9 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	"sort"
+	"sync"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -42,6 +45,11 @@ var ErrBudget = errors.New("bnetimport: import budget exceeded")
 // paste it by hand.
 const minImportLevel = 10
 
+// enrichFreshness is how recently a row must have been enriched for a run
+// to skip it: long enough to cover the sign-in run and its background
+// continuation, far shorter than the nightly refreshWindow.
+const enrichFreshness = 10 * time.Minute
+
 // Service runs the Battle.net import and the nightly refresh.
 // ImportAccount satisfies auth.Importer (it returns auth.ImportSummary,
 // defined in that package rather than here so the dependency runs one
@@ -57,6 +65,10 @@ type Service struct {
 	// no build data is available and buildAndWriteExport (build.go) is a no-op — never a
 	// crash.
 	Tables bnetbuild.Tables
+
+	// staticSeen remembers which static namespaces noteStaticNamespace has
+	// already logged.
+	staticSeen sync.Map
 }
 
 func (s *Service) logger() *slog.Logger {
@@ -97,10 +109,19 @@ func (s *Service) ImportAccount(ctx context.Context, userID int64, userToken str
 	return summary, runErr
 }
 
-// importRegion imports every character the account has in one region. A
-// soft failure (no account in this region, a single character's profile
-// unreadable) is logged and does not stop the run; only ErrBudget
-// (the context deadline) propagates.
+// importRegion imports every character the account has in one region, in
+// two passes so a first sign-in lists every character at once:
+//
+//  1. every eligible character's row is written straight from the account
+//     profile, which is one call for the whole account and cheap DB work;
+//  2. each row is then enriched (public profile, guild, gear, talents,
+//     media, the Blizzard-sourced build), highest level first, so the
+//     character the site will most likely pick as the main is ready first.
+//
+// A soft failure (no account in this region, a single character's profile
+// unreadable) is logged and does not stop the run; only ErrBudget (the
+// context deadline) propagates, with summary.Pending counting the rows the
+// second pass did not reach.
 func (s *Service) importRegion(ctx context.Context, userID int64, userToken, region string,
 	summary *auth.ImportSummary, rosterCache map[string]bnetapi.Roster, realmCache map[string][]bnetapi.Realm) error {
 	chars, err := s.Client.AccountCharacters(ctx, region, userToken)
@@ -125,31 +146,102 @@ func (s *Service) importRegion(ctx context.Context, userID int64, userToken, reg
 		realmCache[region] = realms
 	}
 
+	written, err := s.writeAccountRows(ctx, userID, region, realms, eligible(chars, summary), summary)
+	summary.Characters += len(written)
+	if err != nil {
+		summary.Pending += len(written)
+		return err
+	}
+	return s.enrichAll(ctx, written, summary, rosterCache)
+}
+
+// eligible is the account's characters at or above minImportLevel, highest
+// level first (stable, so Blizzard's own order breaks ties). Every skipped
+// character is counted in summary.Skipped.
+func eligible(chars []bnetapi.AccountCharacter, summary *auth.ImportSummary) []bnetapi.AccountCharacter {
+	out := make([]bnetapi.AccountCharacter, 0, len(chars))
 	for _, ch := range chars {
-		if ctx.Err() != nil {
-			return ErrBudget
-		}
 		if ch.Level < minImportLevel {
 			summary.Skipped++
 			continue
 		}
-		ruleset := rulesetForRealm(realms, ch.RealmSlug)
-		key := character.Key(region, ruleset, ch.Name)
+		out = append(out, ch)
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Level > out[j].Level })
+	return out
+}
 
-		wrote, guildWritten, unavailable, err := s.importOneCharacter(ctx, userID, region, ruleset, key, ch, rosterCache)
+// writeAccountRows is the first pass: one characters row per character,
+// keyed by the ruleset its realm resolves to. A collision (the key already
+// belongs to another account) is counted in summary.Skipped and logged.
+func (s *Service) writeAccountRows(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
+	chars []bnetapi.AccountCharacter, summary *auth.ImportSummary) ([]characterRef, error) {
+	written := make([]characterRef, 0, len(chars))
+	for _, ch := range chars {
+		if ctx.Err() != nil {
+			return written, ErrBudget
+		}
+		ref, wrote, err := s.writeAccountRow(ctx, userID, region, realms, ch)
 		if err != nil {
-			if errors.Is(err, context.DeadlineExceeded) {
-				return ErrBudget
+			if errors.Is(err, context.DeadlineExceeded) || ctx.Err() != nil {
+				return written, ErrBudget
 			}
-			s.logger().Warn("bnetimport", "op", "import_character", "key", key, "user_id", userID, "err", err)
+			s.logger().Warn("bnetimport", "op", "write_character", "key", ref.Key, "user_id", userID, "err", err)
 			continue
 		}
 		if !wrote {
 			summary.Skipped++
-			s.logger().Warn("bnetimport", "op", "collision", "key", key, "user_id", userID)
+			s.logger().Warn("bnetimport", "op", "collision", "key", ref.Key, "user_id", userID)
 			continue
 		}
-		summary.Characters++
+		written = append(written, ref)
+	}
+	return written, nil
+}
+
+// writeAccountRow resolves one account character's ruleset and key and
+// writes its row.
+func (s *Service) writeAccountRow(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
+	ch bnetapi.AccountCharacter) (characterRef, bool, error) {
+	ruleset, err := s.rulesetFor(ctx, userID, region, realms, ch)
+	if err != nil {
+		return characterRef{Key: ch.Name}, false, err
+	}
+	ref := characterRef{
+		UserID: userID, Region: region, Ruleset: ruleset, Key: character.Key(region, ruleset, ch.Name),
+		RealmSlug: ch.RealmSlug, Name: ch.Name, BnetID: ch.ID,
+	}
+	wrote, err := s.writeCharacterRow(ctx, ref, ch)
+	return ref, wrote, err
+}
+
+// enrichAll is the second pass over the rows writeAccountRows wrote. A row
+// enriched within enrichFreshness is skipped, so a run that continues an
+// earlier one (auth's background continuation after the sign-in budget)
+// spends its calls only on what the first run did not reach.
+func (s *Service) enrichAll(ctx context.Context, refs []characterRef, summary *auth.ImportSummary,
+	rosterCache map[string]bnetapi.Roster) error {
+	for i, ref := range refs {
+		if ctx.Err() != nil {
+			summary.Pending += len(refs) - i
+			return ErrBudget
+		}
+		fresh, err := s.recentlyEnriched(ctx, ref.Key)
+		if err != nil {
+			s.logger().Warn("bnetimport", "op", "enrich_freshness", "key", ref.Key, "err", err)
+		}
+		if fresh {
+			continue
+		}
+		guildWritten, unavailable, err := s.enrichCharacter(ctx, ref, rosterCache)
+		if err != nil {
+			if errors.Is(err, context.DeadlineExceeded) || ctx.Err() != nil {
+				summary.Pending += len(refs) - i
+				return ErrBudget
+			}
+			s.logger().Warn("bnetimport", "op", "enrich_character", "key", ref.Key, "user_id", ref.UserID, "err", err)
+			continue
+		}
 		if guildWritten {
 			summary.Guilds++
 		}

@@ -16,8 +16,10 @@ type Roster struct {
 }
 
 // RosterMember is one row of a guild roster. Rank 0 is the guild master
-// (spec §0).
+// (spec §0). ID is Blizzard's character id, the match a realmless Forever
+// roster is read by; Name is the full "Name Surname" when a surname is sent.
 type RosterMember struct {
+	ID        int64
 	Name      string
 	RealmSlug string
 	Level     int
@@ -35,8 +37,10 @@ type guildRosterResponse struct {
 	} `json:"guild"`
 	Members []struct {
 		Character struct {
-			Name  string `json:"name"`
-			Realm struct {
+			ID      int64  `json:"id"`
+			Name    string `json:"name"`
+			Surname string `json:"surname"`
+			Realm   struct {
 				Slug string `json:"slug"`
 			} `json:"realm"`
 			Level         int `json:"level"`
@@ -48,10 +52,17 @@ type guildRosterResponse struct {
 	} `json:"members"`
 }
 
-// GuildRoster reads a guild's public roster.
+// GuildRoster reads a guild's public roster. A realmed guild answers
+// /data/wow/guild/{realm}/{guild}/roster; with realmSlug empty (a Forever
+// guild whose profile names no realm) the realm segment is left out. That
+// realmless form is unconfirmed on the live API (2026-11-03): a 404 is soft
+// for every caller, so the import simply writes no membership.
 func (c *Client) GuildRoster(ctx context.Context, region, realmSlug, guildName string) (Roster, error) {
-	u := c.APIHost(region) + "/data/wow/guild/" + url.PathEscape(realmSlug) + "/" +
-		url.PathEscape(GuildSlug(guildName)) + "/roster?namespace=" + c.ProfileNamespace(region)
+	path := "/data/wow/guild/"
+	if realmSlug != "" {
+		path += url.PathEscape(realmSlug) + "/"
+	}
+	u := c.APIHost(region) + path + url.PathEscape(GuildSlug(guildName)) + "/roster?namespace=" + c.ProfileNamespace(region)
 	var res guildRosterResponse
 	if err := c.getJSON(ctx, "guild_roster", u, &res); err != nil {
 		return Roster{}, err
@@ -59,7 +70,7 @@ func (c *Client) GuildRoster(ctx context.Context, region, realmSlug, guildName s
 	roster := Roster{GuildName: res.Guild.Name, GuildID: res.Guild.ID, RealmSlug: res.Guild.Realm.Slug}
 	for _, m := range res.Members {
 		roster.Members = append(roster.Members, RosterMember{
-			Name: m.Character.Name, RealmSlug: m.Character.Realm.Slug,
+			ID: m.Character.ID, Name: FullName(m.Character.Name, m.Character.Surname), RealmSlug: m.Character.Realm.Slug,
 			Level: m.Character.Level, ClassID: m.Character.PlayableClass.ID, Rank: m.Rank,
 		})
 	}

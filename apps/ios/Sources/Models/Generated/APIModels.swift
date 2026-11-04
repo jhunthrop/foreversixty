@@ -7,11 +7,13 @@ public struct AccountCharacter: Codable, Sendable, Equatable {
     public let key: String
     public let region: String
     public let ruleset: String
+    /// The full display name, first name and surname ("Elyra Duskvale"); show it whole.
     public let name: String
     /// Which path last wrote this character: export (addon or companion) or bnet.
     public let source: String
     /// The class slug
     public let className: String?
+    /// Omitted for Forever characters (rulesets replace realms).
     public let realm: String?
     public let level: Int?
     public let faction: String?
@@ -4181,7 +4183,7 @@ public struct Me: Codable, Sendable, Equatable {
     public let discordLinkSuggested: String?
     /// Omitted until the account picks a main.
     public let mainCharacterKey: String?
-    /// Omitted when the Battle.net import never ran.
+    /// When the Battle.net import last ran. Every Battle.net sign-in imports the account's Forever characters (us, eu, tw); omitted when it never ran.
     public let bnetImportedAt: Date?
     /// Omitted when the server has no sims store configured.
     public let serverSims: ServerSimsUsage?
