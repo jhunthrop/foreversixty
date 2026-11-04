@@ -33,16 +33,16 @@ sources:
   - label: 'Icy Veins, the racial rework'
     url: https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/
     kind: community
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty Protection rotation'
+  - label: 'Forever Sixty, how Protection plays'
     url: https://foreversixty.gg/sim/specs
     kind: site
-  - label: 'Forever Sixty raid loot'
+  - label: 'Forever Sixty, where the raid gear drops'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -85,7 +85,9 @@ Protection is the shield tank: Defensive Stance all fight, Shield Slam and Reven
 
 The Arms points go to **Deflection** for 5% parry, **Improved Heroic Strike** for a cheaper rage dump, and **Improved Rend** into **Deep Wounds**. Improved Tactical Mastery and Anger Management are left out: a tank who stays in Defensive Stance gets more from Bastion's last ranks and Improved Bloodrage.
 
-Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you pull with Charge, **Improved Shield Bash** for a boss with a cast you must silence, and **Iron Will** for a fight full of stuns and fears. On progression bosses, take two points of **Improved Shield Wall** out of Improved Thunder Clap: Shield Wall comes back every 4 minutes instead of every 15, so a long fight gets it two or three times, and each Thunder Clap only costs 4 more rage. Open the [planner](/planner?class=warrior) to see the build point by point.
+Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you pull with Charge, **Improved Shield Bash** for a boss with a cast you must silence, and **Iron Will** for a fight full of stuns and fears. On progression bosses, take two points of **Improved Shield Wall** out of Improved Thunder Clap: Shield Wall comes back every 4 minutes instead of every 15, so a long fight gets it two or three times, and each Thunder Clap only costs 4 more rage.
+
+[Open the planner](/planner?class=warrior) to change the build.
 
 ## Rotation and priority
 
@@ -121,4 +123,4 @@ Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feed
 
 ## Leveling
 
-Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, take Improved Bloodrage, Shield Specialization and Anticipation first. Shield Slam is the 31st point, so it arrives at 40; Bastion, then Improved Heroic Strike and Deflection in Arms, fill the levels after it.
+Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, take Improved Bloodrage, Shield Specialization and Anticipation first. Shield Slam is the 31st point, so it arrives at 40. The last point of Focused Rage comes at 41, then Bastion, and the levels after that go to Improved Heroic Strike, Deflection and Deep Wounds in Arms.

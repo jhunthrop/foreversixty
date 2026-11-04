@@ -27,16 +27,16 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/talents/paladin.json'
+  - label: 'Forever Sixty, paladin talents'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
-  - label: 'Forever Sixty stat weights, data/curated/specs.json'
+  - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/data/curated/specs.json
     kind: site
-  - label: 'Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json'
+  - label: 'Forever Sixty, raids by phase'
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/races.json'
+  - label: 'Forever Sixty, races'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---

@@ -3,8 +3,8 @@ title: Survival Hunter in Forever
 classSlug: hunter
 spec: survival
 role: dps
-build: 'FS1:1.60.1.70755:hunter:dwarf:5/005005001/500230231051222151:'
-recommendedRaces: [dwarf, troll]
+build: 'FS1:1.60.1.70755:hunter:night-elf:5/005005001/500230231051222151:'
+recommendedRaces: [night-elf, orc]
 statPriority: [Hit, Critical strike, Agility, Intellect, Strength, Attack power, Attack speed]
 description: 'How to play a melee Survival Hunter in Forever: talents, the Raptor Strike and Mongoose Bite priority, Lone Wolf, stats, consumables and race picks.'
 updated: 2026-11-03
@@ -19,13 +19,13 @@ sources:
   - label: 'Wowhead Forever, Mongoose Bite and Counterattack tooltips'
     url: https://www.wowhead.com/forever/spell=1495
     kind: community
-  - label: 'Forever Sixty build data, talents/hunter.json'
+  - label: 'Forever Sixty, talent trees'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, spellconst/hunter.json'
+  - label: 'Forever Sixty, spell values'
     url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, races.json'
+  - label: 'Forever Sixty, racial abilities'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
   - label: 'Forever Sixty, stat weights'
@@ -73,7 +73,7 @@ Thirty-five points in Survival take every melee damage talent, eleven in Marksma
 
 Careful Aim (5 points) turns Intellect into attack power and is the way to Lone Wolf. Lethal Attacks (5 points) is 5% crit on everything. Surefooted is 3% hit, Strider Kick is a third melee special, and Clever Traps and Survivalist's Discipline turn Immolation Trap into a damage button. Counterattack comes with Deterrence on the way down. Improved Tracking (5 points) is 5% damage against the creature type you track. Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead, which takes in most raid bosses, so set it to the boss's type before the pull whenever Track covers it.
 
-The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk Eye is range on a bow you never fire, and Efficiency's 15% comes on top of Resourcefulness's 60%, so it saves little. The same build is the raid build. Leave Rapid Killing out there too: a shorter Rapid Fire does not pay for the points it costs.
+The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk Eye is range on a bow you never fire, and Efficiency's 15% comes on top of Resourcefulness's 60%, so it saves little. The same build is the raid build. Rapid Killing sits on Lone Wolf's row, and Lethal Attacks and Careful Aim are exactly the ten points that open it, so its two points would have to come out of the Survival talents or Deadly Aspects, and two fewer points of Deadly Aspects cost you more than a shorter Rapid Fire gives back.
 
 ## Rotation and priority
 
@@ -93,11 +93,11 @@ You fire no shots in this spec. Your bow or gun is there for its stats.
 
 ## Stat priority
 
-Hit first until you reach 9% hit, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it and 1% is built in, so you need 5% from gear. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Then crit, which Predator's Edge and Savage Strikes make strong, and Agility, which Lightning Reflexes raises by 15%. Intellect is attack power through Careful Aim. Strength and plain attack power are the weakest per point. Haste is rare on gear but strong when you find it.
+Hit first until you reach 9% hit, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Then crit, which Predator's Edge and Savage Strikes make strong, and Agility, which Lightning Reflexes raises by 15%. Intellect is attack power through Careful Aim. Strength and plain attack power are the weakest per point. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
-Hunters wear leather until 40 and mail from 40. Survival dual-wields, and Predator's Edge's 50% off-hand bonus makes the off hand worth almost as much as the main hand. The ranged slot is a stat stick. The full lists by level are on the [Survival best in slot page](/bis/hunter/survival).
+Hunters wear leather until 40 and mail from 40. Survival dual-wields, and Predator's Edge's 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick. The full lists by level are on the [Survival best in slot page](/bis/hunter/survival).
 
 ## Enchants and consumables
 
@@ -107,9 +107,9 @@ Forever's damage potions share the two-minute potion cooldown with mana potions.
 
 ## Races
 
-Dwarf for the Alliance: Artisan's Precision is 1% hit, which is worth more to a dual-wielder than to anyone. Night Elf's Elune's Light (10% crit for 15 seconds) lines up with Rapid Fire, and Human's Ruthless is 1% crit. Humans can be Hunters for the first time in Forever.
+Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, and Predator's Edge makes every crit count, so press it with Rapid Fire on the pull. Human's Ruthless is next, and Dwarf's 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.
 
-Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on your swings. Orc's Blood Fury is the other good pull cooldown.
+Orc for the Horde: Blood Fury is 10% attack power for 15 seconds every two minutes, on the pull with Rapid Fire and again at two and four minutes. Troll is right behind: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on your swings.
 
 Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds both of your weapons.
 

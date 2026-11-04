@@ -17,13 +17,13 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights, data/curated/stat-weights.json'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty rotation data, data/curated/apl/mage-fire.json'
+  - label: 'Forever Sixty, rotation'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json'
+  - label: 'Forever Sixty, raid loot tables'
     url: https://foreversixty.gg/sources
     kind: site
 ---
@@ -66,7 +66,7 @@ Fire takes exactly 31 points to Combustion and skips Blast Wave and Improved Fla
 
 The other 20 points buy mana. Seventeen in Arcane reach **Arcane Concentration** (5 points, a free spell 10% of the time) and two ranks of **Arcane Meditation** (a third of your mana regeneration keeps running while you cast). With Mage Armor on top, most of your regeneration runs through the whole fight. Three go into **Precision** in Frost for 6% hit.
 
-The 60 build pays that toll with a point in **Impact**, a 3% chance to stun a mob for 2 seconds while you farm, and a point in Accelerant. The raid build pays it with two ranks of **Burning Soul** instead: 20% less threat from your Fire spells and a 47% chance to keep a cast from being pushed back. It also moves the point of Magic Absorption into a third rank of Arcane Resilience. Build it in the [talent planner](/planner?class=mage).
+The 60 build pays that toll with a point in **Impact**, a 3% chance to stun a mob for 2 seconds while you farm, and a point in Accelerant. The raid build pays it with two ranks of **Burning Soul** instead: 20% less threat from your Fire spells and a 47% chance to keep a cast from being pushed back. It also moves the point of Magic Absorption into a third rank of Arcane Resilience. [Open the planner](/planner?class=mage) to change the build.
 
 ## Rotation and priority
 
@@ -78,9 +78,9 @@ The 60 build pays that toll with a point in **Impact**, a 3% chance to stun a mo
 
 **Ignite and threat.** Ignite's damage is your damage and your threat. Fire mages pull more than anyone else in the first twenty seconds, mostly off a Combustion window that crits three times in a row. You have no Ice Block and no Invisibility, so the only fix is not to pull: watch your threat, hold Combustion on a fresh tank, and stop casting for a global if you are close. Burning Soul takes some off the top.
 
-**Mana in a 3 minute fight.** Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The Robe of the Archmage has its own 5 minute cooldown, but using any of the three locks the other two out for a minute. Evocation is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep Fire Blast on cooldown even when you are short: skipping it saves less damage than it costs. Never downrank Scorch; the top rank is already the cheapest damage you have.
+**Mana in a 3 minute fight.** Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The Robe of the Archmage has its own 5 minute cooldown, but using any of the three locks the other two out for a minute. Evocation is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep Fire Blast on cooldown even when you are short: every cast is a Heating Up stack, and the mana you would save is worth less than the Pyroblasts you would lose. Never downrank Scorch; the top rank is already the cheapest damage you have.
 
-**AoE.** Flamestrike is a 3 second cast that burns the ground for 8 seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range. Flamestrike costs 990 mana, so two of them and you are on the wand. Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
+**AoE.** Flamestrike is a 3 second cast that burns the ground for 8 seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range. Flamestrike costs 990 mana, so a big pull eats a third of your bar before the Arcane Explosions start. Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
 
 **Execute and movement.** Fire has no execute. On the move, keep Fire Blast on cooldown and save a Pyroblast on 3 Heating Up stacks for the next stop. Scorch's stacks last 30 seconds, so a short movement phase does not drop them.
 

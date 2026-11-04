@@ -16,10 +16,10 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty talent planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -60,7 +60,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 - **Holy Specialization** (5 points), **Divine Fury** (5 points) and **Improved Healing** (3 points): more crits for Divine Aegis, faster Heal and Greater Heal, and 15% off Lesser Heal, Heal, Greater Heal and Penance.
 - **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and casts that raid damage rarely pushes back.
 
-**Power Infusion** is not in the build because it adds nothing to your own healing. In a raid with a mage or warlock worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to your best caster on their burst. Open the [planner](/planner?class=priest) to make the swap.
+**Power Infusion** is not in the build. It works on yourself, 15 seconds of 20% more healing every 3 minutes, but on a mage or warlock's burst it is worth far more to the raid. When you have a caster worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to them on their burst. [Open the planner](/planner?class=priest) to make the swap.
 
 ## Rotation and priority
 
@@ -84,7 +84,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Inner Focus** on a Greater Heal or a Prayer of Healing: it makes the spell free and adds 25% crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
 
-**Mana.** Shields and Penance are cheap; the fillers are what drain you. When your bar falls behind the fight, stop topping off the party and heal only real holes. Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead. Shadowfiend cannot be learned at launch.
+**Mana.** Shields and Penance are cheap; the fillers are what drain you. When your bar falls behind the fight, stop topping off the party and heal only real holes. Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead.
 
 ## Stat priority
 

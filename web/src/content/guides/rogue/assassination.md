@@ -75,7 +75,7 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 ### The priority
 
-**Shank** on cooldown, right behind your racial and trinket: 5 energy for 25 back, it cannot miss, and with Venom your poisons hit 30% harder and land 20% more often for the next 6 seconds. At four or more combo points, Cold Blood if it is ready, then the finisher: Slice and Dice when it is down or about to fall off, Eviscerate otherwise. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
+**Shank** on cooldown, right behind your racial and trinket: 5 energy for 25 back, it cannot miss, and with Venom your poisons hit 30% harder and land 20% more often for the next 6 seconds. At four or more combo points, Slice and Dice first if it is down or about to fall off. Otherwise press Cold Blood if it is ready and Eviscerate straight after. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
 
 Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, so you go from nothing to 2 or 3, then to 4 or 5: waiting for exactly five wastes a Mutilate. Rupture and Expose Armor do not make the list. Forever's Expose Armor does not stack with Sunder, so leave it to your warriors.
 
@@ -116,4 +116,4 @@ Night Elf on Alliance and Troll on Horde. **Elune's Light** gives 10% crit for 1
 
 ## Leveling
 
-Level Combat or Assassination with Sinister Strike until 40. Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Relentless Strikes is the energy that carries you between pulls. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.
+Level Combat or Assassination with Sinister Strike until 40. Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Relentless Strikes arrives at the end of the climb, at 39 to 44, and from then on most finishers hand their energy back. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.

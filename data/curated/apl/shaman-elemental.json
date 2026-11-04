@@ -203,7 +203,7 @@
         }
       },
       {
-        "notes": "Chain Lightning on two or more targets: it hits each of them for more than a Lightning Bolt does.",
+        "notes": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
         "action": {
           "condition": {
             "cmp": {

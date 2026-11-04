@@ -68,7 +68,7 @@ In the raid build, Lethality makes Backstab crits hit 20% harder, and with Punct
 
 ### The pull
 
-Check your poisons and stones before the pull. Stealth before the pull, walk in behind the boss, and open with **Garrote** once the tank has the boss. Garrote is a bleed, so the boss having no Sunders on it yet costs it nothing, and it gives you the combo point for Slice and Dice. Backstab out of stealth is the second best opener; Ambush is the weakest one for Combat, because Puncturing Wounds and Lethality never touch it. Cheap Shot is for trash: bosses are immune to stuns.
+Check your poisons and stones before the pull. Stealth before the pull, walk in behind the boss, and open with **Garrote** once the tank has the boss. Garrote is a bleed, so the boss having no Sunders on it yet costs it nothing, and it gives you the combo point for Slice and Dice. Ambush and Backstab from stealth both hit into armor that has no shred on it yet, and neither leaves a bleed behind. Cheap Shot is for trash: bosses are immune to stuns.
 
 Every rogue picks up **Poised** at 18: at full energy out of combat, your next ability costs less. Stand at full energy in stealth before you open.
 
@@ -117,4 +117,4 @@ Night Elf on Alliance and Troll on Horde. **Elune's Light** is 10% crit for 15 s
 
 ## Leveling
 
-Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. Open with Cheap Shot or Garrote from stealth, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Efficient Strikes and Aggression make every Sinister Strike cheaper and harder, and Improved Gouge and Remorseless Attacks make the Gouge trick and back-to-back pulls faster. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and Vanish get you out of the pulls that go wrong.
+Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. Open with Cheap Shot or Garrote from stealth, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Efficient Strikes at 13 and Aggression by 30 make every Sinister Strike cheaper and harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and Vanish get you out of the pulls that go wrong.

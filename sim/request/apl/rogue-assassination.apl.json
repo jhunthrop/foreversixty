@@ -70,7 +70,7 @@
           }
         }
       },
-      "notes": "Cold Blood at four or more combo points, right before the Eviscerate. It is off the global cooldown and costs nothing, so it waits for the finisher."
+      "notes": "Cold Blood at four or more combo points when the finisher is Eviscerate, never ahead of a Slice and Dice. It is off the global cooldown and costs nothing."
     },
     {
       "action": {

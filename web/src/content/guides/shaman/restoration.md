@@ -16,10 +16,10 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -32,7 +32,7 @@ Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal throug
 
 - Chain Heal cast on a target with your Riptide heals it 25% more
 - Chain Heal heals three people for one cast
-- Water Shield turns every hit you take and every heal that crits into mana
+- Water Shield turns the hits you take and your critical heals into mana, three globes at a time
 - Nature's Swiftness makes your biggest Healing Wave instant when the tank is about to die
 
 ### Weaknesses
@@ -76,7 +76,7 @@ Ancestral Healing takes the last three points: 25% more armor on your target for
 3. Healing Wave when the tank is down to 60%. Drop a rank when your mana is behind the fight, but never below rank 8. Lesser Healing Wave is the fast heal when it is down to 30% and the next hit could kill it.
 4. Nature's Swiftness into your highest rank of Healing Wave when the tank is under 25%. Keep it for exactly that, and never spend it on a low rank.
 
-**Low ranks.** A rank keeps your whole healing bonus until you are 17 levels past the level you learned it, then loses a twentieth of it every level after, so at 60 a rank learned at 23 or earlier gets none of your gear. Check the tooltip on a geared 60. The ranks that keep all of it at 60 are Healing Wave 8 to 10, Lesser Healing Wave 4 to 6 and Chain Heal 2 and 3. Healing Wave 7 and Chain Heal 1, both learned at 40, keep most of it. Everything below those heals for little more than the number in its tooltip, however much healing gear you wear.
+**Low ranks.** A rank keeps your whole healing bonus until you are 17 levels past the level you learned it, then loses a twentieth of it every level after, so at 60 a rank learned at 23 or earlier gets none of your gear. Check the tooltip on a geared 60. The ranks that keep all of it at 60 are Healing Wave 8 to 10, Lesser Healing Wave 4 to 6 and Chain Heal 2 and 3. Healing Wave 7 and Chain Heal 1, both learned at 40, keep most of it, Lesser Healing Wave 3 about two thirds and Healing Wave 6 under half. Anything learned at 23 or earlier heals for its tooltip number and nothing more, however much healing gear you wear.
 
 **Everyone else.** Heal them directly only while your mana is above half: Riptide when one is under 50%, Lesser Healing Wave under 25%. Otherwise Chain Heal is how they get healed.
 
@@ -114,4 +114,4 @@ Herbalism and Alchemy keep you in Major Mana Potions and flasks, which is most o
 
 ## Leveling
 
-Put your points into Restoration from the first one. Improved Healing Wave and Tidal Focus make every heal faster and cheaper, Water Shield is in by 20, Mindfulness is full by 30, and Mana Tide Totem comes at 30. You quest with Lightning Bolt, your shocks and your weapon, and you can heal any dungeon the day you walk in. Lesser Healing Wave and Healing Stream Totem come at 20 and Chain Heal at 40. Riptide, the bottom of the tree, is in by 50, and your last ten points, from 51, go to Thundering Strikes and Ancestral Knowledge.
+Put your points into Restoration from the first one. Improved Healing Wave makes Healing Wave faster and Tidal Focus makes every heal cheaper; Water Shield is in at 20, Mindfulness is full by 23, and Mana Tide Totem comes at 25, the first level the fourth row opens. Ancestral Healing and Healing Focus fill out the rest by 30. You quest with Lightning Bolt, your shocks and your weapon, and you can heal any dungeon the day you walk in. Lesser Healing Wave and Healing Stream Totem come at 20 and Chain Heal at 40. Riptide, the bottom of the tree, is in by 50. Train its second rank the same day and its third at 60; the talent only teaches the first. Your last ten points, from 51, go to Thundering Strikes and Ancestral Knowledge.

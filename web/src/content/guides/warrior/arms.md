@@ -3,9 +3,9 @@ title: Arms Warrior in Forever
 classSlug: warrior
 spec: arms
 role: dps
-build: 'FS1:1.60.1.70755:warrior:human:13323213032215201/0505/205:'
-raidBuild: 'FS1:1.60.1.70755:warrior:human:34323213032215201/0505002/2:'
-recommendedRaces: [human, orc]
+build: 'FS1:1.60.1.70755:warrior:high-order-skyborne:13323213032215201/0505/205:'
+raidBuild: 'FS1:1.60.1.70755:warrior:high-order-skyborne:34323213032215201/0505002/2:'
+recommendedRaces: [high-order-skyborne, windshaper-skyborne]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'
 updated: 2026-11-02
@@ -20,19 +20,22 @@ sources:
   - label: 'Warcraft Tavern: WoW Classic PvE DPS Warrior guide, Arms section'
     url: https://www.warcrafttavern.com/wow-classic/guides/pve-dps-warrior/
     kind: community
+  - label: 'Warcraft Tavern, Forever warrior guide'
+    url: https://www.warcrafttavern.com/forever/guides/warrior/
+    kind: community
   - label: 'Icy Veins, the racial rework'
     url: https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/
     kind: community
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty Arms rotation'
+  - label: 'Forever Sixty, how Arms plays'
     url: https://foreversixty.gg/sim/specs
     kind: site
-  - label: 'Forever Sixty raid loot'
+  - label: 'Forever Sixty, where the raid gear drops'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -76,11 +79,13 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 
 The level 60 build puts one point in **Improved Heroic Strike**, three in **Deflection** and five in **Iron Will**, which takes 15% off every stun and fear on you.
 
-The raid build drops Iron Will for two more points of **Improved Heroic Strike**, so your rage dump costs 3 less, a fourth point of **Deflection** for the times a boss turns on you, and two points of **Blood Craze**, which give back a little health after big hits. Open the [planner](/planner?class=warrior) to see both builds point by point.
+The raid build drops Iron Will for two more points of **Improved Heroic Strike**, so your rage dump costs 3 less, a fourth point of **Deflection** for the times a boss turns on you, and two points of **Blood Craze**, which give back a little health after big hits.
+
+[Open the planner](/planner?class=warrior) to change the build.
 
 ## Rotation and priority
 
-**The pull.** Charge on the pull. In a raid that means once the tank has engaged the boss, never before. Out in the world, Charge is how you pull. Charge only works out of combat, and Bloodrage puts you in combat, so a Bloodrage before the pull costs you the Charge. Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you; then press Bloodrage as your first swing lands. That is a Rend and a Mortal Strike in the first two globals.
+**The pull.** Charge on the pull. In a raid that means once the tank has engaged the boss, never before. Out in the world, Charge is how you pull. Charge only works out of combat, and Bloodrage puts you in combat, so a Bloodrage before the pull costs you the Charge. Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you; then press Bloodrage as your first swing lands. That is a shout, a Rend and a Mortal Strike in your first three globals, or Rend and Mortal Strike in the first two when another warrior's shout is already on you.
 
 **Battle Stance.** Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target. Press Overpower the moment it lights up, even ahead of Mortal Strike: it is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later. Mortal Strike goes on cooldown otherwise. With Improved Slam, Slam fills the gap between Mortal Strikes.
 
@@ -104,7 +109,9 @@ Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take
 
 ## Races
 
-Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes: press it with Recklessness at 20%. Human's Ruthless is a flat 1% crit. Troll's Berserking is 10% attack speed for 15 seconds every 3 minutes, which means more swings and more rage in the execute phase.
+Skyborne is the Arms pick on both factions: High Order for the Alliance, Windshaper for the Horde. Wind Blessed is 2% haste that never turns off, so every fight gets more swings and more rage from the first second, with no cooldown to line up. Elemental Insight adds 5% damage against Elementals on top.
+
+If you want a different look, the gap is small. On the Alliance, Night Elf comes next: Elune's Light is 10% crit for 15 seconds every 3 minutes, so press it with Recklessness at 20%. Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, sit just behind it, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds, and runs a close second, then Orc, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes to press with Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails the races that are always on.
 
 ## Professions
 
@@ -112,4 +119,4 @@ Blacksmithing and Mining. Blacksmithing makes Arcanite Champion, and Mining feed
 
 ## Leveling
 
-Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, Victory Rush after every kill, and Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Take Improved Overpower and Bloodthrill as soon as the build reaches them: together they turn every pull into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.
+Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, and Victory Rush whenever it is up after a kill: it heals 10% and comes back every 30 seconds, so open the next pull with it if the last one died fast. Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Improved Overpower comes in at 22 and Bloodthrill at 33, after Deep Wounds and Impale; once both are in, keep Rend on everything and every pull turns into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.
