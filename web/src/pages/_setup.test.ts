@@ -451,14 +451,16 @@ describe('/setup first-run copy', () => {
 
   it('says once, the way the addon welcome does, how a character reaches the site', () => {
     expect(addonCopy.setupHowItArrives).toBe(
-      'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (see Try an export below).',
+      'Your characters come in from Battle.net when you sign in. The addon adds bags and bank when you log out, and the companion sends them. No companion? Paste an export instead (see Try an export below).',
     );
     expect(html.split('No companion? Paste an export instead (see\u00A0').length - 1).toBe(1);
   });
 
   it('drops the Blizzard status sentence from step 1', () => {
     expect(html).not.toMatch(/waits on Blizzard|Character import/i);
-    expect(addonCopy.setupSignInBody).toBe('Saves your builds, sims and logs to your account.');
+    expect(addonCopy.setupSignInBody).toBe(
+      'Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.',
+    );
   });
 });
 
@@ -470,7 +472,9 @@ describe('/setup as three steps (W.9)', () => {
 
   it('titles the page "Get set up" with the one-line subline, not the old lede', () => {
     expect(addonCopy.setupPageTitle).toBe('Get set up');
-    expect(addonCopy.setupSubline).toBe('Three steps. The first two take two minutes.');
+    expect(addonCopy.setupSubline).toBe(
+      'Signing in with Battle.net brings your characters. The addon and companion are optional.',
+    );
     expect(html).toContain(addonCopy.setupSubline);
   });
 
@@ -587,7 +591,7 @@ describe('/setup as three steps (W.9)', () => {
 
   it('says which of the steps is optional', () => {
     expect(addonCopy.setupCompanionNote).toBe(
-      'Sends your character automatically and logs live. Without it, paste an export after each change.',
+      'Optional. Sends bags, bank and live logs after every session.',
     );
   });
 });
@@ -646,10 +650,17 @@ describe('the setup done lines (progress.ts)', () => {
     });
   });
 
-  it('says what to do when no addon character has arrived', () => {
+  it('says the addon is optional once Battle.net brought the characters', () => {
     expect(addonLine(me([character('Blizzard Only', '2026-10-20T11:59:00Z', 'blizzard')]), NOW)).toEqual({
       done: false,
-      text: 'No character yet. Log out once with the addon on and the companion running, or paste an export.',
+      text: 'Your characters are in from Battle.net. The addon adds bags, bank and live sync.',
+    });
+  });
+
+  it('says what to do when the account has no character at all', () => {
+    expect(addonLine(me([]), NOW)).toEqual({
+      done: false,
+      text: 'No character yet. Refresh from Battle.net, or install the addon and paste an export.',
     });
   });
 

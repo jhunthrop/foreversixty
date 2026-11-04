@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:rogue:night-elf:32530200251551031/302303/011:'
 raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:00530311251551031/302302/005:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
-description: 'Assassination Rogue for Forever: Mutilate on two daggers, Seal Fate, Cold Blood Eviscerates, poisons on each hand with Shank and Venom behind them, and Relentless Strikes for energy.'
+description: 'Assassination Rogue for Forever: Mutilate on two daggers, Seal Fate, Cold Blood Eviscerates, Shank and Venom behind your poisons, Relentless Strikes for energy.'
 updated: 2026-11-02
 confidence: inferred
 sources:

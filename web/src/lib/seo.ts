@@ -10,9 +10,18 @@ const TITLE_GAME_TAG = 'WoW Forever';
 export const HOME_TITLE = `${SITE_NAME} · Play your class better in ${GAME_NAME}`;
 export const HOME_DESCRIPTION = `Best in slot gear, talent builds, a simulator, rankings and logs for ${GAME_NAME}. Play your class better.`;
 
-/** The <title> and og:title of a page: the home page's own line, else "<page> · Forever Sixty · WoW Forever". */
+/** Past this many characters a search result cuts the title off, so a long one sheds the brand. */
+export const TITLE_MAX_LENGTH = 60;
+
+/**
+ * The <title> and og:title of a page: the home page's own line, else
+ * "<page> · Forever Sixty · WoW Forever". A title that would run past TITLE_MAX_LENGTH keeps the
+ * game tag (what people search for) and drops the brand, which og:site_name still carries.
+ */
 export function pageTitle(path: string, title: string): string {
-  return path === '/' ? HOME_TITLE : `${title} · ${SITE_NAME} · ${TITLE_GAME_TAG}`;
+  if (path === '/') return HOME_TITLE;
+  const branded = `${title} · ${SITE_NAME} · ${TITLE_GAME_TAG}`;
+  return branded.length <= TITLE_MAX_LENGTH ? branded : `${title} · ${TITLE_GAME_TAG}`;
 }
 
 const publisher = {

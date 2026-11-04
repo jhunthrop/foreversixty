@@ -161,10 +161,9 @@
   const shownOffer = $derived(answeredOffer ?? me?.seat_offer ?? null);
   const planLine = $derived(me === null ? undefined : accountPlanLine(me, new Date(), viewerZone()));
   const isSupporter = $derived(me?.entitlements?.supporter_mark === true);
+  const viaBattlenet = $derived(me?.user.battletag !== undefined && me?.user.battletag !== null);
   const signedInMethod = $derived(
-    me?.user.battletag !== undefined && me?.user.battletag !== null
-      ? accountPageCopy.signedInWithBattlenet
-      : accountPageCopy.signedInByEmail,
+    viaBattlenet ? accountPageCopy.signedInWithBattlenet : accountPageCopy.signedInByEmail,
   );
 
   // The hero band's own read of the current-character pointer (brief 2026-09-22 §B4/B5) --
@@ -325,7 +324,7 @@
       window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
       signedInBanner = accountPageCopy.signedInBanner(main.name);
     } else {
-      signedInBanner = accountPageCopy.signedInBannerEmpty(accountNameOf(me));
+      signedInBanner = accountPageCopy.signedInBannerEmpty(accountNameOf(me), viaBattlenet);
     }
     window.history.replaceState({}, '', window.location.pathname);
   });
@@ -673,7 +672,7 @@
                     </div>
                   {:else if heroPath !== null}
                     <div class="flex min-h-11 flex-wrap items-center gap-3 md:min-h-0">
-                      <CharacterHandoffLinks path={heroPath} buttons />
+                      <CharacterHandoffLinks path={heroPath} buttons fromBattlenet={hero.source === 'bnet'} />
                       <a
                         class="inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
                         href="/logs"
@@ -708,6 +707,7 @@
                 currentKey={hero?.key}
                 onSetMain={setMain}
                 logCoach={me?.entitlements?.log_coach === true}
+                {viaBattlenet}
               />
             </div>
 

@@ -4,10 +4,13 @@
 
 export const characterListCopy = {
   heading: 'Characters',
-  /** Blizzard serves no Forever character data yet (the API's import is off until it
-   *  does), so the empty state sends people to the addon's paste box, not to Battle.net. */
+  /** Battle.net is the primary path (2026-11-03): a Battle.net sign-in imports every Forever
+   *  character, so an empty list means no Forever character on that account yet, an email
+   *  sign-in, or a region Blizzard does not serve (KR); the addon covers the last two. */
   empty:
-    'No characters yet. Install the addon and the companion, then log out once in game; your characters appear here within a minute. Or paste an export.',
+    'No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.',
+  emptyByEmail:
+    'No characters yet. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.',
   getSetUp: 'Get set up',
   getSetUpHref: '/setup',
   pasteAnExport: 'Paste an export',
@@ -24,11 +27,11 @@ export const characterListCopy = {
   /** spec 2026-09-22 §7.3, shown on /account after a Battle.net refresh redirect. */
   refreshedToast: 'Characters refreshed from Battle.net.',
   /** spec 2026-09-22 §3.3: the export "how" explained once, here, for every row. */
-  introBattlenetLine: 'Characters come from the addon; the companion syncs them after you log out.',
+  introBattlenetLine: 'Your characters come from Battle.net each time you sign in.',
   introInstallAddonLink: 'Install the addon',
-  introAddonTail: 'to export gear, talents, bags and bank, then',
-  introPasteLink: 'paste an export',
-  introPasteTail: 'to add a character here.',
+  introAddonTail: 'for bags, bank and live sync. In Korea, or Battle.net is down?',
+  introPasteLink: 'Paste an export',
+  introPasteTail: 'instead.',
   /** The account rows' and the sim landing rows' build-source pill (spec 2026-09-22 §3.1). */
   battlenetSource: 'Battle.net',
   addonSource: 'Addon',

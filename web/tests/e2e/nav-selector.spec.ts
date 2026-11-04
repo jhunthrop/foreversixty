@@ -662,7 +662,7 @@ test.describe('signed out and expired', () => {
     await expect(selector(page)).not.toContainText('Sign in');
     await selector(page).click();
     await expect(panel(page).getByTestId('selector-none')).toContainText(
-      'Your characters appear here once the addon has seen them.',
+      'Your Forever characters arrive when you sign in with Battle.net, or once the addon has seen them.',
     );
     await expect(panel(page).getByTestId('selector-get-set-up')).toHaveAttribute('href', '/setup');
     await expect(panel(page).getByTestId('selector-account')).toHaveAttribute('href', '/account');

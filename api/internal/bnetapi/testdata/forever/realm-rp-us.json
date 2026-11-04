@@ -1,0 +1,28 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://us.api.blizzard.com/data/wow/realm/camwow-us1-realm-10-rp?namespace=dynamic-forever-us"
+    }
+  },
+  "id": 6928,
+  "region": {
+    "key": {
+      "href": "https://us.api.blizzard.com/data/wow/region/91?namespace=dynamic-forever-us"
+    },
+    "name": "CAMWOW North America",
+    "id": 91
+  },
+  "connected_realm": {
+    "href": "https://us.api.blizzard.com/data/wow/connected-realm/6928?namespace=dynamic-forever-us"
+  },
+  "name": "CAMWOW US1 Realm 10 RP",
+  "category": "United States",
+  "locale": "enUS",
+  "timezone": "America/Chicago",
+  "type": {
+    "type": "RP",
+    "name": "Roleplaying"
+  },
+  "is_tournament": false,
+  "slug": "camwow-us1-realm-10-rp"
+}

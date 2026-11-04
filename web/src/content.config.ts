@@ -40,7 +40,12 @@ const changelog = defineCollection({
 // frontmatter against the exact same schema without going through Astro's content layer --
 // `getCollection` needs the dev/build pipeline and returns nothing under plain `vitest run`,
 // for every collection in this file, not only this one (see src/content/guides/_sections.test.ts).
+/** A search result shows about this many characters of a meta description, then cuts it off. */
+export const META_DESCRIPTION_MAX = 160;
+
 export const guideSchema = factSchema.extend({
+  /** The guide's meta description, so it must fit a search snippet whole. */
+  description: z.string().min(1).max(META_DESCRIPTION_MAX).optional(),
   classSlug: z.string(),
   // Present on every spec guide (e.g. `warrior/fury`), absent on a class landing page
   // (`warrior/index`), which covers the whole class rather than one tree.

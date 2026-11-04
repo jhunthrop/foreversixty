@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:shaman:dwarf:5510331300001351/05/053052:'
 raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:5510331300001351/055/053002:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Intellect, Spell power, Hit, Nature power, Critical strike, Spell haste, Spell penetration]
-description: 'Elemental Shaman in Forever: the raid build, Flame Shock up and Lightning Bolt behind Lightning Mastery, Lightning Bolt ranks for mana, totems, stats, races and leveling.'
+description: 'Elemental Shaman in Forever: the raid build, Flame Shock up and Lightning Bolt behind Lightning Mastery, bolt ranks for mana, totems, stats, races and leveling.'
 updated: 2026-11-02
 confidence: inferred
 sources:

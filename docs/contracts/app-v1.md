@@ -140,6 +140,13 @@ The home answer: who you are, your characters, your guilds and what you may use.
 
 A new account with no characters answers `characters: []`, `guilds: []` (fixture `me.empty`).
 
+Characters arrive from Battle.net first: every Battle.net sign-in (web or app) imports the
+account's Forever characters from `profile-forever-{us,eu,tw}` before it answers, so the first
+`/v1/me` after sign-in already lists them; gear, talents and guild follow within a couple of
+minutes. The addon export stays the source for bags and bank, and the only source in KR or while
+Blizzard's API is down. `name` is the full display name, first name and surname ("Elyra
+Duskvale"): show it whole wherever a character is named. A Forever character carries no `realm`.
+
 ### DELETE /v1/me
 Auth session or app device token. In-app account deletion (App Store guideline 5.1.1(v), lane F1).
 Dark: no handler on main yet (the API lanes merge after Nov 6); the shape is final. Body

@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:rogue:night-elf:005302011/320003/035131031321001151:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
-description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike and Shank on cooldown, Boot Knife and Death Mark, and where the tree stands in a raid.'
+description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike and Shank on cooldown, Boot Knife, Death Mark and its raid spot.'
 updated: 2026-11-02
 confidence: inferred
 sources:
