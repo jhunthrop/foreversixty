@@ -1,6 +1,6 @@
 // web/tests/e2e/guide-tooltips.spec.ts
 // A spec guide names talents, spells, racials, enchants and items everywhere: the key-talent
-// list, the build trees, the rotation and cooldown rows, the leveling strip, the gear and
+// list, the build trees, the rotation and cooldown rows, the gear and
 // consumable tables, the races table and the prose itself. Each one opens the same game-style
 // tooltip the rest of the site uses, on hover, keyboard focus or a tap, and Escape closes it.
 // The tooltip data is fetched only once a reader asks for one.
@@ -104,7 +104,7 @@ test.describe('a spec guide opens the game tooltip for every name it shows', () 
   test('a tap opens a talent on touch and a second tap closes it', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'touch path');
     await openGuide(page);
-    const chip = page.locator('[data-testid="guide-leveling-strip"] li[data-game-tip]').first();
+    const chip = page.locator('[data-testid="guide-key-talents"] [data-game-tip]').first();
     await chip.scrollIntoViewIfNeeded();
     await chip.tap();
     const tooltip = page.getByTestId('game-tooltip');

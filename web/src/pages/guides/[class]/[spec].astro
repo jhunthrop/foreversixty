@@ -6,8 +6,8 @@
 // under it, inside the same `ArtPanel`. The nine-section structure (SPEC_SECTIONS) still
 // renders in its existing fixed order with the same jump-list table of contents, boxed at
 // the top on narrow screens and a sticky rail beside the article at lg (Content's aside
-// slot); the Leveling section gains a fourth planted component, `LevelingBandStrip` (§4.D,
-// proposed ruling §10.1), the same planting convention `proseOnly` already uses for Stat
+// slot); the Leveling section gains a planted component, `GuideLevelingTree` (the leveling
+// tree, design/specs/2026-11-04-leveling-tree.md), the same planting convention `proseOnly` already uses for Stat
 // priority and Races. No MDX is installed in this project, so a markdown file cannot embed
 // a component directly -- splitSpecSections/renderGuideMarkdown (lib/guides/) render each
 // of the nine sections independently instead of the whole body as one `<Body />`, which is
@@ -30,7 +30,7 @@ import GuideGearExtras from '../../../components/guides/GuideGearExtras.astro';
 import GuideOverview from '../../../components/guides/GuideOverview.astro';
 import GuideStatTable from '../../../components/guides/GuideStatTable.astro';
 import KeyTalentList from '../../../components/guides/KeyTalentList.astro';
-import LevelingBandStrip, { type LevelingBandRow } from '../../../components/guides/LevelingBandStrip.astro';
+import GuideLevelingTree from '../../../components/guides/GuideLevelingTree.svelte';
 import RacePillRow from '../../../components/guides/RacePillRow.astro';
 import RaceTable from '../../../components/guides/RaceTable.astro';
 import RotationLists from '../../../components/guides/RotationLists.astro';
@@ -55,7 +55,7 @@ import { linkProse } from '../../../lib/guides/prose-tips';
 import GuideTooltips from '../../../components/guides/GuideTooltips.svelte';
 import { pageScript } from '../../../lib/guides/page-script';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
-import { guideLadderOrder, guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
+import { guideLadderSteps } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
 import { raceTableFor, specKindOf } from '../../../lib/guides/race-table';
@@ -92,12 +92,13 @@ function proseOnly(section: SpecSection): string {
   return rest.join('\n').replace(/^\n+/, '');
 }
 
-/** The heading the leveling strip is planted under; the prose before it stays above the strip. */
+/** The heading the leveling tree is planted above; the Levels 1 to 19 prose before it stays above the tree. */
 const LEVELING_STRIP_HEADING = /^### Levels 20 to 60\s*$/m;
 
 /**
- * Splits the Leveling prose around the strip: [prose above it, its heading, prose below it].
- * Without the heading the strip opens the section, as it did before the subsections.
+ * Splits the Leveling prose at the Levels 20 to 60 heading: [prose above it, its heading, prose
+ * below it]. The leveling tree goes between the first two. Without the heading the tree opens
+ * the section.
  */
 function splitAtLevelingStrip(markdown: string): [string, string, string] {
   const match = LEVELING_STRIP_HEADING.exec(markdown);
@@ -235,29 +236,18 @@ const racesProse = proseOnly('Races');
 const racesProseHtml = await prose(racesProse);
 const professionsHtml = await prose(sections.get('Professions') ?? '');
 
-// The strip is the leveling journey: the guide's own level 60 build cut down to each range's
-// points, the same walk the sim's ladder uses (lib/guides/leveling-builds.ts), so it follows
-// the guide's build the moment it changes rather than the published ranker file.
+// The leveling tree is the whole journey, 10 to 60: the guide's own level 60 build climbed one
+// point a level in the ladder's order (lib/guides/leveling-builds.ts guideLadderSteps), the one
+// order the sim, the addon, the planner's band loads and /data/leveling-plans.json read.
 const treeIndex = catalogEntries.find((s) => s.spec_slug === specSlug)?.tree_index;
-const levelingRows: LevelingBandRow[] =
+const ladderSteps =
   buildCode === undefined || treeIndex === undefined
     ? []
-    : guideLevelingBuilds(build, classSlug, fullSpecId, treeIndex, buildCode).map((b) => ({
-        band: b.band,
-        bandLabel: guidesCopy.levelRangeLabel(b.band),
-        pointsLabel: guidesCopy.levelRangePoints(b.points, b.band),
-        plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
-        talents: b.talents,
-      }));
-// The order the points go in, the ladder's own (lib/guides/leveling-builds.ts guideLadderOrder):
-// the strip, the planner links below and /data/leveling-plans.json all read this one order.
-const ladderOrder =
-  buildCode === undefined || treeIndex === undefined
-    ? []
-    : guideLadderOrder(build, classSlug, fullSpecId, treeIndex, buildCode);
+    : guideLadderSteps(build, classSlug, fullSpecId, treeIndex, buildCode);
+const talentsByLevelHeadingHtml = await renderGuideMarkdown(`### ${guidesCopy.talentsByLevel}`);
 const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
-// The strip covers levels 20 to 60, so it sits under that subsection's heading: #leveling,
-// the character home's link, then opens on the Levels 1 to 19 text a new character needs.
+// #leveling, the character home's link, opens on the Levels 1 to 19 text a new character needs;
+// the tree (its own "Talents by level" heading, 10 to 60) follows it, then Levels 20 to 60.
 const [levelingEarlyProse, levelingStripHeading, levelingLateProse] = splitAtLevelingStrip(
   proseOnly('Leveling'),
 );
@@ -367,16 +357,25 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   <Fragment set:html={professionsHtml} />
   <Fragment set:html={levelingHeadingHtml} />
   <Fragment set:html={levelingEarlyHtml} />
-  <Fragment set:html={levelingStripHeadingHtml} />
-  {levelingRows.length > 0 && (
-    <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} spendOrder={ladderOrder} />
+  {ladderSteps.length > 0 && buildCode !== undefined && (
+    <Fragment>
+      <Fragment set:html={talentsByLevelHeadingHtml} />
+      <p class="leveling-tree-intro">{guidesCopy.levelingTreeIntro}</p>
+      <GuideLevelingTree client:visible code={buildCode} spec={fullSpecId} steps={ladderSteps} />
+    </Fragment>
   )}
+  <Fragment set:html={levelingStripHeadingHtml} />
   <Fragment set:html={levelingLateHtml} />
   <script is:inline set:html={pageScript}></script>
   <GuideTooltips client:idle-after-load build={build} bundleUrl={guideTipsUrl(build, classSlug, specSlug)} />
 </Content>
 
 <style>
+  .leveling-tree-intro {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: var(--color-nav);
+  }
   .guide-rail-wrap {
     padding: 24px var(--page-inset) 28px var(--page-inset);
   }

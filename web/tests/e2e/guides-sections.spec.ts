@@ -3,7 +3,7 @@
 // section at desktop (1280) and phone (390) widths: the single status note, the Overview
 // blocks, the builds and the key talents, the rotation lists, the stat block, the
 // best-in-slot table and its level-range switcher, the enchant and consumable tables, the
-// race table and the leveling strip, and checks the page never scrolls sideways.
+// race table and the leveling tree, and checks the page never scrolls sideways.
 //
 // The content comes from data/builds and the BiS ranker, not the planner fixture, so it is the
 // same under either FOREVER_DATA; only the check that icon files actually load needs the real
@@ -231,41 +231,44 @@ for (const [label, viewport] of [
       await expect(page.getByTestId('guide-race-row-human')).not.toContainText('Recommended');
     });
 
-    test('lists each leveling band’s talents with icons, names and ranks, and a planner link', async ({
+    test('shows the leveling journey as a talent tree from 10 to 60, with a planner link per level', async ({
       page,
     }) => {
       await page.goto(PAGE);
-      const strip = page.getByTestId('guide-leveling-strip');
-      const rows = strip.locator('[data-testid^="guide-leveling-row-"]:not([data-testid$="-talents"])');
-      await expect(rows).toHaveCount(5);
-      for (const row of await rows.all()) {
-        await expect(row.getByTestId('guide-leveling-row-talents')).toBeVisible();
-        await expect(row.getByText('Load in planner')).toHaveAttribute(
-          'href',
-          /^\/planner\?spec=mage-frost&talents=/,
-        );
-        const chips = row.getByTestId('guide-leveling-row-talents').locator('li');
-        expect(await chips.count()).toBeGreaterThan(3);
-        await expect(chips.first().locator('img')).toHaveCount(1);
-        await expect(chips.first()).toContainText(/\d\/\d/);
-      }
-      await expect(page.getByTestId('guide-leveling-legend')).toHaveText(
-        'Outlined: points added in this level range.',
+      const tree = page.getByTestId('guide-leveling-tree');
+      const slider = tree.getByTestId('guide-leveling-slider');
+      await expect(slider).toBeEnabled();
+      await expect(tree.getByTestId('guide-tree-columns')).toBeVisible();
+      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('51 points spent, all placed');
+      // The keyboard walks the levels: Home is 10, PageUp ten levels on, End is 60.
+      await slider.focus();
+      await page.keyboard.press('Home');
+      await expect(tree.getByTestId('guide-leveling-caption')).toContainText(/Level 10: .+, rank 1/);
+      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('1 point spent, 50 to go');
+      await expect(tree.getByTestId('guide-leveling-previous')).toBeDisabled();
+      await page.keyboard.press('PageUp');
+      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('Level 20:');
+      await tree.getByTestId('guide-leveling-next').click();
+      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('12 points spent, 39 to go');
+      await expect(tree.getByTestId('guide-leveling-load')).toHaveAttribute(
+        'href',
+        /^\/planner\?spec=mage-frost&talents=[\d-]+$/,
       );
-      await expect(strip.getByTestId('guide-leveling-row-20')).toContainText('Level 20 to 29');
-      await expect(strip.getByTestId('guide-leveling-row-20')).toContainText('11 to 20 points');
-      await imagesLoaded(page, '[data-testid="guide-leveling-strip"] img');
+      await expect(tree.getByTestId('guide-leveling-load')).toHaveAccessibleName(
+        'Load the level 21 build in the planner',
+      );
       await noSidewaysScroll(page);
     });
 
-    test('#leveling opens on the Levels 1 to 19 text, with the strip under Levels 20 to 60', async ({
+    test('#leveling opens on the Levels 1 to 19 text, with the tree before Levels 20 to 60', async ({
       page,
     }) => {
       await page.goto(`${PAGE}#leveling`);
       await expect(page.locator('#levels-1-to-19')).toBeInViewport();
       const top = async (selector: string): Promise<number> =>
         (await page.locator(selector).boundingBox())?.y ?? Number.NaN;
-      expect(await top('#levels-20-to-60')).toBeLessThan(await top('[data-testid="guide-leveling-strip"]'));
+      expect(await top('#levels-1-to-19')).toBeLessThan(await top('[data-testid="guide-leveling-tree"]'));
+      expect(await top('[data-testid="guide-leveling-tree"]')).toBeLessThan(await top('#levels-20-to-60'));
     });
   });
 }

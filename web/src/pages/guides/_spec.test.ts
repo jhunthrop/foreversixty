@@ -19,7 +19,8 @@ import { guideSchema } from '../../content.config';
 import SpecPage from './[class]/[spec].astro';
 import { raceRows } from '../../lib/planner/reference';
 import { racialEffects } from '../../lib/guides/race-table';
-import { bandEntry } from '../../lib/bis/load';
+import { bandEntry, readSpecCatalog } from '../../lib/bis/load';
+import { guideLadderSteps } from '../../lib/guides/leveling-builds';
 import { rankedBisFile } from '../../lib/guides/class-dps';
 import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { bandTalentHits } from '../../lib/guides/talent-hit';
@@ -250,20 +251,24 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       // BlizzCon demo's reading.
       expect(html).not.toMatch(/Eureka![^.<]*50%/);
     }
-    expect(html).toContain('data-testid="guide-leveling-row-talents"');
-    expect(html).toMatch(/leveling-chip-rank[^>]*>\d\/\d</);
-    expect(html).toContain('Level 20 to 29');
-    expect(html).toContain('11 to 20 points');
-    expect(html).toContain('Outlined: points added in this level range.');
+    // The leveling tree, server-rendered at level 60: the caption, the control and the link.
+    expect(html).toContain('data-testid="guide-leveling-tree"');
+    expect(html).toMatch(/data-testid="guide-leveling-caption"[\s\S]*?Level 60: [^<]+, rank \d/);
+    expect(html).toContain('51 points spent, all placed');
+    expect(html).toMatch(
+      /href="\/planner\?spec=mage-frost&amp;talents=[0-9-]+"[^>]*data-testid="guide-leveling-load"|data-testid="guide-leveling-load"[^>]*href="\/planner\?spec=mage-frost&amp;talents=/,
+    );
+    expect(html).not.toContain('guide-leveling-strip');
   });
 
-  it('opens #leveling on the Levels 1 to 19 text and plants the strip under Levels 20 to 60', async () => {
+  it('opens #leveling on the Levels 1 to 19 text, then the tree under Talents by level, then Levels 20 to 60', async () => {
     const html = await frostHtml();
     const at = (needle: string): number => html.indexOf(needle);
     expect(at('id="leveling"')).toBeGreaterThan(-1);
     expect(at('id="levels-1-to-19"')).toBeGreaterThan(at('id="leveling"'));
-    expect(at('id="levels-20-to-60"')).toBeGreaterThan(at('id="levels-1-to-19"'));
-    expect(at('data-testid="guide-leveling-strip"')).toBeGreaterThan(at('id="levels-20-to-60"'));
+    expect(at('id="talents-by-level"')).toBeGreaterThan(at('id="levels-1-to-19"'));
+    expect(at('data-testid="guide-leveling-tree"')).toBeGreaterThan(at('id="talents-by-level"'));
+    expect(at('id="levels-20-to-60"')).toBeGreaterThan(at('data-testid="guide-leveling-tree"'));
   });
 
   it('renders no per-section hedge', async () => {
@@ -274,18 +279,22 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
   });
 });
 
-describe('/guides/priest/shadow Leveling strip', () => {
-  // Sim-accuracy round 16: the strip lists the first range in the ladder's order (Wand
-  // Specialization at 10 and 11, Spirit Tap from 12), which the addon spends too.
-  it('opens the 20 to 29 row on Wand Specialization, then Spirit Tap', async () => {
-    const html = await container.renderToString(SpecPage, {
-      props: { entry: loadGuideEntry('priest/shadow') },
-    });
-    const row =
-      html.split('data-testid="guide-leveling-row-20"')[1]?.split('data-testid="guide-leveling-row-30"')[0] ??
-      '';
-    const names = [...row.matchAll(/class="leveling-chip-name"[^>]*>([^<]+)</g)].map((m) => m[1]);
-    expect(names.slice(0, 2)).toEqual(['Wand Specialization', 'Spirit Tap']);
+describe('/guides/priest/shadow leveling tree', () => {
+  // Sim-accuracy round 16: the ladder opens on Wand Specialization at 10 and 11 and Spirit Tap
+  // from 12, which the addon spends too; the tree's steps are that order.
+  it('opens on Wand Specialization, then Spirit Tap', () => {
+    const steps = guideLadderSteps(
+      activeBuild.build,
+      'priest',
+      'priest-shadow',
+      readSpecCatalog().find((row) => row.class_slug === 'priest' && row.spec_slug === 'shadow')!.tree_index,
+      loadGuideEntry('priest/shadow').data.build!,
+    );
+    expect(steps.slice(0, 3).map((step) => [step.level, step.name, step.rank])).toEqual([
+      [10, 'Wand Specialization', 1],
+      [11, 'Wand Specialization', 2],
+      [12, 'Spirit Tap', 1],
+    ]);
   });
 });
 
