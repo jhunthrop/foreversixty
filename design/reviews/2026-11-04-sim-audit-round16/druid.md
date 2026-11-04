@@ -108,3 +108,35 @@ wow-player SHIP on the rendered feral and Restoration pages (captured at 1440 fr
 - S1, S2 (form spread, unarmed paw): need a Forever log.
 - Pending owner, not reopened: low-rank penalty parameters and the Rejuvenation rank 1 tooltip; Ferocious Bite rank 6 (31018) and Healing Touch / Rejuvenation 11 as level-60 book ranks.
 - Warcraft Logs blocked (gcloud login); not used.
+
+## Wave 2
+
+Merged int/r16 (site c5915e4bb, fork 65c8e36cf; both already held this lane's wave-1 commits). Brief: `$R/wave2.md`.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W2-1 | **Phantom talent lines: none in the druid lists.** Restoration's Nature's Swiftness line casts the talent itself, so a druid without it drops the line (unresolved spell); its instant Healing Touch line already gates on `spellIsKnown 17116` before `auraIsActive 17116`. Checked by running the list with and without both lines at levels 20, 29 (no Nature's Swiftness): identical HPS and Healing Touch casts. From 30 (talent known) both lines work as written. Every other druid line that reads an aura reads a debuff it applies (Faerie Fire, Demoralizing Roar, Lacerate, Moonfire, Insect Swarm, Rip) or gates on `auraIsKnown` first (Balance's Eclipse 408248). Talent spells cast directly (Swiftmend, Shifting Power, Primal Bite, Lacerate) drop their line when not known. | `rot/resto-nons.json`; bare 20/30/40 at -level floor and +9 | Aligned | - | - |
+| W2-2 | **Rank rows judged level by level.** Sweep at floor, +3, +6, +9 (1500 it.), then the switches at 10,000 it., seeds 1 and 50001:<br>- Moonfire: rank 2 beats the top rank at 20-29 (+1.8% at 20, +7.4% at 23, +5.4% at 26, +7.3% at 29); rank 3 stays at 30-35 (rank 4 +0.7% at 35, under the bar); rank 4 beats rank 3 at 36-39 (+1.4, +2.1, +3.6%). Top rank from 40.<br>- Wrath: rank 3 beats rank 4 at 22-26 (+3.3, +2.0, +1.3%); they tie at 28 (-0.2/-0.4%). The 30-39 rank 4 row holds. Top rank from 40 (rank 6 at 46 +0.6%, under the bar).<br>- Insect Swarm: rank 1 holds at 30-38; at 39 rank 2 wins by 1.8%, so the row ends at 38 (36: -0.4%, 37: 0.0%, 38: +1.1/+1.0%, kept at rank 1).<br>- Tank Rejuvenation (authored 9841): rank 2 beats the old choice at 20-37 (20 +2.7%, 22 +5.3/+5.4%, 25 +4.3%, 29 +1.2%, 30 +4.8/+4.7%, 35 +2.6/+2.5%; 39 +1.1/+0.85%, so 38-39 stay rank 4); rank 4 holds at 38-49 (rank 5 +0.9 to 1.0% at 46-49, under the bar); rank 6 beats the top rank at 50-52 (+2.3, +2.7%); the top rank holds at 53-57 (rank 8 +0.7 to 0.9%); rank 8 beats rank 10 at 58-59 (+2.0/+2.2%); bare 60 ties (+0.2%), top rank kept.<br>- Party Rejuvenation rank 1 (8910 row): wins at every level checked 20-59 (rank 2 +1.3% at 40 only, rank 1 again at 43). Kept. | `w2/party.out`, `tank.out`, `tankv.out`, `bal.out`, `balv.out` (lane dir). Tests red first: `TestRestorationDruidRejuvenationKeepsItsHealingBonusInARaid` (new tank cases), `TestBalanceRankRowsByLevel`; both green. `TestCuratedRankChoicesAreCastableDownranks` caught a 39 rank-2 band that the default already casts; dropped. | CONFIRMED (rows judged at floors only) | old (rows of rounds 9-15) | S 4724faf89 |
+| W2-3 | Guide text: Balance "Levels 20 to 60" names the leveling ranks; Restoration's Ranks paragraph names the tank's Rejuvenation by level. wow-player SHIP on the rendered pages (SHOULDs applied: "through" in place of "until", the 27-29 / 40+ gap, "(not 3)"). Open SHOULDs: point the Restoration Leveling section to the Ranks paragraph; the party card's "rank 7" is a level-60 rank. | captures `cap2/` | - | - | S 4724faf89 |
+
+Before/after at the levels the rows reach (bare, 10,000 it., both factions, seeds 1 / 50001; before = this branch before the rows):
+
+| Spec | Band, level | Alliance | Horde |
+|---|---|---|---|
+| Balance | 20, 20 | 45.3 to 46.1, +1.77 / +1.77% | 43.0 to 43.8, +1.86 / +1.86% |
+| Balance | 20, 25 | 45.6 to 47.2, +3.51 / +3.74% | 43.6 to 44.9, +2.98 / +3.22% |
+| Balance | 30, 30 | unchanged | unchanged |
+| Balance | 30, 37 | 83.0 to 84.8, +2.17 / +2.05% | 82.8 to 84.3, +1.81 / +1.69% |
+| Balance | 50, 50 and 59 | unchanged | unchanged |
+| Restoration | 20, 20 | 73.2 to 75.2, +2.73 / +2.73% | 71.7 to 74.0, +3.21 / +3.35% |
+| Restoration | 20, 25 | 73.0 to 76.1, +4.25 / +4.25% | 71.9 to 76.0, +5.70 / +5.99% |
+| Restoration | 30, 30 | 114.3 to 119.8, +4.81 / +4.72% | 113.1 to 118.8, +5.04 / +4.77% |
+| Restoration | 30, 37 | 117.6 to 120.2, +2.21 / +2.12% | 116.6 to 119.3, +2.32 / +2.14% |
+| Restoration | 50, 50 | 320.5 to 328.0, +2.34 / +2.28% | 313.6 to 321.3, +2.46 / +2.33% |
+| Restoration | 50, 59 | 340.4 to 347.1, +1.97 / +2.15% | 333.1 to 340.4, +2.19 / +2.31% |
+
+Raid 60 and bare 60 do not move (no row reaches them).
+
+**Files to regenerate (wave 2):** ladder goldens druid-balance and druid-restoration (bands 20, 30, 50); addon-data.json / Data.lua (the rank rows reach the addon's rotation export); band BiS/weights for druid-balance 20/30 and druid-restoration 20/30/50 at the refresh.
+
+**For other lanes:** `data/tests/test_addonrotation.py::test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts` fails on int/r16 without any druid change (paladin lane).
