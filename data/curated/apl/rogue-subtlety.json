@@ -9,7 +9,7 @@
     },
     {
       "id": 11300,
-      "reason": "Eviscerate and Slice and Dice only spend combo points built while Rupture is running. On the ladder's bare rungs (levels 10 to 50) energy is scarce enough that every set of combo points goes straight into Rupture, which is cast again as soon as it ends, so no points are left for Eviscerate (Slice and Dice is cast from level 20); at level 60, with the full talent build, Eviscerate is cast."
+      "reason": "Eviscerate is the finisher only before Death Mark (Subtlety's 31-point talent, taken at level 40): from then on every combo point left over after Rupture goes into Death Mark, which pays more for less energy, so Eviscerate is idle from level 40 by design. Below 40, on the ladder's bare rungs, energy is scarce enough that every set of combo points goes straight into Rupture, which is cast again as soon as it ends."
     },
     {
       "id": 6774,
@@ -96,8 +96,20 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 1329549,
-              "rank": 2
+              "spellId": 1329549
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "currentComboPoints": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "3"
+                }
+              }
             }
           }
         }
@@ -108,9 +120,64 @@
             "spellId": {
               "spellId": 14278
             }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "currentComboPoints": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "4"
+                }
+              }
+            }
           }
         },
         "notes": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 5 more energy and gives a combo point."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 11290,
+              "rank": 6
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 11290,
+                          "rank": 6
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLe",
+                    "lhs": {
+                      "currentComboPoints": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "4"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Garrote right after Ghostly Strike whenever it has dropped off: Ghostly Strike lets the next Garrote go in without Stealth, and it is a bleed that Hemorrhage, Opportunity and Death Mark all feed."
       },
       {
         "action": {
@@ -204,23 +271,41 @@
             "and": {
               "vals": [
                 {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentComboPoints": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "3"
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentComboPoints": {}
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "3"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "dotIsActive": {
+                          "spellId": {
+                            "spellId": 11275,
+                            "rank": 6
+                          }
+                        }
                       }
-                    }
+                    ]
                   }
                 },
                 {
-                  "dotIsActive": {
-                    "spellId": {
-                      "spellId": 11275,
-                      "rank": 6
+                  "not": {
+                    "val": {
+                      "spellIsKnown": {
+                        "spellId": {
+                          "spellId": 1325758,
+                          "rank": 4
+                        }
+                      }
                     }
                   }
                 }

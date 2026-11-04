@@ -181,6 +181,9 @@ func buildRankChain(class string, rows []spellRankRow) *rankChain {
 		}
 	}
 	if len(ranks) == 0 {
+		if chain := unrankedChainOverride(class, rows); chain != nil {
+			return chain
+		}
 		return singleTierOverrideChain(class, rows)
 	}
 	sort.Ints(ranks)
@@ -237,6 +240,36 @@ var singleTierLevelOverrides = map[string]map[int32]int{
 	"warlock": {
 		603: 60, // Bane of Doom; sim/warlock/curses.go registers it with RequiredLevel: 60
 	},
+}
+
+// unrankedRankOverrides gives a rank number to trainer rows the client
+// leaves unranked (no "Rank N" subtext, so spellranks.json writes rank 0)
+// although they are a real rank progression a trainer teaches at
+// different levels. Without it a rotation's top-rank id is untracked and
+// stays unresolved below the level that rank is learned at.
+var unrankedRankOverrides = map[string]map[int32]int{
+	"rogue": {
+		1329283: 1, // Shank; trainables/rogue.json (SkillLineAbility 59899), level 24
+		1329549: 2, // Shank; trainables/rogue.json (SkillLineAbility 59900), level 44
+	},
+}
+
+// unrankedChainOverride builds the rank chain of a name whose rows are all
+// rank 0 from unrankedRankOverrides, each tier at its row's own level; nil
+// when the name has no overridden row.
+func unrankedChainOverride(class string, rows []spellRankRow) *rankChain {
+	overrides := unrankedRankOverrides[class]
+	var tiers []rankTier
+	for _, row := range rows {
+		if rank, ok := overrides[row.ID]; ok {
+			tiers = append(tiers, rankTier{rank: rank, level: row.Level, ids: []int32{row.ID}, castable: []int32{row.ID}})
+		}
+	}
+	if len(tiers) == 0 {
+		return nil
+	}
+	sort.Slice(tiers, func(i, j int) bool { return tiers[i].rank < tiers[j].rank })
+	return &rankChain{tiers: tiers}
 }
 
 // singleTierOverrideChain is buildRankChain's fallback once it has
