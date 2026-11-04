@@ -104,3 +104,33 @@ Every sentence below is wrong after A1, A2 or C1 (web/src/content/guides/warlock
 - X1 Molten Skin / Destructive Reach (owner, +1.73% if dropped).
 - Demonology Horde race (owner question 1; Orc +0.8%, under the rule).
 - No level-60 or level-40-plus log; Warcraft Logs blocked. Round 14's open items (demon crit at 60, additive versus multiplied modifiers, Ignition's rate, Siphon Life tick crit, shadow wands) are unchanged.
+
+## Wave 3: rank sweep on the level-gap penalty
+
+Merged int/r15 into both branches (site 1e96d8df2, fork 9c511a2cd, which carry the priest lane's E 8d9ca6aae / 974614b8b). Under the new rule, a rank keeps its full spell power until the caster is 17 levels past its learn level, then loses 5% a level; Wrack opts out. It replaces Era's sub-20 cut. I rebuilt spec-breakdown on it.
+
+What the penalty reaches: at 60, every fixed-rank cast in the three APLs is a top or near-top rank. The lowest are Corruption r6 (54), Shadowburn r6 and Life Tap r6 (56), all within 17 levels, so none loses anything. Life Tap, Curse of the Elements and Amplify Curse have no spell-power term. Below 60 the site rewrites every cast to the highest learned rank, which is always within 17 levels. The Succubus's Lash of Pain follows the pet's level. So the only rank questions are downranks, and I swept Shadow Bolt for every spec at bands 20 to 50 (max rank and the two below it; 3,000 iterations to screen, 10,000 at both seeds to confirm).
+
+| # | row | result (horde, 10,000 iterations, seeds 1 / 50001) | decision |
+|---|---|---|---|
+| W1 | Destruction Shadow Bolt rank 4 at 30-39 (existing) | r4 90.9 / 90.9 against r5 90.5 / 90.4 (+0.4 / +0.5%) | kept |
+| W2 | **new:** Destruction Shadow Bolt rank 3 at 20-29 | r3 55.3 / 55.3 against r4 54.6 / 54.6 (+1.3 / +1.3%); Alliance 55.6 / 55.6 against 54.9 / 54.8. Era's sub-20 cut used to take 30% off rank 3's spell power at 20. Mana-bound: 34 Life Taps a fight. | added |
+| W3 | **new:** Demonology Shadow Bolt rank 3 at 20-29 | 50.0 / 50.0 against 49.9 / 49.8 (+0.2 / +0.4%, error ±0.02); Alliance 51.2 / 51.2 against 51.1 / 51.1 | added |
+| W4 | Affliction Shadow Bolt at 20 / 30 | r3 56.2 against 56.4 at 20; lower ranks lose at 30. From 40 Wrack is the filler, so Shadow Bolt's rank does not move the number | no row |
+| W5 | Demonology 30 to 50, Destruction 40 and 50 | every lower rank loses or ties. Destruction's filler from 40 is Incinerate, rank 1 at 40, the only rank | no row |
+
+No race key: both factions gain on W2 and W3. Rows are hand-synced to sim/rankchoices/rank-choices.json. The rank-choice tests in sim/request, sim/rankchoices, talent-search and rotation-search pass.
+
+Bare bands, horde, seed 1 (seed 50001 within 0.1 of it): before ($R/sb-before) -> wave 1 -> wave 3:
+
+| band | Affliction | Demonology | Destruction |
+|---|---|---|---|
+| 20 | 54.6 -> 54.6 -> 56.4 (+3.3%, all from the engine change) | 48.4 -> 48.4 -> 50.0 (+3.3%: +3.1% engine, +0.2% row) | 53.0 -> 52.9 -> 55.3 (+4.5%: +3.2% engine, +1.3% row) |
+| 30 | 90.0 -> 90.0 -> 90.0 | 82.1 -> 82.0 -> 82.0 | 91.0 -> 90.9 -> 90.9 |
+| 40 | 139.6 -> 166.6 -> 166.6 | 147.7 -> 147.9 -> 147.9 | 149.1 -> 149.1 -> 149.1 |
+| 50 | 207.0 -> 257.7 -> 257.7 | 222.2 -> 222.1 -> 222.1 | 268.6 -> 269.2 -> 269.2 |
+| 60 | 307.4 -> 375.9 -> 375.9 | 347.1 -> 346.7 -> 346.7 | 404.9 -> 405.1 -> 405.1 |
+
+Raid 60, all three specs and both factions and seeds: wave 1 = wave 3 exactly (Affliction 592.3 horde s1; Demonology 639.4; Destruction 684.1). The new penalty costs the warlocks nothing; ending Era's sub-20 cut lifts band 20 by about 3%.
+
+Files to regenerate (wave 3): Destruction and Demonology band-20 BiS / weights and the addon's rank lines (raceSpellId rows) at the refresh; ladder goldens for both at level 20.
