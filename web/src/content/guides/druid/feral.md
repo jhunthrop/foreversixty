@@ -3,8 +3,8 @@ title: Feral Druid in Forever
 classSlug: druid
 spec: feral
 role: dps
-build: 'FS1:1.60.1.70755:druid:night-elf:05002/50212032123012123001/05503:'
-raidBuild: 'FS1:1.60.1.70755:druid:night-elf:05002/50230032023011125001/05503:'
+build: 'FS1:1.60.1.70755:druid:night-elf:050022/50212032123012123001/05501:'
+raidBuild: 'FS1:1.60.1.70755:druid:night-elf:050022/50230032023012125001/055:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Agility, Hit, Critical strike, Strength, Attack power, Feral attack power, Melee haste]
 description: 'Cat Form DPS in Forever: the raid build, the Ravage opener, Rip and Shred from behind, Shifting Power for energy, and what to drink in form.'

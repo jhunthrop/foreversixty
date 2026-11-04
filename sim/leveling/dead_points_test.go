@@ -86,3 +86,39 @@ func TestCatLevelSixtyBuildFinishesHeartOfTheWild(t *testing.T) {
 		}
 	}
 }
+
+// Nature's Reach's client row (16819) carries melee hit (aura 54) as well as spell hit (aura
+// 55), 4% at 2/2 with no class mask, and hit is the cat's second stat. Both cat builds take
+// it (sim-accuracy round 15 wave 4: raid 60 +2.6 to +3.2%, bare 50 +1.7 to +1.9%).
+func TestCatBuildsTakeNaturesReach(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	active, err := ReadActiveBuild(repoRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	trees, err := LoadTalentTrees(repoRoot, active, "druid")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var reach TalentNode
+	for _, node := range trees[0].Talents {
+		if node.Name == "Nature's Reach" {
+			reach = node
+		}
+	}
+	if reach.ID == 0 {
+		t.Fatal("no Nature's Reach in the Balance tree")
+	}
+	for name, read := range map[string]func(string, string, string) (string, [3]string, error){
+		"build":     GuideBuildTalents,
+		"raidBuild": GuideRaidBuildTalents,
+	} {
+		_, digits, err := read(repoRoot, "druid", "feral")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := GuideTalentTargets(trees, digits)[reach.ID]; got != reach.MaxRank {
+			t.Errorf("the cat %s takes Nature's Reach %d, want %d", name, got, reach.MaxRank)
+		}
+	}
+}
