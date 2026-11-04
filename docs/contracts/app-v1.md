@@ -51,7 +51,7 @@ Classes: *live public* `public, max-age=30, stale-while-revalidate=300`; *public
 `GET` carries a weak `ETag` over `data`; send it back as `If-None-Match` and a match answers
 `304` with no body. Use this on every private read: it makes a refresh free.
 
-**Limits.** 120 requests a minute per IP across the router, and 120 a minute per device token.
+**Limits.** 300 requests a minute per IP across the router, and 120 a minute per device token.
 `429 rate_limited` is the answer; back off, do not retry in a loop. Writes carry tighter budgets,
 stated per endpoint.
 

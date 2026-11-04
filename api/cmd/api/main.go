@@ -615,6 +615,7 @@ func serve(log *slog.Logger) error {
 		if cfg.BnetImportCharacters {
 			accounts.Importer = &bnetimport.Service{
 				Pool: pool, Client: bnetSvcClient, Regions: cfg.BnetRegions, Log: log, Tables: bnetTables,
+				MaxConcurrentEnrichments: bnetimport.EnrichmentSlotsFor(pool),
 			}
 		} else {
 			// Blizzard serves no Forever namespace yet; see bnetimport.Stub.

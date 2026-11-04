@@ -96,6 +96,8 @@ export const BANNED_PROSE = {
     'in summary',
     "it's important to note",
   ],
+  // Guide-accuracy round 2: a player never sees a repository path, in a source label or the body.
+  filePaths: [/\b[\w-]+\.json\b/, /\bdata\/[\w./-]+/],
 } as const satisfies Record<string, readonly (string | RegExp)[]>;
 
 export interface ProseViolation {
@@ -337,6 +339,7 @@ describe('guide prose rules', () => {
     ].join('\n');
     expect(markdownViolations(raw, 'g.md').map(describeViolation)).toEqual([
       'g.md:2: "Forever Sixty" (simTalk)',
+      'g.md:4: "races.json" (filePaths)',
       'g.md:5: "sim" (simTalk)',
       'g.md:7: "Forever Sixty" (simTalk)',
     ]);

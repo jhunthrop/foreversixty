@@ -3,9 +3,9 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.70755:warlock:gnome:25522300130201351/200522/005:'
-raidBuild: 'FS1:1.60.1.70755:warlock:gnome:2552001013500105/00052/0550004:'
-recommendedRaces: [gnome, orc]
+build: 'FS1:1.60.1.70755:warlock:human:25522300130201351/200522/005:'
+raidBuild: 'FS1:1.60.1.70755:warlock:human:2552001013500105/00052/0550004:'
+recommendedRaces: [human, orc]
 statPriority: [Spell power, Shadow power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'
 updated: 2026-11-02
@@ -17,10 +17,10 @@ sources:
   - label: 'Forever client spell and talent data'
     url: https://wago.tools/db2/SpellEffect
     kind: datamined
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty rotation data, warlock-affliction'
+  - label: 'Forever Sixty, rotation'
     url: https://foreversixty.gg/sources
     kind: site
 ---
@@ -54,10 +54,10 @@ The leveling build is a real Affliction tree: Nightfall, Soul Siphon and Wrack m
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
 - **Amplify Curse** (1 point): no global cooldown, a 3 minute cooldown and 30 seconds to use it. Your next Bane of Agony or Curse of Weakness is 50% stronger, or your next Curse of Exhaustion 20%. In a raid it goes on the Bane of Agony you put up in a boss's last minute.
 - **Pandemic** (3 points): Corruption, both banes, Siphon Life, the drains and Wrack crit for double the usual bonus.
-- **Nightfall** (2 points): each Corruption, Drain Life, Drain Soul or Wrack tick has a 4% chance to make your next Shadow Bolt instant. It is the leveling pick: free bolts while you move between pulls.
+- **Nightfall** (2 points): each Corruption, Drain Life, Drain Soul or Wrack tick has a 4% chance to make your next Shadow Bolt instant. The leveling build takes it for free bolts between pulls. The raid build spends those two points on Grim Reach for range.
 - **Shadow Mastery** (5 points): 10% more Shadow damage on everything you cast.
 - **Siphon Life** (1 point): a 30 second DoT that heals you, and one more Affliction effect for Soul Siphon.
-- **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your Corruption and Bane of Agony. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. Cheap and strong solo. In a raid it trails Shadow Bolt without Soul Siphon and is close to it with Soul Siphon.
+- **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your other Shadow DoTs. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. Cheap and strong solo. In a raid it trails Shadow Bolt without Soul Siphon and is close to it with Soul Siphon.
 
 The raid build trades Nightfall, Soul Siphon, Wrack and Soul Harvest for three talents. It also drops the three points of Improved Drains, since a raid rotation casts no drain, along with Improved Health Funnel and Improved Voidwalker, and takes one point of Improved Bane of Agony for 5% more Bane of Agony damage. Malevolence gives your Shadow spells 5% crit, DoT ticks included. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit; in Forever that debuff is yours alone, not the raid's. Four points of Ruin raise the crit bonus of your Shadow Bolt and Immolate by 80%. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
 
@@ -79,7 +79,7 @@ Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Sou
 
 Your wand is for when you are out of mana with Life Tap unsafe. A wand shot cannot start during a global cooldown, so it never fits between spells.
 
-Execute and movement: Affliction has no execute spell. Near the end of a fight, stop refreshing any DoT that will not get half its ticks in before the boss dies. Your last Bane of Agony wants most of its 24 seconds, since its big ticks come last. Cast Shadow Bolt instead. While moving, refresh DoTs, Life Tap, or fire an instant Shadow Bolt if Nightfall gave you one.
+Execute and movement: Affliction has no execute spell. Near the end of a fight, stop refreshing any DoT that will not get half its ticks in before the boss dies. Your last Bane of Agony wants most of its 24 seconds, since its big ticks come last. Cast Shadow Bolt instead. While moving, refresh DoTs or Life Tap.
 
 Adds and AoE: Corruption and Agony on two or three adds that live 15 seconds or more beats Shadow Bolt on one of them. Rain of Fire for trash packs that stay put. Hellfire burns you as well, so use it only with the pack on top of you and a healer ready.
 
@@ -97,7 +97,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Gnome and Orc are the picks. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Your DoTs get nothing from it, so press it as you start a run of Shadow Bolts. Expansive Mind's 5% more mana is real for a spec that taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder for the whole fight: press Blood Fury with your trinkets once the DoTs are up. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then, which helps a spec that pays for mana in health. Human's Ruthless is 1% crit and The Human Spirit raises Spirit, which feeds Life Tap.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, DoT ticks included, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, but your DoTs get nothing from it, so press it as you start a run of Shadow Bolts; Expansive Mind's 5% more mana helps a spec that taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder for the whole fight: press Blood Fury with your trinkets once the DoTs are up. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then, which helps a spec that pays for mana in health.
 
 ## Professions
 
