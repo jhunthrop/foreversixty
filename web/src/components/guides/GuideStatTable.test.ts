@@ -5,9 +5,9 @@
 // rail-stats.test.ts do -- the nightly republish moves these numbers, so this only ever
 // asserts shape and ordering, never a pinned value (data contracts are floors).
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { bandEntry, loadBisFile } from '../../lib/bis/load';
-import { guideExpertiseCapLine } from '../../lib/guides/hit-cap-line';
 import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { railStatRows } from '../../lib/guides/rail-stats';
 import GuideStatTable from './GuideStatTable.astro';
@@ -74,7 +74,7 @@ describe('GuideStatTable', () => {
     expect(html).not.toContain('guide-stat-table-updated');
   });
 
-  it('gives a tank its tank-score unit and expertise per 1%, never DPS', async () => {
+  it('gives a tank its tank-score unit, never DPS, and no expertise (no Forever item carries it)', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(GuideStatTable, {
       props: {
@@ -82,14 +82,12 @@ describe('GuideStatTable', () => {
         spec: 'warrior-protection',
         classSlug: 'warrior',
         recommendedRaces: ['human'],
-        statPriority: ['Expertise', 'Stamina', 'Defense', 'Dodge', 'Parry', 'Agility'],
+        statPriority: ['Stamina', 'Defense', 'Dodge', 'Parry', 'Agility'],
       },
     });
     expect(html).toContain('Tank score per point');
     expect(html).not.toContain('DPS');
-    expect(html).toMatch(/per 1% expertise/);
-    expect(html).not.toMatch(/Weight \(Expertise = 1\.00\)/);
-    expect(html).not.toContain('Expertise cap: 0%');
+    expect(html).not.toMatch(/expertise/i);
   });
 
   it('gives a healer HPS, and prints no negative weight', async () => {
@@ -133,28 +131,27 @@ describe('GuideStatTable', () => {
     }
   });
 
-  it('prints the expertise-to-cap line exactly when the band publishes the key', async () => {
-    const file = loadBisFile('warrior-fury', BUILD);
-    if (file === null) throw new Error('warrior-fury BiS file missing');
-    const expected = guideExpertiseCapLine(bandEntry(file, 60, 'alliance')?.expertise_to_cap);
+  it('prints no expertise note, even from a band file that still carries expertise_to_cap', async () => {
+    const raw = JSON.parse(
+      readFileSync(
+        new URL(`../../../../data/builds/${BUILD}/bis/warrior-protection.json`, import.meta.url),
+        'utf8',
+      ),
+    ) as { bands: { band: number; expertise_to_cap?: unknown }[] };
+    expect(raw.bands.some((band) => band.band === 60 && band.expertise_to_cap)).toBe(true);
 
     const c = await AstroContainer.create();
     const html = await c.renderToString(GuideStatTable, {
       props: {
         build: BUILD,
-        spec: 'warrior-fury',
+        spec: 'warrior-protection',
         classSlug: 'warrior',
-        recommendedRaces: ['human', 'troll'],
-        statPriority: STAT_PRIORITY,
+        recommendedRaces: ['human'],
+        statPriority: ['Stamina', 'Defense', 'Dodge', 'Parry', 'Agility'],
       },
     });
-
-    if (expected === undefined) {
-      expect(html).not.toContain('guide-stat-table-expertise-cap');
-    } else {
-      expect(html).toContain('data-testid="guide-stat-table-expertise-cap"');
-      expect(html).toContain(expected.text);
-    }
+    expect(html).not.toContain('guide-stat-table-expertise-cap');
+    expect(html).not.toMatch(/Expertise cap/);
   });
 
   it('renders nothing for a spec with no ranked BiS file', async () => {

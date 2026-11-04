@@ -4,7 +4,7 @@
 //
 // - Per-percent stats. Haste and expertise have no rating in this client. The engine's
 //   expertise point takes one percent off the boss's dodge and parry
-//   (`sim/cmd/leveling-bis/expertisecap.go`), so its weight is per 1%, not per point; read
+//   (the engine's attack table), so its weight is per 1%, not per point; read
 //   against the per-point stats it topped every tank's table ("Expertise 1547.3 per point").
 //   Both sit outside the per-point normalization and read "per 1%".
 // - Sign. A weight inside its own error (or flagged insignificant) reads "Not significant";

@@ -35,7 +35,6 @@ import type {
 } from './types';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { Slot } from '../planner/types';
-import { expertiseCapLine, type ExpertiseCapLine } from './expertise-cap';
 import { hitCapLine, type HitCapLine } from './hit-cap';
 import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
 import {
@@ -477,9 +476,6 @@ export interface BandInfo {
   /** The "Hit to cap" line under the rail (`hitCapLine`) -- `undefined` when the band
    *  publishes no `hit_to_cap` (a caster, or a file older than the key). */
   hitCap: HitCapLine | undefined;
-  /** The "Expertise to cap" line under the rail (`expertiseCapLine`) -- `undefined` when the
-   *  band publishes no `expertise_to_cap` (a caster, or a file older than the key). */
-  expertiseCap: ExpertiseCapLine | undefined;
   /** This band's own wearable-slot denominator (spec §4.B/§4.E) -- 17 minus the off hand
    *  under a two-hander, minus every still-empty trinket slot, computed from `rows`. */
   totalSlots: number;
@@ -618,7 +614,6 @@ export function bandInfosFor(
         scaleNoteLine,
         hasteCaptionLine,
         hitCap: hitCapLine(bandData.hit_to_cap),
-        expertiseCap: expertiseCapLine(bandData.expertise_to_cap),
         totalSlots,
         scoreUnit,
         tank: tankHeadlineForBand(bandData),

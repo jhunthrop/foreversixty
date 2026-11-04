@@ -8,7 +8,7 @@ import { existsSync } from 'node:fs';
 import { bandEntry, loadBisFile, realBisPath } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
 import { classRows, racesForClass } from '../planner/reference';
-import type { BisFile, BisExpertiseToCap, BisHitToCap, BisRole, BisStatWeight, Faction } from '../bis/types';
+import type { BisFile, BisHitToCap, BisRole, BisStatWeight, Faction } from '../bis/types';
 import { roleOf } from './role-metric';
 
 /**
@@ -63,7 +63,6 @@ export interface Band60Weights {
   role: BisRole;
   hasteScaleFactor: number | null;
   hitToCap: BisHitToCap | null;
-  expertiseToCap: BisExpertiseToCap | null;
   generatedAt: string;
   /** Which preset these weights were measured under, as the file labels it. */
   presetLabel: string;
@@ -93,7 +92,6 @@ export function band60Weights(
     role: roleOf(band),
     hasteScaleFactor: band.haste_scale_factor ?? null,
     hitToCap: band.hit_to_cap ?? null,
-    expertiseToCap: band.expertise_to_cap ?? null,
     generatedAt: file.generated_at,
     presetLabel: presetLabelFor(file, band),
   };

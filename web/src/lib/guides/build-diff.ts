@@ -51,12 +51,10 @@ export function diffBuilds(
   };
 }
 
-const LIST_CAP = 4;
-
+/** Every talent with its points: the line names them all, so the bracketed points always add
+ *  up to the count it states (an "and N more" tail hid named talents and their points). */
 function listOf(entries: readonly { name: string; points: number }[]): string {
-  const shown = entries.slice(0, LIST_CAP).map((entry) => `${entry.name} (${entry.points})`);
-  const rest = entries.length - shown.length;
-  if (rest > 0) shown.push(`${rest} more`);
+  const shown = entries.map((entry) => `${entry.name} (${entry.points})`);
   if (shown.length <= 1) return shown.join('');
   return `${shown.slice(0, -1).join(', ')} and ${shown[shown.length - 1]}`;
 }
