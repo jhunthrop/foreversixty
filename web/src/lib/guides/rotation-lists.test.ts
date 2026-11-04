@@ -47,6 +47,16 @@ describe('clauseOf', () => {
     );
   });
 
+  it('keeps the Fury Death Wish rule whole: it fits the clause cap in one sentence (round 20)', () => {
+    // Round 19 found the card cut the rule to "At the pull only if a second one fits"; the
+    // curated note now carries the whole rule in one sentence under MAX_WHOLE_CLAUSE.
+    const note =
+      'At the pull when a second one still fits, otherwise in the execute phase, or in the last 30 seconds when that phase is shorter than the buff.';
+    expect(clauseOf(note, 'Death Wish')).toBe(
+      'At the pull when a second one still fits, otherwise in the execute phase, or in the last 30 seconds when that phase is shorter than the buff',
+    );
+  });
+
   it('cuts at the first sentence or semicolon', () => {
     expect(clauseOf('Moonfire only to clip the last seconds; maintaining it costs more.', 'Moonfire')).toBe(
       'Only to clip the last seconds',
