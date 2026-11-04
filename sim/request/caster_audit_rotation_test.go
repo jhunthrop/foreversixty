@@ -51,7 +51,9 @@ func requireBefore(t *testing.T, spec string, ids []int32, first, second int32) 
 }
 
 // W1, W2: the Affliction build takes Siphon Life, so the rotation keeps it
-// up; Bane of Agony, not Bane of Doom, is the maintained curse.
+// up. Sim-accuracy round 15 (warlock lane, A2): Bane of Doom is the
+// maintained bane while a minute or more is left, and Bane of Agony only
+// covers the last minute, so Doom's line sits above Agony's.
 func TestAfflictionKeepsSiphonLifeAndAgony(t *testing.T) {
 	const (
 		siphonLife = 18881
@@ -62,9 +64,7 @@ func TestAfflictionKeepsSiphonLifeAndAgony(t *testing.T) {
 	if !slices.Contains(ids, siphonLife) {
 		t.Errorf("Affliction never casts Siphon Life (%d): %v", siphonLife, ids)
 	}
-	if !slices.Contains(ids, agony) || slices.Contains(ids, doom) {
-		t.Errorf("Affliction must keep Bane of Agony (%d), not Bane of Doom (%d): %v", agony, doom, ids)
-	}
+	requireBefore(t, "warlock-affliction", ids, doom, agony)
 }
 
 // D2: Demonic Pact is real and modeled. The Demonology raid build takes it,
