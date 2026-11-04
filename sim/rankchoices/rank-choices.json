@@ -111,8 +111,8 @@
         "authored": 20904,
         "bands": [
           {
-            "from_level": 40,
-            "to_level": 49,
+            "from_level": 28,
+            "to_level": 59,
             "rank": 1
           },
           {
@@ -129,6 +129,11 @@
         "spell": "Aimed Shot",
         "authored": 20904,
         "bands": [
+          {
+            "from_level": 28,
+            "to_level": 49,
+            "rank": 1
+          },
           {
             "from_level": 60,
             "to_level": 60,
