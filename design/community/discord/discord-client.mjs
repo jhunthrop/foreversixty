@@ -64,5 +64,6 @@ export function createClient({ token = readToken(), dryRun = false, log = consol
     post: (p, b, o) => request('POST', p, b, o),
     patch: (p, b, o) => request('PATCH', p, b, o),
     put: (p, b, o) => request('PUT', p, b, o),
+    del: (p, o) => request('DELETE', p, undefined, o),
   };
 }

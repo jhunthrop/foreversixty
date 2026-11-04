@@ -84,24 +84,25 @@ features, and site links through `/go/discord` or `?golink=discord`.
 
 ## Safety
 
-apply.mjs never deletes a channel, role or message. It finds everything by name (messages by the
+apply.mjs never deletes a channel, role or member's message. The only messages it deletes are the "pinned a message" notices from its own pins. It finds everything by name (messages by the
 bot's own embed title), creates only what is missing and edits the rest to match. Re-running it
 creates no duplicates. It reports anything left over, such as the old empty "Text Channels" and
 "Voice Channels" categories, for the owner to delete by hand.
 
 ## What the bot cannot do
 
-Found on the first run (3 Nov 2026). The owner does these by hand, then re-runs `node apply.mjs`:
+Found on the first runs (3 Nov 2026):
 
-- **Enable Community.** Discord requires Administrator for it. Go to Server Settings > Enable
-  Community and pick #rules and #mod-log. The re-run then creates #announcements and
-  #bug-reports, posts the welcome and launch messages, and turns onboarding on.
-- **Role order.** The bot cannot move its own role. Drag "Forever Sixty" to the top of the role
-  list, and the re-run orders the rest.
-- **Pins.** Pinning needs Pin Messages, which the invite did not include. Give it to the
-  bot's role.
-- **Vanity URL.** It needs boost level 3, and bots cannot set it. Set it in Server Settings >
+- **Community** needs Administrator. The owner enabled it by hand (rules channel #rules, updates
+  channel #mod-log), and the re-run then created #announcements and #bug-reports, posted the
+  welcome and launch messages, turned onboarding on and set rules screening.
+- **Role order:** the bot cannot move its own role, so the owner dragged it to the top. The
+  invite also lacked **Pin Messages**, which the owner granted.
+- **Vanity URL:** bots cannot set it, and it needs boost level 3. Set it in Server Settings >
   Vanity URL.
+- **The safety alerts channel** is ignored by the API, so set it by hand if wanted.
+- The old empty **"Text Channels" and "Voice Channels"** categories are left for the owner to
+  delete.
 
 ## Reviews
 

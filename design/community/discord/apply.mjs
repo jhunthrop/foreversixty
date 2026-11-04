@@ -1,7 +1,8 @@
 // design/community/discord/apply.mjs
 // Applies plan.json to the Forever Sixty community server. Idempotent: everything is found by
 // name (messages by the bot's own first embed title), only what is missing is created and the
-// rest is edited to match. It never deletes a channel, role, emoji or message.
+// rest is edited to match. It never deletes a channel, role or emoji, and the only messages it
+// deletes are the pin notices its own pins create.
 //
 //   node apply.mjs             apply
 //   node apply.mjs --dry-run   log the writes without making them
@@ -71,20 +72,23 @@ async function ensureEmojis(state, model) {
 
 // ---- roles -----------------------------------------------------------------------------------
 
-function allowedRolePermissions(role, botPermissions) {
+// The bot can only change permission bits it holds itself. Bits it lacks keep whatever the role
+// already has (a moderator may have granted them by hand); missing wanted bits are reported.
+function allowedRolePermissions(role, botPermissions, existing) {
   const wanted = bits(role.permissions);
-  const missing = wanted & ~botPermissions;
+  const current = existing ? BigInt(existing.permissions) : 0n;
+  const missing = wanted & ~botPermissions & ~current;
   if (missing) report.manual.push(`role ${role.name}: grant by hand the permissions the bot lacks (${missing})`);
-  return (wanted & botPermissions).toString();
+  return ((wanted & botPermissions) | (current & ~botPermissions)).toString();
 }
 
-function roleBody(role, state, botPermissions) {
+function roleBody(role, state, botPermissions, existing) {
   const body = {
     name: role.name,
     color: role.color ? hexColor(role.color) : 0,
     hoist: role.hoist,
     mentionable: role.mentionable,
-    permissions: allowedRolePermissions(role, botPermissions),
+    permissions: allowedRolePermissions(role, botPermissions, existing),
   };
   const canIcon = state.guild.features.includes('ROLE_ICONS');
   if (role.icon && !canIcon) report.manual.push(`role ${role.name}: icon needs boost level 2`);
@@ -97,8 +101,8 @@ function botPermissionBits(state) {
 }
 
 async function ensureRole(role, state, botPermissions) {
-  const { body, icon } = roleBody(role, state, botPermissions);
   const existing = state.roles.find((r) => r.name === role.name && !r.managed);
+  const { body, icon } = roleBody(role, state, botPermissions, existing);
   if (!existing) {
     const created = await discord.post(`${base}/roles`, { ...body, ...(icon && { icon: dataUri(icon) }) });
     report.created.push(`role ${role.name}`);
@@ -330,7 +334,6 @@ async function ensureCommunity(state, ctx, plan) {
   const changed = changedSettings(state.guild, {
     rules_channel_id: ctx.ids[s.rulesChannel],
     public_updates_channel_id: ctx.ids[s.updatesChannel],
-    safety_alerts_channel_id: ctx.ids[s.safetyAlertsChannel],
   });
   if (!isCommunity) {
     const mutable = state.guild.features.filter((f) => MUTABLE_FEATURES.has(f));
@@ -473,11 +476,44 @@ async function ensureOnboarding(ctx, model) {
     enabled: true,
     mode: ONBOARDING_MODE_DEFAULT,
   };
+  const shape = (o) => ({
+    enabled: o.enabled,
+    defaults: [...o.default_channel_ids].sort(),
+    prompts: o.prompts.map((p) => ({
+      title: p.title, single: p.single_select, required: p.required,
+      options: p.options.map((x) => ({
+        title: x.title, roles: [...x.role_ids].sort(), channels: [...x.channel_ids].sort(),
+        emoji: x.emoji?.id ?? x.emoji_id ?? x.emoji?.name ?? x.emoji_name,
+      })),
+    })),
+  });
+  if (same(shape(current), shape(body))) return;
   try {
     await discord.put(`${base}/onboarding`, body);
     report.updated.push('onboarding (Which class?, Alliance or Horde?, What brings you here?)');
   } catch (e) {
     report.manual.push(`onboarding: ${e.message.slice(0, 160)}`);
+  }
+}
+
+// ---- rules screening -----------------------------------------------------------------------
+
+// Rules screening is the member-verification form. Its endpoint is not in Discord's public docs,
+// so a refusal is reported for the owner rather than failing the run.
+async function ensureRulesScreening(plan) {
+  const { label, rules } = plan.rulesScreening;
+  const current = await discord.get(`${base}/member-verification`).catch(() => null);
+  const field = current?.form_fields?.find((f) => f.field_type === 'TERMS');
+  if (field && same(field.values, rules) && field.label === label) return;
+  try {
+    await discord.patch(`${base}/member-verification`, {
+      enabled: true,
+      description: plan.server.description,
+      form_fields: [{ field_type: 'TERMS', label, required: true, values: rules }],
+    });
+    report.updated.push('rules screening');
+  } catch (e) {
+    report.manual.push(`rules screening: ${e.message.slice(0, 120)}; set it in Server Settings > Safety Setup`);
   }
 }
 
@@ -532,10 +568,17 @@ async function ensureMessage(message, ctx, model) {
   if (message.pin && messageId && !found?.pinned) await pin(channelId, messageId, message.key);
 }
 
-// Pinning needs Pin Messages, which the invite did not grant; report it instead of failing.
+const PIN_NOTICE_TYPE = 6;
+
+// Pinning needs Pin Messages; a refusal is reported instead of failing. The "pinned a message"
+// notice the pin itself posts is the bot's own and is removed, so read-only channels stay clean.
 async function pin(channelId, messageId, key) {
   try {
     await discord.put(`/channels/${channelId}/pins/${messageId}`);
+    const recent = await discord.get(`/channels/${channelId}/messages?limit=5`);
+    const me = await discord.get('/users/@me');
+    const notices = recent.filter((m) => m.type === PIN_NOTICE_TYPE && m.author.id === me.id);
+    for (const notice of notices) await discord.del(`/channels/${channelId}/messages/${notice.id}`);
   } catch (e) {
     report.manual.push(`pin message ${key}: give the bot role Pin Messages, then re-run (${e.message.slice(0, 60)})`);
   }
@@ -577,6 +620,7 @@ async function main() {
   await ensureThreads(ctx, model);
   await ensureAutomod(ctx, model.plan);
   if (community) await ensureOnboarding(ctx, model);
+  if (community) await ensureRulesScreening(model.plan);
   await ensureMessages(ctx, model);
   await ensureVanity(state, model.plan);
   await reportLeftovers(ctx);

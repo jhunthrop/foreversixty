@@ -9,8 +9,7 @@
     "banner": "assets/banner.png",
     "systemChannel": "general",
     "rulesChannel": "rules",
-    "updatesChannel": "mod-log",
-    "safetyAlertsChannel": "mod-log",
+    "updatesChannel": "modlog",
     "vanity": "foreversixty"
   },
   "roles": [
@@ -532,5 +531,17 @@
   ],
   "classTopics": {
     "hunter": "Hunter talk: builds, gear, pets, leveling and raid play. Survival fights in melee in Forever; Beast Mastery and Marksmanship stay ranged. Each spec has its own thread."
+  },
+  "rulesScreening": {
+    "label": "Read and agree to the server rules",
+    "rules": [
+      "Be decent. Go after the argument, never the person.",
+      "No spam or self-promotion outside #lfg-and-recruitment.",
+      "No real-money trading: accounts, gold, boosts, carries or power-leveling.",
+      "Follow the Blizzard and Discord Terms of Service.",
+      "Keep personal info private.",
+      "Tag spoilers for the first week.",
+      "Moderators have the final say."
+    ]
   }
 }
