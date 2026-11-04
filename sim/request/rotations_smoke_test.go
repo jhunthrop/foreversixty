@@ -155,8 +155,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 			"loop: a real artifact of this bare build, not a defect in the gate.",
 	},
 	"druid-restoration": {
-		"{SpellID: 17116}": "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
-		"{SpellID: 18562}": "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
+		"{SpellID: 17116}":   "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
+		"{SpellID: 18562}":   "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
+		"{SpellID: 1259705}": "Read Leyline is the Alliance Skyborne racial (sim/core/racial_read_leyline.go); the published races are Night Elf and Tauren.",
 	},
 	"paladin-protection": {
 		"{SpellID: 20594}": "Stoneform is the Dwarf racial (sim/core/racials.go); this build is not a Dwarf.",
