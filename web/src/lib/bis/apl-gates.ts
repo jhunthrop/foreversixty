@@ -58,6 +58,7 @@ export const CONDITION_NODES: ReadonlySet<string> = new Set([
   'currentComboPoints',
   'currentEnergy',
   'currentHealthPercent',
+  'currentLevel',
   'currentMana',
   'currentManaPercent',
   'currentRage',

@@ -29,12 +29,15 @@
     loot,
     ctx,
     treeVersion,
+    classSlug = '',
     onadd,
   }: {
     items: readonly Item[];
     loot: LootFile;
     ctx: SearchContext;
     treeVersion: string;
+    /** The character's class: a relic class's ranged slot reads "Relic". */
+    classSlug?: string;
     onadd: (itemId: number) => void;
   } = $props();
 
@@ -90,7 +93,7 @@
         bind:value={query.slot}
         options={[
           { value: '', label: bulkCopy.searchAnySlot },
-          ...slotOptions().map((option) => ({ value: option.slot, label: option.label })),
+          ...slotOptions(classSlug).map((option) => ({ value: option.slot, label: option.label })),
         ]}
         testid="sim-search-slot"
       />

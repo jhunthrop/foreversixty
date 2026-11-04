@@ -17,7 +17,7 @@ import { classFor, specKeyFor, type LandingConfig } from './landing-config';
 import { landingCopy } from './landing-copy';
 import { levelingSpecKey } from '../leveling/leveling-plan';
 import { specLinkHref } from './landing-links';
-import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
+import { slotDisplayLabel } from './slot-display-labels';
 import { hasKnownSource } from './source-cell';
 import type { BisBand, Faction } from './types';
 
@@ -34,15 +34,16 @@ export interface SlotCount {
   excluded: string[];
 }
 
-/** The note's names: both of a pair together (`Trinkets`), a lone half by its own label. */
-export function excludedSlotNames(slots: readonly Slot[]): string[] {
+/** The note's names: both of a pair together (`Trinkets`), a lone half by its own label, a
+ *  relic class's ranged slot as `Relic` (`slotDisplayLabel`). */
+export function excludedSlotNames(slots: readonly Slot[], classSlug?: string): string[] {
   const names: string[] = [];
   for (const slot of SLOTS.filter((candidate) => slots.includes(candidate))) {
     const group = slot.replace(PAIR_SUFFIX, '');
     const pairName = PAIRED_SLOT_NAMES[group];
     const bothMissing =
       pairName !== undefined && slots.includes(`${group}1` as Slot) && slots.includes(`${group}2` as Slot);
-    const name = bothMissing ? pairName : SLOT_DISPLAY_LABELS[slot];
+    const name = bothMissing ? pairName : slotDisplayLabel(slot, classSlug);
     if (!names.includes(name)) names.push(name);
   }
   return names;
@@ -52,11 +53,15 @@ export function excludedSlotNames(slots: readonly Slot[]): string[] {
  * Of the slots this band has a sourced pick for, how many the character already wears the pick
  * in. The band's other slots are named, never counted: an unknown is not a zero.
  */
-export function slotCount(band: Pick<BisBand, 'slots'>, gear: Readonly<Record<string, number>>): SlotCount {
+export function slotCount(
+  band: Pick<BisBand, 'slots'>,
+  gear: Readonly<Record<string, number>>,
+  classSlug?: string,
+): SlotCount {
   const sourced = band.slots.filter(hasKnownSource);
   const worn = sourced.filter((pick) => wearsListedBest(pick.slot, pick.item_id, gear)).length;
   const unsourced = SLOTS.filter((slot) => !sourced.some((pick) => pick.slot === slot));
-  return { worn, total: sourced.length, excluded: excludedSlotNames(unsourced) };
+  return { worn, total: sourced.length, excluded: excludedSlotNames(unsourced, classSlug) };
 }
 
 /** `Trinkets have no pick at this band.`; null when every slot has a pick. */
@@ -74,8 +79,9 @@ const NO_LIST: HeaderAnswer = { kind: 'sentence', text: homeHeroCardsCopy.bestIn
 export function countAnswer(
   band: Pick<BisBand, 'slots'>,
   gear: Readonly<Record<string, number>>,
+  classSlug?: string,
 ): HeaderAnswer {
-  const { worn, total, excluded } = slotCount(band, gear);
+  const { worn, total, excluded } = slotCount(band, gear, classSlug);
   const note = excludedNote(excluded);
   return {
     kind: 'figures',
@@ -117,7 +123,7 @@ export async function loadBisAnswer(
   if (specKey === undefined) return withoutList;
   const entry = await bandEntryOf(options.build, specKey, character);
   if (entry === undefined) return withoutList;
-  return countAnswer(entry, character.build?.gear ?? {});
+  return countAnswer(entry, character.build?.gear ?? {}, specKey.split('-')[0]);
 }
 
 /** The header's answer spec for any page that counts worn best-in-slot picks. */

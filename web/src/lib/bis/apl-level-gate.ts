@@ -8,8 +8,8 @@
 // not known, from there on the answer is open.
 //
 // The condition is read three-valued (true, false, open): every clause that is not a
-// `spellIsKnown` is open, so a step is ruled out only when its level gate alone makes the
-// whole condition false.
+// `spellIsKnown` or a `currentLevel` comparison is open, so a step is ruled out only when its
+// level gate alone makes the whole condition false.
 
 import { levelledRanks } from './apl-steps';
 
@@ -40,10 +40,45 @@ function anyOf(values: readonly Truth[]): Truth {
   return values.every((value) => value === false) ? false : undefined;
 }
 
-/** The condition at `level`, as far as what the character has trained decides it. */
+/** The comparisons a `currentLevel` clause can make, as the engine's `APLValueCompare` ops. */
+const LEVEL_OPS: Readonly<Record<string, (lhs: number, rhs: number) => boolean>> = {
+  OpEq: (a, b) => a === b,
+  OpNe: (a, b) => a !== b,
+  OpLt: (a, b) => a < b,
+  OpLe: (a, b) => a <= b,
+  OpGt: (a, b) => a > b,
+  OpGe: (a, b) => a >= b,
+};
+
+/** A side of a comparison at `level`: the character's level, a constant, else unknown. */
+function levelOperand(node: unknown, level: number): number | undefined {
+  if (!isNode(node)) return undefined;
+  if ('currentLevel' in node) return level;
+  if (isNode(node.const) && typeof node.const.val === 'string') {
+    const value = Number(node.const.val);
+    return Number.isFinite(value) ? value : undefined;
+  }
+  return undefined;
+}
+
+/** A `cmp` of `currentLevel` against a constant at `level` (round 19: a line scoped to a
+ *  level range); undefined for any other comparison. */
+function levelCompareAt(cmp: unknown, level: number): Truth {
+  if (!isNode(cmp) || typeof cmp.op !== 'string') return undefined;
+  const mentionsLevel = [cmp.lhs, cmp.rhs].some((side) => isNode(side) && 'currentLevel' in side);
+  const compare = LEVEL_OPS[cmp.op];
+  const lhs = levelOperand(cmp.lhs, level);
+  const rhs = levelOperand(cmp.rhs, level);
+  if (!mentionsLevel || compare === undefined || lhs === undefined || rhs === undefined) return undefined;
+  return compare(lhs, rhs);
+}
+
+/** The condition at `level`, as far as what the character has trained, and a `currentLevel`
+ *  comparison, decide it. */
 export function conditionAt(condition: unknown, level: number, knownAt: KnownAt): Truth {
   if (condition === undefined) return true;
   if (!isNode(condition)) return undefined;
+  if ('cmp' in condition) return levelCompareAt(condition.cmp, level);
   if ('spellIsKnown' in condition) {
     const spellId = spellIdOf(condition.spellIsKnown);
     return spellId === undefined ? undefined : knownAt(spellId, level);

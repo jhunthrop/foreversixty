@@ -972,3 +972,20 @@ def test_rank_siblings_adds_every_rank_of_a_named_family() -> None:
     }
     assert rank_siblings(spellranks, {2052}) == {2050, 2053}
     assert rank_siblings(spellranks, {9999}) == set()
+
+
+def test_a_line_scoped_to_a_level_range_is_in_those_bands_only(tmp_path):
+    # Round 19 (priest lane): Discipline's step-down applies from 40 to 59 and waits on an
+    # owner ruling at 60; the line is scoped with currentLevel, which the addon reads too.
+    def level(op: str, value: int) -> dict:
+        rhs = {"const": {"val": str(value)}}
+        return {"cmp": {"op": op, "lhs": {"currentLevel": {}}, "rhs": rhs}}
+
+    scoped = _cast(2687, notes="Bloodrage from 40 to 59.")
+    scoped["action"]["condition"] = {"and": {"vals": [level("OpGe", 40), level("OpLt", 60)]}}
+    _write_apl(tmp_path, "warrior-fury", [scoped, _cast(25289, rank=7, notes="Battle Shout up.")])
+    bands = _bands("warrior-fury", tmp_path)
+    assert 2687 not in [line.spell_id for line in bands[30]]
+    assert 2687 in [line.spell_id for line in bands[40]]
+    assert 2687 in [line.spell_id for line in bands[50]]
+    assert 2687 not in [line.spell_id for line in bands[60]]

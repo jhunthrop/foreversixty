@@ -3,7 +3,8 @@
      trinkets get one section, not two: sim/bulk tries them in both slots and the grid
      saying otherwise would be a promise the engine does not keep. -->
 <script lang="ts">
-  import { SLOTS, SLOT_LABELS, type Slot } from '../../../lib/planner/types';
+  import { SLOTS, type Slot } from '../../../lib/planner/types';
+  import { slotLabelForClass } from '../../../lib/bis/slot-display-labels';
   import type { CandidateRow } from '../../../lib/sim/candidates';
   import { bulkCopy } from '../../../lib/sim/copy';
   import type { EnchantRow, SuffixRow } from '../../../lib/sim/enchants';
@@ -54,7 +55,7 @@
     {#if slotRows.length > 0}
       <div class="border-line rounded-panel border p-3">
         <header class="flex flex-wrap items-center justify-between gap-2">
-          <h3 class="section-title">{SLOT_LABELS[slot]}</h3>
+          <h3 class="section-title">{slotLabelForClass(slot, classSlug)}</h3>
           <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
             <input
               type="checkbox"

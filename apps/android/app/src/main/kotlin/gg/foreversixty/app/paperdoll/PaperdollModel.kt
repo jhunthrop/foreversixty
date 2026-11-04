@@ -65,11 +65,17 @@ object Paperdoll {
      * A character card's gear (F11.5): each worn item looked up in its class's items file for its
      * icon and quality; the gold dot where the band's pick would gain points.
      */
-    fun fromProfile(gear: List<CharacterGearSlot>, items: Map<Int, Item>, res: Resources): List<PaperdollSlot> {
+    fun fromProfile(
+        gear: List<CharacterGearSlot>,
+        items: Map<Int, Item>,
+        res: Resources,
+        /** The character's class: a paladin, shaman or druid's ranged socket reads Relic. */
+        classSlug: String? = null,
+    ): List<PaperdollSlot> {
         val bySlot = gear.associateBy { it.slot }
         val main = bySlot[MAIN_HAND]?.worn?.let { items[it.id] }
         return ItemVocabulary.frameSlots.map { slot ->
-            val slotName = ItemVocabulary.slotLabel(res, slot)
+            val slotName = ItemVocabulary.slotLabel(res, slot, classSlug)
             val entry = bySlot[slot]
             val worn = entry?.worn
             val blocked = slot == OFF_HAND && worn == null && main?.twoHand == true

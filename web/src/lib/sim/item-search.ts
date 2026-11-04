@@ -6,7 +6,8 @@
 // maintaining a persistent index: the class item lists are a few hundred rows at most, and
 // there is nothing here worth caching across calls.
 import { slotsForItem } from '../planner/rules';
-import { SLOTS, SLOT_LABELS, type Item, type Slot } from '../planner/types';
+import { SLOTS, type Item, type Slot } from '../planner/types';
+import { slotLabelForClass } from '../bis/slot-display-labels';
 
 export interface ItemQuery {
   text: string;
@@ -49,9 +50,10 @@ export function defaultItemQuery(): ItemQuery {
   return { text: '', minItemLevel: 0, slot: '', sourceId: '', usableOnly: true };
 }
 
-/** The slot filter's options, in the grid's own order. */
-export function slotOptions(): { slot: Slot; label: string }[] {
-  return SLOTS.map((slot) => ({ slot, label: SLOT_LABELS[slot] }));
+/** The slot filter's options, in the grid's own order; a relic class's ranged slot reads
+ *  "Relic" (`slotLabelForClass`). */
+export function slotOptions(classSlug?: string): { slot: Slot; label: string }[] {
+  return SLOTS.map((slot) => ({ slot, label: slotLabelForClass(slot, classSlug) }));
 }
 
 /**

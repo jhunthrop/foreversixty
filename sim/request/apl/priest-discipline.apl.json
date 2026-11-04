@@ -12,7 +12,7 @@
       },
       "doAtValue": {
         "const": {
-          "val": "-2.5s"
+          "val": "-3s"
         }
       }
     },
@@ -31,7 +31,7 @@
       },
       "doAtValue": {
         "const": {
-          "val": "-1s"
+          "val": "-1.5s"
         }
       }
     }
@@ -351,7 +351,7 @@
           }
         }
       },
-      "notes": "Keep Renew on the tank all fight."
+      "notes": "Keep Renew rank 7 or higher on the tank all fight."
     },
     {
       "action": {
@@ -969,7 +969,85 @@
           }
         }
       },
-      "notes": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him."
+      "notes": "Greater Heal at the top rank as the tank's filler at 60: he takes the big hits, so the big heal goes on him."
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 6064,
+            "rank": 4
+          },
+          "target": {
+            "type": "Player",
+            "index": 5
+          }
+        },
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "and": {
+                  "vals": [
+                    {
+                      "cmp": {
+                        "op": "OpGe",
+                        "lhs": {
+                          "currentManaPercent": {}
+                        },
+                        "rhs": {
+                          "math": {
+                            "op": "OpMul",
+                            "lhs": {
+                              "remainingTimePercent": {}
+                            },
+                            "rhs": {
+                              "const": {
+                                "val": "0.9"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpLt",
+                        "lhs": {
+                          "currentHealthPercent": {
+                            "sourceUnit": {
+                              "type": "Player",
+                              "index": 5
+                            }
+                          }
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0.8"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "not": {
+                  "val": {
+                    "spellIsKnown": {
+                      "spellId": {
+                        "spellId": 2060,
+                        "rank": 1
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "notes": "Heal on the tank until you learn Greater Heal at 40: it is your biggest heal until then."
     },
     {
       "action": {
@@ -1476,7 +1554,57 @@
           }
         }
       },
-      "notes": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him."
+      "notes": "Greater Heal at the top rank as the tank's filler at 60: he takes the big hits, so the big heal goes on him."
+    },
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 6064,
+            "rank": 4
+          },
+          "target": {
+            "type": "Player",
+            "index": 5
+          }
+        },
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "cmp": {
+                  "op": "OpLt",
+                  "lhs": {
+                    "currentHealthPercent": {
+                      "sourceUnit": {
+                        "type": "Player",
+                        "index": 5
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "0.5"
+                    }
+                  }
+                }
+              },
+              {
+                "not": {
+                  "val": {
+                    "spellIsKnown": {
+                      "spellId": {
+                        "spellId": 2060,
+                        "rank": 1
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "action": {

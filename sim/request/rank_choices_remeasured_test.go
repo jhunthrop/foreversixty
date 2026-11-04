@@ -52,8 +52,9 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 		want, not                       int32
 	}{
 		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned (10945):
-		// ranks 2 and 3 keep 15% and 45% of spell power there, and the rows lost 3.3%.
-		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 10945, 8103},
+		// ranks 2 and 3 keep 15% and 45% of spell power there, and the rows lost 3.3%. Round 19:
+		// an Undead casts rank 6 (8106, whole bonus) at 50 and 51.
+		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 8106, 8103},
 		{"Gnome Mind Blast at 50", "priest-shadow", "priest", BarePreset, "gnome", 50, 10945, 8102},
 		{"Undead Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "undead", 60, 19280, 19276},
 		{"Gnome Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, "gnome", 60, 19280, 19276},
@@ -253,6 +254,29 @@ func TestRound18MarksmanshipAimedShotRankOneFrom52(t *testing.T) {
 		{"Marksmanship Aimed Shot at 59", 59, 19434, 20903},
 	} {
 		ids := rotationIDs(t, "hunter-marksmanship", "hunter", c.level, specRankChoices("hunter-marksmanship", BarePreset, "orc"))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}
+
+// Round 19 (hunter lane): at 46 and 47 Survival queues Raptor Strike rank 5.
+// Immolation Trap rank 4 arrives at 46 and runs the mana dry; rank 5's lower
+// cost buys back traps and gains beyond error at seeds 1 and 50001 (Horde
+// +0.3%, Alliance +0.1%). From 48 rank 7 and from 40 to 45 the top rank
+// wins or ties.
+func TestRound19SurvivalRaptorStrikeRankFiveAt46(t *testing.T) {
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not int32
+	}{
+		{"Survival Raptor Strike at 45", 45, 14264, 14263},
+		{"Survival Raptor Strike at 46", 46, 14263, 14264},
+		{"Survival Raptor Strike at 47", 47, 14263, 14264},
+		{"Survival Raptor Strike at 48", 48, 14265, 14263},
+	} {
+		ids := rotationIDs(t, "hunter-survival", "hunter", c.level, specRankChoices("hunter-survival", BarePreset, "orc"))
 		if !ids[c.want] || ids[c.not] {
 			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
 		}

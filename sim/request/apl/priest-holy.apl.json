@@ -110,7 +110,7 @@
           }
         }
       },
-      "notes": "Keep Renew on the tank all fight."
+      "notes": "Keep Renew rank 7 or higher on the tank all fight."
     },
     {
       "action": {
@@ -620,7 +620,7 @@
           }
         }
       },
-      "notes": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight."
+      "notes": "Greater Heal is the filler at your top trainer rank while your mana keeps pace with the fight."
     },
     {
       "action": {

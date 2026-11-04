@@ -109,8 +109,10 @@ func TestPriestRenewRowsBelowSixty(t *testing.T) {
 		{"priest-holy", 40, []int{4}},
 		{"priest-holy", 44, []int{4}},
 		{"priest-holy", 45, []int{5}},
-		{"priest-holy", 51, []int{5}},
-		{"priest-holy", 52, []int{6}},
+		{"priest-holy", 50, []int{5}},
+		{"priest-holy", 51, []int{5, 6}}, // round 19: rank 6 for an Undead
+		{"priest-holy", 52, []int{5, 6}}, // round 19: rank 5 for a Gnome, Dwarf or Night Elf
+		{"priest-holy", 53, []int{6}},
 		{"priest-holy", 59, []int{6}},
 		{"priest-discipline", 40, []int{4}},
 		{"priest-discipline", 44, []int{4}},
@@ -130,9 +132,9 @@ func TestPriestRenewRowsBelowSixty(t *testing.T) {
 
 // Devouring Plague rank 1 (learned at 20) loses its bonus from 38; rank 2
 // wins from 52 on both factions (round 16 wave 2), and at 50 and 51 for every
-// race since round 18.
+// race but a Human, who keeps rank 1 there (round 19).
 func TestShadowDevouringPlagueMovesToRankTwoAtFiftyTwo(t *testing.T) {
-	for level, want := range map[int][]int{51: {2}, 52: {2}, 59: {2}} {
+	for level, want := range map[int][]int{51: {1, 2}, 52: {2}, 59: {2}} {
 		got, err := ChosenRanks("priest-shadow", "Devouring Plague", level)
 		if err != nil {
 			t.Fatal(err)

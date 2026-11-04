@@ -10,7 +10,8 @@
      still reads correctly, with slot names and ids in place of icons. -->
 <script lang="ts">
   import { loadItems } from '../../lib/planner/load';
-  import { SLOT_LABELS, type Item, type Slot } from '../../lib/planner/types';
+  import type { Item } from '../../lib/planner/types';
+  import { slotLabelForClass } from '../../lib/bis/slot-display-labels';
   import type { BulkResult } from '../../lib/sim/bulk-types';
   import { closestOverlappingPair, comboRows, deltaLabel, rowName, slotSummary } from '../../lib/sim/combos';
   import { bulkCopy } from '../../lib/sim/copy';
@@ -136,7 +137,9 @@
       <ul class="flex flex-col">
         {#each summary as row (`${row.slot}-${row.item_id}`)}
           <li class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 last:border-b-0">
-            <span class="text-muted w-24 text-[12px]">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</span>
+            <span class="text-muted w-24 text-[12px]"
+              >{slotLabelForClass(row.slot, result.request.character.class)}</span
+            >
             <span class="text-text flex-1 text-[13px]">{row.name}</span>
             <span class="text-gold numeric text-[13px]">
               {row.gain === null ? '—' : `+${Math.round(row.gain).toLocaleString('en-US')}`}

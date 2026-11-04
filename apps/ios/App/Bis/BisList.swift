@@ -128,7 +128,7 @@ struct BisListBuilder {
         let mainHand = band.slots.first { $0.slot == "main_hand" }?.itemName
         return BisList(
             setDpsLine: headline(file: file, band: band, unit: unit),
-            rows: band.slots.map { row($0, unit: unit, mainHand: mainHand) },
+            rows: band.slots.map { row($0, unit: unit, mainHand: mainHand, classSlug: Self.classSlug(of: file.spec)) },
             unit: unit,
             specLabel: specLabel,
             rangeLabel: rangeLabel
@@ -144,8 +144,13 @@ struct BisListBuilder {
         return band.setDps.map { Copy.bisSetDps(dps: Self.figure($0), unit: unit.word, date: date) }
     }
 
-    func row(_ slot: BisSlot, unit: BisUnit, mainHand: String?) -> BisRow {
-        let label = ItemVocabulary.slotLabel(slot.slot)
+    /// The class a spec key names: its first word (`shaman-enhancement`).
+    static func classSlug(of spec: String) -> String {
+        String(spec.split(separator: "-").first ?? "")
+    }
+
+    func row(_ slot: BisSlot, unit: BisUnit, mainHand: String?, classSlug: String? = nil) -> BisRow {
+        let label = ItemVocabulary.slotLabel(slot.slot, classSlug: classSlug)
         guard let id = slot.itemId, id > 0, let name = slot.itemName else {
             let reason = if slot.emptyReason == Self.twoHandEquipped, let mainHand {
                 Copy.bisOffHandTwoHand(item: mainHand)

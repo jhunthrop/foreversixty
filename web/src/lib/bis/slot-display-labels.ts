@@ -23,3 +23,37 @@ export const SLOT_DISPLAY_LABELS: Record<Slot, string> = {
   trinket1: 'Trinket',
   trinket2: 'Trinket',
 };
+
+/** The classes whose ranged slot is a relic slot (libram, totem, idol): the client's own
+ *  paperdoll names it "Relic" for them. Every other class keeps "Ranged" for its bow, gun,
+ *  thrown weapon or wand. */
+export const RELIC_CLASSES: ReadonlySet<string> = new Set(['paladin', 'shaman', 'druid']);
+
+/** The client's word for that slot, and on a relic item's own tooltip. */
+export const RELIC_SLOT_LABEL = 'Relic';
+
+/** Whether `slot` is a relic slot for a character of `classSlug`. */
+export function isRelicSlot(slot: string, classSlug: string | undefined): boolean {
+  return slot === 'ranged' && classSlug !== undefined && RELIC_CLASSES.has(classSlug);
+}
+
+function labelFrom(
+  labels: Readonly<Record<string, string>>,
+  slot: string,
+  classSlug: string | undefined,
+): string {
+  if (isRelicSlot(slot, classSlug)) return RELIC_SLOT_LABEL;
+  return Object.prototype.hasOwnProperty.call(labels, slot) ? labels[slot]! : slot;
+}
+
+/** The best-in-slot column's word for `slot` (`SLOT_DISPLAY_LABELS`: "Ring", "Trinket"),
+ *  "Relic" for a relic class's ranged slot; an unknown key prints as published. */
+export function slotDisplayLabel(slot: string, classSlug?: string): string {
+  return labelFrom(SLOT_DISPLAY_LABELS, slot, classSlug);
+}
+
+/** The disambiguating word for `slot` (`SLOT_LABELS`: "Finger 1", "Trinket 2"), "Relic" for a
+ *  relic class's ranged slot; an unknown key prints as published. */
+export function slotLabelForClass(slot: string, classSlug?: string): string {
+  return labelFrom(SLOT_LABELS, slot, classSlug);
+}

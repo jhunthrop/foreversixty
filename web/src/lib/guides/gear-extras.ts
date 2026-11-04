@@ -21,8 +21,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { repoRoot } from '../data/build-files';
 import { bandEntry } from '../bis/load';
-import { SLOT_DISPLAY_LABELS } from '../bis/slot-display-labels';
-import type { Slot } from '../planner/types';
+import { slotDisplayLabel } from '../bis/slot-display-labels';
 import { enchantFits, type EnchantRule, type EnchantTarget } from '../gear/enchant-fit';
 import { buildFile, buildItemCatalog, readBuildJson } from './build-files';
 
@@ -173,7 +172,7 @@ export function pickEnchants(
     return {
       id: record.id,
       slot,
-      slotLabel: slot === 'main_hand' ? 'Weapon' : (SLOT_DISPLAY_LABELS[slot as Slot] ?? slot),
+      slotLabel: slot === 'main_hand' ? 'Weapon' : slotDisplayLabel(slot, context.classSlug),
       name: record.name,
       icon: (iconUses.get(record.icon) ?? 0) >= STAND_IN_ICON_USES ? undefined : record.icon,
       gives: enchantGives(record.stats),
