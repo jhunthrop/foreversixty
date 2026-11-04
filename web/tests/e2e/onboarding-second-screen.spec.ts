@@ -210,7 +210,7 @@ for (const size of SIZES) {
       await settle(page);
       // P.1: a visitor to a character with nothing on it gets one sentence and the lookup box.
       await expect(page.getByTestId('character-not-found-line')).toHaveText(
-        'Elyra Duskvale has no Forever Sixty data yet.',
+        'Elyra Duskvale is here, with no gear, talents or logs yet.',
       );
       await expect(page.getByText('Check the name and ruleset')).toHaveCount(0);
       await expect(page.getByText('(Player)')).toHaveCount(0);

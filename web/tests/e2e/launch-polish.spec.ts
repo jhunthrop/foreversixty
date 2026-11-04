@@ -167,7 +167,7 @@ for (const size of SIZES) {
       await page.goto(CHARACTER_PATH);
       await page.waitForLoadState('networkidle');
       await expect(page.getByTestId('character-not-found-line')).toHaveText(
-        'Elyra Duskvale has no Forever Sixty data yet.',
+        'Elyra Duskvale is here, with no gear, talents or logs yet.',
       );
       await expect(page.getByTestId('character-not-found-form')).toBeVisible();
       await expect(page.getByTestId('character-not-found-next').getByRole('link')).toHaveText(

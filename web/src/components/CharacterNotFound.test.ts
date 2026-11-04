@@ -53,9 +53,9 @@ describe('Character.svelte', () => {
 describe('CharacterNotFound for a character the site holds with no data (P.1)', () => {
   const { body } = render(CharacterNotFound, { props: { path: PATH, name: 'Nobody Here', known: true } });
 
-  it('reads "<Name> has no Forever Sixty data yet." under the name', () => {
+  it('reads "<Name> is here, with no gear, talents or logs yet." under the name', () => {
     expect(body).toContain('>Nobody Here</h1>');
-    expect(body).toContain('Nobody Here has no Forever Sixty data yet.');
+    expect(body).toContain('Nobody Here is here, with no gear, talents or logs yet.');
     expect(body).not.toContain('Character not found');
     expect(body).not.toContain('No character called');
   });
