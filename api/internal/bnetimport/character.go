@@ -140,6 +140,9 @@ func (s *Service) enrichInTx(ctx context.Context, tx pgx.Tx, ref characterRef, r
 	if err := s.captureMedia(ctx, tx, ref.Key, ref.Region, ref.RealmSlug, ref.Name); err != nil {
 		return err
 	}
+	if err := s.captureStatistics(ctx, tx, ref.Key, ref.Region, ref.RealmSlug, ref.Name); err != nil {
+		return err
+	}
 	if err := s.buildAndWriteExport(ctx, tx, ref.UserID, ref.Key, ref.Region, ref.Ruleset, profile, rawEquipment, rawSpecializations); err != nil {
 		return err
 	}

@@ -72,7 +72,9 @@ func newBlizzardFixture(t *testing.T) *blizzardFixture {
 			// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §0), rather
 			// than failing every test written before that capture existed — a test
 			// asserting on the Blizzard-sourced build stubs it explicitly instead.
-			if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/specializations") {
+			// /statistics likewise: a guarded read the import never needs.
+			if r.Method == http.MethodGet && (strings.HasSuffix(r.URL.Path, "/specializations") ||
+				strings.HasSuffix(r.URL.Path, "/statistics")) {
 				w.WriteHeader(http.StatusNotFound)
 				return
 			}
