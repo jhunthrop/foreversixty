@@ -3,7 +3,7 @@ title: Marksmanship Hunter in Forever
 classSlug: hunter
 spec: marksmanship
 role: dps
-build: 'FS1:1.60.1.70755:hunter:dwarf:5320000501/005155000150305/5:'
+build: 'FS1:1.60.1.70755:hunter:dwarf:532000050/005055200152105/5:'
 raidBuild: 'FS1:1.60.1.70755:hunter:dwarf:5/0052550011503051/50005003:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
