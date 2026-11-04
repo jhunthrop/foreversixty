@@ -37,7 +37,7 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and B
 
 ### Weaknesses
 
-- The lowest raid damage of the three trees
+- Bleeds carry its damage, so a boss that cannot bleed takes Garrote and Rupture off your bar and leaves every mark with less to store
 - More moving parts than Combat: a debuff, two bleeds, a mark and three short cooldowns to track
 - Its strongest tools (Vanish and Blind) do little on a raid boss, and Preparation is worth only one extra round of combo points there
 
