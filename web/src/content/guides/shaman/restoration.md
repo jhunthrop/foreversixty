@@ -77,7 +77,7 @@ Ancestral Healing is three points for 25% more armor on your target for 15 secon
 
 **Everyone else.** Heal them directly only while your mana is above half: Riptide when one is under 50%, Lesser Healing Wave under 25%. Otherwise Chain Heal is how they get healed.
 
-**Chain Heal ranks.** Rank 3 costs 405 mana for a 490 base heal, rank 2 costs 315 for 335, and both take your whole healing bonus. With a raid's healing gear rank 2 heals the most per point of mana and rank 3 the most per cast. Rank 1, learned at 40, loses part of your bonus at 60, and at 60 it is never better than rank 2. Cast rank 3 while your mana is ahead of the fight, and drop to rank 2 on fights where you would run dry.
+**Chain Heal ranks.** Rank 3 costs 405 mana for a 490 base heal, rank 2 costs 315 for 335, and both take your whole healing bonus. With a raid's healing gear rank 2 heals the most per point of mana and rank 3 the most per cast. Rank 1, learned at 40, starts losing your bonus at 58, and at 60 it is never better than rank 2. Cast rank 3 while your mana is ahead of the fight, and drop to rank 2 on fights where you would run dry.
 
 **Your party matters.** Healing Stream, Mana Spring and Mana Tide only reach your party. Ask to be grouped with whoever takes the damage, usually the tank and the melee.
 
