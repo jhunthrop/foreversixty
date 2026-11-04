@@ -6,12 +6,14 @@ Site branch `wt/r18-platform` (from int/r18 4600b7d82). No engine changes and no
 
 | # | finding | evidence and source | confirmed? | origin | fix sha |
 |---|---|---|---|---|---|
-| P1 | Each guide's Leveling strip listed every range at its FIRST level. "Level 30 to 39" showed the level 30 build, so a level 36 reader never saw the points taken at 31 to 36. | `web/src/lib/guides/leveling-builds.ts` `guideLevelingBuilds` cut the ladder at `band`, and `LevelingBandStrip.astro` decoded that string. | CONFIRMED-BUG | web | S d36888614 |
+| P1 | Each guide's Leveling strip listed every range at its FIRST level. "Level 30 to 39" showed the level 30 build, so a level 36 reader never saw the points taken at 31 to 36. | `web/src/lib/guides/leveling-builds.ts` `guideLevelingBuilds` cut the ladder at `band`, and `LevelingBandStrip.astro` decoded that string. | CONFIRMED-BUG | web | S d36888614, reverted (superseded by land/leveling-tree) |
 | P2 | The iOS and Android item tooltips dropped expertise rating. Round 17 added the line on the web only (f81ca7bdc). | Both `ItemVocabulary.statOrder` tables had no `expertise` key, so `statLines` never printed it. | CONFIRMED-BUG | apps | S 09ada75b0 |
 | P3 | The Arcane opener card said "Frostbolt 3 s before the pull, without Heating Up". The prose and the APL both say 2.5 s. | See below. | CONFIRMED-BUG (card) | web | S 3df28dc3e |
 | P4 | The Rebirth and Revive tooltips still show raw `$q` because spelltips were not regenerated after the `$q` fill. | See below. | OPEN (data job) | data | - |
 
 ### P1: per-band talent lists
+
+**Reverted.** land/leveling-tree (47b55e8b6, owner request) replaces the chip strip with a talent tree and a 10-60 level slider, so this change was reverted on the branch. The notes below record what was done.
 
 - **Change.** Each range now lists the build held at its LAST level: 29, 39, 49, 59 and 60. The build comes from the same monotone ladder the sim uses.
 - **Level stamps.** Each talent chip names the levels its points come at inside the range, for example "Lv 32-36" or "Lv 23-24, 26". There is one point a level from 10, so the first range also stamps levels 10 to 19.
