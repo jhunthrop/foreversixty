@@ -194,3 +194,20 @@ func TestABandCarriesItsOwnLines(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 18: the top-rank Greater Heal lines (10965) cast rank 1
+// at 46-57, where a mana-bound healer heals more with it than with rank 2 or
+// 3 (+0.2% to +1.2%, 10,000 iterations, seeds 1 and 50001, both factions).
+func TestPriestGreaterHealRankOneBelowFiftyEight(t *testing.T) {
+	for _, spec := range []string{"priest-holy", "priest-discipline"} {
+		for level, want := range map[int][]int{45: nil, 46: {1}, 57: {1}, 58: nil} {
+			got, err := ChosenRanks(spec, "Greater Heal", level)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !slices.Equal(got, want) {
+				t.Errorf("%s Greater Heal at %d: %v, want %v", spec, level, got, want)
+			}
+		}
+	}
+}

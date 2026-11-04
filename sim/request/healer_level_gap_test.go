@@ -106,6 +106,7 @@ func TestPriestsRenewKeepsItsHealingBonus(t *testing.T) {
 // Holy's filler is Greater Heal at its top trainer rank (10965), ahead of
 // each Heal line; Heal stays behind it at its top rank (6064) for the levels
 // before Greater Heal (learned at 40), where it casts the highest rank known.
+// Round 18: Greater Heal is rank 1 from 46 to 57, then the highest rank known.
 func TestHolyFillsWithGreaterHealAheadOfHeal(t *testing.T) {
 	heal := linesCasting(t, "priest-holy", 2054, 6064)
 	greater := linesCasting(t, "priest-holy", 10965)
@@ -114,7 +115,7 @@ func TestHolyFillsWithGreaterHealAheadOfHeal(t *testing.T) {
 		{60, BarePreset, 4}, {60, RaidPreset, 4},
 	})
 	assertRanks(t, greater, "priest-holy", "priest", "troll", greaterHealRanks, []rankCase{
-		{40, BarePreset, 1}, {50, BarePreset, 2}, {60, BarePreset, 4}, {60, RaidPreset, 4},
+		{40, BarePreset, 1}, {50, BarePreset, 1}, {58, BarePreset, 4}, {60, BarePreset, 4}, {60, RaidPreset, 4},
 	})
 	var h, g []any
 	_ = json.Unmarshal(heal, &struct{ PriorityList *[]any }{&h})
