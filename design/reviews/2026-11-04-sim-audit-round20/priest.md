@@ -1,0 +1,128 @@
+# Sim-accuracy round 20: priest
+
+Lane priest. Site wt/r20-priest from int/r20 dcb17fa6b (round 19 landed at 04d7da663), fork lane/r20-priest from int/r20 6c96eb479 (da54b7b06 plus the shaman, mage and paladin lanes). Client 1.60.1.70755 with the late hotfix re-layer. While this lane ran, main moved on: guide round 17 landed (4bd5ca2cf) and client 1.60.1.70790 was activated (ad01d928b, pin abb4e6b8e); this branch stays on int/r20's 70755 and takes round 17's wording where it touches the same lines.
+
+Every sim went through `$R/sim.sh` on the frozen BiS (`$R/bis-frozen`) at 10,000 iterations, seeds 1 and 50001, both factions where race matters; raid 60 on the guide build (`$R/rt`), band levels with `spec-breakdown -level` and, for the level-28 and 29 rows, the ladder leveling build at that level (see X3). Exploration ran at 3,000 iterations.
+
+**Error.** Shadow at band 20: spec-breakdown prints a DPS error of about 0.022 on 42 (0.05%), so two runs differ by about 0.03 DPS beyond chance; a row was taken only on a gain beyond that at both seeds. The healer output prints no error; seeds 1 and 50001 differ by at most 0.2 HPS (0.04%) for the same configuration, and a change was taken only beyond that at both seeds.
+
+## Seeds
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| P-LH | **Discipline Lesser Heal rank 3 at 60: out.** Round 19 gated the eight Lesser Heal lines out of 40 to 59 and left 60 to the owner's low-rank heal item. The decision this round rested on four things.<br>1. **Blizzard's rule has no level bound and names heals.** The character sheet tooltip (1 October 2026 notes): "spells cast using spell ranks vastly below your current level receive less benefit from your Spell Damage and Spell Healing". Both of Blizzard's own examples of the rule sit at level 60: "Using a Rank 1 Frostbolt at level 60 will result in a 0% chance to get a Frostbite activation" (1 October) and Frost Blast, added "to provide the functionality formerly granted by Rank 1 Frostbolt despite the penalization of down-ranking" (16 October).<br>2. **No top-rank exemption.** The only reading that would keep Lesser Heal rank 3 whole (it is the top Lesser Heal rank) is Ozgar's page, which states the rule for "all spells that have a rank lower than the maximum rank available" with no measurement and a disclaimer. Against it, the HealRankAdvisor addon's source says the curve was "Confirmed against in-game tooltips for Lesser Heal 2-3, Renew 1-4 and Heal 1-3 at level 30" (HealRankAdvisor.lua:746): Lesser Heal rank 3 was penalised in game at 30 (85%, as the client MaxLevel 15 + 12 rule gives). ForeverChanges measured the same curve on heals at 18-30. Two independent in-game measurements.<br>3. **Client row.** 2053: SpellLevels BaseLevel 10, MaxLevel 15; the engine's share at 60 is 0 (`core.SpellLevelPenalty`), as it has been since round 16.<br>4. **Strong players.** ForeverChanges: "at 60, Lesser Heal keeps none of its bonus"; foreverwisp and EpicCarry: only the newest three or four ranks stay worthwhile at 60; Ozgar's own worked example applies the rule at 60 (Healing Wave rank 7, 80%). No Forever guide keeps Lesser Heal at 60.<br>At 60 the list cast Lesser Heal rank 3 59 times a fight at raid 60 and 93 at bare 60 for its base alone, each cast restarting the five-second rule. **Fix:** the gate loses its upper bound (`currentLevel < 40`); the card note, discipline.md's "Low ranks" and leveling paragraphs say so. **Results (Alliance / Horde, both seeds):** bare 60 202.2 to 272.3 (+34.7%) / 201.1 to 272.5 (+35.5%); raid 60 506.5 to 539.4 (+6.5%) / 495.7 to 535.9 (+8.1%). Bands 20 to 59 are unchanged (the gate below 60 is round 19's). A Heal rank 4 fallback in its place was not added: at 60 it costs 305 mana against Greater Heal rank 1's 370 and keeps 55% of the bonus, and round 19 measured it cast 0.1 times a fight. | Blizzard notes (URLs below); HealRankAdvisor.lua:734-750; ForeverChanges /downranking; `$R/priest/m1.txt`, `m1b.txt`; `TestDisciplineSkipsLesserHealFromForty` failed on the eight lines, then passed | CONFIRMED | old (round 11 made Lesser Heal rank 3 the party filler; rounds 15 to 19 held 60 for the owner) | S 5ac8228ac; E a7ac1101d (the fork's list copy) |
+| P-DP | **Shadow Devouring Plague rank 1 against rank 2 at 28 and 29, every race** (guide round 17 R17-6). No row existed there, so the list cast rank 2 (19276, learned at 28). On the ladder leveling build at 28 and 29 (Mind Flay from 28), bare band 20 gear:<br>- Gnome: rank 1 42.10 / 42.09 against rank 2 42.00 / 42.02 at 28 (+0.2%), 44.41 / 44.45 against 44.16 / 44.17 at 29 (+0.6%).<br>- Troll: +0.12 / +0.12 DPS at 28 (+0.3%), +0.11 / +0.09 at 29 (+0.2%).<br>- Undead: rank 2 wins, +0.25 / +0.26 at 28 and +0.25 / +0.32 at 29 (+0.6%).<br>- Human, Dwarf, Night Elf: within 0.1 DPS either way (a tie).<br>Rank 2 is cast once a fight at 28 (its mana) against rank 1's 1.8; the fight runs dry for over half its length. **Fix:** a rank 1 row at 28-29 keyed to Gnome and Troll. shadow.md's "rank 1 from 30 to 43" (round 17's line) stays right for the page's Human; race exceptions stay in the rows, as round 19 chose. | `$R/priest/dp.txt`, `dpj.txt` (JSON with errors); `TestRound20DevouringPlagueRankOneAt28ForGnomeAndTroll` failed on the four keyed cases, then passed | CONFIRMED (rank row) | old, guides-handoff | S 60fa5f6eb |
+| P-RACE | **Discipline Gnome against Human on the frozen BiS, guide build, after P-LH and D1:** raid 60 Gnome 539.3 / 539.3, Human 539.9 / 539.9 (Human +0.1%, within error); bare 60 Gnome 270.3 / 270.4, Human 272.3 / 272.2 (Human +0.7%). Both inside the 1% bar, so Gnome stays the pick, and round 17's "Human is level with Gnome, a hair ahead on a long tank fight" holds (it is on this page now). To be repeated at the re-rank. | `$R/priest/m1b.txt`, `m2.txt` | Aligned (within 1%) | - | - |
+| P2 | **Heals scaling with the target's level.** The Blizzard thread has no post after 19 October and no blue reply (fetched 21:55 UTC); this round's searches found no second source and no formula. Every sim fight heals same-level targets. | forum thread 2371681 | OPEN (single source) | - | - |
+| P3 | **Eureka! on a live Gnome Shadow log.** No live report exists yet (launch is 23:00 UTC; foreversixty's recent list holds the one 20 October report; foreverlogs' API answers 403 to every id). Round 19's client reading stands (the periodic mask reaches Mind Flay, Starshards and Penance only). What settles it: one live Gnome Shadow priest's Eureka! window with Mind Flay ticks and a Shadow Word: Pain tick inside it. | `$R/priest/logs/` | OPEN (log) | - | - |
+| P4 | **Lightwell Renew's crit source.** No level-40 log can exist before the first live priests reach 40. What settles it: a level-40+ healer log with Lightwell clicks, read against the clicker's and the priest's crit. 16 ticks of 320 a fight at 60. | client 27874 (coefficient 0) | OPEN (negligible) | - | - |
+| P-CARD | **Discipline Priority card re-capture.** int/r20 carries round 19's regen (the tank Heal row and the 3 s / 1.5 s opener); this lane's new Lesser Heal note and the gate reach the card only after the integrator's addon-data regen. The rendered page this lane captured shows the round-19 card; the wow-player read the new note as text. | `$R/priest/shots/` | Done to the extent the regen allows | - | - |
+
+## Discipline
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| D1 | **Renewed Hope cut Weakened Soul on every Penance pulse.** Renewed Hope: "Your heals from Flash Heal, Lesser Heal, Heal, Greater Heal, and Penance ... reduce the remaining duration of Weakened Soul on their target by 5 sec" at 5/5 (1 s a rank; the guide build has 4). The engine ran the cut inside `healTarget`, which Penance's instant pulse and both channel ticks went through, so one Penance at 5/5 took 15 s off Weakened Soul (the whole debuff) and at 4/4 12 s, and the tank could be shielded again at once. **Blizzard's answer:** community bug tracker issue #288, "Penance procs Renewed Hope talent per cast not per hit", closed 10 October 2026 by AidanZMoon: "Not A Bug. This is a typo in the deep dive." The cut is per cast. **Fix:** the first pulse keeps the cut; the channel pulses heal with the crit bonus only (`healPulse`). **Results, raid 60 (on the P-LH list):** 539.4 to 539.9 Alliance (+0.1%), 535.9 to 536.2 Horde (+0.06%); bare 60 within 0.1. Small because the shield line is mana-paced (5.8 to 6.2 shields a fight) and Weakened Soul is 15 s against a 12 s Penance cooldown. | forever-bugs #288; client 425280; `TestPenanceShortensWeakenedSoulOncePerCast` failed (Weakened Soul gone, -3 s), then passed; `$R/priest/m2.txt` | CONFIRMED | old (fork aefc10818, 7 October; no round examined the tracker's answer) | E 7a9cdb96c |
+| D2 | **Fresh re-audit of the list, raid 60 (Undead):** Penance 20.3 casts a 300 s fight (12 s cooldown, cast when the tank is under 95%), Power Word: Shield 5.8, Renew 18.8 (15 s), Flash Heal 26.3, Greater Heal 8.5 top rank and 9.0 rank 1, Prayer of Healing 3.0, Lightwell 1.0, Dark Sacrifice 2.3 ticks of one cast (mana runs out at 78 s; the mana gate fires late). Every talent the build takes was read against the 70755 talent rows: Twin Disciplines 1%/rank, Mental Strength 2%/rank, Mental Agility 3/7/10, Meditation 17/33/50, Inner Focus -100% cost and +25% crit on non-periodic heals (3 min), Improved Power Word: Shield 7/14/20, Soul Warding -15% cost and -4 s, Penance 12 s, Renewed Hope 2% crit and 1 s a rank, Divine Aegis 5%/rank capped at 20 a level for 12 s, Twilight Focus 23/47/70, Improved Renew 5%/rank, Holy Specialization 1%/rank, Divine Fury -0.1 s a rank on Heal and Greater Heal, Inspiration 8/17/25, Improved Healing -5%/rank on Lesser Heal, Heal, Greater Heal, Penance and Prayer of Mending. Every cast spell's cost, cast time, cooldown, duration, amount and coefficient matches its 70755 row (Power Word: Shield 928 + 0.1, 4 s category, 30 s; Weakened Soul 15 s; Renew 74 a tick, 0.2; Penance 385 mana, 425 a pulse at 0.19; Flash Heal 825, 0.429, 380; Greater Heal 1782, 0.857, 655; Prayer of Healing 583 a member, 0.286, 1030; Lightwell 365, 10 min, five renews of 320 every 2 s for 10 s). Divine Aegis stacks to its cap, as Blizzard said on #286 ("meant to stack up and has a cap"). No dead point: Inspiration (armor) and Twilight Focus are modelled; Silent Resolve is not in this build. | `$R/priest/disc-raid.txt`, `rows1.txt`, `talents.txt` | Aligned | - | - |
+| D3 | **Power Word: Shield re-application.** Blizzard's 3 November note ("Power Word: Shield can now correctly be replaced by a Power Word: Shield of equal or greater rank") and tracker #44 (fixed in 70450) concern a shield still up with Weakened Soul gone. The list shields only when Weakened Soul is off, and Weakened Soul (15 s) ends before the shield (30 s), so the engine never refuses a cast the game allows. | client 10901, 6788; Blizzard 3 November | Aligned | - | - |
+
+## Holy
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| H1 | **Fresh re-audit, raid 60 (Undead):** Prayer of Mending 24.3 casts a 300 s fight (10 s category cooldown, 1240827; five charges, the aura's CumulativeAura 5 and the cast's second effect 5, 413 + 0.429 a heal, 30 s), Renew 18.2, Flash Heal 26.3, Greater Heal 14.8 top rank and 6.0 rank 1, Heal rank 4 11.0, Prayer of Healing 4.4, Lightwell 1.0, Litany of Light 84 returns (5% of base cost a rank on a different heal), Dark Sacrifice one cast of five ticks for 2,022 mana (5 x 320 plus the 422 Spirit, the client's "${$o2+$SPI}"). Talents read against the rows: Spiritual Guidance 5% healing and 1/3/5/6/8% damage of Spirit, Spiritual Healing 3/7/10, Holy Binding 50% of a Flash Heal on another target, Spirit of Redemption and Prayer of Mending gated by the talent. Holy has no Renewed Hope, so D1 moves nothing here. Round 19's Greater Heal rank 1 step-down and the Heal rank 4 last step stand. | `$R/priest/holy-raid.txt`, `rows1.txt` | Aligned | - | - |
+| H2 | **The pre-pull.** Lightwell at -2.5 s completes at -1 s and the global is free at the pull (`TestInnerFireDoesNotCutIntoThePrepullCasts`, both lists, passes on this engine). | fork test | Aligned | - | - |
+
+## Shadow
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| S1 | **Fresh re-audit, raid 60 (Undead, raid build):** Mind Flay 39.4%, Shadow Word: Pain 19.6%, Mind Blast 19.3%, Devouring Plague 11.7%, Shadow Word: Death 8.8%, Touch of the Grave 1.1%; no time out of mana; Inner Focus 1.35 casts, Vampiric Embrace 6.0 (30 s), Shadowform at -20 s, Dark Inspiration 99% up. Client rows: Mind Blast 485 + 0.429, 350 mana, 8 s category cooldown less 0.5 s a rank of Improved Mind Blast (2.5 s at 5), 1.5 s cast; Shadow Word: Pain 127 a tick at 0.2 for 18 s plus 3 s a rank of its talent; Mind Flay 130 a tick at 0.167 over 3 s, 205 mana; Devouring Plague 106 a tick at 0.1 over 24 s on a 24 s category cooldown, 985 mana halved by Devouring Contagion; Shadow Word: Death 448 + 0.429, 340 mana, 18 s category cooldown, 30% backlash on a landed cast and none on a miss (Blizzard, 3 November); Vampiric Embrace 20%, 30 s, 30 s, 40 mana, and its healing cannot crit (Blizzard, 3 November; the engine heals through GainHealth); Shadowform 40% of base mana, +10% Shadow damage, -50% Shadow cost, +100% crit damage bonus, -15% Physical taken; Darkness 2%/rank; Shadow Weaving 2% a stack to five, 100% at 3/3; Early Demise 30% below 20%; Silent Resolve 10%/rank; Shadow Focus 1%/rank. All match the engine. The raid build has no dead point (Shadow Reach, Silence and Dark Inspiration are range, interrupt and party utility, as rounds 17 and 19 found). | `$R/priest/shadow-raid.txt`, `rows1.txt`, `talents.txt` | Aligned | - | - |
+| S2 | **Dark Inspiration's Spirit base.** Tracker #372 (a level-30 Gnome saw +9 Spirit, 15% of base Spirit, not of total) was answered "Fixed in the future" on 16 October. The engine multiplies total Spirit. Whether 70755 carries the fix cannot be read from the client; a level-60 buff tooltip or log settles it. At 3% a rank on the raid build's one point it is worth under 0.1%. | forever-bugs #372 | OPEN (negligible) | - | - |
+
+## Cross-cutting
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| X1 | **The low-rank proc penalty is Blizzard-only now.** Blizzard, 3 November: "Various talents no longer have a penalty to their chance to trigger when casting spells of a low rank. This penalty does still apply to Blizzard ... when casting a rank learned more than 12 levels lower than the caster's current level." That closes priest P1 (no priest proc is penalised). Note for platform: Blizzard's threshold for that one spell is "learned more than 12 levels lower", not the 17 levels (MaxLevel + 12) the heal measurements fit. | Blizzard notes, 3 November | Closed (priest); note (platform) | - | - |
+| X2 | **`sim/request/apl/paladin-holy.apl.json` is out of step with its curated list on int/r20:** `make apl-sync` rewrote it (2 lines) while syncing this lane's Discipline copy. This lane reverted that file; the paladin lane or the integrator should sync it. | apl-sync output | Note (integrator) | - | - |
+| X3 | **`spec-breakdown -level N` runs the band floor's published talents** unless `-talents` is given (sim/cmd/spec-breakdown/main.go:330): at `-level 28` a Shadow priest had band 20's 11 points and no Mind Flay. The level-28 and 29 rows here were judged on the ladder leveling build at that level (`leveling.LadderTalentString`, a throwaway helper). Earlier rounds' +3/+6/+9 rows were judged on floor talents; a `-ladder-talents` flag would make that the default. | main.go; `$R/priest/dp.sh` | Note (platform, method) | - | - |
+| X4 | **"Sudden Insight" (450554) in the bare-60 Discipline mana table** is the Devout set's client proc ("S03 - Mana Proc on Cast - Vestments of the Devout", 5% on cast, 200 mana), applied from the client set rows. The bare-60 set wears five Devout pieces. | sim/core/client_sets_gen.go:466 | Aligned (client row) | - | - |
+| X5 | **BiS items with effects, raid 60:** Uther's Strength (18 healing, a 2% shield when struck: never, the healer is not struck), Shard of the Splithooves (6 mp5, demon attack power), Ankh of Life (12 Spirit, the use heal, round 7), Dormant and Frozen Heart of the Mountain (engine effects), Rune of the Guard Captain on the Horde Shadow set (0.7% hit, the attack power is nothing to a priest). No set bonus is worn at raid 60. | Wowhead Forever tooltips; sim/common/item_effects.go | Aligned | - | - |
+
+## Before/after
+
+Before = `$R/before.tsv` (raid 60) and `$R/sb-before` from `$R/site-before/sim` (bare 60). After = this branch at 60fa5f6eb on the lane engine 7a9cdb96c (`$R/priest/after.tsv` via `measure.sh`; the later commit changes notes and prose only). Guide builds, frozen BiS, 10,000 iterations.
+
+**Raid 60 (effective HPS / DPS, seed 1 then seed 50001):**
+
+| spec | alliance before | alliance after | % | horde before | horde after | % |
+|---|---|---|---|---|---|---|
+| priest-discipline | 506.5 / 506.4 | 539.9 / 539.9 | +6.6 / +6.6 | 495.7 / 495.9 | 536.2 / 536.3 | +8.2 / +8.1 |
+| priest-holy | 780.6 / 781.4 | 780.6 / 781.4 | 0.00 / 0.00 | 797.8 / 798.0 | 797.8 / 798.0 | 0.00 / 0.00 |
+| priest-shadow | 742.6 / 742.9 | 742.6 / 742.9 | 0.00 / 0.00 | 735.5 / 735.0 | 735.5 / 735.0 | 0.00 / 0.00 |
+
+Discipline splits as P-LH +6.5% / +8.1% and D1 +0.1% / +0.06%.
+
+**Bare 60, Discipline (published race):** Alliance 202.2 / 201.9 to 272.3 / 272.3 (+34.7% / +34.9%); Horde 201.1 / 201.2 to 272.4 / 272.4 (+35.5% / +35.4%). Lesser Heal casts drop from 93 a fight to 0.
+
+**Bands below 60:** nothing moves at a published band floor. The Devouring Plague row moves a Gnome or Troll Shadow priest at 28 and 29 only (+0.2% to +0.6%).
+
+**Other classes:** none. E 7a9cdb96c touches `sim/priest` only; E a7ac1101d is the Discipline list copy.
+
+## Files to regenerate
+
+- `data/builds/1.60.1.70755/addon-data.json`, then `addon/ForeverSixty/Data.lua`: the Discipline list's eight Lesser Heal lines (the gate) and their note, the Renew and Greater Heal rank 1 notes now matching main, and the Shadow Devouring Plague row at 28-29 (Gnome and Troll). The Priority cards render from these.
+- TestRotationLadder goldens: priest-discipline (60 bare and raid) and priest-shadow (20), if they print the lines or the rows.
+- Coach starters: `data/curated/coach/priest-discipline.{md,json}` (the Lesser Heal lines).
+- dps-per-point: priest-discipline (60 bare and raid).
+- Copied by hand, not regenerated: `sim/rankchoices/rank-choices.json` (`make rank-choices-sync`), `sim/request/apl/priest-discipline.apl.json` and the fork's `ui/healing_priest/apls/forever_discipline.apl.json` (`make apl-sync`). No fork golden moved (`sim/priest` and `sim/priest/healing` pass).
+
+## Measure at refresh
+
+- Discipline Gnome against Human at the re-ranked BiS, raid 60 and bare 60 (round 17's request): on the frozen BiS it is a tie at raid 60 and Human +0.7% at bare 60.
+- The Devouring Plague 28-29 row on re-ranked band-20 gear (a 0.2% to 0.6% margin).
+- Discipline bare 60 and raid 60 picks without Lesser Heal: the mana-bound fight changed shape (+35% at bare 60), so the healer weights and the bare-60 set may move.
+
+## For other lanes
+
+- **Platform:** X1 (Blizzard's "12 levels learned lower" threshold for the Blizzard proc), X3 (a ladder-talents default for `spec-breakdown -level`), X4 (FYI).
+- **Integrator:** X2 (the paladin-holy site APL copy); main now carries round 17's priest wording and the 70790 `build:` lines, and this branch's discipline.md carries round 17's text on the shared lines with the 70755 `build:` line, so the merge should take main's `build:` line and this lane's paragraphs. The curated list's Renew and Greater Heal rank 1 notes are byte-equal to main's.
+- **Guide lane:** after the regen, re-capture the Discipline Priority card: the Lesser Heal row now reads "Lesser Heal is the party's small top-up for little mana before 40. From 40 on, leave it off your bars for good: ...", and the row drops out of every card level from 40 up.
+
+## For the guide lane
+
+Written in this lane, with the wow-player's verdict below:
+- discipline.md: "Low ranks" (Lesser Heal off the bars for good at 60, wait for the regeneration rather than cast a heal that no longer scales); the leveling paragraph ("From 40 on, leave Lesser Heal off your bars for good: Greater Heal rank 1 takes its place ..."; "From 56, take Renew rank 9 for your last dungeons; at 60 rank 7 is the tank's Renew again"); the fillers line ("Greater Heal rank 1 on everyone else"); "Gnome is the Alliance pick, though a Human is level with it"; round 17's wording on the Human line, the Professions line, the Renew rank 8 clause and the Greater Heal rank 1 clause.
+- The Discipline card notes: the Lesser Heal note; the Renew and Greater Heal rank 1 notes as round 17 wrote them; "waits for a deeper hole" notes on the unpaced tank Greater Heal and party Greater Heal rank 1 lines (S 3997e3447). The Gnome line's final wording is S bccc73b70.
+- For the integrator: discipline.md line 124 (the leveling paragraph) differs from main's round 17 line by this lane's Lesser Heal, Renew rank 9 and Greater Heal sentences; take this branch's line. Lines 102 and 110 are byte-equal to main's; line 6 (`build:`) takes main's 70790 string.
+- holy.md, shadow.md and index.md are untouched (round 17's versions land from main).
+
+## Still open
+
+- P2 (target-level healing, single source), P3 (Eureka! on a live Gnome Shadow log), P4 (Lightwell Renew's crit), S2 (Dark Inspiration's Spirit base).
+- **Logs:** last looked at 21:55 UTC, before launch (23:00 UTC). api.foreversixty.gg/v1/reports/recent holds the one 20 October report; foreverlogs.gg answers 403 to every API id (2814, 2900, 3200, 3300) and its report pages are a script shell. Warcraft Logs is blocked (expired login), recorded. Early live logs (levels 1 to 20) could settle Lesser Heal and Renew rank 1 and 2 coefficients and Shadow Word: Pain's tick at low level, none of which is open; P3 and P4 need a level-40+ log.
+
+## Sources
+
+- Blizzard, WoW Forever Beta Development Notes (1, 8, 16 October; 2 and 3 November 2026): https://us.forums.blizzard.com/en/wow/t/wow-forever-beta-development-notes-%E2%80%93-updated-november-2/2360696 (fetched 2026-11-04 21:30 UTC)
+- Community bug tracker: https://github.com/ClassicWoWCommunity/forever-bugs/issues/288 (Penance and Renewed Hope, closed 10 October), /286 (Divine Aegis stacks), /372 (Dark Inspiration), /44 (Power Word: Shield re-application), /266 (Prayer of Healing range)
+- HealRankAdvisor (github.com/mendeleevforever/HealRankAdvisor, last commit 2026-10-24): README and HealRankAdvisor.lua lines 734-750 (the confirmed ranks)
+- ForeverChanges, downranking (Vektor, updated 16 October 2026): https://foreverchanges.pro/downranking
+- Ozgar's downranking tool: https://wowdownrank.forever.ozgar.se/
+- foreverwisp, downranking (10 October 2026): https://www.foreverwisp.com/guides/wow-forever-downranking-spell-ranks
+- Blizzard forums, "[bug?] Healing spells are scaling based on the targets level": https://us.forums.blizzard.com/en/wow/t/2371681 (fetched 21:55 UTC, no post after 19 October)
+- Wowhead Forever item tooltips: https://nether.wowhead.com/forever/tooltip/item/19120, /11302, /10659, /1713
+- Client 70755 tables (scratchpad raw70755: SpellEffect, SpellCooldowns, SpellCategories, SpellMisc, SpellDuration, SpellAuraOptions, SpellClassOptions; SpellPower and SpellLevels from the 70790 copy, identical for every priest row read): `$R/priest/rows1.txt`; `data/builds/1.60.1.70755/talents/priest.json`: `$R/priest/talents.txt`
+- Lane scratch: `$R/priest/` (m1.txt, m1b.txt, m2.txt, dp.txt, dpj.txt, after.tsv, disc-raid.txt, holy-raid.txt, shadow-raid.txt, shots/)
+
+## wow-player verdict
+
+Two passes on the rendered page (dev server, 1440 wide, full-page captures in `$R/priest/shots/`).
+
+- **First pass: NO-SHIP**, three MUSTs, all applied (S 3997e3447):
+  - "Gnome is the Alliance pick" two lines above "Human is level with Gnome ... take whichever you would rather play" read as a contradiction. The Gnome line now says why Gnome is the pick (Eureka!) and leaves "level" to the Human line (the second pass's SHOULD, applied too).
+  - "From 56, take rank 9" named no spell and read against the card's Renew rank 7 at 60. It is now "From 56, take Renew rank 9 for your last dungeons; at 60 rank 7 is the tank's Renew again."
+  - The capture showed empty icons and a skeleton talent block: the worktree's icon folder is a subset and the talent island fetches at runtime, so that is the dev capture, not the page; the live page renders both, and this lane changed neither.
+  - Its SHOULDs applied: the reason at 40 ("Greater Heal rank 1 takes its place"); "Greater Heal rank 1 on everyone else" (the list casts no rank 2); "waits for a deeper hole" notes on the second Greater Heal rows. Not applied: the Professions sentence and the Human line are round 17's landed wording; Meditation stated twice and the Best in slot requirement labels predate this change (for the guide and platform lanes). Its data doubts (Fear Ward 3 min, Meditation 50%, Greater Heal rank 4 as the trainer's top, rank 1's bonus to 57, The Human Spirit 10%) are the client's values; the reviewer accepted the citations.
+- **Second pass: SHIP** on the text, no MUST. It signed off the prose and the note text, not the icons or the talent tree, which it could not see rendered.

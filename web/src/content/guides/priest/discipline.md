@@ -69,9 +69,9 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Renew** stays on the tank at rank 7 or higher.
 
-**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Greater Heal rank 1 or 2 on everyone else.
+**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Greater Heal rank 1 on everyone else.
 
-**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on.
+**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on, and keep Lesser Heal off your bars for good: when even Greater Heal rank 1 is more than you can afford, wait the few seconds for your regeneration rather than cast a heal that no longer grows with your gear.
 
 **Emergencies.** Flash Heal at the top rank on anyone about to die. It is your fastest heal and your dearest, so it never becomes the filler.
 
@@ -97,9 +97,9 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Races
 
-**Gnome** is the Alliance pick. Eureka! makes your direct heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Penance's heals 10% stronger (never Renew): put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
+**Gnome** is the Alliance pick, for Eureka!: your direct heals are 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and so are Penance's heals (never Renew), so put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
 
-**Human** is a hair behind. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
+**Human** is level with Gnome, a hair ahead on a long tank fight, so take whichever you would rather play. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
 
 **Undead** is the Horde pick for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
 
@@ -107,7 +107,7 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Professions
 
-Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes healing cloth for the first raids, and Enchanting saves you the enchanting bill.
+Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes healing cloth for the first raids, Truefaith Vestments among it, which binds when you make it. Enchanting saves you the enchanting bill, and it makes the Dormant Heart of the Mountain, the bind on pickup trinket a Horde Discipline priest wears in the raid set.
 
 ## Leveling
 
@@ -121,4 +121,4 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 45: they cost far less than the top rank and keep nearly all of your healing bonus. From 50, keep rank 7: rank 8 heals barely more for more mana. From 56, take rank 9. Heal is the tank's filler until you learn Greater Heal at 40. From then, Greater Heal on the tank stays at rank 1 until you learn rank 4 at 58: ranks 2 and 3 cost a lot more mana for little extra healing. Through your forties and fifties, leave Lesser Heal off your bars: by your late forties it has lost your healing bonus, and every cast costs mana regeneration you need for the next Greater Heal.
+From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 45: they cost far less than the top rank and keep nearly all of your healing bonus. From 50, keep rank 7: rank 8 heals more per cast but costs more for it, and over a dungeon the two come out even. From 56, take Renew rank 9 for your last dungeons; at 60 rank 7 is the tank's Renew again. Heal is the tank's filler until you learn Greater Heal at 40. From then, Greater Heal on the tank stays at rank 1 until you learn rank 4 at 58: it keeps your whole healing bonus until then, and the bigger ranks spend mana on healing a dungeon tank rarely needs. From 40 on, leave Lesser Heal off your bars for good: Greater Heal rank 1 takes its place, by your late forties Lesser Heal has lost your healing bonus anyway, and every cast costs mana regeneration you need for the next Greater Heal.
