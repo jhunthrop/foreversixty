@@ -939,7 +939,7 @@
             }
           }
         },
-        "notes": "Healing Wave when the tank drops below 60%. To save mana at 60 drop to rank 8, never lower: a rank loses your healing bonus once you are 17 levels past it, and ranks 1 to 4 keep none of it at 60. While leveling from 20 a cheaper rank heals more before your mana runs out than your top rank: rank 2 until 25, 3 until 36, 4 until 41, 5 until 46, 6 until 56, 7 at 57 and 58, and 8 at 59."
+        "notes": "Healing Wave when the tank drops below 60%. To save mana at 60 drop to rank 8, never lower: a rank loses your healing bonus once you are 17 levels past it, and ranks 1 to 4 keep none of it at 60. While leveling from 20 a cheaper rank heals more before your mana runs out than your top rank: rank 2 until 25, 3 until 36, 4 until 41, 5 from 42 to 46, 6 until 56, 7 at 57 and 58, and 8 at 59."
       }
     ]
   }
