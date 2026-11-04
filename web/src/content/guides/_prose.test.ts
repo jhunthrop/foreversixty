@@ -100,10 +100,29 @@ export const BANNED_PROSE = {
   filePaths: [/\b[\w-]+\.json\b/, /\bdata\/[\w./-]+/],
 } as const satisfies Record<string, readonly (string | RegExp)[]>;
 
+/**
+ * Guide-accuracy round 6: the Stat priority table renders the order from the nightly scale
+ * factors, so the prose under it gives each stat's lasting reason and the cap rule, never a
+ * ranking a re-rank can turn false (one job per page: the table ranks, the prose explains).
+ * Checked only inside a spec guide's "## Stat priority" section, so rotation steps elsewhere
+ * keep their sequence words.
+ */
+export const STAT_RANKING: readonly RegExp[] = [
+  /\b(?:first|third|fourth|fifth|next|last|then)\b/i,
+  // "second" as a rank, not a duration ("a 3 second cast", "the five second rule").
+  /(?<!\b(?:\d+(?:\.\d+)?|one|two|three|four|five|six|eight|ten|fifteen|thirty)[ -])\bsecond\b/i,
+  /\bcomes? (?:before|after)\b/i,
+  /\b(?:ahead of|close behind|followed by|outranks?|leads?)\b/i,
+  /\b(?:top|best|second-best|weakest) stat\b/i,
+  /\bworth (?:more|less) than\b/i,
+];
+
+type ProseRule = keyof typeof BANNED_PROSE | 'statRanking';
+
 export interface ProseViolation {
   file: string;
   line: number;
-  rule: keyof typeof BANNED_PROSE;
+  rule: ProseRule;
   phrase: string;
 }
 
@@ -194,6 +213,29 @@ export function markdownViolations(raw: string, file: string): ProseViolation[] 
   return found;
 }
 
+const STAT_RANKING_MATCHERS = STAT_RANKING.map((entry) => matcherFor(entry));
+const STAT_SECTION = '## Stat priority';
+
+/** Ranking words in the visible lines of a spec guide's Stat priority section. */
+export function statRankingViolations(raw: string, file: string): ProseViolation[] {
+  const found: ProseViolation[] = [];
+  let inSection = false;
+  raw.split(/\r?\n/).forEach((source, index) => {
+    if (source.startsWith('## ')) {
+      inSection = source.trim() === STAT_SECTION;
+      return;
+    }
+    if (!inSection) return;
+    const text = visibleText(source).replace(/[‘’]/g, "'");
+    for (const pattern of STAT_RANKING_MATCHERS) {
+      for (const match of text.matchAll(pattern)) {
+        found.push({ file, line: index + 1, rule: 'statRanking', phrase: match[0].trim() });
+      }
+    }
+  });
+  return found;
+}
+
 function rotationNotes(node: unknown, into: Set<string>): Set<string> {
   if (Array.isArray(node)) {
     for (const item of node) rotationNotes(item, into);
@@ -239,6 +281,7 @@ export function classViolations(classSlug: string): ProseViolation[] {
     const raw = readFileSync(path, 'utf8');
     found.push(...markdownViolations(raw, relative(repoRoot, path)));
     if (name === 'index.md') continue;
+    found.push(...statRankingViolations(raw, relative(repoRoot, path)));
     const apl = join(aplRoot, `${classSlug}-${name.slice(0, -'.md'.length)}.json`);
     if (existsSync(apl)) found.push(...aplViolations(readFileSync(apl, 'utf8'), relative(repoRoot, apl)));
   }
@@ -250,7 +293,7 @@ function describeViolation(v: ProseViolation): string {
 }
 
 function reportMarkdown(slugs: readonly string[]): string {
-  const rules = Object.keys(BANNED_PROSE) as (keyof typeof BANNED_PROSE)[];
+  const rules: ProseRule[] = [...(Object.keys(BANNED_PROSE) as (keyof typeof BANNED_PROSE)[]), 'statRanking'];
   const rows = slugs.map((slug) => {
     const found = classViolations(slug);
     const counts = rules.map((rule) => found.filter((v) => v.rule === rule).length);
@@ -380,6 +423,25 @@ describe('guide prose rules', () => {
     expect(aplViolations(raw, 'a.json').map(describeViolation)).toEqual([
       'a.json:6: "--" (dashes)',
       'a.json:6: "the gate" (siteMeta)',
+    ]);
+  });
+
+  it('flags ranking words only inside the Stat priority section', () => {
+    const raw = [
+      '## Rotation and priority',
+      'Mind Blast first, then Mind Flay.',
+      '## Stat priority',
+      'Hit matters until the cap; past it, it adds nothing. Spirit then leads.',
+      'Crit is worth more than haste, and [the table](/x) is your order.',
+      'The five second rule and a 2.5 second cast pass; the second stat does not.',
+      '## Best in slot',
+      'Take the first staff you find.',
+    ].join('\n');
+    expect(statRankingViolations(raw, 'g.md').map(describeViolation)).toEqual([
+      'g.md:4: "then" (statRanking)',
+      'g.md:4: "leads" (statRanking)',
+      'g.md:5: "worth more than" (statRanking)',
+      'g.md:6: "second" (statRanking)',
     ]);
   });
 

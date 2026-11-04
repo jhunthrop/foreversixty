@@ -69,7 +69,7 @@
         }
       },
       {
-        "notes": "Corruption whenever it has fallen off. Instant with Improved Corruption, cheap, and never clipped.",
+        "notes": "Corruption whenever it has fallen off. Instant with Improved Corruption, and never clipped.",
         "action": {
           "condition": {
             "not": {

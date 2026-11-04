@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:00530311251551031/302302/005:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Assassination Rogue for Forever: Mutilate on two daggers, Seal Fate, Cold Blood Eviscerates, Shank and Venom behind your poisons, Relentless Strikes for energy.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Rogue and Warlock class deep dive'
@@ -96,7 +96,7 @@ Mutilate costs 60, so you will often sit on four points waiting for energy. That
 
 ## Stat priority
 
-Hit first: a missed Mutilate is a wasted global and two combo points you did not get. Agility next, for attack power and crit together. Crit is worth more to you than to most melee, since every builder crit is a Seal Fate point and Lethality makes it bigger.
+Hit counts until your attacks stop missing, and adds nothing past that: a missed Mutilate is a wasted global and two combo points you did not get, and your white swings with two weapons miss far more often than your specials, so they keep wanting hit after Mutilate stops missing. Agility gives attack power and crit together. Crit counts for more in this tree than for most melee, since every builder crit is a Seal Fate point and Lethality makes it bigger. Strength and attack power add straight damage to every hit. Haste is rare on gear; take it when it comes. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -112,7 +112,7 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ## Professions
 
-**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make, and both are pre-raid picks. **Engineering** gives you grenades and dynamite for trash. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
+**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make; the table above shows which of them your set wants. **Engineering** gives you grenades and dynamite for trash. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
 
 ## Leveling
 

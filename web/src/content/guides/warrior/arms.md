@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:warrior:night-elf:34323213032215201/0505002/2:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -96,7 +96,7 @@ The raid build drops Iron Will for two more points of **Improved Heroic Strike**
 
 ## Stat priority
 
-Hit is worth the most until you reach the hit cap: a missed Mortal Strike or Overpower is a lost global and lost rage. Crit feeds Deep Wounds, Impale and Overpower. Every point of Strength is two attack power for a warrior, so Strength beats attack power point for point. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
+The table above gives the order for your gear; this is why each stat counts. Every point of Strength is two attack power for a warrior. Crit feeds Deep Wounds, Impale and Overpower, and a critical swing brings twice the rage. Agility carries crit and armor with it. Hit matters up to the hit cap, because a missed Mortal Strike or Overpower is a lost global and lost rage; once your gear reaches the cap it adds nothing. Haste adds swings, and swings are rage. Weapon skill takes the sting out of glancing blows and trims your misses, and no race brings it any more. For a two-hander it only comes on the weapon itself, like Obsidian Edged Blade's two-handed sword skill; Edgemaster's Handguards and the other skill gear raise one-handed skills and do nothing for you.
 
 ## Best in slot
 

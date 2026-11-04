@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:paladin:human:050050002/503/05233301001301351:'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Intellect, Strength, Critical strike, Agility, Spell power, Attack power, Melee haste]
 description: 'Leveling and raiding with Seals, Judgement and an instant Hammer of Wrath, including the raid Unsealed Wrath swap.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -100,7 +100,7 @@ Leveling order: Benediction and Improved Judgement first, then Conviction and Sa
 
 ## Stat priority
 
-Strength comes first: it is attack power on every swing and Seal proc, and Divine Strength raises it by 10%. Crit is next, because it feeds Vengeance as well as itself. Spell power and Intellect come after, close together: Champion of the Light turns 60% of your Intellect into spell damage for your Seals, Judgements and Consecration, and Intellect is also your mana bar. Agility follows. Hit matters only up to the cap, and the raid gear above already reaches it, so more hit past that adds nothing. Below the cap, in leveling or fresh 60 gear, every miss is a lost swing and a lost Seal proc, so take hit until you get there; Precision and Artisan's Precision both count toward it.
+Strength is attack power on every swing and Seal proc, and Divine Strength raises it by 10%. Crit counts twice: a melee crit doubles the hit, and it feeds Vengeance. Champion of the Light turns 60% of your Intellect into spell damage for your Seals, Judgements and Consecration, so spell power and Intellect both add to your damage, and Intellect is also your mana bar. Agility is crit and armor at once. Hit matters up to the cap and nothing past it. Below the cap, in leveling or fresh 60 gear, every miss is a lost swing and a lost Seal proc, so take hit until you get there; Precision and Artisan's Precision both count toward it. The table above has the order for your gear.
 
 ## Best in slot
 
@@ -108,7 +108,7 @@ Strength comes first: it is attack power on every swing and Seal proc, and Divin
 
 ## Races
 
-**Human** is the Alliance pick. Ruthless is 1% crit on everything, The Human Spirit's 10% Spirit keeps your mana up while leveling and in dungeons, and Will to Survive breaks a stun. **Dwarf** comes out even in a raid, where Artisan's Precision, 1% hit, is worth as much as Ruthless, and Stoneform takes 10% off physical damage for 8 seconds on a hard pull, but it falls behind everywhere else. **Undead** is new to the class in Forever and the Horde's only paladin. Touch of the Grave can drain a little health from the target, at most once every 15 seconds. Will of the Forsaken breaks a fear, but no longer makes you immune to the next one, so use it after the fear lands. Cannibalize restores mana as well as health, which cuts your drinking while leveling.
+**Human** is the Alliance pick. Ruthless is 1% crit on everything, The Human Spirit's 10% Spirit keeps your mana up while leveling and in dungeons, and Will to Survive breaks a stun. **Dwarf** comes out slightly ahead on the raid build in a raid, but Human is ahead solo and while leveling, which is why Human stays the pick. Stoneform takes 10% off physical damage for 8 seconds on a hard pull. **Undead** is new to the class in Forever and the Horde's only paladin. Touch of the Grave can drain a little health from the target, at most once every 15 seconds. Will of the Forsaken breaks a fear, but no longer makes you immune to the next one, so use it after the fear lands. Cannibalize restores mana as well as health, which cuts your drinking while leveling.
 
 ## Professions
 

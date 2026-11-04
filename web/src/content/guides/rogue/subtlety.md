@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:rogue:night-elf:005302011/320003/035131031321001151:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike and Shank on cooldown, Boot Knife, Death Mark and its raid spot.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Rogue and Warlock class deep dive'
@@ -94,7 +94,7 @@ Death Mark is your only damage cooldown and it comes back every 10 seconds, so t
 
 ## Stat priority
 
-Hit first. Your level 60 gear already puts Hemorrhage, Ghostly Strike and the finishers at the hit cap, so for them more hit adds nothing; it stays on top because your white swings with two weapons miss far more often and keep wanting it. Agility next, for attack power and crit together. Crit is better than it looks: your Rupture and Garrote ticks crit, and Death Mark's cap rises with your crit chance. Strength and attack power come after, and haste last.
+Hit counts until your attacks stop missing, and adds nothing past that. Your white swings with two weapons miss far more often than Hemorrhage, Ghostly Strike and your finishers, so they keep wanting hit after your specials have stopped missing. Agility gives attack power and crit together. Crit is better than it looks: your Rupture and Garrote ticks crit, and Death Mark's cap rises with your crit chance. Strength and attack power add straight damage to every hit. Haste is rare on gear; take it when it comes. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -110,13 +110,13 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ## Professions
 
-**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup pre-raid trinkets. **Engineering** is the PvP and trash pick: grenades, dynamite and gadgets. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
+**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make. **Engineering** is the PvP and trash pick: grenades, dynamite and gadgets. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
 
 ## Leveling
 
 ### Levels 1 to 19
 
-You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. Keep a dagger in the main hand: Backstab and Ambush need one, and they are what this tree builds on.
+Combat levels faster with a sword, so if you only want Subtlety for raids, level Combat and respec at 60. If you level Subtlety, here is how it starts. You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. Keep a dagger in the main hand while you level: Backstab and Ambush need one, and they are what your first talents build on until Hemorrhage at 30.
 
 Poised at 18 takes 10 Energy off your opener when you are at full Energy out of combat, so Ambush from stealth costs 50.
 
@@ -126,4 +126,4 @@ Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for t
 
 ### Levels 20 to 60
 
-Combat levels faster with a sword; respec at 60. If you level Subtlety, Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Leveling Subtlety, open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.
+Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.

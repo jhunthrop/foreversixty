@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:hunter:night-elf:5/005005001/500230231051222151:'
 recommendedRaces: [night-elf, orc]
 statPriority: [Hit, Critical strike, Agility, Intellect, Strength, Attack power, Attack speed]
 description: 'How to play a melee Survival Hunter in Forever: talents, the Raptor Strike and Mongoose Bite priority, Lone Wolf, stats, consumables and race picks.'
-updated: 2026-11-03
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Class Deep Dives: Hunter and Druid'
@@ -61,7 +61,7 @@ Survival is a melee spec in Forever: two weapons, Raptor Strike queued every tim
 ### In a raid
 
 - **Role:** Melee DPS without a pet
-- **Brings:** Heart of the Lion (more stats and attack power for everyone near you) and Hunter's Mark on the boss
+- **Brings:** Heart of the Lion (more stats and a flat attack power bonus for everyone near you) and Hunter's Mark on the boss
 - **What the raid adds:** Forever's Strength of Earth Totem gives less Strength than Era's and Curse of Recklessness strips less armor, so a full raid lifts a Survival hunter less than it did in Era.
 
 ## Talents and builds
@@ -85,7 +85,7 @@ The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk
 
 Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. At 60, Aspect of the Falcon gives the same melee attack power as Beast (10 more once you own Hawk's Ahn'Qiraj rank), and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
 
-Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. Elune's Light raises your critical strike chance with all spells and attacks by 10% for 15 sec. Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
+Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
 
 Then work through your melee priority: Raptor Strike, Counterattack, Mongoose Bite, Lacerate, Strider Kick, Immolation Trap. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Mongoose Bite and Counterattack are the buttons you watch for: Expose Prey opens Mongoose Bite off your own hits, while Counterattack needs a parry, and from behind a boss you will not parry, so it is mostly an add and trash button. Keep Lacerate's bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and Strider Kick and Immolation Trap fill what is left. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
 
@@ -99,7 +99,7 @@ You fire no shots in this spec. Your bow or gun is there for its stats.
 
 ## Stat priority
 
-Hit first until you reach 9% hit, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Then crit, which Predator's Edge and Savage Strikes make strong, and Agility, which Lightning Reflexes raises by 15%. Intellect is attack power through Careful Aim. Strength and plain attack power are the weakest per point. Haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit is strong because Predator's Edge and Savage Strikes build on it. Agility is attack power and crit together, and Lightning Reflexes raises it by 15%. Intellect is attack power through Careful Aim, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -107,7 +107,7 @@ Hunters wear leather until 40 and mail from 40. Survival dual-wields, and Predat
 
 ## Enchants and consumables
 
-Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers. Intellect is a fair weapon enchant too: through Careful Aim it is attack power for you.
+Agility on gloves, boots and cloak, since it is attack power and crit together and Lightning Reflexes raises it, and the best stats enchant on the chest, which lifts every stat you use. On bracers and both weapons the Strength, Intellect and Agility enchants are all attack power for you, Strength directly, Intellect through Careful Aim and Agility with crit on top, so take the ones the enchant table on this page picks for your gear.
 
 Forever's damage potions share the two-minute potion cooldown with mana potions. Survival's mana holds with Resourcefulness, so it drinks a Major Frenzy Potion on the pull instead. Keep Elixir of the Mongoose up, with Poached Sunscale Salmon.
 

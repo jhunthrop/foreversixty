@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:druid:night-elf:05312001/0/55530051531132:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [MP5, Spirit, Intellect, Healing power, Critical strike]
 description: 'Restoration in Forever: the build, Rejuvenation and Regrowth ranks, Swiftmend that keeps the HoT, Bloom, Wild Growth and Innervate.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
@@ -83,7 +83,7 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 
 ## Stat priority
 
-A long tank fight runs you out of mana before it runs out of time, which is why MP5 and Spirit lead. Healing power is every heal, and your HoTs take a big share of it per tick. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
+The table above gives the order for your gear. A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count so much for you. Healing power is every heal, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
 
 ## Best in slot
 

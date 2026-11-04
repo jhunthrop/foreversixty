@@ -9,7 +9,7 @@ recommendedRaces: [human, orc]
 statPriority:
   [Spell power, Shadow power, Hit, Critical strike, Intellect, Fire power, Spell haste, Spell penetration]
 description: 'How to play Demonology in Forever: the Imp sacrifice and Demonic Pact setup, Soul Link, Decimation, the Shadow Bolt rotation, shards, races and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -95,7 +95,7 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Hit comes first until the cap: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Once your gear reaches the cap, more hit adds nothing and spell power leads. Spell power is next, and Shadow power is nearly as good, though Immolate is Fire. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Spell power feeds every spell you cast. Shadow power feeds Shadow Bolt and your DoTs; Immolate and Decimation's Soul Fires are Fire, and Fire power reaches only those. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -111,7 +111,7 @@ Human and Orc are the picks. Ruthless is 1% crit on every spell, so more of your
 
 ## Professions
 
-Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted caster pieces fill your pre-raid set. Your best head, Spellpower Goggles Xtreme Plus, is an engineer's craft; if you cannot get a pair, the tailored Felcloth Hood is nearly as good, since its 30 Shadow power suits your Shadow Bolts. Alchemy is the swap if your guild wants a flask from you every raid night.
+Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted caster pieces fill your pre-raid set. Engineering goggles need Engineering to wear, so they are only yours if you train it in place of Enchanting. Alchemy is the swap if your guild wants a flask from you every raid night.
 
 ## Leveling
 
@@ -125,4 +125,4 @@ Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a
 
 ### Levels 20 to 60
 
-Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice, and solo you keep a demon out for Soul Link, Master Demonologist and Demonic Knowledge. Use the Voidwalker when pulls hurt, since Master Demonologist then cuts the physical damage you take by 10%. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. From 48, when you learn Soul Fire, Decimation's free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.
+Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice, and solo you keep a demon out for Soul Link, Master Demonologist and Demonic Knowledge. Use the Voidwalker when pulls hurt; from 35 Master Demonologist also cuts the physical damage you take while it is out, by 10% once it is full at 39. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. From 48, when you learn Soul Fire, Decimation's free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.

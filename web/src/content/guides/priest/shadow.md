@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:priest:human:00510503103/0/52352101201300251:'
 recommendedRaces: [human, undead]
 statPriority: [Spell power, Shadow power, Hit, Spell haste, Critical strike, Intellect, Spell penetration]
 description: 'How to play Shadow Priest in Forever: talents for leveling and raids, the opener and priority, Vampiric Embrace, threat, mana, races and consumables.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -88,7 +88,7 @@ Right after Shadowform the leveling build puts two points into Wand Specializati
 
 **Moving.** Shadow Word: Pain, Devouring Plague, Shadow Word: Death and Vampiric Embrace are all instant. Save a refresh or Shadow Word: Death for when you have to run.
 
-**Threat.** Mind Blast threatens hard. Fade sheds threat for a few seconds on a 30 second cooldown; use it the moment you climb past the tank, not after the boss turns. If you keep pulling, move a point from Mental Strength into Silent Resolve.
+**Threat.** Mind Blast threatens hard. Fade sheds threat for 10 seconds on a 30 second cooldown; use it the moment you climb past the tank, not after the boss turns. If you keep pulling, move a point from Mental Strength into Silent Resolve.
 
 **Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice.
 
@@ -96,7 +96,7 @@ Right after Shadowform the leveling build puts two points into Wand Specializati
 
 ## Stat priority
 
-Spell power and Shadow power are the same stat to you. Hit is next until you reach the 16% spell hit cap against a raid boss: Shadow Focus gives 5%, your gear finds the rest, and every miss is a lost Mind Blast. Critical strike is worth more than it looks: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles every crit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to the 16% spell hit cap against a raid boss and adds nothing past it: Shadow Focus gives 5%, your gear finds the rest, and every miss is a lost Mind Blast. Spell power and Shadow power are the same stat to you, and every spell you cast grows with them. Critical strike counts for more than it looks: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles every crit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
 
 ## Best in slot
 
