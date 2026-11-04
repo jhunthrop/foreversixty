@@ -104,7 +104,12 @@ function perPointText(value: number | undefined): string {
     </GuideTableBox>
     {unitRow !== undefined && (
       <p class="stat-note" data-testid="guide-stat-table-unit">
-        {guidesCopy.unitLine(unitRow.label.toLowerCase(), perPointText(unitRow.perPoint), role)}
+        {guidesCopy.unitLine(
+          unitRow.label.toLowerCase(),
+          perPointText(unitRow.perPoint),
+          role,
+          unitRow.ratingFactor,
+        )}
       </p>
     )}
     {insignificant.length > 0 && (

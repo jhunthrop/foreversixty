@@ -25,3 +25,17 @@ describe('guidesCopy', () => {
     }
   });
 });
+
+describe('the stat table unit line', () => {
+  it('reads a plain stat per point', () => {
+    expect(guidesCopy.unitLine('spell power', '0.39', 'dps')).toBe(
+      '1 point of spell power = 0.39 DPS at level 60',
+    );
+  });
+
+  it('names a rating stat as rating and gives its rating per 1%', () => {
+    expect(guidesCopy.unitLine('hit', '0.46', 'dps', 10)).toBe(
+      '1 hit rating = 0.46 DPS at level 60. 10 hit rating is 1% hit.',
+    );
+  });
+});

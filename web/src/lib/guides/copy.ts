@@ -141,8 +141,11 @@ export const guidesCopy = {
     healer: 'HPS per point',
     tank: 'Tank score per point',
   } as const satisfies Record<GuideRole, string>,
-  unitLine: (stat: string, figure: string, role: GuideRole): string =>
-    `1 point of ${stat} = ${figure} ${ROLE_RATE_UNIT[role]} at level 60`,
+  /** "1 point of spell power = ...", or for a rating stat "1 hit rating = ... 10 hit rating is 1% hit." */
+  unitLine: (stat: string, figure: string, role: GuideRole, ratingFactor?: number): string =>
+    ratingFactor === undefined
+      ? `1 point of ${stat} = ${figure} ${ROLE_RATE_UNIT[role]} at level 60`
+      : `1 ${stat} rating = ${figure} ${ROLE_RATE_UNIT[role]} at level 60. ${ratingFactor} ${stat} rating is 1% ${stat}.`,
   /** A haste or expertise weight, which is per 1% rather than per point: "2.5 per 1% haste". */
   perPercentValue: (figure: string, stat: 'haste' | 'expertise'): string => `${figure} per 1% ${stat}`,
   notSignificant: 'Not significant',

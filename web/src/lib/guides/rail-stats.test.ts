@@ -145,6 +145,30 @@ describe('railStatRows', () => {
     expect(rows[1]!.value).toBeCloseTo(8.1, 5);
     expect(railStatValueText(rows[1]!)).toBe('Not on any item');
   });
+  it('carries the rating per 1% on a rating stat, so the unit line can name it (real Arcane band 60)', () => {
+    const file = loadBisFile('mage-arcane', '1.60.1.70755');
+    if (file === null) throw new Error('mage-arcane BiS file missing');
+    const band = bandEntry(file, 60, 'alliance');
+    if (band === undefined) throw new Error('band 60 alliance missing');
+    const rows = railStatRows(
+      ['Spell power', 'Intellect', 'Hit', 'Critical strike'],
+      band.weights,
+      'mage-arcane',
+      {
+        scaleFactor: band.haste_scale_factor ?? null,
+        onItems: false,
+      },
+    );
+    const hitRow = band.weights.find((weight) => weight.stat === 'hit');
+    const rated = rows.filter((row) => row.ratingFactor !== undefined);
+    expect(rated.length).toBeGreaterThan(0);
+    if (hitRow?.unit === 'rating') {
+      const hit = rows.find((row) => row.label.toLowerCase().includes('hit'));
+      expect(hit?.ratingFactor).toBe(hitRow.rating_factor);
+    }
+    const power = rows.find((row) => row.label === 'Spell power');
+    expect(power?.ratingFactor).toBeUndefined();
+  });
 });
 
 describe('rankedStatLabels', () => {

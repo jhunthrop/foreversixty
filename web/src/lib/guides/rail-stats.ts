@@ -54,6 +54,8 @@ export interface RailStatRow {
   /** The band's own rate (DPS, HPS or tank score) per point of the stat, per 1% on a
    *  per-percent row; set only when the file publishes it and `reading` is `'value'`. */
   perPoint?: number;
+  /** Rating points per 1% on a rating stat (crit, hit), so a point reads as a rating point. */
+  ratingFactor?: number;
 }
 
 /**
@@ -106,9 +108,13 @@ function rowFor({ label, weight }: MatchedRow, top: number | undefined, haste: H
   if (reading !== 'value' || weight === undefined) return { ...base, reading, value: undefined };
   const value = valueOf(weight, perPercent, top, haste.scaleFactor);
   if (value === undefined) return { ...base, reading: 'not-significant', value: undefined };
+  const rated =
+    weight.unit === 'rating' && weight.rating_factor !== undefined
+      ? { ratingFactor: weight.rating_factor }
+      : {};
   return weight.dps_per_point === undefined
-    ? { ...base, reading, value }
-    : { ...base, reading, value, perPoint: weight.dps_per_point };
+    ? { ...base, ...rated, reading, value }
+    : { ...base, ...rated, reading, value, perPoint: weight.dps_per_point };
 }
 
 /**

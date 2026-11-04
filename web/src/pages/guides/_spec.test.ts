@@ -180,7 +180,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     // between nightlies. Pin the shape, a lowercase stat label and then dpsText's figure (two
     // decimals under 10, one at 10 or more), never which stat wins.
     expect(html).toMatch(
-      /data-testid="guide-stat-table-unit"[^>]*>1 point of [a-z][a-z ]* = (?:\d\.\d\d|\d{2,}\.\d) DPS at level 60</,
+      /data-testid="guide-stat-table-unit"[^>]*>1 (?:point of [a-z][a-z ]*|[a-z][a-z ]* rating) = (?:\d\.\d\d|\d{2,}\.\d) DPS at level 60(?:\. \d+ [a-z][a-z ]* rating is 1% [a-z][a-z ]*\.)?</,
     );
     // No item at 60 carries haste: its row reads "Not on any item" and the note under the
     // table gives its per-1% worth.
