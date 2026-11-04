@@ -229,3 +229,32 @@ func TestRestorationShamanChainHealRankOneWhileLeveling(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 19: with Chain Heal rank 1 through 59, Restoration's
+// tank Healing Wave steps up to rank 7 at 56 (+0.4% to +0.7% over rank 6,
+// both factions, seeds 1 and 50001), and Elemental's filler Lightning Bolt
+// casts rank 3 at 26 and 27, where rank 5, just learned, costs more than
+// the fight can pay (+3.7% to +4.9%); from 28 the top rank wins again.
+func TestRoundNineteenShamanRowsByLevel(t *testing.T) {
+	for _, tc := range []struct {
+		spec, spell string
+		level       int
+		want        []int
+	}{
+		{"shaman-restoration", "Healing Wave", 55, []int{6}},
+		{"shaman-restoration", "Healing Wave", 56, []int{7}},
+		{"shaman-restoration", "Healing Wave", 58, []int{7}},
+		{"shaman-elemental", "Lightning Bolt", 25, nil},
+		{"shaman-elemental", "Lightning Bolt", 26, []int{3}},
+		{"shaman-elemental", "Lightning Bolt", 27, []int{3}},
+		{"shaman-elemental", "Lightning Bolt", 28, nil},
+	} {
+		got, err := ChosenRanks(tc.spec, tc.spell, tc.level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(got, tc.want) {
+			t.Errorf("%s %s at %d: %v, want %v", tc.spec, tc.spell, tc.level, got, tc.want)
+		}
+	}
+}
