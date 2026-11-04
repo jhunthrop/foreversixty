@@ -95,6 +95,36 @@
       }
     },
     {
+      "action": {
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "auraIsKnown": {
+                  "auraId": {
+                    "spellId": 400625
+                  }
+                }
+              },
+              {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 12043
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 18809,
+            "rank": 8
+          }
+        }
+      }
+    },
+    {
       "notes": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
       "action": {
         "condition": {
@@ -139,6 +169,90 @@
           "spellId": {
             "spellId": 10212,
             "rank": 7
+          }
+        }
+      }
+    },
+    {
+      "action": {
+        "condition": {
+          "and": {
+            "vals": [
+              {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "auraNumStacks": {
+                      "auraId": {
+                        "spellId": 400625
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "3"
+                    }
+                  }
+                }
+              },
+              {
+                "auraIsKnown": {
+                  "auraId": {
+                    "spellId": 400625
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 18809,
+            "rank": 8
+          }
+        }
+      }
+    },
+    {
+      "action": {
+        "condition": {
+          "auraIsKnown": {
+            "auraId": {
+              "spellId": 400625
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 10199,
+            "rank": 7
+          }
+        }
+      }
+    },
+    {
+      "action": {
+        "condition": {
+          "cmp": {
+            "op": "OpGe",
+            "lhs": {
+              "auraNumStacks": {
+                "auraId": {
+                  "spellId": 400573
+                }
+              }
+            },
+            "rhs": {
+              "const": {
+                "val": "3"
+              }
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 1326082,
+            "rank": 4
           }
         }
       }
@@ -203,6 +317,23 @@
           "spellId": {
             "spellId": 1239700,
             "rank": 5
+          }
+        }
+      }
+    },
+    {
+      "action": {
+        "condition": {
+          "auraIsKnown": {
+            "auraId": {
+              "spellId": 400625
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 10151,
+            "rank": 11
           }
         }
       }
