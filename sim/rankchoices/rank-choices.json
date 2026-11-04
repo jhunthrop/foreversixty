@@ -520,11 +520,29 @@
       }
     ],
     "shaman-restoration": [],
+    "warlock-demonology": [
+      {
+        "spell": "Shadow Bolt",
+        "authored": 11661,
+        "bands": [
+          {
+            "from_level": 20,
+            "to_level": 29,
+            "rank": 3
+          }
+        ]
+      }
+    ],
     "warlock-destruction": [
       {
         "spell": "Shadow Bolt",
         "authored": 11661,
         "bands": [
+          {
+            "from_level": 20,
+            "to_level": 29,
+            "rank": 3
+          },
           {
             "from_level": 30,
             "to_level": 39,
