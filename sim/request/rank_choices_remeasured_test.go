@@ -52,8 +52,9 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 		want, not                       int32
 	}{
 		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned (10945):
-		// ranks 2 and 3 keep 15% and 45% of spell power there, and the rows lost 3.3%.
-		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 10945, 8103},
+		// ranks 2 and 3 keep 15% and 45% of spell power there, and the rows lost 3.3%. Round 19:
+		// an Undead casts rank 6 (8106, whole bonus) at 50 and 51.
+		{"Undead Mind Blast at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 8106, 8103},
 		{"Gnome Mind Blast at 50", "priest-shadow", "priest", BarePreset, "gnome", 50, 10945, 8102},
 		{"Undead Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "undead", 60, 19280, 19276},
 		{"Gnome Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, "gnome", 60, 19280, 19276},

@@ -190,11 +190,20 @@ func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) 
 
 // Shadow's Mind Blast at 50 to 59 casts the highest rank learned: ranks 2 and
 // 3 keep 15% and 45% of spell power at 50, and the rows lost 3.3% there.
+// Round 19: rank 6 (whole bonus to 57) wins for an Undead at 50 and 51 and
+// a Dwarf at 51; from 52 every race casts the highest rank learned.
 func TestShadowMindBlastAtFiftyIsTheHighestRankLearned(t *testing.T) {
 	blast := linesCasting(t, "priest-shadow", 10947)
 	for _, race := range []string{"gnome", "undead", "human", "dwarf"} {
+		atFifty, atFiftyOne := 7, 7
+		switch race {
+		case "undead":
+			atFifty, atFiftyOne = 6, 6
+		case "dwarf":
+			atFiftyOne = 6
+		}
 		assertRanks(t, blast, "priest-shadow", "priest", race, mindBlastRanks, []rankCase{
-			{50, BarePreset, 7}, {52, BarePreset, 8}, {58, BarePreset, 9},
+			{50, BarePreset, atFifty}, {51, BarePreset, atFiftyOne}, {52, BarePreset, 8}, {58, BarePreset, 9},
 		})
 	}
 }
