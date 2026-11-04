@@ -158,3 +158,19 @@ Fixed-rank casts in the APLs:
 All are authored at max rank and rewritten to the learned rank per band. None takes spell power that the penalty could cut, so no row is added, dropped or re-picked. Survival has no rank rows.
 
 Rows changed: none. Commits: this report section only.
+
+## Wave 6: guide-accuracy round 3 seeds (Sniper Shot, Summon Hawk)
+
+Merged int/r15 into both branches (site ef3195852, fork 6a4695cc0). Seeds come from `origin/land/guides-r3:design/reviews/guide-accuracy/round3/hunter.md` ("Sims requested" 1 and 2, D2, D3).
+
+**Live push check (wago.tools, read 2026-11-04 ~05:00 UTC).** wago's 70755 search totals are about 3 times the committed record (Spell 7480 to 22952). A per-record query shows why: every hunter row is the same push 113534, listed three times, with the values we already layer. The rows checked were Aimed Shot 697764 (350), Sniper Shot 1340384/1340617/1340619 (320/450/590), Aspect of the Hawk 692138 (110), Arcane Shot 691069 and Serpent Sting 690655. No other push id touches them, nor the SpellEffect, SpellAuraOptions, SpellCooldowns or SpellClassOptions rows of Falcon, Beast, Deadly Aspects, Summon Hawk, Bestial Wrath, Rapid Fire, Multi-Shot or the Survival kit. Sniper Shot's trainer row 59257 is still push 113007 (AcquireMethod 0).
+
+A caution for other lanes: the druid lane's `druid/hfx/diff.json` "live" tables appear to be the shipped files plus only the newer pushes. Every hunter row shows there as reverted to pre-push values (Aimed Shot 166, Sniper Shot 295), which the per-record query disproves.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W6-1 | **Sniper Shot in the Marksmanship raid build (round 3, sim 1).** Already adopted in wave 1 (H2), taking Improved Stings 3 to 2 rather than the Surefooted point. On round 3's race (Night Elf, alliance, 10000 iterations): published build 745.9 / 745.9, wave-1 build 765.3 / 765.2 (+2.6%), and round 3's variant (Surefooted 3 to 2) 760.0 / 760.2 (+1.9%). The Improved Stings variant stays. Round 3's rotation gate ("next auto shot at least 4 s away") can never be true: the auto timer is about 2 s. The wave-1 gate (over 1.2 s) and casting on cooldown were both measured in wave 1; the gate wins. | spec-breakdown, seeds 1 and 50001 | CONFIRMED (already fixed) | old, guides-handoff | S 1b923c4f0, E 7e25c12ab |
+| W6-2 | **Summon Hawk for the fourth Endurance Training point (round 3, sim 2).** Night Elf, alliance, 10000 iterations: guide raid build 674.8 / 674.9. With Summon Hawk 1 for Endurance Training 4 and Summon Hawk rank 4 in Arcane Shot's place: 664.1 / 664.3 (-1.6%). Casting it ahead of Arcane Shot: 664.3 / 664.6. Only the dive (108 + 5% ranged attack power) can be modelled. The 18 s assault is trigger 1312639, whose only client effect is a dummy (effect 3, no amount, period or creature), so it is server script with no data. Not adopted; the guide line stands. | SpellEffect 1293527 effects 0-3, 1312639 effect 0 (wago 70755); summon_hawk.go | OPEN (model gap: the hawk's attack data, from a Forever log of hawk swings, would settle it) | - | - |
+| W6-3 | **Round 3's D2 is wrong on the data, but its prose holds.** D2 says Falcon has no melee proc chance of its own. SpellAuraOptions 239200 gives 469145 ProcChance 5 (ProcTypeMask 20, melee autos and strikes). This lane's wave 2 models that (E b86fa7d39). The survival.md wording "not a clear upgrade" is still true: Falcon sims 0.2 to 1.4% under Beast. | wave 2 above | Aligned (prose); data note for the guide lane | - | - |
+
+For the integrator: land/guides-r3 changes the race field of every hunter build string to `night-elf`. This lane changed Marksmanship's `build:` and `raidBuild:` digits (S 1b923c4f0, S 1134376ac). The merged lines must keep both: `FS1:1.60.1.70755:hunter:night-elf:532000050/005055200152105/5:` and `FS1:1.60.1.70755:hunter:night-elf:5/0052550011503051/50005003:`.
