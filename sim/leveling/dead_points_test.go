@@ -122,3 +122,39 @@ func TestCatBuildsTakeNaturesReach(t *testing.T) {
 		}
 	}
 }
+
+// Furor's bear half is 10 rage on a shift into Bear Form, which a tank in a fight never makes
+// (the tank starts in Dire Bear Form; round 6 G0), while Naturalist is 2% damage, and so
+// threat, a rank. The bear build keeps one Furor point and finishes Naturalist (sim-accuracy
+// round 15 wave 8: threat +7.6 to +7.7% at raid and bare 60, chance of death unchanged; bands
+// 30 to 50 +1.9 to +5.9%; band 20 -0.5% threat for 68-76% to 41-49% chance of death).
+func TestBearBuildFinishesNaturalistOverFuror(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	active, err := ReadActiveBuild(repoRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	trees, err := LoadTalentTrees(repoRoot, active, "druid")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, digits, err := GuideBuildTalents(repoRoot, "druid", "feral-bear")
+	if err != nil {
+		t.Fatal(err)
+	}
+	targets := GuideTalentTargets(trees, digits)
+	for _, tree := range trees {
+		for _, node := range tree.Talents {
+			switch node.Name {
+			case "Furor":
+				if targets[node.ID] > 1 {
+					t.Errorf("the bear build spends %d points on Furor, want at most 1", targets[node.ID])
+				}
+			case "Naturalist":
+				if targets[node.ID] != node.MaxRank {
+					t.Errorf("the bear build has Naturalist %d, want %d", targets[node.ID], node.MaxRank)
+				}
+			}
+		}
+	}
+}
