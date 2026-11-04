@@ -1,6 +1,10 @@
+import hashlib
 import json
 from pathlib import Path
 
+import pytest
+
+from pipeline.hotfix_push import LAYER_RECORD, PUSH_DIR
 from pipeline.spelltips import _Tables, consumable_tips, racial_tips, write_spell_tips
 
 
@@ -154,7 +158,16 @@ def test_a_consumable_is_its_one_named_item_and_on_use_spell(tmp_path):
     }
 
 
-def test_write_spell_tips_writes_one_file_per_class_and_the_shared_file(tmp_path):
+def _layer(raw: Path) -> None:
+    """The record `layer_hotfix_push` leaves: every table's layered sha256."""
+    tables = {
+        p.stem: {"sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in raw.glob("*.csv")
+    }
+    (raw / PUSH_DIR).mkdir()
+    (raw / PUSH_DIR / LAYER_RECORD).write_text(json.dumps({"tables": tables}), encoding="utf-8")
+
+
+def _build(tmp_path: Path) -> Path:
     build_dir = tmp_path / "1.0.0.1"
     _raw(build_dir / "raw")
     (build_dir / "trainables").mkdir()
@@ -174,6 +187,11 @@ def test_write_spell_tips_writes_one_file_per_class_and_the_shared_file(tmp_path
         json.dumps([{"id": 1900, "spell_id": 10}, {"id": 1, "spell_id": 0}]), encoding="utf-8"
     )
     (build_dir / "items.json").write_text(json.dumps([]), encoding="utf-8")
+    return build_dir
+
+
+def test_write_spell_tips_writes_one_file_per_class_and_the_shared_file(tmp_path):
+    _layer(_build(tmp_path) / "raw")
     out = write_spell_tips("1.0.0.1", root=tmp_path)
     warrior = json.loads((out / "warrior.json").read_text(encoding="utf-8"))
     assert list(warrior["spells"]) == ["21553"]
@@ -181,3 +199,20 @@ def test_write_spell_tips_writes_one_file_per_class_and_the_shared_file(tmp_path
     assert list(shared["enchants"]) == ["1900"]
     assert shared["consumables"] == {}
     assert list(shared["racials"]) == ["Blood Fury"]
+    assert "Spell" in shared["hotfix_layer"]
+
+
+def test_spell_tips_refuse_tables_the_hotfix_push_was_never_layered_into(tmp_path):
+    """2026-11-03: 70755's tips were written mid-fetch, before the push was layered."""
+    _build(tmp_path)
+    with pytest.raises(SystemExit, match="has not had its hotfix push layered"):
+        write_spell_tips("1.0.0.1", root=tmp_path)
+
+
+def test_spell_tips_refuse_a_table_changed_since_the_layer(tmp_path):
+    raw = _build(tmp_path) / "raw"
+    _layer(raw)
+    with (raw / "Spell.csv").open("a", encoding="utf-8") as f:
+        f.write("\n")
+    with pytest.raises(SystemExit, match="Spell.csv is not the table the hotfix layer wrote"):
+        write_spell_tips("1.0.0.1", root=tmp_path)
