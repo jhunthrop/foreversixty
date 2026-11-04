@@ -54,6 +54,17 @@
         }
       },
       {
+        "notes": "Curse of the Elements when no warlock's is on the target. Curses and banes have separate slots, so it sits beside your bane for five minutes; two copies do not stack, so leave it to whoever holds it.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1311680,
+              "rank": 4
+            }
+          }
+        }
+      },
+      {
         "notes": "Corruption whenever it has fallen off. Instant with Improved Corruption, cheap, and never clipped.",
         "action": {
           "condition": {
@@ -72,17 +83,6 @@
             "spellId": {
               "spellId": 11672,
               "rank": 6
-            }
-          }
-        }
-      },
-      {
-        "notes": "Curse of the Elements when no warlock's is on the target. Curses and banes have separate slots, so it sits beside your bane for five minutes; two copies do not stack, so leave it to whoever holds it.",
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 1311680,
-              "rank": 4
             }
           }
         }
