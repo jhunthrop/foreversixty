@@ -481,12 +481,23 @@
           {
             "from_level": 30,
             "to_level": 39,
-            "rank": 4
+            "rank": 3
           },
           {
             "from_level": 40,
             "to_level": 49,
             "rank": 4
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 6
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 8,
+            "preset": "bare"
           },
           {
             "from_level": 60,
@@ -506,20 +517,26 @@
             "rank": 3
           }
         ]
-      },
+      }
+    ],
+    "shaman-restoration": [
       {
-        "spell": "Lightning Bolt",
-        "authored": 15208,
+        "spell": "Healing Wave",
+        "authored": 10396,
         "bands": [
           {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 7
+            "from_level": 20,
+            "to_level": 39,
+            "rank": 3
+          },
+          {
+            "from_level": 40,
+            "to_level": 49,
+            "rank": 5
           }
         ]
       }
     ],
-    "shaman-restoration": [],
     "warlock-destruction": [
       {
         "spell": "Shadow Bolt",

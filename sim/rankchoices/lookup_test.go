@@ -18,7 +18,7 @@ func TestChosenRanksReadsTheCuratedRowsAtALevel(t *testing.T) {
 		{"paladin-retribution", "Consecration", 25, nil},
 		{"druid-balance", "Moonfire", 30, []int{3}},
 		// A row naming a preset still counts for a log, which does not say which preset.
-		{"shaman-elemental", "Lightning Bolt", 60, []int{10}},
+		{"shaman-elemental", "Lightning Bolt", 60, []int{8, 10}},
 		// A race's row counts for any race (round 13): a log's rank is no mistake
 		// where the site casts it for one race.
 		{"priest-shadow", "Mind Blast", 45, []int{3, 4}},

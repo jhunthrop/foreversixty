@@ -407,18 +407,12 @@ func TestRewriteHonoursAPerBandRankChoice(t *testing.T) {
 	}
 }
 
-// The curated table reaches the published rotation: Elemental's top-rank line,
-// cast while mana is ahead of the fight (15208), has its own row since round 12
-// and casts rank 7 (10391) at 50 where the default rule casts rank 9. The
-// filler's rank-4 row at 50 to 59 went in round 15 wave 2 (Forever's level-gap
-// rule: rank 4, learned at 20, keeps 35% of spell power at 50), so the filler
-// casts its authored rank 9 (15207) there.
+// The curated table reaches the published rotation: Elemental's filler line
+// (15207) casts rank 6 (6041) at 50 since round 15 wave 3, where the default
+// rule casts its authored rank 9, and no longer rank 4 (915).
 func TestThePublishedRotationTakesTheCuratedRankChoices(t *testing.T) {
 	ids := rotationIDs(t, "shaman-elemental", "shaman", 50, specRankChoices("shaman-elemental", BarePreset, "orc"))
-	if !ids[10391] || ids[15208] {
-		t.Errorf("Elemental at 50 should cast rank 7 (10391) on its paced line, not rank 10 (15208)")
-	}
-	if !ids[15207] || ids[915] {
-		t.Errorf("Elemental at 50 should cast its filler at rank 9 (15207), not rank 4 (915)")
+	if !ids[6041] || ids[915] {
+		t.Errorf("Elemental at 50 should cast its filler at rank 6 (6041), not rank 4 (915)")
 	}
 }

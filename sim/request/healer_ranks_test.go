@@ -152,8 +152,26 @@ func TestRestorationShamanSwiftnessHealingWaveIsTheTopRank(t *testing.T) {
 		level  int
 		preset string
 		rank   int
-	}{{20, BarePreset, 4}, {30, BarePreset, 5}, {40, BarePreset, 7}, {50, BarePreset, 8}, {56, BarePreset, 9}, {60, BarePreset, 9}, {60, RaidPreset, 9}} {
+	}{{50, BarePreset, 8}, {56, BarePreset, 9}, {60, BarePreset, 9}, {60, RaidPreset, 9}} {
 		assertOnlyRank(t, swiftness, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)
+	}
+}
+
+// Sim-accuracy round 15 wave 3: on Forever's level-gap rule a Healing Wave
+// rank keeps its whole healing bonus until it is 17 levels behind, so the
+// tank filler pays for a lower rank below 50: rank 3 (learned at 12) at 20
+// (+10.9 to +12.1%) and 30 (+19.8%), rank 5 (24) at 40 (+8.4 to +8.6%),
+// each fight still running dry; 50 and 60 keep the top rank learned. Both
+// factions, seeds 1 and 50001. The row shares the authored id with the
+// Nature's Swiftness line, which the band builds below 50 do not take.
+func TestRestorationShamanFillerHealingWaveByBand(t *testing.T) {
+	filler, _ := restorationHealingWaveLines(t)
+	for _, c := range []struct {
+		level  int
+		preset string
+		rank   int
+	}{{20, BarePreset, 3}, {30, BarePreset, 3}, {39, BarePreset, 3}, {40, BarePreset, 5}, {49, BarePreset, 5}, {50, BarePreset, 8}, {60, BarePreset, 9}, {60, RaidPreset, 9}} {
+		assertOnlyRank(t, filler, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)
 	}
 }
 
