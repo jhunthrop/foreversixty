@@ -61,7 +61,7 @@ The raid build goes 36/10/5: down Assassination to Mutilate, with Seal Fate, Ven
 - **Improved Poisons** (5 points): poisons apply more often and often keep their charge.
 - **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
-Opportunity in the raid build adds 20% to Mutilate and Garrote. Blood Splatter keeps your opening Garrote ticking 9 seconds longer, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Two points of Lightning Reflexes with Coup de Grace are the toll to reach Puncturing Wounds and Precision.
+Opportunity in the raid build adds 20% to Mutilate and Garrote. Blood Splatter keeps your opening Garrote ticking 9 seconds longer and every Rupture 6 seconds longer, which is what puts Rupture in your raid rotation, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Two points of Lightning Reflexes with Coup de Grace are the toll to reach Puncturing Wounds and Precision.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -75,9 +75,9 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 ### The priority
 
-**Shank** on cooldown, right behind your racial and trinket: 5 energy for 25 back, it cannot miss, and with Venom your poisons hit 30% harder and land 20% more often for the next 6 seconds. At four or more combo points, Slice and Dice first if it is down or about to fall off. Otherwise press Cold Blood if it is ready and Eviscerate straight after. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
+**Shank** on cooldown, right behind your racial and trinket: 5 energy for 25 back, it cannot miss, and with Venom your poisons hit 30% harder and land 20% more often for the next 6 seconds. At four or more combo points, Slice and Dice first if it is down or about to fall off. In the raid build, Rupture next whenever it is not ticking: Blood Splatter makes it last 6 seconds longer, and bleeds always crit in Forever. Otherwise press Cold Blood if it is ready and Eviscerate straight after. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
 
-Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, so you go from nothing to 2 or 3, then to 4 or 5: waiting for exactly five wastes a Mutilate. Rupture and Expose Armor do not make the list. Forever's Expose Armor does not stack with Sunder, so leave it to your warriors.
+Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, and Ruthlessness often leaves you one after a finisher, so two Mutilates usually put you on four or five: waiting for exactly five wastes a Mutilate. Expose Armor does not make the list: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors. Without Blood Splatter, in the level 60 build, skip Rupture too.
 
 ### Energy
 

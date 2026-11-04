@@ -55,7 +55,7 @@ import { linkProse } from '../../../lib/guides/prose-tips';
 import GuideTooltips from '../../../components/guides/GuideTooltips.svelte';
 import { pageScript } from '../../../lib/guides/page-script';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
-import { guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
+import { guideLadderOrder, guideLevelingBuilds } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
 import { raceTableFor, specKindOf } from '../../../lib/guides/race-table';
@@ -231,6 +231,12 @@ const levelingRows: LevelingBandRow[] =
         plannerHref: `/planner?spec=${fullSpecId}&talents=${encodeURIComponent(b.talents)}`,
         talents: b.talents,
       }));
+// The order the points go in, the ladder's own (lib/guides/leveling-builds.ts guideLadderOrder):
+// the strip, the planner links below and /data/leveling-plans.json all read this one order.
+const ladderOrder =
+  buildCode === undefined || treeIndex === undefined
+    ? []
+    : guideLadderOrder(build, classSlug, fullSpecId, treeIndex, buildCode);
 const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
 // The strip covers levels 20 to 60, so it sits under that subsection's heading: #leveling,
 // the character home's link, then opens on the Levels 1 to 19 text a new character needs.
@@ -344,7 +350,9 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   <Fragment set:html={levelingHeadingHtml} />
   <Fragment set:html={levelingEarlyHtml} />
   <Fragment set:html={levelingStripHeadingHtml} />
-  {levelingRows.length > 0 && <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} />}
+  {levelingRows.length > 0 && (
+    <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} spendOrder={ladderOrder} />
+  )}
   <Fragment set:html={levelingLateHtml} />
   <script is:inline set:html={pageScript}></script>
   <GuideTooltips client:idle-after-load build={build} bundleUrl={guideTipsUrl(build, classSlug, specSlug)} />

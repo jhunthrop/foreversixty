@@ -23,7 +23,7 @@ sources:
 
 ## Overview
 
-Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, downranked Greater Heal as the filler, and Prayer of Healing for a hurt group.
+Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, Greater Heal as the filler, and Prayer of Healing for a hurt group.
 
 ### Strengths
 
@@ -67,7 +67,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **On the tank.** Prayer of Mending every time it is ready. Renew always up at rank 7 or higher. Go up to the top rank on a tank who is dropping through it.
 
-**The filler is a downranked Greater Heal** in a raid: rank 1 or 2, whichever fills the hole without overhealing. In a dungeon group or on bare gear, where your bonus is small, Heal rank 4 is the cheaper cast. With Divine Fury both are 2.5 second casts. The top rank of Greater Heal comes out only when the tank needs one big number.
+**The filler is Greater Heal** at your top rank. Rank 2 and 3 were learned late enough to keep your whole healing bonus and cost less, so step down to rank 3 or 2 when the top rank would overheal. Rank 1 already loses part of its bonus at 60. In a dungeon group or on bare gear, where your bonus is small, Heal rank 4 is the cheaper cast. With Divine Fury both are 2.5 second casts.
 
 **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on.
 

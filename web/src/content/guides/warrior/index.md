@@ -2,7 +2,7 @@
 title: Warrior in Forever
 classSlug: warrior
 description: 'Warrior in Forever: the three specs, how rage shapes all of them, and what changed from 1.12.'
-updated: 2026-11-03
+updated: 2026-11-04
 confidence: confirmed
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -31,7 +31,8 @@ Warrior is the pure melee class: plate, a weapon and a rage bar that fills from 
 - **Shield Block** lasts 7 seconds on a 5 second cooldown.
 - **Shield Wall** is 60% for 12 seconds on a 15 minute cooldown, and Improved Shield Wall now cuts that cooldown to 4 minutes instead of adding duration.
 - **Death Wish** costs 5% more damage taken instead of armor.
-- **New talents** include Bloodthrill and Weaponmaster in Arms, Reckless Swings and Furious Precision in Fury, and Vanguard and Master of Defense in Protection.
+- **Battle Shout** reaches every party and raid member within 20 yards and lasts 3 minutes.
+- **New talents** include Bloodthrill, Weaponmaster and Spearing Strike in Arms, Reckless Swings and Furious Precision in Fury, and Vanguard and Master of Defense in Protection.
 
 ## Races
 

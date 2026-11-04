@@ -48,7 +48,7 @@ Restoration heals with time: Regrowth and Rejuvenation on the tank all fight, Sw
 
 ## Talents and builds
 
-The build is 39 points of Restoration and 12 of Balance. It is built for a tank-healing fight that runs your mana down.
+The build is 40 points of Restoration and 11 of Balance. It is built for a tank-healing fight that runs your mana down.
 
 - **Gift of Nature** (5 points): 10% more healing on your heals. In Forever it does not reach Tranquility.
 - **Improved Rejuvenation** (3 points): 15% more from your most-cast spell.
@@ -59,7 +59,8 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
 - **Improved Tranquility** (2 points): Tranquility with no threat and its cooldown cut from 5 minutes to 2.
 - **Heart of the Wild** (5 points): 10% more Intellect.
-- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) is the price of reaching Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on. The one Balance point left after that sits in Improved Moonfire, which does nothing for a healer. A point of Improved Regrowth, 10% more Regrowth crit, heals a little more if you would rather spend it there.
+- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) is the price of reaching Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
+- **Improved Regrowth** (1 point): 10% more crit on the Regrowth you keep on the tank.
 
 **Wild Growth.** The capstone heals a whole party over 7 seconds, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility, put one point in Wild Growth and the other in Improved Regrowth.
 
@@ -77,13 +78,13 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 
 **The party.** A hurt party member gets a Rejuvenation, you included. Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
 
-**Ranks.** Rank 1 Rejuvenation is not a cheap heal at 60. In Forever a rank learned far below your level loses its share of your healing power, and rank 1 keeps none of it. Your last three ranks (8, 9 and 10) keep all of it, so on a hurt party member cast rank 8 or 9: most of the top rank's healing for less mana. On the tank, use the top rank in a raid. While leveling, your healing power is still low and most of a Rejuvenation is its base heal, so rank 1 barely dents a tank's damage; a middle rank such as rank 4 keeps the heal sizeable and your mana going. Use the top ranks of Regrowth and Healing Touch.
+**Ranks.** In Forever a rank learned far below your level loses its share of your healing power: at 60, ranks 8, 9 and 10 keep all of it, rank 7 most of it, and rank 1 none. In a raid, keep the top rank on the tank and put rank 7 on a hurt party member: most of the heal for far less mana. When there is no raid behind you and the fight will run you dry, as in a long five-man, rank 1 on the party is the most healing your mana buys, because it costs so little. While leveling, rank 1 is your party Rejuvenation too, and on the tank from 28 to 49 a middle rank such as rank 4 keeps the heal sizeable and your mana going. Use the top ranks of Regrowth and Healing Touch.
 
 **Mana.** Innervate is yours from level 40. Cast it on yourself when you are low: it multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit. A Major Mana Potion and a Demonic Rune cover the rest.
 
 ## Stat priority
 
-The table above gives the order for your gear. A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count so much for you. Healing power is every heal, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
+The table above gives the order for your gear. A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count for you. Healing power is every heal, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
 
 ## Best in slot
 

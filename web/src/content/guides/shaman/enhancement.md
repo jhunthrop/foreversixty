@@ -49,12 +49,12 @@ Enhancement is the shaman's melee spec: one weapon with Windfury on it, Stormstr
 
 ## Talents and builds
 
-Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells. The leveling build puts its Elemental points into Convection, Concussion, Elemental Alacrity and Call of Flame for cheaper, faster, harder Lightning Bolts and a stronger Searing Totem. The raid build moves them to Concussion, Reverberation, Elemental Devastation and Elemental Focus: Earth Shock hits harder and comes back sooner, its crits give your swings 9% crit for 10 seconds, and now and then a spell is free. Both builds take Shamanistic Focus, which cuts the cost of your shocks by 45%, and Improved Ghost Wolf, which makes Ghost Wolf instant and usable indoors: the fastest way across a raid room when the boss moves. The raid build pays for its twelfth Elemental point and the third point of Mindfulness with two points of Ancestral Knowledge.
+Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of the Farseer, and both take Tidal Focus in Restoration: its 5% hit counts for your swings as well as your spells. The leveling build puts its Elemental points into Convection, Concussion, Elemental Devastation and Call of Flame: cheaper shocks and bolts, harder Lightning Bolts and Earth Shocks, 9% melee crit for 10 seconds after a spell crits, and a stronger Searing Totem. The raid build keeps Elemental Devastation, fills Concussion and moves the rest to Reverberation and Elemental Focus: Earth Shock hits harder and comes back sooner, and now and then a spell is free. Both builds take Shamanistic Focus, which cuts the cost of your shocks by 45%, and Improved Ghost Wolf, which makes Ghost Wolf instant and usable indoors: the fastest way across a raid room when the boss moves. The raid build pays for its twelfth Elemental point and the third point of Mindfulness with two points of Ancestral Knowledge.
 
 - **Thundering Strikes** (5 points): 5% crit on every attack and spell, and crits are what start Flurry.
 - **Ancestral Knowledge** (5 points, 3 in the raid build): up to 10% more Intellect. With Mental Dexterity, Intellect is attack power.
 - **Mental Dexterity** (3 points): your attack power goes up by one and a half times your Intellect. This is why Enhancement wants Intellect on its gear.
-- **Elemental Weapons** (3 points): Windfury Weapon's extra attacks carry 40% more attack power.
+- **Elemental Weapons** (3 points): Windfury Weapon's extra attacks carry 40% more attack power, and Rockbiter Weapon's attack power is 20% bigger.
 - **Flurry** (5 points): 30% attack speed for your next three swings after a melee crit.
 - **Stormstrike** (1 point): an instant strike for 150% weapon damage on a 6 second cooldown that makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder.
 - **Mental Quickness** (2 points): 30% of your Intellect as spell power, for your shocks and bolts.
@@ -63,7 +63,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Rotation and priority
 
-**Before the pull.** Put Windfury Weapon on your weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves away from them, follow it and press Totemic Call: it relocates your active totems to your location.
+**Before the pull.** Imbue your weapon: Rockbiter Weapon in a raid where a Windfury Totem reaches you, Windfury Weapon everywhere else. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves away from them, follow it and press Totemic Call: it relocates your active totems to your location.
 
 **On the pull.** Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown. Then Stormstrike.
 
@@ -76,7 +76,9 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 5. Fire Nova when Clearcasting makes it free.
 6. Earth Shock on cooldown while you are above half mana. It takes Stormstrike's 20% when no bolt is ready.
 
-**Which Air totem.** Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so you never drop Windfury for yourself. Windfury Totem, Grace of Air and Strength of Earth reach every raid member within 30 yards, not just your party. One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and for them it is worth far more than Grace of Air's Agility. If another shaman already has it down, take Grace of Air. There is nothing to twist: Windfury Totem is an aura around the totem, not a buff that lingers on the weapon, so it ends the moment you replace the totem.
+**Which imbue.** Windfury Weapon on your main hand turns off any Windfury Totem's bonus for you. So in a raid where a Windfury Totem reaches you, yours or another shaman's, put Rockbiter Weapon on instead: Forever's Rockbiter is a large flat attack power bonus, it keeps the totem's extra swings working for you, and Elemental Weapons makes it bigger. It also adds threat to your swings, so watch your meter early in a fight. Solo and anywhere without that totem, use Windfury Weapon.
+
+**Which Air totem.** Windfury Totem, Grace of Air and Strength of Earth reach every raid member within 30 yards, not just your party. One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and for them it is worth far more than Grace of Air's Agility. If another shaman already has it down, take Grace of Air; if you drop it yourself, keep Rockbiter on so its swings count for you too. There is nothing to twist: Windfury Totem is an aura around the totem, not a buff that lingers on the weapon, so it ends the moment you replace the totem.
 
 **Fire Nova on Clearcasting.** In the raid build, Elemental Focus sometimes makes your next damage spell free. Spend it on Fire Nova: in melee your Searing Totem stands within its 10 yards of the boss. Outside a proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target, and so does Flame Shock.
 
@@ -96,7 +98,7 @@ Your raid set leans on crafts. The Heart of the Mountain trinkets are Enchanting
 
 ## Enchants and consumables
 
-Windfury Weapon is your weapon's temporary enchant, so there is no room for a sharpening stone or a weightstone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
+Your imbue is your weapon's temporary enchant, Rockbiter Weapon under a raid's Windfury Totem and Windfury Weapon without it, so there is no room for a sharpening stone or a weightstone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
 
 ## Races
 
@@ -116,4 +118,4 @@ Rockbiter Weapon goes on at 1 and Earth Shock comes at 4. Lightning Shield at 8 
 
 ### Levels 20 to 60
 
-Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Windfury Weapon at 30 replaces Rockbiter and stays on for good. Stormstrike sits in the fourth row and you can press it the moment you learn it: from 20 this build fills Mental Dexterity, Elemental Weapons, Shamanistic Focus and Flurry, and takes Stormstrike at 32, with Improved Ghost Wolf right after. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.
+Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Windfury Weapon at 30 replaces Rockbiter and stays on while you level. Stormstrike sits in the fourth row and you can press it the moment you learn it: from 20 this build fills Mental Dexterity, puts two points in Elemental Weapons and takes Stormstrike at 25, the first level the fourth row opens. Then it finishes Elemental Weapons, takes Shamanistic Focus and fills Flurry by 32, with Improved Ghost Wolf at 33 and 34. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.

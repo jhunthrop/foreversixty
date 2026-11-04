@@ -73,9 +73,9 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 ### The priority
 
-**Shank** on cooldown, right behind your racial and trinket, while you have three combo points or fewer: with Boot Knife it is two points for 5 energy. At four or five, finish first and Shank right after; a 10 second cooldown loses nothing to one global. Ghostly Strike goes on cooldown too, just never at five points. Rupture at four or more combo points whenever it is not ticking. **Death Mark** at five points while Rupture ticks. While Rupture ticks and Death Mark is on cooldown, spend three or more points on Eviscerate, or on Slice and Dice when that is down or about to fall off. Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
+**Shank** on cooldown, right behind your racial and trinket, while you have three combo points or fewer: with Boot Knife it is two points for 5 energy. At four or five, finish first and Shank right after; a 10 second cooldown loses nothing to one global. Ghostly Strike goes on cooldown too, just never at five points. When a Ghostly Strike lands and Garrote has dropped off, put Garrote straight back on: the strike lets it in without Stealth. Rupture at four or more combo points whenever it is not ticking. **Death Mark** at five points while Rupture ticks. While Rupture ticks, spend three or more points on Slice and Dice only when it is down or about to fall off; otherwise keep building to five for the next Death Mark. Eviscerate is your finisher only until Death Mark at 40. Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
 
-Rupture first, always: Hemorrhage's debuff and Serrated Blades both feed it, and Death Mark stores every tick at twice the rate. A mark with no Rupture under it has lost its best source, so never press it into a lapsed bleed. Mark at five points, not four: the storage is per combo point, and the 10 second cooldown means one comes back every few finishers anyway.
+Rupture first, always: Hemorrhage's debuff and Serrated Blades both feed it, and Death Mark stores every tick at twice the rate. A mark with no Rupture under it has lost its best source, so never press it into a lapsed bleed. Mark at five points, not four: the storage is per combo point, and the 10 second cooldown is back by the time you have built five again.
 
 ### Energy
 
@@ -126,4 +126,4 @@ Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for t
 
 ### Levels 20 to 60
 
-Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five.
+Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five until Death Mark comes at 40; from then on, every five points go into Death Mark.

@@ -243,3 +243,42 @@ Expertise was restored on the three tank pages in round 8 (bb4d616e0). The guide
 
 Verdict: NOT zero, so round 10 is needed.
 Rendered review: wow-player SHIP for priest, warrior, mage and paladin, with no MUSTs.
+
+## Round 10 (client 1.60.1.70755, 2026-11-04)
+
+Built on main 84460cec8 (sim round 15, engine pin 9f7f1f6e4), with r15c and rotation-gates merged in. Audit CONFIRMED by class: druid 11, priest 11, warlock 10, mage 8, warrior 7, rogue 6, hunter 6, shaman 3, paladin 3, for 65 in total. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65.
+
+Almost every finding came from one cause. Sim round 15 changed builds, card ranks and rotations but updated only the frontmatter build lines, so prose and card notes still described the old builds. The new builds the prose now describes:
+
+- Arcane raid is 32/16/3 with a Fireball filler.
+- Affliction runs a Wrack raid build.
+- Arms takes Spearing Strike, Reckless Swings and Improved Execute.
+- Fury takes Improved Berserker Rage.
+- Marksmanship takes Sniper Shot.
+- Shadow levels with Wand Specialization, then Spirit Tap.
+- The bear takes 1 point of Furor and puts the rest into Naturalist.
+- Restoration druid ranks changed.
+- Subtlety from 40 builds every finisher to five points for Death Mark.
+- Retribution opens with Seal of the Crusader.
+
+Prose and card notes now match the shipped builds, point orders and cards. The new APL lines have notes.
+
+Rendered review: wow-player SHIP for every class. The page-text MUSTs were:
+
+- paladin race tie
+- Marksmanship leveling line
+- Subtlety Death Mark
+- Rupture with Blood Splatter only
+- Shadow pre-cast timing
+- Holy Greater Heal step-down
+- Reckless Swings' 8 seconds and health cost
+- Chain Heal's party-only jumps
+- Arcane Impact and Heating Up wording
+
+Handed to the component lane: the Arcane, Fire, Feral, Balance and Marksmanship headers load the leveling `build` next to raid-oriented cards, the key-talent chips show leveling ranks, and the Arcane opener timing.
+
+Process note: a sim round that changes a build: line should ship the matching prose or flag the guide lane.
+
+Verdict: NOT zero, so round 11 is needed.
+
+Open sims: race re-runs on the new builds for most specs, Rip against Bite, Bite pooling, Crusader opener on short mobs, Consecration on packs, and Wrack's mask against its tooltip.
