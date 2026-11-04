@@ -7718,7 +7718,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 5189,
+            "spell_id": 5187,
             "name": "Healing Touch",
             "condition": "On the tank under 55%, only while your mana is ahead of the fight.",
             "icon": "spell_nature_healingtouch",
@@ -7763,6 +7763,95 @@
       },
       {
         "level": 32,
+        "lines": [
+          {
+            "spell_id": 17116,
+            "name": "Nature's Swiftness",
+            "condition": "When the tank drops under 35%: Nature's Swiftness, then an instant Healing Touch on him.",
+            "icon": "spell_nature_ravenform",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6778,
+            "name": "Healing Touch",
+            "condition": "Right after Nature's Swiftness, as the instant save on the tank.",
+            "icon": "spell_nature_healingtouch",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18562,
+            "name": "Swiftmend",
+            "condition": "When the tank is under 75% and your mana is keeping pace with the fight.",
+            "icon": "inv_relics_idolofrejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 740,
+            "name": "Tranquility",
+            "condition": "When two of your party, you included, are under 70% at once.",
+            "icon": "spell_nature_tranquility",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8940,
+            "name": "Regrowth",
+            "condition": "On the tank whenever it is not ticking.",
+            "icon": "spell_nature_resistnature",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5187,
+            "name": "Healing Touch",
+            "condition": "On the tank under 55%, only while your mana is ahead of the fight.",
+            "icon": "spell_nature_healingtouch",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "On a hurt party member under 70%, you included.",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 34,
         "lines": [
           {
             "spell_id": 17116,
@@ -8081,42 +8170,42 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 8903,
+            "spell_id": 5189,
             "name": "Healing Touch",
             "condition": "On the tank under 55%, only while your mana is ahead of the fight.",
             "icon": "spell_nature_healingtouch",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
@@ -8177,7 +8266,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 8903,
+            "spell_id": 5189,
             "name": "Healing Touch",
             "condition": "On the tank under 55%, only while your mana is ahead of the fight.",
             "icon": "spell_nature_healingtouch",
@@ -8222,6 +8311,102 @@
       },
       {
         "level": 44,
+        "lines": [
+          {
+            "spell_id": 29166,
+            "name": "Innervate",
+            "condition": "On yourself below 30% mana.",
+            "icon": "spell_nature_lightning",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 17116,
+            "name": "Nature's Swiftness",
+            "condition": "When the tank drops under 35%: Nature's Swiftness, then an instant Healing Touch on him.",
+            "icon": "spell_nature_ravenform",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 9758,
+            "name": "Healing Touch",
+            "condition": "Right after Nature's Swiftness, as the instant save on the tank.",
+            "icon": "spell_nature_healingtouch",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18562,
+            "name": "Swiftmend",
+            "condition": "When the tank is under 75% and your mana is keeping pace with the fight.",
+            "icon": "inv_relics_idolofrejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8918,
+            "name": "Tranquility",
+            "condition": "When two of your party, you included, are under 70% at once.",
+            "icon": "spell_nature_tranquility",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 9750,
+            "name": "Regrowth",
+            "condition": "On the tank whenever it is not ticking.",
+            "icon": "spell_nature_resistnature",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2090,
+            "name": "Rejuvenation",
+            "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5189,
+            "name": "Healing Touch",
+            "condition": "On the tank under 55%, only while your mana is ahead of the fight.",
+            "icon": "spell_nature_healingtouch",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "On a hurt party member under 70%, you included.",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 45,
         "lines": [
           {
             "spell_id": 29166,
@@ -10552,7 +10737,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20903,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -10606,7 +10791,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20903,
+            "spell_id": 19434,
             "name": "Aimed Shot",
             "condition": "Aimed Shot when the shared cooldown comes up right after an auto shot fires.",
             "icon": "inv_spear_07",
@@ -11653,7 +11838,7 @@
           {
             "spell_id": 5143,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11674,7 +11859,7 @@
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -11714,7 +11899,7 @@
           {
             "spell_id": 5143,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11735,7 +11920,7 @@
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -11775,7 +11960,7 @@
           {
             "spell_id": 5143,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11796,7 +11981,7 @@
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -11836,7 +12021,7 @@
           {
             "spell_id": 5144,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11857,7 +12042,7 @@
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -11897,7 +12082,7 @@
           {
             "spell_id": 5144,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -11918,7 +12103,7 @@
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -11972,7 +12157,7 @@
           {
             "spell_id": 5144,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12007,7 +12192,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12061,7 +12246,7 @@
           {
             "spell_id": 5144,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12096,7 +12281,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12150,7 +12335,7 @@
           {
             "spell_id": 5145,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12185,7 +12370,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12239,7 +12424,7 @@
           {
             "spell_id": 5145,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12281,7 +12466,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12335,7 +12520,7 @@
           {
             "spell_id": 5145,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12377,7 +12562,7 @@
           {
             "spell_id": 8406,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12431,7 +12616,7 @@
           {
             "spell_id": 5145,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12473,7 +12658,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12527,7 +12712,7 @@
           {
             "spell_id": 8416,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12569,7 +12754,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12623,7 +12808,7 @@
           {
             "spell_id": 8416,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12665,7 +12850,7 @@
           {
             "spell_id": 8407,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12719,7 +12904,7 @@
           {
             "spell_id": 8416,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12761,7 +12946,7 @@
           {
             "spell_id": 8407,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12815,7 +13000,7 @@
           {
             "spell_id": 8416,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12857,7 +13042,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -12911,7 +13096,7 @@
           {
             "spell_id": 8417,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12953,7 +13138,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -13007,7 +13192,7 @@
           {
             "spell_id": 8417,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13049,7 +13234,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -13103,7 +13288,7 @@
           {
             "spell_id": 8417,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13145,7 +13330,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -13199,7 +13384,7 @@
           {
             "spell_id": 8417,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13241,7 +13426,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -13295,7 +13480,7 @@
           {
             "spell_id": 10211,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13337,7 +13522,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -13391,7 +13576,7 @@
           {
             "spell_id": 10211,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13433,7 +13618,7 @@
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -13487,7 +13672,7 @@
           {
             "spell_id": 10211,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13529,7 +13714,7 @@
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -13583,7 +13768,7 @@
           {
             "spell_id": 10212,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13625,7 +13810,7 @@
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -13679,7 +13864,7 @@
           {
             "spell_id": 10212,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13721,7 +13906,7 @@
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting on the way to 60; in a raid Fireball takes its place.",
+            "condition": "Frostbolt in a raid when you are too low on mana for a Fireball, and as the filler once you stop blasting on the way to 60.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           }
@@ -18180,7 +18365,21 @@
           {
             "spell_id": 20287,
             "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20287,
+            "name": "Seal of Righteousness",
             "condition": "With Unsealed Wrath, once three swings have stored Seal of Command.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20287,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18206,7 +18405,21 @@
           {
             "spell_id": 20287,
             "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20287,
+            "name": "Seal of Righteousness",
             "condition": "With Unsealed Wrath, once three swings have stored Seal of Command.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20287,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18232,7 +18445,21 @@
           {
             "spell_id": 20288,
             "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20288,
+            "name": "Seal of Righteousness",
             "condition": "With Unsealed Wrath, once three swings have stored Seal of Command.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20288,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
             "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
@@ -18253,6 +18480,13 @@
             "name": "Judgement",
             "condition": "On cooldown.",
             "icon": "spell_holy_righteousfury",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20288,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18281,6 +18515,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20288,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18310,6 +18551,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20289,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 879,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -18335,6 +18583,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20289,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18364,6 +18619,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20289,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5614,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -18389,6 +18651,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20289,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18418,6 +18687,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20289,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5614,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -18443,6 +18719,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20289,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18472,6 +18755,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5614,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -18497,6 +18787,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18526,6 +18823,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5615,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -18551,6 +18855,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18580,6 +18891,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5615,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -18605,6 +18923,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18634,6 +18959,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5615,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -18659,6 +18991,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20290,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18688,6 +19027,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20291,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5615,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -18713,6 +19059,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20291,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18742,6 +19095,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20291,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 10312,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -18777,6 +19137,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20291,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5569,
             "name": "Holy Strike",
             "condition": "On cooldown.",
@@ -18800,6 +19167,13 @@
             "name": "Judgement",
             "condition": "On cooldown.",
             "icon": "spell_holy_righteousfury",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20292,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18838,6 +19212,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20292,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5569,
             "name": "Holy Strike",
             "condition": "On cooldown.",
@@ -18861,6 +19242,13 @@
             "name": "Judgement",
             "condition": "On cooldown.",
             "icon": "spell_holy_righteousfury",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20292,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -18899,64 +19287,10 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10332,
-            "name": "Holy Strike",
-            "condition": "On cooldown.",
-            "icon": "classicon_paladin",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 26573,
-            "name": "Consecration",
-            "condition": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more).",
-            "icon": "spell_holy_innerfire",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 58,
-        "lines": [
-          {
-            "spell_id": 20271,
-            "name": "Judgement",
-            "condition": "On cooldown.",
-            "icon": "spell_holy_righteousfury",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10313,
-            "name": "Exorcism",
-            "condition": "On cooldown against Undead and Demons.",
-            "icon": "spell_holy_excorcism_02",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 24274,
-            "name": "Hammer of Wrath",
-            "condition": "Below 20% health, on its 6 second cooldown.",
-            "icon": "ability_thunderclap",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20293,
+            "spell_id": 20292,
             "name": "Seal of Righteousness",
-            "condition": "With Unsealed Wrath, once three swings have stored Seal of Command.",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
             "icon": "ability_thunderbolt",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "Straight back after that one swing under Righteousness has landed.",
-            "icon": "ability_warrior_innerrage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
-            "icon": "ability_warrior_innerrage",
             "race_spell_ids": {}
           },
           {
@@ -18986,6 +19320,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 20292,
+            "name": "Seal of Righteousness",
+            "condition": "Rank 7 from 58, straight after the opening Crusader Judgement: rank 8 gets nothing from your spell damage.",
+            "icon": "ability_thunderbolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 10314,
             "name": "Exorcism",
             "condition": "On cooldown against Undead and Demons.",
@@ -19000,7 +19341,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 20293,
+            "spell_id": 20292,
             "name": "Seal of Righteousness",
             "condition": "With Unsealed Wrath, once three swings have stored Seal of Command.",
             "icon": "ability_thunderbolt",
@@ -19018,6 +19359,13 @@
             "name": "Seal of Command",
             "condition": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana.",
             "icon": "ability_warrior_innerrage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20292,
+            "name": "Seal of Righteousness",
+            "condition": "Otherwise keep Seal of Righteousness up, and recast it in its last second.",
+            "icon": "ability_thunderbolt",
             "race_spell_ids": {}
           },
           {
@@ -20462,7 +20810,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6078,
+            "spell_id": 6076,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -20691,7 +21039,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6078,
+            "spell_id": 6076,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -20920,7 +21268,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10927,
+            "spell_id": 6076,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -21097,7 +21445,7 @@
         ]
       },
       {
-        "level": 46,
+        "level": 45,
         "lines": [
           {
             "spell_id": 1277326,
@@ -21149,7 +21497,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10927,
+            "spell_id": 6077,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -21198,7 +21546,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -21261,7 +21609,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -21378,7 +21726,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10927,
+            "spell_id": 6077,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -21427,7 +21775,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -21490,7 +21838,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -21656,7 +22004,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -21719,236 +22067,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
-            "name": "Greater Heal",
-            "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 2060,
-            "name": "Greater Heal",
-            "condition": "",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
-            "condition": "",
-            "icon": "spell_holy_lesserheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2060,
-            "name": "Greater Heal",
-            "condition": "",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
-            "condition": "",
-            "icon": "spell_holy_lesserheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2060,
-            "name": "Greater Heal",
-            "condition": "",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
-            "condition": "",
-            "icon": "spell_holy_lesserheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2060,
-            "name": "Greater Heal",
-            "condition": "",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
-            "condition": "",
-            "icon": "spell_holy_lesserheal",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 52,
-        "lines": [
-          {
-            "spell_id": 1277327,
-            "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight.",
-            "icon": "spell_holy_powerinfusion_shadow",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1240721,
-            "name": "Penance",
-            "condition": "Penance on cooldown, on whoever is hurt: three heals one second apart for one cast every 12 seconds, your best heal per mana.",
-            "icon": "spell_holy_penance",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1240721,
-            "name": "Penance",
-            "condition": "",
-            "icon": "spell_holy_penance",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1240721,
-            "name": "Penance",
-            "condition": "",
-            "icon": "spell_holy_penance",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1240721,
-            "name": "Penance",
-            "condition": "",
-            "icon": "spell_holy_penance",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1240721,
-            "name": "Penance",
-            "condition": "",
-            "icon": "spell_holy_penance",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10899,
-            "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
-            "icon": "spell_holy_powerwordshield",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10927,
-            "name": "Renew",
-            "condition": "Keep Renew on the tank all fight.",
-            "icon": "spell_holy_renew",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10916,
-            "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10916,
-            "name": "Flash Heal",
-            "condition": "Flash Heal on a party member about to die, as long as your mana is not far behind the fight.",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10916,
-            "name": "Flash Heal",
-            "condition": "",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10916,
-            "name": "Flash Heal",
-            "condition": "",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10916,
-            "name": "Flash Heal",
-            "condition": "",
-            "icon": "spell_holy_flashheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10960,
-            "name": "Prayer of Healing",
-            "condition": "Prayer of Healing once three of your four party members are under 85%: it heals the target and the target's whole party.",
-            "icon": "spell_holy_prayerofhealing02",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10964,
-            "name": "Greater Heal",
-            "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2060,
-            "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps most of your healing bonus for far less mana than the top rank.",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
-            "condition": "Lesser Heal when Greater Heal rank 1 would overheal: a small top-up for little mana.",
-            "icon": "spell_holy_lesserheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2060,
-            "name": "Greater Heal",
-            "condition": "",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
-            "condition": "",
-            "icon": "spell_holy_lesserheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2060,
-            "name": "Greater Heal",
-            "condition": "",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
-            "condition": "",
-            "icon": "spell_holy_lesserheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2060,
-            "name": "Greater Heal",
-            "condition": "",
-            "icon": "spell_holy_greaterheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
-            "condition": "",
-            "icon": "spell_holy_lesserheal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10964,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -22114,7 +22233,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -22177,7 +22296,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -22343,7 +22462,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -22406,7 +22525,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.",
             "icon": "spell_holy_greaterheal",
@@ -22955,7 +23074,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -23079,7 +23198,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -23203,7 +23322,7 @@
           {
             "spell_id": 2055,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -23327,7 +23446,7 @@
           {
             "spell_id": 2055,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -23451,7 +23570,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -23582,7 +23701,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -23713,7 +23832,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -23844,7 +23963,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -23975,7 +24094,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24106,7 +24225,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24193,7 +24312,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6078,
+            "spell_id": 6076,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -24312,9 +24431,79 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24401,7 +24590,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10927,
+            "spell_id": 6076,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -24520,9 +24709,79 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24592,7 +24851,7 @@
         ]
       },
       {
-        "level": 46,
+        "level": 45,
         "lines": [
           {
             "spell_id": 1277326,
@@ -24609,7 +24868,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10927,
+            "spell_id": 6077,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -24658,70 +24917,140 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
@@ -24730,7 +25059,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -24817,7 +25146,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10927,
+            "spell_id": 6077,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -24866,70 +25195,140 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10963,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
@@ -24938,7 +25337,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -25025,7 +25424,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10927,
+            "spell_id": 6078,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -25074,70 +25473,140 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
@@ -25146,7 +25615,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -25233,7 +25702,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10927,
+            "spell_id": 6078,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -25282,70 +25751,140 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal is the filler at the top rank while your mana keeps pace with the fight.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10964,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
             "name": "Greater Heal",
             "condition": "",
             "icon": "spell_holy_greaterheal",
@@ -25354,7 +25893,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -25441,7 +25980,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10927,
+            "spell_id": 6078,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -25560,9 +26099,79 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -25768,9 +26377,79 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 when Greater Heal would overheal or your mana runs short: cheaper, though it keeps only part of your bonus at 60.",
+            "condition": "Heal rank 4 before you learn Greater Heal at 40, or when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -26512,10 +27191,9 @@
             "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
+              "dwarf": 8104,
               "human": 8104,
-              "night-elf": 8103,
+              "night-elf": 8104,
               "troll": 8104,
               "undead": 8104
             }
@@ -26526,10 +27204,9 @@
             "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
+              "dwarf": 8104,
               "human": 8104,
-              "night-elf": 8103,
+              "night-elf": 8104,
               "troll": 8104,
               "undead": 8104
             }
@@ -26594,10 +27271,9 @@
             "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
+              "dwarf": 8104,
               "human": 8104,
-              "night-elf": 8103,
+              "night-elf": 8104,
               "troll": 8104,
               "undead": 8104
             }
@@ -26608,10 +27284,9 @@
             "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
+              "dwarf": 8104,
               "human": 8104,
-              "night-elf": 8103,
+              "night-elf": 8104,
               "troll": 8104,
               "undead": 8104
             }
@@ -26657,7 +27332,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2944,
+            "spell_id": 19276,
             "name": "Devouring Plague",
             "condition": "Devouring Plague every time its 24 second cooldown is up: every priest has it in Forever, its ticks crit, and it heals you.",
             "icon": "spell_shadow_devouringplague",
@@ -26675,28 +27350,14 @@
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
-              "human": 8104,
-              "night-elf": 8103,
-              "troll": 8104,
-              "undead": 8104
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 8106,
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
-              "human": 8104,
-              "night-elf": 8103,
-              "troll": 8104,
-              "undead": 8104
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1309633,
@@ -26739,7 +27400,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2944,
+            "spell_id": 19276,
             "name": "Devouring Plague",
             "condition": "Devouring Plague every time its 24 second cooldown is up: every priest has it in Forever, its ticks crit, and it heals you.",
             "icon": "spell_shadow_devouringplague",
@@ -26757,28 +27418,14 @@
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
-              "human": 8104,
-              "night-elf": 8103,
-              "troll": 8104,
-              "undead": 8104
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 10945,
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
-              "human": 8104,
-              "night-elf": 8103,
-              "troll": 8104,
-              "undead": 8104
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1309633,
@@ -26821,7 +27468,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2944,
+            "spell_id": 19276,
             "name": "Devouring Plague",
             "condition": "Devouring Plague every time its 24 second cooldown is up: every priest has it in Forever, its ticks crit, and it heals you.",
             "icon": "spell_shadow_devouringplague",
@@ -26839,28 +27486,14 @@
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
-              "human": 8104,
-              "night-elf": 8103,
-              "troll": 8104,
-              "undead": 8104
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 10945,
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8103,
-              "gnome": 8104,
-              "human": 8104,
-              "night-elf": 8103,
-              "troll": 8104,
-              "undead": 8104
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1309635,
@@ -26903,18 +27536,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19278,
+            "spell_id": 19276,
             "name": "Devouring Plague",
             "condition": "Devouring Plague every time its 24 second cooldown is up: every priest has it in Forever, its ticks crit, and it heals you.",
             "icon": "spell_shadow_devouringplague",
-            "race_spell_ids": {
-              "dwarf": 2944,
-              "gnome": 2944,
-              "human": 2944,
-              "night-elf": 19276,
-              "troll": 2944,
-              "undead": 2944
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 14751,
@@ -26938,17 +27564,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1309635,
+            "spell_id": 1309633,
             "name": "Shadow Word: Death",
             "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
             "icon": "spell_shadow_demonicfortitude",
-            "race_spell_ids": {
-              "dwarf": 1309633,
-              "gnome": 1309633,
-              "night-elf": 1309633,
-              "troll": 1309633,
-              "undead": 1309633
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 17313,
@@ -27012,91 +27632,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1309635,
+            "spell_id": 1309633,
             "name": "Shadow Word: Death",
             "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
             "icon": "spell_shadow_demonicfortitude",
-            "race_spell_ids": {
-              "dwarf": 1309633,
-              "gnome": 1309633,
-              "night-elf": 1309633,
-              "troll": 1309633,
-              "undead": 1309633
-            }
-          },
-          {
-            "spell_id": 17314,
-            "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
-            "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 56,
-        "lines": [
-          {
-            "spell_id": 1277327,
-            "name": "Dark Sacrifice",
-            "condition": "Dark Sacrifice (Undead) when mana is below a fifth and running behind the fight: it trades your own health for mana over fifteen seconds and adds your Spirit to it, and its ten minute cooldown makes it a once-a-fight cast.",
-            "icon": "spell_holy_powerinfusion_shadow",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10893,
-            "name": "Shadow Word: Pain",
-            "condition": "Always up; stop refreshing it in the closing seconds of a fight.",
-            "icon": "spell_shadow_shadowwordpain",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 15286,
-            "name": "Vampiric Embrace",
-            "condition": "Vampiric Embrace on the boss whenever it is down.",
-            "icon": "spell_shadow_unsummonbuilding",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 19276,
-            "name": "Devouring Plague",
-            "condition": "Devouring Plague every time its 24 second cooldown is up: every priest has it in Forever, its ticks crit, and it heals you.",
-            "icon": "spell_shadow_devouringplague",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14751,
-            "name": "Inner Focus",
-            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
-            "icon": "spell_frost_windwalkon",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10946,
-            "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
-            "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 10946,
-            "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
-            "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1309636,
-            "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
-            "icon": "spell_shadow_demonicfortitude",
-            "race_spell_ids": {
-              "dwarf": 1309633,
-              "gnome": 1309633,
-              "night-elf": 1309633,
-              "troll": 1309633,
-              "undead": 1309633
-            }
           },
           {
             "spell_id": 17314,
@@ -27160,17 +27700,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1309636,
+            "spell_id": 1309633,
             "name": "Shadow Word: Death",
             "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
             "icon": "spell_shadow_demonicfortitude",
-            "race_spell_ids": {
-              "dwarf": 1309633,
-              "gnome": 1309633,
-              "night-elf": 1309633,
-              "troll": 1309633,
-              "undead": 1309633
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 17314,
@@ -29449,7 +29983,7 @@
           {
             "spell_id": 703,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -29496,7 +30030,7 @@
           {
             "spell_id": 703,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
@@ -29543,14 +30077,14 @@
           {
             "spell_id": 703,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1943,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -29597,14 +30131,14 @@
           {
             "spell_id": 8631,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1943,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -29658,14 +30192,14 @@
           {
             "spell_id": 8631,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1943,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -29719,14 +30253,14 @@
           {
             "spell_id": 8631,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8639,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -29780,14 +30314,14 @@
           {
             "spell_id": 8632,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8639,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -29808,7 +30342,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -29848,14 +30382,14 @@
           {
             "spell_id": 8632,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8639,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -29876,7 +30410,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -29916,14 +30450,14 @@
           {
             "spell_id": 8632,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8640,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -29944,7 +30478,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -29984,14 +30518,14 @@
           {
             "spell_id": 8633,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8640,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
@@ -30012,7 +30546,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30052,21 +30586,21 @@
           {
             "spell_id": 8633,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8640,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1316709,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30087,7 +30621,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30127,21 +30661,21 @@
           {
             "spell_id": 8633,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8640,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1316709,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30162,7 +30696,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30202,21 +30736,21 @@
           {
             "spell_id": 8633,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11273,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1316709,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30237,7 +30771,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30277,21 +30811,21 @@
           {
             "spell_id": 11289,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11273,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1316709,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30312,7 +30846,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30352,21 +30886,21 @@
           {
             "spell_id": 11289,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11273,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1325756,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30387,7 +30921,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30427,21 +30961,21 @@
           {
             "spell_id": 11289,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11273,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1325756,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30462,7 +30996,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30502,21 +31036,21 @@
           {
             "spell_id": 11289,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11274,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1325756,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30537,7 +31071,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30577,21 +31111,21 @@
           {
             "spell_id": 11290,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11274,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1325756,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30612,7 +31146,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30652,21 +31186,21 @@
           {
             "spell_id": 11290,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11274,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1325757,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30687,7 +31221,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -30727,21 +31261,21 @@
           {
             "spell_id": 11290,
             "name": "Garrote",
-            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "condition": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
             "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11275,
             "name": "Rupture",
-            "condition": "Rupture at four or more combo points whenever it is not ticking.",
+            "condition": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: Hemorrhage and Serrated Blades both feed it, which makes it the main finisher.",
             "icon": "ability_rogue_rupture",
             "race_spell_ids": {}
           },
           {
             "spell_id": 1325758,
             "name": "Death Mark",
-            "condition": "Death Mark at four or more combo points while Rupture is ticking: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
+            "condition": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.",
             "icon": "ability_creature_cursed_02",
             "race_spell_ids": {}
           },
@@ -30762,7 +31296,7 @@
           {
             "spell_id": 16511,
             "name": "Hemorrhage",
-            "condition": "Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit 15% harder.",
+            "condition": "Hemorrhage, your builder for every global nothing above takes, and it keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder.",
             "icon": "spell_shadow_lifedrain",
             "race_spell_ids": {}
           },
@@ -32245,7 +32779,7 @@
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32285,7 +32819,7 @@
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32325,7 +32859,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32365,7 +32899,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32405,7 +32939,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32445,7 +32979,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32485,7 +33019,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32525,7 +33059,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32565,7 +33099,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32605,7 +33139,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32645,7 +33179,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32692,7 +33226,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32746,7 +33280,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32800,7 +33334,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32854,7 +33388,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32908,7 +33442,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -32962,7 +33496,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -33016,7 +33550,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -33070,7 +33604,7 @@
           {
             "spell_id": 10414,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you are above half mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -141805,8 +142339,8 @@
         },
         "50": {
           "reference": "ranged_attack_power",
-          "dps": 0.0942,
-          "weapon_dps": 1.1241
+          "dps": 0.0946,
+          "weapon_dps": 1.1273
         },
         "60": {
           "reference": "ranged_attack_power",
@@ -141982,9 +142516,9 @@
     },
     "paladin-retribution": {
       "reference": "attack_power",
-      "dps": 0.1917,
+      "dps": 0.192,
       "healing": false,
-      "weapon_dps": 2.7104,
+      "weapon_dps": 2.7141,
       "bands": {
         "20": {
           "reference": "attack_power",
@@ -142009,7 +142543,7 @@
         "60": {
           "reference": "attack_power",
           "dps": 0.0611,
-          "weapon_dps": 0.8557
+          "weapon_dps": 0.8559
         }
       }
     },
@@ -142031,12 +142565,12 @@
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.0967,
+          "dps": 0.1216,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.0549,
+          "dps": 0.0587,
           "weapon_dps": 0.0
         },
         "60": {
@@ -142048,7 +142582,7 @@
     },
     "priest-holy": {
       "reference": "healing_power",
-      "dps": 0.3066,
+      "dps": 0.3727,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
@@ -142064,17 +142598,17 @@
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.161,
+          "dps": 0.1662,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.1668,
+          "dps": 0.2189,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.247,
+          "dps": 0.2492,
           "weapon_dps": 0.0
         }
       }
@@ -142097,7 +142631,7 @@
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.2483,
+          "dps": 0.2251,
           "weapon_dps": 0.0
         },
         "50": {
@@ -142927,6 +143461,8 @@
     "6066": 6,
     "6074": 8,
     "6075": 8,
+    "6076": 8,
+    "6077": 8,
     "6078": 8,
     "6190": 14,
     "6192": 1,
@@ -143145,8 +143681,6 @@
     "10947": 10,
     "10960": 30,
     "10961": 30,
-    "10963": 40,
-    "10964": 40,
     "10965": 40,
     "11129": 40,
     "11273": 20,
@@ -143289,7 +143823,6 @@
     "18931": 25,
     "18932": 25,
     "19276": 20,
-    "19278": 20,
     "19280": 20,
     "19434": 20,
     "19574": 40,
@@ -143307,7 +143840,6 @@
     "20290": 1,
     "20291": 1,
     "20292": 1,
-    "20293": 1,
     "20375": 20,
     "20419": 10,
     "20421": 10,
@@ -143319,7 +143851,6 @@
     "20661": 24,
     "20662": 24,
     "20902": 20,
-    "20903": 20,
     "20904": 20,
     "20909": 30,
     "20910": 30,

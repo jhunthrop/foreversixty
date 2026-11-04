@@ -103,8 +103,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 005005000010000000-00000000000000000-00000000000000000 | main_hand:890 | 18.3 | 5 | spell:139=20.0, spell:2053=13.1, spell:2061=9.9, spell:600=2.1, other:mana_gain=1.9 | - |
 | 30 | 005005031330001000-00000000000000000-00000000000000000 | main_hand:249392 | 43.8 | 8 | spell:2053=18.7, spell:6074=18.2, spell:402174=10.2, spell:9472=4.7, other:mana_gain=4.4 | - |
 | 38 | 005005031330011430-00000000000000000-00000000000000000 | main_hand:873 | 56.3 | 8 | spell:2053=20.6, spell:6075=14.6, spell:402174=11.7, other:mana_gain=4.8, spell:9474=4.0 | - |
-| 40 | 005005031330011430-20000000000000000-00000000000000000 | main_hand:873 | 67.8 | 10 | spell:2053=34.2, spell:1240720=7.3, spell:6078=6.6, other:mana_gain=5.0, spell:2060=3.1 | - |
-| 50 | 005005031330011430-33501000000000000-00000000000000000 | main_hand:812 | 91.8 | 10 | spell:2053=46.3, spell:1240721=5.4, other:mana_gain=5.0, spell:10963=4.5, spell:10927=4.4 | - |
+| 40 | 005005031330011430-20000000000000000-00000000000000000 | main_hand:873 | 67.9 | 10 | spell:2053=34.0, spell:1240720=7.8, spell:6076=7.1, other:mana_gain=4.8, spell:2060=4.4 | - |
+| 50 | 005005031330011430-33501000000000000-00000000000000000 | main_hand:812 | 91.5 | 10 | spell:2053=46.0, spell:1240721=5.6, other:mana_gain=5.0, spell:2060=4.4, spell:10927=4.4 | - |
 | 60 | 005005031330011430-33505003030000000-00000000000000000 | main_hand:19355 | 113.1 | 11 | spell:2053=65.7, spell:10917=6.4, other:mana_gain=4.3, spell:1316995=3.9, spell:10927=2.9 | - |
 
 ## Learned but unused (informational)
@@ -189,4 +189,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- priest-discipline level=50 kind=zero_casts spell="Greater Heal" id=2060 authored=2060
+None.
