@@ -21,7 +21,7 @@ statPriority:
     Attack power,
   ]
 description: 'Holding threat with Righteous Fury, Holy Shield and Holy Strike, taunting with Judgement of Fury, and keeping your mana.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -107,7 +107,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 ## Stat priority
 
-Defense comes first: it takes hits away and lowers the boss's chance to crit you. Stamina is next, because health multiplies everything else on this list. Dodge, Agility, block value and Parry follow: Dodge and Parry take hits away, Agility is dodge and armor at once, and block value makes every block take more off the hit. More block chance is no gain at 60, but keep the shield: your blocks still power Holy Shield's damage and Shield Specialization's mana. Armor takes a slice off every physical hit, so it never goes to zero. Hit sits low once Precision's 3% is in.
+Defense takes hits away and lowers the boss's chance to crit you. Stamina is your health bar, and health is what gives every other stat on this list time to work. Dodge and Parry take hits away, Agility is dodge and armor at once, and block value makes every block take more off the hit. More block chance adds nothing you can measure at 60, but keep the shield: your blocks still power Holy Shield's damage and Shield Specialization's mana. Armor takes a slice off every physical hit. Hit matters up to the cap and nothing past it, and Precision already gives you 3% of it. The table above has the order.
 
 ## Best in slot
 
@@ -129,7 +129,7 @@ Devotion Aura comes at 1, Judgement at 4, Holy Strike at 6 and Hammer of Justice
 
 At 12, the class quest from your trainer teaches Redemption.
 
-If you level as Protection, your first point at 10 is Divine Intellect for 2% Intellect. Redoubt takes 11 to 15: hits on you can give 30% more block chance for 10 seconds or 5 blocks. Precision takes 16 to 18 for 3% hit, and the first point of Sacred Duty at 19 takes 30 seconds off Divine Protection.
+Most tanks level as Retribution and pick these up when they respec; the Retribution guide has those points. If you level as Protection, your first point at 10 is Divine Intellect for 2% Intellect. Redoubt takes 11 to 15: hits on you can give 30% more block chance for 10 seconds or 5 blocks. Precision takes 16 to 18 for 3% hit, and the first point of Sacred Duty at 19 takes 30 seconds off Divine Protection.
 
 Take quest rewards over vendor gear. To tank, pair a one-hander with a shield as soon as you have both, since Seal of Fury's absorb needs the shield. Paladins cannot use wands. You wear mail until plate at 40.
 

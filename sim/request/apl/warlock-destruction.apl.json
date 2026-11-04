@@ -19,7 +19,7 @@
   ],
   "priorityList": [
     {
-      "notes": "Corruption whenever it has fallen off. Instant with Improved Corruption, and cheap.",
+      "notes": "Corruption whenever it has fallen off. Instant with Improved Corruption, and 18 seconds of damage from one global.",
       "action": {
         "condition": {
           "not": {

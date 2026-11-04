@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:5510331300001351/055/053002:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Spell power, Hit, Nature power, Intellect, Critical strike, Spell haste, Spell penetration]
 description: 'Elemental Shaman in Forever: the raid build, Flame Shock up and Lightning Bolt behind Lightning Mastery, bolt ranks for mana, totems, stats, races and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -69,7 +69,7 @@ Elemental Warding (3 points) cuts the Fire, Frost and Nature damage you take by 
 
 Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt so it lands just after the tank's first hit; on a pull you do not trust, wait for the tank instead. Then Lightning Mastery with your cooldowns, Flame Shock, Searing Totem, and Lightning Bolt for the rest of the fight.
 
-**Flame Shock stays up.** Forever's Flame Shock hits hard up front and ticks hard after, and with Call of Flame one global keeps it burning for 21 seconds. Reapply it the moment it falls off, ahead of everything but your cooldowns. Earth Shock stays on your bar for interrupts: it shares the shock cooldown, and that cooldown belongs to Flame Shock.
+**Flame Shock stays up.** Forever's Flame Shock hits hard up front and ticks hard after, and with Call of Flame one global keeps it burning for 21 seconds. Reapply it the moment it falls off, ahead of everything but your cooldowns. Earth Shock stays on your bar for interrupts. It costs about twice a Lightning Bolt's mana and shares the shock cooldown with Flame Shock, so never let it delay a Flame Shock.
 
 **Lightning Mastery goes with everything else.** Press it on the pull with your trinkets and Blood Fury, and again every 3 minutes; Blood Fury comes back sooner, so use it whenever it is ready. For its 15 seconds every Lightning Bolt is a 1.5 second cast, so you fit more bolts into the same window your trinkets are up. A Troll saves Berserking for after it ends.
 
@@ -85,7 +85,7 @@ Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt
 
 ## Stat priority
 
-Hit comes first while you are under the cap: a bolt that misses does nothing. Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, and your gear has to find the rest; once it reaches the cap, more hit adds nothing. Spell power comes next, since it adds to every damage spell you cast. Nature power adds to Lightning Bolt, Chain Lightning and Earth Shock, which is nearly everything you cast, but Flame Shock and Searing Totem are fire, so a point of it is worth less than a point of plain spell power. Crit feeds Elemental Fury's doubled bonus, on top of the 5% Call of Thunder already gives your bolts. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
+Hit matters up to the cap and adds nothing past it: a bolt that misses does nothing. Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, and your gear has to find the rest. Spell power adds to every damage spell you cast. Nature power adds to Lightning Bolt, Chain Lightning and Earth Shock, which is nearly everything you cast, but Flame Shock and Searing Totem are fire, and it does nothing for them, where plain spell power covers both. Crit feeds Elemental Fury's doubled bonus, on top of the 5% Call of Thunder already gives your bolts. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. The table above gives the order for your level and gear. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
 
 ## Best in slot
 
@@ -97,7 +97,7 @@ Your weapon imbues only proc on melee swings, so an Elemental's weapon carries B
 
 ## Races
 
-The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit is the racial that matters for Elemental, since hit is your first stat until your gear reaches the cap. Stoneform's physical damage cut is a nice extra on trash and in PvP.
+The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit is the racial that matters for Elemental, since every point of hit counts until your gear reaches the cap. Stoneform's physical damage cut is a nice extra on trash and in PvP.
 
 On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% for 15 seconds every 2 minutes. Press it with Lightning Mastery on the pull and on its own cooldown after that. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes outside Lightning Mastery: inside it your bolts are already a 1.5 second cast, and casting speed never shortens the 1.5 second global cooldown. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
 
@@ -109,8 +109,8 @@ Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and 
 
 ### Levels 1 to 19
 
-Pull with Lightning Bolt, add Earth Shock from 4 and finish in melee to save mana; a shaman has no wand. Do the Call of Earth class quest at 4 and Call of Fire at 10: they give the Earth Totem every Earth totem needs and the Fire Totem every Fire totem needs, carried in your bags, and without them those totems do not cast. Searing Totem goes down on every pull from 10. Flame Shock also comes at 10, and Fire Nova at 12 bursts around that Searing Totem when two mobs reach you. Your first talent points go to Convection from 10 to 14, 2% off the mana cost of your shocks and Lightning Bolt per point, then Concussion from 15 to 19, 1% more Lightning Bolt and Earth Shock damage per point. Wear leather or cloth with Intellect, take quest rewards over vendor gear, and replace your starter weapon with the first quest staff or mace that carries spell damage.
+Enhancement levels faster: it fights in melee, lives through bad pulls and spends less time drinking. If you level as Elemental anyway, pull with Lightning Bolt, add Earth Shock from 4 and finish in melee to save mana; a shaman has no wand. Do the Call of Earth class quest at 4 and Call of Fire at 10: they give the Earth Totem every Earth totem needs and the Fire Totem every Fire totem needs, carried in your bags, and without them those totems do not cast. Searing Totem goes down on every pull from 10. Flame Shock also comes at 10, and Fire Nova at 12 bursts around that Searing Totem when two mobs reach you. Your first talent points go to Convection from 10 to 14, 2% off the mana cost of your shocks and Lightning Bolt per point, then Concussion from 15 to 19, 1% more Lightning Bolt and Earth Shock damage per point. Wear leather or cloth with Intellect, take quest rewards over vendor gear, and replace your starter weapon with the first quest staff or mace that carries spell damage.
 
 ### Levels 20 to 60
 
-Enhancement levels faster: it fights in melee, lives through bad pulls and spends less time drinking. If you want to level as Elemental anyway, Lightning Bolt and Flame Shock carry you the whole way, Chain Lightning from 32 handles pairs, and Lightning Mastery at 40 is a 15 second burst for the pull that goes wrong. Cast the top rank of Lightning Bolt when you drink after every pull. Drop a rank or two on a long fight where your mana, not the mob, runs out first. Learn Ghost Wolf at 20: its 3 second cast is slow, but the 40% speed is how a shaman travels until a mount. Shamans wear leather until 40 and mail from 40, and Chain Heal comes at 40 as well.
+From 20, Lightning Bolt and Flame Shock carry you the whole way, Chain Lightning from 32 handles pairs, and Lightning Mastery at 40 is a 15 second burst for the pull that goes wrong. Cast the top rank of Lightning Bolt when you drink after every pull. Drop a rank or two on a long fight where your mana, not the mob, runs out first. Learn Ghost Wolf at 20: its 3 second cast is slow, but the 40% speed is how a shaman travels until a mount. Shamans wear leather until 40 and mail from 40, and Chain Heal comes at 40 as well.

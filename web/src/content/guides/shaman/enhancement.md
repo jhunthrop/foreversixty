@@ -8,7 +8,7 @@ raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:0533001/053030310051202051/053:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and Windfury, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -39,7 +39,7 @@ Enhancement is the shaman's melee spec: one weapon with Windfury on it, Stormstr
 ### Weaknesses
 
 - No dual wield: Forever's shamans fight with one weapon, so every point of Windfury rides on it
-- Totems stay where you drop them, and bosses move
+- Totems do not follow you: when the boss moves, Totemic Call brings them back, for a global and a quarter of your base mana
 - Shocks and totems make mana a real limit without raid buffs
 
 ### In a raid
@@ -88,7 +88,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Stat priority
 
-Strength comes first: it is attack power twice over. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Plain attack power and spell power come after them. Hit covers your swings, your Stormstrike and your shocks at once, and it matters up to the cap; past the cap it is wasted.
+Strength is attack power twice over. Intellect does more for you than for any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Plain attack power adds to every swing, and plain spell power to your shocks. Hit covers your swings, your Stormstrike and your shocks at once, and it matters up to the cap; past the cap it is wasted. The table above gives the order for your level and gear.
 
 ## Best in slot
 
@@ -106,7 +106,7 @@ On the Horde, Orc is the pick: Blood Fury is 10% attack power for 15 seconds eve
 
 ## Professions
 
-Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain are Enchanting crafts that bind on pickup, and your raid set wears them. Every other craft in your set binds when equipped, so buy them or ask a guildmate; your second profession can be a gathering one that pays for them.
+Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain are Enchanting trinkets that bind on pickup, so nobody can make them for you. Every other craft in your set binds when equipped, so buy them or ask a guildmate; your second profession can be a gathering one that pays for them.
 
 ## Leveling
 

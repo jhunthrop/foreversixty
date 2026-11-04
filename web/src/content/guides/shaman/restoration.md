@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:shaman:dwarf:0/055/5530003315513151:'
 recommendedRaces: [dwarf, orc]
 statPriority: [MP5, Intellect, Healing power, Spirit, Critical strike]
 description: 'Restoration Shaman in Forever: Riptide into Chain Heal, Water Shield and Mana Tide for mana, which totems to drop, Chain Heal ranks, stats, races and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -35,7 +35,7 @@ Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal throug
 ### Weaknesses
 
 - Chain Heal only jumps to people standing close to its target, so it does little when the raid is spread out
-- Your Water totems only reach your own party, and every totem stays where you drop it
+- Your Water totems only reach your own party, and they stay put until you spend Totemic Call to bring them to you
 - Without raid gear and buffs your mana does not last a long fight
 
 ### In a raid
@@ -89,7 +89,7 @@ Ancestral Healing is three points for 25% more armor on your target for 15 secon
 
 ## Stat priority
 
-Healing power comes first, from any source, including items that add damage and healing; damage-only spell power and Nature power do nothing for a heal. Mp5 keeps you casting through a long fight. Intellect is your mana pool, and Water Shield returns a share of that pool with every globe. Crit fires Water Shield on top of the bigger heal. Spirit comes last: it only adds mana regeneration, and Mindfulness keeps half of that running while you heal.
+Healing power makes every heal bigger, from any source, including items that add damage and healing; damage-only spell power and Nature power do nothing for a heal. Mp5 keeps you casting through a long fight. Intellect is your mana pool, and Water Shield returns a share of that pool with every globe. Crit fires Water Shield on top of the bigger heal. Spirit only adds mana regeneration, and Mindfulness keeps half of that running while you heal. The table above gives the order for your level and gear.
 
 ## Best in slot
 
@@ -101,7 +101,7 @@ Brilliant Mana Oil on your weapon: mp5 and healing in one. Use your Major Mana P
 
 ## Races
 
-The Dwarf shaman is new in Forever and is the only Alliance shaman. Stoneform's physical damage cut keeps you alive through a cleave or a stray add, which is all a healer asks of a racial.
+The Dwarf shaman is new in Forever and is the only Alliance shaman. Stoneform cuts physical damage by 10% and clears poisons, diseases and bleeds, which keeps you alive through a cleave or a stray add.
 
 On the Horde, Orc is the healing pick: Blood Fury increases attack power and spell power by 10% for 15 seconds every 2 minutes, and its spell power covers your heals. Tauren's Endurance, 5% more health, is the safer pick when you are the one taking the damage. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, comes after them. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on.
 
@@ -117,4 +117,4 @@ You quest like any shaman: Lightning Bolt to pull, Earth Shock from 4, Flame Sho
 
 ### Levels 20 to 60
 
-Water Shield is in at 20, Tidal Focus is full at 22 and Mindfulness at 23, and Mana Tide Totem comes at 25, the first level the fourth row opens. The talent teaches its first rank; train the others at 38, 48 and 58, each one a big step up. Ancestral Healing and Healing Focus fill out the rest by 30. You can heal any dungeon the day you walk in. Lesser Healing Wave and Healing Stream Totem come at 20; do the Call of Water quest the same day, since every Water totem needs the Water Totem in your bags. Chain Heal comes at 40. Riptide, the bottom of the tree, is in by 50. Train its second rank the same day and its third at 60; the talent only teaches the first. Your last ten points, from 51, go to Thundering Strikes and Ancestral Knowledge.
+Lesser Healing Wave and Healing Stream Totem come at 20; do the Call of Water quest the same day, since every Water totem needs the Water Totem in your bags. Water Shield is in at 20, Tidal Focus is full at 22 and Mindfulness at 23, and Mana Tide Totem comes at 25, the first level the fourth row opens. The talent teaches its first rank; train the others at 38, 48 and 58, each one a big step up. Ancestral Healing and Healing Focus fill out the rest by 30, and you can heal any dungeon the day you walk in. Chain Heal comes at 40. Riptide, the bottom of the tree, is in by 50. Train its second rank the same day and its third at 60; the talent only teaches the first. Your last ten points, from 51, go to Thundering Strikes and Ancestral Knowledge.

@@ -9,7 +9,7 @@ recommendedRaces: [human, orc]
 statPriority:
   [Spell power, Hit, Fire power, Critical strike, Shadow power, Intellect, Spell haste, Spell penetration]
 description: 'How to play Destruction in Forever: Immolate, Conflagrate, Shadowburn and Incinerate under Shadow and Flame, the opener, banes, shards, races and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -70,7 +70,7 @@ Opener: when your tank pulls on a timer and opens hard, start Immolate 1.5 secon
 
 Priority after that:
 
-1. Corruption whenever it has fallen off. It is instant and cheap.
+1. Corruption whenever it has fallen off. It is instant and ticks for 18 seconds off one global.
 2. Bane of Doom the moment the last one fires. In the last minute of the fight a new Doom would never land, so use Bane of Agony instead.
 3. Immolate when about 3 seconds are left on it. It lands a moment before the old one ends, so it never drops.
 4. Conflagrate on cooldown while Immolate is up.
@@ -95,7 +95,7 @@ Adds and AoE: on two targets, spend your casts on the one that must die and put 
 
 ## Stat priority
 
-Hit comes first until the cap: Suppression already gives you 5% of it, and a resisted Incinerate is a whole cast lost. Once your gear reaches the cap, more hit adds nothing and spell power leads. Spell power is next. Fire power is the better school stat, since Incinerate, Immolate and Conflagrate are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need. Spirit only matters through Life Tap.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Incinerate is a whole cast lost. Spell power feeds every spell you cast. Fire power feeds Incinerate, Immolate and Conflagrate, which are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need. Spirit only matters through Life Tap. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -103,7 +103,7 @@ The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 
-Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Firestone costs a shard and is the fallback. Its 2% crit lands for double through Ruin and its Fire damage feeds Incinerate, Immolate and Conflagrate, while a Spellstone's 2% haste is worth less to you and its bonus damage only reaches your Shadow spells.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Firestone costs a shard and is the fallback. Its 2% crit lands for double through Ruin and its Fire damage feeds Incinerate, Immolate and Conflagrate, while a Spellstone's bonus damage only reaches your Shadow spells.
 
 ## Races
 
@@ -111,7 +111,7 @@ Human and Orc are the picks. Ruthless is 1% crit on every spell, and with Ruin e
 
 ## Professions
 
-Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting adds a few strong caster pieces, and you enchant your own gear. Your best head, Spellpower Goggles Xtreme Plus, is an engineer's craft; if you cannot get a pair, the tailored Dreamweave Circlet is the next best. Alchemy is the swap when your guild expects a flask every raid night, and it keeps your Fire Power elixirs cheap.
+Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting adds a few strong caster pieces, and you enchant your own gear. Engineering goggles need Engineering to wear, so they are only yours if you train it in place of Enchanting. Alchemy is the swap when your guild expects a flask every raid night, and it keeps your Fire Power elixirs cheap.
 
 ## Leveling
 
