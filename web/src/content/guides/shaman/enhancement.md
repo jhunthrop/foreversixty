@@ -17,10 +17,10 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -63,7 +63,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Rotation and priority
 
-**Before the pull.** Put Windfury Weapon on your weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves more than 30 yards from them, stand where it is now and Totemic Call brings them to you.
+**Before the pull.** Put Windfury Weapon on your weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves away from them, aim Totemic Call where it now stands and your totems follow, up to 30 yards.
 
 **On the pull.** Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown. Then Stormstrike.
 
@@ -110,4 +110,4 @@ Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain a
 
 ## Leveling
 
-Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Stormstrike sits in the fourth row and you can press it the moment you learn it: this build fills Mental Dexterity, Elemental Weapons, Shamanistic Focus and Flurry first and takes Stormstrike at 32, with Improved Ghost Wolf right after. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.
+Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Stormstrike sits in the fourth row and you can press it the moment you learn it: this build opens with Thundering Strikes and Ancestral Knowledge, fills Mental Dexterity, Elemental Weapons, Shamanistic Focus and Flurry, and takes Stormstrike at 32, with Improved Ghost Wolf right after. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.

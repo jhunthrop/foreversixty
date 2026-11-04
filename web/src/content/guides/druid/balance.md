@@ -32,13 +32,13 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights, data/curated/stat-weights.json'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty rotation data, data/curated/apl/druid-balance.json'
+  - label: 'Forever Sixty, rotation'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json'
+  - label: 'Forever Sixty, raid loot tables'
     url: https://foreversixty.gg/sources
     kind: site
 ---
@@ -77,7 +77,7 @@ The leveling build takes Heart of the Wild and Reflection, because mana is what 
 - **Moonglow** (3 points): your damage spells cost 25% less.
 - **Moonkin Form** (1 point): the capstone and the crit aura.
 
-From Restoration, Nature's Focus saves your Starfire from pushback 70% of the time when you take damage, and Subtlety cuts the threat of your Nature and Arcane spells. Both matter on a boss that hits the raid.
+From Restoration, Nature's Focus saves your Starfire from pushback 70% of the time when you take damage, which matters on a boss that hits the raid, and Subtlety cuts the threat of your Nature and Arcane spells, which keeps your crit streaks off the tank's threat.
 
 ## Rotation and priority
 
@@ -97,7 +97,7 @@ From Restoration, Nature's Focus saves your Starfire from pushback 70% of the ti
 
 **Mana.** Moonglow makes every damage spell 25% cheaper, Clearcasting procs twice as often in Moonkin Form, and Judgement of Wisdom carries the rest. If you fall behind, lean on Wrath: with Improved Wrath it costs a fraction of a Starfire's mana and takes half its cast. Innervate goes on you when you will otherwise run dry before the boss dies. On a fight you can finish without it, give it to a healer with high Spirit, because Innervate multiplies Spirit regeneration and theirs is higher than yours.
 
-**Faerie Fire.** If no feral druid has it on the boss, put yours up. It costs a global and a little mana in caster form, so only do it when no one else will.
+**Faerie Fire.** If no feral druid has it on the boss, put yours up. In Moonkin Form it is not free: it costs a global and a little mana, so only do it when no one else will.
 
 **AoE.** Hurricane has no cooldown in Forever. On a pack that will live through the channel, Hurricane is your AoE; on a pack that dies fast, Moonfire the tough ones and get back on the boss.
 
@@ -115,7 +115,7 @@ Potions work in Moonkin Form in Forever, so you never shift out to drink. On a l
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren gets more health and War Stomp. Alliance Skyborne get Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown, twice that next to a leyline. Press it when your mana starts to run low.
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren gets more health and War Stomp. Alliance Skyborne get Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are. Press it when your mana starts to run low.
 
 ## Professions
 

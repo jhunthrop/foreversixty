@@ -133,7 +133,7 @@
             }
           }
         },
-        "notes": "Soul Fire every 6 seconds while Decimation is up. Below 35% each Shadow Bolt gives you 10 seconds of 2.4 second Soul Fires that cost no shard; outside Decimation it is never worth its shard."
+        "notes": "Soul Fire every 6 seconds while Decimation is up. Below 35% each Shadow Bolt gives you 10 seconds of 2.4 second Soul Fires that cost no shard. Soul Fire is Fire, so in the raid build it does no more than the Shadow Bolt it replaces; outside Decimation it is never worth its shard."
       },
       {
         "notes": "Life Tap below 10% mana. Each tap turns health, plus a point for every point of Spirit, into mana; a Healthstone or a healer covers the health.",

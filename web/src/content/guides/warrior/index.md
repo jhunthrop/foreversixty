@@ -36,4 +36,4 @@ Warrior is the pure melee class: plate, a weapon and a rage bar that fills from 
 
 ## Races
 
-Every one of the original eight races can be a warrior, and so can the Skyborne, on either faction.
+Every one of the original eight races can be a warrior, and so can the Skyborne, a paid unlock, on either faction.

@@ -19,10 +19,10 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty rotation data, data/curated/apl/druid-feral-bear.json'
+  - label: 'Forever Sixty, rotation'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty tank fight, data/curated/tank-encounter.json'
+  - label: 'Forever Sixty, tank fight'
     url: https://foreversixty.gg/sources
     kind: site
 ---
@@ -42,7 +42,7 @@ The bear tanks on health and armor, with Dodge as its only avoidance and Lacerat
 
 - No Parry and no Block: Dodge is your only avoidance, so damage comes in spikes
 - No Shield Wall or Last Stand style button: Barkskin and Frenzied Regeneration are your cooldowns
-- Threat follows rage, so a bear that is never hit (or dodges a streak) starves
+- Threat follows rage, so a bear the boss is not hitting starves; Natural Reaction's 5 rage a dodge softens a dodge streak but does not replace the hits
 
 ### In a raid
 
@@ -98,7 +98,7 @@ Wolfshead Helm is druid-only in Forever and gives 5 more rage from Enrage (and 5
 
 ## Enchants and consumables
 
-Forever lets a druid drink in form. Mighty Rage Potion is the bear's threat potion and goes down in Dire Bear Form without breaking it. Swap to a Greater Stoneshield Potion on a fight where you die before you lose threat. An Elemental Sharpening Stone or a weightstone counts on your paw in form, so sharpen your weapon. Engineering bombs are the one thing that still knocks you out of form.
+Forever lets a druid drink in form. Mighty Rage Potion is the bear's threat potion and goes down in Dire Bear Form without breaking it. Swap to a Greater Stoneshield Potion on a fight where you die before you lose threat. An Elemental Sharpening Stone or a weightstone counts on your paw in form, so sharpen your weapon. The old Engineering bombs still do not work in form; the EZ-Thro and SAF-T ones do, and an EZ-Thro Thorium Grenade is a pack stun from Dire Bear Form.
 
 ## Races
 

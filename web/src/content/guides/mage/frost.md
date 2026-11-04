@@ -17,13 +17,13 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty stat weights, data/curated/stat-weights.json'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty rotation data, data/curated/apl/mage-frost.json'
+  - label: 'Forever Sixty, rotation'
     url: https://foreversixty.gg/sources
     kind: site
-  - label: 'Forever Sixty raid loot data, data/curated/loot/forever-raid-phases.json'
+  - label: 'Forever Sixty, raid loot tables'
     url: https://foreversixty.gg/sources
     kind: site
 ---
@@ -65,7 +65,7 @@ Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, 
 
 One build does it all at 60, in a raid or out. Frost takes 31 points to Ice Barrier, with one point each in Frostbite and Permafrost and two in Frost Warding to fill the rows, and two in **Winter's Chill**, the toll to reach the 30 points Ice Barrier asks for; each Frostbolt then has a 40% chance to add a stack for your next Cone of Cold. Twelve go into Arcane for **Arcane Concentration** (a free spell 10% of the time) and Missile Barrage. The last eight go into Fire: five ranks of **Incineration**, which adds 10% crit to Ice Lance, two of Flame Throwing for 6 more yards on Fire Blast, and one in Accelerant.
 
-If a boss lets you stand within 10 yards, more points in Winter's Chill and Improved Cone of Cold turn Cone of Cold into a real nuke. Most bosses cleave, breathe or stomp at that range, so the build stays at range. Build it in the [talent planner](/planner?class=mage).
+If a boss lets you stand within 10 yards, more points in Winter's Chill and Improved Cone of Cold turn Cone of Cold into a real nuke. Most bosses cleave, breathe or stomp at that range, so the build stays at range. [Open the planner](/planner?class=mage) to change the build.
 
 ## Rotation and priority
 
@@ -85,11 +85,11 @@ If a boss lets you stand within 10 yards, more points in Winter's Chill and Impr
 
 **Movement.** Frostbolt needs you standing still. Spend a Fingers of Frost charge on Ice Lance on the run, Blink through what you need to cross and use Fire Blast. Frost Nova and Cone of Cold are instant too, when the boss is close.
 
-Frostfire Bolt is not a Frost filler: its hit is smaller than Frostbolt's and half your Frost talents do nothing for it.
+Frostfire Bolt is not a Frost filler: it hits for less than Frostbolt, costs more, and stays a 3 second cast because Improved Frostbolt does not touch it.
 
 ## Stat priority
 
-Hit and spell power are your two best stats until the hit cap: a missed Frostbolt is a missed Fingers of Frost and Missile Barrage chance. Frost spell power is full value for everything you cast but Missiles. Frost needs less Intellect than Arcane or Fire, since it is the spec that does not run out.
+Hit and spell power are your two best stats until the hit cap: a missed Frostbolt is a missed Fingers of Frost and Missile Barrage chance. Frost spell power is full value for nearly everything you cast on a boss: only Missiles and the odd Fire Blast on the move miss out. Frost needs less Intellect than Arcane or Fire, since it is the spec that does not run out.
 
 ## Best in slot
 

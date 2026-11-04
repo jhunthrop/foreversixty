@@ -258,7 +258,7 @@
       }
     },
     {
-      "notes": "Shadow Bolt with every DoT up. It is your filler, and a Nightfall proc makes the next one instant.",
+      "notes": "Shadow Bolt with every DoT up. It is your filler.",
       "action": {
         "castSpell": {
           "spellId": {

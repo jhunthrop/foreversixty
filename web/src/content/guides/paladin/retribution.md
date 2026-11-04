@@ -14,19 +14,19 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/talents/paladin.json'
+  - label: 'Forever Sixty, paladin talents'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
-  - label: 'Forever Sixty stat weights, data/curated/specs.json'
+  - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/data/curated/specs.json
     kind: site
   - label: 'Warcraft Tavern, Classic Retribution Paladin rotation'
     url: https://www.warcrafttavern.com/wow-classic/guides/pve-retribution-paladin-rotations-cooldowns/
     kind: community
-  - label: 'Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json'
+  - label: 'Forever Sixty, raids by phase'
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/races.json'
+  - label: 'Forever Sixty, races'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---
@@ -108,7 +108,7 @@ Hit comes first until the cap: every miss is a lost swing and a lost Seal proc, 
 
 ## Races
 
-**Human** is the Alliance pick: Ruthless is 1% crit on everything, and The Human Spirit helps your regeneration while leveling. **Dwarf** trades that for Artisan's Precision, 1% hit, and Stoneform for a hard-hitting pull. **Undead** is new to the class in Forever and the Horde's only paladin. Touch of the Grave can drain a little health from the target, at most once every 15 seconds. Will of the Forsaken breaks a fear, but no longer makes you immune to the next one, so use it after the fear lands. Cannibalize restores mana as well as health, which cuts your drinking while leveling.
+**Human** is the Alliance pick. Ruthless is 1% crit on everything, The Human Spirit's 10% Spirit keeps your mana up while leveling and in dungeons, and Will to Survive breaks a stun. **Dwarf** comes out even in a raid, where Artisan's Precision, 1% hit, is worth as much as Ruthless, and Stoneform takes 10% off physical damage for 8 seconds on a hard pull, but it falls behind everywhere else. **Undead** is new to the class in Forever and the Horde's only paladin. Touch of the Grave can drain a little health from the target, at most once every 15 seconds. Will of the Forsaken breaks a fear, but no longer makes you immune to the next one, so use it after the fear lands. Cannibalize restores mana as well as health, which cuts your drinking while leveling.
 
 ## Professions
 

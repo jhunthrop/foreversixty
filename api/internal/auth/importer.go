@@ -30,6 +30,9 @@ type ImportSummary struct {
 	// (profile, guild, gear, talents) before its budget ran out. Their rows
 	// are already listed; runImport continues them in the background.
 	Pending int
+	// RateLimited is true when Battle.net answered 429 and the run stopped. runImport
+	// does not continue such a run: the nightly refresh enriches the pending rows.
+	RateLimited bool
 }
 
 // Importer runs the Battle.net character/guild import after a successful

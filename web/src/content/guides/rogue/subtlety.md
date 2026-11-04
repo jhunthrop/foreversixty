@@ -114,4 +114,4 @@ Night Elf on Alliance and Troll on Horde: Elune's Light is 10% crit for 15 secon
 
 ## Leveling
 
-Combat levels faster with a sword; respec at 60. If you level Subtlety, this build takes Master of Deception, Opportunity and Camouflage first, Hemorrhage and Ghostly Strike at 30, and Boot Knife and Death Mark at 40: those early talents make you safe, not fast. Shank comes at 24 for every rogue: press it on cooldown. Leveling Subtlety, open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.
+Combat levels faster with a sword; respec at 60. If you level Subtlety, this build opens with Master of Deception and Opportunity, then Premeditation at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way; Opportunity is what makes your openers hit. Shank comes at 24 for every rogue: press it on cooldown. Leveling Subtlety, open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.
