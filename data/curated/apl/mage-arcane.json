@@ -103,7 +103,7 @@
         }
       },
       {
-        "notes": "Presence of Mind on cooldown, with Arcane Power. Your next spell is instant: spend it on Pyroblast, your longest cast, or on Frostbolt before you have the Fire points. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
+        "notes": "Presence of Mind on cooldown, with Arcane Power. Your next spell is instant: spend it on Pyroblast, your longest cast, or on Frostbolt with the leveling build. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
         "action": {
           "condition": {
             "cmp": {
@@ -164,7 +164,7 @@
         }
       },
       {
-        "notes": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
+        "notes": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
         "action": {
           "condition": {
             "and": {
