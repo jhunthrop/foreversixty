@@ -163,7 +163,8 @@
           {
             "from_level": 40,
             "to_level": 49,
-            "rank": 1
+            "rank": 2,
+            "note": "Sim-accuracy round 16 (low-rank penalty keyed on MaxLevel + 12, E 18815822c): at band 40 bare, effective HPS, rank 2 beats rank 1 by +2.5/+2.3% alliance and +0.85/+0.85% horde at seeds 1/50001; ranks 3 to 6 and rank 1 lose."
           }
         ]
       },
@@ -454,45 +455,49 @@
     "shaman-elemental": [
       {
         "spell": "Lightning Bolt",
-        "authored": 15207,
+        "authored": 15208,
+        "lines": [
+          8
+        ],
+        "prepull": [
+          1
+        ],
         "bands": [
           {
             "from_level": 30,
-            "to_level": 39,
+            "to_level": 33,
             "rank": 3
           },
           {
-            "from_level": 40,
-            "to_level": 49,
+            "from_level": 34,
+            "to_level": 38,
             "rank": 4
           },
           {
-            "from_level": 50,
-            "to_level": 59,
+            "from_level": 39,
+            "to_level": 44,
+            "rank": 5
+          },
+          {
+            "from_level": 45,
+            "to_level": 50,
             "rank": 6
+          },
+          {
+            "from_level": 51,
+            "to_level": 56,
+            "rank": 7
+          },
+          {
+            "from_level": 57,
+            "to_level": 59,
+            "rank": 8
           },
           {
             "from_level": 60,
             "to_level": 60,
             "rank": 8,
             "preset": "bare"
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 10,
-            "preset": "raid"
-          }
-        ]
-      },
-      {
-        "spell": "Flame Shock",
-        "authored": 29228,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 3
           }
         ]
       }
@@ -501,16 +506,44 @@
       {
         "spell": "Healing Wave",
         "authored": 10396,
+        "lines": [
+          17
+        ],
         "bands": [
           {
             "from_level": 20,
-            "to_level": 39,
+            "to_level": 25,
+            "rank": 2
+          },
+          {
+            "from_level": 26,
+            "to_level": 36,
             "rank": 3
           },
           {
-            "from_level": 40,
-            "to_level": 49,
+            "from_level": 37,
+            "to_level": 37,
+            "rank": 4
+          },
+          {
+            "from_level": 38,
+            "to_level": 43,
             "rank": 5
+          },
+          {
+            "from_level": 44,
+            "to_level": 56,
+            "rank": 6
+          },
+          {
+            "from_level": 57,
+            "to_level": 58,
+            "rank": 7
+          },
+          {
+            "from_level": 59,
+            "to_level": 59,
+            "rank": 8
           }
         ]
       }

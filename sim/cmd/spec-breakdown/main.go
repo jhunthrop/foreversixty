@@ -49,6 +49,7 @@ type options struct {
 	spec       string
 	preset     string
 	band       int
+	level      int
 	faction    string
 	race       string
 	iterations int
@@ -72,6 +73,7 @@ func main() {
 	flag.StringVar(&o.spec, "spec", "", "spec slug, e.g. rogue-combat")
 	flag.StringVar(&o.preset, "preset", "raid", "bare or raid")
 	flag.IntVar(&o.band, "band", 60, "BiS band")
+	flag.IntVar(&o.level, "level", 0, "character level inside the band (band to band+9; default the band), to judge a rank row at the band's top as well as its floor")
 	flag.StringVar(&o.faction, "faction", "alliance", "faction of the published entry")
 	flag.StringVar(&o.race, "race", "", "race slug replacing the published entry's (its gear and talents kept); the race's rank choices follow it")
 	flag.IntVar(&o.iterations, "iterations", 20000, "iterations")
@@ -118,7 +120,7 @@ func run(o options) error {
 	if err != nil {
 		return err
 	}
-	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, req.Character.Race, o.band)
+	rotation, err := loadRotation(o.rotation, o.spec, specs.ByKey[o.spec].ClassSlug, o.preset, req.Character.Race, req.Character.Level)
 	if err != nil {
 		return err
 	}
@@ -220,7 +222,24 @@ func loadEntry(o options) (bisEntry, error) {
 	return bisEntry{}, fmt.Errorf("no %s band %d %s %s entry", o.spec, o.band, o.preset, o.faction)
 }
 
+// characterLevel is the level the band's entry is simmed at: the band itself,
+// or -level when it falls inside the band's ten levels (a rank row spans them).
+func (o options) characterLevel() (int, error) {
+	if o.level == 0 {
+		return o.band, nil
+	}
+	top := min(o.band+9, 60)
+	if o.level < o.band || o.level > top {
+		return 0, fmt.Errorf("-level %d is outside band %d (%d to %d)", o.level, o.band, o.band, top)
+	}
+	return o.level, nil
+}
+
 func buildRequest(o options) (api.SimRequest, error) {
+	level, err := o.characterLevel()
+	if err != nil {
+		return api.SimRequest{}, err
+	}
 	entry, err := loadEntry(o)
 	if err != nil {
 		return api.SimRequest{}, err
@@ -272,7 +291,7 @@ func buildRequest(o options) (api.SimRequest, error) {
 		race = o.race
 	}
 	character := api.CharacterSpec{
-		Name: "breakdown", Race: race, Class: info.ClassSlug, Level: o.band,
+		Name: "breakdown", Race: race, Class: info.ClassSlug, Level: level,
 		Talents: talents, Gear: gear, Buffs: kitBuffs, Consumes: kitConsumes,
 	}
 	// Where the ranker stands the spec (leveling-bis's bandCharacter), so

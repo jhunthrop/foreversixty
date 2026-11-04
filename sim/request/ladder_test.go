@@ -354,6 +354,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		// level is published under (rankPreset); at 60 an id with no row is
 		// cast as authored.
 		castAt := rankResolver(class, level, specRankChoices(spec.Spec, PublishedPreset(level), race))
+		choices := specRankChoices(spec.Spec, PublishedPreset(level), race)
 		for authoredID := range authoredIDs {
 			learnedID32, learned := castAt(int32(authoredID))
 			if !learned {
@@ -363,8 +364,8 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 			if warnedSet[spellAction(learnedID)] {
 				continue // already counted as an unresolved id.
 			}
-			if castCounts[learnedID] > 0 {
-				continue // fired; nothing to report.
+			if castCounts[learnedID] > 0 || scopedLineFired(class, level, choices, int32(authoredID), castCounts) {
+				continue // fired (on its own line where a row scopes it); nothing to report.
 			}
 			if reason, ok := expectedIdle[authoredID]; ok && reason != "" {
 				continue // curated file excuses it.
@@ -480,4 +481,15 @@ func TestAddTalentOwnedAurasExemptsWintersChill(t *testing.T) {
 	if node, ok := got[12579]; !ok || node != wintersChillNode {
 		t.Errorf("Winter's Chill aura 12579 -> node %d (present %v), want %d", node, ok, wintersChillNode)
 	}
+}
+
+// scopedLineFired is whether a line-scoped rank choice for authored cast its
+// rank on one of its lines (the unscoped lines resolve as castAt does).
+func scopedLineFired(class string, level int, choices rankChoices, authored int32, castCounts map[int]int64) bool {
+	for _, line := range choices.scopedLines(authored) {
+		if id, learned := lineRankResolver(class, level, choices, line)(authored); learned && castCounts[int(id)] > 0 {
+			return true
+		}
+	}
+	return false
 }
