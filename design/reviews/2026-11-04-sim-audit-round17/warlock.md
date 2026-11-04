@@ -2,8 +2,9 @@
 
 Specs: Affliction, Demonology, Destruction, bands 20 to 60, bare and raid. Client 1.60.1.70755 with the late hotfix re-layer. Site `wt/r17-warlock` from int/r17 (d7fc51fe7); fork `lane/r17-warlock` from int/r17 (f637ec32c), no engine change. spec-breakdown at 10,000 iterations, seeds 1 and 50001, on `$R/bis-frozen` with each guide's raid build unless noted.
 
-Totals: **1 CONFIRMED-BUG**, fixed on the site, no engine change.
-- Affliction leveling build: Nightfall 2/2 does nothing from 40 to 60 (origin `old`: dead since round 15 made Wrack the filler; round 15 A4 looked and kept it).
+Totals: **2 CONFIRMED-BUGs**, both fixed.
+- Affliction leveling build: Nightfall 2/2 does nothing from 40 to 60 (origin `old`: dead since round 15 made Wrack the filler; round 15 A4 looked and kept it). Site only.
+- Demons refused a raid hunter's Heart of the Lion (origin `old`; coordinator follow-up to the hunter lane's E c6f2e362e). Engine b2c4a2d05 plus two guide lines (C4).
 
 ## Logs (owner's standing order)
 
@@ -50,11 +51,12 @@ Totals: **1 CONFIRMED-BUG**, fixed on the site, no engine change.
 |---|---|---|---|---|---|
 | C1 | Round-16 engine changes that reach the warlock: the MaxLevel + 12 penalty (`sim/core/spell.go`, SpellLevelPenalty) and Wrack's comment-only change. Every rank the raid APLs cast is at or near its MaxLevel at 60 (no penalty); band ranks follow the rows (S5, X1). | fork diff 9f7f1f6e4..f637ec32c | Aligned | - | - |
 | C2 | Orc: Blood Fury 20572 is Forever's +10% AP, RAP and spell power for 15 s (2 casts, 16.7% uptime), Command +5% pet damage and +5% on Lash of Pain: modeled (`sim/core/racials.go:220-235`). | races.json; engine | Aligned | - | - |
+| C4 | **Demons refused a raid hunter's Heart of the Lion** (coordinator follow-up after the hunter lane's E c6f2e362e). The 70755 client keeps group buffs off pets by flagging each "can only target players" (SpellMisc Attributes_3 0x100); Heart of the Lion's area buff 409583 has no such flag and targets every nearby ally (ImplicitTarget 31), and the beta logs show the likewise unflagged Trueshot Aura landing on hunter pets. The demon now takes it (+10% stats, 280 attack power at 60) and still refuses every other player buff. Test first: `TestDemonReceivesOnlyHeartOfTheLionFromPlayerBuffs` (fork sim/warlock, replacing `TestDemonReceivesNoPlayerBuffs`) failed (Succubus 129/85, 238 AP, no 409583) and passes (141.9/93.5). Raid 60, seeds 1 / 50001: Demonology +2.37 / +2.37% alliance, +2.42 / +2.45% horde (707.2 to 724.3 at seed 1); Affliction +2.23 / +2.25%, +2.39 / +2.37% (733.1 to 750.6); Destruction +1.94 / +1.91%, +2.04 / +2.01% (776.4 to 792.2). Guide lines demonology.md:64 and index.md:29 ("raid buffs do not land on it") now name the one exception (wow-player SHIP on the second pass: the first asked for "the hunter aura" and "when a hunter in your group runs it"). | wago SpellMisc / SpellEffect 70755; hunter lane | CONFIRMED-BUG | old | E b2c4a2d05, S 27d777138 + this commit |
 | C3 | Pending owner, not reopened: level-60 trainer book ranks (25307, 25309, 25311); Siphon Life tick crit; Demonology Horde race. | | pending owner | - | - |
 
 ## Before/after
 
-Raid 60 (guide raid builds, frozen BiS): unchanged on all 12 runs (spec x faction x seed), identical to `before.tsv` to the decimal (Affliction 733.1 horde, Demonology 707.2, Destruction 776.4 at seed 1).
+Raid 60 (guide raid builds, frozen BiS): the Nightfall change leaves all 12 runs identical to `before.tsv`. Heart of the Lion on demons (C4, measured on site int/r17 1821b14e8, fork int/r17 b66f7547f against b2c4a2d05): Demonology +2.4%, Affliction +2.2 to +2.4%, Destruction +1.9 to +2.0%, both factions and seeds; seed 1 horde 707.2 to 724.3, 733.1 to 750.6, 776.4 to 792.2.
 
 Affliction bare (leveling build, horde; seed 1 / 50001):
 
@@ -77,16 +79,18 @@ The published band numbers move only after addon-builds and the ladder goldens a
 
 ## Measure at refresh
 
+- Every warlock raid-60 weight and BiS pick after C4 (the demon's share rises; about +2% DPS).
+
 - Affliction bare 40, 50, 60 weights and leveling BiS on the new build (crit rises a little in value).
 
 ## For other lanes
 
-- No shared code changed; nothing outside the warlock moves.
+- No shared code changed (C4 uses the core opt-in from E c6f2e362e); nothing outside the warlock moves.
 - Platform: the guide band lists show each band's floor build (see the wow-player review).
 
 ## For the guide lane
 
-- Done in this lane: affliction.md:48, :54 (the Nightfall bullet is now Malevolence), :59, :115; wow-player review below.
+- Done in this lane: affliction.md:48, :54 (the Nightfall bullet is now Malevolence), :59, :115; demonology.md:64 and index.md:29 (Heart of the Lion); wow-player reviews below.
 
 ## Still open
 
