@@ -1225,7 +1225,7 @@
             }
           }
         },
-        "notes": "Lesser Heal when Greater Heal rank 1 is out of reach: a small top-up for little mana. Skip it from 40 to 59, where it has lost your healing bonus and only breaks your mana regeneration."
+        "notes": "Lesser Heal when Greater Heal rank 1 is out of reach: a small top-up for little mana. Skip it from 40 to 59, where it has lost your healing bonus and costs regeneration you need."
       },
       {
         "action": {

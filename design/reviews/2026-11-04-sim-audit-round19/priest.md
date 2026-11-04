@@ -23,8 +23,8 @@ Every sim went through `$R/sim.sh` on frozen BiS (`$R/bis-frozen`), at 10,000 it
 |---|---|---|---|---|---|
 | D1 | **No tank filler before 40.** The tank filler is Greater Heal 10965 (learned 40), with no fallback. Below 40 the tank got Penance (from 30), Renew and the shield only, while the party got Lesser Heal and Flash Heal. The guide's own leveling text calls Discipline "a Renew, Heal and shield healer" there.<br>**Fix:** a Heal rank 4 line behind each tank Greater Heal line, with the same target and condition, gated on Greater Heal rank 1 not yet learned.<br>**Results (Alliance / Horde):**<br>- Bare 20: +7.4% / +9.1%.<br>- Bare 30: +2.7% / +2.1%.<br>- Bands 40-60 and raid 60: unchanged to 0.1 HPS.<br>Ungated, the Heal line cost 0.8% to 1.1% at raid 60.<br>Card note and leveling prose added. | `$R/priest/dheal.txt`, `ba-disc.txt`; `TestDisciplineHealsTheTankWithHealBeforeGreaterHeal` failed, then passed | CONFIRMED | old (integrator lead from the wow-player card review) | S 9afb58196; E e08bc5b05 |
 | D2 | **The pre-pull Renew held the global into the fight.** Lightwell at -2.5 s (1.5 s cast) ends at -1 s, and the round-17 Renew at -1 s held the global to +0.5 s. The fork's `TestInnerFireDoesNotCutIntoThePrepullCasts` was failing on int/r19 (6ea675594) for that reason.<br>**Fix:** Lightwell at -3 s and Renew at -1.5 s. The opener card now reads 3 s and 1.5 s, and the prose reads "just before he engages". Raid 60 and every band are unchanged to 0.1 HPS. | fork test failed on base and on the lane, then passed | CONFIRMED | old (round 17 5dd716a48 added the -1 s Renew) | S 9afb58196; E e08bc5b05 |
-| D3 | **Party step-down from 40 should be Heal rank 4, not Lesser Heal rank 3.** Lesser Heal 3 (learned 10) has no healing bonus left from 47. Heal 4 (learned 34) keeps all of it to 51 and 55% at 60.<br>**Swapping every Lesser Heal 3 line for Heal 4 (Alliance / Horde):**<br>- Bare 40: +7.7% / +6.4%.<br>- Bare 50: +46% / +39%.<br>- Bare 60: +30% / +24%.<br>- Raid 60: +6.0% / +7.5%.<br>- Before 40 Lesser Heal wins: Heal is -10% at bare 20 and -4% at bare 30.<br>**Integrator ruling:** ship 40-59 (the modelled penalty every 40-59 row uses). 60 stays with the owner's pending low-rank heal item.<br>**Blocked:** the APL cannot gate a 40-59 window. A "not known Power Word: Shield rank 10" gate never fired, because the site rewrite resolves a ranked id in a condition down to the highest rank learned. The swap measured 0.0 everywhere, so I reverted it. No unranked 60-only priest spell exists to gate on. Platform was asked for a level value. | `var-disc.txt`, `var-disc2.txt`, `lv-disc.txt` | CONFIRMED, not fixed (blocked on a level gate) | old (round 18 D3 saw the 57 casts and held it as pending) | - |
-| D4 | **Rank rows re-judged on any gain beyond error.** Renew rank 9 (learned 56) against the list's rank 7:<br>- Undead +0.3% to +0.5% at 56-59.<br>- Gnome +0.3% at 57.<br>- At 58: Human +0.3%, Dwarf +0.6%, Night Elf +0.4%, Troll +0.5%.<br>- Dwarf +0.4% at 59.<br>- Elsewhere within error. A Gnome loses 0.4% at 58-59.<br>**Fix:** race-keyed rows level by level. | `out2.txt`, `out6.txt` | CONFIRMED | old (round 18 kept it "within 0.5%") | S b05dd9586 |
+| D3 | **Lesser Heal rank 3 from 40 to 59.** Discipline's Lesser Heal line fires when Greater Heal rank 1 is out of mana reach. Lesser Heal 3 (learned 10) has lost its whole healing bonus by 47 under the level-gap rule, so each cast heals for little and restarts the five-second rule.<br>**Measured:** swapping it for Heal rank 4 gained hugely. Heal 4 itself was cast only 0.1 times a fight (it needs the mana Greater Heal rank 1 lacked), so the whole gain is in not casting Lesser Heal.<br>**Fix (integrator ruling: 40-59 only; the owner keeps 60):** the Lesser Heal lines are scoped out of 40-59 with the platform `currentLevel` gate.<br>**Results (Alliance / Horde), both seeds:**<br>- +7.7% / +6.3% at 40, +13% / +11% at 43, +20% / +17% at 46, +21% / +17% at 49.<br>- +46% / +39% at 50, +45% / +38% at 53, +45% / +38% at 56, +44% / +38% at 59.<br>- Bare 20/30/60 and raid 60 unchanged.<br>Lesser Heal casts drop to 0 in the range.<br>**Trap caught on the way:** a first gate on "not known Power Word: Shield rank 10" never fired (the rank rewrite resolves it) and measured 0.0. | `d3f.txt`, `var-disc.txt`, `lv-disc.txt`; `TestDisciplineSkipsLesserHealFromFortyToFiftyNine` failed, then passed | CONFIRMED | old (round 18 D3 saw the casts and held them) | S 44c6090ac; E f12739f55 |
+| D4 | **Renew rows re-judged on the new list.**<br>- **Rank 9 (learned 56) against rank 7:** Human +1.5% to +1.8%, Gnome +0.7% to +0.9%, Dwarf +0.2% to +1.8%, Night Elf +0.3% to +1.8% at 56-59. Undead +0.3% at 59 only (within error at 56 and 58, -0.2% at 57). Troll -0.1% to -0.3%.<br>- **A Human with the top rank learned (rank 7 from 44)** beats the round-18 rows at 44 (+0.6%), 45 (+0.4%), 46 (+0.3%) and 47 (+0.5%), and ties from 48.<br>- **Held:** Greater Heal rank 1 at 46-57 (the top rank loses 0.2% to 0.8%) and Prayer of Healing rank 1 at 40-49 (rank 2 loses 0.4% to 0.8%) for Human, Gnome and Undead.<br>**Fix:** keyed rows. (An earlier set of rank 9 rows, judged on the list with Lesser Heal, was replaced.) | `out7.txt`, `out8.txt`, `out9.txt` | CONFIRMED | old (round 18 kept rank 9 "within 0.5%") | S b05dd9586, 44c6090ac |
 | D5 | **Race pick (guide round 15 request), raid 60, guide build:**<br>- Human 506.2 / 505.9.<br>- Gnome 502.4 / 502.2 (Human +0.8%).<br>- Undead 495.7 / 495.9.<br>- Troll 481.9 / 482.0 (Undead +2.9%).<br>The guide's Gnome is within 1% of Human, so it stays. | `race.txt` | Aligned (within 1%) | - | - |
 | D6 | **Fresh re-audit, raid 60:** heal ladders match 70755 (P5). Penance's four ranks have the right helper ids (402289, 1240723, 1240724, 1316991) at 0.19. The build has no dead points. | as P5 | Aligned | - | - |
 
@@ -70,7 +70,11 @@ Before = `$R/before.tsv` (raid 60) and `$R/sb-before` from `$R/site-before/sim` 
 |---|---|---|---|---|
 | 20 | 43.2 → 46.4 (+7.4%) | +7.4% | 41.7 → 45.5 (+9.1%) | +9.1% |
 | 30 | 89.8 → 92.2 (+2.7%) | +2.7% | 90.6 → 92.5 (+2.1%) | +2.1% |
-| 40, 50, 60 | 0.0% | 0.0% | 0.0% | 0.0% |
+| 40 | 125.2 → 134.9 (+7.7%) | +7.7% | 131.0 → 139.3 (+6.3%) | +6.3% |
+| 50 | 135.9 → 198.5 (+46%) | +46% | 144.8 → 200.8 (+39%) | +39% |
+| 60 | 0.0% | 0.0% | 0.0% | 0.0% |
+
+Bands 40 and 50 are D3 and the Renew rows together.
 
 **Rank rows** move only the levels they name.
 - **Published band floors:** the only one that moves is Shadow Horde (Undead) at band 50: 242.0 → 243.4 (+0.58%) / 241.8 → 243.2 (+0.58%).
@@ -99,21 +103,20 @@ Before = `$R/before.tsv` (raid 60) and `$R/sb-before` from `$R/site-before/sim` 
 
 ## For other lanes
 
-- **Platform:** an APL level gate (a `currentLevel` value, or `spellIsKnown` exempt from rank resolution) so that D3 can ship at 40-59 (integrator has asked). See X1.
+- **Platform:** thanks for `currentLevel` (bf23e4136 / a7fc87f61). Note X1: a ranked id inside a condition is resolved like a cast.
 - **Guide lane:** after the regen, re-capture the Discipline Priority card, which gains the tank Heal row "Heal on the tank until you learn Greater Heal at 40: it is your biggest heal until then.", and check the 3 s / 1.5 s opener.
 
 ## For the guide lane
 
 This lane wrote the following, all with wow-player review:
 - holy.md: Renew "rank 6 from about 52"; Greater Heal ranks 3 and 4 from 58; leave the shield to a Discipline priest.
-- discipline.md: pre-pull Renew; the leveling order (Heal as the tank filler until 40); Renew rank 9 from 56.
+- discipline.md: pre-pull Renew; the leveling order (Heal as the tank filler until 40); Renew rank 9 from 56; leave Lesser Heal off the bars in your forties and fifties.
 - shadow.md: ranks unchanged, and the race exceptions stay in the rows only.
 
 ## Still open
 
-- **D3 at 40-59:** CONFIRMED and blocked on a level gate. If no gate lands this round, it goes to round 20.
-- **D3 at 60 (owner, pending low-rank heal item):** swapping Discipline's Lesser Heal rank 3 lines for Heal rank 4 is +30% / +24% at bare 60 and +6.0% / +7.5% at raid 60. It is ready to ship as one change (every 2053 line → 6064 rank 4, gated on Greater Heal rank 1 known) once the owner rules the level-gap penalty applies to heals at 60.
-- **Also part of that pending item:** discipline.md's "Low ranks" paragraph says Lesser Heal at 60 heals for little more than its base, while the raid card still steps down to it.
+- **D3 at 40-59:** shipped (S 44c6090ac, E f12739f55).
+- **D3 at 60 (owner, pending low-rank heal item).** Taking Discipline's Lesser Heal rank 3 out at 60 too, by removing the level gate's upper bound (`currentLevel < 60`), is +30% / +24% at bare 60 and +6.0% / +7.5% at raid 60 (Heal rank 4 in its place, same measure). It is ready to ship once the owner rules that the level-gap penalty applies to heals at 60. discipline.md's "Low ranks" paragraph already says Lesser Heal at 60 heals for little more than its base.
 - P2 target-level healing (single source), P3 Eureka! on a live Gnome Shadow log, P4 Lightwell Renew crit.
 - The penalty's open parameters (round 16 section 1) and the proc-chance curve.
 - **Logs:** foreverlogs.gg answers its API again with browser headers. I last looked at 19:05 UTC, before launch, and no live (level 60) reports exist yet. api.foreversixty.gg/v1/reports/recent holds one 20 October report. Warcraft Logs is blocked (expired login).
@@ -142,3 +145,8 @@ This lane wrote the following, all with wow-player review:
     - Holy card row 6 does not name the leveling rank 1. The card is the 60 list.
     - Holy and Discipline Renew advice differs by spec. Each is measured.
   - Its doubt about Spirit Tap is outside this round.
+- **D3 text (discipline.md leveling, Lesser Heal card note):** SHIP with fixes, all applied.
+  - **Its MUST:** name the Renew rank at 50. It now reads "From 50, keep rank 7: rank 8 heals barely more for more mana. From 56, take rank 9." The reviewer's learn levels (46/52) were off. The client has rank 7 at 44, rank 8 at 50 and rank 9 at 56.
+  - **Its SHOULDs:**
+    - "late forties" and "costs mana regeneration" (Meditation keeps half): applied.
+    - The level-60 card still lists Lesser Heal: that is the pending owner item.
