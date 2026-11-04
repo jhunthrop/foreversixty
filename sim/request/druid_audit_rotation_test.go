@@ -67,7 +67,9 @@ func TestCatLetsRipRunToItsLastTick(t *testing.T) {
 
 // Wave 2: Balance's rank rows judged level by level (10,000 iterations,
 // seeds 1 and 50001). Moonfire rank 2 through the 20s and rank 4 from 36;
-// Wrath rank 3 at 22 to 26; Insect Swarm rank 2 at 39.
+// Wrath rank 3 at 22; Insect Swarm rank 2 at 39. Round 20 ends the Wrath
+// rank-3 row at 23 and the Moonfire rank-2 row at 28
+// (TestBalanceRankRowsTwentyToTwentyNine), so 29 is rank 3 here now.
 func TestBalanceRankRowsByLevel(t *testing.T) {
 	const (
 		moonfire2, moonfire3, moonfire4, moonfire5 = 8924, 8925, 8926, 8927
@@ -80,7 +82,7 @@ func TestBalanceRankRowsByLevel(t *testing.T) {
 		want, not int32
 	}{
 		{"Moonfire at 23 is rank 2", 23, moonfire2, moonfire4},
-		{"Moonfire at 29 is rank 2", 29, moonfire2, moonfire5},
+		{"Moonfire at 29 is rank 3", 29, moonfire3, moonfire5},
 		{"Moonfire at 35 is rank 3", 35, moonfire3, moonfire4},
 		{"Moonfire at 36 is rank 4", 36, moonfire4, moonfire3},
 		{"Wrath at 22 is rank 3", 22, wrath3, wrath4},
@@ -162,25 +164,154 @@ func TestRestorationPartyRejuvenationAtFortyToFortyTwo(t *testing.T) {
 	}
 }
 
+// Sim-accuracy round 20: the Healing Touch filler (line 9) judged at 20 to 26,
+// below round 18's sweep. Rank 2 (learned 8) beats the rank 4 learned at 20 by
+// 0.7% (night elf) and 1.8% (tauren) at 20; a tauren keeps it to 23 (+1.1,
+// +0.8, +0.3%), a night elf casts the top rank from 21; both from 24.
+// The Nature's Swiftness line casts the top rank at every level, so only rank
+// 2's presence or absence is the filler's to assert.
+func TestRestorationHealingTouchFillerAtTwenty(t *testing.T) {
+	const healingTouch2 = 5186
+	for _, c := range []struct {
+		race  string
+		level int
+		rank2 bool
+	}{
+		{"night-elf", 20, true},
+		{"night-elf", 21, false},
+		{"tauren", 20, true},
+		{"tauren", 23, true},
+		{"tauren", 24, false},
+	} {
+		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, c.race))
+		if ids[healingTouch2] != c.rank2 {
+			t.Errorf("%s at %d: Healing Touch rank 2 (%d) cast = %v, want %v", c.race, c.level, healingTouch2, ids[healingTouch2], c.rank2)
+		}
+	}
+}
+
+// Sim-accuracy round 20: the party Rejuvenation re-judged at 20 to 39. Rank 2
+// beats rank 1 at 27 (+0.4% night elf, +0.1% tauren), 28 (+0.4%, +0.1%) and
+// 29 (+0.3%, +0.3%), every seed; rank 1 wins again at 26 (tauren -0.4%) and
+// 30 (-1.2%).
+func TestRestorationPartyRejuvenationAtTwentySevenToTwentyNine(t *testing.T) {
+	const rejuvenation1, rejuvenation2 = 774, 1058
+	// Rank 2 (1058) is also the tank's rank through the 20s and 30s, so only
+	// rank 1 (774), which no other line casts, carries a negative check.
+	for _, c := range []struct {
+		level int
+		want  int32
+		not   int32
+	}{
+		{26, rejuvenation1, 0},
+		{27, rejuvenation2, rejuvenation1},
+		{29, rejuvenation2, rejuvenation1},
+		{30, rejuvenation1, 0},
+	} {
+		for _, race := range []string{"night-elf", "tauren"} {
+			ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, race))
+			if !ids[c.want] || (c.not != 0 && ids[c.not]) {
+				t.Errorf("%s at %d: want party Rejuvenation %d cast and %d not", race, c.level, c.want, c.not)
+			}
+		}
+	}
+}
+
 // Sim-accuracy round 19 (design/reviews/2026-11-04-sim-audit-round19/druid.md).
 // The tank Rejuvenation (authored 9841) judged level by level at 40-59 under
 // the low-rank penalty (10,000 iterations, seeds 1 and 50001, both factions):
 // rank 4 wins at 40-43, rank 5 at 44-48, rank 6 at 49-56 (it beats the top
 // rank by 1.0 to 2.7% at 53-56, where round 16 left the top rank) and rank 8
 // at 57-59.
+// Round 20: at 38 and 39, on the band-30 gear those levels wear, rank 2 beats
+// rank 4 by 1.7 to 1.8% and 1.0 to 1.3%, so the rank-4 row starts at 40.
 func TestRestorationTankRejuvenationRanksByLevel(t *testing.T) {
-	rejuvenation := map[int]int32{4: 2090, 5: 2091, 6: 3627, 8: 9839, 9: 9840}
+	rejuvenation := map[int]int32{2: 1058, 4: 2090, 5: 2091, 6: 3627, 8: 9839, 9: 9840}
 	for _, c := range []struct {
 		level int
 		rank  int
 	}{
-		{43, 4}, {44, 5}, {48, 5}, {49, 6}, {53, 6}, {56, 6}, {57, 8}, {59, 8},
+		{38, 2}, {39, 2}, {40, 4}, {43, 4}, {44, 5}, {48, 5}, {49, 6}, {53, 6}, {56, 6}, {57, 8}, {59, 8},
 	} {
 		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, "night-elf"))
 		for rank, id := range rejuvenation {
+			// Rank 2 (1058) is also the party line's rank at 40 to 42
+			// (TestRestorationPartyRejuvenationAtFortyToFortyTwo), so its
+			// absence is only the tank's to assert below 40.
+			if rank == 2 && c.level >= 40 {
+				continue
+			}
 			if got, want := ids[id], rank == c.rank; got != want {
 				t.Errorf("level %d: Rejuvenation rank %d (%d) cast = %v, want %v", c.level, rank, id, got, want)
 			}
+		}
+	}
+}
+
+// Sim-accuracy round 20 (design/reviews/2026-11-04-sim-audit-round20/druid.md
+// L1, L2): the band-20 Balance rows re-judged level by level (10,000
+// iterations, seeds 1 and 50001, night elf and tauren). Wrath rank 3 (learned
+// 14) beats the rank 4 learned at 22 by 1.1% at 22 and ties it at 23; from 24
+// rank 4 wins by 1.3% (24), 2.1% (25) and 2.5% (26), so round 16's rank-3 row
+// ends at 23, not 26. Moonfire's rank-2 row was re-judged with the new Wrath
+// row in: with Wrath rank 4 from 24, rank 2 beats rank 3 by 2.1% at 24 down
+// to 0.5% at 28, and rank 3 wins by 0.3 to 0.4% at 29 (full-precision DPS),
+// so the rank-2 row ends at 28. Judged alone, with the old Wrath row, rank 3
+// had looked ahead at 25 and 26: the two rows move together, so a row is
+// judged with its neighbours' rows in.
+func TestBalanceRankRowsTwentyToTwentyNine(t *testing.T) {
+	const (
+		wrath3, wrath4       = 5178, 5179
+		moonfire2, moonfire3 = 8924, 8925
+	)
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not int32
+	}{
+		{"Wrath at 22 is rank 3", 22, wrath3, wrath4},
+		{"Wrath at 23 is rank 3", 23, wrath3, wrath4},
+		{"Wrath at 24 is rank 4", 24, wrath4, wrath3},
+		{"Wrath at 26 is rank 4", 26, wrath4, wrath3},
+		{"Wrath at 29 is rank 4", 29, wrath4, wrath3},
+		{"Moonfire at 24 is rank 2", 24, moonfire2, moonfire3},
+		{"Moonfire at 26 is rank 2", 26, moonfire2, moonfire3},
+		{"Moonfire at 28 is rank 2", 28, moonfire2, moonfire3},
+		{"Moonfire at 29 is rank 3", 29, moonfire3, moonfire2},
+		{"Moonfire at 30 is rank 3", 30, moonfire3, moonfire2},
+	} {
+		for _, race := range []string{"night-elf", "tauren"} {
+			ids := rotationIDs(t, "druid-balance", "druid", c.level, specRankChoices("druid-balance", BarePreset, race))
+			if !ids[c.want] || ids[c.not] {
+				t.Errorf("%s (%s): want %d cast and %d not", c.name, race, c.want, c.not)
+			}
+		}
+	}
+}
+
+// Sim-accuracy round 20: the tank Rejuvenation's rank-2 row (20 to 37)
+// re-judged at 20, 23, 26, 28, 29, 30, 33, 36 and 39. It holds everywhere but
+// 29, where a night elf heals 0.1 to 0.3% more with rank 3 on every one of
+// four seeds and a tauren is level, so 29 is a race-keyed split: rank 3 for a
+// night elf, rank 2 for every other race.
+func TestRestorationTankRejuvenationAtTwentyNine(t *testing.T) {
+	const rejuvenation2, rejuvenation3 = 1058, 1430
+	for _, c := range []struct {
+		race      string
+		level     int
+		want, not int32
+	}{
+		{"night-elf", 28, rejuvenation2, rejuvenation3},
+		// At 29 the party line casts rank 2 too (its 27 to 29 row), so
+		// only rank 3's presence is the tank's to assert.
+		{"night-elf", 29, rejuvenation3, 0},
+		{"night-elf", 30, rejuvenation2, rejuvenation3},
+		{"tauren", 29, rejuvenation2, rejuvenation3},
+		{"high-order-skyborne", 29, rejuvenation2, rejuvenation3},
+	} {
+		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, c.race))
+		if !ids[c.want] || (c.not != 0 && ids[c.not]) {
+			t.Errorf("%s at %d: want Rejuvenation %d cast and %d not", c.race, c.level, c.want, c.not)
 		}
 	}
 }
