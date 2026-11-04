@@ -145,12 +145,14 @@ func TestRestorationDruidRejuvenationKeepsItsHealingBonusInARaid(t *testing.T) {
 	})
 }
 
-// The shaman's tank Healing Wave is the top rank (10396): rank 2 keeps none
-// of the healing bonus from level 40.
+// The shaman's tank Healing Wave is the top rank (10396) at 50 and 60: rank 2
+// keeps none of the healing bonus from level 40. Below 50 the shaman lane's
+// wave-3 rows pick rank 3 at 20 to 39 and rank 5 at 40 to 49
+// (TestRestorationShamanFillerHealingWaveByBand).
 func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 	filler, _ := restorationHealingWaveLines(t)
 	assertRanks(t, filler, "shaman-restoration", "shaman", "tauren", healingWaveRanks, []rankCase{
-		{12, BarePreset, 3}, {24, BarePreset, 5}, {32, BarePreset, 6}, {40, BarePreset, 7}, {50, BarePreset, 8},
+		{12, BarePreset, 3}, {24, BarePreset, 3}, {32, BarePreset, 3}, {40, BarePreset, 5}, {50, BarePreset, 8},
 		{60, BarePreset, 9}, {60, RaidPreset, 9},
 	})
 }

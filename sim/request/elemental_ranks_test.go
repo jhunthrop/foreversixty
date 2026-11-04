@@ -17,17 +17,19 @@ import (
 // keeps rank 7. Round 15 wave 2 (Forever's level-gap rule): the filler's
 // rank-4 row at bare 60 is gone too, since rank 4 (learned at 20) keeps no
 // spell power at 60 (+28% without it, both factions), so the filler casts
-// its authored rank 9.
+// its authored rank 9. Round 15 wave 3 re-swept every band on that rule:
+// the filler casts rank 8 (learned at 44, full bonus at 60) at bare 60,
+// +3.0 to +3.3% over rank 9, both factions, seeds 1 and 50001.
 func TestElementalRaidCastsLightningBoltRankTen(t *testing.T) {
 	var list struct {
 		Rotation json.RawMessage `json:"rotation"`
 	}
 	readJSON(t, "../../data/curated/apl/shaman-elemental.json", &list)
-	bolt := map[int]int{4: 915, 7: 10391, 9: 15207, 10: 15208}
+	bolt := map[int]int{4: 915, 7: 10391, 8: 10392, 9: 15207, 10: 15208}
 	for _, c := range []struct {
 		preset string
 		want   map[int]bool
-	}{{RaidPreset, map[int]bool{10: true}}, {BarePreset, map[int]bool{9: true, 10: true}}} {
+	}{{RaidPreset, map[int]bool{10: true}}, {BarePreset, map[int]bool{8: true, 10: true}}} {
 		out, err := RewriteRotationRanks(list.Rotation, "shaman-elemental", "shaman", c.preset, "troll", 60)
 		if err != nil {
 			t.Fatal(err)
@@ -52,5 +54,33 @@ func TestElementalFlameShockRanksByBand(t *testing.T) {
 	shock := map[int]int{1: 8050, 2: 8052, 3: 8053, 4: 10447, 5: 10448}
 	for level, want := range map[int]int{30: 3, 39: 3, 40: 3, 49: 3, 50: 4, 55: 5} {
 		assertOnlyRank(t, list.Rotation, "shaman-elemental", "shaman", BarePreset, "troll", level, shock, want)
+	}
+}
+
+// Sim-accuracy round 15 wave 3: on Forever's level-gap rule (a rank keeps
+// its whole spell power until it is 17 levels behind) the filler line's
+// best rank moves to rank 3 at 30 (+4.1 to +4.3% over rank 4; rank 3 lost
+// its Era sub-20 cut) and rank 6 at 50 (+7.5 to +8.5% over rank 9); rank 4
+// holds at 40. The top-rank line casts the highest rank learned at each
+// band (its rank-7 row at 50 tied). Both factions, seeds 1 and 50001.
+func TestElementalLightningBoltRanksByBand(t *testing.T) {
+	var list struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/shaman-elemental.json", &list)
+	bolt := map[int]int{3: 548, 4: 915, 5: 943, 6: 6041, 7: 10391, 8: 10392, 9: 15207}
+	for _, c := range []struct {
+		level int
+		want  map[int]bool
+	}{{30, map[int]bool{3: true, 5: true}}, {40, map[int]bool{4: true, 7: true}}, {50, map[int]bool{6: true, 9: true}}} {
+		out, err := RewriteRotationRanks(list.Rotation, "shaman-elemental", "shaman", BarePreset, "troll", c.level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for rank, id := range bolt {
+			if has := strings.Contains(string(out), `"spellId":`+strconv.Itoa(id)); has != c.want[rank] {
+				t.Errorf("bare %d: Lightning Bolt rank %d (%d) cast %v, want %v", c.level, rank, id, has, c.want[rank])
+			}
+		}
 	}
 }

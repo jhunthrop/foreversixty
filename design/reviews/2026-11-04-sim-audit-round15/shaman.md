@@ -104,3 +104,54 @@ Sentences are quoted from int/r15; land/guides-r1 may already have reworded some
 - Pending, not reopened: Healing Wave 2 tooltip (the filler), the low-rank penalty curve (priest lane), Lightning Overload rank spells, level-60 book ranks (Healing Wave 10, Grace of Air 3).
 
 Sources: [wowtbc.gg Forever Enhancement guide](https://wowtbc.gg/warcraftforever/class-guides/enhancement-shaman/), [zockify Forever shaman](https://www.zockify.com/forever/shaman/), [gfinity Forever shaman guide](https://www.gfinityesports.com/article/world-of-warcraft-forever-shaman-class-guide-specs-builds), [Wowhead Forever Rockbiter Weapon 16316](https://nether.wowhead.com/forever/tooltip/spell/16316) (all read 2026-11-03); foreverlogs.gg reports 2701 to 2808 (beta).
+
+## Wave 3: rank choices on the level-gap rule
+
+Engine change: since fork 8d9ca6aae / 974614b8b (priest lane), a rank keeps its whole spell power and healing bonus until the caster is 17 levels past the rank's learn level, then loses 5% per level. This replaced Era's cut for ranks learned below level 20. I merged int/r15 (site 1e96d8df2, fork 9c511a2cd) into both lane branches; both had my wave-1 commits already. Then I swept every shaman row and every fixed-rank cast.
+
+Elemental:
+- Lightning Bolt filler line (15207):
+  - 30 to 39: rank 4 to rank 3. Rank 3 is no longer cut.
+  - 40 to 49: rank 4 holds. Ranks 3, 5 and 6 lose.
+  - 50 to 59: new row, rank 6. Ranks 5, 7, 8 and 9 lose.
+  - Bare 60: new row, rank 8. Ranks 6, 7 and 9 lose; rank 7 loses 25% of its spell power at 60.
+  - Raid 60: rank 10 holds, +1.1% over no row.
+- Top-rank line (15208): the rank-7 row at 50 to 59 ties now (155.5 vs 155.4), so it is dropped.
+- Flame Shock rank 3 at 40 to 49: the default rank 4 is -0.1 to -0.3%, so the row is kept.
+- Searing Totem rank 6 vs 5 and 4: the top rank holds.
+- Bare 20: the default holds. Ranks 2 and 3 lose.
+
+Restoration:
+- The priest lane moved the tank filler (10396) to the top rank. That pick loses below 50:
+  - Rank 3 at 20 to 39.
+  - Rank 5 at 40 to 49 (ranks 4, 6 and 7 lose).
+- At 50 and 60 the top rank holds: rank 7 ties at 50, and ranks 7 and 8 lose at 60.
+- Every fight still runs dry: mana lasts 104 to 161 s of 300.
+- The new row shares the authored id with the Nature's Swiftness line. The band builds below 50 do not take Nature's Swiftness, so that line does not fire there.
+- Lesser Healing Wave and Chain Heal: top ranks hold at bare 30 to 60. Probes: Lesser Healing Wave ranks 5, 4, 3, 2 and 1; Chain Heal ranks 2 and 1; the only near-miss is Chain Heal rank 1 at 50, a tie.
+- Enhancement has no rank rows, and its fixed casts are top ranks with no spell-power share worth a row.
+
+All figures below are horde, 10,000 iterations, seeds 1 / 50001 unless marked. Alliance is within 1 point of horde everywhere: see $R/shaman/w3-final.tsv.
+
+| Spec, band | round start (sb-before) | wave 1 | int/r15 on the new rule | wave 3 | wave 3 vs int/r15 |
+|---|---|---|---|---|---|
+| Elemental bare 20 | 24.2 | 24.2 | 24.3 | 24.2 / 24.3 | 0 |
+| Elemental bare 30 | 51.9 / 52.0 | 54.1 | 54.1 | 56.4 / 56.4 | +4.1 to +4.3% |
+| Elemental bare 40 | 112.3 / 112.2 | 113.2 | 105.6 | 105.6 | 0 (rank 4 holds) |
+| Elemental bare 50 | 181.9 / 182.0 | 184.6 | 143.1 | 155.2 | +7.5 to +8.5% |
+| Elemental bare 60 | 234.1 / 234.2 | 234.9 | 197.8 / 198.0 | 203.7 / 204.0 | +3.0 to +3.3% |
+| Elemental raid 60 | 630.4 / 630.6 | 637.3 / 638.2 | 637.3 | 637.3 / 638.2 | 0 |
+| Restoration bare 20 | 46.0 | 46.0 | 46.0 | 51.0 | +10.9 to +12.1% |
+| Restoration bare 30 | 84.8 | 84.7 | 84.8 | 101.6 | +19.8% |
+| Restoration bare 40 | 189.6 | 189.0 (3000 it.) | 142.4 | 154.7 | +8.4 to +8.6% |
+| Restoration bare 50 | 293.4 / 293.7 | 300.9 (3000 it.) | 241.0 | 241.2 | 0 |
+| Restoration bare 60 | 411.6 | 424.1 (3000 it.) | 334.0 | 333.9 | 0 |
+| Restoration raid 60 | 718.8 / 719.0 | 731.8 / 732.3 | 713.2 | 713.3 / 713.6 | 0 |
+
+Restoration's losses at bare 40 to 60 and raid 60, against the round start, are the engine change itself. Rank 2's full coefficient was overvalued, and no lower or higher rank recovers it at 50 or 60. Elemental's bare 40 to 60 losses are also the engine: every cheap rank now pays the gap penalty.
+
+Fix: S a0497d1bc. It also updates the priest lane's `TestRestorationShamanTankHealingWaveIsTheTopRank` cases at 24, 32 and 40 to follow the rows. The wave-1 shaman tests are reconciled.
+
+Caveat for the addon: each row covers a ten-level band but was measured at the band's floor. Rank 3 at 39 and rank 6 at 59 sit deeper in the gap penalty than at 30 and 50, so mid-band levels may prefer one rank higher. The rows follow the bands, as every rank row does.
+
+Files to regenerate (in addition to wave 1): the three shaman ladder goldens, and addon-data (rank rows).
