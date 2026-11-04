@@ -38,6 +38,7 @@ describe('band60Weights', () => {
     expect(result!.talents).toBe(expected.talents);
     expect(result!.generatedAt).toBe(file.generated_at);
     expect(result!.hitToCap).toEqual(expected.hit_to_cap ?? null);
+    expect(result!.expertiseToCap).toEqual(expected.expertise_to_cap ?? null);
   });
 
   it('is undefined for a spec with no ranked BiS file', () => {

@@ -97,6 +97,10 @@ export const guidesCopy = {
     `Hit cap: ${cap}${split === undefined ? '' : ` · ${split}`}`,
   hitToCapWhite: (cap: string, white: string, split?: string): string =>
     `Hit cap: ${cap} (special attacks), ${white} (white swings)${split === undefined ? '' : ` · ${split}`}`,
+  /** The Stat priority note under the table: "Expertise cap: 6.5% (dodge)", parry added for a
+   *  tank, "reached" for a cap the character is already past. */
+  expertiseCap: (dodge: string, parry: string | undefined, split?: string): string =>
+    `Expertise cap: ${dodge} (dodge)${parry === undefined ? '' : `, ${parry} (parry)`}${split === undefined ? '' : ` · ${split}`}`,
   capReached: 'reached',
   /** What the band's best-in-slot set and buffs already give toward a cap (`baseline` less its
    *  talents, which `capFrom` names one by one): "10.2% hit from BiS gear and buffs". Not "built

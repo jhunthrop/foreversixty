@@ -74,9 +74,9 @@ test('the weights table renders the tank stats, rating-family rows labelled as r
   for (const stat of TANK_WEIGHT_STATS) {
     await expect(weights.getByTestId(`bis-weight-row-${stat}`)).toBeAttached();
   }
-  // No Forever item carries expertise: no row, no caption, no cap line.
+  // Expertise is per 1%, not per point: a caption, never a per-point table row.
   await expect(weights.getByTestId('bis-weight-row-expertise')).toHaveCount(0);
-  await expect(weights).not.toContainText(/Expertise/);
+  await expect(weights).toContainText(/Expertise: (\d+\.\d\d per 1%|no gain|not significant)/);
   await expect(weights.getByTestId('bis-weight-row-defense')).toContainText('Defense rating');
   const published = bisBand('warrior-protection', 'alliance', 60).weights ?? [];
   const defenseFactor = published.find((weight) => weight.stat === 'defense')?.rating_factor;

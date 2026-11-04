@@ -133,17 +133,3 @@ func TestEveryWarlockSpecWeighsSpiritAndBothOfItsSchools(t *testing.T) {
 		}
 	}
 }
-
-// TestNoSpecWeighsExpertise: no Forever item carries an Expertise stat
-// (data/builds/1.60.1.70755/items: zero items in any class list), so a
-// weight for it prices nothing a player can equip. Expertise reaches a
-// character only through set bonuses (Deathbone Guardian 5P, the Tier 1
-// tank 4Ps), which the ranker scores by full sim, and the rogue's Weapon
-// Expertise talent, which the talent build decides.
-func TestNoSpecWeighsExpertise(t *testing.T) {
-	for _, spec := range All {
-		if slices.Contains(spec.WeightStats, "expertise") {
-			t.Errorf("%s.WeightStats has expertise, which no Forever item carries", spec.Spec)
-		}
-	}
-}

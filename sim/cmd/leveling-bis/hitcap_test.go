@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -173,14 +172,76 @@ func TestPublishedHitToCapRoundTripsBothShapes(t *testing.T) {
 
 func ptr(v float64) *float64 { return &v }
 
-// TestBandReportPublishesNoExpertiseFigure: no Forever item carries an
-// Expertise stat (data/builds/1.60.1.70755/items), so "expertise to cap"
-// names a cap no gear can move. The band report has no such field.
-func TestBandReportPublishesNoExpertiseFigure(t *testing.T) {
-	report := reflect.TypeOf(bandReport{})
-	for i := range report.NumField() {
-		if tag := report.Field(i).Tag.Get("json"); tag == "expertise_to_cap" || strings.HasPrefix(tag, "expertise_to_cap,") {
-			t.Fatalf("bandReport.%s publishes expertise_to_cap", report.Field(i).Name)
+var meleeProfile = core.HitProfile{Physical: true, Melee: true, Expertise: 1, DodgeChance: 6.5, ParryChance: 14}
+
+func TestExpertiseToCapOfADamageDealerIsTheDodgeDistanceAlone(t *testing.T) {
+	got := expertiseToCapFor("rogue-combat", meleeProfile)
+	if got == nil || got.Baseline != 1 || got.Dodge != 5.5 || got.Parry != nil {
+		t.Fatalf("expertise_to_cap = %+v, want baseline 1, dodge 5.5, no parry", got)
+	}
+}
+
+func TestExpertiseToCapOfATankCarriesTheParryDistance(t *testing.T) {
+	got := expertiseToCapFor("warrior-protection", meleeProfile)
+	if got == nil || got.Parry == nil || *got.Parry != 13 {
+		t.Fatalf("expertise_to_cap = %+v, want parry 13", got)
+	}
+}
+
+func TestExpertiseToCapNeverGoesNegative(t *testing.T) {
+	profile := meleeProfile
+	profile.Expertise = 20
+	got := expertiseToCapFor("warrior-protection", profile)
+	if got.Dodge != 0 || *got.Parry != 0 {
+		t.Fatalf("expertise_to_cap past both caps = %+v, want zeros", got)
+	}
+}
+
+func TestExpertiseToCapIsAbsentWithoutAMeleeSwing(t *testing.T) {
+	ranged := core.HitProfile{Physical: true, Expertise: 1, DodgeChance: 6.5}
+	if got := expertiseToCapFor("hunter-marksmanship", ranged); got != nil {
+		t.Fatalf("a ranged-only character has nothing to dodge, got %+v", got)
+	}
+	if got := expertiseToCapFor("mage-fire", meleeProfile); got != nil {
+		t.Fatalf("a caster never swings, got %+v", got)
+	}
+}
+
+// runSpec end to end: the engine reports a melee profile for Marksmanship
+// (its rotation moves out to range only after the profile is read), and
+// the published band still carries no expertise figure.
+func TestRunSpecPublishesNoExpertiseForARangedHunter(t *testing.T) {
+	outDir := t.TempDir()
+	fake := &fakeEngine{
+		DefaultDPS: 500,
+		WeightsResult: map[string]api.StatWeight{
+			"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0},
+			"agility":             {Stat: "agility", Weight: 1.8},
+		},
+		HitProfile: meleeProfile,
+	}
+	err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20}, 5, identityTalentLayout)
+	if err != nil {
+		t.Fatalf("runSpec: %v", err)
+	}
+	b, err := os.ReadFile(filepath.Join(outDir, "hunter-marksmanship.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out struct {
+		Bands []struct {
+			ExpertiseToCap *expertiseToCap `json:"expertise_to_cap"`
+		} `json:"bands"`
+	}
+	if err := json.Unmarshal(b, &out); err != nil {
+		t.Fatal(err)
+	}
+	if len(out.Bands) == 0 {
+		t.Fatal("no bands written")
+	}
+	for i, band := range out.Bands {
+		if band.ExpertiseToCap != nil {
+			t.Errorf("band %d expertise_to_cap = %+v, want none for a ranged hunter", i, band.ExpertiseToCap)
 		}
 	}
 }
@@ -189,13 +250,16 @@ func TestBandReportPublishesNoExpertiseFigure(t *testing.T) {
 // melee weapons equipped. The engine profiles the character before the
 // rotation moves it out, so it reports a melee dual wielder; the ranged
 // shot's cap is the special cap (9% against a boss) and has no white
-// penalty.
+// penalty, and nothing they shoot is dodged by expertise.
 func TestRangedHunterPublishesNoMeleeFigures(t *testing.T) {
 	dualWieldMelee := core.HitProfile{Physical: true, Melee: true, Hit: 4, Suppression: 1, SpecialCap: 9, WhiteCap: 28, DualWielding: true, DodgeChance: 6.5}
 	for _, spec := range []string{"hunter-beast-mastery", "hunter-marksmanship"} {
 		figure, ok := hitToCapFor(spec, dualWieldMelee).(*hitToCap)
 		if !ok || figure.Specials != 5 || figure.White != nil {
 			t.Errorf("%s hit_to_cap = %+v, want specials 5 and no white figure", spec, figure)
+		}
+		if got := expertiseToCapFor(spec, dualWieldMelee); got != nil {
+			t.Errorf("%s expertise_to_cap = %+v, want none", spec, got)
 		}
 	}
 	if figure := hitToCapFor("hunter-survival", dualWieldMelee).(*hitToCap); figure.White == nil {

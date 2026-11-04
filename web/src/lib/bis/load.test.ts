@@ -149,27 +149,12 @@ describe('normaliseBisFile', () => {
     expect(bare.hit_to_cap).toBeNull();
   });
 
-  it('drops expertise_to_cap: no Forever item carries expertise, so no gear moves that cap', () => {
-    const withKey = { ...baseBand, expertise_to_cap: { baseline: 0, dodge: 6.5, parry: 14 } };
-    const [band] = normaliseBisFile({ bands: [withKey] } as unknown as BisFile).bands;
-    expect(band).not.toHaveProperty('expertise_to_cap');
-  });
-
-  it("keeps only the weights the spec's catalogue entry weighs (an expertise row a file still carries)", () => {
-    const weight = (stat: string) => ({ stat, weight: 1, error: 0.1 });
-    const tankBand = {
-      ...baseBand,
-      spec: 'warrior-protection',
-      weights: [weight('stamina'), weight('expertise'), weight('defense')],
-    };
-    const file = { spec: 'warrior-protection', bands: [tankBand] } as unknown as BisFile;
-    expect(normaliseBisFile(file).bands[0]!.weights.map((w) => w.stat)).toEqual(['stamina', 'defense']);
-  });
-
-  it('keeps every weight of a spec the catalogue does not list', () => {
-    const weights = [{ stat: 'expertise', weight: 1, error: 0.1 }];
-    const file = { spec: 'no-such-spec', bands: [{ ...baseBand, weights }] } as unknown as BisFile;
-    expect(normaliseBisFile(file).bands[0]!.weights).toEqual(weights);
+  it('reads expertise_to_cap through, and defaults an absent key to null', () => {
+    const withKey = { ...baseBand, expertise_to_cap: { baseline: 1, dodge: 5.5, parry: 13 } };
+    const file = { bands: [withKey, baseBand] } as unknown as BisFile;
+    const [keyed, bare] = normaliseBisFile(file).bands;
+    expect(keyed.expertise_to_cap).toEqual({ baseline: 1, dodge: 5.5, parry: 13 });
+    expect(bare.expertise_to_cap).toBeNull();
   });
 
   it('defaults a missing coverage field to {} (a file published before guardrail A landed)', () => {

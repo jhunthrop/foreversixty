@@ -107,21 +107,6 @@ function normaliseRole(band: BisBand): Pick<BisBand, 'role' | 'metrics'> {
   return { role, metrics };
 }
 
-/** `weights` cut to the stats `spec`'s catalogue entry (data/curated/specs.json) weighs -- the
- *  one list of what a spec is measured on. A spec the catalogue does not list keeps them all. */
-function weighedOnly(spec: string, weights: BisBand['weights']): BisBand['weights'] {
-  const weighed = SPECS.find((entry) => entry.spec === spec)?.weight_stats;
-  if (weighed === undefined) return weights;
-  if (!Array.isArray(weights)) return weights;
-  return weights.filter((weight) => (weighed as readonly string[]).includes(weight.stat));
-}
-
-/** `band` without the `expertise_to_cap` key a file published before its retirement carries. */
-function withoutExpertiseCap(band: BisBand): BisBand {
-  const { expertise_to_cap: _retired, ...rest } = band as BisBand & { expertise_to_cap?: unknown };
-  return rest;
-}
-
 /** The nightly's first files wrote `null` for an empty "new at this band" list (a Go nil
  *  slice); the contract is an array, so every band is read as one. Also defaults `coverage`
  *  (lane `rank-guardrails`' guardrail A, `report.go`'s own `Coverage` field) to `{}`: a file
@@ -133,22 +118,17 @@ function withoutExpertiseCap(band: BisBand): BisBand {
  *  `slotRow.Alternatives`) to `[]`, each slot's `dps_delta` to `null`, each band's
  *  `reference_dps_per_point` to `null`, each band's `weights_reason` to `null`, each band's
  *  `set_dps_partial` to `false`, each band's `scale_reference_stat` to `null`, each band's
- *  `haste_scale_factor` to `null`, each band's `hit_to_cap` to `null`, and each band's `haste_on_items` to `true` (an unknown
+ *  `haste_scale_factor` to `null`, each band's `hit_to_cap` and `expertise_to_cap` to `null`, and each band's `haste_on_items` to `true` (an unknown
  *  band should not silently start showing a claim -- "no item has it" -- an older file never
  *  made) -- all new, optional fields a file published before the lane that added them landed
  *  carries none of, and a Go nil slice/omitted float/omitted string/omitted bool likewise
- *  reach here as `undefined` rather than `[]`/`null`/`null`/`false`/`null`/`null`/`true`.
- *
- *  Weights are kept only for the stats the spec's catalogue entry weighs (`weighedOnly`), and
- *  a file's `expertise_to_cap` is dropped: no Forever item carries expertise, so a file
- *  published before the catalogue stopped weighing it must not show either. */
+ *  reach here as `undefined` rather than `[]`/`null`/`null`/`false`/`null`/`null`/`true`. */
 export function normaliseBisFile(file: BisFile): BisFile {
   return {
     ...file,
-    bands: file.bands.map(withoutExpertiseCap).map((band) => ({
+    bands: file.bands.map((band) => ({
       ...band,
       ...normaliseRole(band),
-      weights: weighedOnly(file.spec, band.weights),
       new_at_band: band.new_at_band ?? [],
       coverage: band.coverage ?? {},
       reference_dps_per_point: band.reference_dps_per_point ?? null,
@@ -158,6 +138,7 @@ export function normaliseBisFile(file: BisFile): BisFile {
       haste_scale_factor: band.haste_scale_factor ?? null,
       haste_on_items: band.haste_on_items ?? true,
       hit_to_cap: band.hit_to_cap ?? null,
+      expertise_to_cap: band.expertise_to_cap ?? null,
       slots: band.slots.map((slot) => ({
         ...slot,
         alternatives: slot.alternatives ?? [],
