@@ -1646,7 +1646,7 @@
             }
           }
         },
-        "notes": "Greater Heal at the top rank as the tank's filler at 60: he takes the big hits, so the big heal goes on him."
+        "notes": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%."
       },
       {
         "action": {
@@ -1728,7 +1728,8 @@
               }
             }
           }
-        }
+        },
+        "notes": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%."
       },
       {
         "action": {
