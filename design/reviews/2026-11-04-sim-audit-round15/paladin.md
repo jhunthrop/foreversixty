@@ -92,3 +92,47 @@ Raid 60 is identical for all three specs by construction: my only change is the 
 **Wave 2 measure.** `measure.sh` with the lane binary (fork fe4b177ac + site wt/r15-paladin), raid 60: 28 specs × 2 factions × 2 seeds = 112 rows, all identical to before.tsv (0 differ, 0 errors). Output: scratchpad r15/paladin/after-w2.tsv.
 
 **Wave 2 counts.** One CONFIRMED-BUG (W3, old, E fe4b177ac, shared code). W1 reverses the guide lane's prose change, so the engine is unchanged. W2 stays a single-source owner item.
+
+## Wave 3: rank choices on the level-gap rule
+
+Branches merged int/r15: site 1e96d8df2, fork 9c511a2cd. The rule: a rank keeps its whole spell-power or healing bonus until the caster is 17 levels past the rank's learn level, then loses 5% a level (`core.LevelPenalty`; priest lane E 8d9ca6aae, 974614b8b). Method:
+- Sweep: one variant binary per alternative rank, with sim/rankchoices/rank-choices.json edited for the build and then restored. Alliance, 3,000 iterations.
+- Confirmation: 10,000 iterations at seeds 1 and 50001.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W3-1 | **Consecration never took the level-gap rule.** Its first-targets tick adds 0.042 × spell power by hand (consecration.go `consecrationTickDamage`), outside the spell's BonusCoefficient that `levelPenalty` scales. So rank 1 (learned at 20) kept its whole coefficient at 40, 50 and 60, and Retribution's numbers did not move at all under the new rule. The coefficient is now `0.042 × core.LevelPenalty(rank level, caster level)`. | `TestConsecrationCoefficientFollowsTheLevelGap` failed first (undefined helper), then passed; sim/paladin, retribution and protection packages pass, and no fork golden moved | CONFIRMED-BUG | R15 wave 2 (8d9ca6aae's rule did not reach a hand-rolled coefficient) | E 86fe4bf34 |
+| W3-2 | **Holy Shock rank 1 at raid 60.** It is learned at 30, so at 60 it keeps 35% of its healing bonus. Ranks 2/3/4 at raid 60 (3,000 iterations): 658.2 / - / 659.1 against 656.1. At 10,000 iterations rank 4 gains +0.50 / +0.58% alliance and +0.52 / +0.42% horde (seeds 1 / 50001). Mana still runs dry before the end (154 to 145 s against 158 to 147 s), so the row rule's mana clause holds. The bare-60 row widens to both presets. | `TestHolyPaladinHolyShockAtBareSixty` now asserts rank 4 at raid too; it failed first, then passed | CONFIRMED-BUG | R15 wave 2 (the rule makes rank 1 lose) | S e2d3455ea |
+| W3-3 | **Protection rows hold.** Consecration rank 1 at 40/50/bare 60 beats ranks 2 to 5: threat 191.3 / 278.5 / 444.1 against 186.5 to 188.0 / 271.6 to 273.5 / 427.8 to 438.2 (3,000 iterations), because Protection has almost no spell power at these bands. Holy Strike rank 1 at 40 beats rank 5 by +0.58 / +0.68% (10,000 iterations, both seeds) and ranks 2 to 4 at 3,000. | variant sweeps | Aligned (rows kept) | - | - |
+| W3-4 | **Retribution rows hold after W3-1.** Consecration rank 1 at 40: 112.8 / 112.8 against rank 3 (max) 111.3 / 111.2 (+1.3%). At 50: 166.5 / 166.5 against max 161.6 / 161.7 (+3.0%); ranks 2 and 3 lose too. The 30-39 row (gap under 17) and the bare-60 rank 4 row (learned at 50) are untouched by the rule. | variant sweeps, 10,000 iterations | Aligned (rows kept) | - | - |
+| W3-5 | **Holy rows re-picked by the priest lane do not lose.** Against no Holy rows at all: bare 20 +14.8%, 30 +29.4%, 40 +16.2 to +16.3%, 50 +6.4 to +6.5%, bare 60 +0.6% (both seeds). Fixed-rank casts in the Protection and Retribution APLs are authored at their top ranks, so they cast the top rank learned at each band, and a top rank is never penalised. | 10,000 iterations | Aligned | - | - |
+
+**Wave 3 before/after** (alliance, 10,000 iterations, seed 1 / 50001). Before = $R/sb-before (round start). After = this branch.
+
+| spec | band | before | after | % |
+|---|---|---|---|---|
+| Retribution | bare 30 | 72.5 / 72.6 | 72.5 / 72.6 | 0 / 0 |
+| Retribution | bare 40 | 113.7 / 113.7 | 112.8 / 112.8 | -0.8 / -0.8 |
+| Retribution | bare 50 | 174.1 / 174.2 | 166.5 / 166.5 | -4.4 / -4.4 |
+| Retribution | bare 60 | 264.2 / 264.1 | 264.2 / 264.1 | 0 / 0 |
+| Retribution | raid 60 | 762.0 / 762.0 | 762.0 / 762.0 | 0 / 0 |
+| Protection (threat) | bare 40 | 191.2 / 191.5 | 191.2 / 191.5 | 0 / 0 |
+| Protection | bare 50 | 278.0 / 278.2 | 277.9 / 278.2 | 0 / 0 |
+| Protection | bare 60 | 443.9 / 443.3 | 443.8 / 443.2 | 0 / 0 |
+| Protection | raid 60 | 1113.8 / 1112.5 | 1113.8 / 1112.5 | 0 / 0 |
+| Holy (eff. HPS) | bare 20 | 39.1 / 39.1 | 38.0 / 38.0 | -2.8 / -2.8 |
+| Holy | bare 30 | 101.7 / 101.7 | 98.6 / 98.5 | -3.1 / -3.2 |
+| Holy | bare 40 | 190.7 / 190.5 | 145.5 / 145.4 | -23.7 / -23.7 |
+| Holy | bare 50 | 218.2 / 218.1 | 158.4 / 158.3 | -27.4 / -27.4 |
+| Holy | bare 60 | 350.8 / 350.6 | 246.4 / 245.7 | -29.8 / -29.9 |
+| Holy | raid 60 | 676.5 / 677.0 | 659.6 / 660.3 | -2.5 / -2.5 |
+
+What each row means:
+- **Holy bands 20 and 30** still use the published (stale) band talents. On the wave-1 walk, band 20 is +3.3 to +3.8% on top of these.
+- **Holy's large bare losses are the rule itself**, not a rank choice. Bare 40-60 keeps low-rank heals for mana, and those heals now lose most of their bonus. The priest lane's re-pick already recovers +6 to +29% over no rows (W3-5).
+- **Holy raid 60**: the rule costs -3.0%, and Holy Shock rank 4 wins back +0.5%.
+- **Retribution's -0.8% and -4.4%** come from Consecration rank 1's spell-power share fading at 40 and 50. Rank 1 still wins there on mana.
+
+**Wave 3 files to regenerate:** TestRotationLadder goldens for paladin-retribution (bands 40, 50) and paladin-holy (raid 60), and the Holy and Retribution BiS bands at the refresh.
+
+**For other lanes:** any class code that adds a spell-power share by hand, outside BonusCoefficient or a Dot or Hot BonusCoefficient, misses the rule the same way. Paladin's only such site was Consecration (grep for `GetBonusDamage(` and `GetBonusHealing(` inside OnTick or ApplyEffects).
