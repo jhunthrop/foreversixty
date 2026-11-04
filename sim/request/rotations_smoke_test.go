@@ -154,7 +154,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 	},
 	"paladin-holy": {
 		"{SpellID: 20216}":   "Divine Favor is a talent (sim/paladin/divine_favor.go); this build takes none.",
-		"{SpellID: 1311606}": "Holy Shock (rank 1, the rank the rotation names) is a talent (sim/paladin/holy_shock.go); this build takes none.",
+		"{SpellID: 20930}":   "Holy Shock (rank 4, the rank the rotation names) is a talent (sim/paladin/holy_shock.go); this build takes none.",
 		"{SpellID: 1328548}": "Oath of Light is a talent (sim/paladin/oath_of_light.go); this build takes none.",
 	},
 	"priest-discipline": {

@@ -238,6 +238,8 @@ func isHealingWave(id int) bool {
 // +0.3% both factions, seeds 1 and 50001. Round 15 wave 3: under the
 // level-gap rule rank 1 (learned at 30) keeps only 35% of its healing bonus
 // at 60, and rank 4 wins the raid too, +0.4 to +0.6% both factions and seeds.
+// The rotation now names rank 4 (20930); below 60 the top rank learned ties
+// rank 1 (bands 40 and 50 within 0.1%), so no row holds it back.
 func TestHolyPaladinHolyShockAtBareSixty(t *testing.T) {
 	raw, err := os.ReadFile("../../data/curated/apl/paladin-holy.json")
 	if err != nil {
