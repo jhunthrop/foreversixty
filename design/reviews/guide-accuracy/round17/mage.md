@@ -151,3 +151,7 @@ Carried from rounds 14 to 16, still wording:
 ## Counts
 
 CONFIRMED 0, LIKELY 0, NEEDS-SIM 0 new (1 closed), NEEDS-OWNER 0. Covered by sim round 19: 0. SHOULDs: 9 (8 carried, 1 new).
+
+## Fix log (round 17)
+
+- No finding. The Frost race re-run on the shipped build with the new Ice Lance coefficient (Sims requested 1) goes to the sim lane.

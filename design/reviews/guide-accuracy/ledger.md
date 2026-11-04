@@ -426,3 +426,25 @@ Folded in from the racials audit:
 
 Verdict: NOT zero, so round 17 is needed. Six classes audit at zero this round.
 Rendered review: wow-player SHIP for all seven changed classes after three page-text MUSTs were fixed (Incinerate under Eureka!, tooltip wording beside the periodic claims, the Arms Heroic Strike sentence).
+
+## Round 17 (client 1.60.1.70755, 2026-11-04, launch state)
+
+Built on main 919f7e8a7 (guide round 16 plus legal copy), engine pin 6ea675594, five auditors at a time, the live client 1.60.1.70790 identical in talents, items, racials and numbers.
+
+Audit CONFIRMED on main by class: priest 8, paladin 2, rogue 1, shaman 1, warrior 1, warlock 1; mage, hunter and druid 0. Total 14. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1, 18, 8, 4, 14. Most of the priest and paladin findings are sim round 18's own prose and card notes (rank reasons and card notes that were not true at every level they render on).
+
+Fixes:
+
+- **Priest:** Greater Heal and Renew rank reasons on Holy and Discipline (rank 1 keeps the whole bonus to 57; the bigger ranks spend mana a dungeon tank rarely needs; a small heal wastes less on a small hole); Devouring Plague rank 1 from 30; Human is level with Gnome on Discipline and the index, either race a fine pick (Gnome stays, the 0.8% lead is under the bar); Professions names Truefaith Vestments and the Dormant Heart of the Mountain; the Heal, Greater Heal filler and party Greater Heal card notes are true at every level.
+- **Paladin:** the Retribution opener on the page follows its own card (Righteousness rank 7 after the Crusader Judgement, then Command on the first landed swing in a raid); Consecration is the most expensive button in the priority, not on the bars.
+- **Rogue:** the Subtlety Rupture note credits Serrated Blades from 21 and Hemorrhage from 30, not at 20.
+- **Shaman:** Enhancement's raid mana line no longer says "topped up"; you never run dry, so shock down to the last quarter.
+- **Warrior:** Flurry's three charges go to white swings; a Heroic Strike comes out at the faster speed without using one.
+- **Warlock:** Undead sits close behind Orc for Affliction, as on the other two pages (measured 0.5%).
+
+Sim round 19 (not landed, int/r19): its guide text carries five errors of its own, routed to that lane before it lands: Destruction's Corruption/Immolate rank levels at 40 to 42; the priest "Keep Renew rank 7 or higher" note (false at 40 to 59), the "top trainer rank" filler note (round 17 fixed main's version: rank 1 until 57) and "rank 8 heals barely more" (38% more base); Restoration's "Nature's Swiftness makes the cast free" (instant, not free). Round 19 also rewrites lines this round touched (fury.md:64 next to :63, holy.md:122, discipline.md:124, retribution.md:95): its merge keeps round 17's text and applies only its own clauses.
+
+Sims routed to the sim lane: Retribution fresh-boss opener (Righteousness first against Command first on the raid build); Devouring Plague rank 1 against 2 at 28 and 29; Frost races on the shipped build with Ice Lance at 0.107; Enhancement's 25% gate against no gate at raid 60; Gnome against Human for Discipline at the re-ranked BiS.
+
+Verdict: NOT zero, so round 18 is needed. Three classes audit at zero this round.
+Rendered review: wow-player SHIP for all six changed classes (rogue, shaman, warrior, warlock, priest, paladin pending its read), every tile of every page read.
