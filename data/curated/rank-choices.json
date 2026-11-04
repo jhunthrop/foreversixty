@@ -275,17 +275,6 @@
     ],
     "priest-discipline": [
       {
-        "spell": "Power Word: Shield",
-        "authored": 3747,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 6
-          }
-        ]
-      },
-      {
         "spell": "Prayer of Healing",
         "authored": 10961,
         "bands": [

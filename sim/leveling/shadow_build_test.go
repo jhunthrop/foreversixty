@@ -42,11 +42,17 @@ func TestShadowRaidBuildSpendsNothingOnBossDeadTalents(t *testing.T) {
 	}
 }
 
-// Spirit Tap first: every guide levels with it from level 10 (it is how a priest drinks less
-// between pulls), and on the band fight the order is free, since it and Blackout change no
-// number there. Shadow Focus follows, then the walk; Mind Flay stays at 28, because on the
-// band-20 fight a rank-1 Mind Flay without Improved Mind Flay loses to wanding (mana).
-func TestShadowLevelsSpiritTapFirst(t *testing.T) {
+// Wand Specialization 2/2 first, then Spirit Tap 5/5 (sim-accuracy round 15 wave 6, an
+// owner call delegated to the lane): the wand is 37 to 41% of a leveling priest's damage
+// on the band fight, so its +25% gains 10.1% at band 20 and 5.7% at 30, and every Forever
+// guide that orders it takes it first (Icy Veins Forever Shadow leveling, Kargoz's Forever
+// 1-60 guide). A ladder only adds points, so the two Discipline points move Shadowform from
+// 40 to 42 (band 40 -36%); a priest spends 30 levels before 40 and two after it, and the
+// guides accept the same trade. Shadow Focus, Improved Mind Blast, Improved Shadow Word:
+// Pain, Mind Flay and Improved Mind Flay follow ahead of Blackout (which the band fight does
+// not model), so band 30 holds Improved Mind Flay (+5.9% / +4.8% there); Mind Flay lands at
+// 28, past the band-20 fight where a lone rank-1 Mind Flay loses on mana.
+func TestShadowLevelsWithWandSpecializationThenSpiritTap(t *testing.T) {
 	repoRoot := filepath.Join("..", "..")
 	active, err := ReadActiveBuild(repoRoot)
 	if err != nil {
@@ -62,13 +68,17 @@ func TestShadowLevelsSpiritTapFirst(t *testing.T) {
 	}
 	targets := GuideTalentTargets(trees, digits)
 	const shadowTree = 2
-	const none = "000000000000000000-00000000000000000-"
+	const wand = "020000000000000000-00000000000000000-"
 	want := map[int]string{
-		14: none + "00500000000000000",
-		19: none + "50500000000000000",
-		20: none + "51500000000000000",
-		30: none + "52542001200000000",
-		40: none + "52542001201300051",
+		10: "010000000000000000-00000000000000000-00000000000000000",
+		11: wand + "00000000000000000",
+		16: wand + "00500000000000000",
+		20: wand + "40500000000000000",
+		25: wand + "50540000000000000",
+		30: wand + "50542001200000000",
+		40: wand + "52542001201300040",
+		41: wand + "52542001201300050",
+		42: wand + "52542001201300051",
 		50: "025102000000000000-00000000000000000-52542001201300051",
 	}
 	for level, w := range want {

@@ -73,10 +73,24 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 		for _, node := range own.Talents {
 			byName[node.Name] = node
 		}
+		// Another tree's first-row talent with no prerequisite may be reserved too
+		// (reserveOffTree): Shadow's Wand Specialization.
+		for ti, tree := range trees {
+			if ti == info.tree {
+				continue
+			}
+			for _, node := range tree.Talents {
+				if node.Tier == 0 && node.PrereqTalentID == 0 {
+					if _, taken := byName[node.Name]; !taken {
+						byName[node.Name] = node
+					}
+				}
+			}
+		}
 		for _, r := range row.First {
 			node, ok := byName[r.Talent]
 			if !ok {
-				t.Errorf("%s: %q is not a talent of its own tree (%s)", spec, r.Talent, own.Name)
+				t.Errorf("%s: %q is neither a talent of its own tree (%s) nor another tree's first-row talent", spec, r.Talent, own.Name)
 				continue
 			}
 			if targets[node.ID] < r.Rank {
@@ -99,7 +113,7 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if level%10 == 0 && plain[capstone.ID] > 0 && ranks[capstone.ID] == 0 && spineCapstoneNotDefining[spec] != capstone.Name {
+			if level%10 == 0 && plain[capstone.ID] > 0 && ranks[capstone.ID] == 0 && spineCapstoneNotDefining[spec] != capstone.Name && !capstoneWaits[spec][level] {
 				t.Errorf("%s level %d: %q drops %s, which the plain walk's spine holds", spec, level, s, capstone.Name)
 			}
 			for ti, part := range strings.Split(s, "-") {
@@ -187,3 +201,8 @@ func TestBeastMasteryTakesFocusedFireBeforeEnduranceTraining(t *testing.T) {
 		}
 	}
 }
+
+// capstoneWaits are the published bands where a reservation deliberately holds the
+// capstone back: Shadow takes Wand Specialization at 10-11, so Shadowform waits from 40
+// to 42 (sim-accuracy round 15 wave 6; ladder-first.json's reason).
+var capstoneWaits = map[string]map[int]bool{"priest-shadow": {40: true}}
