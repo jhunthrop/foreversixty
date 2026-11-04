@@ -233,3 +233,32 @@ func TestShadowKeepsVampiricEmbraceUp(t *testing.T) {
 	ids := castOrder(t, shadowSpecKey)
 	requireBefore(t, shadowSpecKey, ids, vampiricEmbrace, mindFlay)
 }
+
+// Round 15 (priest): Shadow opens with a Mind Blast cast before the pull, timed
+// to land on it (1.5 s cast), after Shadowform at -20 s. Both Forever Shadow
+// guides open this way (Warcraft Tavern Forever Shadow guide; Mobalytics Forever
+// Shadow guide, 2026-11-02); raid 60 gains about 0.8% and no bare band loses.
+func TestShadowOpensWithAPrePullMindBlast(t *testing.T) {
+	const (
+		shadowform    = 15473
+		mindBlastRank = 10947
+	)
+	curated, err := loadLadderCurated(repoRoot, "priest-shadow")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, p := range rot.PrepullActions {
+		got = append(got, protojson.Format(p.GetAction().GetCastSpell().GetSpellId())+"@"+p.GetDoAtValue().GetConst().GetVal())
+	}
+	if len(rot.PrepullActions) != 2 ||
+		rot.PrepullActions[0].GetAction().GetCastSpell().GetSpellId().GetSpellId() != shadowform ||
+		rot.PrepullActions[1].GetAction().GetCastSpell().GetSpellId().GetSpellId() != mindBlastRank ||
+		rot.PrepullActions[1].GetDoAtValue().GetConst().GetVal() != "-1.5s" {
+		t.Errorf("Shadow prepull %v, want Shadowform then Mind Blast rank 9 at -1.5s", got)
+	}
+}
