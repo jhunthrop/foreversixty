@@ -4,22 +4,22 @@ classSlug: rogue
 spec: subtlety
 role: dps
 build: 'FS1:1.60.1.70755:rogue:night-elf:005302011/320003/035131031321001151:'
-recommendedRaces: [night-elf, troll]
+recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike and Shank on cooldown, Boot Knife, Death Mark and its raid spot.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Rogue and Warlock class deep dive'
-    url: https://www.warcrafttavern.com/forever/news/poison-pets-rogue-warlock-deep-dive-for-wow-forever/
+    url: https://news.blizzard.com/en-us/article/24310968/world-of-warcraft-forever-class-deep-dives-rogue-and-warlock
     kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -39,7 +39,7 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and B
 
 - The lowest raid damage of the three trees
 - More moving parts than Combat: a debuff, a bleed, a mark and three short cooldowns to track
-- Its strongest tools (Vanish, Preparation, Blind) do little on a raid boss
+- Its strongest tools (Vanish and Blind) do little on a raid boss, and Preparation is worth only one extra five-point finisher there
 
 ### In a raid
 
@@ -59,7 +59,7 @@ One build does everything: 12 in Assassination for Malice, Ruthlessness, Improve
 - **Premeditation** (1 point): two combo points on a 2 minute cooldown. In Forever it needs no Stealth, so it opens the fight and comes back in it.
 - **Initiative** (3 points): Garrote, Ambush and Cheap Shot add a combo point.
 
-Opportunity (5 points) adds 20% to Garrote and Ambush. Blood Splatter keeps Rupture up 6 seconds longer and the opening Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. One point of Dirty Deeds takes 10 energy off Garrote and Cheap Shot. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. The point in Improved Ambush only opens the next row; Ambush is not a boss opener for you.
+Opportunity (5 points) adds 20% to Garrote, and to Ambush and Backstab when you hold a dagger. Blood Splatter keeps Rupture up 6 seconds longer and the opening Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. One point of Dirty Deeds takes 10 energy off Garrote and Cheap Shot. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. The point in Improved Ambush is there for the points total that opens Boot Knife and Death Mark; Ambush needs a dagger in the main hand, and even with one it is not a boss opener for you.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -67,7 +67,7 @@ Opportunity (5 points) adds 20% to Garrote and Ambush. Blood Splatter keeps Rupt
 
 ### The pull
 
-Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. It needs no Stealth in Forever, so press it again every 2 minutes in the fight whenever you have three combo points or fewer, and spend them inside the 20 seconds. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush is the opener for anything that will die fast, not for a boss. Then **Rupture** right away at four points, and **Death Mark** as soon as you have five with both bleeds ticking.
+Stealth. A couple of seconds before the pull, press **Premeditation** for two combo points; they last 20 seconds, so do not press it early. It needs no Stealth in Forever, so press it again every 2 minutes in the fight whenever you have three combo points or fewer, and spend them inside the 20 seconds. Open with **Garrote** once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet. Ambush needs a dagger in the main hand, so with a sword it is off your bar. On trash that will die fast, open with **Cheap Shot**, which Initiative makes three combo points and which holds the mob still for 4 seconds, or with Garrote. Then **Rupture** right away at four points, and **Death Mark** as soon as you have five with both bleeds ticking.
 
 Every rogue learns **Poised** at 18: at full energy out of combat, your next ability costs less, so open from full energy.
 
@@ -87,18 +87,18 @@ Death Mark is your only damage cooldown and it comes back every 10 seconds, so t
 
 ### Trash, threat and survival
 
-- **Kidney Shot** costs 25 energy, sits on a 20 second cooldown and stuns longer per combo point, up to 6 seconds at five. Use it on casters. Kick, Gouge and Blind handle the rest; Elusiveness puts Blind on a short leash.
+- **Kidney Shot** costs 25 energy, sits on a 20 second cooldown and stuns longer per combo point, up to 6 seconds at five. Use it on casters. Kick, Gouge and Blind handle the rest; with Elusiveness, Blind comes back every three and a half minutes.
 - **Redirect** (trained at level 1) lifts your combo points off a dying mob and hands them to the next enemy you hit within 15 seconds.
 - **Feint** on cooldown on bosses where you sit near the tank's threat. **Vanish** drops you from the threat table, but a bleed or DoT on you puts you back in combat.
 - **Evasion** and Ghostly Strike's dodge are for melee trash that turns on you. Neither helps against spells.
 
 ## Stat priority
 
-Hit first, so Hemorrhage, Ghostly Strike and the finishers land. Agility next, for attack power and crit together. Crit is better than it looks: your Rupture and Garrote ticks crit, and Death Mark's cap rises with your crit chance.
+Hit counts until your attacks stop missing, and adds nothing past that. Your white swings with two weapons miss far more often than Hemorrhage, Ghostly Strike and your finishers, so they keep wanting hit after your specials have stopped missing. Agility gives attack power and crit together. Crit is better than it looks: your Rupture and Garrote ticks crit, and Death Mark's cap rises with your crit chance. Strength and attack power add straight damage to every hit. Haste is rare on gear; take it when it comes. The table above gives the order for your gear.
 
 ## Best in slot
 
-Daggers in both hands. Hemorrhage and Ghostly Strike both hit harder with a dagger in the main hand, and the main hand is the one that matters. A fast off-hand dagger carries your Instant Poison.
+Subtlety does not need daggers at 60. Hemorrhage and Ghostly Strike hit harder with a dagger, but most of your damage comes from Rupture, Garrote, Death Mark, Shank and your white swings, and none of them care what kind of weapon you hold. Take the weapons in the table above, dagger or not. The off hand carries your Instant Poison and every Shank, so it wants to hit hard too.
 
 ## Enchants and consumables
 
@@ -106,12 +106,24 @@ Deadly Poison and a stone on the main hand, Instant Poison and a stone on the of
 
 ## Races
 
-Night Elf on Alliance and Troll on Horde: Elune's Light is 10% crit for 15 seconds and Berserking 10% attack speed for 15 seconds, both on 3 minute cooldowns, so press them at the pull. Orc's Blood Fury and Human's passive 1% crit are fine alternatives.
+Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, which is free damage all fight. **Elune's Light** is 10% crit for 15 seconds on a 3 minute cooldown, so press it at the pull with the first mark. Orc's Blood Fury and Human's passive 1% crit are the next best.
 
 ## Professions
 
-**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup pre-raid trinkets. **Engineering** is the PvP and trash pick: grenades, dynamite and gadgets. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
+**Enchanting** makes Molten Heart of the Mountain and Frozen Heart of the Mountain, bind-on-pickup trinkets only an enchanter can make. **Engineering** is the PvP and trash pick: grenades, dynamite and gadgets. **Skinning** and **Leatherworking** cover the Devilsaur and Stormshroud crafts.
 
 ## Leveling
 
-Combat levels faster with a sword; respec at 60. If you level Subtlety, this build opens with Master of Deception and Opportunity, then Premeditation at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way; Opportunity is what makes your openers hit. Shank comes at 24 for every rogue: press it on cooldown. Leveling Subtlety, open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.
+### Levels 1 to 19
+
+Combat levels faster with a sword, so if you only want Subtlety for raids, level Combat and respec at 60. If you level Subtlety, here is how it starts. You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. Keep a dagger in the main hand while you level: Backstab and Ambush need one, and they are what your first talents build on until Hemorrhage at 30.
+
+Poised at 18 takes 10 Energy off your opener when you are at full Energy out of combat, so Ambush from stealth costs 50.
+
+Your first three points, 10 to 12, go into Master of Deception, which lets you sneak past mobs as if you were three levels higher. Opportunity from 13 to 17 adds 20% to Backstab, Garrote and Ambush. Dirty Deeds at 18 makes Garrote 10 Energy cheaper and lets you use it from the front, and a point of Camouflage at 19 speeds you up in stealth.
+
+Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for the first better quest dagger, and keep throwing knives for pulling.
+
+### Levels 20 to 60
+
+Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.

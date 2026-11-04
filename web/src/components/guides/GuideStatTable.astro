@@ -12,9 +12,10 @@
 // expertise, which have no rating in this client). A stat inside its error reads "Not
 // significant" and one below zero beyond its error "No gain", here and in the hero.
 import { band60Weights } from '../../lib/guides/class-dps';
-import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
+import { guideExpertiseCapLine, guideHitCapLine } from '../../lib/guides/hit-cap-line';
 import { guidesCopy } from '../../lib/guides/copy';
 import { railStatRows, railStatValueText } from '../../lib/guides/rail-stats';
+import { bandTalentHits } from '../../lib/guides/talent-hit';
 import GuideTableBox from './GuideTableBox.astro';
 
 interface Props {
@@ -26,23 +27,24 @@ interface Props {
   /** The guide's own frontmatter `statPriority` -- the SET of stats to show; this
    *  component, not that array's own order, decides the order they render in. */
   statPriority: string[];
-  /** The school-hit talent the build takes ("Elemental Precision"), for the hit line. */
-  hitTalent?: string;
 }
 
-const { build, spec, classSlug, recommendedRaces, statPriority, hitTalent } = Astro.props;
+const { build, spec, classSlug, recommendedRaces, statPriority } = Astro.props;
 
 const band60 = band60Weights(build, spec, classSlug, recommendedRaces);
-const rows =
-  band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.hasteScaleFactor);
-const anchor = rows.find((row) => row.value !== undefined && row.perPercent === undefined)?.label;
-const hitCap = guideHitCapLine(band60?.hitToCap, hitTalent);
+const rows = band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.haste);
+const anchor = rows.find((row) => row.reading === 'value' && row.perPercent === undefined)?.label;
+// The hit and expertise the weights character's own talents add, named beside its gear.
+const talentHits = band60 === undefined ? [] : bandTalentHits(build, classSlug, band60.talents);
+const hitCap = guideHitCapLine(band60?.hitToCap, talentHits);
+const expertiseCap = guideExpertiseCapLine(band60?.expertiseToCap, talentHits);
 const role = band60?.role ?? 'dps';
 const unitRow = rows.find(
-  (row) => row.value !== undefined && row.perPercent === undefined && row.perPoint !== undefined,
+  (row) => row.reading === 'value' && row.perPercent === undefined && row.perPoint !== undefined,
 );
 const insignificant = rows.filter((row) => row.reading === 'not-significant').map((row) => row.label);
 const noGain = rows.filter((row) => row.reading === 'no-gain').map((row) => row.label);
+const notOnItems = rows.filter((row) => row.reading === 'not-on-items');
 
 function barWidth(value: number | undefined, perPercent: string | undefined): number {
   if (value === undefined || perPercent !== undefined) return 0;
@@ -79,7 +81,7 @@ function perPointText(value: number | undefined): string {
             <tr data-testid={`guide-stat-table-row-${index}`}>
               <td class="stat-name">{row.label}</td>
               <td data-testid={`guide-stat-table-value-${index}`} class="stat-num-cell">
-                {row.value === undefined ? (
+                {row.reading !== 'value' ? (
                   <span class="stat-muted">{railStatValueText(row)}</span>
                 ) : (
                   <span class="stat-weight">
@@ -113,6 +115,16 @@ function perPointText(value: number | undefined): string {
     {noGain.length > 0 && (
       <p class="stat-note" data-testid="guide-stat-table-no-gain">
         {guidesCopy.noGainNote(noGain.join(' and '), noGain.length > 1, role)}
+      </p>
+    )}
+    {notOnItems.map((row) => (
+      <p class="stat-note" data-testid="guide-stat-table-not-on-items">
+        {guidesCopy.notOnItemsNote(row.label, row.value?.toFixed(1))}
+      </p>
+    ))}
+    {expertiseCap !== undefined && (
+      <p class="stat-note" title={expertiseCap.title} data-testid="guide-stat-table-expertise-cap">
+        {expertiseCap.text}
       </p>
     )}
   </div>

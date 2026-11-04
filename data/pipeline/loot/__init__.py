@@ -76,6 +76,7 @@ from pipeline.loot.gear import (
     apply_fork_columns,
     build_enchants,
     build_suffixes,
+    equip_restrictions,
     faction_restrictions,
     suffix_options,
 )
@@ -331,7 +332,7 @@ def write_loot_files(
 
     run = _build_and_write_loot(build_dir, fork, classification, overlay_dir, curated_dir)
 
-    enchants = build_enchants(fork)
+    enchants = build_enchants(fork, equip_restrictions(read_csv(raw / "SpellEquippedItems.csv")))
     suffixes = build_suffixes(fork)
     client, icon_for = client_tables(build_dir, raw)
     ids_text = ids_md.read_text(encoding="utf-8")

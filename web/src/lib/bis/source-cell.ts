@@ -114,6 +114,18 @@ function findSource(sources: readonly LootSource[], kind: string, itemId: number
   return sources.find((source) => source.kind === kind && itemsOfSource(source).includes(itemId));
 }
 
+/** The rep source the row names (the ranker's faction-correct pick), else the first that sells it. */
+function repSourceFor(
+  sources: readonly LootSource[],
+  itemId: number,
+  named: string | undefined,
+): LootSource | undefined {
+  const match = sources.find(
+    (source) => source.kind === 'rep' && source.name === named && itemsOfSource(source).includes(itemId),
+  );
+  return match ?? findSource(sources, 'rep', itemId);
+}
+
 /**
  * Among every `kind`-matching source naming `itemId`, the one whose own drop chance for it
  * is highest -- `findSource`'s plain "first array match" is not the same choice
@@ -179,7 +191,7 @@ function questFor(options: readonly LootQuestOption[], faction: Faction): LootQu
  * resolves through this exact same function rather than a second copy of it.
  */
 export function resolveSourceCell(
-  slot: Pick<BisSlot, 'item_id' | 'source_kind'>,
+  slot: Pick<BisSlot, 'item_id' | 'source_kind'> & { source?: string },
   faction: Faction,
   loot: LootFile & Partial<LootQuestsFile>,
   fallbackLabel: string,
@@ -246,7 +258,9 @@ export function resolveSourceCell(
   }
 
   if (slot.source_kind === 'rep') {
-    const source = findSource(loot.sources, 'rep', itemId);
+    // An item both PvP factions sell (Don Julio's Band: Stormpike Guard and Frostwolf Clan) has
+    // a rep source per faction; the ranker already named this band's own, so that one wins.
+    const source = repSourceFor(loot.sources, itemId, slot.source);
     return source === undefined ? fallback : { kind: 'rep', faction: source.name, standing: source.standing };
   }
 

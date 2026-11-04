@@ -3,24 +3,24 @@ title: Combat Rogue in Forever
 classSlug: rogue
 spec: combat
 role: dps
-build: 'FS1:1.60.1.70755:rogue:night-elf:325301/3153030000012321541/03:'
-raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:005203002/3043030002012321451/005:'
-recommendedRaces: [night-elf, troll]
-statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
+build: 'FS1:1.60.1.70755:rogue:gnome:325301/3153030000012321541/03:'
+raidBuild: 'FS1:1.60.1.70755:rogue:gnome:005203002/3043030002012321451/005:'
+recommendedRaces: [gnome, undead]
+statPriority: [Hit, Agility, Strength, Attack power, Critical strike, Melee haste]
 description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents that matter.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Rogue and Warlock class deep dive'
-    url: https://www.warcrafttavern.com/forever/news/poison-pets-rogue-warlock-deep-dive-for-wow-forever/
+    url: https://news.blizzard.com/en-us/article/24310968/world-of-warcraft-forever-class-deep-dives-rogue-and-warlock
     kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty stat weights'
+  - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty character planner'
+  - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
 ---
@@ -32,7 +32,7 @@ Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from be
 ### Strengths
 
 - The most forgiving raid rotation of the three trees: one builder, two finishers
-- Adrenaline Rush doubles your energy for 15 seconds, and Blade Flurry cleaves every swing onto a second target
+- Adrenaline Rush doubles your energy regeneration for 15 seconds, and Blade Flurry cleaves every swing onto a second target
 - Weapon Expertise and Precision cover dodge and hit inside the tree
 - Plays the same on every boss: stay behind, keep Slice and Dice up, spend at five
 
@@ -60,7 +60,7 @@ The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of F
 - **Puncturing Wounds** (3 points): 30% more crit on Backstab and a 45% chance at a second combo point. This is what makes daggers the Combat weapon in Forever.
 - **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
-In the raid build, Lethality makes Backstab crits hit 20% harder, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes energy off Sinister Strike, 3 at one point and 5 at two: your builder's discount in the level 60 build. In the raid build its two points and four of Lightning Reflexes are the toll to reach Flawless Execution, Weapon Expertise and Aggression.
+In the raid build, Lethality takes Backstab crits from 200% to 220%, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes energy off Sinister Strike, 3 at one point and 5 at two: your builder's discount in the level 60 build. In the raid build its two points and four of Lightning Reflexes are the toll to reach Flawless Execution, Weapon Expertise and Aggression.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -80,7 +80,7 @@ Every rogue picks up **Poised** at 18: at full energy out of combat, your next a
 
 Backstab costs 60 and you are energy-limited all fight, so you spend the moment you can and wait on energy rather than clip anything. Never sit at full energy: anything over the cap is lost. Press **Adrenaline Rush** low on energy, never at the cap: on the pull, Garrote and one Backstab first, then Adrenaline Rush. Blade Flurry costs 25 and can go at any energy. Shank is energy too: never let it sit ready, and press it before Backstab when both are up. Before an add you know is coming, let energy climb a little so the first cleaved swings have Backstabs behind them.
 
-**Thistle Tea** gives 100 energy on a 5 minute cooldown. Drink it when you are near empty, never during Adrenaline Rush.
+**Thistle Tea** gives 100 energy on a 5 minute cooldown. Drink it when you are near empty, so none of the 100 is lost to the cap.
 
 ### Cooldowns and adds
 
@@ -97,7 +97,7 @@ Blade Flurry hits anything next to your target. Never turn it on next to a Sappe
 
 ## Stat priority
 
-Hit comes first: a missed Backstab is a wasted global and a lost combo point, and Precision only gets you part of the way. Agility gives attack power and crit together, which is why it beats Strength and raw attack power. Crit is worth more to Combat than it looks, because Lethality makes your Backstab crits bigger. Haste is rare on gear and good when you find it.
+Hit counts until your attacks stop missing, and adds nothing past that: a missed Backstab is a wasted global and a lost combo point, Precision only gets you part of the way, and your white swings with two weapons miss far more often than your specials. Agility gives attack power and crit together. Strength and attack power add straight damage to every swing. A crit makes one hit bigger, and Lethality makes your Backstab crits bigger still, but Combat has no Seal Fate, so a crit never adds a combo point, and no bleed of yours runs all fight for a crit to tick on. Haste is rare on gear and good when you find it. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -109,12 +109,24 @@ Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **
 
 ## Races
 
-Night Elf on Alliance and Troll on Horde. **Elune's Light** is 10% crit for 15 seconds and **Berserking** 10% attack speed for 15 seconds, both on 3 minute cooldowns: line either up with Adrenaline Rush. Orc's **Blood Fury** is close behind for Horde, and Human's passive 1% crit is the Alliance fallback; Elune's Light beats it for raiding. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
+Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damaging abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** gives you 5% more energy. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc, Troll and Night Elf all land a step behind and within a hair of each other. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
 
 ## Professions
 
-**Enchanting** is the one that changes your gear: Molten Heart of the Mountain and Frozen Heart of the Mountain are bind-on-pickup trinkets only an enchanter can make, and both are pre-raid picks. **Engineering** brings grenades and dynamite for trash. **Skinning** and **Leatherworking** pay for themselves, since Devilsaur and the Stormshroud pieces are leatherworking crafts. Heartseeker comes from a blacksmith; buy it, do not train for it.
+**Enchanting** is the one that changes your gear: Molten Heart of the Mountain and Frozen Heart of the Mountain are bind-on-pickup trinkets only an enchanter can make. **Engineering** brings grenades and dynamite for trash. **Skinning** and **Leatherworking** pay for themselves, since Devilsaur and the Stormshroud pieces are leatherworking crafts. Heartseeker is a blacksmith's dagger that binds when equipped: when it is on your list, buy one, do not train the profession for it.
 
 ## Leveling
 
-Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. Open with Cheap Shot or Garrote from stealth, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Efficient Strikes at 13 and Aggression by 30 make every Sinister Strike cheaper and harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and Vanish get you out of the pulls that go wrong.
+### Levels 1 to 19
+
+Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Slice and Dice at 10 is the big one: from then on, a short one on anything that will live, Eviscerate on the rest.
+
+Poised at 18 takes 10 Energy off your first ability when you start a pull at full Energy out of combat, so never pull half empty.
+
+Your points from 10 to 12 go into Coup de Grace for 20% more Eviscerate damage. Efficient Strikes at 13 takes 3 Energy off Sinister Strike, Lightning Reflexes from 14 to 18 gives you 5% dodge, and Puncturing Wounds from 19 only pays off when you have a dagger in the main hand and get behind the mob for Backstab.
+
+Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger with the first quest sword, axe or mace that beats it, and keep throwing knives for pulling.
+
+### Levels 20 to 60
+
+Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. Open with Cheap Shot or Garrote from stealth, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and Vanish get you out of the pulls that go wrong.

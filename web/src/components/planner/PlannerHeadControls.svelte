@@ -63,7 +63,7 @@
         disabled={store.readOnly}
       />
     </div>
-    <div class="planner-header-select-field">
+    <div class="planner-header-select-field planner-header-race-field">
       <label class="quiet-label" for="planner-race-select">Race</label>
       <Select
         id="planner-race-select"
@@ -136,12 +136,17 @@
      hydrated width. That widened pair once pushed the faction note onto its own row below 560px
      and shifted everything under the controls by 33px (0.086 of layout shift on /planner at
      360px). A fixed field width, wider than any class or race name at 15px, holds the row the
-     same before and after the data arrives. */
+     same before and after the data arrives. The race field is wider: Forever's Skyborne rows
+     ("High Order Skyborne", "Windshaper Skyborne") are the longest names, and both fields still
+     share one row in a 390px phone's column. */
   .planner-header-select-field {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    width: 152px;
+    width: 140px;
+  }
+  .planner-header-race-field {
+    width: 200px;
   }
   .planner-header-faction-note {
     font-size: 13px;

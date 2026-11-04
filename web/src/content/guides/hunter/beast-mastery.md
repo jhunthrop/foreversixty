@@ -8,9 +8,12 @@ raidBuild: 'FS1:1.60.1.70755:hunter:night-elf:5420001505001251/00523500014/0:'
 recommendedRaces: [night-elf, orc]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Beast Mastery Hunter in Forever: talents for leveling and raids, the shot priority, pet handling, stats, consumables and race picks.'
-updated: 2026-11-03
+updated: 2026-11-04
 confidence: inferred
 sources:
+  - label: 'Blizzard, Class Deep Dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
@@ -20,8 +23,11 @@ sources:
   - label: 'Warcraft Tavern, Forever Hunter Guide'
     url: https://warcrafttavern.com/forever/guides/hunter/
     kind: community
+  - label: 'Warcraft Tavern, Forever Hunter Leveling Guide'
+    url: https://www.warcrafttavern.com/forever/guides/hunter-leveling/
+    kind: community
   - label: 'Forever Sixty, talent trees'
-    url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
+    url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
   - label: 'Forever Sixty, spell values'
     url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
@@ -51,13 +57,13 @@ Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial 
 ### Weaknesses
 
 - A dead or idle pet is a large part of your damage gone
-- The pet gets no raid buffs in Forever, so only your own gear makes it stronger
+- The pet takes no stat buffs from other players in Forever, so your gear is what makes it stronger
 - Mana runs out on long fights if you spend Arcane Shots freely
 
 ### In a raid
 
 - **Role:** Ranged physical DPS with a pet
-- **Brings:** Heart of the Lion (10% stats and attack power for everyone near you), Trueshot Aura (100 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
+- **Brings:** Heart of the Lion (10% stats and a flat attack power bonus for everyone near you), Trueshot Aura (100 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
 
 ## Talents and builds
 
@@ -80,7 +86,7 @@ The raid build moves one point out of Efficiency and the point in Rapid Killing 
 
 Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway. Send the pet in once the tank has the boss.
 
-As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and Berserking or Blood Fury together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
+As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
 From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. Multi-Shot on cooldown is fine. Aimed Shot on that cooldown is a small extra for a Beast Mastery hunter: if the cooldown comes up right after an auto shot fires, cast Aimed Shot, which outhits Multi-Shot. Otherwise take Multi-Shot, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot while you have mana.
 
@@ -92,7 +98,7 @@ Auto Shot does more damage than any button you press, so protect it:
 
 When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed Shot and Multi-Shot going. Drink a Major Mana Potion before you need it, not at 5%.
 
-**The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Pets in Forever get no buffs from your raid, so the only way to make it stronger is your own gear. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
+**The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Other players' stat buffs do not reach your pet in Forever, so your own gear is what makes it stronger. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
 
 **Threat.** A Beast Mastery hunter with Bestial Wrath up can pass a fresh tank in the opening seconds. Watch your threat and Feign Death before you reach the tank, not after the boss turns. Feign Death can be resisted: if it says Resisted, you still have all your threat. The pet keeps its own threat, which is fine, since it sits behind the boss.
 
@@ -104,7 +110,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-Hit comes first until you reach 9% hit, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you. After hit, Agility and Intellect are close: Agility is attack power and crit, Intellect is attack power through Careful Aim and mana on top. Crit is better than it looks because the pet copies all of your crit chance. Plain attack power is the weakest per point, and haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you, and past the cap it adds nothing. Agility is attack power and crit together. Crit is better than it looks because the pet copies all of your crit chance. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -112,7 +118,7 @@ Hunters wear leather until 40 and mail from 40. Your ranged weapon is your real 
 
 ## Enchants and consumables
 
-Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 247x128 Accurascope once your raid's engineer can make it. Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers, where Careful Aim makes it count as attack power.
+Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 247x128 Accurascope once your raid's engineer can make it. Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers: no bracer enchant carries real Agility, Strength does nothing for your shots, and Careful Aim makes Intellect count as attack power.
 
 **Ammo and quiver.** Carry the best ammo your level can use and plenty of it: arrows for a bow, bullets for a gun. Jagged Arrows from 40, Ice Threaded and Thorium Headed Arrows from the early 50s, or Thorium Shells from an engineer. The quiver or ammo pouch is a free 10 to 15% ranged attack speed, so upgrade it every time you can: Quickdraw Quiver from 40 and a 15% bag near 60. Run out of ammo in a raid and you do almost nothing.
 
@@ -124,7 +130,7 @@ Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, it lines u
 
 Orc for the Horde. Command makes your pet hit 5% harder all fight, and Blood Fury's two minute cooldown comes up with every Bestial Wrath, so you press them together twice in most boss fights. Troll is a fine second: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull.
 
-Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds every auto shot you fire.
+Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire, and it lands in the middle of the pack, so it is the paid option, never the pick.
 
 ## Professions
 
@@ -132,10 +138,20 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 
 ## Leveling
 
-Beast Mastery is the best way to level a hunter. Tame your first pet at 10 and keep it within a few levels of you. The pet takes the hits, you shoot, and you rarely stop to eat.
+### Levels 1 to 19
 
-Your first five points go into Deadly Aspects. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training comes after it.
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12. Multi-Shot comes at 18.
 
-Open every pull with Hunter's Mark and Serpent Sting, send the pet, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
+
+Your first five points go into Deadly Aspects: with Aspect of the Hawk up, each point is a 2% chance on Auto Shot for 30% ranged attack speed over 12 sec. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training starts at 17.
+
+Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.
+
+### Levels 20 to 60
+
+Beast Mastery is the best way to level a hunter. Keep the pet within a few levels of you. The pet takes the hits, you shoot, and you rarely stop to eat.
+
+Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get, and Bestial Wrath comes the same level.

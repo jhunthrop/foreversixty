@@ -35,6 +35,7 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
+from typing import Any
 
 from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
@@ -549,7 +550,23 @@ def compute_spell_icons(
     specs = load_specs(curated_dir) if (curated_dir / "specs.json").exists() else []
     for form_spell in sorted(s.form_spell for s in specs if s.form_spell is not None):
         icons.setdefault(form_spell, _resolve_icon(form_spell, icon_of))
+    # Every rank of a family any of the above names: a page that downranks to the rank a
+    # character's level has (Lesser Heal rank 1, spell 2050, on a level 1 Discipline card)
+    # draws that rank's own icon, never the placeholder.
+    for spell_id in sorted(rank_siblings(spellranks, set(icons))):
+        icons.setdefault(spell_id, _resolve_icon(spell_id, icon_of))
     return dict(sorted(icons.items()))
+
+
+def rank_siblings(spellranks: dict[str, Any], ids: set[int]) -> set[int]:
+    """Every rank id of each `spellranks.json` family that has a rank in `ids`, `ids` excluded."""
+    siblings: set[int] = set()
+    for families in spellranks.get("classes", {}).values():
+        for ranks in families.values():
+            family = {row["id"] for row in ranks}
+            if family & ids:
+                siblings |= family - ids
+    return siblings
 
 
 def _collect_spell_ids(value: object, into: set[int]) -> None:

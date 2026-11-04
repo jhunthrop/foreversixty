@@ -97,21 +97,21 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 15 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 16 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "421": {
       "name": "Chain Lightning",
       "rank": 1,
-      "cost": 145,
+      "cost": 245,
       "cost_type": 0,
       "cost_pct": 0.0,
-      "cast_time_ms": 2000,
+      "cast_time_ms": 2500,
       "channeled": false,
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 88 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
+      "description": "Hurls a lightning bolt at the enemy, dealing 215 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
       "icon": "spell_nature_chainlightning"
     },
     "526": {
@@ -139,7 +139,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 27 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 30 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "546": {
@@ -181,7 +181,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 45 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 52 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "556": {
@@ -237,21 +237,21 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 61 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 73 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "930": {
       "name": "Chain Lightning",
       "rank": 2,
-      "cost": 200,
+      "cost": 360,
       "cost_type": 0,
       "cost_pct": 0.0,
-      "cast_time_ms": 2000,
+      "cast_time_ms": 2500,
       "channeled": false,
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 100 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
+      "description": "Hurls a lightning bolt at the enemy, dealing 348 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
       "icon": "spell_nature_chainlightning"
     },
     "939": {
@@ -279,7 +279,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 82 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 109 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "945": {
@@ -383,15 +383,15 @@
     "2860": {
       "name": "Chain Lightning",
       "rank": 3,
-      "cost": 250,
+      "cost": 425,
       "cost_type": 0,
       "cost_pct": 0.0,
-      "cast_time_ms": 2000,
+      "cast_time_ms": 2500,
       "channeled": false,
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 112 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
+      "description": "Hurls a lightning bolt at the enemy, dealing 428 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
       "icon": "spell_nature_chainlightning"
     },
     "2870": {
@@ -489,7 +489,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 111 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 148 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "6196": {
@@ -867,7 +867,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 18 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 20 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "8044": {
@@ -881,7 +881,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 33 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 36 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "8045": {
@@ -895,7 +895,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 49 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 67 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "8046": {
@@ -909,7 +909,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 81 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 130 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "8050": {
@@ -923,7 +923,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 20 Fire damage immediately and 28 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 25 Fire damage immediately and 28 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "8052": {
@@ -937,7 +937,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 33 Fire damage immediately and 32 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 51 Fire damage immediately and 48 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "8053": {
@@ -951,7 +951,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 43 Fire damage immediately and 56 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 95 Fire damage immediately and 96 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "8056": {
@@ -965,7 +965,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with frost, causing 66 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
+      "description": "Instantly shocks the target with frost, causing 98 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
       "icon": "spell_frost_frostshock"
     },
     "8058": {
@@ -979,7 +979,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with frost, causing 124 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
+      "description": "Instantly shocks the target with frost, causing 222 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
       "icon": "spell_frost_frostshock"
     },
     "8071": {
@@ -1273,7 +1273,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 147 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 194 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "10392": {
@@ -1287,7 +1287,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 162 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 240 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "10395": {
@@ -1385,7 +1385,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 132 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 242 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "10413": {
@@ -1399,7 +1399,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 205 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 383 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "10414": {
@@ -1413,7 +1413,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with concussive force, causing 301 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
+      "description": "Instantly shocks the target with concussive force, causing 531 Nature damage.  It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec.  Causes a high amount of threat.",
       "icon": "spell_nature_earthshock"
     },
     "10427": {
@@ -1553,7 +1553,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 82 Fire damage immediately and 84 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 164 Fire damage immediately and 168 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "10448": {
@@ -1567,7 +1567,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 128 Fire damage immediately and 136 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 245 Fire damage immediately and 256 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "10456": {
@@ -1665,7 +1665,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with frost, causing 188 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
+      "description": "Instantly shocks the target with frost, causing 355 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
       "icon": "spell_frost_frostshock"
     },
     "10473": {
@@ -1679,7 +1679,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly shocks the target with frost, causing 283 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
+      "description": "Instantly shocks the target with frost, causing 506 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.",
       "icon": "spell_frost_frostshock"
     },
     "10478": {
@@ -1895,15 +1895,15 @@
     "10605": {
       "name": "Chain Lightning",
       "rank": 4,
-      "cost": 315,
+      "cost": 495,
       "cost_type": 0,
       "cost_pct": 0.0,
-      "cast_time_ms": 2000,
+      "cast_time_ms": 2500,
       "channeled": false,
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 30.0,
-      "description": "Hurls a lightning bolt at the enemy, dealing 123 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
+      "description": "Hurls a lightning bolt at the enemy, dealing 510 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.",
       "icon": "spell_nature_chainlightning"
     },
     "10613": {
@@ -2029,7 +2029,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 178 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 295 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "15208": {
@@ -2043,7 +2043,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Casts a bolt of lightning at the target for 196 Nature damage.",
+      "description": "Casts a bolt of lightning at the target for 353 Nature damage.",
       "icon": "spell_nature_lightning"
     },
     "16164": {
@@ -2061,7 +2061,7 @@
       "icon": "spell_shadow_manaburn"
     },
     "16166": {
-      "name": "Elemental Mastery",
+      "name": "Lightning Mastery",
       "rank": 0,
       "cost": 0,
       "cost_type": 0,
@@ -2071,8 +2071,8 @@
       "passive": false,
       "cooldown_ms": 180000,
       "range_yd": 0.0,
-      "description": "Gain mastery over Fire and Lightning, reducing the cast time of Lightning Bolt and Lava Burst by 0.5 sec, and removing the cooldown from Chain Lightning. Lasts 15 sec.",
-      "icon": "spell_nature_wispheal"
+      "description": "Gain mastery over Lightning, reducing the cast time of your Lightning Bolt spell by 0.5 sec, and removing the cooldown from your Chain Lightning spell. Lasts 15 sec.",
+      "icon": "spell_nature_unrelentingstorm"
     },
     "16188": {
       "name": "Nature's Swiftness",
@@ -2307,9 +2307,9 @@
       "cast_time_ms": 0,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 8000,
+      "cooldown_ms": 6000,
       "range_yd": 5.0,
-      "description": "Instantly strike for normal weapon damage and increase the damage you deal to the target with your next Lightning Bolt, Chain Lightning, or Earth Shock spell by 20% for 12 sec.",
+      "description": "Instantly strike for 150% weapon damage and increase the damage you deal to the target with your next Lightning Bolt, Chain Lightning, or Earth Shock spell by 20% for 12 sec.",
       "icon": "ability_shaman_stormstrike"
     },
     "20608": {
@@ -2547,7 +2547,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 20.0,
-      "description": "Instantly sears the target with fire, causing 166 Fire damage immediately and 176 Fire damage over 12 sec.",
+      "description": "Instantly sears the target with fire, causing 292 Fire damage immediately and 320 Fire damage over 12 sec.",
       "icon": "spell_fire_flameshock"
     },
     "36936": {
@@ -2679,15 +2679,15 @@
     "408521": {
       "name": "Riptide",
       "rank": 1,
-      "cost": 245,
+      "cost": 150,
       "cost_type": 0,
       "cost_pct": 0.0,
       "cast_time_ms": 0,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 6000,
+      "cooldown_ms": 12000,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 480, an additional 445 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%.",
+      "description": "Heals a friendly target for 445 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%.",
       "icon": "spell_nature_riptide"
     },
     "425336": {
@@ -2705,7 +2705,7 @@
       "icon": "spell_nature_bloodlust"
     },
     "437009": {
-      "name": "Totemic Projection",
+      "name": "Totemic Call",
       "rank": 0,
       "cost": 0,
       "cost_type": 0,
@@ -2713,37 +2713,37 @@
       "cast_time_ms": 0,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 60000,
+      "cooldown_ms": 30000,
       "range_yd": 30.0,
-      "description": "Relocates your active totems to the specified location.",
+      "description": "Relocates your active totems to your location.",
       "icon": "ability_shaman_totemrelocation"
     },
     "1239242": {
       "name": "Riptide",
       "rank": 2,
-      "cost": 300,
+      "cost": 180,
       "cost_type": 0,
       "cost_pct": 0.0,
       "cast_time_ms": 0,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 6000,
+      "cooldown_ms": 12000,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 612, an additional 575 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%.",
+      "description": "Heals a friendly target for 575 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%.",
       "icon": "spell_nature_riptide"
     },
     "1239243": {
       "name": "Riptide",
       "rank": 3,
-      "cost": 385,
+      "cost": 230,
       "cost_type": 0,
       "cost_pct": 0.0,
       "cast_time_ms": 0,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 6000,
+      "cooldown_ms": 12000,
       "range_yd": 40.0,
-      "description": "Heals a friendly target for 841, an additional 805 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%.",
+      "description": "Heals a friendly target for 805 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%.",
       "icon": "spell_nature_riptide"
     },
     "1325256": {

@@ -21,12 +21,10 @@ describe('GuideStatTable', () => {
     if (file === null) throw new Error('warrior-fury BiS file missing');
     const band = bandEntry(file, 60, 'alliance');
     if (band === undefined) throw new Error('band 60 alliance missing');
-    const expectedRows = railStatRows(
-      STAT_PRIORITY,
-      band.weights,
-      'warrior-fury',
-      band.haste_scale_factor ?? null,
-    );
+    const expectedRows = railStatRows(STAT_PRIORITY, band.weights, 'warrior-fury', {
+      scaleFactor: band.haste_scale_factor ?? null,
+      onItems: band.haste_on_items ?? true,
+    });
 
     const c = await AstroContainer.create();
     const html = await c.renderToString(GuideStatTable, {
@@ -43,7 +41,12 @@ describe('GuideStatTable', () => {
     for (const [index, row] of expectedRows.entries()) {
       expect(html).toContain(`data-testid="guide-stat-table-row-${index}"`);
       expect(html).toContain(row.label);
-      if (row.value === undefined) {
+      if (row.reading === 'not-on-items') {
+        expect(html).toContain('Not on any item');
+        expect(html).toContain(
+          `${row.label}: ${row.value!.toFixed(1)} per 1%, but no item at level 60 has it.`,
+        );
+      } else if (row.value === undefined) {
         expect(html).toContain('Not significant');
       } else if (row.perPercent) {
         expect(html).toContain(`${row.value.toFixed(1)} per 1% haste`);

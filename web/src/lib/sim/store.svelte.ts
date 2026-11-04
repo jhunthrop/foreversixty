@@ -13,7 +13,7 @@
 //     player asks for a number. `init.pool` exists for tests and for the planner, which
 //     brings its own.
 import { loadPresetSets } from './preset-sets';
-import { loadItemsWithCurrentFallback, loadReference, loadTalents } from '../planner/load';
+import { loadItemsWithCurrentFallback, loadReference, loadTalents, playableRaces } from '../planner/load';
 import type { Item, RaceRow, TalentFile } from '../planner/types';
 import { indexTalents } from '../planner/rules';
 import { dispatchServerSim, fetchSim, fetchSimProgress, saveSim } from './api';
@@ -319,7 +319,10 @@ export function createSimStore(init: SimStoreInit) {
       // Only for the strip's race picker, and only when the character needs one -- which is
       // the logged-fight source alone. Every other source already knows the race.
       if (needsRace(outcome.character) && races.length === 0) {
-        races = (await loadReference(outcome.character.tree_version)).races;
+        // Only the races the client lets this class be (combos.json, from CharBaseInfo): a
+        // Skyborne Mage is High Order only, and no list offers a Tauren Mage.
+        const reference = await loadReference(outcome.character.tree_version);
+        races = playableRaces(reference, outcome.character.class_slug);
       }
     } catch {
       // No list means no picker; the strip says so rather than rendering an empty select.
@@ -609,6 +612,10 @@ export function createSimStore(init: SimStoreInit) {
         message = simCopy.noCharacter;
         return;
       }
+      // A character that still owes its race (a logged fight, a bare "Skyborne" export) never
+      // reaches the engine, which refuses an empty race with a raw error; the strip's picker is
+      // the question, and Run opens once it is answered (2026-11-04: a pasted bare export auto-ran).
+      if (needsRace(character)) return;
       if (adoptPending) await adopting;
       message = null;
       detail = '';

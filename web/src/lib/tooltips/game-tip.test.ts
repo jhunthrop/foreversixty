@@ -75,6 +75,16 @@ describe('displayDescription', () => {
     );
   });
 
+  it('reads a chain of conditionals as its last, general branch', () => {
+    expect(
+      displayDescription(
+        'Your casts of $?s2060[Greater Heal]?s5185[Healing Touch]?s331[Healing Wave]?s635[Holy Light][Greater Heal, Healing Touch, Healing Wave, or Holy Light] in combat grant up to 40 increased healing.',
+      ),
+    ).toBe(
+      'Your casts of Greater Heal, Healing Touch, Healing Wave, or Holy Light in combat grant up to 40 increased healing.',
+    );
+  });
+
   it('names both words of a gendered pair and agrees a plural with its number', () => {
     expect(displayDescription('the mage and $ghis:her; allies')).toBe('the mage and his or her allies');
     expect(displayDescription('The next 1 melee attack that $Lstrikes:strike; the caster')).toBe(

@@ -65,7 +65,7 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   await sample.getByRole('link').first().click();
 
   await expect(page).toHaveURL(/\/reports\/sample$/);
-  await expect(page.getByTestId('report-title')).toHaveText('Beta night, 17 Sept 2026');
+  await expect(page.getByTestId('report-title')).toHaveText('Sample raid night, 17 Sept 2026');
   await expect(page.getByText('17 Sept 2026').first()).toBeVisible();
   await expect(page.getByTestId('report-sample-badge')).toHaveText('Sample report');
   await expect(page.getByTestId('report-live')).toHaveCount(0);

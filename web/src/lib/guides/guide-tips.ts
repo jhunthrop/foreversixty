@@ -23,7 +23,7 @@ import {
   type TalentTipEntry,
 } from '../tooltips/game-tip';
 import { buildIconExists, spellIcons } from '../data/build-files';
-import { readBuildJson } from './build-files';
+import { buildItemCatalog, readBuildJson } from './build-files';
 import { loadTalentFile, type DecodedTreeView } from './build-tree';
 import { guideGearExtras, type GearExtras } from './gear-extras';
 import { loadGuideBis, type GuideBis } from './guide-bis';
@@ -39,14 +39,6 @@ interface SharedSpellTips {
   racials: Record<string, SpellTipRow>;
   enchants: Record<string, SpellTipRow>;
   consumables: Record<string, { item_id: number; spell_id: number; use: string }>;
-}
-
-interface CatalogItem {
-  id: number;
-  name: string;
-  quality: number;
-  item_level: number;
-  required_level: number;
 }
 
 const RACIAL_SUBTITLE = 'Racial';
@@ -66,16 +58,6 @@ function sharedSpellTips(build: string): SharedSpellTips {
   };
   sharedCache.set(build, read);
   return read;
-}
-
-const catalogCache = new Map<string, Map<number, CatalogItem>>();
-function itemCatalog(build: string): Map<number, CatalogItem> {
-  const cached = catalogCache.get(build);
-  if (cached !== undefined) return cached;
-  const rows = readBuildJson<CatalogItem[]>(build, 'items.json') ?? [];
-  const indexed = new Map(rows.map((row) => [row.id, row]));
-  catalogCache.set(build, indexed);
-  return indexed;
 }
 
 function shownIcon(build: string, icon: string | undefined): string | undefined {
@@ -145,7 +127,7 @@ export function consumableItemModel(
 ): ItemTooltipModel | undefined {
   const tip = sharedSpellTips(build).consumables[consumableId];
   if (tip === undefined) return undefined;
-  const item = itemCatalog(build).get(tip.item_id);
+  const item = buildItemCatalog(build).get(tip.item_id);
   if (item === undefined) return undefined;
   return {
     id: item.id,

@@ -1,78 +1,82 @@
 // web/src/lib/guides/hit-cap-line.test.ts
 import { describe, expect, it } from 'vitest';
-import type { DecodedTalentView, DecodedTreeView } from './build-tree';
-import { guideHitCapLine, schoolHitTalent } from './hit-cap-line';
+import { guideExpertiseCapLine, guideHitCapLine } from './hit-cap-line';
+import type { TalentHit } from './talent-hit';
 
-function tree(...talents: [string, number][]): DecodedTreeView {
-  const views = talents.map(
-    ([name, rank], index) =>
-      ({
-        id: index,
-        name,
-        icon: 'x',
-        max_rank: 3,
-        tier: index,
-        column: 0,
-        prereq_talent_id: null,
-        prereq_rank: null,
-        ranks: [],
-        spell_id: index,
-        rank,
-      }) satisfies DecodedTalentView,
-  );
-  return { name: 'T', position: 0, talents: views, points: views.reduce((s, t) => s + t.rank, 0) };
-}
+const PRECISION_MAGE: TalentHit = { name: 'Precision', scope: 'spell', percent: 6 };
+const SUPPRESSION: TalentHit = { name: 'Suppression', scope: 'hit', percent: 5 };
+const PRECISION_ROGUE: TalentHit = { name: 'Precision', scope: 'hit', percent: 3 };
+const SHADOW_FOCUS: TalentHit = { name: 'Shadow Focus', scope: 'school', percent: 5 };
+const WEAPON_EXPERTISE: TalentHit = { name: 'Weapon Expertise', scope: 'expertise', percent: 2 };
 
 describe('guideHitCapLine', () => {
-  it('splits a caster’s cap into talent and gear: "Hit cap: 16% · 3% from Precision, 13% from gear"', () => {
-    const line = guideHitCapLine(
-      { kind: 'spell', baseline: 0, spell: 16, school: { names: ['Frost'], hit: 3, to_cap: 13 } },
-      'Precision',
+  it('names a stat-wide talent apart from the gear: Arcane, all 6% from Precision', () => {
+    expect(guideHitCapLine({ kind: 'spell', baseline: 6, spell: 10 }, [PRECISION_MAGE])?.text).toBe(
+      'Hit cap: 16% · 6% from Precision, 10% still to find',
     );
-    expect(line?.text).toBe('Hit cap: 16% · 3% from Precision, 13% from gear');
   });
 
-  it('says "talents" when the build names no school-hit talent', () => {
+  it('splits the gear and buffs from the talent when both count', () => {
+    expect(guideHitCapLine({ kind: 'spell', baseline: 7, spell: 9 }, [PRECISION_MAGE])?.text).toBe(
+      'Hit cap: 16% · 1% hit from BiS gear and buffs, 6% from Precision, 9% still to find',
+    );
+    expect(guideHitCapLine({ kind: 'spell', baseline: 6, spell: 10 }, [SUPPRESSION])?.text).toBe(
+      'Hit cap: 16% · 1% hit from BiS gear and buffs, 5% from Suppression, 10% still to find',
+    );
+  });
+
+  it('names a school talent and the spells it covers: Shadow, 5% from Shadow Focus', () => {
+    const line = guideHitCapLine(
+      { kind: 'spell', baseline: 0, spell: 16, school: { names: ['Shadow'], hit: 5, to_cap: 11 } },
+      [SHADOW_FOCUS],
+    );
+    expect(line?.text).toBe('Hit cap: 16% · 5% from Shadow Focus on Shadow spells, 11% still to find');
+  });
+
+  it('says "talents" for a school bonus its talents do not account for', () => {
     const line = guideHitCapLine({
       kind: 'spell',
       baseline: 0,
       spell: 16,
       school: { names: ['Frost'], hit: 3, to_cap: 13 },
     });
-    expect(line?.text).toBe('Hit cap: 16% · 3% from talents, 13% from gear');
+    expect(line?.text).toBe('Hit cap: 16% · 3% from talents on Frost spells, 13% still to find');
   });
 
-  it('leaves the split off when no talent adds hit', () => {
+  it('leaves the split off when nothing counts toward the cap yet', () => {
     expect(guideHitCapLine({ kind: 'spell', baseline: 0, spell: 16 })?.text).toBe('Hit cap: 16%');
-  });
-
-  it('words a melee cap, with the white-swing distance for a dual wielder', () => {
     expect(guideHitCapLine({ baseline: 0, specials: 9, white: 28 })?.text).toBe(
       'Hit cap: 9% (special attacks), 28% (white swings)',
     );
     expect(guideHitCapLine({ baseline: 0, specials: 6.5 })?.text).toBe('Hit cap: 6.5%');
   });
 
-  it('names the cap, not the distance to it, when the character starts with some hit', () => {
-    expect(guideHitCapLine({ kind: 'spell', baseline: 6, spell: 10 })?.text).toBe(
-      'Hit cap: 16% · 6% built in, 10% from gear',
+  it('names no talent for a melee set whose build takes none: Fury, all gear and buffs', () => {
+    expect(guideHitCapLine({ baseline: 8.9, specials: 0.1, white: 19.1 })?.text).toBe(
+      'Hit cap: 9% (special attacks), 28% (white swings) · 8.9% hit from BiS gear and buffs, 0.1% still to find',
     );
-    expect(guideHitCapLine({ baseline: 3, specials: 6 })?.text).toBe(
-      'Hit cap: 9% · 3% built in, 6% from gear',
+  });
+
+  it('counts only the talents a melee baseline holds', () => {
+    expect(guideHitCapLine({ baseline: 6.3, specials: 2.7, white: 21.7 }, [PRECISION_ROGUE])?.text).toBe(
+      'Hit cap: 9% (special attacks), 28% (white swings) · 3.3% hit from BiS gear and buffs, 3% from Precision, 2.7% still to find',
     );
-    expect(guideHitCapLine({ baseline: 3, specials: 6, white: 25 })?.text).toBe(
-      'Hit cap: 9% (special attacks), 28% (white swings) · 3% built in, 6% from gear',
+    // A spell-only talent is in no melee figure.
+    expect(guideHitCapLine({ baseline: 3, specials: 6 }, [PRECISION_MAGE])?.text).toBe(
+      'Hit cap: 9% · 3% hit from BiS gear and buffs, 6% still to find',
     );
-    expect(
-      guideHitCapLine(
-        { kind: 'spell', baseline: 2, spell: 14, school: { names: ['Frost'], hit: 5, to_cap: 11 } },
-        'Precision',
-      )?.text,
-    ).toBe('Hit cap: 16% · 2% built in, 3% from Precision, 11% from gear');
   });
 
   it('reads "reached" for a cap the character is already past', () => {
-    expect(guideHitCapLine({ baseline: 10, specials: 0 })?.text).toBe('Hit cap: reached · 10% built in');
+    expect(guideHitCapLine({ baseline: 10, specials: 0 })?.text).toBe(
+      'Hit cap: reached · 10% hit from BiS gear and buffs',
+    );
+  });
+
+  it('reads every source as one figure when the talents add up to more than the baseline', () => {
+    expect(guideHitCapLine({ baseline: 2, specials: 7 }, [SUPPRESSION])?.text).toBe(
+      'Hit cap: 9% · 2% hit from BiS gear, buffs and talents, 7% still to find',
+    );
   });
 
   it('is undefined when the band publishes no cap', () => {
@@ -81,13 +85,22 @@ describe('guideHitCapLine', () => {
   });
 });
 
-describe('schoolHitTalent', () => {
-  it('finds the school-hit talent the build spends points in', () => {
-    expect(schoolHitTalent([tree(['Frostbolt', 5], ['Precision', 3])])).toBe('Precision');
+describe('guideExpertiseCapLine', () => {
+  it('words the dodge cap, with parry for a tank', () => {
+    expect(guideExpertiseCapLine({ baseline: 0, dodge: 6.5 })?.text).toBe('Expertise cap: 6.5% (dodge)');
+    expect(guideExpertiseCapLine({ baseline: 0, dodge: 5.5, parry: 14 })?.text).toBe(
+      'Expertise cap: 5.5% (dodge), 14% (parry)',
+    );
+    expect(guideExpertiseCapLine(null)).toBeUndefined();
   });
 
-  it('ignores one with no points and returns undefined when there is none', () => {
-    expect(schoolHitTalent([tree(['Precision', 0])])).toBeUndefined();
-    expect(schoolHitTalent([])).toBeUndefined();
+  it('names the caps for a tank who starts with expertise, never a 0% cap', () => {
+    // The real tank shape: 8% expertise, dodge already gone, parry 6% away (boss parry 14%).
+    expect(guideExpertiseCapLine({ baseline: 8, dodge: 0, parry: 6.000000000000002 })?.text).toBe(
+      'Expertise cap: reached (dodge), 14% (parry) · 8% expertise from BiS gear',
+    );
+    expect(guideExpertiseCapLine({ baseline: 2, dodge: 4.5 }, [WEAPON_EXPERTISE])?.text).toBe(
+      'Expertise cap: 6.5% (dodge) · 2% from Weapon Expertise',
+    );
   });
 });

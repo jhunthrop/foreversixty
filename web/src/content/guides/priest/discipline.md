@@ -3,22 +3,19 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.70755:priest:human:00500503133001143/3350500303/0:'
-recommendedRaces: [human, undead]
+build: 'FS1:1.60.1.70755:priest:gnome:00500503133001143/3350500303/0:'
+recommendedRaces: [gnome, undead]
 statPriority: [MP5, Spirit, Healing power, Intellect, Critical strike]
 description: 'How to heal as a Discipline Priest in Forever: Penance, shield ranks and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty, stat weights'
-    url: https://foreversixty.gg/sim/weights
-    kind: site
   - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
@@ -58,9 +55,9 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 - **Inner Focus** (1 point): a free spell with 25% more crit every 3 minutes.
 - **Meditation** (3 points) and **Mental Strength** (5 points): regeneration while casting, and a deeper bar.
 - **Holy Specialization** (5 points), **Divine Fury** (5 points) and **Improved Healing** (3 points): more crits for Divine Aegis, faster Heal and Greater Heal, and 15% off Lesser Heal, Heal, Greater Heal and Penance.
-- **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and casts that raid damage rarely pushes back.
+- **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and most raid hits no longer push back your casts.
 
-**Power Infusion** is not in the build. It works on yourself, 15 seconds of 20% more healing every 3 minutes, but on a mage or warlock's burst it is worth far more to the raid. When you have a caster worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to them on their burst. [Open the planner](/planner?class=priest) to make the swap.
+**Power Infusion** is not in the build. It works on yourself, 15 seconds of 20% more healing every 3 minutes, but on a mage or warlock's burst it is worth far more to the raid. When you have a caster worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to them on their burst. [Open the planner](/planner?class=priest) to change the build.
 
 ## Rotation and priority
 
@@ -80,7 +77,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Prayer of Healing** when three or more in a group are hurt. It heals the target's party, so target a member of the group that took the damage.
 
-**Overheal.** Shields and Penance land before the damage, so most of your waste is a Greater Heal that arrives after a shield ate the hit. Start it early and cancel it if the tank does not need it.
+**Overheal.** Shields and Divine Aegis land before the damage and Penance goes on health already missing, so most of your waste is a Greater Heal that arrives after a shield ate the hit. Start it early and cancel it if the tank does not need it.
 
 **Inner Focus** on a Greater Heal or a Prayer of Healing: it makes the spell free and adds 25% crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
 
@@ -88,7 +85,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 ## Stat priority
 
-Mana first on a long fight: mp5 and Spirit, then Intellect and healing power close together. Critical strike is worth more to you than to Holy because every crit makes a Divine Aegis, but it is still last per point. Spell power with no healing on it does nothing for a heal.
+The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every shield, Penance and heal. Intellect deepens your bar, and Mental Strength adds 10% to it. Critical strike pays twice for Discipline: every direct heal that crits also leaves a Divine Aegis shield on the target. Spirit is mana, and Meditation keeps half of its regeneration running while you cast. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
@@ -100,11 +97,13 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Races
 
-**Human** is the Alliance pick. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
+**Gnome** is the Alliance pick. Eureka! makes your heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes: put it on a string of Greater Heals and Flash Heals. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
+
+**Human** is a hair behind. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
 
 **Undead** is the Horde pick for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
 
-**Gnome** has Contingency Plan, a ward on an ally that shields and heals them if they fall under 35%, plus Eureka! and 5% mana. **Troll** has Berserking, **Night Elf** Elune's Light for 10% crit (more Divine Aegis), and **Dwarf** Stoneform and Desperate Prayer.
+**Night Elf** has Elune's Light for 10% crit (more Divine Aegis), **Troll** Berserking, and **Dwarf** Stoneform and Desperate Prayer. All three heal clearly less than a Gnome or a Human.
 
 ## Professions
 
@@ -112,4 +111,14 @@ Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes h
 
 ## Leveling
 
-Level as Shadow and respec, or level in dungeons. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all.
+### Levels 1 to 19
+
+Train Power Word: Shield at 6 and Renew at 8, then Mind Blast at 10 and Inner Fire at 12. Shadow Word: Pain at 4 opens every pull, Smite does the work until a wand takes over, and Dispel Magic arrives at 18.
+
+Twin Disciplines takes your points from 10 to 14: 5% more damage and healing on your instants, which at this level means Shadow Word: Pain and Renew. Mental Strength takes 15 to 19 for 10% more Intellect, a bigger mana bar between drinks.
+
+Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
+
+### Levels 20 to 60
+
+From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all.

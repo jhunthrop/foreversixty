@@ -20,7 +20,7 @@ statPriority:
     Spell penetration,
   ]
 description: 'Moonkin in Forever: the build, Eclipse with Wrath into Starfire, Moonfire and Insect Swarm upkeep, Innervate and mana.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
@@ -29,17 +29,14 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Forever Sixty, stat weights'
-    url: https://foreversixty.gg/sources
+    url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, rotation'
-    url: https://foreversixty.gg/sources
-    kind: site
-  - label: 'Forever Sixty, raid loot tables'
-    url: https://foreversixty.gg/sources
+  - label: 'Forever Sixty, which boss drops are upgrades'
+    url: https://foreversixty.gg/sim/drops
     kind: site
 ---
 
@@ -105,7 +102,7 @@ From Restoration, Nature's Focus saves your Starfire from pushback 70% of the ti
 
 ## Stat priority
 
-Spell power is damage on every cast. Hit is worth more to you than to most casters: a resisted Starfire is a 3 second cast for nothing, and a resisted Wrath banks no Eclipse charges. Arcane damage is nearly as good as spell power, because Starfire and Moonfire are Arcane; Nature damage only feeds Wrath and Insect Swarm. Crit pays twice, through Vengeance and Nature's Grace. Intellect is your mana pool and a little crit.
+The table above gives the order for your gear; here is why each stat counts. Spell power is damage on every cast. Hit matters a lot to a moonkin: a resisted Starfire is 3 seconds of casting for nothing, and a resisted Wrath banks no Eclipse charges. It counts up to the spell hit cap and adds nothing past it. Arcane damage is spell power for Starfire and Moonfire, your Arcane spells. Nature damage feeds only Wrath and Insect Swarm. Crit pays twice, through Vengeance and Nature's Grace. Intellect is your mana pool and a little crit.
 
 ## Best in slot
 
@@ -115,7 +112,7 @@ Potions work in Moonkin Form in Forever, so you never shift out to drink. On a l
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren gets more health and War Stomp. Alliance Skyborne get Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are. Press it when your mana starts to run low.
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and Vengeance makes that crit worth more to you. Racials work in Moonkin Form in Forever, so press it with your trinkets. Tauren is the free Horde pick: Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, so its racials bring survival and a stun, not damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are. Press it when your mana starts to run low.
 
 ## Professions
 
@@ -123,4 +120,16 @@ Tailoring makes some of the best early caster gear, and Enchanting puts spell po
 
 ## Leveling
 
-Balance levels fine with Wrath and Moonfire, and Moonkin Form at 40 makes it smooth. Feral is faster: Cat Form kills without drinking, and Bear Form survives the bad pulls. If you level as Balance, take Improved Wrath first, Moonfire every pull, and Wrath until the mob dies. Starfire is for the opener on a mob that is not yet on you.
+### Levels 1 to 19
+
+Wrath is yours from level 1, with new ranks at 6 and 14. Moonfire trains at 4, Entangling Roots at 8 to hold a second mob, Nature's Grasp at 10 and Faerie Fire at 18.
+
+Improved Wrath takes your points from 10 to 14: Wrath 0.5 sec faster for half the mana. Genesis at 15 and 16 adds 4% to Moonfire's ticks and Rejuvenation, and Moonglow from 17 to 19 makes damage spells 25% cheaper.
+
+At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form for the pulls that go wrong.
+
+Druids cannot use wands, so swap the starter weapon for the first quest staff with Intellect. Leather or cloth quest rewards with Intellect and Spirit beat vendor gear, and the Aquatic Form quest at 16 pays the Aquarius Belt or the Idol of Shifting Tides.
+
+### Levels 20 to 60
+
+Balance levels fine with Wrath and Moonfire, and Moonkin Form at 40 makes it smooth. Feral is faster: Cat Form kills without drinking, and Bear Form survives the bad pulls. If you level as Balance, Moonfire every pull and Wrath until the mob dies. Starfire is for the opener on a mob that is not yet on you.

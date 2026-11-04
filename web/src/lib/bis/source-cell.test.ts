@@ -256,6 +256,34 @@ describe('resolveSourceCell', () => {
     expect(cell).toEqual({ kind: 'rep', faction: 'Timbermaw Hold', standing: 'friendly' });
   });
 
+  it('keeps the rep faction the row names when both PvP factions sell the item', () => {
+    const loot: LootFile & LootQuestsFile = {
+      ...LOOT,
+      sources: [
+        {
+          id: 'rep:frostwolf-clan:exalted',
+          kind: 'rep',
+          name: 'Frostwolf Clan',
+          standing: 'exalted',
+          items: [19325],
+        },
+        {
+          id: 'rep:stormpike-guard:exalted',
+          kind: 'rep',
+          name: 'Stormpike Guard',
+          standing: 'exalted',
+          items: [19325],
+        },
+      ],
+    } as LootFile & LootQuestsFile;
+    const row = slot({ item_id: 19325, source_kind: 'rep', source: 'Stormpike Guard' });
+    expect(resolveSourceCell(row, 'alliance', loot, 'fallback')).toEqual({
+      kind: 'rep',
+      faction: 'Stormpike Guard',
+      standing: 'exalted',
+    });
+  });
+
   it('resolves a zone item to the zone', () => {
     const cell = resolveSourceCell(slot({ item_id: 60, source_kind: 'zone' }), 'alliance', LOOT, 'fallback');
     expect(cell).toEqual({ kind: 'zone', place: 'Dun Morogh' });

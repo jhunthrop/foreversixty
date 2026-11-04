@@ -7,18 +7,15 @@ build: 'FS1:1.60.1.70755:priest:human:00500503103/33505003030121431/0:'
 recommendedRaces: [human, undead]
 statPriority: [MP5, Healing power, Spirit, Intellect, Critical strike]
 description: 'How to heal as a Holy Priest in Forever: talents, downranking, Prayer of Mending, Prayer of Healing, Lightwell, mana over a long fight, assignments and races.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty, stat weights'
-    url: https://foreversixty.gg/sim/weights
-    kind: site
   - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
@@ -38,7 +35,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 ### Weaknesses
 
 - Mana is the limit on every long fight
-- No damage prevention: you heal what has already happened
+- Your shield is untalented and Weakened Soul limits it, so most of your healing answers damage that has already landed
 - Slow heals on a spiky tank need you to pre-cast and cancel
 
 ### In a raid
@@ -48,7 +45,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 
 ## Talents and builds
 
-Deep Holy for Prayer of Mending, with Discipline taken to Meditation and Inner Focus.
+Deep Holy for Prayer of Mending, with 17 points in Discipline for stronger, cheaper Renews and mana.
 
 - **Prayer of Mending** (1 point): the capstone. It heals its holder on the next hit or direct heal, then jumps. Keep it on the tank.
 - **Spiritual Healing** (3 points): 10% more healing on everything.
@@ -59,9 +56,10 @@ Deep Holy for Prayer of Mending, with Discipline taken to Meditation and Inner F
 - **Litany of Light** (2 points): mana back whenever your heal is a different spell from the last one. Put a Renew or a Prayer of Mending between your Greater Heals and it pays all fight; two Greater Heals in a row, even at different ranks, earn nothing.
 - **Holy Binding** (1 point): every Flash Heal you put on someone else heals you for half as much. Raid damage hits you too.
 - **Twilight Focus** (3 points): 70% of the hits you take no longer push back your casts. On raid-wide damage this is worth more than any throughput point.
+- **Twin Disciplines** (5 points) and **Mental Agility** (3 points): Renew heals 5% more, and Renew and Power Word: Shield cost 10% less.
 - **Meditation** (3 points), **Mental Strength** (5 points) and **Inner Focus** (1 point): regeneration while casting, a deeper bar, and a free spell every 3 minutes.
 
-Spirit of Redemption is only the path to Prayer of Mending. [Open the planner](/planner?class=priest) to change the build.
+Spirit of Redemption is the step to Prayer of Mending, and if you die it gives you 15 seconds of free heals: keep casting, a death in the last seconds of a hard pull still heals the raid through. [Open the planner](/planner?class=priest) to change the build.
 
 ## Rotation and priority
 
@@ -87,7 +85,7 @@ Spirit of Redemption is only the path to Prayer of Mending. [Open the planner](/
 
 ## Stat priority
 
-On a long fight mp5 wins: a point of it buys more healing over five minutes than a point of healing power. Healing power comes next, then Spirit, which Spiritual Guidance and Meditation turn into both healing and mana. Intellect deepens the bar. Critical strike is last for Holy, since Inspiration only adds armor. Spell power with no healing on it does nothing for a heal.
+The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every heal. Spirit pays you twice: Spiritual Guidance turns it into healing, and Meditation keeps half of its regeneration running while you cast. Intellect deepens the bar. A critical heal is a bigger heal, and for Holy that is all it is, since Inspiration only adds armor to the target. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
@@ -101,9 +99,9 @@ Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric
 
 **Human** is the Alliance pick. The Human Spirit adds 10% Spirit, which Spiritual Guidance turns into healing, and Divine Grace is a free instant heal on an ally under 50% every 10 minutes. Feedback is a PvP spell.
 
-**Undead** is the Horde pick for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. Will of the Forsaken breaks fears.
+**Undead** is the Horde pick, and the best Holy priest of all, for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. Will of the Forsaken breaks fears.
 
-**Gnome** brings Eureka!, 8 seconds of 10% stronger and 10% cheaper heals every 2 minutes, and Expansive Mind's 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Troll** gets Berserking, 10% cast speed. **Night Elf** has Elune's Light, 10% crit for 15 seconds. **Dwarf** has Stoneform and Desperate Prayer, a free self heal.
+**Gnome** is close behind Human. Eureka! makes your heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes, and Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Night Elf** has Elune's Light, 10% crit for 15 seconds, **Troll** Berserking, 10% cast speed, and **Dwarf** Stoneform and Desperate Prayer, a free self heal. Those three heal clearly less.
 
 ## Professions
 
@@ -111,4 +109,14 @@ Tailoring makes healing cloth you will wear into the first raids. Enchanting sav
 
 ## Leveling
 
-Level as Shadow and respec at 60, or level in a group as Holy. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early: a level 30 priest who casts Heal rank 2 instead of rank 3 finishes the dungeon with mana to spare.
+### Levels 1 to 19
+
+Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12.
+
+Three points of Twilight Focus from 10 to 12 mean most hits no longer push back your casts. Improved Renew takes 13 to 15 for 15% bigger Renews, and Holy Specialization starts at 16 for more crit on your Holy spells.
+
+Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
+
+### Levels 20 to 60
+
+From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early: a level 30 priest who casts Heal rank 2 instead of rank 3 finishes the dungeon with mana to spare.

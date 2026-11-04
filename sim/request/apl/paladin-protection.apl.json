@@ -211,7 +211,7 @@
           }
         }
       },
-      "notes": "On cooldown. Your cheapest threat at 20 mana; with Iron Creed it also cuts your damage taken for 6 seconds, and Shieldsworn brings it back every 6 seconds."
+      "notes": "On cooldown. Twenty mana for strong threat; with Iron Creed it also cuts your damage taken for 6 seconds, and Shieldsworn brings it back every 6 seconds."
     },
     {
       "action": {
@@ -249,7 +249,7 @@
           }
         }
       },
-      "notes": "On cooldown, once Holy Shield's mana is safe. It hits your target and the enemies next to it, and it is your biggest single threat button."
+      "notes": "On cooldown, once Holy Shield's mana is safe. It hits your target and up to three enemies next to it, for Holy damage that Righteous Fury multiplies, so it carries your threat on a pack."
     },
     {
       "action": {

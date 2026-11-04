@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:druid:night-elf:05302001/0/555300515311321:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [MP5, Spirit, Intellect, Healing power, Critical strike]
 description: 'Restoration in Forever: the build, Rejuvenation and Regrowth ranks, Swiftmend that keeps the HoT, Bloom, Wild Growth and Innervate.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
@@ -16,20 +16,17 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty, stat weights'
-    url: https://foreversixty.gg/sources
-    kind: site
-  - label: 'Forever Sixty, raid loot tables'
-    url: https://foreversixty.gg/sources
+  - label: 'Forever Sixty, Restoration best in slot'
+    url: https://foreversixty.gg/bis/druid/restoration
     kind: site
 ---
 
 ## Overview
 
-Restoration heals with time: Regrowth and Rejuvenation on the tank all fight, Swiftmend as a free extra heal, Bloom when the HoTs run out, and Healing Touch for the holes.
+Restoration heals with time: Regrowth and Rejuvenation on the tank all fight, Swiftmend as an extra heal, Bloom when the HoTs run out, and Healing Touch for the holes.
 
 ### Strengths
 
@@ -62,13 +59,13 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
 - **Improved Tranquility** (2 points): Tranquility with no threat and its cooldown cut from 5 minutes to 2.
 - **Heart of the Wild** (5 points): 10% more Intellect.
-- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) and Improved Moonfire (1 point) are the price of Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
+- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) is the price of reaching Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on. The one Balance point left after that sits in Improved Moonfire, which does nothing for a healer. A point of Improved Regrowth, 10% more Regrowth crit, heals a little more if you would rather spend it there.
 
 **Wild Growth.** The capstone heals a whole party over 7 seconds, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility, put one point in Wild Growth and the other in Improved Regrowth.
 
 ## Rotation and priority
 
-**Before the pull.** Rejuvenation on the tank a few seconds before he pulls. Keep Mark of the Wild up on the raid.
+**Before the pull.** Rejuvenation on the tank a few seconds before he pulls. Keep Gift of the Wild up on the raid.
 
 **The tank.** Regrowth and Rejuvenation stay up on the tank for the whole fight. Let each one run out before you recast it: a HoT that runs its full duration triggers Bloom, and a refresh on top of it throws that heal away.
 
@@ -86,7 +83,7 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 
 ## Stat priority
 
-A long tank fight runs you out of mana before it runs out of time, which is why MP5 and Spirit lead. Healing power is every heal, and your HoTs take a big share of it per tick. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
+The table above gives the order for your gear. A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count so much for you. Healing power is every heal, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
 
 ## Best in slot
 
@@ -96,12 +93,24 @@ Potions and runes work in any form in Forever, though you heal in caster form an
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths. Tauren gets more health, which keeps you alive through raid damage. Alliance Skyborne get Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are. Press it every time it is ready on a long fight.
+Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths and Healing Touches alike. Tauren is the free Horde pick: Endurance is 5% more health, which keeps you alive through raid damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, which is faster casts, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are. Press it every time it is ready on a long fight.
 
 ## Professions
 
 Herbalism and Alchemy is the healer pair: your own mana potions and elixirs.
 
 ## Leveling
+
+### Levels 1 to 19
+
+Healing Touch comes at level 1, Rejuvenation at 4, Regrowth at 12 and Cure Poison at 14. Revive at 12 raises a dead groupmate out of combat. Solo, you kill with Wrath and Moonfire.
+
+Heart of the Wild takes your points from 10 to 14: 10% more Intellect, 20% more Stamina in Bear Form. Reflection from 15 to 17 keeps half your mana regeneration going while you cast, and Nature's Focus at 18 and 19 saves a heal from pushback more than a quarter of the time.
+
+At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form for the pulls that go wrong.
+
+Druids cannot use wands, so swap the starter weapon for the first quest staff with Intellect. Leather or cloth quest rewards with Intellect and Spirit beat vendor gear, and the Aquatic Form quest at 16 pays the Aquarius Belt or the Idol of Shifting Tides.
+
+### Levels 20 to 60
 
 Restoration is the slowest druid to quest with, because it is built to keep others alive, not to kill. Level as Feral and switch at 60, or heal dungeons on the way up: Rejuvenation and Regrowth carry a group from the low levels, and Healing Touch covers the big pulls.

@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:druid:night-elf:0/5523033202310212551/051:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Defense, Stamina, Dodge, Agility, Armor, Hit, Critical strike, Strength, Attack power]
 description: 'Bear tanking in Forever: the build, the threat opener, Lacerate and Primal Bite, cooldowns, and the potions a bear can drink in form.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Forever class deep dives: Hunter and Druid'
@@ -16,14 +16,11 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty, rotation'
-    url: https://foreversixty.gg/sources
-    kind: site
-  - label: 'Forever Sixty, tank fight'
-    url: https://foreversixty.gg/sources
+  - label: 'Forever Sixty, Feral bear best in slot'
+    url: https://foreversixty.gg/bis/druid/feral-bear
     kind: site
 ---
 
@@ -35,7 +32,7 @@ The bear tanks on health and armor, with Dodge as its only avoidance and Lacerat
 
 - Dire Bear Form adds a flat block of health and multiplies the armor on your gear, and Heart of the Wild adds 20% Stamina on top
 - Primal Bite and Lacerate both carry high threat, so a bear holds a boss on very little rage
-- Defense on gear now works for a bear as it does for other tanks, and Thick Hide adds armor for every point
+- Defense on gear now works for a bear as it does for other tanks, and Thick Hide adds armor for every point of Defense over five times your level
 - Potions, weapon stones and racials all work in Bear Form now, so you never shift to drink
 
 ### Weaknesses
@@ -90,11 +87,11 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 ## Stat priority
 
-Stamina is health, and Heart of the Wild adds 20% to it in form. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Dodge is the only avoidance you have. Defense lowers your chance to be crit and feeds Thick Hide, so it counts twice. Agility is Dodge, armor and crit at once. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Hit keeps your Lacerate and Maul landing, which is threat, not survival.
+The table above gives the order for your gear; here is why each stat counts. Stamina is health, and Heart of the Wild adds 20% to it in form. Agility is Dodge, armor and crit at once. Dodge is the only avoidance you have. Hit keeps your Lacerate and Maul landing, which is threat, not survival, and once your gear reaches the hit cap it adds nothing. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Defense means fewer crits taken, and Thick Hide turns it into a little armor. Crit is threat, and through Blood Frenzy it is rage too.
 
 ## Best in slot
 
-Wolfshead Helm is druid-only in Forever and gives 5 more rage from Enrage (and 5 more energy from Shifting Power). Leatherworkers make it. It is a level 40 blue: a small bonus while leveling, outgrown on stats by 60.
+Wolfshead Helm is druid-only in Forever and gives 5 more rage from Enrage (and 5 more energy from Shifting Power). Leatherworkers make it. It is a level 40 blue with only 10 Spirit beside the bonus, so wearing it trades a helm's stats for the rage.
 
 ## Enchants and consumables
 
@@ -102,7 +99,7 @@ Forever lets a druid drink in form. Mighty Rage Potion is the bear's threat poti
 
 ## Races
 
-Tauren is the tank pick: Endurance is 5% more health, and War Stomp stuns five enemies around you, in form, which is a great trash pull. Night Elf brings Quickness for a little Dodge and Elune's Light for a crit burst, which is threat.
+Your faction picks your race: Night Elf on the Alliance, Tauren on the Horde, and both tank well. Night Elf takes slightly less damage and holds a little more threat, through Quickness, 1% more Dodge, and Elune's Light, 10% crit with all spells and attacks for 15 seconds on a 3 minute cooldown, which is threat when you press it on the pull. Tauren's health is steadier: Endurance is 5% more health, and War Stomp stuns up to 5 enemies around you for 2 seconds, in form, which is a great trash pull. If you already own the paid Skyborne Heroic Pack, Skyborne can be bears on either faction, with Wind Blessed, 2% haste that never turns off.
 
 ## Professions
 
@@ -110,4 +107,14 @@ Skinning and Leatherworking, as for the cat: leather is your armor, and Leatherw
 
 ## Leveling
 
-Bear Form comes at 10 and Dire Bear Form at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate arrives at 25 and Primal Bite at 40, and until then Maul, Swipe and Demoralizing Roar hold a dungeon pack.
+### Levels 1 to 19
+
+Before 10 you are a caster: Moonfire from 4, then Wrath. At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, and Maul, Growl and Demoralizing Roar train the same level. Enrage follows at 12, Bash at 14, Swipe at 16 and a second Maul rank at 18.
+
+Your points from 10 to 14 go into Ferocity, so Maul and Swipe cost 5 less Rage. Furor from 15 to 19 adds 20% to the chance that a shift into Bear Form grants 10 Rage, so by 19 every shift does, and a pull opens with Maul ready.
+
+Your paw hits with your weapon's DPS, so replace the starter weapon with the highest-DPS staff or two-handed mace a quest gives you. Wear leather quest rewards with Stamina and Agility over vendor gear, and take the Idol of Shifting Tides from the Aquatic Form quest at 16.
+
+### Levels 20 to 60
+
+Dire Bear Form comes at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate arrives at 25 and Primal Bite at 40, and until then Maul, Swipe and Demoralizing Roar hold a dungeon pack.

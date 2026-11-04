@@ -2,7 +2,7 @@
 title: Warrior in Forever
 classSlug: warrior
 description: 'Warrior in Forever: the three specs, how rage shapes all of them, and what changed from 1.12.'
-updated: 2026-11-02
+updated: 2026-11-03
 confidence: confirmed
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -14,7 +14,7 @@ sources:
   - label: 'Power Up Gaming, Forever talent changes vs Classic'
     url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/
     kind: community
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
 ---
@@ -29,7 +29,6 @@ Warrior is the pure melee class: plate, a weapon and a rage bar that fills from 
 - **Slam** has a 15 second cooldown, and Improved Slam takes it to 10 with a one second cast that no longer stops your swing.
 - **Thunder Clap** works in Defensive Stance.
 - **Shield Block** lasts 7 seconds on a 5 second cooldown.
-- **Sweeping Strikes** lasts 20 seconds.
 - **Shield Wall** is 60% for 12 seconds on a 15 minute cooldown, and Improved Shield Wall now cuts that cooldown to 4 minutes instead of adding duration.
 - **Death Wish** costs 5% more damage taken instead of armor.
 - **New talents** include Bloodthrill and Weaponmaster in Arms, Reckless Swings and Furious Precision in Fury, and Vanguard and Master of Defense in Protection.

@@ -48,6 +48,7 @@
   import CharacterInGame from './CharacterInGame.svelte';
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
   import LoadError from './ui/LoadError.svelte';
+  import { BUTTON_MD, BUTTON_PRIMARY } from '../lib/ui/button';
   import Skeleton from './ui/Skeleton.svelte';
   import { createLazyComponent } from '../lib/report/lazy-component.svelte';
   import type { Component } from 'svelte';
@@ -268,11 +269,16 @@
 </script>
 
 {#if status === 'missing'}
-  <p class="text-[14px]" data-testid="character-missing">
-    That is not a character address. They look like <code class="font-mono"
-      >/character/us/hardcore/elyra-duskvale</code
-    >.
-  </p>
+  <!-- A bare /character (or a mistyped address) still leads somewhere: the lookup, by name. -->
+  <div class="flex flex-col items-start gap-3" data-testid="character-missing">
+    <h1 class="heading-page">Find a character</h1>
+    <p class="text-[15px]">
+      Look one up by name, region and ruleset. Your own characters are in the character menu at the top.
+    </p>
+    <a class={`${BUTTON_PRIMARY} ${BUTTON_MD}`} href="/#lookup" data-testid="character-missing-lookup"
+      >Look up a character</a
+    >
+  </div>
 {:else if status === 'loading'}
   <Skeleton lines={6} rowHeight="h-4" minHeight={CHARACTER_LOADING_MIN_H} testid="character-skeleton" />
   <HistoryReserve afterSkeleton />

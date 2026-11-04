@@ -8,9 +8,12 @@ raidBuild: 'FS1:1.60.1.70755:hunter:night-elf:5/0052550011503051/50005003:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Marksmanship Hunter in Forever: talents for leveling and raids, the shot priority, auto shot discipline, stats, consumables and race picks.'
-updated: 2026-11-03
+updated: 2026-11-04
 confidence: inferred
 sources:
+  - label: 'Blizzard, Class Deep Dives: Hunter and Druid'
+    url: https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid
+    kind: blizzard
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
@@ -20,8 +23,11 @@ sources:
   - label: 'Warcraft Tavern, Forever Hunter Guide'
     url: https://warcrafttavern.com/forever/guides/hunter/
     kind: community
+  - label: 'Warcraft Tavern, Forever Hunter Leveling Guide'
+    url: https://www.warcrafttavern.com/forever/guides/hunter-leveling/
+    kind: community
   - label: 'Forever Sixty, talent trees'
-    url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
+    url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
   - label: 'Forever Sixty, spell values'
     url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
@@ -56,7 +62,7 @@ Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shar
 ### In a raid
 
 - **Role:** Ranged physical DPS
-- **Brings:** Heart of the Lion (10% stats and attack power for everyone near you), Trueshot Aura (100 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
+- **Brings:** Heart of the Lion (10% stats and a flat attack power bonus for everyone near you), Trueshot Aura (100 ranged attack power at 60 for your party and raid), Hunter's Mark on the boss
 
 ## Talents and builds
 
@@ -70,19 +76,19 @@ There are two builds. You level with the pet: thirty points in Marksmanship take
 - **Efficiency** (5 points): 15% off every shot, so you reach the end of a long fight still shooting
 - **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
 - **Improved Tracking** (5 points): 5% more damage against the creature type you are tracking
-- **Lone Wolf** (1 point, raid build): 20% more damage with every attack while no pet is out
-- **Improved Stings** (3 points in the raid build): 20% more Serpent Sting damage
-- **Surefooted** (3 points, raid build): 3% hit
+- **Lone Wolf** (1 point, raid build): 20% more damage with every attack while no pet is out, in the raid build
+- **Improved Stings** (3 points in the raid build): 6% more Serpent Sting damage with the 1 point you level with, 20% with all 3 in the raid build
+- **Surefooted** (3 points, raid build): 3% hit in the raid build
 
 Improved Tracking only works while you track the target's type, and Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead. Most raid bosses are one of those; the boss's tooltip names its type, and on a boss of any other type the talent does nothing. Set it before the pull, and swap on trash with mixed types.
 
-In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and get no raid buffs, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull, and the leveling build keeps its talents. Sniper Shot, the capstone, costs a point you would take from elsewhere in either build, and its 4 second cast holds your auto shot longer than any other shot you have, so neither build takes it.
+In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. While leveling, keep the pet: it holds what you pull, and the leveling build keeps its talents. Sniper Shot, the capstone, costs a point you would take from elsewhere in either build, and its 4 second cast holds your auto shot twice as long as Aimed Shot, so neither build takes it.
 
 ## Rotation and priority
 
 Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Track the boss's type for Improved Tracking if Track covers it. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
 
-On the pull, press Rapid Fire with your trinkets and Berserking or Blood Fury, just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
+On the pull, press Rapid Fire with your trinkets and your racial (Elune's Light, Berserking or Blood Fury), just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
 Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: it outhits Multi-Shot whenever the cast fits. If you are partway to your next auto shot, take Multi-Shot instead, so the cast never holds your auto. Keep Serpent Sting rolling and refresh it only as it runs out. Fill the gaps with Arcane Shot while you are above a quarter of your mana.
 
@@ -107,7 +113,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-Hit first until you reach 9% hit, the cap against a raid boss: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. In the raid build Surefooted gives you 3% of that cap, so you need 6% from gear, or 5% as a Dwarf. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit matters until you reach it. Agility is attack power and crit together. Crit is strong with Mortal Shots, which makes your ranged crits hit harder. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -115,7 +121,7 @@ Hunters wear leather until 40 and mail from 40. Your ranged weapon is your real 
 
 ## Enchants and consumables
 
-Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 247x128 Accurascope once your raid's engineer can make it. Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers, where Careful Aim makes it count as attack power.
+Put a scope on the ranged weapon: Sniper Scope from Engineering, and Biznicks 247x128 Accurascope once your raid's engineer can make it. Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers: no bracer enchant carries real Agility, Strength does nothing for your shots, and Careful Aim makes Intellect count as attack power.
 
 **Ammo and quiver.** Carry the best ammo your level can use and plenty of it: arrows for a bow, bullets for a gun. Jagged Arrows from 40, Ice Threaded and Thorium Headed Arrows from the early 50s, or Thorium Shells from an engineer. The quiver or ammo pouch is a free 10 to 15% ranged attack speed, so upgrade it every time you can: Quickdraw Quiver from 40 and a 15% bag near 60. Run out of ammo in a raid and you do almost nothing.
 
@@ -127,7 +133,7 @@ Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds and lines u
 
 Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull, and more auto shots is what Marksmanship lives on. Orc is close behind: Blood Fury is 10% attack power for 15 seconds every two minutes, but Command does nothing for you with the pet dismissed.
 
-Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds every auto shot you fire.
+Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire, and it lands in the middle of the pack, so it is the paid option, never the pick.
 
 ## Professions
 
@@ -135,8 +141,20 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 
 ## Leveling
 
+### Levels 1 to 19
+
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12. Multi-Shot comes at 18.
+
+At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
+
+Your first five points go into Lethal Attacks, 1% crit on every attack per point. Improved Stings at 15 adds 6% to Serpent Sting, and Efficiency from 16 cuts the mana cost of your shots and stings by 3% a point, which is fewer drinking breaks.
+
+Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.
+
+### Levels 20 to 60
+
 Marksmanship levels well, a little slower than Beast Mastery because more of the work is yours. Keep a pet out all the way: it holds what you pull while you shoot. Switch to the raid build and dismiss the pet when you start raiding at 60.
 
-Open every pull with Hunter's Mark and Serpent Sting, send the pet, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out of the 8 yard dead zone. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out of the 8 yard dead zone. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get.

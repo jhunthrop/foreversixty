@@ -21,21 +21,18 @@ statPriority:
     Attack power,
   ]
 description: 'Holding threat with Righteous Fury, Holy Shield and Holy Strike, taunting with Judgement of Fury, and keeping your mana.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
   - label: 'Forever Sixty, paladin talents'
-    url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
+    url: https://foreversixty.gg/planner?class=paladin
     kind: datamined
-  - label: 'Forever Sixty, what each stat is worth'
-    url: https://foreversixty.gg/data/curated/specs.json
-    kind: site
-  - label: 'Forever Sixty, raids by phase'
-    url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
-    kind: site
+  - label: "Blizzard, What's Next panel recap"
+    url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
+    kind: blizzard
   - label: 'Forever Sixty, races'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
@@ -48,7 +45,7 @@ Protection tanks with a shield and Holy damage: Righteous Fury on, Holy Shield o
 ### Strengths
 
 - Righteous Fury turns your Holy damage into huge threat, and Holy Shield adds more on every block
-- Holy Shield, Redoubt and Shieldsworn keep your block chance high, and Shieldsworn lets you block spells
+- Holy Shield and Redoubt keep your block chance high, and Shieldsworn fires Holy Shield's damage on every Holy Strike while it is up and lets you block spells
 - Judgement of Fury taunts, and Swift Judgement gives you a second one
 - Three defensives (Templar's Bulwark, Divine Shield, Divine Protection) plus Lay on Hands
 
@@ -94,7 +91,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 1. **Seal of Fury** in its last 2 seconds, if you still have Holy Shield's mana after it.
 2. **Holy Shield** on cooldown. Its cooldown is its duration, so it is always up while it has charges, and it is the first claim on your mana.
 3. **Holy Strike** on cooldown: every 6 seconds with Shieldsworn, 20 mana, and your damage reduction from Iron Creed.
-4. **Hammer of the Righteous** on cooldown, once Holy Shield's mana is safe. It hits your target and the enemies next to it, and it is your biggest single threat button.
+4. **Hammer of the Righteous** on cooldown, once Holy Shield's mana is safe. It hits your target and up to three enemies next to it, for Holy damage that Righteous Fury multiplies, so it is where your threat on a pack comes from.
 5. **Swift Judgement** whenever it is ready.
 6. **Judgement** on cooldown, once Holy Shield's mana is safe.
 7. **Exorcism** on Undead and Demons.
@@ -110,7 +107,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 ## Stat priority
 
-Defense comes first: it takes hits away and lowers the boss's chance to crit you. Block, Dodge and Parry come next because they take hits away or blunt them, and Block also feeds Holy Shield's damage, Redoubt and Shield Specialization's mana. Agility is dodge and armor at once, and block value makes every block take more off the hit. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
+Defense takes hits away and lowers the boss's chance to crit you. Stamina is your health bar, and health is what gives every other stat on this list time to work. Dodge and Parry take hits away, Agility is dodge and armor at once, and block value makes every block take more off the hit. More block chance adds nothing you can measure at 60, but keep the shield: your blocks still power Holy Shield's damage and Shield Specialization's mana. Armor takes a slice off every physical hit. Hit matters up to the cap and nothing past it, and Precision already gives you 3% of it. The table above has the order.
 
 ## Best in slot
 
@@ -118,7 +115,7 @@ Defense comes first: it takes hits away and lowers the boss's chance to crit you
 
 ## Races
 
-**Dwarf** is the Alliance tank. Stoneform takes physical damage off for a few seconds, a free defensive on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Will to Survive, which breaks a stun so you get back to holding the boss, and Ruthless, 1% crit for a little more threat. The Human Spirit does little for a tank. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
+**Dwarf** is the Alliance tank. Dwarf and Human take hits and hold threat about the same, so Stoneform tips it: it takes physical damage off for a few seconds, a free defensive on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Will to Survive, which breaks a stun so you get back to holding the boss, and Ruthless, 1% crit for a little more threat. The Human Spirit does little for a tank. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
 
 ## Professions
 
@@ -126,7 +123,19 @@ Mining and Blacksmithing make plate, shields and the tanking weapons. Engineerin
 
 ## Leveling
 
-Level as Retribution and tank dungeons in it: you get Righteous Fury and Seal of Fury at level 10, which is enough to hold a dungeon group from Ragefire Chasm and the Deadmines on. Switch to Protection when you are tanking more than you are questing. Holy Shield comes at 30, with new ranks at 40, 50 and 60, and Hammer of the Righteous at 40. If you tank in Protection at 20, take Templar's Bulwark before a second point of Sacred Duty: a full health bar of absorb keeps a low-level tank alive far more often than a shorter cooldown on it.
+### Levels 1 to 19
+
+Devotion Aura comes at 1, Judgement at 4, Holy Strike at 6 and Hammer of Justice at 8. At 10 you get Righteous Fury and Seal of Fury: with a shield on, every swing under Seal of Fury gives you an absorb, and judging it hits for Holy damage and taunts for 3 seconds.
+
+At 12, the class quest from your trainer teaches Redemption.
+
+Most tanks level as Retribution and pick these up when they respec; the Retribution guide has those points. If you level as Protection, your first point at 10 is Divine Intellect for 2% Intellect. Redoubt takes 11 to 15: hits on you can give 30% more block chance for 10 seconds or 5 blocks. Precision takes 16 to 18 for 3% hit, and the first point of Sacred Duty at 19 takes 30 seconds off Divine Protection.
+
+Take quest rewards over vendor gear. To tank, pair a one-hander with a shield as soon as you have both, since Seal of Fury's absorb needs the shield. Paladins cannot use wands. You wear mail until plate at 40.
+
+### Levels 20 to 60
+
+Level as Retribution and tank dungeons in it: Righteous Fury and Seal of Fury are enough to hold a dungeon group from Ragefire Chasm and the Deadmines on. Switch to Protection when you are tanking more than you are questing. Holy Shield comes at 30, with new ranks at 40, 50 and 60, and Hammer of the Righteous at 40. If you tank in Protection at 20, take Templar's Bulwark before a second point of Sacred Duty: a full health bar of absorb keeps a low-level tank alive far more often than a shorter cooldown on it.
 
 Common mistakes:
 

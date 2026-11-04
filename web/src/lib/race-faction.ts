@@ -1,8 +1,7 @@
 // web/src/lib/race-faction.ts
 // The faction a race plays (L8.4 fix round 3 item 15), from one fixed table: Classic's eight
-// races, which addon/ForeverSixty/Rules.lua's PAIRS lists. Forever's six new pairs (gnome
-// priest, human hunter, dwarf shaman, orc mage, troll warlock, undead paladin) recombine those
-// races with classes and add no race, so no faction changes. The profile's tooltip mock takes
+// races, which addon/ForeverSixty/Rules.lua's PAIRS lists, and Forever's two Skyborne rows
+// (High Order for the Alliance, Windshaper for the Horde). The profile's tooltip mock takes
 // its faction line from here, so a visitor and the owner see the same mock; an unknown race
 // gives no faction (the line is left out).
 import type { Faction } from './faction-mark';
@@ -16,6 +15,10 @@ export const RACE_FACTION: Readonly<Record<string, Faction>> = {
   undead: 'horde',
   tauren: 'horde',
   troll: 'horde',
+  // Forever's Skyborne: one people, a row per faction (races.json ids 95 and 96), named the way
+  // the Battle.net profile and races.json name them ("High Order Skyborne").
+  highorderskyborne: 'alliance',
+  windshaperskyborne: 'horde',
 };
 
 /** The client's own token for undead (Rules.lua's RACE_ALIAS). */

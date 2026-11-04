@@ -34,7 +34,7 @@ export const homeHeroCopy = {
  *  arrival from Battle.net with a way to check again, and the addon way in. */
 export const homeNoCharacterCopy = {
   sentence: 'Pick your class for its best-in-slot list, talents and rotation.',
-  status: 'You are signed in. Your characters are on their way from Battle.net.',
+  status: 'You are signed in. Battle.net lists a character after you play it and log out; then check again.',
   checkAgain: 'Check again',
   checking: 'Checking...',
   stillNone:

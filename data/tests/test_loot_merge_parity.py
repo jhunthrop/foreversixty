@@ -30,7 +30,7 @@ OVERLAY_FIXTURE = FIXTURES / "curated"
 BUILD = "1.60.1.69893"
 
 RAW_FILES = ("Map.csv", "ItemSparse.csv", "SpellMisc.csv", "Item.csv",
-             "ManifestInterfaceData.csv")
+             "ManifestInterfaceData.csv", "SpellEquippedItems.csv")
 JSON_FILES = ("zones.json", "items.json", "spells.json")
 
 

@@ -8,7 +8,9 @@ import {
   loadReference,
   loadSets,
   loadTalents,
+  playableRaces,
 } from './load';
+import type { ReferenceData } from './store.svelte';
 
 function stubFetch(map: Record<string, unknown>, status = 200): void {
   vi.stubGlobal(
@@ -202,5 +204,34 @@ describe('loadSets', () => {
       }),
     );
     await expect(loadSets('b1')).rejects.toThrow(DATA_LOAD_FAILED);
+  });
+});
+
+describe('playableRaces', () => {
+  const reference = {
+    classes: [
+      { id: 8, slug: 'mage' },
+      { id: 11, slug: 'druid' },
+    ],
+    races: [
+      { id: 6, slug: 'tauren' },
+      { id: 95, slug: 'high-order-skyborne' },
+      { id: 96, slug: 'windshaper-skyborne' },
+    ],
+    combos: [
+      { race_id: 95, class_id: 8 },
+      { race_id: 6, class_id: 11 },
+      { race_id: 95, class_id: 11 },
+      { race_id: 96, class_id: 11 },
+    ],
+  } as unknown as ReferenceData;
+
+  it('keeps only the races the client lets the class be: a Skyborne Mage is High Order', () => {
+    expect(playableRaces(reference, 'mage').map((race) => race.slug)).toEqual(['high-order-skyborne']);
+    expect(playableRaces(reference, 'druid')).toHaveLength(3);
+  });
+
+  it('offers every race for a class the file does not have', () => {
+    expect(playableRaces(reference, 'paladin')).toHaveLength(3);
   });
 });

@@ -27,6 +27,8 @@ assume A7's spelling.
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
 from pathlib import Path
 
 from pipeline.forkdb import (
@@ -130,7 +132,57 @@ def _enchant_icon(fork: ForkDatabase, row: dict) -> str:
     return icon
 
 
-def build_enchants(fork: ForkDatabase) -> list[EnchantRecord]:
+@dataclass(frozen=True)
+class EquipRestriction:
+    """A spell's SpellEquippedItems row: the items it can be cast on."""
+
+    item_class: int
+    subclass_mask: int
+    inventory_type_mask: int
+
+
+#: SpellEquippedItems' "no restriction" class.
+ANY_ITEM_CLASS = -1
+
+
+def equip_restrictions(rows: Iterable[Mapping[str, str]]) -> dict[int, EquipRestriction]:
+    """SpellEquippedItems, by spell id. A spell with no row has no restriction."""
+    return {
+        int(row["SpellID"]): EquipRestriction(
+            item_class=int(row["EquippedItemClass"]),
+            subclass_mask=int(row["EquippedItemSubclass"]),
+            inventory_type_mask=int(row["EquippedItemInvTypes"]),
+        )
+        for row in rows
+    }
+
+
+def with_equip_restrictions(
+    records: Iterable[EnchantRecord], restrictions: Mapping[int, EquipRestriction]
+) -> list[EnchantRecord]:
+    """Each enchant with its spell's client restriction, so a page offers an
+    enchant only for an item the client lets it go on (a weapon enchant never
+    for a held-in-off-hand item)."""
+    unrestricted = EquipRestriction(ANY_ITEM_CLASS, 0, 0)
+    out: list[EnchantRecord] = []
+    for record in records:
+        rule = restrictions.get(record.spell_id, unrestricted)
+        out.append(
+            record.model_copy(
+                update={
+                    "equipped_item_class": rule.item_class,
+                    "equipped_item_subclass_mask": rule.subclass_mask,
+                    "equipped_inventory_type_mask": rule.inventory_type_mask,
+                }
+            )
+        )
+    return out
+
+
+def build_enchants(
+    fork: ForkDatabase, restrictions: Mapping[int, EquipRestriction]
+) -> list[EnchantRecord]:
+    """`restrictions` is `equip_restrictions` over the build's SpellEquippedItems."""
     records = [
         EnchantRecord(
             id=int(row["effectId"]),
@@ -157,4 +209,5 @@ def build_enchants(fork: ForkDatabase) -> list[EnchantRecord]:
     ]
     # Not `write_json`'s sort: `id` alone is not unique here, so the tie is
     # broken by the spell and then the item, which together are.
-    return sorted(records, key=lambda record: (record.id, record.spell_id, record.item_id))
+    ordered = sorted(records, key=lambda record: (record.id, record.spell_id, record.item_id))
+    return with_equip_restrictions(ordered, restrictions)

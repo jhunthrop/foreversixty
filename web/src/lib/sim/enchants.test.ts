@@ -83,6 +83,34 @@ describe('enchantsForSlot', () => {
     // class", not "no class."
     expect(enchantsForSlot([restricted], 'head')).toEqual([restricted]);
   });
+
+  it('offers only what the client lets go on the item: no weapon enchant on a held-in-off-hand item', () => {
+    const weapon: EnchantRow = {
+      ...enchants[0],
+      id: 2504,
+      slots: ['main_hand', 'off_hand'],
+      equipped_item_class: 2,
+      equipped_item_subclass_mask: 0xe5f3,
+      equipped_inventory_type_mask: 0,
+    };
+    const shield: EnchantRow = {
+      ...weapon,
+      id: 1890,
+      equipped_item_class: 4,
+      equipped_item_subclass_mask: 0x40,
+    };
+    const ids = (item: Partial<Item>) =>
+      enchantsForSlot([weapon, shield], 'off_hand', '', item as Item).map((row) => row.id);
+    expect(ids({ class_id: 4, subclass_id: 0, inventory_type: 23 })).toEqual([]);
+    expect(ids({ class_id: 4, subclass_id: 6, inventory_type: 14 })).toEqual([1890]);
+    expect(ids({ class_id: 2, subclass_id: 15, inventory_type: 13 })).toEqual([2504]);
+    // An item or enchant row from a build written before the columns existed is not gated.
+    expect(ids({})).toEqual([2504, 1890]);
+    const { equipped_item_class: _drop, ...older } = weapon;
+    expect(
+      enchantsForSlot([older], 'off_hand', '', { class_id: 4, subclass_id: 0, inventory_type: 23 } as Item),
+    ).toEqual([older]);
+  });
 });
 
 describe('suffixesForItem', () => {

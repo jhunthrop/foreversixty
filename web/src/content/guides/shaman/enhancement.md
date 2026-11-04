@@ -8,13 +8,13 @@ raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:0533001/053030310051202051/053:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and Windfury, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Forever Sixty, stat weights'
@@ -39,7 +39,7 @@ Enhancement is the shaman's melee spec: one weapon with Windfury on it, Stormstr
 ### Weaknesses
 
 - No dual wield: Forever's shamans fight with one weapon, so every point of Windfury rides on it
-- Totems stay where you drop them, and bosses move
+- Totems do not follow you: when the boss moves, Totemic Call brings them back, for a global and a quarter of your base mana
 - Shocks and totems make mana a real limit without raid buffs
 
 ### In a raid
@@ -58,12 +58,12 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 - **Flurry** (5 points): 30% attack speed for your next three swings after a melee crit.
 - **Stormstrike** (1 point): an instant strike for 150% weapon damage on a 6 second cooldown that makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder.
 - **Mental Quickness** (2 points): 30% of your Intellect as spell power, for your shocks and bolts.
-- **Maelstrom Weapon** (5 points): your melee hits build up to five stacks, each taking 20% off your next Lightning Bolt's cast time and mana. At five it is instant and free.
+- **Maelstrom Weapon** (5 points): each melee hit has a chance to add a stack, up to five, each taking 20% off your next Lightning Bolt's cast time and mana. At five it is instant and free; spend it inside 30 seconds.
 - **Rage of the Farseer** (1 point): 30% attack speed for 25 seconds every 3 minutes. Press it with your trinkets.
 
 ## Rotation and priority
 
-**Before the pull.** Put Windfury Weapon on your weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves away from them, aim Totemic Call where it now stands and your totems follow, up to 30 yards.
+**Before the pull.** Put Windfury Weapon on your weapon. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves away from them, follow it and press Totemic Call: it relocates your active totems to your location.
 
 **On the pull.** Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown. Then Stormstrike.
 
@@ -76,7 +76,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 5. Fire Nova when Clearcasting makes it free.
 6. Earth Shock on cooldown while you are above half mana. It takes Stormstrike's 20% when no bolt is ready.
 
-**Which Air totem.** Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so you never drop Windfury for yourself. Windfury Totem, Grace of Air and Strength of Earth reach every raid member within 30 yards, not just your party. One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and it is worth far more to them than Grace of Air is to you. If another shaman already has it down, take Grace of Air. There is nothing to twist: Windfury Totem is an aura around the totem, not a buff that lingers on the weapon, so it ends the moment you replace the totem.
+**Which Air totem.** Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so you never drop Windfury for yourself. Windfury Totem, Grace of Air and Strength of Earth reach every raid member within 30 yards, not just your party. One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and for them it is worth far more than Grace of Air's Agility. If another shaman already has it down, take Grace of Air. There is nothing to twist: Windfury Totem is an aura around the totem, not a buff that lingers on the weapon, so it ends the moment you replace the totem.
 
 **Fire Nova on Clearcasting.** In the raid build, Elemental Focus sometimes makes your next damage spell free. Spend it on Fire Nova: in melee your Searing Totem stands within its 10 yards of the boss. Outside a proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target, and so does Flame Shock.
 
@@ -88,26 +88,32 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Stat priority
 
-Hit covers your swings, your Stormstrike and your shocks at once, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Strength is attack power twice over.
+Strength is attack power twice over. Intellect does more for you than for any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Plain attack power adds to every swing, and plain spell power to your shocks. Hit covers your swings, your Stormstrike and your shocks at once, and it matters up to the cap; past the cap it is wasted. The table above gives the order for your level and gear.
 
 ## Best in slot
 
-Your raid set leans on Leatherworking crafts that bind when equipped, a crafted Blacksmithing axe and two Enchanting trinkets. Shamans wear leather until 40 and mail from 40. Off hand, a shield or a held item; never a second weapon. The full list, with alternatives for every slot, is on the [Enhancement BiS page](/bis/shaman/enhancement).
+Your raid set leans on crafts. The Heart of the Mountain trinkets are Enchanting crafts that bind on pickup, so you make those yourself; every other craft in it binds when equipped, so you can buy it. Shamans wear leather until 40 and mail from 40. Carry a two-hander, or a one-hander with a shield or a held item; never a second weapon. The full list, with alternatives for every slot, is on the [Enhancement BiS page](/bis/shaman/enhancement).
 
 ## Enchants and consumables
 
-Windfury Weapon is your weapon's temporary enchant, so there is no room for a sharpening stone or weighted stone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
+Windfury Weapon is your weapon's temporary enchant, so there is no room for a sharpening stone or a weightstone on it. Keep it up all fight. Elixir of the Mongoose, Juju Power, Juju Might and R.O.I.D.S. are your raid buffs, with a Smoked Desert Dumpling for food.
 
 ## Races
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit with spells and attacks is your racial. Stoneform's physical damage cut is a free cooldown for cleaves and add phases.
 
-On the Horde, Orc is the pick: Blood Fury is 10% attack power for 15 seconds every 2 minutes, and you press it with Rage of the Farseer. Troll's Berserking adds 10% attack speed for 15 seconds every 3 minutes and lines up with Rage of the Farseer just as well. Windshaper Skyborne's 2% haste is always on. Tauren's racials do nothing for your damage.
+On the Horde, Orc is the pick: Blood Fury is 10% attack power for 15 seconds every 2 minutes. Press it with Rage of the Farseer on the pull and on its own cooldown after that. Troll's Berserking adds 10% attack speed for 15 seconds every 3 minutes and lines up with Rage of the Farseer just as well. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
 
 ## Professions
 
-Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain are Enchanting crafts that bind on pickup, and your raid set wears both. Your Leatherworking pieces and the Blacksmithing axe bind when equipped, so buy them or ask a guildmate; your second profession can be a gathering one that pays for them.
+Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain are Enchanting trinkets that bind on pickup, so nobody can make them for you. Every other craft in your set binds when equipped, so buy them or ask a guildmate; your second profession can be a gathering one that pays for them.
 
 ## Leveling
 
-Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Stormstrike sits in the fourth row and you can press it the moment you learn it: this build opens with Thundering Strikes and Ancestral Knowledge, fills Mental Dexterity, Elemental Weapons, Shamanistic Focus and Flurry, and takes Stormstrike at 32, with Improved Ghost Wolf right after. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.
+### Levels 1 to 19
+
+Rockbiter Weapon goes on at 1 and Earth Shock comes at 4. Lightning Shield at 8 stays up while you quest: mobs hit you, so it does damage. Rockbiter stays on your weapon until Windfury Weapon at 30; below 20 its attack power is worth more than Flametongue Weapon. Do the Call of Earth class quest at 4 and Call of Fire at 10: they give the Earth Totem every Earth totem needs and the Fire Totem every Fire totem needs, carried in your bags, and without them those totems do not cast. From 10, Searing Totem and Strength of Earth Totem go down on every pull that lasts. Talents open with Thundering Strikes from 10 to 14, 1% crit with spells and attacks per point, then Ancestral Knowledge from 15 to 19, 2% Intellect per point. Replace the starter weapon with the first slow two-hander a quest gives you: staves are trained already, and a weapon master teaches two-handed maces and axes. Quest rewards beat vendor gear, you wear leather until 40, and you never dual wield.
+
+### Levels 20 to 60
+
+Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Windfury Weapon at 30 replaces Rockbiter and stays on for good. Stormstrike sits in the fourth row and you can press it the moment you learn it: from 20 this build fills Mental Dexterity, Elemental Weapons, Shamanistic Focus and Flurry, and takes Stormstrike at 32, with Improved Ghost Wolf right after. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.

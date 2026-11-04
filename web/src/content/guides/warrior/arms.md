@@ -8,13 +8,13 @@ raidBuild: 'FS1:1.60.1.70755:warrior:night-elf:30303213132215201/05050005012/1:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Warcraft Tavern: WoW Classic PvE DPS Warrior guide, Arms section'
@@ -29,11 +29,8 @@ sources:
   - label: 'Forever Sixty, what each stat is worth'
     url: https://foreversixty.gg/sim/weights
     kind: site
-  - label: 'Forever Sixty, how Arms plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
-  - label: 'Forever Sixty, where the raid gear drops'
-    url: https://foreversixty.gg/sources
+  - label: 'Forever Sixty, which boss drops are upgrades'
+    url: https://foreversixty.gg/sim/drops
     kind: site
   - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
@@ -68,7 +65,7 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 - **Improved Overpower** (2 points): 50% more crit chance on Overpower. With Bloodthrill feeding you Overpowers, this is where your crits come from.
 - **Weaponmaster** (5 points): a bonus that depends on your two-hander. Swords give a 5% chance at an extra attack, axes and polearms 5% crit, maces and staves ignore 15% of armor. Take all five whatever you swing.
 - **Improved Rend** and **Deep Wounds** (3 points each): Rend hits 35% harder and every crit adds a bleed for 60% of your weapon's average damage. Deep Wounds needs the Improved Rend points anyway.
-- **Impale** (2 points): 20% more crit damage on your abilities. Overpower crits most of the time, so this pays every few seconds.
+- **Impale** (2 points): your ability crits hit for 220% of a normal hit instead of double. Overpower crits most of the time, so this pays every few seconds.
 - **Two-Handed Weapon Specialization** (3 points): 6% more damage with the weapon you always carry.
 - **Improved Tactical Mastery** (3 points): you keep 25 rage through a stance change instead of 10. This is what makes the swap to Berserker Stance for Recklessness and Whirlwind free.
 - **Anger Management** and **Improved Charge** (3 points): a point of rage every 3 seconds in combat, and 21 rage from Charge instead of 15. Rage is the limit for Arms, and both pay from the first second of the pull.
@@ -89,7 +86,7 @@ The raid build drops Iron Will for two more points of **Improved Heroic Strike**
 
 **Battle Stance.** Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target. Press Overpower the moment it lights up, even ahead of Mortal Strike: it is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later. Mortal Strike goes on cooldown otherwise. With Improved Slam, Slam fills the gap between Mortal Strikes.
 
-**Rage.** Bloodrage on cooldown whenever you are under 80 rage. Heroic Strike only when you are about to cap at 90 or more: below that, every point is worth more in Mortal Strike, Overpower and Execute. If a shaman drops Windfury Totem in your group, Hamstring on any free global: it is a cheap main-hand hit that can trigger the totem's extra attack. Without Windfury, never Hamstring for damage.
+**Rage.** Bloodrage on cooldown whenever you are under 80 rage. Heroic Strike only when you are about to cap at 90 or more: below that, keep the rage for Mortal Strike, Overpower and Execute, which lose damage every time they wait for it. If a shaman drops Windfury Totem in your group, Hamstring on any free global: it is a cheap main-hand hit that can trigger the totem's extra attack. Without Windfury, never Hamstring for damage.
 
 **Execute.** From 25% stop Hamstring and let the rage build. At 20%, Execute in Battle Stance first: it spends your whole bar, so that first Execute is your biggest hit of the fight. Then swap to Berserker Stance (Improved Tactical Mastery keeps 25 rage) and press Recklessness. From there, Mortal Strike on cooldown and Execute on every other global until the boss dies; in a dungeon without raid buffs, Execute goes first. Overpower and Rend do not work in Berserker Stance, so stay put.
 
@@ -99,7 +96,7 @@ The raid build drops Iron Will for two more points of **Improved Heroic Strike**
 
 ## Stat priority
 
-Hit is worth the most until you reach the hit cap: a missed Mortal Strike or Overpower is a lost global and lost rage. Crit feeds Deep Wounds, Impale and Overpower. Every point of Strength is two attack power for a warrior, so Strength beats attack power point for point. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
+The table above gives the order for your gear; this is why each stat counts. Every point of Strength is two attack power for a warrior. Crit feeds Deep Wounds, Impale and Overpower, and a critical swing brings twice the rage. Agility carries crit and armor with it. Hit matters up to the hit cap, because a missed Mortal Strike or Overpower is a lost global and lost rage; once your gear reaches the cap it adds nothing. Haste adds swings, and swings are rage. Weapon skill takes the sting out of glancing blows and trims your misses, and no race brings it any more. For a two-hander it only comes on the weapon itself, like Obsidian Edged Blade's two-handed sword skill; Edgemaster's Handguards and the other skill gear raise one-handed skills and do nothing for you.
 
 ## Best in slot
 
@@ -109,14 +106,26 @@ Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take
 
 ## Races
 
-Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes: press it with Recklessness at 20%. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds. Skyborne edges both by a hair on either faction, since Wind Blessed is 2% haste that never turns off, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it.
+Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes: press it on the pull and every time it comes back, but never inside Recklessness, which already makes every hit crit. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds. Skyborne edges both by a hair on either faction, since Wind Blessed is 2% haste that never turns off, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it.
 
-If you want a different look, the gap is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, sit just behind it, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes to press with Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails the races that are always on.
+If you want a different look, the gap is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, sit just behind it, and Dwarf's Artisan's Precision, 1% hit, trails them. On the Horde, Orc is next: Blood Fury is 10% attack power for 15 seconds every 2 minutes, so press it on the pull and every time it comes back, and it still adds damage inside Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails Undead and Orc; Tauren brings nothing for damage and comes last.
 
 ## Professions
 
 Blacksmithing and Mining. Blacksmithing makes Arcanite Champion, and Mining feeds it. Engineering is the other pick: Goblin Sapper Charges and Dense Dynamite on every trash pack, and grenades in PvP.
 
 ## Leveling
+
+### Levels 1 to 19
+
+Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 12. Rend's bleed ignores armor, so put it on anything that will live through it. Tactical Mastery at 14 lets you keep 10 Rage through a stance swap.
+
+At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander, a good pick if your two-hander is still the starter.
+
+Your first point at 10 makes Heroic Strike cost 1 less Rage. Three points of Deflection follow for parry, then Improved Rend from 14 to 16 for a much bigger bleed, and Improved Charge at 17 and 18 for 6 more Rage on every opener.
+
+Weapon damage is nearly all your damage, so swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
+
+### Levels 20 to 60
 
 Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, and Victory Rush whenever it is up after a kill: it heals 10% and comes back every 30 seconds, so open the next pull with it if the last one died fast. Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Improved Overpower comes in at 22 and Bloodthrill at 33, after Deep Wounds and Impale; once both are in, keep Rend on everything and every pull turns into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.

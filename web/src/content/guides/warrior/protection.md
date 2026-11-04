@@ -3,8 +3,8 @@ title: Protection Warrior in Forever
 classSlug: warrior
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70755:warrior:dwarf:35300003/0/250533120330001351:'
-recommendedRaces: [dwarf, tauren]
+build: 'FS1:1.60.1.70755:warrior:night-elf:35300003/0/250533120330001351:'
+recommendedRaces: [night-elf, tauren]
 statPriority:
   [
     Defense,
@@ -21,26 +21,20 @@ statPriority:
     Block,
   ]
 description: 'Shield tank in Defensive Stance: Shield Slam and Revenge for threat, Shield Block and Thunder Clap for the hits, Sunder Armor in between.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Icy Veins, the racial rework'
     url: https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/
     kind: community
-  - label: 'Forever Sixty, what each stat is worth'
-    url: https://foreversixty.gg/sim/weights
-    kind: site
-  - label: 'Forever Sixty, how Protection plays'
-    url: https://foreversixty.gg/sim/specs
-    kind: site
-  - label: 'Forever Sixty, where the raid gear drops'
-    url: https://foreversixty.gg/sources
+  - label: 'Forever Sixty, Protection best in slot'
+    url: https://foreversixty.gg/bis/warrior/protection
     kind: site
   - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
@@ -105,17 +99,19 @@ Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you 
 
 ## Stat priority
 
-Defense, dodge and parry come first: they take hits out entirely, and Defense also lowers the chance to be crit. Agility brings dodge and armor with it. Stamina is your buffer: a bigger health bar gives the healers more time to react to a spike. Armor cuts every physical hit, though each point is worth a little less the more you stack. Crushing blows come from the boss's level, not your defense; Shield Block on top of your dodge, parry and block is what pushes them off the table. Block takes a flat amount off the hits it catches, so it grows with your block value. Strength and attack power are threat, and Strength also adds block value. Weapon skill from gear like Edgemaster's Handguards cuts how often the boss dodges and parries you, which is threat and rage, not survival.
+The table above gives the order for your gear; this is why each stat counts. Defense takes hits out entirely and lowers the chance to be crit. Stamina is your buffer: a bigger health bar gives the healers more time to react to a spike. Dodge and parry take hits out too, and each one also lights Revenge and, with Master of Defense, brings rage. Block takes a flat amount off every hit it catches, and Shield Slam adds your block value to its damage. Agility brings dodge and armor with it. Strength is threat and also adds block value. Armor cuts every physical hit, though each point is worth a little less the more you stack. Crushing blows come from the boss's level, not your defense; Shield Block on top of your dodge, parry and block is what pushes them off the table. Weapon skill from gear like Edgemaster's Handguards cuts how often the boss dodges and parries you, which is threat and rage, not survival.
 
 ## Best in slot
 
 ## Enchants and consumables
 
-Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for Stamina and armor first; a tank that dies holds no threat.
+Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for the health bar; a tank that dies holds no threat.
 
 ## Races
 
-Dwarf and Tauren are the tank picks. Dwarf's Stoneform takes 10% off physical damage for 8 seconds every 3 minutes and clears bleeds and poisons, a small Shield Wall you can press on demand. Tauren's Endurance is 5% more health. Night Elf's Quickness adds 1% dodge.
+Night Elf is the Alliance pick and Tauren the Horde pick. Night Elf's Quickness is 1% more dodge and 2% more movement speed, and that dodge is every hit it turns away: a Night Elf takes less damage than any other Alliance race, and its health swings less than a Dwarf's. Tauren's Endurance is 5% more total health, and no race's health swings less when the big hits stack.
+
+Dwarf is the button race. Stoneform removes every bleed, poison and disease, makes you immune to them, and takes 10% off physical damage for 8 seconds every 3 minutes. It only helps when you press it, so save it for the hit you know is coming, or for the bleed or poison stack that would otherwise get a healer to panic.
 
 ## Professions
 
@@ -123,4 +119,16 @@ Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feed
 
 ## Leveling
 
-Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, take Improved Bloodrage, Shield Specialization and Anticipation first. Shield Slam is the 31st point, so it arrives at 40. The last point of Focused Rage comes at 41, then Bastion, and the levels after that go to Improved Heroic Strike, Deflection, Improved Rend and Deep Wounds in Arms.
+### Levels 1 to 19
+
+Charge and Rend train at 4, Thunder Clap at 6 and Hamstring at 8. At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander to pair with a shield.
+
+Shield Bash comes at 12, Revenge and Demoralizing Shout at 14, and Shield Block at 16: two attacks blocked, and every block lights Revenge.
+
+The first two points, at 10 and 11, are Improved Bloodrage for half again the Rage. Shield Specialization takes 12 to 16: more block, and from the fifth point every block gives 5 Rage. Anticipation starts at 17 for Defense.
+
+Take quest rewards over vendor gear: a one-hander and the best shield you can find beat the starter weapon. You wear mail until plate at 40.
+
+### Levels 20 to 60
+
+Solo, Arms or Fury levels faster; keep a shield in your bags, because with one on you can tank every dungeon on the way up, even in damage talents. Shield Slam is the 31st point, so it arrives at 40. The last point of Focused Rage comes at 41, then Bastion, and the levels after that go to Improved Heroic Strike, Deflection, Improved Rend and Deep Wounds in Arms.

@@ -16,6 +16,8 @@ describe('factionOfRace', () => {
       undead: 'horde',
       tauren: 'horde',
       troll: 'horde',
+      highorderskyborne: 'alliance',
+      windshaperskyborne: 'horde',
     });
   });
 
@@ -26,6 +28,8 @@ describe('factionOfRace', () => {
     expect(factionOfRace('Scourge')).toBe('horde');
     expect(factionOfRace('Undead')).toBe('horde');
     expect(factionOfRace('Tauren')).toBe('horde');
+    expect(factionOfRace('High Order Skyborne')).toBe('alliance');
+    expect(factionOfRace('windshaper-skyborne')).toBe('horde');
   });
 
   it('is null when the race is unknown or not one of them', () => {

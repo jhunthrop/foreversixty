@@ -9,20 +9,17 @@ recommendedRaces: [human, orc]
 statPriority:
   [Spell power, Shadow power, Hit, Critical strike, Intellect, Fire power, Spell haste, Spell penetration]
 description: 'How to play Demonology in Forever: the Imp sacrifice and Demonic Pact setup, Soul Link, Decimation, the Shadow Bolt rotation, shards, races and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever client spell and talent data'
-    url: https://wago.tools/db2/SpellEffect
+  - label: 'Forever client spell data (wago.tools, build 70755)'
+    url: https://wago.tools/db2/SpellEffect?build=1.60.1.70755
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
-    kind: site
-  - label: 'Forever Sixty, rotation'
-    url: https://foreversixty.gg/sources
     kind: site
 ---
 
@@ -80,7 +77,7 @@ Each summon is a 6 second cast with Master Summoner, and the Succubus costs a So
 
 On the pull: Curse of the Elements first if you hold it, since every spell the raid casts hits harder from that global on, then Corruption, then Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight. Curses and banes have their own slots in Forever, so Curse of the Elements and Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 
-Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute left never lands, so in the last minute put Bane of Agony up instead. Doom's damage scales hard with your spell damage, which is why it beats Agony here.
+Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute left never lands, so in the last minute put Bane of Agony up instead. Doom does more damage per minute than Agony for one global instead of two and a half, which is why it beats Agony here.
 
 Recast Corruption when it falls off and never clip it. Start Immolate's cast with about 3 seconds left on the old one. Everything else is Shadow Bolt.
 
@@ -98,24 +95,34 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Spell power first, and Shadow power is nearly as good, though Immolate is Fire. Hit comes next until the cap, and Suppression already gives you 5% of it. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Spell power feeds every spell you cast. Shadow power feeds Shadow Bolt, Corruption and Doom. Fire power reaches Immolate on a boss and Rain of Fire on trash, since this build skips Soul Fire. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana, plus a little crit, which pays the same way. Spirit only matters through Life Tap. The table above gives the order for your gear.
 
 ## Best in slot
 
-The pre-raid set leans on Tailoring and Enchanting crafts, with an Engineering head.
+The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 
-Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Put Brilliant Wizard Oil or a Spellstone on the weapon; a Spellstone costs a shard.
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, so more of your Shadow Bolts put up Improved Shadow Bolt and land for double the bonus through Ruin, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, so save it for the last 35%, when every Shadow Bolt hits 6% harder, and Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the last 35% if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, so more of your Shadow Bolts put up Improved Shadow Bolt and land for double the bonus through Ruin, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, so save it for the last 35%, when every Shadow Bolt hits 6% harder, and Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the last 35% if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is close behind Orc: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds.
 
 ## Professions
 
-Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted caster pieces fill your pre-raid set. Your best head, Spellpower Goggles Xtreme Plus, is an engineer's craft; if you cannot get a pair, the tailored Felcloth Hood is nearly as good, since its 30 Shadow power suits your Shadow Bolts. Alchemy is the swap if your guild wants a flask from you every raid night.
+Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted caster pieces fill your pre-raid set. Engineering goggles need Engineering to wear, so they are only yours if you train it in place of Enchanting. Alchemy is the swap if your guild wants a flask from you every raid night.
 
 ## Leveling
 
-Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice, and solo you keep a demon out for Soul Link, Master Demonologist and Demonic Knowledge. Use the Voidwalker when pulls hurt, since Master Demonologist then cuts the physical damage you take by 10%. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. From 48, when you learn Soul Fire, Decimation's free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.
+### Levels 1 to 19
+
+Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10, then train Health Funnel at 12.
+
+Your points at 10 and 11 go into Improved Health Funnel: 40% more health moved, 30% cheaper, no threat, and usable at any demon health. It wakes up at 12 with Health Funnel and keeps the Voidwalker standing through bad pulls. Demonic Embrace follows from 12 to 14 for 9% more Stamina, then Unholy Power from 15 to 19 for 10% more pet damage.
+
+Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 do more than your bolts. An enchanter makes both, or check the Auction House. Cloth quest rewards with Intellect and Stamina beat anything a vendor sells.
+
+### Levels 20 to 60
+
+Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice. Keep a demon out instead: it tanks for you, and from 30 Soul Link, then Demonic Knowledge and Master Demonologist, only work while it lives. Use the Voidwalker when pulls hurt; from 35 Master Demonologist also cuts the physical damage you take while it is out, by 10% once it is full at 39. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. From 48, when you learn Soul Fire, Decimation's free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.

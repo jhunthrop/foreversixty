@@ -19,7 +19,10 @@
     },
     "phase": 0,
     "spell_id": 7454,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 15,
@@ -40,7 +43,10 @@
     },
     "phase": 0,
     "spell_id": 2831,
-    "item_id": 2304
+    "item_id": 2304,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
   },
   {
     "id": 16,
@@ -61,7 +67,10 @@
     },
     "phase": 0,
     "spell_id": 2832,
-    "item_id": 2313
+    "item_id": 2313,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
   },
   {
     "id": 17,
@@ -82,7 +91,10 @@
     },
     "phase": 0,
     "spell_id": 2833,
-    "item_id": 4265
+    "item_id": 4265,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
   },
   {
     "id": 18,
@@ -103,7 +115,10 @@
     },
     "phase": 0,
     "spell_id": 10344,
-    "item_id": 8173
+    "item_id": 8173,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
   },
   {
     "id": 24,
@@ -121,7 +136,10 @@
     },
     "phase": 0,
     "spell_id": 7443,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 30,
@@ -137,7 +155,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 3974,
-    "item_id": 4405
+    "item_id": 4405,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 262156,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 32,
@@ -153,7 +174,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 3975,
-    "item_id": 4406
+    "item_id": 4406,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 262156,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 33,
@@ -169,7 +193,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 3976,
-    "item_id": 4407
+    "item_id": 4407,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 262156,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 34,
@@ -188,7 +215,10 @@
     },
     "phase": 0,
     "spell_id": 7218,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 354,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 36,
@@ -205,7 +235,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 6296,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 41,
@@ -223,7 +256,10 @@
     },
     "phase": 0,
     "spell_id": 7418,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 41,
@@ -241,7 +277,10 @@
     },
     "phase": 0,
     "spell_id": 7420,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 44,
@@ -257,7 +296,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 7426,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 63,
@@ -273,7 +315,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13538,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 66,
@@ -291,7 +336,10 @@
     },
     "phase": 0,
     "spell_id": 7457,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 66,
@@ -309,7 +357,10 @@
     },
     "phase": 0,
     "spell_id": 7863,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 241,
@@ -326,7 +377,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 7745,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 241,
@@ -343,7 +397,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13503,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 242,
@@ -361,7 +418,10 @@
     },
     "phase": 0,
     "spell_id": 7748,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 243,
@@ -379,7 +439,10 @@
     },
     "phase": 0,
     "spell_id": 7766,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 246,
@@ -397,7 +460,10 @@
     },
     "phase": 0,
     "spell_id": 7776,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 247,
@@ -415,7 +481,10 @@
     },
     "phase": 0,
     "spell_id": 7779,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 247,
@@ -433,7 +502,10 @@
     },
     "phase": 0,
     "spell_id": 7867,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 247,
@@ -451,7 +523,10 @@
     },
     "phase": 0,
     "spell_id": 13419,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 248,
@@ -469,7 +544,10 @@
     },
     "phase": 0,
     "spell_id": 7782,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 249,
@@ -486,7 +564,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 7786,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 250,
@@ -503,7 +584,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 7788,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 254,
@@ -521,7 +605,10 @@
     },
     "phase": 0,
     "spell_id": 7857,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 255,
@@ -539,7 +626,10 @@
     },
     "phase": 0,
     "spell_id": 7859,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 255,
@@ -558,7 +648,10 @@
     },
     "phase": 0,
     "spell_id": 13380,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 255,
@@ -576,7 +669,10 @@
     },
     "phase": 0,
     "spell_id": 13687,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 256,
@@ -594,7 +690,10 @@
     },
     "phase": 0,
     "spell_id": 7861,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 663,
@@ -610,7 +709,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 12459,
-    "item_id": 10546
+    "item_id": 10546,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 262156,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 664,
@@ -626,7 +728,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 12460,
-    "item_id": 10548
+    "item_id": 10548,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 262156,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 723,
@@ -645,7 +750,10 @@
     },
     "phase": 0,
     "spell_id": 7793,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 723,
@@ -663,7 +771,10 @@
     },
     "phase": 0,
     "spell_id": 13622,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 724,
@@ -681,7 +792,10 @@
     },
     "phase": 0,
     "spell_id": 13501,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 724,
@@ -699,7 +813,10 @@
     },
     "phase": 0,
     "spell_id": 13644,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 744,
@@ -717,7 +834,10 @@
     },
     "phase": 0,
     "spell_id": 13421,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 0,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 783,
@@ -735,7 +855,10 @@
     },
     "phase": 0,
     "spell_id": 7771,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 803,
@@ -752,7 +875,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13898,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 804,
@@ -770,7 +896,10 @@
     },
     "phase": 0,
     "spell_id": 13522,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 805,
@@ -787,7 +916,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13943,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 823,
@@ -805,7 +937,10 @@
     },
     "phase": 0,
     "spell_id": 13536,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 843,
@@ -823,7 +958,10 @@
     },
     "phase": 0,
     "spell_id": 13607,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 844,
@@ -839,7 +977,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13612,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 845,
@@ -855,7 +996,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13617,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 846,
@@ -871,7 +1015,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13620,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 847,
@@ -893,7 +1040,10 @@
     },
     "phase": 0,
     "spell_id": 13626,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 848,
@@ -912,7 +1062,10 @@
     },
     "phase": 0,
     "spell_id": 13464,
-    "item_id": 11081
+    "item_id": 11081,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 0,
+    "equipped_inventory_type_mask": 16384
   },
   {
     "id": 848,
@@ -930,7 +1083,10 @@
     },
     "phase": 0,
     "spell_id": 13635,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 849,
@@ -948,7 +1104,10 @@
     },
     "phase": 0,
     "spell_id": 13637,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 849,
@@ -966,7 +1125,10 @@
     },
     "phase": 0,
     "spell_id": 13882,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 850,
@@ -984,7 +1146,10 @@
     },
     "phase": 0,
     "spell_id": 13640,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 851,
@@ -1002,7 +1167,10 @@
     },
     "phase": 0,
     "spell_id": 13642,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 851,
@@ -1020,7 +1188,10 @@
     },
     "phase": 0,
     "spell_id": 20024,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 852,
@@ -1038,7 +1209,10 @@
     },
     "phase": 0,
     "spell_id": 13648,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 852,
@@ -1057,7 +1231,10 @@
     },
     "phase": 0,
     "spell_id": 13817,
-    "item_id": 11202
+    "item_id": 11202,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 64,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 852,
@@ -1075,7 +1252,10 @@
     },
     "phase": 0,
     "spell_id": 13836,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 853,
@@ -1092,7 +1272,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13653,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 854,
@@ -1109,7 +1292,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13655,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 856,
@@ -1127,7 +1313,10 @@
     },
     "phase": 0,
     "spell_id": 13661,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 856,
@@ -1145,7 +1334,10 @@
     },
     "phase": 0,
     "spell_id": 13887,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 857,
@@ -1163,7 +1355,10 @@
     },
     "phase": 0,
     "spell_id": 13663,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 863,
@@ -1182,7 +1377,10 @@
     },
     "phase": 0,
     "spell_id": 13689,
-    "item_id": 11168
+    "item_id": 11168,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 64,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 865,
@@ -1198,7 +1396,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13698,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 866,
@@ -1220,7 +1421,10 @@
     },
     "phase": 0,
     "spell_id": 13700,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 884,
@@ -1238,7 +1442,10 @@
     },
     "phase": 0,
     "spell_id": 13746,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 903,
@@ -1260,7 +1467,10 @@
     },
     "phase": 0,
     "spell_id": 13794,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 904,
@@ -1278,7 +1488,10 @@
     },
     "phase": 0,
     "spell_id": 13815,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 904,
@@ -1296,7 +1509,10 @@
     },
     "phase": 0,
     "spell_id": 13935,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 905,
@@ -1314,7 +1530,10 @@
     },
     "phase": 0,
     "spell_id": 13822,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 906,
@@ -1330,7 +1549,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13841,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 907,
@@ -1348,7 +1570,10 @@
     },
     "phase": 0,
     "spell_id": 13846,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 908,
@@ -1366,7 +1591,10 @@
     },
     "phase": 0,
     "spell_id": 13858,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 909,
@@ -1382,7 +1610,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13868,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 910,
@@ -1398,7 +1629,10 @@
     "stats": {},
     "phase": 5,
     "spell_id": 25083,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 911,
@@ -1414,7 +1648,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13890,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 912,
@@ -1431,7 +1668,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13915,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 913,
@@ -1449,7 +1689,10 @@
     },
     "phase": 0,
     "spell_id": 13917,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 923,
@@ -1467,7 +1710,10 @@
     },
     "phase": 0,
     "spell_id": 13931,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 924,
@@ -1485,7 +1731,10 @@
     },
     "phase": 0,
     "spell_id": 7428,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 925,
@@ -1503,7 +1752,10 @@
     },
     "phase": 0,
     "spell_id": 13646,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 926,
@@ -1522,7 +1774,10 @@
     },
     "phase": 0,
     "spell_id": 13933,
-    "item_id": 11224
+    "item_id": 11224,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 64,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 927,
@@ -1540,7 +1795,10 @@
     },
     "phase": 0,
     "spell_id": 13939,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 927,
@@ -1558,7 +1816,10 @@
     },
     "phase": 0,
     "spell_id": 20013,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 928,
@@ -1580,7 +1841,10 @@
     },
     "phase": 0,
     "spell_id": 13941,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 929,
@@ -1598,7 +1862,10 @@
     },
     "phase": 0,
     "spell_id": 13945,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 929,
@@ -1617,7 +1884,10 @@
     },
     "phase": 0,
     "spell_id": 20017,
-    "item_id": 16217
+    "item_id": 16217,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 64,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 929,
@@ -1635,7 +1905,10 @@
     },
     "phase": 0,
     "spell_id": 20020,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 930,
@@ -1651,7 +1924,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13947,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 931,
@@ -1669,7 +1945,10 @@
     },
     "phase": 0,
     "spell_id": 13948,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 943,
@@ -1686,7 +1965,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13529,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 943,
@@ -1703,7 +1985,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13693,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 963,
@@ -1720,7 +2005,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13937,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1483,
@@ -1739,7 +2027,10 @@
     },
     "phase": 0,
     "spell_id": 15340,
-    "item_id": 11622
+    "item_id": 11622,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 1503,
@@ -1758,7 +2049,10 @@
     },
     "phase": 0,
     "spell_id": 15389,
-    "item_id": 11642
+    "item_id": 11642,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 1504,
@@ -1777,7 +2071,10 @@
     },
     "phase": 0,
     "spell_id": 15391,
-    "item_id": 11643
+    "item_id": 11643,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 1505,
@@ -1796,7 +2093,10 @@
     },
     "phase": 0,
     "spell_id": 15394,
-    "item_id": 11644
+    "item_id": 11644,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 1506,
@@ -1815,7 +2115,10 @@
     },
     "phase": 0,
     "spell_id": 15397,
-    "item_id": 11645
+    "item_id": 11645,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 1507,
@@ -1834,7 +2137,10 @@
     },
     "phase": 0,
     "spell_id": 15400,
-    "item_id": 11646
+    "item_id": 11646,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 1508,
@@ -1853,7 +2159,10 @@
     },
     "phase": 0,
     "spell_id": 15402,
-    "item_id": 11647
+    "item_id": 11647,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 1509,
@@ -1872,7 +2181,10 @@
     },
     "phase": 0,
     "spell_id": 15404,
-    "item_id": 11648
+    "item_id": 11648,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 1510,
@@ -1891,7 +2203,10 @@
     },
     "phase": 0,
     "spell_id": 15406,
-    "item_id": 11649
+    "item_id": 11649,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 1843,
@@ -1912,7 +2227,10 @@
     },
     "phase": 0,
     "spell_id": 19057,
-    "item_id": 15564
+    "item_id": 15564,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
   },
   {
     "id": 1883,
@@ -1930,7 +2248,10 @@
     },
     "phase": 0,
     "spell_id": 20008,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 1884,
@@ -1948,7 +2269,10 @@
     },
     "phase": 0,
     "spell_id": 20009,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 1885,
@@ -1966,7 +2290,10 @@
     },
     "phase": 0,
     "spell_id": 20010,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 1886,
@@ -1984,7 +2311,10 @@
     },
     "phase": 0,
     "spell_id": 20011,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 1887,
@@ -2002,7 +2332,10 @@
     },
     "phase": 0,
     "spell_id": 20012,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 1887,
@@ -2020,7 +2353,10 @@
     },
     "phase": 0,
     "spell_id": 20023,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 256
   },
   {
     "id": 1888,
@@ -2042,7 +2378,10 @@
     },
     "phase": 0,
     "spell_id": 20014,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 1889,
@@ -2060,7 +2399,10 @@
     },
     "phase": 0,
     "spell_id": 20015,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 1890,
@@ -2079,7 +2421,10 @@
     },
     "phase": 0,
     "spell_id": 20016,
-    "item_id": 16222
+    "item_id": 16222,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 64,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1891,
@@ -2101,7 +2446,10 @@
     },
     "phase": 0,
     "spell_id": 20025,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 1892,
@@ -2119,7 +2467,10 @@
     },
     "phase": 0,
     "spell_id": 20026,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 1893,
@@ -2137,7 +2488,10 @@
     },
     "phase": 0,
     "spell_id": 20028,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 1894,
@@ -2154,7 +2508,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 20029,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1896,
@@ -2171,7 +2528,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 20030,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1897,
@@ -2188,7 +2548,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 13695,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1897,
@@ -2205,7 +2568,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 20031,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1898,
@@ -2222,7 +2588,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 20032,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1899,
@@ -2239,7 +2608,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 20033,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1900,
@@ -2256,7 +2628,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 20034,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1903,
@@ -2275,7 +2650,10 @@
     },
     "phase": 0,
     "spell_id": 20035,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 1904,
@@ -2294,7 +2672,10 @@
     },
     "phase": 0,
     "spell_id": 20036,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2443,
@@ -2313,7 +2694,10 @@
     },
     "phase": 0,
     "spell_id": 21931,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 196083,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2463,
@@ -2331,7 +2715,10 @@
     },
     "phase": 0,
     "spell_id": 13657,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 2503,
@@ -2352,7 +2739,10 @@
     },
     "phase": 0,
     "spell_id": 22725,
-    "item_id": 18251
+    "item_id": 18251,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
   },
   {
     "id": 2504,
@@ -2371,7 +2761,10 @@
     },
     "phase": 0,
     "spell_id": 22749,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 58867,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2505,
@@ -2390,7 +2783,10 @@
     },
     "phase": 0,
     "spell_id": 22750,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 58867,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2523,
@@ -2406,7 +2802,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 22779,
-    "item_id": 18283
+    "item_id": 18283,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 262156,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2543,
@@ -2425,7 +2824,10 @@
     },
     "phase": 0,
     "spell_id": 22840,
-    "item_id": 18329
+    "item_id": 18329,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2544,
@@ -2444,7 +2846,10 @@
     },
     "phase": 2,
     "spell_id": 22844,
-    "item_id": 18330
+    "item_id": 18330,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2545,
@@ -2463,7 +2868,10 @@
     },
     "phase": 2,
     "spell_id": 22846,
-    "item_id": 18331
+    "item_id": 18331,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2563,
@@ -2482,7 +2890,10 @@
     },
     "phase": 0,
     "spell_id": 23799,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 58867,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2564,
@@ -2501,7 +2912,10 @@
     },
     "phase": 0,
     "spell_id": 23800,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 58867,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2564,
@@ -2519,7 +2933,10 @@
     },
     "phase": 5,
     "spell_id": 25080,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 2565,
@@ -2537,7 +2954,10 @@
     },
     "phase": 0,
     "spell_id": 23801,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 2566,
@@ -2555,7 +2975,10 @@
     },
     "phase": 0,
     "spell_id": 23802,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 2567,
@@ -2574,7 +2997,10 @@
     },
     "phase": 0,
     "spell_id": 23803,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 58867,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2568,
@@ -2593,7 +3019,10 @@
     },
     "phase": 0,
     "spell_id": 23804,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 58867,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2583,
@@ -2616,7 +3045,10 @@
     },
     "phase": 4,
     "spell_id": 24149,
-    "item_id": 19782
+    "item_id": 19782,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2584,
@@ -2639,7 +3071,10 @@
     },
     "phase": 4,
     "spell_id": 24160,
-    "item_id": 19783
+    "item_id": 19783,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2585,
@@ -2661,7 +3096,10 @@
     },
     "phase": 4,
     "spell_id": 24161,
-    "item_id": 19784
+    "item_id": 19784,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2586,
@@ -2684,7 +3122,10 @@
     },
     "phase": 4,
     "spell_id": 24162,
-    "item_id": 19785
+    "item_id": 19785,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2587,
@@ -2706,7 +3147,10 @@
     },
     "phase": 4,
     "spell_id": 24163,
-    "item_id": 19786
+    "item_id": 19786,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2588,
@@ -2728,7 +3172,10 @@
     },
     "phase": 4,
     "spell_id": 24164,
-    "item_id": 19787
+    "item_id": 19787,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2589,
@@ -2750,7 +3197,10 @@
     },
     "phase": 4,
     "spell_id": 24165,
-    "item_id": 19788
+    "item_id": 19788,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2590,
@@ -2773,7 +3223,10 @@
     },
     "phase": 4,
     "spell_id": 24167,
-    "item_id": 19789
+    "item_id": 19789,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2591,
@@ -2796,7 +3249,10 @@
     },
     "phase": 4,
     "spell_id": 24168,
-    "item_id": 19790
+    "item_id": 19790,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2604,
@@ -2814,7 +3270,10 @@
     },
     "phase": 4,
     "spell_id": 24420,
-    "item_id": 20078
+    "item_id": 20078,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 8
   },
   {
     "id": 2605,
@@ -2833,7 +3292,10 @@
     },
     "phase": 4,
     "spell_id": 24421,
-    "item_id": 20076
+    "item_id": 20076,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 8
   },
   {
     "id": 2606,
@@ -2852,7 +3314,10 @@
     },
     "phase": 4,
     "spell_id": 24422,
-    "item_id": 20077
+    "item_id": 20077,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 8
   },
   {
     "id": 2613,
@@ -2868,7 +3333,10 @@
     "stats": {},
     "phase": 5,
     "spell_id": 25072,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 2614,
@@ -2886,7 +3354,10 @@
     },
     "phase": 5,
     "spell_id": 25073,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 2615,
@@ -2904,7 +3375,10 @@
     },
     "phase": 5,
     "spell_id": 25074,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 2616,
@@ -2922,7 +3396,10 @@
     },
     "phase": 5,
     "spell_id": 25078,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 2617,
@@ -2940,7 +3417,10 @@
     },
     "phase": 5,
     "spell_id": 25079,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 2619,
@@ -2958,7 +3438,10 @@
     },
     "phase": 5,
     "spell_id": 25081,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 2620,
@@ -2976,7 +3459,10 @@
     },
     "phase": 5,
     "spell_id": 25082,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 2621,
@@ -2992,7 +3478,10 @@
     "stats": {},
     "phase": 5,
     "spell_id": 25084,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 2622,
@@ -3010,7 +3499,10 @@
     },
     "phase": 5,
     "spell_id": 25086,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
   },
   {
     "id": 2646,
@@ -3029,7 +3521,10 @@
     },
     "phase": 0,
     "spell_id": 27837,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 2681,
@@ -3048,7 +3543,10 @@
     },
     "phase": 4,
     "spell_id": 28161,
-    "item_id": 22635
+    "item_id": 22635,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 130
   },
   {
     "id": 2715,
@@ -3067,7 +3565,10 @@
     },
     "phase": 6,
     "spell_id": 29475,
-    "item_id": 23547
+    "item_id": 23547,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 8
   },
   {
     "id": 2716,
@@ -3086,7 +3587,10 @@
     },
     "phase": 6,
     "spell_id": 29480,
-    "item_id": 23549
+    "item_id": 23549,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 8
   },
   {
     "id": 2717,
@@ -3105,7 +3609,10 @@
     },
     "phase": 6,
     "spell_id": 29483,
-    "item_id": 23548
+    "item_id": 23548,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 8
   },
   {
     "id": 2721,
@@ -3124,7 +3631,10 @@
     },
     "phase": 6,
     "spell_id": 29467,
-    "item_id": 23545
+    "item_id": 23545,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 8
   },
   {
     "id": 7210,
@@ -3141,7 +3651,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 435481,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 189939,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 7223,
@@ -3157,7 +3670,10 @@
     "stats": {},
     "phase": 0,
     "spell_id": 435903,
-    "item_id": 0
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1048608
   },
   {
     "id": 7603,
@@ -3177,6 +3693,9 @@
     },
     "phase": 0,
     "spell_id": 463871,
-    "item_id": 228982
+    "item_id": 228982,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 64,
+    "equipped_inventory_type_mask": 0
   }
 ]

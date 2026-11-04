@@ -8,8 +8,9 @@ import { existsSync } from 'node:fs';
 import { bandEntry, loadBisFile, realBisPath } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
 import { classRows, racesForClass } from '../planner/reference';
-import type { BisFile, BisHitToCap, BisRole, BisStatWeight, Faction } from '../bis/types';
+import type { BisFile, BisExpertiseToCap, BisHitToCap, BisRole, BisStatWeight, Faction } from '../bis/types';
 import { roleOf } from './role-metric';
+import type { HasteFacts } from './rail-stats';
 
 /**
  * Whether the real pipeline has published a BiS file for this spec -- `loadBisFile` (used
@@ -61,8 +62,12 @@ export interface Band60Weights {
   weights: readonly BisStatWeight[];
   /** The role the band was ranked for: decides the unit its per-point figures are in. */
   role: BisRole;
-  hasteScaleFactor: number | null;
+  /** What the band says about haste beyond its weight row (rail-stats.ts). */
+  haste: HasteFacts;
   hitToCap: BisHitToCap | null;
+  expertiseToCap: BisExpertiseToCap | null;
+  /** The weights character's own talents, the code the band publishes ("1410-...-0535"). */
+  talents: string;
   generatedAt: string;
   /** Which preset these weights were measured under, as the file labels it. */
   presetLabel: string;
@@ -90,8 +95,10 @@ export function band60Weights(
   return {
     weights: band.weights,
     role: roleOf(band),
-    hasteScaleFactor: band.haste_scale_factor ?? null,
+    haste: { scaleFactor: band.haste_scale_factor ?? null, onItems: band.haste_on_items ?? true },
+    talents: band.talents,
     hitToCap: band.hit_to_cap ?? null,
+    expertiseToCap: band.expertise_to_cap ?? null,
     generatedAt: file.generated_at,
     presetLabel: presetLabelFor(file, band),
   };

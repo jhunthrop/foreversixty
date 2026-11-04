@@ -166,7 +166,7 @@ export const bandCompareCopy = {
     return `${head} Pick ${names}.`;
   },
   setDpsCaption: (bandLabel: string): string =>
-    `the ${lowerBandPhrase(bandLabel)} range's own gear set, fully equipped — not your build`,
+    `Preview: the ${lowerBandPhrase(bandLabel)} gear set, fully equipped. Not your DPS.`,
   differs: (n: number): string => `${n} of your points differ from this build`,
   /** The same sentence as `differs`, minus its own leading number -- `BandCompare.svelte`
    *  renders the count in its own mono/gold span and this text beside it, rather than

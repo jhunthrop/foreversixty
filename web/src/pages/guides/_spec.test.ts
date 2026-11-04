@@ -19,8 +19,10 @@ import { guideSchema } from '../../content.config';
 import SpecPage from './[class]/[spec].astro';
 import { raceRows } from '../../lib/planner/reference';
 import { racialEffects } from '../../lib/guides/race-table';
-import { decodeBuildTrees } from '../../lib/guides/build-tree';
-import { schoolHitTalent } from '../../lib/guides/hit-cap-line';
+import { bandEntry } from '../../lib/bis/load';
+import { rankedBisFile } from '../../lib/guides/class-dps';
+import { guideHitCapLine } from '../../lib/guides/hit-cap-line';
+import { bandTalentHits } from '../../lib/guides/talent-hit';
 import { createPageContainer } from '../../test-support/page-container';
 import activeBuild from '../../data/active-build.json';
 
@@ -36,33 +38,6 @@ function loadGuideEntry(id: string) {
   const [, frontmatterBlock, ...bodyParts] = raw.split('---');
   const data = guideSchema.parse(parseYaml(frontmatterBlock));
   return { id, collection: 'guides' as const, data, body: bodyParts.join('---').trim() };
-}
-
-/**
- * The talent a guide's hit line names, read from the active build's trees the way the page
- * reads it (the raid build when it differs, else the leveling build; `schoolHitTalent`; the
- * copy's own "talents" when none), so a client build that renames the talent moves the
- * expectation with it instead of failing the move (Elemental Precision became Precision in
- * 1.60.1.70685).
- */
-function guideHitTalent(id: string): string {
-  const { build, raidBuild } = loadGuideEntry(id).data;
-  const code = raidBuild !== undefined && raidBuild !== build ? raidBuild : build;
-  const trees = code === undefined ? [] : (decodeBuildTrees(activeBuild.build, code) ?? []);
-  return schoolHitTalent(trees) ?? 'talents';
-}
-
-/**
- * Client builds where the frost guide's hit line deliberately says "from talents": the
- * build's school-hit talent is not one `SCHOOL_HIT_TALENTS` names, and naming it was
- * decided against. Empty until someone decides that; a move to a build that renames the
- * talent (70685 and 70707 call it Precision) fails here, so the copy is a decision, never
- * a silent fallback.
- */
-const HIT_LINE_FALLBACK_BUILDS: readonly string[] = [];
-
-function escapeRegExp(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 describe('/guides/warrior/fury', () => {
@@ -187,22 +162,17 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     const html = await frostHtml();
     expect(html).toContain('data-testid="stat-priority-pills"');
     expect(html).toContain('data-testid="guide-stat-table"');
-    const named = guideHitTalent('mage/frost');
-    if (!HIT_LINE_FALLBACK_BUILDS.includes(activeBuild.build)) {
-      expect(
-        named,
-        `the frost hit line names no talent on ${activeBuild.build}: add its school-hit talent to SCHOOL_HIT_TALENTS, or the build to HIT_LINE_FALLBACK_BUILDS`,
-      ).not.toBe('talents');
-    }
-    // Precision adds hit to every Mage spell, so whether the band's cap still carries a
-    // talent split is the nightly ranking's call. When it does, the split names the build's
-    // talent, not the "talents" fallback.
-    const talent = escapeRegExp(named);
-    expect(html).toMatch(
-      new RegExp(
-        `data-testid="guide-stat-table-hit-cap"[^>]*>Hit cap: \\d+(\\.\\d)?%(?: · (?:\\d+(\\.\\d)?% built in(?:, )?)?(?:\\d+(\\.\\d)?% from ${talent}(?:, )?)?(?:\\d+(\\.\\d)?% from gear)?)?<`,
-      ),
+    // The line names every source the band's figure counts: the BiS gear and buffs, and each
+    // talent of the weights character's own build that adds hit (Precision, for Frost).
+    const file = rankedBisFile(activeBuild.build, 'mage-frost');
+    const band = file === undefined ? undefined : bandEntry(file, 60, 'alliance');
+    const line = guideHitCapLine(
+      band?.hit_to_cap,
+      band === undefined ? [] : bandTalentHits(activeBuild.build, 'mage', band.talents),
     );
+    expect(line).toBeDefined();
+    expect(html).toContain(`data-testid="guide-stat-table-hit-cap">${line!.text}<`);
+    expect(line!.text).toContain('from Precision');
     expect(html).toContain('DPS per point');
     // The unit line names the top per-point stat at 60, and the nightly sim decides which one
     // that is: for Frost, hit and spell power sit within error of each other and swap places
@@ -211,18 +181,25 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toMatch(
       /data-testid="guide-stat-table-unit"[^>]*>1 point of [a-z][a-z ]* = (?:\d\.\d\d|\d{2,}\.\d) DPS at level 60</,
     );
-    expect(html).toMatch(/\d+\.\d per 1% haste/);
+    // No item at 60 carries haste: its row reads "Not on any item" and the note under the
+    // table gives its per-1% worth.
+    expect(html).toMatch(/Spell haste: \d+\.\d per 1%, but no item at level 60 has it\./);
     expect(html).not.toMatch(/\d per 1%</);
     expect(html).toContain('Spell penetration shows as &quot;Not significant&quot;');
     expect(html).not.toContain('from school');
     const pills = [...html.matchAll(/data-testid="stat-pill-(\d+)"[\s\S]*?<span>([^<]+)<\/span>/g)].map(
       (m) => m[2],
     );
-    const rows = [
-      ...html.matchAll(/data-testid="guide-stat-table-row-\d+"[^>]*><td class="stat-name">([^<]+)</g),
-    ].map((m) => m[1]);
+    // The pills rank exactly the rows the table gives a number, in the table's order.
+    const rankedRows = [
+      ...html.matchAll(
+        /data-testid="guide-stat-table-row-\d+"[^>]*><td class="stat-name">([^<]+)<\/td>[\s\S]*?<\/tr>/g,
+      ),
+    ]
+      .filter((m) => !m[0].includes('stat-muted'))
+      .map((m) => m[1]);
     expect(pills.length).toBeGreaterThan(3);
-    expect(pills).toEqual(rows);
+    expect(pills).toEqual(rankedRows);
   });
 
   it('puts the best-in-slot table in the page, one panel per faction and level range, with the BiS link', async () => {
@@ -259,11 +236,12 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toContain('data-testid="guide-race-table"');
     expect(html).toContain('data-testid="guide-race-row-gnome"');
     expect(html).toMatch(/data-testid="guide-race-row-gnome" data-recommended="true"/);
-    // The racials and the recommendation line come from the race data of the sync that ran: the
-    // real build's sentences, or none under the unit-test fixture.
+    // The guide's own Races prose names both picks, so no pick line repeats it under the table.
+    expect(html).not.toContain('data-testid="guide-race-picks"');
+    // The racials come from the race data of the sync that ran: the real build's sentences, or
+    // none under the unit-test fixture.
     const gnome = raceRows.find((race) => race.slug === 'gnome');
     if (gnome !== undefined && racialEffects(gnome).has('Eureka!')) {
-      expect(html).toContain('Gnome is the Alliance pick: Eureka! and Expansive Mind.');
       expect(html).toContain(
         'Makes your damaging abilities cost 10% less Mana and deal 10% more damage for 8 seconds',
       );
@@ -277,6 +255,15 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toContain('Level 20 to 29');
     expect(html).toContain('11 to 20 points');
     expect(html).toContain('Outlined: points added in this level range.');
+  });
+
+  it('opens #leveling on the Levels 1 to 19 text and plants the strip under Levels 20 to 60', async () => {
+    const html = await frostHtml();
+    const at = (needle: string): number => html.indexOf(needle);
+    expect(at('id="leveling"')).toBeGreaterThan(-1);
+    expect(at('id="levels-1-to-19"')).toBeGreaterThan(at('id="leveling"'));
+    expect(at('id="levels-20-to-60"')).toBeGreaterThan(at('id="levels-1-to-19"'));
+    expect(at('data-testid="guide-leveling-strip"')).toBeGreaterThan(at('id="levels-20-to-60"'));
   });
 
   it('renders no per-section hedge', async () => {

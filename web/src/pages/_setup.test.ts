@@ -583,10 +583,12 @@ describe('/setup as three steps (W.9)', () => {
 
   it('says Mac is not supported while the release carries no Mac bundle', () => {
     const step3 = html.slice(html.indexOf('id="companion"'));
-    expect(step3).toContain('Windows only; Mac is not supported yet.');
+    expect(step3).toContain('Windows only; Mac is not supported yet. On a Mac, paste an export instead.');
     expect(step3).not.toMatch(/macOS next/i);
     expect(companionPlatformsLine(['Windows', 'macOS'])).toBeNull();
-    expect(companionPlatformsLine(['Windows'])).toBe('Windows only; Mac is not supported yet.');
+    expect(companionPlatformsLine(['Windows'])).toBe(
+      'Windows only; Mac is not supported yet. On a Mac, paste an export instead.',
+    );
   });
 
   it('says which of the steps is optional', () => {

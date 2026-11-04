@@ -8,24 +8,24 @@ raidBuild: 'FS1:1.60.1.70755:paladin:human:050050002/503/05233301001301351:'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Intellect, Strength, Critical strike, Agility, Spell power, Attack power, Melee haste]
 description: 'Leveling and raiding with Seals, Judgement and an instant Hammer of Wrath, including the raid Unsealed Wrath swap.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
   - label: 'Forever Sixty, paladin talents'
-    url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
+    url: https://foreversixty.gg/planner?class=paladin
     kind: datamined
   - label: 'Forever Sixty, what each stat is worth'
-    url: https://foreversixty.gg/data/curated/specs.json
+    url: https://foreversixty.gg/sim/weights
     kind: site
   - label: 'Warcraft Tavern, Classic Retribution Paladin rotation'
     url: https://www.warcrafttavern.com/wow-classic/guides/pve-retribution-paladin-rotations-cooldowns/
     kind: community
-  - label: 'Forever Sixty, raids by phase'
-    url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
-    kind: site
+  - label: "Blizzard, What's Next panel recap"
+    url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
+    kind: blizzard
   - label: 'Forever Sixty, races'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
@@ -63,13 +63,13 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 - **Sanctified Judgement** (3 points): every Judgement hands back 60% of the judged Seal's cost. This is what pays for your Seals, and for the twist at 60.
 - **Sacred Arbiter** (1 point): Holy Strike hits 20% harder and refreshes every Judgement on the target.
 - **Two-Handed Weapon Specialization** (3 points): 6% more Physical and Holy damage with a two-hander, and 20% less threat. That reaches your Holy Seal procs and Judgements as well as your swings.
-- **Vengeance** (3 points): 3% more Physical and Holy damage for 30 seconds after a crit, stacking five times to 15%. With Conviction you reach five stacks early and hold them for the whole fight.
+- **Vengeance** (3 points): 3% more Physical and Holy damage for 30 seconds after a crit from anything but Consecration's ticks, stacking five times to 15%. With Conviction you reach five stacks early and hold them for the whole fight.
 - **Champion of the Light** (5 points): 60% of your Intellect as spell damage, and Hammer of Wrath becomes instant.
 - **Unsealed Wrath** (1 point): the raid capstone. Each swing stores a copy of your Seal, up to three, and a swing under a different Seal releases them.
 
-**Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** and one point of **Repentance** are filler on the way to Champion of the Light, since nothing else in the tree adds damage there. Repentance still earns its point in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
+**Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** is filler on the way to Champion of the Light, since nothing else in that row adds damage. **Repentance** is the point Unsealed Wrath requires, and it still earns its place in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
 
-In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your regeneration running in combat, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. With raid buffs at 60, hit is your best stat per point until you reach the cap.
+In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your mana regeneration running while you cast, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. At 60, hit is worth taking up to the cap and adds nothing past it.
 
 Leveling order: Benediction and Improved Judgement first, then Conviction and Sanctified Judgement, then down the tree to Champion of the Light by level 40.
 
@@ -90,7 +90,7 @@ Leveling order: Benediction and Improved Judgement first, then Conviction and Sa
 
 **The raid twist (Unsealed Wrath).** With raid buffs on you, Seal of Command becomes your main Seal. Let three swings land under Seal of Command, so Unsealed Wrath shows three stacks. Switch to Seal of Righteousness for exactly one swing: that swing releases all three stored Commands, each with its normal chance to fire. As soon as it lands (Unsealed Wrath's timer jumps back to 15 seconds), switch back to Seal of Command, and the next swing releases the stored Righteousness hit. Repeat. Two rules keep it from costing you: only twist above 30% mana, and only with raid buffs, because with little attack power Seal of Command does less than Seal of Righteousness and the swaps just burn mana. A swing timer and a stack counter on Unsealed Wrath make this easy.
 
-**Judgements in a raid.** Your own Judgement is for damage. The debuff Judgements are assigned: one paladin keeps Judgement of the Crusader on the boss and another keeps Judgement of Wisdom. If that is you, open with that Seal, Judge it, then go to your damage Seal. The debuff lasts 40 seconds and Holy Strike with Sacred Arbiter refreshes every Judgement you have on the target, so after the first one it costs you nothing. On your own, skip Crusader: one Seal and one Judgement spent on it are worth more as damage.
+**Judgements in a raid.** Your own Judgement is for damage. The debuff Judgements are assigned: one paladin keeps Judgement of the Crusader on the boss and another keeps Judgement of Wisdom. If that is you, open with that Seal, Judge it, then go to your damage Seal. The debuff lasts 40 seconds and Holy Strike with Sacred Arbiter refreshes every Judgement you have on the target, so after the first one it costs you nothing. On your own, know what each Seal gives you. Seal of the Crusader is attack power and faster, lighter swings, and its Judgement makes the target take more Holy damage for 40 seconds, with your melee keeping it up. Seal of Righteousness adds Holy damage to every swing, and its Judgement is a Holy hit. Judgement no longer consumes your Seal, so judging Crusader once and then putting up Righteousness costs you one extra Seal and one Judgement, not a Seal every time.
 
 **Consecration.** It is your most expensive button, so pace it. Cast it only while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and while your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more). Fall under that and Consecration waits until you catch up. Spam it and your Seal drops and you go into the execute with nothing for Hammer of Wrath. Hold it too long and you end the fight with a full bar. Before 40, rank 1 does more over a fight than the higher ranks because it costs so little; from 40 move up to the newest rank you can afford. At 60, use rank 4 without raid buffs and rank 5, the top rank, with them. On two or more targets, cast it freely.
 
@@ -100,7 +100,7 @@ Leveling order: Benediction and Improved Judgement first, then Conviction and Sa
 
 ## Stat priority
 
-Hit comes first until the cap: every miss is a lost swing and a lost Seal proc, and Precision and Artisan's Precision both help. Intellect is next: Champion of the Light turns 60% of it into spell damage for your Seals, Judgements and Consecration, and it is your mana bar. Then Strength, which Divine Strength raises by 10%, and crit, which feeds Vengeance as well as itself.
+Strength is attack power on every swing, every Holy Strike and every Seal of Command proc, and Divine Strength raises it by 10%. Seal of Righteousness works differently: it scales with your weapon's speed and your spell damage, not attack power. Crit counts twice: a melee crit doubles the hit, and it feeds Vengeance. Champion of the Light turns 60% of your Intellect into spell damage for your Seals, Judgements and Consecration, so spell power and Intellect both add to your damage, and Intellect is also your mana bar. Agility is crit and armor at once. Hit matters up to the cap and nothing past it. Below the cap, in leveling or fresh 60 gear, every miss is a lost swing and a lost Seal proc, so take hit until you get there; Precision and Artisan's Precision both count toward it. The table above has the order for your gear.
 
 ## Best in slot
 
@@ -108,13 +108,25 @@ Hit comes first until the cap: every miss is a lost swing and a lost Seal proc, 
 
 ## Races
 
-**Human** is the Alliance pick. Ruthless is 1% crit on everything, The Human Spirit's 10% Spirit keeps your mana up while leveling and in dungeons, and Will to Survive breaks a stun. **Dwarf** comes out even in a raid, where Artisan's Precision, 1% hit, is worth as much as Ruthless, and Stoneform takes 10% off physical damage for 8 seconds on a hard pull, but it falls behind everywhere else. **Undead** is new to the class in Forever and the Horde's only paladin. Touch of the Grave can drain a little health from the target, at most once every 15 seconds. Will of the Forsaken breaks a fear, but no longer makes you immune to the next one, so use it after the fear lands. Cannibalize restores mana as well as health, which cuts your drinking while leveling.
+**Human** is the Alliance pick. Ruthless is 1% crit on everything, The Human Spirit's 10% Spirit keeps your mana up while leveling and in dungeons, and Will to Survive breaks a stun. **Dwarf** comes out slightly ahead on the raid build in a raid, but Human is ahead solo against Humanoids, which is why Human stays the pick. Dwarf's Big Game Hunter adds 5% to the damage you deal to Beasts. Stoneform takes 10% off physical damage for 8 seconds on a hard pull. **Undead** is new to the class in Forever and the Horde's only paladin. Touch of the Grave can drain a little health from the target, at most once every 15 seconds. Will of the Forsaken breaks a fear, but no longer makes you immune to the next one, so use it after the fear lands. Cannibalize restores mana as well as health, which cuts your drinking while leveling.
 
 ## Professions
 
 Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and Elixirs of Holy Power, Forever's 40 Holy damage elixir, which reaches every Seal proc, Judgement and Consecration tick. Pick two that pay for your consumables.
 
 ## Leveling
+
+### Levels 1 to 19
+
+Seal of Righteousness and Holy Light come at 1, Judgement and Blessing of Might at 4, Holy Strike at 6, Hammer of Justice at 8 and Lay on Hands at 10. Judgement does not use up your Seal, and it and Holy Strike both come back every 10 seconds.
+
+At 12, the class quest from your trainer teaches Redemption. Do it before your first dungeon.
+
+Your first five points, 10 to 14, go into Benediction: 10% less mana on every instant, which is every button you fight with. Improved Judgement takes 15 and 16 for a Judgement every 8 seconds, then Conviction from 17 to 19 for 6% crit.
+
+Take quest rewards over vendor gear, and replace your Battleworn Hammer with the first harder-hitting slow two-hander you find: Seal of Righteousness hits harder per swing the slower the weapon. Paladins cannot use wands. You wear mail until plate at 40.
+
+### Levels 20 to 60
 
 Retribution is the paladin leveling spec, even if you want to heal or tank at 60. Pull with Judgement, Holy Strike on cooldown, and let Seal of Righteousness do the rest. Sanctified Judgement refunds most of each Seal, so on one or two mobs at a time you rarely drink.
 
@@ -126,4 +138,4 @@ Common mistakes:
 - Letting the Seal drop. Recast it in its last second or two, not after it is gone.
 - Spending the bar on Consecration on a single target and having nothing left for Hammer of Wrath.
 - Swinging a one-hander. Two-Handed Weapon Specialization only works with a two-hander, and every Seal proc scales with the weapon.
-- Ignoring hit. Below the cap, a point of hit beats a point of Strength.
+- Getting hit wrong at 60. Below the cap every miss costs a swing and a Seal proc, so gear for it; once you reach the cap, stop taking more, because past it hit adds nothing.

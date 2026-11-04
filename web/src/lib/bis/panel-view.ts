@@ -347,7 +347,7 @@ function buildAlternativeView(
 ): AlternativeView {
   const badgeLabel = sourceBadgeLabel({ source_kind: alt.source_kind }, faction);
   const cell = resolveSourceCell(
-    { item_id: alt.item_id, source_kind: alt.source_kind },
+    { item_id: alt.item_id, source_kind: alt.source_kind, source: alt.source },
     faction,
     lootFile,
     badgeLabel,

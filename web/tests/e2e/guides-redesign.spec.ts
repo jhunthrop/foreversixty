@@ -63,7 +63,10 @@ test.describe('desktop', () => {
   }) => {
     await page.goto('/guides/warrior');
     await expect(page.locator('.class-landing-body h2')).toHaveText(['What changed from 1.12', 'Races']);
-    await expect(page.getByTestId('class-landing-what-changed-from-1-12').locator('li')).toHaveCount(8);
+    // A floor, not a pin: the guide rounds add changes to the list as they confirm them.
+    const changes = page.getByTestId('class-landing-what-changed-from-1-12').locator('li');
+    await expect(changes.first()).toBeVisible();
+    expect(await changes.count()).toBeGreaterThanOrEqual(8);
     await expect(page.getByTestId('confidence-footer-note')).toHaveCount(0);
   });
 

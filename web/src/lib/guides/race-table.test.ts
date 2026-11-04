@@ -17,6 +17,7 @@ import {
   racialIconsFor,
   raceNameFor,
   raceTableFor,
+  proseNamesRace,
   recommendedRaceLines,
   specKindOf,
   type SpecKind,
@@ -352,6 +353,21 @@ describe('recommendedRaceLines', () => {
       expect(line.names).toEqual(row.racials.map((racial) => racial.name));
     }
     expect(lines.length).toBe(rows.filter((row) => row.recommended && row.racials.length > 0).length);
+  });
+
+  it('leaves out a race the guide’s own prose already names, so the pick is said once', () => {
+    const rows = raceTableFor(BUILD, 'mage', ['gnome', 'undead'], 'caster');
+    const prose = '**Gnome** is the best Alliance Arcane mage: Eureka! is 10% more damage.';
+    expect(recommendedRaceLines(rows, prose).map((line) => line.slug)).toEqual(['undead']);
+  });
+});
+
+describe('proseNamesRace', () => {
+  it('matches the race’s whole name only', () => {
+    expect(proseNamesRace('On the Horde, **Undead** is the pick.', 'Undead')).toBe(true);
+    expect(proseNamesRace('Night Elf is the Alliance pick.', 'Night Elf')).toBe(true);
+    expect(proseNamesRace('An elf is not named here.', 'Night Elf')).toBe(false);
+    expect(proseNamesRace('Orcish axes', 'Orc')).toBe(false);
   });
 });
 

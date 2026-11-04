@@ -4,21 +4,18 @@ classSlug: shaman
 spec: restoration
 role: healer
 build: 'FS1:1.60.1.70755:shaman:dwarf:0/055/5530003315513151:'
-recommendedRaces: [dwarf, tauren]
+recommendedRaces: [dwarf, orc]
 statPriority: [MP5, Intellect, Healing power, Spirit, Critical strike]
 description: 'Restoration Shaman in Forever: Riptide into Chain Heal, Water Shield and Mana Tide for mana, which totems to drop, Chain Heal ranks, stats, races and leveling.'
-updated: 2026-11-02
+updated: 2026-11-04
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty, stat weights'
-    url: https://foreversixty.gg/sim/weights
-    kind: site
   - label: 'Forever Sixty, character planner'
     url: https://foreversixty.gg/planner
     kind: site
@@ -38,7 +35,7 @@ Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal throug
 ### Weaknesses
 
 - Chain Heal only jumps to people standing close to its target, so it does little when the raid is spread out
-- Your Water totems only reach your own party, and every totem stays where you drop it
+- Your Water totems only reach your own party, and they stay put until you spend Totemic Call to bring them to you
 - Without raid gear and buffs your mana does not last a long fight
 
 ### In a raid
@@ -92,11 +89,11 @@ Ancestral Healing is three points for 25% more armor on your target for 15 secon
 
 ## Stat priority
 
-Healing from any source counts, including items that add damage and healing; damage-only spell power and Nature power do nothing for a heal. Intellect is your mana pool, and Water Shield returns a share of that pool with every globe. Spirit and mp5 keep you casting: Mindfulness keeps half your mana regeneration running while you heal. Crit fires Water Shield on top of the bigger heal.
+Healing power makes every heal bigger, from any source, including items that add damage and healing; damage-only spell power and Nature power do nothing for a heal. Mp5 keeps you casting through a long fight. Intellect is your mana pool, and Water Shield returns a share of that pool with every globe. Crit fires Water Shield on top of the bigger heal. Spirit only adds mana regeneration, and Mindfulness keeps half of that running while you heal. The table above gives the order for your level and gear.
 
 ## Best in slot
 
-Your raid set is most of the Devout set from Stratholme and Blackrock Spire, a crafted Leatherworking helm and Tailoring's Mooncloth Boots; both crafts bind when equipped. Carry a healing staff, or a one-hander with a shield or held off-hand item, and at 60 the staff usually wins. The full list, with alternatives for every slot, is on the [Restoration BiS page](/bis/shaman/restoration).
+Your raid set leans on crafts. Dormant Heart of the Mountain is an Enchanting craft that binds on pickup, so you make that one yourself; every other craft in it binds when equipped, so you can buy it. Carry a healing staff, or a one-hander with a shield or held off-hand item, and at 60 the staff usually wins. The full list, with alternatives for every slot, is on the [Restoration BiS page](/bis/shaman/restoration).
 
 ## Enchants and consumables
 
@@ -104,14 +101,20 @@ Brilliant Mana Oil on your weapon: mp5 and healing in one. Use your Major Mana P
 
 ## Races
 
-The Dwarf shaman is new in Forever and is the only Alliance shaman. Stoneform's physical damage cut keeps you alive through a cleave or a stray add, which is all a healer asks of a racial.
+The Dwarf shaman is new in Forever and is the only Alliance shaman. Stoneform cuts physical damage by 10% and clears poisons, diseases and bleeds, which keeps you alive through a cleave or a stray add.
 
-On the Horde, Tauren's Endurance is 5% more health, the safest pick. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, is the pick for burst healing in a hard phase. Windshaper Skyborne's 2% haste is always on. Orc's Blood Fury raises attack power and spell power, which is a damage dealer's racial.
+On the Horde, Orc is the healing pick: Blood Fury increases attack power and spell power by 10% for 15 seconds every 2 minutes, and its spell power covers your heals. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, heals a little less. Tauren's Endurance, 5% more health, is the pick when you are the one taking the damage. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on.
 
 ## Professions
 
-Herbalism and Alchemy keep you in Major Mana Potions and flasks, which is most of what a healer spends gold on. Tailoring makes Mooncloth Boots, and Leatherworking your Living Crown, but both bind when equipped and can be bought.
+Enchanting is the one profession your raid set asks for: Dormant Heart of the Mountain binds on pickup, so nobody can make it for you. Pair it with Herbalism or Alchemy for Major Mana Potions and flasks, which is most of what a healer spends gold on. Every other craft in your set binds when equipped and can be bought.
 
 ## Leveling
 
-Put your points into Restoration from the first one. Improved Healing Wave makes Healing Wave faster and Tidal Focus makes every heal cheaper; Water Shield is in at 20, Mindfulness is full by 23, and Mana Tide Totem comes at 25, the first level the fourth row opens. Ancestral Healing and Healing Focus fill out the rest by 30. You quest with Lightning Bolt, your shocks and your weapon, and you can heal any dungeon the day you walk in. Lesser Healing Wave and Healing Stream Totem come at 20 and Chain Heal at 40. Riptide, the bottom of the tree, is in by 50. Train its second rank the same day and its third at 60; the talent only teaches the first. Your last ten points, from 51, go to Thundering Strikes and Ancestral Knowledge.
+### Levels 1 to 19
+
+You quest like any shaman: Lightning Bolt to pull, Earth Shock from 4, Flame Shock and Searing Totem from 10, and your weapon to finish, since a shaman has no wand. Do the Call of Earth class quest at 4 and Call of Fire at 10: they give the Earth Totem every Earth totem needs and the Fire Totem every Fire totem needs, carried in your bags, and without them those totems do not cast. Talents go Improved Healing Wave from 10 to 14, a tenth of a second off Healing Wave per point, then two points of Mindfulness at 15 and 16 so mana keeps coming back while you cast, and Tidal Focus from 17, 1% cheaper heals per point. Healing Wave gets new ranks at 6, 12 and 18; train each one before a dungeon. Tremor Totem at 18 breaks the sleeps in Wailing Caverns. Take quest rewards with Intellect over vendor gear, wear leather, and replace your starter weapon with the first quest staff or mace that carries spell damage.
+
+### Levels 20 to 60
+
+Lesser Healing Wave and Healing Stream Totem come at 20; do the Call of Water quest the same day, since every Water totem needs the Water Totem in your bags. Water Shield is in at 20, Tidal Focus is full at 22 and Mindfulness at 23, and Mana Tide Totem comes at 25, the first level the fourth row opens. The talent teaches its first rank; train the others at 38, 48 and 58, each one a big step up. Ancestral Healing and Healing Focus fill out the rest by 30, and you can heal any dungeon the day you walk in. Chain Heal comes at 40. Riptide, the bottom of the tree, is in by 50. Train its second rank the same day and its third at 60; the talent only teaches the first. Your last ten points, from 51, go to Thundering Strikes and Ancestral Knowledge.

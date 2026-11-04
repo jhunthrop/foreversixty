@@ -251,7 +251,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(3+$b1)} damage over 12 sec.\r\n   2 points: ${6*(3+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(3+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(3+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(3+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(4+$b1)} damage over 12 sec.\r\n   2 points: ${6*(4+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(4+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(4+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(4+5*$b1)} damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "1082": {
@@ -265,7 +265,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Claw the enemy for 110% normal damage plus 27. Awards 1 combo point.",
+      "description": "Claw the enemy for 140% normal damage plus 27. Awards 1 combo point.",
       "icon": "ability_druid_rake"
     },
     "1126": {
@@ -335,7 +335,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Rake the target for 23 damage and an additional 48 damage over 9 sec.  Awards 1 combo point.",
+      "description": "Rake the target for 27 damage and an additional 60 damage over 9 sec.  Awards 1 combo point.",
       "icon": "ability_druid_disembowel"
     },
     "1823": {
@@ -349,7 +349,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Rake the target for 31 damage and an additional 63 damage over 9 sec.  Awards 1 combo point.",
+      "description": "Rake the target for 39 damage and an additional 78 damage over 9 sec.  Awards 1 combo point.",
       "icon": "ability_druid_disembowel"
     },
     "1824": {
@@ -363,7 +363,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Rake the target for 45 damage and an additional 78 damage over 9 sec.  Awards 1 combo point.",
+      "description": "Rake the target for 56 damage and an additional 96 damage over 9 sec.  Awards 1 combo point.",
       "icon": "ability_druid_disembowel"
     },
     "1850": {
@@ -475,7 +475,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 81 Arcane damage to the target.",
+      "description": "Causes 113 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "3025": {
@@ -503,7 +503,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Claw the enemy for 110% normal damage plus 39. Awards 1 combo point.",
+      "description": "Claw the enemy for 140% normal damage plus 39. Awards 1 combo point.",
       "icon": "ability_druid_rake"
     },
     "3137": {
@@ -713,7 +713,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Claw the enemy for 110% normal damage plus 57. Awards 1 combo point.",
+      "description": "Claw the enemy for 140% normal damage plus 57. Awards 1 combo point.",
       "icon": "ability_druid_rake"
     },
     "5209": {
@@ -769,7 +769,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Shred the target, causing 155% damage plus 22 to the target.  Must be behind the target.  Awards 1 combo point.",
+      "description": "Shred the target, causing 200% damage plus 22 to the target.  Must be behind the target.  Awards 1 combo point.",
       "icon": "spell_shadow_vampiricaura"
     },
     "5225": {
@@ -937,7 +937,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Ravage the target, causing 350% damage plus 147 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Ravage the target, causing 435% damage plus 147 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_ravage"
     },
     "6787": {
@@ -951,7 +951,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Ravage the target, causing 350% damage plus 217 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Ravage the target, causing 435% damage plus 217 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_ravage"
     },
     "6795": {
@@ -993,7 +993,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Shred the target, causing 155% damage plus 32 to the target.  Must be behind the target.  Awards 1 combo point.",
+      "description": "Shred the target, causing 200% damage plus 32 to the target.  Must be behind the target.  Awards 1 combo point.",
       "icon": "spell_shadow_vampiricaura"
     },
     "6807": {
@@ -1315,7 +1315,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 110 Arcane damage to the target.",
+      "description": "Causes 154 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "8950": {
@@ -1329,7 +1329,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 144 Arcane damage to the target.",
+      "description": "Causes 201 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "8951": {
@@ -1343,7 +1343,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 198 Arcane damage to the target.",
+      "description": "Causes 277 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "8955": {
@@ -1399,7 +1399,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Shred the target, causing 155% damage plus 44 to the target.  Must be behind the target.  Awards 1 combo point.",
+      "description": "Shred the target, causing 200% damage plus 44 to the target.  Must be behind the target.  Awards 1 combo point.",
       "icon": "spell_shadow_vampiricaura"
     },
     "8998": {
@@ -1441,7 +1441,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Pounce, stunning the target for 2 sec and causing 90 damage over 18 sec.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Pounce, stunning the target for 2 sec and causing 114 damage over 18 sec.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_supriseattack"
     },
     "9490": {
@@ -1469,7 +1469,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(4+$b1)} damage over 12 sec.\r\n   2 points: ${6*(4+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(4+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(4+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(4+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(5+$b1)} damage over 12 sec.\r\n   2 points: ${6*(5+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(5+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(5+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(5+5*$b1)} damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9493": {
@@ -1483,7 +1483,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(6+$b1)} damage over 12 sec.\r\n   2 points: ${6*(6+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(6+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(6+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(6+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(8+$b1)} damage over 12 sec.\r\n   2 points: ${6*(8+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(8+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(8+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(8+5*$b1)} damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9634": {
@@ -1581,7 +1581,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(8+$b1)} damage over 12 sec.\r\n   2 points: ${6*(8+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(8+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(8+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(8+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(10+$b1)} damage over 12 sec.\r\n   2 points: ${6*(10+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(10+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(10+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(10+5*$b1)} damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9754": {
@@ -1651,7 +1651,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Pounce, stunning the target for 2 sec and causing 120 damage over 18 sec.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Pounce, stunning the target for 2 sec and causing 150 damage over 18 sec.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_supriseattack"
     },
     "9827": {
@@ -1665,7 +1665,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Pounce, stunning the target for 2 sec and causing 150 damage over 18 sec.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Pounce, stunning the target for 2 sec and causing 186 damage over 18 sec.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_supriseattack"
     },
     "9829": {
@@ -1679,7 +1679,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Shred the target, causing 155% damage plus 64 to the target.  Must be behind the target.  Awards 1 combo point.",
+      "description": "Shred the target, causing 200% damage plus 64 to the target.  Must be behind the target.  Awards 1 combo point.",
       "icon": "spell_shadow_vampiricaura"
     },
     "9830": {
@@ -1693,7 +1693,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Shred the target, causing 155% damage plus 80 to the target.  Must be behind the target.  Awards 1 combo point.",
+      "description": "Shred the target, causing 200% damage plus 80 to the target.  Must be behind the target.  Awards 1 combo point.",
       "icon": "spell_shadow_vampiricaura"
     },
     "9833": {
@@ -1791,7 +1791,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Claw the enemy for 110% normal damage plus 88. Awards 1 combo point.",
+      "description": "Claw the enemy for 140% normal damage plus 88. Awards 1 combo point.",
       "icon": "ability_druid_rake"
     },
     "9850": {
@@ -1805,7 +1805,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Claw the enemy for 110% normal damage plus 115. Awards 1 combo point.",
+      "description": "Claw the enemy for 140% normal damage plus 115. Awards 1 combo point.",
       "icon": "ability_druid_rake"
     },
     "9852": {
@@ -1917,7 +1917,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Ravage the target, causing 350% damage plus 273 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Ravage the target, causing 435% damage plus 273 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_ravage"
     },
     "9867": {
@@ -1931,7 +1931,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Ravage the target, causing 350% damage plus 343 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Ravage the target, causing 435% damage plus 343 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_ravage"
     },
     "9875": {
@@ -1945,7 +1945,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 266 Arcane damage to the target.",
+      "description": "Causes 372 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "9876": {
@@ -1959,7 +1959,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 337 Arcane damage to the target.",
+      "description": "Causes 471 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "9880": {
@@ -2071,7 +2071,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(11+$b1)} damage over 12 sec.\r\n   2 points: ${6*(11+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(11+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(11+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(11+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(14+$b1)} damage over 12 sec.\r\n   2 points: ${6*(14+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(14+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(14+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(14+5*$b1)} damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9896": {
@@ -2085,7 +2085,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(15+$b1)} damage over 12 sec.\r\n   2 points: ${6*(15+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(15+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(15+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(15+5*$b1)} damage over 12 sec.",
+      "description": "Finishing move that causes damage over time.  Damage increases per combo point and by your Attack Power:\r\n   1 point  : ${6*(19+$b1)} damage over 12 sec.\r\n   2 points: ${6*(19+2*$b1)} damage over 12 sec.\r\n   3 points: ${6*(19+3*$b1)} damage over 12 sec.\r\n   4 points: ${6*(19+4*$b1)} damage over 12 sec.\r\n   5 points: ${6*(19+5*$b1)} damage over 12 sec.",
       "icon": "ability_ghoulfrenzy"
     },
     "9898": {
@@ -2127,7 +2127,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Rake the target for 61 damage and an additional 102 damage over 9 sec.  Awards 1 combo point.",
+      "description": "Rake the target for 76 damage and an additional 126 damage over 9 sec.  Awards 1 combo point.",
       "icon": "ability_druid_disembowel"
     },
     "9907": {
@@ -2561,7 +2561,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 1 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 50-66 damage\r\n   2 points: 86-102 damage\r\n   3 points: 122-138 damage\r\n   4 points: 158-174 damage\r\n   5 points: 194-210 damage",
+      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 1.2 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 62-82 damage\r\n   2 points: 107-127 damage\r\n   3 points: 152-177 damage\r\n   4 points: 197-217 damage\r\n   5 points: 242-262 damage",
       "icon": "ability_druid_ferociousbite"
     },
     "22812": {
@@ -2589,7 +2589,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 1.5 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 79-103 damage\r\n   2 points: 138-162 damage\r\n   3 points: 197-221 damage\r\n   4 points: 256-280 damage\r\n   5 points: 315-339 damage",
+      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 1.8 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 99-129 damage\r\n   2 points: 173-203 damage\r\n   3 points: 247-277 damage\r\n   4 points: 321-351 damage\r\n   5 points: 395-425 damage",
       "icon": "ability_druid_ferociousbite"
     },
     "22828": {
@@ -2603,7 +2603,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 2 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 122-162 damage\r\n   2 points: 214-254 damage\r\n   3 points: 306-346 damage\r\n   4 points: 398-438 damage\r\n   5 points: 490-530 damage",
+      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 2.5 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 152-202 damage\r\n   2 points: 267-317 damage\r\n   3 points: 382-432 damage\r\n   4 points: 497-547 damage\r\n   5 points: 612-662 damage",
       "icon": "ability_druid_ferociousbite"
     },
     "22829": {
@@ -2617,7 +2617,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 2.5 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 173-223 damage\r\n   2 points: 301-351 damage\r\n   3 points: 429-479 damage\r\n   4 points: 557-607 damage\r\n   5 points: 685-735 damage",
+      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 3.1 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 215-279 damage\r\n   2 points: 375-439 damage\r\n   3 points: 535-599 damage\r\n   4 points: 695-759 damage\r\n   5 points: 855-919 damage",
       "icon": "ability_druid_ferociousbite"
     },
     "22842": {
@@ -2729,7 +2729,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Causes 381 Arcane damage to the target.",
+      "description": "Causes 533 Arcane damage to the target.",
       "icon": "spell_arcane_starfire"
     },
     "25299": {
@@ -2771,7 +2771,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 2.7 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 199-259 damage\r\n   2 points: 346-406 damage\r\n   3 points: 493-553 damage\r\n   4 points: 640-700 damage\r\n   5 points: 787-847 damage",
+      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 3.3 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 245-321 damage\r\n   2 points: 426-502 damage\r\n   3 points: 607-683 damage\r\n   4 points: 788-864 damage\r\n   5 points: 969-1045 damage",
       "icon": "ability_druid_ferociousbite"
     },
     "407995": {
@@ -3037,7 +3037,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 0.6 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 33-43 damage\r\n   2 points: 57-67 damage\r\n   3 points: 81-91 damage\r\n   4 points: 105-115 damage\r\n   5 points: 129-139 damage",
+      "description": "Finishing move that causes damage per combo point and converts each extra point of energy into 0.7 additional damage.  Damage is increased by your Attack Power.\r\n   1 point  : 40-54 damage\r\n   2 points: 70-84 damage\r\n   3 points: 100-114 damage\r\n   4 points: 130-144 damage\r\n   5 points: 160-174 damage",
       "icon": "ability_druid_ferociousbite"
     },
     "1328829": {

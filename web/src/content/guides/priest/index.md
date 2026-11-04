@@ -2,7 +2,7 @@
 title: Priest in Forever
 classSlug: priest
 description: 'The Priest in Forever: what each spec does, the spells every priest now has, the new Gnome priest and which race to pick.'
-updated: 2026-11-02
+updated: 2026-11-03
 confidence: inferred
 sources:
   - label: 'Blizzard, Deep Dive panel recap'
@@ -14,7 +14,7 @@ sources:
   - label: 'Power Up Gaming, Forever talent changes vs Classic'
     url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/
     kind: community
-  - label: 'Talents Forever (demo transcription)'
+  - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
 ---
@@ -32,10 +32,10 @@ Two healing specs and one shadow caster, as always. Shadow is also how a priest 
 
 **Race picks.**
 
-- Healers: Human on Alliance for The Human Spirit and Divine Grace, Undead on Horde for Dark Sacrifice.
-- Shadow: Gnome on Alliance for Eureka!, Undead on Horde.
-- Dwarf's 1% hit, Night Elf's Elune's Light and Troll's Berserking are all close enough to play what you like.
-- **The Gnome priest** is new. Gnomes bring Eureka! (8 seconds of 10% cheaper and 10% stronger spells, every 2 minutes), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. Gnome is a strong Alliance pick for any spec.
+- Discipline: Gnome on Alliance for Eureka! and Expansive Mind, with Human a hair behind. Undead on Horde for Dark Sacrifice.
+- Holy: Human on Alliance for The Human Spirit and Divine Grace, with Gnome close. Undead on Horde for Dark Sacrifice.
+- Shadow: Human on Alliance for Ruthless, with Night Elf just as good and Dwarf close. Undead on Horde for Touch of the Grave, well ahead of Troll.
+- **The Gnome priest** is new. Gnomes bring Eureka! (8 seconds of 10% cheaper and 10% stronger spells, every 2 minutes), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. Gnome is the Alliance pick for Discipline.
 
 **Each race has its own two priest spells.**
 

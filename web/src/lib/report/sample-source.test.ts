@@ -39,7 +39,7 @@ describe('the sample, one source', () => {
   });
 
   it('is titled without "sample log"; the pill says it is a sample', () => {
-    expect(meta.title).toBe('Beta night, 17 Sept 2026');
+    expect(meta.title).toBe('Sample raid night, 17 Sept 2026');
     expect(row.title).toBe(meta.title);
   });
 });

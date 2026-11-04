@@ -363,7 +363,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(5+$b1)*4} damage over 8 secs\r\n   2 points: ${(5+$b1*2)*5} damage over 10 secs\r\n   3 points: ${(5+$b1*3)*6} damage over 12 secs\r\n   4 points: ${(5+$b1*4)*7} damage over 14 secs\r\n   5 points: ${(5+$b1*5)*8} damage over 16 secs",
+      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(5+$b1)*(4+$<bloodS>/2)} damage over ${(8+$<bloodS>)} secs\r\n   2 points: ${(5+$b1*2)*(5+$<bloodS>/2)} damage over ${(10+$<bloodS>)} secs\r\n   3 points: ${(5+$b1*3)*(6+$<bloodS>/2)} damage over ${(12+$<bloodS>)} secs\r\n   4 points: ${(5+$b1*4)*(7+$<bloodS>/2)} damage over ${(14+$<bloodS>)} secs\r\n   5 points: ${(5+$b1*5)*(8+$<bloodS>/2)} damage over ${(16+$<bloodS>)} secs",
       "icon": "ability_rogue_rupture"
     },
     "1966": {
@@ -783,7 +783,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(7+$b1)*4} damage over 8 secs\r\n   2 points: ${(7+$b1*2)*5} damage over 10 secs\r\n   3 points: ${(7+$b1*3)*6} damage over 12 secs\r\n   4 points: ${(7+$b1*4)*7} damage over 14 secs\r\n   5 points: ${(7+$b1*5)*8} damage over 16 secs",
+      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(7+$b1)*(4+$<bloodS>/2)} damage over ${(8+$<bloodS>)} secs\r\n   2 points: ${(7+$b1*2)*(5+$<bloodS>/2)} damage over ${(10+$<bloodS>)} secs\r\n   3 points: ${(7+$b1*3)*(6+$<bloodS>/2)} damage over ${(12+$<bloodS>)} secs\r\n   4 points: ${(7+$b1*4)*(7+$<bloodS>/2)} damage over ${(14+$<bloodS>)} secs\r\n   5 points: ${(7+$b1*5)*(8+$<bloodS>/2)} damage over ${(16+$<bloodS>)} secs",
       "icon": "ability_rogue_rupture"
     },
     "8640": {
@@ -797,7 +797,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(11+$b1)*4} damage over 8 secs\r\n   2 points: ${(11+$b1*2)*5} damage over 10 secs\r\n   3 points: ${(11+$b1*3)*6} damage over 12 secs\r\n   4 points: ${(11+$b1*4)*7} damage over 14 secs\r\n   5 points: ${(11+$b1*5)*8} damage over 16 secs",
+      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(11+$b1)*(4+$<bloodS>/2)} damage over ${(8+$<bloodS>)} secs\r\n   2 points: ${(11+$b1*2)*(5+$<bloodS>/2)} damage over ${(10+$<bloodS>)} secs\r\n   3 points: ${(11+$b1*3)*(6+$<bloodS>/2)} damage over ${(12+$<bloodS>)} secs\r\n   4 points: ${(11+$b1*4)*(7+$<bloodS>/2)} damage over ${(14+$<bloodS>)} secs\r\n   5 points: ${(11+$b1*5)*(8+$<bloodS>/2)} damage over ${(16+$<bloodS>)} secs",
       "icon": "ability_rogue_rupture"
     },
     "8643": {
@@ -1077,7 +1077,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(16+$b1)*4} damage over 8 secs\r\n   2 points: ${(16+$b1*2)*5} damage over 10 secs\r\n   3 points: ${(16+$b1*3)*6} damage over 12 secs\r\n   4 points: ${(16+$b1*4)*7} damage over 14 secs\r\n   5 points: ${(16+$b1*5)*8} damage over 16 secs",
+      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(16+$b1)*(4+$<bloodS>/2)} damage over ${(8+$<bloodS>)} secs\r\n   2 points: ${(16+$b1*2)*(5+$<bloodS>/2)} damage over ${(10+$<bloodS>)} secs\r\n   3 points: ${(16+$b1*3)*(6+$<bloodS>/2)} damage over ${(12+$<bloodS>)} secs\r\n   4 points: ${(16+$b1*4)*(7+$<bloodS>/2)} damage over ${(14+$<bloodS>)} secs\r\n   5 points: ${(16+$b1*5)*(8+$<bloodS>/2)} damage over ${(16+$<bloodS>)} secs",
       "icon": "ability_rogue_rupture"
     },
     "11274": {
@@ -1091,7 +1091,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(22+$b1)*4} damage over 8 secs\r\n   2 points: ${(22+$b1*2)*5} damage over 10 secs\r\n   3 points: ${(22+$b1*3)*6} damage over 12 secs\r\n   4 points: ${(22+$b1*4)*7} damage over 14 secs\r\n   5 points: ${(22+$b1*5)*8} damage over 16 secs",
+      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(22+$b1)*(4+$<bloodS>/2)} damage over ${(8+$<bloodS>)} secs\r\n   2 points: ${(22+$b1*2)*(5+$<bloodS>/2)} damage over ${(10+$<bloodS>)} secs\r\n   3 points: ${(22+$b1*3)*(6+$<bloodS>/2)} damage over ${(12+$<bloodS>)} secs\r\n   4 points: ${(22+$b1*4)*(7+$<bloodS>/2)} damage over ${(14+$<bloodS>)} secs\r\n   5 points: ${(22+$b1*5)*(8+$<bloodS>/2)} damage over ${(16+$<bloodS>)} secs",
       "icon": "ability_rogue_rupture"
     },
     "11275": {
@@ -1105,7 +1105,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(35+$b1)*4} damage over 8 secs\r\n   2 points: ${(35+$b1*2)*5} damage over 10 secs\r\n   3 points: ${(35+$b1*3)*6} damage over 12 secs\r\n   4 points: ${(35+$b1*4)*7} damage over 14 secs\r\n   5 points: ${(35+$b1*5)*8} damage over 16 secs",
+      "description": "Finishing move that causes damage over time, increased by your Attack Power.  Lasts longer per combo point:\r\n   1 point  : ${(35+$b1)*(4+$<bloodS>/2)} damage over ${(8+$<bloodS>)} secs\r\n   2 points: ${(35+$b1*2)*(5+$<bloodS>/2)} damage over ${(10+$<bloodS>)} secs\r\n   3 points: ${(35+$b1*3)*(6+$<bloodS>/2)} damage over ${(12+$<bloodS>)} secs\r\n   4 points: ${(35+$b1*4)*(7+$<bloodS>/2)} damage over ${(14+$<bloodS>)} secs\r\n   5 points: ${(35+$b1*5)*(8+$<bloodS>/2)} damage over ${(16+$<bloodS>)} secs",
       "icon": "ability_rogue_rupture"
     },
     "11279": {
@@ -1343,7 +1343,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 88 Nature damage.  175 charges.",
+      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 88 Nature damage.  250 charges.",
       "icon": "ability_poisons"
     },
     "11355": {
@@ -1371,7 +1371,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy for 72 Nature damage over 12 sec.  Stacks up to 5 times on a single target.  160 charges.",
+      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy for 72 Nature damage over 12 sec.  Stacks up to 5 times on a single target.  240 charges.",
       "icon": "ability_rogue_dualweild"
     },
     "11399": {
@@ -1385,7 +1385,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy, increasing their casting time by 60% for 14 sec.  150 charges.",
+      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy, increasing their casting time by 60% for 14 sec.  225 charges.",
       "icon": "spell_nature_nullifydisease"
     },
     "13219": {
@@ -1441,7 +1441,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy, reducing all healing effects used on them by 165 for 15 sec.  Stacks up to 5 times on a single target.  160 charges.",
+      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy, reducing all healing effects used on them by 165 for 15 sec.  Stacks up to 5 times on a single target.  240 charges.",
       "icon": "inv_misc_herb_16"
     },
     "13750": {
@@ -1553,7 +1553,7 @@
       "passive": false,
       "cooldown_ms": 20000,
       "range_yd": 5.0,
-      "description": "A strike that deals 125% (180% if a Dagger is equipped in your Main Hand) weapon damage and increases your chance to dodge by 15% for 7 sec.  Awards 1 combo point.",
+      "description": "A strike that deals 125% (180% if a Dagger is equipped in your Main Hand) weapon damage, increases your chance to dodge by 15% for 7 sec, and causes your next Ambush or Garrote cast within 7 sec to not require Stealth.  Awards 1 combo point.",
       "icon": "spell_shadow_curse"
     },
     "16511": {
@@ -1567,7 +1567,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "An instant strike that deals 100% weapon damage (145% if a Dagger is equipped) and causes the target to take 15% increased Rupture damage from the Rogue. Lasts 15 sec. Awards 1 Combo Point.",
+      "description": "An instant strike that deals 100% weapon damage (145% if a Dagger is equipped) and causes the target to take 15% increased Rupture and Garrote damage from the Rogue. Lasts 15 sec. Awards 1 Combo Point.",
       "icon": "spell_shadow_lifedrain"
     },
     "25300": {
@@ -1609,7 +1609,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy for 92 Nature damage over 12 sec.  Stacks up to 5 times on a single target.  180 charges.",
+      "description": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy for 92 Nature damage over 12 sec.  Stacks up to 5 times on a single target.  240 charges.",
       "icon": "ability_rogue_dualweild"
     },
     "31016": {
@@ -1628,7 +1628,7 @@
     },
     "399956": {
       "name": "Mutilate",
-      "rank": 2,
+      "rank": 1,
       "cost": 60,
       "cost_type": 3,
       "cost_pct": 0.0,
@@ -1637,7 +1637,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Instantly attacks with both weapons for 75% weapon damage plus an additional 24.75 with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 Combo Points.",
+      "description": "Instantly attacks with both weapons for 90% weapon damage plus an additional 39.6 with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 Combo Points.",
       "icon": "ability_rogue_deadlybrew"
     },
     "438040": {
@@ -1698,6 +1698,20 @@
     },
     "1241582": {
       "name": "Mutilate",
+      "rank": 2,
+      "cost": 60,
+      "cost_type": 3,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 5.0,
+      "description": "Instantly attacks with both weapons for 90% weapon damage plus an additional 56.7 with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 Combo Points.",
+      "icon": "ability_rogue_deadlybrew"
+    },
+    "1241584": {
+      "name": "Mutilate",
       "rank": 3,
       "cost": 60,
       "cost_type": 3,
@@ -1707,21 +1721,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Instantly attacks with both weapons for 75% weapon damage plus an additional 36 with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 Combo Points.",
-      "icon": "ability_rogue_deadlybrew"
-    },
-    "1241584": {
-      "name": "Mutilate",
-      "rank": 4,
-      "cost": 60,
-      "cost_type": 3,
-      "cost_pct": 0.0,
-      "cast_time_ms": 0,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 0,
-      "range_yd": 5.0,
-      "description": "Instantly attacks with both weapons for 75% weapon damage plus an additional 50.25 with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 Combo Points.",
+      "description": "Instantly attacks with both weapons for 90% weapon damage plus an additional 79.2 with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 Combo Points.",
       "icon": "ability_rogue_deadlybrew"
     },
     "1316709": {
@@ -1734,8 +1734,8 @@
       "channeled": false,
       "passive": false,
       "cooldown_ms": 10000,
-      "range_yd": 25.0,
-      "description": "Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power and Critical Strike chance:\r\n   1 point  : ${1*$<ratio>}% stored, ${63+(1*102)+1*$<maxAP>*$<attackP>} cap before critical strike.\r\n   2 points: ${2*$<ratio>}% stored, ${63+(2*102)+2*$<maxAP>*$<attackP>} damage cap.\r\n   3 points: ${3*$<ratio>}% stored, ${63+(3*102)+3*$<maxAP>*$<attackP>} damage cap.\r\n   4 points: ${4*$<ratio>}% stored, ${63+(4*102)+4*$<maxAP>*$<attackP>} damage cap.\r\n   5 points: ${5*$<ratio>}% stored, ${63+(5*102)+5*$<maxAP>*$<attackP>} damage cap.",
+      "range_yd": 20.0,
+      "description": "Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. Garrote and Rupture damage is stored at twice the rate. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power and Critical Strike chance:\r\n   1 point  : ${1*$<ratio>}% stored, ${((63+(1*102)+1*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   2 points: ${2*$<ratio>}% stored, ${((63+(2*102)+2*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   3 points: ${3*$<ratio>}% stored, ${((63+(3*102)+3*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   4 points: ${4*$<ratio>}% stored, ${((63+(4*102)+4*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   5 points: ${5*$<ratio>}% stored, ${((63+(5*102)+5*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap",
       "icon": "ability_creature_cursed_02"
     },
     "1325756": {
@@ -1748,8 +1748,8 @@
       "channeled": false,
       "passive": false,
       "cooldown_ms": 10000,
-      "range_yd": 25.0,
-      "description": "Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power:\r\n   1 point  : ${1*$<ratio>}% of damage stored, ${1*$<maxAP>}% Attack Power max.\r\n   2 points: ${2*$<ratio>}% of damage stored, ${2*$<maxAP>}% of Attack Power max.\r\n   3 points: ${3*$<ratio>}% of damage stored, ${3*$<maxAP>}% of Attack Power max.\r\n   4 points: ${4*$<ratio>}% of damage stored, ${4*$<maxAP>}% of Attack Power max.\r\n   5 points: ${5*$<ratio>}% of damage stored, ${5*$<maxAP>}% of Attack Power max.",
+      "range_yd": 20.0,
+      "description": "Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. Garrote and Rupture damage is stored at twice the rate. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power and Critical Strike chance:\r\n   1 point  : ${1*$<ratio>}% stored, ${((98+(1*158)+1*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   2 points: ${2*$<ratio>}% stored, ${((98+(2*158)+2*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   3 points: ${3*$<ratio>}% stored, ${((98+(3*158)+3*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   4 points: ${4*$<ratio>}% stored, ${((98+(4*158)+4*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   5 points: ${5*$<ratio>}% stored, ${((98+(5*158)+5*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap",
       "icon": "ability_creature_cursed_02"
     },
     "1325757": {
@@ -1762,8 +1762,8 @@
       "channeled": false,
       "passive": false,
       "cooldown_ms": 10000,
-      "range_yd": 25.0,
-      "description": "Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power:\r\n   1 point  : ${1*$<ratio>}% of damage stored, ${1*$<maxAP>}% Attack Power max.\r\n   2 points: ${2*$<ratio>}% of damage stored, ${2*$<maxAP>}% of Attack Power max.\r\n   3 points: ${3*$<ratio>}% of damage stored, ${3*$<maxAP>}% of Attack Power max.\r\n   4 points: ${4*$<ratio>}% of damage stored, ${4*$<maxAP>}% of Attack Power max.\r\n   5 points: ${5*$<ratio>}% of damage stored, ${5*$<maxAP>}% of Attack Power max.",
+      "range_yd": 20.0,
+      "description": "Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. Garrote and Rupture damage is stored at twice the rate. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power and Critical Strike chance:\r\n   1 point  : ${1*$<ratio>}% stored, ${((138+(1*217)+1*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   2 points: ${2*$<ratio>}% stored, ${((138+(2*217)+2*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   3 points: ${3*$<ratio>}% stored, ${((138+(3*217)+3*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   4 points: ${4*$<ratio>}% stored, ${((138+(4*217)+4*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   5 points: ${5*$<ratio>}% stored, ${((138+(5*217)+5*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap",
       "icon": "ability_creature_cursed_02"
     },
     "1325758": {
@@ -1776,8 +1776,8 @@
       "channeled": false,
       "passive": false,
       "cooldown_ms": 10000,
-      "range_yd": 25.0,
-      "description": "Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power and Critical Strike chance:\r\n   1 point  : ${1*$<ratio>}% stored, ${156+(1*245)+1*$<maxAP>*$<attackP>} damage cap.\r\n   2 points: ${2*$<ratio>}% stored, ${156+(2*245)+2*$<maxAP>*$<attackP>} damage cap.\r\n   3 points: ${3*$<ratio>}% stored, ${156+(3*245)+3*$<maxAP>*$<attackP>} damage cap.\r\n   4 points: ${4*$<ratio>}% stored, ${156+(4*245)+4*$<maxAP>*$<attackP>} damage cap.\r\n   5 points: ${5*$<ratio>}% stored, ${156+(5*245)+5*$<maxAP>*$<attackP>} damage cap.",
+      "range_yd": 20.0,
+      "description": "Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. Garrote and Rupture damage is stored at twice the rate. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power and Critical Strike chance:\r\n   1 point  : ${1*$<ratio>}% stored, ${((156+(1*245)+1*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   2 points: ${2*$<ratio>}% stored, ${((156+(2*245)+2*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   3 points: ${3*$<ratio>}% stored, ${((156+(3*245)+3*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   4 points: ${4*$<ratio>}% stored, ${((156+(4*245)+4*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap\r\n   5 points: ${5*$<ratio>}% stored, ${((156+(5*245)+5*$<maxAP>*$apm)*($mcrit/100+1))*$<coup>} damage cap",
       "icon": "ability_creature_cursed_02"
     },
     "1328825": {
@@ -1793,6 +1793,48 @@
       "range_yd": 0.0,
       "description": "While at maximum Energy, and out of combat, reduce the Energy cost of your next ability by 10.",
       "icon": "ability_rogue_fleetfooted"
+    },
+    "1329283": {
+      "name": "Shank",
+      "rank": 0,
+      "cost": 5,
+      "cost_type": 3,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 10000,
+      "range_yd": 5.0,
+      "description": "Instantly strike with your off-hand weapon, dealing 50% weapon damage and generating 15 Energy. Shank cannot Miss.",
+      "icon": "ability_theblackarrow"
+    },
+    "1329328": {
+      "name": "Venom",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 3,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Causes your Shank ability to increase your Poison damage by 30% and your chance to apply Poisons by 20% for 6 sec.",
+      "icon": "inv_sword_31"
+    },
+    "1329549": {
+      "name": "Shank",
+      "rank": 0,
+      "cost": 5,
+      "cost_type": 3,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 10000,
+      "range_yd": 5.0,
+      "description": "Instantly strike with your off-hand weapon, dealing 50% weapon damage and generating 25 Energy. Shank cannot Miss.",
+      "icon": "ability_theblackarrow"
     }
   }
 }
